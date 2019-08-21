@@ -2134,14 +2134,15 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 <p>Establish a connection to IPFS.</p>
 <p>Args:
     host (str): The IPFS host to connect to.
-        Defaults to environment variable: IPFS_HOST.
+        Defaults to environment variable: IPFS_HOST.  The host name should be of the form 'ipfs.infura.io' and not
+        include 'https://'.
     port (int): The IPFS port to connect to.
         Defaults to environment variable: env IPFS_API_PORT.</p>
 <p>Raises:
     CommunicationError: The exception is raised when there is a
         communication error with IPFS.</p>
 <p>Returns:
-    ipfsapi.client.Client: The IPFS connection client.</p>
+    ipfshttpclient.client.Client: The IPFS connection client.</p>
 <h2 id="dashboard.utils.get_web3">get_web3</h2>
 
 <pre><code class="python">get_web3(network, sockets=False)

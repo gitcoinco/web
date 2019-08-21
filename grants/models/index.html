@@ -2217,6 +2217,17 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="grants.models.Grant.clr_matches">clr_matches</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="grants.models.Grant.clr_matching">clr_matching</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -2319,19 +2330,6 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="grants.models.Grant.reference_url">reference_url</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.Grant.request_ownership_change">request_ownership_change</h3>
-
-<p>Accessor to the related object on the forward side of a many-to-one or
-one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
-<h3 id="grants.models.Grant.request_ownership_change_id">request_ownership_change_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -2582,6 +2580,17 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="grants.models.Subscription.donations">donations</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="grants.models.Subscription.end_approve_tx_id">end_approve_tx_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -2789,7 +2798,118 @@ object the first time, the query is executed.</p>
 </code></pre>
 
 <p>Create a contribution object.
-<h2 id="grants.models.ContributionQuerySet">ContributionQuerySet</h2></p>
+<h2 id="grants.models.DonationQuerySet">DonationQuerySet</h2></p>
+<pre><code class="python">DonationQuerySet(self, model=None, query=None, using=None, hints=None)
+</code></pre>
+
+<p>Define the Contribution default queryset and manager.
+<h2 id="grants.models.Donation">Donation</h2></p>
+<pre><code class="python">Donation(self, *args, **kwargs)
+</code></pre>
+
+<p>Define the structure of an optional donation. These donations are
+additional funds sent to Gitcoin as part of contributing or subscribing
+to a grant.
+<h3 id="grants.models.Donation.contribution">contribution</h3></p>
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="grants.models.Donation.contribution_id">contribution_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Donation.donation_percentage">donation_percentage</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Donation.from_address">from_address</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Donation.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">Donation._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.Donation.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">Donation._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.Donation.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">Donation._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.Donation.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">Donation._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.Donation.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Donation.network">network</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Donation.profile">profile</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="grants.models.Donation.profile_id">profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Donation.subscription">subscription</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="grants.models.Donation.subscription_id">subscription_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Donation.to_address">to_address</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Donation.token_address">token_address</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Donation.token_amount">token_amount</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Donation.token_amount_usdt">token_amount_usdt</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Donation.token_symbol">token_symbol</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Donation.tx_id">tx_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="grants.models.ContributionQuerySet">ContributionQuerySet</h2>
+
 <pre><code class="python">ContributionQuerySet(self, model=None, query=None, using=None, hints=None)
 </code></pre>
 
@@ -2799,7 +2919,18 @@ object the first time, the query is executed.</p>
 </code></pre>
 
 <p>Define the structure of a subscription agreement.
-<h3 id="grants.models.Contribution.get_next_by_created_on">_method</h3></p>
+<h3 id="grants.models.Contribution.donation">donation</h3></p>
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="grants.models.Contribution.get_next_by_created_on">_method</h3>
+
 <pre><code class="python">Contribution._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
 </code></pre>
 
@@ -2858,7 +2989,57 @@ object the first time, the query is executed.</p>
 </code></pre>
 
 <p>Get the next month time.
-<h2 id="grants.models.MatchPledge">MatchPledge</h2></p>
+<h2 id="grants.models.CLRMatch">CLRMatch</h2></p>
+<pre><code class="python">CLRMatch(self, *args, **kwargs)
+</code></pre>
+
+<p>Define the structure of a CLR Match amount.
+<h3 id="grants.models.CLRMatch.amount">amount</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.CLRMatch.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">CLRMatch._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.CLRMatch.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">CLRMatch._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.CLRMatch.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">CLRMatch._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.CLRMatch.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">CLRMatch._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.CLRMatch.grant">grant</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="grants.models.CLRMatch.grant_id">grant_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.CLRMatch.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.CLRMatch.round_number">round_number</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="grants.models.MatchPledge">MatchPledge</h2>
+
 <pre><code class="python">MatchPledge(self, *args, **kwargs)
 </code></pre>
 

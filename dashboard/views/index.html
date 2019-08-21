@@ -2375,6 +2375,11 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 </code></pre>
 
 <p>Handle displaying ethhack landing page.
+<h2 id="dashboard.views.beyond_blocks_2019">beyond_blocks_2019</h2></p>
+<pre><code class="python">beyond_blocks_2019(request)
+</code></pre>
+
+<p>Handle displaying ethhack landing page.
 <h2 id="dashboard.views.accept_bounty">accept_bounty</h2></p>
 <pre><code class="python">accept_bounty(request)
 </code></pre>
@@ -2563,7 +2568,12 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 <pre><code class="python">quickstart(request)
 </code></pre>
 
-<p>Display quickstart guide.
+<p>Display Quickstart Guide.
+<h2 id="dashboard.views.load_banners">load_banners</h2></p>
+<pre><code class="python">load_banners(request)
+</code></pre>
+
+<p>Load profile banners
 <h2 id="dashboard.views.profile_details">profile_details</h2></p>
 <pre><code class="python">profile_details(request, handle)
 </code></pre>
@@ -2602,7 +2612,7 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 The builtins True and False are the only two instances of the class bool.
 The class bool is a subclass of the class int, and cannot be subclassed.
 <h2 id="dashboard.views.profile_filter_activities">profile_filter_activities</h2></p>
-<pre><code class="python">profile_filter_activities(activities, activity_name)
+<pre><code class="python">profile_filter_activities(activities, activity_name, activity_tabs)
 </code></pre>
 
 <p>A helper function to filter a ActivityQuerySet.</p>
@@ -2676,7 +2686,32 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 <pre><code class="python">get_hackathons(request)
 </code></pre>
 
-<p>Handle rendering all Hackathons.</p>
+<p>Handle rendering all Hackathons.
+<h2 id="dashboard.views.board">board</h2></p>
+<pre><code class="python">board(request)
+</code></pre>
+
+<p>Handle the board view.
+<h2 id="dashboard.views.funder_dashboard_bounty_info">funder_dashboard_bounty_info</h2></p>
+<pre><code class="python">funder_dashboard_bounty_info(request, bounty_id)
+</code></pre>
+
+<p>Per-bounty JSON data for the user dashboard
+<h2 id="dashboard.views.funder_dashboard">funder_dashboard</h2></p>
+<pre><code class="python">funder_dashboard(request, bounty_type)
+</code></pre>
+
+<p>JSON data for the funder dashboard
+<h2 id="dashboard.views.contributor_dashboard">contributor_dashboard</h2></p>
+<pre><code class="python">contributor_dashboard(request, bounty_type)
+</code></pre>
+
+<p>JSON data for the contributor dashboard
+<h2 id="dashboard.views.change_user_profile_banner">change_user_profile_banner</h2></p>
+<pre><code class="python">change_user_profile_banner(request)
+</code></pre>
+
+<p>Handle Profile Banner Uploads</p>
                 
                   
                 

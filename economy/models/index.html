@@ -2147,10 +2147,10 @@ object the first time, the query is executed.</p>
 
 <p>Define the model metadata.
 <h3 id="economy.models.SuperModel.save">save</h3></p>
-<pre><code class="python">SuperModel.save(self, *args, **kwargs)
+<pre><code class="python">SuperModel.save(self, update=True, *args, **kwargs)
 </code></pre>
 
-<p>Override the SuperModel save to handle modified_on logic.
+<p>Override the SuperModel save to optionally handle modified_on logic.
 <h3 id="economy.models.SuperModel.to_standard_dict">to_standard_dict</h3></p>
 <pre><code class="python">SuperModel.to_standard_dict(self, fields=None, exclude=None, properties=None)
 </code></pre>

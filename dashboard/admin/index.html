@@ -2277,6 +2277,10 @@ The argument must be an iterable if specified.
 <p>Built-in mutable sequence.</p>
 <p>If no argument is given, the constructor creates a new empty list.
 The argument must be an iterable if specified.
+<h3 id="dashboard.admin.ProfileAdmin.readonly_fields">readonly_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
 <h3 id="dashboard.admin.ProfileAdmin.search_fields">search_fields</h3></p>
 <p>Built-in mutable sequence.</p>
 <p>If no argument is given, the constructor creates a new empty list.
@@ -2396,6 +2400,32 @@ The argument must be an iterable if specified.
     instance (RefundFeeRequest): The refund request to build a link for.</p>
 <p>Returns:
     str: The HTML element for the refund request link.</p>
+<h2 id="dashboard.admin.HackathonSponsorAdmin">HackathonSponsorAdmin</h2>
+
+<pre><code class="python">HackathonSponsorAdmin(self, model, admin_site)
+</code></pre>
+
+<p>The admin object for the HackathonSponsor model.
+<h3 id="dashboard.admin.HackathonSponsorAdmin.list_display">list_display</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h2 id="dashboard.admin.SponsorAdmin">SponsorAdmin</h2></p>
+<pre><code class="python">SponsorAdmin(self, model, admin_site)
+</code></pre>
+
+<p>The admin object for the Sponsor model.
+<h3 id="dashboard.admin.SponsorAdmin.list_display">list_display</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.SponsorAdmin.img">img</h3></p>
+<pre><code class="python">SponsorAdmin.img(self, instance)
+</code></pre>
+
+<p>Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.</p>
+<p>Returns:
+    str: A formatted HTML img node or 'n/a' if the HackathonEvent has no logo.</p>
 <h2 id="dashboard.admin.HackathonEventAdmin">HackathonEventAdmin</h2>
 
 <pre><code class="python">HackathonEventAdmin(self, model, admin_site)
@@ -2425,6 +2455,20 @@ The argument must be an iterable if specified.
 <p>Returns a formatted HTML <a> node.</p>
 <p>Returns:
     str: A formatted HTML <a> node.</p>
+<h2 id="dashboard.admin.CouponAdmin">CouponAdmin</h2>
+
+<pre><code class="python">CouponAdmin(self, model, admin_site)
+</code></pre>
+
+<p>The admin object to maintain discount coupons for bounty
+<h3 id="dashboard.admin.CouponAdmin.list_display">list_display</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.CouponAdmin.search_fields">search_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.</p>
                 
                   
                 

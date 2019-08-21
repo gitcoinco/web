@@ -2342,6 +2342,16 @@ object the first time, the query is executed.</p>
 <p>Convert price from finney to eth.</p>
 <p>Returns:
     float or int:  price in eth.</p>
+<h3 id="kudos.models.Token.price_in_gwei">price_in_gwei</h3>
+
+<p>Convert price from finney to gwei.</p>
+<p>Returns:
+    float or int:  price in gwei.</p>
+<h3 id="kudos.models.Token.price_in_wei">price_in_wei</h3>
+
+<p>Convert price from finney to wei.</p>
+<p>Returns:
+    float or int:  price in wei.</p>
 <h3 id="kudos.models.Token.rarity">rarity</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -2382,6 +2392,16 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="kudos.models.Token.get_relative_url">get_relative_url</h3>
+
+<pre><code class="python">Token.get_relative_url(self)
+</code></pre>
+
+<p>Get the relative URL for the Bounty.</p>
+<p>Attributes:
+    preceding_slash (bool): Whether or not to include a preceding slash.</p>
+<p>Returns:
+    str: The relative URL for the Bounty.</p>
 <h3 id="kudos.models.Token.send_enabled_for">send_enabled_for</h3>
 
 <pre><code class="python">Token.send_enabled_for(self, user)

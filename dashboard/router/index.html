@@ -2173,7 +2173,27 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 </code></pre>
 
 <p>Handle updating of m2m relationships and other custom operations.
-<h2 id="dashboard.router.BountyViewSet">BountyViewSet</h2></p>
+<h2 id="dashboard.router.BountySerializerSlim">BountySerializerSlim</h2></p>
+<pre><code class="python">BountySerializerSlim(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.router.BountySerializerSlim.Meta">Meta</h3>
+
+<pre><code class="python">BountySerializerSlim.Meta(self, /, *args, **kwargs)
+</code></pre>
+
+<p>Define the bounty serializer metadata.
+<h2 id="dashboard.router.BountySerializerCheckIn">BountySerializerCheckIn</h2></p>
+<pre><code class="python">BountySerializerCheckIn(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.router.BountySerializerCheckIn.Meta">Meta</h3>
+
+<pre><code class="python">BountySerializerCheckIn.Meta(self, /, *args, **kwargs)
+</code></pre>
+
+<h2 id="dashboard.router.BountyViewSet">BountyViewSet</h2>
+
 <pre><code class="python">BountyViewSet(self, **kwargs)
 </code></pre>
 
@@ -2197,6 +2217,29 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
 <p>Get the queryset for Bounty.</p>
 <p>Returns:
     QuerySet: The Bounty queryset.</p>
+<h2 id="dashboard.router.BountyViewSetSlim">BountyViewSetSlim</h2>
+
+<pre><code class="python">BountyViewSetSlim(self, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.router.BountyViewSetSlim.queryset">queryset</h3>
+
+<p>Handle the manager queryset for Bounties.
+<h3 id="dashboard.router.BountyViewSetSlim.serializer_class">BountySerializerSlim</h3></p>
+<pre><code class="python">BountyViewSetSlim.BountySerializerSlim(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
+</code></pre>
+
+<h2 id="dashboard.router.BountyViewSetCheckIn">BountyViewSetCheckIn</h2>
+
+<pre><code class="python">BountyViewSetCheckIn(self, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.router.BountyViewSetCheckIn.queryset">queryset</h3>
+
+<p>Handle the manager queryset for Bounties.
+<h3 id="dashboard.router.BountyViewSetCheckIn.serializer_class">BountySerializerCheckIn</h3></p>
+<pre><code class="python">BountyViewSetCheckIn.BountySerializerCheckIn(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
+</code></pre>
                 
                   
                 
