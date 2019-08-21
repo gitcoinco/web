@@ -36,7 +36,7 @@
     
     
       
-        <title>Advanced - Gitcoin Developer Documentation</title>
+        <title>Security Bounty Program - Gitcoin Developer Documentation</title>
       
     
     
@@ -90,7 +90,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="../#advanced-usage" tabindex="1" class="md-skip">
+      <a href="../#gitcoin-security-bounty-program" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -116,7 +116,7 @@
                 Gitcoin Developer Documentation
               </span>
               <span class="md-header-nav__topic">
-                Advanced
+                Security Bounty Program
               </span>
             
           
@@ -363,76 +363,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Advanced
-      </label>
-    
-    <a href="./" title="Advanced" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../mk_advanced/" title="Advanced" class="md-nav__link">
       Advanced
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#performance-and-profiling" title="Performance and Profiling" class="md-nav__link">
-    Performance and Profiling
-  </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#profiling-a-method" title="Profiling a method" class="md-nav__link">
-    Profiling a method
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#viewing-profiling-results" title="Viewing Profiling Results" class="md-nav__link">
-    Viewing Profiling Results
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#additional-help" title="Additional Help" class="md-nav__link">
-    Additional Help
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -500,11 +435,56 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../mk_securitybounty/" title="Security Bounty Program" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Security Bounty Program
+      </label>
+    
+    <a href="./" title="Security Bounty Program" class="md-nav__link md-nav__link--active">
       Security Bounty Program
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#guidelines" title="Guidelines" class="md-nav__link">
+    Guidelines
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vulnerability-scope" title="Vulnerability Scope" class="md-nav__link">
+    Vulnerability Scope
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -2166,36 +2146,16 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#performance-and-profiling" title="Performance and Profiling" class="md-nav__link">
-    Performance and Profiling
-  </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#profiling-a-method" title="Profiling a method" class="md-nav__link">
-    Profiling a method
+  <a href="#guidelines" title="Guidelines" class="md-nav__link">
+    Guidelines
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#viewing-profiling-results" title="Viewing Profiling Results" class="md-nav__link">
-    Viewing Profiling Results
+      
+        <li class="md-nav__item">
+  <a href="#vulnerability-scope" title="Vulnerability Scope" class="md-nav__link">
+    Vulnerability Scope
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#additional-help" title="Additional Help" class="md-nav__link">
-    Additional Help
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2215,34 +2175,115 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/gitcoinco/web/edit/master/docs/mk_advanced.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/gitcoinco/web/edit/master/docs/mk_securitybounty.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="advanced-usage">Advanced Usage</h1>
-<h2 id="performance-and-profiling">Performance and Profiling</h2>
-<p>You can profile functions locally by enabling <a href="https://github.com/jazzband/django-silk">Django Silk</a> by setting the environment variable: <code>ENABLE_SILK</code> to <code>on</code> in your <code>.env</code> file.  If your local environment is already running, you will need to restart the web application via: <code>docker-compose restart web</code></p>
-<h3 id="profiling-a-method">Profiling a method</h3>
-<p>Once enabled, you may use <code>silk</code> by decorating methods with <code>@silk_profile</code>. For example:</p>
-<pre><code class="python">from silk.profiling.profiler import silk_profile
-
-
-@silk_profile(name='View About')
-def about(request):
-    context = {
-        'active': 'about',
-        'title': 'About',
-    }
-    return TemplateResponse(request, 'about.html', context)
-</code></pre>
-
-<h3 id="viewing-profiling-results">Viewing Profiling Results</h3>
-<p>You may view the profiling results by visiting: <a href="http://localhost:8000/silk">http://localhost:8000/silk</a></p>
-<h3 id="additional-help">Additional Help</h3>
+                <h1 id="gitcoin-security-bounty-program">Gitcoin Security Bounty Program</h1>
+<p>Gitcoin is an open-source marketplace with our code available for inspection and research. If you discover a severe bug affecting the privacy, data, or security of our users we ask that you disclose responsibly and privately. For security related vulnerabilities we reward researchers for private and professional disclosure.</p>
+<p>Non-security issues (style issues, gas optimizations) are not eligible for this bounty.</p>
+<h2 id="guidelines">Guidelines</h2>
+<p>Participating in our security bounty program requires you to follow our guidelines. Responsible investigation and reporting includes, but not limited to the following:</p>
 <ul>
-<li><a href="http://silk.readthedocs.io/en/latest/index.html">Silk Documentation</a></li>
-<li><a href="https://github.com/jazzband/django-silk">Silk Github</a></li>
-<li><a href="https://docs.gitcoin.co/mk_envvars/">Gitcoin Environment Variable Documentation</a></li>
+<li>
+<p>Don't download, modify, or destroy other users' data.</p>
+</li>
+<li>
+<p>Don't cause a denial-of-service on our platform through exploits, vulnerabilities, traffic, or causing issues with our technology providers.</p>
+</li>
+<li>
+<p>Don't repeatedly request updates on your reports. Gitcoin is a small team and constant requests for updates can render your report ineligible. Allow us up to 7 days to respond to your emails.</p>
+</li>
+<li>
+<p>Do only use your own account to test issues in production. You can also download our open source code and run your own instance to research and test for vulnerabilities.</p>
+</li>
+<li>
+<p>Social engineering attacks, DDOS, physical access, spearfishing, etc. are not eligible.</p>
+</li>
+<li>
+<p>Payouts will be made to the first individuals who submit a report.</p>
+</li>
 </ul>
+<p>The Gitcoin team has the final say in all determinations of bounty payouts including severity, classification, amount, whether the report falls under our guidelines, etc.</p>
+<p>Vulnerabilities should be disclosed directly to the Gitcoin team by emailing engineering@gitcoin.co - reports should not be made publically or to any third party. These communications must remain confidential to be eligible.</p>
+<p>Threats, ransom demands, unprofessional language, etc. of any kind will automatically disqualify you from participating in the program.</p>
+<p>The only domain eligible for the bounty program is https://gitcoin.co - no subdomains, related services, etc. are within the scope of the program.
+Vulnerabilities found in support services (ex: Slack, Wordpress, etc.) are not eligible.</p>
+<h2 id="vulnerability-scope">Vulnerability Scope</h2>
+<p>Any significant vulnerability may be eligible for an award provided it follows the guidelines set in this document.</p>
+<p>Some examples of eligible issues are:</p>
+<ul>
+<li>
+<p>Cross-Site Request Forgery (CSRF)</p>
+</li>
+<li>
+<p>Cross-Site Scripting (XSS)</p>
+</li>
+<li>
+<p>Code Executions</p>
+</li>
+<li>
+<p>SQL Injection</p>
+</li>
+<li>
+<p>Server Side Request Forgery (SSRF)</p>
+</li>
+<li>
+<p>Privilege Escalations</p>
+</li>
+<li>
+<p>Authentication Bypasses</p>
+</li>
+<li>
+<p>Data Leaks</p>
+</li>
+</ul>
+<p>Some examples of ineligible issues are:</p>
+<ul>
+<li>
+<p>Rate Limiting</p>
+</li>
+<li>
+<p>Stack Traces</p>
+</li>
+<li>
+<p>Self-XSS</p>
+</li>
+<li>
+<p>Man in the Middle (MiTM) Attacks</p>
+</li>
+<li>
+<p>Denial of Service Attacks</p>
+</li>
+<li>
+<p>Cache Poisoning</p>
+</li>
+<li>
+<p>Clickjacking</p>
+</li>
+<li>
+<p>Missing DNS Records</p>
+</li>
+<li>
+<p>Brute Force Attacks</p>
+</li>
+<li>
+<p>Vulnerabilities in third party services or third party platforms</p>
+</li>
+<li>
+<p>Vulnerabilities in past versions of the software</p>
+</li>
+<li>
+<p>Vulnerabilities affecting outdated browsers or operating systems</p>
+</li>
+</ul>
+<p>Eligible Reports must contain enough information and a proof of concept code or screenshots. After a report is made and confirmed, efforts will be made to fix the issue. Researchers agree to assist in the testing of the fixes.</p>
+<p>Vulnerability severity is judged by the <a href="https://www.owasp.org/index.php/OWASP_Risk_Rating_Methodology">OWASP model</a></p>
+<p><img alt="OWASP evaluation chart" src="https://gitcoincontent.s3-us-west-2.amazonaws.com/owasp.png" /></p>
+<p>Payouts will be awarded in ETH and converted from USD at the time of payout - please include your Ethereum address and Gitcoin username when submitting a report:</p>
+<p>Critical: $600</p>
+<p>High: $225</p>
+<p>Medium: $125</p>
+<p>Low: $30</p>
                 
                   
                 
@@ -2263,7 +2304,7 @@ def about(request):
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../mk_third_party_integrations/" title="Third Party Integration Setup" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../mk_contributors/" title="Contributor's Guide" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -2272,19 +2313,19 @@ def about(request):
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Third Party Integration Setup
+                Contributor's Guide
               </span>
             </div>
           </a>
         
         
-          <a href="../mk_widget/" title="Widget Setup" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../mk_styleguide/" title="StyleGuide" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Widget Setup
+                StyleGuide
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
