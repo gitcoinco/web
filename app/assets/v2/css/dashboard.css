@@ -230,6 +230,17 @@ body {
   letter-spacing: 1.7px;
 }
 
+.hackathon-alt {
+  font-size: 11px;
+  color: #0d0764;
+  font-weight: 700;
+  letter-spacing: 1.7px;
+}
+
+.hackathon-explorer .hackathon-alt {
+  display: none;
+}
+
 .status-open {
   color: #00A652;
 }
