@@ -23,6 +23,17 @@ $(document).ready(function() {
 
   updateSummary();
 
+  $(".nav-item").click(function(e){
+    $(".nav-item a").removeClass('active');
+    $(this).find('a').addClass('active');
+    var targetid = $(this).find('a').data('target');
+    var target = $("#" + targetid);
+    $('.tab_target').addClass('hidden');
+    target.removeClass('hidden');
+
+    e.preventDefault();
+  })
+
   $('#frequency_unit, #js-token').on('select2:select', event => {
     updateSummary();
   });

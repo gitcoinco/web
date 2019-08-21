@@ -900,3 +900,26 @@ class MatchPledge(SuperModel):
     def __str__(self):
         """Return the string representation of this object."""
         return f"{self.profile} <> {self.amount} DAI"
+
+class PhantomFunding(SuperModel):
+    """Define the structure of a subscription agreement."""
+
+    round_number = models.PositiveIntegerField(blank=True, null=True)
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='phantom_funding',
+        on_delete=models.CASCADE,
+        help_text=_('The associated Phantom Funding.'),
+    )
+
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='grant_phantom_funding',
+        on_delete=models.CASCADE,
+        help_text=_('The associated Phantom Funding.'),
+    )
+
+    def __str__(self):
+        """Return the string representation of this object."""
+        return f"{self.round_number}; {self.profile} <> {self.grant}"
+

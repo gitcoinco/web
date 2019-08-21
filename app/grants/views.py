@@ -42,7 +42,7 @@ from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
-from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
+from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update, PhantomFunding
 from marketing.mails import (
     grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
     thank_you_for_supporting,
@@ -532,6 +532,26 @@ def grant_fund(request, grant_id, grant_slug):
             })
 
     splitter_contract_address = settings.SPLITTER_CONTRACT_ADDRESS
+    
+    # handle phantom funding
+    round_number = 3
+    can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
+    phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, grant=grant, round_number=round_number)
+    is_phantom_funding_this_grant = request.user.is_authenticated and phantom_funds.exists()
+    if can_phantom_fund and request.GET.get('toggle_phantom_fund'):
+        if is_phantom_funding_this_grant:
+            msg = "You are now phantom funding this project."
+            phantom_funds.delete()
+        else:
+            msg = "You are no longer phantom funding this project."
+            PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
+        is_phantom_funding_this_grant = not is_phantom_funding_this_grant
+        messages.info(
+            request,
+            msg
+        )
+
+
 
     params = {
         'active': 'fund_grant',
@@ -549,7 +569,9 @@ def grant_fund(request, grant_id, grant_slug):
         'conf_time_spread': conf_time_spread(),
         'gas_advisories': gas_advisories(),
         'splitter_contract_address': settings.SPLITTER_CONTRACT_ADDRESS,
-        'gitcoin_donation_address': settings.GITCOIN_DONATION_ADDRESS
+        'gitcoin_donation_address': settings.GITCOIN_DONATION_ADDRESS,
+        'can_phantom_fund': can_phantom_fund,
+        'is_phantom_funding_this_grant': is_phantom_funding_this_grant,
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
