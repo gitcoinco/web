@@ -70,7 +70,7 @@ class BountyDocumentsSerializer(serializers.ModelSerializer):
         fields = ('doc', 'doc_type')
 
 
-class HachathonEventSerializer(serializers.ModelSerializer):
+class HackathonEventSerializer(serializers.ModelSerializer):
     """Handle serializing the hackathon object."""
 
     class Meta:
@@ -124,7 +124,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     interested = InterestSerializer(many=True)
     activities = ActivitySerializer(many=True)
     unsigned_nda = BountyDocumentsSerializer(many=False)
-    event = HachathonEventSerializer(many=False)
+    event = HackathonEventSerializer(many=False)
     bounty_owner_email = serializers.SerializerMethodField('override_bounty_owner_email')
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
 

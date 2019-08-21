@@ -165,7 +165,7 @@ var callbacks = {
     return [ 'status', ui_status ];
   },
   'event_name': function(key, val, result) {
-    let event_name = result['event'] ? 'Hachathon: ' + result.event.name : '';
+    let event_name = result['event'] ? 'Hackathon: ' + result.event.name : '';
 
     return [ 'event_name', event_name ];
   },
