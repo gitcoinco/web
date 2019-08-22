@@ -2868,6 +2868,20 @@ def hackathon(request, hackathon=''):
     return TemplateResponse(request, 'dashboard/index.html', params)
 
 
+def hackathon_onboard(request, hackathon=''):
+
+    try:
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+    except HackathonEvent.DoesNotExist:
+        hackathon_event = HackathonEvent.objects.last()
+    params = {
+        'active': 'hackathon_onboard',
+        'title': 'Hackathon Onboard',
+        'hackathon': hackathon_event,
+    }
+    return TemplateResponse(request, 'dashboard/hackathon_onboard.html', params)
+
+
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 

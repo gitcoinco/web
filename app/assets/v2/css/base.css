@@ -347,6 +347,15 @@ p a {
   color: #25e899;
 }
 
+.link-current {
+  color: currentColor;
+}
+
+.link-current:hover {
+  color: currentColor;
+  text-decoration: none;
+}
+
 .cta-green {
   background-color: var(--gc-green);
   text-align: center;
