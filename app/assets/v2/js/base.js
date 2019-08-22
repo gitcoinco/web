@@ -337,7 +337,6 @@ const gitcoinUpdates = (force) => {
   let urlUpdates = `https://api.github.com/repos/gitcoinco/web/issues/5057?access_token=${document.contxt.access_token}`;
   let today = new Date();
   let showedUpdates = JSON.parse(localStorage.getItem('showed_updates'));
-  console.log(showedUpdates)
   let lastPromp = showedUpdates ? showedUpdates.last_promp : today;
   let lastUpdated = showedUpdates ? showedUpdates.last_updated : 0;
 
