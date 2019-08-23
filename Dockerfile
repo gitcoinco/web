@@ -9,7 +9,8 @@ WORKDIR /code
 # Install general dependencies.
 RUN apk add --no-cache --update $PACKAGES && \
     apk add --no-cache --update --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ vips && \
-    apk add --no-cache --update --virtual .builder $BUILD_DEPS
+    apk add --no-cache --update --virtual .builder $BUILD_DEPS && \
+    apk add --update nodejs nodejs-npm
 
 # GeoIP2 Data Files
 RUN mkdir -p /usr/share/GeoIP/ && \

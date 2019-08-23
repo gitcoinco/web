@@ -10,6 +10,12 @@
     "stylelint:fix": "stylelint --fix ./app/assets/**/**/*.css",
     "build": "webpack --config webpack.config.js --progress --colors"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/gitcoinco/web"
