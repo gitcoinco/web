@@ -280,25 +280,16 @@ const sendPersonal = (persona) => {
     $('#persona_modal').bootstrapModal('hide');
     const urls = [
       {
-        url: document.location.href,
-        redirect: '/onboard/funder'
-      },
-      {
-        url: '/bounties/funder',
-        redirect: '/onboard/funder'
-      },
-      {
-        url: '/contributor',
-        redirect: '/onboard/contributor'
+        url: '/hackathon/onboard'
       }
     ];
 
     const checkUrl = (arr, val) => {
       return arr.some(arrObj => {
         if (val.indexOf(arrObj.url) >= 0) {
-          return true;
+          return false;
         }
-        return false;
+        return true;
       });
     };
 
