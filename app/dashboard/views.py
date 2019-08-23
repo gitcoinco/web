@@ -1132,6 +1132,53 @@ def social_contribution_modal(request):
 
 @csrf_exempt
 @require_POST
+def invite_to_bounty_based_on_skills(request):
+    """Invite users with matching skills to a bounty.
+
+    Args:
+        bounty_id (int): The primary key of the bounty to be accepted.
+        skills (string): Comma separated list of matching keywords.
+
+    Raises:
+        Http403: The exception is raised if the user is not authenticated or
+                 the args are missing.
+
+    Returns:
+        Http200: Json response with {'status': 200, 'msg': 'email_sent'}.
+
+    """
+
+    inviter = request.user if request.user.is_authenticated else None
+    skills = request.POST.get('skills')
+    bounty_id = request.POST.get('bountyId')
+
+    if None in (skills, bounty_id, inviter):
+        return JsonResponse({'success': False}, status=403)
+
+    bounty = Bounty.objects.current().get(id=int(bounty_id))
+
+    profiles = Profile.objects.filter(keywords__in=skills.split(',')
+
+    invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
+
+    for profile in profiles:
+        bounty_invite = BountyInvites.objects.create(
+            status='pending'
+        )
+        bounty_invite.bounty.add(bounty)
+        bounty_invite.inviter.add(inviter)
+        bounty_invite.invitee.add(profile.user)
+        try:
+            share_bounty([profile.email], msg, request.user.profile, invite_url, True)
+        except Exception as e:
+            logging.exception(e)
+    return JsonResponse({'status': 200,
+                         'msg': 'email_sent'})
+
+
+
+@csrf_exempt
+@require_POST
 def social_contribution_email(request):
     """Social Contribution Email
 
