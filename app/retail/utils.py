@@ -175,6 +175,8 @@ def get_codefund_history_at_date(date, keyword):
     if date > timezone.datetime(2019, 7, 9):
         amount += 40269
     if date > timezone.datetime(2019, 8, 9):
+        amount += 31015 # august month to date
+    if date > timezone.datetime(2019, 9, 9):
         amount += 0
     return amount
 

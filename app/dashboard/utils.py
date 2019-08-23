@@ -23,6 +23,7 @@ import logging
 from json.decoder import JSONDecodeError
 
 from django.conf import settings
+from django.utils import timezone
 
 import ipfshttpclient
 import requests
@@ -33,9 +34,12 @@ from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfshttpclient.exceptions import CommunicationError
+from pytz import UTC
 from web3 import HTTPProvider, Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
+
+from .notifications import maybe_market_to_slack
 
 logger = logging.getLogger(__name__)
 
@@ -824,3 +828,57 @@ def get_nonce(network, address):
     JSONStore.objects.create(key=key, view=view, data=[new_nonce])
 
     return new_nonce
+
+
+def re_market_bounty(bounty, auto_save = True):
+    remarketed_count = bounty.remarketed_count
+    if remarketed_count < settings.RE_MARKET_LIMIT:
+        now = timezone.now()
+        minimum_wait_after_remarketing = bounty.last_remarketed + timezone.timedelta(minutes=settings.MINUTES_BETWEEN_RE_MARKETING) if bounty.last_remarketed else now
+        if now >= minimum_wait_after_remarketing:
+            bounty.remarketed_count = remarketed_count + 1
+            bounty.last_remarketed = now
+
+            if auto_save:
+                bounty.save()
+
+            maybe_market_to_slack(bounty, 'issue_remarketed')
+
+            result_msg = 'The issue will appear at the top of the issue explorer. '
+            further_permitted_remarket_count = settings.RE_MARKET_LIMIT - bounty.remarketed_count
+            if further_permitted_remarket_count >= 1:
+                result_msg += f'You will be able to remarket this bounty {further_permitted_remarket_count} more time if a contributor does not pick this up.'
+            elif further_permitted_remarket_count == 0:
+                result_msg += 'Please note this is the last time the issue is able to be remarketed.'
+
+            return {
+                "success": True,
+                "msg": result_msg
+            }
+        else:
+            time_delta_wait_time = minimum_wait_after_remarketing - now
+            minutes_to_wait = round(time_delta_wait_time.total_seconds() / 60)
+            return {
+                "success": False,
+                "msg": f'As you recently remarketed this issue, you need to wait {minutes_to_wait} minutes before remarketing this issue again.'
+            }
+    else:
+        return {
+            "success": False,
+            "msg": f'The issue was not remarketed due to reaching the remarket limit ({settings.RE_MARKET_LIMIT}).'
+        }
+
+
+def apply_new_bounty_deadline(bounty, deadline, auto_save = True):
+    bounty.expires_date = timezone.make_aware(
+        timezone.datetime.fromtimestamp(deadline),
+        timezone=UTC)
+    result = re_market_bounty(bounty, False)
+
+    if auto_save:
+        bounty.save()
+
+    base_result_msg = "You've extended expiration of this issue."
+    result['msg'] = base_result_msg + " " + result['msg']
+
+    return result
