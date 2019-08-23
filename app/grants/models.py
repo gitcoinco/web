@@ -922,4 +922,3 @@ class PhantomFunding(SuperModel):
     def __str__(self):
         """Return the string representation of this object."""
         return f"{self.round_number}; {self.profile} <> {self.grant}"
-
