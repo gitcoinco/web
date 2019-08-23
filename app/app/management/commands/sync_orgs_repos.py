@@ -31,10 +31,11 @@ class Command(BaseCommand):
                         return lsynced
 
                     access_token = profile.user.social_auth.filter(provider='github').latest('pk').access_token
-                    for org in profile.organizations.all():
-                        print(f'Syncing Org: {org.name}')
+                    for org in profile.organizations:
+                        db_org = Organization.objects.get_or_create(name=org)[0]
+                        print(f'Syncing Org: {db_org.name}')
                         org_members = get_organization(
-                            org.name,
+                            db_org.name,
                             '/members',
                             (profile.handle, access_token)
                         )
@@ -51,18 +52,19 @@ class Command(BaseCommand):
                                 continue
 
                             membership = get_organization(
-                                org.name,
+                                db_org.name,
                                 f'/memberships/{handle}',
                                 (profile.handle, access_token)
                             )
                             role = membership['role'] if not None else "member"
-                            group = Group.objects.get_or_create(name=f'{org.name}-role-{role}')
-                            org.groups.add(group[0])
+                            group = Group.objects.get_or_create(name=f'{db_org.name}-role-{role}')
+
+                            db_org.groups.add(group[0])
                             member_user_obj.groups.add(group[0])
                             lsynced = recursive_sync(lsynced, member['login']) if not None else []
 
                         org_repos = get_organization(
-                            org.name,
+                            db_org.name,
                             '/repos',
                             (profile.handle, access_token)
                         )
@@ -88,22 +90,20 @@ class Command(BaseCommand):
                                 else:
                                     permission = "none"
 
-                                group = Group.objects.get_or_create(name=f'{org.name}-repo-{repo["name"]}-{permission}')
-                                org.groups.add(group[0])
+                                group = Group.objects.get_or_create(
+                                    name=f'{db_org.name}-repo-{repo["name"]}-{permission}')
+                                db_org.groups.add(group[0])
                                 member_user_obj.groups.add(group[0])
                                 lsynced = recursive_sync(lsynced, collaborator['login']) if not None else []
 
                     return lsynced
                 except Exception as exc:
-                    print("were over here")
                     print(exc)
 
             for user in all_users:
                 # get profile data now creates or gets the new organization data for each user
                 synced = recursive_sync(synced, user.profile.handle)
-                print("Synced profiles")
-                print(synced)
+                print("Profile Sync Completed")
 
         except ValueError as e:
-            print("were here")
             print(e)

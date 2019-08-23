@@ -208,6 +208,7 @@ def sync_profile(handle, user=None, hide_profile=True):
     try:
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         orgs = get_user(handle, '/orgs')
+        profile.organizations = [ele['login'] for ele in orgs]
         print("Profile:", profile, "- created" if created else "- updated")
         keywords = []
         for repo in profile.repos_data_lite:
@@ -218,11 +219,6 @@ def sync_profile(handle, user=None, hide_profile=True):
                     keywords.append(key)
 
         profile.keywords = keywords
-        profile.organizations.all().delete()
-
-        for ele in orgs:
-            org = Organization.objects.get_or_create(name=ele['login'])
-            profile.organizations.add(org[0])
         profile.save()
 
     except Exception as e:

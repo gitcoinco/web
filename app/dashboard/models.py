@@ -137,10 +137,10 @@ class BountyQuerySet(models.QuerySet):
         """Filter results by bounties that have applicants."""
         return self.prefetch_related('activities') \
             .filter(
-                activities__activity_type='worker_applied',
-                activities__needs_review=False,
-            )
-    
+            activities__activity_type='worker_applied',
+            activities__needs_review=False,
+        )
+
     def warned(self):
         """Filter results by bounties that have been warned for inactivity."""
         return self.prefetch_related('activities') \
@@ -450,33 +450,33 @@ class Bounty(SuperModel):
     @property
     def no_of_applicants(self):
         return self.interested.count()
-   
+
     @property
     def has_applicant(self):
         """Filter results by bounties that have applicants."""
         return self.prefetch_related('activities') \
             .filter(
-                activities__activity_type='worker_applied',
-                activities__needs_review=False,
-            )
-        
+            activities__activity_type='worker_applied',
+            activities__needs_review=False,
+        )
+
     @property
     def warned(self):
         """Filter results by bounties that have been warned for inactivity."""
         return self.prefetch_related('activities') \
             .filter(
-                activities__activity_type='bounty_abandonment_warning',
-                activities__needs_review=True,
-            )
-    
+            activities__activity_type='bounty_abandonment_warning',
+            activities__needs_review=True,
+        )
+
     @property
     def escalated(self):
         """Filter results by bounties that have been escalated for review."""
         return self.prefetch_related('activities') \
             .filter(
-                activities__activity_type='bounty_abandonment_escalation_to_mods',
-                activities__needs_review=True,
-            )
+            activities__activity_type='bounty_abandonment_escalation_to_mods',
+            activities__needs_review=True,
+        )
 
     @property
     def url(self):
@@ -1956,7 +1956,6 @@ def post_add_activity(sender, instance, created, **kwargs):
             dupe.delete()
 
 
-
 class LabsResearch(SuperModel):
     """Define the structure of Labs Research object."""
 
@@ -2087,8 +2086,8 @@ class Profile(SuperModel):
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
-    # organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
-    organizations = models.ManyToManyField(Organization, blank=True)
+    organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    orgs = models.ManyToManyField(Organization, blank=True)
     form_submission_records = JSONField(default=list, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
@@ -3392,8 +3391,10 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner, default to white')
-    text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
+    background_color = models.CharField(max_length=255, null=True, blank=True,
+                                        help_text='hexcode for the banner, default to white')
+    text_color = models.CharField(max_length=255, null=True, blank=True,
+                                  help_text='hexcode for the text, default to black')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
 
