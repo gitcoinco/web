@@ -26,10 +26,11 @@ from django.utils import timezone
 
 import ipfshttpclient
 import pytest
-from dashboard.models import Bounty
+from dashboard.models import Bounty, Profile
 from dashboard.utils import (
     IPFSCantConnectException, apply_new_bounty_deadline, clean_bounty_url, create_user_action, get_bounty, get_ipfs,
     get_ordinal_repr, get_web3, getBountyContract, humanize_event_name, ipfs_cat_ipfsapi, re_market_bounty,
+    release_bounty_to_the_public,
 )
 from pytz import UTC
 from test_plus.test import TestCase
@@ -263,3 +264,36 @@ class DashboardUtilsTest(TestCase):
             timezone=UTC
         )
         assert bounty.expires_date == deadline_as_date_time
+
+    @staticmethod
+    def test_release_bounty_to_public_fails_when_bounty_is_none():
+        assert release_bounty_to_the_public(None) is False
+
+    @staticmethod
+    def test_release_bounty_to_public_is_successful():
+        now = timezone.now()
+        profile = Profile(
+            handle='foo',
+        )
+        bounty = Bounty(
+            title='ReleaseToPublicTrueTest',
+            idx_status='reserved',
+            is_open=True,
+            web3_created=now,
+            expires_date=now + timezone.timedelta(minutes=2),
+            bounty_reserved_for_user=profile,
+            reserved_for_user_from=now,
+            reserved_for_user_expiration=now + timezone.timedelta(minutes=2),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+
+        assert bounty.bounty_reserved_for_user is not None
+        assert bounty.reserved_for_user_from is not None
+        assert bounty.reserved_for_user_expiration is not None
+
+        assert release_bounty_to_the_public(bounty, False) is True
+
+        assert bounty.bounty_reserved_for_user is None
+        assert bounty.reserved_for_user_from is None
+        assert bounty.reserved_for_user_expiration is None

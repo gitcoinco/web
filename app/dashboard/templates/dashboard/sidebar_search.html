@@ -137,6 +137,11 @@
         </div>
 
         <div class="form__radio option">
+          <input name="idx_status" id="status_reserved" type="radio" value="reserved" val-ui='Reserved' />
+          <label class="filter-label" for=status_reserved>{% trans "Reserved" %}</label>
+        </div>
+
+        <div class="form__radio option">
           <input name="idx_status" id="status_expired" type="radio" value="expired" val-ui='Expired' />
           <label class="filter-label" for=status_expired>{% trans "Expired" %}</label>
         </div>
@@ -186,6 +191,10 @@
               <div class="form__radio option">
                 <input name="bounty_filter" id="FulfilledByMe" type="radio" value="fulfilledByMe" val-ui='Fulfilled'/>
                 <label class="filter-label" for=FulfilledByMe>{% trans "Fulfilled By Me" %}</label>
+              </div>
+              <div class="form__radio option">
+                <input name="bounty_filter" id="ReservedForMe" type="radio" value="reservedForMe" val-ui='Reserved For Me'/>
+                <label class="filter-label" for=ReservedForMe>{% trans "Reserved For Me" %}</label>
               </div>
               <div class="form__radio option">
                 <input name="bounty_filter" id="all_bounty" type="radio" value="any" checked/>
