@@ -49,6 +49,7 @@
         </a>
         <div class="dropdown-menu dropdown-menu-right" id="explore-tab" aria-labelledby="navbarDropdownHow">
           <a class="dropdown-item{% if active == 'dashboard' %} selected{% endif %} interior" href="{% url "explorer" %}">{% trans "Bounties" %}</a>
+          <a class="dropdown-item{% if active == 'get_hackathons' %} selected{% endif %} interior" href="{% url "get_hackathons" %}">{% trans "Hackathons" %}</a>
           <a class="dropdown-item{% if active == 'users_directory' %} selected{% endif %} interior" href="{% url "users_directory" %}">{% trans "Users" %}</a>
           <a class="dropdown-item{% if active == 'leaderboard' %} selected{% endif %} interior" href="{% url "_leaderboard" %}">{% trans "Leaderboard" %}</a>
           <a class="dropdown-item{% if active == 'activity' %} selected{% endif %} interior" href="{% url "activity" %}">{% trans "Activity Stream" %}</a>
