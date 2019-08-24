@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
         try:
             print("Loading Users....")
-            all_users = User.objects.all()
+            all_users = User.objects.all() # potentially want to add some filters here around what users are synced
             print(all_users)
             print("Looking up Organization of user")
             # memoize the process so we only ever sync once per user
@@ -26,6 +26,8 @@ class Command(BaseCommand):
                     if handle not in lsynced:
                         print(f'Syncing User Handle: {handle}')
                         profile = sync_profile(handle)
+                        profile.orgs.clear()
+                        profile.save()
                         lsynced.append(handle)
                     else:
                         return lsynced
