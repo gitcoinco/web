@@ -624,7 +624,7 @@ input[type=text].loading {
 }
 
 .alert.warning {
-  background-color: #F2A700
+  background-color: #FF7F00;
 }
 
 .alert.warning .message::before {
