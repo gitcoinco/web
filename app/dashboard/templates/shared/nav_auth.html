@@ -34,7 +34,7 @@
           {% trans "Send Tip" %}
         </a>
         <a class="dropdown-item" href="{% url "kudos_marketplace" %}">
-          <i class="fas"><img data-src="{% static "v2/images/kudos/IconKudos.svg" %}"></i>
+          <i class="fas"><img src="{% static "v2/images/kudos/IconKudos.svg" %}"></i>
           {% trans "Send Kudos" %}
         </a>
         <a class="dropdown-item" href="{% url "new_funding" %}">
@@ -44,15 +44,15 @@
 
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="{% url "grants:profile" %}">
-          <i class="fas"><img data-src="{% static "v2/images/grants/icons/black.svg" %}"></i>
+          <i class="fas"><img src="{% static "v2/images/grants/icons/black.svg" %}"></i>
           {% trans "My Grants" %}
         </a>
         <a class="dropdown-item" href="{% url "explorer" %}?bounty_filter=createdByMe&network=mainnet&order_by=-web3_created">
-          <i class="fas"><img data-src="{% static "v2/images/grants/icons/black.svg" %}"></i>
+          <i class="fas"><img src="{% static "v2/images/grants/icons/black.svg" %}"></i>
           {% trans "My Funded Bounties" %}
         </a>
         <a class="dropdown-item" href="{% url "explorer" %}?bounty_filter=startedByMe&network=mainnet&order_by=-web3_created">
-          <i class="fas"><img data-src="{% static "v2/images/grants/icons/black.svg" %}"></i>
+          <i class="fas"><img src="{% static "v2/images/grants/icons/black.svg" %}"></i>
           {% trans "My Started Bounties" %}
         </a>
         <div class="dropdown-divider"></div>

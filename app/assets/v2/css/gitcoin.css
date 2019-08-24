@@ -378,7 +378,7 @@ div.button-pink {
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
-  min-height: 520px;
+  min-height: 20rem;
 }
 
 .footer__text,
