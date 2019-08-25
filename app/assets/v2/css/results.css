@@ -228,6 +228,15 @@ p.single-stat__fineprint {
   height: auto;
 }
 
+.hackathon-breakdown div{
+  width: 250px;
+  display: inline-block;
+  vertical-align: top;
+}
+.hackathon-breakdown div img{
+  max-width: 250px;
+}
+
 @media screen and (max-width: 768px) {
 
   .content-block {
