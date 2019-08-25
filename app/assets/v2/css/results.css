@@ -4,7 +4,7 @@
   margin-right: 10px;
 }
 
-.navbar{
+.navbar {
   background-color: #0d023b;
 }
 
@@ -160,7 +160,6 @@ p.single-stat__fineprint {
   color: var(--gc-dark-grey);
 }
 
-
 .bounty-status-breakdown {
   display: flex;
   align-items: center;
@@ -228,12 +227,13 @@ p.single-stat__fineprint {
   height: auto;
 }
 
-.hackathon-breakdown div{
+.hackathon-breakdown div {
   width: 250px;
   display: inline-block;
   vertical-align: top;
 }
-.hackathon-breakdown div img{
+
+.hackathon-breakdown div img {
   max-width: 250px;
 }
 
