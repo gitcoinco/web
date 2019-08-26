@@ -872,6 +872,12 @@ def users_fetch(request):
             'show_job_status', 'job_location', 'job_salary', 'job_search_status',
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
             'organizations', 'is_org']}
+
+        if user.show_job_status is False:
+            del profile_json['job_status']
+            del profile_json['job_location']
+            del profile_json['job_type']
+
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
         profile_json['previously_worked'] = user.previous_worked_count > 0
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
