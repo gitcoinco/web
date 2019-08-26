@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
         try:
             print("Loading Users....")
-            all_users = User.objects.all() # potentially want to add some filters here around what users are synced
+            all_users = User.objects.all()  # potentially want to add some filters here around what users are synced
             print(all_users)
             print("Looking up Organization of user")
             # memoize the process so we only ever sync once per user
@@ -26,8 +26,13 @@ class Command(BaseCommand):
                     if handle not in lsynced:
                         print(f'Syncing User Handle: {handle}')
                         profile = sync_profile(handle)
-                        profile.orgs.clear()
-                        profile.save()
+                        remove = [x for x in profile.orgs.all() if x.name not in []]
+
+                        print('Removing Stale Organizations and Groups')
+                        for y in remove:
+                            profile.orgs.remove(y)
+                            profile.user.groups.filter(name__contains=y.name).delete()
+
                         lsynced.append(handle)
                     else:
                         return lsynced
@@ -36,15 +41,12 @@ class Command(BaseCommand):
                     for org in profile.organizations:
                         db_org = Organization.objects.get_or_create(name=org)[0]
                         print(f'Syncing Org: {db_org.name}')
+                        profile.orgs.add(db_org)
                         org_members = get_organization(
                             db_org.name,
                             '/members',
                             (profile.handle, access_token)
                         )
-
-                        # need a query that cleans out data that isn't in the current set we're processing
-                        # drop users from organizations and the underlying groups when they aren't apart of membership
-                        # or are not apart of the collaborators
 
                         for member in org_members:
 
