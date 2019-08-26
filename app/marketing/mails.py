@@ -456,7 +456,7 @@ def warn_subscription_failed(subscription):
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
-        subject = str(subscription.pk) + str(_("subscription failed"))
+        subject = str(subscription.pk) + str(_(" subscription failed"))
         body = f"{settings.BASE_URL}{subscription.admin_url }\n{subscription.contributor_profile.email}, {subscription.contributor_profile.user.email}<pre>\n\n{subscription.subminer_comments}</pre>"
         if not should_suppress_notification_email(to_email, 'admin'):
             send_mail(
