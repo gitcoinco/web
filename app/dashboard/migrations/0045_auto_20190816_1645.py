@@ -12,10 +12,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='profile',
-            name='organizations',
-        ),
         migrations.CreateModel(
             name='Organization',
             fields=[
@@ -29,10 +25,13 @@ class Migration(migrations.Migration):
                 'abstract': False,
             },
         ),
+        migrations.AlterModelOptions(
+            name='organization',
+            options={'ordering': ('name',)},
+        ),
         migrations.AddField(
             model_name='profile',
-            name='organizations',
+            name='orgs',
             field=models.ManyToManyField(blank=True, to='dashboard.Organization'),
         ),
-
     ]
