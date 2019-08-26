@@ -1,4 +1,4 @@
-var locationComponent = {}
+var locationComponent = {};
 const save_location = function() {
   if (!document.contxt.github_handle) {
     _alert('No profile', 'error');
@@ -42,18 +42,19 @@ function initPlacecomplete() {
 
   autocomplete.addListener('place_changed', function() {
     let location = autocomplete.getPlace();
-    for(var i=0; i < location.address_components.length; i++) {
-        var addressObj = location.address_components[i];
-        for(var j=0; j < addressObj.types.length; j++) {
-            if(addressObj.types[j] == 'country') {
-                locationComponent['country'] = addressObj.long_name;
-                locationComponent['code'] = addressObj.short_name;
-            }
-            if(addressObj.types[j] == 'locality') {
-                locationComponent['locality'] = addressObj.long_name;
-            }
+
+    for (var i = 0; i < location.address_components.length; i++) {
+      var addressObj = location.address_components[i];
+
+      for (var j = 0; j < addressObj.types.length; j++) {
+        if (addressObj.types[j] == 'country') {
+          locationComponent['country'] = addressObj.long_name;
+          locationComponent['code'] = addressObj.short_name;
         }
+        if (addressObj.types[j] == 'locality') {
+          locationComponent['locality'] = addressObj.long_name;
+        }
+      }
     }
-    console.log(locationComponent)
   });
 }
