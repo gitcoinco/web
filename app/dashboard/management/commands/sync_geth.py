@@ -34,10 +34,10 @@ logger = logging.getLogger(__name__)
 default_start_id = 0 if not settings.DEBUG else 402
 
 
-def get_bounty_id(_id, network):
+def get_bounty_id(_id, network, contract_version):
     if _id > 0:
         return _id
-    contract = getBountyContract(network)
+    contract = getBountyContract(network, contract_version)
     bounty_id = contract.functions.getNumBounties().call() - 1
     return bounty_id + _id
 
@@ -60,10 +60,17 @@ class Command(BaseCommand):
             type=int,
             help="The end id.  If negative or 0, will be set to highest bounty id minus <x>"
         )
+        parser.add_argument(
+            'contract_version',
+            default='',
+            type=str,
+            help="The Bounty contract version. Values: 1, 2"
+        )
 
     def handle(self, *args, **options):
         # config
         network = options['network']
+        contract_version = options['contract_version']
         hour = datetime.datetime.now().hour
         day = datetime.datetime.now().day
         month = datetime.datetime.now().month
@@ -79,7 +86,7 @@ class Command(BaseCommand):
             try:
                 # pull and process each bounty
                 print(f"[{month}/{day} {hour}:00] Getting bounty {bounty_enum}")
-                bounty = get_bounty(bounty_enum, network)
+                bounty = get_bounty(bounty_enum, network, contract_version)
                 print(f"[{month}/{day} {hour}:00] Processing bounty {bounty_enum}")
                 web3_process_bounty(bounty)
 

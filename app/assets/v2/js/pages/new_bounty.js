@@ -567,6 +567,7 @@ $('#submitBounty').validate({
     });
 
     var metadata = {
+      contact_version: '2',
       issueTitle: data.title,
       issueDescription: data.description,
       issueKeywords: data.keywords ? data.keywords : '',
@@ -602,6 +603,7 @@ $('#submitBounty').validate({
     // https://github.com/ConsenSys/StandardBounties/issues/21
     var ipfsBounty = {
       payload: {
+        contract_version: metadata.contract_version,
         title: metadata.issueTitle,
         description: metadata.issueDescription,
         sourceFileName: '',
@@ -672,7 +674,7 @@ $('#submitBounty').validate({
     // This function instantiates a contract from the existing deployed Standard Bounties Contract.
     // bounty_abi is a giant object containing the different network options
     // bounty_address() is a function that looks up the name of the network and returns the hash code
-    var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+    var bounty = web3.eth.contract(getBountyABI(metadata.contract_version)).at(bounty_address());
     // StandardBounties integration begins here
     // Set up Interplanetary file storage
     // IpfsApi is defined in the ipfs-api.js.
@@ -763,6 +765,7 @@ $('#submitBounty').validate({
 
       var eth_amount = isETH ? amount : 0;
       var _paysTokens = !isETH;
+      // TODO: UPDATE BASED ON VERSION
       var bountyIndex = bounty.issueAndActivateBounty(
         account, // _issuer
         mock_expire_date, // _deadline

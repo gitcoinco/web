@@ -155,7 +155,7 @@ class BountyAdmin(admin.ModelAdmin):
     list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
     readonly_fields = [
         'what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link',
-        '_action_urls', 'coupon_link'
+        '_action_urls', 'coupon_link', 'contract_version'
     ]
 
     def img(self, instance):

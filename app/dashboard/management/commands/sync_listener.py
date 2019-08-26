@@ -29,8 +29,8 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-def process_bounty(bounty_id, network):
-    bounty = get_bounty(bounty_id, network)
+def process_bounty(bounty_id, network, contract_version):
+    bounty = get_bounty(bounty_id, network, contract_version)
     return web3_process_bounty(bounty)
 
 
@@ -39,6 +39,12 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('network', default='rinkeby', type=str)
+        parser.add_argument(
+            'contract_version',
+            default='',
+            type=str,
+            help="The Bounty contract version. Values: 1, 2"
+        )
 
     def handle(self, *args, **options):
         # config
@@ -46,9 +52,10 @@ class Command(BaseCommand):
 
         # setup
         network = options['network']
+        contract_version = options['contract_version']
         web3 = get_web3(network)
-        contract_address = getStandardBountiesContractAddresss(network)
-        contract = getBountyContract(network)
+        contract_address = getStandardBountiesContractAddresss(network, contract_version)
+        contract = getBountyContract(network, contract_version)
         last_block_hash = None
 
         while True:
@@ -79,7 +86,7 @@ class Command(BaseCommand):
                     # any other method
                     bounty_id = int(data[10:74], 16)
                 print('process_bounty %d' % bounty_id)
-                process_bounty(bounty_id, network)
+                process_bounty(bounty_id, network, contract_version)
                 print('done process_bounty %d' % bounty_id)
 
             last_block_hash = block_hash

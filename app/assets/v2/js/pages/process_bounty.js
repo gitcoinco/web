@@ -65,6 +65,7 @@ window.onload = function() {
     };
 
     var issueURL = $('input[name=issueURL]').val();
+    const contract_version = $('input[name=contract_version]').val();
 
     waitforWeb3(function() {
       var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
@@ -182,7 +183,10 @@ window.onload = function() {
         return;
       }
 
-      var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+      var bounty = web3.eth.contract(
+        getBountyABI(contract_version)).
+        at(bounty_address(contract_version)
+        );
 
       loading_button($(this));
 
@@ -257,6 +261,7 @@ window.onload = function() {
         };
         // just sent payout
         var send_payout = function() {
+          // TODO: UPDATE BASED ON VERSION
           bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
         };
 

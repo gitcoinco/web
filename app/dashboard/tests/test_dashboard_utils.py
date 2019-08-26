@@ -57,10 +57,14 @@ class DashboardUtilsTest(TestCase):
     @staticmethod
     def test_get_bounty_contract():
         assert getBountyContract('mainnet').address == "0x2af47a65da8CD66729b4209C22017d6A5C2d2400"
+        assert getBountyContract('mainnet', '1').address == "0x2af47a65da8CD66729b4209C22017d6A5C2d2400"
+        assert getBountyContract('mainnet', '2').address == "0xe7f69ea2a79521136ee0bf3c50f6b5f1ea0ab0cd"
 
     @staticmethod
     def test_get_bounty():
         assert get_bounty(100, 'rinkeby')['contract_deadline'] == 1515699751
+        assert get_bounty(100, 'rinkeby', '1')['contract_deadline'] == 1515699751
+        assert get_bounty(100, 'rinkeby', '2')['contract_deadline'] == 1515699751
 
     @staticmethod
     def test_get_ordinal_repr():

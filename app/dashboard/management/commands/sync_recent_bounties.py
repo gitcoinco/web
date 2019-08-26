@@ -27,8 +27,15 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('network', default='rinkeby', type=str)
+        parser.add_argument(
+            'contract_version',
+            default='',
+            type=str,
+            help="The Bounty contract version. Values: 1, 2"
+        )
 
     def handle(self, *args, **options):
         # config
         network = options['network']
-        call_command('sync_geth', network, -200, 0)
+        contract_version = options['contract_version']
+        call_command('sync_geth', network, -200, 0, contract_version)
