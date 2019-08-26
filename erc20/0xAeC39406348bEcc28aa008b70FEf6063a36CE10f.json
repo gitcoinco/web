@@ -1,0 +1,19 @@
+{
+  "symbol": "THP",
+  "address": "0xAeC39406348bEcc28aa008b70FEf6063a36CE10f",
+  "overview":{
+        "en": "THP(TurboHigh Performance)is a new cryptocurrency based on Proof Of Capacity (hereinafter referred to as POC).Its main feature is to use the hard disk as a consensus participant, reduce the consumption of power resources by the cryptocurrency,lower the participation threshold, make its production mode more decentralized, and more secure and credible, everyone can participate. The mining of cryptocurrencies generates credit and value through mathematical algorithms and distributed mining.",
+        "zh": "THP（TurboHigh Performance)是基于Proof Of Capacity (简称：POC）的新型加密货币。其主要的特点是使用硬盘作为共识的参与者，降低加密货币对电力资源的消耗，降低参与门槛，让其生产方式更趋向去中心化方式，并更加安全可信，让人人都能参与到加密货币 的开采，通过数学算法以及分布式开采产生信用和价值。"
+  },
+  "email": "thpprojectteam@gmail.com",
+  "website": "http://www.thp.one",
+  "whitepaper": "http://www.thp.one/assets/index/THP-Whitepaper_V2.0.1.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-23",
+  "initial_price":{
+        "USD":"0.03 USD"
+  },
+  "links": {
+    "telegram": "https://0.plus/joinchat/Mq80FhMXk8V7e_CqJ5KPBQ"
+  }
+}
