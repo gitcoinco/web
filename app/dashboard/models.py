@@ -133,6 +133,14 @@ class BountyQuerySet(models.QuerySet):
                 activities__needs_review=False,
             )
 
+    def has_applicant(self):
+        """Filter results by bounties that have applicants."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='worker_applied',
+                activities__needs_review=False,
+            )
+    
     def warned(self):
         """Filter results by bounties that have been warned for inactivity."""
         return self.prefetch_related('activities') \
@@ -251,7 +259,7 @@ class Bounty(SuperModel):
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=1000)
     web3_created = models.DateTimeField(db_index=True)
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
@@ -304,12 +312,14 @@ class Bounty(SuperModel):
     canceled_bounty_reason = models.TextField(default='', blank=True, verbose_name=_('Cancelation reason'))
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional', db_index=True)
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless', db_index=True)
-    bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list)
+    bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
     repo_type = models.CharField(max_length=50, choices=REPO_TYPES, default='public')
     snooze_warnings_for_days = models.IntegerField(default=0)
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
     featuring_date = models.DateTimeField(blank=True, null=True, db_index=True)
+    last_remarketed = models.DateTimeField(blank=True, null=True, db_index=True)
+    remarketed_count = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     fee_amount = models.DecimalField(default=0, decimal_places=18, max_digits=50)
     fee_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     coupon_code = models.ForeignKey('dashboard.Coupon', blank=True, null=True, related_name='coupon', on_delete=models.SET_NULL)
@@ -428,6 +438,37 @@ class Bounty(SuperModel):
             return 0
         decimals = token.get('decimals', 0)
         return float(self.value_in_token) / 10**decimals
+
+    @property
+    def no_of_applicants(self):
+        return self.interested.count()
+   
+    @property
+    def has_applicant(self):
+        """Filter results by bounties that have applicants."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='worker_applied',
+                activities__needs_review=False,
+            )
+        
+    @property
+    def warned(self):
+        """Filter results by bounties that have been warned for inactivity."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='bounty_abandonment_warning',
+                activities__needs_review=True,
+            )
+    
+    @property
+    def escalated(self):
+        """Filter results by bounties that have been escalated for review."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='bounty_abandonment_escalation_to_mods',
+                activities__needs_review=True,
+            )
 
     @property
     def url(self):
@@ -1102,6 +1143,23 @@ class Bounty(SuperModel):
 
         self.bounty_reserved_for_user = profile
 
+    @property
+    def can_remarket(self):
+        result = True
+
+        if self.remarketed_count and self.remarketed_count >= 2:
+            result = False
+
+        if self.last_remarketed:
+            one_hour_after_remarketing = self.last_remarketed + timezone.timedelta(hours=1)
+            if timezone.now() < one_hour_after_remarketing:
+                result = False
+
+        if self.interested.count() > 0:
+            result = False
+
+        return result
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -1669,8 +1727,8 @@ class Activity(SuperModel):
         ('killed_bounty', 'Canceled Bounty'),
         ('new_tip', 'New Tip'),
         ('receive_tip', 'Tip Received'),
-        ('bounty_abandonment_escalation_to_mods', 'Escalated for Abandonment of Bounty'),
-        ('bounty_abandonment_warning', 'Warning for Abandonment of Bounty'),
+        ('bounty_abandonment_escalation_to_mods', 'Escalated checkin from @gitcoinbot about bounty status'),
+        ('bounty_abandonment_warning', 'Checkin from @gitcoinbot about bounty status'),
         ('bounty_removed_slashed_by_staff', 'Dinged and Removed from Bounty by Staff'),
         ('bounty_removed_by_staff', 'Removed from Bounty by Staff'),
         ('bounty_removed_by_funder', 'Removed from Bounty by Funder'),
@@ -1790,6 +1848,7 @@ class Activity(SuperModel):
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
         print(activity['kudos'])
+        activity['secondary_avatar_url'] = self.secondary_avatar_url
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
@@ -1821,6 +1880,22 @@ class Activity(SuperModel):
         return activity
 
     @property
+    def secondary_avatar_url(self):
+        if self.metadata.get('to_username'):
+            return f"/dynamic/avatar/{self.metadata['to_username']}"
+        if self.metadata.get('worker_handle'):
+            return f"/dynamic/avatar/{self.metadata['worker_handle']}"
+        if self.metadata.get('url'):
+            return self.metadata['url']
+        if self.bounty:
+            return self.bounty.avatar_url
+        if self.metadata.get('grant_logo'):
+            return self.metadata['grant_logo']
+        if self.grant:
+            return self.grant.logo.url
+        return None
+
+    @property
     def token_name(self):
         if self.bounty:
             return self.bounty.token_name
@@ -1848,6 +1923,26 @@ class Activity(SuperModel):
         if exclude:
             kwargs['exclude'] = exclude
         return model_to_dict(self, **kwargs)
+
+
+@receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
+def post_add_activity(sender, instance, created, **kwargs):
+    if created:
+        dupes = Activity.objects.exclude(pk=instance.pk)
+        dupes = dupes.filter(created_on__gte=(instance.created_on - timezone.timedelta(minutes=5)))
+        dupes = dupes.filter(created_on__lte=(instance.created_on + timezone.timedelta(minutes=5)))
+        dupes = dupes.filter(profile=instance.profile)
+        dupes = dupes.filter(bounty=instance.bounty)
+        dupes = dupes.filter(tip=instance.tip)
+        dupes = dupes.filter(kudos=instance.kudos)
+        dupes = dupes.filter(grant=instance.grant)
+        dupes = dupes.filter(subscription=instance.subscription)
+        dupes = dupes.filter(activity_type=instance.activity_type)
+        dupes = dupes.filter(metadata=instance.metadata)
+        dupes = dupes.filter(needs_review=instance.needs_review)
+        for dupe in dupes:
+            dupe.delete()
+
 
 
 class LabsResearch(SuperModel):
@@ -2695,7 +2790,7 @@ class Profile(SuperModel):
 
         try:
             if bounties.exists():
-                eth_sum = sum([amount for amount in bounty.values_list("value_in_eth", flat=True)])
+                eth_sum = sum([amount for amount in bounties.values_list("value_true", flat=True)])
         except Exception:
             pass
 
@@ -2812,7 +2907,7 @@ class Profile(SuperModel):
             (dashboard.models.ActivityQuerySet): The query results.
 
         """
-        
+
         if not self.is_org:
             all_activities = self.activities
         else:
@@ -3011,8 +3106,8 @@ class ProfileSerializer(serializers.BaseSerializer):
             'keywords': instance.keywords,
             'url': instance.get_relative_url(),
             'position': instance.get_contributor_leaderboard_index(),
-            'organizations': instance.get_who_works_with(),
-            'total_earned': instance.get_eth_sum()
+            'organizations': instance.get_who_works_with(network=None),
+            'total_earned': instance.get_eth_sum(network=None)
         }
 
 
@@ -3268,7 +3363,8 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner')
+    background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner, default to white')
+    text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
 

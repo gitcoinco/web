@@ -692,6 +692,11 @@ input[type=text].loading {
   }
 }
 
+.bottom_notification-yellow {
+  background-color: #ffce08;
+  color: #000;
+}
+
 .metamask_recc {
   width: 45%;
   display: inline-block;
@@ -739,7 +744,7 @@ input[type=text].loading {
 }
 
 .bottom_notification a {
-  color: white;
+  color: currentColor;
   text-decoration: underline;
   margin-left: 5px;
 }
@@ -1030,32 +1035,27 @@ input.is-invalid {
 }
 
 .bounty_box {
-  border: 5px solid white;
+  box-shadow: 0px 0px 0px 3px #15003e;
   width: 100%;
   display: block;
   padding: 30px 30px;
-  background-color: #15003e;
-  color: white;
+  background-color: white;
+  color: black;
   text-decoration: none;
+  transition: all 100ms linear;
 }
 
 .bounty_box.disabled, .bounty_box.disabled:hover {
   cursor: not-allowed;
-  background-color: #5f445b;
+  background-color: rgb(245, 245, 245);
   text-decoration: none;
 }
 
 .bounty_box:hover {
-  background-color: #35305e;
   text-decoration: none;
-}
-
-.bounty_box h5 {
-  color: white;
-}
-
-.bounty_box span {
-  color: white;
+  transition: box-shadow 100ms ease-out;
+  box-shadow: 0px 0px 0px 6px #15003e;
+  color: #000;
 }
 
 .morecontent span {
@@ -1584,4 +1584,13 @@ div.busyOverlay {
 
 .inner-tooltip {
   pointer-events: none;
+}
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+  background-color: #3E00FF !important;
+}
+
+.daterangepicker .ranges li.active {
+  background-color: #5b24ff !important;
 }

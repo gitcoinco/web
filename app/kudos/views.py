@@ -722,7 +722,7 @@ def receive_bulk(request, secret):
         if request.user.is_anonymous:
             error = "You must login."
         if not error:
-            success, error = redeem_bulk_coupon(coupon, request.user.profile, request.POST.get('forwarding_address'), get_ip(request), request.POST.get('save_addr'))
+            success, error, _ = redeem_bulk_coupon(coupon, request.user.profile, request.POST.get('forwarding_address'), get_ip(request), request.POST.get('save_addr'))
         if error:
             messages.error(request, error)
 

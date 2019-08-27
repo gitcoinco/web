@@ -388,7 +388,7 @@ var pull_interest_list = function(bounty_pk, callback) {
 };
 
 var profileHtml = function(handle, name) {
-  return '<span><a href="https://gitcoin.co/profile/' +
+  return '<span><a href="/profile/' +
     handle + '" target="_blank">' + (name ? name : handle) + '</span></a>';
 };
 
@@ -1000,48 +1000,6 @@ window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 1000);
 });
 
-var callMethodIfTokenIsAuthed = function(success, failure) {
-  var denomination = $('#token option:selected').text();
-  var tokenAddress = $('#token option:selected').val();
-
-  if (!denomination) {
-    failure(denomination, tokenAddress);
-  } else if (denomination == 'ETH') {
-    success(denomination, tokenAddress);
-  } else {
-    var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-    var from = web3.eth.coinbase;
-    var to = bounty_address();
-
-    token_contract.allowance.call(from, to, function(error, result) {
-      if (error || result.toNumber() == 0) {
-        failure(denomination, tokenAddress);
-      } else {
-        success(denomination, tokenAddress);
-      }
-    });
-  }
-};
-
-var promptForAuthFailure = function(denomination, tokenAddress) {
-  _alert(
-    gettext(`To enable this token, go to the
-    <a style="padding-left:5px;" href="/settings/tokens">
-    Token Settings page and enable it.
-    </a> This is only needed once per token.`),
-    'warning'
-  );
-};
-
-var promptForAuth = function(event) {
-
-  var success = function(denomination, tokenAddress) {
-    $('.alert').remove();
-  };
-
-  callMethodIfTokenIsAuthed(success, promptForAuthFailure);
-};
-
 var setUsdAmount = function(event) {
   var amount = $('input[name=amount]').val();
   var denomination = $('#token option:selected').text();
@@ -1347,6 +1305,10 @@ function normalizeAmount(amount, decimals) {
   return Math.round((parseInt(amount) / Math.pow(10, decimals)) * 1000) / 1000;
 }
 
+function round(amount, decimals) {
+  return Math.round(((amount) * Math.pow(10, decimals))) / Math.pow(10, decimals);
+}
+
 function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   const ele = document.createElement('div');
   const p = document.createElement('p');
@@ -1359,12 +1321,8 @@ function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   p.className = 'inner-tooltip';
   p.appendChild(span);
   ele.appendChild(p);
-
   if (tooltipInfo) {
-    ele.title =
-      '<div class="tooltip-info tooltip-sm">' +
-      tooltipInfo +
-      '</div>';
+    ele.title = tooltipInfo;
   }
 
   return ele;
