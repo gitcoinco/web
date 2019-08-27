@@ -530,6 +530,7 @@ def account_settings(request):
             create_user_action(profile.user, 'account_disconnected', request)
             messages.success(request, _('Your account has been disconnected from Github'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
+            logout_redirect['Cache-Control'] = 'max-age=0 no-cache no-store must-revalidate'
             return logout_redirect
         elif request.POST.get('delete', False):
 
