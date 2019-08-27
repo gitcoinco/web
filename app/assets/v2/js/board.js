@@ -98,11 +98,34 @@ Vue.mixin({
         vm.disabledBtn = '';
       }
     },
+    removeWorker(key, bountyPk, profileId, obj, section) {
+      let vm = this;
+      let url = `/actions/bounty/${bountyPk}/interest/${profileId}/uninterested/`;
+
+      vm.disabledBtn = key;
+      if (window.confirm('Do you want to stop contributor work on this bounty?')) {
+        let postStartpWork = fetchData (url, 'POST');
+
+        $.when(postStartpWork).then(response => {
+          vm[obj][section].splice(key, 1);
+          vm.disabledBtn = '';
+          _alert({ message: gettext('Contributor removed from bounty.') }, 'success');
+        }, error => {
+          vm.disabledBtn = '';
+          let msg = error.responseJSON.error || 'got an error. please try again, or contact support@gitcoin.co';
+
+          _alert({ message: gettext(msg) }, 'error');
+        });
+      } else {
+        vm.disabledBtn = '';
+      }
+    },
     checkData(persona) {
       let vm = this;
 
       if (!Object.keys(vm.bounties).length && persona === 'funder') {
         vm.fetchBounties('open');
+        vm.fetchBounties('started');
         vm.fetchBounties('submitted');
         vm.fetchBounties('expired');
       }
@@ -138,12 +161,14 @@ if (document.getElementById('gc-board')) {
       expiredBounties: [],
       contributors: [],
       contributorBounties: contributorBounties,
-      expandedGroup: {'submitted': [], 'open': []},
+      expandedGroup: {'submitted': [], 'open': [], 'started': []},
       disabledBtn: false,
       authProfile: authProfile,
       isLoading: {
         'open': true,
         'openContrib': true,
+        'started': true,
+        'startedContrib': true,
         'submitted': true,
         'submittedContrib': true,
         'expired': true,
@@ -154,6 +179,8 @@ if (document.getElementById('gc-board')) {
       error: {
         'open': '',
         'openContrib': '',
+        'started': '',
+        'startedContrib': '',
         'submitted': '',
         'submittedContrib': '',
         'expired': '',
