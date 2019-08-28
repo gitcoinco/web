@@ -81,8 +81,8 @@ from .notifications import (
     maybe_market_to_user_slack,
 )
 from .utils import (
-    get_bounty, get_bounty_id, get_context, get_unrated_bounties_count, get_web3, has_tx_mined,
-    record_user_action_on_interest, web3_process_bounty,
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_unrated_bounties_count, get_web3,
+    has_tx_mined, re_market_bounty, record_user_action_on_interest, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -551,16 +551,13 @@ def extend_expiration(request, bounty_id):
     is_funder = bounty.is_funder(user.username.lower()) if user else False
     if is_funder:
         deadline = round(int(request.POST.get('deadline')))
-        bounty.expires_date = timezone.make_aware(
-            timezone.datetime.fromtimestamp(deadline),
-            timezone=UTC)
-        bounty.save()
+        result = apply_new_bounty_deadline(bounty, deadline)
         record_user_action(request.user, 'extend_expiration', bounty)
         record_bounty_activity(bounty, request.user, 'extend_expiration')
 
         return JsonResponse({
             'success': True,
-            'msg': _("You've extended expiration of this issue."),
+            'msg': _(result['msg']),
         })
 
     return JsonResponse({
@@ -1575,34 +1572,12 @@ def helper_handle_remarket_trigger(request, bounty):
         is_staff = request.user.is_staff
         is_funder = bounty.is_funder(request.user.username.lower())
         if is_staff or is_funder:
-            remarketed_count = bounty.remarketed_count
-            if remarketed_count < 2:
-                now = timezone.now()
-                one_hour_after_remarketing = bounty.last_remarketed + timezone.timedelta(hours=1) if bounty.last_remarketed else now
-                if now >= one_hour_after_remarketing:
-                    bounty.remarketed_count = remarketed_count + 1
-                    bounty.last_remarketed = now
-                    bounty.save()
-
-                    maybe_market_to_slack(bounty, 'issue_remarketed')
-
-                    further_permitted_remarket_count = 2 - bounty.remarketed_count
-                    success_msg = "This issue has been remarketed. The issue will appear at the top of the issue explorer. "
-                    if further_permitted_remarket_count == 1:
-                        success_msg = success_msg + "You will be able to remarket this bounty one more time if a contributor does not pick this up."
-                    elif further_permitted_remarket_count == 0:
-                        success_msg = success_msg + "Please note this is the last time the issue is able to be remarketed."
-
-                    messages.success(request, _(success_msg))
-
-                else:
-                    time_delta_wait_time = one_hour_after_remarketing - now
-                    minutes_to_wait = round(time_delta_wait_time.total_seconds() / 60)
-                    messages.warning(request,
-                                     _(f'You need to wait {minutes_to_wait} minutes before remarketing this bounty again'))
+            result = re_market_bounty(bounty)
+            if result['success']:
+                base_result_msg = "This issue has been remarketed."
+                messages.success(request, _(base_result_msg + " " + result['msg']))
             else:
-                messages.warning(request,
-                                 _('You cannot remarket this bounty again due to reaching the remarket limit (2)'))
+                messages.warning(request, _(result['msg']))
         else:
             messages.warning(request, _('Only staff or the funder of this bounty may do this.'))
 
@@ -2034,7 +2009,7 @@ def profile(request, handle):
                 return HttpResponse(status=204)
 
             context = {}
-            context['activities'] = paginator.get_page(page)
+            context['activities'] = [ele.view_props for ele in paginator.get_page(page)]
 
             return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
