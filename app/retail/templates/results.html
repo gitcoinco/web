@@ -381,27 +381,15 @@
       </div>
     </div>
 
-    {% if user.is_staff %}
-      <div class="row py-5">
-        <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-          <h2 class="text-center">{% trans "Browse More Results, By Programming Language" %}</h2>
-        </div>
+    <div class="row mt-5 pb-5 text-center">
+      <div class="col">
+        <h2>Platform Activities</h2>
+        <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
       </div>
-      <div class="row py-1">
-        <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-          <ul id="programming_languages">
-            {% for pl in programming_languages %}
-              <li class="button button--primary-o {% if pl == keyword or pl == 'All' and keyword == '' %}selected{%endif%}">
-                <a href="{% url 'results' %}/{% if pl != 'All' %}{{pl}}{%endif%}">
-                  {{pl}}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-    {% endif %}
-
+    </div>
+    <div id="activities">
+      {% include 'shared/activity_container.html' with target="/activity" %}
+    </div>
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
@@ -414,6 +402,8 @@
         $("img").unveil(200);
       });
     </script>
+
+    {% include 'shared/activity_scripts.html' %}
 
   </body>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
