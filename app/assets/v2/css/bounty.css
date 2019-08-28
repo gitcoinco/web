@@ -48,16 +48,6 @@ body {
   text-transform: capitalize;
 }
 
-#title {
-  text-align: left;
-  padding-top: 2em;
-  padding-bottom: 15px;
-}
-
-#avatar_url {
-  padding-top: 3em;
-}
-
 .invite-user .avatar {
   width: 5.5rem;
   height: 5.5rem;
@@ -529,6 +519,10 @@ a.btn {
   color: #F5A623;
 }
 
+#funder_notif_info:empty {
+  display: none;
+}
+
 #funder_notif_info .bounty-notification {
   border: orange 1px solid;
   border-radius: 3px;
@@ -767,6 +761,13 @@ a.btn {
   text-align: center;
 }
 
+.hackathon-alt {
+  font-size: 11px;
+  color: #0d0764;
+  font-weight: 700;
+  letter-spacing: 1.7px;
+}
+
 .rocket {
   position: absolute;
   top: 10rem;
@@ -878,11 +879,6 @@ a.btn {
 
   .rocket {
     right: 11rem;
-  }
-
-  #extend_deadline {
-    min-width: 40rem;
-    max-width: 0;
   }
 }
 

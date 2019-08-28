@@ -70,6 +70,7 @@ var rows = [
   'avatar_url',
   'issuer_avatar_url',
   'title',
+  'event_name',
   'github_url',
   'value_in_token',
   'value_in_eth',
@@ -162,6 +163,11 @@ var callbacks = {
     }
 
     return [ 'status', ui_status ];
+  },
+  'event_name': function(key, val, result) {
+    let event_name = result['event'] ? 'Hackathon: ' + result.event.name : '';
+
+    return [ 'event_name', event_name ];
   },
   'issue_description': function(key, val, result) {
 
@@ -361,40 +367,30 @@ var callbacks = {
     return [ 'updated', timeDifference(new Date(result['now']), new Date(result['web3_created'])) ];
   },
   'expires_date': function(key, val, result) {
-    var label = 'expires';
-
+    moment.locale('en-expire');
+    moment.defineLocale('en-expire', {
+      parentLocale: 'en',
+      relativeTime: {
+        future: '%s'
+      }
+    });
     expires_date = new Date(val);
-    now = new Date(result['now']);
-
-    var expiringInPercentage = 100 * (
-      (now.getTime() - new Date(result['web3_created']).getTime()) /
-      (expires_date.getTime() - new Date(result['web3_created']).getTime()));
-
-    if (expiringInPercentage > 100) {
-      expiringInPercentage = 100;
-    }
-
-    $('.progress').css('width', expiringInPercentage + '%');
-    var response = timeDifference(now, expires_date).split(' ');
+    let label = 'expires';
+    let response = moment.utc(expires_date).fromNow();
     const isInfinite = expires_date - new Date().setFullYear(new Date().getFullYear() + 1) > 1;
+
+    $('#expires_date').attr('title', moment(expires_date).format('LLL'));
 
     if (expires_date < new Date()) {
       label = 'expired';
       if (result['is_open']) {
         $('.timeleft').text('Expired');
-        $('.progress-bar').addClass('expired');
-        response = response.join(' ');
-      } else {
-        $('#timer').hide();
       }
-    } else if (result['status'] === 'done' || result['status'] === 'cancelled') {
-      $('#timer').hide();
     } else if (isInfinite) {
-      response = '&infin;';
-    } else {
-      response.shift();
-      response = response.join(' ');
+      $('#expires_date').removeAttr('title');
+      response = 'Never expires';
     }
+
     return [ label, response ];
   },
   'started_owners_username': function(key, val, result) {
@@ -492,7 +488,7 @@ const isAvailableIfReserved = function(bounty) {
 
 const isBountyOwner = result => {
   if (typeof web3 == 'undefined' || !web3.eth ||
-      typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+      typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase || !result) {
     return false;
   }
   return caseInsensitiveCompare(web3.eth.coinbase, result['bounty_owner_address']);
@@ -808,59 +804,56 @@ const repoInstructions = () => {
   });
 };
 
-var set_extended_time_html = function(extendedDuration, currentExpires) {
-  currentExpires.setTime(currentExpires.getTime() + (extendedDuration * 1000));
-  $('input[name=updatedExpires]').val(currentExpires.getTime());
-  const date = getFormattedDate(currentExpires);
-  let days = timeDifference(now, currentExpires).split(' ');
-
-  days.shift();
-  days = days.join(' ');
-
-  $('#extended-expiration-date #extended-date').html(date);
-  $('#extended-expiration-date #extended-days').html(days);
+var set_extended_time_html = function(extendedDuration) {
+  extendedDuration = extendedDuration.set({hour: 0, minute: 0, second: 0, millisecond: 0});
+  $('input[name=updatedExpires]').val(extendedDuration.utc().unix());
+  $('#extended-expiration-date #extended-date').html(extendedDuration.format('MM-DD-YYYY hh:mm A'));
+  $('#extended-expiration-date #extended-days').html(moment.utc(extendedDuration).fromNow());
 };
 
 var show_extend_deadline_modal = function() {
-  var self = this;
+  let modals = $('#modalExtend');
+  let modalBody = $('#modalExtend .modal-content');
+  const url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
 
-  setTimeout(function() {
-    var url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
+  moment.locale('en');
+  modals.on('show.bs.modal', function() {
+    modalBody.load(url, ()=> {
+      const currentExpires = moment.utc(document.result['expires_date']);
 
-    $.get(url, function(newHTML) {
-      var modal = $(newHTML).appendTo('body').modal({
-        modalClass: 'modal add-interest-modal'
+      $('#modalExtend input[name="expirationTimeDelta"]').daterangepicker({
+        parentEl: '#extend_deadline',
+        singleDatePicker: true,
+        startDate: moment(currentExpires).add(1, 'month'),
+        minDate: moment().add(1, 'day'),
+        ranges: {
+          '1 week': [ moment(currentExpires).add(7, 'days'), moment(currentExpires).add(7, 'days') ],
+          '2 weeks': [ moment(currentExpires).add(14, 'days'), moment(currentExpires).add(14, 'days') ],
+          '1 month': [ moment(currentExpires).add(1, 'month'), moment(currentExpires).add(1, 'month') ],
+          '3 months': [ moment(currentExpires).add(3, 'month'), moment(currentExpires).add(3, 'month') ],
+          '1 year': [ moment(currentExpires).add(1, 'year'), moment(currentExpires).add(1, 'year') ]
+        },
+        'locale': {
+          'customRangeLabel': 'Custom'
+        }
+      }, function(start, end, label) {
+        set_extended_time_html(end);
       });
 
-      // all js select 2 fields
-      $('.js-select2').each(function() {
-        $(this).select2();
-      });
-      // removes tooltip
-      $('.submit_bounty select').each(function(evt) {
-        $('.select2-selection__rendered').removeAttr('title');
-      });
-      // removes search field in all but the 'denomination' dropdown
-      $('.select2-container').on('click', function() {
-        $('.select2-container .select2-search__field').remove();
-      });
+      set_extended_time_html($('#modalExtend input[name="expirationTimeDelta"]').data('daterangepicker').endDate);
 
-      var extendedDuration = parseInt($('select[name=expirationTimeDelta]').val());
-      var currentExpires = new Date(document.result['expires_date']);
-
-      set_extended_time_html(extendedDuration, currentExpires);
-      $(document).on('change', 'select[name=expirationTimeDelta]', function() {
-        var previousExpires = new Date(document.result['expires_date']);
-
-        set_extended_time_html(parseInt($(this).val()), previousExpires);
+      $('#neverExpires').on('click', () => {
+        if ($('#neverExpires').is(':checked')) {
+          $('#expirationTimeDelta').attr('disabled', true);
+          $('#extended-expiration-date #extended-days').html('Never');
+          $('#extended-expiration-date #extended-date').html('-');
+        } else {
+          $('#expirationTimeDelta').attr('disabled', false);
+          set_extended_time_html($('#modalExtend input[name="expirationTimeDelta"]').data('daterangepicker').endDate);
+        }
       });
 
-      $('.btn-cancel').on('click', function() {
-        $.modal.close();
-        return;
-      });
-
-      modal.on('submit', function(event) {
+      modals.on('submit', function(event) {
         event.preventDefault();
 
         var extended_time = $('input[name=updatedExpires]').val();
@@ -868,12 +861,16 @@ var show_extend_deadline_modal = function() {
         extend_expiration(document.result['pk'], {
           deadline: extended_time
         });
-        $.modal.close();
         setTimeout(function() {
           window.location.reload();
         }, 2000);
       });
     });
+  });
+  modals.bootstrapModal('show');
+  $(document, modals).on('hidden.bs.modal', function(e) {
+    $('#extend_deadline').remove();
+    $('.daterangepicker').remove();
   });
 };
 
@@ -1179,19 +1176,6 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
-  if (show_extend_deadline) {
-    const enabled = true;
-    const _entry = {
-      enabled: enabled,
-      href: '/extend-deadlines',
-      text: gettext('Extend Expiration'),
-      parent: 'bounty_actions',
-      title: gettext('Extend deadline of an issue')
-    };
-
-    actions.push(_entry);
-  }
-
   if (show_invoice) {
     const _entry = {
       enabled: true,
@@ -1205,14 +1189,30 @@ var do_actions = function(result) {
   }
 
   if (show_change_bounty) {
+    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+
     const _entry = [
       {
         enabled: true,
         href: '/bounty/change/' + result['pk'],
-        text: gettext('Edit Issue Details'),
+        text: gettext('Edit Issue'),
         parent: 'bounty_actions',
-        title: gettext('Update your Bounty Settings to get the right Crowd')
-      }
+        title: gettext('Update your Bounty Settings to get the right Crowd'),
+        edit_dropdown: true,
+        edit_issue_href: '/bounty/change/' + result['pk'],
+        show_extend_expiration: show_extend_deadline,
+        extend_expiration_href: '/extend-deadlines',
+        show_remarket: true,
+        remarket_enabled: result['can_remarket'],
+        remarket_url: result['url'] + connector_char + 'trigger_remarket=1'
+      }// ,
+      // {
+      //   enabled: true,
+      //   href: '/issue/refund_request?pk=' + result['pk'],
+      //   text: gettext('Request Fee Refund'),
+      //   parent: 'right_actions',
+      //   title: gettext('Raise a request if you believe you need your fee refunded')
+      // }
     ];
 
     actions.push(..._entry);

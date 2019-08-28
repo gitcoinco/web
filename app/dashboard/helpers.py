@@ -452,6 +452,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'web3_created': timezone.make_aware(
                     timezone.datetime.fromtimestamp(bounty_payload.get('created')),
                     timezone=UTC),
+                'last_remarketed': timezone.make_aware(
+                    timezone.datetime.fromtimestamp(bounty_payload.get('created')),
+                    timezone=UTC),
+                'remarketed_count': 0,
                 'github_url': url,
                 'token_name': token_name,
                 'token_address': token_address,
