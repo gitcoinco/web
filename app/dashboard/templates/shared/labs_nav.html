@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static matches %}
+{% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark gitcoin-background">
   <div id="gitcoin-background"></div>
   <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'labs' %}">
@@ -58,3 +58,4 @@
 {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
 {% endif %}
+{% cookielaw_banner %}

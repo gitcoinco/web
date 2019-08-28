@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static matches %}
+{% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark g-font-muli">
   <a class="navbar-brand pt-0 pb-0" href="/">
     <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
@@ -102,7 +102,7 @@
 
       <!-- <a class="nav-link interior" href="{% url "pricing" %}">{% trans "Pricing" %}</a> -->
     </nav>
-    <nav class="navbar-nav mr-3">      
+    <nav class="navbar-nav mr-3">
       {% if user.is_authenticated %}
         {% include 'shared/nav_auth.html' with source='authed' %}
       {% else %}
@@ -115,3 +115,4 @@
   </div>
 
 </nav>
+{% cookielaw_banner %}
