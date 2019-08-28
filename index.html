@@ -2119,11 +2119,11 @@
                   <a href="https://github.com/gitcoinco/web/edit/master/docs/index.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <p><img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width=75px height=75px></p>
+                <p><img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width=75px height=75px alt="Gitcoin logo"></p>
 <h1 id="gitcoin">Gitcoin</h1>
 <p>Gitcoin Grows Open Source. Learn more at <a href="https://gitcoin.co">https://gitcoin.co</a></p>
 <p><a href="https://gitcoin.co/explorer?q=gitcoinco">
-    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web&badge=1&maxAge=60">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web&badge=1&maxAge=60" alt="Open bounties widget">
 </a></p>
 <h1 id="web-repo">web repo</h1>
 <p><a href="https://travis-ci.org/gitcoinco/web"><img alt="Build Status" src="https://travis-ci.org/gitcoinco/web.svg?branch=master" /></a>
@@ -2138,23 +2138,36 @@
 <ul>
 <li><a href="#gitcoin">Gitcoin</a></li>
 <li><a href="#web-repo">web repo</a></li>
+<li><a href="#documentation">Documentation</a></li>
 <li><a href="#how-to-interact-with-this-repo">How to interact with this repo</a><ul>
+<li><a href="#table-of-contents">Table of Contents</a></li>
 <li><a href="#on-github">On Github</a></li>
 <li><a href="#on-gitcoin">On Gitcoin</a></li>
 </ul>
 </li>
-<li><a href="#what">What</a></li>
+<li><a href="#what-is-gitcoin">What is Gitcoin?</a></li>
 <li><a href="#developing">Developing</a></li>
 <li><a href="#https-api">HTTPS API</a></li>
-<li><a href="#running-locally">Running Locally</a></li>
+<li><a href="#running-locally">Running locally</a><ul>
+<li><a href="#with-docker-recommended">With Docker (Recommended)</a></li>
+<li><a href="#without-docker">Without Docker</a></li>
+</ul>
+</li>
+<li><a href="#overriding-application-defaults">Overriding Application Defaults</a></li>
 <li><a href="#trying-out-gitcoin">Trying out Gitcoin</a></li>
 <li><a href="#posting-your-first-issue">Posting your first issue</a></li>
 <li><a href="#integrating-gitcoin">Integrating Gitcoin</a></li>
-<li><a href="#integrating-the--available-work-widget--on-your-repo">Integrating the 'available work widget' on your repo.</a></li>
+<li><a href="#integrating-the-available-work-widget-into-your-repository">Integrating the 'available work widget' into your repository</a></li>
 <li><a href="#adding-gitcoinbot-to-your-repo">Adding GitcoinBot to your repo</a></li>
 <li><a href="#adding-your-token-to-gitcoin">Adding your token to Gitcoin</a></li>
-<li><a href="#legal">Legal</a></li>
-<li><a href="#license">License</a></li>
+<li><a href="#high-level-flows">High Level flows...</a><ul>
+<li><a href="#bounties">Bounties</a></li>
+<li><a href="#showing-support-to-individuals">Showing Support to Individuals</a></li>
+<li><a href="#tips">Tips</a></li>
+<li><a href="#kudos">Kudos</a></li>
+</ul>
+</li>
+<li><a href="#licenses">Licenses</a></li>
 </ul>
 <h3 id="on-github">On Github</h3>
 <p><a href="https://github.com/gitcoinco/web/stargazers">Star</a> and <a href="https://github.com/gitcoinco/web/watchers">watch</a> this github repository to stay up to date, we're pushing new code several times per week!</p>
@@ -2239,9 +2252,15 @@
 <h2 id="adding-your-token-to-gitcoin">Adding your token to Gitcoin</h2>
 <p>Have an ERC20 compatible token that you'd like to use on the platform?  Great!  Submit <a href="https://gitcoin.co/submittoken">this form</a> to submit it to the system</p>
 <h2 id="high-level-flows">High Level flows...</h2>
-<h3 id="of-a-bounty">... of a Bounty</h3>
+<ul>
+<li><a href="#bounties">Bounties</a></li>
+<li><a href="#showing-support-to-individuals">Supporting Individuals</a></li>
+<li><a href="#tips">Tips</a></li>
+<li><a href="#kudos">Kudos</a></li>
+</ul>
+<h3 id="bounties">Bounties</h3>
 <p>This is the high level flow of a bounty on Gitcoin:</p>
-<p><a href="https://www.draw.io/?state=%7B%22ids%22:%5B%221FTatOur159qS8pzBCgIG5E0XdEH8iZF-%22%5D,%22action%22:%22open%22,%22userId%22:%22115514289174042120922%22%7D#G1FTatOur159qS8pzBCgIG5E0XdEH8iZF-"><img src='https://github.com/gitcoinco/web/raw/master/docs/bounty_flow.png'></a></p>
+<p><a href="https://www.draw.io/?state=%7B%22ids%22:%5B%221FTatOur159qS8pzBCgIG5E0XdEH8iZF-%22%5D,%22action%22:%22open%22,%22userId%22:%22115514289174042120922%22%7D#G1FTatOur159qS8pzBCgIG5E0XdEH8iZF-"><img src='https://github.com/gitcoinco/web/raw/master/docs/bounty_flow.png' alt="Gitcoin bounty workflow"></a></p>
 <p>Chain of Custody</p>
 <ol>
 <li>Bounty Funder's Wallet</li>
@@ -2252,13 +2271,24 @@
 </ol>
 <p>Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Bounty' function for any reason.</p>
 <p>We may introduce Arbitration <a href="http://delphi.network/">via Delphi</a> at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.</p>
-<h3 id="of-a-tip">of a Tip</h3>
-<h3 id="of-a-kudos">... of a Kudos</h3>
+<h4 id="showing-support-to-individuals">Showing Support to Individuals</h4>
+<ul>
+<li>via <a href="https://gitcoin.co/tips">Tips</a> </li>
+<li>
+<p>A free, fast way to show immediate gratitude towards an individual via github username or email adress</p>
+</li>
+<li>
+<p>via <a href="https://gitcoin.co/kudos">Kudos</a></p>
+</li>
+<li>Showcases special skills and appreciation towards other Gitcoin members.</li>
+</ul>
+<h3 id="tips">Tips</h3>
+<p>This is the high level flow of a tip on Gitcoin:</p>
+<p><a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='https://github.com/gitcoinco/web/raw/master/docs/tip_flow.png' alt="Gitcoin Tip workflow"></a></p>
+<h3 id="kudos">Kudos</h3>
 <p>Note:
 - Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
 - Kudos are also secured by Tips</p>
-<p>This is the high level flow of a tip on Gitcoin:</p>
-<p><a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='https://github.com/gitcoinco/web/raw/master/docs/tip_flow.png'></a></p>
 <h1 id="licenses">Licenses</h1>
 <ul>
 <li><a href="../LICENSE">Code - GNU AFFERO GENERAL PUBLIC LICENSE</a></li>
