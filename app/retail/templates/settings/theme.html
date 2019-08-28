@@ -1,0 +1,30 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static %}
+{% block settings_content %}
+
+<form method="POST" id="settings" class="col-md-8 m-auto">
+    <div class="form-group">
+	  <h5 class="text-center">{% trans "Theme Customization" %}</h5>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form__select2">
+					<select class="w-100 js-select2" name="theme-case" id="theme-case">
+						<option value="light" {% if profile.custom_theme == 'light' %} selected='selected'{% endif %}>{% trans "Light Theme" %}</option>
+						<option value="dark" {% if profile.custom_theme == 'dark' %} selected='selected'{% endif %}>{% trans "Dark Theme" %}</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-md-12 mt-4">
+				<button class='button button--primary' type="submit">{% trans "Save" %}</button>
+			</div>
+		</div>
+	</div>
+    {% csrf_token %}
+</form>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'v2/js/theme_settings.js' %}"></script>
+{{ block.super }}
+{% endblock %}

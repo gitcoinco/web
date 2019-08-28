@@ -734,6 +734,7 @@ def onboard(request, flow):
         'steps': steps or onboard_steps,
         'flow': flow,
         'profile': profile,
+		'theme_type': profile.custom_theme
     }
     params.update(get_avatar_context_for_user(request.user))
     return TemplateResponse(request, 'ftux/onboard.html', params)
@@ -751,7 +752,8 @@ def users_directory(request):
         'title': 'Users',
         'meta_title': "",
         'meta_description': "",
-        'keywords': keywords
+        'keywords': keywords,
+		'theme_type': request.user.profile.custom_theme
     }
     return TemplateResponse(request, 'dashboard/users.html', params)
 
@@ -957,6 +959,7 @@ def dashboard(request):
         'meta_title': "Issue & Open Bug Bounty Explorer | Gitcoin",
         'meta_description': "Find open bug bounties & freelance development jobs including crypto bounty reward value in USD, expiration date and bounty age.",
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
 
@@ -1002,6 +1005,7 @@ def accept_bounty(request):
         title=_('Process Issue'),
     )
     params['open_fulfillments'] = bounty.fulfillments.filter(accepted=False)
+    params['theme_type'] = request.user.profile.custom_theme
     return TemplateResponse(request, 'process_bounty.html', params)
 
 
@@ -1027,6 +1031,7 @@ def contribute(request):
         active='contribute_bounty',
         title=_('Contribute'),
     )
+    params['theme_type'] = request.user.profile.custom_theme
     return TemplateResponse(request, 'contribute_bounty.html', params)
 
 
@@ -1064,6 +1069,7 @@ def invoice(request):
         tip for tip in bounty.tips.send_happy_path() if ((tip.username == request.user.username and tip.username) or (tip.from_username == request.user.username and tip.from_username) or request.user.is_staff)
     ]
     params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
+    params['theme_type'] = request.user.profile.custom_theme
     for tip in params['tips']:
         if tip.value_in_usdt:
             params['total'] += Decimal(tip.value_in_usdt)
@@ -1097,6 +1103,7 @@ def social_contribution(request):
         title=_('Social Contribute'),
     )
     params['promo_text'] = promo_text
+    params['theme_type'] = request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     return TemplateResponse(request, 'social_contribution.html', params)
 
 
@@ -1199,6 +1206,7 @@ def payout_bounty(request):
         active='payout_bounty',
         title=_('Payout'),
     )
+    params['theme_type'] = request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     return TemplateResponse(request, 'payout_bounty.html', params)
 
 
@@ -1225,6 +1233,7 @@ def bulk_payout_bounty(request):
         title=_('Advanced Payout'),
     )
     params['open_fulfillments'] = bounty.fulfillments.filter(accepted=False)
+    params['theme_type'] = request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     return TemplateResponse(request, 'bulk_payout_bounty.html', params)
 
 
@@ -1256,6 +1265,7 @@ def fulfill_bounty(request):
         active='fulfill_bounty',
         title=_('Submit Work'),
     )
+    params['theme_type'] = request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     return TemplateResponse(request, 'bounty/fulfill.html', params)
 
 
@@ -1285,6 +1295,7 @@ def increase_bounty(request):
     )
 
     params['is_funder'] = json.dumps(is_funder)
+    params['theme_type'] = request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
 
     return TemplateResponse(request, 'bounty/increase.html', params)
@@ -1311,6 +1322,7 @@ def cancel_bounty(request):
         active='kill_bounty',
         title=_('Cancel Bounty'),
     )
+    params['theme_type'] = request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     return TemplateResponse(request, 'bounty/kill.html', params)
 
 
@@ -1370,6 +1382,7 @@ def refund_request(request):
         active='refund_request',
         title=_('Request Bounty Refund'),
     )
+    params['theme_type'] = request.user.profile.custom_theme if request.user.is_authenticated else 'light'
 
     return TemplateResponse(request, 'bounty/refund_request.html', params)
 
@@ -1422,6 +1435,7 @@ def process_refund_request(request, pk):
     context = {
         'obj': refund_request,
         'recommend_gas_price': round(recommend_min_gas_price_to_confirm_in_time(1), 1),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
     }
 
     return TemplateResponse(request, 'bounty/process_refund_request.html', context)
@@ -1661,6 +1675,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         "newsletter_headline": _("Be the first to know about new funded issues."),
         'is_staff': request.user.is_staff,
         'is_moderator': request.user.profile.is_moderator if hasattr(request.user, 'profile') else False,
+		'theme_type': request.user.profile.custom_theme if is_user_authenticated else 'light'
     }
     if issue_url:
         try:
@@ -1771,6 +1786,7 @@ def quickstart(request):
     activities = Activity.objects.filter(activity_type='new_bounty').order_by('-created')[:5]
     context = deepcopy(qs.quickstart)
     context["activities"] = [a.view_props for a in activities]
+    context['theme_type'] = request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     return TemplateResponse(request, 'quickstart.html', context)
 
 
@@ -2122,6 +2138,7 @@ def profile(request, handle):
 
             return JsonResponse(msg, status=msg.get('status', 200))
     context['show_activity'] = request.GET.get('p', False) != False
+    context['theme_type'] = request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
@@ -2167,6 +2184,7 @@ def lazy_load_kudos(request):
     html_context = {}
     html_context[key] = kudos
     html_context['kudos_data'] = key
+    html_context['theme_type'] = request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     kudos_html = loader.render_to_string('shared/kudos_card_profile.html', html_context)
     return JsonResponse({'kudos_html': kudos_html, 'has_next': kudos.has_next()})
 
@@ -2193,6 +2211,7 @@ def extend_issue_deadline(request):
         'title': _('Extend Expiration'),
         'bounty': bounty,
         'user_logged_in': request.user.is_authenticated,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
     }
     return TemplateResponse(request, 'extend_issue_deadline.html', context)
@@ -2273,23 +2292,36 @@ def sync_web3(request):
 def terms(request):
     context = {
         'title': _('Terms of Use'),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
     return TemplateResponse(request, 'legal/terms.html', context)
 
 def privacy(request):
-    return TemplateResponse(request, 'legal/privacy.html', {})
+	context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
+	}
+	return TemplateResponse(request, 'legal/privacy.html', context)
 
 
 def cookie(request):
-    return TemplateResponse(request, 'legal/privacy.html', {})
+	context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
+	}
+	return TemplateResponse(request, 'legal/privacy.html', context)
 
 
 def prirp(request):
-    return TemplateResponse(request, 'legal/privacy.html', {})
+	context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
+	}
+	return TemplateResponse(request, 'legal/privacy.html', context)
 
 
 def apitos(request):
-    return TemplateResponse(request, 'legal/privacy.html', {})
+	context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
+	}
+	return TemplateResponse(request, 'legal/privacy.html', context)
 
 
 def toolbox(request):
@@ -2360,7 +2392,8 @@ def toolbox(request):
         'actors': actors,
         'newsletter_headline': _("Don't Miss New Tools!"),
         'profile_up_votes_tool_ids': profile_up_votes_tool_ids,
-        'profile_down_votes_tool_ids': profile_down_votes_tool_ids
+        'profile_down_votes_tool_ids': profile_down_votes_tool_ids,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
     return TemplateResponse(request, 'toolbox.html', context)
 
@@ -2390,7 +2423,8 @@ def labs(request):
         'avatar_url': 'https://c.gitcoin.co/labs/Articles-Announcing_Gitcoin_Labs.png',
         'tools': tools,
         'labs': labs,
-        'socials': socials
+        'socials': socials,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
     return TemplateResponse(request, 'labs.html', context)
 
@@ -2511,7 +2545,8 @@ def redeem_coin(request, shortcode):
         params = {
             'class': 'redeem',
             'title': _('Coin Redemption'),
-            'coin_status': _('PENDING')
+            'coin_status': _('PENDING'),
+			'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
         }
 
         try:
@@ -2544,7 +2579,8 @@ def new_bounty(request):
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
         'amount': request.GET.get('amount'),
         'events': events,
-        'suggested_developers': suggested_developers
+        'suggested_developers': suggested_developers,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
 
     params = get_context(
@@ -2708,7 +2744,8 @@ def change_bounty(request, bounty_id):
     params = {
         'title': _('Change Bounty Details'),
         'pk': bounty.pk,
-        'result': json.dumps(result)
+        'result': json.dumps(result),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
     return TemplateResponse(request, 'bounty/change.html', params)
 
@@ -2833,6 +2870,7 @@ def hackathon(request, hackathon=''):
         'title': title,
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'hackathon': hackathon_event,
     }
 
@@ -2887,6 +2925,7 @@ def get_hackathons(request):
         'active': 'hackathons',
         'title': 'hackathons',
         'hackathons': events,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
     return TemplateResponse(request, 'dashboard/hackathons.html', params)
 
@@ -2902,6 +2941,7 @@ def board(request):
         'card_title': _('Dashboard'),
         'card_desc': _('Manage all your activity.'),
         'avatar_url': static('v2/images/helmet.png'),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
     return TemplateResponse(request, 'board.html', context)
 

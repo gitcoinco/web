@@ -209,6 +209,7 @@ def index(request):
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
     }
     return TemplateResponse(request, 'home/index.html', context)
@@ -291,6 +292,7 @@ def pricing(request):
 
     context = {
         'plans': plans,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'companies': companies
     }
 
@@ -329,6 +331,7 @@ def subscribe(request):
         'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'gas_advisories': gas_advisories(),
     }
     return TemplateResponse(request, 'pricing/subscribe.html', context)
@@ -405,6 +408,7 @@ def funder_bounties(request):
         'gitcoin_description': gitcoin_description,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
         'meta_title': "Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin",
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'meta_description': "The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH). Leverage a global workforce to quickly complete software development and coding jobs."
     }
     return TemplateResponse(request, 'bounties/funder.html', context)
@@ -554,6 +558,7 @@ def contributor_bounties(request, tech_stack):
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
         'projects': projects,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'contributor_list': [
             { 'link': "/python", 'text': "Python"},
             { 'link': "/javascript", 'text': "JavaScript"},
@@ -590,6 +595,7 @@ def get_contributor_landing_page_context(tech_stack):
         'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else str(_("Open Source Opportunities")),
         'available_bounties_count': available_bounties_count,
         'available_bounties_worth': available_bounties_worth,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'tech_stack': tech_stack,
 
     }
@@ -608,6 +614,7 @@ def how_it_works(request, work_type):
     context = {
         'active': f'how_it_works_{work_type}',
         'title': title,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'desc': desc
     }
     return TemplateResponse(request, 'how_it_works/index.html', context)
@@ -728,6 +735,7 @@ def about(request):
         'total_alumnis': str(Alumni.objects.count()),
         'active': 'about',
         'title': 'About',
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'is_outside': True,
     }
     return TemplateResponse(request, 'about.html', context)
@@ -835,6 +843,7 @@ def mission(request):
         'card_desc': _('Our mission is to grow open source.'),
         'avatar_url': static('v2/images/grow_open_source.png'),
         'values': values,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'interactions': interactions
     }
     return TemplateResponse(request, 'mission.html', context)
@@ -870,6 +879,7 @@ def jobs(request):
     context = {
         'active': 'jobs',
         'title': 'Jobs',
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'job_listings': job_listings
     }
     return TemplateResponse(request, 'jobs.html', context)
@@ -883,6 +893,7 @@ def vision(request):
         'avatar_url': static('v2/images/vision/triangle.jpg'),
         'title': 'Vision',
         'card_title': _("Gitcoin's Vision for a Web3 World"),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
     }
     return TemplateResponse(request, 'vision.html', context)
@@ -945,6 +956,7 @@ def products(request):
         'card_title': _("Gitcoin's Products."),
         'card_desc': _('At Gitcoin, we build products that allow for better incentivized collaboration \
                         in the realm of open source software'),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'avatar_url': static('v2/images/grow_open_source.png'),
         'products': products,
     }
@@ -959,6 +971,7 @@ def not_a_token(request):
         'avatar_url': static('v2/images/no-token/no-token.jpg'),
         'title': 'Gitcoin is not a token',
         'card_title': _("Gitcoin is not a token"),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives \
                         with our user base.  Read more about the future of monetization in web3."),
     }
@@ -974,6 +987,7 @@ def results(request, keyword=None):
     import json
     context['kudos_tokens'] = [json.loads(obj) for obj in context['kudos_tokens']]
     context['avatar_url'] = static('v2/images/results_preview.gif')
+    context['theme_type'] = request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     return TemplateResponse(request, 'results.html', context)
 
 
@@ -989,6 +1003,7 @@ def activity(request):
         'next_page': page + 1,
         'page': p.get_page(page),
         'title': _('Activity Feed'),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
     context["activities"] = [a.view_props for a in p.get_page(page)]
 
@@ -1321,6 +1336,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'title': _('Help'),
         'faq': faq,
         'tutorials': tutorials,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
     return TemplateResponse(request, 'help.html', context)
 
@@ -1333,6 +1349,7 @@ def verified(request):
         'active': 'verified',
         'title': _('Verified'),
         'profile': profile,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
     return TemplateResponse(request, 'verified.html', context)
 
@@ -1386,6 +1403,7 @@ def presskit(request):
         'brand_colors': brand_colors,
         'active': 'get',
         'title': _('Presskit'),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
     return TemplateResponse(request, 'presskit.html', context)
 
@@ -1480,6 +1498,7 @@ def slack(request):
         'active': 'slack',
         'msg': None,
         'nav': 'home',
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
 
     if request.POST:
@@ -1507,6 +1526,7 @@ def newtoken(request):
     context = {
         'active': 'newtoken',
         'msg': None,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
 
     if request.POST:
@@ -1634,7 +1654,8 @@ def increase_funding_limit_request(request):
         'form': form,
         'title': _('Request a Funding Limit Increase'),
         'card_title': _('Gitcoin - Request a Funding Limit Increase'),
-        'card_desc': _('Do you hit the Funding Limit? Request a increasement!')
+        'card_desc': _('Do you hit the Funding Limit? Request a increasement!'),
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     }
 
     return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)

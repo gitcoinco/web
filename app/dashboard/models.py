@@ -2084,6 +2084,7 @@ class Profile(SuperModel):
     )
     job_salary = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     job_location = JSONField(default=dict, blank=True)
+    custom_theme = models.CharField(max_length=50, default='light', blank=True, null=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
     profile_wallpaper = models.CharField(max_length=255, default='', blank=True, null=True)

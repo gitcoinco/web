@@ -57,6 +57,9 @@ def get_settings_navs(request):
         'body': _('Email'),
         'href': reverse('email_settings', args=('', ))
     }, {
+		'body': _('Theme'),
+		'href': reverse('theme_settings')
+	}, {
         'body': _('Privacy'),
         'href': reverse('privacy_settings')
     }, {
@@ -159,6 +162,7 @@ def privacy_settings(request):
         'navs': get_settings_navs(request),
         'is_logged_in': is_logged_in,
         'msg': msg,
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
     }
     return TemplateResponse(request, 'settings/privacy.html', context)
 
@@ -185,7 +189,7 @@ def matching_settings(request):
 
     """
     # setup
-    __, es, __, is_logged_in = settings_helper_get_auth(request)
+    profile, es, __, is_logged_in = settings_helper_get_auth(request)
     if not es:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
@@ -204,6 +208,7 @@ def matching_settings(request):
         msg = _('Updated your preferences.')
 
     context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'keywords': ",".join(es.keywords),
         'is_logged_in': is_logged_in,
         'autocomplete_keywords': json.dumps(
@@ -219,7 +224,7 @@ def matching_settings(request):
 
 def feedback_settings(request):
     # setup
-    __, es, __, __ = settings_helper_get_auth(request)
+    profile, es, __, __ = settings_helper_get_auth(request)
     if not es:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
@@ -236,6 +241,7 @@ def feedback_settings(request):
         msg = _('We\'ve received your feedback.')
 
     context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'nav': 'home',
         'active': '/settings/feedback',
         'title': _('Feedback'),
@@ -313,6 +319,7 @@ def email_settings(request, key):
             msg = _('Updated your preferences.')
     pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'nav': 'home',
         'active': '/settings/email',
         'title': _('Email Settings'),
@@ -360,6 +367,7 @@ def slack_settings(request):
             create_user_action(user, ua_type, request, {'channel': channel, 'repos': repos})
 
     context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'repos': profile.get_slack_repos(join=True) if profile else [],
         'is_logged_in': is_logged_in,
         'nav': 'home',
@@ -405,6 +413,7 @@ def discord_settings(request):
             create_user_action(user, ua_type, request, {'webhook_url': webhook_url, 'repos': repos})
 
     context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'repos': profile.get_discord_repos(join=True) if profile else [],
         'is_logged_in': is_logged_in,
         'nav': 'home',
@@ -454,6 +463,7 @@ def token_settings(request):
         msg = "Token approval completed"
 
     context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'is_logged_in': is_logged_in,
         'nav': 'home',
         'active': '/settings/tokens',
@@ -485,6 +495,7 @@ def ens_settings(request):
     ens_subdomain = ens_subdomains.first() if ens_subdomains.exists() else None
 
     context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'is_logged_in': is_logged_in,
         'nav': 'home',
         'ens_subdomain': ens_subdomain,
@@ -497,6 +508,40 @@ def ens_settings(request):
     }
     return TemplateResponse(request, 'settings/ens.html', context)
 
+def theme_settings(request):
+	"""Display and save theme settings.
+
+	Returns:
+		TemplateResponse: The user's theme settings template response.
+
+	"""
+	msg = ''
+	profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+	if not user or not is_logged_in:
+		login_redirect = redirect('/login/github?next='+ request.get_full_path())
+		return login_redirect
+
+	if request.POST:
+		if 'theme-case' in request.POST.keys():
+			profile.custom_theme = request.POST.get('theme-case', False)
+			profile.save()
+			msg = _('Theme settings has been saved.')
+		else:
+			msg = _('Error: did not understand your request')
+
+	context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
+		'is_logged_in': is_logged_in,
+		'nav': 'home',
+		'active': '/settings/theme',
+		'title': _('Theme Settings'),
+		'navs': get_settings_navs(request),
+		'es': es,
+		'profile': profile,
+		'msg': msg,
+	}
+	return TemplateResponse(request, 'settings/theme.html', context)
 
 def account_settings(request):
     """Display and save user's Account settings.
@@ -567,6 +612,7 @@ def account_settings(request):
             msg = _('Error: did not understand your request')
 
     context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'is_logged_in': is_logged_in,
         'nav': 'home',
         'active': '/settings/account',
@@ -636,6 +682,7 @@ def job_settings(request):
             msg = _('Error: did not understand your request')
 
     context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'is_logged_in': is_logged_in,
         'nav': 'home',
         'active': '/settings/job',
@@ -656,6 +703,7 @@ def _leaderboard(request):
 
     """
     context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'active': 'leaderboard',
     }
     return leaderboard(request, '')
@@ -731,6 +779,7 @@ def leaderboard(request, key=''):
     cadence_ui = cadence if cadence != 'all' else 'All-Time'
     page_title = f'{cadence_ui.title()} {keyword_search.title()} Leaderboard: {title.title()}'
     context = {
+		'theme_type': request.user.profile.custom_theme if request.user.is_authenticated else 'light',
         'items': items[0:limit],
         'nav': 'home',
         'titles': titles,

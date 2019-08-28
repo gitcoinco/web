@@ -18,7 +18,11 @@
 {% include 'shared/tag_manager_1.html' %}
 <meta charset="utf-8">
 <link rel="preload" href="{% static "v2/css/base.css" %}" as="style">
-<link rel="preload" href="{% static "v2/css/gitcoin.css" %}" as="style">
+{% if theme_type == 'light' %}
+<link rel="preload" href="{% static "v2/css/theme/default.css" %}" as="style">
+{% elif theme_type == 'dark' %}
+<link rel="preload" href="{% static "v2/css/theme/dark.css" %}" as="style">
+{% endif %}
 <link rel="preload" href="{% static "v2/css/bootstrap.min.css" %}" as="style" crossorigin="anonymous">
 <link rel="preload" href="{% static "v2/css/top-nav.css" %}" as="style">
 <link rel="preload" href="{% static "v2/css/fontawesome-all.min.css" %}" as="style">
@@ -35,7 +39,11 @@
 <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
 <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
+{% if theme_type == 'light' %}
+<link rel="stylesheet" href="{% static "v2/css/theme/default.css" %}">
+{% elif theme_type == 'dark' %}
+<link rel="stylesheet" href="{% static "v2/css/theme/dark.css" %}">
+{% endif %}
 <link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
 {% if not slim %}
@@ -71,7 +79,7 @@
 <!-- Cookie Consent -->
 <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
 
-<title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
+<title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin{{theme_type}}</title>
 {% include 'shared/favicon.html' %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 {% if meta_title %}<meta name="title" content="{{meta_title}}" />{% endif %}
