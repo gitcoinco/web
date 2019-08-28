@@ -161,15 +161,6 @@
   <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
   <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
   <script src="{% static "onepager/js/send.js" %}"></script>
-  
-  
-  {% endcompress %}  
-  
-  
-  <script>
-    $('[data-toggle="popover"]').popover()
-    $('[data-toggle="tooltip"]').bootstrapTooltip();
-  </script>
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/rating.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
@@ -182,4 +173,10 @@
   <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
   <script src="{% static "v2/js/ajax-helper.js" %}"></script>
   <script src="{% static "v2/js/kudos_suggestions.js" %}"></script>
+  {% endcompress %}  
+  <script>
+    $('[data-toggle="popover"]').popover()
+    $('[data-toggle="tooltip"]').bootstrapTooltip();
+  </script>
+
 </html>

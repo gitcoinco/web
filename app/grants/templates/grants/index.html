@@ -11,7 +11,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load humanize static i18n %}
+{% load humanize static i18n compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -218,6 +218,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
+  
+  {% compress js %}
   <script src="{% static "v2/js/lib/jquery.waypoints.min.js" %}"></script>
   <script src="{% static "v2/js/lib/infinite.min.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
@@ -226,9 +228,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/grants/index.js" %}"></script>
-  
-  
   <script src="{% static "v2/js/grants/newMatchingPartner.js" %}"></script>
+  {% endcompress %}
+
   <script>
     var infinite = new Waypoint.Infinite({
       element: $('.infinite-container')[0]

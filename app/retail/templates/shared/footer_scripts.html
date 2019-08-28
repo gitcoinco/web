@@ -21,10 +21,6 @@
   var media_url = "{{ MEDIA_URL }}";
   document.contxt = {{ json_context|safe }};
 </script>
-{% if user.is_authenticated and env == 'prod' %}
-<script src="https://cdn.jsdelivr.net/npm/vue"></script> 
-{% endif %}
-
 {% include 'shared/sentry.html' %}
 <script>
   const bootstrapModal = $.fn.modal.noConflict()
