@@ -14,10 +14,13 @@
   <div class="col-12 col-md-8 d-flex flex-column">
     <div class="bounty-detail">
       [[if attached_job_description != null && attached_job_description != '']]
-        <div class="hiring-alt">HIRING <i class="fa-flag far"></i></div>
+      <div class="hiring-alt">HIRING <i class="fa-flag far"></i></div>
       [[/if]]
       <div class="title font-subheader">
         [[:title]]
+        [[if event != null && event != '']]
+          <div class="hackathon-alt">[[:event.name]]</div>
+        [[/if]]
       </div>
       <div class="bounty-summary col-12">
         <div class="info font-caption">

@@ -71,7 +71,7 @@
                   <input type="hidden" name="bounty_id" id="bountyId" value="{{ bounty.id }}">
                 </div>
                 <div class="w-100 mt-2">
-                  <label for=amount>{% trans "Amount:" %}</label> 
+                  <label for=amount>{% trans "Amount:" %}</label>
                   <input name='amount' id="amount" class="w-20 gc-round-text-input" type="number" placeholder="amount" value="{{ bounty.value_true }}" disabled/>
                   <input type="hidden" id="standard_bounties_id" value="{{ bounty.standard_bounties_id }}">
                   <input type="hidden" id="token_address" value="{{ bounty.token_address }}">
@@ -83,7 +83,13 @@
                       {% for key, token in bounty.additional_funding_summary.items %}
                         <input name='crowdfundedAmount' class="w-20 gc-round-text-input" type="number" value="{{ token.amount }}" disabled style="width: 80px;"/> {{ key }}
                       {% endfor %}
-                     
+
+                    </div>
+                    <div class="row btn-metamask mt-4 mx-1 py-3 br-2">
+                      <i class="col-3 col-lg-2 fas fa-exclamation-triangle font-title-xl my-auto text-center"></i>
+                      <p class="col-9 col-lg-10 pl-lg-0 font-body my-auto font-weight-semibold">
+                        {% trans "To include crowdfunding as part of this payout, please use Basic Payout." %}
+                      </p>
                     </div>
                   {% endif %}
                 </div>
@@ -201,17 +207,9 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
   </body>
-
-  <!-- jQuery -->
-  <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-  <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   <script>
-    var bootstrapTooltip = $.fn.tooltip.noConflict()
-    var bootstrapModal = $.fn.modal.noConflict()
-    $.fn.runTooltip = bootstrapTooltip
-    $.fn.bootstrapModal = bootstrapModal
     $('[data-toggle="popover"]').popover()
-    $('[data-toggle="tooltip"]').runTooltip();
+    $('[data-toggle="tooltip"]').bootstrapTooltip();
   </script>
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/rating.js" %}"></script>

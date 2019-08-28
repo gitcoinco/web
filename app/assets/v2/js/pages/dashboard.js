@@ -10,17 +10,18 @@ var filters = [
   'idx_status',
   'project_type',
   'permission_type',
-  'misc'
+  'misc',
+  'applicants'
 ];
 var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
 local_storage_keys.push('keywords');
 local_storage_keys.push('org');
 
-results_limit = 5;
+results_limit = 10;
 
 if (document.hackathon) {
-  results_limit = 5;
+  results_limit = 10;
 }
 
 var localStorage;
@@ -58,6 +59,20 @@ var paint_search_tabs = function() {
   html += '</ul>';
   target.html(html);
 };
+
+function scrollSlider(element, cardSize) {
+  const arrowLeft = $('#arrowLeft');
+  const arrowRight = $('#arrowRight');
+
+  arrowLeft.on('click', function() {
+    element[0].scrollBy({left: -cardSize, behavior: 'smooth'});
+  });
+  arrowRight.on('click', function() {
+    element[0].scrollBy({left: cardSize, behavior: 'smooth'});
+  });
+
+}
+scrollSlider($('#featured-card-container'), 288);
 
 function debounce(func, wait, immediate) {
   var timeout;
@@ -129,10 +144,13 @@ var save_sidebar_latest = function() {
 
   filters.forEach((filter) => {
     localStorage[filter] = '';
-
-    $('input[name="' + filter + '"]:checked').each(function() {
-      localStorage[filter] += $(this).val() + ',';
-    });
+    if (filter === 'applicants') {
+      localStorage[filter] = $('#applicants_box').val();
+    } else {
+      $('input[name="' + filter + '"]:checked').each(function() {
+        localStorage[filter] += $(this).val() + ',';
+      });
+    }
 
     localStorage[filter] = localStorage[filter].replace(/^,|,\s*$/g, '');
   });
@@ -142,6 +160,7 @@ var save_sidebar_latest = function() {
 const set_sidebar_defaults = () => {
   const q = getParam('q');
   const org = getParam('org');
+  const applicants = getParam('applicants');
 
   if (q) {
     const keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
@@ -169,6 +188,11 @@ const set_sidebar_defaults = () => {
     }
   }
 
+  if (applicants) {
+    if (localStorage['applicants']) {
+      localStorage['applicants'] = applicants;
+    }
+  }
   getActiveFilters();
 
   if (localStorage['order_by']) {
@@ -178,6 +202,10 @@ const set_sidebar_defaults = () => {
 
   filters.forEach((filter) => {
     if (localStorage[filter]) {
+      if (filter === 'applicants') {
+        $('#applicants_box').val(localStorage[filter]).trigger('change.select2');
+      }
+
       localStorage[filter].split(',').forEach(function(val) {
         $('input[name="' + filter + '"][value="' + val + '"]').prop('checked', true);
       });
@@ -295,7 +323,6 @@ var get_search_URI = function(offset, order) {
   var keywords = '';
   var org = '';
 
-
   filters.forEach((filter) => {
     var active_filters = [];
 
@@ -336,6 +363,9 @@ var get_search_URI = function(offset, order) {
         filter = 'bounty_owner_address';
         val = 'myself';
       }
+    }
+    if (filter === 'applicants') {
+      val = $('#applicants_box').val();
     }
 
     if (val && val !== 'any' &&
@@ -592,6 +622,12 @@ var resetFilters = function(resetKeyword) {
         $('input[name="' + filter + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
 
+    if (resetKeyword && filter === 'applicants' && !document.hackathon) {
+      $('#applicants_box').val('ALL').trigger('change.select2');
+    } else if (resetKeyword && filter === 'applicants' && document.hackathon) {
+      localStorage.setItem(filter, '');
+    }
+
     // Defaults to mainnet on clear filters to make it less confusing
     $('input[name="network"][value="mainnet"]').prop('checked', true);
   });
@@ -647,6 +683,12 @@ var resetFilters = function(resetKeyword) {
 })();
 
 $(document).ready(function() {
+
+  $('.js-select2').each(function() {
+    $(this).select2({
+      minimumResultsForSearch: Infinity
+    });
+  });
 
   $('#expand').on('click', () => {
     $('#expand').hide();
@@ -779,20 +821,10 @@ $(document).ready(function() {
   });
 
   // sidebar filters
-  $('.sidebar_search , .sidebar_search label').change('input[type=radio]', function(e) {
-    reset_offset();
-    refreshBounties(null, 0, false, true);
-    e.preventDefault();
-  });
-
-  // sidebar filters
-  $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
-    reset_offset();
-    // refreshBounties(null, 0, false, true);
-    e.preventDefault();
-  });
-
-  $('#org').change(function(e) {
+  $(`.sidebar_search input[type=radio],
+      .sidebar_search input[type=checkbox],
+      .sidebar_search .js-select2,
+      #org`).change(function(e) {
     reset_offset();
     refreshBounties(null, 0, false, true);
     e.preventDefault();

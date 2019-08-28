@@ -8,7 +8,7 @@
   </head>
   <body class="{{ active }} bg-light g-font-muli">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <header class="container-fluid header">
+    <header class="header">
       {% include 'shared/kudos_nav.html' %}
       <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container pb-5">
@@ -111,7 +111,6 @@
       $(document).ready(function() {
         $("img").unveil(200);
       });
-      var bootstrapTooltip = $.fn.tooltip.noConflict()
     </script>
     <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
     {% include 'shared/messages.html' %}

@@ -3,7 +3,7 @@
     max-width: 85vw
   }
 
-  #editor.ql-bubble .ql-editor {
+  #editor.ql-bubble .ql-editor[contenteditable='false'] {
     padding: 0;
   }
 
@@ -183,7 +183,8 @@ textarea.editable {
 
 .grant__stakeholders-list img,
 .grant-item__members img,
-.grant-item__owner-image img {
+.grant-item__owner-image img,
+.grant-item__owner img {
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -209,6 +210,16 @@ textarea.editable {
   padding-bottom: 0 !important;
 }
 
+.disable-tooltip {
+  pointer-events: none;
+}
+
+.disable-btn {
+  border: none;
+  background-color: whitesmoke;
+  color: #999;
+}
+
 @keyframes rotation {
   from {
     transform: rotate(0deg);
@@ -228,14 +239,25 @@ textarea.editable {
 }
 
 @media (max-width: 991.98px) {
+  .summary,
+  .summary textarea,
+  .summary input {
+    text-align: center;
+  }
+
   .summary-info i {
-    float: left;
     position: relative;
     top: 2px;
   }
 
   .logo {
     width: 100%;
+  }
+}
+
+@media (min-width:767.98px) and (max-width: 991.98px) {
+  .summary-info i {
+    float: left;
   }
 }
 
