@@ -20,6 +20,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="{% static "v2/js/lib/jquery.js" %}"></script>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
   </head>
@@ -87,8 +88,5 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
-    <script>
-      var bootstrapTooltip = $.fn.tooltip.noConflict()
-    </script>
   </body>
 </html>
