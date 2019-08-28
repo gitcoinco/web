@@ -1,0 +1,24 @@
+{
+    "symbol": "ARPA",
+    "address": "0xBA50933C268F567BDC86E1aC131BE072C6B0b71a",
+    "overview":{
+          "en": "ARPA is the world’s first privacy-preserving computation network that’s based on MPC. ARPA enables private smart contracts on blockchains acting as a Layer 2. ARPA is committed to providing secure data transferring, sharing, and joint-analysis solutions based on cryptographic operations and blockchain for businesses and individuals.",
+          "zh": "ARPA为全球首个基于多方安全计算的隐私计算网络，实现以协议层（Layer 2）为公链提供隐私计算能力，并赋能开发人员在 ARPA 计算网络上构建高效、安全、能保护数据隐私的的商业应用。ARPA将通过加密计算打开企业与个人的万亿级数据共享、分析、计算市场。"
+    },
+    "email": "about@arpachain.io",
+    "website": "https://arpachain.io/",
+    "whitepaper": "https://docsend.com/view/t69gzij",
+    "state": "NORMAL",
+    "published_on": "2018-04-28",
+    "initial_price":{
+          "USD":"0.023 USD"
+    },
+    "links": {
+      "twitter": "https://twitter.com/arpaofficial",
+      "telegram": "https://t.me/arpa_community",
+      "github": "https://github.com/arpachain",
+      "facebook": "https://www.facebook.com/ARPA-317434982266680",
+      "reddit": "https://www.reddit.com/r/arpachain/",
+      "medium": "https://medium.com/@arpa"
+    }
+  }

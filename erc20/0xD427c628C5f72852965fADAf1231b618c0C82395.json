@@ -1,0 +1,23 @@
+{
+  "symbol": "EST",
+  "address": "0xD427c628C5f72852965fADAf1231b618c0C82395",
+  "overview":{
+    "en": "EvenToken helps event organizers get crowd-sponsorship before holding the event and tokenized all of the events.",
+    "zh": "EvenToken 可以幫活動主辦方於舉辦前獲得群眾贊助，並且將所有活動通證化。"
+  },
+  "email": "johnsie@accuvally.com",
+  "website": "http://www.eventoken.io",
+  "whitepaper": "https://www.accupass.com/go/eventokenwhitepaper",
+  "state": "NORMAL",
+  "published_on": "2018-12-08",
+  "initial_price":{
+    "USD":"0.0675 USD"
+  },
+  "links": {
+    "blog": "http://www.eventoken.io",
+    "twitter": "https://twitter.com/EvenToken",
+    "telegram": "https://t.me/eventoken",
+    "facebook": "https://www.facebook.com/eventoken.io",
+    "linkedin": "https://www.linkedin.com/in/eventoken/"
+  }
+}
