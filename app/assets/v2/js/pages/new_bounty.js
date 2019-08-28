@@ -47,7 +47,7 @@ $('.select2-add_byskill').on('click', function(e) {
   e.preventDefault();
   $('#invite-contributors.js-select2').val(usersBySkills.map((item) => {
     return item.id;
-  })).trigger("change");
+  })).trigger('change');
 });
 
 $('.select2-clear_invites').on('click', function(e) {
@@ -84,7 +84,7 @@ const getSuggestions = () => {
       { text: groups[text], children }
     ));
 
-    usersBySkills = [].map.call(response['recommended_developers'], function(obj){
+    usersBySkills = [].map.call(response['recommended_developers'], function(obj) {
       return obj;
     });
 
