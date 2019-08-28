@@ -45,12 +45,14 @@ $('.select2-tag__choice').on('click', function() {
 
 $('.select2-add_byskill').on('click', function(e) {
   e.preventDefault();
-  $('#invite-contributors.js-select2').val(usersBySkills.map((item) => { return item.id})).trigger("change")
+  $('#invite-contributors.js-select2').val(usersBySkills.map((item) => {
+    return item.id;
+  })).trigger("change");
 });
 
 $('.select2-clear_invites').on('click', function(e) {
   e.preventDefault();
-  $('#invite-contributors.js-select2').val(null).trigger("change")
+  $('#invite-contributors.js-select2').val(null).trigger('change');
 });
 
 
@@ -87,10 +89,10 @@ const getSuggestions = () => {
     });
 
     if (queryParams.keywords.length && usersBySkills.length) {
-      $('#invite-all-container').show()
-      $('.select2-add_byskill span').text(queryParams.keywords.join(', '))
+      $('#invite-all-container').show();
+      $('.select2-add_byskill span').text(queryParams.keywords.join(', '));
     } else {
-      $('#invite-all-container').hide()
+      $('#invite-all-container').hide();
     }
 
     var generalIndex = 0;
