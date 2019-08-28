@@ -11,12 +11,6 @@ window.onload = function() {
 
     $('#submitBounty').validate({
       submitHandler: function(form) {
-        try {
-          bounty_address();
-        } catch (exception) {
-          _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
-          return;
-        }
 
         var data = {};
         var disabled = $(form)
@@ -28,6 +22,13 @@ window.onload = function() {
             data[this.name] = this.value;
           }
         });
+
+        try {
+          bounty_address(data.contract_version);
+        } catch (exception) {
+          _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+          return;
+        }
 
         const selectedRadio = $('input[name=canceled_bounty_reason]:checked').val();
         let reasonCancel;

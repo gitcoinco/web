@@ -5,7 +5,9 @@ load_tokens();
 $(document).ready(function() {
 
   waitforWeb3(function() {
-    $('#contract_address').val(bounty_address());
+    const contract_version = '2'; // TODO: Check if defaulting to 2 is right
+
+    $('#contract_address').val(bounty_address(contract_version));
   });
 
   $('.js-select2').each(function() {

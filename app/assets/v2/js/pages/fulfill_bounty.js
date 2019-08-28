@@ -33,8 +33,10 @@ window.onload = function() {
 
     $('#submitBounty').validate({
       submitHandler: function(form) {
+        const contract_version = $('input[name=contract_version]').val();
+
         try {
-          bounty_address();
+          bounty_address(contract_version);
         } catch (exception) {
           _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
           return;
@@ -62,8 +64,6 @@ window.onload = function() {
         localStorage['githubUsername'] = githubUsername;
 
         var account = web3.eth.coinbase;
-
-        const contract_version = $('input[name=contract_version]').val();
 
         var bounty = web3.eth.contract(
           getBountyABI(contract_version)).

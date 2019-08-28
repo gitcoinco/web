@@ -48,8 +48,10 @@ $(document).ready(function() {
 
   // submit bounty button click
   $('#increaseFunding').on('click', function(e) {
+    const contract_version = $('input[name=contract_version]').val();
+
     try {
-      bounty_address();
+      bounty_address(contract_version);
     } catch (exception) {
       _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
       return;
@@ -62,7 +64,6 @@ $(document).ready(function() {
     var issueURL = $('input[name=issueURL]').val();
     var amount = $('input[name=amount]').val();
     var tokenAddress = $('select[name=denomination]').val();
-    const contract_version = $('input[name=contract_version]').val();
 
     // validation
     var isError = false;

@@ -36,7 +36,7 @@ var bounty_address = contract_version => {
         case 'rinkeby':
           return '0xa53aadb09bd0612ee810ab8b4605c9ee45892169';
         default:
-          throw 'this network is not supported in bounty_address() for gitcoin';
+          throw 'unsupported network. switch to mainnet / rinkeby';
       }
 
     default:
@@ -46,7 +46,7 @@ var bounty_address = contract_version => {
         case 'rinkeby':
           return '0xf209d2b723b6417cbf04c07e733bee776105a073';
         default:
-          throw 'this network is not supported in bounty_address() for gitcoin';
+          throw 'unsupported network. switch to mainnet / rinkeby';
       }
   }
 };

@@ -151,7 +151,7 @@ window.onload = function() {
 
     $('#acceptBounty').on('click', function(e) {
       try {
-        bounty_address();
+        bounty_address(contract_version);
       } catch (exception) {
         _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
         return;
