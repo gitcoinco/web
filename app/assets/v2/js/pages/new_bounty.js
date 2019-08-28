@@ -44,12 +44,14 @@ $('.select2-tag__choice').on('click', function() {
 
 $('.select2-add_byskill').on('click', function(e) {
   e.preventDefault();
-  $('#invite-contributors.js-select2').val(processedData[1].children.map((item) => { return item.id})).trigger("change")
+  $('#invite-contributors.js-select2').val(processedData[1].children.map((item) => {
+    return item.id;
+  })).trigger('change');
 });
 
 $('.select2-clear_invites').on('click', function(e) {
   e.preventDefault();
-  $('#invite-contributors.js-select2').val(null).trigger("change")
+  $('#invite-contributors.js-select2').val(null).trigger('change');
 });
 
 
@@ -60,10 +62,10 @@ const getSuggestions = () => {
   queryParams.invite = params.get('invite') || '';
 
   if (queryParams.keywords.length) {
-    $('#invite-all-container').show()
-    $('.select2-add_byskill span').text(queryParams.keywords)
+    $('#invite-all-container').show();
+    $('.select2-add_byskill span').text(queryParams.keywords);
   } else {
-    $('#invite-all-container').hide()
+    $('#invite-all-container').hide();
   }
 
   let searchParams = new URLSearchParams(queryParams);
