@@ -70,6 +70,7 @@ def premailer_transform(html):
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
 
+
 def render_featured_funded_bounty(bounty):
     params = {'bounty': bounty}
     response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
@@ -97,43 +98,12 @@ def render_nth_day_email_campaign(to_email, nth, firstname):
 
     return response_html, response_txt, subject
 
+
 def render_new_grant_email(grant):
     params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
     response_txt = render_to_string("emails/grants/new_grant.txt", params)
     subject = _("Your Gitcoin Grant")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_request(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_request.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_request.txt", params)
-    subject = _("You've been chosen to be the owner for a Gitcoin Grant")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_accept(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_accept.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_accept.txt", params)
-    subject = _("Grant Owner has changed")
-    return response_html, response_txt, subject
-
-
-def render_notify_ownership_change(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_notify.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_notify.txt", params)
-    subject = _("Grant ownership has been changed")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_reject(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_reject.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_reject.txt", params)
-    subject = _("Grant has no change in ownership")
     return response_html, response_txt, subject
 
 
@@ -245,34 +215,6 @@ def new_supporter(request):
 def new_grant(request):
     grant = Grant.objects.first()
     response_html, __, __ = render_new_grant_email(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_request(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_request(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def notify_ownership_change(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_notify_ownership_change(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_accept(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_accept(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_reject(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_reject(grant)
     return HttpResponse(response_html)
 
 
@@ -932,8 +874,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "The Final Hours of Beyond Blockchain ⛓"
-    new_kudos_pks = [4144, 4141, 4143]
+    subject = "Funding for Open Source. More Hackathons."
+    new_kudos_pks = [1926, 1819, 1895]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -948,23 +890,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-The Beyond Blockchain hackathon is coming to a close. Thank you to all of our participants that hacked along during the past three weeks; we're ecstatic to see what you all have created. We will be releasing another retro in the coming days as winners are announced.
+After months of planning, we're happy to announce that the next round of Gitcoin Grants CLR Matching is right around the corner. With over $150k of funds committed, we will be kicking off the matching process in September! Interested in Gitcoin Grants? Check it out <a href="https://gitcoin.co/grants/">here.</a>
 </p>
 <p>
-For those who didn't get a chance to participate in the hackathon, learned too late, or weren't interested in the prizes: don't fret. The next chapter of prizes is right around the corner. The Grow Ethereum hackathon is slated for July 22nd to August 15th, and we have lots of exciting
-participants to announce. Interested? <a href="https://hackathons.gitcoin.co/grow-ethereum/">Fill out this form. We'll be in touch.</a>
+And yes, we have another hackathon we're proud to announce: Ethereal Blocks. Join us alongside Ethereal Summit in this incredible display of Web3 and more. Over $50k of prizes are up for grabs. The details live <a href="https://hackathons.gitcoin.co/ethereal-blocks/">here.</a>
 </p>
 <p>
-
+Have any questions about our platform? Have any feedback that we should take into consideration? Please reach out. We'd love to hear it. Send us an email at <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a> or reach out to us on Twitter.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.
+        The Gitcoin Livestream is back this week! Join us and some of the winners of Grow Ethereum <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
         </li>
         <li>
-            Round 3 of CLR matching for Gitcoin Grants is coming in Q3! Are you interested in matching? Add to our $50K+ committed and help us grow open source infrastructure projects.  
+        The Gitcoin team is on the road this month, with planned visits to ETHBerlin and Web3. Follow our travel on our valiant leader's Twitter, <a href="https://twitter.com/owocki/">@owocki.</a>
         </li>
     </ul>
 </p>
@@ -973,45 +914,45 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'dvdplm',
+        'who': 'Allenskywalker92',
         'who_link': True,
-        'what': 'Node Syncing: Fixed',
-        'link': 'https://gitcoin.co/issue/paritytech/parity-ethereum/10085/3017',
+        'what': 'Bugfixes and maps are in!',
+        'link': 'https://gitcoin.co/issue/ark-mod/ArkBot/96/3316',
         'link_copy': 'View more',
     }, {
-        'who': 'kziemianek',
+        'who': 'bitsikka',
         'who_link': True,
-        'what': 'Mentors, coded.',
-        'link': 'https://gitcoin.co/issue/gitcoinco/web/963/304',
+        'what': 'My profile edit and share screens, done!',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/8069/3205',
         'link_copy': 'View more',
     }, {
-        'who': 'mishfit',
+        'who': 'srisankethu',
         'who_link': True,
-        'what': 'Web3 Provider Does Not Catch New Events/Block Updates',
-        'link': 'https://gitcoin.co/issue/TrustWallet/trust-web3-provider/6/485',
+        'what': 'Full stack Dapp on Azure, deployed.',
+        'link': 'https://gitcoin.co/issue/kauri-io/Content/53/3187', 
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Quantstamp',
-        'title': 'Scan your smart contract with the Quantstamp Security Network V2 today.',
-        'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/QStamp',
-        'cta': 'Scan now',
+        'name': 'Blockmason',
+        'title': 'Build and deploy your whole laundry list of microservices in a single afternoon.',
+        'image_url': 'https://blockmason.link/wp-content/uploads/2018/11/logo.svg',
+        'link': 'http://bit.ly/2L5IA2n',
+        'cta': 'Get Started Now',
         'body': [
-            'Reentrancy bu🐜s are easy to miss. Have confidence in your code and integrate security checks as part of your development workflow.🛡'
+            'Link creates web-based APIs from your code, so you can deploy microservices instantly.'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/crytic/crytic-compile/issues/2',
-        'primer': 'Add Support for Brownie',
+        'url': 'https://github.com/DigixGlobal/dao-server/issues/69',
+        'primer': 'Email Notifications on Comments',
     }, {
-        'url': 'https://github.com/bluzelle/CryptoMarketWebApp/issues/1',
-        'primer': 'Crypto-Market Application using Bluzelle',
+        'url': 'https://github.com/protofire/solhint/issues/140',
+        'primer': 'Document the structure of the project',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/4745',
-        'primer': 'Allow Ability To Resurface Bounties To The Top When Bounty Has Been Abandoned',
+        'url': 'https://github.com/ethresearch/eth-wiki/issues/9',
+        'primer': 'Correcting Merkle Patricia Trie Example',
 }, ]
     
     

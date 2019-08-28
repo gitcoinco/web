@@ -206,6 +206,9 @@ def index(request):
         'know_us': know_us,
         'press': press,
         'articles': articles,
+        'hide_newsletter_caption': True,
+        'hide_newsletter_consent': True,
+        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
         'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
     }
     return TemplateResponse(request, 'home/index.html', context)
@@ -623,7 +626,6 @@ def robotstxt(request):
 def about(request):
     core_team = [
         (
-            static("v2/images/team/kevin-owocki.png"),
             "Kevin Owocki",
             "All the things",
             "owocki",
@@ -632,7 +634,6 @@ def about(request):
             "Avocado Toast"
         ),
         (
-            static("v2/images/team/alisa-march.jpg"),
             "Alisa March",
             "User Experience Design",
             "PixelantDesign",
@@ -641,7 +642,6 @@ def about(request):
             "Apple Cider Doughnuts"
         ),
         (
-            static("v2/images/team/eric-berry.jpg"),
             "Eric Berry",
             "OSS Funding",
             "coderberry",
@@ -650,7 +650,6 @@ def about(request):
             "Pastel de nata"
         ),
         (
-            static("v2/images/team/vivek-singh.jpg"),
             "Vivek Singh",
             "Community Buidl-er",
             "vs77bb",
@@ -659,7 +658,6 @@ def about(request):
             "Tangerine Gelato"
         ),
         (
-            static("v2/images/team/aditya-anand.jpg"),
             "Aditya Anand M C",
             "Engineering",
             "thelostone-mc",
@@ -668,7 +666,6 @@ def about(request):
             "Cocktail Samosa"
         ),
         (
-            static("v2/images/team/scott.jpg"),
             "Scott Moore",
             "Biz Dev",
             "ceresstation",
@@ -677,7 +674,6 @@ def about(request):
             "Teriyaki Chicken"
         ),
         (
-            static("v2/images/team/octavio-amu.png"),
             "Octavio Amuchástegui",
             "Front End Dev",
             "octavioamu",
@@ -686,7 +682,6 @@ def about(request):
             "Homemade italian pasta"
         ),
         (
-            static("v2/images/team/frank-chen.png"),
             "Frank Chen",
             "Data & Product",
             "frankchen07",
@@ -695,7 +690,6 @@ def about(request):
             "Crispy pork belly"
         ),
         (
-            static("v2/images/team/nate-hopkins.png"),
             "Nate Hopkins",
             "Engineering",
             "hopsoft",
@@ -704,7 +698,6 @@ def about(request):
             "Chicken tikka masala"
         ),
         (
-            static("v2/images/team/dan-lipert.png"),
             "Dan Lipert",
             "Engineering",
             "danlipert",

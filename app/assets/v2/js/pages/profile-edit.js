@@ -9,10 +9,6 @@ $(document).ready(function() {
   });
 
   const banner = document.querySelector('.profile-banner');
-  const updateHeader = document.querySelector('#update-header');
-
-  banner.style['visibility'] = 'visible';
-
 
   function setBanner() {
     const data = new FormData();

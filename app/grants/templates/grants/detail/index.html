@@ -93,18 +93,12 @@
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
   <script>
     $('#wallet-address').attr(
-      'href', etherscan_tx_url($('#wallet-address').text().trim(), '{{ grant.network }}')
+      'href',
+      get_etherscan_url(
+        $('#wallet-address').text().trim(),
+        '{{ grant.network }}',
+        'address'
+      )
     );
-
-    {% if change_ownership == 'Y' %}
-      _alert({ message: gettext('You are now the owner of this grant.') }, 'success');
-    {% elif change_ownership == 'N' %}
-      _alert({ message: gettext('Ownership Request has been rejected.') }, 'error');
-    {% endif %}
-
-    if(localStorage['request_change'] === 'R') {
-      _alert({ message: gettext('Email has been sent to the requested user. Ownership Transfer will happen upon confirmation from the requested user.') }, 'success');
-      delete localStorage['request_change'];
-    }
   </script>
 </html>

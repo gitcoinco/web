@@ -20,7 +20,7 @@ var gitcoin_ize = function(key, val) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
-  return [ key, '<a href="https://gitcoin.co/profile/' + val + '" target="_blank" rel="noopener noreferrer">' + val.replace('@', '') + '</a>' ];
+  return [ key, '<a href="/profile/' + val + '" target="_blank" rel="noopener noreferrer">' + val.replace('@', '') + '</a>' ];
 };
 
 var email_ize = function(key, val) {
@@ -70,6 +70,7 @@ var rows = [
   'avatar_url',
   'issuer_avatar_url',
   'title',
+  'event_name',
   'github_url',
   'value_in_token',
   'value_in_eth',
@@ -112,7 +113,11 @@ var heads = {
 var callbacks = {
   'github_url': link_ize,
   'value_in_token': function(key, val, result) {
-    return [ 'amount', token_value_to_display(val) + ' ' + result['token_name'] ];
+    const title = token_value_to_display(val) + ' ' + result['token_name'];
+    const title_expand = title + ' in funding from original funder.';
+
+    $('#value_in_token').parents('.token').attr('title', title_expand);
+    return [ 'amount', title ];
   },
   'avatar_url': function(key, val, result) {
     return [ 'avatar', '<a href="/profile/' + result['org_name'] + '"><img class="avatar ' + result['github_org_name'] + '" src="' + val + '"></a>' ];
@@ -125,31 +130,32 @@ var callbacks = {
   },
   'status': function(key, val, result) {
     let ui_status = val;
+    let ui_status_raw = val;
 
-    if (ui_status === 'open') {
+    if (ui_status_raw === 'open') {
       ui_status = '<span>' + gettext('OPEN ISSUE') + '</span>';
 
       let can_submit = result['can_submit_after_expiration_date'];
 
-      if (!isBountyOwner && can_submit && is_bounty_expired(result)) {
+      if (!isBountyOwner(result) && can_submit && is_bounty_expired(result)) {
         ui_status += '<p class="text-highlight-light-blue font-weight-light font-body" style="text-transform: none;">' +
           gettext('This issue is past its expiration date, but it is still active.') +
           '<br>' +
           gettext('Check with the submitter to see if they still want to see it fulfilled.') +
           '</p>';
       }
-    } else if (ui_status === 'started') {
+    } else if (ui_status_raw === 'started') {
       ui_status = '<span>' + gettext('work started') + '</span>';
-    } else if (ui_status === 'submitted') {
+    } else if (ui_status_raw === 'submitted') {
       ui_status = '<span>' + gettext('work submitted') + '</span>';
-    } else if (ui_status === 'done') {
+    } else if (ui_status_raw === 'done') {
       ui_status = '<span>' + gettext('done') + '</span>';
-    } else if (ui_status === 'cancelled') {
+    } else if (ui_status_raw === 'cancelled') {
       ui_status = '<span style="color: #f9006c;">' + gettext('cancelled') + '</span>';
     }
 
-    if (isBountyOwner && is_bounty_expired(result) &&
-      ui_status !== 'done' && ui_status !== 'cancelled') {
+    if (isBountyOwner(result) && is_bounty_expired(result) &&
+      ui_status_raw !== 'done' && ui_status_raw !== 'cancelled') {
 
       ui_status += '<p class="font-weight-light font-body" style="color: black; text-transform: none;">' +
       'This issue has expired. Click <a class="text-highlight-light-blue font-weight-semibold" href="/extend-deadlines">here to extend expiration</a> ' +
@@ -158,12 +164,31 @@ var callbacks = {
 
     return [ 'status', ui_status ];
   },
+  'event_name': function(key, val, result) {
+    let event_name = result['event'] ? 'Hackathon: ' + result.event.name : '';
+
+    return [ 'event_name', event_name ];
+  },
   'issue_description': function(key, val, result) {
-    var converter = new showdown.Converter({
-      simplifiedAutoLink: true
+
+    const _markdown = new markdownit({
+      linkify: true,
+      highlight: function(str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return '<pre class="hljs"><code>' +
+                    hljs.highlight(lang, str, true).value +
+                   '</code></pre>';
+          } catch (__) {}
+        }
+        return '<pre class="hljs"><code>' + sanitize(_markdown.utils.escapeHtml(str)) + '</code></pre>';
+      }
     });
 
-    ui_body = sanitize(converter.makeHtml(val));
+    _markdown.renderer.rules.table_open = function() {
+      return '<table class="table">';
+    };
+    ui_body = sanitize(_markdown.render(val));
     return [ 'issue_description', ui_body ];
   },
   'bounty_owner_address': address_ize,
@@ -232,9 +257,8 @@ var callbacks = {
     if (val === null) {
       return [ null, null ];
     }
-    var rates_estimate = get_rates_estimate(val);
 
-    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info tooltip-sm">' + rates_estimate + '</div>');
+    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info">The funding in this bounty adds up to $' + val + ' USD </div>');
 
     return [ 'Amount_usd', val ];
   },
@@ -291,11 +315,11 @@ var callbacks = {
       const ratio = obj['ratio'];
       const amount = obj['amount'];
       const usd = amount * ratio;
-      const funding = normalizeAmount(amount, tokenDecimals);
-      const tokenValue = normalizeAmount(1.0 * ratio, dollarDecimals);
+      const funding = round(amount, 2);
+      const tokenValue = Math.round(1.0 * ratio);
       const timestamp = new Date(obj['timestamp']);
       const timePeg = timeDifference(dateNow, timestamp > dateNow ? dateNow : timestamp, false, 60 * 60);
-      const tooltip = `$ ${normalizeAmount(usd, dollarDecimals)} USD in crowdfunding`;
+      const tooltip = `+ ${funding} ${tokenName} in crowdfunding`;
 
       leftHtml += '<p class="m-0">+ ' + funding + ' ' + tokenName + '</p>';
       rightHtml += '<p class="m-0">@ $' + tokenValue + ' ' + tokenName + ' as of ' + timePeg + '</p>';
@@ -306,9 +330,10 @@ var callbacks = {
         newTokenTag(funding, tokenName, tooltip, true),
         usdTagElement
       );
+
     }
 
-    $('#value_in_usdt').html(normalizeAmount(totalUSDValue, dollarDecimals));
+    $('#value_in_usdt').html(Math.round(totalUSDValue));
 
     $('#value_in_usdt_wrapper').attr('title',
       '<div class="tooltip-info tooltip-sm">' +
@@ -342,40 +367,30 @@ var callbacks = {
     return [ 'updated', timeDifference(new Date(result['now']), new Date(result['web3_created'])) ];
   },
   'expires_date': function(key, val, result) {
-    var label = 'expires';
-
+    moment.locale('en-expire');
+    moment.defineLocale('en-expire', {
+      parentLocale: 'en',
+      relativeTime: {
+        future: '%s'
+      }
+    });
     expires_date = new Date(val);
-    now = new Date(result['now']);
-
-    var expiringInPercentage = 100 * (
-      (now.getTime() - new Date(result['web3_created']).getTime()) /
-      (expires_date.getTime() - new Date(result['web3_created']).getTime()));
-
-    if (expiringInPercentage > 100) {
-      expiringInPercentage = 100;
-    }
-
-    $('.progress').css('width', expiringInPercentage + '%');
-    var response = timeDifference(now, expires_date).split(' ');
+    let label = 'expires';
+    let response = moment.utc(expires_date).fromNow();
     const isInfinite = expires_date - new Date().setFullYear(new Date().getFullYear() + 1) > 1;
+
+    $('#expires_date').attr('title', moment(expires_date).format('LLL'));
 
     if (expires_date < new Date()) {
       label = 'expired';
       if (result['is_open']) {
         $('.timeleft').text('Expired');
-        $('.progress-bar').addClass('expired');
-        response = response.join(' ');
-      } else {
-        $('#timer').hide();
       }
-    } else if (result['status'] === 'done' || result['status'] === 'cancelled') {
-      $('#timer').hide();
     } else if (isInfinite) {
-      response = '&infin;';
-    } else {
-      response.shift();
-      response = response.join(' ');
+      $('#expires_date').removeAttr('title');
+      response = 'Never expires';
     }
+
     return [ label, response ];
   },
   'started_owners_username': function(key, val, result) {
@@ -473,7 +488,7 @@ const isAvailableIfReserved = function(bounty) {
 
 const isBountyOwner = result => {
   if (typeof web3 == 'undefined' || !web3.eth ||
-      typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+      typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase || !result) {
     return false;
   }
   return caseInsensitiveCompare(web3.eth.coinbase, result['bounty_owner_address']);
@@ -512,7 +527,7 @@ var showWarningMessage = function(txid) {
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
     waitforWeb3(function() {
       clearInterval(interval);
-      var link_url = etherscan_tx_url(txid);
+      var link_url = get_etherscan_url(txid);
 
       $('#transaction_url').attr('href', link_url);
     });
@@ -789,59 +804,56 @@ const repoInstructions = () => {
   });
 };
 
-var set_extended_time_html = function(extendedDuration, currentExpires) {
-  currentExpires.setTime(currentExpires.getTime() + (extendedDuration * 1000));
-  $('input[name=updatedExpires]').val(currentExpires.getTime());
-  const date = getFormattedDate(currentExpires);
-  let days = timeDifference(now, currentExpires).split(' ');
-
-  days.shift();
-  days = days.join(' ');
-
-  $('#extended-expiration-date #extended-date').html(date);
-  $('#extended-expiration-date #extended-days').html(days);
+var set_extended_time_html = function(extendedDuration) {
+  extendedDuration = extendedDuration.set({hour: 0, minute: 0, second: 0, millisecond: 0});
+  $('input[name=updatedExpires]').val(extendedDuration.utc().unix());
+  $('#extended-expiration-date #extended-date').html(extendedDuration.format('MM-DD-YYYY hh:mm A'));
+  $('#extended-expiration-date #extended-days').html(moment.utc(extendedDuration).fromNow());
 };
 
 var show_extend_deadline_modal = function() {
-  var self = this;
+  let modals = $('#modalExtend');
+  let modalBody = $('#modalExtend .modal-content');
+  const url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
 
-  setTimeout(function() {
-    var url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
+  moment.locale('en');
+  modals.on('show.bs.modal', function() {
+    modalBody.load(url, ()=> {
+      const currentExpires = moment.utc(document.result['expires_date']);
 
-    $.get(url, function(newHTML) {
-      var modal = $(newHTML).appendTo('body').modal({
-        modalClass: 'modal add-interest-modal'
+      $('#modalExtend input[name="expirationTimeDelta"]').daterangepicker({
+        parentEl: '#extend_deadline',
+        singleDatePicker: true,
+        startDate: moment(currentExpires).add(1, 'month'),
+        minDate: moment().add(1, 'day'),
+        ranges: {
+          '1 week': [ moment(currentExpires).add(7, 'days'), moment(currentExpires).add(7, 'days') ],
+          '2 weeks': [ moment(currentExpires).add(14, 'days'), moment(currentExpires).add(14, 'days') ],
+          '1 month': [ moment(currentExpires).add(1, 'month'), moment(currentExpires).add(1, 'month') ],
+          '3 months': [ moment(currentExpires).add(3, 'month'), moment(currentExpires).add(3, 'month') ],
+          '1 year': [ moment(currentExpires).add(1, 'year'), moment(currentExpires).add(1, 'year') ]
+        },
+        'locale': {
+          'customRangeLabel': 'Custom'
+        }
+      }, function(start, end, label) {
+        set_extended_time_html(end);
       });
 
-      // all js select 2 fields
-      $('.js-select2').each(function() {
-        $(this).select2();
-      });
-      // removes tooltip
-      $('.submit_bounty select').each(function(evt) {
-        $('.select2-selection__rendered').removeAttr('title');
-      });
-      // removes search field in all but the 'denomination' dropdown
-      $('.select2-container').on('click', function() {
-        $('.select2-container .select2-search__field').remove();
-      });
+      set_extended_time_html($('#modalExtend input[name="expirationTimeDelta"]').data('daterangepicker').endDate);
 
-      var extendedDuration = parseInt($('select[name=expirationTimeDelta]').val());
-      var currentExpires = new Date(document.result['expires_date']);
-
-      set_extended_time_html(extendedDuration, currentExpires);
-      $(document).on('change', 'select[name=expirationTimeDelta]', function() {
-        var previousExpires = new Date(document.result['expires_date']);
-
-        set_extended_time_html(parseInt($(this).val()), previousExpires);
+      $('#neverExpires').on('click', () => {
+        if ($('#neverExpires').is(':checked')) {
+          $('#expirationTimeDelta').attr('disabled', true);
+          $('#extended-expiration-date #extended-days').html('Never');
+          $('#extended-expiration-date #extended-date').html('-');
+        } else {
+          $('#expirationTimeDelta').attr('disabled', false);
+          set_extended_time_html($('#modalExtend input[name="expirationTimeDelta"]').data('daterangepicker').endDate);
+        }
       });
 
-      $('.btn-cancel').on('click', function() {
-        $.modal.close();
-        return;
-      });
-
-      modal.on('submit', function(event) {
+      modals.on('submit', function(event) {
         event.preventDefault();
 
         var extended_time = $('input[name=updatedExpires]').val();
@@ -849,13 +861,62 @@ var show_extend_deadline_modal = function() {
         extend_expiration(document.result['pk'], {
           deadline: extended_time
         });
-        $.modal.close();
         setTimeout(function() {
           window.location.reload();
         }, 2000);
       });
     });
   });
+  modals.bootstrapModal('show');
+  $(document, modals).on('hidden.bs.modal', function(e) {
+    $('#extend_deadline').remove();
+    $('.daterangepicker').remove();
+  });
+};
+
+const appendGithubSyncButton = function(result) {
+  if (isBountyOwner(result) || currentProfile.isStaff) {
+    const title = gettext('Sync Issue');
+
+    $('#github_actions').append('<button sync-github-issue id="btn-white" type="button" class="btn btn-small">' + title + '</button>');
+
+    $('#github_actions [sync-github-issue]').on('click', function(e) {
+      const bountyId = result.pk;
+
+      e.preventDefault();
+
+      $.get(
+        '/sync/get_issue_details?url=' + encodeURIComponent(result['github_url']) + '&token=' + currentProfile.githubToken
+      ).then(function(result) {
+        const payload = JSON.stringify({
+          issue_description: result.description
+        });
+
+        return $.post('/bounty/change/' + bountyId, payload).then(
+          function(result) {
+            result = sanitizeAPIResults(result);
+            _alert({ message: result.msg }, 'success');
+
+            if (result.url) {
+              setTimeout(function() {
+                document.location.href = result.url;
+              }, 1000);
+            }
+          }
+        ).fail(
+          function(result) {
+            const alertMsg = result && result.responseJSON ? result.responseJSON.error : gettext('Failed to sync issue. Please reload the page and try again.');
+
+            _alert({ message: alertMsg }, 'error');
+          }
+        );
+      }).fail(function(result) {
+        const alertMsg = result && result.responseJSON ? result.responseJSON.error : gettext('Failed to sync issue. Please reload the page and try again.');
+
+        _alert({ message: alertMsg }, 'error');
+      });
+    });
+  }
 };
 
 var build_detail_page = function(result) {
@@ -900,11 +961,10 @@ var build_detail_page = function(result) {
       _result = callbacks[key](key, val, result);
       val = _result[1];
     }
-    var _entry = {
-      'head': head,
-      'key': key,
-      'val': val
-    };
+
+    hljs.initHighlighting.called = false;
+    hljs.initHighlighting();
+
     var id = '#' + key;
 
     if ($(id).length) {
@@ -926,12 +986,12 @@ var build_detail_page = function(result) {
       '</div>' +
       '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
 
-    var modal = $(content).appendTo('body').modal({
+    $(content).appendTo('body').modal({
       modalClass: 'modal magnify'
     });
   });
 
-  $('#bounty_details #issue_description code').parent().addClass('code-snippet');
+  appendGithubSyncButton(result);
 };
 
 const is_current_user_interested = function(result) {
@@ -1027,7 +1087,7 @@ var do_actions = function(result) {
       enabled: enabled,
       href: result['action_urls']['fulfill'],
       text: gettext('Submit Work'),
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: gettext('Submit work for the funder to review'),
       work_started: is_interested,
       id: 'submit'
@@ -1043,7 +1103,7 @@ var do_actions = function(result) {
 	    enabled: enabled,
 	    href: '#',
 	    text: gettext('Send Payment Reminder'),
-	    parent: 'right_actions',
+	    parent: 'bounty_actions',
 	    title: gettext('Send Payment Reminder'),
 	    id: 'notifyFunder',
 	    clickhandler: show_modal_handler(url),
@@ -1066,7 +1126,7 @@ var do_actions = function(result) {
       enabled: enabled,
       href: is_interested ? '/uninterested' : '/interested',
       text: text,
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
       color: is_interested ? '' : '',
       id: 'interest'
@@ -1081,7 +1141,7 @@ var do_actions = function(result) {
       enabled: enabled,
       href: result['action_urls']['cancel'],
       text: gettext('Cancel Bounty'),
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: gettext('Cancel bounty and reclaim funds for this issue'),
       buttonclass: 'button--warning'
     };
@@ -1096,7 +1156,7 @@ var do_actions = function(result) {
       href: result['action_urls']['payout'],
       text: gettext('Payout Bounty'),
       title: gettext('Payout the bounty to one or more submitters.'),
-      parent: 'right_actions'
+      parent: 'bounty_actions'
     };
 
     actions.push(_entry);
@@ -1109,21 +1169,8 @@ var do_actions = function(result) {
       enabled: enabled,
       href: result['action_urls']['contribute'],
       text: gettext('Contribute'),
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: gettext('Help by funding or promoting this issue')
-    };
-
-    actions.push(_entry);
-  }
-
-  if (show_extend_deadline) {
-    const enabled = true;
-    const _entry = {
-      enabled: enabled,
-      href: '/extend-deadlines',
-      text: gettext('Extend Expiration'),
-      parent: 'right_actions',
-      title: gettext('Extend deadline of an issue')
     };
 
     actions.push(_entry);
@@ -1134,7 +1181,7 @@ var do_actions = function(result) {
       enabled: true,
       href: result['action_urls']['invoice'],
       text: gettext('Show Invoice'),
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: gettext('View an Invoice for this Issue')
     };
 
@@ -1142,13 +1189,22 @@ var do_actions = function(result) {
   }
 
   if (show_change_bounty) {
+    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+
     const _entry = [
       {
         enabled: true,
         href: '/bounty/change/' + result['pk'],
-        text: gettext('Edit Issue Details'),
-        parent: 'right_actions',
-        title: gettext('Update your Bounty Settings to get the right Crowd')
+        text: gettext('Edit Issue'),
+        parent: 'bounty_actions',
+        title: gettext('Update your Bounty Settings to get the right Crowd'),
+        edit_dropdown: true,
+        edit_issue_href: '/bounty/change/' + result['pk'],
+        show_extend_expiration: show_extend_deadline,
+        extend_expiration_href: '/extend-deadlines',
+        show_remarket: true,
+        remarket_enabled: result['can_remarket'],
+        remarket_url: result['url'] + connector_char + 'trigger_remarket=1'
       }// ,
       // {
       //   enabled: true,
@@ -1173,9 +1229,9 @@ var do_actions = function(result) {
       enabled: true,
       href: github_url,
       text: (result['repo_type'] === 'private' ? '<i class="fas fa-lock"></i> ' +
-            gettext('Private Repo') : gettext('View On Github')) +
-            (result['is_issue_closed'] ? gettext(' (Issue is closed)') : ''),
-      parent: 'right_actions',
+        gettext('Private Repo') : gettext('View On Github')) +
+        (result['is_issue_closed'] ? gettext(' (Issue is closed)') : ''),
+      parent: 'github_actions',
       title: gettext('View issue details and comments on Github'),
       comments: result['github_comments'],
       color: 'white'
@@ -1191,7 +1247,7 @@ var do_actions = function(result) {
       enabled: true,
       href: job_url,
       text: gettext('View Attached Job Description'),
-      parent: 'right_actions',
+      parent: 'bounty_actions',
       title: gettext('This bounty funder is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
       color: 'white'
     };
@@ -1449,6 +1505,13 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
+    const issue_message = result.interested.length ?
+      result.interested.find(interest => {
+        if (interest.profile.handle === _activity.profile.handle && interest.issue_message) {
+          return interest.issue_message;
+        }
+        return false;
+      }) : false;
     const has_signed_nda = result.interested.length ?
       result.interested.find(interest => {
         if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
@@ -1490,6 +1553,7 @@ const process_activities = function(result, bounty_activities) {
       activity_type: _activity.activity_type,
       status: _activity.activity_type === 'work_started' ? 'started' : 'stopped',
       signed_nda: has_signed_nda,
+      issue_message: issue_message,
       uninterest_possible: uninterest_possible,
       slash_possible: slash_possible,
       approve_worker_url: meta.approve_worker_url,
@@ -1512,7 +1576,8 @@ const process_activities = function(result, bounty_activities) {
       token_value_time_peg_new: new_bounty.token_value_time_peg,
       token_name: result['token_name'],
       to_username: to_username,
-      kudos: kudos
+      kudos: kudos,
+      permission_type: result['permission_type']
     });
   });
 

@@ -15,81 +15,28 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div class="col-12 sponsors text-white mt-5 mb-3">
-  <p class="font-weight-semibold font-subheader mb-4">SUPPORTED BY</p>
 
+<div class="col-12 sponsors mt-5 mb-3">
   {% if sponsors %}
+    <p class="font-weight-semibold font-subheader mb-4">SUPPORTED BY</p>
     {% if sponsors.sponsors_gold %}
-      <div class="d-flex flex-wrap justify-content-center">
+      <div class="d-flex flex-wrap justify-content-center mb-5">
         {% for sponsor in sponsors.sponsors_gold %}
-          <div class="sponsors-gold">
-            <div class="img-holder">
-              <img src="{{sponsor.logo}}" alt="{{sponsor.name}}" title="{{sponsor.name}}" class="{{sponsor.name}}">
-            </div>
+          <div class="sponsors-gold my-auto mx-2">
+            <img src="{{sponsor.logo}}" alt="{{sponsor.name}}" class="{{sponsor.name}}">
           </div>
         {% endfor %}
       </div>
     {% endif %}
 
     {% if sponsors.sponsors_silver %}
-      <div class="d-flex flex-wrap justify-content-center">
+      <div class="d-flex flex-wrap justify-content-center mb-4">
         {% for sponsor in sponsors.sponsors_silver %}
-          <div class="sponsors-silver">
-            <div class="img-holder">
-              <img src="{{sponsor.logo}}" alt="{{sponsor.name}}" title="{{sponsor.name}}" class="{{sponsor.name}}">
-            </div>
+          <div class="sponsors-silver my-auto mx-2">
+            <img src="{{sponsor.logo}}" alt="{{sponsor.name}}" class="{{sponsor.name}}">
           </div>
         {% endfor %}
       </div>
     {% endif %}
-
-  {% else %}
-    <!-- TODO: CLEAN UP ETH-HACK -->
-    <div class="sponsors-gold d-flex flex-wrap justify-content-center">
-      <div class="img-holder img-holder--dark">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/big/quorum.svg' %}" alt="Quorum" title="Quorum" class="mw-100 mh-100 " width="113" height="113">
-      </div>
-      <div class="img-holder img-holder--light">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/big/labs-logo-blue.svg' %}" alt="Consensys Labs" title="Consensys Labs" class="mw-100 mh-100 " width="113" height="113">
-      </div>
-      <div class="img-holder img-holder--light">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/big/pegasys-logo.svg' %}" alt="Pegasys" title="Pegasys" class="mw-100 mh-100 " width="113" height="113">
-      </div>
-      <div class="img-holder img-holder--light">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/big/microsoft.svg' %}" alt="Microsoft" title="Microsoft" class="mw-100 mh-100 " width="113" height="">
-      </div>
-      <div class="img-holder img-holder--light">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/big/adex-vector-logo.svg' %}" alt="Adex" title="Adex" class="mw-100 mh-100 " width="113" height="113">
-      </div>
-      <div class="img-holder img-holder--dark">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/big/mythx-light.png' %}" alt="MythX" title="MythX" class="mw-100 mh-100 " width="113" height="">
-      </div>
-    </div>
-    <div class="sponsors-silver d-flex flex-wrap justify-content-center">
-      <div class="img-holder img-holder--light">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/small/chainlink-hexagon.svg' %}" alt="Chainlink" title="Chainlink" class="mw-100 mh-100 " width="75" height="75">
-      </div>
-      <div class="img-holder img-holder--light">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/small/kauri_logo_vertical.svg' %}" alt="Kauri" title="Kauri" class="mw-100 mh-100 " width="75" height="75">
-      </div>
-      <div class="img-holder img-holder--light">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/small/leapdao.svg' %}" alt="LeapDAO" title="LeapDAO" class="mw-100 mh-100 " width="75" height="">
-      </div>
-      <div class="img-holder img-holder--light">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/small/kleros-logo-vertical.svg' %}" alt="Kleros" title="Kleros" class="mw-100 mh-100 " width="75" height="75">
-      </div>
-      <div class="img-holder img-holder--light">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/small/alethio-no-bg.svg' %}" alt="Alethio" title="Alethio" class="mw-100 mh-100 " width="75" height="">
-      </div>
-      <div class="img-holder img-holder--light">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/small/coinmark_blue_lg.svg' %}" alt="Coinmark" title="Coinmark" class="mw-100 mh-100 " width="75" height="75">
-      </div>
-      <div class="img-holder img-holder--light">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/small/autom8.svg' %}" alt="Autom(8)" title="Autom(8)" class="mw-100 mh-100 " width="75" height="75">
-      </div>
-      <div class="img-holder img-holder--light">
-        <img src="{% static 'v2/images/hackathon/ethhack/sponsors/small/logo_poa.svg' %}" alt="POA" title="POA" class="mw-100 mh-100 " width="75" height="">
-      </div>
-    </div>
   {% endif %}
 </div>

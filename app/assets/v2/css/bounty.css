@@ -48,16 +48,6 @@ body {
   text-transform: capitalize;
 }
 
-#title {
-  text-align: left;
-  padding-top: 2em;
-  padding-bottom: 15px;
-}
-
-#avatar_url {
-  padding-top: 3em;
-}
-
 .invite-user .avatar {
   width: 5.5rem;
   height: 5.5rem;
@@ -163,9 +153,9 @@ body {
   color: #000000;
 }
 
-#issue_description pre, code {
+/* #issue_description pre, code {
   padding: 1em 0;
-}
+} */
 
 #bounty-info-row {
   margin-left: 1px;
@@ -529,9 +519,8 @@ a.btn {
   color: #F5A623;
 }
 
-.code-snippet {
-  background-color: #F2F6F9;
-  padding: 1rem;
+#funder_notif_info:empty {
+  display: none;
 }
 
 #funder_notif_info .bounty-notification {
@@ -737,6 +726,7 @@ a.btn {
 .modal .magnify {
   width: auto;
   max-width: 100%;
+  overflow-y: scroll;
 }
 
 .bg-container {
@@ -769,6 +759,13 @@ a.btn {
 .issue-url {
   font-size: 1.2rem;
   text-align: center;
+}
+
+.hackathon-alt {
+  font-size: 11px;
+  color: #0d0764;
+  font-weight: 700;
+  letter-spacing: 1.7px;
 }
 
 .rocket {
@@ -882,11 +879,6 @@ a.btn {
 
   .rocket {
     right: 11rem;
-  }
-
-  #extend_deadline {
-    min-width: 40rem;
-    max-width: 0;
   }
 }
 

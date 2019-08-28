@@ -25,6 +25,10 @@
     </a>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
       {% if source == 'authed' %}
+        <!-- <a class="dropdown-item" href="{% url "dashboard" %}">
+          <i class="fas fa-tachometer-alt"></i>
+          {% trans "Dashboard" %}
+        </a> -->
         <a class="dropdown-item" href="{% url "tip" %}">
           <i class="far fa-paper-plane"></i>
           {% trans "Send Tip" %}

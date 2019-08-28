@@ -22,11 +22,6 @@
   background-color: transparent;
 }
 
-.homepage .container {
-  padding-bottom: 4rem;
-  padding-top: 4rem;
-}
-
 .banner {
   background-color: #0d023b;
   background-size: cover;
@@ -59,6 +54,10 @@
 
 .homepage .btn-gc-green {
   color: #0D0764;
+}
+
+.homepage .newsletter {
+  border-top: none;
 }
 
 .watch a {
@@ -224,7 +223,6 @@ img.play {
   cursor: pointer;
   --padding: 40px;
   background-color: var(--gc-green-hover);
-  
   background-position: 15% -20%;
   background-size: 150% 150%;
   background-repeat: no-repeat;

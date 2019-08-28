@@ -103,7 +103,7 @@ $(document).ready(function() {
     });
   }
 
-  var top_nav_salt = 2;
+  var top_nav_salt = 3;
   var remove_top_row = function() {
     $('#top_nav_notification').parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
@@ -245,7 +245,7 @@ if (document.contxt.github_handle && !document.contxt.persona_is_funder && !docu
             </button>
           </div>
           <div class="col-12 pt-2 pb-2 text-center">
-            <img src="${static_url}/v2/images/modals/persona-choose.svg" width="160" height="137">
+            <img src="${static_url}v2/images/modals/persona-choose.svg" width="160" height="137">
             <h2 class="font-title mt-4">${gettext('Are you a Funder or a Contributor?')}</h2>
           </div>
           <div class="col-12 pt-2 text-center">

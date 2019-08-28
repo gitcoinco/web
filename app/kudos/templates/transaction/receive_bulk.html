@@ -21,14 +21,7 @@
 <script src="{% static "v2/js/pages/kudos_bulk_receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
 
-{% endblock %}
 <!-- Main -->
-{% block 'world' %}
-<div>
-  <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
-</div>
-{% endblock %}
-{% block 'main' %}
 <section id="main" class="box-transaction">
   <header class="text-center">
   <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
@@ -62,13 +55,13 @@
         <img src="{% static coupon.token.image %}" style="width: 100%;" alt="{{ coupon.token.name }}" >
       </div>
 
-      
+
       <br>
       <span id="kudosComment" class="d-block">
         <h3><a style='color:black; text-decoration: underline;' href="{{coupon.token.url}}"><span id="kudosName" data-kudosname="{{ coupon.token.name }}" >{{ coupon.token.humanized_name }} </span>{% trans "Kudos" %}</a></h3>
         {% if coupon.comments_to_put_in_kudos_transfer %}
-        with an attached message, just for you: 
-        <p style="  
+        with an attached message, just for you:
+        <p style="
     width: 80%;
     height: 100px;
     background-color: #D0DEEB;
@@ -158,11 +151,10 @@
   }
 </style>
 <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
+<script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
 <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
 {% include 'shared/footer_scripts.html' with slim=1 %}
-
-<script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
 <script>
   document.network = '{{coupon.token.contract.network}}';
   $(document).ready(function(){
@@ -173,4 +165,9 @@
     document.suppress_kudos_levitate_hover = true;
   })
 </script>
+{% endblock %}
+{% block 'world' %}
+<div>
+  <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
+</div>
 {% endblock %}

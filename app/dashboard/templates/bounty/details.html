@@ -10,6 +10,8 @@
     {% if canonical_url %}
       <link rel="canonical" href="{{ canonical_url }}">
     {% endif %}
+    <link rel="stylesheet" href="{% static "v2/css/lib/daterangepicker.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/lib/highlight_github.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
@@ -41,27 +43,28 @@
           <p>{% url 'explorer' as explorerurl %}{% blocktrans %}Check out the <a href="{{ explorerurl }}">Issue Explorer</a>{% endblocktrans %}</p>
           <br>
           <h6>{% trans "Be the OSS Funding you wish to see in the world." %}</h6>
-          <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %} Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
+          <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %}Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
         </div>
 
         <div class="col-12" id="moderator-admin-actions"></div>
         <div class="col-12" id="bounty_details">
-          <div class="row font-body">
+          <div class="row font-body align-items-center mt-4 mb-3">
             <div class="d-none d-lg-block col-lg-2 col-xl-1">
               <div id="avatar_url"></div>
             </div>
             <div class="col-12 col-lg-10 col-xl-11 pl-xl-4">
               <div class="col-12">
-                <h4 id="title" class="font-title"></h4>
+                <div class="d-inline-block font-subheader hackathon-alt" id="event_name"></div>
+                <h4 id="title" class="font-title p-0 text-left"></h4>
                 <div class="col-12 text-center text-lg-left">
                   <div class="tags font-caption align-items-center">
                     <div class="tag token">
-                      <p>
+                      <p class="inner-tooltip">
                         <span id="value_in_token"></span>
                       </p>
                     </div>
                     <div id="value_in_usdt_wrapper" title="" class="tag usd ml-3">
-                      <p>
+                      <p class="inner-tooltip">
                         <span id="value_in_usdt"></span>
                         <span>USD</span>
                       </p>
@@ -142,6 +145,8 @@
                     <button type="button" class="modal-link button button--primary float-right" data-toggle="modal" data-target=".share-modal">
                       <span class="font-caption"><i class="fas fa-share-alt mr-2"></i> Share</span>
                     </button>
+                    <div id="bounty_actions" class="d-inline-block"></div>
+                    <div id="github_actions" class="d-inline-block"></div>
                   </div>
                 </div>
             </div>
@@ -224,9 +229,23 @@
             [[/if]]
           </a>
         [[else]]
-          <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
-            <span class="font-caption">[[:text]]</span>
-          </a>
+          [[if edit_dropdown]]
+              <div class="dropdown show" style="display: inline;">
+                <a class="button button--primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {% trans "Update Issue" %}
+                </a>
+
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <a class="dropdown-item" href="[[:edit_issue_href]]">{% trans "Edit Issue Details" %}</a>
+                  [[if show_extend_expiration]] <a class="dropdown-item" href="[[:extend_expiration_href]]">{% trans "Extend Expiration" %}</a> [[/if]]
+                  [[if show_remarket]] <a class="dropdown-item [[if !remarket_enabled]]disabled[[/if]]" href="[[:remarket_url]]">{% trans "Re-market Issue" %}</a> [[/if]]
+                </div>
+              </div>
+          [[else]]
+            <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
+              <span class="font-caption">[[:text]]</span>
+            </a>
+          [[/if]]
         [[/if]]
       </span>
     </script>
@@ -241,7 +260,7 @@
           </div>
           <div class="col-12 col-md-2">
             <div class="activity-name">
-              <a href="https://gitcoin.co/profile/[[:name]]" target="_blank">
+              <a href="/profile/[[:name]]" target="_blank">
                 [[:name]]
               </a>
             </div>
@@ -321,7 +340,7 @@
             <div class="col-12 col-md-7 started-status-column">
               <div class="activity-status">
                 Worker
-                <a href="https://gitcoin.co/profile/[[:worker_handle]]" target="_blank">
+                <a href="/profile/[[:worker_handle]]" target="_blank">
                   [[:worker_handle]]
                 </a>
                 Approved
@@ -331,7 +350,7 @@
             <div class="col-12 col-md-7 started-status-column">
               <div class="activity-status">
                 Worker
-                <a href="https://gitcoin.co/profile/[[:worker_handle]]" target="_blank">
+                <a href="/profile/[[:worker_handle]]" target="_blank">
                   [[:worker_handle]]
                 </a>
                 Rejected
@@ -399,6 +418,9 @@
           <div class="col-12 col-md-2">
             <div class="activity-time">[[:age]]</div>
           </div>
+          [[if issue_message && activity_type == 'worker_applied' || issue_message && permission_type == 'permissionless' && activity_type == 'start_work' ]]
+            <p class="bg-lightblue p-2 rounded mt-3 mb-0 w-100 overflow-auto" style="resize: vertical;height: 50px;word-break: break-word;white-space: pre-wrap;"><b>Work Plan:</b> [[:issue_message.issue_message]]</p>
+          [[/if]]
         </div>
       [[/if]]
     </script>
@@ -417,6 +439,24 @@
         </div>
       </div>
     </div>
+    <div id="modalExtend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-dialog ">
+          <div class="modal-content py-3">
+            <div class="row loading justify-content-center align-items-center loading_img">
+              <img src="{% static 'v2/images/loading_v2.gif' %}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <noscript>
+        <h2>{{ noscript.title }}</h2>
+        <h3>{{ noscript.org_name }}</h3>
+        <h3>{{ noscript.keywords }}</h3>
+        <p>{{ noscript.issue_description_text }}</p>
+    </noscript>
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
@@ -435,21 +475,21 @@
     {% endif %}
   </script>
 
-  <!-- jQuery -->
-  <script src="{% static "v2/js/lib/showdown.js" %}"></script>
+  <script src="{% static "v2/js/lib/highlight.js" %}"></script>
+  <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
+
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/clipboard.js" %}"></script>>
-    
   <script>
     $('[data-toggle="popover"]').popover()
-
     $("body").on("mouseover", "[data-username] img", function(e) {
       openContributorPopOver($(this).parent().data("username"), $(this));
-});
+    });
   </script>
+  <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>

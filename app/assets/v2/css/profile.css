@@ -1,4 +1,4 @@
-.profile_details .container{
+.mh-150{
   min-height: 150px;
 }
 
@@ -19,6 +19,11 @@
   width: 7.25rem;
   height: 7.25rem;
   border-radius: 50%;
+}
+
+.profile-header {
+  position: relative;
+  min-height: 450px;
 }
 
 .profile-header__handle {
@@ -147,10 +152,21 @@ a:hover .avatar_edit .avatar_edit_text {
   border-radius: 50%;
 }
 
+
+@media (max-width: 1200px) {
+  .profile-header{
+    min-height: 350px;
+  }
+}
+
 @media (max-width: 767.98px) {
 
   .profile-header__main-infos {
     text-align: center;
+  }
+
+  .profile-header{
+    min-height: 200px;
   }
 
   .profile-header__avatar {
@@ -167,6 +183,11 @@ a:hover .avatar_edit .avatar_edit_text {
     float: none;
     margin-right: 0;
   }
+
+  .row.bottom_notification{
+    display: none;
+  }
+
 }
 
 
@@ -192,6 +213,7 @@ a:hover .avatar_edit .avatar_edit_text {
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
+
   .profile-header__stats .card-header {
     padding: 0 0.5rem;
     font-size: 1.2rem;
@@ -374,12 +396,28 @@ a:hover .avatar_edit .avatar_edit_text {
 }
 
 .profile-banner {
-  top: 25vh;
+  display: flex;
+  top: 0;
+  bottom: 0;
   color: #ffffff;
   z-index: 1;
   width: 100vw;
-  visibility: hidden;
   cursor: pointer;
+}
+
+.profile-banner:hover {
+  background: linear-gradient(to top,rgba(255,255,255,0.6),rgba(255,255,255,0.0));
+}
+
+.profile-banner .h4 {
+  font-weight: bold;
+  text-shadow: 1px 1px 1px #000;
+  opacity: 0.5;
+  padding: 5px;
+}
+
+.profile-banner:hover .h4 {
+  opacity: 1;
 }
 
 .picky {
@@ -398,22 +436,4 @@ nav.navbar.navbar-dark{
   background-color: #181143;
 }
 
-#change_header_lede {
-  padding-top: 2rem;
-  padding-bottom: 10rem;
-  background: linear-gradient(to top,rgba(255,255,255,0.6),rgba(255,255,255,0.0));
-}
 
-#change_header_lede:hover {
-  background: linear-gradient(to top,rgba(255,255,255,0.9),rgba(255,255,255,0.0));
-}
-
-#change_header_lede span {
-  font-weight: bold;
-  visibility: hidden;
-  padding: 5px;
-}
-
-#change_header_lede:hover span {
-  visibility: visible;
-}

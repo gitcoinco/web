@@ -35,15 +35,23 @@
     </div>
     {% if hackathon %}
       <link rel="stylesheet" href={% static "v2/css/hackathons/explorer.css" %}>
-      <div id="{{ hackathon.identifier }}" class="row pt-5 pb-5 text-center banner">
+
+      <style>
+        .hackathon-banner {
+          background: {% firstof hackathon.background_color or 'white' %};
+          color: {% firstof hackathon.text_color or 'black' %};
+        }
+      </style>
+
+      <div id="{{ hackathon.identifier }}" class="row pt-5 pb-5 text-center banner hackathon-banner">
         <div class="col g-font-muli">
-          <span class="hackathon-name d-block mt-5 text-white font-weight-semibold">{{ hackathon.name }}</span>
+          <span class="hackathon-name d-block mt-5 font-weight-semibold">{{ hackathon.name }}</span>
           {% if hackathon.logo_svg %}
             <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo_svg.url }}"/>
           {% elif hackathon.logo %}
             <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo.url }}"/>
           {% endif %}
-          <span class="d-block font-title-lg text-white">
+          <span class="d-block font-title-lg">
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
           </span>
         </div>
@@ -58,7 +66,7 @@
           <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
             {% include 'dashboard/sidebar_search_hackathon.html' %}
           </div>
-          <div class="col-12 col-lg-9 col-xl-10 body">
+          <div class="col-12 col-lg-9 col-xl-10 body hackathon-explorer">
             <div class="container-fluid p-2" id="bounties">
               <div id="dashboard-title" class="hidden">
                 {% include 'shared/search_bar.html' %}
@@ -69,7 +77,7 @@
           </div>
 
           <div class="col-12 col-lg-9 col-xl-10 body">
-            <div class="container-fluid p-2" id="bounties">
+            <div class="container-fluid py-2" id="bounties">
               <div id="dashboard-title" class="hidden">
                 <div class="my-3 mx-4">
                   <h1 class="font-bigger-1">Issue Explorer - Freelance Code Bounties</h1>

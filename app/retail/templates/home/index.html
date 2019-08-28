@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static cookielaw_tags %}
+{% load i18n static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -30,6 +30,7 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'home/nav.html' %}
     </div>
+
     <div class="banner header overflow-hidden">
       <div class="row">
         <div class="col-12 col-md-8 col-xl-6 pl-lg-5">
@@ -89,8 +90,12 @@
 
     <img class="w-100 mb-5" data-src="{% static "v2/images/home/story.svg" %}" />
 
-    <div id="optimize_oss" class="mt-5 optimize_oss">
-      <div class="container pt-0">
+    <div class="container-fluid pb-5 my-5 landing__newsletter">
+      {% include 'shared/newsletter.html' %}
+    </div>
+
+    <div id="optimize_oss" class="mt-5 pt-4 optimize_oss">
+      <div class="container pt-0 pb-5">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
             <h2>
@@ -144,7 +149,7 @@
     <div class="products" id="products">
       <img class="text-center px-3 bot-circle" data-src="{% static "v2/images/home/bot-circle.svg" %}"
         alt="gitcoin logo" />
-      <div class="container pt-0">
+      <div class="container pt-0 pb-5">
         <div class="row">
           <div class="col-12 col-md-6 col-lg-4 g-fadein" data-fade-duration=1000 data-fade-direction="left">
             <h4 class="font-title mb-4">{% trans "Grow OSS" %}</h4>
@@ -213,7 +218,7 @@
       </div>
     </div>
     <div id="realign" class="realign">
-      <div class="container" >
+      <div class="container py-5" >
         <div class="row mt-5">
           <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
             <h2>{% trans "Realign open source incentives" %}</h2>
@@ -248,7 +253,7 @@
       </div>
     </div>
     <div id="press" class="press">
-      <div class="container">
+      <div class="container py-5">
         <div class="row">
           <h2 class="col-12 mb-4">{% trans "What are people saying?" %}</h2>
           {% for article in press %}
@@ -262,7 +267,7 @@
       </div>
     </div>
     <div id="know_us" class="know_us">
-      <div class="container">
+      <div class="container py-5">
         <div class="row">
           <div class="col-12 text-center mb-2">
             <h2>{% trans "Get to know us better" %}</h2>
@@ -284,7 +289,7 @@
       </div>
     </div>
     <div id="articles" class="articles">
-      <div class="container">
+      <div class="container py-5">
         <div class="row">
           <div class="col-12 text-center mb-4">
             <h2>{% trans "Gitcoin on Medium" %}</h2>

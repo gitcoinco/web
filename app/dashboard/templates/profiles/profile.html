@@ -15,24 +15,23 @@
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
     <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %} />
+    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
     {% endcompress %}
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="position-absolute profile-banner text-center">
-      {% csrf_token %}
-      {% if is_my_profile%}
-      <h4 class="font-title-lg m-auto" id="change_header_lede">
-        <span>
-          Edit Header Photo
-        </span>
-      </h4>
-      {% endif %}
-    </div>
-      <div class="container-fluid header profile-header dash" style="min-height: 450px; {% if profile.profile_wallpaper %} background-image: url( {{ profile.profile_wallpaper }} ) {% endif %}">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'home/nav.html' %}
-      {% if not hidden and is_staff %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'home/nav.html' %}
+    <div class="container-fluid header profile-header dash" style="{% if profile.profile_wallpaper %} background-image: url( {{ profile.profile_wallpaper }} ) {% endif %}">
+        {% csrf_token %}
+        {% if is_my_profile %}
+        <div class="position-absolute profile-banner text-center">
+          <div class="h4 font-title-lg m-auto">
+            Edit Header Photo
+          </div>
+        </div>
+          {% endif %}
+        {% if not hidden and is_staff %}
         <div class="alpha-warning font-caption mb-0">
           <span class="font-weight-bold">Staff only</span>
           <a style="color:white;" href="{{profile.admin_url}}">{% trans "Profile Admin" %}</a>
@@ -41,7 +40,7 @@
     </div>
     <div class="container-fluid bg-light">
 
-        <div class="container profile-card mt-md-n5">
+        <div class="container profile-card mt-md-n5 mh-150">
           <div class="row">
             <div class="col-12 col-lg-6 profile-header__main-infos">
               {% if not hidden %}
@@ -226,7 +225,7 @@
       {% else %}
 
       {% if not profile.is_org and profile.organizations|length %}
-        <div class="container px-md-0">
+        <div class="container px-md-0 mh-150">
           <div class="row">
           <div class="col py-4 px-md-0">
             <div class="pb-2 profile-section-title">
@@ -252,7 +251,7 @@
 
       {% if tabs %}
         <div class="row pt-4 py-2">
-          <div class="container profile-bounties profile-bounties--activities">
+          <div class="container profile-bounties profile-bounties--activities mh-150">
             <div class="row">
               <div class="col-12 px-4 px-lg-0">
                 <span class="font-caption profile-bounties__sort_label">{% trans 'By Created Date' %}</span>
@@ -267,7 +266,7 @@
                   <div id="section-{{ tab.id }}" class="tab-section">
                     <div class="container">
                       <div class="row mb-3 p-2">
-                        <div id="{{ tab.id }}" class="col-12 activities" count="{{ tab.count }}">
+                        <div id="{{ tab.id }}" class="col-12 activities activity_stream" count="{{ tab.count }}">
                           {% if show_activity %}
                             {% if tab.type == 'activity' %}
                               {% include 'profiles/profile_activities.html' with activities=tab.objects %}
