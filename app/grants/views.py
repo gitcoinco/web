@@ -534,18 +534,20 @@ def grant_fund(request, grant_id, grant_slug):
     splitter_contract_address = settings.SPLITTER_CONTRACT_ADDRESS
     
     # handle phantom funding
+    active_tab = 'normal'
     round_number = 3
     can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, grant=grant, round_number=round_number)
     is_phantom_funding_this_grant = request.user.is_authenticated and phantom_funds.exists()
+    if can_phantom_fund:
+        active_tab = 'phantom'
     if can_phantom_fund and request.GET.get('toggle_phantom_fund'):
         if is_phantom_funding_this_grant:
-            msg = "You are now phantom funding this project."
+            msg = "You are now signaling for this grant."
             phantom_funds.delete()
         else:
-            msg = "You are no longer phantom funding this project."
+            msg = "You are no longer signaling for this grant."
             PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
-        is_phantom_funding_this_grant = not is_phantom_funding_this_grant
         messages.info(
             request,
             msg
@@ -572,6 +574,7 @@ def grant_fund(request, grant_id, grant_slug):
         'gitcoin_donation_address': settings.GITCOIN_DONATION_ADDRESS,
         'can_phantom_fund': can_phantom_fund,
         'is_phantom_funding_this_grant': is_phantom_funding_this_grant,
+        'active_tab': active_tab,
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 

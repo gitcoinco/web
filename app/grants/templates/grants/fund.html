@@ -62,28 +62,33 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <a class="nav-link active" href="#" data-target="original_fund">Normal Fund</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" data-target="phantom_fund">Phantom Fund</a>
+              <a class="nav-link" href="#" data-target="phantom_fund">Signal Funding</a>
             </li>
           </ul>  
         </div>    
       {% endif %}
-      <div id="phantom_fund" class="tab_target hidden">
+      <div id="phantom_fund" class="tab_target {% if active_tab == "normal" %} hidden {% endif %} ">
         <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
           <div class="form__group-horizontal">
             <div class="row">
               <p>
                 <i class="fas fa-circle mr-2"></i>
-                {% trans "You may contribute to blah blah blah." %}
-                <span class="summary-frequency font-weight-bold">-</span> times.
+                {% trans "Signal Funding is a lightweight way to signal that you'd like to support this grant during the active CLR Round.  By clicking 'Signal to Grant', you are signaling your support of this grant with the $5 that has been allocated to you from Gitcoin." %}
+              </p>
+              <p>
+                <i class="fas fa-circle mr-2"></i>
+                {% trans "You may support as many grants as you'd like, per round, with this $5 allocation.  The more the better :)" %}
               </p>
 
               <div class="col-12 form__footer text-center">
-                
+                <img src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
+                <br>
+                <br>
                 <a href="?toggle_phantom_fund=1" class="button button--primary button--full">
                 {% if is_phantom_funding_this_grant %}
-                  {% trans "STOP Contributing to Grant" %}
+                  {% trans "STOP Signaling for Grant" %}
                 {% else %}
-                  {% trans "Contribute to Grant" %}
+                  {% trans "Signal for Grant" %}
                 {% endif %}
                 </a>
               </div>
@@ -91,7 +96,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </div>
         </div>
       </div>
-      <div id="original_fund" class="tab_target">
+      <div id="original_fund" class="tab_target {% if active_tab == "phantom" %} hidden {% endif %}">
         <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
           <p class="col-12 font-weight-semibold my-4 text-center">
             {{ grant.admin_profile }} {% trans "is accepting contributions in "%}
