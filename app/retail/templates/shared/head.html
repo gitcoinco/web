@@ -17,11 +17,14 @@
 {% load i18n static is_in_list matches %}
 {% include 'shared/tag_manager_1.html' %}
 <meta charset="utf-8">
-<link rel="preload" href="{% static "v2/css/base.css" %}" as="style">
 {% if theme_type == 'light' %}
-<link rel="preload" href="{% static "v2/css/theme/default.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/theme/default/base.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/theme/default/gitcoin.css" %}" as="style">
 {% elif theme_type == 'dark' %}
+<link rel="preload" href="{% static "v2/css/theme/dark/base.css" %}" as="style">
 <link rel="preload" href="{% static "v2/css/theme/dark.css" %}" as="style">
+{% else %}
+<link rel="preload" href="{% static "v2/css/theme/default.css" %}" as="style">
 {% endif %}
 <link rel="preload" href="{% static "v2/css/bootstrap.min.css" %}" as="style" crossorigin="anonymous">
 <link rel="preload" href="{% static "v2/css/top-nav.css" %}" as="style">
@@ -40,12 +43,15 @@
 <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
 {% if theme_type == 'light' %}
+<link rel="stylesheet" href="{% static "v2/css/theme/default/base.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/theme/default.css" %}">
 {% elif theme_type == 'dark' %}
-<link rel="stylesheet" href="{% static "v2/css/theme/dark.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/theme/dark/base.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/theme/dark/gitcoin.css" %}">
+{% else %}
+<link rel="stylesheet" href="{% static "v2/css/theme/default.css" %}">
 {% endif %}
 <link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
 {% if not slim %}
   <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
   <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
