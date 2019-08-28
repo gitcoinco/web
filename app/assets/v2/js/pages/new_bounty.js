@@ -37,6 +37,7 @@ function doShowQuickstart(url) {
 }
 
 var processedData;
+var usersBySkills;
 
 $('.select2-tag__choice').on('click', function() {
   $('#invite-contributors.js-select2').data('select2').dataAdapter.select(processedData[0].children[$(this).data('id')]);
@@ -44,7 +45,7 @@ $('.select2-tag__choice').on('click', function() {
 
 $('.select2-add_byskill').on('click', function(e) {
   e.preventDefault();
-  $('#invite-contributors.js-select2').val(processedData[1].children.map((item) => { return item.id})).trigger("change")
+  $('#invite-contributors.js-select2').val(usersBySkills.map((item) => { return item.id})).trigger("change")
 });
 
 $('.select2-clear_invites').on('click', function(e) {
@@ -58,13 +59,6 @@ const getSuggestions = () => {
 
   queryParams.keywords = $('#keywords').val();
   queryParams.invite = params.get('invite') || '';
-
-  if (queryParams.keywords.length) {
-    $('#invite-all-container').show()
-    $('.select2-add_byskill span').text(queryParams.keywords)
-  } else {
-    $('#invite-all-container').hide()
-  }
 
   let searchParams = new URLSearchParams(queryParams);
 
@@ -87,6 +81,17 @@ const getSuggestions = () => {
     let options = Object.entries(response).map(([ text, children ]) => (
       { text: groups[text], children }
     ));
+
+    usersBySkills = [].map.call(response['recommended_developers'], function(obj){
+      return obj;
+    });
+
+    if (queryParams.keywords.length && usersBySkills.length) {
+      $('#invite-all-container').show()
+      $('.select2-add_byskill span').text(queryParams.keywords.join(', '))
+    } else {
+      $('#invite-all-container').hide()
+    }
 
     var generalIndex = 0;
 
