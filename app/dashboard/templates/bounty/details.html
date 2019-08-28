@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,11 +10,13 @@
     {% if canonical_url %}
       <link rel="canonical" href="{{ canonical_url }}">
     {% endif %}
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/lib/daterangepicker.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/lib/highlight_github.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
+    {% endcompress %}
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -475,20 +477,14 @@
     {% endif %}
   </script>
 
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  {% compress js %}
   <script src="{% static "v2/js/lib/highlight.js" %}"></script>
   <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
-
   <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
-  <script src="{% static "v2/js/clipboard.js" %}"></script>>
-  <script>
-    $('[data-toggle="popover"]').popover()
-    $("body").on("mouseover", "[data-username] img", function(e) {
-      openContributorPopOver($(this).parent().data("username"), $(this));
-    });
-  </script>
+  <script src="{% static "v2/js/clipboard.js" %}"></script>
   <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
@@ -498,6 +494,13 @@
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  {% endcompress %}
+  <script>
+    $('[data-toggle="popover"]').popover()
+    $("body").on("mouseover", "[data-username] img", function(e) {
+      openContributorPopOver($(this).parent().data("username"), $(this));
+    });
+  </script>
   {% for message in messages %}
     {% if message.tags == 'success'%}
     <script>

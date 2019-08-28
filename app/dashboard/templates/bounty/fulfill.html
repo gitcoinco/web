@@ -21,8 +21,10 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    {% compress css %}
     <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    {% endcompress %}
   </head>
   <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -111,14 +113,16 @@
     $('[data-toggle="popover"]').popover()
     $('[data-toggle="tooltip"]').bootstrapTooltip();
   </script>
+  {% compress js %}
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/rating.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/pages/fulfill_bounty.js" %}"></script>
   <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
+  {% endcompress %}
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
 
 </html>

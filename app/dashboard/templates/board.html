@@ -15,16 +15,17 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static add_url_schema avatar_tags %}
+{% load i18n static add_url_schema avatar_tags compress %}
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    {% compress css %}
     <link rel="stylesheet" href={% static "v2/css/vue-loader.css" %} />
-
     <link rel="stylesheet" href="{% static "v2/css/board.css" %}" />
+    {% endcompress %}
 
   </head>
   <body class="{{ active }} bg-lightblue g-font-muli" >
@@ -453,8 +454,10 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% compress js %}
     <script src="{% static "v2/js/vue-components.js" %}"></script>
     <script src="{% static "v2/js/board.js" %}"></script>
+    {% endcompress %}
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'

@@ -209,22 +209,14 @@
   </body>
 
   <!-- jQuery -->
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
   {% compress js %}
-  
-  
-  {% endcompress %}    
-  
-  <script>
-    $('[data-toggle="popover"]').popover()
-    $('[data-toggle="tooltip"]').bootstrapTooltip();
-  </script>
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/rating.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/pages/bulk_payout.js" %}"></script>
-  <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
@@ -233,4 +225,10 @@
   <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
   <script src="{% static "v2/js/truncate-hash.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
+  {% endcompress %}    
+  
+  <script>
+    $('[data-toggle="popover"]').popover()
+    $('[data-toggle="tooltip"]').bootstrapTooltip();
+  </script>
 </html>
