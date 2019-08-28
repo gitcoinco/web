@@ -134,9 +134,10 @@ getSuggestions();
 $('#keywords').on('change', getSuggestions);
 
 function formatUser(user) {
-  if (!user.text || user.children) {
+  if (user.children) {
     return user.text;
   }
+
   let markup = `<div class="d-flex align-items-baseline">
                   <div class="mr-2">
                     <img class="rounded-circle" src="${'/dynamic/avatar/' + user.text }" width="20" height="20"/>
