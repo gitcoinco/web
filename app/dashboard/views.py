@@ -2903,7 +2903,7 @@ def board(request):
         'card_desc': _('Manage all your activity.'),
         'avatar_url': static('v2/images/helmet.png'),
     }
-    return TemplateResponse(request, 'board.html', context)
+    return TemplateResponse(request, 'board/index.html', context)
 
 
 def funder_dashboard_bounty_info(request, bounty_id):
@@ -2921,7 +2921,22 @@ def funder_dashboard_bounty_info(request, bounty_id):
         interests = Interest.objects.prefetch_related('profile').filter(status='okay', bounty=bounty).all()
         profiles = [
             {'interest': {'id': i.id,
-                          'issue_message': i.issue_message},
+                          'issue_message': i.issue_message,
+                          'pending': i.pending},
+             'handle': i.profile.handle,
+             'avatar_url': i.profile.avatar_url,
+             'star_rating': i.profile.get_average_star_rating['overall'],
+             'total_rating': i.profile.get_average_star_rating['total_rating'],
+             'fulfilled_bounties': len(
+                [b for b in i.profile.get_fulfilled_bounties()]),
+             'leaderboard_rank': i.profile.get_contributor_leaderboard_index(),
+             'id': i.profile.id} for i in interests]
+    elif bounty.status == 'started':
+        interests = Interest.objects.prefetch_related('profile').filter(status='okay', bounty=bounty).all()
+        profiles = [
+            {'interest': {'id': i.id,
+                          'issue_message': i.issue_message,
+                          'pending': i.pending},
              'handle': i.profile.handle,
              'avatar_url': i.profile.avatar_url,
              'star_rating': i.profile.get_average_star_rating['overall'],
@@ -2964,6 +2979,7 @@ def serialize_funder_dashboard_open_rows(bounties, interests):
              'avatar_url': b.avatar_url,
              'project_type': b.project_type,
              'expires_date': b.expires_date,
+             'keywords': b.keywords,
              'interested_comment': b.interested_comment,
              'bounty_owner_github_username': b.bounty_owner_github_username,
              'submissions_comment': b.submissions_comment} for b in bounties]
@@ -2985,6 +3001,15 @@ def serialize_funder_dashboard_submitted_rows(bounties):
              'interested_comment': b.interested_comment,
              'bounty_owner_github_username': b.bounty_owner_github_username,
              'submissions_comment': b.submissions_comment} for b in bounties]
+
+
+def clean_dupe(data):
+    result = []
+
+    for d in data:
+        if d not in result:
+            result.append(d)
+    return result
 
 
 def funder_dashboard(request, bounty_type):
@@ -3009,11 +3034,23 @@ def funder_dashboard(request, bounty_type):
             current_bounty=True,
             network=network,
             bounty_owner_github_username=profile.handle,
-            ).order_by('-interested__created'))
+            ).order_by('-interested__created', '-web3_created'))
         interests = list(Interest.objects.filter(
             bounty__pk__in=[b.pk for b in bounties],
             status='okay'))
-        return JsonResponse(serialize_funder_dashboard_open_rows(bounties, interests), safe=False)
+        return JsonResponse(clean_dupe(serialize_funder_dashboard_open_rows(bounties, interests)), safe=False)
+
+    elif bounty_type == 'started':
+        bounties = list(Bounty.objects.filter(
+            Q(idx_status='started') | Q(override_status='started'),
+            current_bounty=True,
+            network=network,
+            bounty_owner_github_username=profile.handle,
+            ).order_by('-interested__created', '-web3_created'))
+        interests = list(Interest.objects.filter(
+            bounty__pk__in=[b.pk for b in bounties],
+            status='okay'))
+        return JsonResponse(clean_dupe(serialize_funder_dashboard_open_rows(bounties, interests)), safe=False)
 
     elif bounty_type == 'submitted':
         bounties = Bounty.objects.prefetch_related('fulfillments').distinct('id').filter(
