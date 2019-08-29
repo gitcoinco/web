@@ -24,10 +24,15 @@ $(document).ready(function() {
 
   let fetchInProgress = false;
 
+  // update activity views when scroll happens
   function updateView(ignoreScrollOffset) {
     window.setTimeout(updateView, 300);
 
     if (fetchInProgress) {
+      return;
+    }
+    var is_on_activity_tab = $("#tab_controller .nav-link.active").data('href') == "tab2";
+    if (!is_on_activity_tab){
       return;
     }
 
