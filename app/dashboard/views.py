@@ -2903,7 +2903,7 @@ def board(request):
         'card_desc': _('Manage all your activity.'),
         'avatar_url': static('v2/images/helmet.png'),
     }
-    return TemplateResponse(request, 'board.html', context)
+    return TemplateResponse(request, 'board/index.html', context)
 
 
 def funder_dashboard_bounty_info(request, bounty_id):
@@ -3038,7 +3038,6 @@ def funder_dashboard(request, bounty_type):
         interests = list(Interest.objects.filter(
             bounty__pk__in=[b.pk for b in bounties],
             status='okay'))
-        # return JsonResponse(serialize_funder_dashboard_open_rows(bounties, interests), safe=False)
         return JsonResponse(clean_dupe(serialize_funder_dashboard_open_rows(bounties, interests)), safe=False)
 
     elif bounty_type == 'started':
@@ -3051,7 +3050,6 @@ def funder_dashboard(request, bounty_type):
         interests = list(Interest.objects.filter(
             bounty__pk__in=[b.pk for b in bounties],
             status='okay'))
-        # return JsonResponse(serialize_funder_dashboard_open_rows(bounties, interests), safe=False)
         return JsonResponse(clean_dupe(serialize_funder_dashboard_open_rows(bounties, interests)), safe=False)
 
     elif bounty_type == 'submitted':
