@@ -751,7 +751,7 @@ def users_directory(request):
         'title': 'Users',
         'meta_title': "",
         'meta_description': "",
-        'keywords': keywords,
+        'keywords': keywords
     }
     return TemplateResponse(request, 'dashboard/users.html', params)
 
@@ -2278,16 +2278,16 @@ def terms(request):
     return TemplateResponse(request, 'legal/terms.html', context)
 
 def privacy(request):
-	return TemplateResponse(request, 'legal/privacy.html')
+	return TemplateResponse(request, 'legal/privacy.html', {})
 
 def cookie(request):
-	return TemplateResponse(request, 'legal/privacy.html')
+	return TemplateResponse(request, 'legal/privacy.html', {})
 
 def prirp(request):
-	return TemplateResponse(request, 'legal/privacy.html')
+	return TemplateResponse(request, 'legal/privacy.html', {})
 
 def apitos(request):
-	return TemplateResponse(request, 'legal/privacy.html')
+	return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def toolbox(request):
@@ -2358,7 +2358,7 @@ def toolbox(request):
         'actors': actors,
         'newsletter_headline': _("Don't Miss New Tools!"),
         'profile_up_votes_tool_ids': profile_up_votes_tool_ids,
-        'profile_down_votes_tool_ids': profile_down_votes_tool_ids,
+        'profile_down_votes_tool_ids': profile_down_votes_tool_ids
     }
     return TemplateResponse(request, 'toolbox.html', context)
 
@@ -2388,7 +2388,7 @@ def labs(request):
         'avatar_url': 'https://c.gitcoin.co/labs/Articles-Announcing_Gitcoin_Labs.png',
         'tools': tools,
         'labs': labs,
-        'socials': socials,
+        'socials': socials
     }
     return TemplateResponse(request, 'labs.html', context)
 
@@ -2509,7 +2509,7 @@ def redeem_coin(request, shortcode):
         params = {
             'class': 'redeem',
             'title': _('Coin Redemption'),
-            'coin_status': _('PENDING'),
+            'coin_status': _('PENDING')
         }
 
         try:
@@ -2542,7 +2542,7 @@ def new_bounty(request):
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
         'amount': request.GET.get('amount'),
         'events': events,
-        'suggested_developers': suggested_developers,
+        'suggested_developers': suggested_developers
     }
 
     params = get_context(
@@ -2706,7 +2706,7 @@ def change_bounty(request, bounty_id):
     params = {
         'title': _('Change Bounty Details'),
         'pk': bounty.pk,
-        'result': json.dumps(result),
+        'result': json.dumps(result)
     }
     return TemplateResponse(request, 'bounty/change.html', params)
 

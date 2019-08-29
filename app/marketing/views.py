@@ -188,7 +188,7 @@ def matching_settings(request):
 
     """
     # setup
-    profile, es, __, is_logged_in = settings_helper_get_auth(request)
+    __, es, __, is_logged_in = settings_helper_get_auth(request)
     if not es:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
@@ -222,7 +222,7 @@ def matching_settings(request):
 
 def feedback_settings(request):
     # setup
-    profile, es, __, __ = settings_helper_get_auth(request)
+    __, es, __, __ = settings_helper_get_auth(request)
     if not es:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect

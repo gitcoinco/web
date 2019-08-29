@@ -974,7 +974,6 @@ def results(request, keyword=None):
     import json
     context['kudos_tokens'] = [json.loads(obj) for obj in context['kudos_tokens']]
     context['avatar_url'] = static('v2/images/results_preview.gif')
-    context['theme_type'] = request.user.profile.custom_theme if request.user.is_authenticated else 'light'
     return TemplateResponse(request, 'results.html', context)
 
 
@@ -1635,7 +1634,7 @@ def increase_funding_limit_request(request):
         'form': form,
         'title': _('Request a Funding Limit Increase'),
         'card_title': _('Gitcoin - Request a Funding Limit Increase'),
-        'card_desc': _('Do you hit the Funding Limit? Request a increasement!'),
+        'card_desc': _('Do you hit the Funding Limit? Request a increasement!')
     }
 
     return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)
