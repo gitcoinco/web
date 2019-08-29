@@ -1,0 +1,31 @@
+.tab1{
+  display: none;
+}
+
+#tab_controller {
+  min-height: 50px;
+  padding-left: 0px;
+  margin-top: 30px;
+}
+#tab_controller .nav{
+  border-bottom: 1px solid black;
+}
+
+#tab_controller li{
+  margin-left: 10px;
+  margin-right: 10px;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-left: 1px solid black;
+  background-color: white;
+  color: black;
+}
+
+#tab_controller li a{
+  color: black;
+}
+
+#tab_controller li a.active{
+  color: black;
+  font-weight: bold;
+}
