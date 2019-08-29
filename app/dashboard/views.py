@@ -72,7 +72,7 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer,
+    FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer, ProfileView,
     RefundFeeRequest, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
@@ -2116,6 +2116,14 @@ def profile(request, handle):
         if 'tabs' not in context:
             context['tabs'] = []
         context['tabs'].append(obj)
+
+    # record profile view
+    if request.user.is_authenticated and not context['is_my_profile']:
+        # TODO move the DB write into a celery job
+        ProfileView.objects.create(
+            target=profile,
+            viewer=request.user.profile,
+            )
 
     if request.method == 'POST' and request.is_ajax():
         # Update profile address data when new preferred address is sent
