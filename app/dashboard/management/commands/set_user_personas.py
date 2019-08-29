@@ -14,3 +14,4 @@ class Command(BaseCommand):
         profiles = Profile.objects.filter(pk__in=actions.values_list('profile', flat=True))
         for profile in profiles:
             profile.calculate_and_save_persona()
+            profile.save()

@@ -44,7 +44,6 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
-from dashboard.sql.persona import PERSONA_SQL
 from dashboard.tokens import addr_to_token
 from economy.models import ConversionRate, SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -2241,26 +2240,46 @@ class Profile(SuperModel):
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
 
-    def calculate_and_save_persona(self):
-        network = settings.ENABLE_NOTIFICATIONS_ON_NETWORK
-        designation = None
-        with connection.cursor() as cursor:
-            try:
-                cursor.execute(PERSONA_SQL, [network, self.id, network])
-                result = cursor.fetchone()
-                _, _, designation, _, _ = result
-            except Exception as e:
-                logger.info(
-                    'Exception calculating persona for user %s: %s' % (self.id,
-                                                                       e))
+    def get_persona_action_count(self):
+        hunter_count = 0
+        funder_count = 0
 
-        if designation and designation == "bounty_hunter":
-            self.persona_is_hunter = True
+        hunter_count += self.interested.exists()
+        hunter_count += self.received_tips.exists()
+        hunter_count += self.grant_admin.exists()
+        hunter_count += self.fulfilled.exists()
 
-        if designation and designation == "funder":
-            self.persona_is_funder = True
+        funder_count += self.bounties_funded.exists()
+        funder_count += self.sent_tips.exists()
+        funder_count += self.grant_contributor.exists()
 
-        self.save()
+        return hunter_count, funder_count
+
+    def calculate_and_save_persona(self, respect_defaults=True, decide_only_one=False):
+        if respect_defaults and decide_only_one:
+            raise Exception('cannot use respect_defaults and decide_only_one')
+
+        # respect to defaults
+        is_hunter = False
+        is_funder = False
+        if respect_defaults:
+            is_hunter = self.persona_is_hunter
+            is_funder = self.persona_is_funder
+
+        # calculate persona
+        hunter_count, funder_count = self.get_persona_action_count()
+
+        # update db
+        if not decide_only_one:
+            if hunter_count > 0:
+                self.persona_is_hunter = True
+            if funder_count > 0:
+                self.persona_is_funder = True
+        else:
+            if hunter_count > funder_count:
+                self.persona_is_hunter = True
+            elif funder_count > hunter_count:
+                self.persona_is_funder = True
 
     def has_custom_avatar(self):
         from avatar.models import CustomAvatar
@@ -3059,6 +3078,7 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace(' ', '')
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
+    instance.calculate_and_save_persona()
     instance.actions_count = instance.get_num_actions
 
 
