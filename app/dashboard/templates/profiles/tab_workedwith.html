@@ -1,0 +1,24 @@
+{% load i18n static %}
+
+    {% if not hidden %}
+     {% if is_editable %}
+        <div class="tab3">
+          {% include "shared/rate_bounties.html" %}
+        </div>
+      {% endif %}
+
+      <div class="tab3">
+        Reviews Received
+        {% for feedback in feedbacks_got %}
+          {% include "shared/feedback.html" %}
+        {% endfor %}
+      </div>
+
+      <div class="tab3">
+        Reviews Sent
+        {% for feedback in feedbacks_sent %}
+          {% include "shared/feedback.html" %}
+        {% endfor %}
+      </div>
+
+    {% endif %}
