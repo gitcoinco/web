@@ -1,3 +1,7 @@
+body {
+	background: #000;
+	color: #ffffff !important;
+}
 .mh-150{
   min-height: 150px;
 }
@@ -7,7 +11,7 @@
 }
 
 .profile-card {
-  background: white;
+  background: none;
   border-radius: 5px;
   z-index: 1;
   position: relative;
@@ -193,6 +197,7 @@ a:hover .avatar_edit .avatar_edit_text {
 
 .profile-header__stats {
   border: none;
+  background: #000 !important;
 }
 
 .profile-header__stats .card-header {
