@@ -2244,14 +2244,14 @@ class Profile(SuperModel):
         hunter_count = 0
         funder_count = 0
 
-        hunter_count += self.interested.exists()
-        hunter_count += self.received_tips.exists()
-        hunter_count += self.grant_admin.exists()
-        hunter_count += self.fulfilled.exists()
+        hunter_count += self.interested.count()
+        hunter_count += self.received_tips.count()
+        hunter_count += self.grant_admin.count()
+        hunter_count += self.fulfilled.count()
 
-        funder_count += self.bounties_funded.exists()
-        funder_count += self.sent_tips.exists()
-        funder_count += self.grant_contributor.exists()
+        funder_count += self.bounties_funded.count()
+        funder_count += self.sent_tips.count()
+        funder_count += self.grant_contributor.count()
 
         return hunter_count, funder_count
 
@@ -2278,8 +2278,10 @@ class Profile(SuperModel):
         else:
             if hunter_count > funder_count:
                 self.persona_is_hunter = True
+                self.persona_is_funder = False
             elif funder_count > hunter_count:
                 self.persona_is_funder = True
+                self.persona_is_hunter = False
 
     def has_custom_avatar(self):
         from avatar.models import CustomAvatar
@@ -3078,7 +3080,6 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace(' ', '')
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
-    instance.calculate_and_save_persona()
     instance.actions_count = instance.get_num_actions
 
 
