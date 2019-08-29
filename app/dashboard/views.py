@@ -2025,7 +2025,7 @@ def profile(request, handle):
         context['avg_rating'] = profile.get_average_star_rating
         context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
         context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
-        context['is_editable'] = context['is_my_org'] or context['is_my_profile']
+        context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
         context['ratings'] = range(0,5)
         tabs = []
 
@@ -2082,6 +2082,8 @@ def profile(request, handle):
     context['verification'] = profile.get_my_verified_check
     context['avg_rating'] = profile.get_average_star_rating
     context['suppress_sumo'] = True
+    context['feedbacks_sent'] = profile.feedbacks_sent.all()
+    context['feedbacks_got'] = profile.feedbacks_got.all()
     context['unrated_funded_bounties'] = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
         .filter(
             bounty_owner_github_username__iexact=profile.handle,

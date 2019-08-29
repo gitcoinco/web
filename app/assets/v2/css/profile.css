@@ -1,3 +1,7 @@
+.tab1, .tab3{
+  display: none;
+}
+
 .mh-150{
   min-height: 150px;
 }
