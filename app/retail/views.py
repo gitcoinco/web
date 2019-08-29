@@ -994,6 +994,27 @@ def activity(request):
 
     return TemplateResponse(request, 'activity.html', context)
 
+@ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
+def create_status_update(request):
+    response = {}
+    if request.POST:
+        profile = request.user.profile
+        kwargs = {
+            'activity_type': 'status_update',
+            'metadata': {
+                'title': request.POST.get('data')
+            }
+        }
+        kwargs['profile'] = profile
+        try:
+            Activity.objects.create(**kwargs)
+            response['status'] = 200
+            response['message'] = 'Status updated!'
+        except Exception as e:
+            response['status'] = 400
+            response['message'] = 'Bad Request'
+            logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
+    return JsonResponse(response)
 
 def help(request):
     faq = {

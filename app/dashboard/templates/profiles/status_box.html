@@ -1,0 +1,12 @@
+<div class="container-fluid mt-4" id="status">
+  {% csrf_token %}
+  <textarea
+    id="textarea"
+    class="form__input"
+    placeholder="What are you thinking?"
+    style="resize: none"
+  ></textarea>
+  <div class="text-right">
+    <button class="btn btn-gc-blue" id="btn_post" disabled="true">Post!</button>
+  </div>
+</div>

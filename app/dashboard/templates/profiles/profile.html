@@ -210,7 +210,7 @@
           </div>
         </div>
       {% endif%}
-
+      
       {% if not hidden and not profile.is_org %}
         <div id="tabs">
         <div id="tab_controller" class="container">
@@ -242,7 +242,6 @@
         </div>
       {% endif %}
     </div>
-
     <div class="container">
       {% if hidden %}
         {% include 'profiles/hidden.html' %}
@@ -271,7 +270,15 @@
             </div>
           </div>
         </div>
-      {% endif %}
+	  {% endif %}
+	  
+	  {% if is_my_profile %}
+      <div class="container px-md-0">
+        <div class="row">
+          {% include 'profiles/status_box.html' %}
+        </div>
+	  </div>
+	  {% endif %}
 
       {% if tabs %}
         <div class="row pt-4 py-2 tab2">
@@ -345,6 +352,7 @@
     <script src="{% static "v2/js/pages/profile.js" %}"></script>
     <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
     <script src="{% static "v2/js/rating.js" %}"></script>
+    <script src="{% static "v2/js/status.js" %}"></script>
     <script type="text/javascript">
       {% if preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;
