@@ -694,10 +694,14 @@ def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
 
-def onboard(request, flow):
+def onboard(request, flow=None):
     """Handle displaying the first time user experience flow."""
     if flow not in ['funder', 'contributor', 'profile']:
-        raise Http404
+        if not request.user.is_authenticated:
+            raise Http404
+        target = 'funder' if request.user.profile.persona_is_funder else 'contributor'
+        new_url = f'/onboard/{target}'
+        return redirect(new_url)
     elif flow == 'funder':
         onboard_steps = ['github', 'metamask', 'avatar']
     elif flow == 'contributor':
