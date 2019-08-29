@@ -8,9 +8,9 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
 	<link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
-	{% if theme_type == 'light' %}
+	{% if is_my_profile and theme_type == 'light' %}
     <link rel="stylesheet" href={% static "v2/css/theme/default/profile.css" %} />
-	{% elif theme_type == 'dark' %}
+	{% elif is_my_profile and theme_type == 'dark' %}
     <link rel="stylesheet" href={% static "v2/css/theme/dark/profile.css" %} />
 	{% else %}
     <link rel="stylesheet" href={% static "v2/css/theme/default/profile.css" %} />
@@ -42,7 +42,7 @@
         </div>
       {% endif %}
     </div>
-    <div class="container-fluid {% if profile.custom_theme == 'light' %} bg-light {% elif profile.custom_theme == 'dark' %} bg-black {% else %} bg-light {% endif %}">
+    <div class="container-fluid {% if is_my_profile and profile.custom_theme == 'light' %} bg-light {% elif is_my_profile and profile.custom_theme == 'dark' %} bg-black {% else %} bg-light {% endif %}">
 
         <div class="container profile-card mt-md-n5 mh-150">
           <div class="row">
