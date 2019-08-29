@@ -250,7 +250,7 @@ var redirectURL = function() {
 
   if (flow === 'contributor') {
     save_job_status();
-    url = '/explorer?q=' + words.join(',');
+    url = '/explorer?keywords=' + words.join(',');
   } else if (flow === 'funder') {
     url = '/funding/new';
   } else if (flow === 'profile') {

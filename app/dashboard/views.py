@@ -308,7 +308,9 @@ def new_interest(request, bounty_id):
     msg = _("You have started work.")
     approval_required = bounty.permission_type == 'approval'
     if approval_required:
-        msg = _("You have applied to start work.  If approved, you will be notified via email.")
+        msg = _("You have applied to start work. If approved, you will be notified via email.")
+    elif not approval_required and not bounty.bounty_reserved_for_user:
+        msg = _("You have started work.")
     elif not approval_required and bounty.bounty_reserved_for_user != profile:
         msg = _("You have applied to start work, but the bounty is reserved for another user.")
         JsonResponse({
@@ -1675,6 +1677,11 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                     params['card_title'] = f'{bounty.title} | {bounty.org_name} Funded Issue Detail | Gitcoin'
                     params['title'] = params['card_title']
                     params['card_desc'] = ellipses(bounty.issue_description_text, 255)
+                    params['noscript'] = {
+                        'title': bounty.title,
+                        'org_name': bounty.org_name,
+                        'issue_description_text': bounty.issue_description_text,
+                        'keywords': ', '.join(bounty.keywords.split(','))}
 
                 if bounty.event and bounty.event.slug:
                     params['event'] = bounty.event.slug
@@ -2004,7 +2011,7 @@ def profile(request, handle):
                 return HttpResponse(status=204)
 
             context = {}
-            context['activities'] = paginator.get_page(page)
+            context['activities'] = [ele.view_props for ele in paginator.get_page(page)]
 
             return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 

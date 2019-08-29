@@ -43,7 +43,7 @@
           <p>{% url 'explorer' as explorerurl %}{% blocktrans %}Check out the <a href="{{ explorerurl }}">Issue Explorer</a>{% endblocktrans %}</p>
           <br>
           <h6>{% trans "Be the OSS Funding you wish to see in the world." %}</h6>
-          <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %} Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
+          <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %}Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
         </div>
 
         <div class="col-12" id="moderator-admin-actions"></div>
@@ -450,6 +450,13 @@
         </div>
       </div>
     </div>
+
+    <noscript>
+        <h2>{{ noscript.title }}</h2>
+        <h3>{{ noscript.org_name }}</h3>
+        <h3>{{ noscript.keywords }}</h3>
+        <p>{{ noscript.issue_description_text }}</p>
+    </noscript>
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}

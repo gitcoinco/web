@@ -14,6 +14,7 @@
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
     <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %} />
+    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -263,7 +264,7 @@
                   <div id="section-{{ tab.id }}" class="tab-section">
                     <div class="container">
                       <div class="row mb-3 p-2">
-                        <div id="{{ tab.id }}" class="col-12 activities" count="{{ tab.count }}">
+                        <div id="{{ tab.id }}" class="col-12 activities activity_stream" count="{{ tab.count }}">
                           {% if show_activity %}
                             {% if tab.type == 'activity' %}
                               {% include 'profiles/profile_activities.html' with activities=tab.objects %}

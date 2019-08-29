@@ -874,7 +874,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Grants, Ethereal Blocks, and Grown Ethereum"
+    subject = "Funding for Open Source. More Hackathons."
     new_kudos_pks = [1926, 1819, 1895]
     new_kudos_size_px = 150
 
@@ -890,22 +890,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Grow Ethereum, after two and a half weeks of intense hacking, is now wrapping up. We've seen some incredible projects -- from a 💩 game using Portis' Gas Relay to projects on Arweave's permawe -- and are excited to see our sponsors decide the winners. Make sure you post your submitted project in the Discord channel #project-for-kudos; after you're submitted, we'll send you a unique Grow Ethereum kudo you can proudly display on your profile! Thanks to everyone who participated. We're excited to share the winners with you all next week. 
+After months of planning, we're happy to announce that the next round of Gitcoin Grants CLR Matching is right around the corner. With over $150k of funds committed, we will be kicking off the matching process in September! Interested in Gitcoin Grants? Check it out <a href="https://gitcoin.co/grants/">here.</a>
 </p>
 <p>
-"Are we done with hackathons?" you may ask. Absolutely not. Coming up after ETHBerlin is our next virtual hackathon, Ethereal Blocks. This hackathon has $50k of prizes from Portis, Ethereum, Matic, Status, and more. Place your lego blocks towards a more open, transparent internet: and if you win, you'll get the chance to present at the Ethereal Summit on 9/15. We'll be dropping more details in the coming weeks. Follow us on <a href="https://twitter.com/gitcoin">Twitter</a> and bookmark the <a href="https://hackathons.gitcoin.co/ethereal-blocks/">hackathon homepage.</a>  
+And yes, we have another hackathon we're proud to announce: Ethereal Blocks. Join us alongside Ethereal Summit in this incredible display of Web3 and more. Over $50k of prizes are up for grabs. The details live <a href="https://hackathons.gitcoin.co/ethereal-blocks/">here.</a>
 </p>
 <p>
-We're grearing up for the next round of Gitcoin Grants CLR matching. If you're a project in need of funding, or are a supporter of open source, be sure to peruse the Gitcoin Grants homepage <a href="https://gitcoin.co/grants/">- located here -</a> to find projects that interest you or post your own. Expect more information as we get further along in Q3 of 2019!
+Have any questions about our platform? Have any feedback that we should take into consideration? Please reach out. We'd love to hear it. Send us an email at <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a> or reach out to us on Twitter.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is back this week! Join us alongside UNICEF<a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
+        The Gitcoin Livestream is back this week! Join us and some of the winners of Grow Ethereum <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
         </li>
         <li>
-        <a href="https://www.youtube.com/gitcoinmedia">Rewatch some of the sponsor videos from Grow Ethereum or catch up on some of our other video content on the Gitcoin Media YouTube channel!</a>
+        The Gitcoin team is on the road this month, with planned visits to ETHBerlin and Web3. Follow our travel on our valiant leader's Twitter, <a href="https://twitter.com/owocki/">@owocki.</a>
         </li>
     </ul>
 </p>
@@ -914,45 +914,45 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'pacamara',
+        'who': 'Allenskywalker92',
         'who_link': True,
-        'what': 'Onboarding Designs, implemented.',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8136/3128',
+        'what': 'Bugfixes and maps are in!',
+        'link': 'https://gitcoin.co/issue/ark-mod/ArkBot/96/3316',
         'link_copy': 'View more',
     }, {
-        'who': 'b-m-f',
+        'who': 'bitsikka',
         'who_link': True,
-        'what': 'NVM support, with "solc use"!',
-        'link': 'https://gitcoin.co/issue/crytic/solc-select/16/3301',
+        'what': 'My profile edit and share screens, done!',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/8069/3205',
         'link_copy': 'View more',
     }, {
-        'who': 'PSalant726',
+        'who': 'srisankethu',
         'who_link': True,
-        'what': 'More tests have been written.',
-        'link': 'https://gitcoin.co/issue/tendermint/tendermint/2740/3139', 
+        'what': 'Full stack Dapp on Azure, deployed.',
+        'link': 'https://gitcoin.co/issue/kauri-io/Content/53/3187', 
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Solana',
-        'title': 'Solana is the most performant blockchain in the world with speeds over 50,000 TPS (while being decentralized and secure).',
-        'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/TourDeSOL',
-        'cta': 'Sign Up for Tour de SOL',
+        'name': 'Blockmason',
+        'title': 'Build and deploy your whole laundry list of microservices in a single afternoon.',
+        'image_url': 'https://blockmason.link/wp-content/uploads/2018/11/logo.svg',
+        'link': 'http://bit.ly/2L5IA2n',
+        'cta': 'Get Started Now',
         'body': [
-            'We just announced Tour de SOL, or our incentivized testnet event. Are you a validator? Earn token and race against the best in the world. Deadline is July 21st.'
+            'Link creates web-based APIs from your code, so you can deploy microservices instantly.'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/gitcoinco/creative/issues/51',
-        'primer': 'Gitcoin Bot Stickers',
+        'url': 'https://github.com/DigixGlobal/dao-server/issues/69',
+        'primer': 'Email Notifications on Comments',
     }, {
-        'url': 'https://github.com/spacemeshos/poet2/issues/3',
-        'primer': 'Rust MVP Coding Contest',
+        'url': 'https://github.com/protofire/solhint/issues/140',
+        'primer': 'Document the structure of the project',
     }, {
-        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/20',
-        'primer': 'Stratum Implementation for Pantheon',
+        'url': 'https://github.com/ethresearch/eth-wiki/issues/9',
+        'primer': 'Correcting Merkle Patricia Trie Example',
 }, ]
     
     

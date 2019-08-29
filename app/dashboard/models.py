@@ -1727,8 +1727,8 @@ class Activity(SuperModel):
         ('killed_bounty', 'Canceled Bounty'),
         ('new_tip', 'New Tip'),
         ('receive_tip', 'Tip Received'),
-        ('bounty_abandonment_escalation_to_mods', 'Escalated for Abandonment of Bounty'),
-        ('bounty_abandonment_warning', 'Warning for Abandonment of Bounty'),
+        ('bounty_abandonment_escalation_to_mods', 'Escalated checkin from @gitcoinbot about bounty status'),
+        ('bounty_abandonment_warning', 'Checkin from @gitcoinbot about bounty status'),
         ('bounty_removed_slashed_by_staff', 'Dinged and Removed from Bounty by Staff'),
         ('bounty_removed_by_staff', 'Removed from Bounty by Staff'),
         ('bounty_removed_by_funder', 'Removed from Bounty by Funder'),
@@ -1848,6 +1848,7 @@ class Activity(SuperModel):
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
         print(activity['kudos'])
+        activity['secondary_avatar_url'] = self.secondary_avatar_url
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
@@ -1877,6 +1878,22 @@ class Activity(SuperModel):
         # finally done!
 
         return activity
+
+    @property
+    def secondary_avatar_url(self):
+        if self.metadata.get('to_username'):
+            return f"/dynamic/avatar/{self.metadata['to_username']}"
+        if self.metadata.get('worker_handle'):
+            return f"/dynamic/avatar/{self.metadata['worker_handle']}"
+        if self.metadata.get('url'):
+            return self.metadata['url']
+        if self.bounty:
+            return self.bounty.avatar_url
+        if self.metadata.get('grant_logo'):
+            return self.metadata['grant_logo']
+        if self.grant:
+            return self.grant.logo.url if self.grant.logo else None
+        return None
 
     @property
     def token_name(self):

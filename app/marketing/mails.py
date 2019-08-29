@@ -531,7 +531,7 @@ def share_bounty(emails, msg, profile, invite_url=None, kudos_invite=False):
     for email in emails:
         to_email = email
         from_email = settings.CONTACT_EMAIL
-        subject = "You have been invited to work on a bounty."
+        subject = f"@{profile.handle} invited you to to work on a bounty."
         html, text = render_share_bounty(to_email, msg, profile, invite_url, kudos_invite)
         send_mail(
             from_email,
@@ -621,7 +621,7 @@ def weekly_roundup(to_emails=None):
             setup_lang(to_email)
             html, text, subject = render_new_bounty_roundup(to_email)
             from_email = settings.PERSONAL_CONTACT_EMAIL
-            
+
             if not html:
                 print("no content")
                 return
@@ -671,7 +671,7 @@ def weekly_recap(to_emails=None):
 def unread_notification_email_weekly_roundup(to_emails=None):
     if to_emails is None:
         to_emails = []
-    
+
     cur_language = translation.get_language()
     for to_email in to_emails:
         try:
@@ -681,12 +681,12 @@ def unread_notification_email_weekly_roundup(to_emails=None):
 
             if not should_suppress_notification_email(to_email, 'weeklyrecap'):
                 send_mail(
-                    from_email, 
-                    to_email, 
-                    subject, 
-                    text, 
-                    html, 
-                    from_name="Kevin Owocki (Gitcoin.co)", 
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    from_name="Kevin Owocki (Gitcoin.co)",
                     categories=['marketing', func_name()],
                 )
             else:
