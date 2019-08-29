@@ -1,7 +1,6 @@
-.tab1, .tab3{
+.tab1, .tab3, .tab4{
   display: none;
 }
-
 .mh-150{
   min-height: 150px;
 }
