@@ -338,16 +338,15 @@ def post_comment(request):
     bounty_id = request.POST.get('bounty_id')
     # bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
     bountyObj = Bounty.objects.get(pk=bounty_id)
-    # fbAmount = FeedbackEntry.objects.filter(
-    #     sender_profile=profile_id,
-    #     feedbackType=request.POST.get('review[reviewType]', 'approver'),
-    #     bounty=bountyObj
-    # ).count()
-    # if fbAmount > 0:
-    #     return JsonResponse({
-    #         'success': False,
-    #         'msg': 'There is already a approval comment',
-    #     })
+    fbAmount = FeedbackEntry.objects.filter(
+        sender_profile=profile_id,
+        bounty=bountyObj
+    ).count()
+    if fbAmount > 0:
+        return JsonResponse({
+            'success': False,
+            'msg': 'There is already a approval comment',
+        })
     # if request.POST.get('review[reviewType]') == 'worker':
     #     receiver_profile = bountyObj.bounty_owner_github_username
     # else:
@@ -938,9 +937,6 @@ def get_user_bounties(request):
         bounty_json['url'] = bounty.url
 
         results.append(bounty_json)
-    # else:
-        # raise Http404
-    print(open_bounties)
     params['data'] = json.loads(json.dumps(results, default=str))
     params['is_funder'] = is_funder
     return JsonResponse(params, status=200, safe=False)
@@ -2083,7 +2079,7 @@ def profile(request, handle):
         ).exclude(
             feedbacks__feedbackType='approver',
             feedbacks__sender_profile=profile,
-        ).distinct('pk')
+        ).distinct('pk').nocache()
 
     context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
             .filter(interested__status='okay') \
@@ -2091,7 +2087,7 @@ def profile(request, handle):
             .exclude(
                 feedbacks__feedbackType='worker',
                 feedbacks__sender_profile=profile
-            ).distinct('pk')
+            ).distinct('pk').nocache()
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
