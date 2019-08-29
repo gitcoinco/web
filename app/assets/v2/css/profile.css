@@ -444,3 +444,8 @@ nav.navbar.navbar-dark{
   color: black;
 }
 
+#cal-heatmap{
+  width: 100%;
+  overflow-x: scroll;
+}
+

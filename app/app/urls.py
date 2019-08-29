@@ -94,6 +94,7 @@ urlpatterns = [
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
+    url(r'^api/v0.1/profile/(.*)?/activity.json', dashboard.views.profile_activity, name='profile_activity'),
     url(r'^api/v0.1/profile/banner', dashboard.views.change_user_profile_banner, name='change_user_profile_banner'),
     url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
     url(

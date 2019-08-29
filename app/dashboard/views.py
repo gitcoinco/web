@@ -1841,6 +1841,29 @@ def profile_keywords(request, handle):
     return JsonResponse(response)
 
 
+def profile_activity(request, handle):
+    """Display profile activity details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    activities = list(profile.get_various_activities().values_list('created_on', flat=True))
+    activities += list(profile.actions.values_list('created_on', flat=True))
+    response = {}
+    prev_date = timezone.now()
+    for i in range(1, 8*30):
+        date = timezone.now() - timezone.timedelta(days=i)
+        response[int(date.timestamp())] = len([activity_date for activity_date in activities if (activity_date < prev_date and activity_date > date)])
+        prev_date = date
+    return JsonResponse(response)
+
+
 @require_POST
 @login_required
 def profile_job_opportunity(request, handle):
