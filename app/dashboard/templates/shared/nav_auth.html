@@ -64,6 +64,12 @@
         <i class="fas fa-user"></i>
         {% trans "My Profile" %}
       </a>
+      {% for org in orgs %}
+        <a class="dropdown-item" href="{% url "profile" %}{{org}}">
+          <i class="fas fa-user"></i>
+          {{org}}'s {% trans "Profile" %}
+        </a>
+      {% endfor %}
       {% else %}
         <a class="dropdown-item" href="{% url "get_gitcoin" %}">
           <i class="fas fa-bolt"></i>

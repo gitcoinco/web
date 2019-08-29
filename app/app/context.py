@@ -87,6 +87,7 @@ def preprocess(request):
         'release': settings.RELEASE,
         'env': settings.ENV,
         'email_key': email_key,
+        'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
         'hotjar': settings.HOTJAR_CONFIG,
         'ipfs_config': {
