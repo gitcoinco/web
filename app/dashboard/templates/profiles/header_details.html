@@ -29,6 +29,11 @@
                       <i class="fas fa-home"></i>
                     </a>
                   {% endif %}
+                  {% if profile.linkedin_url and user.is_authenticated %}
+                    <a href="https://linkedin.com/in/{{ profile.linkedin_url }}" target="_blank" rel="noopener noreferrer" >
+                      <i class="fas fa-linkedin"></i>
+                    </a>
+                  {% endif %}
                   {% if profile.data.email and user.is_authenticated %}
                     <a href="mailto:{{profile.data.email | obfuscate}}">
                       <i class="far fa-envelope"></i>
