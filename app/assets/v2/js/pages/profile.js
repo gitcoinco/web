@@ -12,7 +12,7 @@ $(document).ready(function() {
     $(this).addClass('active');
     var target_class = $(this).data('href');
 
-    $('.tab1, .tab2, .tab3, .tab4').css('display', 'none');
+    $('.tab1, .tab2, .tab3, .tab4, .tab5').css('display', 'none');
     $('.' + target_class).css('display', 'block');
     e.preventDefault();
   });
