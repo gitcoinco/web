@@ -1,5 +1,14 @@
 $(document).ready(function() {
   let button = document.querySelector('#btn_post');
+  if(button){
+    button.addEventListener(
+      'click',
+      function() {
+        submitStatusUpdate();
+      },
+      false
+    );
+  }
 
   $('body').on('focus change paste keyup blur', 'textarea', function() {
     if (
@@ -12,14 +21,6 @@ $(document).ready(function() {
       $('#btn_post').attr('disabled', true);
     }
   });
-
-  button.addEventListener(
-    'click',
-    function() {
-      submitStatusUpdate();
-    },
-    false
-  );
 
   function submitStatusUpdate() {
     const data = new FormData();
