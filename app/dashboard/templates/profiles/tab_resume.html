@@ -1,0 +1,56 @@
+{% load i18n static %}
+
+
+    {% if not hidden and not profile.is_org and show_resume_tab %}
+    <div class="container tab4" >
+      <div id="resume-section">
+        <p>
+          <a href="/onboard/profile/?steps=job"> Edit this info
+          </a>
+        </p>
+
+        {% if not profile.show_job_status %}
+        <p>
+          <i class="fas fa-eye"></i> Only visible to you; Your information is private.
+        </p>
+        {% endif %}
+
+        <p>
+        Job Search Status: {{profile.job_status_verbose}}
+        </p>
+
+        <p>
+        Looking for work in Keywords:
+          <ul> 
+            {% for keyword in profile.keywords %}
+              <li>
+                <a href="/explorer?keywords={{keyword}}">{{keyword}}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </p>
+
+        <p>
+          Locations: 
+          <ul> 
+            {% for loc in profile.job_location %}
+              <li>
+                <a href="{{loc.url}}">{{loc.name}}</a>
+              </li>
+            {% endfor %}
+          </ul>
+          {% if profile.remote %}
+            Open to Remote Work
+          {% endif %}
+        </p>
+
+        {% if profile.resume %}
+          <h3>Resume:</h3>
+          <object data="{{profile.resume.url}}" type="application/pdf" style="width: 100%; height: 1000px; overflow-y: scroll;">
+              <embed src="{{profile.resume.url}}" type="application/pdf" />
+          </object>
+        {% endif %}
+
+      </div>
+    </div>
+    {% endif %}
