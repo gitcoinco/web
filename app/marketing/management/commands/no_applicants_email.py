@@ -26,7 +26,7 @@ from marketing.mails import no_applicant_reminder
 
 class Command(BaseCommand):
 
-    help = 'sends feedback emails to bounties that were closed in last xx hours, but only if its the first time a bounty has been accepted by taht persona'
+    help = 'sends reminder emails to funders whose bounties have 0 applications'
 
     def handle(self, *args, **options):
         if settings.DEBUG:
