@@ -2238,27 +2238,46 @@ class Profile(SuperModel):
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
 
-    def calculate_and_save_persona(self):
+    def get_persona_action_count(self):
+        hunter_count = 0
+        funder_count = 0
+
+        hunter_count += self.interested.exists()
+        hunter_count += self.received_tips.exists()
+        hunter_count += self.grant_admin.exists()
+        hunter_count += self.fulfilled.exists()
+
+        funder_count += self.bounties_funded.exists()
+        funder_count += self.sent_tips.exists()
+        funder_count += self.grant_contributor.exists()
+
+        return hunter_count, funder_count
+
+    def calculate_and_save_persona(self, respect_defaults=True, decide_only_one=False):
+        if respect_defaults and decide_only_one:
+            raise Exception('cannot use respect_defaults and decide_only_one')
+
         # respect to defaults
-        is_hunter = self.persona_is_hunter
-        is_funder = self.persona_is_funder
+        is_hunter = False
+        is_funder = False
+        if respect_defaults:
+            is_hunter = self.persona_is_hunter
+            is_funder = self.persona_is_funder
 
         # calculate persona
-        is_hunter |= self.interested.exists()
-        is_hunter |= self.received_tips.exists()
-        is_hunter |= self.grant_admin.exists()
-        is_hunter |= self.fulfilled.exists()
-
-        is_funder |= self.bounties_funded.exists()
-        is_funder |= self.sent_tips.exists()
-        is_funder |= self.grant_contributor.exists()
+        hunter_count, funder_count = self.get_persona_action_count()
 
         # update db
-        if is_hunter:
-            self.persona_is_hunter = True
-
-        if is_funder:
-            self.persona_is_funder = True
+        if not decide_only_one:
+            if hunter_count > 0:
+                self.persona_is_hunter = True
+            if funder_count > 0:
+                self.persona_is_funder = True
+        else:
+            if hunter_count > funder_count:
+                self.persona_is_hunter = True
+            elif funder_count > hunter_count:
+                self.persona_is_funder = True
 
     def has_custom_avatar(self):
         from avatar.models import CustomAvatar
