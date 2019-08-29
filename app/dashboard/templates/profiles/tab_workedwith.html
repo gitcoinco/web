@@ -1,0 +1,7 @@
+{% load i18n static %}
+
+      {% if is_editable and not hidden %}
+        <div class="tab3">
+          {% include "shared/rate_bounties.html" %}
+        </div>
+      {% endif %}

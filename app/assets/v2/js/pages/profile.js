@@ -12,7 +12,7 @@ $(document).ready(function() {
     $(this).addClass('active');
     var target_class = $(this).data('href');
 
-    $('.tab1, .tab2').css('display', 'none');
+    $('.tab1, .tab2, .tab3').css('display', 'none');
     $('.' + target_class).css('display', 'block');
     e.preventDefault();
   });
@@ -32,7 +32,8 @@ $(document).ready(function() {
       return;
     }
     var is_on_activity_tab = $("#tab_controller .nav-link.active").data('href') == "tab2";
-    if (!is_on_activity_tab){
+    var are_there_no_tabs = $("#tab_controller .nav-link.active").length == 0;
+    if (!is_on_activity_tab && !are_there_no_tabs){
       return;
     }
 
