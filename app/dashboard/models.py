@@ -1892,7 +1892,7 @@ class Activity(SuperModel):
         if self.metadata.get('grant_logo'):
             return self.metadata['grant_logo']
         if self.grant:
-            return self.grant.logo.url
+            return self.grant.logo.url if self.grant.logo else None
         return None
 
     @property
