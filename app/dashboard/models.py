@@ -140,7 +140,7 @@ class BountyQuerySet(models.QuerySet):
                 activities__activity_type='worker_applied',
                 activities__needs_review=False,
             )
-    
+
     def warned(self):
         """Filter results by bounties that have been warned for inactivity."""
         return self.prefetch_related('activities') \
@@ -442,7 +442,7 @@ class Bounty(SuperModel):
     @property
     def no_of_applicants(self):
         return self.interested.count()
-   
+
     @property
     def has_applicant(self):
         """Filter results by bounties that have applicants."""
@@ -451,7 +451,7 @@ class Bounty(SuperModel):
                 activities__activity_type='worker_applied',
                 activities__needs_review=False,
             )
-        
+
     @property
     def warned(self):
         """Filter results by bounties that have been warned for inactivity."""
@@ -460,7 +460,7 @@ class Bounty(SuperModel):
                 activities__activity_type='bounty_abandonment_warning',
                 activities__needs_review=True,
             )
-    
+
     @property
     def escalated(self):
         """Filter results by bounties that have been escalated for review."""
@@ -1847,7 +1847,6 @@ class Activity(SuperModel):
         for fk in ['bounty', 'tip', 'kudos', 'profile']:
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
-        print(activity['kudos'])
         activity['secondary_avatar_url'] = self.secondary_avatar_url
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
