@@ -56,7 +56,7 @@ class DashboardModelsTest(TestCase):
         )
         bounty = Bounty.objects.create(
             title='foo',
-            value_in_token=3,
+            value_in_token=3 * 10**18,
             token_name='ETH',
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             github_url='https://github.com/gitcoinco/web/issues/11',
@@ -92,6 +92,7 @@ class DashboardModelsTest(TestCase):
         assert bounty.is_funder('flintstone') is True
         assert bounty.status == 'done'
         assert bounty.value_true == 0
+        assert bounty.value_in_eth == 3
         assert bounty.value_in_usdt_now == 0
         assert 'ago 5 Feature Intermediate' in bounty.desc
         assert bounty.is_legacy is False
