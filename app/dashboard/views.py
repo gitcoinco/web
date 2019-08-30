@@ -72,7 +72,7 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer,
+    FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer, ProfileView,
     RefundFeeRequest, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
@@ -1952,7 +1952,7 @@ def bounty_upload_nda(request):
     return JsonResponse(error_response) if error_response else JsonResponse(response)
 
 
-def get_profile_tab(request, profile, tab):
+def get_profile_tab(request, profile, tab, prev_context):
     if not settings.DEBUG:
         network = 'mainnet'
     else:
@@ -2052,6 +2052,11 @@ def get_profile_tab(request, profile, tab):
                 return JsonResponse(msg, status=msg.get('status', 200))
 
     elif tab == 'resume':
+        if not prev_context['is_editable'] and not profile.show_job_status:
+            raise Http404
+    elif tab == 'viewers':
+        if not prev_context['is_editable']:
+            raise Http404
         pass
     elif tab == 'portfolio':
         pass
@@ -2172,7 +2177,8 @@ def profile(request, handle, tab=None):
     context['suppress_sumo'] = True
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
-    tab = get_profile_tab(request, profile, tab)
+
+    tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
         context.update(tab)
     else:

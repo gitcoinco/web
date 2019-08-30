@@ -3465,3 +3465,26 @@ class Coupon(SuperModel):
     def __str__(self):
         """Return the string representation of Coupon."""
         return f'code: {self.code} | fee: {self.fee_percentage} %'
+
+
+class ProfileView(SuperModel):
+    """Records profileviews ."""
+
+    target = models.ForeignKey('dashboard.Profile', related_name='viewed_by', on_delete=models.CASCADE, db_index=True)
+    viewer = models.ForeignKey('dashboard.Profile', related_name='viewed_profiles', on_delete=models.CASCADE, db_index=True)
+
+    def __str__(self):
+        return f"{self.viewer} => {self.target} on {self.created_on}"
+
+
+@receiver(post_save, sender=ProfileView, dispatch_uid="post_add_profileview")
+def post_add_profileview(sender, instance, created, **kwargs):
+    # disregard other profileviews added within 30 minutes of each other
+    if created:
+        dupes = ProfileView.objects.exclude(pk=instance.pk)
+        dupes = dupes.filter(created_on__gte=(instance.created_on - timezone.timedelta(minutes=30)))
+        dupes = dupes.filter(created_on__lte=(instance.created_on + timezone.timedelta(minutes=30)))
+        dupes = dupes.filter(target=instance.target)
+        dupes = dupes.filter(viewer=instance.viewer)
+        for dupe in dupes:
+            dupe.delete()

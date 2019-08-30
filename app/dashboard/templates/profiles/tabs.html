@@ -30,11 +30,13 @@
                 Kudos
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link {% if tab == 'viewers' %}active{%endif%}" href="{{profile.url}}/viewers">
-                <i class="fas fa-eye"></i> Who's Viewed Your Profile
-              </a>
-            </li>
+            {% if is_editable %}
+              <li class="nav-item">
+                <a class="nav-link {% if tab == 'viewers' %}active{%endif%}" href="{{profile.url}}/viewers">
+                  <i class="fas fa-eye"></i> Who's Viewed Your Profile
+                </a>
+              </li>
+            {% endif %}
           </ul>
         </div>
       {% endif %}
