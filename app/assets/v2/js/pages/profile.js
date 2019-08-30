@@ -7,16 +7,6 @@ $(document).ready(function() {
     $(e.currentTarget).toggleClass('turn');
   });
 
-  $('#tab_controller li a').click(function(e) {
-    $('#tab_controller li a').removeClass('active');
-    $(this).addClass('active');
-    var target_class = $(this).data('href');
-
-    $('.tab1, .tab2, .tab3, .tab4').css('display', 'none');
-    $('.' + target_class).css('display', 'block');
-    e.preventDefault();
-  });
-
   setupTabs('#activity-tabs');
 
   const tabSection = document.querySelector('#activity-tabs-sections');
@@ -31,7 +21,7 @@ $(document).ready(function() {
     if (fetchInProgress) {
       return;
     }
-    var is_on_activity_tab = $("#tab_controller .nav-link.active").data('href') == "tab2";
+    var is_on_activity_tab = $(".profile-bounties--activities").length > 0;
     var are_there_no_tabs = $("#tab_controller .nav-link.active").length == 0;
     if (!is_on_activity_tab && !are_there_no_tabs){
       return;

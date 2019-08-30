@@ -1,0 +1,82 @@
+
+    <!-- D3.js -->
+<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+    
+    <style>
+      .legend {
+        font-family: 'Raleway', sans-serif;
+        fill: #333333;
+      }
+      
+      .tooltip {
+        fill: #333333;
+      }
+    </style>
+  
+    <div class="radarChart tab3"></div>
+
+    <script src="http://bl.ocks.org/nbremer/raw/21746a9668ffdf6d8242/980dda56c87a6813fc4ba527ec7db0b53e83dbb5/radarChart.js"></script> 
+    <script>
+      
+      /* Radar chart design created by Nadieh Bremer - VisualCinnamon.com */
+      
+      ////////////////////////////////////////////////////////////// 
+      //////////////////////// Set-Up ////////////////////////////// 
+      ////////////////////////////////////////////////////////////// 
+
+      var margin = {top: 100, right: 100, bottom: 100, left: 100},
+        width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
+        height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
+          
+      ////////////////////////////////////////////////////////////// 
+      ////////////////////////// Data ////////////////////////////// 
+      ////////////////////////////////////////////////////////////// 
+
+      var data = [
+            [//iPhone
+            {axis:"Overall Rating",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Satisfaction",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Communication",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Speed",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Code Quality",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Recommendation",value:Math.floor(Math.random() * 100 )/ 100},
+
+            ],
+            [//iPhone
+            {axis:"Overall Rating",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Satisfaction",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Communication",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Speed",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Code Quality",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Recommendation",value:Math.floor(Math.random() * 100 )/ 100},
+
+            ],
+            [//iPhone
+            {axis:"Overall Rating",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Satisfaction",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Communication",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Speed",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Code Quality",value:Math.floor(Math.random() * 100 )/ 100},
+            {axis:"Recommendation",value:Math.floor(Math.random() * 100 )/ 100},
+
+            ],
+          ];
+      ////////////////////////////////////////////////////////////// 
+      //////////////////// Draw the Chart ////////////////////////// 
+      ////////////////////////////////////////////////////////////// 
+
+      var color = d3.scale.ordinal()
+        .range(["#EDC951","#CC333F","#00A0B0"]);
+        
+      var radarChartOptions = {
+        w: width,
+        h: height,
+        margin: margin,
+        maxValue: 0.5,
+        levels: 5,
+        roundStrokes: true,
+        color: color
+      };
+      //Call function to draw the Radar chart
+      RadarChart(".radarChart", data, radarChartOptions);
+    </script>

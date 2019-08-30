@@ -1,6 +1,4 @@
-.tab1, .tab3, .tab4{
-  display: none;
-}
+
 .mh-150{
   min-height: 150px;
 }
@@ -442,5 +440,10 @@ nav.navbar.navbar-dark{
 #rank_link{
   font-size: 12px;
   color: black;
+}
+
+#cal-heatmap{
+  width: 100%;
+  overflow-x: scroll;
 }
 

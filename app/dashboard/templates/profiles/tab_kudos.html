@@ -1,0 +1,9 @@
+{% load i18n static %}
+
+    {% if not hidden and not profile.is_org %}
+    <div class="container tab1" >
+      <div id="kudos-section">
+        {% include "shared/profile_kudos.html" %}
+      </div>
+    </div>
+    {% endif %}
