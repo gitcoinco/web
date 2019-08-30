@@ -317,10 +317,11 @@ def handle_marketing_callback(key, request):
     if callbacks.exists():
         callback_reference = callbacks.first().val
         if callback_reference.split(':')[0] == 'add_to_group':
-            from django.contrib.auth.models import Group
-            group_name = callback_reference.split(':')[1]
-            group = Group.objects.get(name=group_name)
-            group.user_set.add(request.user)
+            if request.user.is_authenticated:
+                from django.contrib.auth.models import Group
+                group_name = callback_reference.split(':')[1]
+                group = Group.objects.get(name=group_name)
+                group.user_set.add(request.user)
 
 
 def func_name():
