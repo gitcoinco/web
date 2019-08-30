@@ -31,9 +31,10 @@ $(document).ready(function() {
     if (fetchInProgress) {
       return;
     }
-    var is_on_activity_tab = $("#tab_controller .nav-link.active").data('href') == "tab2";
-    var are_there_no_tabs = $("#tab_controller .nav-link.active").length == 0;
-    if (!is_on_activity_tab && !are_there_no_tabs){
+    var is_on_activity_tab = $('#tab_controller .nav-link.active').data('href') == 'tab2';
+    var are_there_no_tabs = $('#tab_controller .nav-link.active').length == 0;
+
+    if (!is_on_activity_tab && !are_there_no_tabs) {
       return;
     }
 

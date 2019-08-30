@@ -1,9 +1,21 @@
-{% load i18n static %}
+{% load i18n static humanize %}
 
     {% if not hidden %}
      {% if is_editable %}
         <div class="tab3">
           {% include "shared/rate_bounties.html" %}
+        </div>
+      {% endif %}
+
+
+     {% if is_editable %}
+        <div class="tab3">
+          Whos Viewed My Profile
+          {% for viewer in profile.viewed_by.all %}
+            <div>
+              - {{viewer.viewer.handle}} {{viewer.created_on | naturaltime}}
+            </div>
+          {% endfor %}
         </div>
       {% endif %}
 
