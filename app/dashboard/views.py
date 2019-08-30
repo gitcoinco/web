@@ -1857,7 +1857,7 @@ def profile_activity(request, handle):
     activities += list(profile.actions.values_list('created_on', flat=True))
     response = {}
     prev_date = timezone.now()
-    for i in range(1, 8*30):
+    for i in range(1, 12*30):
         date = timezone.now() - timezone.timedelta(days=i)
         response[int(date.timestamp())] = len([activity_date for activity_date in activities if (activity_date < prev_date and activity_date > date)])
         prev_date = date

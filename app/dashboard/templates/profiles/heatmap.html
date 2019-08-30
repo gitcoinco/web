@@ -11,12 +11,13 @@
     var cal = new CalHeatMap();
     cal.init({
       domain: "month",
-      range: 8,
+      range: 12,
       legendColors: ["#eeebf3", "#761d15"],
       legend: [0,1,2,3,4,5],
       tooltip: true,
-      start: new Date('2019-01-30 00:00:00'),
-      end: new Date('2017-09-30 00:00:00'),
+      cellSize: 14,
+      start: new Date('2018-08-30 00:00:00'),
+      end: new Date('2019-09-30 00:00:00'),
       data: "/api/v0.1/profile/{{profile.handle}}/activity.json"
     });
   </script>
