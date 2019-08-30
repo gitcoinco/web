@@ -733,7 +733,7 @@ class Bounty(SuperModel):
     @property
     def get_value_in_eth(self):
         if self.token_name == 'ETH':
-            return self.value_in_token
+            return self.value_in_token / 10**18
         try:
             return convert_amount(self.value_true, self.token_name, 'ETH')
         except Exception:
