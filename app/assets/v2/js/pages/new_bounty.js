@@ -37,10 +37,24 @@ function doShowQuickstart(url) {
 }
 
 var processedData;
+var usersBySkills;
 
 $('.select2-tag__choice').on('click', function() {
   $('#invite-contributors.js-select2').data('select2').dataAdapter.select(processedData[0].children[$(this).data('id')]);
 });
+
+$('.select2-add_byskill').on('click', function(e) {
+  e.preventDefault();
+  $('#invite-contributors.js-select2').val(usersBySkills.map((item) => {
+    return item.id;
+  })).trigger('change');
+});
+
+$('.select2-clear_invites').on('click', function(e) {
+  e.preventDefault();
+  $('#invite-contributors.js-select2').val(null).trigger('change');
+});
+
 
 const getSuggestions = () => {
   let queryParams = {};
@@ -69,6 +83,17 @@ const getSuggestions = () => {
     let options = Object.entries(response).map(([ text, children ]) => (
       { text: groups[text], children }
     ));
+
+    usersBySkills = [].map.call(response['recommended_developers'], function(obj) {
+      return obj;
+    });
+
+    if (queryParams.keywords.length && usersBySkills.length) {
+      $('#invite-all-container').show();
+      $('.select2-add_byskill span').text(queryParams.keywords.join(', '));
+    } else {
+      $('#invite-all-container').hide();
+    }
 
     var generalIndex = 0;
 
@@ -109,9 +134,10 @@ getSuggestions();
 $('#keywords').on('change', getSuggestions);
 
 function formatUser(user) {
-  if (!user.text || user.children) {
+  if (user.children) {
     return user.text;
   }
+
   let markup = `<div class="d-flex align-items-baseline">
                   <div class="mr-2">
                     <img class="rounded-circle" src="${'/dynamic/avatar/' + user.text }" width="20" height="20"/>
