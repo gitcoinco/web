@@ -1,6 +1,7 @@
 $(document).ready(function() {
   let button = document.querySelector('#btn_post');
-  if(button){
+
+  if (button) {
     button.addEventListener(
       'click',
       function() {
