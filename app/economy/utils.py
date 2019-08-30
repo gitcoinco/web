@@ -35,6 +35,7 @@ class ConversionRateNotFoundError(Exception):
 
 
 def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
+    from django.conf import settings
     """Convert the provided amount to another current.
 
     Args:
