@@ -14,17 +14,21 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static %}
+{% load static compress %}
 {% if env == 'prod' %}
+  {% compress css %}
   <link rel="apple-touch-icon" sizes="180x180" href="{% static "v2/images/favicon.ico/apple-touch-icon.png" %}">
   <link rel="icon" type="image/png" sizes="32x32" href="{% static "v2/images/favicon.ico/favicon-32x32.png" %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static "v2/images/favicon.ico/favicon-16x16.png" %}">
   <link rel="manifest" href="{% static "v2/images/favicon.ico/manifest.json" %}">
+  {% endcompress %}
   <meta name="theme-color" content="#ffffff">
 {% else %}
+  {% compress css %}
   <link rel="apple-touch-icon" sizes="180x180" href="{% static "v2/images/favicon_local.ico/apple-touch-icon.png" %}">
   <link rel="icon" type="image/png" sizes="32x32" href="{% static "v2/images/favicon_local.ico/favicon-32x32.png" %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static "v2/images/favicon_local.ico/favicon-16x16.png" %}">
   <link rel="manifest" href="{% static "v2/images/favicon_local.ico/manifest.json" %}">
+  {% endcompress %}
   <meta name="theme-color" content="#ffffff">
 {% endif %}

@@ -17,10 +17,12 @@
 
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static compress %}
 
+{% compress css %}
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
+{% endcompress %}
 {% block coltype %}colMS{% endblock %}
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
@@ -84,6 +86,8 @@
   </script>
   {% include 'shared/footer_scripts.html' %}
 
+  {% compress js %}
   <script src="{% static "v2/js/metamask-approval.js" %}"></script>
   <script src="{% static "v2/js/pages/process_faucet.js" %}"></script>
+  {% endcompress %}
 {% endblock %}

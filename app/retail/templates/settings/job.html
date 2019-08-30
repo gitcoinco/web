@@ -1,5 +1,5 @@
 {% extends 'settings/settings.html' %}
-{% load i18n static %}
+{% load i18n static compress %}
 {% block settings_content %}
 <form id="settings" name="job" method="POST">
   <div class="form-group">
@@ -17,6 +17,8 @@
   var jobLocations = {% if profile.job_location %}{{profile.job_location|safe }};{% else %}[];{% endif %}
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ&libraries=places&callback=initPlacecomplete"></script>
+{% compress js %}
 <script src="{% static 'v2/js/jobs.js' %}"></script>
+{% endcompress %}
 {{ block.super }}
 {% endblock %}

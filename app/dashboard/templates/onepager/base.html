@@ -14,17 +14,19 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static cookielaw_tags %}
+{% load i18n static cookielaw_tags compress %}
 <!DOCTYPE HTML>
 <html>
   <head>
     {% include 'shared/tag_manager_1.html' %}
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <link rel="stylesheet" href="{% static "onepager/css/main.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/box_redeem.css" %}">
 
+    {% endcompress %}
     <style>
       .d-flex {
         display: flex;
@@ -62,7 +64,9 @@
       var media_url = "{{ MEDIA_URL }}";
     </script>
     <noscript>
+      {% compress css %}
       <link rel="stylesheet" href="{% static "onepager/css/noscript.css" %}">
+      {% endcompress %}
     </noscript>
   </head>
   <body id="yge" class="{{ class }} tips transaction g-font-muli">
@@ -109,6 +113,8 @@
         root: "{{ ipfs_config.root }}"
       };
     </script>
+    {% compress js %}
     <script src="{% static "v2/js/metamask-approval.js" %}"></script>
+    {% endcompress %}
   </body>
 </html>

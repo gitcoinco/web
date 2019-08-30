@@ -21,10 +21,12 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/scroll-carousel.css" %}" />
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
 
+    {% endcompress %}
     <style>
       /* TODO: remove duplication of alert with same styles in bounties merge */
       .msg-alert {
@@ -35,7 +37,9 @@
         display: flex;
       }
     </style>
+    {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
+    {% endcompress %}
   </head>
 
   <body class="interior {{active}} g-font-muli">

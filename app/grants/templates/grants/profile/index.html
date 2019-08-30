@@ -14,18 +14,20 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static i18n %}
+{% load static i18n compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
+    {% compress css %}
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
     <link rel="stylesheet" href="{% static "v2/css/grants/profile.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
+    {% endcompress %}
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -81,10 +83,12 @@
   {% include 'shared/footer.html' %}
   {% include 'grants/shared/shared_scripts.html' %}
 
+  {% compress js %}
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/pages/tabs.js" %}"></script>
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/grants/index.js" %}"></script>
+  {% endcompress %}
   <script>
     $(document).ready(function() {
       setupTabs('#grant-profile-tabs');

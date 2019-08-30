@@ -14,8 +14,10 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
+{% compress css %}
 <link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
+{% endcompress %}
 <style>
   form .col:first-child {
     border-top: none;

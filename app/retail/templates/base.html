@@ -14,13 +14,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static %}
+{% load static compress %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards.html' %}
+  {% compress css %}
   <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
+  {% endcompress %}
 </head>
 <body class="{{active}} g-font-muli">
   {% include 'shared/tag_manager_2.html' %}

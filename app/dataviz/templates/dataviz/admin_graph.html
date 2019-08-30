@@ -18,10 +18,12 @@
 
 {% endcomment %}
 
-{% load i18n admin_static static %}
+{% load i18n admin_static static compress %}
 
+{% compress css %}
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
+{% endcompress %}
 {% block coltype %}colMS{% endblock %}
 
 {% block bodyclass %}{{ block.super }} cohort{% endblock %}
@@ -34,7 +36,9 @@
 {% block content %}
   <head>
     <meta charset="utf-8">
+    {% compress js %}
     <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+    {% endcompress %}
     <script src="//d3js.org/d3.v2.min.js?2.9.3"></script>
     <style>
     .colMS{

@@ -36,8 +36,10 @@
       {% include 'shared/nav.html' %}
     </div>
     {% if hackathon %}
+      {% compress css %}
       <link rel="stylesheet" href={% static "v2/css/hackathons/explorer.css" %}>
 
+      {% endcompress %}
       <style>
         .hackathon-banner {
           background: {% firstof hackathon.background_color or 'white' %};

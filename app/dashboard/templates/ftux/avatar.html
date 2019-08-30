@@ -167,7 +167,9 @@
 </div>
 
 
+{% compress js %}
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+{% endcompress %}
 <script>
   var profileId = '{{ profile_id }}';
   var options = {
@@ -177,4 +179,6 @@
     ClothingColor: '{{ defaultClothingColor }}'
   }
 </script>
+{% compress js %}
 <script src="{% static "v2/js/avatar.js" %}"></script>
+{% endcompress %}

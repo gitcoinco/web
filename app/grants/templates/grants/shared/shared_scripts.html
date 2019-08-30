@@ -16,9 +16,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load static compress %}
 
+{% compress js %}
 <script src="{% static "v2/js/lib/web3.min.js" %}"></script>
+{% endcompress %}
 <script>
   var web3 = Web3 ? new Web3(Web3.givenProvider || "ws://localhost:8546") : null;
 </script>

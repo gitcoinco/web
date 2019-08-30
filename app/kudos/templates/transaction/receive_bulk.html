@@ -15,12 +15,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 {% load kudos_extras %}
 {% block 'scripts' %}
+{% compress js %}
 <script src="{% static "v2/js/pages/kudos_bulk_receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
 
+{% endcompress %}
 <!-- Main -->
 <section id="main" class="box-transaction">
   <header class="text-center">
@@ -150,10 +152,12 @@
     }
   }
 </style>
+{% compress js %}
 <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
 <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
 <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+{% endcompress %}
 {% include 'shared/footer_scripts.html' with slim=1 %}
 <script>
   document.network = '{{coupon.token.contract.network}}';

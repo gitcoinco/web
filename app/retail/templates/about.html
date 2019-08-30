@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
   {% include 'shared/head.html' %}
@@ -22,8 +22,10 @@
     <meta name="title" content="About Gitcoin: Find Open Bug Bounties & Freelance Coders">
     <meta name="description" content="Gitcoin is a community for freelance developers to collaborate and monetize their skills
     while working on Open Source projects through bounties paid in crypto (ETH or any ERC-20 token).">
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/about.css" %}" />
+    {% endcompress %}
   </head>
   <body class="{{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}

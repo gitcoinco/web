@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load humanize i18n static %}
+{% load humanize i18n static compress %}
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
 
@@ -16,8 +16,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
+{% compress css %}
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
+{% endcompress %}
 {% block coltype %}colMS{% endblock %}
 
 {% block bodyclass %}{{ block.super }} cohort{% endblock %}
@@ -31,9 +33,11 @@
 <head>
   <meta charset="utf-8">
   <script src="//d3js.org/d3.v3.min.js"></script>
+  {% compress js %}
   <script src="{% static "v2/js/lib/jquery.js" %}"></script>
   <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
   <link rel="stylesheet" type="text/css" href="{% static "v2/js/dataviz/sequences.css" %}">
+  {% endcompress %}
 </head>
 
 

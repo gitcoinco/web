@@ -23,8 +23,10 @@
   {% include 'shared/cards.html' %}
   <meta name="title" content="Create Funded Issue/Bounty | Gitcoin">
   <meta name="description" content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
+  {% compress css %}
   <link rel="stylesheet" href={% static "v2/css/lib/daterangepicker.css" %}>
   <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+  {% endcompress %}
 </head>
 
 <body class="interior {{active}} g-font-muli" style="background-color: #FFFFFF;">

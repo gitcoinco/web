@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -125,10 +125,14 @@
   var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
   </script>
   </body>
+  {% compress js %}
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
+  {% endcompress %}
   <script src="/dynamic/js/tokens_dynamic.js"></script>
+  {% compress js %}
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/faucet_form.js" %}"></script>
+  {% endcompress %}
 </html>

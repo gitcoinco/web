@@ -1,5 +1,5 @@
 {% load humanize %}
-{% load i18n static %}
+{% load i18n static compress %}
 {% comment %}
     Copyright (C) 2019 Gitcoin Core
 
@@ -42,7 +42,9 @@ body {
     {% include "dataviz/shared/nav.html" %}
 <br>
 <h1> Hourly Rate of Bounties over Time, by Repo</h1>
+{% compress js %}
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+{% endcompress %}
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
 function average(data){

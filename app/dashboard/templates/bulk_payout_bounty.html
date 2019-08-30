@@ -21,9 +21,11 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     {% include 'shared/current_profile.html' %}
+    {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "v2/css/bulk_payout_bounty.css" %}">
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    {% endcompress %}
   </head>
 
   <body class="interior {{ active }} g-font-muli">

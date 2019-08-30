@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load humanize i18n static %}
+{% load humanize i18n static compress %}
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
 
@@ -16,8 +16,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
+{% compress css %}
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
+{% endcompress %}
 {% block coltype %}colMS{% endblock %}
 
 {% block bodyclass %}{{ block.super }} cohort{% endblock %}
@@ -79,7 +81,9 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <title>Condegram Spiral Plot</title>
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
+    {% endcompress %}
     <link rel="stylesheet" type="text/css" href="style.css">
     <script data-require="d3@4.0.0" data-semver="4.0.0" src="https://d3js.org/d3.v4.js"></script>
 </head>
@@ -88,7 +92,9 @@
   <h2>{{key}}</h2>
   {% include "dataviz/shared/nav.html" %}
   <div id="chart"></div>
+  {% compress js %}
   <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+  {% endcompress %}
   <script>
   var someData = [];
   {% for stat in stats %}

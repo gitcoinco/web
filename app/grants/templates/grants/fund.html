@@ -18,11 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    {% compress js %}
     <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+    {% endcompress %}
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/fund.css" %}">
+    {% endcompress %}
   </head>
   <body class="interior {{ active }} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -326,5 +330,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   {% endcompress %}
   <script src="/dynamic/js/tokens_dynamic.js"></script>
+  {% compress js %}
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  {% endcompress %}
 </html>

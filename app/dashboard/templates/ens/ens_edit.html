@@ -1,7 +1,9 @@
 {% extends 'ens/ens.html' %}
-{% load i18n static %}
+{% load i18n static compress %}
 {% block 'ens_script' %}
+  {% compress js %}
   <script src="{% static 'ens/register.js' %}"></script>
+  {% endcompress %}
 {% endblock %}
 
 {% block 'body_block' %}

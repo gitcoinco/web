@@ -1,10 +1,12 @@
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html>
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+    {% endcompress %}
   </head>
   <body class="{{ active }} bg-light g-font-muli">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
@@ -104,7 +106,9 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% compress js %}
     <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
+    {% endcompress %}
     {% include 'shared/messages.html' %}
   </body>
 </html>

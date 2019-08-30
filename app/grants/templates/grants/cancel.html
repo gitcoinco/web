@@ -14,14 +14,16 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static humanize i18n %}
+{% load static humanize i18n compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/fund.css" %}">
+    {% endcompress %}
   </head>
   <body class="interior {{ active }} grant">
     {% include 'shared/tag_manager_2.html' %}
@@ -110,6 +112,7 @@
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
+  {% compress js %}
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract0.js" %}"></script>
@@ -122,4 +125,5 @@
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
   <script src="{% static "v2/js/grants/cancel_subscription.js" %}"></script>
+  {% endcompress %}
 </html>

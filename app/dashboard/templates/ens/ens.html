@@ -1,9 +1,11 @@
 {% extends 'ens/base.html' %}
-{% load i18n static %}
+{% load i18n static compress %}
 {% block 'scripts' %}
   <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+  {% compress js %}
   <script src="{% static 'v2/js/shared.js' %}"></script>
   <script src="{% static 'ens/index.js' %}"></script>
+  {% endcompress %}
   {% block 'ens_script' %}
   {% endblock %}
 {% endblock %}

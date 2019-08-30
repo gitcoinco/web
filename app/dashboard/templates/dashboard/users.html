@@ -22,10 +22,12 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    {% compress css %}
     <link rel="stylesheet" href={% static "v2/css/users.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
     <link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
+    {% endcompress %}
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -258,8 +260,10 @@
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.keywords = {{keywords | safe}};
     </script>
+    {% compress js %}
     <script src="{% static "v2/js/vue-components.js" %}"></script>
     <script src="{% static "v2/js/users.js" %}"></script>
 
+    {% endcompress %}
   </body>
 </html>

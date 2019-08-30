@@ -16,13 +16,15 @@
     <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/vision.css" %}" />
+    {% endcompress %}
   </head>
 
   <body class="{{ active }} g-font-futura">
