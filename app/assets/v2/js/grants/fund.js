@@ -307,7 +307,7 @@ const subscribeToGrant = (transactionHash) => {
       $('#transaction_url').attr('href', linkURL);
       enableWaitState('#grants_form');
       // TODO: fix the tweet modal
-      // $('#tweetModal').modal('show');
+       $('#tweetModal').css('display', 'block');
 
       deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
@@ -412,7 +412,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
     $('#transaction_url').attr('href', linkURL);
     enableWaitState('#grants_form');
     // TODO: Fix tweet modal
-    // $('#tweetModal').modal('show');
+    $('#tweetModal').css('display', 'block');
   }).on('confirmation', function(confirmationNumber, receipt) {
     data = {
       'subscription_hash': 'onetime',

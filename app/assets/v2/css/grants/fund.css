@@ -8,6 +8,9 @@
 #grant-link {
   color: #0D0764;
 }
+.tab_target{
+  width: 100%;
+}
 
 .banner-img {
   max-height: 22rem;

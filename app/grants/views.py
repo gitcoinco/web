@@ -539,12 +539,14 @@ def grant_fund(request, grant_id, grant_slug):
     can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, grant=grant, round_number=round_number)
     is_phantom_funding_this_grant = request.user.is_authenticated and phantom_funds.exists()
+    show_tweet_modal = False
     if can_phantom_fund:
         active_tab = 'phantom'
     if can_phantom_fund and request.GET.get('toggle_phantom_fund'):
         if is_phantom_funding_this_grant:
             msg = "You are now signaling for this grant."
             phantom_funds.delete()
+            show_tweet_modal = True
         else:
             msg = "You are no longer signaling for this grant."
             PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
@@ -560,6 +562,7 @@ def grant_fund(request, grant_id, grant_slug):
         'title': _('Fund Grant'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'subscription': {},
+        'show_tweet_modal': show_tweet_modal,
         'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
         'grant': grant,
         'keywords': get_keywords(),
