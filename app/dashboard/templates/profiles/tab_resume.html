@@ -1,6 +1,5 @@
 {% load i18n static %}
 
-
     {% if not hidden and not profile.is_org and show_resume_tab %}
     <div class="container tab4" >
       <div id="resume-section">
@@ -43,6 +42,30 @@
             Open to Remote Work
           {% endif %}
         </p>
+
+        {% if not profile.is_org and profile.organizations|length %}
+          <div class="">
+          <div class="col px-md-0">
+            <div class="">
+              {% trans "Organizations" %} ({{ profile.organizations|length }})
+            </div>
+          </div>
+          </div>
+          <div class="">
+            <div class="profile-organizations">
+              <div class="px-md-0 col-12">
+                {% for org in profile.organizations %}
+                  <div class="organization">
+                    <a href="{% url 'profile' %}{{org}}" title="{{ org }}">
+                      <img src="/dynamic/avatar/{{ org }}" title="{{ org }}" height="100px" width="100px">
+                    </a>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+      {% endif %}
+
 
         {% if profile.resume %}
           <h3>Resume:</h3>

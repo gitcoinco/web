@@ -8,14 +8,15 @@
       {% endif %}
 
       <div class="tab3">
-        Reviews Received
+        <h3>Reviews Received</h3>
+        {% include "profiles/skillchart.html" %}
         {% for feedback in feedbacks_got %}
           {% include "shared/feedback.html" %}
         {% endfor %}
       </div>
 
       <div class="tab3">
-        Reviews Sent
+        <h3>Reviews Sent</h3>
         {% for feedback in feedbacks_sent %}
           {% include "shared/feedback.html" %}
         {% endfor %}
