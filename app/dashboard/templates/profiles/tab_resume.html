@@ -9,17 +9,18 @@
         </p>
 
         {% if not profile.show_job_status %}
-        <p>
+        <p class="only_visible_to_me">
           <i class="fas fa-eye"></i> Only visible to you; Your information is private.
         </p>
         {% endif %}
 
+        <h3>Summary</h3>
         <p>
-        Job Search Status: {{profile.job_status_verbose}}
+        @{{profile.handle}} is {{profile.job_status_verbose|lower}}.
         </p>
 
         <p>
-        Looking for work in Keywords:
+        Looking for work in these areas:
           <ul> 
             {% for keyword in profile.keywords %}
               <li>
@@ -37,17 +38,17 @@
                 <a href="{{loc.url}}">{{loc.name}}</a>
               </li>
             {% endfor %}
-          </ul>
           {% if profile.remote %}
-            Open to Remote Work
+            <li>Remote OK</li>
           {% endif %}
+          </ul>
         </p>
 
         {% if not profile.is_org and profile.organizations|length %}
           <div class="">
           <div class="col px-md-0">
             <div class="">
-              {% trans "Organizations" %} ({{ profile.organizations|length }})
+              {% trans "Organizations" %} ({{ profile.organizations|length }}):
             </div>
           </div>
           </div>

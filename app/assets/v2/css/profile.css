@@ -7,6 +7,10 @@
   overflow: visible;
 }
 
+.profile-header__stats li{
+  list-style-image: url('/static/v2/images/project_logos/eth_small.png');
+}
+
 .profile-card {
   background: white;
   border-radius: 5px;
@@ -354,7 +358,9 @@ a:hover .avatar_edit .avatar_edit_text {
 .profile_details .bounty_row:first-child {
   border-top: none;
 }
-
+.profile_details .works_with_list{
+  list-style-image: none;
+}
 .profile_details .works_with_list span {
   font-weight: bolder;
   display: block;

@@ -1,21 +1,30 @@
   <li>
-  last seen: <b>x days ago</b>
+  Last Seen: <b>x days ago</b>
+  </li>
+  {% if profile.persona_is_hunter %}
+    <li>
+    Top Skills: <b>x, y, z</b>
+    </li>
+  {% endif %}
+  <li>
+  Success Rate: <b>x</b>%
   </li>
   <li>
-  longest activity streak: <b>x days</b>
+  Repeat {% if profile.persona_is_funder %}Workers{%else%}Funders{%endif%}: <b>x</b>
   </li>
-  <li>
-  activity level: <b>high</b>
-  </li>
-  <li>
-  top skills: <b>python, django, javascript</b>
-  </li>
-  <li>
-  success pct: <b>100%</b>
-  </li>
-  <li>
-  number of repeat relationships: <b>10</b>
-  </li>
-  <li>
-  avg hourly rate <b>$25</b>
-  </li>
+  {% if is_staff %}
+    {% if profile.persona_is_hunter %}
+      <li class='admin_only'>
+        Longest activity streak: <b>x days</b>
+      </li>
+      {% endif %}
+    <li class='admin_only'>
+    Activity Level: <b>x</b>
+    </li>
+    <li class='admin_only'>
+    REP: <b>x</b>
+    </li>
+    <li class='admin_only'>
+    Avg Hourly Rate <b>$x</b>
+    </li>
+  {% endif %}

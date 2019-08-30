@@ -7,7 +7,8 @@
         </div>
       {% endif %}
 
-      <div class="container">
+    {% if is_staff %}
+      <div class="container admin_only">
         <h3>Reviews Received</h3>
         {% include "profiles/skillchart.html" %}
         {% for feedback in feedbacks_got %}
@@ -15,11 +16,13 @@
         {% endfor %}
       </div>
 
-      <div class="container">
+      <div class="container admin_only">
         <h3>Reviews Sent</h3>
         {% for feedback in feedbacks_sent %}
           {% include "shared/feedback.html" %}
         {% endfor %}
       </div>
 
+    {% endif %}
+    
     {% endif %}

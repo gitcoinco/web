@@ -2,16 +2,26 @@
 
     {% if not hidden %}
 
+     {% if is_staff %}
      {% if is_editable %}
-        <div class="container">
-          Whos Viewed My Profile
-          {% for viewer in profile.viewed_by.all %}
+        <div class="container admin_only">
+            <h3>Whos Viewed My Profile</h3>
+
             <div>
-              - {{viewer.viewer.handle}} {{viewer.created_on | naturaltime}}
-            </div>
-          {% endfor %}
+            {% if profile.viewed_by.count == 0 %}
+            No Viewers
+
+            {% endif %}
+
+            {% for viewer in profile.viewed_by.all %}
+              <div>
+                - {{viewer.viewer.handle}} {{viewer.created_on | naturaltime}}
+              </div>
+            {% endfor %}
+          </div>
         </div>
       {% endif %}
 
 
     {% endif %}
+    {% endif %}    

@@ -1594,3 +1594,14 @@ div.busyOverlay {
 .daterangepicker .ranges li.active {
   background-color: #5b24ff !important;
 }
+
+.admin_only{
+  background-color: yellow !important;
+}
+.only_visible_to_me_color{
+  background-color: #a3d3f7;
+}
+.only_visible_to_me{
+  padding: 3px 5px;
+  border-radius: 3px;
+}
