@@ -62,24 +62,28 @@
         </div>
       {% endif%}
       
-      {% include 'profiles/tabs.html' %}
-      {% include 'profiles/tab_details.html' %}
-      {% include 'profiles/tab_resume.html' %}
-      {% include 'profiles/tab_stats.html' %}
-
-    </div>
-    <div class="container">
       {% if hidden %}
         {% include 'profiles/hidden.html' %}
       {% else %}
-	  
-      {% if tabs %}
-        {% include 'profiles/tab_activity.html' %}
-        {% include 'profiles/tab_workedwith.html' %}
-      {% else %}
+        {% include 'profiles/tabs.html' %}
+
+        {% if tab == 'kudos' %}
+          {% include 'profiles/tab_kudos.html' %}
+        {% elif tab == 'resume' %}
+          {% include 'profiles/tab_resume.html' %}
+        {% elif tab == 'portfolio' %}
+          {% include 'profiles/tab_portfolio.html' %}
+        {% elif tab == 'activity' %}
+          {% include 'profiles/tab_activity.html' %}
+        {% elif tab == 'ratings' %}
+          {% include 'profiles/tab_ratings.html' %}
+        {% endif %}
+      {% endif %}
+
+      {% if none %}
         {% include 'profiles/none.html' %}
       {% endif %}
-    {% endif %}
+
     </div>
 
     {% include 'profiles/tabs_close.html' %}

@@ -1952,67 +1952,15 @@ def bounty_upload_nda(request):
     return JsonResponse(error_response) if error_response else JsonResponse(response)
 
 
-
-
-def profile_filter_activities(activities, activity_name, activity_tabs):
-    """A helper function to filter a ActivityQuerySet.
-
-    Args:
-        activities (ActivityQuerySet): The ActivityQuerySet.
-        activity_name (str): The activity_type to filter.
-
-    Returns:
-        ActivityQuerySet: The filtered results.
-
-    """
-    if not activity_name or activity_name == 'all-activity':
-        return activities
-    for name, actions in activity_tabs:
-        if slugify(name) == activity_name:
-            return activities.filter(activity_type__in=actions)
-    return activities.filter(activity_type=activity_name)
-
-
-def profile(request, handle):
-    """Display profile details.
-
-    Args:
-        handle (str): The profile handle.
-
-    Variables:
-        context (dict): The template context to be used for template rendering.
-        profile (dashboard.models.Profile): The Profile object to be used.
-        status (int): The status code of the response.
-
-    Returns:
-        TemplateResponse: The profile templated view.
-
-    """
-    status = 200
-    order_by = request.GET.get('order_by', '-modified_on')
-    owned_kudos = None
-    sent_kudos = None
-    handle = handle.replace("@", "")
-
+def get_profile_tab(request, profile, tab):
     if not settings.DEBUG:
         network = 'mainnet'
     else:
         network = 'rinkeby'
-
-    try:
-        if not handle and not request.user.is_authenticated:
-            return redirect('funder_bounties')
-
-        if not handle:
-            handle = request.user.username
-            profile = getattr(request.user, 'profile', None)
-            if not profile:
-                profile = profile_helper(handle)
-        else:
-            if handle.endswith('/'):
-                handle = handle[:-1]
-            profile = profile_helper(handle, current_user=request.user)
-
+    status = 200
+    order_by = request.GET.get('order_by', '-modified_on')
+    context = profile.to_dict(tips=False)
+    if tab == 'activity':
         all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar']
         activity_tabs = [
             (_('All Activity'), all_activities),
@@ -2043,15 +1991,9 @@ def profile(request, handle):
             return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
 
-        context = profile.to_dict(tips=False)
         all_activities = context.get('activities')
-        context['avg_rating'] = profile.get_average_star_rating
-        context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-        context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
-        context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
-        context['ratings'] = range(0,5)
-        context['profile'] = profile
-        context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
+        if all_activities.count() == 0:
+            context['none'] = True
         tabs = []
 
         counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
@@ -2080,6 +2022,128 @@ def profile(request, handle):
 
             context['tabs'] = tabs
 
+            currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
+                .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+            currently_working_bounties_count = currently_working_bounties.count()
+            if currently_working_bounties_count > 0:
+                obj = {'id': 'currently_working',
+                       'name': _('Currently Working'),
+                       'objects': Paginator(currently_working_bounties, 10).get_page(1),
+                       'count': currently_working_bounties_count,
+                       'type': 'bounty'
+                       }
+                if 'tabs' not in context:
+                    context['tabs'] = []
+                context['tabs'].append(obj)
+
+        if request.method == 'POST' and request.is_ajax():
+            # Update profile address data when new preferred address is sent
+            validated = request.user.is_authenticated and request.user.username.lower() == profile.handle.lower()
+            if validated and request.POST.get('address'):
+                address = request.POST.get('address')
+                profile.preferred_payout_address = address
+                profile.save()
+                msg = {
+                    'status': 200,
+                    'msg': _('Success!'),
+                    'wallets': [profile.preferred_payout_address, ],
+                }
+
+                return JsonResponse(msg, status=msg.get('status', 200))
+
+    elif tab == 'resume':
+        pass
+    elif tab == 'portfolio':
+        pass
+    elif tab == 'kudos':
+        owned_kudos = profile.get_my_kudos.order_by('id', order_by)
+        sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
+        kudos_limit = 8
+        context['kudos'] = owned_kudos[0:kudos_limit]
+        context['sent_kudos'] = sent_kudos[0:kudos_limit]
+        context['kudos_count'] = owned_kudos.count()
+        context['sent_kudos_count'] = sent_kudos.count()
+
+    elif tab == 'ratings':
+        context['feedbacks_sent'] = profile.feedbacks_sent.all()
+        context['feedbacks_got'] = profile.feedbacks_got.all()
+        context['unrated_funded_bounties'] = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+            .filter(
+                bounty_owner_github_username__iexact=profile.handle,
+                network=network,
+            ).exclude(
+                feedbacks__feedbackType='approver',
+                feedbacks__sender_profile=profile,
+            ).distinct('pk')
+
+        context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
+                .filter(interested__status='okay') \
+                .filter(interested__pending=False).filter(idx_status='done') \
+                .exclude(
+                    feedbacks__feedbackType='worker',
+                    feedbacks__sender_profile=profile
+                ).distinct('pk')
+    else:
+        raise Http404
+    return context
+
+def profile_filter_activities(activities, activity_name, activity_tabs):
+    """A helper function to filter a ActivityQuerySet.
+
+    Args:
+        activities (ActivityQuerySet): The ActivityQuerySet.
+        activity_name (str): The activity_type to filter.
+
+    Returns:
+        ActivityQuerySet: The filtered results.
+
+    """
+    if not activity_name or activity_name == 'all-activity':
+        return activities
+    for name, actions in activity_tabs:
+        if slugify(name) == activity_name:
+            return activities.filter(activity_type__in=actions)
+    return activities.filter(activity_type=activity_name)
+
+
+def profile(request, handle, tab=None):
+    """Display profile details.
+
+    Args:
+        handle (str): The profile handle.
+
+    Variables:
+        context (dict): The template context to be used for template rendering.
+        profile (dashboard.models.Profile): The Profile object to be used.
+        status (int): The status code of the response.
+
+    Returns:
+        TemplateResponse: The profile templated view.
+
+    """
+
+    # setup
+    status = 200
+    tab = tab if tab else 'activity'
+    owned_kudos = None
+    sent_kudos = None
+    handle = handle.replace("@", "")
+    context = {}
+
+    try:
+        if not handle and not request.user.is_authenticated:
+            return redirect('funder_bounties')
+
+        if not handle:
+            handle = request.user.username
+            profile = getattr(request.user, 'profile', None)
+            if not profile:
+                profile = profile_helper(handle)
+        else:
+            if handle.endswith('/'):
+                handle = handle[:-1]
+            profile = profile_helper(handle, current_user=request.user)
+
     except (Http404, ProfileHiddenException, ProfileNotFoundException):
         status = 404
         context = {
@@ -2096,65 +2160,24 @@ def profile(request, handle):
         return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
     context['preferred_payout_address'] = profile.preferred_payout_address
-
-    owned_kudos = profile.get_my_kudos.order_by('id', order_by)
-    sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
-    kudos_limit = 8
-    context['kudos'] = owned_kudos[0:kudos_limit]
-    context['sent_kudos'] = sent_kudos[0:kudos_limit]
-    context['kudos_count'] = owned_kudos.count()
-    context['sent_kudos_count'] = sent_kudos.count()
+    context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+    context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
+    context['avg_rating'] = profile.get_average_star_rating
+    context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
+    context['ratings'] = range(0,5)
+    context['profile'] = profile
     context['verification'] = profile.get_my_verified_check
     context['avg_rating'] = profile.get_average_star_rating
     context['suppress_sumo'] = True
-    context['feedbacks_sent'] = profile.feedbacks_sent.all()
-    context['feedbacks_got'] = profile.feedbacks_got.all()
-    context['unrated_funded_bounties'] = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
-        .filter(
-            bounty_owner_github_username__iexact=profile.handle,
-            network=network,
-        ).exclude(
-            feedbacks__feedbackType='approver',
-            feedbacks__sender_profile=profile,
-        ).distinct('pk')
-
-    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
-            .filter(interested__status='okay') \
-            .filter(interested__pending=False).filter(idx_status='done') \
-            .exclude(
-                feedbacks__feedbackType='worker',
-                feedbacks__sender_profile=profile
-            ).distinct('pk')
-
-    currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
-        .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
-    currently_working_bounties_count = currently_working_bounties.count()
-    if currently_working_bounties_count > 0:
-        obj = {'id': 'currently_working',
-               'name': _('Currently Working'),
-               'objects': Paginator(currently_working_bounties, 10).get_page(1),
-               'count': currently_working_bounties_count,
-               'type': 'bounty'
-               }
-        if 'tabs' not in context:
-            context['tabs'] = []
-        context['tabs'].append(obj)
-
-    if request.method == 'POST' and request.is_ajax():
-        # Update profile address data when new preferred address is sent
-        validated = request.user.is_authenticated and request.user.username.lower() == profile.handle.lower()
-        if validated and request.POST.get('address'):
-            address = request.POST.get('address')
-            profile.preferred_payout_address = address
-            profile.save()
-            msg = {
-                'status': 200,
-                'msg': _('Success!'),
-                'wallets': [profile.preferred_payout_address, ],
-            }
-
-            return JsonResponse(msg, status=msg.get('status', 200))
+    context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
+    tab = get_profile_tab(request, profile, tab)
+    if type(tab) == dict:
+        context.update(tab)
+    else:
+        return tab
+
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
