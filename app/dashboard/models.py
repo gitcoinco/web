@@ -2366,6 +2366,17 @@ class Profile(SuperModel):
         return self.user.is_staff if self.user else False
 
     @property
+    def success_rate(self):
+        network = self.get_network()
+        num_completed_bounties = self.bounties.filter(
+            idx_status__in=['done'], network=network).count()
+        terminal_state_bounties = self.bounties.filter(
+            idx_status__in=Bounty.TERMINAL_STATUSES, network=network).count()
+        if terminal_state_bounties == 0:
+            return 1.0
+        return num_completed_bounties * 1.0 / (terminal_state_bounties + num_completed_bounties)
+
+    @property
     def get_quarterly_stats(self):
         """Generate last 90 days stats for this user.
 
