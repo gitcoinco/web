@@ -311,6 +311,18 @@ def get_platform_wide_stats(since_last_n_days=90):
     }
 
 
+def handle_marketing_callback(key, request):
+    from marketing.models import MarketingCallback
+    callbacks = MarketingCallback.objects.filter(key=key)
+    if callbacks.exists():
+        callback_reference = callbacks.first().val
+        if callback_reference.split(':')[0] == 'add_to_group':
+            from django.contrib.auth.models import Group
+            group_name = callback_reference.split(':')[1]
+            group = Group.objects.get(name=group_name)
+            group.user_set.add(request.user)
+
+
 def func_name():
     """Determine the calling function's name.
 
