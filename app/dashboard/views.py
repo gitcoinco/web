@@ -1803,10 +1803,11 @@ def profile_details(request, handle):
 
     response = {
         'profile': ProfileSerializer(profile).data,
+        'success_rate': profile.success_rate,
         'recent_activity': {
             'activity_metadata': activity.metadata,
             'activity_type': activity.activity_type,
-            'created': activity.created,
+            'created': activity.created
         },
         'statistics': {
             'work_completed': count_work_completed,
