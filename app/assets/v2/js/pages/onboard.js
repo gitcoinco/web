@@ -150,20 +150,17 @@ onboard.getFilters = function(savedKeywords) {
 
   $('.filter-tags').html(_filters);
   words = [...new Set(_words)];
-  // TODO: Save Preferences
   var settings = {
     url: '/settings/matching',
     method: 'POST',
     headers: {'X-CSRFToken': csrftoken},
-    data: JSON.stringify({
-      'keywords': 'JavaScript,CCoffeeScript,CSS,HTML',
-      'submit': 'Go',
-      'github': 'thelostone-mc'
-    })
+    data: {
+      'keywords': words.join(),
+      'submit': 'Go'
+    }
   };
 
   $.ajax(settings).done(function(response) {
-    // TODO : Update keywords for user profile
   }).fail(function(error) {
     // TODO: Handle Error
   });

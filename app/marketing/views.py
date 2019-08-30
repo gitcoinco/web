@@ -185,13 +185,12 @@ def matching_settings(request):
 
     """
     # setup
-    __, es, __, is_logged_in = settings_helper_get_auth(request)
+    profile, es, __, is_logged_in = settings_helper_get_auth(request)
     if not es:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
     msg = ''
-
     if request.POST and request.POST.get('submit'):
         github = request.POST.get('github', '')
         keywords = request.POST.get('keywords').split(',')
@@ -199,6 +198,8 @@ def matching_settings(request):
             es.github = github
         if keywords:
             es.keywords = keywords
+            profile.keywords = keywords
+            profile.save()
         es = record_form_submission(request, es, 'match')
         es.save()
         msg = _('Updated your preferences.')
