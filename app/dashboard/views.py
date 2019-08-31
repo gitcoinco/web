@@ -2221,8 +2221,8 @@ def sync_web3(request):
     issue_url = request.POST.get('url')
     txid = request.POST.get('txid')
     network = request.POST.get('network')
-    contract_versions = ['2', ''] # TODO: CHECK ['2', '1']
-
+    # contract_versions = ['2', '1'] TODO: std_bounties_2_contract
+    contract_versions = ['1']
     if issue_url and txid and network:
         # confirm txid has mined
         print('* confirming tx has mined')

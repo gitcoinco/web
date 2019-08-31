@@ -13,7 +13,6 @@ window.onload = function() {
     rateUser();
   });
 
-  // Check Radio-box
   $('.rating input:radio').attr('checked', false);
 
   $('.rating input').click(function() {
@@ -24,7 +23,8 @@ window.onload = function() {
   $('input:radio').change(
     function() {
       var userRating = this.value;
-    });
+    }
+  );
 
   // a little time for web3 injection
   setTimeout(function() {
@@ -40,9 +40,9 @@ window.onload = function() {
       if (!is_valid) {
         $(this).val(0);
       }
-      var bounty_amount = parseFloat(document.bounty_amount_whole);
-      var pct = parseFloat($(this).val()) * 0.01;
-      var estimate = Math.round(bounty_amount * pct * 10 ** 3) / 10 ** 3;
+      const bounty_amount = parseFloat(document.bounty_amount_whole);
+      const pct = parseFloat($(this).val()) * 0.01;
+      const estimate = Math.round(bounty_amount * pct * 10 ** 3) / 10 ** 3;
 
       $('#tipEstimate').text(estimate);
     });
@@ -64,88 +64,118 @@ window.onload = function() {
 
     };
 
-    var issueURL = $('input[name=issueURL]').val();
+    const issueURL = $('input[name=issueURL]').val();
     const contract_version = $('input[name=contract_version]').val();
 
     waitforWeb3(function() {
-      var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
+      const uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
 
       $.get(uri, fulfillmentCallback);
     });
 
     $('#goBack').on('click', function(e) {
-      var url = window.location.href;
-      var new_url = url.replace('process?source', 'details?url');
+      const url = window.location.href;
+      const new_url = url.replace('process?source', 'details?url');
 
       window.location.href = new_url;
     });
 
     var attach_and_send_tip = function(callback) {
-      // get form data
-      var bounty_amount = parseFloat(document.bounty_amount_whole);
-      var pct = parseFloat($('#tipPercent').val()) * 0.01;
+      const bounty_amount = parseFloat(document.bounty_amount_whole);
+      const pct = parseFloat($('#tipPercent').val()) * 0.01;
 
-      var email = '';
-      var github_url = $('#issueURL').val();
-      var from_name = document.contxt['github_handle'];
-      var username = getSelectedFulfillment() && getSelectedFulfillment().getAttribute('username');
-      var amountInEth = bounty_amount * pct;
-      var comments_priv = '';
-      var comments_public = '';
-      var from_email = '';
-      var accept_tos = true;
-      var tokenAddress = document.token_address;
-      var expires = 9999999999;
+      let email = '';
+      const github_url = $('#issueURL').val();
+      const from_name = document.contxt['github_handle'];
+      const username = getSelectedFulfillment() && getSelectedFulfillment().getAttribute('username');
+      const amountInEth = bounty_amount * pct;
+      let comments_priv = '';
+      let comments_public = '';
+      let from_email = '';
+      const accept_tos = true;
+      const tokenAddress = document.token_address;
+      const expires = 9999999999;
 
       var success_callback = function(txid) {
-        var url = 'https://' + etherscanDomain() + '/tx/' + txid;
-        var msg = 'The tip has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+        const url = 'https://' + etherscanDomain() + '/tx/' + txid;
+        const msg = 'The tip has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
 
-        // send msg to frontend
         _alert(msg, 'info');
         callback();
-
       };
+
       var failure_callback = function() {
         unloading_button($('.submitBounty'));
       };
 
-      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
-
+      indicateMetamaskPopup();
+      return sendTip(
+        email,
+        github_url,
+        from_name,
+        username,
+        amountInEth,
+        comments_public,
+        comments_priv,
+        from_email,
+        accept_tos,
+        tokenAddress,
+        expires,
+        success_callback,
+        failure_callback,
+        false
+      );
     };
 
     var attach_and_send_kudos = function(selected_kudos, callback) {
-      // get form data
 
-      var email = '';
-      var github_url = $('#issueURL').val();
+      let email = '';
+      const github_url = $('#issueURL').val();
       var from_name = document.contxt['github_handle'];
       var username = getSelectedFulfillment() && getSelectedFulfillment().getAttribute('username');
       var amountInEth = selected_kudos.price_finney / 1000.0;
-      var comments_public = $('.kudos-comment textarea').val();
-      var comments_priv = '';
+      const comments_public = $('.kudos-comment textarea').val();
+      let comments_priv = '';
       var from_email = '';
-      var accept_tos = true;
-      var to_eth_address = $('#bountyFulfillment option:selected').data('address');
-      var expires = 9999999999;
-      var kudosId = selected_kudos.id;
-      var tokenId = selected_kudos.token_id;
-      var send_type = 'github';
-      var success_callback = function(txid) {
-        var url = 'https://' + etherscanDomain() + '/tx/' + txid;
-        var msg = 'The Kudos has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+      const accept_tos = true;
+      const to_eth_address = $('#bountyFulfillment option:selected').data('address');
+      const expires = 9999999999;
+      const kudosId = selected_kudos.id;
+      const tokenId = selected_kudos.token_id;
+      const send_type = 'github';
 
-        // send msg to frontend
+      var success_callback = function(txid) {
+        const url = 'https://' + etherscanDomain() + '/tx/' + txid;
+        const msg = 'The Kudos has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+
         _alert(msg, 'info');
         callback();
-
       };
+
       var failure_callback = function() {
         unloading_button($('.submitBounty'));
       };
 
-      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, true, send_type);
-
+      indicateMetamaskPopup();
+      return sendKudos(
+        email,
+        github_url,
+        from_name,
+        username,
+        amountInEth,
+        comments_public,
+        comments_priv,
+        from_email,
+        accept_tos,
+        to_eth_address,
+        expires,
+        kudosId,
+        tokenId,
+        success_callback,
+        failure_callback,
+        true,
+        send_type
+      );
     };
 
 
@@ -183,7 +213,7 @@ window.onload = function() {
         return;
       }
 
-      var bounty = web3.eth.contract(
+      let bounty = web3.eth.contract(
         getBountyABI(contract_version)).
         at(bounty_address(contract_version)
         );
@@ -205,16 +235,15 @@ window.onload = function() {
           return;
         }
 
-        var bountyAmount = parseInt(result['value_in_token'], 10);
-        var fromAddress = result['bounty_owner_address'];
-        var claimeeAddress = result['fulfiller_address'];
-        var open = result['is_open'];
-        var initialized = true;
-        var bountyId = result['standard_bounties_id'];
+        const bountyAmount = parseInt(result['value_in_token'], 10);
+        const fromAddress = result['bounty_owner_address'];
+        const claimeeAddress = result['fulfiller_address'];
+        const open = result['is_open'];
+        const bountyId = result['standard_bounties_id'];
 
-        var errormsg = undefined;
+        let errormsg = undefined;
 
-        if (bountyAmount == 0 || open == false || initialized == false) {
+        if (bountyAmount == 0 || open == false) {
           errormsg = gettext('No active funding found at this address.  Are you sure this is an active funded issue?');
         } else if (claimeeAddress == '0x0000000000000000000000000000000000000000') {
           errormsg = gettext('No claimee found for this bounty.');
@@ -259,13 +288,28 @@ window.onload = function() {
             next();
           }
         };
-        // just sent payout
+
         var send_payout = function() {
-          // TODO: UPDATE BASED ON VERSION
-          bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
+          const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
+
+          indicateMetamaskPopup();
+
+          switch (contract_version) {
+            case '2':
+              // TODO: std_bounties_2_contract
+              console.log('invoke std bounties contract');
+              break;
+            case '1':
+              bounty.acceptFulfillment(
+                bountyId,
+                fulfillmentId,
+                { gasPrice: gas_price },
+                final_callback
+              );
+              break;
+          }
         };
 
-        // send both tip and payout
         var send_tip_and_payout_callback = function() {
           indicateMetamaskPopup();
           if ($('#tipPercent').val() > 0) {
@@ -282,10 +326,11 @@ window.onload = function() {
         }
 
       };
-      // Get bountyId from the database
 
       waitforWeb3(function() {
-        var uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+        const uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL +
+          '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' +
+          $('input[name=standard_bounties_id]').val();
 
         $.get(uri, apiCallback);
       });

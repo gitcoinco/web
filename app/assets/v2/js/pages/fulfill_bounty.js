@@ -17,7 +17,6 @@ window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
-    var account = web3.eth.accounts[0];
 
     if (typeof localStorage['githubUsername'] != 'undefined') {
       if (!$('input[name=githubUsername]').val()) {
@@ -114,9 +113,12 @@ window.onload = function() {
           if (run_main) {
             if (!ignore_error) {
               var web3Callback = function(error, result) {
-                indicateMetamaskPopup(true);
-                var next = function() {
-                  // setup inter page state
+
+                if (error) {
+                  console.error('err', error);
+                  _alert({ message: gettext('There was an error') });
+                  unloading_button($('.js-submit'));
+                } else {
                   localStorage[issueURL] = JSON.stringify({
                     timestamp: timestamp(),
                     dataHash: null,
@@ -124,30 +126,20 @@ window.onload = function() {
                     txid: result
                   });
 
-                  var finishedComment = function() {
-                    dataLayer.push({ event: 'claimissue' });
-                    _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
-                    setTimeout(() => {
-                      document.location.href = '/funding/details?url=' + issueURL;
-                    }, 1000);
-                  };
-
-                  finishedComment();
-                };
-
-                if (error) {
-                  console.error('err', error);
-                  _alert({ message: gettext('There was an error') });
-                  unloading_button($('.js-submit'));
-                } else {
-                  next();
+                  dataLayer.push({ event: 'claimissue' });
+                  _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
+                  setTimeout(() => {
+                    document.location.href = '/funding/details?url=' + issueURL;
+                  }, 1000);
                 }
               };
 
               // Get bountyId from the database
-              var uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+              const uri = '/api/v0.1/bounties/?event_tag=all&github_url=' +
+                issueURL + '&network=' + $('input[name=network]').val() +
+                '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
-              $.get(uri, function(results, status) {
+              $.get(uri, function(results) {
                 results = sanitizeAPIResults(results);
                 result = results[0];
                 if (result == null) {
@@ -158,22 +150,32 @@ window.onload = function() {
                   return;
                 }
 
-                var bountyId = result['standard_bounties_id'];
+                const bountyId = result['standard_bounties_id'];
 
                 indicateMetamaskPopup();
-                // TODO: UPDATE BASED ON VERSION
-                bounty.fulfillBounty(
-                  bountyId,
-                  document.ipfsDataHash,
-                  {
-                    gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-                  },
-                  web3Callback
-                );
+                // TODO: std_bounties_2_contract
+                switch (contract_version) {
+                  case '2':
+                    // TODO: std_bounties_2_contract
+                    console.log('invoke std bounties contract');
+                    break;
+                  case '1':
+                    bounty.fulfillBounty(
+                      bountyId,
+                      document.ipfsDataHash,
+                      {
+                        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+                      },
+                      web3Callback
+                    );
+                    break;
+                  default:
+                    console.error('unable to find contract version');
+                }
               });
             }
           }
-        }; // _callback
+        };
 
         ipfs.addJson(ipfsFulfill, _callback);
       }

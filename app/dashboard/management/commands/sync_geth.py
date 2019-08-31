@@ -38,8 +38,13 @@ def get_bounty_id(_id, network, contract_version):
     if _id > 0:
         return _id
     contract = getBountyContract(network, contract_version)
-    bounty_id = contract.functions.getNumBounties().call() - 1
-    return bounty_id + _id
+
+    if contract_version == '2':
+        # TODO: std_bounties_2_contract
+        return _id
+    elif contract_version == '1'
+        bounty_id = contract.functions.getNumBounties().call() - 1
+        return bounty_id + _id
 
 
 class Command(BaseCommand):
