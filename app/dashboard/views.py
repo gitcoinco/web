@@ -2006,8 +2006,13 @@ def get_profile_tab(request, profile, tab, prev_context):
 
 
         all_activities = context.get('activities')
-        if all_activities.count() == 0:
-            context['none'] = True
+        context['avg_rating'] = profile.get_average_star_rating
+        context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+        context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+        context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
+        context['ratings'] = range(0,5)
+        context['profile'] = profile
+        # context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
         tabs = []
 
         counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
