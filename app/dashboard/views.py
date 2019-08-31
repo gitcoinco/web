@@ -2178,8 +2178,24 @@ def profile(request, handle, tab=None):
     context['verification'] = profile.get_my_verified_check
     context['avg_rating'] = profile.get_average_star_rating
     context['suppress_sumo'] = True
-    context['tab'] = tab
-    context['show_activity'] = request.GET.get('p', False) != False
+    context['feedbacks_sent'] = profile.feedbacks_sent.all()
+    context['feedbacks_got'] = profile.feedbacks_got.all()
+    context['unrated_funded_bounties'] = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+        .filter(
+            bounty_owner_github_username__iexact=profile.handle,
+            network=network,
+        ).exclude(
+            feedbacks__feedbackType='approver',
+            feedbacks__sender_profile=profile,
+        ).distinct('pk').nocache()
+		
+    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
+            .filter(interested__status='okay') \
+            .filter(interested__pending=False).filter(idx_status='done') \
+            .exclude(
+                feedbacks__feedbackType='worker',
+                feedbacks__sender_profile=profile
+            ).distinct('pk')
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
