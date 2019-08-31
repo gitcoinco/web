@@ -2086,7 +2086,7 @@ def profile(request, handle):
             feedbacks__feedbackType='approver',
             feedbacks__sender_profile=profile,
         ).distinct('pk').nocache()
-
+		
     context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
             .filter(interested__status='okay') \
             .filter(interested__pending=False).filter(idx_status='done') \
