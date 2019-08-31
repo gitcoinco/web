@@ -15,18 +15,20 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n staticfiles %}
-<div>
-  {{feedback.rating}} star rating
-
-  from 
-  {{feedback.sender_profile}}
-
-  to 
-  {{feedback.receiver_profile}}; 
-
-  {% if feedback.comment %}
-    comments:  {{feedback.comment}}
-  {% endif %}
-
-
+<div class="container mt-4">
+	<div class="mt-4 d-flex justify-content-between">
+		<div class="d-flex justify-content-between">
+			<img class="card-rating__avatar rounded-circle" alt="{{ feedback.sender_profile }}" width="48" height="48" src="{% url 'org_avatar' feedback.sender_profile %}" />
+			<div class="align-self-center">{{ feedback.sender_profile }}</div>
+		</div>
+		<div class="static-stars my-3">
+			{% for i in ratings %}
+			<i class="fa fa-star {% if feedback.rating != 0 and i <= feedback.rating %}fas{% endif %}"></i>
+			{% endfor %}
+		</div>
+		{% if feedback.comment %}
+		<div class="align-self-center">{{ feedback.comment }}</div>
+		{% endif %}
+		<a class="align-self-center" href="{{ feedback.bounty.url }}">View Bounty</a>
+	</div>
 </div>

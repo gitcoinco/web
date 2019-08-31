@@ -2028,7 +2028,7 @@ def profile(request, handle):
         context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
         context['ratings'] = range(0,5)
         context['profile'] = profile
-        context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
+        # context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
         tabs = []
 
         counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
