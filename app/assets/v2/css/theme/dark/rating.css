@@ -1,14 +1,10 @@
 .card-rating {
-  color: #ffffff;
-  background-color: #000000;
+  background-color: transparent !important;
 }
 .card-rating__title {
   color: transparent;
 }
 
 .card-rating__header {
-  display: flex;
-  background-color: none;
-  padding: 1rem 0.5em;
-  border-radius: 4px 4px 0 0;
+  background-color: transparent !important;
 }

@@ -46,8 +46,8 @@
                   {% else %}
                     <img class="card-rating__avatar rounded-circle" alt="{{ bounty.bounty_owner_github_username }}" width="56" height="56" src="{% url 'org_avatar' bounty.bounty_owner_github_username %}">
                   {% endif %}
-                  <div class="ml-2 text-dark">
-                    <a href="{{ bounty.url }}" class="card-rating__title">{{ bounty.title }}</a>
+                  <div class="ml-2 {% if is_my_profile and profile.custom_theme == 'light' %} text-dark {% elif is_my_profile and profile.custom_theme == 'dark' %} text-light {% else %} text-light {% endif %}">
+                    <a href="{{ bounty.url }}" class="card-rating__title {% if is_my_profile and profile.custom_theme == 'light' %} text-dark {% elif is_my_profile and profile.custom_theme == 'dark' %} text-light {% else %} text-light {% endif %}">{{ bounty.title }}</a>
                     by {{ bounty.bounty_owner_github_username }} <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="{{ bounty.bounty_owner_github_username }}" width="21" height="21" class="rounded-circle">
                     <div class="d-flex mt-2">
                       <div class="tag token">{{ bounty.value_true }} <span>{{ bounty.token_name }}</span></div>
@@ -76,8 +76,8 @@
                     {% else %}
                       <img class="card-rating__avatar rounded-circle" alt="{{ bounty.bounty_owner_github_username }}" width="56" height="56" src="{% url 'org_avatar' bounty.bounty_owner_github_username %}">
                     {% endif %}
-                    <div class="ml-2 text-dark">
-                      <a href="{{ bounty.url }}" class="card-rating__title">{{ bounty.title }}</a>
+                    <div class="ml-2 {% if is_my_profile and profile.custom_theme == 'light' %} text-dark {% elif is_my_profile and profile.custom_theme == 'dark' %} text-light {% else %} text-light {% endif %}">
+                      <a href="{{ bounty.url }}" class="card-rating__title  {% if is_my_profile and profile.custom_theme == 'light' %} text-dark {% elif is_my_profile and profile.custom_theme == 'dark' %} text-light {% else %} text-light {% endif %}">{{ bounty.title }}</a>
                       {{ fulfilment.fulfiller_github_username }} <img src="{% url 'org_avatar' fulfilment.fulfiller_github_username %}" alt="{{ fulfilment.fulfiller_github_username }}" width="21" height="21" class="rounded-circle">
                       <div class="d-flex mt-2">
                         <div class="tag token">{{ bounty.value_true }} <span>{{ bounty.token_name }}</span></div>
