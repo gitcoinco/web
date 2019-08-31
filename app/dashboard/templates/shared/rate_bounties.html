@@ -25,7 +25,7 @@
       <i class="fas fa-eye"></i> Only visible to you
     </li>
   </ul>
-  <div class="tab-content bg-white p-5" id="ratingTabsContent">
+  <div class="tab-content {% if is_my_profile and profile.custom_theme == 'light' %} bg-white {% elif is_my_profile and profile.custom_theme == 'dark' %} bg-black {% else %} bg-white {% endif %} p-5" id="ratingTabsContent">
     <div class="tab-pane fade show active" id="rating" role="tabpanel" aria-labelledby="home-tab">
       <ul class="nav nav-tabs" id="tabsRatingSelection" role="tablist">
         <li class="nav-item">

@@ -9,11 +9,13 @@
     {% include 'shared/cards_pic.html' %}
 	<link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
 	{% if is_my_profile and theme_type == 'light' %}
-    <link rel="stylesheet" href={% static "v2/css/theme/default/profile.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
 	{% elif is_my_profile and theme_type == 'dark' %}
     <link rel="stylesheet" href={% static "v2/css/theme/dark/profile.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/theme/dark/rating.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
 	{% else %}
-    <link rel="stylesheet" href={% static "v2/css/theme/default/profile.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
 	{% endif %}
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
     <link rel="stylesheet" href={% static "v2/css/kudos/styles.css" %} />
