@@ -8,14 +8,14 @@
       {% endif %}
 
       <div class="tab3">
-        Reviews Received
+		<h5 class="text-left mt-4">{% trans "Reviews Received" %}</h5>
         {% for feedback in feedbacks_got %}
           {% include "shared/feedback.html" %}
         {% endfor %}
       </div>
 
       <div class="tab3">
-        Reviews Sent
+		<h5 class="text-left mt-4">{% trans "Reviews Sent" %}</h5>
         {% for feedback in feedbacks_sent %}
           {% include "shared/feedback.html" %}
         {% endfor %}
