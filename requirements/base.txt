@@ -2,7 +2,9 @@ bs4
 ccxt
 cryptocompare==0.6
 cryptography==2.3
+celery==4.2.1
 django==2.2.3
+django-celery-beat==1.1.1
 django-cors-headers==2.4.0
 django-filter==2.0.0
 django-ratelimit==1.1.0

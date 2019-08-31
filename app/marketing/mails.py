@@ -102,12 +102,14 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
     except UnauthorizedError as e:
-        logger.debug(f'-- Sendgrid Mail failure - {_to_email} / {categories} - Unauthorized - Check sendgrid credentials')
+        logger.debug(
+            f'-- Sendgrid Mail failure - {_to_email} / {categories} - Unauthorized - Check sendgrid credentials')
         logger.debug(e)
     except HTTPError as e:
         logger.debug(f'-- Sendgrid Mail failure - {_to_email} / {categories} - {e}')
 
     return response
+
 
 def nth_day_email_campaign(nth, subscriber):
     firstname = subscriber.email.split('@')[0]
@@ -369,7 +371,8 @@ def tip_email(tip, to_emails, is_new):
     warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
     subject = gettext("⚡️ New Tip Worth {} {} {}").format(round(tip.amount, round_decimals), warning, tip.tokenName)
     if not is_new:
-        subject = gettext("🕐 Tip Worth {} {} {} Expiring Soon").format(round(tip.amount, round_decimals), warning, tip.tokenName)
+        subject = gettext("🕐 Tip Worth {} {} {} Expiring Soon").format(round(tip.amount, round_decimals), warning,
+                                                                        tip.tokenName)
 
     for to_email in to_emails:
         cur_language = translation.get_language()
@@ -436,7 +439,7 @@ def warn_account_out_of_eth(account, balance, denomination):
         setup_lang(to_email)
         subject = account + str(_(" is out of gas"))
         body_str = _("is down to ")
-        body = f"{account } {body_str} {balance} {denomination}"
+        body = f"{account} {body_str} {balance} {denomination}"
         if not should_suppress_notification_email(to_email, 'admin'):
             send_mail(
                 from_email,
@@ -457,7 +460,7 @@ def warn_subscription_failed(subscription):
     try:
         setup_lang(to_email)
         subject = str(subscription.pk) + str(_(" subscription failed"))
-        body = f"{settings.BASE_URL}{subscription.admin_url }\n{subscription.contributor_profile.email}, {subscription.contributor_profile.user.email}<pre>\n\n{subscription.subminer_comments}</pre>"
+        body = f"{settings.BASE_URL}{subscription.admin_url}\n{subscription.contributor_profile.email}, {subscription.contributor_profile.user.email}<pre>\n\n{subscription.subminer_comments}</pre>"
         if not should_suppress_notification_email(to_email, 'admin'):
             send_mail(
                 from_email,
@@ -469,7 +472,6 @@ def warn_subscription_failed(subscription):
             )
     finally:
         translation.activate(cur_language)
-
 
 
 def new_feedback(email, feedback):
@@ -528,20 +530,8 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
 
 
 def share_bounty(emails, msg, profile, invite_url=None, kudos_invite=False):
-    for email in emails:
-        to_email = email
-        from_email = settings.CONTACT_EMAIL
-        subject = "You have been invited to work on a bounty."
-        html, text = render_share_bounty(to_email, msg, profile, invite_url, kudos_invite)
-        send_mail(
-            from_email,
-            to_email,
-            subject,
-            text,
-            html,
-            from_name=f"@{profile.handle}",
-            categories=['transactional', func_name()],
-        )
+    from dashboard.tasks import bounty_emails
+    bounty_emails.delay(emails, msg, profile.handle, invite_url, kudos_invite)
 
 
 def new_reserved_issue(from_email, user, bounty):
@@ -585,6 +575,7 @@ def reject_faucet_request(fr):
     finally:
         translation.activate(cur_language)
 
+
 def new_bounty_daily(bounties, old_bounties, to_emails=None):
     if not bounties:
         return
@@ -621,7 +612,7 @@ def weekly_roundup(to_emails=None):
             setup_lang(to_email)
             html, text, subject = render_new_bounty_roundup(to_email)
             from_email = settings.PERSONAL_CONTACT_EMAIL
-            
+
             if not html:
                 print("no content")
                 return
@@ -668,10 +659,11 @@ def weekly_recap(to_emails=None):
         finally:
             translation.activate(cur_language)
 
+
 def unread_notification_email_weekly_roundup(to_emails=None):
     if to_emails is None:
         to_emails = []
-    
+
     cur_language = translation.get_language()
     for to_email in to_emails:
         try:
@@ -681,12 +673,12 @@ def unread_notification_email_weekly_roundup(to_emails=None):
 
             if not should_suppress_notification_email(to_email, 'weeklyrecap'):
                 send_mail(
-                    from_email, 
-                    to_email, 
-                    subject, 
-                    text, 
-                    html, 
-                    from_name="Kevin Owocki (Gitcoin.co)", 
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    from_name="Kevin Owocki (Gitcoin.co)",
                     categories=['marketing', func_name()],
                 )
             else:
@@ -813,7 +805,6 @@ def bounty_changed(bounty, to_emails=None):
 
 
 def new_match(to_emails, bounty, github_username):
-
     subject = gettext("⚡️ {} Meet {}: {}! ").format(github_username.title(), bounty.org_name.title(), bounty.title)
 
     to_email = to_emails[0]
@@ -886,7 +877,8 @@ def bounty_expire_warning(bounty, to_emails=None):
                 unit = _('hour')
                 num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
             unit = unit + ("s" if num != 1 else "")
-            subject = gettext("😕 Your Funded Issue ({}) Expires In {} {} ... 😕").format(bounty.title_or_desc, num, unit)
+            subject = gettext("😕 Your Funded Issue ({}) Expires In {} {} ... 😕").format(bounty.title_or_desc, num,
+                                                                                          unit)
 
             from_email = settings.CONTACT_EMAIL
             html, text = render_bounty_expire_warning(to_email, bounty)
@@ -1077,7 +1069,7 @@ def new_bounty_request(model):
         setup_lang(to_email)
         subject = _("New Bounty Request")
         body_str = _("New Bounty Request from")
-        body = f"{body_str} {model.requested_by}: "\
+        body = f"{body_str} {model.requested_by}: " \
             f"{settings.BASE_URL}_administrationbounty_requests/bountyrequest/{model.pk}/change"
         send_mail(
             from_email,
@@ -1098,21 +1090,21 @@ def new_funding_limit_increase_request(profile, cleaned_data):
     usdt_per_tx = cleaned_data.get('usdt_per_tx', 0)
     usdt_per_week = cleaned_data.get('usdt_per_week', 0)
     comment = cleaned_data.get('comment', '')
-    accept_link = f'{settings.BASE_URL}requestincrease?'\
-                  f'profile_pk={profile.pk}&'\
-                  f'usdt_per_tx={usdt_per_tx}&'\
-                  f'usdt_per_week={usdt_per_week}'
+    accept_link = f'{settings.BASE_URL}requestincrease?' \
+        f'profile_pk={profile.pk}&' \
+        f'usdt_per_tx={usdt_per_tx}&' \
+        f'usdt_per_week={usdt_per_week}'
 
     try:
         setup_lang(to_email)
         subject = _('New Funding Limit Increase Request')
-        body = f'New Funding Limit Request from {profile} ({profile.absolute_url}).\n\n'\
-               f'New Limit in USD per Transaction: {usdt_per_tx}\n'\
-               f'New Limit in USD per Week: {usdt_per_week}\n\n'\
-               f'To accept the Funding Limit, visit: {accept_link}\n'\
-               f'Administration Link: ({settings.BASE_URL}_administrationdashboard/profile/'\
-               f'{profile.pk}/change/#id_max_tip_amount_usdt_per_tx)\n\n'\
-               f'Comment:\n{comment}'
+        body = f'New Funding Limit Request from {profile} ({profile.absolute_url}).\n\n' \
+            f'New Limit in USD per Transaction: {usdt_per_tx}\n' \
+            f'New Limit in USD per Week: {usdt_per_week}\n\n' \
+            f'To accept the Funding Limit, visit: {accept_link}\n' \
+            f'Administration Link: ({settings.BASE_URL}_administrationdashboard/profile/' \
+            f'{profile.pk}/change/#id_max_tip_amount_usdt_per_tx)\n\n' \
+            f'Comment:\n{comment}'
 
         send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
     finally:
@@ -1132,17 +1124,17 @@ def bounty_request_feedback(profile):
     try:
         setup_lang(to_email)
         subject = _(f'Bounty Request Feedback, @{profile.username} <> Gitcoin')
-        body = f'Howdy @{profile.username},\n\n'\
-               'This is Vivek from Gitcoin. '\
-               'I noticed you made a funded Gitcoin Requests '\
-               'a few months ago and just wanted to check in. '\
-               'How\'d it go? Any feedback for us?\n\n'\
-               'Let us know if you have any bounties in your near future '\
-               '-- we\'ll pay attention to '\
-               'Gitcoin Requests (https://gitcoin.co/requests/) '\
-               'from you as we know you\'ve suggested good things '\
-               'in the past 🙂\n\n'\
-               'Best,\n\nV'
+        body = f'Howdy @{profile.username},\n\n' \
+            'This is Vivek from Gitcoin. ' \
+            'I noticed you made a funded Gitcoin Requests ' \
+            'a few months ago and just wanted to check in. ' \
+            'How\'d it go? Any feedback for us?\n\n' \
+            'Let us know if you have any bounties in your near future ' \
+            '-- we\'ll pay attention to ' \
+            'Gitcoin Requests (https://gitcoin.co/requests/) ' \
+            'from you as we know you\'ve suggested good things ' \
+            'in the past 🙂\n\n' \
+            'Best,\n\nV'
 
         send_mail(
             from_email,
