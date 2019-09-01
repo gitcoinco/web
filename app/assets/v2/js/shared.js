@@ -923,30 +923,43 @@ var listen_for_web3_changes = async function() {
     if (typeof web3 == 'undefined') {
       currentNetwork();
       trigger_form_hooks();
-    } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+    } else if (typeof web3.eth == 'undefined') {
       currentNetwork('locked');
       trigger_form_hooks();
     } else {
-      is_metamask_unlocked = true;
-      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-        if (errors) {
-          return;
-        }
-        if (typeof result != 'undefined' && result !== null) {
-          document.balance = result.toNumber();
-        }
-      });
+      var cb;
+      try {
+        // invoke infura synchronous call, if it fails metamask is locked
+        cb = web3.eth.coinbase;
+      } catch (error) {
+        // catch error so sentry doesn't alert on metamask call failure
+        console.log('web3.eth.coinbase could not be loaded');
+      }
+      if (typeof cb == 'undefined' || !cb) {
+         currentNetwork('locked');
+         trigger_form_hooks();
+      } else {
+        is_metamask_unlocked = true;
+        web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+          if (errors) {
+            return;
+          }
+          if (typeof result != 'undefined' && result !== null) {
+            document.balance = result.toNumber();
+          }
+        });
 
-      web3.version.getNetwork(function(error, netId) {
-        if (error) {
-          currentNetwork();
-        } else {
-          var network = getNetwork(netId);
+        web3.version.getNetwork(function(error, netId) {
+          if (error) {
+            currentNetwork();
+          } else {
+            var network = getNetwork(netId);
 
-          currentNetwork(network);
-          trigger_form_hooks();
-        }
-      });
+            currentNetwork(network);
+            trigger_form_hooks();
+          }
+        });
+      }
     }
   }
 
