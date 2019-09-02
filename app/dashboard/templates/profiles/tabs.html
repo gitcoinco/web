@@ -8,6 +8,13 @@
                 Activity
               </a>
             </li>
+            {% if active_bounties_count %}
+            <li class="nav-item">
+              <a class="nav-link {% if tab == 'resume' %}active{%endif%}" href="{{profile.url}}/active">
+                Active Issues ({{active_bounties_count}})
+              </a>
+            </li>
+            {% endif %}
             {% if show_resume_tab %}
             <li class="nav-item">
               <a class="nav-link {% if tab == 'resume' %}active{%endif%}" href="{{profile.url}}/resume">

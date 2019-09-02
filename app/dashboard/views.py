@@ -1953,6 +1953,8 @@ def bounty_upload_nda(request):
 
 
 def get_profile_tab(request, profile, tab, prev_context):
+    
+    #config
     if not settings.DEBUG:
         network = 'mainnet'
     else:
@@ -1960,6 +1962,18 @@ def get_profile_tab(request, profile, tab, prev_context):
     status = 200
     order_by = request.GET.get('order_by', '-modified_on')
     context = profile.to_dict(tips=False)
+
+    # all tabs
+    if profile.persona_is_funder:
+        active_bounties = Bounty.objects.current().filter(bounty_owner_profile=profile).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+    elif profile.persona_is_hunter:
+        active_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
+            .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+    else:
+        active_bounties = Bounty.objects.none()
+    context['active_bounties_count'] = active_bounties.count()
+
+    # specific tabs
     if tab == 'activity':
         all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar']
         activity_tabs = [
@@ -2022,20 +2036,6 @@ def get_profile_tab(request, profile, tab, prev_context):
 
             context['tabs'] = tabs
 
-            currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
-                .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
-            currently_working_bounties_count = currently_working_bounties.count()
-            if currently_working_bounties_count > 0:
-                obj = {'id': 'currently_working',
-                       'name': _('Currently Working'),
-                       'objects': Paginator(currently_working_bounties, 10).get_page(1),
-                       'count': currently_working_bounties_count,
-                       'type': 'bounty'
-                       }
-                if 'tabs' not in context:
-                    context['tabs'] = []
-                context['tabs'].append(obj)
-
         if request.method == 'POST' and request.is_ajax():
             # Update profile address data when new preferred address is sent
             validated = request.user.is_authenticated and request.user.username.lower() == profile.handle.lower()
@@ -2050,6 +2050,9 @@ def get_profile_tab(request, profile, tab, prev_context):
                 }
 
                 return JsonResponse(msg, status=msg.get('status', 200))
+
+    elif tab == 'active':
+        context['active_bounties'] = active_bounties
 
     elif tab == 'resume':
         if not prev_context['is_editable'] and not profile.show_job_status:

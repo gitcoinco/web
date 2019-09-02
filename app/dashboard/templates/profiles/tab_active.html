@@ -1,0 +1,9 @@
+{% load i18n static %}
+
+    <div class="container tab5" >
+      {% for active in active_bounties %}
+      <div>
+        {{active.pk}} -- {{active.url}}
+      </div>
+      {% endfor %}
+    </div>
