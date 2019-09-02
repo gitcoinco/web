@@ -1,0 +1,22 @@
+{
+    "symbol": "IEC6",
+    "address": "0xfecc2d3f310bD35F937840B23500EC5fE5e9f39c",
+    "overview": {
+        "en": "Intellective Estate Chain",
+        "zh": "智能房产链"
+    },
+    "email": "13159263926@163.com",
+    "website": "http://iecfund.com/",
+    "whitepaper": "http://iecfund.com/uploads/20180724/747a2a47f3b598f3cd0fd6b25c8544ac.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-08",
+    "initial_price": {
+        "ETH": "0.0010740 ETH",
+        "USD": "0.13 USD",
+        "BTC": "0.00003598 BTC"
+    },
+    "links": {
+        "telegram": "https://0.plus/IEC888888",
+        "github": "https://github.com/IEC6"
+    }
+}

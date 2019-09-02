@@ -1,0 +1,12 @@
+{
+    "symbol": "EOST",
+    "account_name": "eostrantoken",
+    "overview": {
+        "en": "EOS Transport is a terminal digital asset exchange matching engine aims to construct a basic digital asset exchange high speed matching engine.",
+        "zh": "EOST是一种终端数字资产交换撮合引擎，以构建基础数字资产交换高速撮合引擎为目的"
+    },
+    "website": "https://eost-transport.com",
+    "links": {
+        "telegram": "https://t.me/eostofficial"
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "symbol": "GBC",
+    "address": "0x02639FC688DF086f18Ce5E7f0F014bc74DE0229b",
+    "overview": {
+        "en": "Golden Berry is a decentralized gold business platform based on Ethereum, which can store, consume and exchange gold in the same way as any currency.",
+        "zh": "黄金贝里是基于以太坊建立的去中心化的黄金商务平台，可实现与任何货币相同的方式存储、消费和兑换黄金。"
+    },
+    "email": "service@goldenberry.io",
+    "website": "https://www.goldenberry.io/",
+    "whitepaper": "https://www.goldenberry.io/pdf/whitebook_tw.pdf",
+    "state": "LOCKED",
+    "published_on": "2019-03-31",
+    "initial_price": {
+        "USD": "0.036 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/GBCtoken?lang=zh-tw",
+        "facebook": "https://www.facebook.com/GBCtoken/"
+    }
+}

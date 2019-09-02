@@ -1,0 +1,19 @@
+{
+  "symbol": "BBC",
+  "address": "0xac040aa49e4a4dc5d3895c524b8c0552c4468956",
+  "overview":{
+        "en": "BBAYCOIN(BBC)是BBAY交易所的平台币，同时也是BBAYWORLD区块链游戏平台的支付方式。BBC将进一步在电子商务、社交媒体、视频直播、广告营销、慈善公益等领域进行大规模应用试验。未来我们将创建BBAY区块链，并迁移代币到BBAYCHAIN上。",
+        "zh": "BBAYCOIN (BBC) is the platform currency of the BBAY exchange, and is also the payment method of the BBAYWORLD blockchain game platform. The BBC will further conduct large-scale application trials in the fields of e-commerce, social media, live video, advertising and marketing, and charity. In the future we will create a BBAY blockchain and migrate tokens to BBAYCHAIN."
+  },
+  "email": "Support@bbayex.com",
+  "website": "https://bbaycoin.com/",
+  "whitepaper": "https://bbaycoin.com/assets/files/white-paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-08-08",
+  "initial_price":{
+        "USD":"0.06 USD"
+  },
+  "links": {
+    "telegram": "https://t.me/bbayio"
+  }
+}

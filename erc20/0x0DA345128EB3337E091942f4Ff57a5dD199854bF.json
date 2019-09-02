@@ -1,0 +1,15 @@
+{
+  "symbol": "WON",
+  "address": "0x0DA345128EB3337E091942f4Ff57a5dD199854bF",
+  "overview":{
+        "zh": "WonderAir（WON）新一代去中心化商业级生态平台，旨在实现分布式应用的性能扩展。利用数字身份进行资产数字化，利用智能合约对数字资产进行自动化管理，实现“智能经济”的一种分布式网络。WonderAir支持三方开发者基于WON部署DAPP，并且实现对链上数据的调用。通过区块链技术解决传统的高度中心化、数据隐私安全等问题和独创的菲米协议、多层环型加密、Star Vista多混合共识机制来减少传统工作量证明的能源消耗，在区块链技术和理念上进行了一系列的创新。"
+  },
+  "email": "thewonderair@gmail.com",
+  "website": "http://wonderair.org/",
+  "whitepaper": "http://wonderair.org/WonderAir.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-10",
+  "links": {
+        "twitter": "https://twitter.com/TheWonderAir"
+   }
+}

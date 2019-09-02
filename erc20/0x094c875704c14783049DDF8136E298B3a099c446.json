@@ -1,0 +1,17 @@
+{
+    "symbol": "PT",
+    "address": "0x094c875704c14783049DDF8136E298B3a099c446",
+    "overview": {
+        "en": "PT (Promo Token) is an ERC20 utility token used by KyberSwap and other token teams for special marketing purposes.",
+        "zh": "PT (Promo Token) 是由 KyberSwap 发行的推广代币。2019.2.2 - 2019.2.3 新年活动期间，可在 imToken Candy Bar 抽到 PT 红包，并在「浏览」页选择 「Kyber」DApp，即可在其中将 PT 兑换成 KNC（ 1 PT 价值相当于 1 美金）。"
+    },
+    "email": "hello@kyber.network",
+    "links": {
+        "twitter": "https://twitter.com/KyberNetwork",
+        "github": "https://github.com/KyberNetwork",
+        "slack": "https://kybernetwork.slack.com"
+    },
+    "website": "https://kyber.network/swap",
+    "whitepaper": "https://blog.kyber.network/kcc-kyber-community-coupon-77302fbc4333",
+    "published_on": "2018-11-22"
+}

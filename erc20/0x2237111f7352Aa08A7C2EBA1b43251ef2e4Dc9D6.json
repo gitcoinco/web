@@ -1,0 +1,20 @@
+{
+    "symbol": "ZBT",
+    "address": "0x2237111f7352Aa08A7C2EBA1b43251ef2e4Dc9D6",
+    "overview": {
+        "en": "ZBT is dedicated to build a value discovery platform for game assets exchanging platform, and build a digital blockchain game assets leading the world.ZBT community users can trade game assets at www.zbt.com. Gamers with Zabit (ZBT) points can get more service content on the platform.",
+        "zh": "扎比特(ZBT)致力于打造专业的游戏资产交易市场。致力于打造全球领先的区块链游戏资产交易社区，扎比特社区用户可以在WWW.ZBT.COM进行游戏资产交易，拥有扎比特(ZBT)积分的用户可以得到平台更多服务内容。"
+    },
+    "email": "customercare@zbt.com",
+    "website": "http://www.zbt.com",
+    "state": "NORMAL",
+    "published_on": "2018-11-01",
+    "initial_price": {
+        "ETH": "0.000039814 ETH",
+        "USD": "0.009 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/zbt_com",
+        "facebook": "https://www.facebook.com/Bithaw-Game-205153960134995/"
+    }
+}

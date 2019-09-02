@@ -1,0 +1,14 @@
+{
+    "symbol": "WAL",
+    "account_name": "whaleextoken",
+    "overview": {
+        "en": "WhaleEx is the decentralized exchange (DEX) based on EOS, aiming to be the top DEX with the highest liquidity all over the world. The WhaleEx team has the strong belief that only the DEX can ensure the security of users' assets. WhaleEx also has self-developed off-chain trade matching engine being capable of handling millions TPS in real time. Besides, WhaleEx is the first decentralized exchange that supports repo trade mining. WhaleEx fully contributes itself to prospering the EOS ecosystem, providing services for Dapps and users within the ecosystem. The EOS World Tour initiated by WhaleEx has been supported by fifty-nine BPs around the world.",
+        "zh": "WhaleEx鲸交所是EOS去中心化交易所，愿景是成为全球流动性最强的去中心化交易所。我们坚信只有去中心化交易所才能真正保护用户的资产安全，让交易平台没有作恶的能力。WhaleEx自主研发百万级TPS线下撮合引擎，是全球第一家支持回购型交易挖矿的去中心化交易所。WhaleEx专注于EOS生态上的DAPP 和用户，为EOS的生态繁荣积极贡献，发起的EOS全球行活动已经获得了全球59家EOS节点的支持。"
+    },
+    "website": "https://www.whaleex.com/",
+    "whitepaper": "https://static.whaleex.com.cn/whitepaper/WhaleEx_zh.1.12.pdf",
+    "links": {
+        "telegram": "https://t.me/WhaleExGroup",
+        "twitter": "https://twitter.com/WhaleExchange"
+    }
+}

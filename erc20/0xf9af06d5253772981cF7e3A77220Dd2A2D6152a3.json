@@ -1,6 +1,6 @@
 {
     "website": "https://www.linkyex.com",
-	"whitepaper": "https://www.linkyex.com/#/book",
+    "whitepaper": "https://www.linkyex.com/#/book",
     "published_on": "2018-08-06",
     "links": {
         "telegram": "https://t.me/lianhui1",
@@ -15,7 +15,7 @@
     "initial_price": {
         "ETH": "0.000006 ETH",
         "USD": "0.1448 USD"
-    }, 
+    },
     "address": "0xf9af06d5253772981cF7e3A77220Dd2A2D6152a3",
     "email": "office@linkyex.com"
 }

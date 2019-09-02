@@ -1,0 +1,17 @@
+{
+    "symbol": "OCT",
+    "account_name": "octtothemoon",
+    "overview": {
+        "en": "OracleChain is a decentralized Oracle technology platform for multi-blockchain. ",
+        "zh": "OracleChain是一个多区块链的去中心化Oracle技术平台，采用自主的PoRD机制，将现实世界数据引入区块链，并将此作为基础设施为其他区块链应用提供服务。"
+    },
+    "website": "https://oraclechain.io",
+    "whitepaper": "https://oraclechain.io/files/oraclechain_white_paper.pdf",
+    "published_on": "2017-07-26",
+    "links": {
+        "steemit": "https://steemit.com/@oraclechain",
+        "twitter": "https://twitter.com/Oracle_Chain",
+        "telegram": "https://t.me/OracleChainChatCN",
+        "medium": "https://medium.com/@OracleChain"
+    }
+}

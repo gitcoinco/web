@@ -1,4 +1,7 @@
 {
-  "symbol": "HKG",
-  "address": "0xF6FE061efa2a8e15936696BaF5E8CBa8C3F3485B"
+    "symbol": "HKG_OLD",
+    "address": "0xF6FE061efa2a8e15936696BaF5E8CBa8C3F3485B",
+    "overview": {
+        "zh": "注：此为 HKG 官方发行的旧 HGK 代币。新 HGK 合约地址：0x14F37B574242D366558dB61f3335289a5035c506"
+    }
 }

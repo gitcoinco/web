@@ -10,9 +10,8 @@
     "state": "NORMAL",
     "published_on": "2018-06-15",
     "links": {
-      "twitter": "https://twitter.com/ChainBowWallet",
-      "telegram": "https://t.me/chainbow_io",
-      "github": "https://github.com/chainbow"
+        "twitter": "https://twitter.com/ChainBowWallet",
+        "telegram": "https://t.me/chainbow_io",
+        "github": "https://github.com/chainbow"
     }
-  }
-  
+}

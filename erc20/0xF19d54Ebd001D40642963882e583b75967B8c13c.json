@@ -1,0 +1,16 @@
+{
+  "symbol": "NUC",
+  "address": "0xF19d54Ebd001D40642963882e583b75967B8c13c",
+  "overview":{
+        "en": "NUChin is an artificial intelligence + internet of value discovery ecology based on BNP network general protocol. NUhain creatively proposes a new five-layer architecture of block chain, defines the common network protocol ( BNP ) of block chain, combines the technologies of internet, internet of things and block chain, and based on TCP / IP protocol, designs the framework, protocol, content and other technical standards of BNP protocol in detail, which is expected to become the common protocol of block chain network transmission. Meanwhile, NUChain has designed block chain hardware products such as NUCBox, NUCRouter, and NUCSDK that support BNP protocol, which can realize the chain-up of off-chain assets, thus solving the problem of the first kilometer of block chain. In addition, nu chain's original PoC contribution value proves that the consensus mechanism is more fair and reasonable, protecting the rights and interests of ordinary nodes. PoSt big data cloud mining enables data providers to have a direct benefit method, thus realizing data democracy. Various traditional enterprises in the real economy, based on NUCchain, can better realize the transformation of the block chain, successfully chain up the real assets and become encrypted digital assets to be traded around the world. NUChain gradually completes the free mapping of entities, free transaction of data, and free circulation of values, thus forming a distributed digital asset ecology.",
+        "zh": "NUChin是基于BNP网络通用协议的人工智能+物联网的价值发现生态。NUChain创新性地提出了区块链新五层架构，定义了区块链通用网络协议（BNP），结合互联网、物联网和区块链的技术，基于TCP/IP协议，详细设计了BNP协议的框架、协议、内容等技术标准，有望成为区块链网络传输的通用协议。同时，NUChain设计了支持BNP协议的NUCBox、NUCRouter、NUCSDK等区块链硬件产品，能够实现链外资产上链，从而解决区块链第一公里的难题。另外，NUChain独创的PoC贡献值证明共识机制更加公平合理，保障普通节点的权益， PoSt大数据云挖矿让数据的提供者有了直接获益的方法，实现了数据的民主。实体经济中的各个传统企业，基于NUChain能较好地实现区块链转型，将实体资产成功上链，成为加密数字资产在全世界各地交易。NUChain逐步完成实体的自由映射、数据的自由交易、价值的自由流通，进而形成一个分布式数字资产生态。"
+  },
+  "email": "kefu@NUchain.org",
+  "website": "http://www.nuchain.org/",
+  "whitepaper": "http://nuchain.net/Nuclear_Chain_Whitepaper_ZH_V3.64.pdf",
+  "links": {
+    "twitter": "https://twitter.com/Nuclearchainlab",
+    "telegram": "https://t.me/nuchain",
+    "facebook": "https://www.facebook.com/Nuclearchainlab"
+  }
+}

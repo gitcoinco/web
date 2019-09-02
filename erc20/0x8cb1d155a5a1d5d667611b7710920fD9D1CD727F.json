@@ -1,0 +1,23 @@
+{
+  "symbol": "AIRx",
+  "address": "0x8cb1d155a5a1d5d667611b7710920fD9D1CD727F",
+  "overview":{
+        "en": "Augmented Reality (AR) and blockchain applications are leading the next technology revolution. The cryptocurrency market will reach $1 Trillion marketcap. Aircoins aims to unlock the digital ecosystem with hidden treasures for you to unlock in the AR environment. Be able to pickup, drop and trade cryptos in AR."
+  },
+  "email": "info@aircoins.co",
+  "website": "https://aircoins.co/",
+  "whitepaper": "https://drive.google.com/file/d/1eZ739U_5LK50RSQNShizb45tRdO93K-o/view",
+  "state": "NORMAL",
+  "published_on": "2018-07-07",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/AIRCOINS_app",
+    "telegram": "http://t.me/aircoins",
+    "facebook": "https://www.facebook.com/Aircoins/",
+    "reddit": "https://www.reddit.com/r/Aircoins/"
+  }
+}

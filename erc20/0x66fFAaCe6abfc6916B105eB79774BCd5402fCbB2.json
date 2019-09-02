@@ -1,0 +1,15 @@
+{
+    "symbol": "DBE",
+    "address": "0x66fFAaCe6abfc6916B105eB79774BCd5402fCbB2",
+    "overview": {
+        "en": "It aims to use the blockchain technology to create a global human integrated distributed symbiotic ecosystem, and to provide a trust pipeline for the transmission of demographic dividends, business information, cultural education, disaster relief, disease prevention, environmental governance, consensus voting, data statistics, etc. The decentralized symbiosis and governance network on the world's land serves the global human race.",
+        "zh": "它的目的是利用区块链技术创建一个全球人类一体化的分布式共生生态系统，并为人口红利、商业信息、文化教育、救灾、疾病预防、环境治理、共识投票、数据统计等的传递提供一条信任管道。世界陆地上的共生与治理网络服务于全球人类。"
+    },
+    "email": "info@dbeth.us",
+    "website": "https://dbeth.us/",
+    "whitepaper": "https://dbeth.us/DBE%20Block%20Chain%20White%20Paper.pdf",
+    "initial_price": {
+        "ETH": "0.00001 ETH",
+        "USD": "0.00135 USD"
+    }
+}

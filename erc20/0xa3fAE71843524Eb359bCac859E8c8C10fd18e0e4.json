@@ -1,0 +1,22 @@
+{
+    "symbol": "KDH",
+    "address": "0xa3fAE71843524Eb359bCac859E8c8C10fd18e0e4",
+    "overview": {
+        "en": "Introducing Hydrahashgraph, a distributed ledger platform that resolves the factors that constrain adoption of public DLT by the mainstream.",
+        "zh": "海德拉哈希混合链, 是一个分布式账本平台,它解决了限制主流采用公共DLT的各种因素."
+    },
+    "email": "contact@kdhgroup.com",
+    "website": "http://kdhgroup.com/",
+    "whitepaper": "http://kdhgroup.com/Hydrahashgraph_Whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-11-06",
+    "initial_price": {
+        "USD": "0.3 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/keydecade",
+        "telegram": "https://t.me/keydecade",
+        "github": "https://github.com/KeyDecadeHoldings/KDH-Token",
+        "reddit": "https://www.reddit.com/r/keydecadeholdings"
+    }
+}

@@ -1,0 +1,27 @@
+{
+  "website": "https://trustdice.win",
+  "published_on": "2018-10-14",
+  "links": {
+    "linkedin": "https://www.linkedin.com/company/19257600/",
+    "telegram": "https://t.me/trust_dice",
+    "reddit": "https://www.reddit.com/r/TrustDice/",
+    "medium": "https://medium.com/@trustdice",
+    "discord": "https://discord.gg/ybsVstu",
+    "youtube": "https://www.youtube.com/channel/UCnRu2PGAsDt3r9rnwQGleSA/videos",
+    "bitcointalk": "https://bitcointalk.org/index.php?topic=5126117.0",
+    "twitter": "https://twitter.com/Trust_Dice",
+    "facebook": "https://www.facebook.com/trustdice.win/"
+  },
+  "overview": {
+    "en": "Value sharing game platform based on blockchain.Play to earn TXT tokens and stake TXT to share value of platform",
+    "cn": "价值共享的区块链游戏平台。玩家可以通过玩游戏赚TXT代币，通过抵押TXT代币来共享平台成长收益"
+  },
+  "symbol": "TXT",
+  "initial_price": {
+    "USD": "0.00025 USD"
+  },
+  "state": "NORMAL",
+  "whitepaper": "https://drive.google.com/file/d/1xjlmJ8Nt3eNv1SHubi9gTO6l44IPFMp6/view",
+  "address": "0xb12907DCd65e09871BbD6F1659436f3Be310AF65",
+  "email": "Infoinfo@trustdice.win"
+}

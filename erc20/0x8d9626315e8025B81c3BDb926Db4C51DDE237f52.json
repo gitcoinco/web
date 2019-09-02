@@ -1,0 +1,27 @@
+{
+    "symbol": "PLS",
+    "address": "0x8d9626315e8025B81c3BDb926Db4C51DDE237f52",
+    "overview": {
+        "en": "Plaas farmers decentralized blockchain platform seeks to enable farm data record, animal tracking through the use of RFID tech and have genetic information stored on smart contract.",
+        "zh": "Plaas农民分散区块链平台寻求通过使用RFID技术实现农场数据记录，动物追踪，并将智能合同中存储的遗传信息存储起来"
+    },
+    "email": "info@plaas.io",
+    "website": "https://plaas.io/",
+    "whitepaper": "https://plaas.io/wp-content/uploads/2018/10/Plaas.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-12-15",
+    "initial_price": {
+        "ETH": "0.002000 ETH",
+        "USD": "0.21 USD",
+        "BTC": "0.000062 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@plaas/plaas-to-undertake-a-token-giveaway-instead-of-an-ico-49f91bed285b",
+        "twitter": "https://twitter.com/plaasio",
+        "telegram": "https://t.me/Plaas2018",
+        "github": "https://github.com/plaasio/Plaas",
+        "facebook": "https://www.facebook.com/plaas.io",
+        "reddit": "https://www.reddit.com/r/altcoin/comments/99usxe/plaas_using_blockchain_to_improve_farm_management/",
+        "medium": "https://medium.com/@plaas/plaas-to-undertake-a-token-giveaway-instead-of-an-ico-49f91bed285b"
+    }
+}

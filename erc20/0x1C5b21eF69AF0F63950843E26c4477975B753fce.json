@@ -1,0 +1,21 @@
+{
+    "symbol": "BLC",
+    "address": "0x1C5b21eF69AF0F63950843E26c4477975B753fce",
+    "overview": {
+        "en": "BLC is referred to as BLC. BLC is a global commercial token issued by the Bole Foundation. BLC is a commercial application token issued under the Ethereum ERC20 agreement. The total number of BLC is limited to 520 million, and will be transferred to self-developed in the future. Public chain above Bolecoin.",
+        "zh": "伯乐币简称BLC，BLC是由Bole基金会发行的全球通用商业代币，BLC初期是基于以太坊ERC20协议发行的商业应用代币，BLC发行总量限定5.2亿枚，未来会转移到自研的公有链Bolecoin之上。"
+    },
+    "email": "support@bolecoin.net",
+    "website": "http://www.bolecoin.net/",
+    "whitepaper": "http://www.bolecoin.net/",
+    "state": "NORMAL",
+    "published_on": "2019-01-23",
+    "initial_price": {
+        "ETH": "0.0084 ETH",
+        "USD": "1.0000 USD",
+        "BTC": "0.00028 BTC"
+    },
+    "links": {
+        "blog": "http://www.bolecoin.net/"
+    }
+}

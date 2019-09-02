@@ -1,0 +1,21 @@
+{
+  "symbol": "SEGG",
+  "address": "0xA2B1f45de96B8D8661b1476Ff78AC4752B1b9559",
+  "overview":{
+        "en": "The SEGG blockchain utilizes the ERC20 Ethereum underlying protocol and can be trusted as a payment gateway. The platform is driven by the community, and the logic is determined by pre-released smart contracts that no central organization can manipulate. It has extremely high stability and extremely low collision degree, completely eliminating the possibility of brute force.",
+        "zh": "SEGG 区块链利用ERC20以太坊底层协议，可信任第三方作为支付网关。平台由社区驱动开发，逻辑由事先发布的智能合约决定，没有中心组织可以操纵。具有极高的稳定性和极低的碰撞程度，完全排除暴力破解可能。"
+  },
+  "email": "support@segg.vip",
+  "website": "http://www.segg.vip",
+  "whitepaper": "http://www.segg.vip/SEGG.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-03-04",
+  "initial_price":{
+        "ETH":"0.001811 ETH",
+        "BTC":"0.000062 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/joinchat/yangjidaheng",
+    "biyong":"https://0.plus/yangjidaheng"
+  }
+}

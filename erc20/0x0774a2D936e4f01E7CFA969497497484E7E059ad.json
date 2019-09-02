@@ -1,0 +1,24 @@
+{
+    "symbol": "BZB",
+    "address": "0x0774a2D936e4f01E7CFA969497497484E7E059ad",
+    "overview": {
+        "en": "token of bitzon exchange",
+        "zh": "币逊交易所平台币"
+    },
+    "email": "support@bitzon.com",
+    "website": "https://www.bitzon.com/",
+    "whitepaper": "https://static.bitzon.com/static/BZB%20whitepaper_English.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-11",
+    "initial_price": {
+        "ETH": "0 ETH",
+        "USD": "0 USD",
+        "BTC": "0 BTC"
+    },
+    "links": {
+        "blog": "https://blog.naver.com/bitzonexchange",
+        "twitter": "https://twitter.com/BitzonExchange",
+        "telegram": "https://t.me/joinchat/KhhG3RTTa1ig4F0DspfOXg",
+        "facebook": "https://www.facebook.com/BitzonKorea"
+    }
+}

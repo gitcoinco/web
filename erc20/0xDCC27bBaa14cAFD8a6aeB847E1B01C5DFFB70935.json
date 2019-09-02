@@ -1,0 +1,23 @@
+{
+    "symbol": "VNT",
+    "address": "0xDCC27bBaa14cAFD8a6aeB847E1B01C5DFFB70935",
+    "overview": {
+        "en": "VANTA is a Decentralized Network for Real-time, Secure, and Private Connectivity."
+    },
+    "email": "official@vanta.network",
+    "website": "https://vanta.network",
+    "whitepaper": "https://vanta.network/doc/VANTA_White_Paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-16",
+    "initial_price": {
+        "USD": "0.00088 USD"
+    },
+    "links": {
+        "blog": "https://blog.naver.com/vanta_network",
+        "twitter": "https://twitter.com/vantanetwork",
+        "telegram": "https://t.me/vanta_network",
+        "reddit": "https://www.reddit.com/r/vantanetwork",
+        "facebook": "https://www.facebook.com/vantanetwork",
+        "medium": "https://medium.com/vantanetwork"
+    }
+}

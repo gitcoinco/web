@@ -1,0 +1,21 @@
+{
+  "symbol": "MXM",
+  "address": "0x8E766F57F7d16Ca50B4A0b90b88f6468A09b0439",
+  "overview": {
+    "en": "MaxiMine is a highly efficient and transparent cloud-based pool mining platform. Users receive a portion of the MaxiMine pool rewards by staking the tokens that they own for hashing power.",
+    "zh": "MaxiMine是一个全球领先的区块链挖矿平台，专注于数字货币挖矿服务。投资人通过购买MXM（极矿币）置换算力，定期获得挖矿收益分红，打造全新挖矿生态体系。"
+  },
+  "email": "mxm@maximine.io",
+  "website": "https://maximine.io/",
+  "state": "NORMAL",
+  "published_on": "2018-03-04",
+  "initial_price": {
+    "ETH": "0.0000167 ETH"
+  },
+  "links": {
+    "blog": "https://medium.com/@maximinecoin",
+    "twitter": "https://twitter.com/maximinecoin?lang=en",
+    "github": "https://github.com/maximine",
+    "medium": "https://medium.com/@maximinecoin"
+  }
+}

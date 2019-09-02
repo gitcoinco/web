@@ -1,0 +1,18 @@
+{
+    "symbol": "GUBI",
+    "address": "0x12b2B2331A72d375c453c160B2c8A7010EeA510A",
+    "overview": {
+        "zh": "团队背景：运营团队来着国内最大的艺术品电商平台中华古玩网（拥有90万注册会员）。核心成员均拥有10年以上的互联网运营经验。开发团队均来自携程，网宿科技，IBM等知名科技企业。项目基本情况：古搜百科Gubi通过五年的沉淀已经汇集了4000多本电子书籍，3300多万件藏品资料。希望通过以图搜图技术为艺术品藏家提供一个易用的艺术品大数据库。同时将区块链技术引入艺术品的线上销售，及鉴定估价环节。构建一个高度完善可信的艺术品资料大数据库、专家数据库、用户信用系统，成为艺术品线上交易领域的基础设施。Gubi为生态的内置通证。Gubi与nem达成战略合作，nem为Gubi提供区块链技术支持。app自2018年12月31至1月31号内测期间，已有注册种子用户5928人。"
+    },
+    "email": "cyrus@gucn.com",
+    "website": "http://www.gubi.network",
+    "whitepaper": "http://www.gubi.network/data/upload/file/201902/f27854c1e281a57693d5676044267e9b.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-03-01",
+    "initial_price": {
+        "USD": "0.0134 USD"
+    },
+    "links": {
+        "telegram": "https://t.me/gubi_cn"
+    }
+}

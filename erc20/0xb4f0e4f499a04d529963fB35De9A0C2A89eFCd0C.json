@@ -1,0 +1,23 @@
+{
+  "symbol": "CCVT",
+  "address": "0xb4f0e4f499a04d529963fB35De9A0C2A89eFCd0C",
+  "overview":{
+        "en": "Communicates create value token. Designed to let users in the community collide with more sparks through chat, generating more unexpected value. We will issue tokens to motivate members to contribute higher quality speech.",
+        "zh": "CCVT项目即Communicate create value token。旨在让社群中的用户， 通过聊天碰撞出更多的火花，产生更多意想不到的价值。我们将发行Token激励成员贡献更高质量的发言。"
+  },
+  "email": "support@windwin.com",
+  "website": "https://ccvt.io/",
+  "whitepaper": "https://ccvt.io/CCVT.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-11-30",
+  "initial_price":{
+        "ETH":"0.00000874 ETH",
+        "USD":"0.0015 USD",
+        "BTC":"0.00000028 BTC"
+  },
+  "links": {
+    "blog": "https://weibo.com/p/1005052896305653",
+    "twitter": "https://twitter.com/Hivebanks",
+    "github": "https://github.com/hivebanks"
+  }
+}

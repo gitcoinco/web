@@ -1,0 +1,18 @@
+{
+    "symbol": "PJD",
+    "address": "0x33eD80d4eA8361BCbb9Fa7Ac121773E3DBf0C4C1",
+    "overview":{
+          "en": "The total amount of PJD issuance is constant at 500 million, and it is guaranteed to never be issued. It is mainly used for supply chain finance. It is repurchased and destroyed by 20% of profits every quarter until the market circulation is 300 million.",
+          "zh": "PJD发行总量恒定为5亿，且保证永不增发，与实体结合，主要用于供应链金融，企业每个季度用利润的20%回购并销毁，直至市场流通量为3亿。"
+    },
+    "email": "pjdallin@protonmail.com",
+    "website": "http://www.pjdb.info/",
+    "whitepaper": "http://19166876.s21d-19.faiusrd.com/61/ABUIABA9GAAgjsWJ5gUowava5AY.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-05-04",
+    "links": {
+      "twitter": "https://twitter.com/PJD36856480",
+      "telegram": "https://t.me/PJD_CN",
+      "facebook": "https://www.facebook.com/token.pjd.1"
+    }
+  }

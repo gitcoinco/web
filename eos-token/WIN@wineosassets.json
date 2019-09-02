@@ -1,0 +1,20 @@
+{
+    "symbol": "WIN",
+    "account_name": "wineosassets",
+    "overview": {
+        "en": "CodingCat Ltd. is a Blockchain-as-a-Service company, providing service on developing decentralized application and related business. The first Dapp, QuickWin, is launched on EOS public blockchain.",
+        "zh": "CodingCat Ltd. 为一致力于区块链服务的公司，近期投入区块链Dapp领域服务开发。目前已于EOS公链上线 quickwin.one 游戏。"
+    },
+    "email": "quickwin.one@gmail.com",
+    "website": "https://quickwin.one/",
+    "published_on": "2019-01-01",
+    "initial_price": {
+        "EOS": "0.0 EOS",
+        "USD": "0.0 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/quick_win_eos",
+        "telegram": "https://t.me/quickwin_cn",
+        "github": "https://github.com/quickwinone"
+    }
+}

@@ -1,0 +1,21 @@
+{
+  "symbol": "FCP",
+  "address": "0x340520004a92DCbbba3793f40d089e040176DD4d",
+  "overview":{
+        "en": "FC Plus(ETH90 Token Plus,FC Token v2.0).",
+        "zh": "FC Plus(ETH90的平台币Plus升级版,FC的v2.0版本)."
+  },
+  "email": "weiming1306@163.com",
+  "website": "https://www.eth90.com",
+  "whitepaper": "https://www.eth90.com/fcp-whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-03-23",
+  "initial_price":{
+        "ETH":"0.00698924 ETH",
+        "USD":"1 USD",
+        "BTC":"0.00024074 BTC"
+  },
+  "links": {
+        "github": "https://github.com/larryzou/token-profile"
+  }
+}

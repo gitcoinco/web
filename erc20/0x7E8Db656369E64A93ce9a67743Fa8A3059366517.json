@@ -1,0 +1,24 @@
+{
+    "symbol": "ZPC",
+    "address": "0x7E8Db656369E64A93ce9a67743Fa8A3059366517",
+    "overview": {
+        "en": "THE WORLD'S FIRST STABLE DIGITAL CURRENCY BASED ON COMPUTATIONAL ECOLOGICAL SETTLEMENT",
+        "zh": "全球首个基于算力生态结算的数字货币。"
+    },
+    "email": "pool@zpool.vip",
+    "website": "http://www.zpool.vip/",
+    "whitepaper": "http://www.zpool.vip/whitepaper/en.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-16",
+    "initial_price": {
+        "ETH": "0.00124739 ETH",
+        "USD": "0.15 USD",
+        "BTC": "0.00004128 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/ZPOOLZCASH2",
+        "telegram": "https://0.plus/zpoolgfsq",
+        "github": "https://github.com/2578482773/zpc-coin.git",
+        "facebook": "https://www.facebook.com/zcash.zpool"
+    }
+}

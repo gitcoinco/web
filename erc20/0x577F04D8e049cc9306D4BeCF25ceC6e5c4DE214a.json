@@ -1,0 +1,13 @@
+{
+  "symbol": "BSC",
+  "address": "0x577F04D8e049cc9306D4BeCF25ceC6e5c4DE214a",
+  "overview": {
+    "en": "BSC Using block chain technology to build a public chain for the whole tourism industry, which consists of three parts: the global tourism asset certification platform, the certification bank and the intelligent agriculture management platform, supports the healthy circulation of industrial certification, and constructs a new pattern of the global tourism industry certification.",
+    "zh": "BSC 利用区块链技术打造的作用于整个全域旅游产业的公链，由全域旅游资产通 证平台、通证银行、智慧农业管理平台三大板块组成,支持 产业通证的健康流通，构筑全域旅游产业通证化全新格局。"
+  },
+  "email": "service@bsc.com",
+  "website": "http://www.bsc.wiki",
+  "whitepaper": "http://www.bsc.wiki/assets/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-03-21"
+}

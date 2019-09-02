@@ -1,0 +1,22 @@
+{
+    "symbol": "CUSD",
+    "account_name": "stablecarbon",
+    "overview": {
+        "en": "CarbonUSD is a compliant, price-stable cryptocurrency that is one-to-one backed with USD. It is live on both Ethereum and EOS."
+    },
+    "email": "team@carbon.money",
+    "website": "https://www.carbon.money/",
+    "whitepaper": "https://www.carbon.money/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-11-01",
+    "initial_price": {
+        "USD": "1.0 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/carbon_money",
+        "telegram": "https://telegram.me/carbon_money",
+        "github": "https://github.com/stablecarbon",
+        "facebook": "https://www.facebook.com/carbonmoney/",
+        "medium": "https://medium.com/@carbon_money"
+    }
+}

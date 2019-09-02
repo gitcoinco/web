@@ -1,0 +1,15 @@
+{
+	"symbol": "FNT",
+	"address": "0x1f88badF3B56998673896572C8C1dE846aB0e6C2",
+	"overview": {
+		"en": "Finent provides comprehensive financial solutions"
+	},
+	"email": "info@finent.io",
+	"website": "https://finent.io/",
+	"whitepaper": "https://finent.io/assets/pdf/finent_whitepaper_en.pdf",
+	"state": "NORMAL",
+	"published_on": "2019-03-27",
+	"initial_price": {
+		"USD": "0.12 USD"
+	}
+}

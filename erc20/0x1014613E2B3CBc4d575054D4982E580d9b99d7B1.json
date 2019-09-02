@@ -1,0 +1,28 @@
+{
+  "symbol": "BCV",
+  "address": "0x1014613E2B3CBc4d575054D4982E580d9b99d7B1",
+  "overview": {
+        "en": "BCV is a world leading crypto token of digital assets management focuses on providing the underlying technology development and services related to digital assets management. BCV Wallet, a one-stop digital asset management platform belongs to BCV, has supported BTC, ETH, TRX, EOS and other public chain assets, and built the closed loop of digital asset circulation through the rich consumption, application, entertainment, exchange of digital assets and other scenes. Currently, the BCV technical team has developed a public-chain named BCV Chain based on the POA consensus which is an application-oriented public chain focusing on the field of digital assets management. Based on the millions of users of BCV Wallet and a large number of data and transactions that need to be on chain completely, BCV Chain is expected to become the top public chain from the points of users and transactions after launching the main network.",
+        "zh": "BCV是全球领先的数字资产管理通证。其专注于提供数字资产管理相关的底层技术研发和服务。旗下一站式数字资产管理平台 BCV Wallet，实现了对BTC、ETH、TRX、EOS等多条公链资产的支持，并通过丰富的数字资产消费、应用、娱乐、兑换等场景构造，实现了数字资产流通闭环。目前，BCV技术团队已基于 POA 共识开发了公链 BCV Chain，专注于数字资产管理领域的应用型公链。基于 BCV Wallet 本身已积累的百万用户以及大量需要多方确信的数据和交易，主网上线后，BCV Chain预计将成为用户和交易量名列前茅的公链。"
+  },
+  "email": "bitcv@bitcv.com",
+  "website": "https://www.bitcv.com/",
+  "whitepaper": "http://bitcv.one/doc/bitcv_whitepaper_cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-01-26",
+  "initial_price": {
+        "ETH":"0.0002 ETH",
+        "USD":"0.03 USD",
+        "BTC":"0.000006 BTC"
+  },
+  "links": {
+    "blog": "https://weibo.com/bitcv",
+    "twitter": "https://twitter.com/BCVofficial",
+    "telegram": "https://t.me/bcvtoken",
+    "github": "https://github.com/bitcv",
+    "facebook": "https://www.facebook.com/BitCapitalVendor",
+    "reddit": "https://www.reddit.com/user/BitCVOfficial",
+    "slack": "https://bitcv.slack.com",
+    "medium": "https://medium.com/@bitcv"
+  }
+}

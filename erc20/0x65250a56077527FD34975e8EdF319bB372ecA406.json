@@ -1,0 +1,18 @@
+{
+"symbol": "AB",
+"address": "0x65250a56077527FD34975e8EdF319bB372ecA406",
+"overview":{
+"zh": "项目介绍：1.基于AI和区块链打造的去中心化商城；2.商城以商城币进行流通消费，商城币为erc20代币，代币AB；3.代币总量2.1亿枚，其中55%为商城矿池挖矿；10%为基金会使用；20%为市场推广运营；10%为技术团队研发经费；4.团队将不断回购AB销毁，并最终保持至1亿枚"
+  },
+"email": "abchainvip@163.com",
+"website": "www.abchain.top",
+"whitepaper": "https://github.com/yang000guang/yangguang/blob/master/AB商城白皮书.pdf",
+"state": "NORMAL",
+"published_on": "2018-05-08",
+"initial_price":{
+"USD":"0.01445 USD"
+  },
+"links": {
+"github": "https://github.com/yang000guang"
+  }
+}

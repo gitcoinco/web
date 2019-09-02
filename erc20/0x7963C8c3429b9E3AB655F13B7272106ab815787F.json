@@ -1,0 +1,15 @@
+{
+    "symbol": "CAD Coin",
+    "address": "0x7963C8c3429b9E3AB655F13B7272106ab815787F",
+    "overview": {
+        "zh": "CAD直播平台是一个立足于直播产业的去中心化的共享平台，主要针对主播和粉丝的一个生态系统。其核心是一套基于区块链技术的去中心化的账号和结算系统。"
+    },
+    "email": "cadcoin@cadcoinx.com",
+    "website": "http://www.cadcoinx.com/fac/public/index.php/index/transition.html",
+    "whitepaper": "http://www.cadcoinx.com/cadcoin.docx",
+    "state": "NORMAL",
+    "published_on": "2018-11-29",
+    "links": {
+        "twitter": "https://twitter.com/CAD51012849?lang=en"
+    }
+}

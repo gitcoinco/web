@@ -1,0 +1,23 @@
+{
+  "symbol": "UGAS",
+  "address": "0x8716Fc5Da009D3A208f0178b637a50F4ef42400F",
+  "overview":{
+        "en": "Ultrain Technology Limited is the next generation public-blockchain technology venture that focuses on building a high performance decentralized blockchain platform through its programmable tech-infrastructure. Ultrain is committed to construct a responsible and sustainable commercial ecosystem that enables all industrial applications. With its groundbreaking innovations in cryptography and based upon a complete decentralized public network, Ultrain is able to provide multi-folds more advanced technical performance to fundamentally solve the performance and scalability issues comparing to other traditional public blockchain platforms.",
+        "zh": "Ultrain是一家全球领先的实现信任计算的通用技术基础设施公司，为广大企业和个人提供可信、安全、高效、高性价比的分布式计算服务。作为信任计算的基础设施，彻底解决了困扰信任计算项目的性能问题，可以有效地支撑大规模的商业应用场景，广泛地赋能于金融服务、共享经济、医疗、零售、物流、媒体娱乐等众多行业。"
+  },
+  "email": "wufeng@ultrain.io",
+  "website": "https://www.ultrain.io/",
+  "whitepaper": "https://www.ultrain.io/downloads/Ultrain Whitepaper_v1.1.9.pdf",
+  "published_on": "2018-08-22",
+  "initial_price":{
+        "ETH":"0.0005 ETH",
+        "USD":"0.2 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/UltrainB",
+    "telegram": "https://t.me/UltrainOfficial",
+    "github": "https://github.com/ultrain-os",
+    "facebook": "https://www.facebook.com/Ultraincommunity/",
+    "medium": "https://medium.com/@ultrainchain"
+  }
+}

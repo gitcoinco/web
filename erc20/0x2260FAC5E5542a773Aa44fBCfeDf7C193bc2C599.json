@@ -1,0 +1,12 @@
+{
+    "symbol": "WBTC",
+    "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+    "overview": {
+        "en": "Wrapped Bitcoin (WBTC) is the first ERC20 token backed 1:1 with Bitcoin.Completely transparent. 100% verifiable. Community led.",
+        "zh": "WBTC 是第一个与比特币 1：1 兑换的 ERC20 代币，完全透明，100％ 可验证，由社区驱动的项目。"
+    },
+    "email": "info@wbtc.network",
+    "website": "https://www.wbtc.network/",
+    "whitepaper": "https://www.wbtc.network/assets/wrapped-tokens-whitepaper.pdf",
+    "published_on": "2019-01-31"
+}

@@ -1,0 +1,13 @@
+{
+  "symbol": "CSCY",
+  "address": "0xa87a216f503977835b83FA7c77a7AcaCd2f83280",
+  "overview": {
+        "en": "The CSCY exchange network is the abbreviation of Cloud Store Chain. The Cloud Store Chain is an underlying protocol based on blockchain development and a cross-chain public chain based on decentralized architecture.",
+        "zh": "CSCY通兑网络是云店链（Cloud Store Chain）的简称，云店链（Cloud Store Chain）是基于区块链开发的底层协议，建立在去中心化架构上的跨链公链。"
+  },
+  "email": "cscystorechain@gmail.com",
+  "website": "http://www.cscy.us/",
+  "whitepaper": "http://cscy.us/CSCYch.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-29"
+} 

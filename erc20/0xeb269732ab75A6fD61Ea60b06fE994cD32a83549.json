@@ -1,0 +1,20 @@
+{
+  "symbol": "USDx",
+  "address": "0xeb269732ab75A6fD61Ea60b06fE994cD32a83549",
+  "overview":{
+        "en": "USDx is a decentralized and synthetic indexed stablecoin 1:1 pegged to a basket of constituent stablecoins, integrated with interest bearing capability. USDx's initial underlying portfolios include USDC, TUSD, PAX and DAI, which can be adjusted by on-chain governance. The synthetization and disaggregation of USDx is wholly on-chain to ensure maximized transparency, immutability and auditability.",
+        "zh": "USDx是dForce发起的锚定美元的稳定币，由一篮子优质美元稳定币通过智能合约去中心化自动铸成，用户可以通过铸币协议将成分稳定币按权重兑换成USDx，也可以将USDx销毁并拿回一篮子的成分稳定币。铸币和销毁过程全部在链上实现，确保了操作的高度透明、不可篡改、可审查性。未来成分币的类别和权重将通过社区投票治理的方式进行更改。"
+  },
+  "email": "contacts@dforce.network",
+  "website": "https://usdx.dforce.network/",
+  "whitepaper": "https://github.com/dforcenetwork/docs/blob/master/white_paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-25",
+  "links": {
+    "twitter": "https://twitter.com/dForcenet",
+    "telegram": "https://t.me/dforcenet",
+    "github": "https://github.com/dforcenetwork",
+    "reddit": "https://www.reddit.com/r/dForceNetwork/",
+    "medium": "https://medium.com/dforcenet"
+  }
+}

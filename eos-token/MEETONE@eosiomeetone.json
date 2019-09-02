@@ -1,0 +1,19 @@
+{
+    "symbol": "MEETONE",
+    "account_name": "eosiomeetone",
+    "overview": {
+        "en": "MEET.ONE is a EOS block producer candidate team from Singapore, dedicating to be an entrance of EOS ecology. MEET.ONE was elected as a EOS block producer on 15 June 2018. We are committed to being the entrance of EOS ecology and actively participate in the construction of EOS ecology.",
+        "zh": "MEET.ONE 是来自新加坡的 EOS 超级节点竞选团队，并于2018年6月15日当选 EOS 创世超级节点。致力于成为EOS 生态入口，积极参与 EOS 生态建设。"
+    },
+    "email": "hello@meet.one",
+    "website": "https://meet.one",
+    "whitepaper": "https://meet.one/MEETONE_EN.pdf",
+    "published_on": "2018-08-11",
+    "links": {
+        "steemit": "https://steemit.com/@meetone",
+        "twitter": "https://twitter.com/MeetDotOne",
+        "telegram": "https://t.me/MeetOneEnglish",
+        "github": "https://github.com/meet-one",
+        "medium": "https://medium.com/@MEET.ONE"
+    }
+}

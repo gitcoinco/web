@@ -2,8 +2,8 @@
     "symbol": "CZR",
     "address": "0x0223fc70574214F65813fE336D870Ac47E147fAe",
     "overview": {
-      "en": "Reforging The Cornerstone Of The Blockchain World",
-      "zh": "重塑区块链世界的基石"
+        "en": "Reforging The Cornerstone Of The Blockchain World",
+        "zh": "重塑区块链世界的基石"
     },
     "email": "helenking@canonchain.com",
     "website": "http://www.canonchain.com/",
@@ -11,11 +11,11 @@
     "state": "NORMAL",
     "published_on": "2018-01-23",
     "initial_price": {
-      "ETH": "0.00013889 ETH"
+        "ETH": "0.00013889 ETH"
     },
     "links": {
-      "twitter": "https://twitter.com/canonchain",
-      "telegram": "https://t.me/canonchain",
-      "github": "https://github.com/canonchain"
+        "twitter": "https://twitter.com/canonchain",
+        "telegram": "https://t.me/canonchain",
+        "github": "https://github.com/canonchain"
     }
-  }
+}

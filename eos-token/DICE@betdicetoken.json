@@ -1,0 +1,16 @@
+{
+    "symbol": "DICE",
+    "account_name": "betdicetoken",
+    "overview": {
+        "en": "Betdice.one is a completely trustworthy, profit-sharing and fair gaming platform based on EOS blockchain.DICE tokens are issued once Betdice goes live.Brand-new profit-sharing gaming platform.50% of Net Profit is paid out to those who have DICE staked in every hour. Gaming creates a win-win situation for both you and us.",
+        "zh": "Betdice.one是一个基于EOS块链的完全可信、利润共享和公平的游戏平台。DICE代币在Betdice上线后发出。Betdice.one是一个全新的利润分享游戏平台，50%的净利润将支付给那些每小时都交易DICE的持有者。游戏为你我创造双赢局面。"
+    },
+    "email": "admin@dice.one",
+    "website": "https://betdice.one",
+    "published_on": "2018-09-24",
+    "links": {
+        "twitter": "https://twitter.com/dice1_en",
+        "telegram": "https://t.me/dice1_en",
+        "medium": "https://medium.com/@dice1"
+    }
+}

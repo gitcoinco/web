@@ -1,0 +1,18 @@
+{
+  "symbol": "GT",
+  "address": "0xD76Ef5A896D60F8Eec260B310E9C464Ab0918496",
+  "overview":{
+        "en": "GT is the platform currency of Gate.io Exchange and an important part of Gate Ecology.",
+        "zh": "GT是Gate.io交易所的平台币，是GateChain公有链的基础币种，也是Gate生态系统的重要组成部分。"
+  },
+  "email":"support@mail.gate.io",
+  "website":"http://www.gate.io",
+  "state":"NORMAL",
+  "published_on": "2019-03-30",
+  "links":{
+    "github":"https://github.com/gateio",
+    "twitter": "https://twitter.com/gate_io",
+    "telegram": "https://t.me/gate_io",
+    "instagram": "https://instagram.com/gate.io/"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "symbol": "PXG",
+  "address": "0x91bb6965BACE45baE7E78Ae638152Af467F9b004",
+  "overview":{
+        "en": "PIEXGO is an emerging digital asset exchange, providing advanced financial services to traders globally by blockchain technology.",
+        "zh": "PIEXGO - 全球领先的数字资产金融服务平台"
+  },
+  "email": "support@piexgo.com",
+  "website": "https://piexgo.com",
+  "state": "NORMAL",
+  "published_on": "2018-06-06",
+  "initial_price":{
+        "ETH":"0.0000166666 ETH",
+        "USD":"0.01 USD",
+        "BTC":"0.000001737 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/piexgocom",
+    "telegram": "https://t.me/Piexgo_Global",
+    "github": "https://github.com/piexgo",
+    "facebook": "https://www.facebook.com/piexgo",
+    "medium": "https://medium.com/piexgo"
+  }
+}

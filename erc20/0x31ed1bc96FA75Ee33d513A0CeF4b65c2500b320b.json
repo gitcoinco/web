@@ -1,0 +1,17 @@
+{
+    "symbol": "OEC",
+    "address": "0x31ed1bc96FA75Ee33d513A0CeF4b65c2500b320b",
+    "overview": {
+        "en": "Our Earth Distributed Intelligent Cloud Ecology (OE) is a multi-centralized hardware architecture, aiming at activating idle devices over $10 trillion, and introducing CDN and OE PC. At present, OE is building a global block chain ecosystem on OECloud based on OEChain and OE PC, which includes digital passport, digital identity, digital interaction, human-computer interaction and intelligent life. Simply speaking, OE is based on the bottom technology of block chain, storage as the bottom layer, and integrates big data, Internet of Things, intelligent life and artificial intelligence. It realizes landing application through OEPC.",
+        "zh": "Our Earth 分布式智能云生态 简称 OE，以盘活超十万亿美金的闲置设备为目标，引入 CDN 和 OE PC，形成多中心化硬件架构。目前，OE 正在以 OEChain 及 OE PC 为基础的 OECloud 上建立一个包含数字通证、数字身份、数字交互、人机互动、智慧生活的全球化区块链生态圈。简单来说，OE 是以区块链底层技术为架构，存储为底层，融合大数据、物联网、智慧生活、人工智能，通过 OEPC 实现落地应用。"
+    },
+    "email": "oecloud@foxmail.com",
+    "website": "http://oec.life/",
+    "whitepaper": "http://oec.life/skin/v1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-12-25",
+    "links": {
+        "金色财经": "https://www.jinse.com/bitcoin/211350.html",
+        "九个亿财经": "https://www.jgy.com/news/viewpoints/180904150806"
+    }
+}

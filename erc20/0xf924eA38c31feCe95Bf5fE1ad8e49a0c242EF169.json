@@ -1,0 +1,23 @@
+{
+    "symbol": "MSEC",
+    "address": "0xf924eA38c31feCe95Bf5fE1ad8e49a0c242EF169",
+    "overview": {
+        "en": "MSEC (Mining Seconds) token is based on Hyperledger system and IOT solution which unlocked the gate of the gold mining business for the all investors segmentation. Each MSEC token represent 1 second rental contract for using MSEC ‘s Gold Mining System.The concept for MSEC can apply into almost all find of businesses or industries, yet the first application is the gold mining industry in Papua New Guinea. Hence, our token holders will have two methods to earn a profit: Exchange MSEC token in the secondary market just like other cryptocurrency OR Redeem MSEC token in Mojo's redemption system, and the return will be the output value generated from the gold mine in that second.",
+        "zh": "秒淘是一種產能出租數碼應用通證，以時間(秒)為單位，將產業或企業的生產力以時間(秒)計算出租。秒淘可以應用在任何產業或企業，只要他們的生產力能夠以時間劃分，並透過物聯網「IOT」及區塊鏈技術全天侯監測及實時記錄每秒生產力量及運作，都能夠申請加入秒淘，將他們的生產力出租。簡單來說，秒淘是以產能出租時間的形式，出租生產力；實時計算已加入之產業或企業的每秒產出價值，對實體經濟有明顯指向性。"
+    },
+    "email": "info@minesec.io",
+    "website": "http://token.merxmax.com",
+    "whitepaper": "http://token.merxmax.com/MSEC-whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-01-06",
+    "initial_price": {
+        "ETH": "0.666 ETH",
+        "USD": "0.666 USD",
+        "BTC": "0.666 BTC"
+    },
+    "links": {
+        "blog": "http://www.qukuailian110.com/article/getDetail/6686.html",
+        "github": "https://github.com/MSECGit",
+        "facebook": "https://www.facebook.com/pages/category/Product-Service/MSEC-%E7%A7%92%E6%B7%98-614529262244788/"
+    }
+}

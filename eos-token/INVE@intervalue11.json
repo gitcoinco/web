@@ -1,0 +1,23 @@
+{
+    "symbol": "INVE",
+    "account_name": "intervalue11",
+    "overview": {
+        "en": "In order to support public Blockchain, InterValue introduces token policy in the incentive layer to realize flexible consensus schemes. The built-in token named INVE stimulates the community to maintain the public Blockchain of InterValue and develop DApps, and then it increases the value of the public Blockchain of InterValue and promotes InterValue’s network effect. INVE is the abbreviation for the base token of InterValue, and it well be used as the transaction fee for advanced smart contract and smart contract based cross-chain transaction. The total amount of INVE token is 10 billion.",
+        "zh": " InterValue 在激励层引入代币机制达到实现面向公有链的灵活共识机制目的，通过内建的 INVE 激励社区维护 InterValue 公有链以及在 InterValue 公有链上开发 DApp 应用，为InterValue 公有链平台增加价值并推动网络效应。INVE 是 InterValue 基础 Token 的简称，支持 InterValue高级智能合约以及基于智能合约的跨链交易费用。INVE Token 发行总量为 100 亿。"
+    },
+    "email": "intervalue@inve.one",
+    "website": "https://www.inve.one/",
+    "whitepaper": "http://www.inve.one/file/InterValue_whitepaper_en.pdf",
+    "published_on": "2018-09-26",
+    "initial_price": {
+        "EOS": "0.0002 EOS",
+        "USD": "0.007 USD"
+    },
+    "links": {
+        "steemit": "https://steemit.com/@intervalue",
+        "twitter": "https://twitter.com/intervaluepro",
+        "telegram": "https://t.me/InterValueProject",
+        "github": "https://github.com/intervalue",
+        "reddit": "https://www.reddit.com/user/intervalue"
+    }
+}

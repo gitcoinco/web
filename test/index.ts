@@ -18,10 +18,7 @@ const ethAddressExp = /^(0x)?[0-9a-f]{40}$/i
 const isEthAddress = address => ethAddressExp.test(address)
 
 const isEosToken = (account: string) => {
-  return !!account && (
-    account.search(/^[1-5a-z]{12}$/) === 0 ||
-    account.search(/^[1-5a-z]+\.[1-5a-z]{1,11}$/) === 0
-  )
+  return !!account && account.search(/^[a-z1-5.]{1,11}[a-z1-5]$/) === 0
 }
 
 const isEthAddressJson = (filename) => jsonExp.test(filename) && isEthAddress(filename.replace(jsonExp, ''))
@@ -87,8 +84,8 @@ const commonFieldCheck = (jsonFileName, obj) => {
   }
 
   if (obj.overview !== undefined) {
-    if (!['zh', 'en'].some(k => !!isStringWithCharacter(obj.overview[k]))) {
-      exitWithMsg(`ERROR! json file ${jsonFileName}'s overview field must have zh and en field, and must be a string (not empty)`)
+    if (!Object.keys(obj.overview).every(k => !!isStringWithCharacter(obj.overview[k]))) {
+      exitWithMsg(`ERROR! json file ${jsonFileName}'s overview field must be a string (not empty)`)
     }
   }
 
@@ -286,7 +283,7 @@ const checkWrongDirectoryItem = (directory, filename) => {
     }
 
   } else if (directory === './images') {
-    if (['bitcoin.png', 'eos.png', 'ethereum.png'].indexOf(filename) === -1 &&
+    if (['bitcoin.png', 'eos.png', 'ethereum.png', 'omni_31.png', 'atom.png', 'cosmos.png'].indexOf(filename) === -1 &&
       !isEthAddressPng(filename) &&
       !isEosTokenPng(filename)) {
       // temporality not throw

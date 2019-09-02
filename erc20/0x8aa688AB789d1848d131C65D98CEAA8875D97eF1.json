@@ -1,0 +1,21 @@
+{
+  "symbol": "MTV",
+  "address": "0x8aa688AB789d1848d131C65D98CEAA8875D97eF1",
+  "overview":{
+        "en": "MultiVAC is High-Throughput Flexible Blockchain Platform based on Trusted Sharding Computation. It’s a next-generation public blockchain platform built for integration with large-scale decentralized applications (dApps).",
+        "zh": "MultiVAC是基于可信分片计算的新一代高性能弹性公链平台，通过多维弹性支持大规模商业去中心化应用。"
+  },
+  "initial_price":{
+        "USD":"0.006 USD"
+  },
+  "email": "core@mtv.ac",
+  "website": "mtv.ac",
+  "whitepaper": "https://www.mtv.ac/assets/file/MultiVAC_Tech_Whitepaper_CN.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-09",
+  "links": {
+    "twitter": "https://twitter.com/MultiVAC_Global",
+    "telegram": "https://t.me/MTVCommunity",
+    "medium": "https://medium.com/multivac-foundation"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "symbol": "LRC",
+  "address": "0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD",
+  "overview": {
+    "en": " Loopring is a protocol for building decentralized exchanges. Besides the protocol smart contracts, Loopring provides higher liquidity and price improvement by matching orders in the form of order-rings. With order sharing, multiple relayers can form a consortium for building a shared liquidity pool to compete with established exchanges. Also, Loopring combines off-chain order sharing and on-chain settlement.",
+    "zh": "路印协议是新一代去中心化交易撮合协议，不仅拥有一套公开的用于执行交易和撮合操作的智能合约，而且还有一组链下参与者用来撮合和⼴播订单。路印协议采用去中心化技术，提供零风险的代币交易所模式，并允许多家交易所通过竞争，对同样的订单进行链外撮合及链上清结算。"
+  },
+  "email": "foundation@loopring.org",
+  "website": "https://loopring.org/",
+  "whitepaper": "https://loopring.org/resources/en_whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-08-01",
+  "initial_price": {
+    "ETH": "0.0002 ETH",
+    "USD": "0.05 USD"
+  },
+  "links": {
+    "blog": "https://blogs.loopring.org",
+    "twitter": "https://twitter.com/loopringorg",
+    "telegram": "https://t.me/loopring_en",
+    "github": "https://github.com/Loopring",
+    "facebook": "https://www.facebook.com/loopringofficial",
+    "reddit": "https://www.reddit.com/r/loopringorg",
+    "medium": "https://medium.com/loopring-protocol"
+  }
+}

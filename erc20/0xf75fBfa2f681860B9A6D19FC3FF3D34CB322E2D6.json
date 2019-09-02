@@ -1,0 +1,27 @@
+{
+    "symbol": "CIYA",
+    "address": "0xf75fBfa2f681860B9A6D19FC3FF3D34CB322E2D6",
+    "overview": {
+        "en": "Global decentralize network to Cash-Out Any CryptoCurrency.CryptoRiya is a platform for the future of Crypto-Currency that enables anyone to spend, withdraw, sell, buy & sends any crypto-currency anywhere globally without any bank account."
+    },
+    "email": "info@cryptoriya.com",
+    "website": "https://www.cryptoriya.io",
+    "whitepaper": "https://www.cryptoriya.io/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-16",
+    "initial_price": {
+        "ETH": "0.004 ETH",
+        "USD": "0.5 USD"
+    },
+    "links": {
+        "medium": "https://medium.com/@cryptoriya",
+        "chat": "https://t.me/cryptoriya",
+        "facebook": "https://www.facebook.com/cryptoriya",
+        "github": "https://github.com/cryptoriya",
+        "gitter": "http://gitter.im/CRYPTORIYA",
+        "instagram": "http://instagram.com/cryptoriya",
+        "telegram": "https://t.me/cryptoriya",
+        "twitter": "https://twitter.com/cryptoriya",
+        "youtube": "https://www.youtube.com/channel/UC7JlEEJrtKXg4MHqkRWLn4Q"
+    }
+}

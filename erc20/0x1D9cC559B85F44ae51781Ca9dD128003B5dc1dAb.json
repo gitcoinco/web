@@ -1,0 +1,16 @@
+{
+    "website": "https://www.haocoin.com/",
+    "published_on": "2019-05-13",
+    "links": {},
+    "overview": {
+        "en": "HaoCoin aims to build a world-class crypto exchange, powering the future of crypto finance.",
+        "zh": "好币以建立世界级加密数字货币交易所为目标，助力加密金融的未来。"
+    },
+    "symbol": "HB",
+    "initial_price": {
+        "USD": "0.0015 USD"
+    },
+    "address": "0x1D9cC559B85F44ae51781Ca9dD128003B5dc1dAb",
+    "whitepaper": "https://www.haocoin.com/wp/HB-whitepaper.pdf",
+    "email": "haocoin@163.com"
+}

@@ -1,0 +1,8 @@
+{
+    "symbol": "ZKS",
+    "account_name": "zkstokensr4u",
+    "overview": {
+        "en": "ZKS will be a EOS compatible token and will be deployed on EOS Blockchain. These ZKS tokens can be exchanged, and given to customers by any business – some examples would be exchanges, restaurants, e-commerce sites, Conference Organizers, etc. The ZKS tokens are redeemed for CPU and Network resources on the EOS Mainnet. We have simplified the process of allocating CPU and Network. ZKS tokens have been designed to be a very simple utility token, that will provide 0.9 EOS of CPU, and 0.1 EOS of NET for 3 hours. There are no complex mechanisms for issuance or redemption. Redemption of the token can be done on the zks.one website. Note: Since there will be times of high demand, and given the finite system resources of the EOS Mainnet, the ZKS token does not guarantee redemption for CPU/NET.\nRedemption schedule: 31 ZKS tokens to be airdropped to every EOS account with 0.1 EOS or more. 1 ZKS token = 0.9 EOS of CPU, and 0.1 EOS of Net for 3 hours."
+    },
+    "website": "https://zks.one"
+}

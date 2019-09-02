@@ -1,0 +1,8 @@
+{
+    "symbol": "EOSISH",
+    "account_name": "buildertoken",
+    "overview": {
+        "en": "Token for EOS Contract Builder. EOSISH is used as means of payment for contract creation. A user who wants to build a smart contract on the Platform needs to buy EOSISH on an exchange and then transfer it to MyWish. EOSISH is used for Platform functionality. Every developer who launches his or her contract on MyWish receives revenue in EOSISH. Some contracts (like WILL) require external calls from network users and thus receive call bonuses in EOSISH."
+    },
+    "website": "https://mywish.io"
+}

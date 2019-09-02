@@ -1,23 +1,26 @@
 {
-    "website": "https://loopring.org/",
-    "published_on": "2017-08-01",
-    "links": {
-        "telegram": "https://t.me/loopringfans",
-        "reddit": "https://www.reddit.com/r/loopring/",
-        "github": "https://github.com/loopring",
-        "slack": "https://loopring-team.slack.com/",
-        "twitter": "https://twitter.com/loopringorg"
-    },
-    "overview": {
-        "en": "Loopring is not only a protocol but also a decentralized automated execution system that trades across the crypto-token exchanges.",
-        "zh": "路印协议是区块链资产交易协议和交易所。它采用去中心化技术，提供零风险的代币交易所模式，并允许多家交易所通过竞争，对同样的订单进行链外撮合及链上清结算。"
-    },
-    "symbol": "LRC",
-    "initial_price": {
-        "ETH": "0.0002 ETH",
-        "USD": "0.053 USD"
-    },
-    "whitepaper": "https://github.com/Loopring/whitepaper",
+    "symbol": "LRC_OLD",
     "address": "0xEF68e7C694F40c8202821eDF525dE3782458639f",
-    "email": "foundation@loopring.org"
-}
+    "overview": {
+      "en": " Loopring is a protocol for building decentralized exchanges. Besides the protocol smart contracts, Loopring provides higher liquidity and price improvement by matching orders in the form of order-rings. With order sharing, multiple relayers can form a consortium for building a shared liquidity pool to compete with established exchanges. Also, Loopring combines off-chain order sharing and on-chain settlement.",
+      "zh": "路印协议是新一代去中心化交易撮合协议，不仅拥有一套公开的用于执行交易和撮合操作的智能合约，而且还有一组链下参与者用来撮合和⼴播订单。路印协议采用去中心化技术，提供零风险的代币交易所模式，并允许多家交易所通过竞争，对同样的订单进行链外撮合及链上清结算。注：此为 LRC 官方发行的旧 LRC 代币。新 LRC 合约地址：0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD"
+    },
+    "email": "foundation@loopring.org",
+    "website": "https://loopring.org/",
+    "whitepaper": "https://loopring.org/resources/en_whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-08-01",
+    "initial_price": {
+      "ETH": "0.0002 ETH",
+      "USD": "0.05 USD"
+    },
+    "links": {
+      "blog": "https://blogs.loopring.org",
+      "twitter": "https://twitter.com/loopringorg",
+      "telegram": "https://t.me/loopring_en",
+      "github": "https://github.com/Loopring",
+      "facebook": "https://www.facebook.com/loopringofficial",
+      "reddit": "https://www.reddit.com/r/loopringorg",
+      "medium": "https://medium.com/loopring-protocol"
+    }
+  }

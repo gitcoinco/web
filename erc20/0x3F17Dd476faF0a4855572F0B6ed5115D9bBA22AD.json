@@ -1,0 +1,25 @@
+{
+    "symbol": "WIB",
+    "address": "0x3F17Dd476faF0a4855572F0B6ed5115D9bBA22AD",
+    "overview": {
+        "en": "Wibson is a blockchain-based, decentralized data marketplace that provides individuals a way to securely and anonymously sell validated private information in a trusted environment. The Wibson Token is a utility token that works as a medium of exchange within the Wibson ecosystem. Wibson tokens are ERC-20 tokens built on the Ethereum network."
+    },
+    "email": "info@wibson.org",
+    "website": "https://wibson.org/",
+    "whitepaper": "https://wibson.org/wp-content/uploads/2018/10/Wibson-Technical-Paper-v1.1.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-11",
+    "initial_price": {
+        "ETH": "0.00000952 ETH",
+        "USD": "0.0011 USD",
+        "BTC": "0.00000011 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/WibsonOrg",
+        "telegram": "https://t.me/wibsoncommunity",
+        "reddit": "https://www.reddit.com/r/wibson/",
+        "github": "https://github.com/wibsonorg/wibson-core/",
+        "facebook": "https://www.facebook.com/WibsonOrg",
+        "medium": "https://medium.com/@wibson"
+    }
+}

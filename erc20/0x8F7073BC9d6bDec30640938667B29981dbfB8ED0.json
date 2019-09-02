@@ -1,0 +1,21 @@
+{
+  "symbol": "CXC",
+  "address": "0x8F7073BC9d6bDec30640938667B29981dbfB8ED0",
+  "overview":{
+        "en": "We independently develop the underlying system, including Web/Html5 applications, App, data services and so on. On this basis, we provide a set of derivative data services and open interfaces, and integrate resources to gradually improve the related supporting system. Ultimately, information consumers can get accurate information more efficiently, information producers can get reasonable returns, and promote better information production",
+        "zh": "自主研发底层系统，包含 Web/Html5 应用、App、数据服务等，并在此基础上提供一整套衍生数据服务与开放接口，整合资源以逐步完善相关的配套体系。最终实现让信息消费者更高效地获得准确信息，让信息生产者得到合理的回报，并促成更优质的信息生产"
+  },
+  "email": "cs@chainxin.com.cn",
+  "website": "https://www.chainxin.com",
+  "whitepaper": "https://www.chainxin.com/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-07-01",
+  "initial_price":{
+        "ETH":"0.000001 ETH",
+        "USD":"0.001 USD",
+        "BTC":"0.0000001 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/cxcgroup"
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "symbol": "CCY",
+    "address": "0xA34d29Cf8a06E8d05D22454cC33e5FBe7A3d3213",
+    "overview": {
+        "en": "CCY (Chong Cao Yuan) proposes and implements the solution of blockchain technology + new concept commodity traceability for the problems of traditional commodity industry. Solve the problem of product quality fidelity, accountability, lack of trust; strengthen the value of the entire industry and the liquidity of industry assets; through the application of CCY and community promotion, popularize and accelerate the spread of commodity-related industry applications, forming a new type And unique commodity culture and ecology.",
+        "zh": "CCY（长城链）针对于传统大宗商品行业的问题，提出并实现了区块链技术+新概念大宗商品溯源的解决方案。解决产品品质保真、追责、信任缺失的问题；加强整个产业的价值提升和行业资产的流动性；通过CCY的应用以及社区推广，进而普及和加速大宗商品相关产业应用的传播，形成一个新型而独特的大宗商品文化生态。"
+    },
+    "email": "gcscoin@foxmail.com",
+    "website": "http://www.ccypures.com/",
+    "whitepaper": "http://www.ccypures.com/Chain.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-05-14",
+    "links": {
+        "blog": "http://www.ccypures.com/",
+        "twitter": "https://twitter.com/ChongCaoYuan1"
+    }
+}

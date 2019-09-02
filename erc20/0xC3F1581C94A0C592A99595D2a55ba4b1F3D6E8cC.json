@@ -1,0 +1,24 @@
+{
+    "symbol": "SHEEP",
+    "address": "0xC3F1581C94A0C592A99595D2a55ba4b1F3D6E8cC",
+    "overview": {
+        "en": "Sheepcoin is designed for international wholesale marketplace 'Membersheep'. After coin generation, millions of the Membersheep orders will be traded with Sheep coins.",
+        "zh": "羊币是专为跨境电商“曼舶羊”设计的。在羊币发行之后，有数百万的曼舶羊订单将用羊币进行交易。"
+    },
+    "email": "martyna@membersheep.com",
+    "website": "https://www.membersheep.com/sheepcoin",
+    "whitepaper": "https://membersheep.com/sheepcoin/",
+    "state": "NORMAL",
+    "published_on": "2018-12-12",
+    "initial_price": {
+        "ETH": "0.002263 ETH",
+        "BTC": "0.00008051 BTC"
+    },
+    "links": {
+        "blog": "https://your-awesome-project.com/blog",
+        "twitter": "https://twitter.com/MembersheepB2B",
+        "telegram": "https://t.me/MembersheepOfficial",
+        "github": "https://github.com/sheepproject",
+        "facebook": "https://www.facebook.com/membersheep"
+    }
+}

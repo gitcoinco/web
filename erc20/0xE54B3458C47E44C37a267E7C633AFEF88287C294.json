@@ -1,0 +1,13 @@
+{
+    "symbol": "AT",
+    "address": "0xE54B3458C47E44C37a267E7C633AFEF88287C294",
+    "overview": {
+        "en": "Artfinity is an art traceability and security monitoring system based on block chain technology. By recording the whole process of art creation from artists to the circulation of successive holders on the block chain, using IOT equipment, NFC information acquisition and identification technology, and combining with the technical characteristics of decentralization and non-tampering of the block chain, the traceability system of art can eliminate the problem of fraud in the art market.",
+        "zh": "Artfinity是基于区块链技术的艺术品溯源和安全监控系统。即将艺术品从艺术家创造到历任持有者流通的全过程记录到区块链上，利用IOT设备和NFC信息采集、识别技术，结合区块链去中心化、不可篡改的技术特性打造的艺术品溯源系统，能够从根源杜绝艺术品市场的造假问题。"
+    },
+    "email": "zjtsunshine@qq.com",
+    "website": "http://www.jueyi.art",
+    "whitepaper": "http://www.jueyi.art/home/whitepaper",
+    "state": "NORMAL",
+    "published_on": "2018-12-24"
+}

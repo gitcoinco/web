@@ -1,4 +1,24 @@
 {
-  "symbol": "INSUR",
-  "address": "0x6ea6531b603F270d23d9EDd2d8279135DC5D6773"
+    "symbol": "INSUR_OLD",
+    "address": "0x6ea6531b603F270d23d9EDd2d8279135DC5D6773",
+    "overview": {
+        "en": "A Decentralized Insurance Blockchain Ecosystem.",
+        "zh": "去中心化的保险区块链创新生态系统.注：此为 INSUR 官方发行的旧 INSUR 代币。新 INSUR 合约地址：0x51fB3dA8A67861361281AC56Fe2Ad8c3b4539FFa"
+    },
+    "email": "customer@insurchain.org",
+    "website": "http://www.insurchain.org",
+    "whitepaper": "https://github.com/InsurChain/whitepaper/blob/master/EN/whitepaper_en.md",
+    "state": "NORMAL",
+    "published_on": "2018-01-31",
+    "initial_price": {
+        "ETH": "0.000004 ETH",
+        "USD": "0.003 USD",
+        "BTC": "0.0000004 BTC"
+    },
+    "links": {
+        "blog": "https://weibo.com/InsurChain",
+        "twitter": "https://twitter.com/InsurChain",
+        "telegram": "https://t.me/InsurChain",
+        "github": "https://github.com/InsurChain"
+    }
 }

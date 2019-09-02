@@ -1,0 +1,19 @@
+{
+    "symbol": "FA",
+    "address": "0xc5cdBab998288D4BA948847d982A32Bce77Ab591",
+    "overview": {
+        "en": "Field Chain is an eco-platform for block-chain games. Players can use the trading platform for block-chain games. The trading volume and liquidity of virtual assets also have the right to circulate virtual assets at any time",
+        "zh": "艾场是一个区块链游戏生态平台，玩家可以通过区块链游戏交易平台，虚拟资产的交易量、 流动性，亦具有随时流通虚拟资产的权利。"
+    },
+    "email": "2199175295@qq.com",
+    "website": "http://www.fa100.com",
+    "whitepaper": "http://www.fa100.com",
+    "state": "NORMAL",
+    "published_on": "2019-01-31",
+    "initial_price": {
+        "ETH": "0.0000141 ETH"
+    },
+    "links": {
+        "facebook": "https://www.facebook.com/fieldchain"
+    }
+}

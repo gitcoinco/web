@@ -1,0 +1,25 @@
+{
+  "symbol": "VJC",
+  "address": "0x5c62da804298d5972a323c80b539b8e7517a0dde",
+  "overview":{
+        "en": "Blockchain Technology based High Value Asset Decentralized Tracking and Trading platform.",
+        "zh": "专注于高价值资产上链的去中心化溯源交易平台"
+  },
+  "email": "support@venjocoin.io",
+  "website": "https://venjocoin.io",
+  "whitepaper": "https://venjocoin.io/vjc_wp_english.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-17",
+  "initial_price":{
+        "ETH":"0.00300000 ETH",
+        "USD":"0.5 USD",
+        "BTC":"0.00010000 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/VenjoCoin",
+    "telegram": "https://t.me/venjocoingroup",
+    "github": "https://github.com/venjocoin/VJC",
+    "facebook": "https://www.facebook.com/Venjocoin",
+    "medium": "https://medium.com/@venjocoin"
+  }
+}

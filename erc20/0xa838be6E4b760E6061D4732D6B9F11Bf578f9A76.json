@@ -1,0 +1,20 @@
+{
+    "symbol": "TTV",
+    "address": "0xa838be6E4b760E6061D4732D6B9F11Bf578f9A76",
+    "overview": {
+        "en": "TV-TWO is a cross-device streaming application. Users are rewarded with the TTV token for watching videos on their TV and on their phone."
+    },
+    "email": "team@tv-two.com",
+    "website": "https://tv-two.com",
+    "whitepaper": "https://tv-two.com/TV_Whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-17",
+    "links": {
+        "twitter": "https://twitter.com/tvtwocom",
+        "telegram": "https://t.me/tvtwocom",
+        "github": "https://github.com/tvtwocom",
+        "facebook": "https://www.facebook.com/tvtwocom",
+        "reddit": "https://www.reddit.com/r/tvtwocom",
+        "medium": "https://medium.com/tvtwocom"
+    }
+}

@@ -1,9 +1,9 @@
 {
     "symbol": "CVNT",
     "address": "0x6400b5522f8d448c0803e6245436dd1c81df09ce",
-    "overview":{
-          "en": "Content Value Network.",
-          "zh": "CVN是基于区块链技术的内容价值网络。"
+    "overview": {
+        "en": "Content Value Network.",
+        "zh": "CVN是基于区块链技术的内容价值网络。"
     },
     "email": "work@cvn.io",
     "website": "http://www.cvn.io/",
@@ -11,6 +11,6 @@
     "state": "NORMAL",
     "published_on": "2018-12-31",
     "links": {
-      "telegram": "https://t.me/CVN_NETWORK"
+        "telegram": "https://t.me/CVN_NETWORK"
     }
 }

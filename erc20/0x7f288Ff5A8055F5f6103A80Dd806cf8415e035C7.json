@@ -1,4 +1,23 @@
 {
-  "symbol": "CFC",
-  "address": "0x7f288Ff5A8055F5f6103A80Dd806cf8415e035C7"
+	"symbol": "CFC",
+	"address": "0x7f288Ff5A8055F5f6103A80Dd806cf8415e035C7",
+	"overview":{
+		"en": "Chain Finance project, initiated by Chain Finance Corp CO., LTD. , aims to create the first decentralized blockchain financial commercial union in the whole world, build a new ecosystem of one-stop cooperation and service docking between the upstream and downstream sectors of the blockchain industry. CFC is the only designated token commonly used in both internal and external business of the project ecology, which not only realizes the seamless circulation within the self-management ecological products inside Chain Finance Corp CO., LTD. , but also will be widely used in the financial and commercial docking between the ecological partners of the union.",
+		"zh": "Chain Finance项目由Chain Finance Corp CO.,LTD发起，致力于缔造全球首个去中心化区块链金融商业联盟组织，打造区块链产业上下游一站式合作与服务对接的全新生态，通过联盟成员的共同力量，推动区块链金融与商业新世界建立共识机制和标准秩序，最终推动区块链在全球范围内健康良性发展。CFC是项目生态内外业务中通用的唯一指定代币，不仅在集团公司自营生态产品内部实现无缝流通使用，也将广泛应用于联盟合作生态伙伴之间的金融与商务对接中。"
+	},
+	"email": "admin@chainfinance.org",
+	"website": "http://www.chainfinance.org/",
+	"whitepaper": "http://www.chainfinance.org/wp-content/uploads/2018/08/cfc_whitepaper_EN.pdf",
+	"state": "NORMAL",
+	"published_on": "2017-12-12",
+	"initial_price":{
+		"ETH":"0.00002 ETH",
+		"USD":"0.01439 USD",
+		"BTC":"0.000002 BTC"
+	},
+	"links": {
+		"twitter": "https://twitter.com/CfcChain",
+		"telegram": "https://0.plus/#/cfcfanrs",
+		"github": "https://github.com/chainfinance/"
+	}
 }

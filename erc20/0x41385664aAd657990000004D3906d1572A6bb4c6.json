@@ -1,0 +1,17 @@
+{
+  "symbol": "AMGC",
+  "address": "0x41385664aAd657990000004D3906d1572A6bb4c6",
+  "overview":{
+        "en": "The concept behind the AmigoCoin payment platform is to create a portal for providing global payment services and solutions to users. It will offer many features of the payment services industry, starting with the registration of users and companies, and performing due diligent checking that conforms to the respective local Know Your Customer (KYC) and Anti Money Laundering (AML) regulatory rules."
+  },
+  "email": "info@amigocoin.co.uk",
+  "website": "https://amigocoin.co.uk/",
+  "whitepaper": "https://amigocoin.co.uk/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-03-16",
+  "links": {
+    "twitter": "https://twitter.com/AmigoCoinUK",
+    "github": "https://github.com/AmigoCoinToken",
+    "facebook": "https://www.facebook.com/amigocoin.co.uk"
+  }
+}

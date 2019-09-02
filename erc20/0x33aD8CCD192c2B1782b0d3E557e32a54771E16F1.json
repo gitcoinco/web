@@ -1,0 +1,24 @@
+{
+  "symbol": "SP",
+  "address": "0x33aD8CCD192c2B1782b0d3E557e32a54771E16F1",
+  "overview":{
+    "en": "Sunpower Bockchain is the perfect combination of solar photovoltaic power generation and block chain technology. Distributed photovoltaic power generation is used to solve the problem of decentralization of block chains and energy sources. Sunpower Bockchain  pays more attention to the bottom technology and long-term development of blockchain. Through three-tier block chain structure, it devotes itself to developing high TPS payment application system. Solid solar cells provide value support for block chain system, and leave sufficient upgrade and expansion possibilities for the future, in order to solve the impossible triangle problem of block chain to the greatest extent.",
+    "zh": "光元区块链是太阳能光伏发电与区块链技术的完美结合。利用分布式光伏发电解决了区块链去中心化和能源问题。光元区块链更关注区块链底层技术和长远发展，通过三层式区块链构架，致力于发展高TPS支付应用体系,实体太阳能电池为区块链系统做价值支撑，并为未来留下充分的升级扩展可能性，以求最大程度解决区块链不可能三角问题。"
+  },
+  "email": "admin@sunpower.io",
+  "website": "https://www.sunpower.io/",
+  "whitepaper": "https://www.sunpower.io/wp.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-18",
+    "initial_price":{
+        "USD":"0.1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/sunpowerio",
+    "telegram": "https://t.me/sunpowerio",
+    "github": "https://github.com/sunpowerio",
+    "facebook": "https://www.facebook.com/sunpowerio",
+    "reddit": "https://www.reddit.com/r/sunpowerio",
+    "medium": "https://medium.com/sunpowerio"
+  }
+}

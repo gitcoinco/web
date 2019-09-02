@@ -1,0 +1,14 @@
+{
+  "symbol": "DMSCOIN",
+  "address": "0x6FC2A052f82d0f8B5d774f8EF8B30Fe933ce9953",
+  "overview":{
+        "en": "DMSCOIN is a cryptocurrency focused to be ‘BOR’’s cryptocurrency to empower businesses and trades across the region as a trusted, secure and greatest cryptocurrency."
+  },
+  "email": "info@coin-dms.com",
+  "website": "http://coin-dms.com",
+  "state": "NORMAL",
+  "published_on": "2018-11-03",
+  "initial_price":{
+        "USD":"1 USD"
+  }
+}

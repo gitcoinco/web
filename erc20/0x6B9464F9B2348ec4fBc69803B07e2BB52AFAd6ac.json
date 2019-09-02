@@ -1,0 +1,24 @@
+{
+    "symbol": "DEBB",
+    "address": "0x6B9464F9B2348ec4fBc69803B07e2BB52AFAd6ac",
+    "overview": {
+        "en": "DEBB is to construct an encrypted digital technology system with block chain as the core. By digitizing elements in real economic activities, a universal link can be established.",
+        "zh": "德意链目标是以区块链为核心，构造出一个加密数字技术体系，通过将现实经济活动中的元素进行数字化，从而建立一种通用的链接。"
+    },
+    "email": "contact@morganff.com",
+    "website": "http://www.morganff.com/",
+    "whitepaper": "https://dbankmoney.github.io/wp/DEBB.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-17",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.7 USD"
+    },
+    "links": {
+        "blog": "https://weibo.com/DEBBchain",
+        "twitter": "https://twitter.com/DEBBchain",
+        "telegram": "https://t.me/DEBBchain",
+        "github": "https://github.com/DEBBchain",
+        "facebook": "https://www.facebook.com/DEBBchain"
+    }
+}

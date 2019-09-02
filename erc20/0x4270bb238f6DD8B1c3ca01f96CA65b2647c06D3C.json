@@ -1,0 +1,26 @@
+{
+    "symbol": "FOTA",
+    "address": "0x4270bb238f6DD8B1c3ca01f96CA65b2647c06D3C",
+    "overview": {
+        "en": "FORTUNA is the first Blockchain platform for global OTC Derivative Market. It aims to solve major problems such as lack of trust, operational inefficiency, illiquidity, and lack of variety through decentralized consensus algorithm DPOSA, structured smart contracts, a decentralized quote scheme and other features of blockchain.",
+        "zh": "方图是全球首个分布式风险对冲区块链。它致力于通过区块链的去中心化共识算法DPOSA、分层化智能合约、去中心化报价机制和其他特性解决诸如信用缺失、运营效率低下，合约流动性不足、合约种类受限等核心问题。"
+    },
+    "email": "support@fota.com",
+    "website": "https://www.fota.io/",
+    "whitepaper": "https://www.fota.io/",
+    "state": "NORMAL",
+    "published_on": "2018-01-25",
+    "initial_price": {
+        "USD": "0.08 USD"
+    },
+    "links": {
+        "blog": "https://blog.naver.com/fortuna-fota",
+        "twitter": "https://twitter.com/Fortuna_FOTA",
+        "telegram": "https://t.me/FortunaOfficial",
+        "facebook": "https://www.facebook.com/fortunablockchain",
+        "reddit": "https://www.reddit.com/r/FortunaBlockchain/",
+        "linkedin": "https://www.linkedin.com/company/fortuna-blockchain/",
+        "medium": "https://medium.com/@Fota",
+        "youtube": "https://www.youtube.com/channel/UCxVUuhaAkYnawGOFE_PdJUg"
+    }
+}

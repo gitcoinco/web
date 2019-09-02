@@ -1,0 +1,19 @@
+{
+    "symbol": "OGN",
+    "address": "0x8207c1FfC5B6804F6024322CcF34F29c3541Ae26",
+    "overview": {
+        "en": "Origin Protocol is a platform for creating decentralized marketplaces on the blockchain.",
+        "zh": "Origin 起源协议帮助开发者和企业在区块链上建立去中心化的电商平台"
+    },
+    "email": "support@originprotocol.com",
+    "website": "https://www.originprotocol.com",
+    "whitepaper": "https://www.originprotocol.com/product-brief",
+    "links": {
+        "twitter": "https://twitter.com/originprotocol",
+        "telegram": "https://t.me/originprotocol",
+        "github": "https://github.com/originprotocol",
+        "facebook": "https://www.facebook.com/originprotocol",
+        "reddit": "https://www.reddit.com/r/originprotocol",
+        "medium": "https://medium.com/originprotocol"
+    }
+}
