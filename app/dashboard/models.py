@@ -2036,6 +2036,11 @@ class Profile(SuperModel):
         ('PL', 'Passively looking and open to hearing new opportunities'),
         ('N', 'Not open to hearing new opportunities'),
     ]
+    PERSONAS = [
+        ('hunter', 'Hunter'),
+        ('funder', 'Funder'),
+        ('', 'Neither'),
+    ]
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
@@ -2097,6 +2102,7 @@ class Profile(SuperModel):
         blank=True,
         help_text=_('override profile avatar'),
     )
+    dominant_persona = models.CharField(max_length=25, choices=PERSONAS, blank=True)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2266,6 +2272,12 @@ class Profile(SuperModel):
 
         # calculate persona
         hunter_count, funder_count = self.get_persona_action_count()
+        if hunter_count > funder_count:
+            self.dominant_persona = 'hunter'
+        elif hunter_count < funder_count:
+            self.dominant_persona = 'funder'
+        else:
+            self.dominant_persona = ''
 
         # update db
         if not decide_only_one:
