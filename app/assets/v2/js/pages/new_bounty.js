@@ -10,7 +10,7 @@ let params = (new URL(document.location)).searchParams;
 
 const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
 
-const contract_version = '1';
+const contract_version = '2';
 
 var bounty_last_synced = new Date();
 
@@ -762,7 +762,32 @@ $('#submitBounty').validate({
       switch (contract_version) {
         case '2':
           // TODO: std_bounties_2_contract
-          console.log('invoke std bounties contract');
+          console.log('invoke std bounties v2 contract');
+          var tokenVersion = 0;
+          if (_paysTokens) {
+            tokenVersion = 20;
+          }
+          var deadline = new Date()
+          deadline.setMonth(deadline.getMonth + 3);
+
+          bounty.issueAndContribute(
+            account,          // _sender
+            [account],        // _issuers[]
+            [account],        // _approvers[]
+            result,           // _data
+            deadline.getTime(),         // _deadline
+            tokenAddress,     // _token
+            tokenVersion,     // _tokenVersion (0, 20, or 721)
+            amount,           // _depositAmount
+           {                 // { from: x, to: y }
+             from: account,
+             value: eth_amount,
+             gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+             gas: web3.toHex(318730),
+             gasLimit: web3.toHex(318730)
+           },
+           web3Callback
+          )
           break;
         case '1':
           bounty.issueAndActivateBounty(

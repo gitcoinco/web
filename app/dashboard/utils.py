@@ -192,7 +192,7 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
 
     Args:
         host (str): The IPFS host to connect to.
-            Defaults to environment variable: IPFS_HOST.  The host name should be of the form 'ipfs.infura.io' and not 
+            Defaults to environment variable: IPFS_HOST.  The host name should be of the form 'ipfs.infura.io' and not
             include 'https://'.
         port (int): The IPFS port to connect to.
             Defaults to environment variable: env IPFS_API_PORT.
@@ -280,7 +280,7 @@ def get_web3(network, sockets=False):
 
         w3 = Web3(provider)
         if network == 'rinkeby':
-            w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+            w3.middleware_onion.inject(geth_poa_middleware, layer=0)
         return w3
     elif network == 'localhost' or 'custom network':
         return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
@@ -397,40 +397,70 @@ def get_bounty(bounty_enum, network, contract_version='1'):
     standard_bounties = getBountyContract(network, contract_version)
 
     try:
-        issuer, contract_deadline, fulfillmentAmount, paysTokens, bountyStage, balance = standard_bounties.functions.getBounty(bounty_enum).call()
+        loaded_bounty = standard_bounties.functions.getBounty(bounty_enum).call()
+        print(loaded_bounty)
+        if contract_version == '1':
+            issuer, contract_deadline, fulfillmentAmount, paysTokens, bountyStage, balance = loaded_bounty
+            bountydata = standard_bounties.functions.getBountyData(bounty_enum).call()
+            arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
+            token = standard_bounties.functions.getBountyToken(bounty_enum).call()
+            num_fulfillments = int(standard_bounties.functions.getNumFulfillments(bounty_enum).call())
+
+        elif contract_version == '2':
+            issuer = loaded_bounty[0][0]
+            approvers = loaded_bounty[1]
+            deadline = loaded_bounty[2]
+            tokenAddress = loaded_bounty[3]
+            tokenVersion = loaded_bounty[4]
+            balance = loaded_bounty[5]
+            hasPaidOut = loaded_bounty[6]
+            fulfillments = loaded_bounty[7]
+            contributions = loaded_bounty[8]
+
+            # not sure here
+            bountyStage = 0 if not hasPaidOut else 1
+            paysTokens = False if tokenVersion == 0 else True
+            fulfillmentAmount = 0
+            arbiter = approvers[0]
+            token = tokenAddress
+
+            num_fulfillments = len(fulfillments)
+
+        bountydata = loaded_bounty
+
     except BadFunctionCallOutput:
         raise BountyNotFoundException
     # pull from blockchain
-    bountydata = standard_bounties.functions.getBountyData(bounty_enum).call()
-    arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
-    token = standard_bounties.functions.getBountyToken(bounty_enum).call()
+
     bounty_data_str = ipfs_cat(bountydata)
     bounty_data = json.loads(bounty_data_str)
 
     # fulfillments
-    num_fulfillments = int(standard_bounties.functions.getNumFulfillments(bounty_enum).call())
     fulfillments = []
-    for fulfill_enum in range(0, num_fulfillments):
 
-        # pull from blockchain
-        accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
-        try:
-            data_str = ipfs_cat(data)
-            data = json.loads(data_str)
-        except JSONDecodeError:
-            logger.error(f'Could not get {data} from ipfs')
-            continue
+    # do this later - Dan
+    if contract_version == '1':
+        for fulfill_enum in range(0, num_fulfillments):
 
-        # validation
-        if 'Failed to get block' in str(data_str):
-            raise IPFSCantConnectException("Failed to connect to IPFS")
+            # pull from blockchain
+            accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
+            try:
+                data_str = ipfs_cat(data)
+                data = json.loads(data_str)
+            except JSONDecodeError:
+                logger.error(f'Could not get {data} from ipfs')
+                continue
 
-        fulfillments.append({
-            'id': fulfill_enum,
-            'accepted': accepted,
-            'fulfiller': fulfiller,
-            'data': data,
-        })
+            # validation
+            if 'Failed to get block' in str(data_str):
+                raise IPFSCantConnectException("Failed to connect to IPFS")
+
+            fulfillments.append({
+                'id': fulfill_enum,
+                'accepted': accepted,
+                'fulfiller': fulfiller,
+                'data': data,
+            })
 
     # validation
     if 'Failed to get block' in str(bounty_data_str):
@@ -502,6 +532,7 @@ def get_bounty_id(issue_url, network, contract_version='1'):
     all_known_stdbounties = Bounty.objects.filter(
         web3_type='bounties_network',
         network=network,
+        contract_version=contract_version
     ).nocache().order_by('-standard_bounties_id')
 
     try:
@@ -536,7 +567,10 @@ def get_bounty_id_from_db(issue_url, network):
 
 def get_highest_known_bounty_id(network, contract_version='1'):
     standard_bounties = getBountyContract(network, contract_version)
-    num_bounties = int(standard_bounties.functions.getNumBounties().call())
+    if contract_version == '1':
+        num_bounties = int(standard_bounties.functions.getNumBounties().call())
+    elif contract_version == '2':
+        num_bounties = int(standard_bounties.functions.numBounties().call())
     if num_bounties == 0:
         raise NoBountiesException()
     return num_bounties - 1
@@ -552,9 +586,11 @@ def get_bounty_id_from_web3(issue_url, network, start_bounty_id, direction='up',
         try:
 
             # pull and process each bounty
-            print(f'** get_bounty_id_from_web3; looking at {bounty_enum}')
+            print(f'** get_bounty_id_from_web3; looking at {bounty_enum}; contract v{contract_version}')
             bounty = get_bounty(bounty_enum, network, contract_version)
+            print('got bounty: {}'.format(bounty))
             url = bounty.get('data', {}).get('payload', {}).get('webReferenceURL', False)
+            print('got url: {}'.format(url))
             if url == issue_url:
                 return bounty['id']
 

@@ -35,7 +35,7 @@ from ens import ENS
 from ens.abis import ENS as ens_abi
 from ens.abis import RESOLVER as resolver_abi
 from ens.main import ENS_MAINNET_ADDR
-from ens.utils import dot_eth_namehash, label_to_hash
+from ens.utils import raw_name_to_hash, label_to_hash
 from eth_account.messages import defunct_hash_message
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from web3 import Web3
@@ -117,7 +117,7 @@ def set_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
     }
 
     ens_contract = w3.eth.contract(address=ENS_MAINNET_ADDR, abi=ens_abi, )
-    txn = ens_contract.functions.setResolver(dot_eth_namehash(subdomain), resolver_addr, ).buildTransaction(transaction)
+    txn = ens_contract.functions.setResolver(raw_name_to_hash(subdomain), resolver_addr, ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
     try:
         txn_hash = convert_txn(w3.eth.sendRawTransaction(signed_txn.rawTransaction))
@@ -146,7 +146,7 @@ def set_owner(signer, github_handle, nonce, gas_multiplier=1.101):
     ens_contract = w3.eth.contract(address=ENS_MAINNET_ADDR, abi=ens_abi, )
 
     txn = ens_contract.functions.setSubnodeOwner(
-        dot_eth_namehash(owned), label_to_hash(label), Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
+        raw_name_to_hash(owned), label_to_hash(label), Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
     ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
     try:
@@ -175,7 +175,7 @@ def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
     }
 
     resolver_contract = w3.eth.contract(address=resolver_addr, abi=resolver_abi, )
-    txn = resolver_contract.functions.setAddr(dot_eth_namehash(subdomain), signer, ).buildTransaction(transaction)
+    txn = resolver_contract.functions.setAddr(raw_name_to_hash(subdomain), signer, ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
     try:
         txn_hash = convert_txn(w3.eth.sendRawTransaction(signed_txn.rawTransaction))

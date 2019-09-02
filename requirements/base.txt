@@ -25,8 +25,8 @@ sendgrid==5.6.0
 slackclient==2.0.0
 eth-tester
 websockets
-web3==4.5.0
-eth-abi==1.1.1
+web3==5.0.2
+eth-abi==2.0.0
 mailchimp3
 django_chartit==0.2.9
 MechanicalSoup==0.9.0.post4
@@ -53,7 +53,7 @@ imageio
 boto3==1.7.81
 django-storages==1.6.6
 easy-thumbnails==2.5
-eth-account==0.2.2
+eth-account==0.4.0
 django-classy-tags==0.8.0
 django-cookie-law==2.0.1
 django-impersonate==1.3
