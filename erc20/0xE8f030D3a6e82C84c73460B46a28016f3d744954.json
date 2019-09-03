@@ -1,0 +1,22 @@
+{
+  "symbol": "GE",
+  "address": "0xE8f030D3a6e82C84c73460B46a28016f3d744954",
+  "overview":{
+        "en": "In GEChain's entire ecosystem, global users and genetic testing organizations are able to turn their own genetic data into their own value and circulate in the ecosystem in the form of GE. As a value carrier, GE not only circulates in the ecosystem, but also inspires the greater value ecology outside the genetic testing and health industry.",
+        "zh": "在GEChain的整个生态中，全球的用户和基因检测机构能够让自己拥有的基因数据转化为自身的价值，并以GE的形式在生态中流通。而GE作为价值承载物，不仅在生态系统中流通，更能撬动基因检测和健康产业之外的更大的价值生态。"
+  },
+  "email": "censeninfo@mail.com",
+  "website": "http://www.gechain.io/",
+  "whitepaper": "http://www.gechain.io/file/GECHAIN%20WHITEPAPER.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-28",
+  "initial_price":{
+        "ETH":"0.0000875 ETH",
+        "USD":"0.02 USD",
+        "BTC":"0.0000017 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/ge_chain",
+    "Telegram": "https://t.me/GEChain_Global"
+  }
+}
