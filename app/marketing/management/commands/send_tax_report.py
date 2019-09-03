@@ -15,10 +15,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import time
-import warnings
 import csv
 import os
+import warnings
 
 from django.core.management.base import BaseCommand
 
