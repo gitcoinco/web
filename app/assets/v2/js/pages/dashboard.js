@@ -71,7 +71,21 @@ function scrollSlider(element, cardSize) {
     element[0].scrollBy({left: cardSize, behavior: 'smooth'});
   });
 
+  element.on('scroll mouseenter', function() {
+    if (this.clientWidth === (this.scrollWidth - this.scrollLeft)) {
+      arrowRight.hide();
+    } else {
+      arrowRight.show();
+    }
+
+    if (this.scrollLeft < 10) {
+      arrowLeft.hide();
+    } else {
+      arrowLeft.show();
+    }
+  });
 }
+
 scrollSlider($('#featured-card-container'), 288);
 
 function debounce(func, wait, immediate) {
