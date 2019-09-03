@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static humanize grants_extra compress %}
+{% load i18n static humanize grants_extra %}
 <a href="{% url 'grants:details' grant.id grant.slug %}">
   <div class="grant-item__img">
     <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">

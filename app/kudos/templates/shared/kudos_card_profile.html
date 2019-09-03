@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static kudos_extras avatar_tags  compress %}
+{% load i18n static kudos_extras avatar_tags  %}
 {% load humanize %}
 {% if kudos_data == 'sent_kudos' %}
   {% regroup sent_kudos|dictsort:"kudos_token_cloned_from.name" by kudos_token_cloned_from.name as kudos_dupe %}
