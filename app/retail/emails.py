@@ -47,6 +47,8 @@ MARKETING_EMAILS = [
     ('roundup', _('Roundup Emails'), _('Weekly')),
     ('new_bounty_notifications', _('New Bounty Notification Emails'), _('(up to) Daily')),
     ('important_product_updates', _('Product Update Emails'), _('Quarterly')),
+	('general', _('General Email Updates'), _('as it comes')),
+	('quarterly', _('Quarterly Email Updates'), _('Quarterly')),
 ]
 
 TRANSACTIONAL_EMAILS = [
@@ -311,7 +313,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     params = {**quarterly_stats, **platform_wide_stats}
     params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
-    params['email_type'] = 'roundup'
+    params['email_type'] = 'quarterly'
     print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
@@ -789,8 +791,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
         'interest': interest,
         'time_delta_days': time_delta_days,
         'subscriber': get_or_save_email_subscriber(interest.profile.email, 'internal'),
-        'email_type': 'bounty',
-        'email_type': 'bounty_expiration'
+        'email_type': 'bounty_expiration',
     }
 
     response_html = premailer_transform(render_to_string("emails/render_bounty_startwork_expired.html", params))
@@ -805,7 +806,7 @@ def render_gdpr_update(to_email):
         'terms_of_use_link': 'https://gitcoin.co/legal/terms',
         'privacy_policy_link': 'https://gitcoin.co/legal/privacy',
         'cookie_policy_link': 'https://gitcoin.co/legal/cookie',
-        'email_type': 'roundup',
+        'email_type': 'general',
     }
 
     subject = "Gitcoin: Updated Terms & Policies"
