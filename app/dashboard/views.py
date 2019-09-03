@@ -1939,6 +1939,23 @@ def profile_filter_activities(activities, activity_name, activity_tabs):
     return activities.filter(activity_type=activity_name)
 
 
+@login_required
+def profile_github_perms(request):
+    groups = request.user.groups.all()
+    perms = {'organizations': [],
+             'repos': []}
+    for group in groups:
+        if 'repo' in group.name:
+            perms['repos'].append(
+                {'repo': group.name.split('-')[2],
+                 'members': [u.profile.handle for u in group.users_set.all()]})
+        elif 'role' in group.name:
+            perms['organizations'].append(
+                {'organization': group.name.split('-')[0],
+                 'members': [u.profile.handle for u in group.users_set.all()]})
+    return JsonResponse(perms, status=200)
+
+
 def profile(request, handle):
     """Display profile details.
 
