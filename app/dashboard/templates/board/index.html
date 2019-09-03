@@ -1,0 +1,63 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not,see
+  <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static add_url_schema avatar_tags compress %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    {% compress css %}
+    <link rel="stylesheet" href={% static "v2/css/vue-loader.css" %} />
+    <link rel="stylesheet" href="{% static "v2/css/board.css" %}" />
+    {% endcompress %}
+  </head>
+  <body class="{{ active }} bg-lightblue g-font-muli" >
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'shared/nav.html' %}
+    <div id="gc-board" v-cloak>
+
+      <div class="container">
+        <nav class="mx-3 mt-5">
+          <div class="nav nav-tabs" id="myTab" role="tablist">
+            <a class="nav-item nav-link nav-line active" id="funder-tab" data-toggle="tab" href="#nav-funder" role="tab" aria-controls="funder" aria-selected="false" @click="checkData('funder')">Funder</a>
+            <a class="nav-item nav-link nav-line " id="contributor-tab" data-toggle="tab" href="#nav-contributor" role="tab" aria-controls="contributor" aria-selected="true" @click="checkData('contributor')">Contributor</a>
+          </div>
+        </nav>
+      </div>
+      <div class="tab-content" id="nav-tabContent">
+        {% include 'board/funder.html' %}
+        {% include 'board/contributor.html' %}
+      </div>
+
+    </div>
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% compress js %}
+    <script src="{% static "v2/js/vue-components.js" %}"></script>
+    <script src="{% static "v2/js/board.js" %}"></script>
+    {% endcompress %}
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+    </script>
+
+  </body>
+</html>
