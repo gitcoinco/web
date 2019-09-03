@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+/* eslint-disable no-multi-spaces */
 window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
@@ -131,16 +132,41 @@ window.onload = function() {
           };
 
           indicateMetamaskPopup();
-          // TODO: UPDATE BASED ON VERSION
-          bounty.killBounty(
-            bountyId,
-            { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) },
-            final_callback
-          );
+          const gas = {
+            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+          };
 
+          switch (contract_version) {
+            case '2': {
+              // TODO: std_bounties_2_contract
+              const account = web3.eth.coinbase;
+              const issuerId = ''; // TODO: Populate
+              const amounts = []; // TODO: Populate
+
+              bounty.drainBounty(
+                account,  // _sender
+                bountyId, // _bountyId
+                issuerId, // _issuerId
+                amounts   // _amounts
+              );
+              break;
+            }
+
+            case '1': {
+              bounty.killBounty(
+                bountyId,
+                gas,
+                final_callback
+              );
+              break;
+            }
+
+            default:
+              console.error('unable to find contract version');
+          }
         };
-        // Get bountyId from the database
-        var uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+
+        const uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
         $.get(uri, apiCallback);
       }
