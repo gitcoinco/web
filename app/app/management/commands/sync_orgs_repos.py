@@ -12,7 +12,8 @@ class Command(BaseCommand):
 
         try:
             print("Loading Users....")
-            all_users = User.objects.all()  # potentially want to add some filters here around what users are synced
+            all_users = User.objects.all(
+                is_active=True)
             print(all_users)
             print("Looking up Organization of user")
             # memoize the process so we only ever sync once per user
@@ -46,7 +47,10 @@ class Command(BaseCommand):
 
                         for member in org_members:
 
-                            member_user_obj = User.objects.get(profile__handle=member['login'])
+                            member_user_obj = User.objects.get(
+                                profile__handle=member['login'],
+                                is_active=True
+                            )
 
                             if member_user_obj is None:
                                 continue
@@ -76,7 +80,7 @@ class Command(BaseCommand):
                             )
 
                             for collaborator in repo_collabs:
-                                member_user_obj = User.objects.get(profile__handle=collaborator['login'])
+                                member_user_obj = User.objects.get(profile__handle=collaborator['login'], is_active=True)
 
                                 if member_user_obj is None:
                                     continue
