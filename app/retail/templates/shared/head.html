@@ -39,14 +39,6 @@
 <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
-{% endcompress %}
-{% if not slim %}
-  {% compress css %}
-  <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-  <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
-  {% endcompress %}
-{% endif %}
-{% compress css %}
 <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/buttons.css" %}" />
@@ -54,10 +46,7 @@
 <link rel="stylesheet" href="{% static "v2/css/carousel.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/faucet.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/colors.css" %}" />
-
-{% endcompress %}
 <!-- Forms -->
-{% compress css %}
 <link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/forms/checkbox.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/forms/drop.css" %}" />
@@ -68,11 +57,15 @@
 <link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/notifications.css" %}">
-{% endcompress %}
 <!-- Cookie Consent -->
-{% compress css %}
 <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
 {% endcompress %}
+{% if not slim %}
+  {% compress css %}
+  <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
+  <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+  {% endcompress %}
+{% endif %}
 
 {% if 'grants' in request.path %}
 <!-- Grants -->

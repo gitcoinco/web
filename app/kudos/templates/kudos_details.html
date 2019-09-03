@@ -133,22 +133,21 @@
     </section>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+
     {% compress js %}
     <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
-    {% endcompress %}
-    {% include 'shared/footer_scripts.html' with slim=1 %}
-    {% compress js %}
     <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/amounts.js" %}"></script>
     <script src="{% static "v2/js/eth-price.js" %}"></script>
-    {% endcompress %}
-    <script>
-      $('[data-toggle="tooltip"]').bootstrapTooltip();
-    </script>
-    {% compress js %}
     <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
     {% endcompress %}
+
+    <script>
+        $('[data-toggle="tooltip"]').bootstrapTooltip();
+    </script>
+    
     {% include 'shared/messages.html' %}
   </body>
 </html>

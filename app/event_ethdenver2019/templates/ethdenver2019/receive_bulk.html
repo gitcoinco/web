@@ -147,14 +147,17 @@
 </style>
 {% compress js %}
 <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
-<link rel="stylesheet" href="{% static 'v2/css/jquery-ui.css' %}" />
-<link rel="stylesheet" href="{% static 'v2/css/kudos/styles.css' %}" />
-{% endcompress %}
-{% include 'shared/footer_scripts.html' with slim=1 %}
-{% compress js %}
 <script src="{% static 'v2/js/lib/popper.min.js' %}"></script>
 <script src="{% static 'v2/js/pages/kudos_details.js' %}"></script>
 {% endcompress %}
+
+{% compress css %}
+<link rel="stylesheet" href="{% static 'v2/css/jquery-ui.css' %}" />
+<link rel="stylesheet" href="{% static 'v2/css/kudos/styles.css' %}" />
+{% endcompress %}
+
+{% include 'shared/footer_scripts.html' with slim=1 %}
+
 <script>
   document.network = '{{coupon.token.contract.network}}';
   $(document).ready(function(){

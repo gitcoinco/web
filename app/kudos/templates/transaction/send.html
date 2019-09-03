@@ -26,6 +26,10 @@
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
   <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+  <script src="{% static "v2/js/pages/kudos_send.js" %}"></script>
+  <script src="{% static "onepager/js/confetti.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="{% static "v2/js/eth-price.js" %}"></script>
   {% endcompress %}
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script>
@@ -35,12 +39,6 @@
       document.network = 'mainnet'
     }
   </script>
-  {% compress js %}
-  <script src="{% static "v2/js/pages/kudos_send.js" %}"></script>
-  <script src="{% static "onepager/js/confetti.js" %}"></script>
-  <script src="{% static "v2/js/user-search.js" %}"></script>
-  <script src="{% static "v2/js/eth-price.js" %}"></script>
-  {% endcompress %}
   <script>
   $(document).ready(function() {
     if (typeof userSearch != 'undefined') {

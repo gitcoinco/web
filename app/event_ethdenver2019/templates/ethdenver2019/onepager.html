@@ -32,11 +32,12 @@
     <script src="{% static "v2/js/event_ethdenver2019/blockies.js" %}"></script>
     {% endcompress %}
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js" integrity="sha256-nWBTbvxhJgjslRyuAKJHK+XcZPlCnmIAAMixz6EefVk=" crossorigin="anonymous"></script>
-
+    
     {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/event_ethdenver2019/style.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     {% endcompress %}
     <style type="text/css">
      .ethdenver2019-nli-header {
@@ -78,9 +79,6 @@
         transform: rotate(90deg);
       }
     </style>
-    {% compress css %}
-    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
-    {% endcompress %}
     {% include 'shared/favicon.html' %}
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
