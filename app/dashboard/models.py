@@ -2035,6 +2035,16 @@ class Organization(SuperModel):
         return self.name
 
 
+class GithubRepo(SuperModel):
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
+
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
