@@ -26,13 +26,11 @@ class Command(BaseCommand):
                     if handle not in lsynced:
                         print(f'Syncing User Handle: {handle}')
                         profile = sync_profile(handle)
-                        remove = [x for x in profile.orgs.all() if x.name not in []]
-
                         print('Removing Stale Organizations and Groups')
+                        remove = [x for x in profile.orgs.all() if x.name not in profile.organizations]
                         for y in remove:
                             profile.orgs.remove(y)
                             profile.user.groups.filter(name__contains=y.name).delete()
-
                         lsynced.append(handle)
                     else:
                         return lsynced
