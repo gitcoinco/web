@@ -1002,7 +1002,8 @@ def create_status_update(request):
         kwargs = {
             'activity_type': 'status_update',
             'metadata': {
-                'title': request.POST.get('data')
+                'title': request.POST.get('data'),
+                'ask': request.POST.get('ask'),
             }
         }
         kwargs['profile'] = profile

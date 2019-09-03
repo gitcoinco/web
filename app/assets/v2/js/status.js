@@ -26,7 +26,9 @@ $(document).ready(function() {
   function submitStatusUpdate() {
     const data = new FormData();
     const message = $('#textarea');
+    const ask = $('.activity_type_selector .active input').val();
 
+    data.append('ask', ask);
     data.append('data', message.val().trim());
     data.append(
       'csrfmiddlewaretoken',
