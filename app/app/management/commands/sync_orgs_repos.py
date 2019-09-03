@@ -8,8 +8,6 @@ from app.utils import sync_profile
 class Command(BaseCommand):
     help = 'Synchronizes Organizations and Repo roles to members'
 
-    # def add_arguments(self, parser):
-
     def handle(self, *args, **options):
 
         try:
