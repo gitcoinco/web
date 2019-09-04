@@ -3386,6 +3386,21 @@ class HackathonEvent(SuperModel):
         """
         return f'{self.name} - {self.start_date}'
 
+    @property
+    def bounties(self):
+        return Bounty.objects.filter(event=self).current()
+
+    @property
+    def stats(self):
+        stats = {
+            'range': f"{self.start_date.strftime('%m/%d/%Y')} to {self.end_date.strftime('%m/%d/%Y')}",
+            'num_bounties': self.bounties.count(),
+            'num_bounties_done': self.bounties.filter(idx_status='done').count(),
+            'num_bounties_open': self.bounties.filter(idx_status='open').count(),
+            'total_volume': sum(self.bounties.values_list('_val_usd_db', flat=True)),
+        }
+        return stats
+
     def save(self, *args, **kwargs):
         """Define custom handling for saving HackathonEvent."""
         from django.utils.text import slugify

@@ -414,7 +414,7 @@ def build_stat_results(keyword=None):
     Args:
         keyword (str): The keyword to build statistic results.
     """
-    from dashboard.models import Bounty, Tip
+    from dashboard.models import Bounty, HackathonEvent, Tip
     context = {
         'active': 'results',
         'title': _('Results'),
@@ -557,5 +557,8 @@ def build_stat_results(keyword=None):
     context['last_month_amount'] = round(sum(bh)/1000)
     context['last_month_amount_hourly'] = sum(bh) / 30 / 24
     context['last_month_amount_hourly_business_hours'] = context['last_month_amount_hourly'] / 0.222
+    context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.all()]
+    context['hackathon_total'] = [ele[1]['total_volume'] for ele in context['hackathons']]
+
 
     return context
