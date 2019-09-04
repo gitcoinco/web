@@ -1,0 +1,117 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <style>
+      .onboard-banner {
+        background: {% firstof hackathon.background_color or 'white' %};
+        color: {% firstof hackathon.text_color or 'black' %};
+      }
+    </style>
+  </head>
+  <body class="interior {{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+      <div class="onboard-banner text-center p-4">
+          {% firstof hackathon.logo_svg or hackathon.logo as logo %}
+          {% if logo %}
+            <img class="" width="364" src="{{MEDIA_URL}}{{logo}}"/>
+          {% else %}
+            <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center text-white">
+              {{ hackathon.name }}
+            </div>
+          {% endif %}
+        <h1>{{hackathon.name}} Guide</h1>
+        {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+
+      </div>
+    </div>
+
+    <div class="container">
+
+      {% if hackathon.end_date|timesince >= "1 min" %}
+        <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
+      {% endif %}
+      <div class="row py-5">
+        <div class="col-12">
+          <div class="mb-4">
+            <h2>How the hackathon works?</h2>
+            <p>Our hackathon is formed by many prizes from diferent open source organisations, you can <a href="{% url 'hackathon' hackathon.slug %}#bounties">check the prizes</a> </p>
+          </div>
+
+          <div class="mb-4">
+            <h2>How to participate?</h2>
+            {% if not github_handle %}
+              <p>First of all you need to connect to gitcoin with your github account. </p>
+              <a class="btn btn-gc-purple my-3" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+                onclick="dataLayer.push({'event': 'login'});">
+                <i class="fab fa-github"></i>
+                <span>{% trans "Login with github" %}</span>
+              </a>
+            {% endif %}
+            <ul class="list-group mt-4">
+              <li class="list-group-item"><a target="_blank" href="https://discord.gg/TxRKTn8">Join Discord</a> - You will able to get updates from our sponsors prizes and find help.</li>
+              <li class="list-group-item"><a target="_blank" href="https://github.com/gitcoinco/{{hackathon.slug}}-teams">Create or Join a team</a> - To participate in <b>{{hackathon.name}}</b> we recommend you to have a team, but you can do it alone also.</li>
+              <li class="list-group-item"><a href="#startSubmit" data-toggle="modal">Start/Submit Work via Gitcoin</a> - Follow this guide to understand how Gitcoin works.</li>
+            </ul>
+
+          </div>
+          <!-- Modal -->
+          <div class="modal fade" id="startSubmit" tabindex="-1" role="dialog" aria-labelledby="startSubmitLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="startSubmitLabel">Start/Submit Work via Gitcoin</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>When your team is formed and you know the prizes you want to compete for you can <b>“Start Work”</b> through Gitcoin using the button on the prize page.</p>
+                  <img class="mw-100 my-3" src="https://i1.wp.com/gitcoin.co/blog/wp-content/uploads/2019/07/Screen-Shot-2019-07-30-at-5.28.09-PM.png?w=2082&ssl=1" alt="">
+                  <p>Then, when your project is completed and you have submitted a pull request or set up a repository with your code and deliverables, it’s time to submit work! Submitting work allows judges to review see your work along with other submissions, and helps them pay you and your teammates out directly. Submit your work by clicking the <b>“Submit Work”</b> button on the prize page, right where the <b>“Start Work”</b> button was before (shown above). Note that you should have already clicked <b>“Start Work”</b> earlier for the <b>“Submit Work”</b> button to appear. Be sure to include your teammates Gitcoin addresses in your project’s readme/front page so that judges can pay them out, too.</p>
+                  <p>And that’s it! Your submission will be reviewed by judges and, if you are the winning submission, you and your teammates will be paid the prize amount in cryptocurrency directly to the ETH address associated with your Gitcoin profile.</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h2>Ready?</h2>
+            <p>Now lets go create something amazing, remember you have time until <b>{{hackathon.end_date}}</b> </p>
+            <p>
+              <a class="btn btn-lg btn-gc-pink" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+  </body>

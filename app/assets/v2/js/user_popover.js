@@ -1,80 +1,58 @@
 let popoverData = [];
 
 const renderPopOverData = json => {
-  return `
-            <div class="popover-bounty__content">
-              <div class="d-flex justify-content-between mb-2">
-                <h2 class="title font-subheader font-weight-bold username">${
-  json.profile.handle
-}</h2>
-                <span class="text-muted specialty pt-2">Specialty: ${json.profile.keywords
-    .slice(0, 3)
-    .toString()}</span>
-                                  ${Object.keys(json.profile.organizations).map(
-    (org, index) => {
-      if (index < 3) {
-        `<img src="/dynamic/avatar/${org}" alt="${org}" class="rounded-circle" width="24" height="24">`;
-      } else {
-        `<img class="rounded-circle m-1" width="24" height="24" title=${Object.keys(json.profile.organizations.length)} times" src=""/>`;
-      }
+  let orgs = Object.keys(json.profile.organizations).map((org, index) => {
+    if (index < 3) {
+      return `<img src="/dynamic/avatar/${org}" alt="${org}" class="rounded-circle" width="24" height="24">`;
     }
-  )}
-              </div>
-              <span class="earned">~ ${
-  Number(json.profile.total_earned).toFixed(4)
-} ETH earned</span>
-              <div class="statistics d-flex justify-content-between mt-2">
-                <div class="popover_card text-center mr-4 pt-2">
-                  <span class="contributor-position font-weight-semibold">#${
-  json.profile.position
-}</span>
-                  <p class="mt-2">Gitcoin Contributor</p>
-                </div>
-                <div class="contributions d-flex justify-content-between">
-                  <div class="popover_card text-center mr-2 pt-2">
-                    <span class="completed-bounties font-weight-semibold">${
-  json.statistics.work_completed
-}</span>
-                    <p class="mt-2">Bounties Completed</p>
-                  </div>
-                  <div class="popover_card text-center mr-2 pt-2">
-                    <span class="in-progress text-center font-weight-semibold">${
-  json.statistics.work_in_progress
-}</span>
-                    <p class="mt-2">Bounties In Progress</p>
-                  </div>
-                  <div class="popover_card text-center mr-2 pt-2">
-                    <span class="abandoned-bounties font-weight-semibold">${
-  json.statistics.work_abandoned
-}</span>
-                    <p class="mt-2">Bounties Abandoned</p>
-                  </div>
-                  <div class="popover_card text-center mr-2 pt-2">
-                    <span class="removed-bounties font-weight-semibold">${
-  json.statistics.work_removed
-}</span>
-                    <p class="mt-2">Bounties Removed</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+    return `<span class="m-1">+${Object.keys(json.profile.organizations).length - 3}</span>`;
+  }).join(' ');
 
-            <div class="popover-bounty__footer">
-              <div class="d-flex justify-content-between">
-                <span class="title text-muted">Latest Activity
-                  <span class="current_status font-weight-semibold">${currentStatus(
-    json.recent_activity.activity_type
-  )}</span>
-                </span>
-                <span class="text-muted time-ago">${moment(
-    json.recent_activity.created,
-    'YYYYMMDD'
-  ).fromNow()}</span>
-              </div>
-              <p class="text-muted pt-2 activity-title">${
-  json.recent_activity.activity_metadata.title
-}</p>
-            </div>`;
+  return `
+    <div class="popover-bounty__content">
+      <div class="d-flex justify-content-between mb-2">
+        <img src="${json.profile.avatar_url}" width="30" class="rounded-circle">
+        <h2 class="title font-subheader font-weight-bold username">${json.profile.handle}</h2>
+        <span class="text-muted specialty pt-2">Specialty: ${json.profile.keywords.slice(0, 3).toString()}</span>
+        ${orgs.length ? '<span>Contributes to: </span>' + orgs : ''}
+      </div>
+      <span class="earned">~ ${Number(json.profile.total_earned).toFixed(4)} ETH earned</span>
+      <div class="statistics d-flex justify-content-between mt-2">
+        <div class="popover_card text-center mr-4 pt-2">
+          <span class="contributor-position font-weight-semibold">#${json.profile.position}</span>
+          <p class="mt-2">Gitcoin Contributor</p>
+        </div>
+        <div class="contributions d-flex justify-content-between">
+          <div class="popover_card text-center mr-2 pt-2">
+            <span class="completed-bounties font-weight-semibold">${json.statistics.work_completed}</span>
+            <p class="mt-2">Bounties Completed</p>
+          </div>
+          <div class="popover_card text-center mr-2 pt-2">
+            <span class="in-progress text-center font-weight-semibold">${json.statistics.work_in_progress}</span>
+            <p class="mt-2">Bounties In Progress</p>
+          </div>
+          <div class="popover_card text-center mr-2 pt-2">
+            <span class="abandoned-bounties font-weight-semibold">${json.statistics.work_abandoned}</span>
+            <p class="mt-2">Bounties Abandoned</p>
+          </div>
+          <div class="popover_card text-center mr-2 pt-2">
+            <span class="removed-bounties font-weight-semibold">${json.statistics.work_removed}</span>
+            <p class="mt-2">Bounties Removed</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popover-bounty__footer">
+      <div class="d-flex justify-content-between">
+        <span class="title text-muted">Latest Activity
+          <span class="current_status font-weight-semibold">${currentStatus(json.recent_activity.activity_type)}</span>
+        </span>
+        <span class="text-muted time-ago">${moment(json.recent_activity.created, 'YYYYMMDD').fromNow()}</span>
+      </div>
+      <p class="text-muted pt-2 activity-title">${json.recent_activity.activity_metadata.title}</p>
+    </div>
+  `;
 };
 
 const openContributorPopOver = (contributor, element) => {

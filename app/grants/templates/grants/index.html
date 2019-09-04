@@ -79,7 +79,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </p>
 
             {% if not user.is_authenticated %}
-              <a class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Become a Matching Partner' %}</a>
+              <a class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">{% trans 'Become a Matching Partner' %}</a>
             {% else %}
               <div class="btn btn-gc-blue font-subtitle font-weight-semibold" onclick="processPayment()">
                 {% trans 'Become a Matching Partner' %}

@@ -93,7 +93,7 @@
       <div class="form-group">
         <hr>
         <h3 class="text-center" style="margin: 0px auto;">👇 Redeem It Here 👇</h3>
-        {% trans "Logged in as" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>) {%endif%}
+        {% trans "Logged in as" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">{% trans "Login" %}</a>) {%endif%}
         <input type="text" placeholder="@username" id="user" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" disabled="disabled" class='form-control'  required >
         {% if not request.user.is_authenticated %}
         <p style="color:red;">{% trans "You must be logged in to receive this kudos." %}</p>
