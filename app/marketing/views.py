@@ -314,7 +314,7 @@ def email_settings(request, key):
     pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     context = {
         'nav': 'home',
-        'active': '/settings/email',
+        'active': '/settings/email/',
         'title': _('Email Settings'),
         'es': es,
         'nav': 'home',
