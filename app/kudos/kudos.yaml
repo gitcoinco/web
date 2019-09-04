@@ -5126,3 +5126,160 @@
   - DAI
   - MakerDAO
   image: dai.svg
+- name: grants_round_3_contributor_-_Popart_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Popart_bot.svg
+- name: grants_round_3_contributor_-_noir_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: noir_bot.svg
+- name: grants_round_3_contributor_-_japaneseArt_ninjaBot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: japaneseArt_ninjaBot.svg
+- name: grants_round_3_contributor_-_origami_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: origami_bot.svg
+- name: grants_round_3_contributor_-_popart_gitcoin
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: popart_gitcoin.svg
+- name: grants_round_3_contributor_-_ramen_eating_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: ramen_eating_bot.svg
+- name: grants_round_3_contributor_-_samurai_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: samurai_bot.svg
+- name: grants_round_3_contributor_-_watercolour_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: watercolour_bot.svg
+- name: grants_round_3_contributor_-_gitcoin_spraybot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: gitcoin_spraybot.svg
+- name: grants_round_3_contributor_-_japanese-bot-sketch
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: japanese-bot-sketch.svg
+- name: grants_round_3_contributor_-_kendo-bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: kendo-bot.svg
+- name: grants_round_3_contributor_-_snowgitcoin_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: snowgitcoin_bot.svg
+- name: grants_round_3_contributor_-_Futurism_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Futurism_bot.svg
+
