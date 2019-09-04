@@ -3394,6 +3394,7 @@ class HackathonEvent(SuperModel):
     def stats(self):
         stats = {
             'range': f"{self.start_date.strftime('%m/%d/%Y')} to {self.end_date.strftime('%m/%d/%Y')}",
+            'logo': self.logo.url if self.logo else None,
             'num_bounties': self.bounties.count(),
             'num_bounties_done': self.bounties.filter(idx_status='done').count(),
             'num_bounties_open': self.bounties.filter(idx_status='open').count(),

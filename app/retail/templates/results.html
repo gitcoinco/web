@@ -138,10 +138,9 @@
 
         <div class="hackathon-breakdown">
           {% for hackathon in hackathons %}
-            {% firstof hackathon.0.logo_svg or hackathon.0.logo as logo %}
             <div>
-              {% if logo %}
-                <img src="{{MEDIA_URL}}{{logo}}"/>
+              {% if hackathon.1.logo %}
+                <img src="{{hackathon.1.logo}}"/>
               {%endif %}
               <h4>{{hackathon.0.name}}</h4>
               {% if hackathon.1.num_bounties %}
