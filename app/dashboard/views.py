@@ -1996,16 +1996,33 @@ def profile(request, handle):
         if page:
             page = int(page)
             activity_type = request.GET.get('a', '')
-            all_activities = profile.get_various_activities()
-            paginator = Paginator(profile_filter_activities(all_activities, activity_type, activity_tabs), 10)
+            if activity_type == 'currently_working':
+                currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
+                    .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+                currently_working_bounties_count = currently_working_bounties.count()
+                if currently_working_bounties_count > 0:
+                    paginator = Paginator(currently_working_bounties, 10)
+                
+                if page > paginator.num_pages:
+                    return HttpResponse(status=204)
 
-            if page > paginator.num_pages:
-                return HttpResponse(status=204)
+                context = {}
+                context['bounties'] = [bounty for bounty in paginator.get_page(page)]   
 
-            context = {}
-            context['activities'] = [ele.view_props for ele in paginator.get_page(page)]
+                return TemplateResponse(request, 'profiles/profile_bounties.html', context, status=status)
+                
+            else:
 
-            return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
+                all_activities = profile.get_various_activities()
+                paginator = Paginator(profile_filter_activities(all_activities, activity_type, activity_tabs), 10)
+
+                if page > paginator.num_pages:
+                    return HttpResponse(status=204)
+
+                context = {}
+                context['activities'] = [ele.view_props for ele in paginator.get_page(page)]
+
+                return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
 
         context = profile.to_dict(tips=False)
