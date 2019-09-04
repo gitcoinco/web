@@ -1,6 +1,6 @@
 ---
 name: ❤️ Say thank you
-about: Tell us how you use nock & support our efforts towards our mission (Grow/Sustain Open Source)
+about: Tell us how you use Gitcoin & support our efforts towards our mission (Grow/Sustain Open Source)
 ---
 
 # ❤️ I'm using Gitcoin
