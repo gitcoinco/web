@@ -928,6 +928,7 @@ var listen_for_web3_changes = async function() {
       trigger_form_hooks();
     } else {
       var cb;
+
       try {
         // invoke infura synchronous call, if it fails metamask is locked
         cb = web3.eth.coinbase;
@@ -936,8 +937,8 @@ var listen_for_web3_changes = async function() {
         console.log('web3.eth.coinbase could not be loaded');
       }
       if (typeof cb == 'undefined' || !cb) {
-         currentNetwork('locked');
-         trigger_form_hooks();
+        currentNetwork('locked');
+        trigger_form_hooks();
       } else {
         is_metamask_unlocked = true;
         web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
