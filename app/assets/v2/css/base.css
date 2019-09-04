@@ -633,7 +633,7 @@ input[type=text].loading {
 }
 
 .alert.warning {
-  background-color: #F2A700
+  background-color: #FF7F00;
 }
 
 .alert.warning .message::before {
@@ -701,6 +701,11 @@ input[type=text].loading {
   }
 }
 
+.bottom_notification-yellow {
+  background-color: #ffce08;
+  color: #000;
+}
+
 .metamask_recc {
   width: 45%;
   display: inline-block;
@@ -748,7 +753,7 @@ input[type=text].loading {
 }
 
 .bottom_notification a {
-  color: white;
+  color: currentColor;
   text-decoration: underline;
   margin-left: 5px;
 }

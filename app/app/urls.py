@@ -481,6 +481,11 @@ urlpatterns = [
         retail.emails.funder_payout_reminder,
         name='funder_payout_reminder'
     ),
+    re_path(
+        r'^_administration/email/no_applicant_reminder$',
+        retail.emails.no_applicant_reminder,
+        name='no_applicant_reminder'
+    ),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),

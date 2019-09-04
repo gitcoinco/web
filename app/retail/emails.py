@@ -308,7 +308,6 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     params = {**quarterly_stats, **platform_wide_stats}
     params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
-    print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
 
@@ -319,6 +318,16 @@ def render_funder_payout_reminder(**kwargs):
     kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(fulfiller_github_username=kwargs['github_username']).last()
     response_html = premailer_transform(render_to_string("emails/funder_payout_reminder.html", kwargs))
     response_txt = ''
+    return response_html, response_txt
+
+
+def render_no_applicant_reminder(bounty):
+    params = {
+        'bounty': bounty,
+        'directory_link': '/users?skills=' + bounty.keywords.lower()
+    }
+    response_html = premailer_transform(render_to_string("emails/bounty/no_applicant_reminder.html", params))
+    response_txt = render_to_string("emails/bounty/no_applicant_reminder.txt", params)
     return response_html, response_txt
 
 
@@ -874,8 +883,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Grants, Ethereal Blocks, and Grown Ethereum"
-    new_kudos_pks = [1926, 1819, 1895]
+    subject = "Ethereal Blocks Begins, Grow Ethereum Wraps"
+    new_kudos_pks = [2563, 4536, 4533]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -890,22 +899,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Grow Ethereum, after two and a half weeks of intense hacking, is now wrapping up. We've seen some incredible projects -- from a 💩 game using Portis' Gas Relay to projects on Arweave's permawe -- and are excited to see our sponsors decide the winners. Make sure you post your submitted project in the Discord channel #project-for-kudos; after you're submitted, we'll send you a unique Grow Ethereum kudo you can proudly display on your profile! Thanks to everyone who participated. We're excited to share the winners with you all next week. 
+Ready, set, hack. Ethereal Blocks, the most recent hackathon in our ever-growing anthology, has officially begun. Participants in this round of decentralized goodness automatically enter themselves into a prize pool of $50k. Our sponsors this go around are the Ethereum Foundation, Airswap, Bancor, Ethereal, portis, Etoro, GoodDollar, Matic, bZx, SKALE, and Status. Check out the hackathon details here: <a href="https://hackathons.gitcoin.co/ethereal-blocks/">https://hackathons.gitcoin.co/ethereal-blocks/</a>.
 </p>
 <p>
-"Are we done with hackathons?" you may ask. Absolutely not. Coming up after ETHBerlin is our next virtual hackathon, Ethereal Blocks. This hackathon has $50k of prizes from Portis, Ethereum, Matic, Status, and more. Place your lego blocks towards a more open, transparent internet: and if you win, you'll get the chance to present at the Ethereal Summit on 9/15. We'll be dropping more details in the coming weeks. Follow us on <a href="https://twitter.com/gitcoin">Twitter</a> and bookmark the <a href="https://hackathons.gitcoin.co/ethereal-blocks/">hackathon homepage.</a>  
+Keep your excitement in check for the next round of Gitcoin Grants CLR matching. Inch by inch, we're getting closer to launch, and we can't wait to see what our community does this time. Have any questions about Grants? Check out the homepage <a href="https://gitcoin.co/grants/">here</a> and send us a tweet. We're happy to help.
 </p>
 <p>
-We're grearing up for the next round of Gitcoin Grants CLR matching. If you're a project in need of funding, or are a supporter of open source, be sure to peruse the Gitcoin Grants homepage <a href="https://gitcoin.co/grants/">- located here -</a> to find projects that interest you or post your own. Expect more information as we get further along in Q3 of 2019!
+For those who we saw at ETHBerlin, it was great to see you! We're decompressing after a phenomenal month of travel. Tweet at us with any photos, and we'll give them a retweet! Our Twitter is @gitcoin.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is back this week! Join us alongside UNICEF<a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
+        The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
         </li>
         <li>
-        <a href="https://www.youtube.com/gitcoinmedia">Rewatch some of the sponsor videos from Grow Ethereum or catch up on some of our other video content on the Gitcoin Media YouTube channel!</a>
+	Keep your eyes open for a blog post with the winners of Grow Ethereum in the next coming days. And for our States-based friends, have a tremendous Labor Day weekend~
         </li>
     </ul>
 </p>
@@ -914,48 +923,48 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'pacamara',
+        'who': 'touhonoob',  
         'who_link': True,
-        'what': 'Onboarding Designs, implemented.',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8136/3128',
+        'what': 'Rule pages, created.',
+        'link': 'https://gitcoin.co/issue/protofire/solhint/139/3363',
         'link_copy': 'View more',
     }, {
-        'who': 'b-m-f',
+        'who': 'bitsikka',
         'who_link': True,
-        'what': 'NVM support, with "solc use"!',
-        'link': 'https://gitcoin.co/issue/crytic/solc-select/16/3301',
+        'what': 'My profile screens reorganisation and items design',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/8070/3211',
         'link_copy': 'View more',
     }, {
-        'who': 'PSalant726',
+        'who': 'sergejmueller',
         'who_link': True,
-        'what': 'More tests have been written.',
-        'link': 'https://gitcoin.co/issue/tendermint/tendermint/2740/3139', 
+        'what': 'Reduce Web3Connect bundle size.',
+        'link': 'https://gitcoin.co/issue/web3connect/web3connect/66/3356',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Solana',
-        'title': 'Solana is the most performant blockchain in the world with speeds over 50,000 TPS (while being decentralized and secure).',
-        'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/TourDeSOL',
-        'cta': 'Sign Up for Tour de SOL',
+        'name': 'Blockmason',
+        'title': 'Build and deploy your whole laundry list of microservices in a single afternoon.',
+        'image_url': 'https://blockmason.link/wp-content/uploads/2018/11/logo.svg',
+        'link': 'http://bit.ly/2L5IA2n',
+        'cta': 'Get Started Now',
         'body': [
-            'We just announced Tour de SOL, or our incentivized testnet event. Are you a validator? Earn token and race against the best in the world. Deadline is July 21st.'
+            'Link creates web-based APIs from your code, so you can deploy microservices instantly.'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/gitcoinco/creative/issues/51',
-        'primer': 'Gitcoin Bot Stickers',
+        'url': 'https://github.com/Synthetixio/synthetix/issues/213',
+        'primer': 'Add Synth Exchanges To Uniswap',
     }, {
-        'url': 'https://github.com/spacemeshos/poet2/issues/3',
-        'primer': 'Rust MVP Coding Contest',
+        'url': 'https://github.com/harmonylion/ideamarkets/issues/2',
+        'primer': 'Idea Markets unit tests and bug bounty',
     }, {
-        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/20',
-        'primer': 'Stratum Implementation for Pantheon',
+        'url': 'https://github.com/gitcoinco/web/issues/5089',
+        'primer': 'Bot Creatives',
 }, ]
-    
-    
+
+
     num_leadboard_items = 5
     highlight_kudos_ids = []
     num_kudos_to_show = 15
@@ -975,6 +984,7 @@ Back to shipping,
             'items': [],
         },
     }
+
 
     from kudos.models import KudosTransfer
     if highlight_kudos_ids:
@@ -1162,6 +1172,26 @@ def funder_payout_reminder(request):
     github_username = request.GET.get('username', '@foo')
     response_html, _ = render_funder_payout_reminder(bounty=bounty, github_username=github_username)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def no_applicant_reminder(request):
+    """Display the no applicant for bounty reminder email template.
+
+    Params:
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    from dashboard.models import Bounty
+    bounty = Bounty.objects.filter(
+        idx_status='open', current_bounty=True, interested__isnull=True
+    ).first()
+    response_html, _ = render_no_applicant_reminder(bounty=bounty)
+    return HttpResponse(response_html)
+
 
 @staff_member_required
 def funder_stale(request):
