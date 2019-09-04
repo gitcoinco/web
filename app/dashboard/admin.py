@@ -272,7 +272,7 @@ class HackathonEventAdmin(admin.ModelAdmin):
     """The admin object for the HackathonEvent model."""
 
     list_display = ['pk', 'img', 'name', 'start_date', 'end_date', 'explorer_link']
-    readonly_fields = ['img', 'explorer_link']
+    readonly_fields = ['img', 'explorer_link', 'stats']
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.

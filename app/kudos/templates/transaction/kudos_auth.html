@@ -40,7 +40,7 @@
   </div>
 
   {% else %}
-  <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">
+  <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
     <i class="fab fa-github"></i>{% trans "Login" %}
   </a>
   {% endif %}

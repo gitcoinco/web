@@ -140,7 +140,7 @@ class BountyQuerySet(models.QuerySet):
                 activities__activity_type='worker_applied',
                 activities__needs_review=False,
             )
-    
+
     def warned(self):
         """Filter results by bounties that have been warned for inactivity."""
         return self.prefetch_related('activities') \
@@ -442,7 +442,7 @@ class Bounty(SuperModel):
     @property
     def no_of_applicants(self):
         return self.interested.count()
-   
+
     @property
     def has_applicant(self):
         """Filter results by bounties that have applicants."""
@@ -451,7 +451,7 @@ class Bounty(SuperModel):
                 activities__activity_type='worker_applied',
                 activities__needs_review=False,
             )
-        
+
     @property
     def warned(self):
         """Filter results by bounties that have been warned for inactivity."""
@@ -460,7 +460,7 @@ class Bounty(SuperModel):
                 activities__activity_type='bounty_abandonment_warning',
                 activities__needs_review=True,
             )
-    
+
     @property
     def escalated(self):
         """Filter results by bounties that have been escalated for review."""
@@ -1847,7 +1847,6 @@ class Activity(SuperModel):
         for fk in ['bounty', 'tip', 'kudos', 'profile']:
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
-        print(activity['kudos'])
         activity['secondary_avatar_url'] = self.secondary_avatar_url
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
@@ -2364,6 +2363,17 @@ class Profile(SuperModel):
 
         """
         return self.user.is_staff if self.user else False
+
+    @property
+    def success_rate(self):
+        network = self.get_network()
+        num_completed_bounties = self.bounties.filter(
+            idx_status__in=['done'], network=network).count()
+        terminal_state_bounties = self.bounties.filter(
+            idx_status__in=Bounty.TERMINAL_STATUSES, network=network).count()
+        if terminal_state_bounties == 0:
+            return 1.0
+        return num_completed_bounties * 1.0 / (terminal_state_bounties + num_completed_bounties)
 
     @property
     def get_quarterly_stats(self):
@@ -3375,6 +3385,21 @@ class HackathonEvent(SuperModel):
             str: The string representation of a HackathonEvent.
         """
         return f'{self.name} - {self.start_date}'
+
+    @property
+    def bounties(self):
+        return Bounty.objects.filter(event=self).current()
+
+    @property
+    def stats(self):
+        stats = {
+            'range': f"{self.start_date.strftime('%m/%d/%Y')} to {self.end_date.strftime('%m/%d/%Y')}",
+            'num_bounties': self.bounties.count(),
+            'num_bounties_done': self.bounties.filter(idx_status='done').count(),
+            'num_bounties_open': self.bounties.filter(idx_status='open').count(),
+            'total_volume': sum(self.bounties.values_list('_val_usd_db', flat=True)),
+        }
+        return stats
 
     def save(self, *args, **kwargs):
         """Define custom handling for saving HackathonEvent."""
