@@ -235,6 +235,10 @@ p.single-stat__fineprint {
 
 .hackathon-breakdown div img {
   max-width: 250px;
+  background-color: black;
+  max-height: 100px;
+  border-radius: 10px;
+  padding: 19px;
 }
 
 @media screen and (max-width: 768px) {
