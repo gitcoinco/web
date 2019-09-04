@@ -24,8 +24,8 @@ import logging
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.db.models import Max
 from django.http import Http404, HttpResponse
