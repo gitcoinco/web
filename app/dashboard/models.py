@@ -3388,7 +3388,7 @@ class HackathonEvent(SuperModel):
 
     @property
     def bounties(self):
-        return Bounty.objects.filter(event=self).current()
+        return Bounty.objects.filter(event=self, network='mainnet').current()
 
     @property
     def stats(self):
