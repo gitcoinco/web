@@ -883,8 +883,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Funding for Open Source. More Hackathons."
-    new_kudos_pks = [1926, 1819, 1895]
+    subject = "Ethereal Blocks Begins, Grow Ethereum Wraps"
+    new_kudos_pks = [2563, 4536, 4533]
     new_kudos_size_px = 150
 
     kudos_friday = f'''
@@ -899,22 +899,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-After months of planning, we're happy to announce that the next round of Gitcoin Grants CLR Matching is right around the corner. With over $150k of funds committed, we will be kicking off the matching process in September! Interested in Gitcoin Grants? Check it out <a href="https://gitcoin.co/grants/">here.</a>
+Ready, set, hack. Ethereal Blocks, the most recent hackathon in our ever-growing anthology, has officially begun. Participants in this round of decentralized goodness automatically enter themselves into a prize pool of $50k. Our sponsors this go around are the Ethereum Foundation, Airswap, Bancor, Ethereal, portis, Etoro, GoodDollar, Matic, bZx, SKALE, and Status. Check out the hackathon details here: <a href="https://hackathons.gitcoin.co/ethereal-blocks/">https://hackathons.gitcoin.co/ethereal-blocks/</a>.
 </p>
 <p>
-And yes, we have another hackathon we're proud to announce: Ethereal Blocks. Join us alongside Ethereal Summit in this incredible display of Web3 and more. Over $50k of prizes are up for grabs. The details live <a href="https://hackathons.gitcoin.co/ethereal-blocks/">here.</a>
+Keep your excitement in check for the next round of Gitcoin Grants CLR matching. Inch by inch, we're getting closer to launch, and we can't wait to see what our community does this time. Have any questions about Grants? Check out the homepage <a href="https://gitcoin.co/grants/">here</a> and send us a tweet. We're happy to help.
 </p>
 <p>
-Have any questions about our platform? Have any feedback that we should take into consideration? Please reach out. We'd love to hear it. Send us an email at <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a> or reach out to us on Twitter.
+For those who we saw at ETHBerlin, it was great to see you! We're decompressing after a phenomenal month of travel. Tweet at us with any photos, and we'll give them a retweet! Our Twitter is @gitcoin.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is back this week! Join us and some of the winners of Grow Ethereum <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
+        The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
         </li>
         <li>
-        The Gitcoin team is on the road this month, with planned visits to ETHBerlin and Web3. Follow our travel on our valiant leader's Twitter, <a href="https://twitter.com/owocki/">@owocki.</a>
+	Keep your eyes open for a blog post with the winners of Grow Ethereum in the next coming days. And for our States-based friends, have a tremendous Labor Day weekend~
         </li>
     </ul>
 </p>
@@ -923,22 +923,22 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'Allenskywalker92',
+        'who': 'touhonoob',  
         'who_link': True,
-        'what': 'Bugfixes and maps are in!',
-        'link': 'https://gitcoin.co/issue/ark-mod/ArkBot/96/3316',
+        'what': 'Rule pages, created.',
+        'link': 'https://gitcoin.co/issue/protofire/solhint/139/3363',
         'link_copy': 'View more',
     }, {
         'who': 'bitsikka',
         'who_link': True,
-        'what': 'My profile edit and share screens, done!',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8069/3205',
+        'what': 'My profile screens reorganisation and items design',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/8070/3211',
         'link_copy': 'View more',
     }, {
-        'who': 'srisankethu',
+        'who': 'sergejmueller',
         'who_link': True,
-        'what': 'Full stack Dapp on Azure, deployed.',
-        'link': 'https://gitcoin.co/issue/kauri-io/Content/53/3187', 
+        'what': 'Reduce Web3Connect bundle size.',
+        'link': 'https://gitcoin.co/issue/web3connect/web3connect/66/3356',
         'link_copy': 'View more',
     }, ]
 
@@ -954,14 +954,14 @@ Back to shipping,
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/DigixGlobal/dao-server/issues/69',
-        'primer': 'Email Notifications on Comments',
+        'url': 'https://github.com/Synthetixio/synthetix/issues/213',
+        'primer': 'Add Synth Exchanges To Uniswap',
     }, {
-        'url': 'https://github.com/protofire/solhint/issues/140',
-        'primer': 'Document the structure of the project',
+        'url': 'https://github.com/harmonylion/ideamarkets/issues/2',
+        'primer': 'Idea Markets unit tests and bug bounty',
     }, {
-        'url': 'https://github.com/ethresearch/eth-wiki/issues/9',
-        'primer': 'Correcting Merkle Patricia Trie Example',
+        'url': 'https://github.com/gitcoinco/web/issues/5089',
+        'primer': 'Bot Creatives',
 }, ]
 
 
@@ -984,6 +984,7 @@ Back to shipping,
             'items': [],
         },
     }
+
 
     from kudos.models import KudosTransfer
     if highlight_kudos_ids:
