@@ -1,0 +1,17 @@
+{
+  "symbol": "GTF",
+  "address": "0x486e50c9F95fB9642aA685D4933223Dca121256B",
+  "overview":{
+        "en": "GTF is a cryptocurrency pegged to gold. It is issued by Gold Trust Foundation and is 1-to-1 backed by gold.",
+        "zh": "GTF是锚定黄金的加密数字货币。GTF是由 Gold Trust Foundation 发行的，严格与实物黄金 1:1 挂钩的、稳定的加密数字货币。"
+  },
+  "email": "contact@gtf.gold",
+  "website": "http://www.gtf.gold",
+  "state": "NORMAL",
+  "published_on": "2019-07-25",
+  "links": {
+  
+    "github": "https://github.com/GTFGOLD2018/"
+   
+  }
+}
