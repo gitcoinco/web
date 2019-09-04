@@ -164,6 +164,7 @@ onboard.getFilters = function(savedKeywords, currentKeywords) {
     };
 
     $.ajax(settings).done(function(response) {
+      onboard.getFilters(false, response.keywords);
     }).fail(function(error) {
       // TODO: Handle Error
     });
