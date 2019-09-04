@@ -526,7 +526,11 @@ $('#submitBounty').validate({
       return;
     }
     if (typeof ga != 'undefined') {
-      ga('send', 'event', 'new_bounty', 'new_bounty_form_submit');
+      dataLayer.push({
+        'event': 'new_bounty',
+        'category': 'new_bounty',
+        'action': 'new_bounty_form_submit'
+      });
     }
 
     var data = {};
@@ -726,7 +730,12 @@ $('#submitBounty').validate({
       }
 
       if (typeof ga != 'undefined') {
-        ga('send', 'event', 'new_bounty', 'metamask_signature_achieved');
+        dataLayer.push({
+          'event': 'new_bounty',
+          'category': 'new_bounty',
+          'action': 'metamask_signature_achieved'
+        });
+
       }
 
 
@@ -835,9 +844,17 @@ $('#submitBounty').validate({
       ipfs.addJson(ipfsBounty, newIpfsCallback);
       if (typeof ga != 'undefined') {
         if (fee == 0)
-          ga('send', 'event', 'new_bounty', 'new_bounty_no_fees');
+          dataLayer.push({
+            'event': 'new_bounty',
+            'category': 'new_bounty',
+            'action': 'new_bounty_no_fees'
+          });
         else
-          ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
+          dataLayer.push({
+            'event': 'new_bounty',
+            'category': 'new_bounty',
+            'action': 'new_bounty_fee_paid'
+          });
       }
     };
 

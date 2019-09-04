@@ -105,7 +105,7 @@ onboard.watchMetamask = function() {
   }
 };
 
-onboard.getFilters = function(savedKeywords) {
+onboard.getFilters = function(savedKeywords, currentKeywords) {
   $('.suggested-tag input[type=checkbox]:checked + span i').removeClass('fa-plus').addClass('fa-check');
   $('.suggested-tag input[type=checkbox]:not(:checked) + span i').removeClass('fa-check').addClass('fa-plus');
 
@@ -120,8 +120,8 @@ onboard.getFilters = function(savedKeywords) {
     });
   }
 
-  if (savedKeywords) {
-    $.each(savedKeywords, function(k, value) {
+  if (currentKeywords) {
+    $.each(currentKeywords, function(k, value) {
       if (keywords.includes(value.toLowerCase())) {
         $('input[type=checkbox][name=tech-stack][value="' + value.toLowerCase() + '"]').prop('checked', true);
       } else {
@@ -149,24 +149,26 @@ onboard.getFilters = function(savedKeywords) {
     $('#selected-skills').css('display', 'inherit');
 
   $('.filter-tags').html(_filters);
-  words = [...new Set(_words)];
-  // TODO: Save Preferences
-  var settings = {
-    url: '/settings/matching',
-    method: 'POST',
-    headers: {'X-CSRFToken': csrftoken},
-    data: JSON.stringify({
-      'keywords': 'JavaScript,CCoffeeScript,CSS,HTML',
-      'submit': 'Go',
-      'github': 'thelostone-mc'
-    })
-  };
 
-  $.ajax(settings).done(function(response) {
-    // TODO : Update keywords for user profile
-  }).fail(function(error) {
-    // TODO: Handle Error
-  });
+  if (savedKeywords) {
+
+    words = [...new Set(_words)];
+    var settings = {
+      url: '/settings/matching',
+      method: 'POST',
+      headers: {'X-CSRFToken': csrftoken},
+      data: {
+        'keywords': words.join(),
+        'submit': 'Go'
+      }
+    };
+
+    $.ajax(settings).done(function(response) {
+      onboard.getFilters(false, response.keywords);
+    }).fail(function(error) {
+      // TODO: Handle Error
+    });
+  }
 };
 
 var changeStep = function(n) {
@@ -226,21 +228,21 @@ keywords.forEach(function(keyword) {
 
 $('#skills #suggested-tags').html(suggested_tags);
 
-if ($('.navbar #navbarDropdown').html()) {
-  var url = '/api/v0.1/profile/' + $('.navbar #navbarDropdown').html().trim() + '/keywords';
+if (document.contxt.github_handle) {
+  var url = `/api/v0.1/profile/${document.contxt.github_handle}/keywords`;
 
   $.get(url, function(response) {
-    onboard.getFilters(response.keywords);
+    onboard.getFilters(false, response.keywords);
   });
 }
 
 $('.suggested-tag input[type=checkbox]').change(function(e) {
-  onboard.getFilters();
+  onboard.getFilters(true);
 });
 
 $('.search-area input[type=text]').keypress(function(e) {
   if (e.which == 13) {
-    onboard.getFilters();
+    onboard.getFilters(true);
     e.preventDefault();
   }
 });

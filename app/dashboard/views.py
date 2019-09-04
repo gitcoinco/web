@@ -334,23 +334,18 @@ def post_comment(request):
             'msg': '',
         })
 
-    # sbid = request.POST.get('standard_bounties_id')
     bounty_id = request.POST.get('bounty_id')
-    # bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
     bountyObj = Bounty.objects.get(pk=bounty_id)
-    # fbAmount = FeedbackEntry.objects.filter(
-    #     sender_profile=profile_id,
-    #     feedbackType=request.POST.get('review[reviewType]', 'approver'),
-    #     bounty=bountyObj
-    # ).count()
-    # if fbAmount > 0:
-    #     return JsonResponse({
-    #         'success': False,
-    #         'msg': 'There is already a approval comment',
-    #     })
-    # if request.POST.get('review[reviewType]') == 'worker':
-    #     receiver_profile = bountyObj.bounty_owner_github_username
-    # else:
+    fbAmount = FeedbackEntry.objects.filter(
+        sender_profile=profile_id,
+        bounty=bountyObj
+    ).count()
+    if fbAmount > 0:
+        return JsonResponse({
+            'success': False,
+            'msg': 'There is already a approval comment',
+        })
+
     receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     kwargs = {
         'bounty': bountyObj,
@@ -938,9 +933,6 @@ def get_user_bounties(request):
         bounty_json['url'] = bounty.url
 
         results.append(bounty_json)
-    # else:
-        # raise Http404
-    print(open_bounties)
     params['data'] = json.loads(json.dumps(results, default=str))
     params['is_funder'] = is_funder
     return JsonResponse(params, status=200, safe=False)
@@ -1803,10 +1795,11 @@ def profile_details(request, handle):
 
     response = {
         'profile': ProfileSerializer(profile).data,
+        'success_rate': profile.success_rate,
         'recent_activity': {
             'activity_metadata': activity.metadata,
             'activity_type': activity.activity_type,
-            'created': activity.created,
+            'created': activity.created
         },
         'statistics': {
             'work_completed': count_work_completed,
@@ -2004,16 +1997,33 @@ def profile(request, handle):
         if page:
             page = int(page)
             activity_type = request.GET.get('a', '')
-            all_activities = profile.get_various_activities()
-            paginator = Paginator(profile_filter_activities(all_activities, activity_type, activity_tabs), 10)
+            if activity_type == 'currently_working':
+                currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
+                    .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+                currently_working_bounties_count = currently_working_bounties.count()
+                if currently_working_bounties_count > 0:
+                    paginator = Paginator(currently_working_bounties, 10)
+                
+                if page > paginator.num_pages:
+                    return HttpResponse(status=204)
 
-            if page > paginator.num_pages:
-                return HttpResponse(status=204)
+                context = {}
+                context['bounties'] = [bounty for bounty in paginator.get_page(page)]   
 
-            context = {}
-            context['activities'] = [ele.view_props for ele in paginator.get_page(page)]
+                return TemplateResponse(request, 'profiles/profile_bounties.html', context, status=status)
+                
+            else:
 
-            return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
+                all_activities = profile.get_various_activities()
+                paginator = Paginator(profile_filter_activities(all_activities, activity_type, activity_tabs), 10)
+
+                if page > paginator.num_pages:
+                    return HttpResponse(status=204)
+
+                context = {}
+                context['activities'] = [ele.view_props for ele in paginator.get_page(page)]
+
+                return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
 
         context = profile.to_dict(tips=False)
@@ -2083,7 +2093,7 @@ def profile(request, handle):
         ).exclude(
             feedbacks__feedbackType='approver',
             feedbacks__sender_profile=profile,
-        ).distinct('pk')
+        ).distinct('pk').nocache()
 
     context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
             .filter(interested__status='okay') \
@@ -2091,7 +2101,7 @@ def profile(request, handle):
             .exclude(
                 feedbacks__feedbackType='worker',
                 feedbacks__sender_profile=profile
-            ).distinct('pk')
+            ).distinct('pk').nocache()
 
     currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
         .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
