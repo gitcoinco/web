@@ -25,6 +25,7 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.db.models import Max
 from django.http import Http404, HttpResponse
@@ -275,6 +276,10 @@ def email_settings(request, key):
         preferred_language = request.POST.get('preferred_language')
         validation_passed = True
         try:
+            email_in_use = User.objects.filter(email=email) | User.objects.filter(profile__email=email)
+            email_used_marketing = EmailSubscriber.objects.filter(email=email).select_related('profile')
+            if (email_in_use or email_used_marketing) and (request.user.email != email or request.user.profile.email != email):
+                raise ValueError(f'{request.user} attempting to use an email which is already in use on the platform')
             validate_email(email)
         except Exception as e:
             print(e)
@@ -314,7 +319,7 @@ def email_settings(request, key):
     pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     context = {
         'nav': 'home',
-        'active': '/settings/email',
+        'active': '/settings/email/',
         'title': _('Email Settings'),
         'es': es,
         'nav': 'home',
