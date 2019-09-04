@@ -41,7 +41,7 @@
               <div class="mb-3">
                 <label for="requested_by" class="form__label">{% trans 'Your Github Profile' %}
                   {% if not user.is_authenticated %}
-                  (<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Login' %}</a>)
+                  (<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">{% trans 'Login' %}</a>)
                   {% endif %}
                 </label>
                 <input name="requested_by" placeholder="{% trans "Please Login First" %}" id="requested_by" class="form__input" type="text" value="{% if github_handle %}{{ github_handle }}{% endif %}" required disabled />
