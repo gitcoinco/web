@@ -1,4 +1,4 @@
-{% load i18n static cookielaw_tags %}
+{% load i18n static cookielaw_tags compress %}
 <!DOCTYPE HTML>
 <html>
   <head>
@@ -10,6 +10,7 @@
     <meta name="description" content="Create and manage your ENS subdomain">
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <meta name="theme-color" content="#ffffff">
+    {% compress js %}
     <!--[if lte IE 8]><script src="{% static "onepager/js/html5shiv.js" %}"></script><![endif]-->
     <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
@@ -30,6 +31,7 @@
     <!--[if lte IE 9]><link rel="stylesheet" href="{% static "onepager/css/ie9.css" %}"><![endif]-->
     <!--[if lte IE 8]><link rel="stylesheet" href="{% static "onepager/css/ie8.css" %}"><![endif]-->
     <noscript><link rel="stylesheet" href="{% static "onepager/css/noscript.css" %}"></noscript>
+    {% endcompress %}
     {% include 'shared/favicon.html' %}
     <style>
       #upper_left p{
@@ -70,7 +72,9 @@
     {% block 'scripts' %}
     {% endblock %}
     {% include 'shared/twitter.html'  %}
+    {% compress js %}
     <script src="{% static "v2/js/lib/jquery.select2.min.js" %}"></script>
     <script src="{% static "cookielaw/js/cl.js" %}"></script>
+    {% endcompress %}
   </body>
 </html>

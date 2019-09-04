@@ -20,7 +20,9 @@
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards.html' %}
+  {% compress css %}
   <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+  {% endcompress %}
 </head>
 <body class="interior submit_bounty g-font-muli">
   {% include 'shared/tag_manager_2.html' %}

@@ -18,10 +18,12 @@
 
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static compress %}
 
+{% compress css %}
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
+{% endcompress %}
 {% block coltype %}colMS{% endblock %}
 
 {% block bodyclass %}{{ block.super }} cohort{% endblock %}
@@ -71,7 +73,9 @@ svg{
 <h1>Bounties by repo volume that were in status at this time</h1>
 {% include "dataviz/shared/nav.html" %}
 <script src="//d3js.org/d3.v2.js"></script>
+{% compress js %}
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+{% endcompress %}
 <br>
 <br>
 <br>

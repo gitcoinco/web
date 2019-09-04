@@ -14,11 +14,13 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
   {% include 'shared/head.html' %}
+  {% compress css %}
   <link rel="stylesheet" href="{% static "v2/css/presskit.css" %}">
+  {% endcompress %}
 <head>
   <body class="{{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}

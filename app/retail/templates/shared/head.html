@@ -39,10 +39,6 @@
 <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
-{% if not slim %}
-  <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-  <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
-{% endif %}
 <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/buttons.css" %}" />
@@ -50,7 +46,6 @@
 <link rel="stylesheet" href="{% static "v2/css/carousel.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/faucet.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/colors.css" %}" />
-
 <!-- Forms -->
 <link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/forms/checkbox.css" %}" />
@@ -65,11 +60,19 @@
 <!-- Cookie Consent -->
 <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
 {% endcompress %}
+{% if not slim %}
+  {% compress css %}
+  <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
+  <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+  {% endcompress %}
+{% endif %}
 
 {% if 'grants' in request.path %}
 <!-- Grants -->
+{% compress css %}
 <link rel="stylesheet" href="{% static "v2/css/grants/grant.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/grants/cancel.css" %}">
+{% endcompress %}
 {% endif %}
 
 <title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>

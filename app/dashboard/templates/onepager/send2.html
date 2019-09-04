@@ -15,9 +15,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 {% block 'scripts' %}
   {% include 'shared/current_profile.html' %}
+  {% compress js %}
   <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
@@ -29,11 +30,14 @@
   <script src="{% static "onepager/js/confetti.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
+  {% endcompress %}
 {% endblock %}
   <script src="/dynamic/js/tokens_dynamic.js"></script>
 <!-- Main -->
 {% block 'main' %}
+{% compress css %}
 <link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
+{% endcompress %}
 <style>
   #ethinfo-tooltip {
     top: 19.5rem;

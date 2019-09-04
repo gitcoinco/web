@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -28,7 +28,9 @@
       {% include 'grants/nav.html' %}
       {% include 'shared/minihero.html' with h1='Grants Leaderboard' suppress_logo=1 position_h1_below_logo=True hide_rain=True %}
     </div>
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+    {% endcompress %}
     <style type="text/css">
     .leaderboard-item{
       padding: 10px 5px;
@@ -62,7 +64,9 @@
   {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts.html' %}
   {% include 'shared/footer.html' %}
+  {% compress js %}
   <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+  {% endcompress %}
   <script>
   $(document).ready(function() {
     $("img").unveil(200);

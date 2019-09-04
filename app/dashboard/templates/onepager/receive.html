@@ -15,8 +15,9 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 {% block 'scripts' %}
+{% compress js %}
 <script src="{% static "v2/js/abi.js" %}"></script>
 <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
 <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
@@ -26,6 +27,7 @@
 <script src="{% static "onepager/js/bignumber.js" %}"></script>
 <script src="{% static "onepager/js/tx.js" %}"></script>
 
+{% endcompress %}
 {% endblock %}
 <!-- Main -->
 {% block 'world' %}

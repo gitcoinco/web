@@ -29,9 +29,11 @@
     </div>
     <meta name="title" content="Labs | Gitcoin">
     <meta name="description" content="To keep you updated about latest research at Gitcoin">
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/toolbox.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/card.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/labs.css" %}" />
+    {% endcompress %}
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}

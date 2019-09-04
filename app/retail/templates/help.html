@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,7 +24,9 @@
     {% include 'shared/cards.html' %}
     <meta name="title" content="Help Guides, Videos & Case Studies | Gitcoin">
     <meta name="description" content="Gitcoin help guides and resources including, tutorials, training videos, case studies, developers guide, repo maintainer guide, how to post bounties, how to price bounties and more.">
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/help.css" %}">
+    {% endcompress %}
 </head>
 <body class="{{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}

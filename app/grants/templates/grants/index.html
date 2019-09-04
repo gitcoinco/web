@@ -15,11 +15,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
+
+    {% compress css %}
+    <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
+    {% endcompress %}
   </head>
   <body class="interior {{ active }} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}

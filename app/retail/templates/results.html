@@ -15,7 +15,8 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load humanize i18n static %}
+{% load static compress %}
+{% load humanize i18n static compress %}
 {% load kudos_extras %}
 
 <!DOCTYPE html>
@@ -25,7 +26,9 @@
   <head>
     <meta name="title" content="Gitcoin Platform Stats & Testimonials | Gitcoin">
     <meta name="description" content="See the Cumulative Bounty History of Gitcoin in USD, Bounty Completion Rate, Median Bounty Turnaround Time, Testimonials and more.">
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/results.css" %}" />
+    {% endcompress %}
   </head>
   <body class="{{ active }} g-font-muli">
 
@@ -407,7 +410,9 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/messages.html' %}
 
+    {% compress js %}
     <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+    {% endcompress %}
     <script>
       $(document).ready(function() {
         $("img").unveil(200);
@@ -416,5 +421,7 @@
 
   </body>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  {% compress js %}
   <script src="{% static "v2/js/pages/results.js" %}"></script>
+  {% endcompress %}
 </html>

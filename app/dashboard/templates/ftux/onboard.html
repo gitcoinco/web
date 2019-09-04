@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -23,10 +23,12 @@
     {% include 'shared/cards.html' %}
     <meta name="title" content="Developers! Get Started with Gitcoin | Gitcoin">
     <meta name="description" content="Use Gitcoin to find paid work and solve real world problems in the blockchain/web3 ecosystem. Receive payment in (ETH or any ERC-20 token).">
+    {% compress css %}
     <link rel="stylesheet" href={% static "v2/css/onboard.css" %}>
     <link rel="stylesheet" href={% static "v2/css/avatar_builder.css" %}>
     <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
     <link rel="stylesheet" href={% static "v2/css/avatar.css" %}>
+    {% endcompress %}
   </head>
   <body class="g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -72,11 +74,14 @@
       steps.push("{{step}}");
     {% endfor %};
   </script>
-  <script src="{% static "v2/js/pages/onboard.js" %}"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ&libraries=places&callback=initPlacecomplete"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+
+  {% compress js %}
+  <script src="{% static "v2/js/pages/onboard.js" %}"></script>
   <script src="{% static "v2/js/jobs.js" %}"></script>
   <script src="{% static "v2/js/avatar_builder.js" %}" defer></script>
-  <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/pages/quickstart.js" %}"></script>
+  {% endcompress %}
 </html>

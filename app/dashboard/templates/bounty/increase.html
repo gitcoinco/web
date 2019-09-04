@@ -27,7 +27,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         max-width: 40rem;
       }
     </style>
+    {% compress css %}
     <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+    {% endcompress %}
   </head>
 
   <body class="interior {{active}} g-font-muli">

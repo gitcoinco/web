@@ -1,12 +1,14 @@
-{% load i18n static kudos_extras avatar_tags%}
+{% load i18n static kudos_extras compress avatar_tags%}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+    {% compress css %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
 
+    {% endcompress %}
   </head>
   <body class="{{ active }} bg-light g-font-muli">
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
@@ -131,16 +133,21 @@
     </section>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
-    <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
     {% include 'shared/footer_scripts.html' with slim=1 %}
+
+    {% compress js %}
+    <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
     <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/amounts.js" %}"></script>
     <script src="{% static "v2/js/eth-price.js" %}"></script>
-    <script>
-      $('[data-toggle="tooltip"]').bootstrapTooltip();
-    </script>
     <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
+    {% endcompress %}
+
+    <script>
+        $('[data-toggle="tooltip"]').bootstrapTooltip();
+    </script>
+    
     {% include 'shared/messages.html' %}
   </body>
 </html>
