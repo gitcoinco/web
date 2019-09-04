@@ -230,7 +230,7 @@ def foo(bar='bar'):
       bar (str): The foo suffix. Defaults to: bar.
 
     Attributes:
-      foobar (str): The foo string concatentated with the provided bar variable.
+      foobar (str): The foo string concatenated with the provided bar variable.
 
     Returns:
       str: The concatenated string.

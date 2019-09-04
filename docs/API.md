@@ -72,7 +72,7 @@ The bounties endpoint provides a listing of bounties and their current status. T
 
 **Filters**
 
-You can filter the data returned from the API by providing these keys as URL parameters `experience_level`, `project_length`, `bounty_type`, `bounty_owner_address`, `is_open`, and `github_url`. `github_url` can take a comma-seperated list of GitHub urls
+You can filter the data returned from the API by providing these keys as URL parameters `experience_level`, `project_length`, `bounty_type`, `bounty_owner_address`, `is_open`, and `github_url`. `github_url` can take a comma-separated list of GitHub urls
 
 **Order By**
 
