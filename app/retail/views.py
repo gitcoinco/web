@@ -1003,16 +1003,20 @@ def create_status_update(request):
             'activity_type': 'status_update',
             'metadata': {
                 'title': request.POST.get('data')
-            }
+            },
+			'profile': profile
         }
-        kwargs['profile'] = profile
         try:
             Activity.objects.create(**kwargs)
-            response['status'] = 200
-            response['message'] = 'Status updated!'
+            response = {
+				'status': 200,
+				'message': 'Status updated!'
+			}
         except Exception as e:
-            response['status'] = 400
-            response['message'] = 'Bad Request'
+            response = {
+				'status': 400,
+				'message': 'Bad Request'
+			}
             logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
     return JsonResponse(response)
 
