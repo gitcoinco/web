@@ -284,7 +284,7 @@ const sendPersonal = (persona) => {
       }
     ];
 
-    const checkUrl = (arr, val) => {
+    const checkUrlRedirect = (arr, val) => {
       return arr.some(arrObj => {
         if (val.indexOf(arrObj.url) >= 0) {
           return false;
@@ -294,14 +294,14 @@ const sendPersonal = (persona) => {
     };
 
     if (response.persona === 'persona_is_funder') {
-      if (checkUrl(urls, document.location.href)) {
+      if (checkUrlRedirect(urls, document.location.href)) {
         window.location = '/onboard/funder';
       } else {
         return _alert(gettext('Thanks, you can read the guide <a href="/how/funder">here.</a>'), 'info');
       }
 
     } else if (response.persona === 'persona_is_hunter') {
-      if (checkUrl(urls, document.location.href)) {
+      if (checkUrlRedirect(urls, document.location.href)) {
         window.location = '/onboard/contributor';
       } else {
         return _alert(gettext('Thanks, you can read the guide <a href="/how/contributor">here.</a>'), 'info');

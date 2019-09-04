@@ -22,11 +22,11 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <style>
-        .onboard-banner {
-          background: {% firstof hackathon.background_color or 'white' %};
-          color: {% firstof hackathon.text_color or 'black' %};
-        }
-      </style>
+      .onboard-banner {
+        background: {% firstof hackathon.background_color or 'white' %};
+        color: {% firstof hackathon.text_color or 'black' %};
+      }
+    </style>
   </head>
   <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -46,7 +46,6 @@
         {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
 
       </div>
-      <!-- {% include 'shared/minihero.html' with h1=hackathon.name suppress_logo=1 position_h1_below_logo=True hide_rain=True %} -->
     </div>
 
     <div class="container">
@@ -56,8 +55,6 @@
       {% endif %}
       <div class="row py-5">
         <div class="col-12">
-
-
           <div class="mb-4">
             <h2>How the hackathon works?</h2>
             <p>Our hackathon is formed by many prizes from diferent open source organisations, you can <a href="{% url 'hackathon' hackathon.slug %}#bounties">check the prizes</a> </p>
