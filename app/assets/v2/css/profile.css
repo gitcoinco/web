@@ -7,10 +7,6 @@
   overflow: visible;
 }
 
-.profile-header__stats li{
-  list-style-image: url('/static/v2/images/project_logos/eth_small.png');
-}
-
 .profile-card {
   background: white;
   border-radius: 5px;
@@ -238,6 +234,7 @@ a:hover .avatar_edit .avatar_edit_text {
 
 .profile-header__stats li {
   margin: 0.15rem 0 0;
+  list-style-image: url('/static/v2/images/project_logos/eth_small.png');
 }
 
 .profile-header__stats li:first-child {

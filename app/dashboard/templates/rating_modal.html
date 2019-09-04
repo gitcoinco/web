@@ -32,7 +32,7 @@
               Funder
             {% endif %}
           </h2>
-          <p class="p-2 text-center font-smaller-1 text-black-60">{% trans 'Your feedback is very valuable for us! Only Gitcoin admins are able to see your feedback.' %}</p>
+          <p class="p-2 text-center font-smaller-1 text-black-60">{% trans 'Your feedback is very valuable for us!' %}</p>
           <div class="text-center">
             {% if bounty.funding_organisation %}
               <img class="card-rating__avatar rounded-circle" alt="{{ bounty.funding_organisation }}" width="63" height="63" src="{% url 'org_avatar' bounty.funding_organisation %}">
