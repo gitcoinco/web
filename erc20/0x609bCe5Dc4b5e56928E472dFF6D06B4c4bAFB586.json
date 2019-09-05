@@ -1,0 +1,19 @@
+{
+  "symbol": "GSB",
+  "address": "0x609bCe5Dc4b5e56928E472dFF6D06B4c4bAFB586",
+  "overview":{
+        "en": "Information chain is the international leading information platform, is based on ERC20 to create block chain global media information platform, for the global information media enthusiasts to build an open, transparent and true media sharing channels.",
+        "zh": "资讯链是国际领先的资讯平台，是基于ERC20打造的区块链全球化媒体资讯平台，为全球资讯、媒体爱好者构建了公开、透明真实的媒体共享渠道。"
+  },
+  "email": "1440097381@qq.com",
+  "website": "http://www.gsbchain.com",
+  "whitepaper": "http://www.gsbchain.com/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-15",
+  "initial_price":{
+        "USD":"0.1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Qu9VBsadQwBDG4s"
+  }
+}
