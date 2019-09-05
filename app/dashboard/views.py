@@ -871,7 +871,7 @@ def users_fetch(request):
             'organizations', 'is_org']}
 
         if user.show_job_status is False:
-            del profile_json['job_status']
+            del profile_json['job_salary']
             del profile_json['job_location']
             del profile_json['job_type']
 
