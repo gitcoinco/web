@@ -41,13 +41,22 @@
             </div>
           {% endif %}
           <div>
+            {% if bounty.event %}
+              <p class="alert-danger p-2">
+                This bounty is part of hackathon, please read the <a href="{% url 'hackathon_onboard' bounty.event.slug %}" target="_blank">rules to participate</a> before you continue.
+              </p>
+            {% endif %}
             <label for="issue_message">
-              <span>
-                {% trans "Provide an action plan and any initial questions you have for this ticket." %} <br>
+              <p>
+                {% trans "Provide an action plan and any initial questions you have for this ticket." %}
+                {% if bounty.event %}
+                  {% trans "Include gitcoin team members usernames and project repo url, if you have one." %}
+                {% endif %}
+                <br>
                 <span class="font-smaller-4">
                   ({% trans "Your response will be reflected in a comment on the Github issue." %})
                 </span>
-              </span>
+              </p>
             </label>
             <textarea id="issue_message" class="form__input"></textarea>
           </div>
