@@ -24,7 +24,7 @@
 <h1 style="margin-top: 50px;">{% trans "Your bounty is now live!" %}</h1>
 <h2 style="margin-top: 10px;">{% trans "(& being sent to Gitcoin's worldwide community of developers)" %}</h2>
 
-<div class="primary-content centered-contents" style="margin-top: 40px;">
+<div class="primary-content text-center" style="margin-top: 40px;">
   <img id="funded_featured_bounty" width="400" src="{% static "v2/images/emails/funded_featured_bounty.png" %}" alt="Funded featured bounty" title="Grow Open Source Image" style="max-width: 100%;">
 
   <div style="margin-bottom: 20px;">
@@ -57,9 +57,9 @@
     </div>
   </div>
 </div>
-<div class="centered-contents" >
+<div class="text-center" >
   {% if bounty.is_featured %}
-    <div class="centered-contents" style="display: flex; justify-content: center; border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center">
+    <div class="text-center" style="display: flex; justify-content: center; border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center">
       <img src="{% static "v2/images/emails/funded_featured_bounty_banner.png" %}" width="100" style="margin-right: 30px" alt="Featured bounty avatar" id="featured_bounty_detail_image">
       <div style="margin-top: 30px;">
         <h3 style="color: #0D0764; text-align: justify;">{% trans "Your bounty is now featured" %}</h3>
@@ -68,7 +68,7 @@
     </div>
   {% endif %}
   {% if bounty.repo_type == 'private' %}
-    <div class="centered-contents" style="border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center;">
+    <div class="text-center" style="border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center;">
       <h3 style="font-size: 2.1em;">{% trans "What to do next" %}</h3>
 
       <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
