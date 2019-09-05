@@ -10,8 +10,7 @@
     "state": "NORMAL",
     "published_on": "2018-03-04",
     "initial_price": {
-        "USD": "$0.13 USD",
-        "HKD": "HK$1.00 HKD"
+        "USD": "$0.13 USD"
     },
     "links": {
         "blog": "https://blog.trusttoken.com/",

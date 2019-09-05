@@ -10,8 +10,7 @@
     "state": "NORMAL",
     "published_on": "2019-04-19",
     "initial_price": {
-        "USD": "$0.68 USD",
-        "AUD": "A$1.00 AUD"
+        "USD": "$0.68 USD"
     },
     "links": {
         "blog": "https://blog.trusttoken.com/",

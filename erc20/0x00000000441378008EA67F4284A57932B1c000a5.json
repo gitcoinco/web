@@ -10,7 +10,6 @@
     "state": "NORMAL",
     "published_on": "2019-03-26",
     "initial_price": {
-        "GBP": "£1.00 GBP",
         "USD": "$1.31 USD"
     },
     "links": {

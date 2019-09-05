@@ -10,8 +10,7 @@
     "state": "NORMAL",
     "published_on": "2019-04-27",
     "initial_price": {
-        "USD": "$0.75 USD",
-        "CAD": "C$1.00 CAD"
+        "USD": "$0.75 USD"
     },
     "links": {
         "blog": "https://blog.trusttoken.com/",
