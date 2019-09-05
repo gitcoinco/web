@@ -1982,13 +1982,16 @@ def profile(request, handle):
                 handle = handle[:-1]
             profile = profile_helper(handle, current_user=request.user)
 
-        all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar']
+        all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar', 'resume', 'ratings', 'portfolio']
         activity_tabs = [
             (_('All Activity'), all_activities),
+			(_('Resume'), ['resume']),
+			(_('Ratings'), ['ratings']),
+			(_('Portfolio'), ['portfolio']),
             (_('Bounties'), ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
             (_('Tips'), ['new_tip', 'receive_tip']),
-            (_('Kudos'), ['receive_kudos', 'new_kudos']),
             (_('Grants'), ['new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution']),
+            (_('Kudos'), ['receive_kudos', 'new_kudos']),
         ]
         if profile.is_org:
             activity_tabs = [
@@ -2045,6 +2048,7 @@ def profile(request, handle):
                    'count': activities_count,
                    'type': 'activity'
                    }
+            print(obj)
             tabs.append(obj)
 
             context['tabs'] = tabs

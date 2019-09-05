@@ -1,7 +1,7 @@
 {% load i18n static avatar_tags %}
   <div class="col-12 col-lg-6">
     <div class="row">
-        <div class="col-12 col-lg-12">
+        <div class="col-12 col-lg-6">
           <div class="profile-header__stats profile-header__stats--contributor card mb-4">
             <div class="card-header font-subheader">
               {% if scoreboard_position_contributor %}
@@ -37,4 +37,5 @@
               </ul>
             </div>
           </div>
-        </div>
+		</div>
+		{% include "profiles/activity_level.html" with level='High' %}
