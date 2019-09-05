@@ -1785,29 +1785,43 @@ def profile_details(request, handle):
     """
     try:
         profile = profile_helper(handle, True)
-        activity = Activity.objects.filter(profile=profile).order_by('-created_on').first()
-        count_work_completed = Activity.objects.filter(profile=profile, activity_type='work_done').count()
-        count_work_in_progress = Activity.objects.filter(profile=profile, activity_type='start_work').count()
-        count_work_abandoned = Activity.objects.filter(profile=profile, activity_type='stop_work').count()
-        count_work_removed = Activity.objects.filter(profile=profile, activity_type='bounty_removed_by_funder').count()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
+    bounties = profile.bounties
+    for word in profile.keywords:
+        bounties = bounties.keyword(word) # TODO: Is this right
+
+    _bounties = []
+    if bounties :
+        for bounty in bounties:
+            _bounty = {
+                'title': bounty.title,
+                'url': bounty.get_absolute_url()
+            }
+            try:
+                # feedback = FeedbackEntry.objects.get(bounty=bounty.pk, receiver_profile=profile)
+                feedback = FeedbackEntry.objects.get() # TODO: remove after testing
+                if feedback:
+                    _bounty['contibutor_rating'] = feedback.rating
+            except FeedbackEntry.DoesNotExist:
+                _bounty['contibutor_rating'] = None
+            _bounties.append(_bounty)
+
     response = {
-        'profile': ProfileSerializer(profile).data,
-        'success_rate': profile.success_rate,
-        'recent_activity': {
-            'activity_metadata': activity.metadata,
-            'activity_type': activity.activity_type,
-            'created': activity.created
-        },
-        'statistics': {
-            'work_completed': count_work_completed,
-            'work_in_progress': count_work_in_progress,
-            'work_abandoned': count_work_abandoned,
-            'work_removed': count_work_removed
+        'avatar': profile.avatar_url,
+        'handle': profile.handle,
+        # 'contributed_to' : dic(profile.get_who_works_with()) # TODO: make into array
+        'keywords': profile.keywords,
+        'related_bounties' : _bounties,
+        'stats': {
+            'position': profile.get_contributor_leaderboard_index(),
+            'completed_bounties': profile.completed_bounties,
+            'success_rate': profile.success_rate,
+            'earnings': profile.get_eth_sum()
         }
     }
+
     return JsonResponse(response, safe=False)
 
 
@@ -2003,15 +2017,15 @@ def profile(request, handle):
                 currently_working_bounties_count = currently_working_bounties.count()
                 if currently_working_bounties_count > 0:
                     paginator = Paginator(currently_working_bounties, 10)
-                
+
                 if page > paginator.num_pages:
                     return HttpResponse(status=204)
 
                 context = {}
-                context['bounties'] = [bounty for bounty in paginator.get_page(page)]   
+                context['bounties'] = [bounty for bounty in paginator.get_page(page)]
 
                 return TemplateResponse(request, 'profiles/profile_bounties.html', context, status=status)
-                
+
             else:
 
                 all_activities = profile.get_various_activities()

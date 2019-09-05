@@ -490,35 +490,6 @@ a.btn {
   margin-bottom: 2em;
 }
 
-.earned {
-  color: #8E2ABE;
-  font-size: 14px;
-  line-height: 13px;
-  font-weight: 600;
-}
-
-.contributor-position,
-.username,
-.current_status,
-.in-progress {
-  color: #0D0764;
-}
-
-.specialty {
-  font-weight: 600;
-  font-size: 10px;
-  line-height: 11px;
-}
-
-.completed-bounties {
-  color: #05B66A;
-}
-
-.abandoned-bounties,
-.removed-bounties {
-  color: #F5A623;
-}
-
 #funder_notif_info:empty {
   display: none;
 }
@@ -539,7 +510,6 @@ a.btn {
   position: relative;
   top: -2px;
 }
-
 
 #bounty_details #issue_description img {
   max-height: 30rem;
@@ -860,7 +830,6 @@ a.btn {
     display: none;
   }
 
-  #title,
   #funder_notif_info {
     text-align: center;
   }

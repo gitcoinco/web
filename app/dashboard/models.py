@@ -2364,8 +2364,28 @@ class Profile(SuperModel):
         """
         return self.user.is_staff if self.user else False
 
+
+    @property
+    def completed_bounties(self):
+        """Returns bounties completed by user
+
+        Returns:
+            number: number of bounties completed
+
+        """
+        network = self.get_network()
+        return self.bounties.filter(
+            idx_status__in=['done'], network=network).count()
+
+
     @property
     def success_rate(self):
+        """Returns success rate of user on the platform
+
+        Returns:
+            number: sucess rate of user
+
+        """
         network = self.get_network()
         num_completed_bounties = self.bounties.filter(
             idx_status__in=['done'], network=network).count()
