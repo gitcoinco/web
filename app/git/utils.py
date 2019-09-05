@@ -591,11 +591,11 @@ def get_interested_actions(github_url, username, email=''):
     return actions_by_interested_party
 
 
-def get_user(user, sub_path=''):
+def get_user(user, sub_path='', auth=_AUTH):
     """Get the github user details."""
     user = user.replace('@', '')
     url = f'https://api.github.com/users/{user}{sub_path}'
-    response = requests.get(url, auth=_AUTH, headers=HEADERS)
+    response = requests.get(url, auth=auth, headers=HEADERS)
 
     try:
         response_dict = response.json()
@@ -616,10 +616,14 @@ def get_organization(org, sub_path='', auth=_AUTH):
     return response_dict
 
 
-def get_repo(repo_full_name, sub_path='', auth=_AUTH):
+def get_repo(repo_full_name, sub_path='', auth=_AUTH, is_user=False):
     """Get the github user details."""
     repo_full_name = repo_full_name.replace('@', '')
-    url = f'https://api.github.com/repos/{repo_full_name}{sub_path}'
+    if is_user:
+        url = f'https://api.github.com/user/repos'
+    else:
+        url = f'https://api.github.com/repos/{repo_full_name}{sub_path}'
+
     response = requests.get(url, auth=auth, headers=HEADERS)
 
     try:
