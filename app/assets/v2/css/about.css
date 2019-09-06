@@ -67,9 +67,9 @@ h4 {
 }
 
 #team .role {
-  font-weight: 111;
+  font-weight: 555;
 }
-#team .role {
+#team .role span{
   font-weight: 888;
 }
 
