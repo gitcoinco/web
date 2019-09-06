@@ -570,7 +570,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
             msg += " #" + keyword
         for user_id in bounty_invitees:
             profile = Profile.objects.get(id=int(user_id))
-            if not profile:
+            if not profile.user:
                 continue
             bounty_invite = BountyInvites.objects.create(
                 status='pending'
