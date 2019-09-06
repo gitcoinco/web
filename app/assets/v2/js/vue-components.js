@@ -52,7 +52,9 @@ Vue.component('select2', {
   },
   watch: {
     value: function(value) {
-      if ([...value].sort().join(',') !== [...$(this.$el).val()].sort().join(',')) {
+      if (value === undefined) {
+        $(this.$el).empty().select2({ data: this.options });
+      } else if ([...value].sort().join(',') !== [...$(this.$el).val()].sort().join(',')) {
         $(this.$el).val(value).trigger('change');
       }
     },
