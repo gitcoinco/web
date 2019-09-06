@@ -14,12 +14,6 @@
                     <span style="font-size: 14px; font-color: #000;">- {{ profile.custom_tagline }}</span>
                   {% endif %}
                 </p>
-                <div class="static-stars my-3">
-                  {% for i in ratings %}
-                    <i class="far fa-star {% if avg_rating.overall != 0 and i <= avg_rating.overall %}fas{% endif %}"></i>
-                  {% endfor %}
-                  <small class="text-muted">({{ avg_rating.total_rating }} {% trans "rating" %}{{avg_rating.total_rating | pluralize}})</small>
-                </div>
                 <p class="profile-header__links clearfix mt-1">
                   <a href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
                     <i class="fab fa-github"></i>
