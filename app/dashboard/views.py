@@ -1143,11 +1143,15 @@ def invite_to_bounty_based_on_skills(request):
     Raises:
         Http403: The exception is raised if the user is not authenticated or
                  the args are missing.
+        Http401: The exception is raised if the user is not a staff member.
 
     Returns:
         Http200: Json response with {'status': 200, 'msg': 'email_sent'}.
 
     """
+    if not request.user.is_staff:
+        return JsonResponse({'status': 401,
+                             'msg': 'Unauthorized'})
 
     inviter = request.user if request.user.is_authenticated else None
     skills = request.POST.get('skills')
@@ -1175,7 +1179,6 @@ def invite_to_bounty_based_on_skills(request):
             logging.exception(e)
     return JsonResponse({'status': 200,
                          'msg': 'email_sent'})
-
 
 
 @csrf_exempt

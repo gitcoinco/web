@@ -116,7 +116,7 @@
               <p class="font-body mx-2 mb-2 mt-4">
                 <span class="font-weight-bold">[[ numUsers ]]</span> users found
               </p>
-              <button v-show="numUsers > 0" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
+              <button v-show="numUsers > 0" :disabled="!(params.skills && params.skills.length)" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
                 Invite all to bounty
               </button>
             {% endif %}
