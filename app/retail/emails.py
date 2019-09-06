@@ -902,10 +902,10 @@ Hey Gitcoiners,
 We hope our American folks had an extravagant Labor Day weekend and cruised into a relaxed, enjoyable week. On our end, we've been watching with baited breath as the Gitcoin community transforms the Ethereal Blocks bounties into real, tangible projects. If you're hacking along this go around, be sure you are watching the Discord channel for any updates. The deadline to submit your work is a week from today, September 11th, at 11:59PM EST.
 </p>
 <p>
-It's new feature time. Our devs have been working hard on the latest iteration of the Dashboard, which is now a your one stop shop for a high level overview of all your activity on the Gitcoin platform. Monitor your active bounties, applications, and submissions. The dashboard is now live at <a href="gitcoin.co/dashboard">https://gitcoin.co/dashboard/</a>.
+It's new feature time. Our devs have been working hard on the latest iteration of the Dashboard, which is now your one stop shop for a high level overview of all your activity on the Gitcoin platform. Monitor your active bounties, applications, and submissions. The dashboard is now live at <a href="gitcoin.co/dashboard">https://gitcoin.co/dashboard/</a>.
 </p>
 <p>
-Inch by inch, row by row, it some time to make Gitcoin Grants grow. We promise: we're closer to launch, and we can't wait to see what our community does this time. Have any questions about Grants? Check out the homepage <a href="https://gitcoin.co/grants/">here</a> or send us a tweet. 
+Inch by inch, row by row, it takes some time to make Gitcoin Grants grow. We promise: we're closer to launch, and we can't wait to see what our community does this time. Have any questions about Grants? Check out the homepage <a href="https://gitcoin.co/grants/">here</a> or send us a tweet. 
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
