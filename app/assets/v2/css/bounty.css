@@ -114,6 +114,10 @@ body {
   list-style-type: none;
 }
 
+.related-bounties .static-stars .far {
+  font-size: 1rem;
+}
+
 .box {
   padding: 14px;
   border: 1px solid #DBDBDB;

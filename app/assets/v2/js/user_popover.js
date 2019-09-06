@@ -13,9 +13,21 @@ const renderPopOverData = data => {
   const bounties = data.related_bounties && data.related_bounties.map(bounty => {
     const title = bounty.title.slice(0, 50);
 
+    let ratings = [];
+
+    if (bounty.rating && bounty.rating[0] > 0) {
+      for (let i = 0; i < 5; i++) {
+        ratings.push(`<i class="far fa-star ${ i <= bounty.rating[0] ? 'fas' : ''} "></i>`);
+      }
+    }
+
     return `<li>
       <a class="font-weight-bold" href="${bounty.url}">${title}</a>
       <span class="font-italic">by ${bounty.org}</span>
+      ${ratings.length > 0 ?
+    `<span class="static-stars float-right">
+        ${ratings.join(' ')}
+      </span>` : ''}
     </li>`;
   }).join(' ');
 
@@ -72,7 +84,7 @@ const renderPopOverData = data => {
 
 function openContributorPopOver(contributor, element) {
   console.log(contributor, element);
-  
+
   const keywords = document.result.keywords;
   const contributorURL = `/api/v0.1/profile/${contributor}?keywords=${keywords}`;
 
