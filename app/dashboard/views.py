@@ -745,6 +745,7 @@ def users_directory(request):
     keywords = programming_languages + programming_languages_full
 
     params = {
+        'is_staff': request.user.is_staff,
         'active': 'users',
         'title': 'Users',
         'meta_title': "",
@@ -1157,7 +1158,7 @@ def invite_to_bounty_based_on_skills(request):
 
     bounty = Bounty.objects.current().get(id=int(bounty_id))
 
-    profiles = Profile.objects.filter(keywords__in=skills.split(',')
+    profiles = Profile.objects.filter(keywords__in=skills.split(','))
 
     invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
 

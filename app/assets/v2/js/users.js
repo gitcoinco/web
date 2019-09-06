@@ -187,7 +187,8 @@ if (document.getElementById('gc-users-directory')) {
       skills: document.keywords,
       selectedSkills: [],
       noResults: false,
-      isLoading: true
+      isLoading: true,
+      gitcoinIssueUrl: ''
     },
     mounted() {
       this.fetchUsers();
