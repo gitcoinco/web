@@ -488,6 +488,9 @@
     $("body").on("mouseover", "[data-username]", function(e) {
       openContributorPopOver($(this).data("username"), $(this));
     });
+    $("body").on("mouseout", "[data-username]", function(e) {
+      $(this).popover('dispose');
+    });
   </script>
   <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>

@@ -1,39 +1,40 @@
 let popoverData = [];
 
-const renderPopOverData = profile => {
-  let contributed_to = Object.keys(profile.contributed_to).map((_organization, index) => {
+const renderPopOverData = data => {
+  console.log(data)
+  let contributed_to = data.contributed_to.map((_organization, index) => {
     if (index < 3) {
       return `<img src="/dynamic/avatar/${_organization}" alt="${_organization}"
         class="rounded-circle" width="24" height="24">`;
     }
-    return `<span class="m-1">+${Object.keys(profile.contributed_to).length - 3}</span>`;
+    return `<span class="m-1">+${data.contributed_to.length - 3}</span>`;
   }).join(' ');
 
   return `
     <div class="popover-bounty__content">
       <div class="mb-2">
-        <img src="${profile.avatar_url}" width="35" class="rounded-circle">
-        <p class="ml-3 d-inline font-body my-auto font-weight-semibold">${profile.handle}</p>
+        <img src="${data.avatar}" width="35" class="rounded-circle">
+        <p class="ml-3 d-inline font-body my-auto font-weight-semibold">${data.handle}</p>
         ${contributed_to.length ? '<span class="my-auto">Contributes to: </span>' + contributed_to : ''}
       </div>
 
       <div class="stats">
         <div class="stat-card d-inline">
-          <h2>${profile.stats.position}</h2>
+          <h2>${data.stats.position}</h2>
           <p>contributor</p>
         </div>
         <div class="stat-card d-inline">
-          <h2>${profile.stats.success_rate}</h2>
+          <h2>${data.stats.success_rate}</h2>
           <p>success rate</p>
         </div>
         <div class="stat-card d-inline">
-          <h2>${profile.stats.earnings ? Number(profile.stats.earnings).toFixed(4) : 0} ETH</h2>
-          <p>collected from ${profile.stats.completed_bounties} bounties</p>
+          <h2>${data.stats.earnings ? Number(data.stats.earnings).toFixed(4) : 0} ETH</h2>
+          <p>collected from ${data.stats.completed_bounties} bounties</p>
         </div>
       </div>
 
-      <p>Bounties completed related to ${profile.keywords.slice(0, 3).toString()}</p>
-      ${profile.related_bounties ?
+      <p>Bounties completed related to ${data.keywords.slice(0, 3).toString()}</p>
+      ${data.related_bounties ?
     '<ul><li>// TODO: LOOP THROUGH TITLE</li></ul>'
     :
     '<p>None</p>'
@@ -44,7 +45,8 @@ const renderPopOverData = profile => {
 };
 
 function openContributorPopOver(contributor, element) {
-  const contributorURL = `/api/v0.1/profile/${contributor}`;
+  const keywords = document.result.keywords;
+  const contributorURL = `/api/v0.1/profile/${contributor}?keywords=${keywords}`;
 
   if (popoverData.filter(index => index[contributor]).length === 0) {
     fetch(contributorURL, { method: 'GET' })
