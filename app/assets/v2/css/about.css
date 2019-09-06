@@ -69,13 +69,27 @@ h4 {
   font-weight: bolder;
 }
 
-#team .avatar {
+#community .avatar {
   border: 0.1rem solid #1AB56D;
   width: 150px;
   height: 150px;
   border-radius: 50%;
   margin: auto;
   margin-bottom: 10px;
+}
+
+#team .avatar {
+  width: 175px;
+  height: 225px;
+  margin: auto;
+  margin-bottom: 10px;
+}
+#team .avatar.nate {
+  height: 315px;
+  margin-bottom: -80px;
+}
+#team .avatar.jobs {
+  height: 185px;
 }
 
 #team .name, #team .name a{
