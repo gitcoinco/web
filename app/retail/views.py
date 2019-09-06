@@ -632,7 +632,8 @@ def about(request):
             "owocki",
             "The Community",
             "Avocado Toast",
-            "kevin"
+            "kevin",
+            "Summoner of Bots"
         ),
         (
             "Alisa March",
@@ -641,7 +642,8 @@ def about(request):
             "pixelant",
             "Tips",
             "Apple Cider Doughnuts",
-            "alisa"
+            "alisa",
+            "Pixel Mage"
         ),
         (
             "Eric Berry",
@@ -650,7 +652,8 @@ def about(request):
             "ericberry",
             "Chrome/Firefox Extension",
             "Pastel de nata",
-            "eric"
+            "eric",
+            "Burnout Healer"
         ),
         (
             "Vivek Singh",
@@ -659,7 +662,8 @@ def about(request):
             "vivek-singh-b5a4b675",
             "Gitcoin Requests",
             "Tangerine Gelato",
-            "vivek"
+            "vivek",
+            "Campfire StoryTeller"
         ),
         (
             "Aditya Anand M C",
@@ -668,7 +672,8 @@ def about(request):
             "aditya-anand-m-c-95855b65",
             "The Community",
             "Cocktail Samosa",
-            "aditya"
+            "aditya",
+            "Block Welder"
         ),
         (
             "Scott Moore",
@@ -677,7 +682,8 @@ def about(request):
             "scott-moore-a2970075",
             "Issue Explorer",
             "Teriyaki Chicken",
-            "scott"
+            "scott",
+            "Phase Shifter"
         ),
         (
             "Octavio Amuchástegui",
@@ -686,7 +692,8 @@ def about(request):
             "octavioamu",
             "The Community",
             "Homemade italian pasta",
-            "octavio"
+            "octavio",
+            "Bugs Breeder"
         ),
         (
             "Frank Chen",
@@ -695,7 +702,8 @@ def about(request):
             "frankchen07",
             "Kudos!",
             "Crispy pork belly",
-            "frank"
+            "frank",
+            "Hashed Scout"
         ),
         (
             "Nate Hopkins",
@@ -704,7 +712,8 @@ def about(request):
             None,
             "Bounties",
             "Chicken tikka masala",
-            "nate"
+            "nate",
+            "Lord of Night's Watch"
         ),
         (
             "Alessandro Voto",
@@ -713,7 +722,8 @@ def about(request):
             None,
             "Devvies",
             "Tacos",
-            "alex"
+            "alex",
+            "Starship Captain"
         ),
         (
             "Dan Lipert",
@@ -722,7 +732,18 @@ def about(request):
             "danlipert",
             "EIP 1337",
             "Tantan Ramen",
-            "dan"
+            "dan",
+            "Blockchain Artificer"
+        ),
+        (
+            "Connor O'Day",
+            "DevRel",
+            "connoroday",
+            "connoroday",
+            "the lols",
+            "Robertas Pizza",
+            "connor",
+            "Druid of The Chain"
         ),
         (
             "Joseph Chen",
@@ -731,7 +752,8 @@ def about(request):
             "josephchen",
             "Ethical Ads",
             "DIY",
-            "joseph"
+            "joseph",
+            "Arithmagician"
         )
 
     ]

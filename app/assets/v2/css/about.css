@@ -51,6 +51,7 @@ h4 {
 }
 #team .card p {
   font-size: 14px;
+  margin-bottom: 3px;
 }
 #team .card-small {
   padding-left: .5rem;
@@ -63,6 +64,13 @@ h4 {
 #jobs .title,
 #team .card .title {
   color: #999;
+}
+
+#team .role {
+  font-weight: 111;
+}
+#team .role {
+  font-weight: 888;
 }
 
 #team .card .desc {

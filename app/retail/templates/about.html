@@ -41,14 +41,14 @@
         </div>
       </div>
       <div class="row">
-          {% for name, role, handle, linkedin, feature, food, fname in core_team %}
+          {% for name, role, handle, linkedin, feature, food, fname, rpgname in core_team %}
             <div class="col-10 col-md-6 col-lg-3">
               <div class="card">
                 <a href="/profile/{{handle}}">
                   <img class="avatar {{fname}}" src="/static/v2/images/team/{{fname}}.png">
                 </a>
-                <p class="name">(better known as .. <a style="font-weight:strong;" href="/profile/{{handle}}">@{{handle}}</a>)</p>
-                <p class="role font-caption">{{role}}</p>
+                <p class="name">(aka .. <a style="font-weight:888; font-size: 16px;" href="/profile/{{handle}}">@{{handle}}</a>)</p>
+                <p class="role font-caption">{{rpgname}} <span>({{role}})</span></p>
                 <p class="font-caption">
                   <span class="title">Favorite Gitcoin Feature</span></br>
                   <span class="desc">{{feature}}</span>
