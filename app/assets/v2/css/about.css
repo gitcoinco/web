@@ -20,6 +20,7 @@ h4 {
   font-weight: bold;
 }
 
+
 #team p,
 #jobs p,
 #origin_story p {
@@ -29,6 +30,13 @@ h4 {
 .grow_hero img{
   width: 100%;
   max-width: 400px;
+}
+
+.problem img{
+  filter: grayscale(90%);
+}
+.problem img:hover{
+  filter: grayscale(20%);
 }
 
 #origin_story img {
