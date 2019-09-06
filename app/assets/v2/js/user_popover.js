@@ -1,8 +1,8 @@
 let popoverData = [];
 
 const renderPopOverData = data => {
-  console.log(data)
-  let contributed_to = data.contributed_to.map((_organization, index) => {
+  const unique_contributed_to = data.contributed_to ? Array.from(new Set(data.contributed_to)) : [];
+  let contributed_to = unique_contributed_to && unique_contributed_to.map((_organization, index) => {
     if (index < 3) {
       return `<img src="/dynamic/avatar/${_organization}" alt="${_organization}"
         class="rounded-circle" width="24" height="24">`;
@@ -10,34 +10,60 @@ const renderPopOverData = data => {
     return `<span class="m-1">+${data.contributed_to.length - 3}</span>`;
   }).join(' ');
 
+  const bounties = data.related_bounties && data.related_bounties.map(bounty => {
+    const title = bounty.title.slice(0, 50);
+
+    return `<li>
+      <a class="font-weight-bold" href="${bounty.url}">${title}</a>
+      <span class="font-italic">by ${bounty.org}</span>
+    </li>`;
+  }).join(' ');
+
   return `
     <div class="popover-bounty__content">
       <div class="mb-2">
         <img src="${data.avatar}" width="35" class="rounded-circle">
         <p class="ml-3 d-inline font-body my-auto font-weight-semibold">${data.handle}</p>
-        ${contributed_to.length ? '<span class="my-auto">Contributes to: </span>' + contributed_to : ''}
-      </div>
-
-      <div class="stats">
-        <div class="stat-card d-inline">
-          <h2>${data.stats.position}</h2>
-          <p>contributor</p>
-        </div>
-        <div class="stat-card d-inline">
-          <h2>${data.stats.success_rate}</h2>
-          <p>success rate</p>
-        </div>
-        <div class="stat-card d-inline">
-          <h2>${data.stats.earnings ? Number(data.stats.earnings).toFixed(4) : 0} ETH</h2>
-          <p>collected from ${data.stats.completed_bounties} bounties</p>
+        <div class="float-right">
+          ${contributed_to.length ? '<span class="my-auto">Contributes to: </span>' + contributed_to : ''}
         </div>
       </div>
 
-      <p>Bounties completed related to ${data.keywords.slice(0, 3).toString()}</p>
-      ${data.related_bounties ?
-    '<ul><li>// TODO: LOOP THROUGH TITLE</li></ul>'
+      <div class="stats text-center mt-4">
+        <div class="stat-card mx-1 mb-2 py-2 px-5 px-sm-3 d-inline-block text-center">
+          <h2 class="font-title font-weight-bold mb-0">
+            ${data.stats.position == 0 ? '-' : '#' + data.stats.position}
+          </h2>
+          <p class="font-body mb-0">contributor</p>
+        </div>
+        <div class="stat-card mx-1 mb-2 py-2 px-5 px-sm-3 d-inline-block text-center">
+          <h2 class="font-title font-weight-bold mb-0">
+            ${data.stats.success_rate ? data.stats.success_rate : 0} %
+          </h2>
+          <p class="font-body mb-0">success rate</p>
+        </div>
+        <div class="stat-card mx-1 mb-2 py-2 px-5 px-sm-3 d-inline-block text-center">
+          <h2 class="font-title font-weight-bold mb-0">
+            ${data.stats.earnings ? Number(data.stats.earnings).toFixed(4) : 0} ETH
+          </h2>
+          <p class="font-body mb-0">
+            collected from
+            <span class="font-weight-bold">${data.stats.completed_bounties}</span> bounties
+          </p>
+        </div>
+      </div>
+
+    ${data.related_bounties.length == 0 ?
+    `<p class="font-body mt-3 summary">
+        No bounties completed related to <span class="font-italic">${data.keywords}</span>
+      </p>`
     :
-    '<p>None</p>'
+    `<p class="font-body mt-3 summary">
+        Bounties completed related to <span class="font-italic">${data.keywords}:</span>
+      </p>
+      <ul class="related-bounties font-body pl-0">
+        ${bounties}
+      </ul>`
 }
 
     </div>
@@ -45,6 +71,8 @@ const renderPopOverData = data => {
 };
 
 function openContributorPopOver(contributor, element) {
+  console.log(contributor, element);
+  
   const keywords = document.result.keywords;
   const contributorURL = `/api/v0.1/profile/${contributor}?keywords=${keywords}`;
 

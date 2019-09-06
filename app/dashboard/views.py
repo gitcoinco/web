@@ -1795,9 +1795,6 @@ def profile_details(request, handle):
 
     keywords = request.GET.get('keywords')
 
-    # bounties = profile.bounties
-        # Prefetch('feedbacks', queryset=queryset, to_attr='feedback'), 'feedback__rating') \
-    # queryset = FeedbackEntry.objects.all().filter(receiver_profile=profile)
     bounties = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
         .filter(interested__profile=profile, network=network,) \
         .filter(interested__status='okay') \
@@ -1809,11 +1806,6 @@ def profile_details(request, handle):
             Q(issue_description__icontains=keywords)
         ) \
         .distinct('pk')
-
-
-
-    # for word in keywords:
-        # bounties = bounties.keyword(word) # TODO: Is this right
 
     _bounties = []
     _orgs = []
@@ -1828,13 +1820,6 @@ def profile_details(request, handle):
                 'rating': [feedback.rating for feedback in bounty.feedbacks.all().distinct('bounty_id')],
             }
             _org = bounty.org_name
-            # try:
-            #     # feedback = FeedbackEntry.objects.get(bounty=bounty.pk, receiver_profile=profile)
-            #     # feedback = FeedbackEntry.objects.get() # TODO: remove after testing
-            #     if feedback:
-            #         _bounty['contibutor_rating'] = feedback.rating
-            # except FeedbackEntry.DoesNotExist:
-            #     _bounty['contibutor_rating'] = None
             _orgs.append(_org)
             _bounties.append(_bounty)
 
