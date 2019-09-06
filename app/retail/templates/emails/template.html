@@ -125,7 +125,6 @@
     vertical-align: middle;
     display: inline-block;
     max-height: 80px;
-    height: 80px;
     max-width: 100%;
   }
 
@@ -136,14 +135,18 @@
 
   #header {
     height: 100px;
+    background-color: #8934b3;
   }
 
   #header, #footer {
     color: white;
-    background-color: #15003e;
     align-content: center;
     text-align: center;
     padding: 30px 50px;
+  } 
+
+  #footer {
+    background-color: #15003e;
   }
 
   #footer p, #footer a {
@@ -222,7 +225,7 @@
   {% if not hide_header %}
   <div id="header">
     <a href="{% url 'funder_bounties' %}">
-      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="{% static "v2/images/emails/email_header2.gif" %}" alt="Gitcoin" title="Gitcoin Logo">
     </a>
   </div>
   {% endif %}
