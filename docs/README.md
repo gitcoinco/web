@@ -148,7 +148,7 @@ This widget will help you advertise that you support Gitcoin bounties, so that y
 
 Gitcoinbot will allow you to add issues straight from github.
 
-[Check out the gitcoinbot readme to learn how](https://github.com/gitcoinco/web/blob/master/app/gitcoinbot/README.md)
+[Check out the gitcoinbot readme to learn how](https://docs.gitcoin.co/mk_gitcoinbot/)
 
 ## Adding your token to Gitcoin
 
