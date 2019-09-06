@@ -1814,7 +1814,6 @@ def profile_details(request, handle):
 
             _bounty = {
                 'title': bounty.title,
-                'url': bounty.get_absolute_url(),
                 'id': bounty.id,
                 'org': bounty.org_name,
                 'rating': [feedback.rating for feedback in bounty.feedbacks.all().distinct('bounty_id')],

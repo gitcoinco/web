@@ -105,7 +105,7 @@ body {
 
 .stat-card h2,
 .stat-card p,
-.related-bounties li span,
+.related-bounties li .bounty-org,
 .popover-bounty__content .summary {
   color: #717171;
 }
@@ -114,8 +114,12 @@ body {
   list-style-type: none;
 }
 
+.related-bounties .bounty-title {
+  color: #3E00FF;
+}
+
 .related-bounties .static-stars .far {
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 
 .box {

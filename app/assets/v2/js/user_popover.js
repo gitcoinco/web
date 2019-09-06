@@ -11,7 +11,7 @@ const renderPopOverData = data => {
   }).join(' ');
 
   const bounties = data.related_bounties && data.related_bounties.map(bounty => {
-    const title = bounty.title.slice(0, 50);
+    const title = bounty.title <= 30 ? bounty.title : bounty.title.slice(0, 27) + '...';
 
     let ratings = [];
 
@@ -22,8 +22,8 @@ const renderPopOverData = data => {
     }
 
     return `<li>
-      <a class="font-weight-bold" href="${bounty.url}">${title}</a>
-      <span class="font-italic">by ${bounty.org}</span>
+      <span class="font-weight-semibold bounty-title">${title}</span>
+      <span class="bounty-org">by ${bounty.org}</span>
       ${ratings.length > 0 ?
     `<span class="static-stars float-right">
         ${ratings.join(' ')}
@@ -50,7 +50,7 @@ const renderPopOverData = data => {
         </div>
         <div class="stat-card mx-1 mb-2 py-2 px-5 px-sm-3 d-inline-block text-center">
           <h2 class="font-title font-weight-bold mb-0">
-            ${data.stats.success_rate ? data.stats.success_rate : 0} %
+            ${data.stats.success_rate ? Math.round(data.stats.success_rate) : 0} %
           </h2>
           <p class="font-body mb-0">success rate</p>
         </div>
