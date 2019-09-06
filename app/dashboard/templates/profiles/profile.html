@@ -24,10 +24,17 @@
     <div class="container-fluid header profile-header dash" style="{% if profile.profile_wallpaper %} background-image: url( {{ profile.profile_wallpaper }} ) {% endif %}">
         {% csrf_token %}
         {% if is_editable %}
-        <div class="position-absolute profile-banner text-center">
-          <div class="h4 font-title-lg m-auto">
-            Edit Header Photo
-          </div>
+        <div class="position-relative profile-banner">
+			<div class="container mt-5">
+				<div class="row">
+					<div class="col-12">
+						<span class="profile-banner-cta">
+							<i class="fa fa-camera"></i>
+							Update Header Image
+						</span>
+					</div>
+				</div>
+			</div>
         </div>
           {% endif %}
         {% if not hidden and is_staff %}
@@ -100,7 +107,6 @@
     <script>
       $('[data-toggle="popover"]').popover()
       $('[data-toggle="tooltip"]').bootstrapTooltip();
-
     </script>
     <script src="{% static "v2/js/pages/tabs.js" %}"></script>
     <script src="{% static "v2/js/pages/profile.js" %}"></script>
