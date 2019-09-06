@@ -3,11 +3,11 @@ let popoverData = [];
 const renderPopOverData = data => {
   const unique_contributed_to = data.contributed_to ? Array.from(new Set(data.contributed_to)) : [];
   let contributed_to = unique_contributed_to && unique_contributed_to.map((_organization, index) => {
-    if (index < 3) {
+    if (index < 5) {
       return `<img src="/dynamic/avatar/${_organization}" alt="${_organization}"
         class="rounded-circle" width="24" height="24">`;
     }
-    return `<span class="m-1">+${data.contributed_to.length - 3}</span>`;
+    return `<span class="m-1">+${data.contributed_to.length - 5}</span>`;
   }).join(' ');
 
   const bounties = data.related_bounties && data.related_bounties.map(bounty => {
