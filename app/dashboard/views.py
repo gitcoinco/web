@@ -34,7 +34,7 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg, Count, Prefetch, Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -1788,31 +1788,61 @@ def profile_details(request, handle):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
-    bounties = profile.bounties
-    for word in profile.keywords:
-        bounties = bounties.keyword(word) # TODO: Is this right
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
+
+    keywords = request.GET.get('keywords')
+
+    # bounties = profile.bounties
+        # Prefetch('feedbacks', queryset=queryset, to_attr='feedback'), 'feedback__rating') \
+    # queryset = FeedbackEntry.objects.all().filter(receiver_profile=profile)
+    bounties = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+        .filter(interested__profile=profile, network=network,) \
+        .filter(interested__status='okay') \
+        .filter(interested__pending=False).filter(idx_status='done') \
+        .filter(feedbacks__receiver_profile=profile) \
+        .filter(
+            Q(metadata__issueKeywords__icontains=keywords) | \
+            Q(title__icontains=keywords) | \
+            Q(issue_description__icontains=keywords)
+        ) \
+        .distinct('pk')
+
+
+
+    # for word in keywords:
+        # bounties = bounties.keyword(word) # TODO: Is this right
 
     _bounties = []
+    _orgs = []
     if bounties :
         for bounty in bounties:
+
             _bounty = {
                 'title': bounty.title,
-                'url': bounty.get_absolute_url()
+                'url': bounty.get_absolute_url(),
+                'id': bounty.id,
+                'org': bounty.org_name,
+                'rating': [feedback.rating for feedback in bounty.feedbacks.all().distinct('bounty_id')],
             }
-            try:
-                # feedback = FeedbackEntry.objects.get(bounty=bounty.pk, receiver_profile=profile)
-                feedback = FeedbackEntry.objects.get() # TODO: remove after testing
-                if feedback:
-                    _bounty['contibutor_rating'] = feedback.rating
-            except FeedbackEntry.DoesNotExist:
-                _bounty['contibutor_rating'] = None
+            _org = bounty.org_name
+            # try:
+            #     # feedback = FeedbackEntry.objects.get(bounty=bounty.pk, receiver_profile=profile)
+            #     # feedback = FeedbackEntry.objects.get() # TODO: remove after testing
+            #     if feedback:
+            #         _bounty['contibutor_rating'] = feedback.rating
+            # except FeedbackEntry.DoesNotExist:
+            #     _bounty['contibutor_rating'] = None
+            _orgs.append(_org)
             _bounties.append(_bounty)
 
     response = {
         'avatar': profile.avatar_url,
         'handle': profile.handle,
-        # 'contributed_to' : dic(profile.get_who_works_with()) # TODO: make into array
-        'keywords': profile.keywords,
+        'contributed_to': _orgs,
+        'keywords': keywords,
         'related_bounties' : _bounties,
         'stats': {
             'position': profile.get_contributor_leaderboard_index(),
