@@ -5342,3 +5342,124 @@
    - rare
    - limited edition
   image: Noodle_Fighter.svg
+- name: Ethereal Summit - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-01.svg
+- name: Gitcoin - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-06.svg
+- name: Ethereum Foundation - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-07.svg
+- name: Airswap - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-08.svg
+- name: Bancor - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-09.svg
+- name: Portis - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-10.svg
+- name: eToro - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-11.svg
+- name: GoodDollar - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-02.svg
+- name: eToroX - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-05.svg
+- name: Matic - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-03.svg
+- name: Status - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-04.svg
