@@ -631,7 +631,8 @@ def about(request):
             "owocki",
             "owocki",
             "The Community",
-            "Avocado Toast"
+            "Avocado Toast",
+            "kevin"
         ),
         (
             "Alisa March",
@@ -639,7 +640,8 @@ def about(request):
             "PixelantDesign",
             "pixelant",
             "Tips",
-            "Apple Cider Doughnuts"
+            "Apple Cider Doughnuts",
+            "alisa"
         ),
         (
             "Eric Berry",
@@ -647,7 +649,8 @@ def about(request):
             "coderberry",
             "ericberry",
             "Chrome/Firefox Extension",
-            "Pastel de nata"
+            "Pastel de nata",
+            "eric"
         ),
         (
             "Vivek Singh",
@@ -655,7 +658,8 @@ def about(request):
             "vs77bb",
             "vivek-singh-b5a4b675",
             "Gitcoin Requests",
-            "Tangerine Gelato"
+            "Tangerine Gelato",
+            "vivek"
         ),
         (
             "Aditya Anand M C",
@@ -663,7 +667,8 @@ def about(request):
             "thelostone-mc",
             "aditya-anand-m-c-95855b65",
             "The Community",
-            "Cocktail Samosa"
+            "Cocktail Samosa",
+            "aditya"
         ),
         (
             "Scott Moore",
@@ -671,7 +676,8 @@ def about(request):
             "ceresstation",
             "scott-moore-a2970075",
             "Issue Explorer",
-            "Teriyaki Chicken"
+            "Teriyaki Chicken",
+            "scott"
         ),
         (
             "Octavio Amuchástegui",
@@ -679,7 +685,8 @@ def about(request):
             "octavioamu",
             "octavioamu",
             "The Community",
-            "Homemade italian pasta"
+            "Homemade italian pasta",
+            "octavio"
         ),
         (
             "Frank Chen",
@@ -687,7 +694,8 @@ def about(request):
             "frankchen07",
             "frankchen07",
             "Kudos!",
-            "Crispy pork belly"
+            "Crispy pork belly",
+            "frank"
         ),
         (
             "Nate Hopkins",
@@ -695,7 +703,17 @@ def about(request):
             "hopsoft",
             None,
             "Bounties",
-            "Chicken tikka masala"
+            "Chicken tikka masala",
+            "nate"
+        ),
+        (
+            "Alessandro Voto",
+            "DevRel",
+            "avotofuture",
+            None,
+            "Devvies",
+            "Tacos",
+            "alex"
         ),
         (
             "Dan Lipert",
@@ -703,7 +721,17 @@ def about(request):
             "danlipert",
             "danlipert",
             "EIP 1337",
-            "Tantan Ramen"
+            "Tantan Ramen",
+            "dan"
+        ),
+        (
+            "Joseph Chen",
+            "Operations",
+            "josephchen",
+            "josephchen",
+            "Ethical Ads",
+            "DIY",
+            "joseph"
         )
 
     ]
