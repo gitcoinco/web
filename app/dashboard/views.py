@@ -1793,7 +1793,7 @@ def profile_details(request, handle):
     else:
         network = 'rinkeby'
 
-    keywords = request.GET.get('keywords')
+    keywords = request.GET.get('keywords', '')
 
     bounties = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
         .filter(interested__profile=profile, network=network,) \
@@ -1805,7 +1805,7 @@ def profile_details(request, handle):
             Q(title__icontains=keywords) | \
             Q(issue_description__icontains=keywords)
         ) \
-        .distinct('pk')
+        .distinct('pk')[:3]
 
     _bounties = []
     _orgs = []

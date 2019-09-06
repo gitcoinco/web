@@ -67,11 +67,11 @@ const renderPopOverData = data => {
 
     ${data.related_bounties.length == 0 ?
     `<p class="font-body mt-3 summary">
-        No bounties completed related to <span class="font-italic">${data.keywords}</span>
+        No bounties completed related to <span class="font-italic">${data.keywords || 'bounty'}</span>
       </p>`
     :
     `<p class="font-body mt-3 summary">
-        Bounties completed related to <span class="font-italic">${data.keywords}:</span>
+        Bounties completed related to <span class="font-italic">${data.keywords || 'bounty'}:</span>
       </p>
       <ul class="related-bounties font-body pl-0">
         ${bounties}
@@ -83,9 +83,7 @@ const renderPopOverData = data => {
 };
 
 function openContributorPopOver(contributor, element) {
-  console.log(contributor, element);
-
-  const keywords = document.result.keywords;
+  const keywords = document.result.keywords || '';
   const contributorURL = `/api/v0.1/profile/${contributor}?keywords=${keywords}`;
 
   if (popoverData.filter(index => index[contributor]).length === 0) {
