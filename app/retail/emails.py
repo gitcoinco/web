@@ -905,7 +905,7 @@ We hope our American folks had an extravagant Labor Day weekend and cruised into
 It's new feature time. Our devs have been working hard on the latest iteration of the Dashboard, which is now a your one stop shop for a high level overview of all your activity on the Gitcoin platform. Monitor your active bounties, applications, and submissions. The dashboard is now live at <a href="gitcoin.co/dashboard">https://gitcoin.co/dashboard/</a>.
 </p>
 <p>
-Inch by inch, row by row, it some time to make Gitcoin Grants grow. We promise: we're closer to launch, and we can't wait to see what our community does this time. Have any questions about Grants? Check out the homepage <a href="https://gitcoin.co/grants/">here</a> or send us a tweet. 
+Inch by inch, row by row, it takes some time to make Gitcoin Grants grow. We promise: we're closer to launch, and we can't wait to see what our community does this time. Have any questions about Grants? Check out the homepage <a href="https://gitcoin.co/grants/">here</a> or send us a tweet. 
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
@@ -943,13 +943,13 @@ Back to shipping,
     }, ]
 
     sponsor = {
-        'name': 'Blockmason',
-        'title': 'Build and deploy your whole laundry list of microservices in a single afternoon.',
-        'image_url': 'https://blockmason.link/wp-content/uploads/2018/11/logo.svg',
-        'link': 'http://bit.ly/2L5IA2n',
-        'cta': 'Get Started Now',
+        'name': 'Gitcoin Ads (aka. CodeFund)',
+        'title': 'Earn recurring, passive revenue for your blockchain projects & blogs.',
+        'image_url': '',
+        'link': 'https://codefund.io/?utm_source=gitcoin&utm_campaign=newsletter',
+        'cta': 'Do I qualify?',
         'body': [
-            'Link creates web-based APIs from your code, so you can deploy microservices instantly.'
+            'Gitcoin Ads provides ethical advertising to support bloggers, app builders, and maintainers of blockchain technology. Find out if you qualify!'
         ]
     }
 
