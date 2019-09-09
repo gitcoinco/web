@@ -15,7 +15,6 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load staticfiles %}
 {% load humanize i18n static %}
 {% load kudos_extras %}
 
@@ -40,7 +39,7 @@
     <div class="content-block content-block--white">
       <div class="container">
         <h2 class="content-block__title">
-          ${{ universe_total_usd|floatformat:2|intcomma }} of {% blocktrans %}
+          ${{ universe_total_usd|floatformat:0|intcomma }} of {% blocktrans %}
            Gross Marketplace Value
           {% endblocktrans %}
           {% if keyword %}({{keyword}}){%endif%}
@@ -129,6 +128,30 @@
             <p class="single-stat__subtitle">{% trans "Bounty Hunters Hired Full Time" %}</p>
             <p class="single-stat__fineprint">(that we know of, at least 🤷‍♀️)</p>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block content-block--grey">
+      <div class="container" >
+        <h2 class="content-block__title">{{hackathons | length }} {% trans "Virtual Hackathons" %} worth ${{hackathon_total|floatformat:0|intcomma}}.</h2>
+
+        <div class="hackathon-breakdown">
+          {% for hackathon in hackathons %}
+            {% firstof hackathon.0.logo_svg or hackathon.0.logo as logo %}
+            <div>
+              {% if logo %}
+                <img src="{{MEDIA_URL}}{{logo}}"/>
+              {%endif %}
+              <h4>{{hackathon.0.name}}</h4>
+              {% if hackathon.1.num_bounties %}
+                <p>{{hackathon.1.num_bounties}} Bounties</p>
+                <p>${{hackathon.1.total_volume|floatformat:0|intcomma}} In Prizes</p>
+              {% endif %}
+              <p>{{hackathon.1.range}}</p>
+              <a href="{% url 'hackathon' hackathon.0.slug %}">View Prize Explorer</a>
+            </div>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -381,27 +404,15 @@
       </div>
     </div>
 
-    {% if user.is_staff %}
-      <div class="row py-5">
-        <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-          <h2 class="text-center">{% trans "Browse More Results, By Programming Language" %}</h2>
-        </div>
+    <div class="row mt-5 pb-5 text-center">
+      <div class="col">
+        <h2>Platform Activities</h2>
+        <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
       </div>
-      <div class="row py-1">
-        <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-          <ul id="programming_languages">
-            {% for pl in programming_languages %}
-              <li class="button button--primary-o {% if pl == keyword or pl == 'All' and keyword == '' %}selected{%endif%}">
-                <a href="{% url 'results' %}/{% if pl != 'All' %}{{pl}}{%endif%}">
-                  {{pl}}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-    {% endif %}
-
+    </div>
+    <div id="activities">
+      {% include 'shared/activity_container.html' with target="/activity" %}
+    </div>
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
@@ -414,6 +425,8 @@
         $("img").unveil(200);
       });
     </script>
+
+    {% include 'shared/activity_scripts.html' %}
 
   </body>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>

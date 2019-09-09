@@ -37,7 +37,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_profile
 from cacheops import cached_view
-from dashboard.models import Activity, Profile
+from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
@@ -49,6 +49,7 @@ from marketing.mails import (
     thank_you_for_supporting,
 )
 from marketing.models import Keyword, Stat
+from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
@@ -125,6 +126,20 @@ def grants(request):
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
     }
+
+    # log this search, it might be useful for matching purposes down the line
+    if keyword:
+        try:
+            SearchHistory.objects.update_or_create(
+                search_type='grants',
+                user=request.user,
+                data=request.GET,
+                ip_address=get_ip(request)
+            )
+        except Exception as e:
+            logger.debug(e)
+            pass
+
     return TemplateResponse(request, 'grants/index.html', params)
 
 
