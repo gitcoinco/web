@@ -1,26 +1,33 @@
-{% load i18n static humanize %}
-
-    {% if not hidden %}
-     {% if is_editable %}
-        <div class="tab3">
-          {% include "shared/rate_bounties.html" %}
-        </div>
-      {% endif %}
-
-      <div class="tab3">
-		<h5 class="text-left mt-4">{% trans "Reviews Received" %}</h5>
-        {% for feedback in feedbacks_got %}
-          {% include "shared/feedback.html" %}
-        {% endfor %}
-      </div>
-
-      <div class="tab3">
-		<h5 class="text-left mt-4">{% trans "Reviews Sent" %}</h5>
-        {% for feedback in feedbacks_sent %}
-          {% include "shared/feedback.html" %}
-        {% endfor %}
-      </div>
-
-    {% endif %}
-    
-    {% endif %}
+{% load i18n static %}
+<div class="static-stars my-3 d-flex">
+	{% for i in ratings %}
+		<i class="fa fa-star align-self-center {% if avg_rating.overall != 0 and i <= avg_rating.overall %}fas{% endif %}"></i>
+	{% endfor %}
+	<div class="font-weight-bold">
+		&nbsp;&nbsp;{{ avg_rating.total_rating }} {% trans "rating" %}{{avg_rating.total_rating | pluralize}}
+	</div>
+</div>
+<div class="row">
+	<div class="col-4">
+		<span>Satisfaction {{feedback.satisfaction_rating}}</span>
+	</div>
+	<div class="col-4">
+		<span>Speed {{feedback.speed_rating}}</span>
+	</div>
+	<div class="col-4">
+		<span>Recommended to other funders {{feedback.recommendation_rating}}</span>
+	</div>
+	<div class="col-4">
+		<span>Communication/Responsiveness {{feedback.communication_rating}}</span>
+	</div>
+	<div class="col-4">
+		<span>Quality of Code Submission {{feedback.code_quality_rating}}</span>
+	</div>
+</div>
+<div class="border-bottom my-3"></div>
+<div class="tab-reviews">
+	<h6 class="font-weight-bold">Reviews</h6>
+	{% for feedback in feedbacks_got %}
+		{% include "shared/feedback.html" %}
+	{% endfor %}
+</div>
