@@ -1,6 +1,6 @@
 Vue.component('modal', {
-  props: [ 'user', 'size' ],
-  template: `<div class="vue-modal modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+  props: [ 'user', 'size', 'id' ],
+  template: `<div class="vue-modal modal fade" :id="id" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" :class="size" role="document">
           <div class="modal-content">
             <div class="modal-header border-0">
@@ -25,6 +25,7 @@ Vue.component('modal', {
   },
   mounted() {
     let vm = this;
+    console.log($(this.$el))
 
     vm.jqEl = $(this.$el);
   },
