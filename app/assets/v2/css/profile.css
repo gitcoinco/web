@@ -2,26 +2,26 @@
 	display: none;
   }
 
-  .tab-projects__item img {
-	width: 50px;
-	height: 50px;
-  }
+.tab-projects__item img {
+  width: 50px;
+  height: 50px;
+}
   
-  .tag-list .tag-list__item {
-	  background: #E8F0FA;
-	  padding: 4px;
-	  border-radius: 2px;
-	  font-size: 14px;
-	  color: #6487AE;
-  }
+.tag-list .tag-list__item {
+  background: #E8F0FA;
+  padding: 4px;
+  border-radius: 2px;
+  font-size: 14px;
+  color: #6487AE;
+}
 
-  .review-comment {
-	background: #E4E6E7;
-	border-radius: 5px;
-	padding: 5px 7px;
-	font-size: 12px;
-	color: #666666;
-  }
+.review-comment {
+  background: #E4E6E7;
+  border-radius: 5px;
+  padding: 5px 7px;
+  font-size: 12px;
+  color: #666666;
+}
 
   .mh-150{
 	min-height: 150px;

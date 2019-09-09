@@ -1,126 +1,76 @@
 {% load i18n static %}
-      {% if not hidden and not profile.is_org %}
-        <!-- <div id="tabs">
-        <div id="tab_controller" class="container">
-          <ul class="nav">
-            <li class="nav-item">
-              <a class="nav-link {% if tab == 'activity' %}active{%endif%}" href="{{profile.url}}/activity">
-                Activity
-              </a>
-            </li>
-            {% if active_bounties_count %}
-            <li class="nav-item">
-              <a class="nav-link {% if tab == 'resume' %}active{%endif%}" href="{{profile.url}}/active">
-                Active Issues ({{active_bounties_count}})
-              </a>
-            </li>
-            {% endif %}
-            {% if show_resume_tab %}
-            <li class="nav-item">
-              <a class="nav-link {% if tab == 'resume' %}active{%endif%}" href="{{profile.url}}/resume">
-                Resume
-              </a>
-            </li>
-            {% endif %}
-            {% if is_staff %}
-            <li class="nav-item admin_only">
-              <a class="nav-link {% if tab == 'ratings' %}active{%endif%}" href="{{profile.url}}/ratings">
-                Ratings
-              </a>
-            </li>
-            <li class="nav-item admin_only">
-              <a class="nav-link {% if tab == 'portfolio' %}active{%endif%}" href="{{profile.url}}/portfolio">
-                Portfolio
-              </a>
-            </li>
-            {% endif %}
-            <li class="nav-item">
-              <a class="nav-link {% if tab == 'kudos' %}active{%endif%}" href="{{profile.url}}/kudos">
-                Kudos
-              </a>
-            </li>
-            {% if is_staff %}
-            {% if is_editable %}
-              <li class="nav-item">
-                <a class="nav-link only_visible_to_me_color admin_only {% if tab == 'viewers' %}active{%endif%}" href="{{profile.url}}/viewers">
-                  <i class="fas fa-eye"></i> Who's Viewed Your Profile
-                </a>
-              </li>
-            {% endif %}
-            {% endif %}
-          </ul>
-		</div> -->
-		<div class="container">
-			<ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
-				<li class="nav-item">
-				  <a class="nav-link nav-line active" id="activity-tab" data-toggle="tab" href="#activity" role="tab" aria-controls="activities" aria-selected="true">{% trans "Activity"%}</a>
-				</li>
-				{% if profile.show_job_status %}
-				<li class="nav-item">
-				  <a class="nav-link nav-line" id="resume-tab" data-toggle="tab" href="#resume" role="tab" aria-controls="resume" aria-selected="false">{% trans "Resume" %}</a>
-				</li>
-				{% endif %}
-				<li class="nav-item">
-				  <a class="nav-link nav-line" id="ratings-tab" data-toggle="tab" href="#ratings" role="tab" aria-controls="ratings" aria-selected="false">{% trans "Ratings" %}</a>
-				</li>
-				<li class="nav-item">
-				  <a class="nav-link nav-line" id="portfolio-tab" data-toggle="tab" href="#portfolio" role="tab" aria-controls="portfolio" aria-selected="false">{% trans "Portfolio" %}</a>
-				</li>
-				{% if not hidden and not profile.is_org %}
-				<li class="nav-item">
-				  <a class="nav-link nav-line" id="kudos-tab" data-toggle="tab" href="#kudos" role="tab" aria-controls="kudos" aria-selected="false">{% trans "Kudos" %}</a>
-				</li>
-				{% endif %}
-				<li class="align-self-center ml-auto font-smaller-2">
-				  &nbsp;
-				</li>
-			</ul>
+  {% if not hidden and not profile.is_org %}
+    <div class="container">
+	  <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+	    <li class="nav-item">
+		  <a class="nav-link nav-line active" id="activity-tab" data-toggle="tab" href="#activity" role="tab" aria-controls="activities" aria-selected="true">{% trans "Activity"%}</a>
+		</li>
+		{% if profile.show_job_status %}
+		  <li class="nav-item">
+		    <a class="nav-link nav-line" id="resume-tab" data-toggle="tab" href="#resume" role="tab" aria-controls="resume" aria-selected="false">{% trans "Resume" %}</a>
+		  </li>
+		{% endif %}
+		<li class="nav-item">
+		  <a class="nav-link nav-line" id="ratings-tab" data-toggle="tab" href="#ratings" role="tab" aria-controls="ratings" aria-selected="false">{% trans "Ratings" %}</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link nav-line" id="portfolio-tab" data-toggle="tab" href="#portfolio" role="tab" aria-controls="portfolio" aria-selected="false">{% trans "Portfolio" %}</a>
+		</li>
+		{% if not hidden and not profile.is_org %}
+		  <li class="nav-item">
+		    <a class="nav-link nav-line" id="kudos-tab" data-toggle="tab" href="#kudos" role="tab" aria-controls="kudos" aria-selected="false">{% trans "Kudos" %}</a>
+		  </li>
+		{% endif %}
+		<li class="align-self-center ml-auto font-smaller-2">
+		  &nbsp;
+		</li>
+	  </ul>
+	</div>
+	<div class="tab-content profile-tab mt-4" id="myTabContent">
+	  <div class="tab-pane fade show active" id="activity" role="tabpanel" aria-labelledby="activity-tab">
+	    <div class="container position-relative">
+		  <div class="row mb-2 bg-white rounded p-3">
+		    <div class="col-12">
+			  {% include 'profiles/tab_activity.html' %}
+			</div>
+		  </div>
 		</div>
-		<div class="tab-content profile-tab mt-4" id="myTabContent">
-			<div class="tab-pane fade show active" id="activity" role="tabpanel" aria-labelledby="activity-tab">
-				<div class="container position-relative">
-					<div class="row mb-2 bg-white rounded p-3">
-						<div class="col-12">
-							{% include 'profiles/tab_activity.html' %}
-						</div>
-					</div>
-				</div>
+	  </div>
+	  <div class="tab-pane fade show" id="resume" role="tabpanel" aria-labelledby="resume-tab">
+	    <div class="container position-relative">
+		  <div class="row mb-2 bg-white rounded p-3">
+			<div class="col-12">
+		      {% include 'profiles/tab_resume.html' %}
 			</div>
-			<div class="tab-pane fade show" id="resume" role="tabpanel" aria-labelledby="resume-tab">
-				<div class="container position-relative">
-					<div class="row mb-2 bg-white rounded p-3">
-						<div class="col-12">
-							{% include 'profiles/tab_resume.html' %}
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="tab-pane fade show" id="ratings" role="tabpanel" aria-labelledby="ratings-tab">
-				<div class="container position-relative">
-					<div class="row mb-2 bg-white rounded p-3">
-						<div class="col-12">
-							{% include 'profiles/tab_ratings.html' %}
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="tab-pane fade show" id="portfolio" role="tabpanel" aria-labelledby="portfolio-tab">
-				<div class="container position-relative">
-					<div class="row mb-2 bg-white rounded p-3">
-						<div class="col-12">
-							{% include 'profiles/tab_portfolio.html' %}
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="tab-pane fade show" id="kudos" role="tabpanel" aria-labelledby="kudos-tab">
-				<div class="container position-relative">
-					<div class="row mb-2 bg-white rounded p-3">
-						<div class="col-12">
-							{% include "shared/profile_kudos.html" %}
-						</div>
-					</div>
-				</div>
-			</div>
+		  </div>
 		</div>
-      {% endif %}
+	  </div>
+	  <div class="tab-pane fade show" id="ratings" role="tabpanel" aria-labelledby="ratings-tab">
+	    <div class="container position-relative">
+		  <div class="row mb-2 bg-white rounded p-3">
+			<div class="col-12">
+		      {% include 'profiles/tab_ratings.html' %}
+			</div>
+		  </div>
+		</div>
+	  </div>
+	  <div class="tab-pane fade show" id="portfolio" role="tabpanel" aria-labelledby="portfolio-tab">
+		<div class="container position-relative">
+	      <div class="row mb-2 bg-white rounded p-3">
+			<div class="col-12">
+		      {% include 'profiles/tab_portfolio.html' %}
+			</div>
+		  </div>
+		</div>
+	  </div>
+	  <div class="tab-pane fade show" id="kudos" role="tabpanel" aria-labelledby="kudos-tab">
+		<div class="container position-relative">
+	      <div class="row mb-2 bg-white rounded p-3">
+			<div class="col-12">
+		      {% include "shared/profile_kudos.html" %}
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+  {% endif %}

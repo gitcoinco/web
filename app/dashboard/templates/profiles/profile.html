@@ -22,22 +22,22 @@
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'home/nav.html' %}
     <div class="container-fluid header profile-header dash" style="{% if profile.profile_wallpaper %} background-image: url( {{ profile.profile_wallpaper }} ) {% endif %}">
-        {% csrf_token %}
-        {% if is_editable %}
+      {% csrf_token %}
+      {% if is_editable %}
         <div class="position-relative profile-banner">
-			<div class="container mt-5">
-				<div class="row">
-					<div class="col-12">
-						<span class="profile-banner-cta">
-							<i class="fa fa-camera"></i>
-							Update Header Image
-						</span>
-					</div>
-				</div>
+		  <div class="container mt-5">
+		    <div class="row">
+			  <div class="col-12">
+				<span class="profile-banner-cta">
+			      <i class="fa fa-camera"></i>
+				  Update Header Image
+				</span>
+			  </div>
 			</div>
+		  </div>
         </div>
-          {% endif %}
-        {% if not hidden and is_staff %}
+      {% endif %}
+      {% if not hidden and is_staff %}
         <div class="alpha-warning font-caption mb-0">
           <span class="font-weight-bold">Staff only</span>
           <a style="color:white;" href="{{profile.admin_url}}">{% trans "Profile Admin" %}</a>
@@ -45,44 +45,36 @@
       {% endif %}
     </div>
     <div class="container-fluid bg-light">
-        <div class="container profile-card mt-md-n5 mh-150">
-          <div class="row">
-            <div class="col-12 col-lg-6 profile-header__main-infos">
-              {% if not hidden %}
-                {% include 'profiles/header_avatar.html' %}
-                {% include 'profiles/header_details.html' %}
+      <div class="container profile-card mt-md-n5 mh-150">
+        <div class="row">
+          <div class="col-12 col-lg-6 profile-header__main-infos">
+            {% if not hidden %}
+              {% include 'profiles/header_avatar.html' %}
+              {% include 'profiles/header_details.html' %}
 
             {% if not hidden %}
               {% if profile.is_org %}
                 {% include 'profiles/organization.html' %}
               {% else %}
               {% if profile.persona_is_hunter %}
-                  {% include 'profiles/scorecard_hunter.html' %}
-                {% elif profile.persona_is_funder %}
+                {% include 'profiles/scorecard_hunter.html' %}
+              {% elif profile.persona_is_funder %}
                   {% include 'profiles/scorecard_funder.html' %}
-                {% endif %}
-                  </div>
-              </div>
               {% endif %}
-            {% endif %}
           </div>
         </div>
-      {% endif%}
-      
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+    {% endif%}
+    
       {% include 'profiles/tabs.html' %}
-
     </div>
     <div class="container">
       {% if hidden %}
         {% include 'profiles/hidden.html' %}
-      {% else %}
-	  
-      {% if tabs %}
-        {% include 'profiles/tab_workedwith.html' %}
-      {% else %}
-        {% include 'profiles/none.html' %}
       {% endif %}
-
     </div>
 
     {% include 'profiles/tabs_close.html' %}

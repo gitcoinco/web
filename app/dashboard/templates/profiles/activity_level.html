@@ -1,26 +1,26 @@
 {% load i18n static avatar_tags %}
 <div class="col-12 col-lg-6">
-	<div class="profile-header__stats profile-header__stats--contributor card mb-4">
-		<div class="card-header font-subheader">
-			{% if level %}
-			<b>#{{ level }}</b>
-			{% else %}
-			<b>&nbsp;</b>
-			{% endif %}
-			{% trans "Activity Level" %}
-		</div>
-		<div class="card-body">
-			<ul>
-			<li>{% trans "Last seen" %} <b>2 days ago</b></li>
-			<li><b>100 days</b> {% trans "longest streak" %}</li>
-			<li><b>10</b> {% trans "repeat relationships" %}</li>
-			<li class="static-stars my-3">
-			  {% for i in ratings %}
-				<i class="fa fa-star {% if avg_rating.overall != 0 and i <= avg_rating.overall %}fas{% endif %}"></i>
-			  {% endfor %}
-			  <small>({{ avg_rating.total_rating }} {% trans "rating" %}{{avg_rating.total_rating | pluralize}})</small>
-			</li>
-			</ul>
-		</div>
+  <div class="profile-header__stats profile-header__stats--contributor card mb-4">
+    <div class="card-header font-subheader">
+	  {% if level %}
+	    <b>#{{ level }}</b>
+	  {% else %}
+        <b>&nbsp;</b>
+	  {% endif %}
+	  {% trans "Activity Level" %}
 	</div>
+	<div class="card-body">
+	  <ul>
+	    <li>{% trans "Last seen" %} <b>2 days ago</b></li>
+	    <li><b>100 days</b> {% trans "longest streak" %}</li>
+	    <li><b>10</b> {% trans "repeat relationships" %}</li>
+	    <li class="static-stars my-3">
+	      {% for rating in ratings %}
+	        <i class="fa fa-star {% if avg_rating.overall != 0 and rating <= avg_rating.overall %}fas{% endif %}"></i>
+	      {% endfor %}
+		  <small>({{ avg_rating.total_rating }} {% trans "rating" %}{{avg_rating.total_rating | pluralize}})</small>
+		</li>
+	  </ul>
+	</div>
+  </div>
 </div>
