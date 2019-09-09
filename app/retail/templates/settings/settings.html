@@ -73,6 +73,7 @@
       <div class="form_container">
         <ul class="nav nav-tabs">
             {% for nav in navs %}
+            <!-- {{nav.href}} {{active}} -->
               <li class="nav-item">
                 <a class="nav-link {% if nav.href == active %}active{%endif%}" href="{{nav.href}}">{{nav.body}}</a>
               </li>

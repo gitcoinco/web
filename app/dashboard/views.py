@@ -73,7 +73,7 @@ from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_fil
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
     FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer,
-    RefundFeeRequest, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
+    RefundFeeRequest, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -892,6 +892,19 @@ def users_fetch(request):
     params['has_next'] = all_pages.page(page).has_next()
     params['count'] = all_pages.count
     params['num_pages'] = all_pages.num_pages
+
+    # log this search, it might be useful for matching purposes down the line
+    try:
+        SearchHistory.objects.update_or_create(
+            search_type='users',
+            user=request.user,
+            data=request.GET,
+            ip_address=get_ip(request)
+        )
+    except Exception as e:
+        logger.debug(e)
+        pass
+
     return JsonResponse(params, status=200, safe=False)
 
 
@@ -1795,10 +1808,11 @@ def profile_details(request, handle):
 
     response = {
         'profile': ProfileSerializer(profile).data,
+        'success_rate': profile.success_rate,
         'recent_activity': {
             'activity_metadata': activity.metadata,
             'activity_type': activity.activity_type,
-            'created': activity.created,
+            'created': activity.created
         },
         'statistics': {
             'work_completed': count_work_completed,
@@ -1996,16 +2010,33 @@ def profile(request, handle):
         if page:
             page = int(page)
             activity_type = request.GET.get('a', '')
-            all_activities = profile.get_various_activities()
-            paginator = Paginator(profile_filter_activities(all_activities, activity_type, activity_tabs), 10)
+            if activity_type == 'currently_working':
+                currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
+                    .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+                currently_working_bounties_count = currently_working_bounties.count()
+                if currently_working_bounties_count > 0:
+                    paginator = Paginator(currently_working_bounties, 10)
+                
+                if page > paginator.num_pages:
+                    return HttpResponse(status=204)
 
-            if page > paginator.num_pages:
-                return HttpResponse(status=204)
+                context = {}
+                context['bounties'] = [bounty for bounty in paginator.get_page(page)]   
 
-            context = {}
-            context['activities'] = [ele.view_props for ele in paginator.get_page(page)]
+                return TemplateResponse(request, 'profiles/profile_bounties.html', context, status=status)
+                
+            else:
 
-            return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
+                all_activities = profile.get_various_activities()
+                paginator = Paginator(profile_filter_activities(all_activities, activity_type, activity_tabs), 10)
+
+                if page > paginator.num_pages:
+                    return HttpResponse(status=204)
+
+                context = {}
+                context['activities'] = [ele.view_props for ele in paginator.get_page(page)]
+
+                return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
 
         context = profile.to_dict(tips=False)
@@ -2865,6 +2896,20 @@ def hackathon(request, hackathon=''):
         params['sponsors'] = eth_hack
 
     return TemplateResponse(request, 'dashboard/index.html', params)
+
+
+def hackathon_onboard(request, hackathon=''):
+
+    try:
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+    except HackathonEvent.DoesNotExist:
+        hackathon_event = HackathonEvent.objects.last()
+    params = {
+        'active': 'hackathon_onboard',
+        'title': 'Hackathon Onboard',
+        'hackathon': hackathon_event,
+    }
+    return TemplateResponse(request, 'dashboard/hackathon_onboard.html', params)
 
 
 def get_hackathons(request):

@@ -157,6 +157,7 @@ urlpatterns = [
 
     # Hackathons / special events
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
+    path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
     path('hackathon/', dashboard.views.hackathon, name='hackathon_idx'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
 
@@ -479,6 +480,11 @@ urlpatterns = [
         r'^_administration/email/funder_payout_reminder$',
         retail.emails.funder_payout_reminder,
         name='funder_payout_reminder'
+    ),
+    re_path(
+        r'^_administration/email/no_applicant_reminder$',
+        retail.emails.no_applicant_reminder,
+        name='no_applicant_reminder'
     ),
 
     # settings

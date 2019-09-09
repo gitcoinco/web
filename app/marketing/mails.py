@@ -34,8 +34,8 @@ from retail.emails import (
     render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent,
     render_gdpr_update, render_grant_cancellation_email, render_kudos_email, render_match_email, render_new_bounty,
     render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email,
-    render_new_supporter_email, render_new_work_submission, render_nth_day_email_campaign, render_quarterly_stats,
-    render_reserved_issue, render_share_bounty, render_start_work_applicant_about_to_expire,
+    render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder, render_nth_day_email_campaign,
+    render_quarterly_stats, render_reserved_issue, render_share_bounty, render_start_work_applicant_about_to_expire,
     render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
     render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
     render_support_cancellation_email, render_thank_you_for_supporting_email, render_tip_email,
@@ -517,6 +517,29 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
                 text,
                 html,
                 from_name="Kevin Owocki (Gitcoin.co)",
+                categories=['marketing', func_name()],
+            )
+        except Exception as e:
+            logger.warning(e)
+            return False
+        return True
+    else:
+        return html
+
+
+def no_applicant_reminder(to_email, bounty):
+    from_email = settings.SERVER_EMAIL
+    subject = "Get more applicants on your bounty"
+    html, text = render_no_applicant_reminder(to_email=to_email, bounty=bounty)
+    if (live):
+        try:
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                from_name="No Reply from Gitcoin.co",
                 categories=['marketing', func_name()],
             )
         except Exception as e:
