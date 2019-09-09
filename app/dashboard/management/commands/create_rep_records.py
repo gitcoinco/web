@@ -30,6 +30,7 @@ class Command(BaseCommand):
             if instance.point_value() and instance.profile:
                 print(instance.pk)
                 REPEntry.objects.create(
+                    created_on=instance.created_on,
                     why=instance.activity_type,
                     profile=instance.profile,
                     source=instance,
@@ -40,6 +41,7 @@ class Command(BaseCommand):
             if instance.point_value() and instance.profile:
                 print(instance.pk)
                 REPEntry.objects.create(
+                    created_on=instance.created_on,
                     why=instance.action,
                     profile=instance.profile,
                     source=instance,

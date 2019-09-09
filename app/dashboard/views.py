@@ -73,7 +73,7 @@ from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_fil
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
     FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer, ProfileView,
-    RefundFeeRequest, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
+    RefundFeeRequest, REPEntry, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -1862,6 +1862,32 @@ def profile_activity(request, handle):
         response[int(date.timestamp())] = len([activity_date for activity_date in activities if (activity_date < prev_date and activity_date > date)])
         prev_date = date
     return JsonResponse(response)
+
+
+def profile_rep(request, handle):
+    """Display profile activity details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    response = """date,close"""
+    activities = list(profile.repentries.order_by('created_on').values_list('created_on', 'balance'))
+    uniqueness = []
+    for activity in activities:
+        val = activity[1]
+        datestr = activity[0].strftime('%d-%b-%y')
+        if datestr not in uniqueness:
+            response += f"\n{datestr},{val}"
+            uniqueness.append(datestr)
+
+    mimetype = 'text/x-csv'
+    return HttpResponse(response)
 
 
 @require_POST
