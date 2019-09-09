@@ -1,19 +1,4 @@
 {% load i18n static %}
-
-  {% if is_staff %}
-    <div class="container px-md-0 tab2">
-      <div class="row admin_only">
-        TODO: Insert REP Graph here.
-      </div>
-    </div>
-  {% endif %}
-
-    <div class="container px-md-0 tab2">
-      <div class="row">
-        {% include "profiles/heatmap.html" %}
-      </div>
-    </div>
-
     {% if is_my_profile %}
 	{% include 'profiles/status_box.html' %}
     {% endif %}
