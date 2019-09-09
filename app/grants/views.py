@@ -540,12 +540,12 @@ def grant_fund(request, grant_id, grant_slug):
     fund_reward = None
     round_number = 3
     can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
-    phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, grant=grant, round_number=round_number)
-    is_phantom_funding_this_grant = can_phantom_fund and request.user.is_authenticated and phantom_funds.exists()
+    phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, grant=grant, round_number=round_number) if request.user.is_authenticated else PhantomFunding.objects.none()
+    is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.exists()
     show_tweet_modal = False
     if can_phantom_fund:
         active_tab = 'phantom'
-    if can_phantom_fund and request.GET.get('toggle_phantom_fund'):
+    if can_phantom_fund and request.POST.get('toggle_phantom_fund'):
         if is_phantom_funding_this_grant:
             msg = "You are no longer signaling for this grant."
             phantom_funds.delete()

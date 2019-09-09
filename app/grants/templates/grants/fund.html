@@ -84,12 +84,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <img src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
                 <br>
                 <br>
-                <a href="?toggle_phantom_fund=1" class="button button--primary button--full">
+                <form method=POST>
+                  {%csrf_token%}
+                  <input type=hidden name=toggle_phantom_fund value=1 />
+                  <input class="btn btn-gc-blue" type=submit name=submit value="
                 {% if is_phantom_funding_this_grant %}
                   {% trans "STOP Signaling for Grant" %}
                 {% else %}
                   {% trans "Signal for Grant" %}
                 {% endif %}
+                " />
+                </form> 
                 </a>
               </div>
             </div>
