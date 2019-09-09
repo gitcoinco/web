@@ -40,11 +40,14 @@ from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 import pytz
 import requests
 from app.utils import get_upload_filename
 from dashboard.tokens import addr_to_token
+from dashboard.points import point_values
 from economy.models import ConversionRate, SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -663,6 +666,12 @@ class Bounty(SuperModel):
                 return [keyword.strip() for keyword in keywords.split(",")]
             except AttributeError:
                 return []
+
+    @property
+    def fulfillers_handles(self):
+        bounty_fulfillers = self.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True)
+        tip_fulfillers = self.tips.values_list('username', flat=True)
+        return list(bounty_fulfillers) + list(tip_fulfillers)
 
     @property
     def now(self):
@@ -1797,7 +1806,6 @@ class Activity(SuperModel):
         return f"{self.profile.handle} type: {self.activity_type} created: {naturalday(self.created)} " \
                f"needs review: {self.needs_review}"
 
-
     @property
     def humanized_activity_type(self):
         """Turn snake_case into Snake Case.
@@ -1810,6 +1818,13 @@ class Activity(SuperModel):
                 return activity_type[1]
         return ' '.join([x.capitalize() for x in self.activity_type.split('_')])
 
+    def point_value(self):
+        """
+
+        Returns:
+            int the Point value of this activity
+        """
+        return point_values.get(self.activity_type, 0)
 
     def i18n_name(self):
         return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
@@ -1929,6 +1944,7 @@ class Activity(SuperModel):
 @receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
 def post_add_activity(sender, instance, created, **kwargs):
     if created:
+        # make sure duplicate activity feed items are removed
         dupes = Activity.objects.exclude(pk=instance.pk)
         dupes = dupes.filter(created_on__gte=(instance.created_on - timezone.timedelta(minutes=5)))
         dupes = dupes.filter(created_on__lte=(instance.created_on + timezone.timedelta(minutes=5)))
@@ -1944,6 +1960,14 @@ def post_add_activity(sender, instance, created, **kwargs):
         for dupe in dupes:
             dupe.delete()
 
+        # add REP
+        if instance.point_value():
+            REPEntry.objects.create(
+                why=instance.activity_type,
+                profile=instance.profile,
+                source=instance,
+                value=instance.point_value(),
+                )
 
 
 class LabsResearch(SuperModel):
@@ -2105,6 +2129,12 @@ class Profile(SuperModel):
         help_text=_('override profile avatar'),
     )
     dominant_persona = models.CharField(max_length=25, choices=PERSONAS, blank=True)
+    longest_streak = models.IntegerField(default=0)
+    activity_level = models.CharField(max_length=10, blank=True, help_text=_('the users activity level (high, low, new)'))
+    num_repeated_relationships = models.IntegerField(default=0)
+    avg_hourly_rate = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    success_rate = models.IntegerField(default=0)
+    rep = models.IntegerField(default=0)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2399,6 +2429,136 @@ class Profile(SuperModel):
 
         """
         return self.user.is_staff if self.user else False
+
+    def calc_activity_level(self):
+        """Determines the activity level of a user
+
+        Returns:
+            str: High, Low, Medium, or New
+
+        """
+        high_threshold = 15
+        med_threshold = 15
+        new_threshold_days = 7
+
+        if self.created_on > (timezone.now() - timezone.timedelta(days=new_threshold_days)):
+            return "New"
+
+        visits = self.actions.filter(action='Visit')
+        visits_last_month = visits.filter(created_on__gt=timezone.now() - timezone.timedelta(days=30)).count()
+
+        if visits_last_month > high_threshold:
+            return "High"
+        if visits_last_month > med_threshold:
+            return "Medium"
+        if visits_last_month > med_threshold:
+            return "Low"
+
+
+    def calc_longest_streak(self):
+        """ Determines the longest streak, in workdays, of this user
+
+        Returns:
+            int: a number of weekdays
+
+        """
+
+        # setup
+        action_dates = self.actions.all().values_list('created_on', flat=True)
+        start_date = timezone.datetime(self.created_on.year, self.created_on.month, self.created_on.day)
+        end_date = timezone.datetime(timezone.now().year, timezone.now().month, timezone.now().day)
+
+        # loop setup
+        iterdate = start_date
+        max_streak = 0
+        this_streak = 0
+        while iterdate < end_date:
+            # housekeeping
+            last_iterdate = start_date
+            iterdate += timezone.timedelta(days=1)
+
+            is_weekday = iterdate.weekday() < 5
+            if not is_weekday:
+                continue
+
+            has_action_during_window = len([ele for ele in action_dates if ele > last_iterdate.replace(tzinfo=pytz.utc) and ele < iterdate.replace(tzinfo=pytz.utc)])
+            if has_action_during_window:
+                this_streak += 1
+                if this_streak > max_streak:
+                    max_streak = this_streak
+            else:
+                this_streak = 0
+
+        return max_streak
+
+    def calc_num_repeated_relationships(self):
+        """ the number of repeat relationships that this user has created
+
+        Returns:
+            int: a number of repeat relationships
+
+        """
+        bounties = self.bounties
+        completed_bounties = bounties.filter(idx_status__in=['done'])
+        relationships = []
+        for bounty in completed_bounties:
+            fulfiller_handles = bounty.fulfillers_handles
+            if bounty.is_funder(self.handle):
+                for handle in fulfiller_handles:
+                    relationships.append(handle)
+            if self.handle in fulfiller_handles:
+                relationships.append(bounty.bounty_owner_github_username)
+
+        rel_count = { key: 0 for key in relationships }
+        for rel in relationships:
+            rel_count[rel] += 1
+
+        return len([key for key, val in rel_count.items() if val > 1])
+
+
+    def calc_avg_hourly_rate(self):
+        """
+
+        Returns:
+            float: the average hourly rate for this user in dollars
+
+        """
+        rates = []
+        for bounty in self.bounties:
+            hr = bounty.hourly_rate
+            if hr:
+                rates.append(hr)
+        if len(rates) == 0:
+            return 0
+        return sum(rates)/len(rates)
+
+    def calc_success_rate(self):
+        """
+
+        Returns:
+            int; the success percentage for this users bounties as a positive integer.
+
+        """
+        bounties = self.bounties
+        completed_bounties = bounties.filter(idx_status__in=['done'])
+        eligible_bounties = bounties.filter(idx_status__in=['done', 'expired', 'cancelled'])
+
+        if eligible_bounties.count() == 0:
+            return -1
+
+        return int(completed_bounties.count() * 100 / eligible_bounties.count())
+
+    def calc_rep_number(self):
+        """
+
+        Returns:
+            the REP points that the user has.
+
+        """
+        rep = self.repentries.order_by('-created_on')
+        if rep.exists():
+            return rep.first().balance
+        return 0
 
     @property
     def get_quarterly_stats(self):
@@ -3094,6 +3254,15 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.lower()
     instance.actions_count = instance.get_num_actions
 
+    instance.calculate_and_save_persona()
+
+    instance.activity_level = instance.calc_activity_level()
+    instance.longest_streak = instance.calc_longest_streak()
+    instance.num_repeated_relationships = instance.calc_num_repeated_relationships()
+    instance.avg_hourly_rate = instance.calc_avg_hourly_rate()
+    instance.success_rate = instance.calc_success_rate()
+    instance.rep = instance.calc_rep_number()
+
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
@@ -3186,6 +3355,27 @@ class UserAction(SuperModel):
 
     def __str__(self):
         return f"{self.action} by {self.profile} at {self.created_on}"
+
+    def point_value(self):
+        """
+
+        Returns:
+            int the Point value of this user action
+        """
+        return point_values.get(self.action, 0)
+
+
+@receiver(post_save, sender=UserAction, dispatch_uid="post_add_ua")
+def post_add_ua(sender, instance, created, **kwargs):
+    if created:
+        # add REP
+        if instance.point_value():
+            REPEntry.objects.create(
+                why=instance.action,
+                profile=instance.profile,
+                source=instance,
+                value=instance.point_value(),
+                )
 
 
 class CoinRedemption(SuperModel):
@@ -3500,3 +3690,24 @@ def post_add_profileview(sender, instance, created, **kwargs):
         dupes = dupes.filter(viewer=instance.viewer)
         for dupe in dupes:
             dupe.delete()
+
+class REPEntry(SuperModel):
+    """Records REP ."""
+
+    why = models.CharField(max_length=50)
+    profile = models.ForeignKey('dashboard.Profile', related_name='repentries', on_delete=models.CASCADE, db_index=True)
+    source_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    source_id = models.PositiveIntegerField()
+    source = GenericForeignKey('source_type', 'source_id')
+    value = models.PositiveIntegerField()
+    balance = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.profile.handle} + {self.value} => {self.balance} on {self.created_on}"
+
+
+@receiver(pre_save, sender=REPEntry, dispatch_uid="post_add_rep")
+def psave_rep(sender, instance, **kwargs):
+    instance.balance = sum(REPEntry.objects.filter(profile=instance.profile).values_list('value', flat=True))
+
+

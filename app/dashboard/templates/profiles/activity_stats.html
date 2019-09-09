@@ -1,30 +1,36 @@
+{% load humanize %}
   <li>
-  Last Seen: <b>x days ago</b>
+  Last Seen: <b>{{profile.last_visit|naturaltime}}</b>
+  </li>
+  <li>
+  Joined: <b>{{profile.created_on|naturaltime}}</b>
   </li>
   {% if profile.persona_is_hunter %}
     <li>
-    Top Skills: <b>x, y, z</b>
+    Top Skills: <b>{{profile.keywords|join:", "}}</b>
+    </li>
+  {% endif %}
+  {% if profile.success_rate != -1 %}
+    <li>
+    Success Rate: <b>{{profile.success_rate}}</b>%
     </li>
   {% endif %}
   <li>
-  Success Rate: <b>x</b>%
-  </li>
-  <li>
-  Repeat {% if profile.persona_is_funder %}Workers{%else%}Funders{%endif%}: <b>x</b>
+  Repeat {% if profile.persona_is_funder %}Workers{%else%}Funders{%endif%}: <b>{{profile.num_repeated_relationships}}</b>
   </li>
   {% if is_staff %}
     {% if profile.persona_is_hunter %}
       <li class='admin_only'>
-        Longest activity streak: <b>x days</b>
+        Longest activity streak: <b>{{profile.longest_streak}} weekdays</b>
       </li>
       {% endif %}
     <li class='admin_only'>
-    Activity Level: <b>x</b>
+    Activity Level: <b>{{profile.activity_level}}</b>
     </li>
     <li class='admin_only'>
-    REP: <b>x</b>
+    REP: <b>{{profile.rep}}</b>
     </li>
     <li class='admin_only'>
-    Avg Hourly Rate <b>$x</b>
+    Avg Hourly Rate <b>${{profile.avg_hourly_rate}}</b>
     </li>
   {% endif %}

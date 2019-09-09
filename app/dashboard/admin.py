@@ -26,7 +26,7 @@ from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
     CoinRedemptionRequest, Coupon, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile,
     ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Tip, TokenApproval, Tool, ToolVote, UserAction,
-    UserVerificationModel,
+    UserVerificationModel, REPEntry
 )
 
 
@@ -40,6 +40,12 @@ class BountyFulfillmentAdmin(admin.ModelAdmin):
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+
+class REPEntryAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['profile']
 
 
 class ToolAdmin(admin.ModelAdmin):
@@ -311,6 +317,7 @@ class CouponAdmin(admin.ModelAdmin):
 
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
+admin.site.register(REPEntry, REPEntryAdmin)
 admin.site.register(BlockedUser, GeneralAdmin)
 admin.site.register(ProfileView, GeneralAdmin)
 admin.site.register(UserAction, UserActionAdmin)

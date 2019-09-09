@@ -8,6 +8,11 @@
   </div>
   <div id="cal-heatmap"></div>
   <script type="text/javascript">
+    var oneYearAgo = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth() - 12, 
+        new Date().getDate()
+    );    
     var cal = new CalHeatMap();
     cal.init({
       domain: "month",
@@ -16,8 +21,8 @@
       legend: [0,1,2,3,4,5],
       tooltip: true,
       cellSize: 14,
-      start: new Date('2018-09-30 00:00:00'),
-      end: new Date('2019-09-30 00:00:00'),
+      start: oneYearAgo,
+      end: new Date(),
       data: "/api/v0.1/profile/{{profile.handle}}/activity.json"
     });
   </script>
