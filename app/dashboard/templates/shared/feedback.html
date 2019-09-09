@@ -14,26 +14,30 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n staticfiles %}
+{% load i18n staticfiles avatar_tags%}
 <div class="mt-4 d-flex activity row">
-	<div class="col-12 col-md-1">
-		<div class="activity-avatar">
-			<img height="72" width="72" class="avatar card-rating__avatar rounded-circle" src="/dynamic/avatar/{{feedback.sender_profile}}"/>
-			<img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" src="/dynamic/avatar/{{feedback.sender_profile}}" />
-		</div>
+  <div class="col-12 col-md-1">
+    <div class="activity-avatar">
+	  <img height="72" width="72" class="avatar card-rating__avatar rounded-circle" src="{% avatar_url feedback.sender_profile %}"/>
+	  <img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" src="{% avatar_url feedback.sender_profile %}" />
 	</div>
-	<div class="col-12 col-md-10">
-		<div class="d-flex flex-column mt-2">
-			<div class="sender-profile d-flex flex-column">
-				<span class="font-weight-bold">@{{feedback.sender_profile}}</span>
-				<small>for {{feedback.bounty.org_name}}: <a class="align-self-center" href="{{ feedback.bounty.url }}">{{feedback.bounty.title}}</a></small>
-			</div>
-			<div class="static-stars">
-				{% for i in ratings %}
-				<i class="fa fa-star {% if feedback.rating != 0 and i <= feedback.rating %}fas{% endif %}"></i>
-				{% endfor %}
-			</div>
-		</div>
+  </div>
+  <div class="col-12 col-md-10">
+    <div class="d-flex flex-column mt-2">
+	  <div class="sender-profile d-flex flex-column">
+		<span class="font-weight-bold">@{{feedback.sender_profile}}</span>
+		<small>for {{feedback.bounty.org_name}}:
+		  <a class="align-self-center" href="{{ feedback.bounty.url }}">{{feedback.bounty.title}}</a>
+		</small>
+	  </div>
+	  <div class="static-stars">
+	    {% for rating in ratings %}
+		  <i class="fa fa-star {% if feedback.rating != 0 and rating <= feedback.rating %}fas{% endif %}"></i>
+		{% endfor %}
+	  </div>
 	</div>
+  </div>
 </div>
-<small class="review-comment">{{ feedback.comment }}</small>
+{% if feedback.comment %}
+  <small class="review-comment">{{ feedback.comment }}</small>
+{% endif %}
