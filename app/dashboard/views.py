@@ -2006,14 +2006,8 @@ def get_profile_tab(request, profile, tab, prev_context):
 
 
         all_activities = context.get('activities')
-        context['avg_rating'] = profile.get_average_star_rating
-        context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-        context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
-        context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
-        context['ratings'] = range(0,5)
-        context['profile'] = profile
-        # context['show_resume_tab'] = profile.show_job_status if context['is_my_profile']
-        context['show_resume_tab'] = True
+        if all_activities.count() == 0:
+            context['none'] = True
         tabs = []
 
         counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
@@ -2186,22 +2180,8 @@ def profile(request, handle, tab=None):
     context['suppress_sumo'] = True
     context['feedbacks_sent'] = profile.feedbacks_sent.all()
     context['feedbacks_got'] = profile.feedbacks_got.all()
-    context['unrated_funded_bounties'] = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
-        .filter(
-            bounty_owner_github_username__iexact=profile.handle,
-            network=network,
-        ).exclude(
-            feedbacks__feedbackType='approver',
-            feedbacks__sender_profile=profile,
-        ).distinct('pk')
-		
-    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
-            .filter(interested__status='okay') \
-            .filter(interested__pending=False).filter(idx_status='done') \
-            .exclude(
-                feedbacks__feedbackType='worker',
-                feedbacks__sender_profile=profile
-            ).distinct('pk')
+    context['tab'] = tab
+    context['show_activity'] = request.GET.get('p', False) != False
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
