@@ -70,8 +70,6 @@
       {% endif%}
       
       {% include 'profiles/tabs.html' %}
-      {% include 'profiles/tab_details.html' %}
-      {% include 'profiles/tab_resume.html' %}
 
     </div>
     <div class="container">
@@ -80,7 +78,6 @@
       {% else %}
 	  
       {% if tabs %}
-        {% include 'profiles/tab_activity.html' %}
         {% include 'profiles/tab_workedwith.html' %}
       {% else %}
         {% include 'profiles/none.html' %}
