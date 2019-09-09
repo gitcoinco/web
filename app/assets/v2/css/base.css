@@ -1596,7 +1596,8 @@ div.busyOverlay {
 }
 
 .admin_only{
-  background-color: yellow !important;
+  background-color: #f2f5ea !important;
+  border-radius: 3px;
 }
 .only_visible_to_me_color{
   background-color: #a3d3f7;
