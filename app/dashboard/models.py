@@ -27,6 +27,8 @@ from urllib.parse import urlsplit
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -40,14 +42,12 @@ from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 
 import pytz
 import requests
 from app.utils import get_upload_filename
-from dashboard.tokens import addr_to_token
 from dashboard.points import point_values
+from dashboard.tokens import addr_to_token
 from economy.models import ConversionRate, SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -3709,5 +3709,3 @@ class REPEntry(SuperModel):
 @receiver(pre_save, sender=REPEntry, dispatch_uid="post_add_rep")
 def psave_rep(sender, instance, **kwargs):
     instance.balance = sum(REPEntry.objects.filter(profile=instance.profile).values_list('value', flat=True))
-
-

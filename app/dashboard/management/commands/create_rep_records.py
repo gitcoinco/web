@@ -18,7 +18,7 @@
 
 from django.core.management.base import BaseCommand
 
-from dashboard.models import Activity, UserAction, REPEntry
+from dashboard.models import Activity, REPEntry, UserAction
 
 
 class Command(BaseCommand):
@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for instance in Activity.objects.all().order_by('created_on'):
-            if instance.point_value():
+            if instance.point_value() and instance.profile:
                 print(instance.pk)
                 REPEntry.objects.create(
                     why=instance.activity_type,
@@ -37,7 +37,7 @@ class Command(BaseCommand):
                     )
 
         for instance in UserAction.objects.all().order_by('created_on'):
-            if instance.point_value():
+            if instance.point_value() and instance.profile:
                 print(instance.pk)
                 REPEntry.objects.create(
                     why=instance.action,
