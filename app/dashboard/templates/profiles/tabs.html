@@ -8,9 +8,9 @@
                 Activity
               </a>
             </li>
-            {% if active_bounties_count %}
-            <li class="nav-item">
-              <a class="nav-link {% if tab == 'resume' %}active{%endif%}" href="{{profile.url}}/active">
+            {% if active_bounties_count and is_staff %}
+            <li class="nav-item admin_only">
+              <a class="nav-link {% if tab == 'active' %}active{%endif%}" href="{{profile.url}}/active">
                 Active Issues ({{active_bounties_count}})
               </a>
             </li>

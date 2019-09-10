@@ -1993,8 +1993,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     if profile.persona_is_funder:
         active_bounties = Bounty.objects.current().filter(bounty_owner_profile=profile).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
     elif profile.persona_is_hunter:
-        active_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
-            .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+        active_bounties = Bounty.objects.filter(pk__in=profile.active_bounties.values_list('bounty', flat=True))
     else:
         active_bounties = Bounty.objects.none()
     context['active_bounties_count'] = active_bounties.count()
@@ -2159,6 +2158,8 @@ def profile(request, handle, tab=None):
     # setup
     status = 200
     tab = tab if tab else 'activity'
+    # staff only tabs
+    tab = 'activity' if tab in ['active', 'ratings', 'portfolio', 'viewers'] and not request.user.is_staff else tab
     owned_kudos = None
     sent_kudos = None
     handle = handle.replace("@", "")

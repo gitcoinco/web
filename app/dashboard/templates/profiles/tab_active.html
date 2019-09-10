@@ -1,9 +1,23 @@
-{% load i18n static %}
+{% load i18n static avatar_tags humanize %}
 
-    <div class="container tab5" >
-      {% for active in active_bounties %}
-      <div>
-        {{active.pk}} -- {{active.url}}
+<div class="tab-projects d-flex flex-column">
+  {% for bounty in active_bounties %}
+    <div class="tab-projects__item d-flex mb-4">
+      <img class="rounded mr-3" src="{% avatar_url bounty.org_name %}" alt="">
+      <div class="tab-projects__item-details" style="width: 70%">
+        <div class="d-flex">
+          <h5 class="font-weight-semibold">{{bounty.title}}</h5>&nbsp;
+        </div>
+        <small class="align-self-center">for {{bounty.org_name}}</small>
+        <div class="tag-list">
+          {% for keyword in bounty.keywords_list %}
+            <small class="tag-list__item">{{keyword}}</small>
+          {% endfor %}
+        </div>
       </div>
-      {% endfor %}
+      <div style="float:right;">
+        <a class="btn btn-gc-blue btn-sm " href="{{bounty.url}}">View Bounty &gt;</a>
+        </div>
     </div>
+  {% endfor %}
+</div>

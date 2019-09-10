@@ -5,11 +5,6 @@
   <li>
   Joined: <b>{{profile.created_on|naturaltime}}</b>
   </li>
-  {% if profile.persona_is_hunter %}
-    <li>
-    Top Skills: <b>{{profile.keywords|join:", "}}</b>
-    </li>
-  {% endif %}
   {% if profile.success_rate != -1 %}
     <li>
     Success Rate: <b>{{profile.success_rate}}</b>%
