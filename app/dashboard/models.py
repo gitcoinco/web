@@ -2451,8 +2451,8 @@ class Profile(SuperModel):
             return "High"
         if visits_last_month > med_threshold:
             return "Medium"
-        if visits_last_month > med_threshold:
-            return "Low"
+        return "Low"
+            
 
 
     def calc_longest_streak(self):
@@ -2493,6 +2493,7 @@ class Profile(SuperModel):
 
     def calc_num_repeated_relationships(self):
         """ the number of repeat relationships that this user has created
+
 
         Returns:
             int: a number of repeat relationships
@@ -3708,4 +3709,4 @@ class REPEntry(SuperModel):
 
 @receiver(pre_save, sender=REPEntry, dispatch_uid="post_add_rep")
 def psave_rep(sender, instance, **kwargs):
-    instance.balance = sum(REPEntry.objects.filter(profile=instance.profile).values_list('value', flat=True))
+    instance.balance = sum(REPEntry.objects.filter(profile=instance.profile, created_on__lt=instance.created_on).values_list('value', flat=True)) + instance.value

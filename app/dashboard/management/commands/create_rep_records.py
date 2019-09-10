@@ -26,6 +26,7 @@ class Command(BaseCommand):
     help = 'creates REP records for current acivity feeds'
 
     def handle(self, *args, **options):
+        #REPEntry.objects.all().delete()
         for instance in Activity.objects.all().order_by('created_on'):
             if instance.point_value() and instance.profile:
                 print(instance.pk)
@@ -47,3 +48,7 @@ class Command(BaseCommand):
                     source=instance,
                     value=instance.point_value(),
                     )
+
+        # make sure balances look ok
+        for instance in REPEntry.objects.all().order_by('created_on'):
+            instance.save()
