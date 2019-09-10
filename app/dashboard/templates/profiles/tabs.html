@@ -51,3 +51,32 @@
           </ul>
         </div>
       {% endif %}
+
+
+  <div class="tab-content profile-tab">
+    <div class="tab-pane fade show active">
+      <div class="container position-relative">
+        <div class="row mb-2 mt-0 bg-white rounded p-3">
+          <div class="col-12">
+          {% if tab == 'kudos' %}
+            {% include 'profiles/tab_kudos.html' %}
+          {% elif tab == 'resume' %}
+            {% include 'profiles/tab_resume.html' %}
+          {% elif tab == 'active' %}
+            {% include 'profiles/tab_active.html' %}
+          {% elif tab == 'portfolio' %}
+            {% include 'profiles/tab_portfolio.html' %}
+          {% elif tab == 'activity' %}
+            {% include 'profiles/tab_activity.html' %}
+          {% elif tab == 'ratings' %}
+            {% include 'profiles/tab_ratings.html' %}
+          {% elif tab == 'viewers' %}
+            {% include 'profiles/tab_viewers.html' %}
+          {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
