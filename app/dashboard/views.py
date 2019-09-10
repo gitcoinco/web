@@ -73,7 +73,7 @@ from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_fil
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
     FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer,
-    RefundFeeRequest, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
+    RefundFeeRequest, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -898,6 +898,19 @@ def users_fetch(request):
     params['has_next'] = all_pages.page(page).has_next()
     params['count'] = all_pages.count
     params['num_pages'] = all_pages.num_pages
+
+    # log this search, it might be useful for matching purposes down the line
+    try:
+        SearchHistory.objects.update_or_create(
+            search_type='users',
+            user=request.user,
+            data=request.GET,
+            ip_address=get_ip(request)
+        )
+    except Exception as e:
+        logger.debug(e)
+        pass
+
     return JsonResponse(params, status=200, safe=False)
 
 

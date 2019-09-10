@@ -124,8 +124,12 @@
   #logo {
     vertical-align: middle;
     display: inline-block;
-    max-height: 120px;
-    max-width: 100%;
+    {% if email_style %}
+      max-height: 100%;
+    {% else %}
+      max-height: 80px;
+    {% endif %}
+      max-width: 100%;
   }
 
   #grow-oss {
@@ -134,15 +138,32 @@
   }
 
   #header {
-    height: 200px;
+    {% if email_style %}
+      height: 300px;
+    {% else %}
+      height: 100px;
+      padding: 30px 50px;
+    {% endif %}
   }
 
   #header, #footer {
     color: white;
-    background-color: #15003e;
     align-content: center;
     text-align: center;
-    padding: 2em;
+      {% if email_style == 1 %}
+        background-color: #3E00FF;
+      {% elif email_style == 2 %}
+        background-color: #8934b3;
+      {% elif email_style == 3 or email_style == 4 %}
+        background-color: #dbdbdb;
+      {% elif email_style == 5 or email_style == 6 %}
+        background-color: #084c8e;
+      {% else %}
+        background-color: #15003e;
+      {% endif %}
+  } 
+  #footer {
+    padding: 30px 50px;
   }
 
   #footer p, #footer a {
@@ -221,7 +242,22 @@
   {% if not hide_header %}
   <div id="header">
     <a href="{% url 'funder_bounties' %}">
-      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span>
+      {% if email_style == 1 %}
+        <img id="logo" src="{% static "v2/images/emails/email_header1.gif" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 2 %}
+        <img id="logo" src="{% static "v2/images/emails/email_header2.gif" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 3 %}
+        <img id="logo" src="{% static "v2/images/emails/email_header3.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 4 %}
+        <img id="logo" src="{% static "v2/images/emails/email_header4.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 5 %}
+        <img id="logo" src="{% static "v2/images/emails/email_header5.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 6 %}
+        <img id="logo" src="{% static "v2/images/emails/email_header6.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% else %}
+        <img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% endif %}
     </a>
   </div>
   {% endif %}
