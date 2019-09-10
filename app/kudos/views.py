@@ -38,7 +38,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Activity, Profile
+from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_nonce, get_web3
 from dashboard.views import record_user_action
@@ -124,6 +124,17 @@ def marketplace(request):
     if q:
         title = f'{q.title()} Kudos'
         token_list = token_list.keyword(q)
+        # log this search, it might be useful for matching purposes down the line
+        try:
+            SearchHistory.objects.update_or_create(
+                search_type='kudos',
+                user=request.user,
+                data=request.GET,
+                ip_address=get_ip(request)
+            )
+        except Exception as e:
+            logger.debug(e)
+            pass
 
     listings = token_list.order_by(order_by).cache()
     context = {
