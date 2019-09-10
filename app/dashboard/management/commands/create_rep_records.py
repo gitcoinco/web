@@ -19,15 +19,17 @@
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Activity, REPEntry, UserAction
-
+from django.utils import timezone
 
 class Command(BaseCommand):
 
     help = 'creates REP records for current acivity feeds'
 
     def handle(self, *args, **options):
-        #REPEntry.objects.all().delete()
-        for instance in Activity.objects.all().order_by('created_on'):
+        #REPEntry.objects.all().delete() 
+        # exclude 3/5 to 3/6 where something wonky went on with activity feeds
+        activities = Activity.objects.exclude(created_on__gt=timezone.datetime(2019,3,5),created_on__lt=timezone.datetime(2019,3,6)).order_by('created_on')
+        for instance in activities:
             if instance.point_value() and instance.profile:
                 print(instance.pk)
                 REPEntry.objects.create(
@@ -38,7 +40,8 @@ class Command(BaseCommand):
                     value=instance.point_value(),
                     )
 
-        for instance in UserAction.objects.all().order_by('created_on'):
+        uas = UserAction.objects.exclude(created_on__gt=timezone.datetime(2019,3,5),created_on__lt=timezone.datetime(2019,3,6)).order_by('created_on')
+        for instance in uas:
             if instance.point_value() and instance.profile:
                 print(instance.pk)
                 REPEntry.objects.create(
@@ -50,5 +53,5 @@ class Command(BaseCommand):
                     )
 
         # make sure balances look ok
-        for instance in REPEntry.objects.all().order_by('created_on'):
+        for instance in REPEntry.objects.filter(profile__handle='owocki').order_by('created_on'):
             instance.save()

@@ -3710,3 +3710,4 @@ class REPEntry(SuperModel):
 @receiver(pre_save, sender=REPEntry, dispatch_uid="post_add_rep")
 def psave_rep(sender, instance, **kwargs):
     instance.balance = sum(REPEntry.objects.filter(profile=instance.profile, created_on__lt=instance.created_on).values_list('value', flat=True)) + instance.value
+    #print(f"updating {instance.pk} created on {instance.created_on} for {instance.why} worth  {instance.value} to {instance.balance}")
