@@ -113,7 +113,7 @@ class SearchHistoryAdmin(admin.ModelAdmin):
     raw_id_fields = ['user']
     ordering = ['-id']
     search_fields = ['user', 'data']
-    list_display = ['user', 'data']
+    list_display = ['user', 'search_type', 'data']
 
 
 class TipAdmin(admin.ModelAdmin):
