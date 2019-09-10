@@ -11,8 +11,8 @@
   "state": "LOCKED",
   "published_on": "2019-06",
   "initial_price": {
-  "BTC": "0.0044",
-  "USD": "1"
+      "BTC": "0.000000823 BTC",
+      "USD": "0.008429 USD"
   },
   "links": {
     "twitter": "https://twitter.com/STEMC11041000",
