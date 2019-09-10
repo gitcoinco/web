@@ -2217,6 +2217,10 @@ def profile(request, handle, tab=None):
     else:
         return tab
 
+    # record profile view
+    if request.user.is_authenticated and not context['is_my_profile']:
+        ProfileView.objects.create(target=profile, viewer=request.user.profile)
+
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
