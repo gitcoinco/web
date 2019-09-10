@@ -2438,7 +2438,7 @@ class Profile(SuperModel):
 
         """
         high_threshold = 15
-        med_threshold = 15
+        med_threshold = 7
         new_threshold_days = 7
 
         if self.created_on > (timezone.now() - timezone.timedelta(days=new_threshold_days)):
