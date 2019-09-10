@@ -254,21 +254,22 @@
           </div>
           <div slot="body">
             <div class="form-group">
-              <label>Github Issue URL</label>
+              <label class="font-weight-semibold">Github Issue URL</label>
               <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://github.com/gitcoinco/web/issues/5045" @change="getIssueDetails(gitcoinIssueUrl)"/>
             </div>
-            <div v-if="issueDetails">
-              ISSUE TITLE
+            <span class="font-weight-semibold">Description</span>
+            <div v-if="issueDetails" class="pre-scrollable p-3 bg-light rounded" style="white-space: pre-line;">
+              <span class="">ISSUE TITLE</span>
               [[issueDetails.title]]
-              ISSUE DESCRIPTION
-              [[issueDetails.description]]
+              <span class="">ISSUE DESCRIPTION</span>
+              [[issueDetails.issue_description_text]]
             </div>
             [[params]]
           </div>
           <div slot="footer" class="d-flex align-items-center flex-fill">
             <div class="ml-auto">
               <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-              <button v-bind:disabled="gitcoinIssueUrl === ''" class="btn btn-gc-blue" @click="sendInviteAll(gitcoinIssueUrl)">Invite</button>
+              <button v-bind:disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-gc-blue" @click="sendInviteAll(issueDetails.pk)">Invite</button>
             </div>
           </div>
         </modal>

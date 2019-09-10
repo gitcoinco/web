@@ -82,7 +82,7 @@ from .notifications import (
 )
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_unrated_bounties_count, get_web3,
-    has_tx_mined, re_market_bounty, record_user_action_on_interest, web3_process_bounty, get_bounty_id_from_db,
+    has_tx_mined, re_market_bounty, record_user_action_on_interest, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -1151,18 +1151,13 @@ def bulk_invite(request):
     """
     from .utils import get_bounty_invite_url
 
-    if not settings.DEBUG:
-        network = 'mainnet'
-    else:
-        network = 'rinkeby'
-
     if not request.user.is_staff:
         return JsonResponse({'status': 401,
                              'msg': 'Unauthorized'})
 
     inviter = request.user if request.user.is_authenticated else None
     skills = request.POST.get('skills[]')
-    bounty_id = get_bounty_id_from_db(request.POST.get('bountyId'), network)
+    bounty_id = request.POST.get('bountyId')
     print(bounty_id)
     print(skills)
     if None in (skills, bounty_id, inviter):
