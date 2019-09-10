@@ -2204,6 +2204,8 @@ def profile(request, handle, tab=None):
     context['verification'] = profile.get_my_verified_check
     context['avg_rating'] = profile.get_average_star_rating
     context['suppress_sumo'] = True
+    context['feedbacks_sent'] = profile.feedbacks_sent.all()
+    context['feedbacks_got'] = profile.feedbacks_got.all()
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
 

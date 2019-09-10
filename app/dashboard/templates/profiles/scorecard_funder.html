@@ -1,40 +1,38 @@
 {% load i18n static avatar_tags %}
-  <div class="col-12 col-lg-6">
-    <div class="profile-header__stats profile-header__stats--funder card mb-4">
-      <div class="card-header font-subheader">
-        {% if scoreboard_position_funder %}
-          <b>#{{ scoreboard_position_funder }}</b>
-        {% else %}
-          <b>&nbsp;</b>
-        {% endif %}
-        {% trans "Funder" %}
-      {% include "shared/profile_rank_link.html" with link='payers' %}
-      </div>
-      <div class="card-body font-subheader">
-        <ul>
-          <li class="works_with_list">
-            {% if works_with_funded|length %}
-              <span class="font-body"><i class="fab fa-ethereum"></i> {% trans "Funds" %}:</span>
-              {% for profile, num_times in works_with_funded.items %}
-                {% if forloop.counter < 6 %}
-                  <a href="{% url 'profile' profile %} ">
-                    <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
-                  </a>
-                {% endif %}
-              {% endfor %}
-              {% if works_with_funded|length > 5 %}
-                <div href="" class="plus-img" data-container="body" data-toggle="popover" data-template='<div class="popover big-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>' data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_funded.items %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_funded|length|add:"-5"}}</span></div>
-              {% endif %}
-            {% endif %}
-          </li>
-          </div>
-          <div class="card-header font-subheader">
-            {% trans "Stats" %}
-          </div>
-          <div class="card-body font-subheader">
-          <li><b>{{ funded_bounties_count }}</b> {% trans "bounties funded" %}</li>
-          <li><b>{{ sum_eth_funded|floatformat:2 }} ETH</b> {% trans "funded" %}</li>
-          {% include "profiles/activity_stats.html" %}
-        </ul>
-    </div>
-  </div>
+<div class="col-12 col-lg-6">
+  <div class="row">
+	<div class="col-12 col-lg-6">
+  	  <div class="profile-header__stats profile-header__stats--funder card mb-4">
+		<div class="card-header font-subheader">
+	  	  {% if scoreboard %}
+			<b>#{{ scoreboard }}</b>
+	  	  {% else %}
+			<b>&nbsp;</b>
+		  {% endif %}
+			{% trans "Funder" %}
+			{% include "shared/profile_rank_link.html" with link='payers' %}
+		</div>
+		<div class="card-body font-subheader">
+		  <ul>
+			<li><b>{{ funded_bounties_count }}</b> {% trans "bounties funded" %}</li>
+			<li><b>{{ sum_eth_funded|floatformat:2 }} ETH</b> {% trans "funded" %}</li>
+			<li class="works_with_list">
+		  	  {% if works_with_funded|length %}
+				<span class="font-body"><i class="fab fa-ethereum"></i> {% trans "Funds" %}:</span>
+				{% for profile, num_times in works_with_funded.items %}
+			  	  {% if forloop.counter < 6 %}
+					<a href="{% url 'profile' profile %} ">
+					  <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+					</a>
+				  {% endif %}
+				{% endfor %}
+				{% if works_with_funded|length > 5 %}
+				  <div href="" class="plus-img" data-container="body" data-toggle="popover" data-template='<div class="popover big-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>' data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_funded.items %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_funded|length|add:"-5"}}</span></div>
+				{% endif %}
+			  {% endif %}
+			</li>
+		  </ul>
+		</div>
+	  </div>
+	</div>
+	{% include "profiles/activity_level.html" with level='High'%}
