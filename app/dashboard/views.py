@@ -1133,7 +1133,7 @@ def social_contribution_modal(request):
 
 @csrf_exempt
 @require_POST
-def invite_to_bounty_based_on_skills(request):
+def bulk_invite(request):
     """Invite users with matching skills to a bounty.
 
     Args:

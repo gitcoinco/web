@@ -120,6 +120,28 @@ Vue.mixin({
         }
       });
     },
+    sendInviteAll: function(bountyUrl) {
+      let vm = this;
+      let apiUrlInvite = '/api/v0.1/bulk_invite/';
+      let postInvite = fetchData(
+        apiUrlInvite,
+        'POST',
+        { 'params': vm.params, 'bountyId': bountyUrl},
+        {'X-CSRFToken': csrftoken}
+      );
+
+      $.when(postInvite).then((response) => {
+        console.log(response);
+        if (response.status === 500) {
+          _alert(response.msg, 'error');
+
+        } else {
+          vm.$refs['user-modal'].closeModal();
+          _alert('The invitation has been sent', 'info');
+        }
+      });
+
+    },
     closeModal() {
       this.$refs['user-modal'].closeModal();
     },
