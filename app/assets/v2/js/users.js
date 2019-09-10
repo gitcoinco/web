@@ -145,10 +145,25 @@ Vue.mixin({
     getIssueDetails: function(url) {
       let vm = this;
       let apiUrldetails = `/actions/api/v0.1/bounties/?github_url=${encodeURIComponent(url)}`;
+
+      vm.errorIssueDetails = undefined;
+
+      if (url.indexOf('github.com/') < 0) {
+        vm.issueDetails = null;
+        vm.errorIssueDetails = 'Please paste a github issue url';
+        return;
+      }
+      vm.issueDetails = undefined;
       let getIssue = fetchData(apiUrldetails, 'GET');
 
       $.when(getIssue).then((response) => {
-        vm.issueDetails = response[0];
+        if (response[0]) {
+          vm.issueDetails = response[0];
+          vm.errorIssueDetails = undefined;
+        } else {
+          vm.issueDetails = null;
+          vm.errorIssueDetails = 'This issue wasn\'t bountied yet.';
+        }
       });
 
     },
@@ -221,7 +236,8 @@ if (document.getElementById('gc-users-directory')) {
       noResults: false,
       isLoading: true,
       gitcoinIssueUrl: '',
-      issueDetails: ''
+      issueDetails: undefined,
+      errorIssueDetails: undefined
     },
     mounted() {
       this.fetchUsers();
