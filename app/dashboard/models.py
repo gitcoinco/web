@@ -2210,25 +2210,24 @@ class Profile(SuperModel):
         num += self.get_my_grants.count()
         return num
 
-    @property
-    def get_average_star_rating(self):
+    def get_average_star_rating(self, scale=1):
         """Returns the average star ratings (overall and individual topic)
         for a particular user"""
 
         feedbacks = FeedbackEntry.objects.filter(receiver_profile=self).all()
         average_rating = {}
-        average_rating['overall'] = sum([feedback.rating for feedback in feedbacks]) \
+        average_rating['overall'] = sum([feedback.rating for feedback in feedbacks]) * scale \
             / feedbacks.count() if feedbacks.count() != 0 else 0
-        average_rating['code_quality_rating'] = sum([feedback.code_quality_rating for feedback in feedbacks]) \
-            / feedbacks.count() if feedbacks.count() != 0 else 0
-        average_rating['communication_rating'] = sum([feedback.communication_rating for feedback in feedbacks]) \
-            / feedbacks.count() if feedbacks.count() != 0 else 0
-        average_rating['recommendation_rating'] = sum([feedback.recommendation_rating for feedback in feedbacks]) \
-            / feedbacks.count() if feedbacks.count() != 0 else 0
-        average_rating['satisfaction_rating'] = sum([feedback.satisfaction_rating for feedback in feedbacks]) \
-            / feedbacks.count() if feedbacks.count() != 0 else 0
-        average_rating['speed_rating'] = sum([feedback.speed_rating for feedback in feedbacks]) \
-            / feedbacks.count() if feedbacks.count() != 0 else 0
+        average_rating['code_quality_rating'] = sum([feedback.code_quality_rating for feedback in feedbacks]) * scale \
+            / feedbacks.exclude(code_quality_rating=0).count() if feedbacks.exclude(code_quality_rating=0).count() != 0 else 0
+        average_rating['communication_rating'] = sum([feedback.communication_rating for feedback in feedbacks]) * scale \
+            / feedbacks.exclude(communication_rating=0).count() if feedbacks.exclude(communication_rating=0).count() != 0 else 0
+        average_rating['recommendation_rating'] = sum([feedback.recommendation_rating for feedback in feedbacks]) * scale \
+            / feedbacks.exclude(recommendation_rating=0).count() if feedbacks.exclude(recommendation_rating=0).count() != 0 else 0
+        average_rating['satisfaction_rating'] = sum([feedback.satisfaction_rating for feedback in feedbacks]) * scale \
+            / feedbacks.exclude(satisfaction_rating=0).count() if feedbacks.exclude(satisfaction_rating=0).count() != 0 else 0
+        average_rating['speed_rating'] = sum([feedback.speed_rating for feedback in feedbacks]) * scale \
+            / feedbacks.exclude(speed_rating=0).count() if feedbacks.exclude(speed_rating=0).count() != 0 else 0
         average_rating['total_rating'] = feedbacks.count()
         return average_rating
 

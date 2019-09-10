@@ -885,7 +885,7 @@ def users_fetch(request):
         profile_json['work_done'] = count_work_completed
         profile_json['work_inprogress'] = count_work_in_progress
         profile_json['verification'] = user.get_my_verified_check
-        profile_json['avg_rating'] = user.get_average_star_rating
+        profile_json['avg_rating'] = user.get_average_star_rating()
         if user.avatar_baseavatar_related.exists():
             user_avatar = user.avatar_baseavatar_related.first()
             profile_json['avatar_id'] = user_avatar.pk
@@ -2197,12 +2197,13 @@ def profile(request, handle, tab=None):
     context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
     context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
-    context['avg_rating'] = profile.get_average_star_rating
+    context['avg_rating'] = profile.get_average_star_rating()
+    context['avg_rating_scaled'] = profile.get_average_star_rating(20)
     context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
     context['ratings'] = range(0,5)
     context['profile'] = profile
     context['verification'] = profile.get_my_verified_check
-    context['avg_rating'] = profile.get_average_star_rating
+    context['avg_rating'] = profile.get_average_star_rating()
     context['suppress_sumo'] = True
     context['feedbacks_sent'] = profile.feedbacks_sent.all()
     context['feedbacks_got'] = profile.feedbacks_got.all()
@@ -3017,8 +3018,8 @@ def funder_dashboard_bounty_info(request, bounty_id):
                           'issue_message': i.issue_message},
              'handle': i.profile.handle,
              'avatar_url': i.profile.avatar_url,
-             'star_rating': i.profile.get_average_star_rating['overall'],
-             'total_rating': i.profile.get_average_star_rating['total_rating'],
+             'star_rating': i.profile.get_average_star_rating()['overall'],
+             'total_rating': i.profile.get_average_star_rating()['total_rating'],
              'fulfilled_bounties': len(
                 [b for b in i.profile.get_fulfilled_bounties()]),
              'leaderboard_rank': i.profile.get_contributor_leaderboard_index(),

@@ -1,10 +1,10 @@
 {% load i18n static %}
 <div class="static-stars my-3 d-flex">
   {% for i in ratings %}
-    <i class="fa fa-star align-self-center {% if avg_rating.overall != 0 and i <= avg_rating.overall %}fas{% endif %}"></i>
+    <i class="fa fa-star align-self-center {% if avg_rating_scaled.overall != 0 and i <= avg_rating_scaled.overall %}fas{% endif %}"></i>
   {% endfor %}
   <div class="font-weight-bold">
-	&nbsp;&nbsp;{{ avg_rating.total_rating }} {% trans "rating" %}{{avg_rating.total_rating | pluralize}}
+	&nbsp;&nbsp;{{ avg_rating_scaled.total_rating }} {% trans "rating" %}{{avg_rating_scaled.total_rating | pluralize}}
   </div>
 </div>
 <div class="row">
@@ -15,7 +15,7 @@
 		  </div>
 		  <div class="col-7">
 		    <div class="progress mt-2" style="height: 6px;">
-			  <div class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="{{feedback.satisifaction_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
+			  <div class="progress-bar bg-success" role="progressbar" style="width: {{avg_rating_scaled.satisfaction_rating}}%" aria-valuenow="{{avg_rating_scaled.satisfaction_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
 			</div>
 		  </div>
 	  </div>
@@ -27,7 +27,7 @@
 		  </div>
 		  <div class="col-7">
 		    <div class="progress mt-2" style="height: 6px;">
-			  <div class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="{{feedback.speed_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
+			  <div class="progress-bar bg-success" role="progressbar" style="width: {{avg_rating_scaled.speed_rating}}%" aria-valuenow="{{avg_rating_scaled.speed_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
 			</div>
 		  </div>
 	  </div>
@@ -39,7 +39,7 @@
 		  </div>
 		  <div class="col-7">
 		    <div class="progress mt-2" style="height: 6px;">
-			  <div class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="{{feedback.recommendation_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
+			  <div class="progress-bar bg-success" role="progressbar" style="width: {{avg_rating_scaled.recommendation_rating}}%" aria-valuenow="{{avg_rating_scaled.recommendation_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
 			</div>
 		  </div>
 	  </div>
@@ -51,7 +51,7 @@
 		  </div>
 		  <div class="col-7">
 		    <div class="progress mt-2" style="height: 6px;">
-			  <div class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="{{feedback.communication_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
+			  <div class="progress-bar bg-success" role="progressbar" style="width: {{avg_rating_scaled.communication_rating}}%" aria-valuenow="{{avg_rating_scaled.communication_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
 			</div>
 		  </div>
 	  </div>
@@ -63,7 +63,7 @@
 		  </div>
 		  <div class="col-7">
 		    <div class="progress mt-2" style="height: 6px;">
-			  <div class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="{{feedback.code_quality_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
+			  <div class="progress-bar bg-success" role="progressbar" style="width: {{avg_rating_scaled.code_quality_rating}}%" aria-valuenow="{{avg_rating_scaled.code_quality_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
 			</div>
 		  </div>
 	  </div>
