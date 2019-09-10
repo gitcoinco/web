@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
         print('Fetching Valid Grant CLR Round 3 Users')
         valid_users = User.objects.filter(~Q(groups__name__in=[clr_r3_group_name]),
-                                          profile__data__created_at__lte="2019-03-01") | User.objects.filter(
+                                          profile__data__created_at__lte="2019-02-15") | User.objects.filter(
             ~Q(groups__name__in=[clr_r3_group_name]), profile__trust_profile=True)
         for user in valid_users:
             user.groups.add(clr_group_r3)
