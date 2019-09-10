@@ -25,7 +25,6 @@ Vue.component('modal', {
   },
   mounted() {
     let vm = this;
-    console.log($(this.$el))
 
     vm.jqEl = $(this.$el);
   },

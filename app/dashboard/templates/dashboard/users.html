@@ -264,6 +264,7 @@
               <span class="">ISSUE DESCRIPTION</span>
               [[issueDetails.issue_description_text]]
             </div>
+            <loading-screen v-else-if="gitcoinIssueUrl"></loading-screen>
             [[params]]
           </div>
           <div slot="footer" class="d-flex align-items-center flex-fill">

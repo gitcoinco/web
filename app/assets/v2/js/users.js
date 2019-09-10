@@ -144,8 +144,7 @@ Vue.mixin({
     },
     getIssueDetails: function(url) {
       let vm = this;
-      let apiUrldetails =  `/actions/api/v0.1/bounties/?github_url=${encodeURIComponent(url)}`;
-      // let apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url)}&token=${document.contxt.access_token}`;
+      let apiUrldetails = `/actions/api/v0.1/bounties/?github_url=${encodeURIComponent(url)}`;
       let getIssue = fetchData(apiUrldetails, 'GET');
 
       $.when(getIssue).then((response) => {
