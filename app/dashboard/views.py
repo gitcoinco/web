@@ -82,7 +82,7 @@ from .notifications import (
 )
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_unrated_bounties_count, get_web3,
-    has_tx_mined, re_market_bounty, record_user_action_on_interest, web3_process_bounty,
+    has_tx_mined, re_market_bounty, record_user_action_on_interest, web3_process_bounty, get_bounty_id_from_db,
 )
 
 logger = logging.getLogger(__name__)
@@ -1149,20 +1149,29 @@ def bulk_invite(request):
         Http200: Json response with {'status': 200, 'msg': 'email_sent'}.
 
     """
+    from .utils import get_bounty_invite_url
+
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
+
     if not request.user.is_staff:
         return JsonResponse({'status': 401,
                              'msg': 'Unauthorized'})
 
     inviter = request.user if request.user.is_authenticated else None
-    skills = request.POST.get('skills')
-    bounty_id = request.POST.get('bountyId')
-
+    skills = request.POST.get('skills[]')
+    bounty_id = get_bounty_id_from_db(request.POST.get('bountyId'), network)
+    print(bounty_id)
+    print(skills)
     if None in (skills, bounty_id, inviter):
         return JsonResponse({'success': False}, status=403)
 
     bounty = Bounty.objects.current().get(id=int(bounty_id))
+    print(bounty)
 
-    profiles = Profile.objects.filter(keywords__in=skills.split(','))
+    profiles = Profile.objects.filter(keywords__icontains=skills.split(','))
 
     invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
 

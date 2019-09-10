@@ -1,5 +1,5 @@
 Vue.component('modal', {
-  props: [ 'user', 'size', 'id' ],
+  props: [ 'user', 'size', 'id', 'issueDetails' ],
   template: `<div class="vue-modal modal fade" :id="id" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" :class="size" role="document">
           <div class="modal-content">

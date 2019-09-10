@@ -126,7 +126,7 @@ Vue.mixin({
       let postInvite = fetchData(
         apiUrlInvite,
         'POST',
-        { 'params': vm.params, 'bountyId': bountyUrl},
+        { 'params': [vm.params], 'skills': vm.params.skills, 'bountyId': bountyUrl},
         {'X-CSRFToken': csrftoken}
       );
 
@@ -139,6 +139,16 @@ Vue.mixin({
           vm.$refs['user-modal'].closeModal();
           _alert('The invitation has been sent', 'info');
         }
+      });
+
+    },
+    getIssueDetails: function(url) {
+      let vm = this;
+      let apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url)}&token=${document.contxt.access_token}`;
+      let getIssue = fetchData(apiUrldetails, 'GET');
+
+      $.when(getIssue).then((response) => {
+        vm.issueDetails = response;
       });
 
     },
@@ -210,7 +220,8 @@ if (document.getElementById('gc-users-directory')) {
       selectedSkills: [],
       noResults: false,
       isLoading: true,
-      gitcoinIssueUrl: ''
+      gitcoinIssueUrl: '',
+      issueDetails: ''
     },
     mounted() {
       this.fetchUsers();

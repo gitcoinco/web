@@ -246,7 +246,7 @@
         </div>
       </modal>
       {% if is_staff %}
-        <modal ref="user-modal" id="inviteAll">
+        <modal ref="user-modal" id="inviteAll" size="modal-lg" v-bind:issueDetails="issueDetails">
           <div slot="header">
             <div class="d-flex flex-column align-items-center">
               <h6 class="font-weight-bold mb-3">Invite [[numUsers]] Users to the Bounty</h6>
@@ -254,12 +254,19 @@
           </div>
           <div slot="body">
             <div class="form-group">
-              <label>Gitcoin Issue URL</label>
-              <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://gitcoin.co/issue/gitcoinco/web/4870/3260"/>
+              <label>Github Issue URL</label>
+              <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://github.com/gitcoinco/web/issues/5045" @change="getIssueDetails(gitcoinIssueUrl)"/>
             </div>
+            <div v-if="issueDetails">
+              ISSUE TITLE
+              [[issueDetails.title]]
+              ISSUE DESCRIPTION
+              [[issueDetails.description]]
+            </div>
+            [[params]]
           </div>
           <div slot="footer" class="d-flex align-items-center flex-fill">
-            <div class="text-right">
+            <div class="ml-auto">
               <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
               <button v-bind:disabled="gitcoinIssueUrl === ''" class="btn btn-gc-blue" @click="sendInviteAll(gitcoinIssueUrl)">Invite</button>
             </div>
