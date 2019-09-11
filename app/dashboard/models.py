@@ -2307,8 +2307,6 @@ class Profile(SuperModel):
             self.dominant_persona = 'hunter'
         elif hunter_count < funder_count:
             self.dominant_persona = 'funder'
-        else:
-            self.dominant_persona = ''
 
         # update db
         if not decide_only_one:

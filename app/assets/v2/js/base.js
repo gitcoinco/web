@@ -271,6 +271,7 @@ $('body').on('click', '[data-persona]', function(e) {
 });
 
 const sendPersonal = (persona) => {
+  $('#persona_modal').bootstrapModal('hide');
   let postPersona = fetchData('/api/v0.1/choose_persona/', 'POST',
     {persona, 'access_token': document.contxt.access_token}
   );
@@ -280,7 +281,6 @@ const sendPersonal = (persona) => {
       return _alert(response.msg, 'error');
     }
 
-    $('#persona_modal').bootstrapModal('hide');
     const urls = [
       {
         url: document.location.href,
@@ -304,19 +304,21 @@ const sendPersonal = (persona) => {
         return false;
       });
     };
+    let do_redirect = document.URL.indexOf('/profile/') == -1;
+    if(do_redirect){
+      if (response.persona === 'persona_is_funder') {
+        if (checkUrl(urls, document.location.href)) {
+          window.location = '/onboard/funder';
+        } else {
+          return _alert(gettext('Thanks, you can read the guide <a href="/how/funder">here.</a>'), 'info');
+        }
 
-    if (response.persona === 'persona_is_funder') {
-      if (checkUrl(urls, document.location.href)) {
-        window.location = '/onboard/funder';
-      } else {
-        return _alert(gettext('Thanks, you can read the guide <a href="/how/funder">here.</a>'), 'info');
-      }
-
-    } else if (response.persona === 'persona_is_hunter') {
-      if (checkUrl(urls, document.location.href)) {
-        window.location = '/onboard/contributor';
-      } else {
-        return _alert(gettext('Thanks, you can read the guide <a href="/how/contributor">here.</a>'), 'info');
+      } else if (response.persona === 'persona_is_hunter') {
+        if (checkUrl(urls, document.location.href)) {
+          window.location = '/onboard/contributor';
+        } else {
+          return _alert(gettext('Thanks, you can read the guide <a href="/how/contributor">here.</a>'), 'info');
+        }
       }
     }
 
