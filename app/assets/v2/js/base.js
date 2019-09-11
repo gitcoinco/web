@@ -271,7 +271,6 @@ $('body').on('click', '[data-persona]', function(e) {
 });
 
 const sendPersonal = (persona) => {
-  $('#persona_modal').bootstrapModal('hide');
   let postPersona = fetchData('/api/v0.1/choose_persona/', 'POST',
     {persona, 'access_token': document.contxt.access_token}
   );
@@ -280,6 +279,7 @@ const sendPersonal = (persona) => {
     if (statusCode.status != 200) {
       return _alert(response.msg, 'error');
     }
+    $('#persona_modal').bootstrapModal('hide');
 
     const urls = [
       {
