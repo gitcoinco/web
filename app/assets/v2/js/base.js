@@ -283,46 +283,36 @@ const sendPersonal = (persona) => {
 
     const urls = [
       {
-        url: document.location.href,
-        redirect: '/onboard/funder'
+        url: '/hackathon/onboard'
       },
       {
-        url: '/bounties/funder',
-        redirect: '/onboard/funder'
-      },
-      {
-        url: '/contributor',
-        redirect: '/onboard/contributor'
+        url: '/profile'
       }
     ];
 
-    const checkUrl = (arr, val) => {
+    const checkUrlRedirect = (arr, val) => {
       return arr.some(arrObj => {
         if (val.indexOf(arrObj.url) >= 0) {
-          return true;
+          return false;
         }
-        return false;
+        return true;
       });
     };
-    let do_redirect = document.URL.indexOf('/profile/') == -1;
 
-    if (do_redirect) {
-      if (response.persona === 'persona_is_funder') {
-        if (checkUrl(urls, document.location.href)) {
-          window.location = '/onboard/funder';
-        } else {
-          return _alert(gettext('Thanks, you can read the guide <a href="/how/funder">here.</a>'), 'info');
-        }
+    if (response.persona === 'persona_is_funder') {
+      if (checkUrlRedirect(urls, document.location.href)) {
+        window.location = '/onboard/funder';
+      } else {
+        return _alert(gettext('Thanks, you can read the guide <a href="/how/funder">here.</a>'), 'info');
+      }
 
-      } else if (response.persona === 'persona_is_hunter') {
-        if (checkUrl(urls, document.location.href)) {
-          window.location = '/onboard/contributor';
-        } else {
-          return _alert(gettext('Thanks, you can read the guide <a href="/how/contributor">here.</a>'), 'info');
-        }
+    } else if (response.persona === 'persona_is_hunter') {
+      if (checkUrlRedirect(urls, document.location.href)) {
+        window.location = '/onboard/contributor';
+      } else {
+        return _alert(gettext('Thanks, you can read the guide <a href="/how/contributor">here.</a>'), 'info');
       }
     }
-
 
   });
 };

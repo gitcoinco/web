@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n staticfiles %}
+{% load i18n static %}
 {% load kudos_extras matches %}
 <div class="kd-card {% if listing.num_clones_available == 0 %}ghost{% endif %}">
   <a href="{% url 'kudos_details' listing.id listing.name %}" class="{% if 'cellarius' in listing.tags %}cellarius-partner{% endif %}">

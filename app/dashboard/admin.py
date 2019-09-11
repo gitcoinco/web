@@ -120,7 +120,7 @@ class SearchHistoryAdmin(admin.ModelAdmin):
     raw_id_fields = ['user']
     ordering = ['-id']
     search_fields = ['user', 'data']
-    list_display = ['user', 'data']
+    list_display = ['user', 'search_type', 'data']
 
 
 class TipAdmin(admin.ModelAdmin):
@@ -279,7 +279,7 @@ class HackathonEventAdmin(admin.ModelAdmin):
     """The admin object for the HackathonEvent model."""
 
     list_display = ['pk', 'img', 'name', 'start_date', 'end_date', 'explorer_link']
-    readonly_fields = ['img', 'explorer_link']
+    readonly_fields = ['img', 'explorer_link', 'stats']
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.

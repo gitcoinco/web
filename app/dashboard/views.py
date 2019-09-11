@@ -72,8 +72,8 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer, ProfileView,
-    RefundFeeRequest, REPEntry, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
+    FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer,
+    RefundFeeRequest, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel, REPEntry,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -334,23 +334,18 @@ def post_comment(request):
             'msg': '',
         })
 
-    # sbid = request.POST.get('standard_bounties_id')
     bounty_id = request.POST.get('bounty_id')
-    # bountyObj = Bounty.objects.filter(standard_bounties_id=sbid).first()
     bountyObj = Bounty.objects.get(pk=bounty_id)
-    # fbAmount = FeedbackEntry.objects.filter(
-    #     sender_profile=profile_id,
-    #     feedbackType=request.POST.get('review[reviewType]', 'approver'),
-    #     bounty=bountyObj
-    # ).count()
-    # if fbAmount > 0:
-    #     return JsonResponse({
-    #         'success': False,
-    #         'msg': 'There is already a approval comment',
-    #     })
-    # if request.POST.get('review[reviewType]') == 'worker':
-    #     receiver_profile = bountyObj.bounty_owner_github_username
-    # else:
+    fbAmount = FeedbackEntry.objects.filter(
+        sender_profile=profile_id,
+        bounty=bountyObj
+    ).count()
+    if fbAmount > 0:
+        return JsonResponse({
+            'success': False,
+            'msg': 'There is already a approval comment',
+        })
+
     receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     kwargs = {
         'bounty': bountyObj,
@@ -901,6 +896,19 @@ def users_fetch(request):
     params['has_next'] = all_pages.page(page).has_next()
     params['count'] = all_pages.count
     params['num_pages'] = all_pages.num_pages
+
+    # log this search, it might be useful for matching purposes down the line
+    try:
+        SearchHistory.objects.update_or_create(
+            search_type='users',
+            user=request.user,
+            data=request.GET,
+            ip_address=get_ip(request)
+        )
+    except Exception as e:
+        logger.debug(e)
+        pass
+
     return JsonResponse(params, status=200, safe=False)
 
 
@@ -942,9 +950,6 @@ def get_user_bounties(request):
         bounty_json['url'] = bounty.url
 
         results.append(bounty_json)
-    # else:
-        # raise Http404
-    print(open_bounties)
     params['data'] = json.loads(json.dumps(results, default=str))
     params['is_funder'] = is_funder
     return JsonResponse(params, status=200, safe=False)
@@ -1807,10 +1812,11 @@ def profile_details(request, handle):
 
     response = {
         'profile': ProfileSerializer(profile).data,
+        'success_rate': profile.success_rate,
         'recent_activity': {
             'activity_metadata': activity.metadata,
             'activity_type': activity.activity_type,
-            'created': activity.created,
+            'created': activity.created
         },
         'statistics': {
             'work_completed': count_work_completed,
@@ -2018,16 +2024,33 @@ def get_profile_tab(request, profile, tab, prev_context):
         if page:
             page = int(page)
             activity_type = request.GET.get('a', '')
-            all_activities = profile.get_various_activities()
-            paginator = Paginator(profile_filter_activities(all_activities, activity_type, activity_tabs), 10)
+            if activity_type == 'currently_working':
+                currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
+                    .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
+                currently_working_bounties_count = currently_working_bounties.count()
+                if currently_working_bounties_count > 0:
+                    paginator = Paginator(currently_working_bounties, 10)
+                
+                if page > paginator.num_pages:
+                    return HttpResponse(status=204)
 
-            if page > paginator.num_pages:
-                return HttpResponse(status=204)
+                context = {}
+                context['bounties'] = [bounty for bounty in paginator.get_page(page)]   
 
-            context = {}
-            context['activities'] = [ele.view_props for ele in paginator.get_page(page)]
+                return TemplateResponse(request, 'profiles/profile_bounties.html', context, status=status)
+                
+            else:
 
-            return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
+                all_activities = profile.get_various_activities()
+                paginator = Paginator(profile_filter_activities(all_activities, activity_type, activity_tabs), 10)
+
+                if page > paginator.num_pages:
+                    return HttpResponse(status=204)
+
+                context = {}
+                context['activities'] = [ele.view_props for ele in paginator.get_page(page)]
+
+                return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
 
         all_activities = context.get('activities')
@@ -2107,7 +2130,7 @@ def get_profile_tab(request, profile, tab, prev_context):
             ).exclude(
                 feedbacks__feedbackType='approver',
                 feedbacks__sender_profile=profile,
-            ).distinct('pk')
+            ).distinct('pk').nocache()
 
         context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
                 .filter(interested__status='okay') \
@@ -2115,7 +2138,7 @@ def get_profile_tab(request, profile, tab, prev_context):
                 .exclude(
                     feedbacks__feedbackType='worker',
                     feedbacks__sender_profile=profile
-                ).distinct('pk')
+                ).distinct('pk').nocache()
     else:
         raise Http404
     return context
@@ -2974,6 +2997,20 @@ def hackathon(request, hackathon=''):
     return TemplateResponse(request, 'dashboard/index.html', params)
 
 
+def hackathon_onboard(request, hackathon=''):
+
+    try:
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+    except HackathonEvent.DoesNotExist:
+        hackathon_event = HackathonEvent.objects.last()
+    params = {
+        'active': 'hackathon_onboard',
+        'title': 'Hackathon Onboard',
+        'hackathon': hackathon_event,
+    }
+    return TemplateResponse(request, 'dashboard/hackathon_onboard.html', params)
+
+
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
@@ -3002,7 +3039,7 @@ def board(request):
         'card_desc': _('Manage all your activity.'),
         'avatar_url': static('v2/images/helmet.png'),
     }
-    return TemplateResponse(request, 'board.html', context)
+    return TemplateResponse(request, 'board/index.html', context)
 
 
 def funder_dashboard_bounty_info(request, bounty_id):
@@ -3020,7 +3057,22 @@ def funder_dashboard_bounty_info(request, bounty_id):
         interests = Interest.objects.prefetch_related('profile').filter(status='okay', bounty=bounty).all()
         profiles = [
             {'interest': {'id': i.id,
-                          'issue_message': i.issue_message},
+                          'issue_message': i.issue_message,
+                          'pending': i.pending},
+             'handle': i.profile.handle,
+             'avatar_url': i.profile.avatar_url,
+             'star_rating': i.profile.get_average_star_rating['overall'],
+             'total_rating': i.profile.get_average_star_rating['total_rating'],
+             'fulfilled_bounties': len(
+                [b for b in i.profile.get_fulfilled_bounties()]),
+             'leaderboard_rank': i.profile.get_contributor_leaderboard_index(),
+             'id': i.profile.id} for i in interests]
+    elif bounty.status == 'started':
+        interests = Interest.objects.prefetch_related('profile').filter(status='okay', bounty=bounty).all()
+        profiles = [
+            {'interest': {'id': i.id,
+                          'issue_message': i.issue_message,
+                          'pending': i.pending},
              'handle': i.profile.handle,
              'avatar_url': i.profile.avatar_url,
              'star_rating': i.profile.get_average_star_rating()['overall'],
@@ -3063,6 +3115,7 @@ def serialize_funder_dashboard_open_rows(bounties, interests):
              'avatar_url': b.avatar_url,
              'project_type': b.project_type,
              'expires_date': b.expires_date,
+             'keywords': b.keywords,
              'interested_comment': b.interested_comment,
              'bounty_owner_github_username': b.bounty_owner_github_username,
              'submissions_comment': b.submissions_comment} for b in bounties]
@@ -3084,6 +3137,15 @@ def serialize_funder_dashboard_submitted_rows(bounties):
              'interested_comment': b.interested_comment,
              'bounty_owner_github_username': b.bounty_owner_github_username,
              'submissions_comment': b.submissions_comment} for b in bounties]
+
+
+def clean_dupe(data):
+    result = []
+
+    for d in data:
+        if d not in result:
+            result.append(d)
+    return result
 
 
 def funder_dashboard(request, bounty_type):
@@ -3108,11 +3170,23 @@ def funder_dashboard(request, bounty_type):
             current_bounty=True,
             network=network,
             bounty_owner_github_username=profile.handle,
-            ).order_by('-interested__created'))
+            ).order_by('-interested__created', '-web3_created'))
         interests = list(Interest.objects.filter(
             bounty__pk__in=[b.pk for b in bounties],
             status='okay'))
-        return JsonResponse(serialize_funder_dashboard_open_rows(bounties, interests), safe=False)
+        return JsonResponse(clean_dupe(serialize_funder_dashboard_open_rows(bounties, interests)), safe=False)
+
+    elif bounty_type == 'started':
+        bounties = list(Bounty.objects.filter(
+            Q(idx_status='started') | Q(override_status='started'),
+            current_bounty=True,
+            network=network,
+            bounty_owner_github_username=profile.handle,
+            ).order_by('-interested__created', '-web3_created'))
+        interests = list(Interest.objects.filter(
+            bounty__pk__in=[b.pk for b in bounties],
+            status='okay'))
+        return JsonResponse(clean_dupe(serialize_funder_dashboard_open_rows(bounties, interests)), safe=False)
 
     elif bounty_type == 'submitted':
         bounties = Bounty.objects.prefetch_related('fulfillments').distinct('id').filter(
