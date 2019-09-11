@@ -305,7 +305,8 @@ const sendPersonal = (persona) => {
       });
     };
     let do_redirect = document.URL.indexOf('/profile/') == -1;
-    if(do_redirect){
+
+    if (do_redirect) {
       if (response.persona === 'persona_is_funder') {
         if (checkUrl(urls, document.location.href)) {
           window.location = '/onboard/funder';

@@ -98,7 +98,7 @@ $(document).ready(function() {
 
 (function($) {
 
-  $('.tooltip').bootstrapTooltip()
+  $('.tooltip').bootstrapTooltip();
 
   // rep graph
   if ($('#my_dataviz').length) {
