@@ -98,6 +98,8 @@ $(document).ready(function() {
 
 (function($) {
 
+  $('.tooltip').bootstrapTooltip()
+
   // rep graph
   if ($('#my_dataviz').length) {
     // Set the dimensions of the canvas / graph
