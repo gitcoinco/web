@@ -34,6 +34,8 @@
 <script>
   const bootstrapTooltip = $.fn.tooltip.noConflict()
   $.fn.bootstrapTooltip = bootstrapTooltip;
+  const bootstrapModal = $.fn.modal.noConflict();
+  $.fn.bootstrapModal = bootstrapModal;
 
 </script>
 
@@ -47,13 +49,13 @@
 <script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
 <script src="{% static "v2/js/lib/jsrender.js" %}"></script>
 <script src="{% static "v2/js/lib/moment.min.js" %}"></script>
+<script src="{% static "v2/js/ajax-helper.js" %}"></script>
 <script src="{% static "v2/js/base.js" %}"></script>
 <script src="{% static "v2/js/lib/purify.min.js" %}"></script>
 <script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/truncate-hash.js" %}"></script>
 <script defer src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
 <script src="{% static "v2/js/note.js" %}"></script>
-<script src="{% static "v2/js/ajax-helper.js" %}"></script>
 <script src="{% static "v2/js/pages/carousel.js" %}"></script>
 {% if user.is_authenticated %}
   <script src="{% static "v2/js/notifications.js" %}"></script>

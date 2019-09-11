@@ -884,8 +884,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Ethereal Blocks Begins, Grow Ethereum Wraps"
-    new_kudos_pks = [2563, 4536, 4533]
+    subject = "Dashboard, Ethereal Blocks Midpoint"
+    new_kudos_pks = [4553, 4547, 4544]
     new_kudos_size_px = 150
     if settings.DEBUG and false:
         # for debugging email styles
@@ -906,13 +906,13 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Ready, set, hack. Ethereal Blocks, the most recent hackathon in our ever-growing anthology, has officially begun. Participants in this round of decentralized goodness automatically enter themselves into a prize pool of $50k. Our sponsors this go around are the Ethereum Foundation, Airswap, Bancor, Ethereal, portis, Etoro, GoodDollar, Matic, bZx, SKALE, and Status. Check out the hackathon details here: <a href="https://hackathons.gitcoin.co/ethereal-blocks/">https://hackathons.gitcoin.co/ethereal-blocks/</a>.
+We hope our American folks had an extravagant Labor Day weekend and cruised into a relaxed, enjoyable week. On our end, we've been watching with baited breath as the Gitcoin community transforms the Ethereal Blocks bounties into real, tangible projects. If you're hacking along this go around, be sure you are watching the Discord channel for any updates. The deadline to submit your work is a week from today, September 11th, at 11:59PM EST.
 </p>
 <p>
-Keep your excitement in check for the next round of Gitcoin Grants CLR matching. Inch by inch, we're getting closer to launch, and we can't wait to see what our community does this time. Have any questions about Grants? Check out the homepage <a href="https://gitcoin.co/grants/">here</a> and send us a tweet. We're happy to help.
+It's new feature time. Our devs have been working hard on the latest iteration of the Dashboard, which is now your one stop shop for a high level overview of all your activity on the Gitcoin platform. Monitor your active bounties, applications, and submissions. The dashboard is now live at <a href="gitcoin.co/dashboard">https://gitcoin.co/dashboard/</a>.
 </p>
 <p>
-For those who we saw at ETHBerlin, it was great to see you! We're decompressing after a phenomenal month of travel. Tweet at us with any photos, and we'll give them a retweet! Our Twitter is @gitcoin.
+Inch by inch, row by row, it takes some time to make Gitcoin Grants grow. We promise: we're closer to launch, and we can't wait to see what our community does this time. Have any questions about Grants? Check out the homepage <a href="https://gitcoin.co/grants/">here</a> or send us a tweet. 
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
@@ -921,7 +921,7 @@ For those who we saw at ETHBerlin, it was great to see you! We're decompressing 
         The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
         </li>
         <li>
-	Keep your eyes open for a blog post with the winners of Grow Ethereum in the next coming days. And for our States-based friends, have a tremendous Labor Day weekend~
+        Interested in our sponsors for Ethereal Blocks? Check out our most recent post featuring <a href="https://gitcoin.co/blog/ethereal-blocks-x-bancor-liquid-bounties/">Bancor.</a>
         </li>
     </ul>
 </p>
@@ -930,22 +930,22 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'touhonoob',  
+        'who': 'sulliwane',  
         'who_link': True,
-        'what': 'Rule pages, created.',
-        'link': 'https://gitcoin.co/issue/protofire/solhint/139/3363',
+        'what': 'Soccer Scores DOracle',
+        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/11/3196',
         'link_copy': 'View more',
     }, {
-        'who': 'bitsikka',
+        'who': 'MajorTomSec',
         'who_link': True,
-        'what': 'My profile screens reorganisation and items design',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8070/3211',
+        'what': 'Copy updates for consistency',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/8846/3391',
         'link_copy': 'View more',
     }, {
-        'who': 'sergejmueller',
+        'who': 'batatsar',
         'who_link': True,
-        'what': 'Reduce Web3Connect bundle size.',
-        'link': 'https://gitcoin.co/issue/web3connect/web3connect/66/3356',
+        'what': 'eth_getunclebyblockhashandindex typo',
+        'link': 'https://gitcoin.co/issue/ethresearch/eth-wiki/7/3361',
         'link_copy': 'View more',
     }, ]
 
@@ -961,14 +961,14 @@ Back to shipping,
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/Synthetixio/synthetix/issues/213',
-        'primer': 'Add Synth Exchanges To Uniswap',
+        'url': 'https://github.com/MetaMask/metamask-extension/issues/6699',
+        'primer': 'Malicious Dependency Update Bug Bounty',
     }, {
-        'url': 'https://github.com/harmonylion/ideamarkets/issues/2',
-        'primer': 'Idea Markets unit tests and bug bounty',
+        'url': 'https://github.com/Synthetixio/synthetix/issues/196',
+        'primer': 'Gas Optimisation R&D',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/5089',
-        'primer': 'Bot Creatives',
+        'url': 'https://github.com/centrifuge/security/issues/1',
+        'primer': 'Security Vulnerability Bounty Centrifuge OS',
 }, ]
 
 
