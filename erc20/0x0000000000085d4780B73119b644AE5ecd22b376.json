@@ -1,5 +1,5 @@
 {
-    "symbol": "TrueUSD",
+    "symbol": "TUSD",
     "address": "0x0000000000085d4780B73119b644AE5ecd22b376",
     "overview": {
         "en": "TrueUSD (TUSD) is the first independently-verified digital asset fully collateralized by US Dollars. The ERC20 stablecoin uses multiple escrow accounts to reduce counterparty risk, provide transparent attestations, and legal protections against fraud. TUSD users enjoy the lowest gas costs of any stablecoin thanks to GasBoost; easy wallet alias creation through Autosweep; and direct-to-bank TUSD transactions through unique, easy-to-remember Redemption Addresses.",
