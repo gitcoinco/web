@@ -107,7 +107,7 @@ def get_favorites(request,  favType, **kwargs):
                 ser = GrantSerializer(obj)
                 jsonRetData.append(ser.data)
         elif reqTypes[favType] == "USER":
-            for obj in Profile.objects.filter(user=fav.obj_id):
+            for obj in Profile.objects.filter(id=fav.obj_id):
                 ser = ProfileSerializer(obj)
                 jsonRetData.append(ser.data)
 

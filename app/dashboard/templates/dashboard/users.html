@@ -123,14 +123,16 @@
               <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
             </div>
             <div class="grid-4">
-              <div v-for="user in users" class="card card-user shadow-sm border-0" :key="user.id">
+              <div v-for="(user, key) in users" class="card card-user shadow-sm border-0" :key="user.id">
                 <div class="d-flex flex-column py-1 bg-lightblue">
                   <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
                   <div class="dropdown-menu dropdown-menu-right">
                     <a :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item">Fund bounty</a>
+                    <a @click="favUser(user.id)" target="_blank" class="dropdown-item">Favorite</a>
                     <div class="dropdown-divider"></div>
                     <a :href="`/profile/${ user.handle }`" class="dropdown-item" target="_blank">View profile</a>
                   </div>
+                  <button class="btn position-absolute align-self-start" href="#" @click="favUser(key, user.id, !user.fav)" role="button"><i class="fa-heart" :class="[user.fav ?  'fas' : 'far']"></i></button>
                   <img class="rounded-circle shadow-sm mx-auto mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${ user.handle }`"/>
                   <h5 class="text-center card-user_name">
                     [[ user.name || user.handle ]]

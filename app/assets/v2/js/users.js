@@ -158,6 +158,23 @@ Vue.mixin({
           }
         }
       }
+    },
+    favUser(key, userId, state) {
+      let vm = this;
+      let api = `/api/v0.1/favorites/user/${userId}`;
+      let favoriteUsers
+      console.log(key,state)
+      if (state) {
+        favoriteUsers = fetchData (api, 'POST', [],{'X-CSRFToken': csrftoken});
+      } else {
+        favoriteUsers = fetchData (api, 'DELETE', [],{'X-CSRFToken': csrftoken});
+      }
+
+      $.when(favoriteUsers).then(function(response) {
+        console.log(response)
+        vm.$set(vm.users[key], 'fav', state);
+
+      });
     }
   }
 });

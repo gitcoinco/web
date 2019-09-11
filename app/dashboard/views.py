@@ -60,6 +60,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
+from favorites.models import Favorite
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import new_reserved_issue, start_work_approved, start_work_new_applicant, start_work_rejected
@@ -776,6 +777,7 @@ def users_fetch(request):
     else:
         network = 'rinkeby'
     if current_user:
+        favorites = Favorite.objects.filter(user=current_user, type='USER')
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
             ).exclude(hide_profile=True)
@@ -883,6 +885,10 @@ def users_fetch(request):
         profile_json['work_inprogress'] = count_work_in_progress
         profile_json['verification'] = user.get_my_verified_check
         profile_json['avg_rating'] = user.get_average_star_rating
+        # profile_json['fav'] = [user.id for user in favorites]
+        # profile_json['fav'] = [i for i in favorites if user.id in [i_user.id for i_user in range(0,i.obj_id)]]
+        profile_json['fav'] = ['true' for i in favorites if user.id in range(0,i.obj_id)]
+
         if user.avatar_baseavatar_related.exists():
             user_avatar = user.avatar_baseavatar_related.first()
             profile_json['avatar_id'] = user_avatar.pk
