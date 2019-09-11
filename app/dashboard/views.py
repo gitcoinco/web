@@ -73,7 +73,7 @@ from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_fil
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
     FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer,
-    RefundFeeRequest, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
+    RefundFeeRequest, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -869,6 +869,12 @@ def users_fetch(request):
             'show_job_status', 'job_location', 'job_salary', 'job_search_status',
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
             'organizations', 'is_org']}
+
+        if user.show_job_status is False:
+            del profile_json['job_salary']
+            del profile_json['job_location']
+            del profile_json['job_type']
+
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
         profile_json['previously_worked'] = user.previous_worked_count > 0
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
@@ -892,6 +898,19 @@ def users_fetch(request):
     params['has_next'] = all_pages.page(page).has_next()
     params['count'] = all_pages.count
     params['num_pages'] = all_pages.num_pages
+
+    # log this search, it might be useful for matching purposes down the line
+    try:
+        SearchHistory.objects.update_or_create(
+            search_type='users',
+            user=request.user,
+            data=request.GET,
+            ip_address=get_ip(request)
+        )
+    except Exception as e:
+        logger.debug(e)
+        pass
+
     return JsonResponse(params, status=200, safe=False)
 
 
@@ -2003,15 +2022,15 @@ def profile(request, handle):
                 currently_working_bounties_count = currently_working_bounties.count()
                 if currently_working_bounties_count > 0:
                     paginator = Paginator(currently_working_bounties, 10)
-                
+
                 if page > paginator.num_pages:
                     return HttpResponse(status=204)
 
                 context = {}
-                context['bounties'] = [bounty for bounty in paginator.get_page(page)]   
+                context['bounties'] = [bounty for bounty in paginator.get_page(page)]
 
                 return TemplateResponse(request, 'profiles/profile_bounties.html', context, status=status)
-                
+
             else:
 
                 all_activities = profile.get_various_activities()
@@ -2601,7 +2620,9 @@ def get_suggested_contributors(request):
         Q(bounty__issue_description__icontains=keyword)
 
     recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile') \
-        .filter(keywords_filter).values('fulfiller_github_username', 'profile__id').distinct()[:10]
+        .filter(keywords_filter).values('fulfiller_github_username', 'profile__id') \
+        .exclude(fulfiller_github_username__isnull=True) \
+        .exclude(fulfiller_github_username__exact='').distinct()[:10]
 
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle', 'user__profile__id')
 

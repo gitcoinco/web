@@ -718,6 +718,7 @@ def psave_grant(sender, instance, **kwargs):
         value_usdt = subscription.get_converted_amount()
         for contrib in subscription.subscription_contribution.filter(success=True):
             if value_usdt:
+                #print(f"adding contribution of {round(subscription.amount_per_period,2)} {subscription.token_symbol}, pk: {contrib.pk}, worth ${round(value_usdt,2)} to make total ${round(instance.amount_received,2)}. (txid: {contrib.tx_id} tx_cleared:{contrib.tx_cleared} )")
                 instance.amount_received += Decimal(value_usdt)
 
         if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:

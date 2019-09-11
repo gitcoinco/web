@@ -32,10 +32,59 @@
       {% include 'home/nav.html' %}
       {% include 'shared/minihero.html' with h1='About' %}
     </div>
+    <div id="team" class="container-fluid section">
+      <div class="row">
+        <div class="col-12 mb-4">
+          <h4 class="font-heading">{% trans "We are Proudly" %}</h4>
+          <p class="font-subheader caption">{% trans "Owned &amp; Built By Open Source Software Developers" %}</p>
+          <p class="font-subheader ">{% trans "*For* Open Source Software Developers" %}</p>
+        </div>
+      </div>
+      <div class="row">
+          {% for name, role, handle, linkedin, feature, food, fname, rpgname in core_team %}
+            <div class="col-10 col-md-6 col-lg-3">
+              <div class="card">
+                <a href="/profile/{{handle}}">
+                  <img class="avatar {{fname}}" src="/static/v2/images/team/{{fname}}.png">
+                </a>
+                <p class="name">(aka .. <a style="font-weight:888; font-size: 16px;" href="/profile/{{handle}}">@{{handle}}</a>)</p>
+                <p class="role font-caption">{{rpgname}} <span>({{role}})</span></p>
+                <p class="font-caption">
+                  <span class="title">Favorite Gitcoin Feature</span></br>
+                  <span class="desc">{{feature}}</span>
+                </p>
+                <p class="font-caption">
+                  <span class="title">Favorite Food</span></br>
+                  <span class="desc">{{food}}</span>
+                </p>
+                <div class="social-links">
+                  {%  if linkedin %}
+                    <a href="https://www.linkedin.com/in/{{linkedin}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                  {% endif %}
+                  <a href="https://gitcoin.co/profile/{{handle}}"><div class="gitcoin-svg"></div></a>
+                  <a href="https://github.com/{{handle}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        <div class="col-10 col-md-6 col-lg-3">
+            <div class="card">
+              <a href="/jobs">
+                <img class="avatar jobs" src="/static/v2/images/team/jobs.png">
+              </a>
+              <p class="name">@You?</p>
+              <p class="role font-caption">Working on something important.</p>
+              <p class="role font-caption">For People Like You..</p>
+              <p class="role font-caption">At a Market Rate Salary</p>
+              <p class="role font-caption"><a href="/jobs">See Openings</a></p>
+            </div>
+          </div>
+      </div>
+    </div>
     <div class="container">
       <div class="row pb-1 pt-5 justify-content-center">
         <div class="col-12 pb-4 text-center">
-          <h2 >{% trans "The Problem" %}</h2>
+          <h2 >{% trans "The Problem is" %}</h2>
           <h6>{% trans "Incentive alignment in Open Source Software." %}</h6>
         </div>
         <div class="col-12 pb-4">
@@ -110,8 +159,14 @@
     <div class="container-fluid " style="background: white;">
       <div class="row pb-5 pt-5">
         <div class="col pb-4">
-          <h4>{% trans "The Solution" %}</h4>
-          <h6 class="text-center">{% trans "A double sided market that connects coders to funding." %}</h6>
+          <h4>{% trans "We think the Solution is" %}</h4>
+          <h6 class="text-center"><a href=/mission>{% trans "A community united by a mission," %}</a></h6>
+          <h6 class="text-center"><a href=/mission>{% trans "and a vision." %}</a></h6>
+          <h6 class="text-center"><a href=/explorer>{% trans "A double sided market that connects coders to funding." %}</a></h6>
+          <h6 class="text-center"><a href=/product>{% trans "and multiple matching mechanisms" %}</a></h6>
+          <h6 class="text-center"><a href=/users>{% trans "that connects coders" %}</a></h6>
+          <h6 class="text-center"><a href=/leaderboard>{% trans "to funders" %}</a></h6>
+          <h6 class="text-center"><a href=/results>{% trans "and creates results..." %}</a></h6>
         </div>
       </div>
       <div class="row">
@@ -182,41 +237,7 @@
         </div>
       </div>
     </div>
-    <div id="team" class="container-fluid section">
-      <div class="row">
-        <div class="col-12 mb-4">
-          <h4 class="font-heading">{% trans "Team" %}</h4>
-          <p class="font-subheader caption">{% trans "Built By &amp; For Open Source Software Developers" %}</p>
-        </div>
-      </div>
-      <div class="row">
-          {% for name, role, handle, linkedin, feature, food in core_team %}
-            <div class="col-10 col-md-6 col-lg-3">
-              <div class="card">
-                <a href="/profile/{{handle}}">
-                  <img class="avatar" src="https://gitcoin.co/dynamic/avatar/{{handle}}">
-                </a>
-                <p class="name">{{name}} (<a href="/profile/{{handle}}">@{{handle}}</a>)</p>
-                <p class="role font-caption">{{role}}</p>
-                <p class="font-caption">
-                  <span class="title">Favorite Gitcoin Feature</span></br>
-                  <span class="desc">{{feature}}</span>
-                </p>
-                <p class="font-caption">
-                  <span class="title">Favorite Food</span></br>
-                  <span class="desc">{{food}}</span>
-                </p>
-                <div class="social-links">
-                  {%  if linkedin %}
-                    <a href="https://www.linkedin.com/in/{{linkedin}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
-                  {% endif %}
-                  <a href="https://gitcoin.co/profile/{{handle}}"><div class="gitcoin-svg"></div></a>
-                  <a href="https://github.com/{{handle}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-      </div>
+    <div class="container-fluid text-center white-light-bg" id="community">
       {% include 'community.html' with h1="Community"  h2="Gitcoin's Top Community Members" community_members=community_members %}
       {% include 'community.html' with h1="Alumni"  h2=total_alumnis|add:" community members have 'graduated' into full time work in the space (that we know of!)" community_members=alumni %}
     </div>
