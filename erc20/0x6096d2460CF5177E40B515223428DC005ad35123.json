@@ -1,0 +1,22 @@
+{
+  "symbol": "PCM",
+  "address": "0x6096d2460CF5177E40B515223428DC005ad35123",
+  "overview":{
+        "en": "The Precium platform is a smart contract Commerce and Marketing platform based on Onyx Chain, a Hybrid blockchain that combines the advantages of a Private blockchain with a Public blockchain. There are two parties involved in the Precium Platform, the Contract Users and the Contract Creators. Contract Creators provide a validated contract conditions or templates to Contract Users, and Contract Users can easily build a new Smart Contract in the Onyx chain using the conditions provided by the Contract Creators. In this process, the Contract Creators are rewarded for every time whenever the contract conditions are used. In addition, Precium Platform provides a secure and versatile form of smart contract for contract users by building a reliable Oracle solution that connects on-chain and off-chain.",
+        "zh": "Precium Platform是一个KOL营销及商务平台。 在以专属的形式拥有200多名顶级（位居前5%）韩国网红以及约1000万粉丝的KOL营销公司KCENT和核心成员均为研究生学历以上的软件开发公司HANKY＆PARTNERS的支持下，该平台提供专门营销服务。 该平台将向所有其他品牌进行开放，以便他们通过KOL推广或团购销售他们自己的产品，并从用户端实现病毒营销。 网红可以通过利用他们的广范围的影响力来帮助品牌公司销售他们的产品，并自己也获得收益。初期的网红将会由KCENT专属网红组成。 用户将通过对产品的老实反馈可获得奖励，而根据他们的贡献程度，这便会是成为新的一个网红的通道。 我们相信通过区块链技术可以创建一个安全透明的商业及营销平台，使得所有平台上的参与方感到满意。不仅如此，当我们把我们事业带到国外发展时，我们相信区块链技术将会降低进军新市场的门槛。"
+  },
+  "email": "contact@precium.io",
+  "website": "https://precium.io/",
+  "whitepaper": "https://precium.io/pdf/Whitepaper_N_Precium_v6.3_Eng.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-10-15",
+  "initial_price":{
+        "USD":"0.04 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Precium_io",
+    "telegram": "https://t.me/preciumen",
+    "github": "https://github.com/PreciumFoundation",
+    "medium": "https://medium.com/@precium"
+  }
+}
