@@ -7,6 +7,11 @@
 	&nbsp;&nbsp;{{ avg_rating_scaled.total_rating }} {% trans "rating" %}{{avg_rating_scaled.total_rating | pluralize}}
   </div>
 </div>
+{% if is_editable %}
+  <div class="tab3">
+    {% include "shared/rate_bounties.html" %}
+  </div>
+{% endif %}
 <div class="row">
   <div class="col-4">
 	  <div class="row">

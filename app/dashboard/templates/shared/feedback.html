@@ -24,16 +24,21 @@
   </div>
   <div class="col-12 col-md-10">
     <div class="d-flex flex-column mt-2">
-	  <div class="sender-profile d-flex flex-column">
-		<span class="font-weight-bold">@{{feedback.sender_profile}}</span>
-		<small>for {{feedback.bounty.org_name}}:
-		  <a class="align-self-center" href="{{ feedback.bounty.url }}">{{feedback.bounty.title}}</a>
-		</small>
-	  </div>
+  	  <div class="sender-profile d-flex flex-column">
+        {% if feedback.private %}
+          <div style="float: right; font-size: 12px;">
+            <i class="fas fa-eye"></i> <span>Only visible to you</span>
+          </div>
+        {% endif %}
+    		<span class="font-weight-bold">@{{feedback.sender_profile}}</span>
+    		<small>for {{feedback.bounty.org_name}}:
+    		  <a class="align-self-center" href="{{ feedback.bounty.url }}">{{feedback.bounty.title}}</a>
+    		</small>
+  	  </div>
 	  <div class="static-stars">
 	    {% for rating in ratings %}
-		  <i class="fa fa-star {% if feedback.rating != 0 and rating <= feedback.rating %}fas{% endif %}"></i>
-		{% endfor %}
+	   	  <i class="fa fa-star {% if feedback.rating != 0 and rating <= feedback.rating %}fas{% endif %}"></i>
+  		{% endfor %}
 	  </div>
 	</div>
   </div>

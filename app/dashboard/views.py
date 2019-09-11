@@ -353,6 +353,7 @@ def post_comment(request):
         'receiver_profile': receiver_profile,
         'rating': request.POST.get('review[rating]', '0'),
         'satisfaction_rating': request.POST.get('review[satisfaction_rating]', '0'),
+        'private': not bool(request.POST.get('review[public]', '0') == "1"),
         'communication_rating': request.POST.get('review[communication_rating]', '0'),
         'speed_rating': request.POST.get('review[speed_rating]', '0'),
         'code_quality_rating': request.POST.get('review[code_quality_rating]', '0'),
@@ -2121,8 +2122,8 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['sent_kudos_count'] = sent_kudos.count()
 
     elif tab == 'ratings':
-        context['feedbacks_sent'] = profile.feedbacks_sent.all()
-        context['feedbacks_got'] = profile.feedbacks_got.all()
+        context['feedbacks_sent'] = [fb for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
+        context['feedbacks_got'] = [fb for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
         context['unrated_funded_bounties'] = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
             .filter(
                 bounty_owner_github_username__iexact=profile.handle,
@@ -2180,9 +2181,18 @@ def profile(request, handle, tab=None):
 
     # setup
     status = 200
-    tab = tab if tab else 'activity'
+    default_tab = 'activity'
+    tab = tab if tab else default_tab
+    # make sure tab param is correct
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos']
+    tab = default_tab if tab in all_tabs else tab
+    if handle in all_tabs and request.user.is_authenticated:
+        # someone trying to go to their own profile?
+        tab = handle
+        handle = request.user.profile.handle
     # staff only tabs
-    tab = 'activity' if tab in ['active', 'ratings', 'portfolio', 'viewers'] and not request.user.is_staff else tab
+    staff_tabs = ['active', 'ratings', 'portfolio', 'viewers']
+    tab = default_tab if tab in staff_tabs and not request.user.is_staff else tab
     owned_kudos = None
     sent_kudos = None
     handle = handle.replace("@", "")

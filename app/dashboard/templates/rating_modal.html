@@ -73,6 +73,11 @@
                 <textarea name='review[comment]' id='review' class="form-control gc-border-blue" placeholder="{% trans 'Let us know here...' %}"></textarea>
               </div>
 
+              <div class="w-100 mt-2 p-2">
+                <label class="form__label text-weight_semibold" for="public">{% trans "Is it okay to show this review publicly?" %}</label>
+                <input name='review[public]' id="public" type="checkbox" class="gc-border-blue" value="1" checked="checked" ></textarea>
+              </div>
+
             </div>
             <div class="p-2 text-right">
               <button type="button" class="button button--primary-o shadow-none" data-dismiss="modal" aria-label="Close">Cancel</button>

@@ -3667,10 +3667,23 @@ class FeedbackEntry(SuperModel):
     recommendation_rating = models.SmallIntegerField(blank=True, default=0)
     comment = models.TextField(default='', blank=True)
     feedbackType = models.TextField(default='', blank=True, max_length=20)
+    private = models.BooleanField(help_text=_('whether this feedback can be shown publicly'), default=True)
 
     def __str__(self):
         """Return the string representation of a Bounty."""
         return f'<Feedback Bounty #{self.bounty} - from: {self.sender_profile} to: {self.receiver_profile}>'
+
+    def visible_to(self, user):
+        """Whether this user can see the feedback ornot"""
+        if not self.private:
+            return True
+        if user.is_staff:
+            return True
+        if not user.is_authenticated:
+            return False
+        if self.sender_profile.handle == user.profile.handle:
+            return True
+        return False
 
 
 class Coupon(SuperModel):
