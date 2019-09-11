@@ -1595,6 +1595,31 @@ div.busyOverlay {
   pointer-events: none;
 }
 
+/* Gitcoin Updates */
+.dynamic-content img {
+  max-width: 100%;
+}
+
+.dynamic-content h2 {
+  font-size: 1.8em;
+}
+
+.dynamic-content h3 {
+  font-size: 1.6em;
+}
+
+.dynamic-content h4 {
+  font-size: 1.4em;
+}
+
+.dynamic-content h5 {
+  font-size: 1.3em;
+}
+
+.dynamic-content h6 {
+  font-size: 1.2em;
+}
+
 .daterangepicker td.active,
 .daterangepicker td.active:hover {
   background-color: #3E00FF !important;

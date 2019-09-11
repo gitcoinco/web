@@ -86,6 +86,7 @@ h4 {
 }
 
 #community .avatar {
+  border: 0.1rem solid #1AB56D;
   width: 150px;
   height: 150px;
   border-radius: 50%;
@@ -100,15 +101,18 @@ h4 {
   margin-bottom: 10px;
   opacity: .9;
 }
+
 #team .avatar:hover {
   width: 235px;
   height: 295px;
   opacity: 1;
 }
+
 #team .avatar.nate {
   height: 385px;
   margin-bottom: -90px;
 }
+
 #team .avatar.jobs {
   height: 275px;
 }

@@ -880,12 +880,19 @@ def render_start_work_applicant_expired(interest, bounty):
 
     return response_html, response_txt, subject
 
+
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
     subject = "Dashboard, Ethereal Blocks Midpoint"
     new_kudos_pks = [4553, 4547, 4544]
     new_kudos_size_px = 150
+    if settings.DEBUG and false:
+        # for debugging email styles
+        email_style = 4
+    else:
+        offset = 2
+        email_style = int(timezone.now().strftime("%V")) + offset % 6 + 1
 
     kudos_friday = f'''
 <h3>Happy Kudos Friday!</h3>
@@ -1023,6 +1030,7 @@ Back to shipping,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
         'sponsor': sponsor,
+        'email_style': email_style,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))

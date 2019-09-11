@@ -38,7 +38,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Activity, Profile
+from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_nonce, get_web3
 from dashboard.views import record_user_action
@@ -124,6 +124,17 @@ def marketplace(request):
     if q:
         title = f'{q.title()} Kudos'
         token_list = token_list.keyword(q)
+        # log this search, it might be useful for matching purposes down the line
+        try:
+            SearchHistory.objects.update_or_create(
+                search_type='kudos',
+                user=request.user,
+                data=request.GET,
+                ip_address=get_ip(request)
+            )
+        except Exception as e:
+            logger.debug(e)
+            pass
 
     listings = token_list.order_by(order_by).cache()
     context = {
@@ -728,6 +739,7 @@ def receive_bulk(request, secret):
 
     title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
+    tweet_text = f"I just got a {coupon.token.humanized_name} Kudos on @gitcoin.  " if not request.GET.get('tweet', None) else request.GET.get('tweet')
     params = {
         'title': title,
         'card_title': title,
@@ -739,6 +751,6 @@ def receive_bulk(request, secret):
         'class': _class,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
-        'tweet_text': urllib.parse.quote_plus(f"I just got a {coupon.token.humanized_name} Kudos on @gitcoin.  ")
+        'tweet_text': urllib.parse.quote_plus(tweet_text)
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)

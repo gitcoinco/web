@@ -8,6 +8,9 @@
 #grant-link {
   color: #0D0764;
 }
+.tab_target{
+  width: 100%;
+}
 
 .banner-img {
   max-height: 22rem;
@@ -141,6 +144,22 @@
   left: 0;
   right: 0;
   bottom: -1.2rem;
+}
+
+.nav{
+  text-align: center;
+}
+.nav-link{
+  border-right: 1px solid black;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  margin-right: 10px;
+}
+.nav-link:visited{
+  color: black;
+}
+.nav-item.active{
+  text-decoration: underline;
 }
 
 @media (min-width:1140px) and (max-width: 1600px) {
