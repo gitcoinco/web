@@ -125,7 +125,7 @@ def get_avatar_context():
                 'cloak', 'robe', 'pjs', 'elf_inspired', 'business_suit', 'suspender', 'gitcoinpro', 'star_uniform',
                 'jersey', 'charlie', 'doctor', 'chinese', 'blouse', 'polkadotblouse', 'coat', 'crochettop',
                 'space_suit', 'armour', 'pilot', 'baseball', 'football', 'lifevest', 'firefighter', 'leatherjacket',
-                'martialarts', 'raincoat', 'recycle', 'chef', 'sailor',
+                'martialarts', 'raincoat', 'recycle', 'chef', 'sailor', 'turtleneck',
             ),
             'paid_options': {
                 'robe': 0.01,

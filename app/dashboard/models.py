@@ -3355,6 +3355,7 @@ class SearchHistory(SuperModel):
 
         verbose_name_plural = 'Search History'
 
+    search_type = models.CharField(max_length=50, db_index=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField(default=dict)
     ip_address = models.GenericIPAddressField(blank=True, null=True)

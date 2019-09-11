@@ -127,7 +127,7 @@
             <li class="text-center my-5" :class="{'d-none': (isLoading.open || bounties.open && bounties.open.length > 0) }">
               <img src="{% static 'v2/images/zero-bounties.svg' %}" alt="" width="197" height="169">
               <h4 class="h5 font-weight-semibold my-3">
-                You haven’t funded any issues yet.
+                You don't have any open issues right now!
               </h4>
               <p class="text-black-70"><a title="Fund an issue" href="{% url 'new_funding' %}">Fund an Issue</a> or check out our <a href="{% url 'quickstart' %}">Funders Guide</a> to start getting contributors for your project! </p>
               <p class="text-black-70">Have any question? Chat with us on <a href="{% url 'slack' %}">Slack</a>!</p>
@@ -292,7 +292,7 @@
               </div>
             </li>
             <li class="text-center my-5" :class="{'d-none': isLoading.submitted ||bounties.submitted && bounties.submitted.length > 0}" v-cloak>
-              <p>[[ error.submitted || 'You have no bounties with submittions.' ]]</p>
+              <p>[[ error.submitted || 'You have no bounties with submissions.' ]]</p>
             </li>
           </ul>
           <loading-screen v-if="isLoading.submitted"></loading-screen>
@@ -352,7 +352,7 @@
     <div class="row text-center py-5">
       <div class="col-12">
         <p>
-          If you want to check also your finished and cancel bounties you can find them here:
+          If you also want to check your finished and cancelled bounties, you can find them here:
         </p>
         <a class="btn btn-gc-blue" href="/explorer?bounty_filter=createdByMe&network=mainnet&order_by=-web3_created">Check my bounties in the explorer</a>
       </div>
