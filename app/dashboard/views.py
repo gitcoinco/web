@@ -72,8 +72,8 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer,
-    RefundFeeRequest, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel, REPEntry, ProfileView
+    FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer, ProfileView,
+    RefundFeeRequest, REPEntry, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
