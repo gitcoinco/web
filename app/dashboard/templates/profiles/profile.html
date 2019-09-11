@@ -22,6 +22,12 @@
     {% include 'home/nav.html' %}
     <div class="container-fluid header profile-header dash {% if not profile.profile_wallpaper %}basic {% endif %}" style="{% if profile.profile_wallpaper %} background-image: url( {{ profile.profile_wallpaper }} ) {% endif %}">
       {% csrf_token %}
+      {% if not hidden and is_staff %}
+        <div class="alpha-warning font-caption mb-0">
+          <span class="font-weight-bold">Staff only</span>
+          <a style="color:white;" href="{{profile.admin_url}}">{% trans "Profile Admin" %}</a>
+        </div>
+      {% endif %}
       {% if is_editable %}
         <div class="position-relative profile-banner">
 		  <div class="container mt-5">
@@ -34,12 +40,6 @@
 			  </div>
 			</div>
 		  </div>
-        </div>
-      {% endif %}
-      {% if not hidden and is_staff %}
-        <div class="alpha-warning font-caption mb-0">
-          <span class="font-weight-bold">Staff only</span>
-          <a style="color:white;" href="{{profile.admin_url}}">{% trans "Profile Admin" %}</a>
         </div>
       {% endif %}
     </div>

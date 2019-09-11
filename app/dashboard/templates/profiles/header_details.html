@@ -55,7 +55,6 @@
               {% if  profile.show_job_status %}
                 <div class="my-2" id="job_status">
                   <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ profile.job_status_verbose }}
-                  {% if profile.resume %}<a href="{{ MEDIA_URL }}{{profile.resume}}" download>View Resume</a>{% endif %}
                 </div>
               {% endif %}
               {% if profile.data.bio %}

@@ -2953,6 +2953,8 @@ class Profile(SuperModel):
 
     @staticmethod
     def get_network():
+        if settings.OVERRIDE_NETWORK:
+            return settings.OVERRIDE_NETWORK
         return 'mainnet' if not settings.DEBUG else 'rinkeby'
 
     def get_fulfilled_bounties(self, network=None):
@@ -3010,11 +3012,14 @@ class Profile(SuperModel):
         if sum_type == 'funded':
             bounties = bounties.has_funds()
 
-        try:
-            if bounties.exists():
-                eth_sum = sum([bounty.get_value_in_eth for bounty in bounties])
-        except Exception:
-            pass
+        eth_sum = 0
+        if bounties.exists():
+            try:
+                for bounty in bounties:
+                    eth_sum += float(bounty.get_value_in_eth)
+            except Exception as e:
+                logger.exception(e)
+                pass
 
         return eth_sum
 
@@ -3051,8 +3056,8 @@ class Profile(SuperModel):
                     all_tokens_sum_tmp[ele[0]] += ele[1] / 10**18
                 all_tokens_sum = [{'token_name': token_name, 'value_in_token': value_in_token} for token_name, value_in_token in all_tokens_sum_tmp.items()]
 
-        except Exception:
-            pass
+        except Exception as e:
+            logger.exception(e)
 
         return all_tokens_sum
 
