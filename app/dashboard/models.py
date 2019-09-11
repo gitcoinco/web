@@ -3409,12 +3409,13 @@ class HackathonEvent(SuperModel):
 
     @property
     def bounties(self):
-        return Bounty.objects.filter(event=self).current()
+        return Bounty.objects.filter(event=self, network='mainnet').current()
 
     @property
     def stats(self):
         stats = {
             'range': f"{self.start_date.strftime('%m/%d/%Y')} to {self.end_date.strftime('%m/%d/%Y')}",
+            'logo': self.logo.url if self.logo else None,
             'num_bounties': self.bounties.count(),
             'num_bounties_done': self.bounties.filter(idx_status='done').count(),
             'num_bounties_open': self.bounties.filter(idx_status='open').count(),
