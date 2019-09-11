@@ -48,7 +48,7 @@ import requests
 from app.utils import get_upload_filename
 from dashboard.points import point_values
 from dashboard.tokens import addr_to_token
-from economy.models import ConversionRate, SuperModel
+from economy.models import ConversionRate, SuperModel, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
@@ -2071,6 +2071,7 @@ class Profile(SuperModel):
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True, unique=True)
     last_sync_date = models.DateTimeField(null=True)
+    last_calc_date = models.DateTimeField(default=get_time)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES, blank=True)
@@ -2289,6 +2290,17 @@ class Profile(SuperModel):
         on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
+
+    def calculate_all(self):
+        # calculates all the info needed to make the profile_great
+        self.calculate_and_save_persona()
+        self.activity_level = self.calc_activity_level()
+        self.longest_streak = self.calc_longest_streak()
+        self.num_repeated_relationships = self.calc_num_repeated_relationships()
+        self.avg_hourly_rate = self.calc_avg_hourly_rate()
+        self.success_rate = self.calc_success_rate()
+        self.rep = self.calc_rep_number()
+        self.last_calc_date = timezone.now() + timezone.timedelta(seconds=1)
 
     def get_persona_action_count(self):
         hunter_count = 0
@@ -3286,14 +3298,6 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.lower()
     instance.actions_count = instance.get_num_actions
 
-    instance.calculate_and_save_persona()
-
-    instance.activity_level = instance.calc_activity_level()
-    instance.longest_streak = instance.calc_longest_streak()
-    instance.num_repeated_relationships = instance.calc_num_repeated_relationships()
-    instance.avg_hourly_rate = instance.calc_avg_hourly_rate()
-    instance.success_rate = instance.calc_success_rate()
-    instance.rep = instance.calc_rep_number()
 
 
 @receiver(user_logged_in)
