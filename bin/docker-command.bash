@@ -64,7 +64,7 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
         python manage.py loaddata app/fixtures/avatar.json
         python manage.py loaddata app/fixtures/marketing.json
         python manage.py loaddata app/fixtures/profiles.json
-        python manage.py loaddata app/fixtures/profiles.json
+        python manage.py loaddata app/fixtures/grants.json
     fi
     date >> /provisioned
     echo "Provisioning completed!"
