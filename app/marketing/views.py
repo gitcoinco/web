@@ -279,13 +279,19 @@ def email_settings(request, key):
         try:
             email_in_use = User.objects.filter(email=email) | User.objects.filter(profile__email=email)
             email_used_marketing = EmailSubscriber.objects.filter(email=email).select_related('profile')
-            if (email_in_use or email_used_marketing) and (request.user.email != email or request.user.profile.email != email):
+            logged_in = request.user.is_authenticated
+            email_already_used = (email_in_use or email_used_marketing)
+            user = request.user if logged_in else None
+            email_used_by_me = (user and (user.email == email or user.profile.email == email))
+            email_changed = es.email != email
+
+            if email_changed and email_already_used and not email_used_by_me:
                 raise ValueError(f'{request.user} attempting to use an email which is already in use on the platform')
             validate_email(email)
         except Exception as e:
             print(e)
             validation_passed = False
-            msg = _('Invalid Email')
+            msg = str(e)
         if preferred_language:
             if preferred_language not in [i[0] for i in settings.LANGUAGES]:
                 msg = _('Unknown language')
