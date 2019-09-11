@@ -88,3 +88,4 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 ## USERS
 0 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash set_user_personas  >> /var/log/gitcoin/set_user_personas.log  2>&1
+30 0 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash setup_clr_round_3 >>  /var/log/gitcoin/setup_clr_round_3.log  2>&1
