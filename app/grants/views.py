@@ -42,7 +42,8 @@ from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
-from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
+from grants.models import Contribution, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update
+from kudos.models import BulkTransferCoupon
 from marketing.mails import (
     grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
     thank_you_for_supporting,
@@ -517,6 +518,7 @@ def grant_fund(request, grant_id, grant_slug):
             else:
                 record_subscription_activity_helper('new_grant_subscription', subscription, profile)
 
+            # TODO - how do we attach the tweet modal WITH BULK TRANSFER COUPON next pageload??
             messages.info(
                 request,
                 _('Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Open Source !')
@@ -547,12 +549,41 @@ def grant_fund(request, grant_id, grant_slug):
             })
 
     splitter_contract_address = settings.SPLITTER_CONTRACT_ADDRESS
+    
+    # handle phantom funding
+    active_tab = 'normal'
+    fund_reward = None
+    round_number = 3
+    can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
+    phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, grant=grant, round_number=round_number) if request.user.is_authenticated else PhantomFunding.objects.none()
+    is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.exists()
+    show_tweet_modal = False
+    if can_phantom_fund:
+        active_tab = 'phantom'
+    if can_phantom_fund and request.POST.get('toggle_phantom_fund'):
+        if is_phantom_funding_this_grant:
+            msg = "You are no longer signaling for this grant."
+            phantom_funds.delete()
+        else:
+            msg = "You are now signaling for this grant."
+            show_tweet_modal = True
+            name_search = 'grants_round_3_contributor_' if not settings.DEBUG else 'pogs_eth'
+            fund_reward = BulkTransferCoupon.objects.filter(token__name__contains=name_search).order_by('?').first()
+            PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
+        messages.info(
+            request,
+            msg
+        )
+        is_phantom_funding_this_grant = not is_phantom_funding_this_grant
+
+
 
     params = {
         'active': 'fund_grant',
         'title': _('Fund Grant'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'subscription': {},
+        'show_tweet_modal': show_tweet_modal,
         'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
         'grant': grant,
         'keywords': get_keywords(),
@@ -564,7 +595,11 @@ def grant_fund(request, grant_id, grant_slug):
         'conf_time_spread': conf_time_spread(),
         'gas_advisories': gas_advisories(),
         'splitter_contract_address': settings.SPLITTER_CONTRACT_ADDRESS,
-        'gitcoin_donation_address': settings.GITCOIN_DONATION_ADDRESS
+        'gitcoin_donation_address': settings.GITCOIN_DONATION_ADDRESS,
+        'can_phantom_fund': can_phantom_fund,
+        'is_phantom_funding_this_grant': is_phantom_funding_this_grant,
+        'active_tab': active_tab,
+        'fund_reward': fund_reward,
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
