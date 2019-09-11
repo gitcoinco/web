@@ -27,12 +27,53 @@
   body {
     margin: 0px;
     padding: 0px;
+    font-family: Helvetica, sans-serif;
+  }
+
+  .bounty-box {
+    margin: 2rem auto;
+    padding-top: 1.5em;
+    padding-bottom: 1em;
+  }
+
+  .rounded {
+    border-radius: 50%;
+  }
+
+  .mb-0 {
+    margin-bottom: 0;
+  }
+
+  .mt-1 {
+    margin-top: .5rem;
+  }
+
+  .mt-2 {
+    margin-top: 1rem;
+  }
+
+  .mt-3 {
+    margin-top: 1.5rem;
+  }
+
+  .mt-4 {
+    margin-top: 2rem;
+  }
+
+  .my-3 {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .my-4 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 
   h1, h2, h3, h4, h5, h6,
   .h1, .h2, .h3, .h4, .h5, .h6 {
     text-transform: capitalize;
-    font-weight: lighter;
+    font-weight: 500;
   }
 
   h3 {
@@ -68,11 +109,12 @@
     {% endif %}
   }
 
-  a.button{
+  a.button {
     color: #fff;
-    background-color: #15003e;
+    background-color: #3E00FF;
     border-radius: 5px;
-    padding: 15px 20px;
+    cursor: pointer;
+    padding: 1rem 3rem;
     font-size: 14px;
     line-height: 1.5;
     text-align: center;
@@ -82,8 +124,12 @@
   #logo {
     vertical-align: middle;
     display: inline-block;
-    max-height: 120px;
-    max-width: 100%;
+    {% if email_style %}
+      max-height: 100%;
+    {% else %}
+      max-height: 80px;
+    {% endif %}
+      max-width: 100%;
   }
 
   #grow-oss {
@@ -92,18 +138,35 @@
   }
 
   #header {
-    height: 200px;
+    {% if email_style %}
+      height: 300px;
+    {% else %}
+      height: 100px;
+      padding: 30px 50px;
+    {% endif %}
   }
 
   #header, #footer {
     color: white;
-    background-color: #15003e;
     align-content: center;
     text-align: center;
-    padding: 2em;
+      {% if email_style == 1 %}
+        background-color: #3E00FF;
+      {% elif email_style == 2 %}
+        background-color: #8934b3;
+      {% elif email_style == 3 or email_style == 4 %}
+        background-color: #dbdbdb;
+      {% elif email_style == 5 or email_style == 6 %}
+        background-color: #084c8e;
+      {% else %}
+        background-color: #15003e;
+      {% endif %}
+  } 
+  #footer {
+    padding: 30px 50px;
   }
 
-  #footer p, #footer a{
+  #footer p, #footer a {
     color: #ccc;
   }
 
@@ -124,7 +187,7 @@
     font-size: 15px;
   }
 
-  .centered-contents {
+  .text-center {
     text-align: center;
   }
 
@@ -137,6 +200,8 @@
     .social-img {
       max-height: 50px;
       max-width: 50px;
+      margin-left: 1rem;
+      margin-right: 1rem;
     }
 
     .primary-content {
@@ -177,18 +242,33 @@
   {% if not hide_header %}
   <div id="header">
     <a href="{% url 'funder_bounties' %}">
-      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span>
+      {% if email_style == 1 %}
+        <img id="logo" src="{% static "v2/images/emails/email_header1.gif" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 2 %}
+        <img id="logo" src="{% static "v2/images/emails/email_header2.gif" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 3 %}
+        <img id="logo" src="{% static "v2/images/emails/email_header3.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 4 %}
+        <img id="logo" src="{% static "v2/images/emails/email_header4.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 5 %}
+        <img id="logo" src="{% static "v2/images/emails/email_header5.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 6 %}
+        <img id="logo" src="{% static "v2/images/emails/email_header6.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% else %}
+        <img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% endif %}
     </a>
   </div>
   {% endif %}
 
-    <div class="primary-content centered-contents">
+    <div class="primary-content text-center">
         {% block content %}
         {% endblock %}
         <img id="grow-oss" width="259" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
     </div>
 
-  <div id="footer" class="centered-contents">
+  <div id="footer" class="text-center">
     <div>
       <a href="https://www.twitter.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
 

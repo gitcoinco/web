@@ -35,6 +35,7 @@ class ConversionRateNotFoundError(Exception):
 
 
 def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
+    from django.conf import settings
     """Convert the provided amount to another current.
 
     Args:
@@ -53,6 +54,13 @@ def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
         from_currency = 'ETH'
     if to_currency == 'WETH':
         to_currency = 'ETH'
+
+    # hack to handle DAI
+    if from_currency in settings.STABLE_COINS:
+        from_currency = 'USDT'
+    if to_currency in settings.STABLE_COINS:
+        to_currency = 'USDT'
+
     
     if timestamp:
         conversion_rate = ConversionRate.objects.filter(
