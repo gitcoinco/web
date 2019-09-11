@@ -291,11 +291,11 @@ const sendPersonal = (persona) => {
     ];
 
     const checkUrlRedirect = (arr, val) => {
-      return arr.some(arrObj => {
-        if (val.indexOf(arrObj.url) >= 0) {
-          return false;
+      return arr.all(arrObj => {
+        if (val.indexOf(arrObj.url) == -1) {
+          return true;
         }
-        return true;
+        return false;
       });
     };
 
