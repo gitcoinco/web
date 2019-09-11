@@ -3282,12 +3282,18 @@ class Profile(SuperModel):
     @property
     def reassemble_profile_dict(self):
         params = self.as_dict
+
+        # lazily generate profile dict on the fly
+        if not params.get('title'):
+            self.calculate_all()
+            self.save()
+
         if params.get('tips'):
             params['tips'] = Tip.objects.filter(pk__in=params['tips'])
         if params.get('activities'):
             params['activities'] = Activity.objects.filter(pk__in=params['activities'])
         params['profile'] = self
-        params['portfolio'] = BountyFulfillment.objects.filter(pk__in=params['portfolio'])
+        params['portfolio'] = BountyFulfillment.objects.filter(pk__in=params.get('portfolio', []))
         return params
 
     @property

@@ -2100,12 +2100,13 @@ def get_profile_tab(request, profile, tab, prev_context):
 
 
         all_activities = context.get('activities')
-        if all_activities.count() == 0:
-            context['none'] = True
         tabs = []
-
-        counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
-        counts = {ele['activity_type']: ele['the_count'] for ele in counts}
+        counts = {}
+        if all_activities is None or all_activities.count() == 0:
+            context['none'] = True
+        else:
+            counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
+            counts = {ele['activity_type']: ele['the_count'] for ele in counts}
         for name, actions in activity_tabs:
 
             # this functions as profile_filter_activities does

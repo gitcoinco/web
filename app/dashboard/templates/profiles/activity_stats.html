@@ -36,7 +36,7 @@
       REP: <b>{{profile.rep}}</b>
     </li>
     <li class='admin_only'>
-    Avg Hourly Rate <b>${{profile.avg_hourly_rate}}</b>
+    Avg Hourly Rate <b>${{profile.avg_hourly_rate|floatformat:2}}</b>
     </li>
   {% endif %}
 {% endif %}
