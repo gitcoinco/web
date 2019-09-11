@@ -20,6 +20,7 @@ from __future__ import unicode_literals
 
 import base64
 import collections
+import json
 import logging
 from datetime import datetime, timedelta
 from urllib.parse import urlsplit
@@ -44,12 +45,11 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import pytz
-import json
 import requests
 from app.utils import get_upload_filename
 from dashboard.points import point_values
 from dashboard.tokens import addr_to_token
-from economy.models import ConversionRate, SuperModel, get_time, EncodeAnything
+from economy.models import ConversionRate, EncodeAnything, SuperModel, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
