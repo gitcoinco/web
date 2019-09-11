@@ -49,6 +49,7 @@
               <li class="nav-item">
                 <a class="nav-link {% if tab == 'viewers' %}active{%endif%}" href="{{profile.url}}/viewers">
                   <i class="fas fa-eye"></i> Viewers
+                  {% if profile.viewed_by.count %}({{profile.viewed_by.count}}){%endif%}                  
                 </a>
               </li>
             {% endif %}

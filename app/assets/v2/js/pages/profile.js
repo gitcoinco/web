@@ -101,11 +101,11 @@ $(document).ready(function() {
   $('.tooltip').bootstrapTooltip();
 
   // rep graph
-  if ($('#my_dataviz').length) {
+  if ($('#rep_dataviz').length) {
     // Set the dimensions of the canvas / graph
     var margin = {top: 30, right: 30, bottom: 30, left: 70};
     var width = $('#tab_controller').width() - margin.left - margin.right;
-    var height = 270 - margin.top - margin.bottom;
+    var height = 120 - margin.top - margin.bottom;
 
     // Parse the date / time
     var parseDate = d3.time.format('%d-%b-%y').parse;
@@ -131,7 +131,7 @@ $(document).ready(function() {
       });
         
     // Adds the svg canvas
-    var svg = d3.select('#my_dataviz')
+    var svg = d3.select('#rep_dataviz')
       .append('svg')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)

@@ -2128,6 +2128,7 @@ class Profile(SuperModel):
         help_text=_('override profile avatar'),
     )
     dominant_persona = models.CharField(max_length=25, choices=PERSONAS, blank=True)
+    selected_persona = models.CharField(max_length=25, choices=PERSONAS, blank=True)
     longest_streak = models.IntegerField(default=0)
     activity_level = models.CharField(max_length=10, blank=True, help_text=_('the users activity level (high, low, new)'))
     num_repeated_relationships = models.IntegerField(default=0)
@@ -2267,6 +2268,21 @@ class Profile(SuperModel):
         bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
         bounties = bounties.distinct()
         return bounties.order_by('-web3_created')
+
+    @property
+    def cascaded_persona(self):
+        if self.is_org:
+            return 'org'
+        if self.selected_persona:
+            return self.selected_persona
+        if self.dominant_persona:
+            return self.dominant_persona
+        if self.persona_is_funder:
+            return 'funder'
+        if self.persona_is_hunter:
+            return 'hunter'
+        return 'hunter'
+
 
     @property
     def tips(self):

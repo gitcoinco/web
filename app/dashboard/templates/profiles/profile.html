@@ -56,9 +56,11 @@
               {% if profile.is_org %}
                 {% include 'profiles/organization.html' %}
               {% else %}
-              {% if profile.dominant_persona == 'funder' %}
+              {% if profile.cascaded_persona == 'funder' %}
                 {% include 'profiles/scorecard_funder.html' %}
-              {% elif profile.persona_is_funder %}
+              {% elif profile.cascaded_persona == 'hunter' %}
+                {% include 'profiles/scorecard_hunter.html' %}
+              {% else %}
                 {% include 'profiles/scorecard_hunter.html' %}
               {% endif %}
           </div>

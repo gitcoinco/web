@@ -3338,10 +3338,10 @@ def choose_persona(request):
         persona = request.POST.get('persona')
         if persona == 'persona_is_funder':
             profile.persona_is_funder = True
-            profile.dominant_persona = 'funder'
+            profile.selected_persona = 'funder'
         elif persona == 'persona_is_hunter':
             profile.persona_is_hunter = True
-            profile.dominant_persona = 'hunter'
+            profile.selected_persona = 'hunter'
         profile.save()
     else:
         return JsonResponse(
