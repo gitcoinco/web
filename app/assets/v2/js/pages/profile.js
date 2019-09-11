@@ -101,9 +101,9 @@ $(document).ready(function() {
   // rep graph
   if ($('#my_dataviz').length) {
     // Set the dimensions of the canvas / graph
-    var margin = {top: 30, right: 30, bottom: 30, left: 70},
-        width = $('#tab_controller').width() - margin.left - margin.right,
-        height = 270 - margin.top - margin.bottom;
+    var margin = {top: 30, right: 30, bottom: 30, left: 70};
+    var width = $('#tab_controller').width() - margin.left - margin.right;
+    var height = 270 - margin.top - margin.bottom;
 
     // Parse the date / time
     var parseDate = d3.time.format('%d-%b-%y').parse;
