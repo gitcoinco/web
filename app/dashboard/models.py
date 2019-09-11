@@ -2393,7 +2393,7 @@ class Profile(SuperModel):
             idx_status__in=Bounty.TERMINAL_STATUSES, network=network).count()
         if terminal_state_bounties == 0:
             return 1.0
-        return num_completed_bounties * 1.0 / (terminal_state_bounties + num_completed_bounties)
+        return num_completed_bounties * 1.0 / terminal_state_bounties
 
     @property
     def get_quarterly_stats(self):
