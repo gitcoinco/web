@@ -1795,17 +1795,27 @@ def profile_details(request, handle):
 
     keywords = request.GET.get('keywords', '')
 
-    bounties = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
-        .filter(interested__profile=profile, network=network,) \
-        .filter(interested__status='okay') \
-        .filter(interested__pending=False).filter(idx_status='done') \
-        .filter(feedbacks__receiver_profile=profile) \
-        .filter(
-            Q(metadata__issueKeywords__icontains=keywords) | \
-            Q(title__icontains=keywords) | \
+    bounties = Bounty.objects.current().prefetch_related(
+        'fulfillments',
+        'interested',
+        'interested__profile',
+        'feedbacks'
+        ).filter(
+            interested__profile=profile,
+            network=network,
+        ).filter(
+            interested__status='okay'
+        ).filter(
+            interested__pending=False
+        ).filter(
+            idx_status='done'
+        ).filter(
+            feedbacks__receiver_profile=profile
+        ).filter(
+            Q(metadata__issueKeywords__icontains=keywords) |
+            Q(title__icontains=keywords) |
             Q(issue_description__icontains=keywords)
-        ) \
-        .distinct('pk')[:3]
+        ).distinct('pk')[:3]
 
     _bounties = []
     _orgs = []
