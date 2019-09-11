@@ -3012,7 +3012,7 @@ class Profile(SuperModel):
 
         try:
             if bounties.exists():
-                eth_sum = sum([amount for amount in bounties.values_list("value_in_eth", flat=True)])
+                eth_sum = sum([bounty.get_value_in_eth for bounty in bounties])
         except Exception:
             pass
 
