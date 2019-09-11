@@ -3268,7 +3268,6 @@ class Profile(SuperModel):
         context = params
         profile = self
 
-        context['preferred_payout_address'] = profile.preferred_payout_address
         context['avg_rating'] = profile.get_average_star_rating()
         context['avg_rating_scaled'] = profile.get_average_star_rating(20)
         context['verification'] = profile.get_my_verified_check
