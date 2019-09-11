@@ -1997,12 +1997,13 @@ def get_profile_tab(request, profile, tab, prev_context):
     context = profile.to_dict(tips=False)
 
     # all tabs
-    if profile.persona_is_funder:
-        active_bounties = Bounty.objects.current().filter(bounty_owner_profile=profile).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
-    elif profile.persona_is_hunter:
-        active_bounties = Bounty.objects.filter(pk__in=profile.active_bounties.values_list('bounty', flat=True))
+    if profile.dominant_persona == 'funder':
+        active_bounties = Bounty.objects.current().filter(bounty_owner_github_username=profile.handle).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
+    elif profile.dominant_persona == 'hunter':
+        active_bounties = Bounty.objects.filter(pk__in=profile.active_bounties.values_list('bounty', flat=True)).filter(network='mainnet')
     else:
         active_bounties = Bounty.objects.none()
+    active_bounties = active_bounties.order_by('-web3_created')
     context['active_bounties_count'] = active_bounties.count()
 
     # specific tabs
@@ -2183,21 +2184,27 @@ def profile(request, handle, tab=None):
     status = 200
     default_tab = 'activity'
     tab = tab if tab else default_tab
+    handle = handle.replace("@", "")
+    
     # make sure tab param is correct
     all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos']
-    tab = default_tab if tab in all_tabs else tab
+    tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
         tab = handle
         handle = request.user.profile.handle
-    # staff only tabs
-    staff_tabs = ['active', 'ratings', 'portfolio', 'viewers']
-    tab = default_tab if tab in staff_tabs and not request.user.is_staff else tab
+    
+    # user only tabs
+    if not handle and request.user.is_authenticated:
+        handle = request.user.username
+    is_my_profile = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    user_only_tabs = ['viewers']
+    tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
     owned_kudos = None
     sent_kudos = None
-    handle = handle.replace("@", "")
     context = {}
 
+    # get this user
     try:
         if not handle and not request.user.is_authenticated:
             return redirect('funder_bounties')
@@ -2227,8 +2234,9 @@ def profile(request, handle, tab=None):
         }
         return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
+    # setup context for visit
     context['preferred_payout_address'] = profile.preferred_payout_address
-    context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    context['is_my_profile'] = is_my_profile
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
     context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
     context['avg_rating'] = profile.get_average_star_rating()
@@ -2239,8 +2247,12 @@ def profile(request, handle, tab=None):
     context['verification'] = profile.get_my_verified_check
     context['avg_rating'] = profile.get_average_star_rating()
     context['suppress_sumo'] = True
-    context['feedbacks_sent'] = profile.feedbacks_sent.all()
-    context['feedbacks_got'] = profile.feedbacks_got.all()
+    context['feedbacks_sent'] = [fb for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
+    context['feedbacks_got'] = [fb for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
+    context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
+    context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count()
+    context['portfolio'] = profile.fulfilled.filter(bounty__network='mainnet').order_by('-created_on')
+
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
 

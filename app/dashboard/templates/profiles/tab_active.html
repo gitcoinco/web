@@ -8,7 +8,7 @@
         <div class="d-flex">
           <h5 class="font-weight-semibold">{{bounty.title}}</h5>&nbsp;
         </div>
-        <small class="align-self-center">for {{bounty.org_name}}</small>
+        <small class="align-self-center">Created {{bounty.web3_created|naturaltime}} for {{bounty.org_name}}</small>
         <div class="tag-list">
           {% for keyword in bounty.keywords_list %}
             <small class="tag-list__item">{{keyword}}</small>

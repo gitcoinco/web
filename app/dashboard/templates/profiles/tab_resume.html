@@ -4,6 +4,15 @@
   <div class="py-3 font-weight-bold">Job Preferences</div>
 	<div class="work_type">
   	  <div class="mt-3">
+
+    {% if is_my_profile %}
+      <div style="float: right; font-size: 12px;">
+        <i class="fas fa-eye"></i> <span>Only visible to you</span>
+        <br>
+        <a href="/onboard/profile/?steps=job"> Edit this info</a>
+      </div>
+    {% endif %}
+
 		<i class="fa fa-briefcase"></i>
 		<span>Actively looking for (Full Time, Part Time, Contract)</span>
 	  </div>

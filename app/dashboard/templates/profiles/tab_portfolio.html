@@ -9,7 +9,7 @@
 <div class="py-3 font-weight-bold">Projects</div>
 
 <div class="tab-projects d-flex flex-column">
-  {% for submission in profile.fulfilled.all %}
+  {% for submission in portfolio %}
   	<div class="tab-projects__item d-flex mb-4">
   		<img class="rounded mr-3" src="{% avatar_url submission.bounty.org_name %}" alt="">
   		<div class="tab-projects__item-details" style="width: 70%">
