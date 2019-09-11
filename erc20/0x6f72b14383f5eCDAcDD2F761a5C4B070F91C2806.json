@@ -1,0 +1,20 @@
+{
+    "symbol": "MELT",
+    "address": "0x6f72b14383f5eCDAcDD2F761a5C4B070F91C2806",
+    "overview": {
+        "en": "MELT is a 1% deflatory token, every time MELT is transferred, 1% of sent amount is burned, this embedded functionality increases scarcity over time. MELT is based on original BOMB"
+    },
+    "email": "dev@meltproject.net",
+    "website": "https://www.meltproject.net",
+    "state": "NORMAL",
+    "published_on": "2019-07-08",
+    "initial_price": {
+        "USD": "1 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/project_melt",
+        "telegram": "https://t.me/meltcommunity",
+        "github": "https://github.com/the-melt-project",
+        "reddit": "https://www.reddit.com/user/Meltofficial"
+    }
+}

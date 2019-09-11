@@ -1,0 +1,16 @@
+{
+  "symbol": "WRB",
+  "address": "0xdD72a22b2229fcF2a93Fe0ec1328244D76D6aFc9",
+  "overview":{
+        "en": "WRB is a global general integral issued by WR Global Exchange, with a total circulation of 2.1 billion. As an important part of WR Global ecology, WRB will be used in the application scenarios of WR Global ecology construction, user fee reduction and currency voting, so as to better create a complete ecological system and achieve win-win industrial situation in the era of global block chain.",
+        "zh": "WRB 是WR Global交易所推出的全球通用积分，总发行量21亿枚，WRB将作为WR Global生态的重要组成部分，用于WR Global生态建设，用户手续费减免，上币投票等应用场景，更好的打造出完整的生态体系，实现全球区块链时代的产业共赢。"
+  },
+  "email": "wr@wr.net",
+  "website": "https://www.wr.net/",
+  "whitepaper": "https://www.wr.net/book.pdf",
+  "links": {
+    "twitter": "https://twitter.com/wrnetofficial",
+    "telegram": "https://t.me/wrofficial",
+    "facebook": "https://www.facebook.com/wrnetofficial"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "symbol": "RRB",
+  "address": "0x02f02e0cA8a521EF73daA9C45353b9fBEFc5Ee10",
+  "overview": {
+    "en": "RRB is a functional digital token which plays an essential role of the extension of platform functions, RRB can be applied on RenrenBit platform and the realization of various rights and returns of ecological value.",
+    "zh": "RRB是在RenrenBit平台上通行的功能性Token，是平台功能的拓展、多项权益的实现和生态价值回报的重要组成部分。"
+  },
+  "email": "market@renrenbit.com",
+  "website": "https://www.renrenbit.com",
+  "whitepaper": "https://resource.kanquanbu.com/rrb-wp-en.html",
+  "state": "NORMAL",
+  "published_on": "2019-07-22",
+  "links": {
+    "telegram": "https://t.me/renrenbit_global",
+    "github": "https://github.com/renrenbit"
+  }
+}

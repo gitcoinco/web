@@ -1,0 +1,23 @@
+{
+  "symbol": "IT",
+  "address": "0xbf5f8bFCEe9502a30018d91C63ecA66980E6E9Bb",
+  "overview":{
+        "en": "The token introduced by IDAX is IDAX Token, referred to as “IT”, and the total amount of issuance is constant at 200,000,000 pieces, and will never be issued. IT is initiated by IDAX, and the decentralized blockchain assets jointly issued and supervised by GBC Group/Mongolian Genghis Khan Bank are based on the trust certificate of ERC20 public chain.",
+        "zh": "IDAX推行的代币为IDAX Token，简称“IT”，发行总量恒定为200,000,000枚，且永不增发。IT由IDAX发起，GBC集团/蒙古成吉思汗银行协同发行、监管的去中心化的区块链资产，它是基于ERC20公链的信任通证。"
+  },
+  "email": "service@idax.pro",
+  "website": "https://www.idax.pro/",
+  "whitepaper": "https://static.idaxstatic.com/pcimg/home/IDAXTOKEN/IDAXTOKENzh-cn20190220.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-02-22",
+  "initial_price":{
+        "USD":"0.2 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/IDAXpro",
+    "telegram": "https://t.me/IDAX_Overseas_group",
+    "github": "https://github.com/idax-exchange",
+    "facebook": "https://www.facebook.com/IdaxCenter",
+    "medium": "https://medium.com/@IDAX11"
+  }
+}

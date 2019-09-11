@@ -1,0 +1,21 @@
+{
+  "symbol": "BCAC",
+  "address": "0x1aBdb309aa592f00a101c545168BFDF9a6Ec61CE",
+  "overview": {
+      "en": "Business Credit Alliance Chain (BCAC) builds a new retail commercial credit economy based on blockchain. Through blockchain technology, it creates a supply chain traceability, credit quantifiability, data transparency, collection of consumer shopping, membership services, precision marketing, centralized procurement and other scenarios to form an online e-commerce transaction, offline shopping experience to build a new retail ecosystem with multi-participation and multi-party benefits.",
+      "zh": "商信链（BCAC）构建基于区块链的新零售商业信用经济生态：通过区块链技术，打造成一个供应链可追溯、信用可量化，数据公开透明，集消费购物，会员服务，精准营销，集中采购等场景于一体，形成线上电商交易、线下购物体验，构建多方参与、多方受益的新零售生态。"
+  },
+  "email": "bcachain@gmail.com",
+  "website": "http://www.bcachain.org/",
+  "whitepaper": "https://github.com/BusinessCredit/white_paper/blob/master/BCAChain.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-26",
+  "initial_price": {
+      "ETH": "0.000033333 ETH"
+  },
+  "links": {
+      "twitter": "https://twitter.com/BCAChain",
+      "telegram": "https://t.me/bcachainglobal",
+      "github": "https://github.com/BusinessCredit"
+  }
+}

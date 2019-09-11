@@ -1,0 +1,19 @@
+{
+  "symbol": "CARM",
+  "address": "0x2E0c40bEB655a988E087AD71Ca191A2806Ac55ef",
+  "overview":{
+        "en": "Unique marketing platform for car owners/lovers that allows users to profit from their own data.",
+        "zh": "为车主/爱好者提供独特的营销平台，让用户可以从自己的数据中获利。"
+  },
+  "email": "info@carnomic.io",
+  "website": "https://www.carnomic.io",
+  "whitepaper": "https://www.carnomic.io/wp/Carnomic-White-Paper-en.pdf",
+  "published_on": "2019-05-23",
+  "links": {
+    "blog": "https://medium.com/carnomic-io",
+    "twitter": "https://twitter.com/carnomicio",
+    "telegram": "https://t.me/carnomicofficial",
+    "facebook": "https://www.facebook.com/carnomic/",
+    "LinkedIn": "https://www.linkedin.com/company/carnomic"
+  }
+}

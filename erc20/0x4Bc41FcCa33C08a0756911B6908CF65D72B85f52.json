@@ -1,0 +1,15 @@
+{
+    "symbol": "DFD",
+	"address": "0x4Bc41FcCa33C08a0756911B6908CF65D72B85f52",
+    "overview": {
+        "en": "Measurable data tokens, control and monetize your data.",
+        "zh": "可衡量的数据令牌，控制和货币化您的数据。"
+    },
+    "email": "token@darkforcedata.network",
+    "website": "http://www.darkforcedata.network/",
+    "whitepaper": "http://www.darkforcedata.network/pdf/DFD_whitepaper_zh.pdf",
+    "published_on": "2019-06-12",
+    "initial_price": {
+        "USD": "0.01 USD"
+    }
+}

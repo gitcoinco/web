@@ -1,0 +1,21 @@
+{
+  "symbol": "EXX Token",
+  "address": "0x7A271d1Df2C3f2FeF734611C6C7eE6b9B8439204",
+  "overview":{
+        "en": "ET is the abbreviation of EXX Token. On July 9, 2018, ET was officially issued, with a total amount of 10 billion, and will never be issued. ET is a proof of the rights of the EXX trading platform itself. It is based on the Ethereum ERC20 agreement and is the only global certificate of the EXX platform. As an important part of the EXX ecosystem, ET will be applied to the application environment of the EXX entity ecosystem in the future. ET holders share various rights such as community governance and are the cornerstone of the collaborative development of EXX community members. Holders enjoy the corresponding rights of ET's entire ecology and enjoy the scarcity of ET's continued repurchase and destruction.",
+        "zh": "ET为EXX Token的简称，2018年 7月9日，ET 正式对外发行，总量恒定 100 亿，永不增发。ET是 EXX 交易平台本身的权益证明，基于以太坊ERC20协议发行，是EXX平台唯一的全球通证。ET作为EXX生态中的重要组成部分，未来会应用到EXX实体生态的应用场景中。ET 持有者共同享有社区治理等各类权利，是EXX社区成员协同发展的基石。持有者享受ET全生态的相应权益，并得到生态子通证奖励，以及享受ET持续回购销毁带来的稀缺性提升。"
+  },
+  "website": "https://www.exx.com",
+  "whitepaper": "https://www.exxvip.com/src/EXX-cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-09",
+  "initial_price":{
+        "USD":"0.14 USD"
+  },
+  "links": {
+    "weibo": "https://www.weibo.com/6409905840/profile?rightmod=1&wvr=6&mod=personinfo",
+    "twitter": "https://twitter.com/ExchangeXGroup",
+    "telegram": "t.me/EXXcom",
+    "facebook": "https://www.facebook.com/ExchangeXGroup/"
+  }
+}

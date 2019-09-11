@@ -1,0 +1,11 @@
+{
+  "symbol": "USDA",
+  "address": "0x5d81a1DDB8E51D3f7f68C0698CeE1193FC2b07e2",
+  "overview":{
+        "en": "USDA is a USD-backed ERC20 stablecoin that is fully collateralized, legally protected, and transparently verified by third-party attestations. USDA is the first asset token built on the Stabilize platform.",
+        "zh": "USDA是美元支持的ERC20稳定币，完全抵押，受法律保护，并由第三方证明进行透明验证。 USDA是第一个在Stabilize平台上构建的资产代币。"
+  },
+  "email": "support@usdasset.io",
+  "website": "https://www.usdasset.io",
+  "whitepaper": "https://www.usdasset.io/download/USDA%20Stablecoin%20Whitepaper.pdf"
+}

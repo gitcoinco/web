@@ -24,6 +24,8 @@ imToken 支持 ERC20 和 EOS 代币 Token Profile 的提交，选择对应教程
 ## 建议
 由于 Token Profile 的提交涉及诸多方面：GitHub 使用，Logo 设计，项目资料介绍等。我们建议 **Token Profile 提交由你们的市场运营人员、技术人员、设计师协作完成。**
 
+提交后，imToken 会在 5 个工作日内处理。
+
 ## Copyright
 
 2019&copy;imToken PTE. LTD.

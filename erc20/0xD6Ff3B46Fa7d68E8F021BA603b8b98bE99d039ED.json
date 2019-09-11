@@ -1,0 +1,23 @@
+{
+    "symbol": "AKC",
+    "address": "0xD6Ff3B46Fa7d68E8F021BA603b8b98bE99d039ED",
+    "overview":{
+        "en": "ARTWOOK is a high-end art block chain trading platform，Enable people to participate in high-end art investment and share value-added gains.",
+        "zh": "ARTWOOK是一个高端艺术品区块链交易平台，使民众能够参与高端艺术品投资，共享增值收益。"
+    },
+    "email": "contact@artwook.com",
+    "website": "https://www.artwook.com",
+    "whitepaper": "https://static.artwook.com/ARTWOOK_whitepaper_en_v1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-15",
+    "initial_price":{
+        "ETH": "0.00033333 ETH",
+        "USD":"0.15 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/artwook_akc",
+        "telegram": "https://t.me/artwook",
+        "github": "https://github.com/artwook",
+        "facebook": "https://www.facebook.com/ArtWook-2029005760759166"
+    }
+}

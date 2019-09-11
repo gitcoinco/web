@@ -1,0 +1,19 @@
+{
+    "symbol": "PCD",
+    "address": "0xB7481bDde3dad5e82E307A507B04453Dc85B2680",
+    "overview": {
+        "en": "PCD is the general license of data storage, query and circulation under weixin chain, which is only issued by official channels and cannot be separated.",
+        "zh": "PCD 是唯信链旗下的作为数据存储查询流通的通证，目前仅由官方渠道发放，不可分割。"
+    },
+    "email": "pcdcoin@gmail.com",
+    "website": "https://privacycenterdata.com/",
+    "whitepaper": "https://privacycenterdata.com/PCDCN.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-08",
+    "initial_price": {
+        "ETH": "0.0003336 ETH",
+        "USD": "0.093333 USD",
+        "BTC": "0.000010 BTC"
+    },
+    "links": {}
+}

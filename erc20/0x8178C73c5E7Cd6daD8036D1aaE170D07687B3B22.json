@@ -1,0 +1,11 @@
+{
+  "symbol": "ICB",
+  "address": "0x8178C73c5E7Cd6daD8036D1aaE170D07687B3B22",
+  "overview":{
+        "en": "Big Intelligence Chain, referred to as ICB, ICB is dedicated to creating an artificial intelligence avatar for users based on big data based on the authentication of different data sources, through 3D stereo image reconstruction and speech recognition technology - Intelligent Digital Hygiene IDT (Intelligent Digital Twin), and authenticate, authorize and manage individual data and IDT windings.",
+        "zh": "Big Intelligence Chain，简称ICB，ICB致力于在大数据的基础上，根据个体不同数据源的认证， 通过3D立体图像重建和语音识别技术， 以数字化方式为用户创建一个人工智能虚拟形象— 智能数字孪生体IDT（ Intelligence Digital Twin）， 并将个体数据和IDT上链进行认证、 授权和管理。"
+  },
+  "email": "icbteam001@126.com",
+  "website": "http://icb.ink",
+  "whitepaper": "http://icb.ink/statics/Smart%20White%20Paper%20OF%20ICB%20v2.0.pdf"
+} 

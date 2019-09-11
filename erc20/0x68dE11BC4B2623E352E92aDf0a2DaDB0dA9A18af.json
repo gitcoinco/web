@@ -1,0 +1,21 @@
+{
+  "symbol": "IFX",
+  "address": "0x68dE11BC4B2623E352E92aDf0a2DaDB0dA9A18af",
+  "overview":{
+        "en": "IFX.DO is committed to building the world's biggest one-stop online risk trading service platform integrating deep social communication, trading competition & one-click strategy-following, crowdfunding asset management and AI fund. The exclusive automatic risk control competition and strategy output system developed by ifx.do will effectively realize the intelligent interaction and value transmission.",
+        "zh": "智汇网 (IFX.do) 为新加坡 IFXDO Pte. Ltd.下属科技公司，致力于为全球在线风险交易者提供交易竞技+操作分享服务，第一期版本支持外汇、贵金属、原油、数字货币交易。目前该项目为区块链交易社区中完全落地的项目，点击 www.ifx.do 即可访问并使用所有网站功能。 智汇网在线交易系统内置风控规则，参加竞技的操盘手必须在严格的风控框架下进行竞技，从根本上杜绝了操盘手的重仓、漂单、情绪化交易。同时，智汇网利用区块链分布式记账技术将竞技数据上链，保证了比赛的真实性和公平性。 另外，智汇网还可以让观赛用户把优秀操盘手的策略一键复制到自己的实盘，目前已经支持全球上千家外汇、贵金属、原油.交易商。"
+  },
+  "email": "biz@ifx.do",
+  "website": "https://www.ifx.do",
+  "whitepaper": "http://www.ifxdo.com/static/js/White%20Paper%20of%20IFX.do.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-11-29",
+  "initial_price":{
+        "ETH":"0.000091 ETH",
+        "USD":"0.015 USD",
+        "BTC":"0.0000016163 BTC"
+  },
+  "links": {
+    "blog": "https://weibo.com/u/6791622085/home?topnav=1&wvr=6"
+  }
+}

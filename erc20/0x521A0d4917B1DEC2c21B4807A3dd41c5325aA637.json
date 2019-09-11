@@ -1,0 +1,22 @@
+{
+  "symbol": "VCCT",
+  "address": "0x521A0d4917B1DEC2c21B4807A3dd41c5325aA637",
+  "overview":{
+        "en": "A decentralized service platform of the automotive data ecosystem",
+        "zh": "VCCT 是一个去中心化的汽车数据生态服务平台."
+  },
+  "email": "service@vcct.group",
+  "website": "http://vcct.io",
+  "whitepaper": "http://vcct.io/file/VCCT白皮书.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-11-18",
+  "initial_price":{
+        "USD":"0.074 USD"
+  },
+  "links": {
+    "blog": "https://weibo.com/u/6213422007",
+    "twitter": "https://twitter.com/VcctF",
+    "telegram": "https://t.me/vcct_global2",
+    "github": "https://github.com/VehicleChainTechnologyVCCT/ChainTechnology"
+  }
+}

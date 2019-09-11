@@ -1,0 +1,16 @@
+{
+    "symbol": "ATHENA",
+    "account_name": "athenastoken",
+    "overview": {
+        "en": "ATHENA is a blockchain smart contract platform developed by Pandoras.io. Athena implies Pandoras' hope, Focusing on Decentralized Dapp Ecology.",
+        "zh": "ATHENA 是一个区块链智能合约平台, 由Pandoras.io开发. Athena寓意着Pandoras的希望, 为去中心化而生."
+    },
+    "website": "https://www.pandoras.io",
+    "whitepaper": "https://www.pandoras.io/file/PandorasWhitePaper.pdf",
+    "published_on": "2019-06-20",
+    "links": {
+        "github": "https://github.com/athena-coin",
+        "telegram": "https://t.me/Pandorascom",
+        "twitter": "https://twitter.com/WalletPandoras"
+    }
+}

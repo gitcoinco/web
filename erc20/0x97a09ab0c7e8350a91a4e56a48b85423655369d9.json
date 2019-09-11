@@ -1,0 +1,22 @@
+{
+    "symbol": "AIC",
+    "address": "0x97a09ab0c7e8350a91a4e56a48b85423655369d9",
+    "overview": {
+        "en": "The AIC (Artificial Intelligence Internet of Things Chain) open source community is an open platform for decentralized blockchain technology to promote data interconnection, transaction settlement, and intelligent contracts between the Internet of Things and AI robots. Today, human beings have entered the AI era, and AI can speak, listen, see, move, think, and approach human level. The goal of the AIC community is to connect AIC technology between AI, the Internet of Things, and data. Through smart contracts and property transactions, human beings are the real beneficiaries of the wealth of the Internet of Things and AI robots.",
+        "zh": "AIC（Artificial Intelligence Internet of Things Chain）开源社区是一个旨在推进物联网及AI机器人之间数据互联、交易结算、智能合约的去中心化区块链技术开放平台。今天，人类已经进入 AI 时代，AI 能说、能听、能看、能动、能思考，接近人类水平。AIC 社区的目标就是将 AI、物联网、数据之间利用 AIC 技术连接在一起，通过智能合约及物权交易，让人类成为物联网及 AI 机器人财富的真正受益者。"
+    },
+    "email": "support@aichain.life",
+    "website": "https://aichain.life",
+    "whitepaper": "http://aichain.life/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-06-01",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.7 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "links": {
+        "telegram": "https://t.me/aicchain",
+        "github": "https://github.com/aicchain"
+    }
+}

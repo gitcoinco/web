@@ -1,0 +1,24 @@
+{
+  "symbol": "FBTT",
+  "address": "0x33f605291ad6305379404e86253ee4f7f0A713Ec",
+  "overview":{
+        "en": "FBTT is a commercial token that provides value recognition, connection and transmission for service and consumer in foreign exchange market. By consuming FBTT, it can obtain products and services equivalent to FBTT.",
+        "zh": "FBTT是为外汇交易市场的服务与消费方，提供价值认可、连接、传递的商业化代币，通过消耗FBTT，获得与FBTT等价的产品、服务"
+  },
+  "email": "service@fbtt.org",
+  "website": "http://fbtt.org",
+  "whitepaper": "https://fbtt.org/doc/fbtt_whitepaper_v1.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-01-01",
+  "initial_price":{
+        "ETH":"0.00032498 ETH",
+        "USD":"0.1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/FBTT6",
+    "telegram": "https://t.me/FBTTGroup",
+    "github": "https://github.com/FBTT-CORE/FBTT",
+    "facebook": "https://www.facebook.com/FBTT-458552064928785/",
+    "reddit": "https://www.reddit.com/r/your-awesome-project/"
+  }
+}

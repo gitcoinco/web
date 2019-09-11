@@ -1,0 +1,16 @@
+{
+  "symbol": "BOOM_OLD",
+  "address": "0x2CcFdf494a91c5212873dD267eC764F7b71b9B82",
+  "overview":{
+        "en": "BOOM is a new type of utility token with self-destructing mechanism, based on Ethereum smart contract.BOOM project is a social experiment, aiming at exploring the market influence of an extremely deflationary cryptocurrency, and it will validate the effect of BOOM token as a hedge against the rapid inflation in token ecosystem. The origin of BOOM is simple, once users transfer BOOM to others, 1% of the total transfer amount is automatically destroyed at the same time. The initial total supply of BOOM is 1 billion. The supply will decrease due to transactions, and no new BOOM will be issued then. The destruction of BOOM token will run automatically on chain, written in Ethereum smart contract. No one can interfere.",
+        "zh":"BOOM是建立在以太坊智能合约上、自带销毁机制的新型Token。BOOM的立项是一次社会实验，旨在探索极端紧缩型货币在市场中的影响，验证其对冲Token世界急速通货膨胀的效能。BOOM的原始机制简单明了：每笔链上BOOM转账发生时，转账BOOM量的1%将被自动销毁。代币初始总量10亿，永不增发，只会一直缩减。基于以太坊智能合约，BOOM的销毁将在链上自动运行，不受他人干预。"
+  },
+  "email": "business@boomtoken.io",
+  "website": "https://www.boomtoken.io/",
+  "state": "NORMAL",
+  "published_on": "2019-06-28",
+  "links": {
+    "twitter": "https://twitter.com/boomtoken",
+    "telegram": "https://t.me/boomtoken"  
+  }
+}

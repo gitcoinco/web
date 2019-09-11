@@ -28,6 +28,8 @@ imToken supports the submission of ERC20 and EOS Token Profile, please select th
 
 Since the submission of the Token Profile involves many aspects: GitHub usage, Logo design, project information introduction etc, we recommend that the **Token Profile submission to be done by your market operations staff, developers, and designers together.**
 
+imToken will process the application within 5 business days.
+
 ## Copyright
 
 2019&copy;imToken PTE. LTD.

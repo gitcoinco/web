@@ -1,4 +1,16 @@
 {
-    "symbol": "PTT",
-    "address": "0x4689a4e169eB39cC9078C0940e21ff1Aa8A39B9C"
+	"symbol": "PTT",
+	"address": "0x4689a4e169eB39cC9078C0940e21ff1Aa8A39B9C",
+	"overview": {
+		"en": "Proton is a public chain that is dedicated to data fusion and collaboration. It builds the fundamental infrastructure for data security and high-efficiency data collaboration processing across various data sources, unleashing the real potential of big data and artificial intelligent applications on different industries. With freeing the data from silos, from a single online shop to the IoT industry giants can break through their bottle neck of lacking valid data samples and insufficient recognition of data. For actual use case, Proton’s team chooses the digital marketing industry that generates tremendous data and urge for data collaboration as a priority entry point.",
+		"zh": "「Proton 质子链」致力于建造全网数据聚合协作网络，旨在打通全网数据，并利用区块链技术实现安全、高效的跨数据源协同运算，为大数据及人工智能在多个领域的应用提供基础设施支持。 让小到单一的网店大到 IoT 产业数据都可以通过「质子链」实现自有数据彼此之间的聚合与协作，帮助各个行业突破因数据有效样本不足、数据可识别性低的发展瓶颈，释放更多商业价值。"
+	},
+	"email": "info@proton.global",
+	"website": "https://www.proton.global/",
+	"whitepaper": "https://www.proton.global/static/doc/ProtonNetworkWhitePaper2018zh.pdf",
+	"state": "NORMAL",
+	"links": {
+		"twitter": "https://twitter.com/proton_global",
+		"telegram": "https://t.me/PTTglobal"
+	}
 }

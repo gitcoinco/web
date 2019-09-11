@@ -1,0 +1,20 @@
+{
+    "symbol": "QEC",
+    "address": "0xdD62b07841CAD953E2ab6Dafc798f9F75f6582C2",
+    "overview": {
+        "en": "QEC Token is the foundation for building automated transactions in the blockchain domain, building an automated trading system. QEC is able to purchase and lease automated trading strategies, providing trading strategy writing, debugging, back testing and other services for traders without programming skills. There is no need to pay for legal currency to use these services, just a small amount of QEC. The aim is to create the underlying structure of the blockchain quantitative trading field and fully activate the vitality of the token economy. Achieve quantitative trading strategy platforms covering various financial fields, including but not limited to digital currency, stocks, futures, options and other categories. Reduce the automatic trading threshold and benefit those involved in QEC construction.",
+        "zh": "QEC Token是构建区块链领域自动化交易的通证，构建自动化交易系统。使用QEC能够购买和租赁自动化交易策略，为没有编程能力的交易员提供交易策略编写、调试、回测等服务。使用这些服务无需支付法币，只需少量QEC即可。旨在打造区块链量化交易领域底层架构，全方位激活Token经济的活力。实现覆盖各种金融领域的量化交易策略平台，包括但不限于数字货币、股票、期货、期权等门类。降低自动交易门槛，使参与QEC建设的人员获益。"
+    },
+    "email": "service@qecpro.top",
+    "website": "https://www.qecpro.top",
+    "whitepaper": "https://www.qecpro.top/static/QEC_白皮书_CN_v1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-08-20",
+    "initial_price": {
+        "USD": "0.5 USD"
+    },
+    "links": {
+        "twitter" : "https://twitter.com/BlackCa11563630",
+        "telegram": "https://t.me/joinchat/MpU-6k3h6ZLRquXiL57m_A"
+    }
+}

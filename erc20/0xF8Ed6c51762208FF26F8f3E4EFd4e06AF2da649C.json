@@ -1,0 +1,27 @@
+{
+    "symbol": "AXA",
+    "address": "0xF8Ed6c51762208FF26F8f3E4EFd4e06AF2da649C",
+    "overview": {
+        "en": " AXA is called ALLDEX ALLIANCE and is the lifeblood of the AXA ecosystem. AXA has a total circulation of 10 billion. The first circulation application platform is the ALLDEX Derivatives Exchange, which will be used for wallet payment, credit lending, insurance and other Defi applications. AXA will be used as third-party token trading platforms, commercial circulation and user expansion tokens.",
+        "zh": " AXA 全称为 ALLDEX ALLIANCE, 是AXA生态系统的生命源头。AXA总发行量为100亿, 首个流通应用平台为ALLDEX衍生品交易所，之后还将被运用于钱包支付、信用借贷、保险和其他Defi应用，第三方代币交易平台，进行代币的商业流通和用户拓展。"
+    },
+    "email": "contact@alldex.com",
+    "website": "www.alldex.com",
+    "whitepaper": "https://www.alldex.com/Alldex_whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-03-01",
+    "initial_price":{
+          "ETH":"0.0001 ETH",
+          "USD":"0.01 USD",
+          "BTC":"0.000003 BTC"
+    },
+    "links": {
+        "blog":"https://weibo.com/u/7207849104?topnav=1&wvr=6&topsug=1&is_hot=1",
+        "twitter": "https://twitter.com/Alldex_com",
+        "telegram": "https://t.me/alldex_EN",
+        "github": "https://github.com/consenlabs",
+        "facebook": "https://www.facebook.com/imToken.consenlabs",
+        "medium": "https://medium.com/@alldex"
+      }
+    }
+

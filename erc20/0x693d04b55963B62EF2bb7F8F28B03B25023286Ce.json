@@ -1,0 +1,15 @@
+{
+  "symbol": "SFM",
+  "address": "0x693d04b55963B62EF2bb7F8F28B03B25023286Ce",
+  "overview":{
+    "en": "The SmartFund is a set of smart contracts and tokens running on Ethereum. It is completely decentralized and uses voting to invest DAPP projects with clear profit model in Ethereum, and real-time dividends."
+  },
+  "email": "smart.fund@outlook.com",
+  "website": "https://1smart.fund",
+  "whitepaper": "https://1smart.fund/static/$mart_Investment_Ecology.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-24",
+  "links": {
+    "github": "https://github.com/1smartfund"
+  }
+}

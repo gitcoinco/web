@@ -1,0 +1,20 @@
+{
+  "symbol": "HET",
+  "address": "0xf0Ca4CBB3A5624A4bF9bb3A08DfF8B617c6A3d8C",
+  "overview":{
+      "en": "HET is the first one to adopt the concept of complete anonymity protocol and specific measures of proof of interest (POS) encryption currency. Unlike other currently used anonymity protocol encryption currency, HET uses a very efficient cumulative light node system, which allows the payment process of HET to use light nodes to verify digital currency. The node contains all the unpaid HET tokens. This allows the accumulator to store large amounts of digital money while maintaining relatively small computational requirements.HET currency does not need gas, only uses POS pledge system, and makes HET transaction one of the fastest private transfer business nowadays.",
+      "zh": "HET 是最早采用完整匿名协议理念和具体措施的权益证明（POS）加密货币，与目前使用匿名协议的其他加密货币不同，HET 使用非常高效的累加轻节点系统，该系统允许 HET 的支付流程使用轻节点验证数字货币。其中，节点包含所有未支付过的 HET 代币。这样让蓄积器中存储大量的数字货币，同时维持相对较小的计算需求。HET 币无需 gas ，只需采用 POS 质押体系，并让 HET 交易成为如今最快的私人转账业务之一。"
+  },
+  "email": "hashentangle@gmail.com",
+  "website": "https://www.het.one/",
+  "whitepaper": "https://www.het.one/images/whitepaper-en.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-06-22",
+  "initial_price":{
+      "ETH":"0.00025 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Hashentangle",
+    "telegram": "https://t.me/hashentangle"
+  }
+}

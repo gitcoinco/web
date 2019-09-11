@@ -1,0 +1,19 @@
+{
+    "symbol": "RB",
+    "address": "0xc9e35813B427D0Eb24914FDe441956651e946865",
+    "overview":{
+          "en": "阅读宝是一款新闻聚合APP，结合区块链通证思想，用户在阅读新闻的同时可以获得RB奖励.",
+          "zh": "Reading Box is a news application that users will get token by reading."
+    },
+    "email": "support@readbox.vip",
+    "website": "http://www.readbox.vip/",
+    "whitepaper": "http://www.readbox.vip/cdn/whitePaper/RB-WhitePaper-EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-07-02",
+    "initial_price":{
+          "USD":"0.15 USD"
+    },
+    "links": {
+      "github": "https://github.com/ReadingBox"
+    }
+}
