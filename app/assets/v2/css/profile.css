@@ -26,6 +26,10 @@
   min-height: 450px;
 }
 
+.profile-header.basic {
+  min-height: 250px;
+}
+
 .profile-header__handle {
   padding-top: 0.8rem;
   margin-bottom: 0;
