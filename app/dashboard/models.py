@@ -44,11 +44,12 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import pytz
+import json
 import requests
 from app.utils import get_upload_filename
 from dashboard.points import point_values
 from dashboard.tokens import addr_to_token
-from economy.models import ConversionRate, SuperModel, get_time
+from economy.models import ConversionRate, SuperModel, get_time, EncodeAnything
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
@@ -2136,6 +2137,7 @@ class Profile(SuperModel):
     avg_hourly_rate = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     success_rate = models.IntegerField(default=0)
     rep = models.IntegerField(default=0)
+    as_dict = JSONField(default=dict, blank=True)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2300,6 +2302,7 @@ class Profile(SuperModel):
         self.avg_hourly_rate = self.calc_avg_hourly_rate()
         self.success_rate = self.calc_success_rate()
         self.rep = self.calc_rep_number()
+        self.as_dict = json.loads(json.dumps(self.to_dict(tips=False), cls=EncodeAnything))
         self.last_calc_date = timezone.now() + timezone.timedelta(seconds=1)
 
     def get_persona_action_count(self):
@@ -3028,7 +3031,10 @@ class Profile(SuperModel):
         if bounties.exists():
             try:
                 for bounty in bounties:
-                    eth_sum += float(bounty.get_value_in_eth)
+                    eth = bounty.get_value_in_eth
+                    if not eth:
+                        continue
+                    eth_sum += float(eth)
             except Exception as e:
                 logger.exception(e)
                 pass
@@ -3207,7 +3213,7 @@ class Profile(SuperModel):
         sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
-
+        
         sum_all_funded_tokens = self.get_all_tokens_sum(sum_type='funded', bounties=funded_bounties, network=network)
         sum_all_collected_tokens = self.get_all_tokens_sum(
             sum_type='collected', bounties=fulfilled_bounties, network=network
@@ -3232,27 +3238,26 @@ class Profile(SuperModel):
             'card_title': f'@{self.handle} | Gitcoin',
             'card_desc': desc,
             'avatar_url': self.avatar_url_with_gitcoin_logo,
-            'profile': self,
-            'bounties': bounties,
             'count_bounties_completed': total_fulfilled,
-            'sum_eth_collected': sum_eth_collected,
-            'sum_eth_funded': sum_eth_funded,
             'works_with_collected': works_with_collected,
             'works_with_funded': works_with_funded,
+            'works_with_org': works_with_org,
+            'sum_eth_collected': sum_eth_collected,
+            'sum_eth_funded': sum_eth_funded,
             'funded_bounties_count': total_funded,
             'no_times_been_removed': no_times_been_removed,
             'sum_eth_on_repos': sum_eth_on_repos,
-            'works_with_org': works_with_org,
             'count_bounties_on_repo': count_bounties_on_repo,
             'sum_all_funded_tokens': sum_all_funded_tokens,
-            'sum_all_collected_tokens': sum_all_collected_tokens
+            'sum_all_collected_tokens': sum_all_collected_tokens,
+            'bounties': bounties.values_list('pk', flat=True),
         }
 
         if activities:
-            params['activities'] = self.get_various_activities()
+            params['activities'] = self.get_various_activities().values_list('pk', flat=True)
 
         if tips:
-            params['tips'] = self.tips.filter(**query_kwargs).send_happy_path()
+            params['tips'] = self.tips.filter(**query_kwargs).send_happy_path().values_list('pk', flat=True)
 
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
@@ -3260,6 +3265,30 @@ class Profile(SuperModel):
             if self.is_org:
                 params['scoreboard_position_org'] = self.get_org_leaderboard_index()
 
+        context = params
+        profile = self
+
+        context['preferred_payout_address'] = profile.preferred_payout_address
+        context['avg_rating'] = profile.get_average_star_rating()
+        context['avg_rating_scaled'] = profile.get_average_star_rating(20)
+        context['verification'] = profile.get_my_verified_check
+        context['avg_rating'] = profile.get_average_star_rating()
+        context['suppress_sumo'] = True
+        context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count()
+        context['portfolio'] = profile.fulfilled.filter(bounty__network='mainnet').values_list('pk', flat=True)
+
+        return context
+
+
+    @property
+    def reassemble_profile_dict(self):
+        params = self.as_dict
+        if params.get('tips'):
+            params['tips'] = Tip.objects.filter(pk__in=params['tips'])
+        if params.get('activities'):
+            params['activities'] = Activity.objects.filter(pk__in=params['activities'])
+        params['profile'] = self
+        params['portfolio'] = BountyFulfillment.objects.filter(pk__in=params['portfolio'])
         return params
 
     @property

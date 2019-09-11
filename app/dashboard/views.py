@@ -2038,7 +2038,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         network = 'rinkeby'
     status = 200
     order_by = request.GET.get('order_by', '-modified_on')
-    context = profile.to_dict(tips=False)
+    context = profile.reassemble_profile_dict
 
     # all tabs
     if profile.dominant_persona == 'funder':
@@ -2279,26 +2279,17 @@ def profile(request, handle, tab=None):
         return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
     # setup context for visit
-    context['preferred_payout_address'] = profile.preferred_payout_address
-    context['is_my_profile'] = is_my_profile
-    context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
-    context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
-    context['avg_rating'] = profile.get_average_star_rating()
-    context['avg_rating_scaled'] = profile.get_average_star_rating(20)
-    context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
-    context['ratings'] = range(0,5)
-    context['profile'] = profile
-    context['verification'] = profile.get_my_verified_check
-    context['avg_rating'] = profile.get_average_star_rating()
-    context['suppress_sumo'] = True
-    context['feedbacks_sent'] = [fb for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
-    context['feedbacks_got'] = [fb for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
-    context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
-    context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count()
-    context['portfolio'] = profile.fulfilled.filter(bounty__network='mainnet').order_by('-created_on')
 
+    context['is_my_profile'] = is_my_profile
+    context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
+    context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
+    context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+    context['ratings'] = range(0,5)
+    context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
+    context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
+    context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:

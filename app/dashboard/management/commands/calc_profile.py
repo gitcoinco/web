@@ -20,7 +20,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.db.models import F
 
-from dashboard.models import Profile
+from dashboard.models import Profile, UserAction
 
 
 class Command(BaseCommand):
@@ -29,7 +29,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         start_time = timezone.now()-timezone.timedelta(hours=1)
-        profiles = Profile.objects.filter(modified_on__gt=start_time).filter(modified_on__gt=F('last_calc_date'))
+        profiles = Profile.objects.filter(modified_on__gt=start_time)
+        profiles = profiles | Profile.objects.filter(pk__in=UserAction.objects.filter(created_on__gt=start_time).values_list('pk', flat=True))
+        profiles = profiles.filter(modified_on__gt=F('last_calc_date'))
         print(profiles.count())
         for instance in profiles:
             instance.calculate_all()
