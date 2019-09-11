@@ -34,27 +34,12 @@
       {% include 'shared/minihero.html' with h1='Activity Feed' position_h1_below_logo=1 %}
     </div>
 
-    <div style="background-color: white;">
-      <div class="container infinite-container" id="activity_stream">
-          {% for row in activities %}
-            {% include 'shared/activity.html' %}
-          {% endfor %}
-          <a class="infinite-more-link" href="?page={{next_page}}" style="display:none;">More</a>
-      </div>
-    </div>
+    {% include 'shared/activity_container.html' %}
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/messages.html' %}
-    <script src="{% static "v2/js/lib/jquery.waypoints.min.js" %}"></script>
-    <script src="{% static "v2/js/lib/infinite.min.js" %}"></script>
-    <script>
-      $(document).ready(function(){
-        var infinite = new Waypoint.Infinite({
-          element: $('.infinite-container')[0]
-        });
-      });
-    </script>
+    {% include 'shared/activity_scripts.html' %}
   </body>
 </html>

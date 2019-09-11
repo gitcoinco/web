@@ -56,7 +56,7 @@ class DashboardModelsTest(TestCase):
         )
         bounty = Bounty.objects.create(
             title='foo',
-            value_in_token=3,
+            value_in_token=3 * 10**18,
             token_name='ETH',
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             github_url='https://github.com/gitcoinco/web/issues/11',

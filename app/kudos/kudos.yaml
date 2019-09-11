@@ -1,3 +1,80 @@
+- name: Grow Ethereum Winner!
+  description: Congrats to the winner of an open source prize during the Grow Ethereum hackathon.
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  to_address:
+  can_be_sent_by:
+  marketplace_listed: True
+  tags:
+   - community
+   - growethereum
+  image: firstplace.svg
+- name: Grow Ethereum
+  description: A badge showing a submission of a project during the Grow Ethereum hackathon.
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  to_address:
+  can_be_sent_by:
+  marketplace_listed: True
+  tags:
+   - fluence
+   - community
+   - growethereum
+  image: projectcreated.svg
+- name: UNICEF Sustainer
+  description: For a UNICEF community member who made an impact towards the audacious sustainable development goals set in 2019.
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  to_address:
+  can_be_sent_by:
+  marketplace_listed: True
+  tags:
+   - unicef
+   - community
+   - growethereum
+  image: unicef.svg
+- name: (In)Fluence(r)
+  description: Given for influential contributions to Fluence via code, community, or otherwise!
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  to_address:
+  can_be_sent_by:
+  marketplace_listed: True
+  tags:
+   - fluence
+   - community
+   - growethereum
+  image: fluence.svg
+- name: bZx Trader
+  description: For a bZx community member who has made meaningful contributions towards our decentralized trading future.
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  to_address:
+  can_be_sent_by:
+  marketplace_listed: True
+  tags:
+   - bzx
+   - community
+   - growethereum
+  image: bzx.svg
+- name: AdEx Unicorn
+  description: A wonderful AdEx community member
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  to_address:
+  can_be_sent_by:
+  marketplace_listed: True
+  tags:
+   - adex
+   - community
+   - growethereum
+  image: adex.svg
 - name: hadoop_admiral
   description: You are a Master of MapReduce, a sultan of reliable, distributed, and
     scalable computing.  Owners of this badge are infamous for their command of distributing
@@ -1844,7 +1921,7 @@
     - soft skills
   image: trap_avoider.svg
 - name: trollolo
-  description: trololololol lollollollollollollollollollol 
+  description: trololololol lollollollollollollollollollol
   priceFinney: 100
   numClonesAllowed: 1000
   tags:
@@ -1884,21 +1961,21 @@
   description: Are you a creative cat?  Are you always getting new, creative, ideas out to your team?  Then this kudos is for you.
   priceFinney: 2
   numClonesAllowed: 100
-  tags: 
+  tags:
     - soft skills
   image: creative_cat.svg
 - name: firedog
   description: This is fine.. Everything is fine.  Know someone who's cool under pressure?  Then this kudos is for them!
   priceFinney: 2
   numClonesAllowed: 100
-  tags: 
+  tags:
     - memes
   image: firedog.svg
 - name: octo_kitteh
   description: Know someone who's a pro at git?  Know someone who's such an efficient worker that they've probably got eight handes?  This kudos is for htem.
   priceFinney: 2
   numClonesAllowed: 100
-  tags: 
+  tags:
     - Soft skills
     - git
     - Technical skills
@@ -1907,7 +1984,7 @@
   description: Know someone who's always giving without expectation of return?  This kudos is for them.
   priceFinney: 2
   numClonesAllowed: 100
-  tags: 
+  tags:
     - Soft Skills
     - Giving
   image: give_first.svg
@@ -1915,7 +1992,7 @@
   description: Know someone who's good at IPFS?  This kudos is for them
   priceFinney: 2
   numClonesAllowed: 100
-  tags: 
+  tags:
     - IPFS
     - decentralization
   image: ipfs.svg
@@ -1923,7 +2000,7 @@
   description: Know someone who's so zen and so good they are probably an ancient master in a universe far, very far, away?  Then this kudos is for htem.
   priceFinney: 2
   numClonesAllowed: 100
-  tags: 
+  tags:
     - Soft Skills
     - Master
     - zen
@@ -1932,7 +2009,7 @@
   description: Is there smoeone out there who is a great mentor?  Then this kudos is for them
   priceFinney: 2
   numClonesAllowed: 100
-  tags: 
+  tags:
     - mentor
     - soft skills
     - appreciation
@@ -1941,7 +2018,7 @@
   description: Know someone who's a party to be around?  Then this party parrot is for them!
   priceFinney: 2
   numClonesAllowed: 100
-  tags: 
+  tags:
     - fun
     - memes
     - party
@@ -1950,7 +2027,7 @@
   description: Know someone who's always pioneering new frontiers.  This kudos is for such a person :)
   priceFinney: 2
   numClonesAllowed: 100
-  tags: 
+  tags:
     - soft skills
     - pioneer
   image: pioneer.svg
@@ -1958,7 +2035,7 @@
   description: Got someone in your life who is extremely pragmatic?  This kudos is for them.
   priceFinney: 2
   numClonesAllowed: 100
-  tags: 
+  tags:
     - soft skills
     - compliments
   image: pragmatic.svg
@@ -1966,7 +2043,7 @@
   description: Did someone you know do something awful, like send a Kudos to themselves? Then send them this Scarlet Letter Kudos
   priceFinney: 2
   numClonesAllowed: 1000
-  tags: 
+  tags:
     - common
     - scarlet letter
   image: scarlet_letter.svg
@@ -1974,7 +2051,7 @@
   description: This one is just for fun and appreciation of steampunk artwork
   priceFinney: 2
   numClonesAllowed: 100
-  tags: 
+  tags:
     - art
     - beautiful
   image: steampunk.svg
@@ -1982,14 +2059,14 @@
   description: No one can say hello to another contributor like this alien Kudos
   priceFinney: 2
   numClonesAllowed: 100
-  tags: 
+  tags:
     - memes
   image: your_bounty_is_bad_and_you_should_fill_bad.svg
 - name: mad_scientist
   description: The mad scientist transforms the core primitives of logic, math, and physics into something greater (and madder) than the sum of it's parts. muhahahhaah!
   priceFinney: 3
   numClonesAllowed: 300
-  tags: 
+  tags:
     - science
     - mad scientist
     - fun
@@ -1998,7 +2075,7 @@
   description: Neither fire, nor ice, nor any weapon of war, nor any of the elements of the earth can get through to the resilient.  Kudos to you and your resilience through adversity of any kind.
   priceFinney: 4
   numClonesAllowed: 200
-  tags: 
+  tags:
     - resilience
     - soft skills
     - shield
@@ -2009,7 +2086,7 @@
   description: Choose your tools wisely young hero; for they will be important problem solvers for you during your web3 journey.
   priceFinney: 3
   numClonesAllowed: 250
-  tags: 
+  tags:
     - cyberphunk
     - augment
     - tools
@@ -2018,7 +2095,7 @@
   description: This Kudos is for those who have a cyberphunk mind.  Know someone who is the brains of the operation?  Send them this Kudos.
   priceFinney: 5
   numClonesAllowed: 150
-  tags: 
+  tags:
     - cyberphunk
     - brain
     - mind
@@ -2027,7 +2104,7 @@
   description: This Kudos can be awarded only by Gitcoin team, and signifies that one was a Gitcoin ambassador during Fall 2018 and beyond.
   priceFinney: 100
   numClonesAllowed: 250
-  tags: 
+  tags:
     - gitcoin core
     - gitcoin ambassador
   image: gitcoin_ambassador.svg
@@ -2035,16 +2112,16 @@
   description: This Kudos is a thank you to Gitcoin's twitter followers at https://twitter.com/gitcoin.
   priceFinney: 10
   numClonesAllowed: 250
-  tags: 
-    - gitcoin 
+  tags:
+    - gitcoin
     - thanksgiving
   image: turkey.svg
 - name: ether_gun
   description: Know someone who produces and distributes value at a rapid clip?  Send them the Ether Gun Kudos!
   priceFinney: 4
   numClonesAllowed: 251
-  tags: 
-    - gitcoin 
+  tags:
+    - gitcoin
     - value
     - fun
     - ether
@@ -2053,8 +2130,8 @@
   description: The helpotron is your handy, helpful, robot friend.  This kudos is for any collaborator that you find really "helpful"!
   priceFinney: 3
   numClonesAllowed: 255
-  tags: 
-    - gitcoin 
+  tags:
+    - gitcoin
     - helpful
     - sot skills
     - fun
@@ -2064,40 +2141,40 @@
   description: This kudos is for those who have been at the top of the Gitcoin Leaderboard at gitcoin.co/leaderboard
   priceFinney: 15
   numClonesAllowed: 300
-  tags: 
-    - gitcoin 
+  tags:
+    - gitcoin
     - leaderboard
   image: trophy_1.svg
 - name: top_two_leaderboard
   description: This kudos is for those who have been in the top 2 of the Gitcoin Leaderboard at gitcoin.co/leaderboard
   priceFinney: 10
   numClonesAllowed: 350
-  tags: 
-    - gitcoin 
+  tags:
+    - gitcoin
     - leaderboard
   image: trophy_2.svg
 - name: top_three_leaderboard
   description: This kudos is for those who have been in the top 3 of the Gitcoin Leaderboard at gitcoin.co/leaderboard
   priceFinney: 9
   numClonesAllowed: 400
-  tags: 
-    - gitcoin 
+  tags:
+    - gitcoin
     - leaderboard
   image: trophy_3.svg
 - name: top_four_leaderboard
   description: This kudos is for those who have been in the top 4 of the Gitcoin Leaderboard at gitcoin.co/leaderboard
   priceFinney: 8
   numClonesAllowed: 500
-  tags: 
-    - gitcoin 
+  tags:
+    - gitcoin
     - leaderboard
   image: trophy_4.svg
 - name: top_five_leaderboard
   description: This kudos is for those who have been in the top 5 of the Gitcoin Leaderboard at gitcoin.co/leaderboard
   priceFinney: 7
   numClonesAllowed: 500
-  tags: 
-    - gitcoin 
+  tags:
+    - gitcoin
     - leaderboard
   image: trophy_5.svg
 - name: eth_singapore_winner_1
@@ -2560,7 +2637,7 @@
     - red rocks
   image: consensys.svg
 - name: dj_chill_room_ethdenver_2019
-  description: When Bufficorns aren’t “Shillin’ Colorado” they can be found chillin’ to live beats and code. Don’t forget the kombucha! 
+  description: When Bufficorns aren’t “Shillin’ Colorado” they can be found chillin’ to live beats and code. Don’t forget the kombucha!
   priceFinney: 100
   numClonesAllowed: 1000
   tags:
@@ -2596,7 +2673,7 @@
     - maker
   image: maker.svg
 - name: maker_space_ethdenver_2019
-  description: Bufficorns aren’t just technical beasts. They enjoy creative expression of all kinds! 
+  description: Bufficorns aren’t just technical beasts. They enjoy creative expression of all kinds!
   priceFinney: 100
   numClonesAllowed: 1000
   tags:
@@ -2614,7 +2691,7 @@
     - NCC
   image: ncc.svg
 - name: opolis_ethdenver_2019
-  description: You couldn’t ask for a better belayer when sending a hard project than Opolis. Bufficorns never climb difficult routes without them! 
+  description: You couldn’t ask for a better belayer when sending a hard project than Opolis. Bufficorns never climb difficult routes without them!
   priceFinney: 100
   numClonesAllowed: 1000
   tags:
@@ -2649,7 +2726,7 @@
     - the graph
   image: the_graph.svg
 - name: shape_shift_ethdenver_2019
-  description: Hittin’ the slopes with its Shapeshift pals is a preferred activity of the Bufficorn almost anytime. Have you ever tried to outski a fox? 
+  description: Hittin’ the slopes with its Shapeshift pals is a preferred activity of the Bufficorn almost anytime. Have you ever tried to outski a fox?
   priceFinney: 100
   numClonesAllowed: 1000
   tags:
@@ -2658,7 +2735,7 @@
     - skiing
   image: shape_shift.svg
 - name: top_secret_ethden_kudos
-  description: This top secret Kudos, which definitely *wasnt* made in secret for ETHDenenver 2019, can only be found if someone told you the secret code, or if you spelunk'd our codebase.  
+  description: This top secret Kudos, which definitely *wasnt* made in secret for ETHDenenver 2019, can only be found if someone told you the secret code, or if you spelunk'd our codebase.
   priceFinney: 10
   numClonesAllowed: 10
   tags:
@@ -2666,7 +2743,7 @@
     - top secret
   image: marihuana_bufficorn.svg
 - name: shill_colorado_ethdenver_2019
-  description: Shillin’ Colorado is something Bufficorns just can’t help doing. Native to the 14ers of the Rocky Mountains, regardless of where Bufficorns roam, they always remember their roots. 
+  description: Shillin’ Colorado is something Bufficorns just can’t help doing. Native to the 14ers of the Rocky Mountains, regardless of where Bufficorns roam, they always remember their roots.
   priceFinney: 100
   numClonesAllowed: 1000
   tags:
@@ -2675,7 +2752,7 @@
     - 14ers
   image: shill_colorado_ethdenver_2019.svg
 - name: skale_labs_ethdenver_2019
-  description: Being bold and daring isn’t foreign to Bufficorns. Jumping in frozen lakes in the middle of winter is the perfect way to blow off some steam with friends from Skale Labs. 
+  description: Being bold and daring isn’t foreign to Bufficorns. Jumping in frozen lakes in the middle of winter is the perfect way to blow off some steam with friends from Skale Labs.
   priceFinney: 100
   numClonesAllowed: 1000
   tags:
@@ -2723,8 +2800,8 @@
   - p2p
   image: Livepeer.svg
 - name: swarm_developer
-  description: Swarm is a decentralized p2p storage & hosting service running on top of Ethereum blockchain. 
-    Swarm acts as a peer-to-peer storage and servicing solution that has zero downtime, fault-tolerant, 
+  description: Swarm is a decentralized p2p storage & hosting service running on top of Ethereum blockchain.
+    Swarm acts as a peer-to-peer storage and servicing solution that has zero downtime, fault-tolerant,
     and censorship-resistant, and self-sustaining due to a built-in incentive system.
   priceFinney: 100
   artist: sriharikapu
@@ -2737,8 +2814,8 @@
   - Ethereum
   image: Swarm-dev-min.svg
 - name: swarm_expert
-  description: Swarm is a decentralized p2p storage & hosting service running on top of Ethereum blockchain. 
-    Swarm acts as a peer-to-peer storage and servicing solution that has zero downtime, fault-tolerant, 
+  description: Swarm is a decentralized p2p storage & hosting service running on top of Ethereum blockchain.
+    Swarm acts as a peer-to-peer storage and servicing solution that has zero downtime, fault-tolerant,
     and censorship-resistant, and self-sustaining due to a built-in incentive system.
   priceFinney: 500
   artist: sriharikapu
@@ -2751,8 +2828,8 @@
   - Ethereum
   image: SwarmRare-min.svg
 - name: sustainability
-  description: You are a promoter of Sustainability, Sustainability is the process of maintaining change in a balanced fashion, 
-    in which the exploitation of resources, the direction of investments, the orientation of technological development and 
+  description: You are a promoter of Sustainability, Sustainability is the process of maintaining change in a balanced fashion,
+    in which the exploitation of resources, the direction of investments, the orientation of technological development and
     institutional change are all in harmony and enhance both current and future potential to meet human needs and aspirations.
   priceFinney: 10
   artist: sriharikapu
@@ -3041,7 +3118,7 @@
     - just for fun
     - meme
     - doge
-    - gold 
+    - gold
   image: doge.svg
 - name: captain
   to_address: 0xb9c4668CEf8B52b1A0751Dcf14605Cd90F8c9Fce
@@ -3049,7 +3126,7 @@
   description: You are Captain Kudos!
   priceFinney: 50
   numClonesAllowed: 500
-  tags: 
+  tags:
     - programming
     - leader
     - captain
@@ -3079,7 +3156,7 @@
   description: For those who have a very good logic in solving the problem/issue in hand.
   priceFinney: 50
   numClonesAllowed: 100
-  tags: 
+  tags:
     - programming
     - lanugages
     - c++
@@ -3102,7 +3179,7 @@
     - nyan
     - cat
     - rainbow
-  image: nyan.svg  
+  image: nyan.svg
 - name: show_me_what_you_got
   artist: emiwatanabe422
   description: You showed me what you got!
@@ -3202,7 +3279,7 @@
 - name: HackerBoy
   to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
   artist: yash412
-  description: For an absolute mad lad coder. 
+  description: For an absolute mad lad coder.
   priceFinney: 40
   numClonesAllowed: 50
   tags:
@@ -3213,7 +3290,7 @@
 - name: Ethereum_Pro
   to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
   artist: yash412
-  description: For someone who's an ethereum pro. 
+  description: For someone who's an ethereum pro.
   priceFinney: 40
   numClonesAllowed: 50
   tags:
@@ -3245,7 +3322,7 @@
 - name: Network_Security_God
   to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
   artist: yash412
-  description: For someone who's a knows how to keep his network safe. 
+  description: For someone who's a knows how to keep his network safe.
   priceFinney: 40
   numClonesAllowed: 50
   tags:
@@ -3258,7 +3335,7 @@
 - name: Watchful_Protector
   to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
   artist: yash412
-  description: For someone who's keeps a watch out for bugs & issues. 
+  description: For someone who's keeps a watch out for bugs & issues.
   priceFinney: 40
   numClonesAllowed: 50
   tags:
@@ -3271,7 +3348,7 @@
 - name: Money_Maker
   to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
   artist: yash412
-  description: For someone who has just earned a huge bounty! 
+  description: For someone who has just earned a huge bounty!
   priceFinney: 40
   numClonesAllowed: 50
   tags:
@@ -3359,19 +3436,19 @@
 - name: Bug_Detective
   to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
   artist: yash412
-  description: Professional Bug Killer.  
+  description: Professional Bug Killer.
   priceFinney: 40
   numClonesAllowed: 50
   tags:
     - coder
     - bug
     - debug
-    - debugger 
+    - debugger
   image: bug21.svg
 - name: Natural_Coder
   to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
   artist: yash412
-  description: Codes flow within you. 
+  description: Codes flow within you.
   priceFinney: 40
   numClonesAllowed: 50
   tags:
@@ -3383,7 +3460,7 @@
 - name: Invite_a_Friend
   to_address: '0x11328DFcD09ae7d2F40AAc3D544D0700bB222C47'
   artist: j0ker1234
-  description: This is for a friend who is new to gitcoin. 
+  description: This is for a friend who is new to gitcoin.
   priceFinney: 20
   numClonesAllowed: 300
   tags:
@@ -3413,7 +3490,7 @@
 - name: Deadly_Coder
   to_address: '0xD27D4fE82aCF5eaBb78723eC0F624c8127c64972'
   artist: yash412
-  description: The badge says enough already.  
+  description: The badge says enough already.
   priceFinney: 40
   numClonesAllowed: 50
   tags:
@@ -3523,7 +3600,7 @@
     - pet
     - roboto
     - tamagotchi
-  image: Tamagotchi.svg 
+  image: Tamagotchi.svg
 - name: Ethereal_gameboy
   artist: cryptodesign
   description: Booting up Ethereal Summit 2019.
@@ -3533,7 +3610,7 @@
     - animated
     - gameboy
     - ethereal
-  image: Gameboy.svg 
+  image: Gameboy.svg
 - name: youre_a_star
   artist: Mladen
   description: For the brightest shining stars in your network!
@@ -3590,7 +3667,7 @@
   image: brett_li.svg
 - name: Ethereal_computer
   artist: yash412
-  description: Old School Coder. 
+  description: Old School Coder.
   priceFinney: 20
   numClonesAllowed: 200
   tags:
@@ -3601,7 +3678,7 @@
   image: 90_1.svg
 - name: Ethereal_poloroid
   artist: yash412
-  description: Snapshot of the 90s. 
+  description: Snapshot of the 90s.
   priceFinney: 20
   numClonesAllowed: 200
   tags:
@@ -3680,7 +3757,7 @@
   image: 90_9.svg
 - name: Ethereal_Donatello
   artist: yash412
-  description: Technological genius of the group. 
+  description: Technological genius of the group.
   priceFinney: 20
   numClonesAllowed: 200
   tags:
@@ -3713,7 +3790,7 @@
   image: 90_8.svg
 - name: Ethereal_Raphael
   artist: yash412
-  description: The aggressive member. 
+  description: The aggressive member.
   priceFinney: 20
   numClonesAllowed: 200
   tags:
@@ -3967,7 +4044,7 @@
 - name: walkman
   artist: joe_bender
   to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
-  description: Limited Edition 90s Kudos! Imagine having all of your records, turntable, cumbersome wires, bulky headphones, and studio receiver…..all in your pocket! Now you can take Duran Duran, Bon Jovi, and R.E.M. with you wherever you go! Be the coolest kid walking down the street with the new Hi-Fi Walkman from Sony with stereo sound. 
+  description: Limited Edition 90s Kudos! Imagine having all of your records, turntable, cumbersome wires, bulky headphones, and studio receiver…..all in your pocket! Now you can take Duran Duran, Bon Jovi, and R.E.M. with you wherever you go! Be the coolest kid walking down the street with the new Hi-Fi Walkman from Sony with stereo sound.
   platform: gitcoin
   priceFinney: 22
   numClonesAllowed: 88
@@ -3991,7 +4068,7 @@
 - name: technology
   artist: joe_bender
   to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
-  description: Limited Edition 90s Kudos! Welcome to the future! The exponential technologicalizationing that has occurred will forever change globoculture. Futuroinnovation and synergeticisms will agiley disruptify the incumbenthorities of the legacynical industromarkets. 
+  description: Limited Edition 90s Kudos! Welcome to the future! The exponential technologicalizationing that has occurred will forever change globoculture. Futuroinnovation and synergeticisms will agiley disruptify the incumbenthorities of the legacynical industromarkets.
   platform: gitcoin
   priceFinney: 22
   numClonesAllowed: 88
@@ -4015,7 +4092,7 @@
 - name: minesweeper
   artist: joe_bender
   to_address: '0xdf9B0d723776972C5cAe27FDb4F3Ea827A5Cf283'
-  description:  Limited Edition 90s Kudos! 3...2...1...BOOM! One wrong click and your smile can turn into a frown real quick. Relive the nostalgia of Windows 95 and dial-up tones with this explosive kudos. 
+  description:  Limited Edition 90s Kudos! 3...2...1...BOOM! One wrong click and your smile can turn into a frown real quick. Relive the nostalgia of Windows 95 and dial-up tones with this explosive kudos.
   platform: gitcoin
   priceFinney: 22
   numClonesAllowed: 88
@@ -4035,14 +4112,14 @@
     - just for fun
     - ethereal
     - 90s
-  image: blockbuster.svg  
+  image: blockbuster.svg
 - name: code_eating_hippo
   artist: mladen
   to_address: '0x5dD03D36358d6Da50D758F2EF6e18423F6CF42C4'
   description: Comuka is a code-eating hippo living in nonce community. Hang out and code together every Saturday with Comuka.
   priceFinney: 1
   numClonesAllowed: 1000
-  tags: 
+  tags:
    - Saturday Coding Salon
    - Weekly casual hackathon
   image: code_eating_hippo.svg
@@ -4052,7 +4129,7 @@
   artist: Mladen
   numClonesAllowed: 1000
   to_address: '0xfdb33f8ac7ce72d7d4795dd8610e323b4c122fbb'
-  tags: 
+  tags:
    - ENS
    - Naming
   image: ENS.svg
@@ -4070,7 +4147,7 @@
 - name: Snor-ey
   artist: yash412
   to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
-  description: Sleeping, do not disturb or I'll errupt. 
+  description: Sleeping, do not disturb or I'll errupt.
   priceFinney: 20
   numClonesAllowed: 200
   tags:
@@ -4081,7 +4158,7 @@
 - name: Charm-bot
   artist: yash412
   to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
-  description: Playing with fire! 
+  description: Playing with fire!
   priceFinney: 20
   numClonesAllowed: 200
   tags:
@@ -4103,7 +4180,7 @@
 - name: Bullba_bot
   artist: yash412
   to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
-  description: As green as this world itself, oh wait. 
+  description: As green as this world itself, oh wait.
   priceFinney: 20
   numClonesAllowed: 200
   tags:
@@ -4125,7 +4202,7 @@
 - name: Meow_bot
   artist: yash412
   to_address: '0xa40c2140a4B369Eb5AAccb2E7BADCa50E2892A74'
-  description: Team Rocket! 
+  description: Team Rocket!
   priceFinney: 20
   numClonesAllowed: 200
   tags:
@@ -4157,7 +4234,7 @@
 - name: Ambo_Launch_Kudos
   artist: jbhav24
   to_address: '0xCb1D5db9bD5C41b8B3cf223920554cA1A58F6A6C'
-  description: A special gift to the early users of the Ambo Wallet! 
+  description: A special gift to the early users of the Ambo Wallet!
   priceFinney: 1
   numClonesAllowed: 1000
   tags:
@@ -4258,7 +4335,7 @@
   priceFinney: 10
   numClonesAllowed: 500
   to_address: "0x12c8ff915ad423cfA1c03E6D0749F1eBAc582959"
-  tags: 
+  tags:
     - ethereum
     - metamask
     - community
@@ -4269,7 +4346,7 @@
   description: This is a part of a cryptokitty, collected at Ethereal 2019.
   priceFinney: 1
   numClonesAllowed: 2000
-  tags: 
+  tags:
     - ethereal
     - cryptokitty
   image: kitties_asset1.svg
@@ -4277,7 +4354,7 @@
   description: This is a part of a cryptokitty, collected at Ethereal 2019.
   priceFinney: 1
   numClonesAllowed: 2000
-  tags: 
+  tags:
     - ethereal
     - cryptokitty
   image: kitties_asset2.svg
@@ -4285,7 +4362,7 @@
   description: This is a part of a cryptokitty, collected at Ethereal 2019.
   priceFinney: 1
   numClonesAllowed: 2000
-  tags: 
+  tags:
     - ethereal
     - cryptokitty
   image: kitties_asset3.svg
@@ -4293,7 +4370,7 @@
   description: This is a part of a cryptokitty, collected at Ethereal 2019.
   priceFinney: 1
   numClonesAllowed: 2000
-  tags: 
+  tags:
     - ethereal
     - cryptokitty
   image: kitties_asset4.svg
@@ -4301,7 +4378,7 @@
   description: This is a part of a cryptokitty, collected at Ethereal 2019.
   priceFinney: 1
   numClonesAllowed: 2000
-  tags: 
+  tags:
     - ethereal
     - cryptokitty
   image: kitties_asset5.svg
@@ -4309,7 +4386,7 @@
   description: This is a part of a cryptokitty, collected at Ethereal 2019.
   priceFinney: 1
   numClonesAllowed: 2000
-  tags: 
+  tags:
     - ethereal
     - cryptokitty
   image: kitties_asset6.svg
@@ -4679,7 +4756,7 @@
   - gitcoin bot
   image: mario_bot.svg
 - name: summer_beach_bot
-  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends!
   priceFinney: 20
   platform: gitcoin
   numClonesAllowed: 88
@@ -4695,7 +4772,7 @@
   - gitcoin bot
   image: lovely_bot.svg
 - name: kayak_bot
-  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends!
   priceFinney: 20
   platform: gitcoin
   numClonesAllowed: 88
@@ -4703,7 +4780,7 @@
   - gitcoin bot
   image: kayak.svg
 - name: biking_bot
-  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends!
   priceFinney: 20
   platform: gitcoin
   numClonesAllowed: 88
@@ -4711,7 +4788,7 @@
   - gitcoin bot
   image: biking.svg
 - name: camping_bot
-  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends!
   priceFinney: 20
   platform: gitcoin
   numClonesAllowed: 88
@@ -4735,7 +4812,7 @@
   - gitcoin bot
   image: hippy.svg
 - name: summer_trip_bots
-  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends! 
+  description: Getting and outdoors and getting some sunshine.  Celebrate the outdoors with your friends!
   priceFinney: 20
   platform: gitcoin
   numClonesAllowed: 88
@@ -4840,7 +4917,7 @@
   - BUIDL
   image: i_want_you_to_build_on_eth.svg
 - name: beyond_blockchain_submission
-  description: This badge is for a Gitcoiner who grew open source during Beyond Blockchain 2019 :) 
+  description: This badge is for a Gitcoiner who grew open source during Beyond Blockchain 2019 :)
   priceFinney: 2
   artist: mladen
   platform: gitcoin
@@ -4860,7 +4937,7 @@
   - gitcoin
   image: RN-Kudo.svg
 - name: beyond_blockchain_winners
-  description: This badge is for prize winners of the Beyond Blockchain hackathon! 
+  description: This badge is for prize winners of the Beyond Blockchain hackathon!
   priceFinney: 2
   artist: mladen
   platform: gitcoin
@@ -4870,7 +4947,7 @@
   - gitcoin
   image: beyond_blockchain_throphy.svg
 - name: portis_badge
-  description: This badge is for a Portis community member who has shown their appreciation for a usable blockchain future! 
+  description: This badge is for a Portis community member who has shown their appreciation for a usable blockchain future!
   priceFinney: 2
   artist: mladen
   platform: gitcoin
@@ -4880,7 +4957,7 @@
   - wallet
   image: portis.svg
 - name: beyond_blockchain
-  description: This badge is for hackers in the Beyond Blockchain hackathon! 
+  description: This badge is for hackers in the Beyond Blockchain hackathon!
   priceFinney: 2
   artist: mladen
   platform: gitcoin
@@ -4964,7 +5041,7 @@
   artist: MladenPetronijevic
   priceFinney: 20
   numClonesAllowed: 100
-  tags: 
+  tags:
    - Labs
    - Hackathon
    - Beyond Blockchain
@@ -5030,4 +5107,238 @@
   - rare
   - codefund
   image: codefund/codefund_influencer_v1.0reissue.svg
-
+- name: 3Box_Social_Butterfly
+  description: You're a social butterfly!
+  priceFinney: 1
+  numClonesAllowed: 150
+  to_address: '0xa8eE0BABE72cD9A80Ae45dD74Cd3eaE7a82fd5d1'
+  tags:
+  - 3Box
+  - Social
+  - Friends
+  - Love
+  image: 3box_butterfly.svg
+- name: DAI
+  description: For DAI + Kudos community
+  priceFinney: 1
+  numClonesAllowed: 150
+  tags:
+  - DAI
+  - MakerDAO
+  image: dai.svg
+- name: grants_round_3_contributor_-_Popart_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Popart_bot.svg
+- name: grants_round_3_contributor_-_noir_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: noir_bot.svg
+- name: grants_round_3_contributor_-_japaneseArt_ninjaBot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: japaneseArt_ninjaBot.svg
+- name: grants_round_3_contributor_-_origami_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: origami_bot.svg
+- name: grants_round_3_contributor_-_popart_gitcoin
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: popart_gitcoin.svg
+- name: grants_round_3_contributor_-_ramen_eating_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: ramen_eating_bot.svg
+- name: grants_round_3_contributor_-_samurai_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: samurai_bot.svg
+- name: grants_round_3_contributor_-_watercolour_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: watercolour_bot.svg
+- name: grants_round_3_contributor_-_gitcoin_spraybot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: gitcoin_spraybot.svg
+- name: grants_round_3_contributor_-_japanese-bot-sketch
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: japanese-bot-sketch.svg
+- name: grants_round_3_contributor_-_kendo-bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: kendo-bot.svg
+- name: grants_round_3_contributor_-_snowgitcoin_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: snowgitcoin_bot.svg
+- name: grants_round_3_contributor_-_Futurism_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Futurism_bot.svg
+- name: grants_round_3_contributor_-_Koibot.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Koibot.svg
+- name: grants_round_3_contributor_-_samurai_bot.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: samurai_bot.svg
+- name: grants_round_3_contributor_-_bounty_bot_koi.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: bounty_bot_koi.svg
+- name: grants_round_3_contributor_-_bot_with_mount_fuji.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: bot_with_mount_fuji.svg
+- name: grants_round_3_contributor_-_Noodle_Fighter.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Noodle_Fighter.svg

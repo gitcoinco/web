@@ -103,7 +103,7 @@ $(document).ready(function() {
     });
   }
 
-  var top_nav_salt = 2;
+  var top_nav_salt = 3;
   var remove_top_row = function() {
     $('#top_nav_notification').parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
@@ -280,37 +280,28 @@ const sendPersonal = (persona) => {
     $('#persona_modal').bootstrapModal('hide');
     const urls = [
       {
-        url: document.location.href,
-        redirect: '/onboard/funder'
-      },
-      {
-        url: '/bounties/funder',
-        redirect: '/onboard/funder'
-      },
-      {
-        url: '/contributor',
-        redirect: '/onboard/contributor'
+        url: '/hackathon/onboard'
       }
     ];
 
-    const checkUrl = (arr, val) => {
+    const checkUrlRedirect = (arr, val) => {
       return arr.some(arrObj => {
         if (val.indexOf(arrObj.url) >= 0) {
-          return true;
+          return false;
         }
-        return false;
+        return true;
       });
     };
 
     if (response.persona === 'persona_is_funder') {
-      if (checkUrl(urls, document.location.href)) {
+      if (checkUrlRedirect(urls, document.location.href)) {
         window.location = '/onboard/funder';
       } else {
         return _alert(gettext('Thanks, you can read the guide <a href="/how/funder">here.</a>'), 'info');
       }
 
     } else if (response.persona === 'persona_is_hunter') {
-      if (checkUrl(urls, document.location.href)) {
+      if (checkUrlRedirect(urls, document.location.href)) {
         window.location = '/onboard/contributor';
       } else {
         return _alert(gettext('Thanks, you can read the guide <a href="/how/contributor">here.</a>'), 'info');
