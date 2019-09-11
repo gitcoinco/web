@@ -1528,6 +1528,12 @@ div.busyOverlay {
   border-top-color: #F8F8F8;
 }
 
+.popover-bounty__footer {
+  padding: 1.3em 1.3em 1.2em;
+  background-color: #F8F8F8;
+  border-radius: 0 0 .3rem .3rem;
+}
+
 .popover-bounty__content {
   padding: 1.4em 1.3em 1.3em;
 }
