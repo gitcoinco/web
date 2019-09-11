@@ -1,16 +1,16 @@
 {% load i18n static %}
       {% if not hidden and not profile.is_org %}
         <div id="tabs">
-        <div id="tab_controller" class="container">
-          <ul class="nav">
+        <div class="container">
+          <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
             <li class="nav-item">
-              <a class="nav-link {% if tab == 'activity' %}active{%endif%}" href="{{profile.url}}/activity">
+              <a class="nav-link nav-line  {% if tab == 'activity' %}active{%endif%}" href="{{profile.url}}/activity">
                 Activity
               </a>
             </li>
             {% if show_resume_tab %}
             <li class="nav-item">
-              <a class="nav-link {% if tab == 'resume' %}active{%endif%}" href="{{profile.url}}/resume">
+              <a class="nav-link nav-line  {% if tab == 'resume' %}active{%endif%}" href="{{profile.url}}/resume">
                 {% if not profile.show_job_status and is_my_profile %}
                  <i class="fas fa-eye"></i> 
                 {% endif %}
@@ -20,34 +20,34 @@
             {% endif %}
             {% if active_bounties_count %}
             <li class="nav-item ">
-              <a class="nav-link {% if tab == 'active' %}active{%endif%}" href="{{profile.url}}/active">
+              <a class="nav-link nav-line  {% if tab == 'active' %}active{%endif%}" href="{{profile.url}}/active">
                 Active Issues ({{active_bounties_count}})
               </a>
             </li>
             {% endif %}
             {% if is_my_profile and all_feedbacks|length %}
             <li class="nav-item">
-              <a class="nav-link {% if tab == 'ratings' %}active{%endif%}" href="{{profile.url}}/ratings">
+              <a class="nav-link nav-line  {% if tab == 'ratings' %}active{%endif%}" href="{{profile.url}}/ratings">
                 Ratings ({{all_feedbacks|length}})
               </a>
             </li>
             {% endif %}
             {% if portfolio.count %}
             <li class="nav-item">
-              <a class="nav-link {% if tab == 'portfolio' %}active{%endif%}" href="{{profile.url}}/portfolio">
+              <a class="nav-link nav-line  {% if tab == 'portfolio' %}active{%endif%}" href="{{profile.url}}/portfolio">
                 Portfolio ({{portfolio.count}})
               </a>
             </li>
             {% endif %}
             <li class="nav-item">
-              <a class="nav-link {% if tab == 'kudos' %}active{%endif%}" href="{{profile.url}}/kudos">
+              <a class="nav-link nav-line  {% if tab == 'kudos' %}active{%endif%}" href="{{profile.url}}/kudos">
                 Kudos {% if total_kudos_count %}({{total_kudos_count}}){%endif%}
               </a>
             </li>
             {% if is_staff %}
             {% if is_editable %}
               <li class="nav-item">
-                <a class="nav-link {% if tab == 'viewers' %}active{%endif%}" href="{{profile.url}}/viewers">
+                <a class="nav-link nav-line  {% if tab == 'viewers' %}active{%endif%}" href="{{profile.url}}/viewers">
                   <i class="fas fa-eye"></i> Viewers
                   {% if profile.viewed_by.count %}({{profile.viewed_by.count}}){%endif%}                  
                 </a>
