@@ -1,4 +1,5 @@
 {% load humanize %}
+{% if not profile.is_org %}
   <li>
   Last Seen: <b>{{profile.last_visit|naturaltime}}</b>
   </li>
@@ -23,7 +24,7 @@
     {% if profile.persona_is_hunter %}
       <li class='admin_only'>
       <label id="tooltip">
-        <i class='fa fa-info-circle' title="How many weekdays in a row has the user been active on Gitcoin?."></i>
+        <i class='fa fa-info-circle' title="How many weekdays in a row has the user been active on Gitcoin?"></i>
       </label>
         Longest activity streak: <b>{{profile.longest_streak}} weekdays</b>
       </li>
@@ -38,3 +39,4 @@
     Avg Hourly Rate <b>${{profile.avg_hourly_rate}}</b>
     </li>
   {% endif %}
+{% endif %}

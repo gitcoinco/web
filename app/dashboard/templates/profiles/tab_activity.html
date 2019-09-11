@@ -1,6 +1,6 @@
 {% load i18n static %}
 
-  {% if is_staff %}
+  {% if is_staff and not profile.is_org %}
     <div class="container px-md-0 tab2">
       <div class="row admin_only">
         {% include "profiles/REPgraph.html" %}
