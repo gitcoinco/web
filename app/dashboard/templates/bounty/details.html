@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -487,6 +488,9 @@
     $('[data-toggle="popover"]').popover()
     $("body").on("mouseover", "[data-username]", function(e) {
       openContributorPopOver($(this).data("username"), $(this));
+    });
+    $("body").on("mouseout", "[data-username]", function(e) {
+      $(this).popover('dispose');
     });
   </script>
   <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>

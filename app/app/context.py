@@ -26,6 +26,7 @@ from app.utils import get_location_from_ip
 from dashboard.models import Activity, Tip, UserAction
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
+from marketing.utils import handle_marketing_callback
 from retail.helpers import get_ip
 
 RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
@@ -74,6 +75,11 @@ def preprocess(request):
 
         if record_join:
             Activity.objects.create(profile=profile, activity_type='joined')
+
+    # handles marketing callbacks
+    if request.GET.get('cb'):
+        callback = request.GET.get('cb')
+        handle_marketing_callback(callback, request)
 
     context = {
         'STATIC_URL': settings.STATIC_URL,

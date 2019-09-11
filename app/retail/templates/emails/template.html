@@ -166,6 +166,14 @@
     padding: 30px 50px;
   }
 
+  #preferred_payout{
+    background-color: #eee;
+    padding: 10px 50px;
+    text-align: center;
+    margin-bottom: 20px;
+
+  }
+
   #footer p, #footer a {
     color: #ccc;
   }
@@ -259,6 +267,16 @@
         <img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% endif %}
     </a>
+  </div>
+  <div id="preferred_payout">
+    {% if subscriber.profile.preferred_payout_address %}
+      Your Gitcoin preferred payout address is <strong>{{subscriber.profile.preferred_payout_address}}</strong>.  Payments will be auto-sent to this address.
+      <a href="https://gitcoin.co/settings/account">New Wallet? Click here to update Payout Address.</a>
+    {% else %}
+      You do not have a prefered payout address on file.
+      <a href="https://gitcoin.co/settings/account">Click here to set a Payout Address.</a>    
+    {% endif %}
+
   </div>
   {% endif %}
 

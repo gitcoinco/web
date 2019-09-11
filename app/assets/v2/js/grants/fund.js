@@ -23,6 +23,18 @@ $(document).ready(function() {
 
   updateSummary();
 
+  $('.nav-item').click(function(e) {
+    $('.nav-item a').removeClass('active');
+    $(this).find('a').addClass('active');
+    var targetid = $(this).find('a').data('target');
+    var target = $('#' + targetid);
+
+    $('.tab_target').addClass('hidden');
+    target.removeClass('hidden');
+
+    e.preventDefault();
+  });
+
   $('#frequency_unit, #js-token').on('select2:select', event => {
     updateSummary();
   });
@@ -295,7 +307,7 @@ const subscribeToGrant = (transactionHash) => {
       $('#transaction_url').attr('href', linkURL);
       enableWaitState('#grants_form');
       // TODO: fix the tweet modal
-      // $('#tweetModal').modal('show');
+      $('#tweetModal').css('display', 'block');
 
       deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
@@ -400,7 +412,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
     $('#transaction_url').attr('href', linkURL);
     enableWaitState('#grants_form');
     // TODO: Fix tweet modal
-    // $('#tweetModal').modal('show');
+    $('#tweetModal').css('display', 'block');
   }).on('confirmation', function(confirmationNumber, receipt) {
     data = {
       'subscription_hash': 'onetime',

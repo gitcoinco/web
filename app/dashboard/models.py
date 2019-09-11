@@ -2575,6 +2575,19 @@ class Profile(SuperModel):
         return 0
 
     @property
+    def completed_bounties(self):
+        """Returns bounties completed by user
+
+        Returns:
+            number: number of bounties completed
+
+        """
+        network = self.get_network()
+        return self.bounties.filter(
+            idx_status__in=['done'], network=network).count()
+
+
+    @property
     def get_quarterly_stats(self):
         """Generate last 90 days stats for this user.
 
