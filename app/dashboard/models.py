@@ -2362,14 +2362,15 @@ class Profile(SuperModel):
         return user_actions.count()
 
     def get_desc(self, funded_bounties, fulfilled_bounties):
-        total_funded = funded_bounties.aggregate(Sum('value_in_usdt'))['value_in_usdt__sum'] or 0
-        total_fulfilled = fulfilled_bounties.aggregate(Sum('value_in_usdt'))['value_in_usdt__sum'] or 0
-
         role = 'newbie'
-        if total_funded > total_fulfilled:
+        if self.persona_is_funder and self.persona_is_hunter:
+            role = 'funder/coder'
+        elif self.persona_is_funder:
             role = 'funder'
-        elif total_funded < total_fulfilled:
+        elif self.persona_is_hunter:
             role = 'coder'
+        if self.is_org:
+            role = 'organization'
 
         total_funded_participated = funded_bounties.count() + fulfilled_bounties.count()
         plural = 's' if total_funded_participated != 1 else ''
