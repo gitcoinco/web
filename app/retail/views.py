@@ -633,7 +633,21 @@ def about(request):
             "The Community",
             "Avocado Toast",
             "kevin",
-            "Summoner of Bots"
+            "Summoner of Bots",
+            "owocki",
+            True
+        ),
+        (
+            "Joe Lubin",
+            "Consensys",
+            "",
+            "",
+            "Meshiness",
+            "",
+            "joe",
+            "Harbringer of Decentralization",
+            "ethereumJoseph",
+            True
         ),
         (
             "Alisa March",
@@ -643,7 +657,9 @@ def about(request):
             "Tips",
             "Apple Cider Doughnuts",
             "alisa",
-            "Pixel Mage"
+            "Pixel Mage",
+            "pixelant",
+            True
         ),
         (
             "Eric Berry",
@@ -653,7 +669,9 @@ def about(request):
             "Chrome/Firefox Extension",
             "Pastel de nata",
             "eric",
-            "Burnout Healer"
+            "Burnout Healer",
+            "coderberry",
+            True
         ),
         (
             "Vivek Singh",
@@ -663,7 +681,9 @@ def about(request):
             "Gitcoin Requests",
             "Tangerine Gelato",
             "vivek",
-            "Campfire StoryTeller"
+            "Campfire StoryTeller",
+            "vsinghdothings",
+            True
         ),
         (
             "Aditya Anand M C",
@@ -673,7 +693,9 @@ def about(request):
             "The Community",
             "Cocktail Samosa",
             "aditya",
-            "Block Welder"
+            "Block Welder",
+            "thelostone_mc",
+            True
         ),
         (
             "Scott Moore",
@@ -683,7 +705,9 @@ def about(request):
             "Issue Explorer",
             "Teriyaki Chicken",
             "scott",
-            "Phase Shifter"
+            "Phase Shifter",
+            "notscottmoore",
+            True
         ),
         (
             "Octavio Amuchástegui",
@@ -693,7 +717,9 @@ def about(request):
             "The Community",
             "Homemade italian pasta",
             "octavio",
-            "Bugs Breeder"
+            "Bugs Breeder",
+            "octavioamu",
+            True
         ),
         (
             "Frank Chen",
@@ -703,7 +729,9 @@ def about(request):
             "Kudos!",
             "Crispy pork belly",
             "frank",
-            "Hashed Scout"
+            "Hashed Scout",
+            "",
+            True
         ),
         (
             "Nate Hopkins",
@@ -713,7 +741,9 @@ def about(request):
             "Bounties",
             "Chicken tikka masala",
             "nate",
-            "Lord of Night's Watch"
+            "Lord of Night's Watch",
+            "hopsoft",
+            True
         ),
         (
             "Alessandro Voto",
@@ -723,7 +753,9 @@ def about(request):
             "Devvies",
             "Tacos",
             "alex",
-            "Starship Captain"
+            "Starship Captain",
+            "avotofuture",
+            True
         ),
         (
             "Dan Lipert",
@@ -733,7 +765,9 @@ def about(request):
             "EIP 1337",
             "Tantan Ramen",
             "dan",
-            "Blockchain Artificer"
+            "Blockchain Artificer",
+            "dan_lipert",
+            True
         ),
         (
             "Connor O'Day",
@@ -743,7 +777,9 @@ def about(request):
             "the lols",
             "Robertas Pizza",
             "connor",
-            "Druid of The Chain"
+            "Druid of The Chain",
+            "connoroday0",
+            True
         ),
         (
             "Joseph Chen",
@@ -753,7 +789,21 @@ def about(request):
             "Ethical Ads",
             "DIY",
             "joseph",
-            "Arithmagician"
+            "Arithmagician",
+            "",
+            True
+        ),
+        (
+            "gitcoinbot",
+            "beep boop bop",
+            "gitcoinbot",
+            "gitcoinbot",
+            "everything that's automated",
+            "bits",
+            "gitcoinbot",
+            "Loveable Companion",
+            "",
+            False
         )
 
     ]
