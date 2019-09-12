@@ -40,10 +40,10 @@
                   <small class="review-comment">{{ profile.data.bio }}</small>
                 </div>
               {% endif %}
-              {% if preferred_payout_address %}
+              {% if profile.preferred_payout_address %}
                 <div class="my-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="10" height="16" class="mr-2 mb-1"><path fill="#000" fill-rule="nonzero" d="M10 8.113L5.002 11 0 8.113 5.002 0 10 8.113zm-5 3.821L0 9l5 7 5-7-5 2.934z"/></svg>
-                  <span id="preferred-address" data-truncatehash title="{{ preferred_payout_address }}">{{ preferred_payout_address }}</span>
+                  <span id="preferred-address" data-truncatehash title="{{ profile.preferred_payout_address }}">{{ profile.preferred_payout_address }}</span>
                   {% if is_my_profile %}
                     <a href="/settings/account" class=""><i class="fas fa-plus-circle"></i> Update preferred address</a>
                   {% endif %}
