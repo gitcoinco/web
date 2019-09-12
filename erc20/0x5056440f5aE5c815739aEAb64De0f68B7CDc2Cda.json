@@ -11,7 +11,7 @@
   "state": "NORMAL", 
   "published_on": "2019-04-29",
   "initial_price":{
-        "USD":"0.0015"
+        "USD":"0.0015 USD"
   },
   "links": {
     "blog": "https://www.lvcb.net/index.html",
