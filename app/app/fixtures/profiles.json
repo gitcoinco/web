@@ -1960,7 +1960,7 @@
         "pk": 30,
         "fields": {
             "created_on": "2019-05-31T14:09:40Z",
-            "modified_on": "2019-06-14T20:21:11.697Z",
+            "modified_on": "2019-09-12T19:59:23.205Z",
             "user": 3,
             "data": {
                 "id": null,
@@ -2005,7 +2005,7 @@
             "preferred_kudos_wallet": null,
             "max_tip_amount_usdt_per_tx": "500.00",
             "max_tip_amount_usdt_per_week": "1500.00",
-            "last_visit": "2019-06-14T20:20:33.046Z",
+            "last_visit": "2019-09-12T19:59:14.299Z",
             "job_search_status": "AL",
             "show_job_status": true,
             "job_type": "",
@@ -2017,7 +2017,7 @@
             "profile_wallpaper": "",
             "actions_count": 0,
             "fee_percentage": 10,
-            "persona_is_funder": false,
+            "persona_is_funder": true,
             "persona_is_hunter": false,
             "admin_override_name": "",
             "admin_override_avatar": ""
@@ -2164,7 +2164,7 @@
         "pk": 33,
         "fields": {
             "created_on": "2019-05-31T14:41:48Z",
-            "modified_on": "2019-09-09T00:43:20.864Z",
+            "modified_on": "2019-09-12T19:59:07.885Z",
             "user": 1,
             "data": {
                 "id": 149186,
@@ -2209,7 +2209,7 @@
             "preferred_kudos_wallet": null,
             "max_tip_amount_usdt_per_tx": "500.00",
             "max_tip_amount_usdt_per_week": "1500.00",
-            "last_visit": "2019-09-09T00:41:34.181Z",
+            "last_visit": "2019-09-12T19:59:07.885Z",
             "job_search_status": "AL",
             "show_job_status": true,
             "job_type": "",
