@@ -25,6 +25,7 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.db.models import Max
@@ -540,8 +541,9 @@ def account_settings(request):
             profile.email = ''
             profile.save()
             create_user_action(profile.user, 'account_disconnected', request)
-            messages.success(request, _('Your account has been disconnected from Github'))
-            logout_redirect = redirect(reverse('logout') + '?next=/')
+            redirect_url = f'https://www.github.com/settings/connections/applications/{settings.GITHUB_CLIENT_ID}'
+            logout(request)
+            logout_redirect = redirect(redirect_url)
             logout_redirect['Cache-Control'] = 'max-age=0 no-cache no-store must-revalidate'
             return logout_redirect
         elif request.POST.get('delete', False):
