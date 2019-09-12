@@ -15,7 +15,7 @@
 		<div class="card-body font-subheader">
 		  <ul>
 			<li><b>{{ funded_bounties_count }}</b> {% trans "bounties funded" %}</li>
-			<li><b>{{ sum_eth_funded|floatformat:2 }} ETH</b> {% trans "funded" %}</li>
+      <li><b>${{ spent_total|floatformat:0 }}</b> {% trans "funded" %}</li>
 			<li class="works_with_list">
 		  	  {% if works_with_funded|length %}
 				<span class="font-body"><i class="fab fa-ethereum"></i> {% trans "Funds" %}:</span>

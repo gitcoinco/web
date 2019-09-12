@@ -446,6 +446,19 @@ def psave_kt(sender, instance, **kwargs):
         token.popularity_quarter = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=90))).count()
         token.save()
 
+    from django.contrib.contenttypes.models import ContentType
+    from dashboard.models import Earning
+    Earning.objects.update_or_create(
+        created_on=instance.created_on,
+        from_profile=instance.sender_profile,
+        to_profile=instance.recipient_profile,
+        value_usd=instance.value_in_usdt_then,
+        source_type=ContentType.objects.get(app_label='kudos', model='kudostransfer'),
+        source_id=instance.pk,
+        url=instance.kudos_token_cloned_from.url,
+        network=instance.network,
+        )
+
 
 class Contract(SuperModel):
 

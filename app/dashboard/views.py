@@ -72,8 +72,9 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer, ProfileView,
-    RefundFeeRequest, REPEntry, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
+    Earning, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer,
+    ProfileView, RefundFeeRequest, REPEntry, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction,
+    UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -2158,6 +2159,10 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'portfolio':
         pass
+    elif tab == 'earnings':
+        context['earnings'] = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).order_by('-created_on')
+    elif tab == 'spent':
+        context['spent'] = Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False).order_by('-created_on')
     elif tab == 'kudos':
         owned_kudos = profile.get_my_kudos.order_by('id', order_by)
         sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
@@ -2232,7 +2237,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
     
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos']
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2243,7 +2248,7 @@ def profile(request, handle, tab=None):
     if not handle and request.user.is_authenticated:
         handle = request.user.username
     is_my_profile = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    user_only_tabs = ['viewers']
+    user_only_tabs = ['viewers', 'earnings', 'spent']
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
     owned_kudos = None
     sent_kudos = None

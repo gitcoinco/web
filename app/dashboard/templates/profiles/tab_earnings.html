@@ -1,0 +1,26 @@
+{% load i18n static avatar_tags humanize %}
+{% if not hidden %}
+{% if is_editable %}
+
+<div class="tab-projects d-flex flex-column">
+  {% if earnings.count == 0 %}
+    No Earnings
+  {% endif %}
+  {% for earning in earnings %}
+    <div class="tab-projects__item d-flex mb-4">
+      <img class="rounded mr-3" src="{% avatar_url earning.from_profile.handle %}" alt="">
+      <div class="tab-projects__item-details" style="width: 70%">
+        <div class="d-flex">
+          <h5 class="font-weight-semibold">${{earning.value_usd}}</h5>&nbsp;
+        </div>
+        <small class="align-self-center">from {{earning.from_profile.handle}} {{earning.created_on | naturaltime}}
+        {% if earning.url %}
+          <a href="{{earning.url}}">[source]</a>
+        {% endif %}
+        </small>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endif %}    

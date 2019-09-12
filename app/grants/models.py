@@ -25,7 +25,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.timezone import localtime
@@ -852,6 +852,23 @@ class Contribution(SuperModel):
         if tx_status != 'pending':
             self.success = tx_status == 'success'
             self.tx_cleared = True
+
+@receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
+def psave_contrib(sender, instance, **kwargs):
+
+    from django.contrib.contenttypes.models import ContentType
+    from dashboard.models import Earning
+    Earning.objects.update_or_create(
+        created_on=instance.created_on,
+        from_profile=instance.subscription.contributor_profile,
+        to_profile=instance.subscription.grant.admin_profile,
+        value_usd=instance.subscription.get_converted_amount(),
+        source_type=ContentType.objects.get(app_label='grants', model='contribution'),
+        source_id=instance.pk,
+        url=instance.subscription.grant.url,
+        network=instance.subscription.grant.network,
+        )
+
 
 def next_month():
     """Get the next month time."""

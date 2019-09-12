@@ -1,6 +1,5 @@
 {% load i18n static avatar_tags humanize %}
 {% if not hidden %}
-{% if is_staff %}
 {% if is_editable %}
 
 <div class="tab-projects d-flex flex-column">
@@ -27,6 +26,5 @@
     </div>
   {% endfor %}
 </div>
-{% endif %}
 {% endif %}
 {% endif %}    

@@ -44,7 +44,6 @@
                 Kudos {% if total_kudos_count %}({{total_kudos_count}}){%endif%}
               </a>
             </li>
-            {% if is_staff %}
             {% if is_editable %}
               <li class="nav-item">
                 <a class="nav-link nav-line  {% if tab == 'viewers' %}active{%endif%}" href="{{profile.url}}/viewers">
@@ -53,6 +52,21 @@
                 </a>
               </li>
             {% endif %}
+            {% if is_editable and profile.persona_is_hunter %}
+              <li class="nav-item">
+                <a class="nav-link nav-line  {% if tab == 'earnings' %}active{%endif%}" href="{{profile.url}}/earnings">
+                  <i class="fas fa-eye"></i> Earnings
+                  {% if earnings_total %}(${{earnings_total|floatformat:0}}){%endif%}                  
+                </a>
+              </li>
+            {% endif %}
+            {% if is_editable and profile.persona_is_funder %}
+              <li class="nav-item">
+                <a class="nav-link nav-line  {% if tab == 'spent' %}active{%endif%}" href="{{profile.url}}/spent">
+                  <i class="fas fa-eye"></i> Spent
+                  {% if spent_total %}(${{spent_total|floatformat:0}}){%endif%}                  
+                </a>
+              </li>
             {% endif %}
           </ul>
         </div>
@@ -78,6 +92,10 @@
             {% include 'profiles/tab_ratings.html' %}
           {% elif tab == 'viewers' %}
             {% include 'profiles/tab_viewers.html' %}
+          {% elif tab == 'earnings' %}
+            {% include 'profiles/tab_earnings.html' %}
+          {% elif tab == 'spent' %}
+            {% include 'profiles/tab_spent.html' %}
           {% endif %}
           </div>
         </div>

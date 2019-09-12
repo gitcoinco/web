@@ -15,7 +15,7 @@
         <div class="card-body">
           <ul>
             <li><b>{{ count_bounties_completed }}</b> {% trans "bounties completed" %}</li>
-            <li><b>{{ sum_eth_collected|floatformat:2 }} ETH</b> {% trans "collected" %}</li>
+            <li><b>${{ earnings_total|floatformat:0 }}</b> {% trans "earned" %}</li>
             {% if no_times_been_removed %}
               <li> - {% trans "removed from" %} <b>{{ no_times_been_removed }}</b> {% trans "bounties" %}</li>
             {% endif %}

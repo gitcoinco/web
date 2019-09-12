@@ -1556,10 +1556,21 @@ def psave_tip(sender, instance, **kwargs):
     instance.username = instance.username.replace(' ', '')
 
 
-# @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
-# def normalize_usernames(sender, instance, **kwargs):
-#     if instance.bounty_owner_github_username:
-#         instance.bounty_owner_github_username = instance.bounty_owner_github_username.lstrip('@')
+@receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
+def postsave_tip(sender, instance, **kwargs):
+    from django.contrib.contenttypes.models import ContentType
+    is_valid = instance.sender_profile != instance.recipient_profile
+    if is_valid:
+        Earning.objects.update_or_create(
+            created_on=instance.created_on,
+            from_profile=instance.sender_profile,
+            to_profile=instance.recipient_profile,
+            value_usd=instance.value_in_usdt_then,
+            source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
+            source_id=instance.pk,
+            url='https://gitcoin.co/tips',
+            network=instance.network,
+            )
 
 
 # method for updating
@@ -1594,6 +1605,28 @@ def psave_bounty(sender, instance, **kwargs):
     instance.value_in_usdt = instance.get_value_in_usdt
     instance.value_in_eth = instance.get_value_in_eth
     instance.value_true = instance.get_value_true
+
+    if not instance.bounty_owner_profile:
+        if instance.bounty_owner_github_username:
+            profiles = Profile.objects.filter(handle=instance.bounty_owner_github_username.lower().replace('@',''))
+            if profiles.exists():
+                instance.bounty_owner_profile = profiles.first()
+
+
+@receiver(post_save, sender=BountyFulfillment, dispatch_uid="psave_bounty_fulfill")
+def psave_bounty_fulfilll(sender, instance, **kwargs):
+    from django.contrib.contenttypes.models import ContentType
+    if instance.accepted:
+        Earning.objects.update_or_create(
+            created_on=instance.created_on,
+            from_profile=instance.bounty.bounty_owner_profile,
+            to_profile=instance.profile,
+            value_usd=instance.bounty.value_in_usdt_then,
+            source_type=ContentType.objects.get(app_label='dashboard', model='bountyfulfillment'),
+            source_id=instance.pk,
+            url=instance.bounty.url,
+            network=instance.bounty.network,
+            )
 
 
 class InterestQuerySet(models.QuerySet):
@@ -3275,6 +3308,8 @@ class Profile(SuperModel):
         context['suppress_sumo'] = True
         context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count()
         context['portfolio'] = profile.fulfilled.filter(bounty__network='mainnet').values_list('pk', flat=True)
+        context['earnings_total'] = sum(Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True))
+        context['spent_total'] = sum(Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True))
 
         return context
 
@@ -3810,3 +3845,18 @@ class REPEntry(SuperModel):
 def psave_rep(sender, instance, **kwargs):
     instance.balance = sum(REPEntry.objects.filter(profile=instance.profile, created_on__lt=instance.created_on).values_list('value', flat=True)) + instance.value
     #print(f"updating {instance.pk} created on {instance.created_on} for {instance.why} worth  {instance.value} to {instance.balance}")
+
+class Earning(SuperModel):
+    """Records Earning - the generic object for all earnings on the platform ."""
+
+    from_profile = models.ForeignKey('dashboard.Profile', related_name='sent_earnings', on_delete=models.CASCADE, db_index=True, null=True)
+    to_profile = models.ForeignKey('dashboard.Profile', related_name='earnings', on_delete=models.CASCADE, db_index=True, null=True)
+    value_usd = models.DecimalField(decimal_places=2, max_digits=50, null=True)
+    source_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    source_id = models.PositiveIntegerField()
+    source = GenericForeignKey('source_type', 'source_id')
+    network = models.CharField(max_length=50, default='')
+    url = models.CharField(max_length=500, default='')
+
+    def __str__(self):
+        return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"

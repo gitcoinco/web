@@ -24,9 +24,9 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
-    CoinRedemptionRequest, Coupon, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile,
-    ProfileView, RefundFeeRequest, REPEntry, SearchHistory, Sponsor, Tip, TokenApproval, Tool, ToolVote, UserAction,
-    UserVerificationModel,
+    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch,
+    Profile, ProfileView, RefundFeeRequest, REPEntry, SearchHistory, Sponsor, Tip, TokenApproval, Tool, ToolVote,
+    UserAction, UserVerificationModel,
 )
 
 
@@ -46,6 +46,13 @@ class REPEntryAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
     raw_id_fields = ['profile']
+
+
+class EarningAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['from_profile', 'to_profile']
+    search_fields = ['from_profile__handle', 'to_profile__handle']
 
 
 class ToolAdmin(admin.ModelAdmin):
@@ -317,6 +324,7 @@ class CouponAdmin(admin.ModelAdmin):
 
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
+admin.site.register(Earning, EarningAdmin)
 admin.site.register(REPEntry, REPEntryAdmin)
 admin.site.register(BlockedUser, GeneralAdmin)
 admin.site.register(ProfileView, GeneralAdmin)
