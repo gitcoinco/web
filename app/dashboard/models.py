@@ -2498,8 +2498,8 @@ class Profile(SuperModel):
             str: High, Low, Medium, or New
 
         """
-        high_threshold = 15
-        med_threshold = 7
+        high_threshold = 7
+        med_threshold = 2
         new_threshold_days = 7
 
         if self.created_on > (timezone.now() - timezone.timedelta(days=new_threshold_days)):
