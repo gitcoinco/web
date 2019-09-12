@@ -884,7 +884,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Dashboard, Ethereal Blocks Midpoint"
+    subject = "CLR Round Three, Road to Devcon"
     new_kudos_pks = [4553, 4547, 4544]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
@@ -906,13 +906,13 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-We hope our American folks had an extravagant Labor Day weekend and cruised into a relaxed, enjoyable week. On our end, we've been watching with baited breath as the Gitcoin community transforms the Ethereal Blocks bounties into real, tangible projects. If you're hacking along this go around, be sure you are watching the Discord channel for any updates. The deadline to submit your work is a week from today, September 11th, at 11:59PM EST.
+    It's finally time. Gitcoin Grants CLR Round 3 is happening, and it's happening now. After months of planning, we're proud to announce $100k in matching is secured for this fourteen day period from September 14th to the 30th. We're aiming for over 1,000 unique crowdfunded contributions this go around: it's time to invite your friends, because every contribution counts. <a href="https://gitcoin.co/blog/gitcoins-q3-match-100k-to-oss-projects/">Take a gander at the announcement post and get excited. It's days away.</a>
 </p>
 <p>
-It's new feature time. Our devs have been working hard on the latest iteration of the Dashboard, which is now your one stop shop for a high level overview of all your activity on the Gitcoin platform. Monitor your active bounties, applications, and submissions. The dashboard is now live at <a href="gitcoin.co/dashboard">https://gitcoin.co/dashboard/</a>.
+    Speaking of CLR matching, it's time to geek out. We've been working with a few CLR junkies on anti collusion measures. Interested in CLR and theory? Jump in the discussion on <a href="https://ethresear.ch/t/pairwise-coordination-subsidies-a-new-quadratic-funding-design/5553/3">ethresearch.</a>
 </p>
 <p>
-Inch by inch, row by row, it takes some time to make Gitcoin Grants grow. We promise: we're closer to launch, and we can't wait to see what our community does this time. Have any questions about Grants? Check out the homepage <a href="https://gitcoin.co/grants/">here</a> or send us a tweet. 
+    What do you call a group of hackathons? We don't know, but soon, we'll have to come up with a term for them. Another hackathon, the Road to Devcon, was just announced. Learn more about this one, and ask us any questions! The hackathon homepage lives <a href="https://hackathons.gitcoin.co/the-road-to-devcon/">here.</a> 
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
@@ -921,7 +921,7 @@ Inch by inch, row by row, it takes some time to make Gitcoin Grants grow. We pro
         The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
         </li>
         <li>
-        Interested in our sponsors for Ethereal Blocks? Check out our most recent post featuring <a href="https://gitcoin.co/blog/ethereal-blocks-x-bancor-liquid-bounties/">Bancor.</a>
+        Thanks to all who participated in the Ethereal Blocks hackathon. We'll have the announcement post for the winners published in the next few days. Hurrah!
         </li>
     </ul>
 </p>
@@ -930,45 +930,46 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'sulliwane',  
+        'who': 'mul1sh',  
         'who_link': True,
-        'what': 'Soccer Scores DOracle',
-        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/11/3196',
+        'what': 'Deploying Full Stack DApp to AWS',
+        'link': 'https://gitcoin.co/issue/kauri-io/Content/51/3186',
         'link_copy': 'View more',
     }, {
-        'who': 'MajorTomSec',
+        'who': 'igetgames',
         'who_link': True,
-        'what': 'Copy updates for consistency',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8846/3391',
+        'what': 'Eth_gasPrice Format Example Has Leading Zeros',
+        'link': 'https://gitcoin.co/issue/ethresearch/eth-wiki/16/3439',
         'link_copy': 'View more',
     }, {
-        'who': 'batatsar',
+        'who': 'RobertMCForster',
         'who_link': True,
-        'what': 'eth_getunclebyblockhashandindex typo',
-        'link': 'https://gitcoin.co/issue/ethresearch/eth-wiki/7/3361',
+        'what': 'Linkdrop x Gnosis Safe Smart Contract Bug-bounty',
+        'link': 'https://gitcoin.co/issue/LinkdropHQ/linkdrop-safe-module/5/3309',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Blockmason',
-        'title': 'Build and deploy your whole laundry list of microservices in a single afternoon.',
-        'image_url': 'https://blockmason.link/wp-content/uploads/2018/11/logo.svg',
-        'link': 'http://bit.ly/2L5IA2n',
-        'cta': 'Get Started Now',
+        'name': 'Solana',
+        'title': 'Build on Solana: Join the Private Beta',
+        'image_url': '',
+        'link': 'http://bit.ly/2L5IA2nhttps://solana.com/beta/?utm_source=gitcoin&utm_campaign=newsletter',
+        'cta': 'Join the Private Beta',
         'body': [
-            'Link creates web-based APIs from your code, so you can deploy microservices instantly.'
+            'Solana is a Lightning-fast distributed ledger technology for mission-critical decentralized apps.',
+            'We are currently taking applications for an incredibly limited beta program for early adopters of Solana to launch their projects alongside our mainnet later in 2019.'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/MetaMask/metamask-extension/issues/6699',
-        'primer': 'Malicious Dependency Update Bug Bounty',
-    }, {
-        'url': 'https://github.com/Synthetixio/synthetix/issues/196',
+        'url': 'https://gitcoin.co/issue/Synthetixio/synthetix/196/3430'
         'primer': 'Gas Optimisation R&D',
     }, {
-        'url': 'https://github.com/centrifuge/security/issues/1',
-        'primer': 'Security Vulnerability Bounty Centrifuge OS',
+        'url': 'https://github.com/knocte/NLightning/issues/1',
+        'primer': 'Create upload pipeline',
+    }, {
+        'url': 'https://github.com/cennznet/bounties/issues/1',
+        'primer': 'Publish a Tutorial-based Blog Post on Creating a Blockchain Using OnFinality & Connecting to CENNZNet Public Blockchain',
 }, ]
 
 
