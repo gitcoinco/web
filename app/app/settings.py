@@ -113,6 +113,7 @@ INSTALLED_APPS = [
     'revenue',
     'event_ethdenver2019',
     'inbox',
+    'compressor',
 ]
 
 MIDDLEWARE = [
@@ -345,6 +346,17 @@ STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
 STATIC_ROOT = root('static')
 STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
 MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
+
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
+COMPRESS_PRECOMPILERS = (
+    ('text/es6', f'{os.path.abspath(os.pardir)}''/node_modules/.bin/browserify {infile} -t babelify --outfile {outfile}'),
+)
 
 if ENV in ['prod', 'stage']:
     DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')

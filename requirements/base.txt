@@ -82,3 +82,6 @@ sentry-sdk
 websocket-client
 bleach
 python-magic
+rcssmin --install-option="--without-c-extensions"
+rjsmin
+compressor

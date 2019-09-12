@@ -21,6 +21,9 @@
   },
   "homepage": "https://github.com/gitcoinco/web#readme",
   "devDependencies": {
+    "@babel/preset-env": "^7.6.0",
+    "babelify": "^10.0.0",
+    "browserify": "^16.5.0",
     "cypress": "^3.4.1",
     "eslint": "^5.16.0",
     "stylelint": "^9.10.1",
