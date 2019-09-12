@@ -7,13 +7,16 @@
     No Earnings
   {% endif %}
   {% for earning in earnings %}
-    <div class="tab-projects__item d-flex mb-4">
-      <img class="rounded mr-3" src="{% avatar_url earning.from_profile.handle %}" alt="">
-      <div class="tab-projects__item-details" style="width: 70%">
+    <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} pt-1 pb-1">
+      <div class="activity-avatar ml-5">
+      <img height="72" width="72" class="avatar card-rating__avatar rounded-circle" src="{% avatar_url earning.from_profile.handle %}"/>
+      <img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" style="margin-left: -30px; margin-top:30px;" src="{% avatar_url earning.to_profile.handle %}" />
+    </div>
+      <div class="tab-projects__item-details ml-5" style="width: 60%">
         <div class="d-flex">
           <h5 class="font-weight-semibold">${{earning.value_usd}}</h5>&nbsp;
         </div>
-        <small class="align-self-center">from {{earning.from_profile.handle}} {{earning.created_on | naturaltime}}
+        <small class="align-self-center">from {{earning.from_profile.handle}} to {{earning.to_profile.handle}} {{earning.created_on | naturaltime}}
         {% if earning.url %}
           <a href="{{earning.url}}">[source]</a>
         {% endif %}

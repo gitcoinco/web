@@ -10,7 +10,7 @@
 
 <div class="tab-projects d-flex flex-column">
   {% for submission in portfolio %}
-  	<div class="tab-projects__item d-flex mb-4">
+  	<div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} pt-1 pb-1">
   		<img class="rounded mr-3" src="{% avatar_url submission.bounty.org_name %}" alt="">
   		<div class="tab-projects__item-details" style="width: 70%">
   			<div class="d-flex">
@@ -24,9 +24,9 @@
   			</div>
       </div>
       <div style="float:right;">
-        <a class="btn btn-gc-blue btn-sm " href="{{submission.bounty.url}}">View Bounty &gt;</a>
+        <a class="btn btn-gc-blue btn-sm m-2" href="{{submission.bounty.url}}">View Bounty &gt;</a>
         {% if submission.fulfiller_github_url %}
-          <a class="btn btn-gc-blue btn-sm" href="{{submission.fulfiller_github_url}}">View Work &gt;</a>
+          <a class="btn btn-gc-blue btn-sm m-2" href="{{submission.fulfiller_github_url}}">View Work &gt;</a>
         {% endif %}
         </div>
     </div>

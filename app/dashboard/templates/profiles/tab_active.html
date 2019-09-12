@@ -2,7 +2,7 @@
 
 <div class="tab-projects d-flex flex-column">
   {% for bounty in active_bounties %}
-    <div class="tab-projects__item d-flex mb-4">
+    <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} pt-1 pb-1">
       <img class="rounded mr-3" src="{% avatar_url bounty.org_name %}" alt="">
       <div class="tab-projects__item-details" style="width: 70%">
         <div class="d-flex">

@@ -2335,7 +2335,7 @@ class Profile(SuperModel):
         self.avg_hourly_rate = self.calc_avg_hourly_rate()
         self.success_rate = self.calc_success_rate()
         self.rep = self.calc_rep_number()
-        self.as_dict = json.loads(json.dumps(self.to_dict(tips=False), cls=EncodeAnything))
+        self.as_dict = json.loads(json.dumps(self.to_dict(), cls=EncodeAnything))
         self.last_calc_date = timezone.now() + timezone.timedelta(seconds=1)
 
     def get_persona_action_count(self):
@@ -3202,18 +3202,8 @@ class Profile(SuperModel):
         self.avatar_baseavatar_related.update(active=False)
         self.avatar_baseavatar_related.filter(pk=avatar_pk).update(active=True)
 
-    def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
+    def to_dict(self):
         """Get the dictionary representation with additional data.
-
-        Args:
-            activities (bool): Whether or not to include activity queryset data.
-                Defaults to: True.
-            leaderboards (bool): Whether or not to include leaderboard position data.
-                Defaults to: True.
-            network (str): The Ethereum network to use for relevant queries.
-                Defaults to: None (Environment specific).
-            tips (bool): Whether or not to include tip data.
-                Defaults to: True.
 
         Attributes:
             params (dict): The context dictionary to be returned.
@@ -3233,7 +3223,7 @@ class Profile(SuperModel):
 
         """
         params = {}
-        network = network or self.get_network()
+        network = self.get_network()
         query_kwargs = {'network': network}
         bounties = self.bounties
         fulfilled_bounties = self.get_fulfilled_bounties(network=network)
@@ -3286,17 +3276,12 @@ class Profile(SuperModel):
             'bounties': bounties.values_list('pk', flat=True),
         }
 
-        if activities:
-            params['activities'] = self.get_various_activities().values_list('pk', flat=True)
-
-        if tips:
-            params['tips'] = self.tips.filter(**query_kwargs).send_happy_path().values_list('pk', flat=True)
-
-        if leaderboards:
-            params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
-            params['scoreboard_position_funder'] = self.get_funder_leaderboard_index()
-            if self.is_org:
-                params['scoreboard_position_org'] = self.get_org_leaderboard_index()
+        params['activities'] = self.get_various_activities().values_list('pk', flat=True)
+        params['tips'] = self.tips.filter(**query_kwargs).send_happy_path().values_list('pk', flat=True)
+        params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
+        params['scoreboard_position_funder'] = self.get_funder_leaderboard_index()
+        if self.is_org:
+            params['scoreboard_position_org'] = self.get_org_leaderboard_index()
 
         context = params
         profile = self
@@ -3308,9 +3293,12 @@ class Profile(SuperModel):
         context['suppress_sumo'] = True
         context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count()
         context['portfolio'] = profile.fulfilled.filter(bounty__network='mainnet').values_list('pk', flat=True)
-        context['earnings_total'] = sum(Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True))
-        context['spent_total'] = sum(Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True))
-
+        context['earnings_total'] = round(sum(Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True)))
+        context['spent_total'] = round(sum(Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True)))
+        if context['earnings_total'] > 1000:
+            context['earnings_total'] = f"{round(context['earnings_total']/1000)}k"
+        if context['spent_total'] > 1000:
+            context['spent_total'] = f"{round(context['spent_total']/1000)}k"
         return context
 
 

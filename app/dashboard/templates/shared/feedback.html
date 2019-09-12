@@ -15,14 +15,13 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n staticfiles avatar_tags%}
-<div class="mt-4 d-flex activity row">
   <div class="col-12 col-md-1">
     <div class="activity-avatar">
 	  <img height="72" width="72" class="avatar card-rating__avatar rounded-circle" src="{% avatar_url feedback.sender_profile %}"/>
-	  <img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" src="{% avatar_url feedback.receiver_profile %}" />
+	  <img height="72" width="72" class="avatar secondary_avatar rounded-circle align-self-end" style="right: -2.5rem;" src="{% avatar_url feedback.receiver_profile %}" />
 	</div>
   </div>
-  <div class="col-12 col-md-10">
+  <div class="col-12 col-md-10 pl-5">
     <div class="d-flex flex-column mt-2">
   	  <div class="sender-profile d-flex flex-column">
         {% if feedback.private %}
@@ -42,7 +41,6 @@
 	  </div>
 	</div>
   </div>
-</div>
-{% if feedback.comment %}
-  <small class="review-comment">{{ feedback.comment }}</small>
-{% endif %}
+  {% if feedback.comment %}
+    <small class="review-comment">{{ feedback.comment }}</small>
+  {% endif %}

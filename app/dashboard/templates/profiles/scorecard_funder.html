@@ -4,10 +4,9 @@
 	<div class="col-12 col-lg-6">
   	  <div class="profile-header__stats profile-header__stats--funder card mb-4">
 		<div class="card-header font-subheader">
-	  	  {% if scoreboard %}
-			<b>#{{ scoreboard }}</b>
+	  	  {% if scoreboard_position_funder %}
+			<b>#{{ scoreboard_position_funder }}</b>
 	  	  {% else %}
-			<b>&nbsp;</b>
 		  {% endif %}
 			{% trans "Funder" %}
 			{% include "shared/profile_rank_link.html" with link='payers' %}
@@ -15,7 +14,7 @@
 		<div class="card-body font-subheader">
 		  <ul>
 			<li><b>{{ funded_bounties_count }}</b> {% trans "bounties funded" %}</li>
-      <li><b>${{ spent_total|floatformat:0 }}</b> {% trans "funded" %}</li>
+      <li><b>${{ spent_total }}</b> {% trans "funded" %}</li>
 			<li class="works_with_list">
 		  	  {% if works_with_funded|length %}
 				<span class="font-body"><i class="fab fa-ethereum"></i> {% trans "Funds" %}:</span>

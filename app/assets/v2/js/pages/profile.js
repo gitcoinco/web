@@ -104,7 +104,7 @@ $(document).ready(function() {
   if ($('#rep_dataviz').length) {
     // Set the dimensions of the canvas / graph
     var margin = {top: 30, right: 30, bottom: 30, left: 70};
-    var width = $('#tab_controller').width() - margin.left - margin.right;
+    var width = $('.container.position-relative').width() - margin.left - margin.right;
     var height = 120 - margin.top - margin.bottom;
 
     // Parse the date / time

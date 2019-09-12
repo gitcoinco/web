@@ -7,7 +7,7 @@
     No Viewers
   {% endif %}
   {% for viewer in profile.viewed_by.all %}
-    <div class="tab-projects__item d-flex mb-4">
+    <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} pt-1 pb-1">
       <img class="rounded mr-3" src="{% avatar_url viewer.viewer.handle %}" alt="">
       <div class="tab-projects__item-details" style="width: 70%">
         <div class="d-flex">

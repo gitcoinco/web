@@ -134,6 +134,12 @@
   width: 100%;
   height: 40px;
 }
+
+.odd{
+  background-color: #f9f9f9;
+  border-top: #eeeeee 1px solid;
+  border-bottom: #eeeeee 1px solid;
+}
   
 /* .is_editable a:hover .profile-header__avatar{
 	border: 3px solid #0fce7c;

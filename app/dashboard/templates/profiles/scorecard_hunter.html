@@ -7,7 +7,6 @@
           {% if scoreboard_position_contributor %}
             <b>#{{ scoreboard_position_contributor }}</b>
           {% else %}
-            <b>&nbsp;</b>
           {% endif %}
           {% trans "Contributor" %}
           {% include "shared/profile_rank_link.html" with link='earners' %}
@@ -15,7 +14,7 @@
         <div class="card-body">
           <ul>
             <li><b>{{ count_bounties_completed }}</b> {% trans "bounties completed" %}</li>
-            <li><b>${{ earnings_total|floatformat:0 }}</b> {% trans "earned" %}</li>
+            <li><b>${{ earnings_total }}</b> {% trans "earned" %}</li>
             {% if no_times_been_removed %}
               <li> - {% trans "removed from" %} <b>{{ no_times_been_removed }}</b> {% trans "bounties" %}</li>
             {% endif %}
