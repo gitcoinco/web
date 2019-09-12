@@ -24,6 +24,7 @@ async function metamaskApproval() {
       _alert('Permission to connect to metamask rejected. Allow gitcoin to connect to metamask.', 'warning');
     }
   }
+  window.removeEventListener('load', metamaskApproval);
   ask_metamask_connection();
 }
 
@@ -51,15 +52,12 @@ function ask_metamask_connection() {
 
   shown_on = [ '/tip/send/2', '/kudos/send', '/ens' ];
   var len = page_url.length - 1;
-  
+
   if (page_url.lastIndexOf('/') === len) {
     page_url = page_url.substring(0, len);
   }
   if ($.inArray(page_url, shown_on) != -1 && !is_metamask_approved) {
-    _alert('Metamask not connected. <button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>', 'error');
-    $('#metamask_connect').css('background', 'none');
-    $('#metamask_connect').css('color', 'white');
-    $('#metamask_connect').css('border', '2px solid white');
-    $('#metamask_connect').css('border-radius', '10px');
+    console.log(page_url)
+    _alert('Metamask not connected. <button id="metamask_connect" onclick="approve_metamask()" style="background: none; color: white; border: 2px solid white; border-radius: 10px;">Click here to connect to metamask</button>', 'error');
   }
 }
