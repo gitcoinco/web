@@ -100,6 +100,12 @@ class FeedbackAdmin(admin.ModelAdmin):
     ordering = ['-id']
     raw_id_fields = ['sender_profile', 'receiver_profile', 'bounty']
 
+def recalculate_profile(modeladmin, request, queryset):
+    for profile in queryset:
+        profile.calculate_all()
+        profile.save()
+recalculate_profile.short_description = "Recalculate Profile Frontend Info"
+
 
 class ProfileAdmin(admin.ModelAdmin):
     raw_id_fields = ['user', 'preferred_kudos_wallet']
@@ -107,6 +113,7 @@ class ProfileAdmin(admin.ModelAdmin):
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
     readonly_fields = ['active_bounties_list']
+    actions = [recalculate_profile]
 
     def active_bounties_list(self, instance):
         interests = instance.active_bounties
@@ -118,6 +125,12 @@ class ProfileAdmin(admin.ModelAdmin):
         html = format_html("<BR>".join(htmls))
         return html
 
+    def response_change(self, request, obj):
+        if "_recalc_flontend" in request.POST:
+            obj.calculate_all()
+            obj.save()
+            self.message_user(request, "Recalc done")
+        return super().response_change(request, obj)
 
 class VerificationAdmin(admin.ModelAdmin):
     raw_id_fields = ['user']
