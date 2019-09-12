@@ -876,11 +876,6 @@ def users_fetch(request):
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
             'organizations', 'is_org']}
 
-        if user.show_job_status is False:
-            del profile_json['job_salary']
-            del profile_json['job_location']
-            del profile_json['job_type']
-
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
         profile_json['previously_worked'] = user.previous_worked_count > 0
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
@@ -889,6 +884,13 @@ def users_fetch(request):
         profile_json['work_inprogress'] = count_work_in_progress
         profile_json['verification'] = user.get_my_verified_check
         profile_json['avg_rating'] = user.get_average_star_rating()
+
+        if not user.show_job_status:
+            for key in ['job_salary', 'job_location', 'job_type',
+                        'linkedin_url', 'resume', 'job_search_status',
+                        'remote', 'job_status']:
+                del profile_json[key]
+
         if user.avatar_baseavatar_related.exists():
             user_avatar = user.avatar_baseavatar_related.first()
             profile_json['avatar_id'] = user_avatar.pk

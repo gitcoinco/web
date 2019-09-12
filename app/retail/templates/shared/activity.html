@@ -38,7 +38,9 @@
       {% elif row.activity_type == 'new_kudos' %}
         {% trans "sent a" %}
         Kudos
+        {% if row.metadata.to_username %}
         {% trans "to" %}
+        {% endif %}
         <a href="/profile/{{ row.metadata.to_username|cut:'@' }}">
           {{ row.metadata.to_username }}
         </a>

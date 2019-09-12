@@ -887,12 +887,12 @@ def render_new_bounty_roundup(to_email):
     subject = "Dashboard, Ethereal Blocks Midpoint"
     new_kudos_pks = [4553, 4547, 4544]
     new_kudos_size_px = 150
-    if settings.DEBUG and false:
+    if settings.DEBUG and False:
         # for debugging email styles
-        email_style = 4
+        email_style = 2
     else:
         offset = 2
-        email_style = int(timezone.now().strftime("%V")) + offset % 6 + 1
+        email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
 <h3>Happy Kudos Friday!</h3>
