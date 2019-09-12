@@ -1,5 +1,5 @@
 {
-    "symbol": "TrueGBP",
+    "symbol": "TGBP",
     "address": "0x00000000441378008EA67F4284A57932B1c000a5",
     "overview": {
         "en": "TrueGBP (TGBP) is an independently-verified digital asset fully collateralized by pounds sterling. The ERC20 stablecoin provides transparent attestations and legal protections against fraud. TGBP users enjoy the lowest gas costs of any stablecoin thanks to GasBoost; easy wallet alias creation through Autosweep; and direct-to-bank TGBP transactions through unique, easy-to-remember Redeption Addresses.",
