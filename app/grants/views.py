@@ -239,6 +239,20 @@ def grant_details(request, grant_id, grant_slug):
     return TemplateResponse(request, 'grants/detail/index.html', params)
 
 
+def potential_clr(request, grant_id):
+    donation = request.GET.get('donation')
+    if not donation:
+        return JsonResponse({
+            'success': False,
+            'info': 'no donation amount',
+        })
+    grant = Grant.objects.get(pk=grant_id)
+    return JsonResponse({
+        'success': True,
+        'matching': grant.clr_prediction(donation)
+    })
+
+
 @login_required
 def grant_new(request):
     """Handle new grant."""
@@ -549,7 +563,7 @@ def grant_fund(request, grant_id, grant_slug):
             })
 
     splitter_contract_address = settings.SPLITTER_CONTRACT_ADDRESS
-    
+
     # handle phantom funding
     active_tab = 'normal'
     fund_reward = None
