@@ -2786,12 +2786,14 @@ class Profile(SuperModel):
             float: The total sum of all ETH of the provided type.
 
         """
+
         eth_sum = 0
         if bounties is None:
             if sum_type == 'funded':
                 bounties = self.get_funded_bounties(network=network)
             elif sum_type == 'collected':
                 bounties = self.get_fulfilled_bounties(network=network)
+                tips = self.tips.filter(is_for_bounty_fulfiller=False)
             elif sum_type == 'org':
                 bounties = self.get_orgs_bounties(network=network)
 
@@ -2801,8 +2803,12 @@ class Profile(SuperModel):
         try:
             if bounties.exists():
                 eth_sum = sum([amount for amount in bounties.values_list("value_in_eth", flat=True)])
+                
         except Exception:
             pass
+
+        if sum_type == 'collected':
+            eth_sum = eth_sum + sum([amount.value_in_eth for amount in self.tips])
 
         return eth_sum
 
@@ -2968,6 +2974,7 @@ class Profile(SuperModel):
         network = network or self.get_network()
         query_kwargs = {'network': network}
         bounties = self.bounties
+        tips = self.tips
         fulfilled_bounties = self.get_fulfilled_bounties(network=network)
         funded_bounties = self.get_funded_bounties(network=network)
         orgs_bounties = None
@@ -2975,7 +2982,7 @@ class Profile(SuperModel):
         if self.is_org:
             orgs_bounties = self.get_orgs_bounties(network=network)
         sum_eth_funded = self.get_eth_sum(sum_type='funded', bounties=funded_bounties)
-        sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
+        sum_eth_collected = self.get_eth_sum(sum_type='collected', bounties=fulfilled_bounties)
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
 
@@ -2993,7 +3000,7 @@ class Profile(SuperModel):
             works_with_org = self.get_who_works_with(work_type='org', bounties=orgs_bounties)
 
         total_funded = funded_bounties.count()
-        total_fulfilled = fulfilled_bounties.count()
+        total_fulfilled = fulfilled_bounties.count() + self.tips.count()
         desc = self.get_desc(funded_bounties, fulfilled_bounties)
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
         params = {
