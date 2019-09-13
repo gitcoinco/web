@@ -885,7 +885,7 @@ def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
     subject = "CLR Round Three, Road to Devcon"
-    new_kudos_pks = [4548, 4550, 4716]
+    new_kudos_pks = [4548, 4550, 4549]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
