@@ -180,21 +180,21 @@ def index(request):
     articles = [
         {
             'link': 'https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0',
-            'img': 'https://cdn-images-1.medium.com/max/2000/1*ErCNRMzIJguUGUgXgVc-xw.png',
+            'img': static("v2/images/medium/1.png"),
             'title': _('Progressive Elaboration of Scope on Gitcoin'),
             'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
             'alt': 'gitcoin scope'
         },
         {
             'link': 'https://medium.com/gitcoin/commit-reveal-scheme-on-ethereum-25d1d1a25428',
-            'img': 'https://cdn-images-1.medium.com/max/1600/1*GTEu2R4xIxAApx50rAV_qw.png',
+            'img': static("v2/images/medium/2.png"),
             'title': _('Commit Reveal Scheme on Ethereum'),
             'description': _('Hiding Actions and Generating Random Numbers'),
             'alt': 'commit reveal scheme'
         },
         {
             'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',
-            'img': 'https://cdn-images-1.medium.com/max/2000/1*iPQYV3M-JOlYeFFC-iqfcg.png',
+            'img': static("v2/images/medium/3.png"),
             'title': _('Announcing Open Kudos'),
             'description': _('Our vision for integrating Kudos in any (d)App'),
             'alt': 'open kudos'
@@ -631,7 +631,23 @@ def about(request):
             "owocki",
             "owocki",
             "The Community",
-            "Avocado Toast"
+            "Avocado Toast",
+            "kevin",
+            "Summoner of Bots",
+            "owocki",
+            True
+        ),
+        (
+            "Joe Lubin",
+            "Consensys",
+            "",
+            "",
+            "Meshiness",
+            "",
+            "joe",
+            "Harbringer of Decentralization",
+            "ethereumJoseph",
+            True
         ),
         (
             "Alisa March",
@@ -639,7 +655,11 @@ def about(request):
             "PixelantDesign",
             "pixelant",
             "Tips",
-            "Apple Cider Doughnuts"
+            "Apple Cider Doughnuts",
+            "alisa",
+            "Pixel Mage",
+            "pixelant",
+            True
         ),
         (
             "Eric Berry",
@@ -647,7 +667,11 @@ def about(request):
             "coderberry",
             "ericberry",
             "Chrome/Firefox Extension",
-            "Pastel de nata"
+            "Pastel de nata",
+            "eric",
+            "Burnout Healer",
+            "coderberry",
+            True
         ),
         (
             "Vivek Singh",
@@ -655,7 +679,11 @@ def about(request):
             "vs77bb",
             "vivek-singh-b5a4b675",
             "Gitcoin Requests",
-            "Tangerine Gelato"
+            "Tangerine Gelato",
+            "vivek",
+            "Campfire StoryTeller",
+            "vsinghdothings",
+            True
         ),
         (
             "Aditya Anand M C",
@@ -663,7 +691,11 @@ def about(request):
             "thelostone-mc",
             "aditya-anand-m-c-95855b65",
             "The Community",
-            "Cocktail Samosa"
+            "Cocktail Samosa",
+            "aditya",
+            "Block Welder",
+            "thelostone_mc",
+            True
         ),
         (
             "Scott Moore",
@@ -671,7 +703,11 @@ def about(request):
             "ceresstation",
             "scott-moore-a2970075",
             "Issue Explorer",
-            "Teriyaki Chicken"
+            "Teriyaki Chicken",
+            "scott",
+            "Phase Shifter",
+            "notscottmoore",
+            True
         ),
         (
             "Octavio Amuchástegui",
@@ -679,7 +715,11 @@ def about(request):
             "octavioamu",
             "octavioamu",
             "The Community",
-            "Homemade italian pasta"
+            "Homemade italian pasta",
+            "octavio",
+            "Bugs Breeder",
+            "octavioamu",
+            True
         ),
         (
             "Frank Chen",
@@ -687,7 +727,11 @@ def about(request):
             "frankchen07",
             "frankchen07",
             "Kudos!",
-            "Crispy pork belly"
+            "Crispy pork belly",
+            "frank",
+            "Hashed Scout",
+            "",
+            True
         ),
         (
             "Nate Hopkins",
@@ -695,7 +739,23 @@ def about(request):
             "hopsoft",
             None,
             "Bounties",
-            "Chicken tikka masala"
+            "Chicken tikka masala",
+            "nate",
+            "Lord of Night's Watch",
+            "hopsoft",
+            True
+        ),
+        (
+            "Alessandro Voto",
+            "DevRel",
+            "avotofuture",
+            None,
+            "Devvies",
+            "Tacos",
+            "alex",
+            "Starship Captain",
+            "avotofuture",
+            True
         ),
         (
             "Dan Lipert",
@@ -703,7 +763,47 @@ def about(request):
             "danlipert",
             "danlipert",
             "EIP 1337",
-            "Tantan Ramen"
+            "Tantan Ramen",
+            "dan",
+            "Blockchain Artificer",
+            "dan_lipert",
+            True
+        ),
+        (
+            "Connor O'Day",
+            "DevRel",
+            "connoroday",
+            "connoroday",
+            "the lols",
+            "Robertas Pizza",
+            "connor",
+            "Druid of The Chain",
+            "connoroday0",
+            True
+        ),
+        (
+            "Joseph Chen",
+            "Operations",
+            "josephchen",
+            "josephchen",
+            "Ethical Ads",
+            "DIY",
+            "joseph",
+            "Arithmagician",
+            "",
+            True
+        ),
+        (
+            "gitcoinbot",
+            "beep boop bop",
+            "gitcoinbot",
+            "gitcoinbot",
+            "everything that's automated",
+            "bits",
+            "gitcoinbot",
+            "Loveable Companion",
+            "",
+            False
         )
 
     ]

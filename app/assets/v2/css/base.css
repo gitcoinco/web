@@ -347,6 +347,15 @@ p a {
   color: #25e899;
 }
 
+.link-current {
+  color: currentColor;
+}
+
+.link-current:hover {
+  color: currentColor;
+  text-decoration: none;
+}
+
 .cta-green {
   background-color: var(--gc-green);
   text-align: center;
@@ -624,7 +633,7 @@ input[type=text].loading {
 }
 
 .alert.warning {
-  background-color: #F2A700
+  background-color: #FF7F00;
 }
 
 .alert.warning .message::before {
@@ -692,6 +701,11 @@ input[type=text].loading {
   }
 }
 
+.bottom_notification-yellow {
+  background-color: #ffce08;
+  color: #000;
+}
+
 .metamask_recc {
   width: 45%;
   display: inline-block;
@@ -739,7 +753,7 @@ input[type=text].loading {
 }
 
 .bottom_notification a {
-  color: white;
+  color: currentColor;
   text-decoration: underline;
   margin-left: 5px;
 }
@@ -1579,6 +1593,31 @@ div.busyOverlay {
 
 .inner-tooltip {
   pointer-events: none;
+}
+
+/* Gitcoin Updates */
+.dynamic-content img {
+  max-width: 100%;
+}
+
+.dynamic-content h2 {
+  font-size: 1.8em;
+}
+
+.dynamic-content h3 {
+  font-size: 1.6em;
+}
+
+.dynamic-content h4 {
+  font-size: 1.4em;
+}
+
+.dynamic-content h5 {
+  font-size: 1.3em;
+}
+
+.dynamic-content h6 {
+  font-size: 1.2em;
 }
 
 .daterangepicker td.active,

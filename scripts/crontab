@@ -60,6 +60,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 15 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pending_start_work_actions  >> /var/log/gitcoin/pending_start_work_actions.log  2>&1
 #0 0 1 */3 * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash send_quarterly_stats --live  >> /var/log/gitcoin/send_quarterly_stats.log  2>&1
 00 10 * * 5 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_leaderboard_to_slack  >> /var/log/gitcoin/post_leaderboard_to_slack.log  2>&1
+0 9 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash no_applicants_email  >> /var/log/gitcoin/no_applicants_email.log 2>&1
+
 
 ## PERFTOOLS
 
@@ -86,3 +88,4 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 ## USERS
 0 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash set_user_personas  >> /var/log/gitcoin/set_user_personas.log  2>&1
+30 0 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash setup_grants_clr_3 >>  /var/log/gitcoin/setup_clr_round_3.log  2>&1

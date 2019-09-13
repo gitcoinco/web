@@ -419,6 +419,7 @@ class BountyViewSet(viewsets.ModelViewSet):
                 data['nonce'] = int(time.time()  * 1000000)
                 try:
                     SearchHistory.objects.update_or_create(
+                        search_type='bounty',
                         user=self.request.user,
                         data=data,
                         ip_address=get_ip(self.request)

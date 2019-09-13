@@ -175,9 +175,11 @@ def get_codefund_history_at_date(date, keyword):
     if date > timezone.datetime(2019, 7, 9):
         amount += 40269
     if date > timezone.datetime(2019, 8, 9):
-        amount += 31015 # august month to date
+        amount += 50871
     if date > timezone.datetime(2019, 9, 9):
-        amount += 0
+        amount += 52000
+    if date > timezone.datetime(2019, 10, 9):
+        amount += 0 # october month to date
     return amount
 
 
@@ -414,7 +416,7 @@ def build_stat_results(keyword=None):
     Args:
         keyword (str): The keyword to build statistic results.
     """
-    from dashboard.models import Bounty, Tip
+    from dashboard.models import Bounty, HackathonEvent, Tip
     context = {
         'active': 'results',
         'title': _('Results'),
@@ -557,5 +559,8 @@ def build_stat_results(keyword=None):
     context['last_month_amount'] = round(sum(bh)/1000)
     context['last_month_amount_hourly'] = sum(bh) / 30 / 24
     context['last_month_amount_hourly_business_hours'] = context['last_month_amount_hourly'] / 0.222
+    context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.all()]
+    context['hackathon_total'] = sum([ele[1]['total_volume'] for ele in context['hackathons']])
+
 
     return context
