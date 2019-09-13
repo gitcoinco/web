@@ -2786,7 +2786,6 @@ class Profile(SuperModel):
             float: The total sum of all ETH of the provided type.
 
         """
-
         eth_sum = 0
         if bounties is None:
             if sum_type == 'funded':
@@ -2802,7 +2801,6 @@ class Profile(SuperModel):
         try:
             if bounties.exists():
                 eth_sum = sum([amount for amount in bounties.values_list("value_in_eth", flat=True)])
-                
         except Exception:
             pass
 
