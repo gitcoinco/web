@@ -962,7 +962,7 @@ Back to shipping,
     }
 
     bounties_spec = [{
-        'url': 'https://gitcoin.co/issue/Synthetixio/synthetix/196/3430'
+        'url': 'https://github.com/Synthetixio/synthetix/issues/196',
         'primer': 'Gas Optimisation R&D',
     }, {
         'url': 'https://github.com/knocte/NLightning/issues/1',
