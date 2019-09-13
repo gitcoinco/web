@@ -3355,6 +3355,13 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.lower()
     instance.actions_count = instance.get_num_actions
 
+    # give the user a profile header if they have not yet selected one
+    if not instance.profile_wallpaper:
+        from dashboard.helpers import load_files_in_directory
+        import random
+        wallpapers = load_files_in_directory('wallpapers')
+        instance.profile_wallpaper = f"/static/wallpapers/{random.choice(wallpapers)}"
+
 
 
 @receiver(user_logged_in)
