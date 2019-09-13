@@ -716,18 +716,12 @@ def receive_bulk(request, secret):
     coupons = BulkTransferCoupon.objects.filter(secret=secret)
     if not coupons.exists():
         raise Http404
-
+    
     coupon = coupons.first()
     _class = request.GET.get('class', '')
     if coupon.num_uses_remaining <= 0:
         messages.info(request, f'Sorry but the coupon for a free kudos has has expired.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
         return redirect(coupon.token.url)
-
-    kudos_transfer = None
-    if request.user.is_authenticated:
-        redemptions = BulkTransferRedemption.objects.filter(redeemed_by=request.user.profile, coupon=coupon)
-        if redemptions.exists():
-            kudos_transfer = redemptions.first().kudostransfer
 
     error = False
     if request.POST:
@@ -737,6 +731,12 @@ def receive_bulk(request, secret):
             success, error, _ = redeem_bulk_coupon(coupon, request.user.profile, request.POST.get('forwarding_address'), get_ip(request), request.POST.get('save_addr'))
         if error:
             messages.error(request, error)
+
+    kudos_transfer = None
+    if request.user.is_authenticated:
+        redemptions = BulkTransferRedemption.objects.filter(redeemed_by=request.user.profile, coupon=coupon)
+        if redemptions.exists():
+            kudos_transfer = redemptions.first().kudostransfer
 
     title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
