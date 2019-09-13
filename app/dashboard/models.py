@@ -2793,7 +2793,6 @@ class Profile(SuperModel):
                 bounties = self.get_funded_bounties(network=network)
             elif sum_type == 'collected':
                 bounties = self.get_fulfilled_bounties(network=network)
-                tips = self.tips.filter(is_for_bounty_fulfiller=False)
             elif sum_type == 'org':
                 bounties = self.get_orgs_bounties(network=network)
 
@@ -2974,7 +2973,6 @@ class Profile(SuperModel):
         network = network or self.get_network()
         query_kwargs = {'network': network}
         bounties = self.bounties
-        tips = self.tips
         fulfilled_bounties = self.get_fulfilled_bounties(network=network)
         funded_bounties = self.get_funded_bounties(network=network)
         orgs_bounties = None
@@ -2982,7 +2980,7 @@ class Profile(SuperModel):
         if self.is_org:
             orgs_bounties = self.get_orgs_bounties(network=network)
         sum_eth_funded = self.get_eth_sum(sum_type='funded', bounties=funded_bounties)
-        sum_eth_collected = self.get_eth_sum(sum_type='collected', bounties=fulfilled_bounties)
+        sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
 
