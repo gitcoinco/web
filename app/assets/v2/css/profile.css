@@ -140,7 +140,11 @@
   border-top: #eeeeee 1px solid;
   border-bottom: #eeeeee 1px solid;
 }
-  
+
+.profile_details .nav-link {
+  padding: 0.5rem;
+}
+
 /* .is_editable a:hover .profile-header__avatar{
 	border: 3px solid #0fce7c;
   } */

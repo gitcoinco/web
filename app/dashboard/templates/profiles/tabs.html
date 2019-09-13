@@ -21,34 +21,34 @@
             {% if active_bounties_count %}
             <li class="nav-item ">
               <a class="nav-link nav-line  {% if tab == 'active' %}active{%endif%}" href="{{profile.url}}/active">
-                Active Issues ({{active_bounties_count}})
+                Active Issues <span>{{active_bounties_count}}</span>
               </a>
             </li>
             {% endif %}
             {% if all_feedbacks|length %}
             <li class="nav-item">
               <a class="nav-link nav-line  {% if tab == 'ratings' %}active{%endif%}" href="{{profile.url}}/ratings">
-                Ratings ({{all_feedbacks|length}})
+                Ratings <span>{{all_feedbacks|length}}</span>
               </a>
             </li>
             {% endif %}
             {% if portfolio.count %}
             <li class="nav-item">
               <a class="nav-link nav-line  {% if tab == 'portfolio' %}active{%endif%}" href="{{profile.url}}/portfolio">
-                Portfolio ({{portfolio.count}})
+                Portfolio <span>{{portfolio.count}}</span>
               </a>
             </li>
             {% endif %}
             <li class="nav-item">
               <a class="nav-link nav-line  {% if tab == 'kudos' %}active{%endif%}" href="{{profile.url}}/kudos">
-                Kudos {% if total_kudos_count %}({{total_kudos_count}}){%endif%}
+                Kudos {% if total_kudos_count %}<span>{{total_kudos_count}}</span>{%endif%}
               </a>
             </li>
             {% if is_editable %}
               <li class="nav-item">
                 <a class="nav-link nav-line  {% if tab == 'viewers' %}active{%endif%}" href="{{profile.url}}/viewers">
                   <i class="fas fa-eye"></i> Viewers
-                  {% if profile.viewed_by.count %}({{profile.viewed_by.count}}){%endif%}                  
+                  {% if profile.viewed_by.count %}<span>{{profile.viewed_by.count}}</span>{%endif%}                  
                 </a>
               </li>
             {% endif %}
@@ -56,7 +56,7 @@
               <li class="nav-item">
                 <a class="nav-link nav-line  {% if tab == 'earnings' %}active{%endif%}" href="{{profile.url}}/earnings">
                   <i class="fas fa-eye"></i> Earnings
-                  {% if earnings_total %}(${{earnings_total}}){%endif%}                  
+                  {% if earnings_total %}<span>${{earnings_total}}</span>{%endif%}                  
                 </a>
               </li>
             {% endif %}
@@ -64,7 +64,7 @@
               <li class="nav-item">
                 <a class="nav-link nav-line  {% if tab == 'spent' %}active{%endif%}" href="{{profile.url}}/spent">
                   <i class="fas fa-eye"></i> Spent
-                  {% if spent_total %}(${{spent_total}}){%endif%}                  
+                  {% if spent_total %}<span>${{spent_total}}</span>{%endif%}                  
                 </a>
               </li>
             {% endif %}
