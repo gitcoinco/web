@@ -17,9 +17,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import datetime as dt
 import json
 import math
 from itertools import combinations
+
+from grants.models import Grant, Contribution
 
 grant_contributions = [
     {
@@ -240,6 +243,16 @@ print(f'\n\n\n=============== \nFINAL \nPOT:  {total_pot} \nCalculated CLR:  {to
 print(json.dumps(grants_clr, indent=2))
 print('===============')
 
-# Test 1 iteration 
+def predict_clr(grant):
+    clr_start_date = dt.datetime(2019, 9, 15, 0, 0)
+    contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=clr_start_date)
+    sum_contributions = sum([c.subscription.amount_per_period_usdt for c in contributions])
+    potential_donations = [1, 10, 100, 1000, 10000]
+    potential_clr = []
+    for donation in potential_donations:
+        
+
+
+# Test 1 iteration
 # threshold = 10
 # calculate_clr(threshold, grant_contributions)

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 from datetime import timedelta
 from decimal import Decimal
+import math
 
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -189,6 +190,11 @@ class Grant(SuperModel):
         max_digits=20,
         help_text=_('The TOTAL CLR matching amount across all rounds'),
     )
+    clr_prediction_curve = ArrayField(
+        ArrayField(
+            models.FloatField(),
+            size=2,
+        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
 
@@ -198,6 +204,18 @@ class Grant(SuperModel):
     def __str__(self):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}"
+
+
+    def clr_prediction(self, donation):
+        """Linear interpolation between 5 point curve"""
+        curve = self.clr_prediction_curve
+        for i in range(1, length(curve)):
+            if curve[i-1][0] <= donation and donation <= curve[i][0]:
+                break
+        m = (curve[i-1][0] - curve[i-1][1]) / (curve[i][0] - curve[i][1])
+        prediction = (donation - curve[i][1]) * m + curve[i-1][1]
+        return prediction
+
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
