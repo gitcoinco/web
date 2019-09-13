@@ -632,6 +632,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
         address = Web3.toChecksumAddress(address)
     except:
         error = "You must enter a valid Ethereum address (so we know where to send your Kudos). Please try again."
+        return None, error, None
 
     # handle form submission
     kudos_transfer = None
@@ -641,7 +642,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
 
     private_key = settings.KUDOS_PRIVATE_KEY if not coupon.sender_pk else coupon.sender_pk
     kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
-    gas_price_confirmation_time = 2 if not coupon.sender_address else 60
+    gas_price_confirmation_time = 1 if not coupon.sender_address else 60
     kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
     kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
     w3 = get_web3(coupon.token.contract.network)
