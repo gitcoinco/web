@@ -214,6 +214,10 @@ class Grant(SuperModel):
         self.activeSubscriptions = handles
 
     @property
+    def amount_received_with_phantom_funds(self):
+        return float(self.amount_received) + float(sum([ele.value for ele in self.phantom_funding.all()]))
+
+    @property
     def abi(self):
         """Return grants abi."""
         if self.contract_version == 0:
@@ -927,3 +931,21 @@ class PhantomFunding(SuperModel):
     def __str__(self):
         """Return the string representation of this object."""
         return f"{self.round_number}; {self.profile} <> {self.grant}"
+
+    def competing_phantum_funds(self):
+        return PhantomFunding.objects.filter(profile=self.profile, round_number=self.round_number)
+
+    @property
+    def value(self):
+        return 5/(self.competing_phantum_funds().count())
+
+    def to_mock_contribution(self):
+        context = self.to_standard_dict()
+        context['subscription'] = { 
+            'contributor_profile': self.profile,
+            'amount_per_period': self.value,
+            'token_symbol': 'DAI',
+        }
+        context['tx_cleared'] = True
+        context['success'] = True
+        return context

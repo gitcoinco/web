@@ -53,7 +53,7 @@
         <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6">
           <p class="sub-title mb-0 font-caption">TOTAL FUNDED</p>
           <p class="font-title mb-0 font-weight-bold">
-            {{ grant.amount_received|floatformat:0|intcomma }} DAI
+            {{ grant.amount_received_with_phantom_funds|floatformat:0|intcomma }} DAI
           </p>
 
           {% if grant.clr_matching %}

@@ -24,13 +24,12 @@
 
     <button type="button" id="nav-transactions" href="{{grant.url}}?tab=activity" class="section-tab {% if tab == "activity" %} active {% endif %}">
       {% trans "ACTIVITY" %}
-      {% if not subscriptions and not cancelled_subscriptions and not contributions %}
-        <span class="nav-badge">0</span>
-      {% endif %}
+      <span class="nav-badge">{{ activity_count }}</span>
     </button>
 
     <button type="button" id="nav-summary" href="{{grant.url}}?tab=updates" class="section-tab {% if tab == "updates" %} active {% endif %}">
       {% trans "UPDATES" %}
+      <span class="nav-badge">0</span>
     </button>
 
     <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">

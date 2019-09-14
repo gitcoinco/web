@@ -157,6 +157,9 @@ def grant_details(request, grant_id, grant_slug):
         subscriptions = grant.subscriptions.filter(active=True, error=False).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False).order_by('-created_on')
         contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all()).order_by('-created_on')
+        phantom_funds = grant.phantom_funding.filter(round_number=3)
+        contributions = list(contributions) + [ele.to_mock_contribution() for ele in phantom_funds]
+        activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
         add_cancel_params = user_subscription
@@ -221,6 +224,7 @@ def grant_details(request, grant_id, grant_slug):
         'updates': updates,
         'milestones': milestones,
         'keywords': get_keywords(),
+        'activity_count': activity_count,
     }
 
     if add_cancel_params:
@@ -555,15 +559,15 @@ def grant_fund(request, grant_id, grant_slug):
     fund_reward = None
     round_number = 3
     can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
-    phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, grant=grant, round_number=round_number) if request.user.is_authenticated else PhantomFunding.objects.none()
-    is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.exists()
+    phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
+    is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
     if can_phantom_fund:
         active_tab = 'phantom'
     if can_phantom_fund and request.POST.get('toggle_phantom_fund'):
         if is_phantom_funding_this_grant:
             msg = "You are no longer signaling for this grant."
-            phantom_funds.delete()
+            phantom_funds.filter(grant=grant).delete()
         else:
             msg = "You are now signaling for this grant."
             show_tweet_modal = True
@@ -575,8 +579,6 @@ def grant_fund(request, grant_id, grant_slug):
             msg
         )
         is_phantom_funding_this_grant = not is_phantom_funding_this_grant
-
-
 
     params = {
         'active': 'fund_grant',
@@ -600,6 +602,7 @@ def grant_fund(request, grant_id, grant_slug):
         'is_phantom_funding_this_grant': is_phantom_funding_this_grant,
         'active_tab': active_tab,
         'fund_reward': fund_reward,
+        'phantom_funds': phantom_funds,
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
