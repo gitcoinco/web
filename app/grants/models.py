@@ -203,7 +203,7 @@ class Grant(SuperModel):
         """Return the percentage of token received based on the token goal."""
         if not self.amount_goal:
             return 0
-        return ((self.amount_received / self.amount_goal) * 100)
+        return ((float(self.amount_received_with_phantom_funds) / float(self.amount_goal)) * 100)
 
 
     def updateActiveSubscriptions(self):

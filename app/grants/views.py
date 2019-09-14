@@ -156,9 +156,10 @@ def grant_details(request, grant_id, grant_slug):
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False).order_by('-created_on')
-        contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all()).order_by('-created_on')
+        _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
         phantom_funds = grant.phantom_funding.filter(round_number=3)
-        contributions = list(contributions) + [ele.to_mock_contribution() for ele in phantom_funds]
+        contributions = list(_contributions.order_by('-created_on')) + [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
+        contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
         activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
@@ -225,6 +226,7 @@ def grant_details(request, grant_id, grant_slug):
         'milestones': milestones,
         'keywords': get_keywords(),
         'activity_count': activity_count,
+        'contributors': contributors,
     }
 
     if add_cancel_params:
