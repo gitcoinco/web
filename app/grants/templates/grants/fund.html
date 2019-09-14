@@ -62,7 +62,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <a class="nav-link active" href="#" data-target="original_fund">Normal Fund</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" data-target="phantom_fund">Signal Funding</a>
+              <a class="nav-link" href="#" data-target="phantom_fund">$5 Voucher Funding</a>
             </li>
           </ul>  
         </div>    
@@ -73,12 +73,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="row">
               <p>
                 <i class="fas fa-circle mr-2"></i>
-                {% trans "Signal Funding is a lightweight way to signal that you'd like to support this grant during the active CLR Round.  By clicking 'Signal to Grant', you are signaling your support of this grant with the $5 that has been allocated to you from Gitcoin." %}
+                {% trans "Voucher Funding is a lightweight way to signal that you'd like to support this grant during the active CLR Round." %}
               </p>
               <p>
                 <i class="fas fa-circle mr-2"></i>
-                {% trans "You may support as many grants as you'd like, per round, with this $5 allocation.  The more the better :)" %}
+                {% trans "By clicking 'Use Voucher for this Grant', you are signaling your support of this grant with the $5 that has been allocated to you from Gitcoin." %}
               </p>
+              <p>
+                <i class="fas fa-circle mr-2"></i>
+                {% trans "You may support as many grants as you'd like, per round, with this $5 voucher.  The more the better :)" %}
+              </p>
+
+              <div>
+                So far, you are supporting <strong>{{phantom_funds.count}}</strong> projects.
+                <ol>
+                {% for ele in phantom_funds %}
+                  <li style="padding: 5px; {% cycle 'background-color: #eeeeee;' '' %}">
+                    <a href={{ele.grant.url}}>{{ele.grant.title}}</a>
+                    {% if grant.pk == ele.grant.pk %}
+                    (this grant)
+                    {% endif %}
+                     for <strong>${{ele.value|floatformat:2}}</strong>
+                  </li>
+                {% endfor %}
+                </ol>
+              </div>  
 
               <div class="col-12 form__footer text-center">
                 <img src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
@@ -89,9 +108,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <input type=hidden name=toggle_phantom_fund value=1 />
                   <input class="btn btn-gc-blue" type=submit name=submit value="
                 {% if is_phantom_funding_this_grant %}
-                  {% trans "STOP Signaling for Grant" %}
+                  {% trans "STOP using voucher for this Grant" %}
                 {% else %}
-                  {% trans "Signal for Grant" %}
+                  {% trans "Use Voucher for this Grant" %}
                 {% endif %}
                 " />
                 </form> 
