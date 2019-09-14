@@ -324,6 +324,8 @@ def handle_marketing_callback(key, request):
                 group_name = callback_reference.split(':')[1]
                 group = Group.objects.get(name=group_name)
                 group.user_set.add(request.user)
+            else:
+                messages.info(request, "You have been selected to receive a $5.00 Gitcoin Grants voucher. Login to use it.")
 
 
 def func_name():
