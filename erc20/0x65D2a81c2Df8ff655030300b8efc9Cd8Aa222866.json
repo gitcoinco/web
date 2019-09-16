@@ -1,0 +1,17 @@
+{
+  "symbol": "BJS",
+  "address": "0x65D2a81c2Df8ff655030300b8efc9Cd8Aa222866",
+  "overview":{
+    "en": "BJS Pass, the full name of the Broad Joint System Token, is the certificate of rights issued by the BJS Eco-Platform. The holders of the BJS Pass enjoy the various interests of the application platform, and the holders can obtain benefits such as dividends, voting, and destruction of value-added. BJS Pass is mainly used to encourage team members, users, investors and partners to contribute to the BJS ecosystem, accelerate the rapid development of BJS ecological applications, and as an ecological application anchor currency, with deflation attributes. The total amount of BJS pass is constant, the promise will never be issued, and the profit repurchase and destruction mechanism will be voted by the community committee. BJS pass is the key to the user to open the door of ecological application",
+    "zh": "BJS通证，全称为Broad Joint System Token，是BJS生态平台发行的权益证明通证，BJS通证持有者享有应用平台的各种权益，持有者可以获得分红、投票、销毁增值等权益，BJS通证主要用于激励团队成员、用户、投资者、合作伙伴对BJS生态体系做出贡献，加速BJS生态应用高速发展，作为生态应用锚定货币，具备通缩属性。BJS通证总量恒定，承诺永不增发，利润回购销毁机制将由社群委员会进行投票表决，BJS通证是用户打开生态应用大门的钥匙"
+  },
+  "email": "support@bjs.one",
+  "website": "https://www.bjs.one/",
+  "whitepaper": "https://www.bjs.one/BJS_EN.pdf",
+  "published_on": "2019-07-18",
+  "initial_price":{
+    "ETH":"0.0005 ETH",
+    "USD":"0.1445 USD",
+    "BTC":"0.00001114 BTC"
+  }
+}
