@@ -1,0 +1,23 @@
+  
+{
+  "symbol": "USDH",
+  "address": "0x201a59270DD85Da26615A37bba3EED8665153abb",
+  "overview":{
+        "en": "HonestCoin is a U.S. Dollar-backed stablecoin that is fully regulated and has no limitation in redemption. It is created for real world scenarios to solve real world problems. HonestCoin aims at enabling capital around the world to move safely and efficiently with low cost, eliminating unnecessary restrictions, and bypass costly intermediaries, so that asset holders can truly have total control over their global asset.",
+        "zh": "HonestCoin 是合规且可自由兑换的美元稳定币，是真正的区块链上的美元，定位于应用在现实世界的场景中，解决现实世界的问题。通过 HonestCoin ，我们希望让世界各地的资产可以安全、高效、低成本的流通，冲破各种外界的限制，去除所有不必要的中间环节，让资产的拥有者真正掌控自己的财富。"
+  },
+  "email": "contact@honestnode.io",
+  "website": "https://www.honestcoin.io/",
+  "state": "NORMAL",
+  "published_on": "2019-08-11",
+  "initial_price":{
+        "USD":"$1.00 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/thehonestnode",
+    "telegram": "https://t.me/theHonestNode",
+    "facebook": "https://www.facebook.com/thehonestnode",
+    "reddit": "https://www.reddit.com/r/HonestNode",
+    "medium": "https://medium.com/@honestnode123"
+  }
+}
