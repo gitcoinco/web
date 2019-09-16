@@ -177,7 +177,9 @@ def get_codefund_history_at_date(date, keyword):
     if date > timezone.datetime(2019, 8, 9):
         amount += 50871
     if date > timezone.datetime(2019, 9, 9):
-        amount += 0 # september month to date
+        amount += 52000
+    if date > timezone.datetime(2019, 10, 9):
+        amount += 0 # october month to date
     return amount
 
 
@@ -558,7 +560,7 @@ def build_stat_results(keyword=None):
     context['last_month_amount_hourly'] = sum(bh) / 30 / 24
     context['last_month_amount_hourly_business_hours'] = context['last_month_amount_hourly'] / 0.222
     context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.all()]
-    context['hackathon_total'] = [ele[1]['total_volume'] for ele in context['hackathons']]
+    context['hackathon_total'] = sum([ele[1]['total_volume'] for ele in context['hackathons']])
 
 
     return context

@@ -884,15 +884,15 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Ethereal Blocks Begins, Grow Ethereum Wraps"
-    new_kudos_pks = [2563, 4536, 4533]
+    subject = "CLR Round Three, Road to Devcon"
+    new_kudos_pks = [4548, 4550, 4549]
     new_kudos_size_px = 150
-    if settings.DEBUG and false:
+    if settings.DEBUG and False:
         # for debugging email styles
-        email_style = 4
+        email_style = 2
     else:
         offset = 2
-        email_style = int(timezone.now().strftime("%V")) + offset % 6 + 1
+        email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
 <h3>Happy Kudos Friday!</h3>
@@ -906,13 +906,13 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-Ready, set, hack. Ethereal Blocks, the most recent hackathon in our ever-growing anthology, has officially begun. Participants in this round of decentralized goodness automatically enter themselves into a prize pool of $50k. Our sponsors this go around are the Ethereum Foundation, Airswap, Bancor, Ethereal, portis, Etoro, GoodDollar, Matic, bZx, SKALE, and Status. Check out the hackathon details here: <a href="https://hackathons.gitcoin.co/ethereal-blocks/">https://hackathons.gitcoin.co/ethereal-blocks/</a>.
+    It's finally time. Gitcoin Grants CLR Round 3 is happening, and it's happening now. After months of planning, we're proud to announce $100k in matching is secured for this fourteen day period from September 14th to the 30th. We're aiming for over 1,000 unique crowdfunded contributions this go around: it's time to invite your friends, because every contribution counts. <a href="https://gitcoin.co/blog/gitcoins-q3-match-100k-to-oss-projects/">Take a gander at the announcement post and get excited. It's days away.</a>
 </p>
 <p>
-Keep your excitement in check for the next round of Gitcoin Grants CLR matching. Inch by inch, we're getting closer to launch, and we can't wait to see what our community does this time. Have any questions about Grants? Check out the homepage <a href="https://gitcoin.co/grants/">here</a> and send us a tweet. We're happy to help.
+    Speaking of CLR matching, it's time to geek out. We've been working with a few CLR junkies on anti collusion measures. Interested in CLR and theory? Jump in the discussion on <a href="https://ethresear.ch/t/pairwise-coordination-subsidies-a-new-quadratic-funding-design/5553/3">ethresearch.</a>
 </p>
 <p>
-For those who we saw at ETHBerlin, it was great to see you! We're decompressing after a phenomenal month of travel. Tweet at us with any photos, and we'll give them a retweet! Our Twitter is @gitcoin.
+    What do you call a group of hackathons? We don't know, but soon, we'll have to come up with a term for them. Another hackathon, the Road to Devcon, was just announced. Learn more about this one, and ask us any questions! The hackathon homepage lives <a href="https://hackathons.gitcoin.co/the-road-to-devcon/">here.</a> 
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
@@ -921,7 +921,7 @@ For those who we saw at ETHBerlin, it was great to see you! We're decompressing 
         The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
         </li>
         <li>
-	Keep your eyes open for a blog post with the winners of Grow Ethereum in the next coming days. And for our States-based friends, have a tremendous Labor Day weekend~
+        Thanks to all who participated in the Ethereal Blocks hackathon. We'll have the announcement post for the winners published in the next few days. Hurrah!
         </li>
     </ul>
 </p>
@@ -930,45 +930,46 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'touhonoob',  
+        'who': 'mul1sh',  
         'who_link': True,
-        'what': 'Rule pages, created.',
-        'link': 'https://gitcoin.co/issue/protofire/solhint/139/3363',
+        'what': 'Deploying Full Stack DApp to AWS',
+        'link': 'https://gitcoin.co/issue/kauri-io/Content/51/3186',
         'link_copy': 'View more',
     }, {
-        'who': 'bitsikka',
+        'who': 'igetgames',
         'who_link': True,
-        'what': 'My profile screens reorganisation and items design',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8070/3211',
+        'what': 'Eth_gasPrice Format Example Has Leading Zeros',
+        'link': 'https://gitcoin.co/issue/ethresearch/eth-wiki/16/3439',
         'link_copy': 'View more',
     }, {
-        'who': 'sergejmueller',
+        'who': 'RobertMCForster',
         'who_link': True,
-        'what': 'Reduce Web3Connect bundle size.',
-        'link': 'https://gitcoin.co/issue/web3connect/web3connect/66/3356',
+        'what': 'Linkdrop x Gnosis Safe Smart Contract Bug-bounty',
+        'link': 'https://gitcoin.co/issue/LinkdropHQ/linkdrop-safe-module/5/3309',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Blockmason',
-        'title': 'Build and deploy your whole laundry list of microservices in a single afternoon.',
-        'image_url': 'https://blockmason.link/wp-content/uploads/2018/11/logo.svg',
-        'link': 'http://bit.ly/2L5IA2n',
-        'cta': 'Get Started Now',
+        'name': 'Solana',
+        'title': 'Build on Solana: Join the Private Beta',
+        'image_url': '',
+        'link': 'http://bit.ly/solana-beta',
+        'cta': 'Join the Private Beta',
         'body': [
-            'Link creates web-based APIs from your code, so you can deploy microservices instantly.'
+            'Solana is a Lightning-fast distributed ledger technology for mission-critical decentralized apps.',
+            'We are currently taking applications for an incredibly limited beta program for early adopters of Solana to launch their projects alongside our mainnet later in 2019.'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/Synthetixio/synthetix/issues/213',
-        'primer': 'Add Synth Exchanges To Uniswap',
+        'url': 'https://github.com/Synthetixio/synthetix/issues/196',
+        'primer': 'Gas Optimisation R&D',
     }, {
-        'url': 'https://github.com/harmonylion/ideamarkets/issues/2',
-        'primer': 'Idea Markets unit tests and bug bounty',
+        'url': 'https://github.com/knocte/NLightning/issues/1',
+        'primer': 'Create upload pipeline',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/5089',
-        'primer': 'Bot Creatives',
+        'url': 'https://github.com/cennznet/bounties/issues/1',
+        'primer': 'Publish a Tutorial-based Blog Post on Creating a Blockchain Using OnFinality & Connecting to CENNZNet Public Blockchain',
 }, ]
 
 

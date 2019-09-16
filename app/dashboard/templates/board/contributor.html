@@ -178,11 +178,21 @@
               </div>
             </li>
             <li class="text-center my-5" :class="{'d-none': isLoading.work_submitted || contributorBounties.work_submitted && contributorBounties.work_submitted.length > 0}" v-cloak>
-              <p>[[ error.work_submitted || "You don't have any submittion awaiting payment." ]]</p>
+              <p>[[ error.work_submitted || "You don't have any submission awaiting payment." ]]</p>
             </li>
           </ul>
           <loading-screen v-if="isLoading.work_submitted"></loading-screen>
         </div>
+      </div>
+    </div>
+  </section>
+  <section class="container">
+    <div class="row text-center py-5">
+      <div class="col-12">
+        <p>
+          If you also want to check your finished bounties, you can find them here:
+        </p>
+        <a class="btn btn-gc-blue" href="/explorer?bounty_filter=startedByMe&network=mainnet&order_by=-web3_created">Check my bounties in the explorer</a>
       </div>
     </div>
   </section>

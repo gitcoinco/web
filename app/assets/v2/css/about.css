@@ -20,6 +20,7 @@ h4 {
   font-weight: bold;
 }
 
+
 #team p,
 #jobs p,
 #origin_story p {
@@ -29,6 +30,13 @@ h4 {
 .grow_hero img{
   width: 100%;
   max-width: 400px;
+}
+
+.problem img{
+  filter: grayscale(90%);
+}
+.problem img:hover{
+  filter: grayscale(20%);
 }
 
 #origin_story img {
@@ -87,17 +95,36 @@ h4 {
 }
 
 #team .avatar {
-  width: 175px;
-  height: 225px;
+  width: 225px;
+  height: 285px;
   margin: auto;
   margin-bottom: 10px;
+  opacity: .9;
 }
+
+#team .avatar:hover {
+  width: 235px;
+  height: 295px;
+  opacity: 1;
+}
+
 #team .avatar.nate {
-  height: 315px;
-  margin-bottom: -80px;
+  height: 385px;
+  margin-bottom: -90px;
 }
+
+#team .avatar.joe {
+  width: 255px;
+  margin-left: -15px;
+}
+
+#team .avatar.joe:hover {
+  width: 265px;
+  margin-left: -15px;
+}
+
 #team .avatar.jobs {
-  height: 185px;
+  height: 275px;
 }
 
 #team .name, #team .name a{
@@ -110,7 +137,7 @@ h4 {
 }
 
 #team .social-links a i {
-  font-size: 1.25em;
+  font-size: 1.75em;
   transition: all 0.3s;
   color: black;
 }
