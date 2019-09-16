@@ -62,7 +62,9 @@ from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
-from marketing.mails import new_reserved_issue, start_work_approved, start_work_new_applicant, start_work_rejected
+from marketing.mails import (
+    new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
+)
 from marketing.models import Keyword
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -1173,13 +1175,11 @@ def bulk_invite(request):
     inviter = request.user if request.user.is_authenticated else None
     skills = request.POST.get('skills[]')
     bounty_id = request.POST.get('bountyId')
-    print(bounty_id)
-    print(skills)
+
     if None in (skills, bounty_id, inviter):
         return JsonResponse({'success': False}, status=403)
 
     bounty = Bounty.objects.current().get(id=int(bounty_id))
-    print(bounty)
 
     profiles = Profile.objects.filter(keywords__icontains=skills.split(','))
 
@@ -1193,6 +1193,7 @@ def bulk_invite(request):
         bounty_invite.inviter.add(inviter)
         bounty_invite.invitee.add(profile.user)
         try:
+            msg = request.POST.get('msg', '')
             share_bounty([profile.email], msg, request.user.profile, invite_url, True)
         except Exception as e:
             logging.exception(e)
@@ -1208,7 +1209,6 @@ def social_contribution_email(request):
     Returns:
         JsonResponse: Success in sending email.
     """
-    from marketing.mails import share_bounty
     from .utils import get_bounty_invite_url
 
     emails = []
