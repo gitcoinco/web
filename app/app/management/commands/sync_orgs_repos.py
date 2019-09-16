@@ -14,11 +14,13 @@ class Command(BaseCommand):
         try:
             print("Loading Users....")
             all_users = User.objects.filter(
-                is_active=True)
+                is_active=True, profile__isnull=False)
 
             synced = []
 
             def recursive_sync(lsynced, handle):
+                print("lysnced is")
+                print(lsynced)
                 try:
 
                     if handle not in lsynced:
@@ -31,11 +33,12 @@ class Command(BaseCommand):
                         for y in remove_org_groups:
                             profile.orgs.remove(y)
                             profile.user.groups.filter(name__contains=y.name).delete()
-
+                        print('getting repos')
                         user_access_repos = get_repo(handle, '/repos', (handle, access_token), is_user=True)
                         # Question around user repo acccess if we can't get user repos, should we assume all repos are no longer available in the platform?
 
                         if 'message' not in user_access_repos:
+                            print('got repos')
                             current_user_repos = []
                             for y in user_access_repos:
                                 current_user_repos.append(y['name'])
@@ -46,7 +49,7 @@ class Command(BaseCommand):
                                                                     profile__handle=handle)
                             for y in remove_user_repos:
                                 profile.repos.remove(y)
-
+                        print('appending to lsynced: {}'.format(handle))
                         lsynced.append(handle)
                     else:
                         return lsynced
@@ -132,6 +135,7 @@ class Command(BaseCommand):
 
             for user in all_users:
                 # get profile data now creates or gets the new organization data for each user
+                print('syncing user {}'.format(user.profile.handle))
                 synced = recursive_sync(synced, user.profile.handle)
             print("Sync Completed")
         except ValueError as e:

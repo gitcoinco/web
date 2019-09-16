@@ -93,6 +93,30 @@ confirm_time_minutes_target = 4
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 
+def org_perms(request):
+    if request.user.is_authenticated and getattr(request.user, 'profile', None):
+        profile = request.user.profile
+    else:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+             status=401)
+    orgs = profile.orgs.all()
+    response_data = []
+    for org in orgs:
+        org_perms = {'name': org.name, 'users': []}
+        groups = org.groups
+        for g in groups: # "admin", "write", "pull", "none"
+            group_data = g.name.split('-')
+            if group_data[1] != "role": #skip repo level groups
+                continue
+            org_perms['users'].append(
+                *[{'handle': user.profile.handle,
+                   'role': group_data[2],
+                   'name': '{} {}'.format(u.first_name, u.last_name)}
+                for u in g.user_set.prefetch_related('profile').all()])
+        response_data.append(org_perms)
+    return JsonResponse({'orgs': response_data}, safe=False)
+
 def record_user_action(user, event_name, instance):
     instance_class = instance.__class__.__name__.lower()
     kwargs = {
