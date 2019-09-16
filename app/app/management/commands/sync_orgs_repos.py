@@ -1,8 +1,9 @@
+from django.contrib.auth.models import Group, User
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User, Group
-from dashboard.models import Profile, Organization, Repo
-from git.utils import get_organization, get_user, get_repo
+
 from app.utils import sync_profile
+from dashboard.models import Organization, Profile, Repo
+from git.utils import get_organization, get_repo, get_user
 
 
 class Command(BaseCommand):
