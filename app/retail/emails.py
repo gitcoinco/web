@@ -308,7 +308,6 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     params = {**quarterly_stats, **platform_wide_stats}
     params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
-    print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
 
@@ -319,6 +318,16 @@ def render_funder_payout_reminder(**kwargs):
     kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(fulfiller_github_username=kwargs['github_username']).last()
     response_html = premailer_transform(render_to_string("emails/funder_payout_reminder.html", kwargs))
     response_txt = ''
+    return response_html, response_txt
+
+
+def render_no_applicant_reminder(bounty):
+    params = {
+        'bounty': bounty,
+        'directory_link': '/users?skills=' + bounty.keywords.lower()
+    }
+    response_html = premailer_transform(render_to_string("emails/bounty/no_applicant_reminder.html", params))
+    response_txt = render_to_string("emails/bounty/no_applicant_reminder.txt", params)
     return response_html, response_txt
 
 
@@ -871,12 +880,19 @@ def render_start_work_applicant_expired(interest, bounty):
 
     return response_html, response_txt, subject
 
+
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Funding for Open Source. More Hackathons."
-    new_kudos_pks = [1926, 1819, 1895]
+    subject = "CLR Round Three, Road to Devcon"
+    new_kudos_pks = [4548, 4550, 4549]
     new_kudos_size_px = 150
+    if settings.DEBUG and False:
+        # for debugging email styles
+        email_style = 2
+    else:
+        offset = 2
+        email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
 <h3>Happy Kudos Friday!</h3>
@@ -890,22 +906,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-After months of planning, we're happy to announce that the next round of Gitcoin Grants CLR Matching is right around the corner. With over $150k of funds committed, we will be kicking off the matching process in September! Interested in Gitcoin Grants? Check it out <a href="https://gitcoin.co/grants/">here.</a>
+    It's finally time. Gitcoin Grants CLR Round 3 is happening, and it's happening now. After months of planning, we're proud to announce $100k in matching is secured for this fourteen day period from September 14th to the 30th. We're aiming for over 1,000 unique crowdfunded contributions this go around: it's time to invite your friends, because every contribution counts. <a href="https://gitcoin.co/blog/gitcoins-q3-match-100k-to-oss-projects/">Take a gander at the announcement post and get excited. It's days away.</a>
 </p>
 <p>
-And yes, we have another hackathon we're proud to announce: Ethereal Blocks. Join us alongside Ethereal Summit in this incredible display of Web3 and more. Over $50k of prizes are up for grabs. The details live <a href="https://hackathons.gitcoin.co/ethereal-blocks/">here.</a>
+    Speaking of CLR matching, it's time to geek out. We've been working with a few CLR junkies on anti collusion measures. Interested in CLR and theory? Jump in the discussion on <a href="https://ethresear.ch/t/pairwise-coordination-subsidies-a-new-quadratic-funding-design/5553/3">ethresearch.</a>
 </p>
 <p>
-Have any questions about our platform? Have any feedback that we should take into consideration? Please reach out. We'd love to hear it. Send us an email at <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a> or reach out to us on Twitter.
+    What do you call a group of hackathons? We don't know, but soon, we'll have to come up with a term for them. Another hackathon, the Road to Devcon, was just announced. Learn more about this one, and ask us any questions! The hackathon homepage lives <a href="https://hackathons.gitcoin.co/the-road-to-devcon/">here.</a> 
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is back this week! Join us and some of the winners of Grow Ethereum <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
+        The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
         </li>
         <li>
-        The Gitcoin team is on the road this month, with planned visits to ETHBerlin and Web3. Follow our travel on our valiant leader's Twitter, <a href="https://twitter.com/owocki/">@owocki.</a>
+        Thanks to all who participated in the Ethereal Blocks hackathon. We'll have the announcement post for the winners published in the next few days. Hurrah!
         </li>
     </ul>
 </p>
@@ -914,48 +930,49 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'Allenskywalker92',
+        'who': 'mul1sh',  
         'who_link': True,
-        'what': 'Bugfixes and maps are in!',
-        'link': 'https://gitcoin.co/issue/ark-mod/ArkBot/96/3316',
+        'what': 'Deploying Full Stack DApp to AWS',
+        'link': 'https://gitcoin.co/issue/kauri-io/Content/51/3186',
         'link_copy': 'View more',
     }, {
-        'who': 'bitsikka',
+        'who': 'igetgames',
         'who_link': True,
-        'what': 'My profile edit and share screens, done!',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8069/3205',
+        'what': 'Eth_gasPrice Format Example Has Leading Zeros',
+        'link': 'https://gitcoin.co/issue/ethresearch/eth-wiki/16/3439',
         'link_copy': 'View more',
     }, {
-        'who': 'srisankethu',
+        'who': 'RobertMCForster',
         'who_link': True,
-        'what': 'Full stack Dapp on Azure, deployed.',
-        'link': 'https://gitcoin.co/issue/kauri-io/Content/53/3187', 
+        'what': 'Linkdrop x Gnosis Safe Smart Contract Bug-bounty',
+        'link': 'https://gitcoin.co/issue/LinkdropHQ/linkdrop-safe-module/5/3309',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Blockmason',
-        'title': 'Build and deploy your whole laundry list of microservices in a single afternoon.',
-        'image_url': 'https://blockmason.link/wp-content/uploads/2018/11/logo.svg',
-        'link': 'http://bit.ly/2L5IA2n',
-        'cta': 'Get Started Now',
+        'name': 'Solana',
+        'title': 'Build on Solana: Join the Private Beta',
+        'image_url': '',
+        'link': 'http://bit.ly/solana-beta',
+        'cta': 'Join the Private Beta',
         'body': [
-            'Link creates web-based APIs from your code, so you can deploy microservices instantly.'
+            'Solana is a Lightning-fast distributed ledger technology for mission-critical decentralized apps.',
+            'We are currently taking applications for an incredibly limited beta program for early adopters of Solana to launch their projects alongside our mainnet later in 2019.'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/DigixGlobal/dao-server/issues/69',
-        'primer': 'Email Notifications on Comments',
+        'url': 'https://github.com/Synthetixio/synthetix/issues/196',
+        'primer': 'Gas Optimisation R&D',
     }, {
-        'url': 'https://github.com/protofire/solhint/issues/140',
-        'primer': 'Document the structure of the project',
+        'url': 'https://github.com/knocte/NLightning/issues/1',
+        'primer': 'Create upload pipeline',
     }, {
-        'url': 'https://github.com/ethresearch/eth-wiki/issues/9',
-        'primer': 'Correcting Merkle Patricia Trie Example',
+        'url': 'https://github.com/cennznet/bounties/issues/1',
+        'primer': 'Publish a Tutorial-based Blog Post on Creating a Blockchain Using OnFinality & Connecting to CENNZNet Public Blockchain',
 }, ]
-    
-    
+
+
     num_leadboard_items = 5
     highlight_kudos_ids = []
     num_kudos_to_show = 15
@@ -975,6 +992,7 @@ Back to shipping,
             'items': [],
         },
     }
+
 
     from kudos.models import KudosTransfer
     if highlight_kudos_ids:
@@ -1013,6 +1031,7 @@ Back to shipping,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
         'sponsor': sponsor,
+        'email_style': email_style,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
@@ -1162,6 +1181,26 @@ def funder_payout_reminder(request):
     github_username = request.GET.get('username', '@foo')
     response_html, _ = render_funder_payout_reminder(bounty=bounty, github_username=github_username)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def no_applicant_reminder(request):
+    """Display the no applicant for bounty reminder email template.
+
+    Params:
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    from dashboard.models import Bounty
+    bounty = Bounty.objects.filter(
+        idx_status='open', current_bounty=True, interested__isnull=True
+    ).first()
+    response_html, _ = render_no_applicant_reminder(bounty=bounty)
+    return HttpResponse(response_html)
+
 
 @staff_member_required
 def funder_stale(request):

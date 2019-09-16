@@ -225,6 +225,7 @@ pages:
     - Third Party Integration Setup: mk_third_party_integrations.md << docs/THIRD_PARTY_SETUP.md
     - Advanced: mk_advanced.md << docs/ADVANCED.md
     - Widget Setup: mk_widget.md << docs/WIDGET.md
+    - GitcoinBot: mk_gitcoinbot.md << app/gitcoinbot/README.md
     - Environment Variables: mk_envvars.md << docs/ENVIRONMENT_VARIABLES.md
     - Rest API: mk_rest_api.md << docs/API.md
     - Changelog: mk_changelog.md << CHANGELOG.md

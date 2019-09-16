@@ -1,84 +1,90 @@
 let popoverData = [];
 
-const renderPopOverData = json => {
-  return `
-            <div class="popover-bounty__content">
-              <div class="d-flex justify-content-between mb-2">
-                <h2 class="title font-subheader font-weight-bold username">${
-  json.profile.handle
-}</h2>
-                <span class="text-muted specialty pt-2">Specialty: ${json.profile.keywords
-    .slice(0, 3)
-    .toString()}</span>
-                                  ${Object.keys(json.profile.organizations).map(
-    (org, index) => {
-      if (index < 3) {
-        `<img src="/dynamic/avatar/${org}" alt="${org}" class="rounded-circle" width="24" height="24">`;
-      } else {
-        `<img class="rounded-circle m-1" width="24" height="24" title=${Object.keys(json.profile.organizations.length)} times" src=""/>`;
+const renderPopOverData = data => {
+  const unique_contributed_to = data.contributed_to ? Array.from(new Set(data.contributed_to)) : [];
+  let contributed_to = unique_contributed_to && unique_contributed_to.map((_organization, index) => {
+    if (index < 5) {
+      return `<img src="/dynamic/avatar/${_organization}" alt="${_organization}"
+        class="rounded-circle" width="24" height="24">`;
+    }
+    return `<span class="m-1">+${data.contributed_to.length - 5}</span>`;
+  }).join(' ');
+
+  const bounties = data.related_bounties && data.related_bounties.map(bounty => {
+    const title = bounty.title <= 30 ? bounty.title : bounty.title.slice(0, 27) + '...';
+
+    let ratings = [];
+
+    if (bounty.rating && bounty.rating[0] > 0) {
+      for (let i = 0; i < 5; i++) {
+        ratings.push(`<i class="far fa-star ${ i <= bounty.rating[0] ? 'fas' : ''} "></i>`);
       }
     }
-  )}
-              </div>
-              <span class="earned">~ ${
-  Number(json.profile.total_earned).toFixed(4)
-} ETH earned</span>
-              <div class="statistics d-flex justify-content-between mt-2">
-                <div class="popover_card text-center mr-4 pt-2">
-                  <span class="contributor-position font-weight-semibold">#${
-  json.profile.position
-}</span>
-                  <p class="mt-2">Gitcoin Contributor</p>
-                </div>
-                <div class="contributions d-flex justify-content-between">
-                  <div class="popover_card text-center mr-2 pt-2">
-                    <span class="completed-bounties font-weight-semibold">${
-  json.statistics.work_completed
-}</span>
-                    <p class="mt-2">Bounties Completed</p>
-                  </div>
-                  <div class="popover_card text-center mr-2 pt-2">
-                    <span class="in-progress text-center font-weight-semibold">${
-  json.statistics.work_in_progress
-}</span>
-                    <p class="mt-2">Bounties In Progress</p>
-                  </div>
-                  <div class="popover_card text-center mr-2 pt-2">
-                    <span class="abandoned-bounties font-weight-semibold">${
-  json.statistics.work_abandoned
-}</span>
-                    <p class="mt-2">Bounties Abandoned</p>
-                  </div>
-                  <div class="popover_card text-center mr-2 pt-2">
-                    <span class="removed-bounties font-weight-semibold">${
-  json.statistics.work_removed
-}</span>
-                    <p class="mt-2">Bounties Removed</p>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div class="popover-bounty__footer">
-              <div class="d-flex justify-content-between">
-                <span class="title text-muted">Latest Activity
-                  <span class="current_status font-weight-semibold">${currentStatus(
-    json.recent_activity.activity_type
-  )}</span>
-                </span>
-                <span class="text-muted time-ago">${moment(
-    json.recent_activity.created,
-    'YYYYMMDD'
-  ).fromNow()}</span>
-              </div>
-              <p class="text-muted pt-2 activity-title">${
-  json.recent_activity.activity_metadata.title
-}</p>
-            </div>`;
+    return `<li>
+      <span class="font-weight-semibold bounty-title">${title}</span>
+      <span class="bounty-org">by ${bounty.org}</span>
+      ${ratings.length > 0 ?
+    `<span class="static-stars float-right">
+        ${ratings.join(' ')}
+      </span>` : ''}
+    </li>`;
+  }).join(' ');
+
+  return `
+    <div class="popover-bounty__content">
+      <div class="mb-2">
+        <img src="${data.avatar}" width="35" class="rounded-circle">
+        <p class="ml-3 d-inline font-body my-auto font-weight-semibold">${data.handle}</p>
+        <div class="float-right">
+          ${contributed_to.length ? '<span class="my-auto">Contributes to: </span>' + contributed_to : ''}
+        </div>
+      </div>
+
+      <div class="stats text-center mt-4">
+        <div class="stat-card mx-1 mb-2 py-2 px-5 px-sm-3 d-inline-block text-center">
+          <h2 class="font-title font-weight-bold mb-0">
+            ${data.stats.position == 0 ? '-' : '#' + data.stats.position}
+          </h2>
+          <p class="font-body mb-0">contributor</p>
+        </div>
+        <div class="stat-card mx-1 mb-2 py-2 px-5 px-sm-3 d-inline-block text-center">
+          <h2 class="font-title font-weight-bold mb-0">
+            ${data.stats.success_rate ? Math.round(data.stats.success_rate * 100) : 0} %
+          </h2>
+          <p class="font-body mb-0">success rate</p>
+        </div>
+        <div class="stat-card mx-1 mb-2 py-2 px-5 px-sm-3 d-inline-block text-center">
+          <h2 class="font-title font-weight-bold mb-0">
+            ${data.stats.earnings ? Number(data.stats.earnings).toFixed(4) : 0} ETH
+          </h2>
+          <p class="font-body mb-0">
+            collected from
+            <span class="font-weight-bold">${data.stats.completed_bounties}</span> bounties
+          </p>
+        </div>
+      </div>
+
+    ${data.related_bounties.length == 0 ?
+    `<p class="font-body mt-3 summary">
+        No bounties completed related to <span class="font-italic">${data.keywords || 'bounty'}</span>
+      </p>`
+    :
+    `<p class="font-body mt-3 summary">
+        Bounties completed related to <span class="font-italic">${data.keywords || 'bounty'}:</span>
+      </p>
+      <ul class="related-bounties font-body pl-0">
+        ${bounties}
+      </ul>`
+}
+
+    </div>
+  `;
 };
 
-const openContributorPopOver = (contributor, element) => {
-  let contributorURL = `/api/v0.1/profile/${contributor}`;
+function openContributorPopOver(contributor, element) {
+  const keywords = document.result.keywords || '';
+  const contributorURL = `/api/v0.1/profile/${contributor}?keywords=${keywords}`;
 
   if (popoverData.filter(index => index[contributor]).length === 0) {
     fetch(contributorURL, { method: 'GET' })
@@ -87,8 +93,12 @@ const openContributorPopOver = (contributor, element) => {
         element.popover({
           placement: 'auto',
           trigger: 'hover',
-          template:
-            '<div class="popover popover-bounty" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+          template: `
+            <div class="popover popover-bounty" role="tooltip">
+              <div class="arrow"></div>
+              <h3 class="popover-header"></h3>
+              <div class="popover-body"></div>
+            </div>`,
           content: renderPopOverData(response),
           html: true
         });
@@ -102,8 +112,12 @@ const openContributorPopOver = (contributor, element) => {
     element.popover({
       placement: 'auto',
       trigger: 'hover',
-      template:
-        '<div class="popover popover-bounty" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+      template: `
+        <div class="popover popover-bounty" role="tooltip">
+          <div class="arrow"></div>
+          <h3 class="popover-header"></h3>
+          <div class="popover-body"></div>
+        </div>`,
       content: renderPopOverData(
         popoverData.filter(item => item[contributor])[0][contributor]
       ),
@@ -111,35 +125,4 @@ const openContributorPopOver = (contributor, element) => {
     });
     $(element).popover('show');
   }
-};
-
-const currentStatus = status => {
-  const activity_names = {
-    new_bounty: gettext('New Bounty'),
-    start_work: gettext('Work Started'),
-    stop_work: gettext('Work Stopped'),
-    work_submitted: gettext('Work Submitted'),
-    work_done: gettext('Work Done'),
-    worker_approved: gettext('Worker Approved'),
-    worker_rejected: gettext('Worker Rejected'),
-    worker_applied: gettext('Worker Applied'),
-    increased_bounty: gettext('Increased Funding'),
-    killed_bounty: gettext('Canceled Bounty'),
-    new_crowdfund: gettext('New Crowdfund Contribution'),
-    new_tip: gettext('New Tip'),
-    receive_tip: gettext('Tip Received'),
-    bounty_abandonment_escalation_to_mods: gettext(
-      'Escalated for Abandonment of Bounty'
-    ),
-    bounty_abandonment_warning: gettext('Warned for Abandonment of Bounty'),
-    bounty_removed_slashed_by_staff: gettext(
-      'Dinged and Removed from Bounty by Staff'
-    ),
-    bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
-    bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
-    bounty_changed: gettext('Bounty Details Changed'),
-    extend_expiration: gettext('Extended Bounty Expiration')
-  };
-
-  return activity_names[status] || 'Unknown activity ';
-};
+}

@@ -1040,18 +1040,29 @@ var do_actions = function(result) {
   let bounty_path = result['network'] + '/' + result['standard_bounties_id'];
 
 
-  // Find interest information
   const is_interested = is_current_user_interested(result);
 
-  const has_fulfilled = result['fulfillments'].filter(fulfiller => caseInsensitiveCompare(fulfiller.fulfiller_github_username, document.contxt['github_handle'])).length > 0;
+  const has_fulfilled = result['fulfillments'].filter(fulfiller =>
+    caseInsensitiveCompare(fulfiller.fulfiller_github_username, document.contxt['github_handle'])
+  ).length > 0;
 
   document.interested = is_interested;
 
   const current_user_is_approved = is_current_user_approved(result);
-  // which actions should we show?
-  const should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
-  let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work &&
-    is_open && !isBountyOwner(result) && isAvailableIfReserved(result);
+
+  const should_block_from_starting_work =
+    !is_interested &&
+    result['project_type'] == 'traditional' &&
+    (result['status'] == 'started' || result['status'] == 'submitted');
+
+  let show_start_stop_work =
+    is_still_on_happy_path &&
+    !should_block_from_starting_work &&
+    is_open &&
+    !isBountyOwner(result) &&
+    isAvailableIfReserved(result) &&
+    !has_fulfilled;
+
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
   let show_submit_work = is_open && !has_fulfilled;
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);

@@ -348,3 +348,15 @@ class EmailSupressionList(SuperModel):
 
     def __str__(self):
         return f"{self.email}"
+
+class MarketingCallback(SuperModel):
+    """Define the Marketing Callback model; which is used to peform
+
+    various functions when a user with a specific secret key visits the site.
+    """
+
+    key = models.CharField(max_length=255, db_index=True)
+    val = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.key} - {self.val}"

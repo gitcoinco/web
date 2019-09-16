@@ -5126,3 +5126,340 @@
   - DAI
   - MakerDAO
   image: dai.svg
+- name: grants_round_3_contributor_-_Popart_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Popart_bot.svg
+- name: grants_round_3_contributor_-_noir_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: noir_bot.svg
+- name: grants_round_3_contributor_-_japaneseArt_ninjaBot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: japaneseArt_ninjaBot.svg
+- name: grants_round_3_contributor_-_origami_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: origami_bot.svg
+- name: grants_round_3_contributor_-_popart_gitcoin
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: popart_gitcoin.svg
+- name: grants_round_3_contributor_-_ramen_eating_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: ramen_eating_bot.svg
+- name: grants_round_3_contributor_-_samurai_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: samurai_bot.svg
+- name: grants_round_3_contributor_-_watercolour_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: watercolour_bot.svg
+- name: grants_round_3_contributor_-_gitcoin_spraybot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: gitcoin_spraybot.svg
+- name: grants_round_3_contributor_-_japanese-bot-sketch
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: japanese-bot-sketch.svg
+- name: grants_round_3_contributor_-_kendo-bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: kendo-bot.svg
+- name: grants_round_3_contributor_-_snowgitcoin_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: snowgitcoin_bot.svg
+- name: grants_round_3_contributor_-_Futurism_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Futurism_bot.svg
+- name: grants_round_3_contributor_-_Koibot.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Koibot.svg
+- name: grants_round_3_contributor_-_samurai_bot.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: samurai_bot.svg
+- name: grants_round_3_contributor_-_bounty_bot_koi.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: bounty_bot_koi.svg
+- name: grants_round_3_contributor_-_bot_with_mount_fuji.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: bot_with_mount_fuji.svg
+- name: grants_round_3_contributor_-_Noodle_Fighter.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Noodle_Fighter.svg
+- name: Ethereal Summit - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-01.svg
+- name: Gitcoin - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-06.svg
+- name: Ethereum Foundation - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-07.svg
+- name: Airswap - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-08.svg
+- name: Bancor - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-09.svg
+- name: Portis - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-10.svg
+- name: eToro - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-11.svg
+- name: GoodDollar - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-02.svg
+- name: eToroX - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-05.svg
+- name: Matic - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-03.svg
+- name: Status - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-04.svg

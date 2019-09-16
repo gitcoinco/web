@@ -203,7 +203,7 @@ class Grant(SuperModel):
         """Return the percentage of token received based on the token goal."""
         if not self.amount_goal:
             return 0
-        return ((self.amount_received / self.amount_goal) * 100)
+        return ((float(self.amount_received_with_phantom_funds) / float(self.amount_goal)) * 100)
 
 
     def updateActiveSubscriptions(self):
@@ -212,6 +212,10 @@ class Grant(SuperModel):
         for handle in Subscription.objects.filter(grant=self, active=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
             handles.append(handle)
         self.activeSubscriptions = handles
+
+    @property
+    def amount_received_with_phantom_funds(self):
+        return float(self.amount_received) + float(sum([ele.value for ele in self.phantom_funding.all()]))
 
     @property
     def abi(self):
@@ -718,6 +722,7 @@ def psave_grant(sender, instance, **kwargs):
         value_usdt = subscription.get_converted_amount()
         for contrib in subscription.subscription_contribution.filter(success=True):
             if value_usdt:
+                #print(f"adding contribution of {round(subscription.amount_per_period,2)} {subscription.token_symbol}, pk: {contrib.pk}, worth ${round(value_usdt,2)} to make total ${round(instance.amount_received,2)}. (txid: {contrib.tx_id} tx_cleared:{contrib.tx_cleared} )")
                 instance.amount_received += Decimal(value_usdt)
 
         if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
@@ -900,3 +905,47 @@ class MatchPledge(SuperModel):
     def __str__(self):
         """Return the string representation of this object."""
         return f"{self.profile} <> {self.amount} DAI"
+
+class PhantomFunding(SuperModel):
+    """Define the structure of a PhantomFunding object.
+
+    For Grants, we have a fund we’re contributing on their behalf.  just having a quick button they can push saves all the hassle of (1) asking them their wallet, (2) sending them the DAI (3) contributing it.
+
+    """
+
+    round_number = models.PositiveIntegerField(blank=True, null=True)
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='phantom_funding',
+        on_delete=models.CASCADE,
+        help_text=_('The associated grant being Phantom Funding.'),
+    )
+
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='grant_phantom_funding',
+        on_delete=models.CASCADE,
+        help_text=_('The associated profile doing the Phantom Funding.'),
+    )
+
+    def __str__(self):
+        """Return the string representation of this object."""
+        return f"{self.round_number}; {self.profile} <> {self.grant}"
+
+    def competing_phantum_funds(self):
+        return PhantomFunding.objects.filter(profile=self.profile, round_number=self.round_number)
+
+    @property
+    def value(self):
+        return 5/(self.competing_phantum_funds().count())
+
+    def to_mock_contribution(self):
+        context = self.to_standard_dict()
+        context['subscription'] = { 
+            'contributor_profile': self.profile,
+            'amount_per_period': self.value,
+            'token_symbol': 'DAI',
+        }
+        context['tx_cleared'] = True
+        context['success'] = True
+        return context

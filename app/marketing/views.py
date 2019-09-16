@@ -25,6 +25,7 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.db.models import Max
 from django.http import Http404, HttpResponse
@@ -185,13 +186,12 @@ def matching_settings(request):
 
     """
     # setup
-    __, es, __, is_logged_in = settings_helper_get_auth(request)
+    profile, es, __, is_logged_in = settings_helper_get_auth(request)
     if not es:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
     msg = ''
-
     if request.POST and request.POST.get('submit'):
         github = request.POST.get('github', '')
         keywords = request.POST.get('keywords').split(',')
@@ -199,6 +199,8 @@ def matching_settings(request):
             es.github = github
         if keywords:
             es.keywords = keywords
+            profile.keywords = keywords
+            profile.save()
         es = record_form_submission(request, es, 'match')
         es.save()
         msg = _('Updated your preferences.')
@@ -275,11 +277,21 @@ def email_settings(request, key):
         preferred_language = request.POST.get('preferred_language')
         validation_passed = True
         try:
+            email_in_use = User.objects.filter(email=email) | User.objects.filter(profile__email=email)
+            email_used_marketing = EmailSubscriber.objects.filter(email=email).select_related('profile')
+            logged_in = request.user.is_authenticated
+            email_already_used = (email_in_use or email_used_marketing)
+            user = request.user if logged_in else None
+            email_used_by_me = (user and (user.email == email or user.profile.email == email))
+            email_changed = es.email != email
+
+            if email_changed and email_already_used and not email_used_by_me:
+                raise ValueError(f'{request.user} attempting to use an email which is already in use on the platform')
             validate_email(email)
         except Exception as e:
             print(e)
             validation_passed = False
-            msg = _('Invalid Email')
+            msg = str(e)
         if preferred_language:
             if preferred_language not in [i[0] for i in settings.LANGUAGES]:
                 msg = _('Unknown language')
@@ -314,7 +326,7 @@ def email_settings(request, key):
     pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     context = {
         'nav': 'home',
-        'active': '/settings/email',
+        'active': '/settings/email/',
         'title': _('Email Settings'),
         'es': es,
         'nav': 'home',
