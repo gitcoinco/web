@@ -93,7 +93,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     {% if grant.pk == ele.grant.pk %}
                     (this grant)
                     {% endif %}
-                     for <strong>${{ele.value|floatformat:2}}</strong>
+                     for <strong>${{ele.value|floatformat:2}}</strong> + $<strong>{{ele.estimated_matching_value}}</strong> in matching.
                   </li>
                 {% endfor %}
                 </ol>
@@ -105,6 +105,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <br>
                 <form method=POST>
                   {%csrf_token%}
+                  {% include './clr_estimate.html' %}
                   <input type=hidden name=toggle_phantom_fund value=1 />
                   <input class="btn btn-gc-blue" type=submit name=submit value="
                 {% if is_phantom_funding_this_grant %}
@@ -313,6 +314,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <div class="form__group-horizontal">
                     <div class="row">
+                      {% include './clr_estimate.html' with class='extraleft' %}
                       <div class="col-12 form__footer text-center">
                         <button class="button button--primary button--full" id='js-fundGrant-button'>{% trans "Contribute to Grant" %}</button>
                       </div>

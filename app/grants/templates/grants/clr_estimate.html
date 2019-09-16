@@ -1,0 +1,10 @@
+{% load static%}
+{% if clr_contributoin_estimate %}
+  <div class="clr_estimate {{class}}">
+    <img src="{% static "v2/images/diamonds_high_fiving.gif" %}" >
+    <h3>Clr Match Round 3</h3>
+
+    <h4><span>{{clr_contributoin_estimate}} DAI</span> of 100,000 DAI</h4>
+    <p>Your contribution at this moment would increase the CLR Match amount for this grant by {{clr_contributoin_estimate}} DAI.<strong></strong></p>
+  </div>
+{% endif %}
