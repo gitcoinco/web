@@ -619,6 +619,7 @@ def grant_fund(request, grant_id, grant_slug):
         'active_tab': active_tab,
         'fund_reward': fund_reward,
         'phantom_funds': phantom_funds,
+        'clr_contributoin_estimate': 750, # TODO - fill this in dynamicaly.
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
