@@ -470,13 +470,15 @@ appreciate you being a part of the community and let me know if you'd like some 
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3):
+    email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
         'subscriber': sub,
         'keywords': ",".join(sub.keywords),
+        'email_style': email_style,
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -1132,7 +1134,7 @@ def new_bounty(request):
     from dashboard.models import Bounty
     bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties, int(request.GET.get('offset', 2)))
     return HttpResponse(response_html)
 
 
