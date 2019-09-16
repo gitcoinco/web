@@ -8,6 +8,7 @@ let selected_token;
 let splitterAddress;
 let gitcoinDonationAddress;
 
+document.suppress_faucet_solicitation = 1;
 
 $(document).ready(function() {
   gitcoinDonationAddress = $('#gitcoin_donation_address').val();
