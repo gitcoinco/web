@@ -47,9 +47,9 @@
         <div class="col g-font-muli">
           <span class="hackathon-name d-block mt-5 font-weight-semibold">{{ hackathon.name }}</span>
           {% if hackathon.logo_svg %}
-            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo_svg.url }}"/>
+            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
           {% elif hackathon.logo %}
-            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo.url }}"/>
+            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
           {% endif %}
           <span class="d-block font-title-lg">
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
@@ -86,10 +86,10 @@
               </div>
         {% endif %}
           <div class="row loading justify-content-center align-items-center loading_img">
-            <img src="{% static "v2/images/loading_v2.gif" %}">
+            <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
           </div>
           <div class="row nonefound mx-auto" style="display:none;">
-            <img src="{% static "v2/images/shrug_bot.png" %}">
+            <img src="{% static "v2/images/shrug_bot.png" %}" alt="Shrug bot">
             <h3>{% trans "No results found." %}</h3>
             <p>{% trans "Please try another query" %}</p>
           </div>
