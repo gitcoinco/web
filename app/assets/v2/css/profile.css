@@ -109,8 +109,17 @@
   box-shadow: 0 -2px 4px 0 rgba(0,0,0,0.50);
 }
 
+#kudos_header {
+  position: absolute;
+  top: -95px;
+  right: 0px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  padding: 5px;
+}
 #kudos_header img{
   box-shadow: none;  
+  background: none;
 }
 
 .avatar_edit {

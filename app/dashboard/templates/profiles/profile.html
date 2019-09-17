@@ -1,4 +1,4 @@
-{% load i18n humanize static avatar_tags %}
+{% load i18n humanize static avatar_tags kudos_extras %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -46,6 +46,14 @@
     <div class="container-fluid bg-light">
       <div class="container profile-card mt-md-n5 mh-150">
         <div class="row">
+          {% if total_kudos_count %}
+            <div id=kudos_header>
+              {% for kudos_group in my_kudos %}
+                <img src="{{ kudos_group.kudos_token_cloned_from.preview_img_url }}" title="{{ kudos_group.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="70">
+              {% endfor %}
+            </div>
+          {% endif %}
+
           <div class="col-12 col-lg-6 profile-header__main-infos">
             {% if not hidden %}
               {% include 'profiles/header_avatar.html' %}
