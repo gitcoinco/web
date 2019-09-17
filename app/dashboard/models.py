@@ -2534,8 +2534,9 @@ class Profile(SuperModel):
 
         # setup
         action_dates = self.actions.all().values_list('created_on', flat=True)
-        start_date = timezone.datetime(self.created_on.year, self.created_on.month, self.created_on.day)
-        end_date = timezone.datetime(timezone.now().year, timezone.now().month, timezone.now().day)
+        action_dates = set([ele.replace(tzinfo=pytz.utc).strftime('%m/%d/%Y') for ele in action_dates])
+        start_date = timezone.datetime(self.created_on.year, self.created_on.month, self.created_on.day).replace(tzinfo=pytz.utc)
+        end_date = timezone.datetime(timezone.now().year, timezone.now().month, timezone.now().day).replace(tzinfo=pytz.utc)
 
         # loop setup
         iterdate = start_date
@@ -2550,7 +2551,7 @@ class Profile(SuperModel):
             if not is_weekday:
                 continue
 
-            has_action_during_window = len([ele for ele in action_dates if ele > last_iterdate.replace(tzinfo=pytz.utc) and ele < iterdate.replace(tzinfo=pytz.utc)])
+            has_action_during_window = iterdate.strftime('%m/%d/%Y') in action_dates
             if has_action_during_window:
                 this_streak += 1
                 if this_streak > max_streak:
@@ -2569,15 +2570,9 @@ class Profile(SuperModel):
 
         """
         bounties = self.bounties
-        completed_bounties = bounties.filter(idx_status__in=['done'])
         relationships = []
-        for bounty in completed_bounties:
-            fulfiller_handles = bounty.fulfillers_handles
-            if bounty.is_funder(self.handle):
-                for handle in fulfiller_handles:
-                    relationships.append(handle)
-            if self.handle in fulfiller_handles:
-                relationships.append(bounty.bounty_owner_github_username)
+        relationships += list(self.sent_earnings.values_list('to_profile__handle', flat=True))
+        relationships += list(self.earnings.values_list('from_profile__handle', flat=True))
 
         rel_count = { key: 0 for key in relationships }
         for rel in relationships:
@@ -2593,14 +2588,11 @@ class Profile(SuperModel):
             float: the average hourly rate for this user in dollars
 
         """
-        rates = []
-        for bounty in self.bounties:
-            hr = bounty.hourly_rate
-            if hr:
-                rates.append(hr)
-        if len(rates) == 0:
-            return 0
-        return sum(rates)/len(rates)
+        values_list = self.bounties.values_list('fulfillments__fulfiller_hours_worked', 'value_in_usdt')
+        values_list = [ele for ele in values_list if (ele[0] and ele[1])]
+        hourly_rates = [(ele[1]/ele[0]) for ele in values_list]
+        avg_hourly_rate = sum(hourly_rates)/len(hourly_rates)
+        return avg_hourly_rate
 
     def calc_success_rate(self):
         """
@@ -2609,14 +2601,16 @@ class Profile(SuperModel):
             int; the success percentage for this users bounties as a positive integer.
 
         """
-        bounties = self.bounties
-        completed_bounties = bounties.filter(idx_status__in=['done'])
-        eligible_bounties = bounties.filter(idx_status__in=['done', 'expired', 'cancelled'])
+        bounties = self.bounties.filter(network=self.get_network()) if self.cascaded_persona == 'hunter' else self.bounties_funded.current()
+        completed_bounties = bounties.filter(idx_status='done').count()
+        expired_bounties = bounties.filter(idx_status='expired').count()
+        cancelled_bounties = bounties.filter(idx_status='cancelled').count()
+        eligible_bounties = cancelled_bounties + expired_bounties + completed_bounties
 
-        if eligible_bounties.count() == 0:
+        if eligible_bounties == 0:
             return -1
 
-        return int(completed_bounties.count() * 100 / eligible_bounties.count())
+        return int(completed_bounties * 100 / eligible_bounties)
 
     def calc_rep_number(self):
         """
