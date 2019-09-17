@@ -14,9 +14,9 @@
       <img class="rounded mr-3" src="{% avatar_url submission.bounty.org_name %}" alt="">
       <div class="tab-projects__item-details" style="width: 70%">
         <div class="d-flex">
-          <h5 class="font-weight-semibold">{{submission.bounty.created_on|naturaltime}}</h5>&nbsp;
-          <small class="align-self-center">for {{submission.bounty.org_name}}</small>
+          <h5 class="font-weight-semibold">{{submission.bounty.title}}</h5>&nbsp;
         </div>
+        <p class="align-self-center">{{submission.bounty.created_on|naturaltime}} for {{submission.bounty.org_name}}</p>
         <div class="tag-list">
           {% for keyword in submission.bounty.keywords_list %}
             <small class="tag-list__item">{{keyword}}</small>

@@ -3296,11 +3296,11 @@ class Profile(SuperModel):
 
         context['avg_rating'] = profile.get_average_star_rating()
         context['avg_rating_scaled'] = profile.get_average_star_rating(20)
-        context['verification'] = profile.get_my_verified_check
+        context['verification'] = bool(profile.get_my_verified_check)
         context['avg_rating'] = profile.get_average_star_rating()
         context['suppress_sumo'] = True
         context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count()
-        context['portfolio'] = list(profile.fulfilled.filter(bounty__network='mainnet').values_list('pk', flat=True))
+        context['portfolio'] = list(profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True).values_list('pk', flat=True))
         context['earnings_total'] = round(sum(Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True)))
         context['spent_total'] = round(sum(Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True)))
         if context['earnings_total'] > 1000:
@@ -3318,6 +3318,7 @@ class Profile(SuperModel):
         if not params.get('title'):
             self.calculate_all()
             self.save()
+            params = self.as_dict
 
         if params.get('tips'):
             params['tips'] = Tip.objects.filter(pk__in=params['tips'])

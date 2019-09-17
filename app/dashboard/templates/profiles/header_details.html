@@ -1,7 +1,7 @@
 {% load i18n static avatar_tags add_url_schema email_obfuscator %}
                 <h1 class="profile-header__handle">
                   {{ profile.name }}
-                  {% if verification.verified %}
+                  {% if verification %}
                     <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
                     <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
                     <p>This contributor has completed the Gitcoin verification process, which means that the Gitcoin Core trusts their work.</p>

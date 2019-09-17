@@ -1913,7 +1913,9 @@ def profile_activity(request, handle):
     prev_date = timezone.now()
     for i in range(1, 12*30):
         date = timezone.now() - timezone.timedelta(days=i)
-        response[int(date.timestamp())] = len([activity_date for activity_date in activities if (activity_date < prev_date and activity_date > date)])
+        count = len([activity_date for activity_date in activities if (activity_date < prev_date and activity_date > date)])
+        if count:
+            response[int(date.timestamp())] = count
         prev_date = date
     return JsonResponse(response)
 
@@ -2047,7 +2049,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     if profile.dominant_persona == 'funder':
         active_bounties = Bounty.objects.current().filter(bounty_owner_github_username=profile.handle).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
     elif profile.dominant_persona == 'hunter':
-        active_bounties = Bounty.objects.filter(pk__in=profile.active_bounties.values_list('bounty', flat=True)).filter(network='mainnet')
+        active_bounties = Bounty.objects.filter(pk__in=profile.active_bounties.filter(pending=False).values_list('bounty', flat=True)).filter(network='mainnet')
     else:
         active_bounties = Bounty.objects.none()
     active_bounties = active_bounties.order_by('-web3_created')

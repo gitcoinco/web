@@ -106,7 +106,6 @@ def recalculate_profile(modeladmin, request, queryset):
         profile.save()
 recalculate_profile.short_description = "Recalculate Profile Frontend Info"
 
-
 class ProfileAdmin(admin.ModelAdmin):
     raw_id_fields = ['user', 'preferred_kudos_wallet']
     ordering = ['-id']
@@ -130,6 +129,9 @@ class ProfileAdmin(admin.ModelAdmin):
             obj.calculate_all()
             obj.save()
             self.message_user(request, "Recalc done")
+        if "_impersonate" in request.POST:
+            from django.shortcuts import redirect
+            return redirect(f"/impersonate/{obj.user.pk}")
         return super().response_change(request, obj)
 
 class VerificationAdmin(admin.ModelAdmin):

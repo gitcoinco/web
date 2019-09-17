@@ -16,10 +16,10 @@
     cal.init({
       domain: "month",
       range: 13,
-      legendColors: ["#eeebf3", "#761d15"],
-      legend: [0,1,2,3,4,5],
+      legend: [1,3,5,8,13,21,34,55],
       tooltip: true,
       cellSize: 14,
+      itemName: ["activity", "activities"],
       start: oneYearAgo,
       end: new Date(),
       data: "/api/v0.1/profile/{{profile.handle}}/activity.json"
