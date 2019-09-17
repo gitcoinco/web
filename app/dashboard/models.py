@@ -42,6 +42,7 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 import pytz
@@ -2335,7 +2336,7 @@ class Profile(SuperModel):
         self.avg_hourly_rate = self.calc_avg_hourly_rate()
         self.success_rate = self.calc_success_rate()
         self.rep = self.calc_rep_number()
-        self.as_dict = json.loads(json.dumps(self.to_dict(), cls=EncodeAnything))
+        self.as_dict = json.loads(json.dumps(self.to_dict()))
         self.last_calc_date = timezone.now() + timezone.timedelta(seconds=1)
 
     def get_persona_action_count(self):
@@ -2619,7 +2620,7 @@ class Profile(SuperModel):
         """
         rep = self.repentries.order_by('-created_on')
         if rep.exists():
-            return rep.first().balance
+            return rep.nocache().first().balance
         return 0
 
     @property
@@ -3105,7 +3106,7 @@ class Profile(SuperModel):
                 all_tokens_sum_tmp = {token: 0 for token in set([ele[0] for ele in tokens_and_values])}
                 for ele in tokens_and_values:
                     all_tokens_sum_tmp[ele[0]] += ele[1] / 10**18
-                all_tokens_sum = [{'token_name': token_name, 'value_in_token': value_in_token} for token_name, value_in_token in all_tokens_sum_tmp.items()]
+                all_tokens_sum = [{'token_name': token_name, 'value_in_token': float(value_in_token)} for token_name, value_in_token in all_tokens_sum_tmp.items()]
 
         except Exception as e:
             logger.exception(e)
@@ -3257,7 +3258,7 @@ class Profile(SuperModel):
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
-            'newsletter_headline': _('Be the first to know about new funded issues.'),
+            'newsletter_headline': ('Be the first to know about new funded issues.'),
             'card_title': f'@{self.handle} | Gitcoin',
             'card_desc': desc,
             'avatar_url': self.avatar_url_with_gitcoin_logo,
@@ -3273,11 +3274,11 @@ class Profile(SuperModel):
             'count_bounties_on_repo': count_bounties_on_repo,
             'sum_all_funded_tokens': sum_all_funded_tokens,
             'sum_all_collected_tokens': sum_all_collected_tokens,
-            'bounties': bounties.values_list('pk', flat=True),
+            'bounties': list(bounties.values_list('pk', flat=True)),
         }
 
-        params['activities'] = self.get_various_activities().values_list('pk', flat=True)
-        params['tips'] = self.tips.filter(**query_kwargs).send_happy_path().values_list('pk', flat=True)
+        params['activities'] = list(self.get_various_activities().values_list('pk', flat=True))
+        params['tips'] = list(self.tips.filter(**query_kwargs).send_happy_path().values_list('pk', flat=True))
         params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
         params['scoreboard_position_funder'] = self.get_funder_leaderboard_index()
         if self.is_org:
@@ -3292,7 +3293,7 @@ class Profile(SuperModel):
         context['avg_rating'] = profile.get_average_star_rating()
         context['suppress_sumo'] = True
         context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count()
-        context['portfolio'] = profile.fulfilled.filter(bounty__network='mainnet').values_list('pk', flat=True)
+        context['portfolio'] = list(profile.fulfilled.filter(bounty__network='mainnet').values_list('pk', flat=True))
         context['earnings_total'] = round(sum(Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True)))
         context['spent_total'] = round(sum(Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True)))
         if context['earnings_total'] > 1000:
@@ -3721,7 +3722,6 @@ class HackathonEvent(SuperModel):
 
     def save(self, *args, **kwargs):
         """Define custom handling for saving HackathonEvent."""
-        from django.utils.text import slugify
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
@@ -3855,3 +3855,14 @@ class Earning(SuperModel):
 
     def __str__(self):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
+
+class PortfolioItem(SuperModel):
+    """Define the structure of PortfolioItem object."""
+
+    title = models.CharField(max_length=255)
+    tags = ArrayField(models.CharField(max_length=50), default=list, blank=True)
+    link = models.URLField(null=True)
+    profile = models.ForeignKey('dashboard.Profile', related_name='portfolio_items', on_delete=models.CASCADE, db_index=True)
+
+    def __str__(self):
+        return f"{self.title} by {self.profile.handle}"

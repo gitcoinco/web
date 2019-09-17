@@ -72,9 +72,9 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    Earning, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer,
-    ProfileView, RefundFeeRequest, REPEntry, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction,
-    UserVerificationModel,
+    Earning, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile,
+    ProfileSerializer, ProfileView, RefundFeeRequest, REPEntry, SearchHistory, Sponsor, Subscription, Tool, ToolVote,
+    UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -2052,6 +2052,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         active_bounties = Bounty.objects.none()
     active_bounties = active_bounties.order_by('-web3_created')
     context['active_bounties_count'] = active_bounties.count()
+    context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.count()
 
     # specific tabs
     if tab == 'activity':
@@ -2160,7 +2161,21 @@ def get_profile_tab(request, profile, tab, prev_context):
             raise Http404
         pass
     elif tab == 'portfolio':
-        pass
+        title = request.POST.get('project_title')
+        if title:
+            if request.POST.get('URL')[0:4] != "http":
+                messages.info(request, 'Invalid link.')
+            elif not request.POST.get('URL')[0:4]:
+                messages.info(request, 'Please enter some tags.')
+            else:
+                PortfolioItem.objects.create(
+                    profile=request.user.profile,
+                    title=title,
+                    link=request.POST.get('URL'),
+                    tags=request.POST.get('tags').split(','),
+                    )
+                messages.info(request, 'Portfolio Item added.')
+
     elif tab == 'earnings':
         context['earnings'] = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).order_by('-created_on')
     elif tab == 'spent':

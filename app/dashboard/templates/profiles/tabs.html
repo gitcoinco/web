@@ -32,10 +32,10 @@
               </a>
             </li>
             {% endif %}
-            {% if portfolio.count %}
+            {% if portfolio_count or is_my_profile %}
             <li class="nav-item">
               <a class="nav-link nav-line  {% if tab == 'portfolio' %}active{%endif%}" href="{{profile.url}}/portfolio">
-                Portfolio <span>{{portfolio.count}}</span>
+                Portfolio <span>{{portfolio_count}}</span>
               </a>
             </li>
             {% endif %}
