@@ -210,6 +210,7 @@ def get_interest_modal(request):
 
     context = {
         'bounty': bounty,
+        'gitcoin_discord_username': request.user.profile.gitcoin_discord_username if request.user.is_authenticated else None,
         'active': 'get_interest_modal',
         'title': _('Add Interest'),
         'user_logged_in': request.user.is_authenticated,
@@ -304,6 +305,11 @@ def new_interest(request, bounty_id):
             'error': _('You have already started work on this bounty!'),
             'success': False},
             status=401)
+
+    if request.POST.get('discord_username'):
+        profile = request.user.profile
+        profile.gitcoin_discord_username = request.POST.get('discord_username')
+        profile.save()
 
     msg = _("You have started work.")
     approval_required = bounty.permission_type == 'approval'

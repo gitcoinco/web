@@ -17,6 +17,10 @@
     <label class="form__label" for="repos">{% trans "Github repos to monitor (use full name, like 'gitcoinco/web' for <a href=https://github.com/gitcoinco/web>this repo</a>)" %}</label>
     <input type="text" name="repos" class="form__input" placeholder='comma, separated, list (gitcoinco/web)' value="{{ repos }}">
   </div>
+  <div class="form-group">
+    <label class="form__label" for="gitcoin_discord_username">{% trans "Gitcoin Events Discord Username (<a href=https://discord.gg/TxRKTn8>get a discord invite</a>)" %}</label>
+    <input type="text" name="gitcoin_discord_username" class="form__input" placeholder='vivek#9746' value="{{ gitcoin_discord_username }}">
+  </div>
   {% csrf_token %}
   <input class='button button--primary' type='submit' name='submit' value="{% trans "Go" %}">
   <input class='button button--primary' style='margin-left: 0.5em;' type='submit' name='test' value="{% trans "Test" %}">

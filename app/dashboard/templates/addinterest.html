@@ -61,6 +61,16 @@
             <textarea id="issue_message" class="form__input"></textarea>
           </div>
           <div>
+          {% if bounty.event or 1 %}
+            <div class="d-flex">
+              <input type="text" id="discord_username" name="discord_username" class="form__input" style="width: 100px;" placeholder="vivek#9746" value="{{gitcoin_discord_username}}" required/>
+              <div class="filter-label">
+                <label for="checkbox2">
+                    {% trans "Discord Username" %} (<a target="_blank" href="https://discord.gg/TxRKTn8">Join Discord</a> to get updates from our sponsors prizes and find help)
+                </label>
+              </div>
+            </div>
+            {% endif %}
             <div class="checkbox_container d-flex">
               <input type="checkbox" id="checkbox2" class="form__input" value="1" required/>
               <span class="checkbox"></span>
@@ -78,6 +88,7 @@
                 </label>
               </div>
             </div>
+          <div>
             <div class="checkbox_container d-flex">
               <input type="checkbox" id="checkbox1" class="form__input" value="1" required/>
               <span class="checkbox"></span>

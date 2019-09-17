@@ -2055,6 +2055,7 @@ class Profile(SuperModel):
     slack_token = models.CharField(max_length=255, default='', blank=True)
     custom_tagline = models.CharField(max_length=255, default='', blank=True)
     slack_channel = models.CharField(max_length=255, default='', blank=True)
+    gitcoin_discord_username = models.CharField(max_length=255, default='', blank=True)
     discord_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     discord_webhook_url = models.CharField(max_length=400, default='', blank=True)
     suppress_leaderboard = models.BooleanField(
