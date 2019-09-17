@@ -31,7 +31,7 @@
                 <h5>Thanks for Contributing!</h5>
                 <span>{% trans "Tell your network about this Gitcoin Grant. If they fund a grant, the grant owner will get even more Matching Funds!" %}</span>
               {% else %}
-                <img class="icon w-75 h-75" src="{{fund_reward.token.img_url}}" />
+                <img class="icon w-75 h-75" src="{{fund_reward.token.preview_img_url}}" />
                 <h5>Thanks for Contributing! You Earned a Kudos</h5>
                 <span>Have a <strong>{{fund_reward.token.ui_name}}</strong> Kudos on us.  When you click 'redeem kudos' your kudos will be transfered to your Ethereum wallet. </span>
               {% endif %}

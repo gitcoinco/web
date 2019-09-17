@@ -560,6 +560,13 @@ class Bounty(SuperModel):
         return self.github_org_name
 
     @property
+    def org_profile(self):
+        profiles = Profile.objects.filter(handle__iexact=self.org_name)
+        if profiles.count():
+            return profiles.first()
+        return None
+
+    @property
     def org_display_name(self): # TODO: Remove POST ORGS
         if self.admin_override_org_name:
             return self.admin_override_org_name
@@ -3787,6 +3794,27 @@ class FeedbackEntry(SuperModel):
         if self.sender_profile.handle == user.profile.handle:
             return True
         return False
+
+    @property
+    def anonymized_comment(self):
+        import re
+        replace_str = [
+            self.bounty.bounty_owner_github_username,
+            ]
+        for profile in [self.sender_profile, self.receiver_profile, self.bounty.org_profile]:
+            if profile:
+                replace_str.append(profile.handle)
+                name = profile.data.get('name')
+                if name:
+                    name = name.split(' ')
+                    for ele in name:
+                        replace_str.append(ele)
+        
+        review = self.comment
+        for ele in replace_str:
+            review = re.sub(ele, 'NAME', review, flags=re.I)
+
+        return review
 
 
 class Coupon(SuperModel):
