@@ -22,7 +22,7 @@ import json
 import math
 from itertools import combinations
 
-from grants.models import Grant, Contribution
+# from grants.models import Grant, Contribution
 
 grant_contributions = [
     {
@@ -244,28 +244,40 @@ print(json.dumps(grants_clr, indent=2))
 print('===============')
 
 def calculate_clr_for_donation(donation_grant, donation_amount, total_pot, grant_contributions):
-    for grant_contribution in grant_contributions:
-        if grant_contribution['id'] = donation_grant.id:
-            grant_contribution['contributions'].append({'999999999999': donation_amount})
+    # find grant in contributions list
+    if donation_amount != 0:
+        for grant_contribution in grant_contributions:
+            if grant_contribution['id'] == donation_grant.id:
+                # add this donation with a new profile to get impact
+                grant_contribution['contributions'].append({'999999999999': donation_amount})
     grants_clr, _, _, _ = grants_clr_calculate(total_pot + donation_amount, grant_contributions, 0, total_pot)
-    return something?
+    for grant_clr in grants_clr:
+        if grant_clr['id'] == donation.grant.id:
+            return grant_clr['clr_amount']
+    print('error: could not find grant in final grants_clr data')
+    return None
 
 def predict_clr(grant):
     clr_start_date = dt.datetime(2019, 9, 15, 0, 0)
+    # get all the eligible contributions and calculate total
     contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=clr_start_date)
     sum_contributions = sum([c.subscription.amount_per_period_usdt for c in contributions])
     grants = Grants.objects.all()
     c_data = []
+
     for grant in grants:
+        # go through all the individual contributions for each grant
         g_contributions = contributions.filter(subscription__grant_id=grant.id).all()
+        # put in correct format
         c_data.append({'id': grant.id, 'contributions': [{str(c.id): c.subscription.get_converted_monthly_amount} for c in g_contributions]}
-        potential_donations = [1, 10, 100, 1000, 10000]
+        # five potential additional donations
+        potential_donations = [0, 1, 10, 100, 1000, 10000]
         potential_clr = []
         for donation_amount in potential_donations:
+            # calculate impact for each additional donation and save as number to display
             potential_clr.append(calculate_clr_for_donation(grant, donation_amount, sum_contributions, g_contributions))
         grant.clr_prediction_curve = zip(potential_donations, potential_clr)
         grant.save()
-
 
 # Test 1 iteration
 # threshold = 10
