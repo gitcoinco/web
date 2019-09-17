@@ -1701,6 +1701,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
                 params['bounty_pk'] = bounty.pk
                 params['network'] = bounty.network
+                params['contract_version'] = bounty.contract_version
                 params['stdbounties_id'] = bounty.standard_bounties_id if not stdbounties_id else stdbounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
@@ -1708,6 +1709,13 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
+
+                bounty_owner_groups = bounty.bounty_owner_profile.user.groups
+                common_groups = request.user.groups.intersection(bounty_owner_groups).all()
+
+                # if the requesting user and the bounty owner are in the same github perms
+                # group then they should have access to payout/administer the bounty
+                params['shared_bounty_access'] = any('github' in g.name for g in common_groups)
 
                 helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)

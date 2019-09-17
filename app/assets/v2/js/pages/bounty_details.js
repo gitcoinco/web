@@ -137,7 +137,7 @@ var callbacks = {
 
       let can_submit = result['can_submit_after_expiration_date'];
 
-      if (!isBountyOwner(result) && can_submit && is_bounty_expired(result)) {
+      if (!isBountyAdmin(result) && can_submit && is_bounty_expired(result)) {
         ui_status += '<p class="text-highlight-light-blue font-weight-light font-body" style="text-transform: none;">' +
           gettext('This issue is past its expiration date, but it is still active.') +
           '<br>' +
@@ -154,7 +154,7 @@ var callbacks = {
       ui_status = '<span style="color: #f9006c;">' + gettext('cancelled') + '</span>';
     }
 
-    if (isBountyOwner(result) && is_bounty_expired(result) &&
+    if (isBountyAdmin(result) && is_bounty_expired(result) &&
       ui_status_raw !== 'done' && ui_status_raw !== 'cancelled') {
 
       ui_status += '<p class="font-weight-light font-body" style="color: black; text-transform: none;">' +
@@ -486,18 +486,38 @@ const isAvailableIfReserved = function(bounty) {
   return true;
 };
 
-const isBountyOwner = result => {
+const isSharedPayment = result => {
+  if($('input[name=contract_version]').val() != '2') {
+    return false;
+  } else if ($('input[name=shared_bounty_access]').val() == 'true') {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+const isBountyAdmin = result => {
   if (typeof web3 == 'undefined' || !web3.eth ||
       typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase || !result) {
     return false;
   }
-  return caseInsensitiveCompare(web3.eth.coinbase, result['bounty_owner_address']);
+  if (caseInsensitiveCompare(web3.eth.coinbase, result['bounty_owner_address'])) {
+    return true;
+  } else if (isSharedPayment(result)) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
-const isBountyOwnerPerLogin = result => {
-  return caseInsensitiveCompare(
-    result['bounty_owner_github_username'], document.contxt['github_handle']
-  );
+const isBountyAdminPerLogin = result => {
+  if(caseInsensitiveCompare(result['bounty_owner_github_username'], document.contxt['github_handle']) {
+    return true;
+  } else if (isSharedPayment(result)) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 var update_title = function() {
@@ -875,7 +895,7 @@ var show_extend_deadline_modal = function() {
 };
 
 const appendGithubSyncButton = function(result) {
-  if (isBountyOwner(result) || currentProfile.isStaff) {
+  if (isBountyAdmin(result) || currentProfile.isStaff) {
     const title = gettext('Sync Issue');
 
     $('#github_actions').append('<button sync-github-issue id="btn-white" type="button" class="btn btn-small">' + title + '</button>');
@@ -936,7 +956,7 @@ var build_detail_page = function(result) {
   $('.title').html(gettext('Funded Issue Details: ') + result['title']);
 
   // funded by
-  if (isBountyOwnerPerLogin(result) && !isBountyOwner(result)) {
+  if (isBountyAdminPerLogin(result) && !isBountyAdmin(result)) {
     $('#funder_notif_info').html(gettext('Funder Address: ') +
       '<span id="bounty_funded_by">' + result['bounty_owner_address'] + '</span>');
     $('#funder_notif_info').append('\
@@ -1059,27 +1079,27 @@ var do_actions = function(result) {
     is_still_on_happy_path &&
     !should_block_from_starting_work &&
     is_open &&
-    !isBountyOwner(result) &&
+    !isBountyAdmin(result) &&
     isAvailableIfReserved(result) &&
     !has_fulfilled;
 
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
   let show_submit_work = is_open && !has_fulfilled;
-  let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
+  let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyAdmin(result);
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
-  const submit_work_enabled = !isBountyOwner(result) && current_user_is_approved;
+  const submit_work_enabled = !isBountyAdmin(result) && current_user_is_approved;
   const notify_funder_enabled = is_funder_notifiable(result);
-  let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
-  let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
-  let show_invoice = isBountyOwner(result);
+  let show_payout = !is_status_expired && !is_status_done && isBountyAdmin(result);
+  let show_extend_deadline = isBountyAdmin(result) && !is_status_expired && !is_status_done;
+  let show_invoice = isBountyAdmin(result);
   let show_notify_funder = is_open && has_fulfilled;
 
 
   const show_suspend_auto_approval = currentProfile.isStaff && result['permission_type'] == 'approval' && !result['admin_override_suspend_auto_approval'];
   const show_admin_methods = currentProfile.isStaff;
   const show_moderator_methods = currentProfile.isModerator;
-  const show_change_bounty = is_still_on_happy_path && (isBountyOwner(result) || show_admin_methods);
+  const show_change_bounty = is_still_on_happy_path && (isBountyAdmin(result) || show_admin_methods);
 
   if (is_legacy) {
     show_start_stop_work = false;
@@ -1147,7 +1167,7 @@ var do_actions = function(result) {
   }
 
   if (show_kill_bounty) {
-    const enabled = isBountyOwner(result);
+    const enabled = isBountyAdmin(result);
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['cancel'],
@@ -1161,7 +1181,7 @@ var do_actions = function(result) {
   }
 
   if (show_payout) {
-    const enabled = isBountyOwner(result);
+    const enabled = isBountyAdmin(result);
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['payout'],
@@ -1536,7 +1556,7 @@ const process_activities = function(result, bounty_activities) {
       interest.profile.handle === _activity.profile.handle);
     const slash_possible = currentProfile.isStaff;
     const is_logged_in = currentProfile.username;
-    const uninterest_possible = is_logged_in && ((isBountyOwnerPerLogin(result) || currentProfile.isStaff) && is_open && has_interest);
+    const uninterest_possible = is_logged_in && ((isBountyAdminPerLogin(result) || currentProfile.isStaff) && is_open && has_interest);
 
     let profile_id = _activity.profile.id;
     let profile_handle = _activity.profile.handle;
