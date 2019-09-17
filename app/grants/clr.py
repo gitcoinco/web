@@ -243,20 +243,28 @@ print(f'\n\n\n=============== \nFINAL \nPOT:  {total_pot} \nCalculated CLR:  {to
 print(json.dumps(grants_clr, indent=2))
 print('===============')
 
-def calculate_clr_for_donation(donation):
-    # TODO - actually do something here
-    pass
+def calculate_clr_for_donation(donation_grant, donation_amount, total_pot, grant_contributions):
+    for grant_contribution in grant_contributions:
+        if grant_contribution['id'] = donation_grant.id:
+            grant_contribution['contributions'].append({'999999999999': donation_amount})
+    grants_clr, _, _, _ = grants_clr_calculate(total_pot + donation_amount, grant_contributions, 0, total_pot)
+    return something?
 
 def predict_clr(grant):
     clr_start_date = dt.datetime(2019, 9, 15, 0, 0)
     contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=clr_start_date)
     sum_contributions = sum([c.subscription.amount_per_period_usdt for c in contributions])
-    potential_donations = [1, 10, 100, 1000, 10000]
-    potential_clr = []
-    for donation in potential_donations:
-        potential_clr.append(calculate_clr_for_donation(donation))
-    grant.clr_prediction_curve = zip(potential_donations, potential_clr)
-    grant.save()
+    grants = Grants.objects.all()
+    c_data = []
+    for grant in grants:
+        g_contributions = contributions.filter(subscription__grant_id=grant.id).all()
+        c_data.append({'id': grant.id, 'contributions': [{str(c.id): c.subscription.get_converted_monthly_amount} for c in g_contributions]}
+        potential_donations = [1, 10, 100, 1000, 10000]
+        potential_clr = []
+        for donation_amount in potential_donations:
+            potential_clr.append(calculate_clr_for_donation(grant, donation_amount, sum_contributions, g_contributions))
+        grant.clr_prediction_curve = zip(potential_donations, potential_clr)
+        grant.save()
 
 
 # Test 1 iteration
