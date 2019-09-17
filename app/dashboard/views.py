@@ -2164,9 +2164,11 @@ def get_profile_tab(request, profile, tab, prev_context):
         title = request.POST.get('project_title')
         if title:
             if request.POST.get('URL')[0:4] != "http":
-                messages.info(request, 'Invalid link.')
+                messages.error(request, 'Invalid link.')
             elif not request.POST.get('URL')[0:4]:
-                messages.info(request, 'Please enter some tags.')
+                messages.error(request, 'Please enter some tags.')
+            elif not request.user.is_authenticated or request.user.profile.pk != profile.pk:
+                messages.error(request, 'Not Authorized')
             else:
                 PortfolioItem.objects.create(
                     profile=request.user.profile,
