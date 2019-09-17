@@ -1,9 +1,9 @@
 {
   "symbol": "LTC",
-  "address": "ltc",
+  "address": "litecoin",
   "overview":{
-        "en": "Litecoin is a peer-to-peer Internet currency that enables instant, near-zero cost payments to anyone in the world. Litecoin is an open source, global payment network that is fully decentralized without any central authorities. Mathematics secures the network and empowers individuals to control their own finances.",
-        "zh": "莱特币加密货币是一款点对点的分布式网络货币系统。她可以在瞬间，以低廉交易费的方式向全世界的任意角落付款。莱特币是一个开源的项目，全球性的支付网络，她没有任何的中央控制节点。严谨的密码学协议使这个网络系统充分保障每一位用户的财务安全。"
+        "en": "Litecoin is a peer-to-peer Internet currency that enables instant, near-zero cost payments to anyone in the world.",
+        "zh": "莱特币加密货币是一款点对点的分布式网络货币系统。"
   },
   "email": "contact@litecoin.org",
   "website": "https://litecoin.org",
