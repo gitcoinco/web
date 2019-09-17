@@ -1,11 +1,11 @@
 {
-    "symbol": "TrueUSD",
+    "symbol": "TUSD",
     "address": "0x0000000000085d4780B73119b644AE5ecd22b376",
     "overview": {
-        "en": "TrueUSD (TUSD) is a USD-backed ERC20 stablecoin that is fully collateralized, legally protected, and transparently verified by third-party attestations. TrueUSD uses multiple escrow accounts to reduce counterparty risk, and to provide token-holders with legal protections against misappropriation. TrueUSD is the first asset token built on the TrustToken platform.",
-        "zh": "TrueUSD是美元支持的ERC20稳定币，完全抵押，受法律保护，并由第三方证明进行透明验证。 TrueUSD使用多个托管账户来降低交易对手风险，并为代币持有人提供法律保护以防止盗用。 TrueUSD是在TrustToken平台上构建的第一个资产令牌。"
+        "en": "TrueUSD (TUSD) is the first independently-verified digital asset fully collateralized by US Dollars. The ERC20 stablecoin uses multiple escrow accounts to reduce counterparty risk, provide transparent attestations, and legal protections against fraud. TUSD users enjoy the lowest gas costs of any stablecoin thanks to GasBoost; easy wallet alias creation through Autosweep; and direct-to-bank TUSD transactions through unique, easy-to-remember Redemption Addresses.",
+        "zh": "TrueUSD(TUSD)是首个完全以美元做担保，且通过独立第三方机构认证的数字资产。基于ERC20的TUSD使用多个第三方托管账户来降低交易对手风险，提供透明的审计报告，以及防止欺诈的法律保护。 TUSD持续进行技术创新，优化用户体验。借助独有的GasBoost技术，TUSD用户在交易过程中所花的Gas费比其它稳定币都要低。通过另一个独有的Autosweep技术，可以在主钱包下轻松创建数百万个别名钱包，使机构用户轻松管理别名地址并省去与主钱包间的转账Gas费。另外，TUSD还独创了“唯一且易记赎回地址“功能，用户可实现便捷且直达其银行账户的交易操作。"
     },
-    "email": "exchange-support@trusttoken.com",
+    "email": "support@trusttoken.com",
     "website": "https://www.trusttoken.com/trueusd/",
     "state": "NORMAL",
     "published_on": "2018-03-04",
@@ -15,7 +15,7 @@
     "links": {
         "blog": "https://blog.trusttoken.com/",
         "twitter": "https://twitter.com/TrustToken",
-        "github": "https://github.com/trusttoken/trueUSD",
+        "github": "https://github.com/trusttoken/true-currencies",
         "medium": "https://blog.trusttoken.com/@trusttokenteam"
     }
 }

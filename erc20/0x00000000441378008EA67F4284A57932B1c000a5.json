@@ -1,0 +1,21 @@
+{
+    "symbol": "TGBP",
+    "address": "0x00000000441378008EA67F4284A57932B1c000a5",
+    "overview": {
+        "en": "TrueGBP (TGBP) is an independently-verified digital asset fully collateralized by pounds sterling. The ERC20 stablecoin provides transparent attestations and legal protections against fraud. TGBP users enjoy the lowest gas costs of any stablecoin thanks to GasBoost; easy wallet alias creation through Autosweep; and direct-to-bank TGBP transactions through unique, easy-to-remember Redeption Addresses.",
+        "zh": "TrueGBP(TGBP)是首个完全以英镑做担保，且通过独立第三方机构认证的数字资产。基于ERC20的TGBP使用多个第三方托管账户来降低交易对手风险，提供透明的审计报告，以及防止欺诈的法律保护。 TGBP持续进行技术创新，优化用户体验。借助独有的GasBoost技术，TGBP用户在交易过程中所花的Gas费比其它稳定币都要低。通过另一个独有的Autosweep技术，可以在主钱包下轻松创建数百万个别名钱包，使机构用户轻松管理别名地址并省去与主钱包间的转账Gas费。另外，TGBP还独创了“唯一且易记赎回地址“功能，用户可实现便捷且直达其银行账户的交易操作。"
+    },
+    "email": "support@trusttoken.com",
+    "website": "https://www.trusttoken.com/truegbp/",
+    "state": "NORMAL",
+    "published_on": "2019-03-26",
+    "initial_price": {
+        "USD": "$1.31 USD"
+    },
+    "links": {
+        "blog": "https://blog.trusttoken.com/",
+        "twitter": "https://twitter.com/TrustToken",
+        "github": "https://github.com/trusttoken/true-currencies",
+        "medium": "https://blog.trusttoken.com/@trusttokenteam"
+    }
+}

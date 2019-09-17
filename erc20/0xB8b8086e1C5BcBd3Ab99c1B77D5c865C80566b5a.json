@@ -6,12 +6,13 @@
     "zh": "EGOLD 是基于NEWG金矿发行的一种通证，用于奖励全球区块链雾计算网络共享CDN和FogIPFS。"
   },
   "email": "support@newifi.gold",
-  "website": "http://ex.gold/",
+  "website": "http://www.newifi.gold",
   "whitepaper": "http://www.newifi.gold/Public/files/white_paperv2.pdf",
   "state": "NORMAL",
   "published_on": "2019-05-24",
   "links": {
     "twitter": "https://twitter.com/newg_Gmine",
-    "github": "https://github.com/gold-mine-project"
+    "github": "https://github.com/gold-mine-project",
+    "telegram": "https://t.me/egold_public"
   }
 }

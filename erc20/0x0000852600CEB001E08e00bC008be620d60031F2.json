@@ -1,0 +1,22 @@
+{
+    "symbol": "THKD",
+    "address": "0x0000852600CEB001E08e00bC008be620d60031F2",
+    "overview": {
+        "en": "TrueHKD (THKD) is an independently-verified digital asset fully collateralized by Hong Kong dollars. The ERC20 stablecoin provides transparent attestations and legal protections against fraud. THKD users enjoy the lowest gas costs of any stablecoin thanks to GasBoost; easy wallet alias creation through Autosweep; and direct-to-bank THKD transactions through unique, easy-to-remember Redeption Addresses.",
+        "zh": "TrueHKD(THKD)是首个完全以港元做担保，且通过独立第三方机构认证的数字资产。基于ERC20的THKD使用多个第三方托管账户来降低交易对手风险，提供透明的审计报告，以及防止欺诈的法律保护。 THKD持续进行技术创新，优化用户体验。借助独有的GasBoost技术，THKD用户在交易过程中所花的Gas费比其它稳定币都要低。通过另一个独有的Autosweep技术，可以在主钱包下轻松创建数百万个别名钱包，使机构用户轻松管理别名地址并省去与主钱包间的转账Gas费。另外，THKD还独创了“唯一且易记赎回地址“功能，用户可实现便捷且直达其银行账户的交易操作。"
+    },
+    "email": "support@trusttoken.com",
+    "website": "https://www.trusttoken.com/truehkd/",
+    "state": "NORMAL",
+    "published_on": "2018-03-04",
+    "initial_price": {
+        "USD": "$0.13 USD"
+    },
+    "links": {
+        "blog": "https://blog.trusttoken.com/",
+        "twitter": "https://twitter.com/TrustToken",
+        "github": "https://github.com/trusttoken/true-currencies",
+        "medium": "https://blog.trusttoken.com/@trusttokenteam"
+    }
+}
+

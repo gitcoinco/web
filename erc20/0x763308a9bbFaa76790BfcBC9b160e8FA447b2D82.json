@@ -1,0 +1,17 @@
+{
+  "symbol": "TDC-token",
+  "overview": {
+        "en":"TDC project profile:The Cloud Network (TDC) is a data economy foundation chain based on blockchain technology. The TDC ecosystemrevolves around data ownership distribution, data leakage, data authenticity and data incentives in the existing data economy, using blockchains. The distributed network, encryption algorithm, anonymity, non-tampering and the economy of the economy have developed a wealth of trusted data components to provide users and developers with safe and convenient services. TDC through the chain and chain synchronization management Ways to open up data link, data storage, data calculation, data exchange and other aspects，to provide a shared, co-governing, transparent and secure underlying service for the future of the world's petascale data economy market, and to create a digital era for the future. Public facilities have become a global trusted data value network platform.",
+        "zh":"TDC项目简介：聚云链（TDC）是一个基于区块链技术的数据经济基础链。TDC生态系统围绕着现有数据经济中的数据所有权分配、数据泄露、数据真伪和数据激励等问题，利用区块链的分布式网络、加密算法、匿名性、不可篡改以及通证经济等技术，开发出了丰富的可信数据组件，为用户和开发者提供安全便捷的服务。TDC通过链上链下同步治理的方式，打通数据上链、数据储存、数据计算、数据交换等各个环节，为人类未来千万亿级的数据经济市场提供共享、共治、透明、安全的底层服务，打造为未来全民数字化时代的公共设施，成为全球可信数据价值网络平台。"
+  },
+  "address": "0x763308a9bbFaa76790BfcBC9b160e8FA447b2D82",
+  "email": "tdcchain@gmail.com",
+  "website": "http://www.tdcchain.io/",
+  "whitepaper": "http://tdc.pub/TDC白皮书.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-08",
+  "links": {
+	"facebook": "https://www.facebook.com/tdc.chain.1",
+    "github": "https://github.com/wanfq199112/token-profile.git"
+  }
+}

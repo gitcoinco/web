@@ -1,0 +1,21 @@
+{
+    "symbol": "CWT",
+    "address": "0x8EC7740A73b1BF8D72D471Dfe63A34F81F50A118",
+    "overview":{
+          "en": "CoinWord builds a true, trusted information platform that eliminates information noise and false content.",
+          "zh": "CoinWord构建了一个真实、可信的信息平台，剔除信息噪声、虚假内容。"
+    },
+    "email": "CoinWordToken@gmail.com",
+    "website": "http://coinword.io",
+    "whitepaper": "http://coinword.io/uploads/files/20190802/1cd6fa1af0d3f88b1293ebbf42f64111.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-08-28",
+    "initial_price":{
+          "USD":"0.00143 USD"
+    },
+    "links": {
+      "telegram": "https://t.me/cwtfans",
+      "facebook": "https://m.facebook.com/profile.php?ref=bookmarks"
+    }
+  
+  }

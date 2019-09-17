@@ -1,0 +1,18 @@
+{
+    "symbol": "CLC",
+    "address": "0xB4c146DD5A26B1CdC1BC0B527966a3852Aed0912",
+    "overview": {
+        "zh": "熵云链（CLC）是涵盖溯源防伪、供应链支付结算等领域的底层公链，致力于通过质量溯源、破除供需信息壁垒、调控商品供给，打造高度互信的新型经济协作生态体系，是针对零售业痛点的根源性解决方案。"
+    },
+    "email": "hailang9103@163.com",
+    "website": "http://www.cloudlinkchain.com/",
+    "whitepaper": "http://www.cloudlinkchain.com/index/index/download",
+    "state": "NORMAL",
+    "published_on": "2019-07-01",
+    "initial_price":{
+        "USD":"0.14 USD"
+  },
+    "links": {
+    	"medium": "https://xueqiu.com/8746957936/129690048"
+  }
+}
