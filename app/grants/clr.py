@@ -22,7 +22,7 @@ import json
 import math
 from itertools import combinations
 
-from grants.models import Grant, Contribution
+from grants.models import Contribution, Grant
 
 grant_contributions = [
     {
@@ -223,8 +223,11 @@ def grants_clr_calculate (total_pot, grant_contributions, min_threshold, max_thr
     threshold = (max_threshold + min_threshold) / 2
     total_clr, grants_clrs = calculate_clr(threshold, grant_contributions)
 
-    print(f'************ POT:  {total_pot} | Calculated CLR:  {total_clr} | Threshold {threshold} | Iterations {iterations}')
-    # print(f'MIN {min_threshold} MAX {max_threshold} threshold {threshold}')
+    print(f'************ POT:  {total_pot} | Calculated CLR:  {total_clr} | Threshold {threshold} | Iterations {iterations} | GRANT SPLIT {grants_clrs}')
+
+    if total_pot == threshold:
+        # EDGE CASE: when total_pot !== total_clr for any threshold
+        return grants_clrs, total_clr, threshold, iterations
 
     if total_clr > total_pot:
         max_threshold = threshold
