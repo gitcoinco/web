@@ -3,27 +3,31 @@
 {% if not hidden and not profile.is_org and show_resume_tab %}
   <div class="py-3 font-weight-bold">Job Preferences</div>
 	<div class="work_type">
-  	  <div class="mt-3">
+    <div class="mt-3">
+      {% if is_my_profile %}
+        <div style="float: right; font-size: 12px;">
+          <i class="fas fa-eye"></i>
+          <span>Only visible to you</span>
+          <br>
+          <a href="/onboard/profile/?steps=job"> Edit this info</a>
+        </div>
+      {% endif %}
 
-    {% if is_my_profile %}
-      <div style="float: right; font-size: 12px;">
-        <i class="fas fa-eye"></i> <span>Only visible to you</span>
-        <br>
-        <a href="/onboard/profile/?steps=job"> Edit this info</a>
-      </div>
-    {% endif %}
+      {% if profile.job_status_verbose %}
+        <i class="fa fa-briefcase"></i>
+        <span>{{profile.job_status_verbose}} ({{profile.job_type}})</span>
+      {% endif %}
+    </div>
 
-    {% if profile.job_status_verbose %}
-		<i class="fa fa-briefcase"></i>
-		<span>{{profile.job_status_verbose}} ({{profile.job_type}})</span>
-    {% endif %}
-	  </div>
     {% if profile.job_location %}
   	  <div class="mt-3">
-  		<i class="fa fa-map-marker"></i>
-  		<span>Looking for companies in {% for loc in profile.job_location %}{{loc.name}}, {% endfor %} {% if profile.remote %}(Remote OK){%endif%}</span>
+        <i class="fa fa-map-marker"></i>
+        <span>
+          Looking for companies in {% for loc in profile.job_location %}{{loc.name}}, {% endfor %} {% if profile.remote %}(Remote OK){%endif%}
+        </span>
   	  </div>
     {% endif %}
+
     {% if profile.job_salary %}
   	  <div class="mt-3">
   		<i class="fa fa-dollar-sign"></i>
@@ -34,9 +38,9 @@
 	<div class="border-bottom my-3"></div>
 	{% if profile.resume %}
 	  <div class="d-flex justify-content-space-around">
-		<div class="font-weight-bold mr-3">Resume</div>
-		<a href="{{profile.resume.url}}" class="align-self-center">Download Resume</a>
-  	  </div>
+      <div class="font-weight-bold mr-3">Resume</div>
+      <a href="{{profile.resume.url}}" class="align-self-center">Download Resume</a>
+    </div>
 	  <object data="{{profile.resume.url}}" type="application/pdf" style="width: 100%; height: 1000px; overflow-y: scroll;">
 	    <embed src="{{profile.resume.url}}" type="application/pdf" />
 	  </object>

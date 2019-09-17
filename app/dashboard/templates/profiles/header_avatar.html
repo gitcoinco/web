@@ -1,18 +1,20 @@
 {% load i18n static avatar_tags %}
-  <div class="float_avatar_image d-inline-block d-inline-block mb-1 {% if is_editable %}is_editable{% endif %}">
-    {% if is_editable %}
-      <a href="{% url "onboard" "profile" %}?steps=avatar">
-    {% endif %}
-    <img class="profile-header__avatar" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
-     {% if is_editable %}
-        <div class="avatar_edit d-md-block d-sm-none">
-          <div class="avatar_edit_text">
-	        <span>
-			  <i class="fa fa-camera"></i>
-			  Update
-			</span>
-          </div>
-        </div>
-      </a>
-    {% endif %}
-  </div>
+<div class="float_avatar_image d-inline-block d-inline-block mb-1 {% if is_editable %}is_editable{% endif %}">
+  {% if is_editable %}
+    <a href="{% url "onboard" "profile" %}?steps=avatar">
+  {% endif %}
+
+  <img class="profile-header__avatar" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
+
+  {% if is_editable %}
+    <div class="avatar_edit d-md-block d-sm-none">
+      <div class="avatar_edit_text">
+        <span>
+          <i class="fa fa-camera"></i>
+          Update
+        </span>
+      </div>
+    </div>
+    </a>
+  {% endif %}
+</div>

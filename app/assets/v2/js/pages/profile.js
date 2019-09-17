@@ -22,8 +22,8 @@ $(document).ready(function() {
       return;
     }
 
-    var is_on_activity_tab = $('.profile-bounties--activities').length > 0;
-    var are_there_no_tabs = $('#tab_controller .nav-link.active').length == 0;
+    const is_on_activity_tab = $('.profile-bounties--activities').length > 0;
+    const are_there_no_tabs = $('#tab_controller .nav-link.active').length == 0;
 
     if (!is_on_activity_tab && !are_there_no_tabs) {
       return;
@@ -47,7 +47,7 @@ $(document).ready(function() {
       fetchInProgress = true;
       loadingImg.className = loadingImg.className.replace('hidden', 'visible');
 
-      var fetch_url = location.href.replace(location.hash, '').replace('?', '').replace('#', '');
+      const fetch_url = location.href.replace(location.hash, '').replace('?', '').replace('#', '');
 
       fetch(fetch_url + '?p=' + (++page) + '&a=' + activityName).then(
         function(response) {
@@ -103,16 +103,16 @@ $(document).ready(function() {
   // rep graph
   if ($('#rep_dataviz').length) {
     // Set the dimensions of the canvas / graph
-    var margin = {top: 30, right: 30, bottom: 30, left: 70};
-    var width = $('.container.position-relative').width() - margin.left - margin.right;
-    var height = 120 - margin.top - margin.bottom;
+    const margin = {top: 30, right: 30, bottom: 30, left: 70};
+    const width = $('.container.position-relative').width() - margin.left - margin.right;
+    const height = 120 - margin.top - margin.bottom;
 
     // Parse the date / time
-    var parseDate = d3.time.format('%d-%b-%y').parse;
+    const parseDate = d3.time.format('%d-%b-%y').parse;
 
     // Set the ranges
-    var x = d3.time.scale().range([ 0, width ]);
-    var y = d3.scale.linear().range([ height, 0 ]);
+    const x = d3.time.scale().range([ 0, width ]);
+    const y = d3.scale.linear().range([ height, 0 ]);
 
     // Define the axes
     var xAxis = d3.svg.axis().scale(x)

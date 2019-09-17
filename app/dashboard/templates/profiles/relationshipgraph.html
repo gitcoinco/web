@@ -1,47 +1,50 @@
 <div class="tab3">
-<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-<script src="https://cdn.rawgit.com/hkelly93/d3-relationshipGraph/master/dest/d3.relationshipgraph.js"></script>
-<link type="text/css" rel="stylesheet" href="https://cdn.rawgit.com/hkelly93/d3-relationshipGraph/master/dest/d3.relationshipgraph.min.css">
+  <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+  <script src="https://cdn.rawgit.com/hkelly93/d3-relationshipGraph/master/dest/d3.relationshipgraph.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdn.rawgit.com/hkelly93/d3-relationshipGraph/master/dest/d3.relationshipgraph.min.css">
 
+  <h3>Relationships</h3>
+  <div id="graph2" style="width: 300px; "></div>
 
-<h3>Relationships</h3>
-<div id="graph2" style="width: 300px; ">
-</div>
-<script>
-    var json1 = [
-        {
-            "Title": "Foo Bar Bounty",
-            "parent": "@StatusSceptre",
-            "value": "$2087",
-        }, {
-            "Title": "Foo Bar Bounty",
-            "parent": "@StatusSceptre",
-            "value": "$12432",
-        }, {
-            "Title": "Foo Bar Bounty",
-            "parent": "@StatusSceptre",
-            "value": "$235435",
-        }, {
-            "Title": "Foo Bar Bounty",
-            "parent": "@gitcoinco",
-            "value": "$235435",
-        }, {
-            "Title": "Foo Bar Bounty",
-            "parent": "@gitcoinco",
-            "value": "$235435",
-        }, {
-            "Title": "Foo Bar Bounty",
-            "parent": "@Consenseys",
-            "value": "$235435",
-        },
-        ];
-
+  <script>
+    const json1 = [
+      {
+        "Title": "Foo Bar Bounty",
+        "parent": "@StatusSceptre",
+        "value": "$2087",
+      },
+      {
+        "Title": "Foo Bar Bounty",
+        "parent": "@StatusSceptre",
+        "value": "$12432",
+      },
+      {
+        "Title": "Foo Bar Bounty",
+        "parent": "@StatusSceptre",
+        "value": "$235435",
+      },
+      {
+        "Title": "Foo Bar Bounty",
+        "parent": "@gitcoinco",
+        "value": "$235435",
+      },
+      {
+        "Title": "Foo Bar Bounty",
+        "parent": "@gitcoinco",
+        "value": "$235435",
+      },
+      {
+          "Title": "Foo Bar Bounty",
+          "parent": "@Consenseys",
+          "value": "$235435",
+      },
+    ];
 
     var graph = d3.select('#graph').relationshipGraph({
-        'maxChildCount': 10,
-        'valueKeyName': 'Worldwide Gross',
-        'thresholds': [1000000000, 2000000000, 3000000000],
-        showTooltips: true
+      'maxChildCount': 10,
+      'valueKeyName': 'Worldwide Gross',
+      'thresholds': [1000000000, 2000000000, 3000000000],
+      showTooltips: true
     });
 
     graph.data(json1);
@@ -49,45 +52,44 @@
     var interval = null;
 
     function data1() {
-        if (interval != null) {
-            clearInterval(interval);
-        }
-        graph.data(json1);
-        document.querySelector('h1').innerHTML = 'Highest Grossing Films by Studio';
+      if (interval != null) {
+        clearInterval(interval);
+      }
+      graph.data(json1);
+      document.querySelector('h1').innerHTML = 'Highest Grossing Films by Studio';
     }
 
     function data2() {
-        if (interval != null) {
-            clearInterval(interval);
-        }
-        graph.data(json2);
-        document.querySelector('h1').innerHTML = 'Highest Grossing Films by Year';
+      if (interval != null) {
+        clearInterval(interval);
+      }
+      graph.data(json2);
+      document.querySelector('h1').innerHTML = 'Highest Grossing Films by Year';
     }
 
     function random() {
-        var getData = function () {
-            var json = [];
+      var getData = function () {
+        let json = [];
 
-            for (var j = 0; j < 35; j++) {
-                var obj = {
-                    'parent': 'parent' + Math.floor(Math.random() * 6),
-                    'value': 1000000000 * Math.floor(Math.random() * 3)
-                };
-
-                json.push(obj);
-            }
-
-            graph.data(json);
-        };
-
-        getData();
-
-        if (interval === null) {
-            interval = setInterval(getData, 1000);
+        for (let j = 0; j < 35; j++) {
+          const obj = {
+            'parent': 'parent' + Math.floor(Math.random() * 6),
+            'value': 1000000000 * Math.floor(Math.random() * 3)
+          };
+          json.push(obj);
         }
 
-        document.querySelector('h1').innerHTML = 'Random Data';
+        graph.data(json);
+      };
+
+      getData();
+
+      if (interval === null) {
+        interval = setInterval(getData, 1000);
+      }
+
+      document.querySelector('h1').innerHTML = 'Random Data';
     }
 
-</script>
+  </script>
 </div>
