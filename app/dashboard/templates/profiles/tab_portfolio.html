@@ -5,7 +5,9 @@
 	 <small class="tag-list__item">{{keyword}}</small>
   {% endfor %}
 </div>
+
 <div class="border-bottom my-3"></div>
+
 <div class="py-3 font-weight-bold">Projects</div>
 
 <div class="tab-projects d-flex flex-column">
@@ -23,12 +25,12 @@
           {% endfor %}
         </div>
       </div>
-      <div style="float:right;">
+      <div class="float-right">
         <a class="btn btn-gc-blue btn-sm m-2" href="{{submission.bounty.url}}">View Bounty &gt;</a>
         {% if submission.fulfiller_github_url %}
           <a class="btn btn-gc-blue btn-sm m-2" href="{{submission.fulfiller_github_url}}">View Work &gt;</a>
         {% endif %}
-        </div>
+      </div>
     </div>
   {% endfor %}
 
@@ -46,11 +48,11 @@
           {% endfor %}
         </div>
       </div>
-      <div style="float:right;">
+      <div class="float-right">
         {% if pi.link %}
           <a class="btn btn-gc-blue btn-sm m-2" href="{{pi.link}}">View Work &gt;</a>
         {% endif %}
-        </div>
+      </div>
     </div>
   {% endfor %}
 
@@ -60,30 +62,30 @@
   <div class="py-3 font-weight-bold">Add a project</div>
 
   <div class="tab-projects-submit d-flex flex-column">
-      <div class="tab-projects__item d-flex mb-0 pt-1 pb-1">
-        <form method="POST">
-          {% csrf_token %}
-          <div id="contact-section" class="py-4 collapse show" style="">
-            <div class="row mt-2">
-              <div class="col-12 col-md-3">
-                <label class="form__label" for="URL">Project URL</label>
-                <input name="URL" id="URL" class="form__input" type="url" placeholder="https://foo.bar" value="">
-              </div>
-              <div class="col-12 col-md-3 ">
-                <label class="form__label" for="project_title">Project Title</label>
-                <input name="project_title" id="project_title" class="form__input" type="text" placeholder="" value="">
-              </div>
-              <div class="col-12 col-md-3 ">
-                <label class="form__label" for="tags">Tags (comma seperated)</label>
-                <input name="tags" id="tags" class="form__input" type="text" placeholder="python, javascript" value="">
-              </div>
-              <div class="col-12 col-md-3 ">
-                <div class="mt-6">&nbsp;</div>
-                <input class="btn btn-gc-blue btn-sm mt-3"  type="submit" name="submit" id="submit" value="Add Project">
-              </div>
+    <div class="tab-projects__item d-flex mb-0 pt-1 pb-1">
+      <form method="POST">
+        {% csrf_token %}
+        <div id="contact-section" class="py-4 collapse show" style="">
+          <div class="row mt-2">
+            <div class="col-12 col-md-3">
+              <label class="form__label" for="URL">Project URL</label>
+              <input name="URL" id="URL" class="form__input" type="url" placeholder="https://foo.bar" value="">
             </div>
-          </div>        
-      </div>
+            <div class="col-12 col-md-3 ">
+              <label class="form__label" for="project_title">Project Title</label>
+              <input name="project_title" id="project_title" class="form__input" type="text" placeholder="" value="">
+            </div>
+            <div class="col-12 col-md-3 ">
+              <label class="form__label" for="tags">Tags (comma seperated)</label>
+              <input name="tags" id="tags" class="form__input" type="text" placeholder="python, javascript" value="">
+            </div>
+            <div class="col-12 col-md-3 ">
+              <div class="mt-6">&nbsp;</div>
+              <input class="btn btn-gc-blue btn-sm mt-3"  type="submit" name="submit" id="submit" value="Add Project">
+            </div>
+          </div>
+        </div>
+    </div>
   </div>
 {% endif %}
 

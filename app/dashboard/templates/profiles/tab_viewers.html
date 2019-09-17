@@ -1,30 +1,29 @@
 {% load i18n static avatar_tags humanize %}
 {% if not hidden %}
-{% if is_editable %}
-
-<div class="tab-projects d-flex flex-column">
-  {% if profile.viewed_by.count == 0 %}
-    No Viewers
-  {% endif %}
-  {% for viewer in profile.viewed_by.all %}
-    <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} pt-1 pb-1">
-      <img class="rounded mr-3" src="{% avatar_url viewer.viewer.handle %}" alt="">
-      <div class="tab-projects__item-details" style="width: 70%">
-        <div class="d-flex">
-          <h5 class="font-weight-semibold">{{viewer.viewer.handle}}</h5>&nbsp;
+  {% if is_editable %}
+    <div class="tab-projects d-flex flex-column">
+      {% if profile.viewed_by.count == 0 %}
+        No Viewers
+      {% endif %}
+      {% for viewer in profile.viewed_by.all %}
+        <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} pt-1 pb-1">
+          <img class="rounded mr-3" src="{% avatar_url viewer.viewer.handle %}" alt="">
+          <div class="tab-projects__item-details" style="width: 70%">
+            <div class="d-flex">
+              <h5 class="font-weight-semibold">{{viewer.viewer.handle}}</h5>&nbsp;
+            </div>
+            <small class="align-self-center">Viewed profile {{viewer.created_on | naturaltime}}</small>
+            <div class="tag-list">
+              {% for keyword in viewer.keywords %}
+                <small class="tag-list__item">{{keyword}}</small>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="float-right">
+            <a class="btn btn-gc-blue btn-sm " href="/profile/{{viewer.viewer.handle}}">View Profile &gt;</a>
+          </div>
         </div>
-        <small class="align-self-center">Viewed profile {{viewer.created_on | naturaltime}}</small>
-        <div class="tag-list">
-          {% for keyword in viewer.keywords %}
-            <small class="tag-list__item">{{keyword}}</small>
-          {% endfor %}
-        </div>
-      </div>
-      <div style="float:right;">
-        <a class="btn btn-gc-blue btn-sm " href="/profile/{{viewer.viewer.handle}}">View Profile &gt;</a>
-        </div>
+      {% endfor %}
     </div>
-  {% endfor %}
-</div>
-{% endif %}
+  {% endif %}
 {% endif %}    

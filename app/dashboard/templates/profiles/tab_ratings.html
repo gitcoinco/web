@@ -9,7 +9,7 @@
     <i class="fa fa-star align-self-center {% if avg_rating_scaled.overall != 0 and i <= avg_rating_scaled.overall %}fas{% endif %}"></i>
   {% endfor %}
   <div class="font-weight-bold">
-	&nbsp;&nbsp;{{ avg_rating_scaled.total_rating }} {% trans "rating" %}{{avg_rating_scaled.total_rating | pluralize}}
+	  &nbsp;&nbsp;{{ avg_rating_scaled.total_rating }} {% trans "rating" %}{{avg_rating_scaled.total_rating | pluralize}}
   </div>
 </div>
 <div class="row">
@@ -78,8 +78,8 @@
 <div class="tab-reviews">
   <h6 class="font-weight-bold">Reviews</h6>
   {% for feedback in feedbacks_got %}
-  <div class="d-flex activity row mb-0 {% cycle 'odd' 'even' %} pt-3 pb-3">
-    {% include "shared/feedback.html" %}
-  </div>
+    <div class="d-flex activity row mb-0 {% cycle 'odd' 'even' %} pt-3 pb-3">
+      {% include "shared/feedback.html" %}
+    </div>
   {% endfor %}
 </div>

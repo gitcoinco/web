@@ -12,11 +12,7 @@ $(document).ready(function() {
   }
 
   $('body').on('focus change paste keyup blur', 'textarea', function() {
-    if (
-      $(this)
-        .val()
-        .trim().length > 4
-    ) {
+    if ($(this).val().trim().length > 4) {
       $('#btn_post').attr('disabled', false);
     } else {
       $('#btn_post').attr('disabled', true);

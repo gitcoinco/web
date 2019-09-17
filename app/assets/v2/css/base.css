@@ -1629,14 +1629,16 @@ div.busyOverlay {
   background-color: #5b24ff !important;
 }
 
-.admin_only{
+.admin_only {
   background-color: #f2f5ea !important;
   border-radius: 3px;
 }
-.only_visible_to_me_color{
+
+.only_visible_to_me_color {
   background-color: #d3e3f7;
 }
-.only_visible_to_me{
+
+.only_visible_to_me {
   padding: 3px 5px;
   border-radius: 3px;
 }

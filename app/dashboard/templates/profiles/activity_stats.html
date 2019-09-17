@@ -1,10 +1,10 @@
 {% load humanize %}
 {% if not profile.is_org %}
   <li>
-  Last Seen: <b>{{profile.last_visit|naturaltime}}</b>
+    Last Seen: <b>{{profile.last_visit|naturaltime}}</b>
   </li>
   <li>
-  Joined: <b>{{profile.created_on|naturaltime}}</b>
+    Joined: <b>{{profile.created_on|naturaltime}}</b>
   </li>
   {% if profile.success_rate != -1 %}
     <li>
@@ -15,20 +15,20 @@
     </li>
   {% endif %}
   <li>
-      <label id="tooltip">
+    <label id="tooltip">
       <i class='fa fa-info-circle' title="The number of users with whom this user has worked with more than one time.."></i>
-      </label>
-  Repeat {% if profile.persona_is_funder %}Workers{%else%}Funders{%endif%}: <b>{{profile.num_repeated_relationships}}</b>
+    </label>
+    Repeat {% if profile.persona_is_funder %}Workers{%else%}Funders{%endif%}: <b>{{profile.num_repeated_relationships}}</b>
   </li>
   {% if is_staff %}
     {% if profile.persona_is_hunter %}
       <li class='admin_only'>
-      <label id="tooltip">
-        <i class='fa fa-info-circle' title="How many weekdays in a row has the user been active on Gitcoin?"></i>
-      </label>
-        Longest activity streak: <b>{{profile.longest_streak}} weekdays</b>
+        <label id="tooltip">
+          <i class='fa fa-info-circle' title="How many weekdays in a row has the user been active on Gitcoin?"></i>
+        </label>
+          Longest activity streak: <b>{{profile.longest_streak}} weekdays</b>
       </li>
-      {% endif %}
+    {% endif %}
     <li class='admin_only'>
       <label id="tooltip">
         <i class='fa fa-info-circle' title="REP is a calculation of how much value this user has created for the Gitcoin network"></i>
@@ -36,7 +36,7 @@
       REP: <b>{{profile.rep}}</b>
     </li>
     <li class='admin_only'>
-    Avg Hourly Rate <b>${{profile.avg_hourly_rate|floatformat:2}}</b>
+      Avg Hourly Rate <b>${{profile.avg_hourly_rate|floatformat:2}}</b>
     </li>
   {% endif %}
 {% endif %}
