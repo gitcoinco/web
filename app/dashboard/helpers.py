@@ -741,7 +741,7 @@ def get_fulfillment_data_for_activity(fulfillment):
     return data
 
 
-def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None):
+def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None, override_created=None):
     """Records activity based on bounty changes
 
     Args:
@@ -781,6 +781,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
 
     if user_profile:
         return Activity.objects.create(
+            created_on=timezone.now() if not override_created else override_created,
             profile=user_profile,
             activity_type=event_name,
             bounty=new_bounty,

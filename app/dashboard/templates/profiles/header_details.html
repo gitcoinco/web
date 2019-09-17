@@ -1,4 +1,4 @@
-{% load i18n static avatar_tags add_url_schema email_obfuscator %}
+{% load i18n static avatar_tags add_url_schema email_obfuscator kudos_extras %}
 
 <h1 class="profile-header__handle">
   {{ profile.name }}
@@ -59,10 +59,23 @@
     {% endif %}
   </div>
 {% endif %}
-{% if  profile.show_job_status %}
+<div class="static-stars my-3">
+  {% for i in ratings %}
+    <i class="far fa-star {% if avg_rating.overall != 0 and i <= avg_rating.overall %}fas{% endif %}"></i>
+  {% endfor %}
+  <small class="text-muted">({{ avg_rating.total_rating }} {% trans "rating" %}{{avg_rating.total_rating | pluralize}})</small>
+</div>
+{% if profile.show_job_status %}
   <div class="my-2" id="job_status">
     <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ profile.job_status_verbose }}
   </div>
 {% endif %}
-
+{% if total_kudos_count %}
+  <div id=kudos_header>
+    {% for kudos_group in my_kudos %}
+      <img src="{{ kudos_group.kudos_token_cloned_from.preview_img_url }}" title="{{ kudos_group.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="70">
+    {% endfor %}
+    <small class="text-muted">({{ total_kudos_count }} {% trans "kudo" %}{{total_kudos_count | pluralize}})</small>
+  </div>
+{% endif %}
 </div>

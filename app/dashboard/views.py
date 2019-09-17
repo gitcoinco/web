@@ -2055,6 +2055,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     active_bounties = active_bounties.order_by('-web3_created')
     context['active_bounties_count'] = active_bounties.count()
     context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.count()
+    context['my_kudos'] = profile.get_my_kudos.order_by('-id')[0:5]
 
     # specific tabs
     if tab == 'activity':

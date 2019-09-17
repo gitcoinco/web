@@ -109,6 +109,10 @@
   box-shadow: 0 -2px 4px 0 rgba(0,0,0,0.50);
 }
 
+#kudos_header img{
+  box-shadow: none;  
+}
+
 .avatar_edit {
   text-align: center;
   background: #000;

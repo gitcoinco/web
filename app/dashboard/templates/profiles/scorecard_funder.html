@@ -8,7 +8,9 @@
             <b>#{{ scoreboard_position_funder }}</b>
           {% else %}
           {% endif %}
-          {% trans "Funder" %}
+          <a style="color: #707070;" href="{% url 'leaderboard' link %}payers">
+            {% trans "Funder" %}
+          </a>
           {% include "shared/profile_rank_link.html" with link='payers' %}
         </div>
         <div class="card-body font-subheader">
