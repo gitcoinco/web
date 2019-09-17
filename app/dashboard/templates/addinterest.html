@@ -61,7 +61,7 @@
             <textarea id="issue_message" class="form__input"></textarea>
           </div>
           <div>
-          {% if bounty.event or 1 %}
+          {% if bounty.event %}
             <div class="d-flex">
               <input type="text" id="discord_username" name="discord_username" class="form__input" style="width: 100px;" placeholder="vivek#9746" value="{{gitcoin_discord_username}}" required/>
               <div class="filter-label">
