@@ -47,7 +47,7 @@ from django.utils.http import is_safe_url
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, requires_csrf_token
 from django.views.decorators.http import require_GET, require_POST
 
 import magic
@@ -850,9 +850,9 @@ def onboard(request, flow=None):
             login_redirect = redirect('/login/github?next=' + request.get_full_path())
             return login_redirect
 
-    if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
+    if request.POST.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
-        eth_address = request.GET.get('eth_address')
+        eth_address = request.POST.get('eth_address')
         profile.preferred_payout_address = eth_address
         profile.save()
         return JsonResponse({'OK': True})
