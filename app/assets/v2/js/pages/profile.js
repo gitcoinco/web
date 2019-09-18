@@ -119,7 +119,7 @@ $(document).ready(function() {
       .orient('bottom').ticks(5);
 
     var yAxis = d3.svg.axis().scale(y)
-      .orient('left').ticks(5);
+      .orient('left').ticks(3);
 
     // Define the line
     var valueline = d3.svg.line()
