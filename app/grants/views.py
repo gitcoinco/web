@@ -57,6 +57,10 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
 matching_live = '($50K matching live now!) '
+total_clr_pot = 10000
+clr_round = 3
+clr_active = True
+
 if True:
     clr_matching_banners_style = 'results'
     matching_live = ''
@@ -125,6 +129,8 @@ def grants(request):
         'grants_count': _grants.count(),
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
+        'total_clr_pot': total_clr_pot,
+        'clr_active': True
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -619,7 +625,10 @@ def grant_fund(request, grant_id, grant_slug):
         'active_tab': active_tab,
         'fund_reward': fund_reward,
         'phantom_funds': phantom_funds,
-        'clr_contributoin_estimate': 750, # TODO - fill this in dynamicaly.
+        'clr_round': clr_round,
+        'clr_contribution_estimate': 750, # TODO - fill this in dynamicaly.
+        'total_clr_pot': total_clr_pot,
+        'clr_active': True
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 

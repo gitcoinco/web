@@ -107,11 +107,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   {% include './clr_estimate.html' %}
                   <input type=hidden name=toggle_phantom_fund value=1 />
                   <input class="btn btn-gc-blue" type=submit name=submit value="
-                {% if is_phantom_funding_this_grant %}
-                  {% trans "STOP using voucher for this Grant" %}
-                {% else %}
-                  {% trans "Use Voucher for this Grant" %}
-                {% endif %}
+                  {% if is_phantom_funding_this_grant %}
+                    {% trans "STOP using voucher for this Grant" %}
+                  {% else %}
+                    {% trans "Use Voucher for this Grant" %}
+                  {% endif %}
                 " />
                 </form> 
                 </a>
@@ -139,7 +139,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <div class="form__group-horizontal">
                     <div class="row">
-                      <div id="amount-container" class="col-6 col-sm-8" data-container="body" data-toggle="popover" data-html="true" data-placement="left">
+                      <div class="col-6 col-sm-8">
                         <label class="form__label" id="amount_label">{% trans "Amount Per Period" %}</label>
                         <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" value="5" required />
                       </div>
@@ -368,10 +368,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% endif %}
 
   </body>
-
-  <script>
-    $('[data-toggle="popover"]').popover();
-  </script>
 
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>
