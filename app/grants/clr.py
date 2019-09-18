@@ -17,12 +17,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import copy
 import datetime as dt
 import json
 import math
 from itertools import combinations
 
 from grants.models import Contribution, Grant
+
+CLR_DISTRIBUTION_AMOUNT = 100000
 
 grant_contributions = [
     {
@@ -80,8 +83,8 @@ def generate_grant_pair(grant):
             else:
                 unique_contributions[profile] = amount
 
-    print(f'Grant Contributions: {grant_contributions}')
-    print(f'Unique Contributions: {unique_contributions}')
+    #print(f'Grant Contributions: {grant_contributions}')
+    #print(f'Unique Contributions: {unique_contributions}')
 
     profile_pairs = list(combinations(unique_contributions.keys(), 2))
     contribution_pairs = list(combinations(unique_contributions.values(), 2))
@@ -99,12 +102,12 @@ def generate_grant_pair(grant):
         'sqrt_of_product_pairs': sqrt_of_product_pairs
     }
 
-    print(f'Grant ID: {grant["id"]}')
-    print(f'Profile Pairs: {grant["profile_pairs"]}')
-    print(f'Contribution Pairs: {grant["contribution_pairs"]}')
-    print(f'Sqrt Of Product Pairs: {grant["sqrt_of_product_pairs"]}')
+    #print(f'Grant ID: {grant["id"]}')
+    #print(f'Profile Pairs: {grant["profile_pairs"]}')
+    #print(f'Contribution Pairs: {grant["contribution_pairs"]}')
+    #print(f'Sqrt Of Product Pairs: {grant["sqrt_of_product_pairs"]}')
 
-    print('=================\n')
+    #print('=================\n')
 
     return grant
 
@@ -164,7 +167,7 @@ def calculate_clr(threshold, grant_contributions):
     for grant in grants:
         grant_clr = 0
         lr_contributions = []
-        print(grant['profile_pairs'])
+        #print(grant['profile_pairs'])
         for index, profile_pair in enumerate(grant['profile_pairs']):
             pair = str('&'.join(profile_pair))
             pair_reversed = str('&'.join(profile_pair[::-1]))
@@ -216,25 +219,28 @@ def calculate_clr(threshold, grant_contributions):
         iterations (int)
 '''
 def grants_clr_calculate (total_pot, grant_contributions, min_threshold, max_threshold, iterations = 0):
-    print("seeing {} contributions".format(len(grant_contributions)))
+    # print("seeing {} contributions".format(len(grant_contributions)))
+    # print("calculating CLR for contributions:{}".format(grant_contributions))
     if len(grant_contributions) == 0:
         return 0, 0, 0, 0
     iterations += 1
     threshold = (max_threshold + min_threshold) / 2
     total_clr, grants_clrs = calculate_clr(threshold, grant_contributions)
 
-    print(f'************ POT:  {total_pot} | Calculated CLR:  {total_clr} | Threshold {threshold} | Iterations {iterations} | GRANT SPLIT {grants_clrs}')
+    # print(f'************ POT:  {total_pot} | Calculated CLR:  {total_clr} | Threshold {threshold} | Iterations {iterations} | GRANT SPLIT {grants_clrs}')
+
+    if iterations == 100:
+        return grants_clrs, total_clr, threshold, iterations
 
     if total_pot == threshold:
         # EDGE CASE: when total_pot !== total_clr for any threshold
         return grants_clrs, total_clr, threshold, iterations
-
     if total_clr > total_pot:
         max_threshold = threshold
-        print(f'++ MIN {min_threshold} NEW MAX {max_threshold}')
+        # print(f'++ MIN {min_threshold} NEW MAX {max_threshold}')
     elif total_clr < total_pot:
         min_threshold = threshold
-        print(f'-- NEW MIN {min_threshold} MAX {max_threshold}')
+        #print(f'-- NEW MIN {min_threshold} MAX {max_threshold}')
     else:
         return grants_clrs, total_clr, threshold, iterations
 
@@ -251,45 +257,56 @@ print(json.dumps(grants_clr, indent=2))
 print('===============')
 '''
 
-def calculate_clr_for_donation(donation_grant, donation_amount, total_pot, grant_contributions):
+def calculate_clr_for_donation(donation_grant, donation_amount, total_pot, base_grant_contributions):
+    grant_contributions = copy.deepcopy(base_grant_contributions)
     # find grant in contributions list
     if donation_amount != 0:
         for grant_contribution in grant_contributions:
             if grant_contribution['id'] == donation_grant.id:
                 # add this donation with a new profile to get impact
                 grant_contribution['contributions'].append({'999999999999': donation_amount})
-    grants_clr, _, _, _ = grants_clr_calculate(total_pot + donation_amount, grant_contributions, 0, total_pot)
-    print(grants_clr)
-    if grants_clr == 0:
-        return 0
+    grants_clr, _, _, _ = grants_clr_calculate(CLR_DISTRIBUTION_AMOUNT, grant_contributions, 0, CLR_DISTRIBUTION_AMOUNT)
+    # print("GRANTS CLR: {}".format(grants_clr))
+    # print("TOTAL CLR: {}".format(total_clr))
+    # if grants_clr == 0:
+    #    return 0
     for grant_clr in grants_clr:
-        if grant_clr['id'] == donation.grant.id:
-            return grant_clr['clr_amount']
+        if grant_clr['id'] == donation_grant.id:
+            return (grant_clr['clr_amount'], grants_clr)
     print('error: could not find grant in final grants_clr data')
-    return None
+    return (None, None)
 
-def predict_clr(grant):
+def predict_clr():
     clr_start_date = dt.datetime(2019, 1, 15, 0, 0)
     # get all the eligible contributions and calculate total
     contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=clr_start_date)
-    sum_contributions = sum([c.subscription.amount_per_period_usdt for c in contributions])
     grants = Grant.objects.all()
+    final_output = []
+    contrib_data = []
 
+    # set up data to load contributions for each grant
     for grant in grants:
-        contrib_data = []
         # go through all the individual contributions for each grant
-        g_contributions = contributions.filter(subscription__grant_id=grant.id).all()
+        g_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id).all()
         # put in correct format
-        contrib_data.append({'id': grant.id, 'contributions': [{str(c.id): c.subscription.get_converted_monthly_amount()} for c in g_contributions]})
+        contrib_data.append({'id': grant.id, 'contributions': [{str(c.subscription.contributor_profile.id): c.subscription.get_converted_monthly_amount()} for c in g_contributions]})
+
+    print('\n\ncontributions data:\n\n')
+    print(contrib_data)
+    # apply potential donations for each grant
+    for grant in grants:
         # five potential additional donations
         potential_donations = [0, 1, 10, 100, 1000, 10000]
         potential_clr = []
         for donation_amount in potential_donations:
             # calculate impact for each additional donation and save as number to display
-            potential_clr.append(calculate_clr_for_donation(grant, donation_amount, 50000, contrib_data))
+            predicted_clr, grants_clr = calculate_clr_for_donation(grant, donation_amount, CLR_DISTRIBUTION_AMOUNT, contrib_data)
+            potential_clr.append(predicted_clr)
         # grant.clr_prediction_curve = zip(potential_donations, potential_clr)
         # grant.save()
-        print("grant: {} potential_clr: {}".format(grant.id, potential_clr))
+        # print("grant: {} potential_clr: {}".format(grant.id, potential_clr))
+        final_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
+    return final_output
 # Test 1 iteration
 # threshold = 10
 # calculate_clr(threshold, grant_contributions)
