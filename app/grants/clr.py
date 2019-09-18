@@ -260,8 +260,8 @@ print('===============')
 def generate_random_contribution_data():
     import random
     contrib_data = []
-    for grant_id in range(30):
-        contrib_data.append({'id': grant_id, 'contributions': [{str(profile_id): random.randint(1,1000)} for profile_id in range(random.randint(0,10))]})
+    for grant_id in range(33):
+        contrib_data.append({'id': grant_id, 'contributions': [{str(profile_id): random.randint(3000,6890)} for profile_id in range(random.randint(0,17))]})
     return contrib_data
 
 
@@ -284,7 +284,7 @@ def calculate_clr_for_donation(donation_grant, donation_amount, total_pot, base_
     print('error: could not find grant in final grants_clr data')
     return (None, None)
 
-def predict_clr():
+def predict_clr(random_data=False):
     clr_start_date = dt.datetime(2019, 1, 15, 0, 0)
     # get all the eligible contributions and calculate total
     contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=clr_start_date)
@@ -293,14 +293,24 @@ def predict_clr():
     contrib_data = []
 
     # set up data to load contributions for each grant
-    '''
-    for grant in grants:
-        # go through all the individual contributions for each grant
-        g_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id).all()
-        # put in correct format
-        contrib_data.append({'id': grant.id, 'contributions': [{str(c.subscription.contributor_profile.id): c.subscription.get_converted_monthly_amount()} for c in g_contributions]})
-    '''
-    contrib_data = generate_random_contribution_data()
+    if not random_data:
+        for grant in grants:
+            # go through all the individual contributions for each grant
+            g_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id)
+
+            # put in correct format
+            all_contributing_profile_ids = list(set([c.subscription.contributor_profile.id for c in g_contributions]))
+            all_summed_contributions = []
+            print("*** grant id:{} has contributions from profiles: {}".format(grant.id, all_contributing_profile_ids))
+            for profile_id in all_contributing_profile_ids:
+                profile_g_contributions = g_contributions.filter(subscription__contributor_profile_id=profile_id)
+                sum_of_each_profiles_contributions = float(sum([c.subscription.get_converted_monthly_amount() for c in profile_g_contributions]))
+                print("*** profile id:{} contributed total:{}".format(profile_id, sum_of_each_profiles_contributions))
+                all_summed_contributions.append({str(profile_id): sum_of_each_profiles_contributions})
+            #contrib_data.append({'id': grant.id, 'contributions': [{str(c.subscription.contributor_profile.id): c.subscription.get_converted_monthly_amount()} for c in g_contributions]})
+            contrib_data.append({'id': grant.id, 'contributions': all_summed_contributions})
+    else:
+        contrib_data = generate_random_contribution_data()
     print('\n\ncontributions data:\n\n')
     print(contrib_data)
     # apply potential donations for each grant

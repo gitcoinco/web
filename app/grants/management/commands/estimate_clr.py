@@ -32,13 +32,13 @@ class Command(BaseCommand):
     help = 'calculate CLR estimates for all grants'
 
     def handle(self, *args, **options):
-        clr_prediction_curves = predict_clr()
-        for grant in clr_prediction_curves:
-            print("CLR predictions for grant {}".format(grant['grant']))
-            print("All grants: {}".format(grant['grants_clr']))
-            print("prediction curve: {}\n\n".format(grant['clr_prediction_curve']))
+        clr_prediction_curves = predict_clr(random_data=False)
+        # for grant in clr_prediction_curves:
+            #print("CLR predictions for grant {}".format(grant['grant']))
+            #print("All grants: {}".format(grant['grants_clr']))
+            #print("prediction curve: {}\n\n".format(grant['clr_prediction_curve']))
         #sanity check: sum all the estimated clr distributions - should equal 100000
         clr_data = [g['grants_clr'] for g in clr_prediction_curves]
-        print(clr_data)
+        #print(clr_data)
         total_clr_funds = sum([each_grant['clr_amount'] for each_grant in clr_data[0]])
         print("allocated CLR funds:{}".format(total_clr_funds))
