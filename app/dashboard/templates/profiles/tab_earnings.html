@@ -2,6 +2,20 @@
 {% if not hidden %}
 {% if is_editable %}
 
+
+{% if not profile.is_org %}
+  <div class="container px-md-0 tab2">
+    <div class="row">
+      {% if earnings_type == 'spent' %}
+        {% include "profiles/earningsgraph.html" with amount=spent_total graph_type="spent" %}
+      {% else %}
+        {% include "profiles/earningsgraph.html" with amount=earnings_total graph_type="earnings" %}
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+
 <div class="tab-projects d-flex flex-column">
   {% if earnings.count == 0 %}
     No Earnings

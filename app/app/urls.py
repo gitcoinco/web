@@ -95,7 +95,9 @@ urlpatterns = [
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/profile/(.*)?/activity.json', dashboard.views.profile_activity, name='profile_activity'),
-    url(r'^api/v0.1/profile/(.*)?/rep.csv', dashboard.views.profile_rep, name='profile_rep'),
+    url(r'^api/v0.1/profile/(.*)?/earnings.csv', dashboard.views.profile_earnings, name='profile_earnings'),
+    url(r'^api/v0.1/profile/(.*)?/viewers.csv', dashboard.views.profile_viewers, name='profile_viewers'),
+    url(r'^api/v0.1/profile/(.*)?/spent.csv', dashboard.views.profile_spent, name='profile_spent'),
     url(r'^api/v0.1/profile/banner', dashboard.views.change_user_profile_banner, name='change_user_profile_banner'),
     url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
     url(

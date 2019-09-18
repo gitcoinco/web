@@ -28,7 +28,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
 
-        # four
+        # one
+        management.call_command('create_rep_records')
+
+        # two
         from dashboard.helpers import record_bounty_activity
         from dashboard.models import Bounty
         bounties = Bounty.objects.current().filter(web3_created__lt=timezone.datetime(2019,3,5)).filter(network='mainnet')
@@ -42,6 +45,7 @@ class Command(BaseCommand):
                 print(e)
 
 
+        # three
         from dashboard.models import Tip
         from dashboard.tip_views import record_tip_activity
         for tip in Tip.objects.filter(network='mainnet').filter(created_on__lt=timezone.datetime(2019,3,5)):
@@ -50,14 +54,13 @@ class Command(BaseCommand):
                 print(tip.pk)
             except Exception as e:
                 print(e)
+        # three
+        management.call_command('create_earnings')
 
-        # one
-        management.call_command('create_rep_records')
 
-        # two
+        # four
+        from dashboard.models import Profile
         for instance in Profile.objects.filter(hide_profile=False):
             instance.calculate_all()
             instance.save()
 
-        # three
-        management.call_command('create_earnings')

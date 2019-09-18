@@ -19,7 +19,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import BountyFulfillment, Tip
+from dashboard.models import BountyFulfillment, Tip, Profile
 from grants.models import Contribution
 from kudos.models import KudosTransfer
 
@@ -36,4 +36,6 @@ class Command(BaseCommand):
         for obj in Contribution.objects.all():
             obj.save()
         for obj in KudosTransfer.objects.all():
+            obj.save()
+        for obj in Profile.objects.all():
             obj.save()

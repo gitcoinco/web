@@ -101,7 +101,7 @@ $(document).ready(function() {
   $('.tooltip').bootstrapTooltip();
 
   // rep graph
-  if ($('#rep_dataviz').length) {
+  if ($('#earn_dataviz').length) {
     // Set the dimensions of the canvas / graph
     const margin = {top: 30, right: 30, bottom: 30, left: 70};
     const width = $('.container.position-relative').width() - margin.left - margin.right;
@@ -131,7 +131,7 @@ $(document).ready(function() {
       });
         
     // Adds the svg canvas
-    var svg = d3.select('#rep_dataviz')
+    var svg = d3.select('#earn_dataviz')
       .append('svg')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
@@ -140,7 +140,7 @@ $(document).ready(function() {
         'translate(' + margin.left + ',' + margin.top + ')');
 
     // Get the data
-    d3.csv(document.rep_url, function(error, data) {
+    d3.csv(document.graph_url, function(error, data) {
       data.forEach(function(d) {
         d.date = parseDate(d.date);
         d.close = +d.close;

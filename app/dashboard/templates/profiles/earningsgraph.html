@@ -3,14 +3,14 @@
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <style> /* set the CSS */
 
-#rep_dataviz path { 
+#earn_dataviz path { 
     stroke: steelblue;
     stroke-width: 2;
     fill: none;
 }
 
-#rep_dataviz .axis path,
-#rep_dataviz .axis line {
+#earn_dataviz .axis path,
+#earn_dataviz .axis line {
     fill: none;
     stroke: grey;
     stroke-width: 1;
@@ -22,12 +22,11 @@
 
 <div style="min-height: 110px; margin-bottom: 10px">
   <div style="font-size: 1.2rem; padding: 0.1rem 0.7rem; margin-bottom: -10px;">
-    <b>{{profile.rep}} REP</b>
   </div>
-  <div id="rep_dataviz"></div>
+  <div id="earn_dataviz"></div>
 <script>
 
-document.rep_url = "/api/v0.1/profile/{{profile.handle}}/rep.csv";
+document.graph_url = "/api/v0.1/profile/{{profile.handle}}/{{graph_type}}.csv";
 </script>
 
 </div>

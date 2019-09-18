@@ -44,7 +44,7 @@
               Kudos {% if total_kudos_count %}<span>{{total_kudos_count}}</span>{%endif%}
             </a>
           </li>
-        {% if is_editable %}
+        {% if is_editable and profile.viewed_by.count %}
           <li class="nav-item">
             <a class="nav-link nav-line  {% if tab == 'viewers' %}active{%endif%}" href="{{profile.url}}/viewers">
               <i class="fas fa-eye"></i> Viewers
@@ -52,7 +52,7 @@
             </a>
           </li>
         {% endif %}
-        {% if is_editable and profile.persona_is_hunter %}
+        {% if is_editable and profile.persona_is_hunter and earnings_total %}
           <li class="nav-item">
             <a class="nav-link nav-line  {% if tab == 'earnings' %}active{%endif%}" href="{{profile.url}}/earnings">
               <i class="fas fa-eye"></i> Earnings
@@ -60,7 +60,7 @@
             </a>
           </li>
         {% endif %}
-        {% if is_editable and profile.persona_is_funder %}
+        {% if is_editable and profile.persona_is_funder and spent_total %}
           <li class="nav-item">
             <a class="nav-link nav-line  {% if tab == 'spent' %}active{%endif%}" href="{{profile.url}}/spent">
               <i class="fas fa-eye"></i> Spent

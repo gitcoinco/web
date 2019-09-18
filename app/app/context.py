@@ -21,6 +21,7 @@ import json
 
 from django.conf import settings
 from django.utils import timezone
+import logging
 
 from app.utils import get_location_from_ip
 from dashboard.models import Activity, Tip, UserAction
@@ -31,6 +32,7 @@ from retail.helpers import get_ip
 
 RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
 
+logger = logging.getLogger(__name__)
 
 def preprocess(request):
     """Handle inserting pertinent data into the current context."""
@@ -61,7 +63,10 @@ def preprocess(request):
         if record_visit:
             ip_address = get_ip(request)
             profile.last_visit = timezone.now()
-            profile.save()
+            try:
+                profile.save()
+            except Exception as e:
+                logger.exception(e)
             metadata = {'useragent': request.META['HTTP_USER_AGENT'], }
             UserAction.objects.create(
                 user=request.user,

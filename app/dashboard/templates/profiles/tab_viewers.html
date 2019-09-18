@@ -1,6 +1,10 @@
 {% load i18n static avatar_tags humanize %}
 {% if not hidden %}
   {% if is_editable %}
+    {% if profile.viewed_by.count > 1 %}
+      {% include "profiles/earningsgraph.html" with amount=profile.viewed_by.count graph_type="viewers" %}
+    {% endif %}
+
     <div class="tab-projects d-flex flex-column">
       {% if profile.viewed_by.count == 0 %}
         No Viewers

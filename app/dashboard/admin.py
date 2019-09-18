@@ -42,7 +42,13 @@ class GeneralAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
 
 
-class REPEntryAdmin(admin.ModelAdmin):
+class ProfileViewAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    raw_id_fields = ['target', 'viewer']
+    list_display = ['created_on', '__str__']
+
+
+class PortfolioItemAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
     raw_id_fields = ['profile']
@@ -340,10 +346,10 @@ class CouponAdmin(admin.ModelAdmin):
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Earning, EarningAdmin)
-admin.site.register(REPEntry, REPEntryAdmin)
+admin.site.register(REPEntry, GeneralAdmin)
 admin.site.register(BlockedUser, GeneralAdmin)
-admin.site.register(PortfolioItem, GeneralAdmin)
-admin.site.register(ProfileView, GeneralAdmin)
+admin.site.register(PortfolioItem, PortfolioItemAdmin)
+admin.site.register(ProfileView, ProfileViewAdmin)
 admin.site.register(UserAction, UserActionAdmin)
 admin.site.register(Interest, InterestAdmin)
 admin.site.register(Profile, ProfileAdmin)

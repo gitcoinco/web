@@ -1920,8 +1920,18 @@ def profile_activity(request, handle):
     return JsonResponse(response)
 
 
-def profile_rep(request, handle):
-    """Display profile activity details.
+def profile_spent(request, handle):
+    """Display profile spent details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    return profile_earnings(request, handle, 'from')
+
+
+def profile_earnings(request, handle, direction='to'):
+    """Display profile earnings details.
 
     Args:
         handle (str): The profile handle.
@@ -1932,15 +1942,51 @@ def profile_rep(request, handle):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
+    if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
+        raise Http404
+
+    earnings = profile.earnings
+    if direction == "from":
+        earnings = profile.sent_earnings
+
     response = """date,close"""
-    activities = list(profile.repentries.order_by('created_on').values_list('created_on', 'balance'))
+    earnings = list(earnings.order_by('created_on').values_list('created_on', 'value_usd'))
     uniqueness = []
-    for activity in activities:
-        val = activity[1]
-        datestr = activity[0].strftime('%d-%b-%y')
+    running_balance = 0
+    for earning in earnings:
+        val = earning[1]
+        running_balance += val
+        datestr = earning[0].strftime('%d-%b-%y')
         if datestr not in uniqueness:
-            response += f"\n{datestr},{val}"
+            response += f"\n{datestr},{running_balance}"
             uniqueness.append(datestr)
+
+    mimetype = 'text/x-csv'
+    return HttpResponse(response)
+
+
+def profile_viewers(request, handle):
+    """Display profile viewers details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
+        raise Http404
+
+    response = """date,close"""
+    items = list(profile.viewed_by.order_by('created_on').values_list('created_on', flat=True))
+    running_balance = 0
+    for item in items:
+        running_balance += 1
+        datestr = item.strftime('%d-%b-%y')
+        response += f"\n{datestr},{running_balance}"
 
     mimetype = 'text/x-csv'
     return HttpResponse(response)

@@ -1,13 +1,5 @@
 {% load i18n static %}
 
-{% if is_staff and not profile.is_org %}
-  <div class="container px-md-0 tab2">
-    <div class="row admin_only">
-      {% include "profiles/REPgraph.html" %}
-    </div>
-  </div>
-{% endif %}
-
 <div class="container px-md-0 tab2">
   <div class="row">
     {% include "profiles/heatmap.html" %}
@@ -15,7 +7,7 @@
 </div>
 
 {% if is_my_profile %}
-  % include 'profiles/status_box.html' %}
+  {% include 'profiles/status_box.html' %}
 {% endif %}
 
 <div class="row tab2">
