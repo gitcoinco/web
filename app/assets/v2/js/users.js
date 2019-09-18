@@ -122,7 +122,6 @@ Vue.mixin({
     },
     sendInviteAll: function(bountyUrl) {
       let vm = this;
-      console.log({ 'params': [vm.params], 'skills': vm.params.skills, 'bountyId': bountyUrl})
       let apiUrlInvite = '/api/v0.1/bulk_invite/';
       let postInvite = fetchData(
         apiUrlInvite,
