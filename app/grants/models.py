@@ -206,19 +206,6 @@ class Grant(SuperModel):
         return f"id: {self.pk}, active: {self.active}, title: {self.title}"
 
 
-    def clr_prediction(self, donation):
-        """Linear interpolation between 5 point curve"""
-        curve = self.clr_prediction_curve
-        donation = float(donation)
-        for i in range(1, len(curve)):
-            if curve[i-1][0] <= donation and donation <= curve[i][0]:
-                print('value between {} and {}'.format(curve[i-1][0], curve[i][0]))
-                break
-        m = (curve[i-1][0] - curve[i-1][1]) / (curve[i][0] - curve[i][1])
-        prediction = (donation - curve[i][1]) * m + curve[i-1][1]
-        return prediction
-
-
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
         if not self.amount_goal:
@@ -965,7 +952,7 @@ class PhantomFunding(SuperModel):
 
     def to_mock_contribution(self):
         context = self.to_standard_dict()
-        context['subscription'] = { 
+        context['subscription'] = {
             'contributor_profile': self.profile,
             'amount_per_period': self.value,
             'token_symbol': 'DAI',

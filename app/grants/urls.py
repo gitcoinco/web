@@ -27,7 +27,6 @@ from grants.views import (
 app_name = 'grants'
 urlpatterns = [
     path('', grants, name='grants'),
-    path('<int:grant_id>/potential_clr', potential_clr, name='potential_clr'),
     path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
     path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
     re_path(r'^new', grant_new, name='new'),
