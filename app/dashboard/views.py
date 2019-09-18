@@ -73,8 +73,8 @@ from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_fil
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
     Earning, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile,
-    ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Subscription, Tool, ToolVote,
-    UserAction, UserVerificationModel,
+    ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction,
+    UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,

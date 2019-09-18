@@ -25,8 +25,8 @@ from django.utils.safestring import mark_safe
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch,
-    PortfolioItem, Profile, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Tip, TokenApproval, Tool,
-    ToolVote, UserAction, UserVerificationModel,
+    PortfolioItem, Profile, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Tip, TokenApproval, Tool, ToolVote,
+    UserAction, UserVerificationModel,
 )
 
 
