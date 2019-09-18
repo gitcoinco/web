@@ -19,7 +19,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import BountyFulfillment, Tip, Profile
+from dashboard.models import BountyFulfillment, Profile, Tip
 from grants.models import Contribution
 from kudos.models import KudosTransfer
 

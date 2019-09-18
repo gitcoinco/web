@@ -25,7 +25,7 @@ from django.utils.safestring import mark_safe
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch,
-    PortfolioItem, Profile, ProfileView, RefundFeeRequest, REPEntry, SearchHistory, Sponsor, Tip, TokenApproval, Tool,
+    PortfolioItem, Profile, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Tip, TokenApproval, Tool,
     ToolVote, UserAction, UserVerificationModel,
 )
 
@@ -346,7 +346,6 @@ class CouponAdmin(admin.ModelAdmin):
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Earning, EarningAdmin)
-admin.site.register(REPEntry, GeneralAdmin)
 admin.site.register(BlockedUser, GeneralAdmin)
 admin.site.register(PortfolioItem, PortfolioItemAdmin)
 admin.site.register(ProfileView, ProfileViewAdmin)

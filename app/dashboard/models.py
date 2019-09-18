@@ -2001,15 +2001,6 @@ def post_add_activity(sender, instance, created, **kwargs):
         for dupe in dupes:
             dupe.delete()
 
-        # add REP
-        if instance.point_value():
-            REPEntry.objects.create(
-                why=instance.activity_type,
-                profile=instance.profile,
-                source=instance,
-                value=instance.point_value(),
-                )
-
 
 class LabsResearch(SuperModel):
     """Define the structure of Labs Research object."""
@@ -3471,15 +3462,7 @@ class UserAction(SuperModel):
 @receiver(post_save, sender=UserAction, dispatch_uid="post_add_ua")
 def post_add_ua(sender, instance, created, **kwargs):
     if created:
-        # add REP
-        if instance.point_value():
-            REPEntry.objects.create(
-                why=instance.action,
-                profile=instance.profile,
-                source=instance,
-                value=instance.point_value(),
-                )
-
+        pass
 
 class CoinRedemption(SuperModel):
     """Define the coin redemption schema."""
@@ -3843,26 +3826,6 @@ def post_add_profileview(sender, instance, created, **kwargs):
         dupes = dupes.filter(viewer=instance.viewer)
         for dupe in dupes:
             dupe.delete()
-
-class REPEntry(SuperModel):
-    """Records REP ."""
-
-    why = models.CharField(max_length=50)
-    profile = models.ForeignKey('dashboard.Profile', related_name='repentries', on_delete=models.CASCADE, db_index=True)
-    source_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    source_id = models.PositiveIntegerField()
-    source = GenericForeignKey('source_type', 'source_id')
-    value = models.PositiveIntegerField()
-    balance = models.PositiveIntegerField()
-
-    def __str__(self):
-        return f"{self.profile.handle} + {self.value} => {self.balance} on {self.created_on}"
-
-
-@receiver(pre_save, sender=REPEntry, dispatch_uid="post_add_rep")
-def psave_rep(sender, instance, **kwargs):
-    instance.balance = sum(REPEntry.objects.filter(profile=instance.profile, created_on__lt=instance.created_on).values_list('value', flat=True)) + instance.value
-    #print(f"updating {instance.pk} created on {instance.created_on} for {instance.why} worth  {instance.value} to {instance.balance}")
 
 class Earning(SuperModel):
     """Records Earning - the generic object for all earnings on the platform ."""

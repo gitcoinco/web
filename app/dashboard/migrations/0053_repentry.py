@@ -13,21 +13,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='REPEntry',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('why', models.CharField(max_length=50)),
-                ('source_id', models.PositiveIntegerField()),
-                ('value', models.PositiveIntegerField()),
-                ('balance', models.PositiveIntegerField()),
-                ('profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='repentries', to='dashboard.Profile')),
-                ('source_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType')),
-            ],
-            options={
-                'abstract': False,
-            },
-        ),
     ]
