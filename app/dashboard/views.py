@@ -1186,9 +1186,8 @@ def bulk_invite(request):
     if not request.user.is_staff:
         return JsonResponse({'status': 401,
                              'msg': 'Unauthorized'})
-    print(request.POST)
+
     inviter = request.user if request.user.is_authenticated else None
-    # skills = request.POST.getlist('skills[]')
     skills = ','.join(request.POST.getlist('params[skills][]', []))
     bounties_completed = request.POST.get('params[bounties_completed]', '').strip().split(',')
     leaderboard_rank = request.POST.get('params[leaderboard_rank]', '').strip().split(',')
@@ -1196,15 +1195,8 @@ def bulk_invite(request):
     organisation = request.POST.get('params[organisation]', '')
     bounty_id = request.POST.get('bountyId')
 
-    print(
-        skills,
-        bounties_completed,
-        leaderboard_rank,
-        rating,
-        organisation)
-
     if None in (skills, bounty_id, inviter):
-        return JsonResponse({'success': False}, status=403)
+        return JsonResponse({'success': False}, status=400)
 
     bounty = Bounty.objects.current().get(id=int(bounty_id))
 
@@ -1222,7 +1214,6 @@ def bulk_invite(request):
 
     invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
 
-    print(len(profiles))
     if len(profiles):
         for profile in profiles:
             bounty_invite = BountyInvites.objects.create(
