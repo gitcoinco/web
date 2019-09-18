@@ -223,7 +223,7 @@ class Grant(SuperModel):
         """Return the percentage of token received based on the token goal."""
         if not self.amount_goal:
             return 0
-        return ((self.amount_received / self.amount_goal) * 100)
+        return ((float(self.amount_received_with_phantom_funds) / float(self.amount_goal)) * 100)
 
 
     def updateActiveSubscriptions(self):
@@ -232,6 +232,10 @@ class Grant(SuperModel):
         for handle in Subscription.objects.filter(grant=self, active=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
             handles.append(handle)
         self.activeSubscriptions = handles
+
+    @property
+    def amount_received_with_phantom_funds(self):
+        return float(self.amount_received) + float(sum([ele.value for ele in self.phantom_funding.all()]))
 
     @property
     def abi(self):
@@ -947,3 +951,25 @@ class PhantomFunding(SuperModel):
     def __str__(self):
         """Return the string representation of this object."""
         return f"{self.round_number}; {self.profile} <> {self.grant}"
+
+    def competing_phantum_funds(self):
+        return PhantomFunding.objects.filter(profile=self.profile, round_number=self.round_number)
+
+    @property
+    def value(self):
+        return 5/(self.competing_phantum_funds().count())
+
+    @property
+    def estimated_matching_value(self):
+        return 'TODO'
+
+    def to_mock_contribution(self):
+        context = self.to_standard_dict()
+        context['subscription'] = { 
+            'contributor_profile': self.profile,
+            'amount_per_period': self.value,
+            'token_symbol': 'DAI',
+        }
+        context['tx_cleared'] = True
+        context['success'] = True
+        return context

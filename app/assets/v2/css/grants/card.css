@@ -35,7 +35,13 @@
 }
 
 .clr h2 {
-  color: #f6851b;
+  background: #10cd7a;
+  color: #fff;
+  border-radius: 3px;
+}
+
+.clr p {
+  font-size: 10px;
 }
 
 .grant-item__img {

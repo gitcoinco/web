@@ -11,14 +11,8 @@ let gitcoinDonationAddress;
 
 $(document).ready(function() {
 
-  showCLRPopover();
-
   $('#amount').on('input', () => {
-    showCLRPopover();
-  });
-
-  $('.popover').on('click', () => {
-    $('#amount-container').popover('hide');
+    predictCLRMatch();
   });
 
   gitcoinDonationAddress = $('#gitcoin_donation_address').val();
@@ -500,27 +494,31 @@ const splitGrantAmount = () => {
   }
 
   $('.gitcoin-grant-percent').html(percent);
-  $('.summary-gitcoin-amount').html(gitcoin_grant_amount);
+  $('.summary-gitcoin-amount').html(gitcoin_grant_amount.toFixed(2));
   $('#summary-amount').html(grant_amount);
 };
 
-const showCLRPopover = () => {
-  // TODO: Check if grant has CLR else return
+const predictCLRMatch = () => {
 
-  const clr_amount = 0; // TODO: trigger CLR calculation
-  const total_clr = 0; // TODO: fetch CLR
-  const random = 0; // TODO: figure out what this is
-  const html = `
-    <div class="mx-3 clr-popover text-center">
-      <h1 class="mt-3 mb-0 font-title">CLR MATCH ${clr_amount} DAI</h1>
-      <h2 class="font-body mt-0 mb-2">( out of ${total_clr} DAI )</h2>
-      <p class="font-caption">
-        This is how much your contribution at this moment would
-        increase the CLR Match amount for the grant by ${random} amount
-      </p>
-    </div>
-  `;
+  const amount = Number.parseFloat($('#amount').val());
+  let predicted_clr = 0;
 
-  $('#amount-container').attr('data-content', html);
-  $('#amount-container').popover('show');
+  if (amount == 0) {
+    predicted_clr = prediction_curve[0];
+  } else if (amount <= 1) {
+    predicted_clr = (prediction_curve[0] + prediction_curve[1]) / 2;
+  } else if (amount <= 10) {
+    predicted_clr = (prediction_curve[1] + prediction_curve[2]) / 2;
+  } else if (amount <= 100) {
+    predicted_clr = (prediction_curve[2] + prediction_curve[3]) / 2;
+  } else if (amount <= 1000) {
+    predicted_clr = (prediction_curve[3] + prediction_curve[4]) / 2;
+  } else if (amount <= 10000) {
+    predicted_clr = (prediction_curve[4] + prediction_curve[5]) / 2;
+  } else {
+    predicted_clr = prediction_curve[5];
+  }
+
+  $('.clr_match_prediction').html(predicted_clr);
+  $('.clr_increase').html(predicted_clr - prediction_curve[0]);
 };

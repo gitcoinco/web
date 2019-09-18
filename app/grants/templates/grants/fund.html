@@ -61,7 +61,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <a class="nav-link active" href="#" data-target="original_fund">Normal Fund</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" data-target="phantom_fund">Signal Funding</a>
+              <a class="nav-link" href="#" data-target="phantom_fund">$5 Voucher Funding</a>
             </li>
           </ul>  
         </div>    
@@ -72,12 +72,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="row">
               <p>
                 <i class="fas fa-circle mr-2"></i>
-                {% trans "Signal Funding is a lightweight way to signal that you'd like to support this grant during the active CLR Round.  By clicking 'Signal to Grant', you are signaling your support of this grant with the $5 that has been allocated to you from Gitcoin." %}
+                {% trans "Voucher Funding is a lightweight way to signal that you'd like to support this grant during the active CLR Round." %}
               </p>
               <p>
                 <i class="fas fa-circle mr-2"></i>
-                {% trans "You may support as many grants as you'd like, per round, with this $5 allocation.  The more the better :)" %}
+                {% trans "By clicking 'Use Voucher for this Grant', you are signaling your support of this grant with the $5 that has been allocated to you from Gitcoin." %}
               </p>
+              <p>
+                <i class="fas fa-circle mr-2"></i>
+                {% trans "You may support as many grants as you'd like, per round, with this $5 voucher.  The more the better :)" %}
+              </p>
+
+              <div>
+                So far, you are supporting <strong>{{phantom_funds.count}}</strong> projects.
+                <ol>
+                {% for ele in phantom_funds %}
+                  <li style="padding: 5px; {% cycle 'background-color: #eeeeee;' '' %}">
+                    <a href={{ele.grant.url}}>{{ele.grant.title}}</a>
+                    {% if grant.pk == ele.grant.pk %}
+                    (this grant)
+                    {% endif %}
+                     for <strong>${{ele.value|floatformat:2}}</strong> + $<strong>{{ele.estimated_matching_value}}</strong> in matching.
+                  </li>
+                {% endfor %}
+                </ol>
+              </div>  
 
               <div class="col-12 form__footer text-center">
                 <img src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
@@ -85,13 +104,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <br>
                 <form method=POST>
                   {%csrf_token%}
+                  {% include './clr_estimate.html' %}
                   <input type=hidden name=toggle_phantom_fund value=1 />
                   <input class="btn btn-gc-blue" type=submit name=submit value="
-                {% if is_phantom_funding_this_grant %}
-                  {% trans "STOP Signaling for Grant" %}
-                {% else %}
-                  {% trans "Signal for Grant" %}
-                {% endif %}
+                  {% if is_phantom_funding_this_grant %}
+                    {% trans "STOP using voucher for this Grant" %}
+                  {% else %}
+                    {% trans "Use Voucher for this Grant" %}
+                  {% endif %}
                 " />
                 </form> 
                 </a>
@@ -119,7 +139,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <div class="form__group-horizontal">
                     <div class="row">
-                      <div id="amount-container" class="col-6 col-sm-8" data-container="body" data-toggle="popover" data-html="true" data-placement="left">
+                      <div class="col-6 col-sm-8">
                         <label class="form__label" id="amount_label">{% trans "Amount Per Period" %}</label>
                         <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" value="5" required />
                       </div>
@@ -293,6 +313,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <div class="form__group-horizontal">
                     <div class="row">
+                      {% include './clr_estimate.html' with class='extraleft' %}
                       <div class="col-12 form__footer text-center">
                         <button class="button button--primary button--full" id='js-fundGrant-button'>{% trans "Contribute to Grant" %}</button>
                       </div>
@@ -338,19 +359,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
 
-    {% if show_tweet_modal %}
-      <script>
+    <script>
+      {% if show_tweet_modal %}
         $(document).ready(function(){
-           $('#tweetModal').css('display', 'block');
+          $('#tweetModal').css('display', 'block');
         });
-      </script>
-    {% endif %}
+      {% endif %}
+
+      const prediction_curve = {{ prediction_curve }};
+    </script>
 
   </body>
-
-  <script>
-    $('[data-toggle="popover"]').popover();
-  </script>
 
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>
