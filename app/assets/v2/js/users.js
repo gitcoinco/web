@@ -127,7 +127,7 @@ Vue.mixin({
       let postInvite = fetchData(
         apiUrlInvite,
         'POST',
-        { 'params': vm.params, 'skills': vm.params.skills, 'bountyId': bountyUrl},
+        { 'params': vm.params, 'bountyId': bountyUrl},
         {'X-CSRFToken': csrftoken}
       );
 

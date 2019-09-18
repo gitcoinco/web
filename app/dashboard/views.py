@@ -753,6 +753,49 @@ def users_directory(request):
     }
     return TemplateResponse(request, 'dashboard/users.html', params)
 
+def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation  ):
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
+
+    if skills:
+        profile_list = profile_list.filter(keywords__icontains=skills)
+
+    if len(bounties_completed) == 2:
+        profile_list = profile_list.annotate(
+            count=Count('fulfilled')
+        ).filter(
+                count__gte=bounties_completed[0],
+                count__lte=bounties_completed[1],
+            )
+
+    if len(leaderboard_rank) == 2:
+        profile_list = profile_list.filter(
+            leaderboard_ranks__isnull=False,
+            leaderboard_ranks__leaderboard='quarterly_earners',
+            leaderboard_ranks__rank__gte=leaderboard_rank[0],
+            leaderboard_ranks__rank__lte=leaderboard_rank[1],
+            leaderboard_ranks__active=True,
+        )
+
+    if rating != 0:
+        profile_list = profile_list.annotate(
+            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+        ).filter(
+            average_rating__gte=rating
+        )
+
+    if organisation:
+        profile_list = profile_list.filter(
+            fulfilled__bounty__network=network,
+            fulfilled__accepted=True,
+            fulfilled__bounty__github_url__icontains=organisation
+        ).distinct()
+
+    return profile_list
+
+
 
 @require_GET
 def users_fetch(request):
@@ -790,39 +833,13 @@ def users_fetch(request):
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
 
-    if skills:
-        profile_list = profile_list.filter(keywords__icontains=skills)
-
-    if len(bounties_completed) == 2:
-        profile_list = profile_list.annotate(
-            count=Count('fulfilled')
-        ).filter(
-                count__gte=bounties_completed[0],
-                count__lte=bounties_completed[1],
-            )
-
-    if len(leaderboard_rank) == 2:
-        profile_list = profile_list.filter(
-            leaderboard_ranks__isnull=False,
-            leaderboard_ranks__leaderboard='quarterly_earners',
-            leaderboard_ranks__rank__gte=leaderboard_rank[0],
-            leaderboard_ranks__rank__lte=leaderboard_rank[1],
-            leaderboard_ranks__active=True,
-        )
-
-    if rating != 0:
-        profile_list = profile_list.annotate(
-            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).filter(
-            average_rating__gte=rating
-        )
-
-    if organisation:
-        profile_list = profile_list.filter(
-            fulfilled__bounty__network=network,
-            fulfilled__accepted=True,
-            fulfilled__bounty__github_url__icontains=organisation
-        ).distinct()
+    profile_list = users_fetch_filters(
+        profile_list,
+        skills,
+        bounties_completed,
+        leaderboard_rank,
+        rating,
+        organisation)
 
     def previous_worked():
         if current_user.profile.persona_is_funder:
@@ -864,8 +881,7 @@ def users_fetch(request):
         ).order_by('-previous_worked_count')
     for user in this_page:
         previously_worked_with = 0
-        count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
-        count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
+        count_work_completed = user.get_fulfilled_bounties(network=network).count()
         profile_json = {
             k: getattr(user, k) for k in
             ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
@@ -878,7 +894,6 @@ def users_fetch(request):
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
         profile_json['work_done'] = count_work_completed
-        profile_json['work_inprogress'] = count_work_in_progress
         profile_json['verification'] = user.get_my_verified_check
         profile_json['avg_rating'] = user.get_average_star_rating
 
@@ -1173,21 +1188,41 @@ def bulk_invite(request):
                              'msg': 'Unauthorized'})
     print(request.POST)
     inviter = request.user if request.user.is_authenticated else None
-    skills = request.POST.getlist('skills[]')
-    params = request.POST.getlist('params')
-    print(params)
-    print(','.join(skills))
+    # skills = request.POST.getlist('skills[]')
+    skills = ','.join(request.POST.getlist('params[skills][]', []))
+    bounties_completed = request.POST.get('params[bounties_completed]', '').strip().split(',')
+    leaderboard_rank = request.POST.get('params[leaderboard_rank]', '').strip().split(',')
+    rating = int(request.POST.get('params[rating]', '0'))
+    organisation = request.POST.get('params[organisation]', '')
     bounty_id = request.POST.get('bountyId')
+
+    print(
+        skills,
+        bounties_completed,
+        leaderboard_rank,
+        rating,
+        organisation)
 
     if None in (skills, bounty_id, inviter):
         return JsonResponse({'success': False}, status=403)
 
     bounty = Bounty.objects.current().get(id=int(bounty_id))
-    profiles = Profile.objects.filter(keywords__icontains=','.join(skills))
+
+    profiles = Profile.objects.prefetch_related(
+                'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
+            ).exclude(hide_profile=True)
+
+    profiles = users_fetch_filters(
+        profiles,
+        skills,
+        bounties_completed,
+        leaderboard_rank,
+        rating,
+        organisation)
 
     invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
 
-    print(len(profiles), skills)
+    print(len(profiles))
     if len(profiles):
         for profile in profiles:
             bounty_invite = BountyInvites.objects.create(
