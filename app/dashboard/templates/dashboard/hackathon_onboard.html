@@ -62,7 +62,7 @@
 
           <div class="mb-4">
             {% if not github_handle %}
-              <p>Log in with Githubto register for the hackathon and receive email updates.</p>
+              <p>Log in with Github to register for the hackathon and receive email updates.</p>
               <a class="btn btn-gc-purple my-3" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
                 onclick="dataLayer.push({'event': 'login'});">
                 <i class="fab fa-github"></i>
@@ -70,8 +70,8 @@
               </a>
             {% endif %}
             <ul class="list-group mt-4">
-              <li class="list-group-item"><a target="_blank" href="{% url 'hackathon' hackathon.slug %}#bounties">View prizes</a> -  Find challenges from our sponsors that your team can work on. Prizes will be posted on or before <b>{{hackathon.start_date}}</b></li>
-              <li class="list-group-item"><a target="_blank" href="https://github.com/gitcoinco/{{hackathon.slug}}-teams">Create or Join a team</a> - Share project ideas and skills or join an existing team.</li>
+              <li class="list-group-item"><a target="_blank" href="{% url 'hackathon' hackathon.slug %}#bounties">View Prizes</a> -  Find challenges from our sponsors that your team can work on. Prizes will be posted on or before <b>{{hackathon.start_date}}</b></li>
+              <li class="list-group-item"><a target="_blank" href="https://github.com/gitcoinco/{{hackathon.slug}}-teams">Create or Join a Team</a> - Share project ideas and skills or join an existing team.</li>
               <li class="list-group-item"><a target="_blank" href="https://discord.gg/TxRKTn8">Join Discord</a> - Our main communication channel for updates, sponsor questions, and project work.</li>
               <li class="list-group-item"><a href="#startSubmit" data-toggle="modal">Start/Submit Work via Gitcoin</a> - Follow this guide to formally apply for a prize and submit your work before <b>{{hackathon.end_date}}</b></li>
             </ul>
