@@ -626,7 +626,7 @@ def grant_fund(request, grant_id, grant_slug):
         'fund_reward': fund_reward,
         'phantom_funds': phantom_funds,
         'clr_round': clr_round,
-        'clr_contribution_estimate': 750, # TODO - fill this in dynamicaly.
+        'prediction_curve': [5, 10, 15, 20, 25, 30], # grant.clr_prediction_curve
         'total_clr_pot': total_clr_pot,
         'clr_active': True
     }

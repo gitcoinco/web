@@ -359,13 +359,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
 
-    {% if show_tweet_modal %}
-      <script>
+    <script>
+      {% if show_tweet_modal %}
         $(document).ready(function(){
-           $('#tweetModal').css('display', 'block');
+          $('#tweetModal').css('display', 'block');
         });
-      </script>
-    {% endif %}
+      {% endif %}
+
+      const prediction_curve = {{ prediction_curve }};
+    </script>
 
   </body>
 

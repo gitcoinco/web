@@ -11,6 +11,10 @@ let gitcoinDonationAddress;
 
 $(document).ready(function() {
 
+  $('#amount').on('input', () => {
+    predictCLRMatch();
+  });
+
   gitcoinDonationAddress = $('#gitcoin_donation_address').val();
   splitterAddress = $('#splitter_contract_address').val();
 
@@ -490,6 +494,31 @@ const splitGrantAmount = () => {
   }
 
   $('.gitcoin-grant-percent').html(percent);
-  $('.summary-gitcoin-amount').html(gitcoin_grant_amount);
+  $('.summary-gitcoin-amount').html(gitcoin_grant_amount.toFixed(2));
   $('#summary-amount').html(grant_amount);
+};
+
+const predictCLRMatch = () => {
+
+  const amount = Number.parseFloat($('#amount').val());
+  let predicted_clr = 0;
+
+  if (amount == 0) {
+    predicted_clr = prediction_curve[0];
+  } else if (amount <= 1) {
+    predicted_clr = (prediction_curve[0] + prediction_curve[1]) / 2;
+  } else if (amount <= 10) {
+    predicted_clr = (prediction_curve[1] + prediction_curve[2]) / 2;
+  } else if (amount <= 100) {
+    predicted_clr = (prediction_curve[2] + prediction_curve[3]) / 2;
+  } else if (amount <= 1000) {
+    predicted_clr = (prediction_curve[3] + prediction_curve[4]) / 2;
+  } else if (amount <= 10000) {
+    predicted_clr = (prediction_curve[4] + prediction_curve[5]) / 2;
+  } else {
+    predicted_clr = prediction_curve[5];
+  }
+
+  $('.clr_match_prediction').html(predicted_clr);
+  $('.clr_increase').html(predicted_clr - prediction_curve[0]);
 };
