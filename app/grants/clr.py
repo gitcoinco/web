@@ -83,8 +83,8 @@ def generate_grant_pair(grant):
             else:
                 unique_contributions[profile] = amount
 
-    #print(f'Grant Contributions: {grant_contributions}')
-    #print(f'Unique Contributions: {unique_contributions}')
+    # print(f'Grant Contributions: {grant_contributions}')
+    # print(f'Unique Contributions: {unique_contributions}')
 
     profile_pairs = list(combinations(unique_contributions.keys(), 2))
     contribution_pairs = list(combinations(unique_contributions.values(), 2))
@@ -102,12 +102,12 @@ def generate_grant_pair(grant):
         'sqrt_of_product_pairs': sqrt_of_product_pairs
     }
 
-    #print(f'Grant ID: {grant["id"]}')
-    #print(f'Profile Pairs: {grant["profile_pairs"]}')
-    #print(f'Contribution Pairs: {grant["contribution_pairs"]}')
-    #print(f'Sqrt Of Product Pairs: {grant["sqrt_of_product_pairs"]}')
+    # print(f'Grant ID: {grant["id"]}')
+    # print(f'Profile Pairs: {grant["profile_pairs"]}')
+    # print(f'Contribution Pairs: {grant["contribution_pairs"]}')
+    # print(f'Sqrt Of Product Pairs: {grant["sqrt_of_product_pairs"]}')
 
-    #print('=================\n')
+    # print('=================\n')
 
     return grant
 
@@ -167,7 +167,7 @@ def calculate_clr(threshold, grant_contributions):
     for grant in grants:
         grant_clr = 0
         lr_contributions = []
-        #print(grant['profile_pairs'])
+        # print(grant['profile_pairs'])
         for index, profile_pair in enumerate(grant['profile_pairs']):
             pair = str('&'.join(profile_pair))
             pair_reversed = str('&'.join(profile_pair[::-1]))
@@ -206,33 +206,30 @@ def calculate_clr(threshold, grant_contributions):
     that the entire pot can be distributed based on it's contributions
 
     Args:
-        total_pot:      (int),
+        total_pot:          (int),
         grant_contributions: object,
-        min_threshold:  (int)
-        max_threshold:  (int)
-        iterations:     (int)
+        min_threshold:      (int)
+        max_threshold:      (int)
+        iterations:         (int)
+        previous_threshold: (int)
 
     Returns:
-        grants_clr (object)
-        total_clr  (int)
-        threshold  (int)
-        iterations (int)
+        grants_clr         (object)
+        total_clr          (int)
+        threshold          (int)
+        iterations         (int)
 '''
-def grants_clr_calculate (total_pot, grant_contributions, min_threshold, max_threshold, iterations = 0):
-    # print("seeing {} contributions".format(len(grant_contributions)))
-    # print("calculating CLR for contributions:{}".format(grant_contributions))
+def grants_clr_calculate (total_pot, grant_contributions, min_threshold, max_threshold, iterations = 0, previous_threshold=None):
     if len(grant_contributions) == 0:
         return 0, 0, 0, 0
+
     iterations += 1
     threshold = (max_threshold + min_threshold) / 2
     total_clr, grants_clrs = calculate_clr(threshold, grant_contributions)
 
-    # print(f'************ POT:  {total_pot} | Calculated CLR:  {total_clr} | Threshold {threshold} | Iterations {iterations} | GRANT SPLIT {grants_clrs}')
+    print(f'\n\n************ POT:  {total_pot} | Calculated CLR:  {total_clr} | Threshold {threshold} | Iterations {iterations} | GRANT SPLIT {grants_clrs}')
 
-    if iterations == 100:
-        return grants_clrs, total_clr, threshold, iterations
-
-    if total_pot == threshold:
+    if total_pot == threshold or previous_threshold == threshold:
         # EDGE CASE: when total_pot !== total_clr for any threshold
         return grants_clrs, total_clr, threshold, iterations
     if total_clr > total_pot:
@@ -240,11 +237,11 @@ def grants_clr_calculate (total_pot, grant_contributions, min_threshold, max_thr
         # print(f'++ MIN {min_threshold} NEW MAX {max_threshold}')
     elif total_clr < total_pot:
         min_threshold = threshold
-        #print(f'-- NEW MIN {min_threshold} MAX {max_threshold}')
+        # print(f'-- NEW MIN {min_threshold} MAX {max_threshold}')
     else:
         return grants_clrs, total_clr, threshold, iterations
 
-    return grants_clr_calculate(total_pot, grant_contributions, min_threshold, max_threshold, iterations)
+    return grants_clr_calculate(total_pot, grant_contributions, min_threshold, max_threshold, iterations, threshold)
 
 '''
 total_pot = 50
@@ -327,6 +324,3 @@ def predict_clr(random_data=False):
         # print("grant: {} potential_clr: {}".format(grant.id, potential_clr))
         final_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
     return final_output
-# Test 1 iteration
-# threshold = 10
-# calculate_clr(threshold, grant_contributions)
