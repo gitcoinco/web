@@ -1171,32 +1171,39 @@ def bulk_invite(request):
     if not request.user.is_staff:
         return JsonResponse({'status': 401,
                              'msg': 'Unauthorized'})
-
+    print(request.POST)
     inviter = request.user if request.user.is_authenticated else None
-    skills = request.POST.get('skills[]')
+    skills = request.POST.getlist('skills[]')
+    params = request.POST.getlist('params')
+    print(params)
+    print(','.join(skills))
     bounty_id = request.POST.get('bountyId')
 
     if None in (skills, bounty_id, inviter):
         return JsonResponse({'success': False}, status=403)
 
     bounty = Bounty.objects.current().get(id=int(bounty_id))
-
-    profiles = Profile.objects.filter(keywords__icontains=skills.split(','))
+    profiles = Profile.objects.filter(keywords__icontains=','.join(skills))
 
     invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
 
-    for profile in profiles:
-        bounty_invite = BountyInvites.objects.create(
-            status='pending'
-        )
-        bounty_invite.bounty.add(bounty)
-        bounty_invite.inviter.add(inviter)
-        bounty_invite.invitee.add(profile.user)
-        try:
-            msg = request.POST.get('msg', '')
-            share_bounty([profile.email], msg, request.user.profile, invite_url, True)
-        except Exception as e:
-            logging.exception(e)
+    print(len(profiles), skills)
+    if len(profiles):
+        for profile in profiles:
+            bounty_invite = BountyInvites.objects.create(
+                status='pending'
+            )
+            bounty_invite.bounty.add(bounty)
+            bounty_invite.inviter.add(inviter)
+            bounty_invite.invitee.add(profile.user)
+            # emails.append(profile.email)
+            try:
+                msg = request.POST.get('msg', '')
+                share_bounty([profile.email], msg, inviter.profile, invite_url, False)
+            except Exception as e:
+                logging.exception(e)
+    else:
+        return JsonResponse({'success': False}, status=403)
     return JsonResponse({'status': 200,
                          'msg': 'email_sent'})
 

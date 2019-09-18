@@ -122,17 +122,18 @@ Vue.mixin({
     },
     sendInviteAll: function(bountyUrl) {
       let vm = this;
+      console.log({ 'params': [vm.params], 'skills': vm.params.skills, 'bountyId': bountyUrl})
       let apiUrlInvite = '/api/v0.1/bulk_invite/';
       let postInvite = fetchData(
         apiUrlInvite,
         'POST',
-        { 'params': [vm.params], 'skills': vm.params.skills, 'bountyId': bountyUrl},
+        { 'params': vm.params, 'skills': vm.params.skills, 'bountyId': bountyUrl},
         {'X-CSRFToken': csrftoken}
       );
 
       $.when(postInvite).then((response) => {
         console.log(response);
-        if (response.status === 500) {
+        if (response.status !== 200) {
           _alert(response.msg, 'error');
 
         } else {

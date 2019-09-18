@@ -260,7 +260,7 @@
             <span class="font-weight-semibold d-block mb-2" v-if="issueDetails">Description</span>
             <div v-if="issueDetails" class="pre-scrollable p-3 bg-light rounded font-body" style="white-space: pre-line;">
               <span class="text-black-60 text-uppercase d-block mt-3">ISSUE TITLE</span>
-              [[issueDetails.title]]
+              [[issueDetails.title]] <span class="badge">[[issueDetails.status]]</span>
               <span class="text-black-60 text-uppercase d-block mt-3">ISSUE DESCRIPTION</span>
               [[issueDetails.issue_description_text]]
             </div>
