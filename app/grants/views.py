@@ -57,7 +57,7 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
 matching_live = '($50K matching live now!) '
-total_clr_pot = 10000
+total_clr_pot = 100000
 clr_round = 3
 clr_active = True
 
@@ -626,7 +626,6 @@ def grant_fund(request, grant_id, grant_slug):
         'fund_reward': fund_reward,
         'phantom_funds': phantom_funds,
         'clr_round': clr_round,
-        'prediction_curve': [5, 10, 15, 20, 25, 30], # grant.clr_prediction_curve
         'total_clr_pot': total_clr_pot,
         'clr_active': True
     }

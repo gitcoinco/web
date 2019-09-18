@@ -40,7 +40,7 @@
         {% if clr_active %}
           <div class="clr position-absolute text-center">
             <h2 class="font-caption font-weight-bold my-0 p-1">
-              CLR MATCH <span id="clr-grant-match">0</span> DAI
+              CLR MATCH <span id="clr-grant-match">{{ grant.clr_prediction_curve.0}}</span> DAI
             </h2>
             <p class="my-0">( out of <span id="clr-total">{{ total_clr_pot }}</span> DAI )</p>
           </div>

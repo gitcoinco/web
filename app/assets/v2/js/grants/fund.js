@@ -498,27 +498,67 @@ const splitGrantAmount = () => {
   $('#summary-amount').html(grant_amount);
 };
 
+const lerp = (x_lower, x_upper, y_lower, y_upper, x) => {
+  console.log(x_lower, x_upper, y_lower, y_upper, x);
+  return y_lower + (((y_upper - y_lower) * (x - x_lower)) / (x_upper - x_lower));
+};
+
 const predictCLRMatch = () => {
 
   const amount = Number.parseFloat($('#amount').val());
   let predicted_clr = 0;
 
-  if (amount == 0) {
-    predicted_clr = prediction_curve[0];
-  } else if (amount <= 1) {
-    predicted_clr = (prediction_curve[0] + prediction_curve[1]) / 2;
-  } else if (amount <= 10) {
-    predicted_clr = (prediction_curve[1] + prediction_curve[2]) / 2;
-  } else if (amount <= 100) {
-    predicted_clr = (prediction_curve[2] + prediction_curve[3]) / 2;
-  } else if (amount <= 1000) {
-    predicted_clr = (prediction_curve[3] + prediction_curve[4]) / 2;
-  } else if (amount <= 10000) {
-    predicted_clr = (prediction_curve[4] + prediction_curve[5]) / 2;
+  const contributions_axis = [ 0, 1, 10, 100, 1000, 10000 ];
+
+  if (isNaN(amount)) {
+    predicted_clr = clr_prediction_curve[index];
+  } else if (contributions_axis.indexOf(amount) >= 0) {
+    index = contributions_axis.indexOf(amount);
+    predicted_clr = clr_prediction_curve[index];
   } else {
-    predicted_clr = prediction_curve[5];
+    let x_lower = 0;
+    let x_upper = 0;
+    let y_lower = 0;
+    let y_upper = 0;
+
+    if (0 < amount && amount < 1) {
+      x_lower = 0;
+      x_upper = 1;
+      y_lower = clr_prediction_curve[0];
+      y_upper = clr_prediction_curve[1];
+    } else if (1 < amount && amount < 10) {
+      x_lower = 1;
+      x_upper = 10;
+      y_lower = clr_prediction_curve[1];
+      y_upper = clr_prediction_curve[2];
+    } else if (10 < amount && amount < 100) {
+      x_lower = 10;
+      x_upper = 100;
+      y_lower = prediction_curve[2];
+      y_upper = prediction_curve[3];
+    } else if (100 < amount && amount < 1000) {
+      x_lower = 100;
+      x_upper = 1000;
+      y_lower = clr_prediction_curve[3];
+      y_upper = clr_prediction_curve[4];
+    } else if (1000 < amount && amount <= 10000) {
+      x_lower = 1000;
+      x_upper = 10000;
+      y_lower = clr_prediction_curve[4];
+      y_upper = clr_prediction_curve[5];
+    } else {
+      // NOT SURE WHAT TO DO HERE
+      // NEED TO ESTIMATE ONE WITH MAX CONTRIBUTION
+      // CAN WE ASSUME MAX AMOUNT IS 10000 ?
+      x_lower = 10000;
+      x_upper = 0; // WHAT ?
+      y_lower = clr_prediction_curve[5];
+      y_upper = 0; // WHAT ?
+    }
+
+    predicted_clr = lerp(x_lower, x_upper, y_lower, y_upper, amount);
   }
 
-  $('.clr_match_prediction').html(predicted_clr);
-  $('.clr_increase').html(predicted_clr - prediction_curve[0]);
+  $('.clr_match_prediction').html(predicted_clr.toFixed(2));
+  $('.clr_increase').html((predicted_clr - clr_prediction_curve[0]).toFixed(2));
 };
