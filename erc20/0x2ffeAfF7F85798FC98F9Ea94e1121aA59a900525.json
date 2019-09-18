@@ -11,7 +11,7 @@
 	"state": "NORMAL",
 	"published_on": "2019-09-30",
 	"initial_price": {
-		"USDT": "0 USDT"
+		"USD": "0 USD"
 	},
 	"links": {
 		"blog": "https://medium.com/zvchain",
