@@ -2081,7 +2081,7 @@ def bounty_upload_nda(request):
 
 
 def get_profile_tab(request, profile, tab, prev_context):
-    
+
     #config
     if not settings.DEBUG:
         network = 'mainnet'
@@ -2092,9 +2092,11 @@ def get_profile_tab(request, profile, tab, prev_context):
     context = profile.reassemble_profile_dict
 
     # all tabs
-    if profile.dominant_persona == 'funder':
+    if profile.cascaded_persona == 'org':
+        active_bounties = profile.bounties.filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
+    elif profile.cascaded_persona == 'funder':
         active_bounties = Bounty.objects.current().filter(bounty_owner_github_username=profile.handle).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
-    elif profile.dominant_persona == 'hunter':
+    elif profile.cascaded_persona == 'hunter':
         active_bounties = Bounty.objects.filter(pk__in=profile.active_bounties.filter(pending=False).values_list('bounty', flat=True)).filter(network='mainnet')
     else:
         active_bounties = Bounty.objects.none()
@@ -2198,10 +2200,12 @@ def get_profile_tab(request, profile, tab, prev_context):
                 }
 
                 return JsonResponse(msg, status=msg.get('status', 200))
-
+    elif tab == 'orgs':
+        pass
+    elif tab == 'people':
+        pass
     elif tab == 'active':
         context['active_bounties'] = active_bounties
-
     elif tab == 'resume':
         if not prev_context['is_editable'] and not profile.show_job_status:
             raise Http404
@@ -2226,7 +2230,6 @@ def get_profile_tab(request, profile, tab, prev_context):
                     tags=request.POST.get('tags').split(','),
                     )
                 messages.info(request, 'Portfolio Item added.')
-
     elif tab == 'earnings':
         context['earnings'] = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).order_by('-created_on')
     elif tab == 'spent':
@@ -2251,7 +2254,6 @@ def get_profile_tab(request, profile, tab, prev_context):
                 feedbacks__feedbackType='approver',
                 feedbacks__sender_profile=profile,
             ).distinct('pk').nocache()
-
         context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
                 .filter(interested__status='okay') \
                 .filter(interested__pending=False).filter(idx_status='done') \
@@ -2305,7 +2307,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
     
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent']
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?

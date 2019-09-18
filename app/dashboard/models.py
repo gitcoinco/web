@@ -1416,6 +1416,13 @@ class SendCryptoAsset(SuperModel):
         except Exception:
             return None
 
+    @property
+    def org_profile(self):
+        profiles = Profile.objects.filter(handle__iexact=self.org_name)
+        if profiles.count():
+            return profiles.first()
+        return None
+
     # TODO: DRY
     @property
     def value_in_eth(self):
@@ -1570,14 +1577,17 @@ def postsave_tip(sender, instance, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile
     if is_valid:
         Earning.objects.update_or_create(
-            created_on=instance.created_on,
-            from_profile=instance.sender_profile,
-            to_profile=instance.recipient_profile,
-            value_usd=instance.value_in_usdt_then,
             source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
             source_id=instance.pk,
-            url='https://gitcoin.co/tips',
-            network=instance.network,
+            defaults={
+                "created_on":instance.created_on,
+                "org_profile":instance.org_profile,
+                "from_profile":instance.sender_profile,
+                "to_profile":instance.recipient_profile,
+                "value_usd":instance.value_in_usdt_then,
+                "url":'https"://gitcoin.co/tips',
+                "network":instance.network,
+            }
             )
 
 
@@ -1626,14 +1636,17 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
     from django.contrib.contenttypes.models import ContentType
     if instance.accepted:
         Earning.objects.update_or_create(
-            created_on=instance.created_on,
-            from_profile=instance.bounty.bounty_owner_profile,
-            to_profile=instance.profile,
-            value_usd=instance.bounty.value_in_usdt_then,
             source_type=ContentType.objects.get(app_label='dashboard', model='bountyfulfillment'),
             source_id=instance.pk,
-            url=instance.bounty.url,
-            network=instance.bounty.network,
+            defaults={
+                "created_on":instance.created_on,
+                "org_profile":instance.bounty.org_profile,
+                "from_profile":instance.bounty.bounty_owner_profile,
+                "to_profile":instance.profile,
+                "value_usd":instance.bounty.value_in_usdt_then,
+                "url":instance.bounty.url,
+                "network":instance.bounty.network,
+            }
             )
 
 
@@ -2195,6 +2208,12 @@ class Profile(SuperModel):
         return Grant.objects.filter(Q(admin_profile=self) | Q(team_members__in=[self]) | Q(subscriptions__contributor_profile=self))
 
     @property
+    def team(self):
+        if not self.is_org:
+            return Profile.objects.none()
+        return Profile.objects.filter(organizations__icontains=self.handle)
+
+    @property
     def get_my_kudos(self):
         from kudos.models import KudosTransfer
         kt_owner_address = KudosTransfer.objects.filter(
@@ -2291,6 +2310,26 @@ class Profile(SuperModel):
             return self.data['type'] == 'Organization'
         except KeyError:
             return False
+
+    @property
+    def org_leaderboard(self):
+        return self.leaderboard_helper(self.org_earnings, 'to_profile')
+
+    @property
+    def contrib_leaderboard(self):
+        return self.leaderboard_helper(self.earnings, 'from_profile')
+
+    @property
+    def sent_leaderboard(self):
+        return self.leaderboard_helper(self.sent_earnings, 'to_profile')
+
+    def leaderboard_helper(self, earnings, distinct_on):
+        from django.db.models import Sum, Count
+        order_field = f'{distinct_on}__handle'
+        earnings = earnings.filter(network=self.get_network())
+        leaderboard = earnings.values(order_field).annotate(sum=Sum('value_usd')).annotate(count=Count('value_usd'))
+        kwargs = {order_field:None}
+        return [(ele[order_field], ele['count'], ele['sum']) for ele in leaderboard.exclude(**kwargs).order_by('-sum')]
 
     @property
     def bounties(self):
@@ -2571,7 +2610,6 @@ class Profile(SuperModel):
 
         return len([key for key, val in rel_count.items() if val > 1])
 
-
     def calc_avg_hourly_rate(self):
         """
 
@@ -2581,6 +2619,8 @@ class Profile(SuperModel):
         """
         values_list = self.bounties.values_list('fulfillments__fulfiller_hours_worked', 'value_in_usdt')
         values_list = [ele for ele in values_list if (ele[0] and ele[1])]
+        if not len(values_list):
+            return 0
         hourly_rates = [(ele[1]/ele[0]) for ele in values_list]
         avg_hourly_rate = sum(hourly_rates)/len(hourly_rates)
         return avg_hourly_rate
@@ -2610,9 +2650,6 @@ class Profile(SuperModel):
             the REP points that the user has.
 
         """
-        rep = self.repentries.order_by('-created_on')
-        if rep.exists():
-            return rep.nocache().first().balance
         return 0
 
     @property
@@ -3830,11 +3867,13 @@ def post_add_profileview(sender, instance, created, **kwargs):
         for dupe in dupes:
             dupe.delete()
 
+
 class Earning(SuperModel):
     """Records Earning - the generic object for all earnings on the platform ."""
 
     from_profile = models.ForeignKey('dashboard.Profile', related_name='sent_earnings', on_delete=models.CASCADE, db_index=True, null=True)
     to_profile = models.ForeignKey('dashboard.Profile', related_name='earnings', on_delete=models.CASCADE, db_index=True, null=True)
+    org_profile = models.ForeignKey('dashboard.Profile', related_name='org_earnings', on_delete=models.CASCADE, db_index=True, null=True)
     value_usd = models.DecimalField(decimal_places=2, max_digits=50, null=True)
     source_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     source_id = models.PositiveIntegerField()

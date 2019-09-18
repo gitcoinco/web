@@ -451,6 +451,7 @@ def psave_kt(sender, instance, **kwargs):
     Earning.objects.update_or_create(
         created_on=instance.created_on,
         from_profile=instance.sender_profile,
+        org_profile=instance.org_profile,
         to_profile=instance.recipient_profile,
         value_usd=instance.value_in_usdt_then,
         source_type=ContentType.objects.get(app_label='kudos', model='kudostransfer'),

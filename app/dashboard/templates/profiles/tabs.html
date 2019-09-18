@@ -1,5 +1,5 @@
 {% load i18n static %}
-{% if not hidden and not profile.is_org %}
+{% if not hidden %}
   <div id="tabs">
     <div class="container">
       <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
@@ -39,11 +39,27 @@
             </a>
           </li>
         {% endif %}
+        {% if profile.organizations|length %}
+          <li class="nav-item">
+            <a class="nav-link nav-line  {% if tab == 'orgs' %}active{%endif%}" href="{{profile.url}}/orgs">
+              Orgs <span>{{profile.organizations|length}}</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if profile.is_org %}
+          <li class="nav-item">
+            <a class="nav-link nav-line  {% if tab == 'people' %}active{%endif%}" href="{{profile.url}}/people">
+              People <span>{{profile.team|length}}</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if not profile.is_org %}
           <li class="nav-item">
             <a class="nav-link nav-line  {% if tab == 'kudos' %}active{%endif%}" href="{{profile.url}}/kudos">
               Kudos {% if total_kudos_count %}<span>{{total_kudos_count}}</span>{%endif%}
             </a>
           </li>
+        {% endif %}
         {% if is_editable and profile.viewed_by.count %}
           <li class="nav-item">
             <a class="nav-link nav-line  {% if tab == 'viewers' %}active{%endif%}" href="{{profile.url}}/viewers">
@@ -86,6 +102,10 @@
             {% include 'profiles/tab_active.html' %}
           {% elif tab == 'portfolio' %}
             {% include 'profiles/tab_portfolio.html' %}
+          {% elif tab == 'orgs' %}
+            {% include 'profiles/tab_orgs.html' %}
+          {% elif tab == 'people' %}
+            {% include 'profiles/tab_people.html' %}
           {% elif tab == 'activity' %}
             {% include 'profiles/tab_activity.html' %}
           {% elif tab == 'ratings' %}

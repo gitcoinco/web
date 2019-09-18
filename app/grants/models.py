@@ -214,6 +214,22 @@ class Grant(SuperModel):
         self.activeSubscriptions = handles
 
     @property
+    def org_name(self):
+        from git.utils import org_name
+        try:
+            return org_name(self.reference_url)
+        except Exception:
+            return None
+
+    @property
+    def org_profile(self):
+        from dashboard.models import Profile
+        profiles = Profile.objects.filter(handle__iexact=self.org_name)
+        if profiles.count():
+            return profiles.first()
+        return None
+
+    @property
     def amount_received_with_phantom_funds(self):
         return float(self.amount_received) + float(sum([ele.value for ele in self.phantom_funding.all()]))
 
@@ -863,14 +879,17 @@ def psave_contrib(sender, instance, **kwargs):
     from django.contrib.contenttypes.models import ContentType
     from dashboard.models import Earning
     Earning.objects.update_or_create(
-        created_on=instance.created_on,
-        from_profile=instance.subscription.contributor_profile,
-        to_profile=instance.subscription.grant.admin_profile,
-        value_usd=instance.subscription.get_converted_amount(),
         source_type=ContentType.objects.get(app_label='grants', model='contribution'),
         source_id=instance.pk,
-        url=instance.subscription.grant.url,
-        network=instance.subscription.grant.network,
+        defaults={
+            "created_on":instance.created_on,
+            "from_profile":instance.subscription.contributor_profile,
+            "org_profile":instance.subscription.grant.org_profile,
+            "to_profile":instance.subscription.grant.admin_profile,
+            "value_usd":instance.subscription.get_converted_amount(),
+            "url":instance.subscription.grant.url,
+            "network":instance.subscription.grant.network,
+        }
         )
 
 

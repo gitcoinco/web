@@ -15,8 +15,14 @@
   </div>
 {% endif %}
 
+{% if earnings_type == 'spent' %}
+  {% include 'profiles/leaderboard.html' with leaderboard=profile.sent_leaderboard %}
+{% else %}
+  {% include 'profiles/leaderboard.html' with leaderboard=profile.contrib_leaderboard %}
+{% endif %}
 
 <div class="tab-projects d-flex flex-column">
+  <h3>Earnings</h3>
   {% if earnings.count == 0 %}
     No Earnings
   {% endif %}
