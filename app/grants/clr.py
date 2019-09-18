@@ -229,8 +229,8 @@ def grants_clr_calculate (total_pot, grant_contributions, min_threshold, max_thr
 
     print(f'\n\n************ POT:  {total_pot} | Calculated CLR:  {total_clr} | Threshold {threshold} | Iterations {iterations} | GRANT SPLIT {grants_clrs}')
 
-    if total_pot == threshold or previous_threshold == threshold:
-        # EDGE CASE: when total_pot !== total_clr for any threshold
+    if iterations == 100 or total_pot == threshold or previous_threshold == threshold:
+        # No more accuracy to be had
         return grants_clrs, total_clr, threshold, iterations
     if total_clr > total_pot:
         max_threshold = threshold
