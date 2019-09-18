@@ -213,6 +213,7 @@ def generate_random_contribution_data():
     low_donation = 3000
     high_donation = 6890
     number_of_profiles = 17
+
     for grant_id in range(grants_to_use):
         contrib_data.append({'id': grant_id,
                              'contributions': [{str(profile_id): random.randint(low_donation, high_donation)} for profile_id in range(random.randint(1, number_of_profiles))]})

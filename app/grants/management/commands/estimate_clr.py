@@ -32,7 +32,7 @@ class Command(BaseCommand):
     help = 'calculate CLR estimates for all grants'
 
     def handle(self, *args, **options):
-        clr_prediction_curves = predict_clr(random_data=False, save_to_db=False)
+        clr_prediction_curves = predict_clr(random_data=False, save_to_db=True)
 
         # Uncomment these for debugging and sanity checking
         # for grant in clr_prediction_curves:

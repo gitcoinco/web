@@ -209,8 +209,10 @@ class Grant(SuperModel):
     def clr_prediction(self, donation):
         """Linear interpolation between 5 point curve"""
         curve = self.clr_prediction_curve
-        for i in range(1, length(curve)):
+        donation = float(donation)
+        for i in range(1, len(curve)):
             if curve[i-1][0] <= donation and donation <= curve[i][0]:
+                print('value between {} and {}'.format(curve[i-1][0], curve[i][0]))
                 break
         m = (curve[i-1][0] - curve[i-1][1]) / (curve[i][0] - curve[i][1])
         prediction = (donation - curve[i][1]) * m + curve[i-1][1]
