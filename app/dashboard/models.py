@@ -3353,9 +3353,12 @@ def psave_profile(sender, instance, **kwargs):
     if not instance.profile_wallpaper:
         from dashboard.helpers import load_files_in_directory
         import random
-        wallpapers = load_files_in_directory('wallpapers')
-        instance.profile_wallpaper = f"/static/wallpapers/{random.choice(wallpapers)}"
-
+        try:
+            wallpapers = load_files_in_directory('wallpapers')
+            instance.profile_wallpaper = f"/static/wallpapers/{random.choice(wallpapers)}"
+        except:
+            # fix for travis, which has no static dir
+            pass
 
 
 @receiver(user_logged_in)
