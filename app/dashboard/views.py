@@ -753,6 +753,7 @@ def users_directory(request):
     }
     return TemplateResponse(request, 'dashboard/users.html', params)
 
+
 def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation  ):
     if not settings.DEBUG:
         network = 'mainnet'
