@@ -2157,7 +2157,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         all_activities = context.get('activities')
         tabs = []
         counts = {}
-        if all_activities is None or all_activities.count() == 0:
+        if not all_activities or all_activities.count() == 0:
             context['none'] = True
         else:
             counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
