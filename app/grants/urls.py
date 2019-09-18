@@ -29,7 +29,6 @@ urlpatterns = [
     path('', grants, name='grants'),
     path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
     path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
-    path('<int:grant_id>/potential_clr', potential_clr, name='potential_clr'),
     re_path(r'^new', grant_new, name='new'),
     re_path(r'^old', grant_new_v0, name='old'),
     path('<int:grant_id>/<slug:grant_slug>/milestones', milestones, name='milestones'),
