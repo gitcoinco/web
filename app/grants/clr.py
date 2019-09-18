@@ -257,6 +257,14 @@ print(json.dumps(grants_clr, indent=2))
 print('===============')
 '''
 
+def generate_random_contribution_data():
+    import random
+    contrib_data = []
+    for grant_id in range(30):
+        contrib_data.append({'id': grant_id, 'contributions': [{str(profile_id): random.randint(1,1000)} for profile_id in range(random.randint(0,10))]})
+    return contrib_data
+
+
 def calculate_clr_for_donation(donation_grant, donation_amount, total_pot, base_grant_contributions):
     grant_contributions = copy.deepcopy(base_grant_contributions)
     # find grant in contributions list
@@ -285,12 +293,14 @@ def predict_clr():
     contrib_data = []
 
     # set up data to load contributions for each grant
+    '''
     for grant in grants:
         # go through all the individual contributions for each grant
         g_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id).all()
         # put in correct format
         contrib_data.append({'id': grant.id, 'contributions': [{str(c.subscription.contributor_profile.id): c.subscription.get_converted_monthly_amount()} for c in g_contributions]})
-
+    '''
+    contrib_data = generate_random_contribution_data()
     print('\n\ncontributions data:\n\n')
     print(contrib_data)
     # apply potential donations for each grant
