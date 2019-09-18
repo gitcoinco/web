@@ -2235,6 +2235,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     elif tab == 'spent':
         context['spent'] = Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False).order_by('-created_on')
     elif tab == 'kudos':
+        context['org_kudos'] = profile.get_org_kudos
         owned_kudos = profile.get_my_kudos.order_by('id', order_by)
         sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
         kudos_limit = 8

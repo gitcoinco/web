@@ -53,7 +53,7 @@
             </a>
           </li>
         {% endif %}
-        {% if not profile.is_org %}
+        {% if not profile.is_org or total_kudos_count %}
           <li class="nav-item">
             <a class="nav-link nav-line  {% if tab == 'kudos' %}active{%endif%}" href="{{profile.url}}/kudos">
               Kudos {% if total_kudos_count %}<span>{{total_kudos_count}}</span>{%endif%}

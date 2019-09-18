@@ -2214,6 +2214,15 @@ class Profile(SuperModel):
         return Profile.objects.filter(organizations__icontains=self.handle)
 
     @property
+    def get_org_kudos(self):
+        from kudos.models import Token
+        from django.db.models import F
+
+        if not self.is_org:
+            return Token.objects.none()
+        return Token.objects.filter(Q(name__icontains=self.name)|Q(name__icontains=self.handle)).filter(cloned_from_id=F('token_id')).visible()
+
+    @property
     def get_my_kudos(self):
         from kudos.models import KudosTransfer
         kt_owner_address = KudosTransfer.objects.filter(
@@ -2310,6 +2319,10 @@ class Profile(SuperModel):
             return self.data['type'] == 'Organization'
         except KeyError:
             return False
+
+    @property
+    def frontend_calc_stale(self):
+        return self.last_calc_date < (timezone.now() - timezone.timedelta(hours=24))
 
     @property
     def org_leaderboard(self):
@@ -3321,7 +3334,7 @@ class Profile(SuperModel):
         context['verification'] = bool(profile.get_my_verified_check)
         context['avg_rating'] = profile.get_average_star_rating()
         context['suppress_sumo'] = True
-        context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count()
+        context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count() + profile.get_org_kudos.count()
         context['portfolio'] = list(profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True).values_list('pk', flat=True))
         context['earnings_total'] = round(sum(Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True)))
         context['spent_total'] = round(sum(Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True)))
@@ -3337,7 +3350,7 @@ class Profile(SuperModel):
         params = self.as_dict
 
         # lazily generate profile dict on the fly
-        if not params.get('title'):
+        if not params.get('title') or self.frontend_calc_stale:
             self.calculate_all()
             self.save()
             params = self.as_dict

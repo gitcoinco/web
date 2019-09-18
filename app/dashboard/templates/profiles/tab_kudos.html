@@ -1,9 +1,13 @@
 {% load i18n static %}
 
-{% if not hidden and not profile.is_org %}
+{% if not hidden %}
   <div class="container tab1" >
     <div id="kudos-section">
-      {% include "shared/profile_kudos.html" %}
+      {% if profile.is_org %}
+        {% include "shared/org_kudos.html" %}
+      {% else %}
+        {% include "shared/profile_kudos.html" %}
+      {% endif %}
     </div>
   </div>
 {% endif %}
