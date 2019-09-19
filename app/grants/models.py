@@ -945,10 +945,6 @@ class PhantomFunding(SuperModel):
     def value(self):
         return 5/(self.competing_phantum_funds().count())
 
-    @property
-    def estimated_matching_value(self):
-        return 'TODO'
-
     def to_mock_contribution(self):
         context = self.to_standard_dict()
         context['subscription'] = {

@@ -11,6 +11,8 @@ let gitcoinDonationAddress;
 
 $(document).ready(function() {
 
+  predictCLRMatch();
+
   $('#amount').on('input', () => {
     predictCLRMatch();
   });
@@ -499,7 +501,6 @@ const splitGrantAmount = () => {
 };
 
 const lerp = (x_lower, x_upper, y_lower, y_upper, x) => {
-  console.log(x_lower, x_upper, y_lower, y_upper, x);
   return y_lower + (((y_upper - y_lower) * (x - x_lower)) / (x_upper - x_lower));
 };
 
@@ -546,19 +547,11 @@ const predictCLRMatch = () => {
       x_upper = 1000;
       y_lower = clr_prediction_curve[3];
       y_upper = clr_prediction_curve[4];
-    } else if (1000 < amount && amount <= 10000) {
+    } else {
       x_lower = 1000;
       x_upper = 10000;
       y_lower = clr_prediction_curve[4];
       y_upper = clr_prediction_curve[5];
-    } else {
-      // NOT SURE WHAT TO DO HERE
-      // NEED TO ESTIMATE ONE WITH MAX CONTRIBUTION
-      // CAN WE ASSUME MAX AMOUNT IS 10000 ?
-      x_lower = 10000;
-      x_upper = 0; // WHAT ?
-      y_lower = clr_prediction_curve[5];
-      y_upper = 0; // WHAT ?
     }
 
     predicted_clr = lerp(x_lower, x_upper, y_lower, y_upper, amount);
