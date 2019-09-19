@@ -215,6 +215,8 @@ class SocialAvatar(BaseAvatar):
 @receiver(post_save, sender=SocialAvatar, dispatch_uid="psave_avatar")
 @receiver(post_save, sender=CustomAvatar, dispatch_uid="psave_avatar2")
 def psave_avatar(sender, instance, **kwargs):
+    if kwargs['raw']:  # Skip adding updated_avatar activity if loading avatars from fixture
+        return
     from dashboard.models import Activity
     metadata = {'url': instance.png.url if getattr(instance, 'png', False) else None, }
     Activity.objects.create(profile=instance.profile, activity_type='updated_avatar', metadata=metadata)
