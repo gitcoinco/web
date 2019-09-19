@@ -174,7 +174,7 @@
           </div>
         </div>
 
-        <script type="text/javascript">
+        <script>
           document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ pct_open }}],  [ 'Bounties w. started work', {{ pct_started }}],  [ 'Completed bounties', {{ pct_done }} ] ];
         </script>
       </div>
@@ -455,6 +455,6 @@
     {% include 'shared/activity_scripts.html' %}
 
   </body>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>
 </html>
