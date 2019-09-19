@@ -2463,8 +2463,28 @@ The class bool is a subclass of the class int, and cannot be subclassed.
     Http404: The exception is raised if no associated Bounty is found.</p>
 <p>Returns:
     TemplateResponse: The accept bounty view.</p>
-<h2 id="dashboard.views.social_contribution_email">social_contribution_email</h2>
+<h2 id="dashboard.views.bulk_invite">bulk_invite</h2>
 
+<pre><code class="python">bulk_invite(request)
+</code></pre>
+
+<p>Invite users with matching skills to a bounty.</p>
+<p>Args:
+    bounty_id (int): The primary key of the bounty to be accepted.
+    skills (string): Comma separated list of matching keywords.</p>
+<p>Raises:
+    Http403: The exception is raised if the user is not authenticated or
+             the args are missing.
+    Http401: The exception is raised if the user is not a staff member.</p>
+<p>Returns:
+    Http200: Json response with {'status': 200, 'msg': 'email_sent'}.</p>
+<h3 id="dashboard.views.bulk_invite.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.social_contribution_email">social_contribution_email</h2></p>
 <pre><code class="python">social_contribution_email(request)
 </code></pre>
 
