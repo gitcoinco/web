@@ -2645,7 +2645,7 @@ class Profile(SuperModel):
             int; the success percentage for this users bounties as a positive integer.
 
         """
-        bounties = self.bounties.filter(network=self.get_network()) if self.cascaded_persona == 'hunter' else self.bounties_funded.current()
+        bounties = self.bounties.filter(network=self.get_network()) if self.cascaded_persona == 'hunter' else self.get_sent_bounties.current()
         completed_bounties = bounties.filter(idx_status='done').count()
         expired_bounties = bounties.filter(idx_status='expired').count()
         cancelled_bounties = bounties.filter(idx_status='cancelled').count()
