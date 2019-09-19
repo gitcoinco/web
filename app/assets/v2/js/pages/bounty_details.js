@@ -678,6 +678,7 @@ var show_interest_modal = function() {
       }
 
       let actionPlanForm = $('#action_plan');
+      let discord_username = $('#discord_username');
       let issueMessage = $('#issue_message');
 
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
@@ -715,7 +716,8 @@ var show_interest_modal = function() {
               _alert(response.message, 'info');
               add_interest(document.result['pk'], {
                 issue_message: msg,
-                signed_nda: response.bounty_doc_id
+                signed_nda: response.bounty_doc_id,
+                discord_username: $('#discord_username').length ? $('#discord_username').val() : null
               }).then(success => {
                 if (success) {
                   $(self).attr('href', '/uninterested');
@@ -736,7 +738,8 @@ var show_interest_modal = function() {
           });
         } else {
           add_interest(document.result['pk'], {
-            issue_message: msg
+            issue_message: msg,
+            discord_username: $('#discord_username').length ? $('#discord_username').val() : null
           }).then(success => {
             if (success) {
               $(self).attr('href', '/uninterested');
