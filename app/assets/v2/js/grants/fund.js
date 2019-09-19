@@ -508,7 +508,7 @@ const predictCLRMatch = () => {
   let amount = Number.parseFloat($('#amount').val());
 
   if (amount > 10000) {
-    amount = 10000
+    amount = 10000;
   }
 
   let predicted_clr = 0;
