@@ -114,12 +114,12 @@
         </div>
       </div>
     </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
   </body>
-  {% include 'shared/bottom_notification.html' %}
-  {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts.html' with slim=1 %}
-  {% include 'shared/footer.html' %}
-  {% include 'shared/messages.html' %}
   <script src="{% static 'v2/js/lib/animate-number.min.js' %}"></script>
   <script>
      $('#package-period').change(function() {

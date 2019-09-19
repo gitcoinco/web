@@ -24,18 +24,17 @@
 
     <button type="button" id="nav-transactions" href="{{grant.url}}?tab=activity" class="section-tab {% if tab == "activity" %} active {% endif %}">
       {% trans "ACTIVITY" %}
-      {% if not subscriptions and not cancelled_subscriptions and not contributions %}
-        <span class="nav-badge">0</span>
-      {% endif %}
+      <span class="nav-badge">{{ activity_count }}</span>
     </button>
 
     <button type="button" id="nav-summary" href="{{grant.url}}?tab=updates" class="section-tab {% if tab == "updates" %} active {% endif %}">
       {% trans "UPDATES" %}
+      <span class="nav-badge">0</span>
     </button>
 
     <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">
       {% trans "CONTRIBUTORS" %}
-      <span class="nav-badge">{{ contributions|length }}</span>
+      <span class="nav-badge">{{ contributors|length }}</span>
     </button>
 
   </div>
@@ -73,7 +72,7 @@
     {% if tab == "contributors" %}
     <div id="section-nav-contributors" class="">
       <div class="grant__stakeholders-list d-flex flex-wrap">
-        {% for contribution in contributions %}
+        {% for contribution in contributors %}
           <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' contribution.subscription.contributor_profile.handle %}">
             <div class="mr-2 d-inline-block">
               <img src="{{ contribution.subscription.contributor_profile.avatar_url }}" />

@@ -62,7 +62,9 @@ from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
-from marketing.mails import new_reserved_issue, start_work_approved, start_work_new_applicant, start_work_rejected
+from marketing.mails import (
+    new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
+)
 from marketing.models import Keyword
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -742,6 +744,7 @@ def users_directory(request):
     keywords = programming_languages + programming_languages_full
 
     params = {
+        'is_staff': request.user.is_staff,
         'active': 'users',
         'title': 'Users',
         'meta_title': "",
@@ -749,6 +752,50 @@ def users_directory(request):
         'keywords': keywords
     }
     return TemplateResponse(request, 'dashboard/users.html', params)
+
+
+def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation  ):
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
+
+    if skills:
+        profile_list = profile_list.filter(keywords__icontains=skills)
+
+    if len(bounties_completed) == 2:
+        profile_list = profile_list.annotate(
+            count=Count('fulfilled')
+        ).filter(
+                count__gte=bounties_completed[0],
+                count__lte=bounties_completed[1],
+            )
+
+    if len(leaderboard_rank) == 2:
+        profile_list = profile_list.filter(
+            leaderboard_ranks__isnull=False,
+            leaderboard_ranks__leaderboard='quarterly_earners',
+            leaderboard_ranks__rank__gte=leaderboard_rank[0],
+            leaderboard_ranks__rank__lte=leaderboard_rank[1],
+            leaderboard_ranks__active=True,
+        )
+
+    if rating != 0:
+        profile_list = profile_list.annotate(
+            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+        ).filter(
+            average_rating__gte=rating
+        )
+
+    if organisation:
+        profile_list = profile_list.filter(
+            fulfilled__bounty__network=network,
+            fulfilled__accepted=True,
+            fulfilled__bounty__github_url__icontains=organisation
+        ).distinct()
+
+    return profile_list
+
 
 
 @require_GET
@@ -787,39 +834,13 @@ def users_fetch(request):
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
 
-    if skills:
-        profile_list = profile_list.filter(keywords__icontains=skills)
-
-    if len(bounties_completed) == 2:
-        profile_list = profile_list.annotate(
-            count=Count('fulfilled')
-        ).filter(
-                count__gte=bounties_completed[0],
-                count__lte=bounties_completed[1],
-            )
-
-    if len(leaderboard_rank) == 2:
-        profile_list = profile_list.filter(
-            leaderboard_ranks__isnull=False,
-            leaderboard_ranks__leaderboard='quarterly_earners',
-            leaderboard_ranks__rank__gte=leaderboard_rank[0],
-            leaderboard_ranks__rank__lte=leaderboard_rank[1],
-            leaderboard_ranks__active=True,
-        )
-
-    if rating != 0:
-        profile_list = profile_list.annotate(
-            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).filter(
-            average_rating__gte=rating
-        )
-
-    if organisation:
-        profile_list = profile_list.filter(
-            fulfilled__bounty__network=network,
-            fulfilled__accepted=True,
-            fulfilled__bounty__github_url__icontains=organisation
-        ).distinct()
+    profile_list = users_fetch_filters(
+        profile_list,
+        skills,
+        bounties_completed,
+        leaderboard_rank,
+        rating,
+        organisation)
 
     def previous_worked():
         if current_user.profile.persona_is_funder:
@@ -861,8 +882,7 @@ def users_fetch(request):
         ).order_by('-previous_worked_count')
     for user in this_page:
         previously_worked_with = 0
-        count_work_completed = Activity.objects.filter(profile=user, activity_type='work_done').count()
-        count_work_in_progress = Activity.objects.filter(profile=user, activity_type='start_work').count()
+        count_work_completed = user.get_fulfilled_bounties(network=network).count()
         profile_json = {
             k: getattr(user, k) for k in
             ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
@@ -875,7 +895,6 @@ def users_fetch(request):
         profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
         profile_json['work_done'] = count_work_completed
-        profile_json['work_inprogress'] = count_work_in_progress
         profile_json['verification'] = user.get_my_verified_check
         profile_json['avg_rating'] = user.get_average_star_rating
 
@@ -1147,13 +1166,82 @@ def social_contribution_modal(request):
 
 @csrf_exempt
 @require_POST
+def bulk_invite(request):
+    """Invite users with matching skills to a bounty.
+
+    Args:
+        bounty_id (int): The primary key of the bounty to be accepted.
+        skills (string): Comma separated list of matching keywords.
+
+    Raises:
+        Http403: The exception is raised if the user is not authenticated or
+                 the args are missing.
+        Http401: The exception is raised if the user is not a staff member.
+
+    Returns:
+        Http200: Json response with {'status': 200, 'msg': 'email_sent'}.
+
+    """
+    from .utils import get_bounty_invite_url
+
+    if not request.user.is_staff:
+        return JsonResponse({'status': 401,
+                             'msg': 'Unauthorized'})
+
+    inviter = request.user if request.user.is_authenticated else None
+    skills = ','.join(request.POST.getlist('params[skills][]', []))
+    bounties_completed = request.POST.get('params[bounties_completed]', '').strip().split(',')
+    leaderboard_rank = request.POST.get('params[leaderboard_rank]', '').strip().split(',')
+    rating = int(request.POST.get('params[rating]', '0'))
+    organisation = request.POST.get('params[organisation]', '')
+    bounty_id = request.POST.get('bountyId')
+
+    if None in (skills, bounty_id, inviter):
+        return JsonResponse({'success': False}, status=400)
+
+    bounty = Bounty.objects.current().get(id=int(bounty_id))
+
+    profiles = Profile.objects.prefetch_related(
+                'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
+            ).exclude(hide_profile=True)
+
+    profiles = users_fetch_filters(
+        profiles,
+        skills,
+        bounties_completed,
+        leaderboard_rank,
+        rating,
+        organisation)
+
+    invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
+
+    if len(profiles):
+        for profile in profiles:
+            bounty_invite = BountyInvites.objects.create(
+                status='pending'
+            )
+            bounty_invite.bounty.add(bounty)
+            bounty_invite.inviter.add(inviter)
+            bounty_invite.invitee.add(profile.user)
+            try:
+                msg = request.POST.get('msg', '')
+                share_bounty([profile.email], msg, inviter.profile, invite_url, False)
+            except Exception as e:
+                logging.exception(e)
+    else:
+        return JsonResponse({'success': False}, status=403)
+    return JsonResponse({'status': 200,
+                         'msg': 'email_sent'})
+
+
+@csrf_exempt
+@require_POST
 def social_contribution_email(request):
     """Social Contribution Email
 
     Returns:
         JsonResponse: Success in sending email.
     """
-    from marketing.mails import share_bounty
     from .utils import get_bounty_invite_url
 
     emails = []

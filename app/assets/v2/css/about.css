@@ -113,6 +113,16 @@ h4 {
   margin-bottom: -90px;
 }
 
+#team .avatar.joe {
+  width: 255px;
+  margin-left: -15px;
+}
+
+#team .avatar.joe:hover {
+  width: 265px;
+  margin-left: -15px;
+}
+
 #team .avatar.jobs {
   height: 275px;
 }
@@ -127,7 +137,7 @@ h4 {
 }
 
 #team .social-links a i {
-  font-size: 2.25em;
+  font-size: 1.75em;
   transition: all 0.3s;
   color: black;
 }

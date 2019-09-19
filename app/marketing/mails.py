@@ -530,24 +530,21 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
 def no_applicant_reminder(to_email, bounty):
     from_email = settings.SERVER_EMAIL
     subject = "Get more applicants on your bounty"
-    html, text = render_no_applicant_reminder(to_email=to_email, bounty=bounty)
-    if (live):
-        try:
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                text,
-                html,
-                from_name="No Reply from Gitcoin.co",
-                categories=['marketing', func_name()],
-            )
-        except Exception as e:
-            logger.warning(e)
-            return False
-        return True
-    else:
-        return html
+    html, text = render_no_applicant_reminder(bounty=bounty)
+    try:
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            text,
+            html,
+            from_name="No Reply from Gitcoin.co",
+            categories=['marketing', func_name()],
+        )
+    except Exception as e:
+        logger.warning(e)
+        return False
+    return True
 
 
 def share_bounty(emails, msg, profile, invite_url=None, kudos_invite=False):

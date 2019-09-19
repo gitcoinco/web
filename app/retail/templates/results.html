@@ -174,7 +174,7 @@
           </div>
         </div>
 
-        <script type="text/javascript">
+        <script>
           document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ pct_open }}],  [ 'Bounties w. started work', {{ pct_started }}],  [ 'Completed bounties', {{ pct_done }} ] ];
         </script>
       </div>
@@ -357,8 +357,35 @@
       </div>
     </div>
 
-    <div class="content-block content-block--blue-grey">
-      <div class="container" id="bounty_universe">
+    <div class="content-block content-block--white">
+      <div class="container" id="bounty_jdi">
+        <h2 class="content-block__title">{% trans "Reviews" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+        <div class="row py-1">
+          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+            <p style="text-align: center; font-size: 0.9rem;">Feedback is a gift.  Here are some anonymized reviews left from & to users on the Gitcoin network   </p>
+          </div>
+          <div class="col-12" style="font-size: 14px; max-height: 700px; overflow-y: scroll;">
+            {% for review in reviews %}
+              <div class="pt-2 pb-2" style="{% cycle 'background-color: #eee;' '' %}">
+                <span style="font-style: italic;">{{review.1}}</span>
+                |
+                <span class="static-stars my-3">
+                  {% for i in ratings %}
+                    <i class="far fa-star {% if review.0 != 0 and i <= review.0 %}fas{% endif %}"></i>
+                  {% endfor %}
+                  |
+                  <small class="text-muted">several days ago</small>
+                </span>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="content-block content-block--white">
+      <div class="container" id="">
         <h2 class="content-block__title">{% trans "Community Growth" %} {% if keyword %}({{keyword}}){%endif%}</h2>
         <div class="row py-5">
           <script>
@@ -428,6 +455,6 @@
     {% include 'shared/activity_scripts.html' %}
 
   </body>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>
 </html>
