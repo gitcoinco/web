@@ -516,6 +516,8 @@ const predictCLRMatch = () => {
 
   const contributions_axis = [ 0, 1, 10, 100, 1000, 10000 ];
 
+  let index = 0
+
   if (isNaN(amount)) {
     predicted_clr = clr_prediction_curve[index];
   } else if (contributions_axis.indexOf(amount) >= 0) {

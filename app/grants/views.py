@@ -251,20 +251,6 @@ def grant_details(request, grant_id, grant_slug):
     return TemplateResponse(request, 'grants/detail/index.html', params)
 
 
-def potential_clr(request, grant_id):
-    donation = request.GET.get('donation')
-    if not donation:
-        return JsonResponse({
-            'success': False,
-            'info': 'no donation amount',
-        })
-    grant = Grant.objects.get(pk=grant_id)
-    return JsonResponse({
-        'success': True,
-        'matching': grant.clr_prediction(donation)
-    })
-
-
 @login_required
 def grant_new(request):
     """Handle new grant."""
@@ -610,6 +596,7 @@ def grant_fund(request, grant_id, grant_slug):
         'show_tweet_modal': show_tweet_modal,
         'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
         'grant': grant,
+        'clr_prediction_curve': [c[1] for c in grant.clr_prediction_curve] if grant.clr_prediction_curve else [0, 0, 0, 0, 0, 0],
         'keywords': get_keywords(),
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
         'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
