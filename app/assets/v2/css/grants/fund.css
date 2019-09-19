@@ -24,6 +24,12 @@
   object-fit: cover;
 }
 
+#grants_form .nav-link {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  color: #000;
+}
+
 #grants_form .form__input.valid,
 #grants_form .form__input.error {
   background-position: top 0.5rem right 0.5rem;
@@ -234,6 +240,12 @@
   color: #10cd7a;
   font-size: 12px;
   color: #959595;
+}
+
+#phantom_fund .description i {
+  font-size: 10px;
+  position: relative;
+  top: -1px;
 }
 
 @media (min-width:1140px) and (max-width: 1600px) {
