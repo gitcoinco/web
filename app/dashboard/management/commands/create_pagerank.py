@@ -54,7 +54,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # setup
-        pagerank_offset = 3
+        top_range_pagerank = 10
         num_traversals_of_graph = 4 if settings.DEBUG else 500
         percent_that_go_to_random_walk = 20
         final_results = {}
@@ -173,7 +173,7 @@ class Command(BaseCommand):
             bucket_size = max_pagerank / 100
 
             for key in pagerank.keys():
-                pagerank[key] = pagerank_offset + get_exponent(pagerank[key])
+                pagerank[key] = get_exponent(pagerank[key])
 
             print("")
             print("***************")
@@ -192,13 +192,21 @@ class Command(BaseCommand):
         # print(f"-{len(final_results['funder'])}-")
         # print(f"-{len(final_results['org'])}-")
         # print(f"-{len(final_results['funder'])}-")
-        all_keys = set(list(final_results['funder'].keys()) + list(final_results['org'].keys()) + list(final_results['coder'].keys()))
+        all_keys = []
+        max_pagerank = 0
+        for direction in ['funder', 'coder', 'org']:
+            all_keys = all_keys + list(final_results[direction].keys())
+            max_pagerank = max(max_pagerank, max(final_results[direction].values()))
+        all_keys = set(all_keys)
+
+        pagerank_offset = top_range_pagerank - max_pagerank
+        print(f"offsetting all contributions by {pagerank_offset}")
         i = 0
         for handle in all_keys:
             i += 1
             profile = Profile.objects.get(handle=handle)
-            profile.rank_funder = final_results['funder'].get(handle, 0)
-            profile.rank_org = final_results['org'].get(handle, 0)
-            profile.rank_coder = final_results['coder'].get(handle, 0)
+            profile.rank_funder = final_results['funder'].get(handle, 0) + pagerank_offset
+            profile.rank_org = final_results['org'].get(handle, 0) + pagerank_offset
+            profile.rank_coder = final_results['coder'].get(handle, 0) + pagerank_offset
             profile.save()
-        print("</>")
+        print("fin")
