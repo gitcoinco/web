@@ -23,10 +23,10 @@ import json
 import math
 from itertools import combinations
 
-from grants.models import Contribution, Grant
+from grants.models import Contribution, Grant, PhantomFunding
 
 CLR_DISTRIBUTION_AMOUNT = 100000
-CLR_START_DATE = dt.datetime(2019, 9, 15, 0, 0)
+CLR_START_DATE = dt.datetime(2019, 1, 15, 0, 0)
 
 
 '''
@@ -254,17 +254,24 @@ def predict_clr(random_data=False, save_to_db=False):
             g_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id)
 
             # put in correct format
-            all_contributing_profile_ids = list(set([c.subscription.contributor_profile.id for c in g_contributions]))
+            phantom_funding_profiles = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=CLR_START_DATE)
+            all_contributing_profile_ids = list(set([c.subscription.contributor_profile.id for c in g_contributions] + [p.profile_id for p in phantom_funding_profiles]))
             all_summed_contributions = []
 
             for profile_id in all_contributing_profile_ids:
                 # get sum of contributions per grant for each profile
                 profile_g_contributions = g_contributions.filter(subscription__contributor_profile_id=profile_id)
                 sum_of_each_profiles_contributions = float(sum([c.subscription.get_converted_monthly_amount() for c in profile_g_contributions]))
+
+                phantom_funding = PhantomFunding.objects.filter(created_on__gte=CLR_START_DATE, grant_id=grant.id, profile_id=profile_id)
+                if phantom_funding.exists():
+                    sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
+
                 all_summed_contributions.append({str(profile_id): sum_of_each_profiles_contributions})
 
             # for each grant, list the contributions in key value pairs like {'profile id': sum of contributions}
             contrib_data.append({'id': grant.id, 'contributions': all_summed_contributions})
+
     else:
         # use random contribution data for testing
         contrib_data = generate_random_contribution_data()
