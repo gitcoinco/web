@@ -403,6 +403,7 @@ def discord_settings(request):
     if request.POST:
         test = request.POST.get('test')
         submit = request.POST.get('submit')
+        gitcoin_discord_username = request.POST.get('gitcoin_discord_username', '')
         webhook_url = request.POST.get('webhook_url', '')
         repos = request.POST.get('repos', '')
 
@@ -410,6 +411,7 @@ def discord_settings(request):
             response = validate_discord_integration(webhook_url)
 
         if submit or (response and response.get('success')):
+            profile.gitcoin_discord_username = gitcoin_discord_username
             profile.update_discord_integration(webhook_url, repos)
             profile = record_form_submission(request, profile, 'discord')
             if not response.get('output'):
@@ -419,6 +421,7 @@ def discord_settings(request):
 
     context = {
         'repos': profile.get_discord_repos(join=True) if profile else [],
+        'gitcoin_discord_username': profile.gitcoin_discord_username,
         'is_logged_in': is_logged_in,
         'nav': 'home',
         'active': '/settings/discord',

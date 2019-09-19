@@ -18,7 +18,7 @@
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark g-font-muli gitcoin-background">
   <a class="navbar-brand pt-0 pb-0" href="/bounties/funder">
-    <img id="logo" src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="35" />
+    <img id="logo" src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="35" alt="Logo" />
   </a>
   {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
     <div class="navbar-network ml-xl-5 py-1 px-2 hidden">

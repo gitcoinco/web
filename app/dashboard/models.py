@@ -556,6 +556,13 @@ class Bounty(SuperModel):
         return self.github_org_name
 
     @property
+    def org_profile(self):
+        profiles = Profile.objects.filter(handle__iexact=self.org_name)
+        if profiles.count():
+            return profiles.first()
+        return None
+
+    @property
     def org_display_name(self): # TODO: Remove POST ORGS
         if self.admin_override_org_name:
             return self.admin_override_org_name
@@ -2048,6 +2055,7 @@ class Profile(SuperModel):
     slack_token = models.CharField(max_length=255, default='', blank=True)
     custom_tagline = models.CharField(max_length=255, default='', blank=True)
     slack_channel = models.CharField(max_length=255, default='', blank=True)
+    gitcoin_discord_username = models.CharField(max_length=255, default='', blank=True)
     discord_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     discord_webhook_url = models.CharField(max_length=400, default='', blank=True)
     suppress_leaderboard = models.BooleanField(
@@ -2364,8 +2372,28 @@ class Profile(SuperModel):
         """
         return self.user.is_staff if self.user else False
 
+
+    @property
+    def completed_bounties(self):
+        """Returns bounties completed by user
+
+        Returns:
+            number: number of bounties completed
+
+        """
+        network = self.get_network()
+        return self.bounties.filter(
+            idx_status__in=['done'], network=network).count()
+
+
     @property
     def success_rate(self):
+        """Returns success rate of user on the platform
+
+        Returns:
+            number: sucess rate of user
+
+        """
         network = self.get_network()
         num_completed_bounties = self.bounties.filter(
             idx_status__in=['done'], network=network).count()
@@ -2373,7 +2401,7 @@ class Profile(SuperModel):
             idx_status__in=Bounty.TERMINAL_STATUSES, network=network).count()
         if terminal_state_bounties == 0:
             return 1.0
-        return num_completed_bounties * 1.0 / (terminal_state_bounties + num_completed_bounties)
+        return num_completed_bounties * 1.0 / terminal_state_bounties
 
     @property
     def get_quarterly_stats(self):
@@ -3389,12 +3417,13 @@ class HackathonEvent(SuperModel):
 
     @property
     def bounties(self):
-        return Bounty.objects.filter(event=self).current()
+        return Bounty.objects.filter(event=self, network='mainnet').current()
 
     @property
     def stats(self):
         stats = {
             'range': f"{self.start_date.strftime('%m/%d/%Y')} to {self.end_date.strftime('%m/%d/%Y')}",
+            'logo': self.logo.url if self.logo else None,
             'num_bounties': self.bounties.count(),
             'num_bounties_done': self.bounties.filter(idx_status='done').count(),
             'num_bounties_open': self.bounties.filter(idx_status='open').count(),
@@ -3457,6 +3486,27 @@ class FeedbackEntry(SuperModel):
     def __str__(self):
         """Return the string representation of a Bounty."""
         return f'<Feedback Bounty #{self.bounty} - from: {self.sender_profile} to: {self.receiver_profile}>'
+
+    @property
+    def anonymized_comment(self):
+        import re
+        replace_str = [
+            self.bounty.bounty_owner_github_username,
+            ]
+        for profile in [self.sender_profile, self.receiver_profile, self.bounty.org_profile]:
+            if profile:
+                replace_str.append(profile.handle)
+                name = profile.data.get('name')
+                if name:
+                    name = name.split(' ')
+                    for ele in name:
+                        replace_str.append(ele)
+        
+        review = self.comment
+        for ele in replace_str:
+            review = re.sub(ele, 'NAME', review, flags=re.I)
+
+        return review
 
 
 class Coupon(SuperModel):

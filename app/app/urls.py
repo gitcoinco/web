@@ -112,6 +112,11 @@ urlpatterns = [
         dashboard.views.social_contribution_email,
         name='social_contribution_email'
     ),
+    url(
+        r'^api/v0.1/bulk_invite',
+        dashboard.views.bulk_invite,
+        name='bulk_invite'
+    ),
     url(r'^api/v0.1/bountydocument', dashboard.views.bounty_upload_nda, name='bounty_upload_nda'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),

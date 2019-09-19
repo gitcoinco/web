@@ -39,9 +39,9 @@ class Command(BaseCommand):
         start_time_7_days = timezone.now() - timezone.timedelta(hours=24 * 7)
         end_time_7_days = timezone.now() - timezone.timedelta(hours=24 * 8)
         bounties = Bounty.objects.current().filter(
-            network='mainnet',
             (Q(created_on__range=[end_time_3_days, start_time_3_days]) | Q(created_on__range=[end_time_7_days, start_time_7_days])),
-            idx_status='open'
+            idx_status='open',
+            network='mainnet'
             )
 
         for bounty in [b for b in bounties if b.no_of_applicants == 0]:

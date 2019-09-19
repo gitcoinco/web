@@ -632,6 +632,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
         address = Web3.toChecksumAddress(address)
     except:
         error = "You must enter a valid Ethereum address (so we know where to send your Kudos). Please try again."
+        return None, error, None
 
     # handle form submission
     kudos_transfer = None
@@ -641,7 +642,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
 
     private_key = settings.KUDOS_PRIVATE_KEY if not coupon.sender_pk else coupon.sender_pk
     kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
-    gas_price_confirmation_time = 2 if not coupon.sender_address else 60
+    gas_price_confirmation_time = 1 if not coupon.sender_address else 60
     kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
     kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
     w3 = get_web3(coupon.token.contract.network)
@@ -715,18 +716,12 @@ def receive_bulk(request, secret):
     coupons = BulkTransferCoupon.objects.filter(secret=secret)
     if not coupons.exists():
         raise Http404
-
+    
     coupon = coupons.first()
     _class = request.GET.get('class', '')
     if coupon.num_uses_remaining <= 0:
         messages.info(request, f'Sorry but the coupon for a free kudos has has expired.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
         return redirect(coupon.token.url)
-
-    kudos_transfer = None
-    if request.user.is_authenticated:
-        redemptions = BulkTransferRedemption.objects.filter(redeemed_by=request.user.profile, coupon=coupon)
-        if redemptions.exists():
-            kudos_transfer = redemptions.first().kudostransfer
 
     error = False
     if request.POST:
@@ -737,8 +732,15 @@ def receive_bulk(request, secret):
         if error:
             messages.error(request, error)
 
+    kudos_transfer = None
+    if request.user.is_authenticated:
+        redemptions = BulkTransferRedemption.objects.filter(redeemed_by=request.user.profile, coupon=coupon)
+        if redemptions.exists():
+            kudos_transfer = redemptions.first().kudostransfer
+
     title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
+    tweet_text = f"I just got a {coupon.token.humanized_name} Kudos on @gitcoin.  " if not request.GET.get('tweet', None) else request.GET.get('tweet')
     params = {
         'title': title,
         'card_title': title,
@@ -750,6 +752,6 @@ def receive_bulk(request, secret):
         'class': _class,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
-        'tweet_text': urllib.parse.quote_plus(f"I just got a {coupon.token.humanized_name} Kudos on @gitcoin.  ")
+        'tweet_text': urllib.parse.quote_plus(tweet_text)
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)

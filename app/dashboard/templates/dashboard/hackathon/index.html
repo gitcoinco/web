@@ -5,13 +5,13 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/hackathons/static.css" %}">
-    
+
   </head>
   <body class="g-font-muli hackathon {{ hackathon_id }}">
     <div class="container-fluid px-lg-0">
       <div class="row {{ bg }}">
         <div class="col-12 {{ logo_bg }}">
-          <img class="w-100 my-5 py-4 banner-logo" {% if logo %} src="{{ logo }}"  alt="{{ hackathon_id }}" {% endif %}/>
+          <img class="w-100 my-5 py-4 banner-logo" {% if logo %} src="{{ logo }}" alt="{{ hackathon_id }}" {% endif %}/>
         </div>
         <div class="col-12 py-5 text-center">
           <h1 class="my-5 pt-5 font-weight-semibold {{ banner_text }}">{{ title_banner |safe }}</h1>
@@ -45,7 +45,7 @@
 
         <div class="col-12 text-center my-4 info-links font-title-xl pb-5">
           {% if discord_link %}
-            <p class="d-lg-inline"> <a class="mx-5" href="{{ discord_link}}">Join The Discord</a> </p> 
+            <p class="d-lg-inline"> <a class="mx-5" href="{{ discord_link}}">Join The Discord</a> </p>
           {% endif %}
           {% if prize_link %}
             <p class="d-lg-inline"> <a class="mx-5" href="{{ prize_link }}">View Prizes</a> </p>
@@ -91,22 +91,22 @@
       {% if notification %}
         <div class="row">
           <div class="col-12 bottom_notification {{ primary_color }}">
-            <p class="my-auto pl-4 py-2 font-subheader font-weight-semibold">{{ notification |safe }}</p> 
+            <p class="my-auto pl-4 py-2 font-subheader font-weight-semibold">{{ notification |safe }}</p>
           </div>
         </div>
       {% endif %}
-      
+
       {% for section in sections %}
         <div class="row section py-5 font-bg-color text-center {{ section.bg }}">
-          
+
           <div class="col-12 my-4 text-center g-fadein" data-fade-duration=700>
             <h2 class="mt-lg-5 pt-3">{{ section.title }}</h2>
             <p class="border mx-auto"></p>
           </div>
-          
+
           {% if section.img %}
             <div class="col-12 my-4 g-fadein" data-fade-duration=700>
-              <img src="{{ section.img }}" />
+              <img src="{{ section.img }}" alt="{{ section.title }}" />
             </div>
           {% endif %}
 
@@ -129,7 +129,7 @@
             <div class="col-12 text-center my-4 info-links font-title-xl g-fadein" data-fade-duration=700>
               <p>
                 {% if discord_link %}
-                  <p class="d-lg-inline"> <a class="mx-5" href="{{ discord_link}}">Join The Discord</a> </p> 
+                  <p class="d-lg-inline"> <a class="mx-5" href="{{ discord_link}}">Join The Discord</a> </p>
                 {% endif %}
                 {% if prize_link %}
                   <p class="d-lg-inline"> <a class="mx-5" href="{{ prize_link }}">View Prizes</a> </p>
@@ -138,24 +138,24 @@
                   <p class="d-lg-inline"> <a class="mx-5" href="{{ results_link }}">View Past Results</a> </p>
                 {% endif %}
               </p>
-    
+
               {% if starter_guide %}
                 <p class="font-title my-5 pb-2">
                   or view our <a href="{{starter_guide }}">Get Started Guide</a>
                 </p>
               {% endif %}
             </div>
-          {% endif %}         
+          {% endif %}
         </div>
       {% endfor %}
     </div>
 
     {% if notification %}
       <div class="row bottom_notification {{ primary_color }}">
-        <p class="my-auto pl-4 py-2 font-subheader font-weight-semibold">{{ notification |safe }}</p> 
+        <p class="my-auto pl-4 py-2 font-subheader font-weight-semibold">{{ notification |safe }}</p>
       </div>
     {% endif %}
-  
+
     <footer class="py-2">
       <div class="d-flex align-items-center justify-content-around p-5 flex-column flex-md-row">
         {% for footer_link in footer_links %}
