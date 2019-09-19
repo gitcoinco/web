@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
-import math
 from datetime import timedelta
 from decimal import Decimal
 
