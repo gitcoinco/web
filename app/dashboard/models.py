@@ -3415,7 +3415,20 @@ class Profile(SuperModel):
         context['avg_rating'] = profile.get_average_star_rating()
         context['suppress_sumo'] = True
         context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count() + profile.get_org_kudos.count()
-        context['portfolio'] = list(profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True).values_list('pk', flat=True))
+
+        # portfolio
+        portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
+        portfolio_keywords = {}
+        for fulfillment in portfolio_bounties:
+            for keyword in fulfillment.bounty.keywords_list:
+                keyword = keyword.lower()
+                if keyword not in portfolio_keywords.keys():
+                    portfolio_keywords[keyword] = 0
+                portfolio_keywords[keyword] += 1
+        sorted_portfolio_keywords = [(k, portfolio_keywords[k]) for k in sorted(portfolio_keywords, key=portfolio_keywords.get, reverse=True)]
+
+        context['portfolio'] = list(portfolio_bounties.values_list('pk', flat=True))
+        context['portfolio_keywords'] = sorted_portfolio_keywords
         context['earnings_total'] = round(sum(Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True)))
         context['spent_total'] = round(sum(Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True)))
         if context['earnings_total'] > 1000:
