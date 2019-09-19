@@ -561,6 +561,9 @@ def build_stat_results(keyword=None):
     context['last_month_amount_hourly_business_hours'] = context['last_month_amount_hourly'] / 0.222
     context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.all()]
     context['hackathon_total'] = sum([ele[1]['total_volume'] for ele in context['hackathons']])
-
+    from dashboard.models import FeedbackEntry
+    reviews = FeedbackEntry.objects.exclude(comment='').filter(created_on__lt=(timezone.now() - timezone.timedelta(days=7))).order_by('-created_on')[0:15]
+    context['reviews'] = [(ele.rating, ele.anonymized_comment) for ele in reviews]
+    context['ratings'] = [1, 2, 3, 4, 5]
 
     return context

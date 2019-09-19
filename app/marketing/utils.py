@@ -22,6 +22,7 @@ import sys
 from datetime import datetime, timedelta
 
 from django.conf import settings
+from django.contrib import messages
 from django.templatetags.static import static
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
@@ -319,6 +320,7 @@ def handle_marketing_callback(key, request):
         if callback_reference.split(':')[0] == 'add_to_group':
             if request.user.is_authenticated:
                 from django.contrib.auth.models import Group
+                messages.info(request, "You have redeemed your $5.00 Gitcoin Grants voucher. Browse grants on gitcoin.co/grants and click 'fund' to spend this voucher!")
                 group_name = callback_reference.split(':')[1]
                 group = Group.objects.get(name=group_name)
                 group.user_set.add(request.user)
