@@ -505,7 +505,12 @@ const lerp = (x_lower, x_upper, y_lower, y_upper, x) => {
 
 const predictCLRMatch = () => {
 
-  const amount = Number.parseFloat($('#amount').val());
+  let amount = Number.parseFloat($('#amount').val());
+
+  if (amount > 10000) {
+    amount = 10000
+  }
+
   let predicted_clr = 0;
 
   const contributions_axis = [ 0, 1, 10, 100, 1000, 10000 ];
@@ -534,8 +539,8 @@ const predictCLRMatch = () => {
     } else if (10 < amount && amount < 100) {
       x_lower = 10;
       x_upper = 100;
-      y_lower = prediction_curve[2];
-      y_upper = prediction_curve[3];
+      y_lower = clr_prediction_curve[2];
+      y_upper = clr_prediction_curve[3];
     } else if (100 < amount && amount < 1000) {
       x_lower = 100;
       x_upper = 1000;
