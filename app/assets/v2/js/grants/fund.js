@@ -30,7 +30,7 @@ $(document).ready(function() {
 
   updateSummary();
 
-  $('.nav-item').click(function(e) {
+  $('#grants_form .nav-item').click(function(e) {
     $('.nav-item a').removeClass('active');
     $(this).find('a').addClass('active');
     var targetid = $(this).find('a').data('target');
