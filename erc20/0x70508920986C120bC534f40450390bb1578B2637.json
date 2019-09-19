@@ -1,0 +1,21 @@
+{
+  "symbol": "JADE",
+  "address": "0x70508920986C120bC534f40450390bb1578B2637",
+  "overview":{
+        "en": "Jade Assets Digital Blockchain",
+        "zh": ""
+  },
+  "email": "jadechain666@gmail.com",
+  "website": "https://www.jadechain.net",
+  "whitepaper": "http://whitepaper.jadechain.net/file.pdf",
+  "links": {
+    "blog": "https://weibo.com/jadechain/home",
+    "twitter": "https://twitter.com/jadechain",
+    "telegram": "https://t.me/joinchat/your-awesome-project",
+    "github": "https://github.com/your-awesome-project",
+    "facebook": "https://www.facebook.com/your-awesome-project",
+    "reddit": "https://www.reddit.com/r/your-awesome-project/",
+    "slack": "https://your-awesome-project.slack.com",
+    "medium": "https://medium.com/your-awesome-project"
+  }
+}
