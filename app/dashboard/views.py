@@ -1223,7 +1223,6 @@ def bulk_invite(request):
             bounty_invite.bounty.add(bounty)
             bounty_invite.inviter.add(inviter)
             bounty_invite.invitee.add(profile.user)
-            # emails.append(profile.email)
             try:
                 msg = request.POST.get('msg', '')
                 share_bounty([profile.email], msg, inviter.profile, invite_url, False)

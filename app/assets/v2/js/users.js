@@ -122,8 +122,8 @@ Vue.mixin({
     },
     sendInviteAll: function(bountyUrl) {
       let vm = this;
-      let apiUrlInvite = '/api/v0.1/bulk_invite/';
-      let postInvite = fetchData(
+      const apiUrlInvite = '/api/v0.1/bulk_invite/';
+      const postInvite = fetchData(
         apiUrlInvite,
         'POST',
         { 'params': vm.params, 'bountyId': bountyUrl},
@@ -144,7 +144,7 @@ Vue.mixin({
     },
     getIssueDetails: function(url) {
       let vm = this;
-      let apiUrldetails = `/actions/api/v0.1/bounties/?github_url=${encodeURIComponent(url)}`;
+      const apiUrldetails = `/actions/api/v0.1/bounties/?github_url=${encodeURIComponent(url)}`;
 
       vm.errorIssueDetails = undefined;
 
@@ -154,7 +154,7 @@ Vue.mixin({
         return;
       }
       vm.issueDetails = undefined;
-      let getIssue = fetchData(apiUrldetails, 'GET');
+      const getIssue = fetchData(apiUrldetails, 'GET');
 
       $.when(getIssue).then((response) => {
         if (response[0]) {
