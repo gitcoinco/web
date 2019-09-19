@@ -30,12 +30,6 @@
       </li>
     {% endif %}
     <li class='admin_only'>
-      <label id="tooltip">
-        <i class='fa fa-info-circle' title="REP is a calculation of how much value this user has created for the Gitcoin network"></i>
-      </label>
-      REP: <b>{{profile.rep}}</b>
-    </li>
-    <li class='admin_only'>
       Avg Hourly Rate <b>${{profile.avg_hourly_rate|floatformat:2}}</b>
     </li>
   {% endif %}
