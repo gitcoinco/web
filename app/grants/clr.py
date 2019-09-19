@@ -26,7 +26,7 @@ from itertools import combinations
 from grants.models import Contribution, Grant
 
 CLR_DISTRIBUTION_AMOUNT = 100000
-CLR_START_DATE = dt.datetime(2019, 1, 16, 0, 0)
+CLR_START_DATE = dt.datetime(2019, 9, 15, 0, 0)
 
 
 '''
