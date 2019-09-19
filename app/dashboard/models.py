@@ -2613,8 +2613,7 @@ class Profile(SuperModel):
             has_action_during_window = iterdate.strftime('%m/%d/%Y') in action_dates
             if has_action_during_window:
                 this_streak += 1
-                if this_streak > max_streak:
-                    max_streak = this_streak
+                max_streak = max(max_streak, this_streak)
             else:
                 this_streak = 0
 
@@ -3431,6 +3430,14 @@ class Profile(SuperModel):
         context['avg_rating'] = profile.get_average_star_rating()
         context['suppress_sumo'] = True
         context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count() + profile.get_org_kudos.count()
+        context['total_kudos_sent_count'] = profile.sent_kudos.count()
+        context['total_kudos_received_count'] = profile.received_kudos.count()
+        context['total_grant_created'] = profile.grant_admin.count()
+        context['total_grant_contributions'] = profile.grant_contributor.filter(subscription_contribution__success=True).values_list('subscription_contribution').count() + profile.grant_phantom_funding.count()
+
+        context['total_tips_sent'] = profile.get_sent_tips.count()
+        context['total_tips_received'] = profile.get_my_tips.count()
+
 
         # portfolio
         portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
@@ -3445,8 +3452,12 @@ class Profile(SuperModel):
 
         context['portfolio'] = list(portfolio_bounties.values_list('pk', flat=True))
         context['portfolio_keywords'] = sorted_portfolio_keywords
-        context['earnings_total'] = round(sum(Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True)))
-        context['spent_total'] = round(sum(Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False).values_list('value_usd', flat=True)))
+        earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False)
+        earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False)
+        context['earnings_total'] = round(sum(earnings_to.values_list('value_usd', flat=True)))
+        context['spent_total'] = round(sum(earnings_from.values_list('value_usd', flat=True)))
+        context['earnings_count'] = earnings_to.count()
+        context['spent_count'] = earnings_from.count()
         if context['earnings_total'] > 1000:
             context['earnings_total'] = f"{round(context['earnings_total']/1000)}k"
         if context['spent_total'] > 1000:

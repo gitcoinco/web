@@ -21,24 +21,24 @@
 <div class="col-12 col-lg-4">
   <div class="profile-header__stats profile-header__stats--contributor card mb-4">
     <div class="card-header font-subheader">
-      {% if scoreboard_position_org %}
-        <b>#{{ scoreboard_position_org }}</b> 
-      {% else %}
-      {% endif %}
-      <a style="color: #707070;" href="{% url 'leaderboard' link %}orgs">
-        {% trans "Organization" %}
-      </a>
-      {% include "shared/profile_rank_link.html" with link='orgs' %}
+      <b>{{ profile.rank_org }}</b> 
+      {% trans "OrganizationRank" %}
+        <label id="tooltip">
+          <i class='fa fa-info-circle' title="OrganizationRank is Gitcoin's modified version of PageRank, which measures the influence of different Orgs on the network.  OrganizationRank is scored on a range between 1 (lowest) and 10 (highest)."></i>
+        </label>
     </div>
     <div class="card-body font-subheader">
       <ul>
         <li><b>{{ count_bounties_on_repo }}</b> {% trans "bounties" %}</li>
-        <li><b>{{ sum_eth_on_repos|floatformat:2 }}</b> {% trans "ETH" %}</li>
+        <li><b>{{ sum_eth_on_repos|floatformat:2 }}</b> {% trans "ETH" %} spent</li>
         <li>
-          <label id="tooltip">
-            <i class='fa fa-info-circle' title="OrgRank is Gitcoin's modified version of PageRank, which measures the influence of different Orgs on the network.  OrgRank is scored on a range between 1 (lowest) and 10 (highest)."></i>
-          </label>
-          OrgRank: <b>{{profile.rank_org}}</b>
+        {% if scoreboard_position_org %}
+          <li>
+            <b>#{{ scoreboard_position_org }}</b>
+            {% trans "on leaderboard" %}
+            <a style="color: #707070;" href="{% url 'leaderboard' orgs %}">(view)</a>
+          </li>
+          {% endif %}
         </li>
 
         <li class="works_with_list">

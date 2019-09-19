@@ -4,24 +4,27 @@
     <div class="col-12 col-lg-6">
       <div class="profile-header__stats profile-header__stats--contributor card mb-4">
         <div class="card-header font-subheader">
-          {% if scoreboard_position_contributor %}
-            <b>#{{ scoreboard_position_contributor }}</b>
-          {% else %}
-          {% endif %}
-          <a style="color: #707070;" href="{% url 'leaderboard' link %}">
-            {% trans "Contributor" %}
-          </a>
-          {% include "shared/profile_rank_link.html" with link='earners' %}
+          <b>{{ profile.rank_coder }}</b>
+          {% trans "ContributorRank" %}
+          <i class='fa fa-info-circle' title="ContributorRank is Gitcoin's modified version of PageRank, which measures the influence of different Contributors on the network.  ContributorRank is scored on a range between 1 (lowest) and 10 (highest)."></i>
         </div>
         <div class="card-body">
           <ul>
-            <li>
-              <b>{{ count_bounties_completed }}</b>
-              {% trans "bounties completed" %}
-            </li>
+            {% if is_my_profile %}
+              <li>
+                Persona: <b>Contributor</b>   <a id="rank_link" href="javascript:show_persona_modal();">(Toggle)</a>
+              </li>
+            {% endif %}
             <li>
               <b>${{ earnings_total }}</b>
               {% trans "earned" %}
+            </li>
+            <li>
+              <b>{{ earnings_count }}</b> transaction{{earnings_count|pluralize}}
+            </li>
+            <li>
+              - <b>{{ count_bounties_completed }}</b>
+              bounties completed
             </li>
             {% if no_times_been_removed %}
               <li>
@@ -29,6 +32,25 @@
                 <b>{{ no_times_been_removed }}</b>
                 {% trans "bounties" %}
               </li>
+            {% endif %}
+            <li>
+              - <b>{{ total_tips_received }}</b>
+              tip{{total_tips_received|pluralize}} received
+            </li>
+            <li>
+              - <b>{{ total_kudos_received_count }}</b>
+              kudo{{total_kudos_received_count|pluralize}} received
+            </li>
+            <li>
+              - <b>{{ total_grant_created }}</b>
+              grant{{total_grant_created|pluralize}} created
+            </li>
+            {% if scoreboard_position_contributor %}
+            <li>
+              <b>#{{ scoreboard_position_contributor }}</b>
+              {% trans "on leaderboard" %}
+              <a style="color: #707070;" href="{% url 'leaderboard' link %}">(view)</a>
+            </li>
             {% endif %}
             <li class="works_with_list">
               {% if works_with_collected|length %}
