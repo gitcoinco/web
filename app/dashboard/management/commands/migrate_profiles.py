@@ -60,3 +60,6 @@ class Command(BaseCommand):
         for instance in Profile.objects.filter(hide_profile=False):
             instance.calculate_all()
             instance.save()
+
+        # three
+        management.call_command('create_pagerank')

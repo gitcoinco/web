@@ -14,6 +14,13 @@
       Success Rate: <b>{{profile.success_rate}}</b>% 
     </li>
   {% endif %}
+    <li>
+      <label id="tooltip">
+        <i class='fa fa-info-circle' title="{% if profile.cascaded_persona == "funder" %}Funder{%else%}Coder{%endif%}Rank is Gitcoin's modified version of PageRank, which measures the influence of different {% if profile.cascaded_persona == "funder" %}Funder{%else%}Coder{%endif%}s on the network.  {% if profile.cascaded_persona == "funder" %}Funder{%else%}Coder{%endif%}Rank is scored on a range between 1 (lowest) and 10 (highest)."></i>
+      </label>
+      {% if profile.cascaded_persona == "funder" %}Funder{%else%}Coder{%endif%}Rank: <b>{% if profile.cascaded_persona == "funder" %}{{profile.rank_funder}}{%else%}{{profile.rank_coder}}{%endif%}</b>
+    </li>
+
   <li>
     <label id="tooltip">
       <i class='fa fa-info-circle' title="Gitcoin's perception of how reliable this user is.
@@ -40,7 +47,7 @@
       <label id="tooltip">
         <i class='fa fa-info-circle' title="How many weekdays in a row has the user been active on Gitcoin?"></i>
       </label>
-        Longest activity streak: <b>{{profile.longest_streak}} weekdays</b>
+        Longest Streak: <b>{{profile.longest_streak}} weekdays</b>
     </li>
   {% endif %}
   <li class=''>

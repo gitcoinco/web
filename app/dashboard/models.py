@@ -2184,6 +2184,9 @@ class Profile(SuperModel):
     success_rate = models.IntegerField(default=0)
     reliability = models.CharField(max_length=10, blank=True, help_text=_('the users reliability level (high, medium, unproven)'))
     as_dict = JSONField(default=dict, blank=True)
+    rank_funder = models.IntegerField(default=0)
+    rank_org = models.IntegerField(default=0)
+    rank_coder = models.IntegerField(default=0)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2371,7 +2374,6 @@ class Profile(SuperModel):
             return 'hunter'
         return 'hunter'
 
-
     @property
     def tips(self):
         on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
@@ -2380,7 +2382,20 @@ class Profile(SuperModel):
 
     def calculate_all(self):
         # calculates all the info needed to make the profile_great
+
+        # give the user a profile header if they have not yet selected one
+        if not self.profile_wallpaper:
+            from dashboard.helpers import load_files_in_directory
+            import random
+            try:
+                wallpapers = load_files_in_directory('wallpapers')
+                self.profile_wallpaper = f"/static/wallpapers/{random.choice(wallpapers)}"
+            except:
+                # fix for travis, which has no static dir
+                pass
+
         self.calculate_and_save_persona()
+        self.actions_count = self.get_num_actions
         self.activity_level = self.calc_activity_level()
         self.longest_streak = self.calc_longest_streak()
         self.num_repeated_relationships = self.calc_num_repeated_relationships()
@@ -3491,18 +3506,6 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace(' ', '')
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
-    instance.actions_count = instance.get_num_actions
-
-    # give the user a profile header if they have not yet selected one
-    if not instance.profile_wallpaper:
-        from dashboard.helpers import load_files_in_directory
-        import random
-        try:
-            wallpapers = load_files_in_directory('wallpapers')
-            instance.profile_wallpaper = f"/static/wallpapers/{random.choice(wallpapers)}"
-        except:
-            # fix for travis, which has no static dir
-            pass
 
 
 @receiver(user_logged_in)

@@ -85,6 +85,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 10 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash output_gas_viz  >> /var/log/gitcoin/output_gas_viz.log  2>&1
 */15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash check_gh_ratelimit  >> /var/log/gitcoin/gh_ratelimit.log  2>&1
 1 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash process_faucet_requests  >> /var/log/gitcoin/process_faucet_requests.log  2>&1
+1 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash create_pagerank  > /var/log/gitcoin/create_pagerank.log  2>&1
 
 
 ## USERS

@@ -34,6 +34,13 @@
       <ul>
         <li><b>{{ count_bounties_on_repo }}</b> {% trans "bounties" %}</li>
         <li><b>{{ sum_eth_on_repos|floatformat:2 }}</b> {% trans "ETH" %}</li>
+        <li>
+          <label id="tooltip">
+            <i class='fa fa-info-circle' title="OrgRank is Gitcoin's modified version of PageRank, which measures the influence of different Orgs on the network.  OrgRank is scored on a range between 1 (lowest) and 10 (highest)."></i>
+          </label>
+          OrgRank: <b>{{profile.rank_org}}</b>
+        </li>
+
         <li class="works_with_list">
           {% if works_with_org|length %}
             <span class="font-body"><i class="fa fa-code"></i> {% trans "Contributors" %}:</span>
