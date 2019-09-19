@@ -16,6 +16,12 @@
   {% endif %}
   <li>
     <label id="tooltip">
+      <i class='fa fa-info-circle' title="Gitcoin's perception of how reliable this user is."></i>
+    </label>
+    Reliability: <b>{{profile.reliability}}</b>
+  </li>
+  <li>
+    <label id="tooltip">
       <i class='fa fa-info-circle' title="The number of users with whom this user has worked with more than one time.."></i>
     </label>
     Repeat {% if profile.persona_is_funder %}Workers{%else%}Funders{%endif%}: <b>{{profile.num_repeated_relationships}}</b>

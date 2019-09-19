@@ -2181,7 +2181,7 @@ class Profile(SuperModel):
     num_repeated_relationships = models.IntegerField(default=0)
     avg_hourly_rate = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     success_rate = models.IntegerField(default=0)
-    rep = models.IntegerField(default=0)
+    reliability = models.CharField(max_length=10, blank=True, help_text=_('the users reliability level (high, medium, unproven)'))
     as_dict = JSONField(default=dict, blank=True)
 
     objects = ProfileQuerySet.as_manager()
@@ -2385,7 +2385,7 @@ class Profile(SuperModel):
         self.num_repeated_relationships = self.calc_num_repeated_relationships()
         self.avg_hourly_rate = self.calc_avg_hourly_rate()
         self.success_rate = self.calc_success_rate()
-        self.rep = self.calc_rep_number()
+        self.reliability = self.calc_reliability_ranking() # must be calc'd last
         self.as_dict = json.loads(json.dumps(self.to_dict()))
         self.last_calc_date = timezone.now() + timezone.timedelta(seconds=1)
 
@@ -2656,13 +2656,93 @@ class Profile(SuperModel):
 
         return int(completed_bounties * 100 / eligible_bounties)
 
-    def calc_rep_number(self):
+    def calc_reliability_ranking(self):
         """
 
         Returns:
-            the REP points that the user has.
+            the reliabiliyt ranking that the user has.
 
         """
+
+        # thresholds
+        high_threshold = 3
+        med_threshold = 2
+        new_threshold_days = 7
+        rating_deduction_threshold = 0.7
+        rating_merit_threshold = 0.95
+        abandon_deduction_threshold = 0.85
+        abandon_merit_threshold = 0.95
+        abandon_merit_earnings_threshold = med_threshold
+        abandon_slash_multiplier = 2
+        success_rate_deduction_threshold = 0.65
+        success_ratemerit_threshold = 0.85
+        num_repeated_relationships_merit_threshold = 3
+
+        # setup
+        base_rating = 0
+        deductions = 0
+
+
+        #calculate base rating
+        num_earnings = self.earnings.count() + self.sent_earnings.count()
+        if num_earnings == 0:
+            return "Unproven"
+
+        if num_earnings > high_threshold:
+            base_rating = 3 # high
+        elif num_earnings > med_threshold:
+            base_rating = 2 # medium
+        else:
+            base_rating = 1 # low
+
+        # calculate deductions
+
+        ## ratings deduction
+        num_5_star_ratings = self.feedbacks_got.filter(rating=5).count()
+        num_subpar_star_ratings = self.feedbacks_got.filter(rating__lt=4).count()
+        total_rating = num_subpar_star_ratings + num_5_star_ratings
+        if total_rating:
+            if num_5_star_ratings/total_rating < rating_deduction_threshold:
+                deductions -= 1
+            if num_5_star_ratings/total_rating > rating_merit_threshold:
+                deductions += 1
+
+        ## abandonment deduction
+        total_removals = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff()+ (self.no_times_slashed_by_staff() * abandon_slash_multiplier)
+        if total_rating:
+            if total_removals/num_earnings < abandon_deduction_threshold:
+                deductions -= 1
+            if num_earnings > abandon_merit_earnings_threshold and total_removals/num_earnings > abandon_merit_threshold:
+                deductions += 1
+
+        ## success rate deduction
+        if self.success_rate != -1:
+            if self.success_rate < success_rate_deduction_threshold:
+                deductions -= 1
+            if self.success_rate > success_ratemerit_threshold:
+                deductions += 1
+
+        ## activity level deduction
+        if self.activity_level == "High":
+                deductions += 1
+
+        ## activity level deduction
+        if self.num_repeated_relationships > num_repeated_relationships_merit_threshold:
+                deductions += 1
+
+        # calculate final rating
+        final_rating = base_rating + deductions
+        if final_rating >= 5:
+            return "Very High"
+        elif final_rating >= 3:
+            return "High"
+        elif final_rating >= 2:
+            return "Medium"
+        elif final_rating >= 1:
+            return "Low"
+        elif final_rating <= 1:
+            return "Very Low"
+
         return 0
 
     @property
