@@ -1,7 +1,7 @@
 {% extends 'ens/base.html' %}
 {% load i18n static %}
 {% block 'scripts' %}
-  <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+  <script src="{% url 'javascript-catalog' %}"></script>
   <script src="{% static 'v2/js/shared.js' %}"></script>
   <script src="{% static 'ens/index.js' %}"></script>
   {% block 'ens_script' %}
