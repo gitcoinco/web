@@ -84,7 +84,7 @@ from .notifications import (
 )
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_unrated_bounties_count, get_web3,
-    has_tx_mined, re_market_bounty, record_user_action_on_interest, web3_process_bounty,
+    has_tx_mined, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -1691,6 +1691,26 @@ def helper_handle_remarket_trigger(request, bounty):
             messages.warning(request, _('Only staff or the funder of this bounty may do this.'))
 
 
+def helper_handle_release_bounty_to_public(request, bounty):
+    release_to_public = request.GET.get('release_to_public', False)
+    if release_to_public:
+        is_bounty_status_reserved = bounty.status == 'reserved'
+        if is_bounty_status_reserved:
+            is_staff = request.user.is_staff
+            is_bounty_reserved_for_user = bounty.reserved_for_user_handle == request.user.username.lower()
+            if is_staff or is_bounty_reserved_for_user:
+                success = release_bounty_to_the_public(bounty)
+                if success:
+                    messages.success(request, _('You have successfully released this bounty to the public'))
+                else:
+                    messages.warning(request, _('An error has occurred whilst trying to release. Please try again later'))
+            else:
+                messages.warning(request, _('Only staff or the user that has been reserved can release this bounty'))
+        else:
+            messages.warning(request, _('This functionality is only for reserved bounties'))
+
+
+
 @login_required
 def bounty_invite_url(request, invitecode):
     """Decode the bounty details and redirect to correct bounty
@@ -1809,6 +1829,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 helper_handle_suspend_auto_approval(request, bounty)
                 helper_handle_mark_as_remarket_ready(request, bounty)
                 helper_handle_remarket_trigger(request, bounty)
+                helper_handle_release_bounty_to_public(request, bounty)
                 helper_handle_admin_contact_funder(request, bounty)
                 helper_handle_override_status(request, bounty)
         except Bounty.DoesNotExist:

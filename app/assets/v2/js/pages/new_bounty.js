@@ -421,8 +421,20 @@ $(function() {
 
 });
 
-$('#reservedFor').on('select2:select', function(e) {
+$('#reservedFor').on('select2:select', (e) => {
   $('#permissionless').click();
+  $('#releaseAfterFormGroup').show();
+  $('#releaseAfter').attr('required', true);
+});
+
+$('#reservedFor').on('select2:unselect', (e) => {
+  $('#releaseAfterFormGroup').hide();
+  $('#releaseAfter').attr('required', false);
+  $('#releaseAfterFormGroup').addClass('releaseAfterFormGroupRequired');
+});
+
+$('#releaseAfter').on('change', () => {
+  $('#releaseAfterFormGroup').removeClass('releaseAfterFormGroupRequired');
 });
 
 $('#sync-issue').on('click', function(event) {
@@ -566,6 +578,7 @@ $('#submitBounty').validate({
     var decimalDivisor = Math.pow(10, decimals);
     var expirationTimeDelta = $('#expirationTimeDelta').data('daterangepicker').endDate.utc().unix();
     let reservedFor = $('.username-search').select2('data')[0];
+    let releaseAfter = $('#releaseAfter').children('option:selected').val();
     let inviteContributors = $('#invite-contributors.js-select2').select2('data').map((user) => {
       return user.profile__id;
     });
@@ -587,6 +600,7 @@ $('#submitBounty').validate({
       repo_type: data.repo_type,
       featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
       reservedFor: reservedFor ? reservedFor.text : '',
+      releaseAfter: releaseAfter !== 'Release To Public After' ? releaseAfter : '',
       tokenName,
       invite: inviteContributors,
       bounty_categories: data.bounty_category

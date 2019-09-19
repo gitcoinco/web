@@ -882,3 +882,17 @@ def apply_new_bounty_deadline(bounty, deadline, auto_save = True):
     result['msg'] = base_result_msg + " " + result['msg']
 
     return result
+
+
+def release_bounty_to_the_public(bounty, auto_save = True):
+    if bounty:
+        bounty.reserved_for_user_handle = None
+        bounty.reserved_for_user_from = None
+        bounty.reserved_for_user_expiration = None
+
+        if auto_save:
+            bounty.save()
+
+        return True
+    else:
+        return False

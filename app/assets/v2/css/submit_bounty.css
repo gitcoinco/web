@@ -227,3 +227,13 @@ input:read-only {
 .letter-spacing {
   letter-spacing: 0.1em;
 }
+
+.release-after-form-group {
+  display: none;
+  margin-top: 0.75em;
+}
+
+.release-after-form-group-required {
+  border: 1px solid red;
+  padding: 5px;
+}
