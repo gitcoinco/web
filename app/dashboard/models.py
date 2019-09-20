@@ -2881,6 +2881,9 @@ class Profile(SuperModel):
         except Exception:
             pass
 
+        if sum_type == 'collected':
+            eth_sum = eth_sum + sum([amount.value_in_eth for amount in self.tips])
+
         return eth_sum
 
     def get_all_tokens_sum(self, sum_type='collected', network='mainnet', bounties=None):
@@ -3070,7 +3073,7 @@ class Profile(SuperModel):
             works_with_org = self.get_who_works_with(work_type='org', bounties=orgs_bounties)
 
         total_funded = funded_bounties.count()
-        total_fulfilled = fulfilled_bounties.count()
+        total_fulfilled = fulfilled_bounties.count() + self.tips.count()
         desc = self.get_desc(funded_bounties, fulfilled_bounties)
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
         params = {
