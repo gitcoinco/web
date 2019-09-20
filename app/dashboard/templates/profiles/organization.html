@@ -27,14 +27,14 @@
     </div>
     <div class="card-body font-subheader">
       <ul>
-        <li><b>{{ count_bounties_on_repo }}</b> {% trans "bounties" %}</li>
-        <li><b>{{ sum_eth_on_repos|floatformat:2 }}</b> {% trans "ETH" %} spent</li>
+        <li><b>{{ count_bounties_on_repo }}</b> {% trans "Bounties" %}</li>
+        <li><b>{{ sum_eth_on_repos|floatformat:2 }}</b> {% trans "ETH" %} Spent</li>
         <li>
         {% if scoreboard_position_org %}
           <li>
             <b>#{{ scoreboard_position_org }}</b>
-            {% trans "on leaderboard" %}
-            <a style="color: #707070;" href="{% url 'leaderboard' orgs %}">(view)</a>
+            {% trans "On Leaderboard" %}
+          <a style="font-size: 12px; color: black; text-decoration: underline;" href="{% url 'leaderboard' orgs %}">(View)</a>
           </li>
           {% endif %}
         </li>

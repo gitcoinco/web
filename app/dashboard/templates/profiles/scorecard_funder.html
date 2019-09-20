@@ -16,31 +16,38 @@
               </li>
             {% endif %}
             <li>
-              <b>${{ spent_total }}</b> {% trans "funded" %}
+              <b>{{ spent_count }}</b> Transaction{{spent_count|pluralize}}
+             <a href="#" style="color: black; text-decoration: underline; font-size: 12px;" data-toggle="collapse" data-target="#tx_details">(Details)
+             </a>
             </li>
+            <div id="tx_details" class="collapse">
+              <li>
+                - <b>{{ funded_bounties_count }}</b> Bountie{{funded_bounties_count|pluralize}} Funded
+              </li>
+              <li>
+                - <b>{{ hackathons_funded }}</b> Hackathon{{hackathons_funded|pluralize}} Participated
+              </li>
+              <li>
+                - <b>{{ total_tips_Sent }}</b>
+                Tip{{total_tips_Sent|pluralize}} Sent
+              </li>
+              <li>
+                - <b>{{ total_kudos_Sent_count }}</b>
+                Kudo{{total_kudos_Sent_count|pluralize}} Sent
+              </li>
+              <li>
+                - <b>{{ total_grant_contributions }}</b>
+                Grant{{total_grant_contributions|pluralize}} Created
+              </li>
+            </div>
             <li>
-              <b>{{ spent_count }}</b> transaction{{spent_count|pluralize}}
-            </li>
-            <li>
-              - <b>{{ funded_bounties_count }}</b> bountie{{funded_bounties_count|pluralize}} funded
-            </li>
-            <li>
-              - <b>{{ total_tips_sent }}</b>
-              tip{{total_tips_sent|pluralize}} sent
-            </li>
-            <li>
-              - <b>{{ total_kudos_sent_count }}</b>
-              kudo{{total_kudos_sent_count|pluralize}} sent
-            </li>
-            <li>
-              - <b>{{ total_grant_contributions }}</b>
-              grant{{total_grant_contributions|pluralize}} created
+              <b>${{ spent_total }}</b> {% trans "Funded" %}
             </li>
             {% if scoreboard_position_funder %}
             <li>
               <b>#{{ scoreboard_position_funder }}</b>
-              {% trans "on leaderboard" %}
-              <a style="color: #707070;" href="{% url 'leaderboard' link %}payers">(view)</a>
+              {% trans "On Leaderboard" %}
+              <a style="font-size: 12px; color: black; text-decoration: underline;" href="{% url 'leaderboard' link %}payers">(View)</a>
             </li>
             {% endif %}
 

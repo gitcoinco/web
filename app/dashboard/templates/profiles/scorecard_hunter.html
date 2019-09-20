@@ -16,40 +16,47 @@
               </li>
             {% endif %}
             <li>
-              <b>${{ earnings_total }}</b>
-              {% trans "earned" %}
+              <b>{{ earnings_count }}</b> Transaction{{earnings_count|pluralize}}
+             <a href="#" style="color: black; text-decoration: underline; font-size: 12px;" data-toggle="collapse" data-target="#tx_details">(Details)
+             </a>
             </li>
-            <li>
-              <b>{{ earnings_count }}</b> transaction{{earnings_count|pluralize}}
-            </li>
-            <li>
-              - <b>{{ count_bounties_completed }}</b>
-              bounties completed
-            </li>
-            {% if no_times_been_removed %}
+            <div id="tx_details" class="collapse">
               <li>
-                - {% trans "removed from" %}
-                <b>{{ no_times_been_removed }}</b>
-                {% trans "bounties" %}
+                - <b>{{ count_bounties_completed }}</b>
+                Bounties Completed
               </li>
-            {% endif %}
+              {% if no_times_been_removed %}
+                <li>
+                  - {% trans "Removed From" %}
+                  <b>{{ no_times_been_removed }}</b>
+                  {% trans "Bounties" %}
+                </li>
+              {% endif %}
+              <li>
+                - <b>{{ hackathons_participated_in }}</b> Hackathon{{hackathons_participated_in|pluralize}} participated
+              </li>
+              <li>
+                - <b>{{ total_tips_received }}</b>
+                Tip{{total_tips_received|pluralize}} received
+              </li>
+              <li>
+                - <b>{{ total_kudos_received_count }}</b>
+                Kudo{{total_kudos_received_count|pluralize}} received
+              </li>
+              <li>
+                - <b>{{ total_grant_created }}</b>
+                Grant{{total_grant_created|pluralize}} created
+              </li> 
+            </div>
             <li>
-              - <b>{{ total_tips_received }}</b>
-              tip{{total_tips_received|pluralize}} received
-            </li>
-            <li>
-              - <b>{{ total_kudos_received_count }}</b>
-              kudo{{total_kudos_received_count|pluralize}} received
-            </li>
-            <li>
-              - <b>{{ total_grant_created }}</b>
-              grant{{total_grant_created|pluralize}} created
+              <b>${{ earnings_total }}</b>
+              {% trans "Earned" %}
             </li>
             {% if scoreboard_position_contributor %}
             <li>
               <b>#{{ scoreboard_position_contributor }}</b>
-              {% trans "on leaderboard" %}
-              <a style="color: #707070;" href="{% url 'leaderboard' link %}">(view)</a>
+              {% trans "On Leaderboard" %}
+              <a style="font-size: 12px; color: black; text-decoration: underline;" href="{% url 'leaderboard' link %}">(View)</a>
             </li>
             {% endif %}
             <li class="works_with_list">

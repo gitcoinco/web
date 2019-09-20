@@ -3458,6 +3458,8 @@ class Profile(SuperModel):
         context['spent_total'] = round(sum(earnings_from.values_list('value_usd', flat=True)))
         context['earnings_count'] = earnings_to.count()
         context['spent_count'] = earnings_from.count()
+        context['hackathons_participated_in'] = self.interested.filter(bounty__event__isnull=False).distinct('bounty__event').count()
+        context['hackathons_funded'] = funded_bounties.filter(event__isnull=False).distinct('event').count()
         if context['earnings_total'] > 1000:
             context['earnings_total'] = f"{round(context['earnings_total']/1000)}k"
         if context['spent_total'] > 1000:

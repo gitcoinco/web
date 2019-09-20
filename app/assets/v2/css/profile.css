@@ -461,4 +461,5 @@ nav.navbar.navbar-dark{
 #rank_link{
   font-size: 12px;
   color: black;
+  text-decoration: underline;
 }
