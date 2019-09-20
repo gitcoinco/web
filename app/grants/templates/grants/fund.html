@@ -63,8 +63,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <li class="nav-item">
               <a class="nav-link" href="#" data-target="phantom_fund">$5 Voucher Funding</a>
             </li>
-          </ul>  
-        </div>    
+          </ul>
+        </div>
       {% endif %}
       <div id="phantom_fund" class="tab_target {% if active_tab == "normal" %} hidden {% endif %} ">
         <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
@@ -88,11 +88,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <ol>
                 {% for phantom_fund in phantom_funds %}
                   <li style="padding: 5px; {% cycle 'background-color: #eeeeee;' '' %}">
-                    <a href={{ele.grant.url}}>{{phantom_fund.grant.title}}</a>
+                    <a href={{ele.grant.url}}>{{phantom_fund.grant.title}}</a> for <strong>${{phantom_fund.value|floatformat:2}}</strong> + $<strong><span class="phantom_clr_increase">0</span></strong> in matching.
                   </li>
                 {% endfor %}
                 </ol>
-              </div>  
+              </div>
 
               <div class="col-12 form__footer pt-2 text-center">
                 <img class="mb-4" src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
@@ -106,7 +106,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     {% trans "Use Voucher for this Grant" %}
                   {% endif %}
                 " />
-                </form> 
+                </form>
                 </a>
               </div>
             </div>
@@ -360,6 +360,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% endif %}
 
       const clr_prediction_curve = {{ clr_prediction_curve }};
+
+      {% if phantom_funds %}
+        const phantom_value = {{ phantom_funds.0.value }};
+      {% else %}
+        const phantom_value = 5;
+      {% endif %}
     </script>
 
   </body>
