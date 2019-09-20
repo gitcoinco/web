@@ -95,6 +95,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </div>
 
               <div class="col-12 form__footer pt-2 text-center">
+                {% include './clr_estimate.html' with class='' %}
                 <img class="mb-4" src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
                 <form method=POST>
                   {%csrf_token%}
@@ -359,7 +360,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         });
       {% endif %}
 
-      const clr_prediction_curve = {{ clr_prediction_curve }};
+      const clr_prediction_curve = {% if clr_prediction_curve %}{{ clr_prediction_curve }}{% else %}[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]{% endif %}
 
       {% if phantom_funds %}
         const phantom_value = {{ phantom_funds.0.value }};
