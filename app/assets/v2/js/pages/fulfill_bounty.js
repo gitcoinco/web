@@ -18,6 +18,7 @@ window.onload = function() {
   setTimeout(function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
     var account = web3.eth.accounts[0];
+    $('#payoutAddress').val(account);
 
     if (typeof localStorage['githubUsername'] != 'undefined') {
       if (!$('input[name=githubUsername]').val()) {
