@@ -800,11 +800,15 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
         )
 
     if organisation:
-        profile_list = profile_list.filter(
+        profile_list1 = profile_list.filter(
             fulfilled__bounty__network=network,
             fulfilled__accepted=True,
             fulfilled__bounty__github_url__icontains=organisation
-        ).distinct()
+        )
+        profile_list2 = profile_list.filter(
+            organizations__icontains=organisation
+        )
+        profile_list = (profile_list1 | profile_list2).distinct()
 
     return profile_list
 
@@ -815,6 +819,7 @@ def users_fetch(request):
     """Handle displaying users."""
     q = request.GET.get('search', '')
     skills = request.GET.get('skills', '')
+    persona = request.GET.get('persona', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
     order_by = request.GET.get('order_by', '-actions_count')
@@ -845,6 +850,13 @@ def users_fetch(request):
 
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
+    if persona:
+        if persona == 'Funder':
+            profile_list = profile_list.filter(dominant_persona='funder')
+        if persona == 'Coder':
+            profile_list = profile_list.filter(dominant_persona='hunter')
+        if persona == 'Organization':
+            profile_list = profile_list.filter(data__type='Organization')
 
     profile_list = users_fetch_filters(
         profile_list,
