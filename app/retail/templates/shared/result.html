@@ -28,6 +28,8 @@
             <i class="g-icon g-icon__dot-circle"></i>
             [[if status === "open"]]
               {% trans "Ready to work" %}
+            [[else status === "reserved"]]
+              {% trans "Reserved" %}
             [[else status === "started"]]
               {% trans "Work Started" %}
             [[else status === "submitted"]]

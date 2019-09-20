@@ -81,6 +81,15 @@
   width: 100%;
 }
 
+.hackathon-alt {
+  color: var(--gc-blue-hover);
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1.6px;
+}
+
 @media (min-width: 768px) {
   .list-bounty-item_logo {
     width: 40px;

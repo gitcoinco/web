@@ -14,14 +14,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-<script>
-  document.messages = []
-  {% for message in messages %}
-  if (document.messages.indexOf('{{ message }}') == -1) {
-    setTimeout(function(){
-      _alert({message: gettext('{{ message }}')}, '{{ message.tags }}');
-    }, 1000);
-    document.messages.push('{{ message }}');
-  }
-  {% endfor %}
-</script>
+{% load i18n %}
+<div class="w-100 mt-2">
+  <label class="form__label" for="payoutAddress">{% trans "Payout Address" %}</label>
+      <label id="tooltip">
+      <i class='fa fa-info-circle' title="This bounty will be paid out from your web3 address. To change this address, update your web3 wallet to a new address. "></i>
+    </label>
+
+  <input name='payoutAddress' id='payoutAddress' class="form__input" type="text" placeholder="0x0000000000000" value="" disabled="" />
+</div>

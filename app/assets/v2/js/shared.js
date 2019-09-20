@@ -774,7 +774,7 @@ var currentNetwork = function(network) {
  */
 var trigger_primary_form_web3_hooks = function() {
   if ($('#primary_form').length) {
-    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
+    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1 && !document.suppress_faucet_solicitation;
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');

@@ -706,6 +706,11 @@ input[type=text].loading {
   color: #000;
 }
 
+.bottom_notification-pink {
+  background-color: #9f80ff;
+  color: #000;
+}
+
 .metamask_recc {
   width: 45%;
   display: inline-block;

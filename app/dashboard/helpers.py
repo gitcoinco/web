@@ -601,12 +601,18 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         for activity in latest_old_bounty.activities.all().nocache():
             new_bounty.activities.add(activity)
 
-
     bounty_reserved_for_user = metadata.get('reservedFor', '')
-    if bounty_reserved_for_user:
+    release_to_public_after = metadata.get('releaseAfter', '')
+    if bounty_reserved_for_user and release_to_public_after:
+        new_bounty.reserved_for_user_from = timezone.now()
+        if release_to_public_after == "3-days":
+            new_bounty.reserved_for_user_expiration = new_bounty.reserved_for_user_from + timezone.timedelta(days=3)
+        elif release_to_public_after == "1-week":
+            new_bounty.reserved_for_user_expiration = new_bounty.reserved_for_user_from + timezone.timedelta(weeks=1)
+
         new_bounty.reserved_for_user_handle = bounty_reserved_for_user
         new_bounty.save()
-        if new_bounty.bounty_reserved_for_user:
+        if new_bounty.bounty_reserved_for_user and new_bounty.status == 'reserved':
             # notify a user that a bounty has been reserved for them
             new_reserved_issue('founders@gitcoin.co', new_bounty.bounty_reserved_for_user, new_bounty)
 

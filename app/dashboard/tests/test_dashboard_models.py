@@ -663,3 +663,191 @@ class DashboardModelsTest(TestCase):
 
         assert query[1]['token_name'] == 'ETH'
         assert query[1]['value_in_token'] == 6
+
+    @staticmethod
+    def test_total_reserved_length_label_empty_when_bounty_not_reserved():
+        bounty = Bounty(
+            title='ReservedLengthLabelTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+
+        assert bounty.total_reserved_length_label == ''
+
+    @staticmethod
+    def test_total_reserved_length_label_is_indefinite_when_no_expiration_set():
+        dummy_profile = Profile(
+            handle='foo'
+        )
+
+        bounty = Bounty(
+            title='ReservedLengthLabelTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            bounty_reserved_for_user=dummy_profile,
+            reserved_for_user_from=timezone.now(),
+            raw_data={}
+        )
+
+        assert bounty.total_reserved_length_label == 'indefinitely'
+
+    @staticmethod
+    def test_total_reserved_length_label_empty_when_from_and_exp_date_the_same():
+        dummy_profile = Profile(
+            handle='foo'
+        )
+
+        now = timezone.now()
+        bounty = Bounty(
+            title='ReservedLengthLabelTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            bounty_reserved_for_user=dummy_profile,
+            reserved_for_user_from=now,
+            reserved_for_user_expiration=now,
+            raw_data={}
+        )
+
+        assert bounty.total_reserved_length_label == ''
+
+    @staticmethod
+    def test_total_reserved_length_label_when_reservation_is_one_week():
+        dummy_profile = Profile(
+            handle='foo'
+        )
+
+        now = timezone.now()
+        bounty = Bounty(
+            title='ReservedLengthLabelTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            bounty_reserved_for_user=dummy_profile,
+            reserved_for_user_from=now,
+            reserved_for_user_expiration=now + timezone.timedelta(weeks=1),
+            raw_data={}
+        )
+
+        assert bounty.total_reserved_length_label == '1 week'
+
+    @staticmethod
+    def test_total_reserved_length_label_when_reservation_is_two_weeks():
+        dummy_profile = Profile(
+            handle='foo'
+        )
+
+        now = timezone.now()
+        bounty = Bounty(
+            title='ReservedLengthLabelTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            bounty_reserved_for_user=dummy_profile,
+            reserved_for_user_from=now,
+            reserved_for_user_expiration=now + timezone.timedelta(weeks=2),
+            raw_data={}
+        )
+
+        assert bounty.total_reserved_length_label == '2 weeks'
+
+    @staticmethod
+    def test_total_reserved_length_label_when_reservation_is_one_day():
+        dummy_profile = Profile(
+            handle='foo'
+        )
+
+        now = timezone.now()
+        bounty = Bounty(
+            title='ReservedLengthLabelTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            bounty_reserved_for_user=dummy_profile,
+            reserved_for_user_from=now,
+            reserved_for_user_expiration=now + timezone.timedelta(days=1),
+            raw_data={}
+        )
+
+        assert bounty.total_reserved_length_label == '1 day'
+
+    @staticmethod
+    def test_total_reserved_length_label_when_reservation_is_three_days():
+        dummy_profile = Profile(
+            handle='foo'
+        )
+
+        now = timezone.now()
+        bounty = Bounty(
+            title='ReservedLengthLabelTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            bounty_reserved_for_user=dummy_profile,
+            reserved_for_user_from=now,
+            reserved_for_user_expiration=now + timezone.timedelta(days=3),
+            raw_data={}
+        )
+
+        assert bounty.total_reserved_length_label == '3 days'
+
+    @staticmethod
+    def test_total_reserved_length_label_when_reservation_is_one_hour():
+        dummy_profile = Profile(
+            handle='foo'
+        )
+
+        now = timezone.now()
+        bounty = Bounty(
+            title='ReservedLengthLabelTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            bounty_reserved_for_user=dummy_profile,
+            reserved_for_user_from=now,
+            reserved_for_user_expiration=now + timezone.timedelta(hours=1),
+            raw_data={}
+        )
+
+        assert bounty.total_reserved_length_label == '1 hour'
+
+    @staticmethod
+    def test_total_reserved_length_label_when_reservation_is_three_hours():
+        dummy_profile = Profile(
+            handle='foo'
+        )
+
+        now = timezone.now()
+        bounty = Bounty(
+            title='ReservedLengthLabelTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            bounty_reserved_for_user=dummy_profile,
+            reserved_for_user_from=now,
+            reserved_for_user_expiration=now + timezone.timedelta(hours=3),
+            raw_data={}
+        )
+
+        assert bounty.total_reserved_length_label == '3 hours'

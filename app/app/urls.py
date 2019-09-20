@@ -494,7 +494,7 @@ urlpatterns = [
         retail.emails.no_applicant_reminder,
         name='no_applicant_reminder'
     ),
-
+ 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
     re_path(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
