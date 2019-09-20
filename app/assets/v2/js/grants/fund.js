@@ -510,21 +510,25 @@ const predictPhantomCLRMatch = () => {
 
   let amount = phantom_value;
 
-  if (0 < amount && amount < 1) {
-    x_lower = 0;
-    x_upper = 1;
-    y_lower = clr_prediction_curve[0];
-    y_upper = clr_prediction_curve[1];
-  } else if (1 < amount && amount < 10) {
-    x_lower = 1;
-    x_upper = 10;
-    y_lower = clr_prediction_curve[1];
-    y_upper = clr_prediction_curve[2];
+  for (var grant_id in clr_prediction_curve_per_grant) {
+
+    var curve_per_grant = clr_prediction_curve_per_grant[grant_id].map(function(value,index) { return value[1]; });
+
+    if (0 < amount && amount < 1) {
+      x_lower = 0;
+      x_upper = 1;
+      y_lower = curve_per_grant[0];
+      y_upper = curve_per_grant[1];
+    } else if (1 < amount && amount < 10) {
+      x_lower = 1;
+      x_upper = 10;
+      y_lower = curve_per_grant[1];
+      y_upper = curve_per_grant[2];
+    }
+    let predicted_clr = lerp(x_lower, x_upper, y_lower, y_upper, amount);
+
+    $('.phantom_clr_increase' + grant_id).html((predicted_clr - curve_per_grant[0]).toFixed(2));
   }
-
-  let predicted_clr = lerp(x_lower, x_upper, y_lower, y_upper, amount);
-
-  $('.phantom_clr_increase').html((predicted_clr - clr_prediction_curve[0]).toFixed(2));
 };
 
 const predictCLRMatch = () => {
