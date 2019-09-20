@@ -51,7 +51,7 @@ Vue.mixin({
     },
     fetchMatchingBounties: function() {
       let vm = this;
-      const apiUrlbounties = `/api/v0.1/bounties/slim/?network=${network}&applicants=ALL&keywords=${vm.skills}&order_by=-web3_created&offset=0&limit=10`;
+      const apiUrlbounties = `/api/v0.1/bounties/slim/?network=${network}&idx_status=open&applicants=ALL&keywords=${vm.skills}&order_by=-web3_created&offset=0&limit=10`;
 
       if (vm.matchingBounties.length) {
         return;
