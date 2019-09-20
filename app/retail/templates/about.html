@@ -42,12 +42,12 @@
       </div>
       <div class="row">
           {% for name, role, handle, linkedin, feature, food, fname, rpgname, twitter_handle, show_aka in core_team %}
-            <div class="col-10 col-md-6 col-lg-3">
+            <div class="col-10 col-md-6 col-lg-3 mx-auto">
               <div class="card">
                 {%  if handle %}
                 <a href="/profile/{{handle}}">
                 {% endif %}
-                  <img class="avatar {{fname}}" src="/static/v2/images/team/{{fname}}.png">
+                  <img class="avatar {{fname}} mx-auto" src="/static/v2/images/team/{{fname}}.png">
                 {%  if handle %}
                 </a>
                 {% endif %}
@@ -88,7 +88,7 @@
               </div>
             </div>
           {% endfor %}
-        <div class="col-10 col-md-6 col-lg-3">
+        <div class="col-10 col-md-6 col-lg-3 mx-auto">
             <div class="card">
               <a href="/jobs">
                 <img class="avatar jobs" src="/static/v2/images/team/jobs.png">
