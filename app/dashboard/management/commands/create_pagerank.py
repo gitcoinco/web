@@ -23,12 +23,12 @@ import time
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from dashboard.models import Earning, Profile
+from dashboard.models import Earning, Profile, ProfileStatHistory
 
 
-def get_exponent(num):
+def get_exponent(num, base=5):
     i = 1
-    while 10**i < num:
+    while base**i < num:
         i += 1
     return i
 
@@ -72,6 +72,9 @@ class Command(BaseCommand):
             if direction == 'org':
                 earnings = earnings.exclude(org_profile__isnull=True)
                 edges = earnings.values_list('from_profile__handle', 'org_profile__handle', 'value_usd')
+
+            # remove self links
+            edges = [ele for ele in edges if ele[1] != ele[0]]
 
             # print("*")
             # setup node map
@@ -173,7 +176,7 @@ class Command(BaseCommand):
             bucket_size = max_pagerank / 100
 
             for key in pagerank.keys():
-                pagerank[key] = get_exponent(pagerank[key])
+                pagerank[key] = get_exponent(pagerank[key]/num_traversals_of_graph)
 
             print("")
             print("***************")
@@ -209,4 +212,14 @@ class Command(BaseCommand):
             profile.rank_org = final_results['org'].get(handle, 0) + pagerank_offset
             profile.rank_coder = final_results['coder'].get(handle, 0) + pagerank_offset
             profile.save()
+
+            ProfileStatHistory.objects.create(
+                profile=profile,
+                key='pagerank',
+                payload={
+                    'org': profile.rank_org,
+                    'coder': profile.rank_coder,
+                    'funder': profile.rank_funder,
+                }
+                )
         print("fin")

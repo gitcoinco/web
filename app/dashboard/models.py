@@ -4007,6 +4007,7 @@ class Earning(SuperModel):
     def __str__(self):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
 
+
 class PortfolioItem(SuperModel):
     """Define the structure of PortfolioItem object."""
 
@@ -4017,3 +4018,15 @@ class PortfolioItem(SuperModel):
 
     def __str__(self):
         return f"{self.title} by {self.profile.handle}"
+
+
+class ProfileStatHistory(SuperModel):
+    """ProfileStatHistory - generalizable model for tracking history of a profiles info"""
+
+    profile = models.ForeignKey('dashboard.Profile', related_name='stats', on_delete=models.CASCADE, db_index=True)
+    key = models.CharField(max_length=50, default='', db_index=True)
+    payload = JSONField(default=dict, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.key} <> {self.profile.handle}"
+
