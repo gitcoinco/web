@@ -2578,7 +2578,7 @@ class Profile(SuperModel):
         if visits_last_month > high_threshold:
             return "High"
         if visits_last_month > med_threshold:
-            return "Medium"
+            return "Med"
         return "Low"
             
 
