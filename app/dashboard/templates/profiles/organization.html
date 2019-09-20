@@ -21,11 +21,9 @@
 <div class="col-12 col-lg-4">
   <div class="profile-header__stats profile-header__stats--contributor card mb-4">
     <div class="card-header font-subheader">
+      {% include "profiles/rank_tooltip.html" with name="Organization" %}
       <b>{{ profile.rank_org }}</b> 
       {% trans "OrganizationRank" %}
-        <label id="tooltip">
-          <i class='fa fa-info-circle' title="OrganizationRank is Gitcoin's modified version of PageRank, which measures the influence of different Orgs on the network.  OrganizationRank is scored on a range between 1 (lowest) and 10 (highest)."></i>
-        </label>
     </div>
     <div class="card-body font-subheader">
       <ul>

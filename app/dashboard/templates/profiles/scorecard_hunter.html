@@ -6,7 +6,7 @@
         <div class="card-header font-subheader">
           <b>{{ profile.rank_coder }}</b>
           {% trans "ContributorRank" %}
-          <i class='fa fa-info-circle' title="ContributorRank is Gitcoin's modified version of PageRank, which measures the influence of different Contributors on the network.  ContributorRank is scored on a range between 1 (lowest) and 10 (highest)."></i>
+          {% include "profiles/rank_tooltip.html" with name="Contributor" %}
         </div>
         <div class="card-body">
           <ul>

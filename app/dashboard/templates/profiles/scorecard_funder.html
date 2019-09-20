@@ -4,11 +4,9 @@
     <div class="col-12 col-lg-6">
       <div class="profile-header__stats profile-header__stats--funder card mb-4">
         <div class="card-header font-subheader">
-          <b>{{ profile.rank_funder }}</b>
+          <b class="mb-0 mt-1">{{ profile.rank_funder }}</b>
           {% trans "FunderRank" %}
-          <i class='fa fa-info-circle' title="FunderRank is Gitcoin's modified version of PageRank, which measures the influence of different Funders on the network.  FunderRank is scored on a range between 1 (lowest) and 10 (highest)."></i>
-          </a>
-          {% include "shared/profile_rank_link.html" with link='payers' %}
+          {% include "profiles/rank_tooltip.html" with name="Funder" %}
         </div>
         <div class="card-body font-subheader">
           <ul>
