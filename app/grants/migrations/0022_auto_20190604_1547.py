@@ -7,14 +7,7 @@ from grants.models import Grant
 logger = logging.getLogger(__name__)
 
 def forwards(apps, schema_editor):
-    from grants.models import CLRMatch
-    for grant in Grant.objects.all():
-        if grant.clr_matching:
-            CLRMatch.objects.create(
-                grant=grant,
-                round_number=1,
-                amount=grant.clr_matching,
-                )
+    pass
 
 def backwards(apps, schema_editor):
     pass

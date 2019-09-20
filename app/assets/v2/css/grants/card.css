@@ -30,6 +30,20 @@
   display: flex;
 }
 
+.clr {
+  right: 1.25rem;
+}
+
+.clr h2 {
+  background: #10cd7a;
+  color: #fff;
+  border-radius: 3px;
+}
+
+.clr p {
+  font-size: 10px;
+}
+
 .grant-item__img {
   height: 11rem;
   overflow: hidden;
