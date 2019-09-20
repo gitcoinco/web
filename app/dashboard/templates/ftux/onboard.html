@@ -58,10 +58,10 @@
     </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>
   {% csrf_token %}
-  <script type="text/javascript">
+  <script>
     var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
     var jobLocations = {% if profile.job_location %}{{profile.job_location|safe }};{% else %}[];{% endif %}
   </script>

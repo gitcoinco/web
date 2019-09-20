@@ -8,6 +8,7 @@
 #grant-link {
   color: #0D0764;
 }
+
 .tab_target{
   width: 100%;
 }
@@ -21,6 +22,12 @@
   height: auto;
   width: 100%;
   object-fit: cover;
+}
+
+#grants_form .nav-link {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  color: #000;
 }
 
 #grants_form .form__input.valid,
@@ -146,20 +153,99 @@
   bottom: -1.2rem;
 }
 
-.nav{
+.nav {
   text-align: center;
 }
-.nav-link{
+
+.nav-link {
   border-right: 1px solid black;
   border-top: 1px solid black;
   border-left: 1px solid black;
   margin-right: 10px;
 }
-.nav-link:visited{
+
+.nav-link:visited {
   color: black;
 }
-.nav-item.active{
+
+.nav-item.active {
   text-decoration: underline;
+}
+
+.clr_estimate {
+  background-color: white;
+  border-radius: 5px;
+  border: 2px solid #10cd7a;
+  text-align: left;
+  width: 250px;
+  padding: 1rem 15px;
+  position: absolute;
+  top: 0px;
+  left: 130px;
+}
+
+.clr_estimate.extraleft {
+  left: -270px;
+}
+
+.clr_estimate:after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 30%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-left-color: #10cd7a;
+  border-right: 0;
+  border-bottom: 0;
+  margin-top: -10px;
+  margin-right: -20px;
+}
+
+.clr_estimate img {
+  float: right;
+  width: 50px;
+}
+
+.clr_estimate h3 {
+  text-align: left;
+  color: white;
+  font-size: 12px;
+  text-transform: uppercase;
+  width: 150px;
+}
+
+.clr_estimate h3 span {
+  background-color: #10cd7a;
+  border-radius: 3px;
+  padding: 4px 6px;
+
+}
+
+.clr_estimate h4 {
+  padding-top: 0px;
+  text-align: left;
+  color: #10cd7a;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.clr_estimate h4 span {
+  font-size: 16px;
+}
+
+.clr_estimate p {
+  text-align: left;
+  color: #10cd7a;
+  font-size: 12px;
+  color: #959595;
+}
+
+#phantom_fund .description i {
+  font-size: 10px;
+  position: relative;
+  top: -1px;
 }
 
 @media (min-width:1140px) and (max-width: 1600px) {
@@ -186,5 +272,11 @@
   .banner-img img {
     width: auto;
     max-width: 100%;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .clr_estimate {
+    display: none;
   }
 }

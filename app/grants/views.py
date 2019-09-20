@@ -57,6 +57,10 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
 matching_live = '($50K matching live now!) '
+total_clr_pot = 100000
+clr_round = 3
+clr_active = True
+
 if True:
     clr_matching_banners_style = 'results'
     matching_live = ''
@@ -125,6 +129,8 @@ def grants(request):
         'grants_count': _grants.count(),
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
+        'total_clr_pot': total_clr_pot,
+        'clr_active': True
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -555,7 +561,7 @@ def grant_fund(request, grant_id, grant_slug):
             })
 
     splitter_contract_address = settings.SPLITTER_CONTRACT_ADDRESS
-    
+
     # handle phantom funding
     active_tab = 'normal'
     fund_reward = None
@@ -590,6 +596,7 @@ def grant_fund(request, grant_id, grant_slug):
         'show_tweet_modal': show_tweet_modal,
         'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
         'grant': grant,
+        'clr_prediction_curve': [c[1] for c in grant.clr_prediction_curve] if grant.clr_prediction_curve else [0, 0, 0, 0, 0, 0],
         'keywords': get_keywords(),
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
         'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
@@ -605,6 +612,9 @@ def grant_fund(request, grant_id, grant_slug):
         'active_tab': active_tab,
         'fund_reward': fund_reward,
         'phantom_funds': phantom_funds,
+        'clr_round': clr_round,
+        'total_clr_pot': total_clr_pot,
+        'clr_active': True
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 

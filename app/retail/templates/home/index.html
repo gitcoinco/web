@@ -306,12 +306,11 @@
         </div>
       </div>
     </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts_lite.html' with slim=1 %}
+    {% include 'shared/footer.html' %}
   </body>
-  {% include 'shared/bottom_notification.html' %}
-  {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts_lite.html' with slim=1 %}
-  {% include 'shared/footer.html' %}
-  {% include 'shared/messages.html' %}
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script>
     const options = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";

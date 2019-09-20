@@ -52,7 +52,7 @@
           <div class="card mb-5" id="{{hackathon.slug}}">
             {% firstof hackathon.logo_svg or hackathon.logo as logo %}
             {% if logo %}
-              <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{logo}}"/>
+              <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
             {% else %}
               <div class="card-img-top d-flex align-items-center justify-content-around font-bigger-4 text-center text-white">
                 {{ hackathon.name }}
@@ -81,5 +81,5 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>

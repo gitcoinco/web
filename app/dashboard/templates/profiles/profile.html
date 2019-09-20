@@ -92,6 +92,11 @@
                       <i class="far fa-envelope"></i>
                     </a>
                   {% endif %}
+                  {% if profile.gitcoin_discord_username and user.is_authenticated %}
+                    <a href="https://discord.gg/TxRKTn8#{{profile.gitcoin_discord_username}}" title="{{profile.gitcoin_discord_username}}">
+                      <i class="fab fa-discord"></i>
+                    </a>
+                  {% endif %}
                 </p>
 
               {% if preferred_payout_address %}
@@ -301,7 +306,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
-    {% include 'shared/messages.html' %}
+    
 
     <!-- jQuery -->
     <script src="{% static "v2/js/abi.js" %}"></script>
@@ -316,7 +321,7 @@
     <script src="{% static "v2/js/pages/profile.js" %}"></script>
     <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
     <script src="{% static "v2/js/rating.js" %}"></script>
-    <script type="text/javascript">
+    <script>
       {% if preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;
       {% endif %}

@@ -247,15 +247,16 @@ class Bounty(SuperModel):
         ('cancelled', 'cancelled'),
         ('done', 'done'),
         ('expired', 'expired'),
+        ('reserved', 'reserved'),
         ('open', 'open'),
         ('started', 'started'),
         ('submitted', 'submitted'),
         ('unknown', 'unknown'),
     )
-    FUNDED_STATUSES = ['open', 'started', 'submitted', 'done']
-    OPEN_STATUSES = ['open', 'started', 'submitted']
+    FUNDED_STATUSES = ['reserved', 'open', 'started', 'submitted', 'done']
+    OPEN_STATUSES = ['reserved', 'open', 'started', 'submitted']
     CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
-    WORK_IN_PROGRESS_STATUSES = ['open', 'started', 'submitted']
+    WORK_IN_PROGRESS_STATUSES = ['reserved', 'open', 'started', 'submitted']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
@@ -281,6 +282,8 @@ class Bounty(SuperModel):
     bounty_reserved_for_user = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='reserved_bounties', blank=True
     )
+    reserved_for_user_from = models.DateTimeField(blank=True, null=True)
+    reserved_for_user_expiration = models.DateTimeField(blank=True, null=True)
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
     raw_data = JSONField()
@@ -556,6 +559,13 @@ class Bounty(SuperModel):
         return self.github_org_name
 
     @property
+    def org_profile(self):
+        profiles = Profile.objects.filter(handle__iexact=self.org_name)
+        if profiles.count():
+            return profiles.first()
+        return None
+
+    @property
     def org_display_name(self): # TODO: Remove POST ORGS
         if self.admin_override_org_name:
             return self.admin_override_org_name
@@ -720,6 +730,8 @@ class Bounty(SuperModel):
             if self.num_fulfillments == 0:
                 if self.pk and self.interested.filter(pending=False).exists():
                     return 'started'
+                elif self.is_reserved:
+                    return 'reserved'
                 return 'open'
             return 'submitted'
         except Exception as e:
@@ -1151,14 +1163,58 @@ class Bounty(SuperModel):
             result = False
 
         if self.last_remarketed:
-            one_hour_after_remarketing = self.last_remarketed + timezone.timedelta(hours=1)
-            if timezone.now() < one_hour_after_remarketing:
+            minimum_wait_after_remarketing = self.last_remarketed + timezone.timedelta(minutes=settings.MINUTES_BETWEEN_RE_MARKETING)
+            if timezone.now() < minimum_wait_after_remarketing:
                 result = False
 
         if self.interested.count() > 0:
             result = False
 
         return result
+
+    @property
+    def is_reserved(self):
+        if self.bounty_reserved_for_user and self.reserved_for_user_from:
+            if timezone.now() < self.reserved_for_user_from:
+                return False
+
+            if self.reserved_for_user_expiration and timezone.now() > self.reserved_for_user_expiration:
+                return False
+
+            return True
+
+    @property
+    def total_reserved_length_label(self):
+        if self.bounty_reserved_for_user and self.reserved_for_user_from:
+            if self.reserved_for_user_expiration is None:
+                return 'indefinitely'
+
+            if self.reserved_for_user_from == self.reserved_for_user_expiration:
+                return ''
+
+            delta = self.reserved_for_user_expiration - self.reserved_for_user_from
+            days = delta.days
+
+            if days > 0:
+                if days % 7 == 0:
+                    if days == 7:
+                        return '1 week'
+                    else:
+                        weeks = int(days / 7)
+                        return f'{weeks} weeks'
+
+                if days == 1:
+                    return '1 day'
+                else:
+                    return f'{days} days'
+            else:
+                hours = int(int(delta.total_seconds()) / 3600)
+                if hours == 1:
+                    return '1 hour'
+                else:
+                    return f'{hours} hours'
+        else:
+            return ''
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
@@ -2069,6 +2125,7 @@ class Profile(SuperModel):
     slack_token = models.CharField(max_length=255, default='', blank=True)
     custom_tagline = models.CharField(max_length=255, default='', blank=True)
     slack_channel = models.CharField(max_length=255, default='', blank=True)
+    gitcoin_discord_username = models.CharField(max_length=255, default='', blank=True)
     discord_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     discord_webhook_url = models.CharField(max_length=400, default='', blank=True)
     suppress_leaderboard = models.BooleanField(
@@ -2847,6 +2904,9 @@ class Profile(SuperModel):
         except Exception:
             pass
 
+        if sum_type == 'collected':
+            eth_sum = eth_sum + sum([amount.value_in_eth for amount in self.tips])
+
         return eth_sum
 
     def get_all_tokens_sum(self, sum_type='collected', network='mainnet', bounties=None):
@@ -3036,7 +3096,7 @@ class Profile(SuperModel):
             works_with_org = self.get_who_works_with(work_type='org', bounties=orgs_bounties)
 
         total_funded = funded_bounties.count()
-        total_fulfilled = fulfilled_bounties.count()
+        total_fulfilled = fulfilled_bounties.count() + self.tips.count()
         desc = self.get_desc(funded_bounties, fulfilled_bounties)
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
         params = {
@@ -3501,6 +3561,27 @@ class FeedbackEntry(SuperModel):
     def __str__(self):
         """Return the string representation of a Bounty."""
         return f'<Feedback Bounty #{self.bounty} - from: {self.sender_profile} to: {self.receiver_profile}>'
+
+    @property
+    def anonymized_comment(self):
+        import re
+        replace_str = [
+            self.bounty.bounty_owner_github_username,
+            ]
+        for profile in [self.sender_profile, self.receiver_profile, self.bounty.org_profile]:
+            if profile:
+                replace_str.append(profile.handle)
+                name = profile.data.get('name')
+                if name:
+                    name = name.split(' ')
+                    for ele in name:
+                        replace_str.append(ele)
+        
+        review = self.comment
+        for ele in replace_str:
+            review = re.sub(ele, 'NAME', review, flags=re.I)
+
+        return review
 
 
 class Coupon(SuperModel):

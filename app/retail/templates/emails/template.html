@@ -156,8 +156,26 @@
         background-color: #8934b3;
       {% elif email_style == 3 or email_style == 4 %}
         background-color: #dbdbdb;
-      {% elif email_style == 5 or email_style == 6 %}
-        background-color: #084c8e;
+      {% elif email_style == 5 %}
+        background-color: #1f8de3;
+      {% elif email_style == 6 %}
+        background-color: #2bffbc;
+      {% elif email_style == 0 %}
+        background-color: #15003e;
+      {% elif email_style == 7 or email_style == 8 or email_style == 9 or email_style == 11 or email_style == 15 or email_style == 16 or email_style == 18 or email_style == 19 %}
+        background-color: #150065;
+      {% elif email_style == 12 or  email_style == 25 %}
+        background-color: #ffffff;
+      {% elif email_style == 13 %}
+        background-color: #f2f2f2;
+      {% elif email_style == 17 or email_style == 22 or email_style == 24 %}
+        background-color: #fccf0e;
+      {% elif email_style == 20 or email_style == 10 or email_style == 14 %}
+        background-color: #3e00ff;
+      {% elif email_style == 23 %}
+        background-color: #ffc000;
+      {% elif email_style == 21 %}
+        background-color: #f7ecbc;
       {% else %}
         background-color: #15003e;
       {% endif %}
@@ -263,6 +281,26 @@
         <img id="logo" src="{% static "v2/images/emails/email_header5.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% elif email_style == 6 %}
         <img id="logo" src="{% static "v2/images/emails/email_header6.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 0 %}
+        <img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 7 %} <img id="logo" src="{% static "v2/images/emails/email_header7.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 8 %} <img id="logo" src="{% static "v2/images/emails/email_header8.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 9 %} <img id="logo" src="{% static "v2/images/emails/email_header9.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 10 %} <img id="logo" src="{% static "v2/images/emails/email_header10.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 11 %} <img id="logo" src="{% static "v2/images/emails/email_header11.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 12 %} <img id="logo" src="{% static "v2/images/emails/email_header12.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 13 %} <img id="logo" src="{% static "v2/images/emails/email_header13.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 14 %} <img id="logo" src="{% static "v2/images/emails/email_header14.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 15 %} <img id="logo" src="{% static "v2/images/emails/email_header15.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 16 %} <img id="logo" src="{% static "v2/images/emails/email_header16.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 17 %} <img id="logo" src="{% static "v2/images/emails/email_header17.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 18 %} <img id="logo" src="{% static "v2/images/emails/email_header18.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 19 %} <img id="logo" src="{% static "v2/images/emails/email_header19.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 20 %} <img id="logo" src="{% static "v2/images/emails/email_header20.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 21 %} <img id="logo" src="{% static "v2/images/emails/email_header21.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 22 %} <img id="logo" src="{% static "v2/images/emails/email_header22.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 23 %} <img id="logo" src="{% static "v2/images/emails/email_header23.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 24 %} <img id="logo" src="{% static "v2/images/emails/email_header24.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% else %}
         <img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% endif %}
@@ -270,7 +308,7 @@
   </div>
   <div id="preferred_payout">
     {% if subscriber.profile.preferred_payout_address %}
-      Your Gitcoin preferred payout address is <strong>{{subscriber.profile.preferred_payout_address}}</strong>.  Payments will be auto-sent to this address.
+      Your Gitcoin preferred payout address is <strong>{{subscriber.profile.preferred_payout_address}}</strong>.  Payments will be auto-sent to this address (unless otherwise specified upon work submission).
       <a href="https://gitcoin.co/settings/account">New Wallet? Click here to update Payout Address.</a>
     {% else %}
       You do not have a prefered payout address on file.

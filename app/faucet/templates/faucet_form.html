@@ -117,10 +117,10 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
+    
 
   {% csrf_token %}
-  <script type="text/javascript">
+  <script>
   // using jQuery
   var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
   </script>

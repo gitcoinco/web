@@ -48,7 +48,7 @@
     <div class="container">
       <div class="row">
         <div id="robot_error" class="hidden my-5">
-          <img src="{% static "v2/images/prime.png" %}">
+          <img src="{% static "v2/images/prime.png" %}" alt="Prime">
         </div>
       </div>
       <div class="row" id="primary_form">
@@ -151,7 +151,7 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>
 
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>

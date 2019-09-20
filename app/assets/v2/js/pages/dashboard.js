@@ -363,6 +363,9 @@ var get_search_URI = function(offset, order) {
         } else if (_value === 'fulfilledByMe') {
           _key = 'fulfiller_github_username';
           _value = document.contxt.github_handle;
+        } else if (_value === 'reservedForMe') {
+          _key = 'reserved_for_user_handle';
+          _value = document.contxt.github_handle;
         }
 
         if (_value !== 'any') {
