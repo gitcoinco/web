@@ -3095,6 +3095,9 @@ def get_hackathons(request):
 def board(request):
     """Handle the board view."""
 
+    user = request.user if request.user.is_authenticated else None
+    keywords = user.profile.keywords
+
     context = {
         'is_outside': True,
         'active': 'dashboard',
@@ -3102,6 +3105,7 @@ def board(request):
         'card_title': _('Dashboard'),
         'card_desc': _('Manage all your activity.'),
         'avatar_url': static('v2/images/helmet.png'),
+        'keywords': keywords,
     }
     return TemplateResponse(request, 'board/index.html', context)
 
