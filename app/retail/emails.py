@@ -886,8 +886,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "CLR Round Three, Road to Devcon"
-    new_kudos_pks = [4548, 4550, 4549]
+    subject = "The Long and Winding Road"
+    new_kudos_pks = [4716, 4550, 4547]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -908,22 +908,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    It's finally time. Gitcoin Grants CLR Round 3 is happening, and it's happening now. After months of planning, we're proud to announce $100k in matching is secured for this fourteen day period from September 14th to the 30th. We're aiming for over 1,000 unique crowdfunded contributions this go around: it's time to invite your friends, because every contribution counts. <a href="https://gitcoin.co/blog/gitcoins-q3-match-100k-to-oss-projects/">Take a gander at the announcement post and get excited. It's days away.</a>
+    The <i>Long and Winding Road</i> that leads to Devcon draws near; it's time to get excited. We're proud to announce a bricolage of top tier sponsors: the Ethereum Foundation, Algorand, ConsenSys Grants, ConsenSys Labs, and more. Winners of the hackathon will be revealed at <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347624">Gitcoin's Grow Open Source Day in Tokyo.</a> Expect more of the goodness we've captured with our hackathons so far — compelling challenges, glorious prize pools, and impeccible support. Get signed up for the <a href="https://hackathons.gitcoin.co/the-road-to-devcon/">Road to Devcon here.</a>
 </p>
 <p>
-    Speaking of CLR matching, it's time to geek out. We've been working with a few CLR junkies on anti collusion measures. Interested in CLR and theory? Jump in the discussion on <a href="https://ethresear.ch/t/pairwise-coordination-subsidies-a-new-quadratic-funding-design/5553/3">ethresearch.</a>
+    Want $5? Help us decide where the $100k for Gitcoin Grants Round 3 is allocated. The steps are as follows: Step 1) Use this link: https://gitcoin.co/grants?cb=grants_signal_fund_enable Step 2) Click ‘Fund Grant’ any grant you’d like to support. Step 3) Click ‘Use Voucher For This Grant’. Until the 30th of September, we'll be matching contributions to Gitcoin Grants with quadratic voting. Check out the projects on Gitcoin Grants<a href="https://gitcoin.co/grants/">here.</a>
 </p>
 <p>
-    What do you call a group of hackathons? We don't know, but soon, we'll have to come up with a term for them. Another hackathon, the Road to Devcon, was just announced. Learn more about this one, and ask us any questions! The hackathon homepage lives <a href="https://hackathons.gitcoin.co/the-road-to-devcon/">here.</a> 
+    Speaking of Devcon, <i>Here Comes the Devcon Events</i>. We're excited to host a suite of events during our Grow Open Source Day alongside Infura, Bounties Network, and C-Dili. If you'll be in Japan for Devcon, stop by. Reserve a spot <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347625">here.</a>
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
+        The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday with Algorand, one of our sponsors for The Road to Devcon. </a>
         </li>
         <li>
-        Thanks to all who participated in the Ethereal Blocks hackathon. We'll have the announcement post for the winners published in the next few days. Hurrah!
+        Thanks to all who participated in the Ethereal Blocks hackathon. We have the announcement post for the winners ready to drop tomorrow. Keep an eye on the ol' <a href="https://twitter.com/gitcoin">Twitter feed.</a>
         </li>
     </ul>
 </p>
@@ -932,22 +932,22 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'mul1sh',  
+        'who': 'mirshko',  
         'who_link': True,
-        'what': 'Deploying Full Stack DApp to AWS',
-        'link': 'https://gitcoin.co/issue/kauri-io/Content/51/3186',
+        'what': 'Fix Metadata For Subpages',
+        'link': 'https://gitcoin.co/issue/centrifuge/website/144/3449',
         'link_copy': 'View more',
     }, {
-        'who': 'igetgames',
+        'who': 'AshleyOyt',
         'who_link': True,
-        'what': 'Eth_gasPrice Format Example Has Leading Zeros',
-        'link': 'https://gitcoin.co/issue/ethresearch/eth-wiki/16/3439',
+        'what': '768px width to 639px, columns get messed up',
+        'link': 'https://gitcoin.co/issue/nateberkopec/speedshop/1/3470',
         'link_copy': 'View more',
     }, {
-        'who': 'RobertMCForster',
+        'who': 'chuckwagoncomputing',
         'who_link': True,
-        'what': 'Linkdrop x Gnosis Safe Smart Contract Bug-bounty',
-        'link': 'https://gitcoin.co/issue/LinkdropHQ/linkdrop-safe-module/5/3309',
+        'what': 'Create upload pipeline',
+        'link': 'https://gitcoin.co/issue/knocte/DotNetLightning/1/3412',
         'link_copy': 'View more',
     }, ]
 
@@ -964,14 +964,14 @@ Back to shipping,
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/Synthetixio/synthetix/issues/196',
-        'primer': 'Gas Optimisation R&D',
+        'url': 'https://github.com/ArweaveTeam/Bounties/issues/13',
+        'primer': 'Decentralized Discussion Board',
     }, {
-        'url': 'https://github.com/knocte/NLightning/issues/1',
-        'primer': 'Create upload pipeline',
+        'url': 'https://github.com/kauri-io/Content/issues/52',
+        'primer': 'Deploying Full stack Dapp to Google Cloud',
     }, {
-        'url': 'https://github.com/cennznet/bounties/issues/1',
-        'primer': 'Publish a Tutorial-based Blog Post on Creating a Blockchain Using OnFinality & Connecting to CENNZNet Public Blockchain',
+        'url': 'https://github.com/hoprnet/hopr-website/issues/8',
+        'primer': 'Create d3.js chart from Ethereum events via web3.js / Metamask',
 }, ]
 
 
