@@ -43,6 +43,75 @@
     <div class="row">
       <div class="col-12">
         <div class="bg-white rounded border my-4">
+          <div class="d-flex justify-content-between p-4 border-bottom btn-gc-blue btn-sm" @click="skills[0] ? (toggleCollapse(1, 'bountiesMatch'), fetchMatchingBounties()) : redirect('/settings/matching')">
+            <div v-if="skills[0]">
+              Bounties matching your skills: <b>[[ skills.join(', ') ]]</b> <a href="{% url 'matching_settings' %}" class="white underline">(Update Skills)</a>
+            </div>
+            <div v-else>
+              Update your skills to get the right matches <a href="{% url 'matching_settings' %}" class="white underline">Update Skills</a>
+            </div>
+            <div v-show="skills[0]">
+              View Matching Bounties <i class="fa fa-fw" :class="isExpanded(1, 'bountiesMatch')? 'fa-chevron-up': 'fa-chevron-down'"></i>
+            </div>
+          </div>
+
+          <div v-show="isExpanded(1, 'bountiesMatch')">
+            <ul class="list-unstyled list-bounty">
+              <li class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item" v-for="(bounty, key) in matchingBounties">
+                <span class="fa-stack mr-2">
+                  <i class="fas fa-circle fa-stack-2x blue"></i>
+                  <i class="fas fa-user fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="font-weight-bold">New bounty matching your skills</span>
+                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center border p-3 my-2 ml-5 rounded">
+                  <div class="list-bounty-item_content my-auto">
+                    <div class="d-flex">
+                      <img :src="bounty.avatar_url" alt="Avatar" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
+                      <div class="d-flex flex-column w-100 ml-md-3">
+                        <div class="">
+                          <a :href="bounty.url" data-toggle="tooltip" title="View profile" class="text-dark">[[ bounty.title ]]</a>
+                          <span v-if="bounty.event" class="hackathon-alt">[[ bounty.event.name ]]</span>
+                        </div>
+                        <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
+                            <template v-if="bounty.project_type">
+                              <span class="my-1">[[ bounty.project_type ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
+                            </template>
+                            <template v-if="bounty.expires_date">
+                              <time :datetime="[[ bounty.expires_date ]]" class="my-1" :title="[[ bounty.expires_date ]]">Expires [[ bounty.expires_date | moment ]]</time> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
+                            </template>
+                            <span class="my-1">[[bounty.value_in_token | humanizeEth ]] [[ bounty.token_name ]] ([[ bounty.value_in_usdt ]] USD)</span>
+                            <a :href="bounty.url" title="View bounty details" class="mx-md-2 my-1"><i class="fas fa-eye"></i> View Issue Details</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <a :href="bounty.url" title="View bounty details" class="btn btn-sm btn-gc-blue">View Details</a>
+                  </div>
+                </div>
+              </li>
+              <li class="text-center my-5" :class="{'d-none': (isLoading.matchingBounties || matchingBounties && matchingBounties.length > 0) }">
+                <h4 class="h5 font-weight-semibold my-3">
+                  No matching bounties at the moment.
+                </h4>
+                <p class="text-black-70">Check back regularly for the latest matching bounties or <br> check out the <b>Issue Explorer</b> for more bounties!</p>
+              </li>
+              <li class="text-center">
+                <a :href="`/explorer?network=${network}&applicants=ALL&keywords=${skills}&order_by=-web3_created`" class="btn btn-outline-gc-blue w-75 font-smaller-2 gc-letter-spacing" target="_blank">VIEW MORE BOUNTIES</a>
+              </li>
+            </ul>
+            <loading-screen v-if="isLoading.matchingBounties"></loading-screen>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="bg-white rounded border my-4">
           <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.work_in_progress">[[ contributorBounties.work_in_progress.length ]] [[ 'Bount' | pluralize(contributorBounties.work_in_progress.length, 'y', 'ies') ]] in Progress</div>
 
           <ul class="list-unstyled list-bounty">
@@ -178,11 +247,21 @@
               </div>
             </li>
             <li class="text-center my-5" :class="{'d-none': isLoading.work_submitted || contributorBounties.work_submitted && contributorBounties.work_submitted.length > 0}" v-cloak>
-              <p>[[ error.work_submitted || "You don't have any submittion awaiting payment." ]]</p>
+              <p>[[ error.work_submitted || "You don't have any submission awaiting payment." ]]</p>
             </li>
           </ul>
           <loading-screen v-if="isLoading.work_submitted"></loading-screen>
         </div>
+      </div>
+    </div>
+  </section>
+  <section class="container">
+    <div class="row text-center py-5">
+      <div class="col-12">
+        <p>
+          If you also want to check your finished bounties, you can find them here:
+        </p>
+        <a class="btn btn-gc-blue" href="/explorer?bounty_filter=startedByMe&network=mainnet&order_by=-web3_created">Check my bounties in the explorer</a>
       </div>
     </div>
   </section>

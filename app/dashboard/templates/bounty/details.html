@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -38,7 +39,7 @@
         {% include 'shared/waiting_state.html' %}
 
         <div class="row nonefound" style="display:none;">
-          <img src="{% static "v2/images/shrug_bot.png" %}">
+          <img src="{% static "v2/images/shrug_bot.png" %}" alt="Shrug bot">
           <h3>{% trans "No funded issue found." %}</h3>
           <p>{% url 'explorer' as explorerurl %}{% blocktrans %}Check out the <a href="{{ explorerurl }}">Issue Explorer</a>{% endblocktrans %}</p>
           <br>
@@ -218,7 +219,7 @@
               <span class="font-caption d-inline-flex">
                 [[:text]]
                 <span class="comment">
-                  <img src={% static "v2/images/comment.svg" %}>
+                  <img src={% static "v2/images/comment.svg" alt="Comment" %}>
                   <span class="github-comment">
                     [[:comments]]
                   </span>
@@ -255,7 +256,7 @@
         <div class="row box activity">
           <div class="col-12 col-md-1">
             <div class="activity-avatar bounty_row user-popover" data-username="[[:name]]" data-html="true" data-toggle="popover" data-container="body">
-              <img class="avatar" src="/dynamic/avatar/[[:name]]"/>
+              <img class="avatar" src="/dynamic/avatar/[[:name]]" alt="Avatar"/>
             </div>
           </div>
           <div class="col-12 col-md-2">
@@ -405,7 +406,7 @@
             <div class="col-12 col-md-7">
               <div class="activity-status activity-tag-first align-items-center d-flex justify-content-between">
                 <span>New Kudos sent to <a href="/profile/[[:to_username]]">[[:to_username]]</a></span>
-                <img width="60px" height="60px" class="activity-kudos started-status-column" src="/static/[[:kudos]]"></img>
+                <img width="60px" height="60px" class="activity-kudos started-status-column" src="/static/[[:kudos]]" alt="Kudos">
               </div>
             </div>
           [[else]]
@@ -434,7 +435,7 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="row loading justify-content-center align-items-center loading_img">
-            <img src="{% static 'v2/images/loading_v2.gif' %}">
+            <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ...">
           </div>
         </div>
       </div>
@@ -444,7 +445,7 @@
         <div class="modal-dialog ">
           <div class="modal-content py-3">
             <div class="row loading justify-content-center align-items-center loading_img">
-              <img src="{% static 'v2/images/loading_v2.gif' %}">
+              <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ...">
             </div>
           </div>
         </div>
@@ -485,9 +486,14 @@
   <script src="{% static "v2/js/clipboard.js" %}"></script>
   <script>
     $('[data-toggle="popover"]').popover()
-    $("body").on("mouseover", "[data-username]", function(e) {
-      openContributorPopOver($(this).data("username"), $(this));
+    $('body').on('mouseover', '[data-username]', function(e) {
+      openContributorPopOver($(this).data('username'), $(this));
+      $('[data-username]').not(this).popover('hide');
     });
+    $('body').on('mouseout', '[data-username]', function(e) {
+      $(this).popover('dispose');
+    });
+
   </script>
   <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>

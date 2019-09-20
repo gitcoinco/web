@@ -29,8 +29,8 @@ from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
 from .models import (
-    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, HackathonEvent, Interest, ProfileSerializer,
-    SearchHistory,
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, HackathonEvent, Interest, Profile,
+    ProfileSerializer, SearchHistory,
 )
 
 logger = logging.getLogger(__name__)
@@ -157,7 +157,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
             'additional_funding_summary', 'funding_organisation', 'paid', 'event',
             'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured',
-            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on', 'can_remarket'
+            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on', 'can_remarket', 'is_reserved'
         )
 
     def create(self, validated_data):
@@ -268,6 +268,15 @@ class BountyViewSet(viewsets.ModelViewSet):
                         args[f'{key}__icontains'] = value.strip()
                         _queryset = _queryset | queryset.filter(**args)
                     queryset = _queryset
+
+        if 'reserved_for_user_handle' in param_keys:
+            handle = self.request.query_params.get('reserved_for_user_handle', '')
+            if handle:
+                try:
+                    profile = Profile.objects.filter(handle__iexact=handle).first()
+                    queryset = queryset.filter(bounty_reserved_for_user=profile)
+                except:
+                    logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
 
         # filter by PK
         if 'pk__gt' in param_keys:

@@ -25,6 +25,7 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.db.models import Max
@@ -402,6 +403,7 @@ def discord_settings(request):
     if request.POST:
         test = request.POST.get('test')
         submit = request.POST.get('submit')
+        gitcoin_discord_username = request.POST.get('gitcoin_discord_username', '')
         webhook_url = request.POST.get('webhook_url', '')
         repos = request.POST.get('repos', '')
 
@@ -409,6 +411,7 @@ def discord_settings(request):
             response = validate_discord_integration(webhook_url)
 
         if submit or (response and response.get('success')):
+            profile.gitcoin_discord_username = gitcoin_discord_username
             profile.update_discord_integration(webhook_url, repos)
             profile = record_form_submission(request, profile, 'discord')
             if not response.get('output'):
@@ -418,6 +421,7 @@ def discord_settings(request):
 
     context = {
         'repos': profile.get_discord_repos(join=True) if profile else [],
+        'gitcoin_discord_username': profile.gitcoin_discord_username,
         'is_logged_in': is_logged_in,
         'nav': 'home',
         'active': '/settings/discord',
@@ -540,8 +544,9 @@ def account_settings(request):
             profile.email = ''
             profile.save()
             create_user_action(profile.user, 'account_disconnected', request)
-            messages.success(request, _('Your account has been disconnected from Github'))
-            logout_redirect = redirect(reverse('logout') + '?next=/')
+            redirect_url = f'https://www.github.com/settings/connections/applications/{settings.GITHUB_CLIENT_ID}'
+            logout(request)
+            logout_redirect = redirect(redirect_url)
             logout_redirect['Cache-Control'] = 'max-age=0 no-cache no-store must-revalidate'
             return logout_redirect
         elif request.POST.get('delete', False):

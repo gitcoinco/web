@@ -17,12 +17,12 @@
 {% endcomment %}
 {% load static %}
 <!-- THIS IS LIGHT -->
-<script type="text/javascript">
+<script>
   var static_url = "{{ STATIC_URL }}";
   var media_url = "{{ MEDIA_URL }}";
   document.contxt = {{ json_context|safe }};
 </script>
-<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+<script src="{% url 'javascript-catalog' %}"></script>
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 {% if user.is_authenticated and env == 'prod' %}
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -42,8 +42,8 @@
 <script src="{% static "v2/js/lib/jquery.select2.min.js" %}"></script>
 <script src="{% static "v2/js/lib/moment.min.js" %}"></script>
 <script src="{% static "v2/js/note.js" %}"></script>
-<script src="{% static "v2/js/base.js" %}"></script>
 <script src="{% static "v2/js/ajax-helper.js" %}"></script>
+<script src="{% static "v2/js/base.js" %}"></script>
 {% if user.is_authenticated %}
   <script src="{% static "v2/js/notifications.js" %}"></script>
 {% endif %}
@@ -62,7 +62,7 @@
 </script>
 
 {% if recommend_gas_price %}
-<script type="text/javascript">
+<script>
   setInterval(function(){
     defaultGasPrice = parseInt(10**9 * {{ recommend_gas_price }});
   }, 1000);

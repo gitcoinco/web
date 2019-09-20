@@ -43,13 +43,13 @@
         }
       </style>
 
-      <div id="{{ hackathon.identifier }}" class="row pt-5 pb-5 text-center banner hackathon-banner">
+      <div id="{{ hackathon.identifier }}" class="row pt-5 pb-4 text-center banner hackathon-banner">
         <div class="col g-font-muli">
           <span class="hackathon-name d-block mt-5 font-weight-semibold">{{ hackathon.name }}</span>
           {% if hackathon.logo_svg %}
-            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo_svg.url }}"/>
+            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
           {% elif hackathon.logo %}
-            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo.url }}"/>
+            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
           {% endif %}
           <span class="d-block font-title-lg">
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
@@ -57,8 +57,8 @@
         </div>
         {% include 'shared/hackathon_sponsors.html' %}
         {% if hackathon.end_date|timesince <= "1 min" %}
-          <div class="col">
-            <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="link-current font-bigger-2 underline"> How to Participate</a>
+          <div class="col text-right">
+            <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-outline-green rounded-pill font-bigger-1 font-weight-bold px-3 py-2 mr-3"><i class="far fa-lightbulb"></i> Hackathon Guide</a>
           </div>
         {% endif %}
       </div>
@@ -91,10 +91,10 @@
               </div>
         {% endif %}
           <div class="row loading justify-content-center align-items-center loading_img">
-            <img src="{% static "v2/images/loading_v2.gif" %}">
+            <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
           </div>
           <div class="row nonefound mx-auto" style="display:none;">
-            <img src="{% static "v2/images/shrug_bot.png" %}">
+            <img src="{% static "v2/images/shrug_bot.png" %}" alt="Shrug bot">
             <h3>{% trans "No results found." %}</h3>
             <p>{% trans "Please try another query" %}</p>
           </div>
