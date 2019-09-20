@@ -522,6 +522,7 @@ const predictPhantomCLRMatch = () => {
   }
 
   let predicted_clr = lerp(x_lower, x_upper, y_lower, y_upper, amount);
+
   $('.phantom_clr_increase').html((predicted_clr - clr_prediction_curve[0]).toFixed(2));
 };
 
@@ -537,9 +538,7 @@ const predictCLRMatch = () => {
 
   const contributions_axis = [ 0, 1, 10, 100, 1000, 10000 ];
 
-  let index = 0
-
-
+  let index = 0;
 
   if (isNaN(amount)) {
     predicted_clr = clr_prediction_curve[index];
