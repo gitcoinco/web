@@ -509,7 +509,9 @@ const lerp = (x_lower, x_upper, y_lower, y_upper, x) => {
 const predictPhantomCLRMatch = () => {
 
   let amount = phantom_value;
-
+  if (typeof clr_prediction_curve_per_grant == 'undefined'){
+    return;
+  }
   for (var grant_id in clr_prediction_curve_per_grant) {
 
     var curve_per_grant = clr_prediction_curve_per_grant[grant_id].map(function(value,index) { return value[1]; });
