@@ -885,7 +885,7 @@ def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
     subject = "The Long and Winding Road"
-    new_kudos_pks = [4716, 4550, 4547]
+    new_kudos_pks = [4546, 4550, 4542]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -909,7 +909,7 @@ Hey Gitcoiners,
     The <i>Long and Winding Road</i> that leads to Devcon draws near; it's time to get excited. We're proud to announce a bricolage of top tier sponsors: the Ethereum Foundation, Algorand, ConsenSys Grants, ConsenSys Labs, and more. Winners of the hackathon will be revealed at <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347624">Gitcoin's Grow Open Source Day in Tokyo.</a> Expect more of the goodness we've captured with our hackathons so far — compelling challenges, glorious prize pools, and impeccible support. Get signed up for the <a href="https://hackathons.gitcoin.co/the-road-to-devcon/">Road to Devcon here.</a>
 </p>
 <p>
-    Want $5? Help us decide where the $100k for Gitcoin Grants Round 3 is allocated. The steps are as follows: Step 1) Use this link: https://gitcoin.co/grants?cb=grants_signal_fund_enable Step 2) Click ‘Fund Grant’ any grant you’d like to support. Step 3) Click ‘Use Voucher For This Grant’. Until the 30th of September, we'll be matching contributions to Gitcoin Grants with quadratic voting. Check out the projects on Gitcoin Grants<a href="https://gitcoin.co/grants/">here.</a>
+    Want $5? Help us decide where the $100k for Gitcoin Grants Round 3 is allocated. The steps are as follows: Step 1) Use this link: https://gitcoin.co/grants?cb=grants_signal_fund_enable Step 2) Click ‘Fund Grant’ any grant you’d like to support. Step 3) Click ‘Use Voucher For This Grant’. Until the 30th of September, we'll be matching contributions to Gitcoin Grants with quadratic voting. Check out the projects on Gitcoin Grants <a href="https://gitcoin.co/grants/">here.</a>
 </p>
 <p>
     Speaking of Devcon, <i>Here Comes the Devcon Events</i>. We're excited to host a suite of events during our Grow Open Source Day alongside Infura, Bounties Network, and C-Dili. If you'll be in Japan for Devcon, stop by. Reserve a spot <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347625">here.</a>
