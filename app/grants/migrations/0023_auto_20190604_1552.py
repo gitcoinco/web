@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 
 def forwards(apps, schema_editor):
     ## ROUND 2 CLR Match Amounts
+    '''
     from grants.models import CLRMatch
     # array of [grant_id, amount]
     try:
@@ -27,6 +28,8 @@ def forwards(apps, schema_editor):
                         )
     except Exception as e:
         logger.info(e)
+    '''
+    pass
 
 def backwards(apps, schema_editor):
     pass

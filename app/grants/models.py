@@ -189,6 +189,11 @@ class Grant(SuperModel):
         max_digits=20,
         help_text=_('The TOTAL CLR matching amount across all rounds'),
     )
+    clr_prediction_curve = ArrayField(
+        ArrayField(
+            models.FloatField(),
+            size=2,
+        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
 
@@ -198,6 +203,7 @@ class Grant(SuperModel):
     def __str__(self):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}"
+
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
@@ -941,7 +947,7 @@ class PhantomFunding(SuperModel):
 
     def to_mock_contribution(self):
         context = self.to_standard_dict()
-        context['subscription'] = { 
+        context['subscription'] = {
             'contributor_profile': self.profile,
             'amount_per_period': self.value,
             'token_symbol': 'DAI',

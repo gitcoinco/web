@@ -54,7 +54,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
       {% include 'grants/banner.html' %}
 
-
       {% if can_phantom_fund %}
         <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
           <ul class="nav">
@@ -64,56 +63,50 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <li class="nav-item">
               <a class="nav-link" href="#" data-target="phantom_fund">$5 Voucher Funding</a>
             </li>
-          </ul>  
-        </div>    
+          </ul>
+        </div>
       {% endif %}
       <div id="phantom_fund" class="tab_target {% if active_tab == "normal" %} hidden {% endif %} ">
         <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
           <div class="form__group-horizontal">
-            <div class="row">
-              <p>
-                <i class="fas fa-circle mr-2"></i>
+            <div class="row description">
+              <p class="mb-2">
+                <i class="fas fa-plus mr-1"></i>
                 {% trans "Voucher Funding is a lightweight way to signal that you'd like to support this grant during the active CLR Round." %}
               </p>
-              <p>
-                <i class="fas fa-circle mr-2"></i>
+              <p class="mb-2">
+                <i class="fas fa-plus mr-1"></i>
                 {% trans "By clicking 'Use Voucher for this Grant', you are signaling your support of this grant with the $5 that has been allocated to you from Gitcoin." %}
               </p>
-              <p>
-                <i class="fas fa-circle mr-2"></i>
+              <p class="mb-2">
+                <i class="fas fa-plus mr-1"></i>
                 {% trans "You may support as many grants as you'd like, per round, with this $5 voucher.  The more the better :)" %}
               </p>
 
               <div>
                 So far, you are supporting <strong>{{phantom_funds.count}}</strong> projects.
                 <ol>
-                {% for ele in phantom_funds %}
+                {% for phantom_fund in phantom_funds %}
                   <li style="padding: 5px; {% cycle 'background-color: #eeeeee;' '' %}">
-                    <a href={{ele.grant.url}}>{{ele.grant.title}}</a>
-                    {% if grant.pk == ele.grant.pk %}
-                    (this grant)
-                    {% endif %}
-                     for <strong>${{ele.value|floatformat:2}}</strong>
+                    <a href={{ele.grant.url}}>{{phantom_fund.grant.title}}</a> for <strong>${{phantom_fund.value|floatformat:2}}</strong> + $<strong><span class="phantom_clr_increase">0</span></strong> in matching.
                   </li>
                 {% endfor %}
                 </ol>
-              </div>  
+              </div>
 
-              <div class="col-12 form__footer text-center">
-                <img src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
-                <br>
-                <br>
+              <div class="col-12 form__footer pt-2 text-center">
+                <img class="mb-4" src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
                 <form method=POST>
                   {%csrf_token%}
                   <input type=hidden name=toggle_phantom_fund value=1 />
                   <input class="btn btn-gc-blue" type=submit name=submit value="
-                {% if is_phantom_funding_this_grant %}
-                  {% trans "STOP using voucher for this Grant" %}
-                {% else %}
-                  {% trans "Use Voucher for this Grant" %}
-                {% endif %}
+                  {% if is_phantom_funding_this_grant %}
+                    {% trans "STOP using voucher for this Grant" %}
+                  {% else %}
+                    {% trans "Use Voucher for this Grant" %}
+                  {% endif %}
                 " />
-                </form> 
+                </form>
                 </a>
               </div>
             </div>
@@ -121,7 +114,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </div>
       </div>
       <div id="original_fund" class="tab_target {% if active_tab == "phantom" %} hidden {% endif %}">
-        <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
+        <div class="col-12 offset-md-2 col-md-10 offset-xl-3 col-xl-6 mt-5 font-subheader mx-0 mx-md-auto row">
           <p class="col-12 font-weight-semibold my-4 text-center">
             {{ grant.admin_profile }} {% trans "is accepting contributions in "%}
             {% if grant_has_no_token %}
@@ -313,6 +306,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <div class="form__group-horizontal">
                     <div class="row">
+                      {% include './clr_estimate.html' with class='extraleft' %}
                       <div class="col-12 form__footer text-center">
                         <button class="button button--primary button--full" id='js-fundGrant-button'>{% trans "Contribute to Grant" %}</button>
                       </div>
@@ -358,13 +352,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
 
-    {% if show_tweet_modal %}
-      <script>
+    <script>
+      {% if show_tweet_modal %}
         $(document).ready(function(){
-           $('#tweetModal').css('display', 'block');
+          $('#tweetModal').css('display', 'block');
         });
-      </script>
-    {% endif %}
+      {% endif %}
+
+      const clr_prediction_curve = {{ clr_prediction_curve }};
+
+      {% if phantom_funds %}
+        const phantom_value = {{ phantom_funds.0.value }};
+      {% else %}
+        const phantom_value = 5;
+      {% endif %}
+    </script>
 
   </body>
 
