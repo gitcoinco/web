@@ -61,7 +61,7 @@
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
-                    <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                    <img :src="bounty.avatar_url" alt="Avatar" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
                     <div class="d-flex flex-column w-100 ml-md-3">
                       <a :href="bounty.absolute_url" title="View bounty details" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
                       <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
@@ -90,7 +90,7 @@
                     <div class="d-flex flex-column flex-md-row justify-content-between">
                       <div class="list-bounty-item_content my-auto">
                         <div class="d-flex">
-                          <img :src="contributor.avatar_url" alt="" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
+                          <img :src="contributor.avatar_url" alt="Avatar" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
                           <div class="d-flex flex-column">
                             <div class="">
                               <a :href="`/profile/${contributor.handle}`" data-toggle="tooltip" title="View profile" class="text-dark">[[ contributor.handle ]]</a> <a :href="`https://github.com/${contributor.handle}`" target="_blank"><i class="fab fa-github text-dark" data-toggle="tooltip" title="View GitHub profile"></i></a>
@@ -125,7 +125,7 @@
               </div>
             </li>
             <li class="text-center my-5" :class="{'d-none': (isLoading.open || bounties.open && bounties.open.length > 0) }">
-              <img src="{% static 'v2/images/zero-bounties.svg' %}" alt="" width="197" height="169">
+              <img src="{% static 'v2/images/zero-bounties.svg' %}" alt="Zero bounties" width="197" height="169">
               <h4 class="h5 font-weight-semibold my-3">
                 You don't have any open issues right now!
               </h4>
@@ -157,7 +157,7 @@
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
-                    <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                    <img :src="bounty.avatar_url" alt="Avatar" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
                     <div class="d-flex flex-column w-100 ml-md-3">
                       <a :href="bounty.absolute_url" title="View bounty details" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
                       <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
@@ -186,7 +186,7 @@
                     <div class="d-flex flex-column flex-md-row justify-content-between">
                       <div class="list-bounty-item_content my-auto">
                         <div class="d-flex">
-                          <img :src="contributor.avatar_url" alt="" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
+                          <img :src="contributor.avatar_url" alt="Avatar" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
                           <div class="d-flex flex-column">
                             <div class="">
                               <a :href="`/profile/${contributor.handle}`" data-toggle="tooltip" title="View profile" class="text-dark">[[ contributor.handle ]]</a> <a :href="`https://github.com/${contributor.handle}`" target="_blank"><i class="fab fa-github text-dark" data-toggle="tooltip" title="View GitHub profile"></i></a>
@@ -247,7 +247,7 @@
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
-                    <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                    <img :src="bounty.avatar_url" alt="Avatar" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
                     <div class="d-flex flex-column w-100 ml-md-3">
                       <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark" title="View bounty details">[[ bounty.title ]]</a>
                       <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
@@ -272,7 +272,7 @@
                     <div class="d-flex flex-column flex-md-row justify-content-between">
                       <div class="list-bounty-item_content my-auto">
                         <div class="d-flex">
-                          <img :src="contributor.avatar_url" alt="" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
+                          <img :src="contributor.avatar_url" alt="Avatar" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle">
                           <div class="d-flex flex-column">
                             <div class="">
                               <a :href="`/profile/${contributor.handle}`" data-toggle="tooltip" title="View profile" class="text-dark">[[ contributor.handle ]]</a> <a :href="`https://github.com/${contributor.handle}`" target="_blank"><i class="fab fa-github text-dark" data-toggle="tooltip" title="View GitHub profile"></i></a>
@@ -317,7 +317,7 @@
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
-                    <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                    <img :src="bounty.avatar_url" alt="Avatar" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
                     <div class="d-flex flex-column w-100 ml-md-3">
                       <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
                       <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">

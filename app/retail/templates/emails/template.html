@@ -308,7 +308,7 @@
   </div>
   <div id="preferred_payout">
     {% if subscriber.profile.preferred_payout_address %}
-      Your Gitcoin preferred payout address is <strong>{{subscriber.profile.preferred_payout_address}}</strong>.  Payments will be auto-sent to this address.
+      Your Gitcoin preferred payout address is <strong>{{subscriber.profile.preferred_payout_address}}</strong>.  Payments will be auto-sent to this address (unless otherwise specified upon work submission).
       <a href="https://gitcoin.co/settings/account">New Wallet? Click here to update Payout Address.</a>
     {% else %}
       You do not have a prefered payout address on file.

@@ -245,6 +245,10 @@ body {
   color: #00A652;
 }
 
+.status-reserved {
+  color: #d58512;
+}
+
 .status-started {
   color: #0D0764;
 }

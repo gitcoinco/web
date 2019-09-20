@@ -112,6 +112,14 @@
               </div>
             </div>
             <button class="btn blue" @click="params = {};">Reset Filters</button>
+            {% if is_staff %}
+              <p class="font-body mx-2 mb-2 mt-4">
+                <span class="font-weight-bold">[[ numUsers ]]</span> users found
+              </p>
+              <button v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params.skills && params.skills.length)" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
+                Invite all to bounty
+              </button>
+            {% endif %}
           </nav>
         </transition>
         <div class="container pt-4" @scroll.passive="onScroll($event)">
@@ -131,7 +139,7 @@
                     <div class="dropdown-divider"></div>
                     <a :href="`/profile/${ user.handle }`" class="dropdown-item" target="_blank">View profile</a>
                   </div>
-                  <img class="rounded-circle shadow-sm mx-auto mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${ user.handle }`"/>
+                  <img class="rounded-circle shadow-sm mx-auto mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${ user.handle }`" alt="Avatar"/>
                   <h5 class="text-center card-user_name">
                     [[ user.name || user.handle ]]
                     <span v-if="user.verification">
@@ -192,11 +200,11 @@
           </div>
         </div>
       </div>
-      <modal ref="user-modal" >
+      <modal ref="user-modal" id="userModal">
         <div slot="header" v-if="userSelected.handle">
           <div class="d-flex flex-column align-items-center">
             <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
-            <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`"/>
+            <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`" alt="Avatar"/>
             <span>[[ userSelected.name ]]</span>
             <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
               [[ userSelected.handle ]]
@@ -210,7 +218,7 @@
             </div>
             <div class="bounties-box">
               <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
-                <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30">
+                <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30" alt="Avatar">
                 <p class="line-clamp font-smaller-2 my-0 mx-2">
                   [[ bounty.title ]]
                 </p>
@@ -237,6 +245,38 @@
           </div>
         </div>
       </modal>
+      {% if is_staff %}
+        <modal ref="user-modal" id="inviteAll" size="modal-lg" v-bind:issueDetails="issueDetails">
+          <div slot="header">
+            <div class="d-flex flex-column align-items-center">
+              <h6 class="font-weight-bold mb-3">Invite [[numUsers]] Users to the Bounty</h6>
+            </div>
+          </div>
+          <div slot="body">
+            <div class="form-group">
+              <label class="font-weight-semibold">Github Issue URL</label>
+              <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://github.com/gitcoinco/web/issues/5045" v-on:keyup="getIssueDetails(gitcoinIssueUrl)"/>
+            </div>
+            <span class="font-weight-semibold d-block mb-2" v-if="issueDetails">Description</span>
+            <div v-if="issueDetails" class="pre-scrollable p-3 bg-light rounded font-body" style="white-space: pre-line;">
+              <span class="text-black-60 text-uppercase d-block mt-3">ISSUE TITLE</span>
+              [[issueDetails.title]] <span class="badge">[[issueDetails.status]]</span>
+              <span class="text-black-60 text-uppercase d-block mt-3">ISSUE DESCRIPTION</span>
+              [[issueDetails.issue_description_text]]
+            </div>
+            <loading-screen v-else-if="gitcoinIssueUrl && !errorIssueDetails"></loading-screen>
+            <div class="alert-warning p-3" v-if="errorIssueDetails">
+              [[errorIssueDetails]]
+            </div>
+          </div>
+          <div slot="footer" class="d-flex align-items-center flex-fill">
+            <div class="ml-auto">
+              <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
+              <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-gc-blue" @click="sendInviteAll(issueDetails.pk)">Invite</button>
+            </div>
+          </div>
+        </modal>
+      {% endif %}
     </div>
 
     <script type="text/x-template" id="select2-template">

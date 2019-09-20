@@ -120,6 +120,53 @@ Vue.mixin({
         }
       });
     },
+    sendInviteAll: function(bountyUrl) {
+      let vm = this;
+      const apiUrlInvite = '/api/v0.1/bulk_invite/';
+      const postInvite = fetchData(
+        apiUrlInvite,
+        'POST',
+        { 'params': vm.params, 'bountyId': bountyUrl},
+        {'X-CSRFToken': csrftoken}
+      );
+
+      $.when(postInvite).then((response) => {
+        console.log(response);
+        if (response.status !== 200) {
+          _alert(response.msg, 'error');
+
+        } else {
+          vm.$refs['user-modal'].closeModal();
+          _alert('The invitation has been sent', 'info');
+        }
+      });
+
+    },
+    getIssueDetails: function(url) {
+      let vm = this;
+      const apiUrldetails = `/actions/api/v0.1/bounties/?github_url=${encodeURIComponent(url)}`;
+
+      vm.errorIssueDetails = undefined;
+
+      if (url.indexOf('github.com/') < 0) {
+        vm.issueDetails = null;
+        vm.errorIssueDetails = 'Please paste a github issue url';
+        return;
+      }
+      vm.issueDetails = undefined;
+      const getIssue = fetchData(apiUrldetails, 'GET');
+
+      $.when(getIssue).then((response) => {
+        if (response[0]) {
+          vm.issueDetails = response[0];
+          vm.errorIssueDetails = undefined;
+        } else {
+          vm.issueDetails = null;
+          vm.errorIssueDetails = 'This issue wasn\'t bountied yet.';
+        }
+      });
+
+    },
     closeModal() {
       this.$refs['user-modal'].closeModal();
     },
@@ -187,7 +234,10 @@ if (document.getElementById('gc-users-directory')) {
       skills: document.keywords,
       selectedSkills: [],
       noResults: false,
-      isLoading: true
+      isLoading: true,
+      gitcoinIssueUrl: '',
+      issueDetails: undefined,
+      errorIssueDetails: undefined
     },
     mounted() {
       this.fetchUsers();
