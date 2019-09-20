@@ -41,6 +41,7 @@ from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from decimal import Decimal
 import pytz
 import requests
 from app.utils import get_upload_filename
@@ -2882,7 +2883,7 @@ class Profile(SuperModel):
             pass
 
         if sum_type == 'collected':
-            eth_sum = eth_sum + sum([amount.value_in_eth for amount in self.tips])
+            eth_sum = eth_sum + Decimal(sum([amount.value_in_eth for amount in self.tips])) if self.tips else eth_sum
 
         return eth_sum
 
@@ -3553,7 +3554,7 @@ class FeedbackEntry(SuperModel):
                     name = name.split(' ')
                     for ele in name:
                         replace_str.append(ele)
-        
+
         review = self.comment
         for ele in replace_str:
             review = re.sub(ele, 'NAME', review, flags=re.I)
