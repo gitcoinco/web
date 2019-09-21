@@ -22,6 +22,7 @@ import base64
 import collections
 import logging
 from datetime import datetime, timedelta
+from decimal import Decimal
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -41,7 +42,6 @@ from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from decimal import Decimal
 import pytz
 import requests
 from app.utils import get_upload_filename
