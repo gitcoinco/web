@@ -142,7 +142,7 @@ def grants(request):
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
-        'clr_active': True,
+        'clr_active': clr_active,
         'sort_by_index': sort_by_index
     }
 
@@ -246,6 +246,7 @@ def grant_details(request, grant_id, grant_slug):
         'keywords': get_keywords(),
         'activity_count': activity_count,
         'contributors': contributors,
+        'clr_active': clr_active,
     }
 
     if add_cancel_params:
