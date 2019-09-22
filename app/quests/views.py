@@ -15,6 +15,10 @@ def index(request):
     return TemplateResponse(request, 'quests/index.html', params)
 
 def details(request, obj_id, name):
+
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile', None):
+        return redirect('/login/github?next=' + request.get_full_path())
+
     """Render the Kudos 'detail' page."""
     if not re.match(r'\d+', obj_id):
         raise ValueError(f'Invalid obj_id found.  ID is not a number:  {obj_id}')

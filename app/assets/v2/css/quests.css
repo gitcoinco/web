@@ -14,15 +14,62 @@
  #breadcrumbs, #breadcrumbs a{
   color: black;
  }
- #enemy img,
- #protagonist img{
-  width: 400px;
-  height: : 400px;
-  border-radius: 50px;
+ .character{
+  text-align: center;
  }
- #protagonist img{
+ .character h3{
+  font-weight: 900;
+  font-size: 48px;
+  background-color: #ccc;
+  width: 70%;
+  margin: 0px auto;
+ }
+ .character p{
+  font-size: 18px;
+  background-color: #aaa;
+  width: 65%;
+  margin: 0px auto;
+ }
+ .character .info{
+  margin-top: -60px;
+  z-index: 999;
+  position: absolute;
+  bottom: -50px;
+  width: 100%;
+ }
+ .character img{
+  width: 350px;
+  height: : 350px;
   border-radius: 200px;
   border: 5px solid #ccc;
+ }
+ #enemy img{
+  border: none !important;
+ }
+
+ .character.harm img{
+  border: 5px solid #F9006C;
+ }
+ .character.heal img{
+  border: 5px solid #0fce7c;
+ }
+ .character.harm h3,
+ .character.harm p{
+  background-color:  #F9006C;
+  color: white;
+ }
+ .character.heal h3,
+ .character.heal p{
+  background-color: #0fce7c;
+  color: white;
+ }
+
+ .damage, .heal{
+    z-index: 99999;
+    position: absolute;
+    font-size: 85px;
+    top: 10px;  
+    margin: 0px auto;
  }
 
  #header{
@@ -31,6 +78,8 @@
   width: 60%;
   text-align: center;
   background-color: white;
+  font-style: italic;
+  padding: 10px;
  }
  #cta_button{
   font-weight: bold;

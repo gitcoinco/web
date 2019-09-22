@@ -24,18 +24,27 @@
     <div id="background" style="background: url('/static/v2/images/quests/{{quest.background}}.png') no-repeat;">
       &nbsp;
     </div>
-    <div id="enemy" class="tr">
+    <div id="enemy" class="character tr heal">
       <img src="/static/{{quest.game_metadata.enemy.art}}">
+      <div class='info'>
+        <h3>{{quest.game_metadata.enemy.title}}</h3>
+        <p>Level {{quest.game_metadata.enemy.level}} Opponent</p>
+      </div>
+    {% include 'quests/shared/alts_to_characters.html' %}
     </div>
-    <div id="protagonist" class="bl">
+    <div id="protagonist" class="character bl harm">
       <img src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
-      </a>
+      <div class='info'>
+        <h3>@{{user.profile.handle}}</h3>
+        <p>Level 1 Etherean</p>
+      </div>
+      {% include 'quests/shared/alts_to_characters.html' %}
     </div>
 
     <div id="header" class="cen">
     </div>
     <div id="cta_button" class="cen">
-      <a href="#">Enter Quest</a>
+      <a href="#">Enter Quest 🏔</a>
     </div>
   </div>
   <script>
