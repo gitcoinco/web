@@ -171,6 +171,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="col-12 col-md-6 pt-1 font-caption order_by d-md-inline text-center text-sm-right">
               <div class="heading">{% trans "SORT" %}</div>
               <select name="sort_option" id="sort_option">
+                <option value="match_pledge_amount_1">{% trans "$1 Pledge Matching Amount" %}</option>
+                <option value="match_pledge_amount_10">{% trans "$10 Pledge Matching Amount" %}</option>
+                <option value="match_pledge_amount_100">{% trans "$100 Pledge Matching Amount" %}</option>
+                <option value="match_pledge_amount_1000">{% trans "$1000 Pledge Matching Amount" %}</option>
                 <option value="-created_on">{% trans "Created: Recent" %}</option>
                 <option value="created_on">{% trans "Created: Oldest" %}</option>
                 <option value="-clr_matching">{% trans "CLR Match: Highest" %}</option>

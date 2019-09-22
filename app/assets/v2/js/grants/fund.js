@@ -531,7 +531,6 @@ const predictPhantomCLRMatch = () => {
         y_upper = curve_per_grant[2];
       }
       let predicted_clr = lerp(x_lower, x_upper, y_lower, y_upper, amount);
-
       $('.phantom_clr_increase' + grant_id).html((predicted_clr - curve_per_grant[0]).toFixed(2));
     }
   }

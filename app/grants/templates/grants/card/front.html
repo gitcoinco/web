@@ -37,18 +37,21 @@
             </div>
           </div>
         </a>
-        {% if clr_active %}
-          <div class="clr position-absolute text-center">
-            <h2 class="font-caption font-weight-bold my-0 p-1">
-              CLR MATCH <span id="clr-grant-match">{{ grant.clr_prediction_curve.0.1|floatformat:2 }}</span> DAI
-            </h2>
-            <p class="my-0">( out of <span id="clr-total">{{ total_clr_pot }}</span> DAI )</p>
-          </div>
-        {% endif %}
       </div>
 
       <div class="row progress-container mb-4">
         <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
+        {% if clr_active %}
+          <div class="clr position-absolute text-center">
+            <h2 class="font-caption font-weight-bold my-0 p-1">
+              Round 3 CLR Match estimate: {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma }} DAI
+            </h2>
+            <p class="my-0"> + $1 contrib: +<span id="clr-grant-match">{{ grant.clr_prediction_curve.1.2|floatformat:0|intcomma }}</span> DAI</p>
+            <p class="my-0"> + $10 contrib: +<span id="clr-grant-match">{{ grant.clr_prediction_curve.2.2|floatformat:0|intcomma }}</span> DAI</p>
+            <p class="my-0"> + $100 contrib: +<span id="clr-grant-match">{{ grant.clr_prediction_curve.3.2|floatformat:0|intcomma }}</span> DAI</p>
+            <p class="my-0 mb-2"> + $1k contrib: +<span id="clr-grant-match">{{ grant.clr_prediction_curve.4.2|floatformat:0|intcomma }}</span> DAI</p>
+          </div>
+        {% else %}
           <p class="sub-title mb-0 font-caption">MONTHLY RECURRING</p>
           <p class="font-title mb-0 font-weight-bold">
             {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
@@ -56,6 +59,9 @@
           <p class="font-caption {% if grant.clr_matching %} my-2 {% endif %}">
             of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal
           </p>
+
+        {% endif %}
+
         </div>
 
         <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6">
@@ -72,8 +78,7 @@
         </div>
       </div>
 
-      {% include 'grants/detail/matching.html' %}
-      <div class="grant-item__state mt-3 row">
+      <div class="grant-item__state mt-5 row">
         <div class="col-6">
           {% if grant.active %}
             <div class="grant-item__state-active">
