@@ -34,7 +34,7 @@ from django.contrib.humanize.templatetags.humanize import naturalday, naturaltim
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import connection, models
-from django.db.models import Q, Sum
+from django.db.models import Count, F, Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
@@ -49,7 +49,7 @@ import pytz
 import requests
 from app.utils import get_upload_filename
 from dashboard.points import point_values
-from dashboard.tokens import addr_to_token
+from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -565,7 +565,7 @@ class Bounty(SuperModel):
     @property
     def org_profile(self):
         profiles = Profile.objects.filter(handle__iexact=self.org_name)
-        if profiles.count():
+        if profiles.exists():
             return profiles.first()
         return None
 
@@ -1622,7 +1622,6 @@ def psave_tip(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
 def postsave_tip(sender, instance, **kwargs):
-    from django.contrib.contenttypes.models import ContentType
     is_valid = instance.sender_profile != instance.recipient_profile
     if is_valid:
         Earning.objects.update_or_create(
@@ -1682,7 +1681,6 @@ def psave_bounty(sender, instance, **kwargs):
 
 @receiver(post_save, sender=BountyFulfillment, dispatch_uid="psave_bounty_fulfill")
 def psave_bounty_fulfilll(sender, instance, **kwargs):
-    from django.contrib.contenttypes.models import ContentType
     if instance.accepted:
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='bountyfulfillment'),
@@ -1935,7 +1933,6 @@ class Activity(SuperModel):
 
     @property
     def view_props(self):
-        from dashboard.tokens import token_by_name
         from kudos.models import Token
         icons = {
             'new_tip': 'fa-thumbs-up',
@@ -2269,7 +2266,6 @@ class Profile(SuperModel):
     @property
     def get_org_kudos(self):
         from kudos.models import Token
-        from django.db.models import F
 
         if not self.is_org:
             return Token.objects.none()
@@ -2390,7 +2386,6 @@ class Profile(SuperModel):
         return self.leaderboard_helper(self.sent_earnings, 'to_profile')
 
     def leaderboard_helper(self, earnings, distinct_on):
-        from django.db.models import Sum, Count
         order_field = f'{distinct_on}__handle'
         earnings = earnings.filter(network=self.get_network())
         leaderboard = earnings.values(order_field).annotate(sum=Sum('value_usd')).annotate(count=Count('value_usd'))
@@ -2430,7 +2425,7 @@ class Profile(SuperModel):
         return on_repo | tipped_for
 
     def calculate_all(self):
-        # calculates all the info needed to make the profile_great
+        # calculates all the info needed to make the profile frontend great
 
         # give the user a profile header if they have not yet selected one
         if not self.profile_wallpaper:
@@ -3260,7 +3255,7 @@ class Profile(SuperModel):
                 pass
 
         if sum_type == 'collected':
-            eth_sum = eth_sum + sum([amount.value_in_eth for amount in self.tips])
+            eth_sum = float(eth_sum) + sum([float(amount.value_in_eth) for amount in self.tips])
 
         return eth_sum
 
