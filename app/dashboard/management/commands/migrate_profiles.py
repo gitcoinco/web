@@ -21,7 +21,8 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.helpers import record_bounty_activity
-from dashboard.models import Bounty
+from dashboard.models import Bounty, Profile, Tip
+from dashboard.tip_views import record_tip_activity
 
 
 class Command(BaseCommand):
@@ -42,8 +43,6 @@ class Command(BaseCommand):
                 print(e)
 
 
-        from dashboard.models import Tip
-        from dashboard.tip_views import record_tip_activity
         for tip in Tip.objects.filter(network='mainnet').filter(created_on__lt=timezone.datetime(2019,3,5)):
             try:
                 record_tip_activity(tip, tip.username, 'new_tip', override_created=tip.created_on)
@@ -52,7 +51,6 @@ class Command(BaseCommand):
                 print(e)
 
 
-        from dashboard.models import Profile
         for instance in Profile.objects.filter(hide_profile=False):
             instance.calculate_all()
             instance.save()
