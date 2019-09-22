@@ -40,6 +40,9 @@ $(document).ready(function() {
             { message: gettext('Status has been saved.') },
             'success'
           );
+          const activityContainer = document.querySelector('.tab-section.active .activities');
+          activityContainer.setAttribute('page', 0);
+          $(".tab-section.active .activities").html('');
           message.val('');
         } else {
           _alert(
