@@ -1,0 +1,44 @@
+{% extends 'quests/base.html' %}
+{% load humanize static i18n %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% block 'content' %}
+  <div id="breadcrumbs" class="mt-2 mb-2">
+    <a href=/quests>Quests</a> &gt;&gt; <a href={{quest.url}}>{{quest.title}}</a>
+  </div>
+  <div id="gameboard">
+    <div id="background" style="background: url('/static/v2/images/quests/{{quest.background}}.png') no-repeat;">
+      &nbsp;
+    </div>
+    <div id="enemy" class="tr">
+      <img src="/static/{{quest.game_metadata.enemy.art}}">
+    </div>
+    <div id="protagonist" class="bl">
+      <img src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+      </a>
+    </div>
+
+    <div id="header" class="cen">
+    </div>
+    <div id="cta_button" class="cen">
+      <a href="#">Enter Quest</a>
+    </div>
+  </div>
+  <script>
+    document.quest = {{quest_json|safe}};
+  </script>
+{% endblock %}

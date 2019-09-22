@@ -44,6 +44,7 @@ import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
+import quests.views
 import retail.emails
 import retail.views
 import revenue.views
@@ -149,6 +150,10 @@ urlpatterns = [
         dashboard.views.funder_dashboard_bounty_info,
         name='funder_dashboard_bounty_info'
     ),
+
+    # quests
+    path('quests/', quests.views.index, name='quests_index'),
+    re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='kudos_details'),
 
     # Contributor dashboard
     path(

@@ -1,0 +1,41 @@
+{% extends 'quests/base.html' %}
+{% load humanize static i18n %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% block 'content' %}
+  <h1 class="mt-3">Available Quests</h1>
+  <div>
+    {% for quest in quests %}
+      <div style="{% cycle 'background-color: #fafafa;' '' %}; width: 330px; display: block; float: left; border-radius: 10px; height: 650px; text-align: center;" class="m-3 p-2">
+        <img style="height: 200px; width: 200px; margin: 0px auto;" src="/static/{{quest.game_metadata.enemy.art}}">
+        <div style="background-color: #eee; border-top: 3px solid #bbb; border-radius: 5px;" class="p-3 mt-3">
+          <a href="{{quest.url}}">
+            <h2>
+              {{quest.title}}
+            </h2>
+          </a> 
+          <p style="color: #222; font-size: 10px;">Created {{quest.created_on|naturaltime}} | Attempted {{quest.attempts.count}} times</p>
+          <p style=" max-height: 130px; overflow-y: scroll;">{{quest.description}}</p>
+        </div>
+        <div>
+          <br>
+        </div>
+        <a style="position: relative; bottom: -20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Accept Quest</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

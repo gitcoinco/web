@@ -2882,7 +2882,7 @@ class Profile(SuperModel):
             pass
 
         if sum_type == 'collected':
-            eth_sum = eth_sum + sum([amount.value_in_eth for amount in self.tips])
+            eth_sum = float(eth_sum) + sum([float(amount.value_in_eth) for amount in self.tips])
 
         return eth_sum
 
