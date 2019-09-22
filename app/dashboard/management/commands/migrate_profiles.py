@@ -28,38 +28,30 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
 
-        # one
         from dashboard.helpers import record_bounty_activity
         from dashboard.models import Bounty
         bounties = Bounty.objects.current().filter(web3_created__lt=timezone.datetime(2019,3,5)).filter(network='mainnet')
         for bounty in bounties:
             try:
                 record_bounty_activity('new_bounty', None, bounty, _fulfillment=None, override_created=bounty.web3_created)
-                print(bounty.url)
+                #print(bounty.url)
                 for ful in bounty.fulfillments.all():
                     record_bounty_activity('work_submitted', None, bounty, _fulfillment=ful, override_created=ful.created_on)
             except Exception as e:
                 print(e)
 
 
-        # two
         from dashboard.models import Tip
         from dashboard.tip_views import record_tip_activity
         for tip in Tip.objects.filter(network='mainnet').filter(created_on__lt=timezone.datetime(2019,3,5)):
             try:
                 record_tip_activity(tip, tip.username, 'new_tip', override_created=tip.created_on)
-                print(tip.pk)
+                #print(tip.pk)
             except Exception as e:
                 print(e)
 
-        # three
-        management.call_command('create_earnings')
 
-        # four
         from dashboard.models import Profile
         for instance in Profile.objects.filter(hide_profile=False):
             instance.calculate_all()
             instance.save()
-
-        # three
-        management.call_command('create_pagerank')
