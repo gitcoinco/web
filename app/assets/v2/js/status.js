@@ -41,8 +41,9 @@ $(document).ready(function() {
             'success'
           );
           const activityContainer = document.querySelector('.tab-section.active .activities');
+
           activityContainer.setAttribute('page', 0);
-          $(".tab-section.active .activities").html('');
+          $('.tab-section.active .activities').html('');
           message.val('');
         } else {
           _alert(

@@ -19,6 +19,7 @@
 from django.core import management
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+
 from dashboard.helpers import record_bounty_activity
 from dashboard.models import Bounty
 
