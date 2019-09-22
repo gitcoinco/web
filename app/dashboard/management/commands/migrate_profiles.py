@@ -19,6 +19,8 @@
 from django.core import management
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from dashboard.helpers import record_bounty_activity
+from dashboard.models import Bounty
 
 
 class Command(BaseCommand):
@@ -28,8 +30,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
 
-        from dashboard.helpers import record_bounty_activity
-        from dashboard.models import Bounty
         bounties = Bounty.objects.current().filter(web3_created__lt=timezone.datetime(2019,3,5)).filter(network='mainnet')
         for bounty in bounties:
             try:

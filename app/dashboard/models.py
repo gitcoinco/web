@@ -48,7 +48,6 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
-from dashboard.points import point_values
 from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -2371,7 +2370,7 @@ class Profile(SuperModel):
 
     @property
     def frontend_calc_stale(self):
-        return self.last_calc_date < (timezone.now() - timezone.timedelta(hours=24))
+        return self.last_calc_date < (timezone.now() - timezone.timedelta(hours=72))
 
     @property
     def org_leaderboard(self):
