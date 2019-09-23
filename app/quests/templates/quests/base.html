@@ -1,0 +1,47 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load i18n static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    {% include 'shared/head.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/quests.css" %}" />
+    {% include 'shared/cards.html' %}
+  </head>
+  <body class="g-font-muli {{body_class}}">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <div class="container-fluid header dash">
+      {% include 'home/nav.html' %}
+    </div>
+    <div class="row">
+      <div class="col-12 col-sm-10 m-auto">
+        {% block 'content' %}
+        {% endblock %}
+      </div>
+    </div>
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    
+  </body>
+  {% csrf_token %}
+  <script>
+  </script>
+  <script src="{% static "v2/js/pages/quests.helpers.js" %}"></script>
+  <script src="{% static "v2/js/pages/quests.js" %}"></script>
+</html>

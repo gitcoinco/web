@@ -82,6 +82,9 @@ class SuperModel(models.Model):
             self.modified_on = get_time()
         return super(SuperModel, self).save(*args, **kwargs)
 
+    def to_json_dict(self, fields=None, exclude=None, properties=None):
+        return json.dumps(self.to_standard_dict(fields=fields, exclude=exclude, properties=properties), cls=EncodeAnything)
+
     def to_standard_dict(self, fields=None, exclude=None, properties=None):
         """Define the standard to dict representation of the object.
 
