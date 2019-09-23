@@ -86,6 +86,17 @@
                 </select2>
               </div>
             </div>
+            <div class="pb-4 border-bottom form-group">
+              <label for="persona" class="font-weight-bold">Persona</label>
+              <div class="form__select2">
+                <select2 v-model="params.persona" data-minimum-results-for-search="Infinity" class="form-control">
+                  <option value="" selected="true">All</option>
+                  <option value="Funder">Funder</option>
+                  <option value="Organization">Organization</option>
+                  <option value="Coder">Coder</option>
+                </select2>
+              </div>
+            </div>
             <div class="pb-2 border-bottom form-group">
               <div class="w-100 p-2">
                 <fieldset class="">
@@ -106,7 +117,7 @@
               </div>
             </div>
             <div class="g-multiselect pb-4 border-bottom form-group">
-              <label for="organisations" class="font-weight-bold">Organisation</label>
+              <label for="organisations" class="font-weight-bold">Organization</label>
               <div class="font-smaller">
                 <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
               </div>

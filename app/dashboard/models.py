@@ -20,6 +20,7 @@ from __future__ import unicode_literals
 
 import base64
 import collections
+import json
 import logging
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -28,11 +29,13 @@ from urllib.parse import urlsplit
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import connection, models
-from django.db.models import Q, Sum
+from django.db.models import Count, F, Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
@@ -40,14 +43,14 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
 from app.utils import get_upload_filename
-from dashboard.sql.persona import PERSONA_SQL
-from dashboard.tokens import addr_to_token
-from economy.models import ConversionRate, SuperModel
+from dashboard.tokens import addr_to_token, token_by_name
+from economy.models import ConversionRate, EncodeAnything, SuperModel, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
@@ -562,7 +565,7 @@ class Bounty(SuperModel):
     @property
     def org_profile(self):
         profiles = Profile.objects.filter(handle__iexact=self.org_name)
-        if profiles.count():
+        if profiles.exists():
             return profiles.first()
         return None
 
@@ -675,6 +678,12 @@ class Bounty(SuperModel):
                 return [keyword.strip() for keyword in keywords.split(",")]
             except AttributeError:
                 return []
+
+    @property
+    def fulfillers_handles(self):
+        bounty_fulfillers = self.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True)
+        tip_fulfillers = self.tips.values_list('username', flat=True)
+        return list(bounty_fulfillers) + list(tip_fulfillers)
 
     @property
     def now(self):
@@ -1456,6 +1465,13 @@ class SendCryptoAsset(SuperModel):
         except Exception:
             return None
 
+    @property
+    def org_profile(self):
+        profiles = Profile.objects.filter(handle__iexact=self.org_name)
+        if profiles.count():
+            return profiles.first()
+        return None
+
     # TODO: DRY
     @property
     def value_in_eth(self):
@@ -1604,10 +1620,23 @@ def psave_tip(sender, instance, **kwargs):
     instance.username = instance.username.replace(' ', '')
 
 
-# @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
-# def normalize_usernames(sender, instance, **kwargs):
-#     if instance.bounty_owner_github_username:
-#         instance.bounty_owner_github_username = instance.bounty_owner_github_username.lstrip('@')
+@receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
+def postsave_tip(sender, instance, **kwargs):
+    is_valid = instance.sender_profile != instance.recipient_profile
+    if is_valid:
+        Earning.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "org_profile":instance.org_profile,
+                "from_profile":instance.sender_profile,
+                "to_profile":instance.recipient_profile,
+                "value_usd":instance.value_in_usdt_then,
+                "url":'https"://gitcoin.co/tips',
+                "network":instance.network,
+            }
+            )
 
 
 # method for updating
@@ -1642,6 +1671,30 @@ def psave_bounty(sender, instance, **kwargs):
     instance.value_in_usdt = instance.get_value_in_usdt
     instance.value_in_eth = instance.get_value_in_eth
     instance.value_true = instance.get_value_true
+
+    if not instance.bounty_owner_profile:
+        if instance.bounty_owner_github_username:
+            profiles = Profile.objects.filter(handle=instance.bounty_owner_github_username.lower().replace('@',''))
+            if profiles.exists():
+                instance.bounty_owner_profile = profiles.first()
+
+
+@receiver(post_save, sender=BountyFulfillment, dispatch_uid="psave_bounty_fulfill")
+def psave_bounty_fulfilll(sender, instance, **kwargs):
+    if instance.accepted:
+        Earning.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='dashboard', model='bountyfulfillment'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "org_profile":instance.bounty.org_profile,
+                "from_profile":instance.bounty.bounty_owner_profile,
+                "to_profile":instance.profile,
+                "value_usd":instance.bounty.value_in_usdt_then,
+                "url":instance.bounty.url,
+                "network":instance.bounty.network,
+            }
+            )
 
 
 class InterestQuerySet(models.QuerySet):
@@ -1772,6 +1825,7 @@ class Activity(SuperModel):
     """
 
     ACTIVITY_TYPES = [
+        ('status_update', 'Update status'),
         ('new_bounty', 'New Bounty'),
         ('start_work', 'Work Started'),
         ('stop_work', 'Work Stopped'),
@@ -1854,7 +1908,6 @@ class Activity(SuperModel):
         return f"{self.profile.handle} type: {self.activity_type} created: {naturalday(self.created)} " \
                f"needs review: {self.needs_review}"
 
-
     @property
     def humanized_activity_type(self):
         """Turn snake_case into Snake Case.
@@ -1867,19 +1920,26 @@ class Activity(SuperModel):
                 return activity_type[1]
         return ' '.join([x.capitalize() for x in self.activity_type.split('_')])
 
+    def point_value(self):
+        """
+
+        Returns:
+            int the Point value of this activity
+        """
+        return point_values.get(self.activity_type, 0)
 
     def i18n_name(self):
         return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
 
     @property
     def view_props(self):
-        from dashboard.tokens import token_by_name
         from kudos.models import Token
         icons = {
             'new_tip': 'fa-thumbs-up',
             'start_work': 'fa-lightbulb',
             'new_bounty': 'fa-money-bill-alt',
             'work_done': 'fa-check-circle',
+            'status_update': 'fa-user',
             'new_kudos': 'fa-thumbs-up',
             'new_grant': 'fa-envelope',
             'update_grant': 'fa-edit',
@@ -1984,6 +2044,7 @@ class Activity(SuperModel):
 @receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
 def post_add_activity(sender, instance, created, **kwargs):
     if created:
+        # make sure duplicate activity feed items are removed
         dupes = Activity.objects.exclude(pk=instance.pk)
         dupes = dupes.filter(created_on__gte=(instance.created_on - timezone.timedelta(minutes=5)))
         dupes = dupes.filter(created_on__lte=(instance.created_on + timezone.timedelta(minutes=5)))
@@ -1998,7 +2059,6 @@ def post_add_activity(sender, instance, created, **kwargs):
         dupes = dupes.filter(needs_review=instance.needs_review)
         for dupe in dupes:
             dupe.delete()
-
 
 
 class LabsResearch(SuperModel):
@@ -2093,11 +2153,17 @@ class Profile(SuperModel):
         ('PL', 'Passively looking and open to hearing new opportunities'),
         ('N', 'Not open to hearing new opportunities'),
     ]
+    PERSONAS = [
+        ('hunter', 'Hunter'),
+        ('funder', 'Funder'),
+        ('', 'Neither'),
+    ]
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True, unique=True)
     last_sync_date = models.DateTimeField(null=True)
+    last_calc_date = models.DateTimeField(default=get_time)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES, blank=True)
@@ -2155,6 +2221,18 @@ class Profile(SuperModel):
         blank=True,
         help_text=_('override profile avatar'),
     )
+    dominant_persona = models.CharField(max_length=25, choices=PERSONAS, blank=True)
+    selected_persona = models.CharField(max_length=25, choices=PERSONAS, blank=True)
+    longest_streak = models.IntegerField(default=0)
+    activity_level = models.CharField(max_length=10, blank=True, help_text=_('the users activity level (high, low, new)'))
+    num_repeated_relationships = models.IntegerField(default=0)
+    avg_hourly_rate = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    success_rate = models.IntegerField(default=0)
+    reliability = models.CharField(max_length=10, blank=True, help_text=_('the users reliability level (high, medium, unproven)'))
+    as_dict = JSONField(default=dict, blank=True)
+    rank_funder = models.IntegerField(default=0)
+    rank_org = models.IntegerField(default=0)
+    rank_coder = models.IntegerField(default=0)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2178,6 +2256,20 @@ class Profile(SuperModel):
     def get_my_grants(self):
         from grants.models import Grant
         return Grant.objects.filter(Q(admin_profile=self) | Q(team_members__in=[self]) | Q(subscriptions__contributor_profile=self))
+
+    @property
+    def team(self):
+        if not self.is_org:
+            return Profile.objects.none()
+        return Profile.objects.filter(organizations__icontains=self.handle)
+
+    @property
+    def get_org_kudos(self):
+        from kudos.models import Token
+
+        if not self.is_org:
+            return Token.objects.none()
+        return Token.objects.filter(Q(name__icontains=self.name)|Q(name__icontains=self.handle)).filter(cloned_from_id=F('token_id')).visible()
 
     @property
     def get_my_kudos(self):
@@ -2230,25 +2322,24 @@ class Profile(SuperModel):
         num += self.get_my_grants.count()
         return num
 
-    @property
-    def get_average_star_rating(self):
+    def get_average_star_rating(self, scale=1):
         """Returns the average star ratings (overall and individual topic)
         for a particular user"""
 
         feedbacks = FeedbackEntry.objects.filter(receiver_profile=self).all()
         average_rating = {}
-        average_rating['overall'] = sum([feedback.rating for feedback in feedbacks]) \
+        average_rating['overall'] = sum([feedback.rating for feedback in feedbacks]) * scale \
             / feedbacks.count() if feedbacks.count() != 0 else 0
-        average_rating['code_quality_rating'] = sum([feedback.code_quality_rating for feedback in feedbacks]) \
-            / feedbacks.count() if feedbacks.count() != 0 else 0
-        average_rating['communication_rating'] = sum([feedback.communication_rating for feedback in feedbacks]) \
-            / feedbacks.count() if feedbacks.count() != 0 else 0
-        average_rating['recommendation_rating'] = sum([feedback.recommendation_rating for feedback in feedbacks]) \
-            / feedbacks.count() if feedbacks.count() != 0 else 0
-        average_rating['satisfaction_rating'] = sum([feedback.satisfaction_rating for feedback in feedbacks]) \
-            / feedbacks.count() if feedbacks.count() != 0 else 0
-        average_rating['speed_rating'] = sum([feedback.speed_rating for feedback in feedbacks]) \
-            / feedbacks.count() if feedbacks.count() != 0 else 0
+        average_rating['code_quality_rating'] = sum([feedback.code_quality_rating for feedback in feedbacks]) * scale \
+            / feedbacks.exclude(code_quality_rating=0).count() if feedbacks.exclude(code_quality_rating=0).count() != 0 else 0
+        average_rating['communication_rating'] = sum([feedback.communication_rating for feedback in feedbacks]) * scale \
+            / feedbacks.exclude(communication_rating=0).count() if feedbacks.exclude(communication_rating=0).count() != 0 else 0
+        average_rating['recommendation_rating'] = sum([feedback.recommendation_rating for feedback in feedbacks]) * scale \
+            / feedbacks.exclude(recommendation_rating=0).count() if feedbacks.exclude(recommendation_rating=0).count() != 0 else 0
+        average_rating['satisfaction_rating'] = sum([feedback.satisfaction_rating for feedback in feedbacks]) * scale \
+            / feedbacks.exclude(satisfaction_rating=0).count() if feedbacks.exclude(satisfaction_rating=0).count() != 0 else 0
+        average_rating['speed_rating'] = sum([feedback.speed_rating for feedback in feedbacks]) * scale \
+            / feedbacks.exclude(speed_rating=0).count() if feedbacks.exclude(speed_rating=0).count() != 0 else 0
         average_rating['total_rating'] = feedbacks.count()
         return average_rating
 
@@ -2279,6 +2370,29 @@ class Profile(SuperModel):
             return False
 
     @property
+    def frontend_calc_stale(self):
+        return self.last_calc_date < (timezone.now() - timezone.timedelta(hours=72))
+
+    @property
+    def org_leaderboard(self):
+        return self.leaderboard_helper(self.org_earnings, 'to_profile')
+
+    @property
+    def contrib_leaderboard(self):
+        return self.leaderboard_helper(self.earnings, 'from_profile')
+
+    @property
+    def sent_leaderboard(self):
+        return self.leaderboard_helper(self.sent_earnings, 'to_profile')
+
+    def leaderboard_helper(self, earnings, distinct_on):
+        order_field = f'{distinct_on}__handle'
+        earnings = earnings.filter(network=self.get_network())
+        leaderboard = earnings.values(order_field).annotate(sum=Sum('value_usd')).annotate(count=Count('value_usd'))
+        kwargs = {order_field:None}
+        return [(ele[order_field], ele['count'], ele['sum']) for ele in leaderboard.exclude(**kwargs).order_by('-sum')]
+
+    @property
     def bounties(self):
         fulfilled_bounty_ids = self.fulfilled.all().values_list('bounty_id')
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
@@ -2291,31 +2405,96 @@ class Profile(SuperModel):
         return bounties.order_by('-web3_created')
 
     @property
+    def cascaded_persona(self):
+        if self.is_org:
+            return 'org'
+        if self.selected_persona:
+            return self.selected_persona
+        if self.dominant_persona:
+            return self.dominant_persona
+        if self.persona_is_funder:
+            return 'funder'
+        if self.persona_is_hunter:
+            return 'hunter'
+        return 'hunter'
+
+    @property
     def tips(self):
         on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
 
-    def calculate_and_save_persona(self):
-        network = settings.ENABLE_NOTIFICATIONS_ON_NETWORK
-        designation = None
-        with connection.cursor() as cursor:
+    def calculate_all(self):
+        # calculates all the info needed to make the profile frontend great
+
+        # give the user a profile header if they have not yet selected one
+        if not self.profile_wallpaper:
+            from dashboard.helpers import load_files_in_directory
+            import random
             try:
-                cursor.execute(PERSONA_SQL, [network, self.id, network])
-                result = cursor.fetchone()
-                _, _, designation, _, _ = result
-            except Exception as e:
-                logger.info(
-                    'Exception calculating persona for user %s: %s' % (self.id,
-                                                                       e))
+                wallpapers = load_files_in_directory('wallpapers')
+                self.profile_wallpaper = f"/static/wallpapers/{random.choice(wallpapers)}"
+            except:
+                # fix for travis, which has no static dir
+                pass
 
-        if designation and designation == "bounty_hunter":
-            self.persona_is_hunter = True
+        self.calculate_and_save_persona()
+        self.actions_count = self.get_num_actions
+        self.activity_level = self.calc_activity_level()
+        self.longest_streak = self.calc_longest_streak()
+        self.num_repeated_relationships = self.calc_num_repeated_relationships()
+        self.avg_hourly_rate = self.calc_avg_hourly_rate()
+        self.success_rate = self.calc_success_rate()
+        self.reliability = self.calc_reliability_ranking() # must be calc'd last
+        self.as_dict = json.loads(json.dumps(self.to_dict()))
+        self.last_calc_date = timezone.now() + timezone.timedelta(seconds=1)
 
-        if designation and designation == "funder":
-            self.persona_is_funder = True
+    def get_persona_action_count(self):
+        hunter_count = 0
+        funder_count = 0
 
-        self.save()
+        hunter_count += self.interested.count()
+        hunter_count += self.received_tips.count()
+        hunter_count += self.grant_admin.count()
+        hunter_count += self.fulfilled.count()
+
+        funder_count += self.bounties_funded.count()
+        funder_count += self.sent_tips.count()
+        funder_count += self.grant_contributor.count()
+
+        return hunter_count, funder_count
+
+    def calculate_and_save_persona(self, respect_defaults=True, decide_only_one=False):
+        if respect_defaults and decide_only_one:
+            raise Exception('cannot use respect_defaults and decide_only_one')
+
+        # respect to defaults
+        is_hunter = False
+        is_funder = False
+        if respect_defaults:
+            is_hunter = self.persona_is_hunter
+            is_funder = self.persona_is_funder
+
+        # calculate persona
+        hunter_count, funder_count = self.get_persona_action_count()
+        if hunter_count > funder_count:
+            self.dominant_persona = 'hunter'
+        elif hunter_count < funder_count:
+            self.dominant_persona = 'funder'
+
+        # update db
+        if not decide_only_one:
+            if hunter_count > 0:
+                self.persona_is_hunter = True
+            if funder_count > 0:
+                self.persona_is_funder = True
+        else:
+            if hunter_count > funder_count:
+                self.persona_is_hunter = True
+                self.persona_is_funder = False
+            elif funder_count > hunter_count:
+                self.persona_is_funder = True
+                self.persona_is_hunter = False
 
     def has_custom_avatar(self):
         from avatar.models import CustomAvatar
@@ -2358,14 +2537,15 @@ class Profile(SuperModel):
         return user_actions.count()
 
     def get_desc(self, funded_bounties, fulfilled_bounties):
-        total_funded = funded_bounties.aggregate(Sum('value_in_usdt'))['value_in_usdt__sum'] or 0
-        total_fulfilled = fulfilled_bounties.aggregate(Sum('value_in_usdt'))['value_in_usdt__sum'] or 0
-
         role = 'newbie'
-        if total_funded > total_fulfilled:
+        if self.persona_is_funder and self.persona_is_hunter:
+            role = 'funder/coder'
+        elif self.persona_is_funder:
             role = 'funder'
-        elif total_funded < total_fulfilled:
+        elif self.persona_is_hunter:
             role = 'coder'
+        if self.is_org:
+            role = 'organization'
 
         total_funded_participated = funded_bounties.count() + fulfilled_bounties.count()
         plural = 's' if total_funded_participated != 1 else ''
@@ -2422,6 +2602,207 @@ class Profile(SuperModel):
         """
         return self.user.is_staff if self.user else False
 
+    def calc_activity_level(self):
+        """Determines the activity level of a user
+
+        Returns:
+            str: High, Low, Medium, or New
+
+        """
+        high_threshold = 7
+        med_threshold = 2
+        new_threshold_days = 7
+
+        if self.created_on > (timezone.now() - timezone.timedelta(days=new_threshold_days)):
+            return "New"
+
+        visits = self.actions.filter(action='Visit')
+        visits_last_month = visits.filter(created_on__gt=timezone.now() - timezone.timedelta(days=30)).count()
+
+        if visits_last_month > high_threshold:
+            return "High"
+        if visits_last_month > med_threshold:
+            return "Med"
+        return "Low"
+            
+
+
+    def calc_longest_streak(self):
+        """ Determines the longest streak, in workdays, of this user
+
+        Returns:
+            int: a number of weekdays
+
+        """
+
+        # setup
+        action_dates = self.actions.all().values_list('created_on', flat=True)
+        action_dates = set([ele.replace(tzinfo=pytz.utc).strftime('%m/%d/%Y') for ele in action_dates])
+        start_date = timezone.datetime(self.created_on.year, self.created_on.month, self.created_on.day).replace(tzinfo=pytz.utc)
+        end_date = timezone.datetime(timezone.now().year, timezone.now().month, timezone.now().day).replace(tzinfo=pytz.utc)
+
+        # loop setup
+        iterdate = start_date
+        max_streak = 0
+        this_streak = 0
+        while iterdate < end_date:
+            # housekeeping
+            last_iterdate = start_date
+            iterdate += timezone.timedelta(days=1)
+
+            is_weekday = iterdate.weekday() < 5
+            if not is_weekday:
+                continue
+
+            has_action_during_window = iterdate.strftime('%m/%d/%Y') in action_dates
+            if has_action_during_window:
+                this_streak += 1
+                max_streak = max(max_streak, this_streak)
+            else:
+                this_streak = 0
+
+        return max_streak
+
+    def calc_num_repeated_relationships(self):
+        """ the number of repeat relationships that this user has created
+
+
+        Returns:
+            int: a number of repeat relationships
+
+        """
+        bounties = self.bounties
+        relationships = []
+        relationships += list(self.sent_earnings.values_list('to_profile__handle', flat=True))
+        relationships += list(self.earnings.values_list('from_profile__handle', flat=True))
+
+        rel_count = { key: 0 for key in relationships }
+        for rel in relationships:
+            rel_count[rel] += 1
+
+        return len([key for key, val in rel_count.items() if val > 1])
+
+    def calc_avg_hourly_rate(self):
+        """
+
+        Returns:
+            float: the average hourly rate for this user in dollars
+
+        """
+        values_list = self.bounties.values_list('fulfillments__fulfiller_hours_worked', 'value_in_usdt')
+        values_list = [ele for ele in values_list if (ele[0] and ele[1])]
+        if not len(values_list):
+            return 0
+        hourly_rates = [(ele[1]/ele[0]) for ele in values_list]
+        avg_hourly_rate = sum(hourly_rates)/len(hourly_rates)
+        return avg_hourly_rate
+
+    def calc_success_rate(self):
+        """
+
+        Returns:
+            int; the success percentage for this users bounties as a positive integer.
+
+        """
+        bounties = self.bounties.filter(network=self.get_network()) if self.cascaded_persona == 'hunter' else self.get_sent_bounties.current()
+        completed_bounties = bounties.filter(idx_status='done').count()
+        expired_bounties = bounties.filter(idx_status='expired').count()
+        cancelled_bounties = bounties.filter(idx_status='cancelled').count()
+        eligible_bounties = cancelled_bounties + expired_bounties + completed_bounties
+
+        if eligible_bounties == 0:
+            return -1
+
+        return int(completed_bounties * 100 / eligible_bounties)
+
+    def calc_reliability_ranking(self):
+        """
+
+        Returns:
+            the reliabiliyt ranking that the user has.
+
+        """
+
+        # thresholds
+        high_threshold = 3
+        med_threshold = 2
+        new_threshold_days = 7
+        rating_deduction_threshold = 0.7
+        rating_merit_threshold = 0.95
+        abandon_deduction_threshold = 0.85
+        abandon_merit_threshold = 0.95
+        abandon_merit_earnings_threshold = med_threshold
+        abandon_slash_multiplier = 2
+        success_rate_deduction_threshold = 0.65
+        success_ratemerit_threshold = 0.85
+        num_repeated_relationships_merit_threshold = 3
+
+        # setup
+        base_rating = 0
+        deductions = 0
+
+
+        #calculate base rating
+        num_earnings = self.earnings.count() + self.sent_earnings.count()
+        if num_earnings == 0:
+            return "Unproven"
+
+        if num_earnings > high_threshold:
+            base_rating = 3 # high
+        elif num_earnings > med_threshold:
+            base_rating = 2 # medium
+        else:
+            base_rating = 1 # low
+
+        # calculate deductions
+
+        ## ratings deduction
+        num_5_star_ratings = self.feedbacks_got.filter(rating=5).count()
+        num_subpar_star_ratings = self.feedbacks_got.filter(rating__lt=4).count()
+        total_rating = num_subpar_star_ratings + num_5_star_ratings
+        if total_rating:
+            if num_5_star_ratings/total_rating < rating_deduction_threshold:
+                deductions -= 1
+            if num_5_star_ratings/total_rating > rating_merit_threshold:
+                deductions += 1
+
+        ## abandonment deduction
+        total_removals = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff()+ (self.no_times_slashed_by_staff() * abandon_slash_multiplier)
+        if total_rating:
+            if total_removals/num_earnings < abandon_deduction_threshold:
+                deductions -= 1
+            if num_earnings > abandon_merit_earnings_threshold and total_removals/num_earnings > abandon_merit_threshold:
+                deductions += 1
+
+        ## success rate deduction
+        if self.success_rate != -1:
+            if self.success_rate < success_rate_deduction_threshold:
+                deductions -= 1
+            if self.success_rate > success_ratemerit_threshold:
+                deductions += 1
+
+        ## activity level deduction
+        if self.activity_level == "High":
+                deductions += 1
+
+        ## activity level deduction
+        if self.num_repeated_relationships > num_repeated_relationships_merit_threshold:
+                deductions += 1
+
+        # calculate final rating
+        final_rating = base_rating + deductions
+        if final_rating >= 5:
+            return "Very High"
+        elif final_rating >= 3:
+            return "High"
+        elif final_rating >= 2:
+            return "Medium"
+        elif final_rating >= 1:
+            return "Low"
+        elif final_rating <= 1:
+            return "Very Low"
+
+        return 0
 
     @property
     def completed_bounties(self):
@@ -2435,23 +2816,6 @@ class Profile(SuperModel):
         return self.bounties.filter(
             idx_status__in=['done'], network=network).count()
 
-
-    @property
-    def success_rate(self):
-        """Returns success rate of user on the platform
-
-        Returns:
-            number: sucess rate of user
-
-        """
-        network = self.get_network()
-        num_completed_bounties = self.bounties.filter(
-            idx_status__in=['done'], network=network).count()
-        terminal_state_bounties = self.bounties.filter(
-            idx_status__in=Bounty.TERMINAL_STATUSES, network=network).count()
-        if terminal_state_bounties == 0:
-            return 1.0
-        return num_completed_bounties * 1.0 / terminal_state_bounties
 
     @property
     def get_quarterly_stats(self):
@@ -2819,6 +3183,8 @@ class Profile(SuperModel):
 
     @staticmethod
     def get_network():
+        if settings.OVERRIDE_NETWORK:
+            return settings.OVERRIDE_NETWORK
         return 'mainnet' if not settings.DEBUG else 'rinkeby'
 
     def get_fulfilled_bounties(self, network=None):
@@ -2876,11 +3242,17 @@ class Profile(SuperModel):
         if sum_type == 'funded':
             bounties = bounties.has_funds()
 
-        try:
-            if bounties.exists():
-                eth_sum = sum([amount for amount in bounties.values_list("value_in_eth", flat=True)])
-        except Exception:
-            pass
+        eth_sum = 0
+        if bounties.exists():
+            try:
+                for bounty in bounties:
+                    eth = bounty.get_value_in_eth
+                    if not eth:
+                        continue
+                    eth_sum += float(eth)
+            except Exception as e:
+                logger.exception(e)
+                pass
 
         # if sum_type == 'collected':
         #     eth_sum = eth_sum + float(sum([amount.value_in_eth for amount in self.tips])) if self.tips else eth_sum
@@ -2918,10 +3290,10 @@ class Profile(SuperModel):
                 all_tokens_sum_tmp = {token: 0 for token in set([ele[0] for ele in tokens_and_values])}
                 for ele in tokens_and_values:
                     all_tokens_sum_tmp[ele[0]] += ele[1] / 10**18
-                all_tokens_sum = [{'token_name': token_name, 'value_in_token': value_in_token} for token_name, value_in_token in all_tokens_sum_tmp.items()]
+                all_tokens_sum = [{'token_name': token_name, 'value_in_token': float(value_in_token)} for token_name, value_in_token in all_tokens_sum_tmp.items()]
 
-        except Exception:
-            pass
+        except Exception as e:
+            logger.exception(e)
 
         return all_tokens_sum
 
@@ -3015,18 +3387,8 @@ class Profile(SuperModel):
         self.avatar_baseavatar_related.update(active=False)
         self.avatar_baseavatar_related.filter(pk=avatar_pk).update(active=True)
 
-    def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
+    def to_dict(self):
         """Get the dictionary representation with additional data.
-
-        Args:
-            activities (bool): Whether or not to include activity queryset data.
-                Defaults to: True.
-            leaderboards (bool): Whether or not to include leaderboard position data.
-                Defaults to: True.
-            network (str): The Ethereum network to use for relevant queries.
-                Defaults to: None (Environment specific).
-            tips (bool): Whether or not to include tip data.
-                Defaults to: True.
 
         Attributes:
             params (dict): The context dictionary to be returned.
@@ -3046,7 +3408,7 @@ class Profile(SuperModel):
 
         """
         params = {}
-        network = network or self.get_network()
+        network = self.get_network()
         query_kwargs = {'network': network}
         bounties = self.bounties
         fulfilled_bounties = self.get_fulfilled_bounties(network=network)
@@ -3059,7 +3421,7 @@ class Profile(SuperModel):
         sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
-
+        
         sum_all_funded_tokens = self.get_all_tokens_sum(sum_type='funded', bounties=funded_bounties, network=network)
         sum_all_collected_tokens = self.get_all_tokens_sum(
             sum_type='collected', bounties=fulfilled_bounties, network=network
@@ -3080,38 +3442,94 @@ class Profile(SuperModel):
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
-            'newsletter_headline': _('Be the first to know about new funded issues.'),
+            'newsletter_headline': ('Be the first to know about new funded issues.'),
             'card_title': f'@{self.handle} | Gitcoin',
             'card_desc': desc,
             'avatar_url': self.avatar_url_with_gitcoin_logo,
-            'profile': self,
-            'bounties': bounties,
             'count_bounties_completed': total_fulfilled,
-            'sum_eth_collected': sum_eth_collected,
-            'sum_eth_funded': sum_eth_funded,
             'works_with_collected': works_with_collected,
             'works_with_funded': works_with_funded,
+            'works_with_org': works_with_org,
+            'sum_eth_collected': sum_eth_collected,
+            'sum_eth_funded': sum_eth_funded,
             'funded_bounties_count': total_funded,
             'no_times_been_removed': no_times_been_removed,
             'sum_eth_on_repos': sum_eth_on_repos,
-            'works_with_org': works_with_org,
             'count_bounties_on_repo': count_bounties_on_repo,
             'sum_all_funded_tokens': sum_all_funded_tokens,
-            'sum_all_collected_tokens': sum_all_collected_tokens
+            'sum_all_collected_tokens': sum_all_collected_tokens,
+            'bounties': list(bounties.values_list('pk', flat=True)),
         }
 
-        if activities:
-            params['activities'] = self.get_various_activities()
+        params['activities'] = list(self.get_various_activities().values_list('pk', flat=True))
+        params['tips'] = list(self.tips.filter(**query_kwargs).send_happy_path().values_list('pk', flat=True))
+        params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
+        params['scoreboard_position_funder'] = self.get_funder_leaderboard_index()
+        if self.is_org:
+            params['scoreboard_position_org'] = self.get_org_leaderboard_index()
 
-        if tips:
-            params['tips'] = self.tips.filter(**query_kwargs).send_happy_path()
+        context = params
+        profile = self
 
-        if leaderboards:
-            params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
-            params['scoreboard_position_funder'] = self.get_funder_leaderboard_index()
-            if self.is_org:
-                params['scoreboard_position_org'] = self.get_org_leaderboard_index()
+        context['avg_rating'] = profile.get_average_star_rating()
+        context['avg_rating_scaled'] = profile.get_average_star_rating(20)
+        context['verification'] = bool(profile.get_my_verified_check)
+        context['avg_rating'] = profile.get_average_star_rating()
+        context['suppress_sumo'] = True
+        context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count() + profile.get_org_kudos.count()
+        context['total_kudos_sent_count'] = profile.sent_kudos.count()
+        context['total_kudos_received_count'] = profile.received_kudos.count()
+        context['total_grant_created'] = profile.grant_admin.count()
+        context['total_grant_contributions'] = profile.grant_contributor.filter(subscription_contribution__success=True).values_list('subscription_contribution').count() + profile.grant_phantom_funding.count()
 
+        context['total_tips_sent'] = profile.get_sent_tips.count()
+        context['total_tips_received'] = profile.get_my_tips.count()
+
+
+        # portfolio
+        portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
+        portfolio_keywords = {}
+        for fulfillment in portfolio_bounties:
+            for keyword in fulfillment.bounty.keywords_list:
+                keyword = keyword.lower()
+                if keyword not in portfolio_keywords.keys():
+                    portfolio_keywords[keyword] = 0
+                portfolio_keywords[keyword] += 1
+        sorted_portfolio_keywords = [(k, portfolio_keywords[k]) for k in sorted(portfolio_keywords, key=portfolio_keywords.get, reverse=True)]
+
+        context['portfolio'] = list(portfolio_bounties.values_list('pk', flat=True))
+        context['portfolio_keywords'] = sorted_portfolio_keywords
+        earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False)
+        earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False)
+        context['earnings_total'] = round(sum(earnings_to.values_list('value_usd', flat=True)))
+        context['spent_total'] = round(sum(earnings_from.values_list('value_usd', flat=True)))
+        context['earnings_count'] = earnings_to.count()
+        context['spent_count'] = earnings_from.count()
+        context['hackathons_participated_in'] = self.interested.filter(bounty__event__isnull=False).distinct('bounty__event').count()
+        context['hackathons_funded'] = funded_bounties.filter(event__isnull=False).distinct('event').count()
+        if context['earnings_total'] > 1000:
+            context['earnings_total'] = f"{round(context['earnings_total']/1000)}k"
+        if context['spent_total'] > 1000:
+            context['spent_total'] = f"{round(context['spent_total']/1000)}k"
+        return context
+
+
+    @property
+    def reassemble_profile_dict(self):
+        params = self.as_dict
+
+        # lazily generate profile dict on the fly
+        if not params.get('title') or self.frontend_calc_stale:
+            self.calculate_all()
+            self.save()
+            params = self.as_dict
+
+        if params.get('tips'):
+            params['tips'] = Tip.objects.filter(pk__in=params['tips'])
+        if params.get('activities'):
+            params['activities'] = Activity.objects.filter(pk__in=params['activities'])
+        params['profile'] = self
+        params['portfolio'] = BountyFulfillment.objects.filter(pk__in=params.get('portfolio', []))
         return params
 
     @property
@@ -3148,7 +3566,6 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace(' ', '')
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
-    instance.actions_count = instance.get_num_actions
 
 
 @receiver(user_logged_in)
@@ -3222,6 +3639,7 @@ class UserAction(SuperModel):
         ('added_slack_integration', 'Added Slack Integration'),
         ('removed_slack_integration', 'Removed Slack Integration'),
         ('updated_avatar', 'Updated Avatar'),
+        ('status_update', 'Update Status'),
         ('account_disconnected', 'Account Disconnected'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES, db_index=True)
@@ -3242,6 +3660,19 @@ class UserAction(SuperModel):
     def __str__(self):
         return f"{self.action} by {self.profile} at {self.created_on}"
 
+    def point_value(self):
+        """
+
+        Returns:
+            int the Point value of this user action
+        """
+        return point_values.get(self.action, 0)
+
+
+@receiver(post_save, sender=UserAction, dispatch_uid="post_add_ua")
+def post_add_ua(sender, instance, created, **kwargs):
+    if created:
+        pass
 
 class CoinRedemption(SuperModel):
     """Define the coin redemption schema."""
@@ -3486,7 +3917,6 @@ class HackathonEvent(SuperModel):
 
     def save(self, *args, **kwargs):
         """Define custom handling for saving HackathonEvent."""
-        from django.utils.text import slugify
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
@@ -3535,10 +3965,23 @@ class FeedbackEntry(SuperModel):
     recommendation_rating = models.SmallIntegerField(blank=True, default=0)
     comment = models.TextField(default='', blank=True)
     feedbackType = models.TextField(default='', blank=True, max_length=20)
+    private = models.BooleanField(help_text=_('whether this feedback can be shown publicly'), default=True)
 
     def __str__(self):
         """Return the string representation of a Bounty."""
         return f'<Feedback Bounty #{self.bounty} - from: {self.sender_profile} to: {self.receiver_profile}>'
+
+    def visible_to(self, user):
+        """Whether this user can see the feedback ornot"""
+        if not self.private:
+            return True
+        if user.is_staff:
+            return True
+        if not user.is_authenticated:
+            return False
+        if self.sender_profile.handle == user.profile.handle:
+            return True
+        return False
 
     @property
     def anonymized_comment(self):
@@ -3570,3 +4013,66 @@ class Coupon(SuperModel):
     def __str__(self):
         """Return the string representation of Coupon."""
         return f'code: {self.code} | fee: {self.fee_percentage} %'
+
+
+class ProfileView(SuperModel):
+    """Records profileviews ."""
+
+    target = models.ForeignKey('dashboard.Profile', related_name='viewed_by', on_delete=models.CASCADE, db_index=True)
+    viewer = models.ForeignKey('dashboard.Profile', related_name='viewed_profiles', on_delete=models.CASCADE, db_index=True)
+
+    def __str__(self):
+        return f"{self.viewer} => {self.target} on {self.created_on}"
+
+
+@receiver(post_save, sender=ProfileView, dispatch_uid="post_add_profileview")
+def post_add_profileview(sender, instance, created, **kwargs):
+    # disregard other profileviews added within 30 minutes of each other
+    if created:
+        dupes = ProfileView.objects.exclude(pk=instance.pk)
+        dupes = dupes.filter(created_on__gte=(instance.created_on - timezone.timedelta(minutes=30)))
+        dupes = dupes.filter(created_on__lte=(instance.created_on + timezone.timedelta(minutes=30)))
+        dupes = dupes.filter(target=instance.target)
+        dupes = dupes.filter(viewer=instance.viewer)
+        for dupe in dupes:
+            dupe.delete()
+
+
+class Earning(SuperModel):
+    """Records Earning - the generic object for all earnings on the platform ."""
+
+    from_profile = models.ForeignKey('dashboard.Profile', related_name='sent_earnings', on_delete=models.CASCADE, db_index=True, null=True)
+    to_profile = models.ForeignKey('dashboard.Profile', related_name='earnings', on_delete=models.CASCADE, db_index=True, null=True)
+    org_profile = models.ForeignKey('dashboard.Profile', related_name='org_earnings', on_delete=models.CASCADE, db_index=True, null=True)
+    value_usd = models.DecimalField(decimal_places=2, max_digits=50, null=True)
+    source_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    source_id = models.PositiveIntegerField()
+    source = GenericForeignKey('source_type', 'source_id')
+    network = models.CharField(max_length=50, default='')
+    url = models.CharField(max_length=500, default='')
+
+    def __str__(self):
+        return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
+
+
+class PortfolioItem(SuperModel):
+    """Define the structure of PortfolioItem object."""
+
+    title = models.CharField(max_length=255)
+    tags = ArrayField(models.CharField(max_length=50), default=list, blank=True)
+    link = models.URLField(null=True)
+    profile = models.ForeignKey('dashboard.Profile', related_name='portfolio_items', on_delete=models.CASCADE, db_index=True)
+
+    def __str__(self):
+        return f"{self.title} by {self.profile.handle}"
+
+
+class ProfileStatHistory(SuperModel):
+    """ProfileStatHistory - generalizable model for tracking history of a profiles info"""
+
+    profile = models.ForeignKey('dashboard.Profile', related_name='stats', on_delete=models.CASCADE, db_index=True)
+    key = models.CharField(max_length=50, default='', db_index=True)
+    payload = JSONField(default=dict, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.key} <> {self.profile.handle}"

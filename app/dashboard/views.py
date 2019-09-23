@@ -74,8 +74,9 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile, ProfileSerializer,
-    RefundFeeRequest, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
+    Earning, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile,
+    ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction,
+    UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -361,6 +362,7 @@ def post_comment(request):
         'receiver_profile': receiver_profile,
         'rating': request.POST.get('review[rating]', '0'),
         'satisfaction_rating': request.POST.get('review[satisfaction_rating]', '0'),
+        'private': not bool(request.POST.get('review[public]', '0') == "1"),
         'communication_rating': request.POST.get('review[communication_rating]', '0'),
         'speed_rating': request.POST.get('review[speed_rating]', '0'),
         'code_quality_rating': request.POST.get('review[code_quality_rating]', '0'),
@@ -697,10 +699,14 @@ def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
 
-def onboard(request, flow):
+def onboard(request, flow=None):
     """Handle displaying the first time user experience flow."""
     if flow not in ['funder', 'contributor', 'profile']:
-        raise Http404
+        if not request.user.is_authenticated:
+            raise Http404
+        target = 'funder' if request.user.profile.persona_is_funder else 'contributor'
+        new_url = f'/onboard/{target}'
+        return redirect(new_url)
     elif flow == 'funder':
         onboard_steps = ['github', 'metamask', 'avatar']
     elif flow == 'contributor':
@@ -794,11 +800,15 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
         )
 
     if organisation:
-        profile_list = profile_list.filter(
+        profile_list1 = profile_list.filter(
             fulfilled__bounty__network=network,
             fulfilled__accepted=True,
             fulfilled__bounty__github_url__icontains=organisation
-        ).distinct()
+        )
+        profile_list2 = profile_list.filter(
+            organizations__icontains=organisation
+        )
+        profile_list = (profile_list1 | profile_list2).distinct()
 
     return profile_list
 
@@ -809,6 +819,7 @@ def users_fetch(request):
     """Handle displaying users."""
     q = request.GET.get('search', '')
     skills = request.GET.get('skills', '')
+    persona = request.GET.get('persona', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
     order_by = request.GET.get('order_by', '-actions_count')
@@ -839,6 +850,13 @@ def users_fetch(request):
 
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
+    if persona:
+        if persona == 'Funder':
+            profile_list = profile_list.filter(dominant_persona='funder')
+        if persona == 'Coder':
+            profile_list = profile_list.filter(dominant_persona='hunter')
+        if persona == 'Organization':
+            profile_list = profile_list.filter(data__type='Organization')
 
     profile_list = users_fetch_filters(
         profile_list,
@@ -902,7 +920,7 @@ def users_fetch(request):
         profile_json['position_funder'] = user.get_funder_leaderboard_index()
         profile_json['work_done'] = count_work_completed
         profile_json['verification'] = user.get_my_verified_check
-        profile_json['avg_rating'] = user.get_average_star_rating
+        profile_json['avg_rating'] = user.get_average_star_rating()
 
         if not user.show_job_status:
             for key in ['job_salary', 'job_location', 'job_type',
@@ -2004,6 +2022,103 @@ def profile_keywords(request, handle):
     return JsonResponse(response)
 
 
+def profile_activity(request, handle):
+    """Display profile activity details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    activities = list(profile.get_various_activities().values_list('created_on', flat=True))
+    activities += list(profile.actions.values_list('created_on', flat=True))
+    response = {}
+    prev_date = timezone.now()
+    for i in range(1, 12*30):
+        date = timezone.now() - timezone.timedelta(days=i)
+        count = len([activity_date for activity_date in activities if (activity_date < prev_date and activity_date > date)])
+        if count:
+            response[int(date.timestamp())] = count
+        prev_date = date
+    return JsonResponse(response)
+
+
+def profile_spent(request, handle):
+    """Display profile spent details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    return profile_earnings(request, handle, 'from')
+
+
+def profile_earnings(request, handle, direction='to'):
+    """Display profile earnings details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
+        raise Http404
+
+    earnings = profile.earnings
+    if direction == "from":
+        earnings = profile.sent_earnings
+
+    response = """date,close"""
+    earnings = list(earnings.order_by('created_on').values_list('created_on', 'value_usd'))
+    uniqueness = []
+    running_balance = 0
+    for earning in earnings:
+        val = earning[1]
+        running_balance += val
+        datestr = earning[0].strftime('%d-%b-%y')
+        if datestr not in uniqueness:
+            response += f"\n{datestr},{running_balance}"
+            uniqueness.append(datestr)
+
+    mimetype = 'text/x-csv'
+    return HttpResponse(response)
+
+
+def profile_viewers(request, handle):
+    """Display profile viewers details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
+        raise Http404
+
+    response = """date,close"""
+    items = list(profile.viewed_by.order_by('created_on').values_list('created_on', flat=True))
+    running_balance = 0
+    for item in items:
+        running_balance += 1
+        datestr = item.strftime('%d-%b-%y')
+        response += f"\n{datestr},{running_balance}"
+
+    mimetype = 'text/x-csv'
+    return HttpResponse(response)
+
+
 @require_POST
 @login_required
 def profile_job_opportunity(request, handle):
@@ -2092,67 +2207,33 @@ def bounty_upload_nda(request):
     return JsonResponse(error_response) if error_response else JsonResponse(response)
 
 
+def get_profile_tab(request, profile, tab, prev_context):
 
-
-def profile_filter_activities(activities, activity_name, activity_tabs):
-    """A helper function to filter a ActivityQuerySet.
-
-    Args:
-        activities (ActivityQuerySet): The ActivityQuerySet.
-        activity_name (str): The activity_type to filter.
-
-    Returns:
-        ActivityQuerySet: The filtered results.
-
-    """
-    if not activity_name or activity_name == 'all-activity':
-        return activities
-    for name, actions in activity_tabs:
-        if slugify(name) == activity_name:
-            return activities.filter(activity_type__in=actions)
-    return activities.filter(activity_type=activity_name)
-
-
-def profile(request, handle):
-    """Display profile details.
-
-    Args:
-        handle (str): The profile handle.
-
-    Variables:
-        context (dict): The template context to be used for template rendering.
-        profile (dashboard.models.Profile): The Profile object to be used.
-        status (int): The status code of the response.
-
-    Returns:
-        TemplateResponse: The profile templated view.
-
-    """
-    status = 200
-    order_by = request.GET.get('order_by', '-modified_on')
-    owned_kudos = None
-    sent_kudos = None
-    handle = handle.replace("@", "")
-
+    #config
     if not settings.DEBUG:
         network = 'mainnet'
     else:
         network = 'rinkeby'
+    status = 200
+    order_by = request.GET.get('order_by', '-modified_on')
+    context = profile.reassemble_profile_dict
 
-    try:
-        if not handle and not request.user.is_authenticated:
-            return redirect('funder_bounties')
+    # all tabs
+    if profile.cascaded_persona == 'org':
+        active_bounties = profile.bounties.filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
+    elif profile.cascaded_persona == 'funder':
+        active_bounties = Bounty.objects.current().filter(bounty_owner_github_username=profile.handle).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
+    elif profile.cascaded_persona == 'hunter':
+        active_bounties = Bounty.objects.filter(pk__in=profile.active_bounties.filter(pending=False).values_list('bounty', flat=True)).filter(network='mainnet')
+    else:
+        active_bounties = Bounty.objects.none()
+    active_bounties = active_bounties.order_by('-web3_created')
+    context['active_bounties_count'] = active_bounties.count()
+    context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.count()
+    context['my_kudos'] = profile.get_my_kudos.distinct('kudos_token_cloned_from__name')[0:7]
 
-        if not handle:
-            handle = request.user.username
-            profile = getattr(request.user, 'profile', None)
-            if not profile:
-                profile = profile_helper(handle)
-        else:
-            if handle.endswith('/'):
-                handle = handle[:-1]
-            profile = profile_helper(handle, current_user=request.user)
-
+    # specific tabs
+    if tab == 'activity':
         all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar']
         activity_tabs = [
             (_('All Activity'), all_activities),
@@ -2200,15 +2281,14 @@ def profile(request, handle):
                 return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
 
-        context = profile.to_dict(tips=False)
         all_activities = context.get('activities')
-        context['avg_rating'] = profile.get_average_star_rating
-        context['is_my_profile'] = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-        context['ratings'] = range(0,5)
         tabs = []
-
-        counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
-        counts = {ele['activity_type']: ele['the_count'] for ele in counts}
+        counts = {}
+        if not all_activities or all_activities.count() == 0:
+            context['none'] = True
+        else:
+            counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
+            counts = {ele['activity_type']: ele['the_count'] for ele in counts}
         for name, actions in activity_tabs:
 
             # this functions as profile_filter_activities does
@@ -2233,6 +2313,160 @@ def profile(request, handle):
 
             context['tabs'] = tabs
 
+        if request.method == 'POST' and request.is_ajax():
+            # Update profile address data when new preferred address is sent
+            validated = request.user.is_authenticated and request.user.username.lower() == profile.handle.lower()
+            if validated and request.POST.get('address'):
+                address = request.POST.get('address')
+                profile.preferred_payout_address = address
+                profile.save()
+                msg = {
+                    'status': 200,
+                    'msg': _('Success!'),
+                    'wallets': [profile.preferred_payout_address, ],
+                }
+
+                return JsonResponse(msg, status=msg.get('status', 200))
+    elif tab == 'orgs':
+        pass
+    elif tab == 'people':
+        pass
+    elif tab == 'active':
+        context['active_bounties'] = active_bounties
+    elif tab == 'resume':
+        if not prev_context['is_editable'] and not profile.show_job_status:
+            raise Http404
+    elif tab == 'viewers':
+        if not prev_context['is_editable']:
+            raise Http404
+        pass
+    elif tab == 'portfolio':
+        title = request.POST.get('project_title')
+        if title:
+            if request.POST.get('URL')[0:4] != "http":
+                messages.error(request, 'Invalid link.')
+            elif not request.POST.get('URL')[0:4]:
+                messages.error(request, 'Please enter some tags.')
+            elif not request.user.is_authenticated or request.user.profile.pk != profile.pk:
+                messages.error(request, 'Not Authorized')
+            else:
+                PortfolioItem.objects.create(
+                    profile=request.user.profile,
+                    title=title,
+                    link=request.POST.get('URL'),
+                    tags=request.POST.get('tags').split(','),
+                    )
+                messages.info(request, 'Portfolio Item added.')
+    elif tab == 'earnings':
+        context['earnings'] = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).order_by('-created_on')
+    elif tab == 'spent':
+        context['spent'] = Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False).order_by('-created_on')
+    elif tab == 'kudos':
+        context['org_kudos'] = profile.get_org_kudos
+        owned_kudos = profile.get_my_kudos.order_by('id', order_by)
+        sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
+        kudos_limit = 8
+        context['kudos'] = owned_kudos[0:kudos_limit]
+        context['sent_kudos'] = sent_kudos[0:kudos_limit]
+        context['kudos_count'] = owned_kudos.count()
+        context['sent_kudos_count'] = sent_kudos.count()
+
+    elif tab == 'ratings':
+        context['feedbacks_sent'] = [fb for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
+        context['feedbacks_got'] = [fb for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
+        context['unrated_funded_bounties'] = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+            .filter(
+                bounty_owner_github_username__iexact=profile.handle,
+                network=network,
+            ).exclude(
+                feedbacks__feedbackType='approver',
+                feedbacks__sender_profile=profile,
+            ).distinct('pk').nocache()
+        context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
+                .filter(interested__status='okay') \
+                .filter(interested__pending=False).filter(idx_status='done') \
+                .exclude(
+                    feedbacks__feedbackType='worker',
+                    feedbacks__sender_profile=profile
+                ).distinct('pk').nocache()
+    else:
+        raise Http404
+    return context
+
+def profile_filter_activities(activities, activity_name, activity_tabs):
+    """A helper function to filter a ActivityQuerySet.
+
+    Args:
+        activities (ActivityQuerySet): The ActivityQuerySet.
+        activity_name (str): The activity_type to filter.
+
+    Returns:
+        ActivityQuerySet: The filtered results.
+
+    """
+    if not activity_name or activity_name == 'all-activity':
+        return activities
+    for name, actions in activity_tabs:
+        if slugify(name) == activity_name:
+            return activities.filter(activity_type__in=actions)
+    return activities.filter(activity_type=activity_name)
+
+
+def profile(request, handle, tab=None):
+    """Display profile details.
+
+    Args:
+        handle (str): The profile handle.
+
+    Variables:
+        context (dict): The template context to be used for template rendering.
+        profile (dashboard.models.Profile): The Profile object to be used.
+        status (int): The status code of the response.
+
+    Returns:
+        TemplateResponse: The profile templated view.
+
+    """
+
+    # setup
+    status = 200
+    default_tab = 'activity'
+    tab = tab if tab else default_tab
+    handle = handle.replace("@", "")
+    
+    # make sure tab param is correct
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people']
+    tab = default_tab if tab not in all_tabs else tab
+    if handle in all_tabs and request.user.is_authenticated:
+        # someone trying to go to their own profile?
+        tab = handle
+        handle = request.user.profile.handle
+    
+    # user only tabs
+    if not handle and request.user.is_authenticated:
+        handle = request.user.username
+    is_my_profile = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    user_only_tabs = ['viewers', 'earnings', 'spent']
+    tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
+    owned_kudos = None
+    sent_kudos = None
+    context = {}
+
+    # get this user
+    try:
+        if not handle and not request.user.is_authenticated:
+            return redirect('funder_bounties')
+
+        if not handle:
+            handle = request.user.username
+            profile = getattr(request.user, 'profile', None)
+            if not profile:
+                profile = profile_helper(handle)
+        else:
+            if handle.endswith('/'):
+                handle = handle[:-1]
+            profile = profile_helper(handle, current_user=request.user)
+
     except (Http404, ProfileHiddenException, ProfileNotFoundException):
         status = 404
         context = {
@@ -2248,64 +2482,29 @@ def profile(request, handle):
         }
         return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
-    context['preferred_payout_address'] = profile.preferred_payout_address
+    # setup context for visit
 
-    owned_kudos = profile.get_my_kudos.order_by('id', order_by)
-    sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
-    kudos_limit = 8
-    context['kudos'] = owned_kudos[0:kudos_limit]
-    context['sent_kudos'] = sent_kudos[0:kudos_limit]
-    context['kudos_count'] = owned_kudos.count()
-    context['sent_kudos_count'] = sent_kudos.count()
-    context['verification'] = profile.get_my_verified_check
-    context['avg_rating'] = profile.get_average_star_rating
-    context['suppress_sumo'] = True
-    context['unrated_funded_bounties'] = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
-        .filter(
-            bounty_owner_github_username__iexact=profile.handle,
-            network=network,
-        ).exclude(
-            feedbacks__feedbackType='approver',
-            feedbacks__sender_profile=profile,
-        ).distinct('pk').nocache()
-
-    context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
-            .filter(interested__status='okay') \
-            .filter(interested__pending=False).filter(idx_status='done') \
-            .exclude(
-                feedbacks__feedbackType='worker',
-                feedbacks__sender_profile=profile
-            ).distinct('pk').nocache()
-
-    currently_working_bounties = Bounty.objects.current().filter(interested__profile=profile).filter(interested__status='okay') \
-        .filter(interested__pending=False).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES)
-    currently_working_bounties_count = currently_working_bounties.count()
-    if currently_working_bounties_count > 0:
-        obj = {'id': 'currently_working',
-               'name': _('Currently Working'),
-               'objects': Paginator(currently_working_bounties, 10).get_page(1),
-               'count': currently_working_bounties_count,
-               'type': 'bounty'
-               }
-        if 'tabs' not in context:
-            context['tabs'] = []
-        context['tabs'].append(obj)
-
-    if request.method == 'POST' and request.is_ajax():
-        # Update profile address data when new preferred address is sent
-        validated = request.user.is_authenticated and request.user.username.lower() == profile.handle.lower()
-        if validated and request.POST.get('address'):
-            address = request.POST.get('address')
-            profile.preferred_payout_address = address
-            profile.save()
-            msg = {
-                'status': 200,
-                'msg': _('Success!'),
-                'wallets': [profile.preferred_payout_address, ],
-            }
-
-            return JsonResponse(msg, status=msg.get('status', 200))
+    context['is_my_profile'] = is_my_profile
+    context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
+    context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
+    context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
+    context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+    context['ratings'] = range(0,5)
+    context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
+    context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
+    context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
+
+    tab = get_profile_tab(request, profile, tab, context)
+    if type(tab) == dict:
+        context.update(tab)
+    else:
+        return tab
+
+    # record profile view
+    if request.user.is_authenticated and not context['is_my_profile']:
+        ProfileView.objects.create(target=profile, viewer=request.user.profile)
+
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
@@ -3143,8 +3342,8 @@ def funder_dashboard_bounty_info(request, bounty_id):
                           'pending': i.pending},
              'handle': i.profile.handle,
              'avatar_url': i.profile.avatar_url,
-             'star_rating': i.profile.get_average_star_rating['overall'],
-             'total_rating': i.profile.get_average_star_rating['total_rating'],
+             'star_rating': i.profile.get_average_star_rating()['overall'],
+             'total_rating': i.profile.get_average_star_rating()['total_rating'],
              'fulfilled_bounties': len(
                 [b for b in i.profile.get_fulfilled_bounties()]),
              'leaderboard_rank': i.profile.get_contributor_leaderboard_index(),
@@ -3384,8 +3583,10 @@ def choose_persona(request):
         persona = request.POST.get('persona')
         if persona == 'persona_is_funder':
             profile.persona_is_funder = True
+            profile.selected_persona = 'funder'
         elif persona == 'persona_is_hunter':
             profile.persona_is_hunter = True
+            profile.selected_persona = 'hunter'
         profile.save()
     else:
         return JsonResponse(

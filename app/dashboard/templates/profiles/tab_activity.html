@@ -1,0 +1,50 @@
+{% load i18n static %}
+
+<div class="container px-md-0 tab2">
+  <div class="row">
+    {% include "profiles/heatmap.html" %}
+  </div>
+</div>
+
+{% if is_my_profile %}
+  {% include 'profiles/status_box.html' %}
+{% endif %}
+
+<div class="row tab2">
+  <div class="container profile-bounties profile-bounties--activities mh-150">
+    <div class="row">
+      <div id="activity-tabs" class="tab-container mt-4 font-body">
+        {% for tab in tabs %}
+          <button type="button" id="{{ tab.id }}" class="section-tab">{{ tab.name }} ({{ tab.count }})</button>
+        {% endfor %}
+      </div>
+      <div id="activity-tabs-sections" class="tab-sections section">
+        {% for tab in tabs %}
+          <div id="section-{{ tab.id }}" class="tab-section">
+            <div class="container">
+              <div class="row mb-3 p-2">
+                <div id="{{ tab.id }}" class="col-12 activities activity_stream" count="{{ tab.count }}">
+                  {% if show_activity %}
+                    {% if tab.type == 'activity' %}
+                      {% include 'profiles/profile_activities.html' with activities=tab.objects %}
+                    {% else %}
+                      {% include 'profiles/profile_bounties.html' with bounties=tab.objects %}
+                    {% endif %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="col text-center">
+        <div class="row loading justify-content-center align-items-center loading_img hidden">
+          <img src="{% static 'v2/images/loading_v2.gif' %}">
+        </div>
+        <span id="update-view-btn" class="btn btn-outline-gc-purple font-caption m-1 p-1" style="visibility: hidden;">
+          {% trans 'Show Me More' %}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

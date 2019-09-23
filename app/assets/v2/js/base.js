@@ -244,8 +244,7 @@ if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_upda
   $('#notify_policy_update').bootstrapModal('show');
 }
 
-if (document.contxt.github_handle && !document.contxt.persona_is_funder && !document.contxt.persona_is_hunter) {
-
+var show_persona_modal = function(e) {
   const content = $.parseHTML(
     `<div id="persona_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
@@ -272,6 +271,14 @@ if (document.contxt.github_handle && !document.contxt.persona_is_funder && !docu
 
   $(content).appendTo('body');
   $('#persona_modal').bootstrapModal('show');
+};
+
+if (
+  document.contxt.github_handle &&
+  !document.contxt.persona_is_funder &&
+  !document.contxt.persona_is_hunter
+) {
+  show_persona_modal();
 }
 
 $('body').on('click', '[data-persona]', function(e) {
@@ -287,20 +294,23 @@ const sendPersonal = (persona) => {
     if (statusCode.status != 200) {
       return _alert(response.msg, 'error');
     }
-
     $('#persona_modal').bootstrapModal('hide');
+
     const urls = [
       {
         url: '/hackathon/onboard'
+      },
+      {
+        url: '/profile'
       }
     ];
 
     const checkUrlRedirect = (arr, val) => {
-      return arr.some(arrObj => {
-        if (val.indexOf(arrObj.url) >= 0) {
-          return false;
+      return arr.all(arrObj => {
+        if (val.indexOf(arrObj.url) == -1) {
+          return true;
         }
-        return true;
+        return false;
       });
     };
 
@@ -318,7 +328,6 @@ const sendPersonal = (persona) => {
         return _alert(gettext('Thanks, you can read the guide <a href="/how/contributor">here.</a>'), 'info');
       }
     }
-
 
   });
 };
