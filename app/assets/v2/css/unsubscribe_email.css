@@ -1,5 +1,5 @@
 .background {
-  background-image: url("/static/v2/images/emails/email-unsubscribe-background.png");
+  background-image: url("/static/v2/images/emails/email-unsubscribe-background.svg");
   background-size: cover;
   height: 100vh;
 }
