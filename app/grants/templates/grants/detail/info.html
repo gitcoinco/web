@@ -141,7 +141,11 @@
         </div>
       {% endif %}
 
+
       <div class="row progress-container {% if not is_admin %} mt-4 {% endif %}">
+        {% if clr_active %}
+          {% include 'grants/card/clr_estimate.html' %}
+        {% else %}
         <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
           <p class="sub-title mb-0 font-caption">MONTHLY RECURRING</p>
           <p class="font-title-xl mb-0 font-weight-bold">
@@ -149,6 +153,7 @@
           </p>
           <p>of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal</p>
         </div>
+        {% endif %}
 
         <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6">
           <p class="sub-title mb-0 font-caption">TOTAL FUNDED</p>
@@ -156,10 +161,7 @@
             {{ grant.amount_received_with_phantom_funds|floatformat:0|intcomma }} DAI
           </p>
 
-          {% if grant.clr_matching %}
-            <span class="mr-2">+{{ grant.clr_matching|floatformat:0 }} DAI</span>
-            <img src="{% static "v2/images/grants/clr.svg" %}">
-          {% endif %}
+          {% include 'grants/card/clr_estimate_prev.html' %}
         </div>
 
       </div>
@@ -292,8 +294,6 @@
     {% endif %}
 
     <span id="grant_contract_owner_address" class="hidden">{{ grant.contract_owner_address }}</span>
-
-    {% include 'grants/detail/matching.html' %}
 
   </div>
 </div>

@@ -159,7 +159,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </ul>
           </div>
           <div class="row mt-5">
-            <div class="col-12 col-md-6 pt-1 text-center text-sm-left pl-sm-0">
+            <div class="col-12 col-md-4 pt-1 text-center text-sm-left pl-sm-0">
               {{ grants_count }} {% trans "Grants available on" %}
               <span class="ml-2">
                 <select name="network" id="network">
@@ -168,13 +168,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </select>
               </span>
             </div>
-            <div class="col-12 col-md-6 pt-1 font-caption order_by d-md-inline text-center text-sm-right">
+            <div class="col-12 col-md-8 pt-1 font-caption order_by d-md-inline text-center text-sm-right sort_container">
               <div class="heading">{% trans "SORT" %}</div>
               <select name="sort_option" id="sort_option">
+
+                <option value="match_pledge_amount_1">{% trans "Round 3 $1 Contrib Matching Amount" %}</option>
+                <option value="match_pledge_amount_10">{% trans "Round 3 $10 Contrib Matching Amount" %}</option>
+                <option value="match_pledge_amount_100">{% trans "Round 3 $100 Contrib Matching Amount" %}</option>
+                <option value="match_pledge_amount_1000">{% trans "Round 3 $1k Contrib Matching Amount" %}</option>
+                <option value="-clr_prediction_curve__0__1">{% trans "Round 3 CLR Match Estimate: Highest" %}</option>
+                <option value="clr_prediction_curve__0__1">{% trans "Round 3 CLR Match Estimate: Lowest" %}</option>
+                <option value="-clr_matching">{% trans "Rounds 1 & 2 Total CLR Match: Highest" %}</option>
+                <option value="clr_matching">{% trans "Rounds 1 & 2 Total CLR Match: Lowest" %}</option>
                 <option value="-created_on">{% trans "Created: Recent" %}</option>
                 <option value="created_on">{% trans "Created: Oldest" %}</option>
-                <option value="-clr_matching">{% trans "CLR Match: Highest" %}</option>
-                <option value="clr_matching">{% trans "CLR Match: Lowest" %}</option>
                 <option value="-amount_goal">{% trans "Goal: Highest" %}</option>
                 <option value="amount_goal">{% trans "Goal: Lowest" %}</option>
                 <option value="-amount_received">{% trans "Amount Raised: Highest" %}</option>
