@@ -2434,9 +2434,9 @@ class Profile(SuperModel):
             try:
                 wallpapers = load_files_in_directory('wallpapers')
                 self.profile_wallpaper = f"/static/wallpapers/{random.choice(wallpapers)}"
-            except:
+            except Exception as e:
                 # fix for travis, which has no static dir
-                pass
+                logger.exception(e)
 
         self.calculate_and_save_persona()
         self.actions_count = self.get_num_actions
