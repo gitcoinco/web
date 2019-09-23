@@ -1,7 +1,7 @@
 #gameboard { 
   width: 100%;
   height: 900px;
- }
+}
 #background { 
   position: absolute;
   z-index: -999999;
@@ -10,68 +10,69 @@
   background-size: 300% !important;
   background-position: -600px !important;
   opacity:0.5;
- }
- #breadcrumbs, #breadcrumbs a{
+}
+#breadcrumbs, #breadcrumbs a{
   color: black;
- }
- .character{
+}
+.character{
   text-align: center;
- }
- .character h3{
+}
+.character h3{
   font-weight: 900;
   font-size: 48px;
   background-color: #ccc;
   width: 70%;
   margin: 0px auto;
- }
- .character p{
+}
+.character p{
   font-size: 18px;
   background-color: #aaa;
   width: 65%;
   margin: 0px auto;
- }
- .character .info{
+}
+.character .info{
   margin-top: -60px;
   z-index: 999;
   position: absolute;
   bottom: -50px;
   width: 100%;
- }
- .character img{
+}
+.character img{
   width: 350px;
   height: : 350px;
   border-radius: 200px;
   border: 5px solid #ccc;
- }
- #enemy img{
+}
+#enemy img,
+#helpful_guide img{
   border: none !important;
- }
+}
 
- .character.harm img{
+.character.harm img{
   border: 5px solid #F9006C;
- }
- .character.heal img{
+}
+.character.heal img{
   border: 5px solid #0fce7c;
- }
- .character.harm h3,
- .character.harm p{
+}
+.character.harm h3,
+.character.harm p{
   background-color:  #F9006C;
   color: white;
- }
- .character.heal h3,
- .character.heal p{
+}
+.character.heal h3,
+.character.heal p{
   background-color: #0fce7c;
   color: white;
- }
+}
 
- .damage, .heal{
-    z-index: 99999;
-    position: absolute;
-    font-size: 85px;
-    margin: 0px auto;
- }
+.damage, .heal{
+  z-index: 99999;
+  position: absolute;
+  font-size: 85px;
+  margin: 0px auto;
+}
 
- #header{
+#header{
   font-weight: bold;
   font-size: 36px;
   width: 60%;
@@ -79,98 +80,166 @@
   background-color: white;
   font-style: italic;
   padding: 10px;
- }
- #desc{
+}
+#header.fail{
+  background-color: #F9006C;
+  padding: 20px; 
+  color: white;
+  margin-top: 5%;
+}
+#header.success{
+  background-color: #0fce7c;
+  padding: 20px; 
+  color: white;
+  margin-top: 5%;
+}
+#desc{
   font-size: 14px;
   width: 60%;
   text-align: center;
   background-color: white;
   padding: 10px;
   margin-top: 100px;
- }
- #cta_button{
+}
+#cta_button{
   margin-top: 10%;
   width: 60%;
   text-align: center;
- }
- body.stage_3 #cta_button,
- body.stage_1 #cta_button,
- body.stage_2 #cta_button{
+}
+body.stage_1 #cta_button{
   margin-top: 30%;
- }
+}
+body.stage_2 #cta_button{
+  margin-top: 20%;
+}
+body.stage_1 #header{
+  margin-top: -10%;
+}
+body.stage_1 #desc{
+  margin-top: -5%;
+}
+body.stage_3 #desc{
+  margin-top: 0%;
+}body.stage_3 #header{
+  margin-top: -5%;
+}
+body.stage_4 #header{
+  margin-top: -19%;
+  z-index: 9999;
+}
+body.stage_4 #cta_button{
+  margin-top: 25%;
+}
+body.stage_4 #desc{
+  margin-top: -2%;
+}
 
- .button{
+.button{
   font-weight: bold;
   font-size: 36px;
   color: white;
   background-color: #3E00FF;
   border: 2px solid white;
   padding: 20px;
- }
- .button.button_sm{
+}
+.button.button_sm{
   font-weight: normal;;
   border: 0px solid white;
   font-size: 16px;
   padding: 5px;
   background-color: #666;
- }
- .button.button_sm.off{
+}
+.button.button_sm.off{
   background-color: #aaa;
- }
- #cta_button p{ 
+}
+#cta_button p{ 
   margin-top: 20px;
   font-size: 14px;
   font-weight: normal;
   color: white; 
- }
+}
 
 .cen{
   position: absolute;
   top: 50%;
   right: 20%;
- }
+}
 
 .tr{
   position: absolute;
   top:0px;
   right: 0px;
- }
+}
+.tl{
+  position: absolute;
+  top:0px;
+  left: 0px;
+}
 .br{
   position: absolute;
   bottom:0px;
   right: 0px;
- }
-.br{
-  position: absolute;
-  bottom:0px;
-  right: 0px;
- }
+}
 .bl{
   position: absolute;
   bottom:0px;
   left: 0px;
- }
+}
 
- .quest-card.locked div,
- .quest-card.locked div a{
+#timer{
+  bottom: 36px;
+  font-size: 51px;
+  color: #888;
+}
+#timer.red{
+  color: red;
+}
+
+.quest-card.locked div,
+.quest-card.locked div a{
   color: #aaa !important;
- }
- .quest-card.locked img{
+}
+.quest-card.locked img{
   filter: grayscale(1);
- }
- .quest-card.beaten div{
+}
+.quest-card.beaten div{
   background-color: #c0eec0 !important;
- }
+}
+.quest-card.cooldown div{
+  background-color: #aad4e5 !important;
+}
 
- #leaderboard {
+#leaderboard {
   font-size: 25px;
- }
- #leaderboard .row {
+}
+#leaderboard .row {
   height: 120px;
   padding: 20px;
- }
- #leaderboard img {
+}
+#leaderboard img {
   height: 80px;
   width: 80px;
   border-radius: 50px;
- }
+}
+
+.answer{
+  list-style: none;
+}
+.answer{
+  font-size: 24px;
+  background-color: #aaa;
+  border: 1px solid white;
+  padding: 10px;
+  cursor: pointer;
+}
+.answer.selected{
+  background-color: #0fce7c;
+}
+.answer a{
+  color: white;
+}
+.flair div{
+  position: absolute;
+  font-size: 85px;
+  top: 410px;
+}

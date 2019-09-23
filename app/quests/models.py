@@ -4,6 +4,7 @@ from django.db import models
 from economy.models import SuperModel
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils.text import slugify
+from django.utils import timezone
 
 
 class Quest(SuperModel):
@@ -57,6 +58,25 @@ class Quest(SuperModel):
         is_completed = user.profile.quest_attempts.filter(success=True, quest=self).exists()
         return is_completed
 
+    def questions_safe(self, idx):
+        try:
+            question = self.questions[idx]
+            num_responses = question['responses']
+            for i in range(0, len(num_responses)):
+                del question['responses'][i]['correct']
+            return question
+        except:
+            return None
+
+
+    def is_within_cooldown_period(self, user):
+        if not user.is_authenticated:
+            return False
+
+        cooldown_period_hours = 4
+        is_completed = user.profile.quest_attempts.filter(success=False, quest=self, created_on__gt=(timezone.now() - timezone.timedelta(hours=cooldown_period_hours))).exists()
+        return is_completed
+
         
 
 
@@ -69,8 +89,9 @@ class QuestAttempt(SuperModel):
         on_delete=models.CASCADE,
         related_name='quest_attempts',
     )
+    state = models.IntegerField(default=0)
 
     def __str__(self):
         """Return the string representation of this obj."""
-        return f'{self.pk}, {self.profile.handle} => {self.quest.title} success: {self.success}'
+        return f'{self.pk}, {self.profile.handle} => {self.quest.title} state: {self.state} success: {self.success}'
 

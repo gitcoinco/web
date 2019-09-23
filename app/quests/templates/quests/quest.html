@@ -18,6 +18,7 @@
 {% endcomment %}
 {% block 'content' %}
 <script type='text/javascript' src='//www.midijs.net/lib/midi.js'></script>
+<link rel="stylesheet" href="{% static 'v2/css/jquery-ui.css' %}" />
 
 
 {% if not hidden and is_staff %}
@@ -38,6 +39,14 @@
       <div class='info'>
         <h3>{{quest.game_metadata.enemy.title}}</h3>
         <p>Level {{quest.game_metadata.enemy.level}} Opponent</p>
+      </div>
+    {% include 'quests/shared/alts_to_characters.html' %}
+    </div>
+    <div id="helpful_guide" class="character tr">
+      <img src="/static/v2/images/quests/enemies/helpful_guide.svg">
+      <div class='info'>
+        <h3>@guide</h3>
+        <p>Your Quests Conceirge</p>
       </div>
     {% include 'quests/shared/alts_to_characters.html' %}
     </div>
@@ -67,9 +76,16 @@
         <a class="button button_sm music_toggle" href="#">Sound On 🎵</a>
       </span>
     </div>
+    <div id="timer" class="br hidden">
+      10:00
+    </div>
 
   </div>
   <script>
+    document.kudos_reward = {
+      'name': '{{quest.kudos_reward.ui_name}}',
+      'img': '{{quest.kudos_reward.preview_img_url}}'
+    };
     document.quest = {{quest_json|safe}};
     document.music_enabled = true;
   </script>
