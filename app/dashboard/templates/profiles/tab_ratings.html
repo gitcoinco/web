@@ -4,9 +4,9 @@
     {% include "shared/rate_bounties.html" %}
   </div>
 {% endif %}
-<div class="static-stars my-3 d-flex">
+<div class="static-stars rating--small my-3 d-flex">
   {% for i in ratings %}
-    <i class="fa fa-star align-self-center {% if avg_rating_scaled.overall != 0 and i <= avg_rating_scaled.overall %}fas{% endif %}"></i>
+    <i class="far fa-star align-self-center {% if avg_rating_scaled.overall != 0 and i <= avg_rating_scaled.overall %}fas{% endif %}"></i>
   {% endfor %}
   <div class="font-weight-bold">
 	  &nbsp;&nbsp;{{ avg_rating_scaled.total_rating }} {% trans "rating" %}{{avg_rating_scaled.total_rating | pluralize}}
