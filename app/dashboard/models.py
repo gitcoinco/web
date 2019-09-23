@@ -2355,7 +2355,7 @@ class Profile(SuperModel):
 
     @property
     def job_status_verbose(self):
-        return dict(Profile.JOB_SEARCH_STATUS)[self.job_search_status]
+        return dict(Profile.JOB_SEARCH_STATUS).get(self.job_search_status, 'Unknown Job Status')
 
     @property
     def active_bounties(self):
