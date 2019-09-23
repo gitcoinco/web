@@ -2,6 +2,12 @@ const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 };
 
+var show_prize = function() {
+  var kudos_html = "<div class='tl prize'><span>🏆Quest Prize🏅</span><img src=" + document.kudos_reward['img'] + '></div>';
+
+  $('#gameboard').append(kudos_html);
+};
+
 var post_state = async(data) => {
   const location = document.location.href.replace('#', '');
   const settings = {
@@ -62,14 +68,23 @@ var start_music_midi = function(name) {
   if (!document.music_enabled) {
     return;
   }
+  if (!MIDIjs) {
+    return;
+  }
   MIDIjs.play(get_midi(name));
 };
 var resume_music_midi = function(name) {
   // get_audio('bossmusic.mid').play();
+  if (!MIDIjs) {
+    return;
+  }
   MIDIjs.resume();
 };
 var pause_music_midi = function(name) {
   // get_audio('bossmusic.mid').play();
+  if (!MIDIjs) {
+    return;
+  }
   MIDIjs.pause();
 };
 
@@ -78,9 +93,10 @@ $(document).ready(function() {
   $('body').keyup(function(e) {
     // 1-10
     if (e.keyCode >= 49 && e.keyCode < 59 && document.quiz_started) {
-      var selected = e.keyCode - 49;
+      var selected = e.keyCode - 48;
 
-      console.log(selected);
+      $('#desc .answer:nth-child(' + selected + ')').toggleClass('selected');
+
     }
     // space
     // enter

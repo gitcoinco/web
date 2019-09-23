@@ -27,12 +27,6 @@
   border-radius: 200px;
   border: 5px solid #ccc;
 }
-.character.harm img{
-  border: 5px solid #F9006C;
-}
-.character.heal img{
-  border: 5px solid #0fce7c;
-}
 .character.harm h3,
 .character.harm p{
   background-color:  #F9006C;
@@ -42,6 +36,30 @@
 .character.heal p{
   background-color: #0fce7c;
   color: white;
+}
+
+.prize{
+  margin-top:60px; 
+  margin-left: 20px;
+  background-color: #fafafa;
+  border-radius: 5px;
+  padding: 10px;
+  border-top: 1px solid #bbb;
+  border-left: 2px solid #bbb;
+}
+.prize img{
+  height: 100px;
+  width: 85px;
+}
+.character.harm img{
+  border: 5px solid #F9006C;
+}
+.character.heal img{
+  border: 5px solid #0fce7c;
+}
+.prize span{
+  font-size: 12px;
+  display: block;
 }
 
 .damage, .heal{
@@ -59,18 +77,18 @@
   background-color: white;
   font-style: italic;
   padding: 10px;
+  z-index: 9999;
 }
 #header.fail{
   background-color: #F9006C;
   padding: 20px; 
   color: white;
-  margin-top: 5%;
+  margin-top: 5% !important;
 }
 #header.success{
   background-color: #0fce7c;
   padding: 20px; 
   color: white;
-  margin-top: 5%;
 }
 #desc{
   font-size: 14px;
@@ -79,6 +97,7 @@
   background-color: white;
   padding: 10px;
   margin-top: 100px;
+  z-index: 9999;
 }
 #cta_button{
   margin-top: 10%;
@@ -99,18 +118,26 @@ body.stage_1 #desc{
 }
 body.stage_3 #desc{
   margin-top: 0%;
-}body.stage_3 #header{
+}
+body.stage_3 #cta_button{
+  margin-top: 15%;
+}
+body.stage_3 #header{
   margin-top: -5%;
 }
 body.stage_4 #header{
-  margin-top: -19%;
-  z-index: 9999;
+  margin-top: -12%;
+  font-size: 24px;
 }
 body.stage_4 #cta_button{
   margin-top: 25%;
 }
 body.stage_4 #desc{
   margin-top: -2%;
+}
+body.quest_battle .top-nav,
+body.quest_battle .header.dash{
+  display: none !important;
 }
 
 .button{
@@ -140,7 +167,7 @@ body.stage_4 #desc{
 
 .cen{
   position: absolute;
-  top: 50%;
+  top: 35%;
   right: 20%;
 }
 
@@ -156,7 +183,7 @@ body.stage_4 #desc{
 }
 .br{
   position: absolute;
-  bottom:0px;
+  bottom: -50px;
   right: 0px;
 }
 .bl{
@@ -166,7 +193,7 @@ body.stage_4 #desc{
 }
 
 #timer{
-  bottom: 36px;
+  bottom: -26px;
   font-size: 51px;
   color: #888;
 }
@@ -177,12 +204,11 @@ body.stage_4 #desc{
 .flair div{
   position: absolute;
   font-size: 85px;
-  top: 410px;
+  top: 15px;
 }
 .answer a{
   color: white;
 }
-
 .quest-card.locked div,
 .quest-card.locked div a{
   color: #aaa !important;
@@ -196,9 +222,12 @@ body.stage_4 #desc{
 .quest-card.cooldown div{
   background-color: #aad4e5 !important;
 }
+#protagonist .flair div{
+  top: 35px;
+}
 #gameboard { 
   width: 100%;
-  height: 900px;
+  height: 520px;
 }
 #background { 
   position: absolute;
@@ -211,10 +240,12 @@ body.stage_4 #desc{
 }
 #leaderboard {
   font-size: 25px;
+  width: 100%;
 }
-#leaderboard .row {
+#leaderboard .inner_row {
   height: 120px;
   padding: 20px;
+  width: 100%;
 }
 #leaderboard img {
   height: 80px;

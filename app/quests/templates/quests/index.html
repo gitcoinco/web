@@ -63,16 +63,18 @@
 
   {% if leaderboard|length %}
   <div class=row>
-  <h1 class="mt-3">Leaderboard</h1>
-  <div id=leaderboard>
-    {% for item in leaderboard %}
-      <div class="row" style="{% cycle 'background-color: #fafafa;' '' %}";>
+    <h1 class="mt-3">Leaderboard</h1>
+  </div>
+  <div class=row>
+    <div id=leaderboard>
+      {% for item in leaderboard %}
+      <div class="inner_row" style="{% cycle 'background-color: #fafafa;' '' %}";>
         <div class="float-left mr-2 ml-2 pt-3">{{ forloop.counter }}</div>
         <div class="float-left mr-2 ml-2"><img src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
         <div style="position: relative; right: -400px; top:30px;">{{item.1}} quest{{item.1|pluralize}} beaten</div>
       </div>
-    {% endfor %}
-  </div>
+      {% endfor %}
+    </div>
   </div>
   {% endif %}
 

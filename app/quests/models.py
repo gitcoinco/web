@@ -73,8 +73,8 @@ class Quest(SuperModel):
         if not user.is_authenticated:
             return False
 
-        cooldown_period_hours = 4
-        is_completed = user.profile.quest_attempts.filter(success=False, quest=self, created_on__gt=(timezone.now() - timezone.timedelta(hours=cooldown_period_hours))).exists()
+        cooldown_period_mins = 30
+        is_completed = user.profile.quest_attempts.filter(success=False, quest=self, created_on__gt=(timezone.now() - timezone.timedelta(minutes=cooldown_period_mins))).exists()
         return is_completed
 
         

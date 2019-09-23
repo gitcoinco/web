@@ -12,25 +12,31 @@ var start_quiz = async function() {
     for (var d = 0; d < $('.answer.selected').length; d += 1) {
       answers[d] = $('.answer.selected a')[d].innerHTML;
     }
-    console.log(answers);
     var response = await post_state({
       'question_number': question_number,
       'answers': answers
     });
 
     question_number += 1;
-    $('#enemy .attack').removeClass('hidden');
     var can_continue = response['can_continue'];
     var did_win = response['did_win'];
 
     if (did_win) {
+      // won the game
       await winner(response['prize_url']);
       return;
     } else if (!can_continue) {
+      // ded
       await death();
       return;
     }
+
     if (answers.length) {
+      // got a question right
+      $('#protagonist .heal').removeClass('hidden');
+      setTimeout(function() {
+        $('#protagonist .heal').addClass('hidden');
+      }, 2000);
       await toggle_character_class($('#protagonist'), [ 'heal', '' ]);
       await toggle_character_class($('#enemy'), [ 'harm', '' ]);
     }
@@ -44,6 +50,10 @@ var start_quiz = async function() {
 
       html += '<li class=answer><a href=#>' + ele + '</a></li>';
     }
+    $('#enemy .attack').removeClass('hidden');
+    setTimeout(function() {
+      $('#enemy .attack').addClass('hidden');
+    }, 2000);
     $('#enemy').effect('bounce');
     await $('#cta_button a').html('Submit Response 📨');
     await $('#header').html(question);
@@ -66,7 +76,6 @@ var start_quiz = async function() {
 
       $('#timer').addClass('red').html(0 + 's left');
     }
-    $('#enemy .attack').addClass('hidden');
     $('#timer').removeClass('red').html('...');
   }
 };
@@ -85,9 +94,10 @@ var advance_to_state = async function(new_state) {
 
   // confirm
   if (new_state == 4) {
-    var sure = confirm('are you sure?  make sure you study up. if you fail the quest, you cannot try again until after the cooldown period (4 hours).');
+    var sure = confirm('are you sure?  make sure you study up. if you fail the quest, you cannot try again until after the cooldown period (30 mins).');
 
     if (!sure) {
+      await $('#cta_button').removeClass('hidden').fadeIn();
       return;
     }
   }
@@ -139,7 +149,7 @@ var advance_to_state = async function(new_state) {
     document.typewriter_txt = document.quest.game_schema.intro;
     document.typewriter_speed = 30;
     typeWriter();
-    var kudos_reward_html = " <BR><BR> If you're successful in this quest, you'll earn this limited edition <strong>" + document.kudos_reward['name'] + "</strong> Kudos: <img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>';
+    var kudos_reward_html = " <BR><BR> If you're successful in this quest, you'll earn this limited edition <strong>" + document.kudos_reward['name'] + "</strong> Kudos: <BR> <BR> <img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>';
 
     setTimeout(function() {
       var new_html = $('#desc').html() + kudos_reward_html;
@@ -150,11 +160,12 @@ var advance_to_state = async function(new_state) {
     await $('#desc').removeClass('hidden').fadeIn();
     await sleep(4000);
     await $('#cta_button a').html('Continue 🤟');
-    await $('#cta_button').fadeIn();
+    await $('#cta_button').removeClass('hidden').fadeIn();
   }/* 1 to 2 */ else if (old_state == 1) {
     await sleep(1000);
     await $('#header').html('Quest Rules');
     await $('#header').fadeIn();
+    show_prize();
     start_music_midi('boss');
     await sleep(1000);
     await $('#helpful_guide').fadeOut();
@@ -169,7 +180,7 @@ var advance_to_state = async function(new_state) {
     await $('#enemy').removeClass('hidden');
     await toggle_character_class($('#enemy'), [ 'heal', 'harm' ]);
     await $('#cta_button a').html('Got It 🤙');
-    await $('#cta_button').fadeIn();
+    await $('#cta_button').removeClass('hidden').fadeIn();
   }/* 2 to 3 */ else if (old_state == 2) {
     await sleep(1000);
     await $('#header').html('');
@@ -187,11 +198,13 @@ var advance_to_state = async function(new_state) {
 
       html += '<li><a href=' + ele.url + ' target=new>' + ele.title + '</a></li>';
     }
+    html += '<BR> Take a moment and read through them. You will have limited time to look things up when the quest starts.';
     setTimeout(function() {
       var new_html = $('#desc').html() + html;
 
       $('#desc').html(new_html);
     }, 4000);
+
     document.typewriter_id = 'desc';
     document.typewriter_i = 0;
     document.typewriter_txt = text;
@@ -200,8 +213,9 @@ var advance_to_state = async function(new_state) {
     await $('#desc').removeClass('hidden').fadeIn();
     await sleep(1000);
     await $('#cta_button a').html('Got It 🤙');
-    await $('#cta_button').fadeIn();
+    await $('#cta_button').removeClass('hidden').fadeIn();
   }/* 3 to 4 */ else if (old_state == 3) {
+    show_prize();
     await $('#helpful_guide').fadeOut();
     await sleep(500);
     $('.skip_intro').remove();
@@ -216,6 +230,7 @@ var advance_to_state = async function(new_state) {
 };
 
 var death = async function() {
+  $('#protagonist .ded').removeClass('hidden');
   await $('#header').fadeOut();
   await $('#cta_button').fadeOut();
   await $('#desc').fadeOut();
@@ -224,18 +239,39 @@ var death = async function() {
   await $('#header').addClass('fail').fadeIn().html('You Lose');
   await sleep(500);
   $('#protagonist').effect('explode');
+  setInterval(function() {
+    var r = Math.random();
+
+    if (r < 0.3) {
+      $('#enemy').effect('shake');
+    } else if (r < 0.6) {
+      $('#enemy').effect('pulsate');
+    } else if (r < 0.8) {
+      $('#enemy').effect('bounce');
+    } else {
+      $('#enemy').effect('highlight');
+    }
+  }, 2000);
   document.location.href = document.location.href;
 };
 
 var winner = async function(prize_url) {
+  $('#enemy .ded').removeClass('hidden');
   await $('#header').fadeOut();
   await $('#cta_button').fadeOut();
   await $('#desc').fadeOut();
+  await sleep(500);
+  $('#enemy').effect('explode');
+  await sleep(500);
   await toggle_character_class($('#protagonist'), [ 'heal', '' ]);
   await sleep(500);
   await $('#header').addClass('success').fadeIn().html('You Win');
-  await sleep(500);
-  $('#enemy').effect('explode');
+  var span = '<span style="display:block; font-weight: bold; font-size: 24px;">🏆Quest Prize🏅</span>';
+
+  $('#desc').html(span + "<img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>');
+  $('.prize').fadeOut();
+  $('#desc').fadeIn();
+  await sleep(1000);
   document.location.href = prize_url;
 };
 
