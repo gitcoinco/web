@@ -1,0 +1,16 @@
+{
+    "symbol": "GDB",
+    "address": "0xFb6ee81E69B62D30d85C3123f7b59b6CFD8cCBC4",
+    "overview":{
+          "en": "G.D.B. token, Global Digital Bank ",
+          "zh": "G.D.B.聚合量化交易平台体系权益通证"
+    },
+    "email": "info@gdb.ai",
+    "website": "http://www.gdb.ai/",
+    "whitepaper": "http://www.gdb.ai/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-07-24",
+    "initial_price":{
+          "USD":"0.028 USD"
+    }
+  }
