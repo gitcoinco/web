@@ -19,22 +19,38 @@
 {% block 'content' %}
   <h1 class="mt-3">Available Quests</h1>
   <div>
-    {% for quest in quests %}
-      <div style="{% cycle 'background-color: #fafafa;' '' %}; width: 330px; display: block; float: left; border-radius: 10px; height: 650px; text-align: center;" class="m-3 p-2">
+    {% for unlocked, beaten, quest in quests %}
+      <div style="{% cycle 'background-color: #fafafa;' '' %}; width: 330px; display: block; float: left; border-radius: 10px; height: 650px; text-align: center;" class="m-3 p-2 quest-card {%if not unlocked%}locked{%endif%}{%if beaten%}beaten{%endif%}">
         <img style="height: 200px; width: 200px; margin: 0px auto;" src="/static/{{quest.game_metadata.enemy.art}}">
         <div style="background-color: #eee; border-top: 3px solid #bbb; border-radius: 5px;" class="p-3 mt-3">
-          <a href="{{quest.url}}">
-            <h2>
+            <span style="position: relative; top: -50px; font-size: 50px;">
+              {%if beaten%}
+                ✅
+              {%elif unlocked%}
+                🔐
+              {%else%}
+                🔒
+              {%endif%}
+            </span>
+        <a href="{{quest.url}}">
+            <h2 style="margin-top: -50px;">
+  
               {{quest.title}}
             </h2>
           </a> 
-          <p style="color: #222; font-size: 10px;">Created {{quest.created_on|naturaltime}} | Attempted {{quest.attempts.count}} times</p>
+          <p style="color: #222; font-size: 10px;">Created {{quest.created_on|naturaltime}} | Attempted {{quest.attempts.count}} times | Beaten {{quest.attempts.count}} times</p>
           <p style=" max-height: 130px; overflow-y: scroll;">{{quest.description}}</p>
         </div>
         <div>
           <br>
         </div>
-        <a style="position: relative; bottom: -20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Accept Quest</a>
+        {%if beaten%}
+          ( ✅ You've already beaten this quest)
+        {%elif unlocked%}
+          <a style="position: relative; bottom: -20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Accept Quest</a>
+        {%else%}
+          🔒Locked Until <a href="{{quest.unlocked_by.url}}">{{quest.unlocked_by.title}}</a> is beaten.
+        {%endif%}
       </div>
     {% endfor %}
   </div>

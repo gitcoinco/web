@@ -68,7 +68,6 @@
     z-index: 99999;
     position: absolute;
     font-size: 85px;
-    top: 10px;  
     margin: 0px auto;
  }
 
@@ -81,18 +80,48 @@
   font-style: italic;
   padding: 10px;
  }
- #cta_button{
-  font-weight: bold;
-  font-size: 36px;
+ #desc{
+  font-size: 14px;
   width: 60%;
+  text-align: center;
+  background-color: white;
+  padding: 10px;
+  margin-top: 100px;
+ }
+ #cta_button{
   margin-top: 10%;
+  width: 60%;
   text-align: center;
  }
- #cta_button a{ 
+ body.stage_3 #cta_button,
+ body.stage_1 #cta_button,
+ body.stage_2 #cta_button{
+  margin-top: 30%;
+ }
+
+ .button{
+  font-weight: bold;
+  font-size: 36px;
   color: white;
   background-color: #3E00FF;
   border: 2px solid white;
   padding: 20px;
+ }
+ .button.button_sm{
+  font-weight: normal;;
+  border: 0px solid white;
+  font-size: 16px;
+  padding: 5px;
+  background-color: #666;
+ }
+ .button.button_sm.off{
+  background-color: #aaa;
+ }
+ #cta_button p{ 
+  margin-top: 20px;
+  font-size: 14px;
+  font-weight: normal;
+  color: white; 
  }
 
 .cen{
@@ -106,8 +135,29 @@
   top:0px;
   right: 0px;
  }
+.br{
+  position: absolute;
+  bottom:0px;
+  right: 0px;
+ }
+.br{
+  position: absolute;
+  bottom:0px;
+  right: 0px;
+ }
 .bl{
   position: absolute;
   bottom:0px;
   left: 0px;
+ }
+
+ .quest-card.locked div,
+ .quest-card.locked div a{
+  color: #aaa !important;
+ }
+ .quest-card.locked img{
+  filter: grayscale(1);
+ }
+ .quest-card.beaten div{
+  background-color: #c0eec0 !important;
  }

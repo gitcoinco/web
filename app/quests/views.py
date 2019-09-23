@@ -2,13 +2,16 @@ from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.http import Http404, JsonResponse
 from quests.models import Quest
+from django.shortcuts import redirect
 import re
 import json
 
 # Create your views here.
 def index(request):
+    quests = [(ele.is_unlocked_for(request.user), ele.is_beaten(request.user), ele) for ele in Quest.objects.all()]
+    
     params = {
-        'quests': Quest.objects.all(),
+        'quests': quests,
         'title': 'Quests on Gitcoin',
         'card_desc': 'Use Gitcoin to learn about the Ethereum ecosystem and level up while you do it!',
     }
@@ -16,7 +19,7 @@ def index(request):
 
 def details(request, obj_id, name):
 
-    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile', None):
+    if not request.user.is_authenticated and request.GET.get('login'):
         return redirect('/login/github?next=' + request.get_full_path())
 
     """Render the Kudos 'detail' page."""
@@ -25,6 +28,8 @@ def details(request, obj_id, name):
 
     try:
         quest = Quest.objects.get(pk=obj_id)
+        if not quest.is_unlocked_for(request.user):
+            raise Http404
     except:
         raise Http404
 
