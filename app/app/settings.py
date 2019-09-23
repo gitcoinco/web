@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
+    'quests',
     'enssubdomain',
     'faucet',
     'tdi',
@@ -142,7 +143,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
