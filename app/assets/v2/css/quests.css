@@ -161,3 +161,16 @@
  .quest-card.beaten div{
   background-color: #c0eec0 !important;
  }
+
+ #leaderboard {
+  font-size: 25px;
+ }
+ #leaderboard .row {
+  height: 120px;
+  padding: 20px;
+ }
+ #leaderboard img {
+  height: 80px;
+  width: 80px;
+  border-radius: 50px;
+ }
