@@ -1,10 +1,10 @@
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
+from django.utils import timezone
+from django.utils.text import slugify
 
 # Create your models here.
 from economy.models import SuperModel
-from django.contrib.postgres.fields import ArrayField, JSONField
-from django.utils.text import slugify
-from django.utils import timezone
 
 
 class Quest(SuperModel):
@@ -94,4 +94,3 @@ class QuestAttempt(SuperModel):
     def __str__(self):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.profile.handle} => {self.quest.title} state: {self.state} success: {self.success}'
-

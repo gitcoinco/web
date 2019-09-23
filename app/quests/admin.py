@@ -3,6 +3,7 @@ from django.contrib import admin
 # Register your models here.
 from .models import Quest, QuestAttempt
 
+
 class QuestAdmin(admin.ModelAdmin):
     raw_id_fields = ['kudos_reward', 'unlocked_by']
     ordering = ['-id']

@@ -1,17 +1,19 @@
-from django.shortcuts import render
-from django.template.response import TemplateResponse
-from django.http import Http404, JsonResponse
-from quests.models import Quest, QuestAttempt
-from django.shortcuts import redirect
-from django.db.models import Count
-from django.views.decorators.csrf import csrf_exempt
-import re
-from django.contrib import messages
 import json
-from ratelimit.decorators import ratelimit
 import random
-from kudos.views import get_profile
+import re
+
+from django.contrib import messages
+from django.db.models import Count
+from django.http import Http404, JsonResponse
+from django.shortcuts import redirect, render
+from django.template.response import TemplateResponse
+from django.views.decorators.csrf import csrf_exempt
+
 from kudos.models import BulkTransferCoupon
+from kudos.views import get_profile
+from quests.models import Quest, QuestAttempt
+from ratelimit.decorators import ratelimit
+
 
 # Create your views here.
 def index(request):

@@ -2,25 +2,27 @@ const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 };
 
-var post_state = async (data) => {
-  const location = document.location.href.replace('#','');
+var post_state = async(data) => {
+  const location = document.location.href.replace('#', '');
   const settings = {
-      method: 'POST',
-      headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
   };
-  try {
-      const fetchResponse = await fetch(location, settings);
-      const data = await fetchResponse.json();
-      return data;
-  } catch (e) {
-      return e;
-  }    
 
-}
+  try {
+    const fetchResponse = await fetch(location, settings);
+    const data = await fetchResponse.json();
+
+    return data;
+  } catch (e) {
+    return e;
+  }
+
+};
 
 var toggle_character_class = async function(sel, classes) {
   for (var k = 0; k < 5; k += 1) {
@@ -77,17 +79,18 @@ $(document).ready(function() {
     // 1-10
     if (e.keyCode >= 49 && e.keyCode < 59 && document.quiz_started) {
       var selected = e.keyCode - 49;
-      console.log(selected)
+
+      console.log(selected);
     }
     // space
     // enter
     if (e.keyCode == 32 || e.keyCode == 13) {
-      if(document.quiz_started){
+      if (document.quiz_started) {
         return;
-      } else {
-        advance_to_state(document.quest_state + 1);
-        e.preventDefault();
       }
+      advance_to_state(document.quest_state + 1);
+      e.preventDefault();
+      
     }
   });
 
@@ -119,9 +122,8 @@ $(document).ready(function() {
       await sleep(10);
     }
     document.quest_state = 3;
-    advance_to_state(document.quest_state+1);
+    advance_to_state(document.quest_state + 1);
   });
-
 
 
   if (document.quest) {

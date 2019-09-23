@@ -1,66 +1,73 @@
 var seconds_per_question = 15;
 
-var start_quiz = async function(){
+var start_quiz = async function() {
   document.quiz_started = true;
   var question_number = 0;
   var should_continue = true;
-  while(should_continue){
+
+  while (should_continue) {
     document.submitted_answer = false;
     var answers = [];
-    for(var d=0; d<$(".answer.selected").length; d+=1){
-      answers[d] = $(".answer.selected a")[d].innerHTML;
+
+    for (var d = 0; d < $('.answer.selected').length; d += 1) {
+      answers[d] = $('.answer.selected a')[d].innerHTML;
     }
     console.log(answers);
     var response = await post_state({
-      "question_number":question_number,
-      "answers":answers,
-    })
+      'question_number': question_number,
+      'answers': answers
+    });
+
     question_number += 1;
-    $("#enemy .attack").removeClass('hidden');
+    $('#enemy .attack').removeClass('hidden');
     var can_continue = response['can_continue'];
     var did_win = response['did_win'];
-    if (did_win){
+
+    if (did_win) {
       await winner(response['prize_url']);
       return;
-    } else if (!can_continue){
+    } else if (!can_continue) {
       await death();
       return;
-    } else {
-      if(answers.length){
-        await toggle_character_class($('#protagonist'), [ 'heal', '' ]);
-        await toggle_character_class($('#enemy'), [ 'harm', '' ]);
-      }
     }
+    if (answers.length) {
+      await toggle_character_class($('#protagonist'), [ 'heal', '' ]);
+      await toggle_character_class($('#enemy'), [ 'harm', '' ]);
+    }
+    
     var question = response['question']['question'];
     var possible_answers = response['question']['responses'];
-    var html = "";
+    var html = '';
+
     for (var i = 0; i < possible_answers.length; i += 1) {
       var ele = possible_answers[i]['answer'];
+
       html += '<li class=answer><a href=#>' + ele + '</a></li>';
     }
     $('#enemy').effect('bounce');
-    await $('#cta_button a').html("Submit Response 📨")
+    await $('#cta_button a').html('Submit Response 📨');
     await $('#header').html(question);
     await $('#desc').html(html);
     await $('#header').removeClass('hidden').fadeIn();
     await $('#desc').removeClass('hidden').fadeIn();
     await $('#cta_button').removeClass('hidden').fadeIn();
     var timer = seconds_per_question * 1000;
-    while(timer > 0 && !document.submitted_answer){
+
+    while (timer > 0 && !document.submitted_answer) {
       await sleep(100);
       timer -= 100;
-      var sec_left_ui = timer/1000 + "s left";
-      $("#timer").removeClass('hidden').html(sec_left_ui);
+      $('#timer').removeClass('hidden').html(timer / 1000 + 's left');
     }
-    var timer = 2 * 1000;
-    while(timer > 0  && !document.submitted_answer){
+    timer = 2 * 1000;
+
+    while (timer > 0 && !document.submitted_answer) {
       await sleep(100);
       timer -= 100;
-      var sec_left_ui = 0 + "s left";
-      $("#timer").addClass('red').html(sec_left_ui);
+
+      $('#timer').addClass('red').html(0 + 's left');
     }
-    $("#enemy .attack").addClass('hidden');
-    $("#timer").removeClass('red').html('...');
+    $('#enemy .attack').addClass('hidden');
+    $('#timer').removeClass('red').html('...');
   }
 };
 
@@ -71,7 +78,7 @@ var advance_to_state = async function(new_state) {
   if (document.state_transitioning) {
     return;
   }
-  if (document.quiz_started){
+  if (document.quiz_started) {
     document.submitted_answer = 1;
     return;
   }
@@ -108,7 +115,7 @@ var advance_to_state = async function(new_state) {
   // manage state transitoin
   console.log('state from', old_state, '/', document.quest_state, ' to', new_state);
   document.quest_state = new_state;
-  for(var p=0; p<10; p+=1){
+  for (var p = 0; p < 10; p += 1) {
     $('body').removeClass('stage_' + p);
   }
   $('body').addClass('stage_' + new_state);
@@ -132,7 +139,8 @@ var advance_to_state = async function(new_state) {
     document.typewriter_txt = document.quest.game_schema.intro;
     document.typewriter_speed = 30;
     typeWriter();
-    var kudos_reward_html = " <BR><BR> If you're successful in this quest, you'll earn this limited edition <strong>"+document.kudos_reward['name']+"</strong> Kudos: <img style='height: 250px;width: 220px;' src="+document.kudos_reward['img']+">"
+    var kudos_reward_html = " <BR><BR> If you're successful in this quest, you'll earn this limited edition <strong>" + document.kudos_reward['name'] + "</strong> Kudos: <img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>';
+
     setTimeout(function() {
       var new_html = $('#desc').html() + kudos_reward_html;
 
@@ -176,6 +184,7 @@ var advance_to_state = async function(new_state) {
 
     for (var i = 0; i < iterate_me.length; i += 1) {
       var ele = iterate_me[i];
+
       html += '<li><a href=' + ele.url + ' target=new>' + ele.title + '</a></li>';
     }
     setTimeout(function() {
@@ -212,7 +221,7 @@ var death = async function() {
   await $('#desc').fadeOut();
   await toggle_character_class($('#protagonist'), [ 'harm', '' ]);
   await sleep(500);
-  await $('#header').addClass('fail').fadeIn().html("You Lose");
+  await $('#header').addClass('fail').fadeIn().html('You Lose');
   await sleep(500);
   $('#protagonist').effect('explode');
   document.location.href = document.location.href;
@@ -224,7 +233,7 @@ var winner = async function(prize_url) {
   await $('#desc').fadeOut();
   await toggle_character_class($('#protagonist'), [ 'heal', '' ]);
   await sleep(500);
-  await $('#header').addClass('success').fadeIn().html("You Win");
+  await $('#header').addClass('success').fadeIn().html('You Win');
   await sleep(500);
   $('#enemy').effect('explode');
   document.location.href = prize_url;
