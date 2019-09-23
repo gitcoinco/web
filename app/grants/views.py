@@ -813,7 +813,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
     metadata = {
         'id': subscription.id,
         'value_in_token': str(subscription.amount_per_period),
-        'value_in_usdt_now': str(subscription.amount_per_period_usdt),
+        'value_in_usdt_now': str(round(subscription.amount_per_period_usdt,2)),
         'token_name': subscription.token_symbol,
         'title': subscription.grant.title,
         'grant_logo': grant_logo,
