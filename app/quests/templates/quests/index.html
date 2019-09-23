@@ -17,6 +17,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% block 'content' %}
+  <div class=row>
   <h1 class="mt-3">Available Quests</h1>
   <div>
     {% for unlocked, beaten, cooldown, quest in quests %}
@@ -58,8 +59,10 @@
       </div>
     {% endfor %}
   </div>
+  </div>
 
   {% if leaderboard|length %}
+  <div class=row>
   <h1 class="mt-3">Leaderboard</h1>
   <div id=leaderboard>
     {% for item in leaderboard %}
@@ -69,6 +72,7 @@
         <div style="position: relative; right: -400px; top:30px;">{{item.1}} quest{{item.1|pluralize}} beaten</div>
       </div>
     {% endfor %}
+  </div>
   </div>
   {% endif %}
 
