@@ -1,0 +1,18 @@
+{
+    "symbol": "EEM",
+    "address": "0x5d48ACa3954d288A5fEA9fc374ac48a5dBF5fA6d",
+    "overview": {
+        "en": "The EEM project proposes solutions that help investors make a real profit. Most of the funds raised will be used for market value management and marketing, ensuring that every Ethereum invested by investors can be applied to the tokens of their own investments and reject irresponsible project parties. "
+    },
+    "email": "shane970813@gmail.com",
+    "website": "http://eemtrader.com/",
+    "whitepaper": "https://eemtrader.weebly.com/uploads/1/2/9/2/12920330/eem_eng_v1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-03",
+    "initial_price": {
+        "USD": "0.03 USD"
+    },
+    "links": {
+        "website": "http://eemtrader.com/"
+    }
+}
