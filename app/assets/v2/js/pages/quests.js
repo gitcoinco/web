@@ -252,7 +252,7 @@ var death = async function() {
       $('#enemy').effect('highlight');
     }
   }, 2000);
-  document.location.href = document.location.href;
+  document.location.reload();
 };
 
 var winner = async function(prize_url) {
