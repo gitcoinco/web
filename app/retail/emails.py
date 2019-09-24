@@ -47,6 +47,8 @@ MARKETING_EMAILS = [
     ('roundup', _('Roundup Emails'), _('Weekly')),
     ('new_bounty_notifications', _('New Bounty Notification Emails'), _('(up to) Daily')),
     ('important_product_updates', _('Product Update Emails'), _('Quarterly')),
+	('general', _('General Email Updates'), _('as it comes')),
+	('quarterly', _('Quarterly Email Updates'), _('Quarterly')),
 ]
 
 TRANSACTIONAL_EMAILS = [
@@ -92,6 +94,7 @@ def render_nth_day_email_campaign(to_email, nth, firstname):
     params = {
         "firstname": firstname,
         "subscriber": get_or_save_email_subscriber(to_email, "internal"),
+		"email_type": "welcome_mail"
     }
     response_html = premailer_transform(render_to_string(f"emails/campaigns/email_campaign_day_{nth}.html", params))
     response_txt = render_to_string(f"emails/campaigns/email_campaign_day_{nth}.txt", params)
@@ -240,6 +243,7 @@ def render_tip_email(to_email, tip, is_new):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'is_sender': to_email not in tip.emails,
         'is_receiver': to_email in tip.emails,
+		'email_type': 'tip'
     }
 
     response_html = premailer_transform(render_to_string("emails/new_tip.html", params))
@@ -294,6 +298,7 @@ def render_match_email(bounty, github_username):
     params = {
         'bounty': bounty,
         'github_username': github_username,
+		'email_type': 'bounty_match'
     }
     response_html = premailer_transform(render_to_string("emails/new_match.html", params))
     response_txt = render_to_string("emails/new_match.txt", params)
@@ -308,6 +313,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     params = {**quarterly_stats, **platform_wide_stats}
     params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
+    params['email_type'] = 'quarterly'
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
 
@@ -410,6 +416,7 @@ PS - we've got some new gitcoin schwag on order. send me your mailing address an
 
     params = {
         'txt': txt,
+		'email_type': 'bounty_feedback'
     }
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
     response_txt = txt
@@ -428,6 +435,7 @@ def render_admin_contact_funder(bounty, text, from_user):
 """
     params = {
         'txt': txt,
+		'email_type': 'admin_contact_funder'
     }
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
     response_txt = txt
@@ -479,6 +487,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'subscriber': sub,
         'keywords': ",".join(sub.keywords),
         'email_style': email_style,
+		'email_type': 'new_bounty_notifications'
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -501,6 +510,7 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
         'subscriber': subscriber,
         'profile': profile.handle,
         'notifications': notifications,
+		'email_type': 'roundup'
     }
 
     subject = "Your unread notifications"
@@ -588,7 +598,8 @@ def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
           'from': from_date,
           'to': to_date
         },
-        'debug': activity_types
+        'debug': activity_types,
+		'email_type': 'roundup'
     }
 
     response_html = premailer_transform(render_to_string("emails/recap/weekly_founder_recap.html", params))
@@ -601,6 +612,7 @@ def render_gdpr_reconsent(to_email):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
         'subscriber': sub,
+		'email_type': 'roundup'
     }
 
     response_html = premailer_transform(render_to_string("emails/gdpr_reconsent.html", params))
@@ -625,7 +637,8 @@ def render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invi
         'from_profile': from_profile,
         'to_email': to_email,
         'invite_url': invite_url,
-        'kudos_invite': kudos_invite
+        'kudos_invite': kudos_invite,
+		'email_type': 'bounty'
     }
     response_html = premailer_transform(render_to_string("emails/share_bounty_email.html", params))
     response_txt = render_to_string("emails/share_bounty_email.txt", params)
@@ -635,6 +648,7 @@ def render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invi
 def render_new_work_submission(to_email, bounty):
     params = {
         'bounty': bounty,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -648,6 +662,7 @@ def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
     params = {
         'bounty': bounty,
         'unrated_count': unrated_count,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -660,6 +675,7 @@ def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
 def render_new_bounty_rejection(to_email, bounty):
     params = {
         'bounty': bounty,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -672,6 +688,7 @@ def render_new_bounty_rejection(to_email, bounty):
 def render_bounty_changed(to_email, bounty):
     params = {
         'bounty': bounty,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -698,6 +715,7 @@ def render_bounty_expire_warning(to_email, bounty):
         'unit': unit,
         'is_claimee': (to_email.lower() in fulfiller_emails),
         'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -712,6 +730,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
         'bounty': bounty,
         'interest': interest,
         'time_delta_days': time_delta_days,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -725,6 +744,7 @@ def render_bounty_unintersted(to_email, bounty, interest):
     params = {
         'bounty': bounty,
         'interest': interest,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -753,6 +773,7 @@ def render_faucet_request(fr):
     params = {
         'fr': fr,
         'amount': settings.FAUCET_AMOUNT,
+		'email_type': 'faucet',
         'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
     }
 
@@ -766,6 +787,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
     params = {
         'bounty': bounty,
         'interest': interest,
+		'email_type': 'bounty',
         'time_delta_days': time_delta_days,
         'subscriber': get_or_save_email_subscriber(interest.profile.email, 'internal'),
     }
@@ -782,6 +804,7 @@ def render_gdpr_update(to_email):
         'terms_of_use_link': 'https://gitcoin.co/legal/terms',
         'privacy_policy_link': 'https://gitcoin.co/legal/privacy',
         'cookie_policy_link': 'https://gitcoin.co/legal/cookie',
+		'email_type': 'general'
     }
 
     subject = "Gitcoin: Updated Terms & Policies"
@@ -795,7 +818,8 @@ def render_reserved_issue(to_email, user, bounty):
     params = {
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'user': user,
-        'bounty': bounty
+        'bounty': bounty,
+		'email_type': 'bounty'
     }
     subject = "Reserved Issue"
     response_html = premailer_transform(render_to_string("emails/reserved_issue.html", params))
@@ -809,6 +833,7 @@ def render_start_work_approved(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -825,6 +850,7 @@ def render_start_work_rejected(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -841,6 +867,7 @@ def render_start_work_new_applicant(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -857,6 +884,7 @@ def render_start_work_applicant_about_to_expire(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -873,6 +901,7 @@ def render_start_work_applicant_expired(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -1033,6 +1062,7 @@ Back to shipping,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
         'sponsor': sponsor,
+		'email_type': 'roundup',
         'email_style': email_style,
     }
 
