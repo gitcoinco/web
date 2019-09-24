@@ -29,7 +29,7 @@ from dashboard.utils import create_user_action, is_blocked
 from git.utils import org_name
 from marketing.utils import is_deleted_account
 from PIL import Image, ImageOps
-
+from avatar.helpers import hex_to_rgb_array, rgb_array_to_hex, add_rgb_array, sub_rgb_array
 from .models import BaseAvatar, CustomAvatar, SocialAvatar
 from .utils import (
     add_gitcoin_logo_blend, build_avatar_svg, get_avatar, get_err_response, get_user_github_avatar_image,
@@ -37,7 +37,124 @@ from .utils import (
 )
 
 logger = logging.getLogger(__name__)
+import xml.etree.ElementTree as ET 
+avatar_3d_base_path = 'assets/v2/images/avatar3d/avatar.svg'
 
+preview_viewbox = {
+    'background': '0 0 350 350',
+    'clothing': '60 80 260 300',
+    'ears': '100 70 50 50',
+    'head': '80 10 170 170',
+    'mouth': '130 90 70 70',
+    'nose': '140 80 50 50',
+    'eyes': '120 40 80 80',
+    'hair': '110 0 110 110',
+}
+
+skin_tones = ['F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26' ]
+base_3d_skin_tone = 'F4B990'
+max_skin_tone = 'FFFFF6'
+min_skin_tone = 'FFFFF6'
+def get_avatar_skin_tone_map():
+    avatar_svg_skin_tones = {
+        'D68876': 0,
+        'BC8269': 0,
+        'EEE3C1': 0,
+        'FFCAA6': 0,
+        'D68876': 0,
+        'FFDBC2': 0,
+        'F4B990': 0, #base
+    }
+    for key in avatar_svg_skin_tones.keys():
+        avatar_svg_skin_tones[key] = sub_rgb_array(hex_to_rgb_array(key),hex_to_rgb_array(base_3d_skin_tone))
+    return avatar_svg_skin_tones
+
+def avatar3d(request):
+    """Serve an 3d avatar."""
+
+    #get request
+    accept_ids = request.GET.getlist('ids')
+    if not accept_ids:
+        accept_ids = request.GET.getlist('ids[]')
+    skinTone = request.GET.get('skinTone','F4B990')
+    viewBox = request.GET.get('viewBox','')
+    height = request.GET.get('height','')
+    width = request.GET.get('width','')
+    scale = request.GET.get('scale','')
+    mode = request.GET.get('mode','')
+    height = height if height else scale
+    width = width if width else scale
+    force_show_whole_body = request.GET.get('force_show_whole_body', True)
+    if mode == 'preview' and len(accept_ids) == 1:
+        height = 30
+        width = 30
+        _type = accept_ids[0].split('_')[0]
+        viewBox = preview_viewbox.get(_type, '0 0 600 600')
+        force_show_whole_body = False
+
+    # setup
+    tags = ['{http://www.w3.org/2000/svg}style']
+    ET.register_namespace('', "http://www.w3.org/2000/svg")
+    prepend = f'''<?xml version="1.0" encoding="utf-8"?>
+<svg width="{width}%" height="{height}%" viewBox="{viewBox}" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+'''
+    postpend = '''
+</svg>
+'''
+    
+    #ensure at least one per category
+
+    if bool(int(force_show_whole_body)):
+        categories = avatar3dids_helper()['by_category']
+        for category_name, ids in categories.items():
+            has_ids_in_category = any([ele in accept_ids for ele in ids])
+            if not has_ids_in_category:
+                accept_ids.append(ids[0])
+
+    #mutate_skin_tone
+    avatar_svg_skin_tones = get_avatar_skin_tone_map()
+    print(avatar_svg_skin_tones)
+    for key in avatar_svg_skin_tones.keys():
+        rgb_array = add_rgb_array(avatar_svg_skin_tones[key], hex_to_rgb_array(skinTone))
+        print(rgb_array)
+        avatar_svg_skin_tones[key] = rgb_array_to_hex(rgb_array)
+    print(avatar_svg_skin_tones)
+    # asseble response
+    with open(avatar_3d_base_path) as file:
+        elements = []
+        tree = ET.parse(file)
+        for item in tree.getroot():
+            include_item = item.attrib.get('id') in accept_ids or item.tag in tags
+            if include_item:
+                elements.append(ET.tostring(item).decode('utf-8'))
+        output = prepend + "".join(elements) + postpend
+        for _from, to in avatar_svg_skin_tones.items():
+            output = output.replace(_from, to)
+        response = HttpResponse(output, content_type='image/svg+xml')
+    return response
+
+
+def avatar3dids_helper():
+    with open(avatar_3d_base_path) as file:
+        tree = ET.parse(file)
+        ids = [item.attrib.get('id') for item in tree.getroot()]
+        ids = [ele for ele in ids if ele]
+        category_list = {ele.split("_")[0]: [] for ele in ids}
+        for ele in ids:
+            category = ele.split("_")[0]
+            category_list[category].append(ele)
+
+        response = {
+            'ids': ids,
+            'by_category': category_list,
+        }
+        return response
+
+
+def avatar3dids(request):
+    """Serve an 3d avatar id list."""
+    response = JsonResponse(avatar3dids_helper())
+    return response
 
 def avatar(request):
     """Serve an avatar."""

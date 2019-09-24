@@ -26,6 +26,7 @@ from copy import deepcopy
 from datetime import datetime
 from decimal import Decimal
 
+from avatar.views import avatar3dids_helper, skin_tones
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -743,6 +744,8 @@ def onboard(request, flow=None):
         'steps': steps or onboard_steps,
         'flow': flow,
         'profile': profile,
+        '3d_avatar_params': none if 'avatar' not in steps else avatar3dids_helper(),
+        'possible_skin_tones': skin_tones,
     }
     params.update(get_avatar_context_for_user(request.user))
     return TemplateResponse(request, 'ftux/onboard.html', params)
