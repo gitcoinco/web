@@ -143,7 +143,8 @@ def grants(request):
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
         'clr_active': clr_active,
-        'sort_by_index': sort_by_index
+        'sort_by_index': sort_by_index,
+        'clr_round': clr_round
     }
 
     # log this search, it might be useful for matching purposes down the line
