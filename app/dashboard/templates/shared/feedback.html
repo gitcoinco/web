@@ -36,9 +36,9 @@
         <a class="align-self-center" href="{{ feedback.bounty.url }}">{{feedback.bounty.title}}</a>
       </small>
     </div>
-    <div class="static-stars">
+    <div class="static-stars rating--small">
       {% for rating in ratings %}
-        <i class="fa fa-star {% if feedback.rating != 0 and rating <= feedback.rating %}fas{% endif %}"></i>
+        <i class="far fa-star {% if feedback.rating != 0 and rating <= feedback.rating %}fas{% endif %}"></i>
       {% endfor %}
     </div>
   </div>
