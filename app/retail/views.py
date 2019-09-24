@@ -1080,7 +1080,7 @@ def results(request, keyword=None):
 def activity(request):
     """Render the Activity response."""
     page_size = 15
-    activities = Activity.objects.all().order_by('-created')
+    activities = Activity.objects.all().order_by('-created_on')
     p = Paginator(activities, page_size)
     page = int(request.GET.get('page', 1))
 
@@ -1094,6 +1094,28 @@ def activity(request):
 
     return TemplateResponse(request, 'activity.html', context)
 
+@ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
+def create_status_update(request):
+    response = {}
+    if request.POST:
+        profile = request.user.profile
+        kwargs = {
+            'activity_type': 'status_update',
+            'metadata': {
+                'title': request.POST.get('data'),
+                'ask': request.POST.get('ask'),
+            }
+        }
+        kwargs['profile'] = profile
+        try:
+            Activity.objects.create(**kwargs)
+            response['status'] = 200
+            response['message'] = 'Status updated!'
+        except Exception as e:
+            response['status'] = 400
+            response['message'] = 'Bad Request'
+            logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
+    return JsonResponse(response)
 
 def help(request):
     faq = {

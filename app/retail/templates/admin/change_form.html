@@ -1,0 +1,9 @@
+{% extends 'admin/change_form.html' %}
+
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+    <div class="submit-row">
+            <input type="submit" value="Recalculate Profile Frontend" name="_recalc_flontend" value="1">
+            <input type="submit" value="Impersonate" name="_impersonate" value="1">
+    </div>
+{% endblock %}

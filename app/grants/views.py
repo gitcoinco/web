@@ -74,16 +74,28 @@ def grants(request):
     """Handle grants explorer."""
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
-    sort = request.GET.get('sort_option', '-created_on')
+    sort = request.GET.get('sort_option', 'match_pledge_amount_1')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
     _grants = None
 
+    sort_by_index = None
+    sort_by_clr_pledge_matching_amount = None
+    if 'match_pledge_amount_' in sort:
+        sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
+        sort_by = 'pk'
+
     if state == 'active':
         _grants = Grant.objects.filter(network=network, hidden=False).active().keyword(keyword).order_by(sort)
     else:
         _grants = Grant.objects.filter(network=network, hidden=False).keyword(keyword).order_by(sort)
+
+    clr_prediction_curve_schema_map = {10**x:x+1 for x in range(0, 5)}
+    if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
+        sort_by_index = clr_prediction_curve_schema_map.get(sort_by_clr_pledge_matching_amount, 0)
+        field_name = f'clr_prediction_curve__{sort_by_index}__2'
+        _grants = _grants.order_by(f"-{field_name}")
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -130,7 +142,8 @@ def grants(request):
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
-        'clr_active': True
+        'clr_active': clr_active,
+        'sort_by_index': sort_by_index
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -233,6 +246,7 @@ def grant_details(request, grant_id, grant_slug):
         'keywords': get_keywords(),
         'activity_count': activity_count,
         'contributors': contributors,
+        'clr_active': clr_active,
     }
 
     if add_cancel_params:
@@ -596,7 +610,7 @@ def grant_fund(request, grant_id, grant_slug):
         'show_tweet_modal': show_tweet_modal,
         'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
         'grant': grant,
-        'clr_prediction_curve': [c[1] for c in grant.clr_prediction_curve] if grant.clr_prediction_curve else [0, 0, 0, 0, 0, 0],
+        'clr_prediction_curve': [c[1] for c in grant.clr_prediction_curve] if grant.clr_prediction_curve and len(grant.clr_prediction_curve[0]) > 1 else [0, 0, 0, 0, 0, 0],
         'keywords': get_keywords(),
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
         'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),

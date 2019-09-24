@@ -25,7 +25,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.timezone import localtime
@@ -218,6 +218,22 @@ class Grant(SuperModel):
         for handle in Subscription.objects.filter(grant=self, active=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
             handles.append(handle)
         self.activeSubscriptions = handles
+
+    @property
+    def org_name(self):
+        from git.utils import org_name
+        try:
+            return org_name(self.reference_url)
+        except Exception:
+            return None
+
+    @property
+    def org_profile(self):
+        from dashboard.models import Profile
+        profiles = Profile.objects.filter(handle__iexact=self.org_name)
+        if profiles.count():
+            return profiles.first()
+        return None
 
     @property
     def amount_received_with_phantom_funds(self):
@@ -862,6 +878,26 @@ class Contribution(SuperModel):
         if tx_status != 'pending':
             self.success = tx_status == 'success'
             self.tx_cleared = True
+
+@receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
+def psave_contrib(sender, instance, **kwargs):
+
+    from django.contrib.contenttypes.models import ContentType
+    from dashboard.models import Earning
+    Earning.objects.update_or_create(
+        source_type=ContentType.objects.get(app_label='grants', model='contribution'),
+        source_id=instance.pk,
+        defaults={
+            "created_on":instance.created_on,
+            "from_profile":instance.subscription.contributor_profile,
+            "org_profile":instance.subscription.grant.org_profile,
+            "to_profile":instance.subscription.grant.admin_profile,
+            "value_usd":instance.subscription.get_converted_amount(),
+            "url":instance.subscription.grant.url,
+            "network":instance.subscription.grant.network,
+        }
+        )
+
 
 def next_month():
     """Get the next month time."""

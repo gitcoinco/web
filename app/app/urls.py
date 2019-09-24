@@ -44,6 +44,7 @@ import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
+import quests.views
 import retail.emails
 import retail.views
 import revenue.views
@@ -94,7 +95,12 @@ urlpatterns = [
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
+    url(r'^api/v0.1/profile/(.*)?/activity.json', dashboard.views.profile_activity, name='profile_activity'),
+    url(r'^api/v0.1/profile/(.*)?/earnings.csv', dashboard.views.profile_earnings, name='profile_earnings'),
+    url(r'^api/v0.1/profile/(.*)?/viewers.csv', dashboard.views.profile_viewers, name='profile_viewers'),
+    url(r'^api/v0.1/profile/(.*)?/spent.csv', dashboard.views.profile_spent, name='profile_spent'),
     url(r'^api/v0.1/profile/banner', dashboard.views.change_user_profile_banner, name='change_user_profile_banner'),
+    url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
     url(
         r'^api/v0.1/profile/(.*)?/jobopportunity',
         dashboard.views.profile_job_opportunity,
@@ -112,11 +118,7 @@ urlpatterns = [
         dashboard.views.social_contribution_email,
         name='social_contribution_email'
     ),
-    url(
-        r'^api/v0.1/bulk_invite',
-        dashboard.views.bulk_invite,
-        name='bulk_invite'
-    ),
+    url(r'^api/v0.1/bulk_invite', dashboard.views.bulk_invite, name='bulk_invite'),
     url(r'^api/v0.1/bountydocument', dashboard.views.bounty_upload_nda, name='bounty_upload_nda'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
@@ -139,6 +141,7 @@ urlpatterns = [
     # dashboard views
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
+    re_path(r'^onboard/?$', dashboard.views.onboard, name='onboard'),
     url(r'^postcomment/', dashboard.views.post_comment, name='post_comment'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
 
@@ -149,6 +152,10 @@ urlpatterns = [
         dashboard.views.funder_dashboard_bounty_info,
         name='funder_dashboard_bounty_info'
     ),
+
+    # quests
+    path('quests/', quests.views.index, name='quests_index'),
+    re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='kudos_details'),
 
     # Contributor dashboard
     path(
@@ -269,6 +276,7 @@ urlpatterns = [
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
 
     # Alpha functionality
+    re_path(r'^profile/(.*)/(.*)?', dashboard.views.profile, name='profile_by_tab'),
     re_path(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
     re_path(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
     path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
@@ -491,7 +499,7 @@ urlpatterns = [
         retail.emails.no_applicant_reminder,
         name='no_applicant_reminder'
     ),
- 
+
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
     re_path(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),

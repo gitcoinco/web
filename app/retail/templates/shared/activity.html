@@ -76,6 +76,9 @@
         <a href="{{ row.metadata.grant_url }}" target="_blank">
           {{ row.metadata.title }}
         </a>
+      {% elif row.activity_type == 'status_update' %}
+        {% trans "updated status" %}
+        <b>{{ row.metadata.title }}</b>
       {% elif row.activity_type == 'new_bounty' %}
         <span>{% trans "funded a new issue: " %}</span>{{ row.urled_title | safe }}
       {% elif row.activity_type == 'start_work' %}

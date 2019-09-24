@@ -73,6 +73,12 @@
           <a class="dropdown-item" href="{% url "results" %}">
             {% trans "Results" %}
           </a>
+          <a class="dropdown-item" href="{% url "leaderboard" "" %}">
+            {% trans "Leaderboard" %}
+          </a>
+          <a class="dropdown-item" href="{% url "activity" %}">
+            {% trans "Activity Feed" %}
+          </a>
         </div>
       </div>
 
@@ -92,7 +98,7 @@
             {% trans "Blog" %}
           </a>
           <a class="dropdown-item" href="{% url "not_a_token" %}">
-            {% trans "No Token" %}
+            {% trans "No Utility Token ICO" %}
           </a>
           <a class="dropdown-item" href="{% url "jobs" %}">
             {% trans "Jobs" %}

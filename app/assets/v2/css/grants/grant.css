@@ -1,3 +1,16 @@
+.clr {
+  right: 1.25rem;
+}
+
+.clr h2 {
+  background: #10cd7a;
+  color: #fff;
+  border-radius: 3px;
+}
+
+.clr p {
+  font-size: 10px;
+}
 .header {
   background-image: none;
   background: linear-gradient(to right top, #0fce7c, #00a5a1, #0077b5, #0046a1, #0d0764);
@@ -196,6 +209,10 @@
   text-align: left;
   min-width: 9rem;
   font-size: 12px;
+}
+
+#search_form .sort_container .select2-container {
+  width: 300px !important;
 }
 
 #grants_nav{
