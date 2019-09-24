@@ -206,6 +206,7 @@ body.quest_battle .header.dash{
   font-size: 85px;
   top: 15px;
 }
+.answer,
 .answer a{
   color: white;
 }
