@@ -1,0 +1,17 @@
+{
+  "symbol": "cREP",
+  "address": "0x158079Ee67Fce2f58472A96584A73C7Ab9AC95c1",
+  "overview":{
+        "en": "cREP is like an instant REP savings account. By Compound.",
+        "zh": "cREP 由 Compound 发行，类似于一个即时的 REP 存储账户。 "
+  },
+  "website": "https://app.compound.finance/asset/cREP",
+  "whitepaper": "https://compound.finance/documents/Compound.Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-07",
+  "links": {
+    "blog": "https://medium.com/compound-finance",
+    "twitter": "https://twitter.com/compoundfinance",
+    "github": "https://github.com/compound-finance/compound-protocol"
+  }
+}
