@@ -83,7 +83,7 @@ function prefill_recommended_prices() {
   var avg_data = get_updated_metamask_conf_time_and_cost(parseFloat($('#average-recommended-gas').data('amount')));
   var fast_data = get_updated_metamask_conf_time_and_cost(parseFloat($('#fast-recommended-gas').data('amount')));
 
-  if (fast_data['time'] == 'unknown') {
+  if (fast_data && fast_data['time'] == 'unknown') {
     $('#default-recommended-gas').show();
     $('#default-recommended-gas').html('The confirmation time is unknown. <br> However we recommend a gas price of $' + parseFloat(fast_data['usd']).toFixed(2));
     $('#default-recommended-gas').data('amount-usd', parseFloat(fast_data['usd']).toFixed(2));
@@ -96,7 +96,7 @@ function prefill_recommended_prices() {
     $('#gasPrice').val(new_gas_price);
     $('#gas-usd').html('$' + parseFloat(fast_data['usd']).toFixed(2));
     $('#gas-eth').html(avg_data['eth'] + 'ETH');
-  } else if (slow_data['time'] < 20 && parseFloat($('#slow-recommended-gas').data('amount')) < 2) {
+  } else if (slow_data && slow_data['time'] < 20 && parseFloat($('#slow-recommended-gas').data('amount')) < 2) {
     $('#slow-recommended-gas').hide();
     $('#default-recommended-gas').hide();
     $('#average-recommended-gas').hide();

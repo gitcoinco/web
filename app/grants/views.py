@@ -143,7 +143,8 @@ def grants(request):
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
         'clr_active': clr_active,
-        'sort_by_index': sort_by_index
+        'sort_by_index': sort_by_index,
+        'clr_round': clr_round
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -813,7 +814,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
     metadata = {
         'id': subscription.id,
         'value_in_token': str(subscription.amount_per_period),
-        'value_in_usdt_now': str(subscription.amount_per_period_usdt),
+        'value_in_usdt_now': str(round(subscription.amount_per_period_usdt,2)),
         'token_name': subscription.token_symbol,
         'title': subscription.grant.title,
         'grant_logo': grant_logo,
