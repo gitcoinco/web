@@ -1,0 +1,21 @@
+{
+  "symbol": "HUB",
+  "address": "0x6E3fd7E78aC97A2692fA87Ad28E2365e505b675e",
+  "overview":{
+    "cn": "HubChain is an incentive protocol, which aims to build a blockchain network that based on DPOC (Delegated Proof of Contribution). HubChain wants to improve the way of traditional value distribution and create a sustainable UGC ecosystem by connecting the outstanding content platform, community and business organizations together.",
+        "zh": "Hub 是基于区块链的数字内容分发网络，是一个分布式数字内容分发、激励系统。Hub 的目标是利用区块链技术构建一个基于委托贡献证明机制 DPOC（ Delegated Proof of Contribution）的区块链网络，打造一个高效自治的内容社区，重塑内容创造者、使用者与生态建设者之间的关系，改变现有的价值分配体系，让所有参与者都能得到合理的回报。"
+  },
+  "email": "apply@hubchain.in",
+  "website": "https://hubchain.in/",
+  "whitepaper": "https://download.hubchain.in/whitepaper/Hub2.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-16",
+  "initial_price":{
+        "USD":"0.0029 USD"
+  },
+  "links": {
+    "weibo": "https://weibo.com/u/7201209440",
+    "twitter": "https://twitter.com/Hub70761797",
+    "telegram": "https://t.me/HubchainCN"
+  }
+}
