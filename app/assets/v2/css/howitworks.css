@@ -2,12 +2,12 @@
   display: flex;
 }
 
-h1,
-h2 {
+.howworks-section h1,
+.howworks-section h2 {
   color: #0D0764;
 }
 
-h2 {
+.howworks-section h2 {
   font-weight: bold;
 }
 
@@ -39,6 +39,12 @@ h2 {
 
 .how-it-works__step:nth-child(even) {
   flex-direction: row-reverse;
+}
+.how-it-works__step-inverse .how-it-works__step:nth-child(odd) {
+  flex-direction: row-reverse;
+}
+.how-it-works__step-inverse .how-it-works__step:nth-child(even) {
+  flex-direction: row;
 }
 
 .how-it-works__step-description {

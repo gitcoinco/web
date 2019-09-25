@@ -65,6 +65,7 @@ def preprocess(request):
             ip_address = get_ip(request)
             profile.last_visit = timezone.now()
             try:
+                profile.as_dict = json.loads(json.dumps(profile.to_dict()))
                 profile.save()
             except Exception as e:
                 logger.exception(e)
