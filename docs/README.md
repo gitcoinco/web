@@ -27,6 +27,7 @@ This is the website that is live at [gitcoin.co](https://gitcoin.co)
 [https://docs.gitcoin.co](https://docs.gitcoin.co)
 
 ## Join us!
+
 Come and talk with us at our very own [Discord server](https://discordapp.com/invite/QRA2rXp)!
 
 ### Table of Contents
@@ -56,7 +57,7 @@ Come and talk with us at our very own [Discord server](https://discordapp.com/in
 
 Gitcoin is an open source bounties platform on the Ethereum blockchain. We facilitate a space that allows open source developers to get paid for their work contributing to open source projects and in return, the open source projects get exposure to a vast community of hard working developers they might not have had otherwise.
 
-## Functionally
+### Functionally
 The app has several key features:
 
 * Smart Contracts -- Where funded issues are stored and indexed.
@@ -68,7 +69,7 @@ The app has several key features:
 
 [More about how/why to interact with web3 here](https://gitcoin.co/web3).
 
-## Technically
+### Technically
 
 The system is architected:
 
@@ -84,7 +85,7 @@ The system is architected:
 
 [Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
 
-Check out the [CHANGELOG](https://docs.gitcoin.co/mk_changelog/) for details about recent changes to this repository.
+Check out the [CHANGELOG](https://github.com/gitcoinco/web/releases) for details about recent changes to this repository.
 
 Also,
 
@@ -119,14 +120,14 @@ Gitcoin provides a simple HTTPS API to access data without having to run your ow
 
 # Trying out Gitcoin
 
-## Posting your first issue
+## Funding your first issue
 
 If you
 
 * Have some work on your Github Issues board that you don't have time (or skills) to do.
 * Are dependant upon an upstream repo for something, and you'd like to incentivize them to work onit.
 
-Try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
+Try funding your issue at [https://gitcoin.co/new](https://gitcoin.co/new).
 
 # Integrating Gitcoin
 
