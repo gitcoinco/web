@@ -105,8 +105,6 @@
 .float_avatar_image img {
   height: 186px;
   width: 186px;
-  border: 3px solid #FFFFFF;
-  box-shadow: 0 -2px 4px 0 rgba(0,0,0,0.50);
 }
 
 .avatar_edit {

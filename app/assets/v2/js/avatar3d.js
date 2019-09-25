@@ -1,10 +1,10 @@
 $(document).ready(function() {
 
-  $('#skin_tones li:first-child').addClass('selected');
-  $('#hair_tones li:first-child').addClass('selected');
+  $('#skin_tones li:nth-child(6)').addClass('selected');
+  $('#hair_tones li:nth-child(3)').addClass('selected');
   document.td_ids = [];
-  document.skin_tone = $('#skin_tones li:first-child').data('tone');
-  document.hair_tone = $('#hair_tones li:first-child').data('tone');
+  document.skin_tone = $('#skin_tones li.selected').data('tone');
+  document.hair_tone = $('#hair_tones li.selected').data('tone');
 
   var get_avatar_url = function() {
     var url = '/avatar/view3d?';
@@ -96,8 +96,9 @@ $(document).ready(function() {
       unloading_button($('#save-3d-avatar'));
     });
 
+    var url = get_avatar_url();
     var request = $.ajax({
-      url: get_avatar_url(),
+      url: url,
       type: 'POST',
       data: JSON.stringify({save:true}),
       dataType: 'json',

@@ -21,7 +21,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import re_path
 
 from .views import (
-    activate_avatar, avatar, avatar3d, avatar3dids, save_custom_avatar, save_github_avatar, select_preset_avatar,
+    activate_avatar, avatar, save_custom_avatar, save_github_avatar, select_preset_avatar,
+)
+from .views_3d import (
+    avatar3d, avatar3dids, 
 )
 
 app_name = 'avatar'
