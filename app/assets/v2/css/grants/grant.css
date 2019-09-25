@@ -20,6 +20,10 @@
   font-size: 13px;
 }
 
+.clr-prediction .amount {
+  font-size: 13px;
+}
+
 .clr-prediction .title {
   border-bottom: 1px solid #0FCE7C;
   padding: 0.65rem 1rem;
