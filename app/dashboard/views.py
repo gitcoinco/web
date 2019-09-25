@@ -52,7 +52,7 @@ from django.views.decorators.http import require_GET, require_POST
 import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
-from avatar.views import avatar3dids_helper, skin_tones, hair_tones
+from avatar.views import avatar3dids_helper, hair_tones, skin_tones
 from dashboard.context import quickstart as qs
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
 from economy.utils import convert_token_to_usdt

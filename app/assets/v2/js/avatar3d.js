@@ -33,13 +33,13 @@ $(document).ready(function() {
     $(this).parents('#skin_tones').find('.selected').removeClass('selected');
     $(this).addClass('selected');
     document.skin_tone = $(this).data('tone');
-    update_all_options()
+    update_all_options();
   });
 
-  var update_all_options = function(){
+  var update_all_options = function() {
     $('#tdavatartarget').attr('src', get_avatar_url());
     $('.tdselection').each(function() {
-      var new_url = $(this).data('src') + '&skinTone=' + document.skin_tone+ '&hairTone=' + document.hair_tone;
+      var new_url = $(this).data('src') + '&skinTone=' + document.skin_tone + '&hairTone=' + document.hair_tone;
 
       $(this).data('altsrc', new_url);
       $(this).attr('src', '');
@@ -60,12 +60,13 @@ $(document).ready(function() {
 
   $('#random-3d-avatar-button').click(function(e) {
     e.preventDefault();
-    $(".select_avatar_type").each(function(){
+    $('.select_avatar_type').each(function() {
       var catclass = $(this).data('target');
-      $(".category."+catclass+" .tdselection").random().click();
+
+      $('.category.' + catclass + ' .tdselection').random().click();
     });
-    $("#skin_tones li").random().click();
-    $("#hair_tones li").random().click();
+    $('#skin_tones li').random().click();
+    $('#hair_tones li').random().click();
   });
 
 
@@ -86,9 +87,45 @@ $(document).ready(function() {
     });
   });
 
+  function save3DAvatar() {
+    $(document).ajaxStart(function() {
+      loading_button($('#save-3d--avatar'));
+    });
+
+    $(document).ajaxStop(function() {
+      unloading_button($('#save-3d-avatar'));
+    });
+
+    var request = $.ajax({
+      url: get_avatar_url(),
+      type: 'POST',
+      data: JSON.stringify({save:true}),
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      success: function(response) {
+        _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
+        changeStep(1);
+      },
+      error: function(response) {
+        let text = gettext('Error occurred while saving. Please try again.');
+
+        if (response.responseJSON && response.responseJSON.message) {
+          text = response.responseJSON.message;
+        }
+        $('#later-button').show();
+        _alert({ message: text}, 'error');
+      }
+    });
+  }
+  $("#save-3d-avatar").click(function(){
+    save3DAvatar();
+  });
+
+
   jQuery.fn.random = function() {
-      var randomIndex = Math.floor(Math.random() * this.length);  
-      return jQuery(this[randomIndex]);
+    var randomIndex = Math.floor(Math.random() * this.length);
+
+    return jQuery(this[randomIndex]);
   };
 
 });

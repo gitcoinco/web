@@ -52,9 +52,13 @@ preview_viewbox = {
     'hair': '110 0 110 110',
 }
 
-skin_tones = [ 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '392D16' ]
+skin_tones = [
+    'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '392D16'
+]
 hair_tones = ['000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C']
 tone_maps = ['skin', 'blonde_hair', 'brown_hair', 'dark_hair', 'grey_hair']
+
+
 def get_avatar_tone_map(tone='skin', skinTone=''):
     tones = {
         'D68876': 0,
@@ -67,18 +71,10 @@ def get_avatar_tone_map(tone='skin', skinTone=''):
     }
     base_3d_tone = 'F4B990'
     if tone == 'blonde_hair':
-        tones = {
-            'CEA578': 0,
-            'BA7056': 0,
-            'F4C495': 0,
-        }
+        tones = {'CEA578': 0, 'BA7056': 0, 'F4C495': 0, }
         base_3d_tone = 'CEA578'
     if tone == 'brown_hair':
-        tones = {
-            '775246': 0,
-            '563532': 0,
-            'A3766A': 0,
-        }
+        tones = {'775246': 0, '563532': 0, 'A3766A': 0, }
         base_3d_tone = '775246'
     if tone == 'dark_hair':
         tones = {
@@ -93,11 +89,7 @@ def get_avatar_tone_map(tone='skin', skinTone=''):
         }
         base_3d_tone = '6D5E66'
     if tone == 'grey_hair':
-        tones = {
-            '7C6761': 0,
-            '5E433D': 0,
-            'AA8B87': 0,
-        }
+        tones = {'7C6761': 0, '5E433D': 0, 'AA8B87': 0, }
         base_3d_tone = '7C6761'
 
     #mutate_tone
