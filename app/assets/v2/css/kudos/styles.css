@@ -73,7 +73,7 @@
   margin-bottom: 50px; }
 
 .select2 {
-  width: 100%; 
+  width: 100%;
   max-width: 100%;
 }
 
@@ -141,7 +141,11 @@
 .kd-card .img-thumbnail {
   width: 100%;
   padding: 1.25rem 2.14rem;
-  transition: all linear .15s; }
+  transition: all linear .15s;
+  background-image: url(data:image/gif;base64,R0lGODlhMAAwAPcAAAAAABMTExUVFRsbGx0dHSYmJikpKS8vLzAwM…KkMccFWYKEGxvc7BMMsxwT4thXo2lCliQWM6LGKtPaJkIipA8c2t4T/bHHHv4CbjhBAQEAOw==);
+  background-repeat: no-repeat;
+  background-position: center;
+}
 .kd-card a:hover .img-thumbnail {
   border-color: #3e00ff;
   box-shadow: inset 0 0 0px 2px #3e00ff; }
