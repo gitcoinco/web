@@ -39,25 +39,23 @@
         </a>
       </div>
 
-      <div class="row progress-container mb-4">
-        <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
-        {% if clr_active %}
-          {% include 'grants/card/clr_estimate.html' %}
-        {% else %}
-          <p class="sub-title mb-0 font-caption">MONTHLY RECURRING</p>
-          <p class="font-title mb-0 font-weight-bold">
-            {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
-          </p>
-          <p class="font-caption {% if grant.clr_matching %} my-2 {% endif %}">
-            of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal
-          </p>
-
-        {% endif %}
-
+      <div class="row progress-container mb-2">
+        <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
+          {% if clr_active %}
+            {% include 'grants/card/clr_match.html' %}
+          {% else %}
+            <p class="sub-title font-weight-semibold font-caption mb-1 py-1">MONTHLY RECURRING</p>
+            <p class="font-title mb-0 font-weight-bold">
+              {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
+            </p>
+            <p class="font-caption {% if grant.clr_matching %} mb-2 {% endif %}">
+              of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal
+            </p>
+          {% endif %}
         </div>
 
-        <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6">
-          <p class="sub-title mb-0 font-caption">TOTAL FUNDED</p>
+        <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6">
+          <p class="sub-title mb-1 font-weight-semibold font-caption mb-1 py-1">TOTAL FUNDED</p>
           <p class="font-title mb-0 font-weight-bold">
             {{ grant.amount_received_with_phantom_funds|floatformat:0|intcomma }} DAI
           </p>
@@ -67,7 +65,11 @@
         </div>
       </div>
 
-      <div class="grant-item__state mt-5 row">
+      {% if clr_active %}
+        {% include 'grants/card/clr_estimate.html' %}
+      {% endif %}
+
+      <div class="grant-item__state mt-2 row">
         <div class="col-6">
           {% if grant.active %}
             <div class="grant-item__state-active">

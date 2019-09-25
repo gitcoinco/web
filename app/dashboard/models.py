@@ -2355,7 +2355,7 @@ class Profile(SuperModel):
 
     @property
     def job_status_verbose(self):
-        return dict(Profile.JOB_SEARCH_STATUS)[self.job_search_status]
+        return dict(Profile.JOB_SEARCH_STATUS).get(self.job_search_status, 'Unknown Job Status')
 
     @property
     def active_bounties(self):
@@ -2434,9 +2434,9 @@ class Profile(SuperModel):
             try:
                 wallpapers = load_files_in_directory('wallpapers')
                 self.profile_wallpaper = f"/static/wallpapers/{random.choice(wallpapers)}"
-            except:
+            except Exception as e:
                 # fix for travis, which has no static dir
-                pass
+                logger.exception(e)
 
         self.calculate_and_save_persona()
         self.actions_count = self.get_num_actions
