@@ -1,9 +1,10 @@
 $(document).ready(function() {
-  $.get('/avatar/view3d/ids').then(function(result) {
-    console.log(result);
-  });
+
+  $('#skin_tones li:first-child').addClass('selected');
+  $('#hair_tones li:first-child').addClass('selected');
   document.td_ids = [];
-  document.skin_tone = '';
+  document.skin_tone = $('#skin_tones li:first-child').data('tone');
+  document.hair_tone = $('#hair_tones li:first-child').data('tone');
 
   var get_avatar_url = function() {
     var url = '/avatar/view3d?';
@@ -12,6 +13,7 @@ $(document).ready(function() {
       url += '&ids[]=' + document.td_ids[i];
     }
     url += '&skinTone=' + document.skin_tone;
+    url += '&hairTone=' + document.hair_tone;
     return url;
   };
 
@@ -31,9 +33,13 @@ $(document).ready(function() {
     $(this).parents('#skin_tones').find('.selected').removeClass('selected');
     $(this).addClass('selected');
     document.skin_tone = $(this).data('tone');
+    update_all_options()
+  });
+
+  var update_all_options = function(){
     $('#tdavatartarget').attr('src', get_avatar_url());
     $('.tdselection').each(function() {
-      var new_url = $(this).data('src') + '&skinTone=' + document.skin_tone;
+      var new_url = $(this).data('src') + '&skinTone=' + document.skin_tone+ '&hairTone=' + document.hair_tone;
 
       $(this).data('altsrc', new_url);
       $(this).attr('src', '');
@@ -41,7 +47,25 @@ $(document).ready(function() {
     $('.tdselection:visible').each(function() {
       $(this).attr('src', $(this).data('altsrc'));
     });
+  };
 
+  $('#hair_tones li').click(function(e) {
+    e.preventDefault();
+    $(this).parents('#hair_tones').find('.selected').removeClass('selected');
+    $(this).addClass('selected');
+    document.hair_tone = $(this).data('tone');
+    update_all_options();
+  });
+
+
+  $('#random-3d-avatar-button').click(function(e) {
+    e.preventDefault();
+    $(".select_avatar_type").each(function(){
+      var catclass = $(this).data('target');
+      $(".category."+catclass+" .tdselection").random().click();
+    });
+    $("#skin_tones li").random().click();
+    $("#hair_tones li").random().click();
   });
 
 
@@ -61,6 +85,10 @@ $(document).ready(function() {
       }
     });
   });
-  // $("#avatars-builder-3d .avatars-container").html('3d avatar goes here');
-  // $("#avatars-builder-3d .action-buttons").html('3d buttons goes here');
+
+  jQuery.fn.random = function() {
+      var randomIndex = Math.floor(Math.random() * this.length);  
+      return jQuery(this[randomIndex]);
+  };
+
 });

@@ -84,16 +84,17 @@
   color: #0D0764;
   border-bottom: 1px solid #0D0764;
 }
-#skin_tones{
+.tones{
   list-style: none;
+  margin: 5px;
 }
-#skin_tones li{
+.tones li{
   display: inline-block;
   width: 30px;
   height: 30px;
   cursor: pointer
 }
 
-#skin_tones li.selected{
+.tones li.selected{
   border: 3px solid #aaa;
 }

@@ -52,14 +52,11 @@ preview_viewbox = {
     'hair': '110 0 110 110',
 }
 
-skin_tones = ['F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26']
-base_3d_skin_tone = 'F4B990'
-max_skin_tone = 'FFFFF6'
-min_skin_tone = 'FFFFF6'
-
-
-def get_avatar_skin_tone_map():
-    avatar_svg_skin_tones = {
+skin_tones = [ 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '392D16' ]
+hair_tones = ['000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C']
+tone_maps = ['skin', 'blonde_hair', 'brown_hair', 'dark_hair', 'grey_hair']
+def get_avatar_tone_map(tone='skin', skinTone=''):
+    tones = {
         'D68876': 0,
         'BC8269': 0,
         'EEE3C1': 0,
@@ -68,9 +65,48 @@ def get_avatar_skin_tone_map():
         'FFDBC2': 0,
         'F4B990': 0,  #base
     }
-    for key in avatar_svg_skin_tones.keys():
-        avatar_svg_skin_tones[key] = sub_rgb_array(hex_to_rgb_array(key), hex_to_rgb_array(base_3d_skin_tone))
-    return avatar_svg_skin_tones
+    base_3d_tone = 'F4B990'
+    if tone == 'blonde_hair':
+        tones = {
+            'CEA578': 0,
+            'BA7056': 0,
+            'F4C495': 0,
+        }
+        base_3d_tone = 'CEA578'
+    if tone == 'brown_hair':
+        tones = {
+            '775246': 0,
+            '563532': 0,
+            'A3766A': 0,
+        }
+        base_3d_tone = '775246'
+    if tone == 'dark_hair':
+        tones = {
+            '4C3D44': 0,
+            '422D39': 0,
+            '6D5E66': 0,
+            '5E4F57': 0,
+            '9B8886': 0,
+            '896F6B': 0,
+            '84767E': 0,
+            '422C37': 0,
+        }
+        base_3d_tone = '6D5E66'
+    if tone == 'grey_hair':
+        tones = {
+            '7C6761': 0,
+            '5E433D': 0,
+            'AA8B87': 0,
+        }
+        base_3d_tone = '7C6761'
+
+    #mutate_tone
+    for key in tones.keys():
+        delta = sub_rgb_array(hex_to_rgb_array(key), hex_to_rgb_array(base_3d_tone), False)
+        rgb_array = add_rgb_array(delta, hex_to_rgb_array(skinTone), True)
+        tones[key] = rgb_array_to_hex(rgb_array)
+
+    return tones
 
 
 def avatar3d(request):
@@ -80,7 +116,8 @@ def avatar3d(request):
     accept_ids = request.GET.getlist('ids')
     if not accept_ids:
         accept_ids = request.GET.getlist('ids[]')
-    skinTone = request.GET.get('skinTone', 'F4B990')
+    skinTone = request.GET.get('skinTone', '')
+    hairTone = request.GET.get('hairTone', '')
     viewBox = request.GET.get('viewBox', '')
     height = request.GET.get('height', '')
     width = request.GET.get('width', '')
@@ -115,14 +152,6 @@ def avatar3d(request):
             if not has_ids_in_category:
                 accept_ids.append(ids[0])
 
-    #mutate_skin_tone
-    avatar_svg_skin_tones = get_avatar_skin_tone_map()
-    print(avatar_svg_skin_tones)
-    for key in avatar_svg_skin_tones.keys():
-        rgb_array = add_rgb_array(avatar_svg_skin_tones[key], hex_to_rgb_array(skinTone))
-        print(rgb_array)
-        avatar_svg_skin_tones[key] = rgb_array_to_hex(rgb_array)
-    print(avatar_svg_skin_tones)
     # asseble response
     with open(avatar_3d_base_path) as file:
         elements = []
@@ -132,8 +161,11 @@ def avatar3d(request):
             if include_item:
                 elements.append(ET.tostring(item).decode('utf-8'))
         output = prepend + "".join(elements) + postpend
-        for _from, to in avatar_svg_skin_tones.items():
-            output = output.replace(_from, to)
+        for _type in tone_maps:
+            base_tone = skinTone if 'hair' not in _type else hairTone
+            if base_tone:
+                for _from, to in get_avatar_tone_map(_type, base_tone).items():
+                    output = output.replace(_from, to)
         response = HttpResponse(output, content_type='image/svg+xml')
     return response
 

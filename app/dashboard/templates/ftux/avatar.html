@@ -164,9 +164,21 @@
       <div class="avatars-container">
         <img id=tdavatartarget src="/avatar/view3d">
       </div>
-        <div id=skin_tones>
+        <button type="button" id="random-3d-avatar-button" class="button button--primary">
+          Random Avatar
+        </button>
+        <div id=skin_tones class=tones>
+          Skin:
           {% for st in possible_skin_tones %}
           <li data-tone='{{st}}' style="background-color: #{{st}}">
+            &nbsp;
+          </li>
+          {% endfor %}
+        </div>
+        <div id=hair_tones class=tones>
+          Hair:
+          {% for ht in possible_hair_tones %}
+          <li data-tone='{{ht}}' style="background-color: #{{ht}}">
             &nbsp;
           </li>
           {% endfor %}
@@ -178,9 +190,9 @@
       </div>
       <div class="targets">
         {% for category, ids in 3d_avatar_params.by_category.items %}
-          <div class="category {{category}} hidden">
+          <div class="category {{category}} {% if category != 'background' %}hidden{%endif%}">
             {% for id in ids %}
-              <img class=tdselection data-id="{{id}}" data-src="/avatar/view3d?mode=preview&ids={{id}}" data-altsrc="/avatar/view3d?mode=preview&ids={{id}}">            
+              <img class=tdselection data-id="{{id}}" data-src="/avatar/view3d?mode=preview&ids={{id}}" data-altsrc="/avatar/view3d?mode=preview&ids={{id}}" {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}"{%endif%}>            
             {% endfor %}
           </div>
         {% endfor %}
