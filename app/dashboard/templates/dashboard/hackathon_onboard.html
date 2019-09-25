@@ -21,6 +21,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
     <style>
       .onboard-banner {
         background: {% firstof hackathon.background_color or 'white' %};
@@ -48,70 +49,137 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="container-fluid p-5">
 
       {% if hackathon.end_date|timesince >= "1 min" %}
         <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
       {% endif %}
       <div class="row py-5">
         <div class="col-12">
-          <div class="mb-4">
-            <h2>How to Participate?</h2>
-            <p>Here’s how to participate in this Gitcoin virtual hackathon: </p>
-          </div>
+          <h2 class="text-center">How does the Hackathon work?</h2>
+        </div>
+      </div>
 
-          <div class="mb-4">
-            {% if not github_handle %}
-              <p>Log in with Github to register for the hackathon and receive email updates.</p>
-              <a class="btn btn-gc-purple my-3" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
-                onclick="dataLayer.push({'event': 'login'});">
-                <i class="fab fa-github"></i>
-                <span>{% trans "Login with github" %}</span>
-              </a>
-            {% endif %}
-            <ul class="list-group mt-4">
-              <li class="list-group-item"><a target="_blank" href="{% url 'hackathon' hackathon.slug %}#bounties">View Prizes</a> -  Find challenges from our sponsors that your team can work on. Prizes will be posted on or before <b>{{hackathon.start_date}}</b></li>
-              <li class="list-group-item"><a target="_blank" href="https://github.com/gitcoinco/{{hackathon.slug}}-teams">Create or Join a Team</a> - Share project ideas and skills or join an existing team.</li>
-              <li class="list-group-item"><a target="_blank" href="https://discord.gg/TxRKTn8">Join Discord</a> - Our main communication channel for updates, sponsor questions, and project work.</li>
-              <li class="list-group-item"><a href="#startSubmit" data-toggle="modal">Start/Submit Work via Gitcoin</a> - Follow this guide to formally apply for a prize and submit your work before <b>{{hackathon.end_date}}</b></li>
-            </ul>
-
+      <div class="how-it-works__step-inverse">
+        <div class="how-it-works__step text-center">
+          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
           </div>
-          <!-- Modal -->
-          <div class="modal fade" id="startSubmit" tabindex="-1" role="dialog" aria-labelledby="startSubmitLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="startSubmitLabel">Start/Submit Work via Gitcoin</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <p>When your team is formed and you know the prizes you want to compete for you can <b>“Start Work”</b> through Gitcoin using the button on the prize page.</p>
-                  <img class="mw-100 my-3" src="https://i1.wp.com/gitcoin.co/blog/wp-content/uploads/2019/07/Screen-Shot-2019-07-30-at-5.28.09-PM.png?w=2082&ssl=1" alt="">
-                  <p>Then, when your project is completed and you have submitted a pull request or set up a repository with your code and deliverables, it’s time to submit work! Submitting work allows judges to review see your work along with other submissions, and helps them pay you and your teammates out directly. Submit your work by clicking the <b>“Submit Work”</b> button on the prize page, right where the <b>“Start Work”</b> button was before (shown above). Note that you should have already clicked <b>“Start Work”</b> earlier for the <b>“Submit Work”</b> button to appear. Be sure to include your teammates Gitcoin addresses in your project’s readme/front page so that judges can pay them out, too.</p>
-                  <p>And that’s it! Your submission will be reviewed by judges and, if you are the winning submission, you and your teammates will be paid the prize amount in cryptocurrency directly to the ETH address associated with your Gitcoin profile.</p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-              </div>
+          <div class="col-12 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
+            <div>
+              <div class="how-it-works__step-number text-center">1</div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Check out the Prizes" %}</div>
+            <div class="how-it-works__step-text">
+              {{hackathon.slug}}
+              {% url 'hackathon' hackathon.slug as hackathon_url %}
+              {% blocktrans %}
+                <p class="center-block">
+                  Visit the <a target="_blank" href="{{ hackathon_url }}#bounties">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
+                </p>
+              {% endblocktrans %}
             </div>
           </div>
-          <div>
-            <h2>Ready?</h2>
-            <p>Let’s hack!</p>
-            <p>
-              <a class="btn btn-lg btn-gc-pink" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
-            </p>
+        </div>
+
+        <div class="col-12 col-lg-8 how-it-works__step p-0 text-center">
+          <div class="col-12 col-lg-6 how-it-works__screenshot">
+            <img src="{% static "v2/images/how-it-works/hackathon/pic2.jpg" %}" class="mw-100" alt="express interest" />
+          </div>
+          <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
+
+            <div>
+              <div class="how-it-works__step-number text-center">2</div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Join Discord" %}</div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %}
+                <p class="center-block">
+                  Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time on the <a target="_blank" href="https://discord.gg/TxRKTn8">Gitcoin Events Discord</a>.
+                </p>
+              {% endblocktrans %}
+            </div>
+          </div>
+        </div>
+
+        <div class="how-it-works__step text-center">
+          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/hackathon/pic3.jpg" %}" class="mw-100" alt="bounty explorer" />
+          </div>
+          <div class="col-12 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
+            <div>
+              <div class="how-it-works__step-number text-center">3</div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Start Work via Gitcoin" %}</div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %}
+                <p class="center-block">
+                  When your team is formed please have one of your teammates navigate to each prize page you plan to compete for and click the “Start Work” button.
+                </p>
+              {% endblocktrans %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-8 how-it-works__step p-0 text-center">
+          <div class="col-12 col-lg-6 how-it-works__screenshot">
+            <img src="{% static "v2/images/how-it-works/hackathon/pic4.jpg" %}" class="mw-100" alt="express interest" />
+          </div>
+          <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
+
+            <div>
+              <div class="how-it-works__step-number text-center">4</div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "BUIDL!" %}</div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %}
+                <p class="center-block">
+                  Build your cool ideas and make your vision come true with your team!
+                </p>
+              {% endblocktrans %}
+            </div>
+          </div>
+        </div>
+
+        <div class="how-it-works__step text-center">
+          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
+          </div>
+          <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
+            <div>
+              <div class="how-it-works__step-number text-center">5</div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Submit Work via Gitcoin" %}</div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %}
+                <p class="center-block">
+                  When your project is completed, submit your work by clicking the “Submit Work” button on the prize page,
+                </p>
+              {% endblocktrans %}
+            </div>
           </div>
         </div>
       </div>
+      <div class="text-center">
+          <a class="btn btn-lg btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
+      </div>
+
+
+
+
+
+
+
+
+
 
     </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    
+
   </body>
