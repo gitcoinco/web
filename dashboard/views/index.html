@@ -2364,7 +2364,7 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 The builtins True and False are the only two instances of the class bool.
 The class bool is a subclass of the class int, and cannot be subclassed.
 <h2 id="dashboard.views.onboard">onboard</h2></p>
-<pre><code class="python">onboard(request, flow)
+<pre><code class="python">onboard(request, flow=None)
 </code></pre>
 
 <p>Handle displaying the first time user experience flow.
@@ -2633,6 +2633,38 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 <p>Display profile details.</p>
 <p>Args:
     handle (str): The profile handle.</p>
+<h2 id="dashboard.views.profile_activity">profile_activity</h2>
+
+<pre><code class="python">profile_activity(request, handle)
+</code></pre>
+
+<p>Display profile activity details.</p>
+<p>Args:
+    handle (str): The profile handle.</p>
+<h2 id="dashboard.views.profile_spent">profile_spent</h2>
+
+<pre><code class="python">profile_spent(request, handle)
+</code></pre>
+
+<p>Display profile spent details.</p>
+<p>Args:
+    handle (str): The profile handle.</p>
+<h2 id="dashboard.views.profile_earnings">profile_earnings</h2>
+
+<pre><code class="python">profile_earnings(request, handle, direction='to')
+</code></pre>
+
+<p>Display profile earnings details.</p>
+<p>Args:
+    handle (str): The profile handle.</p>
+<h2 id="dashboard.views.profile_viewers">profile_viewers</h2>
+
+<pre><code class="python">profile_viewers(request, handle)
+</code></pre>
+
+<p>Display profile viewers details.</p>
+<p>Args:
+    handle (str): The profile handle.</p>
 <h2 id="dashboard.views.profile_job_opportunity">profile_job_opportunity</h2>
 
 <pre><code class="python">profile_job_opportunity(request, handle)
@@ -2667,7 +2699,7 @@ The class bool is a subclass of the class int, and cannot be subclassed.
     ActivityQuerySet: The filtered results.</p>
 <h2 id="dashboard.views.profile">profile</h2>
 
-<pre><code class="python">profile(request, handle)
+<pre><code class="python">profile(request, handle, tab=None)
 </code></pre>
 
 <p>Display profile details.</p>

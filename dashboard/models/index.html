@@ -4133,6 +4133,13 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Activity.point_value">point_value</h3>
+
+<pre><code class="python">Activity.point_value(self)
+</code></pre>
+
+<p>Returns:
+    int the Point value of this activity</p>
 <h3 id="dashboard.models.Activity.to_dict">to_dict</h3>
 
 <pre><code class="python">Activity.to_dict(self, fields=None, exclude=None)
@@ -4394,6 +4401,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.activity_level">activity_level</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.admin_override_avatar">admin_override_avatar</h3>
 
 <p>Just like the FileDescriptor, but for ImageFields. The only difference is
@@ -4413,6 +4424,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.as_dict">as_dict</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.avatar_baseavatar_related">avatar_baseavatar_related</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -4424,6 +4439,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.avg_hourly_rate">avg_hourly_rate</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.bounties_funded">bounties_funded</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -4500,7 +4519,22 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.dominant_persona">dominant_persona</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.donations">donations</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.earnings">earnings</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
 many-to-one relation.</p>
@@ -4589,17 +4623,24 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
-<h3 id="dashboard.models.Profile.get_average_star_rating">get_average_star_rating</h3>
+<h3 id="dashboard.models.Profile.get_dominant_persona_display">_method</h3>
 
-<p>Returns the average star ratings (overall and individual topic)
-for a particular user
-<h3 id="dashboard.models.Profile.get_job_search_status_display">_method</h3></p>
+<pre><code class="python">Profile._method(self, *, field=&lt;django.db.models.fields.CharField: dominant_persona&gt;)
+</code></pre>
+
+<h3 id="dashboard.models.Profile.get_job_search_status_display">_method</h3>
+
 <pre><code class="python">Profile._method(self, *, field=&lt;django.db.models.fields.CharField: job_search_status&gt;)
 </code></pre>
 
 <h3 id="dashboard.models.Profile.get_next_by_created_on">_method</h3>
 
 <pre><code class="python">Profile._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.Profile.get_next_by_last_calc_date">_method</h3>
+
+<pre><code class="python">Profile._method(self, *, field=&lt;django.db.models.fields.DateTimeField: last_calc_date&gt;, is_next=True, **kwargs)
 </code></pre>
 
 <h3 id="dashboard.models.Profile.get_next_by_modified_on">_method</h3>
@@ -4615,6 +4656,11 @@ for a particular user
 <h3 id="dashboard.models.Profile.get_previous_by_created_on">_method</h3>
 
 <pre><code class="python">Profile._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.Profile.get_previous_by_last_calc_date">_method</h3>
+
+<pre><code class="python">Profile._method(self, *, field=&lt;django.db.models.fields.DateTimeField: last_calc_date&gt;, is_next=False, **kwargs)
 </code></pre>
 
 <h3 id="dashboard.models.Profile.get_previous_by_modified_on">_method</h3>
@@ -4648,6 +4694,11 @@ for a particular user
     'user_no_of_languages': No of languages user used while working on bounties.
     'user_languages': Languages that were used in bounties that were worked on.
     'relevant_bounties': a list of Bounty(s) that would match the skillset input by the user into the Match tab of their settings</p>
+<h3 id="dashboard.models.Profile.get_selected_persona_display">_method</h3>
+
+<pre><code class="python">Profile._method(self, *, field=&lt;django.db.models.fields.CharField: selected_persona&gt;)
+</code></pre>
+
 <h3 id="dashboard.models.Profile.gitcoin_discord_username">gitcoin_discord_username</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -4780,6 +4831,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.last_calc_date">last_calc_date</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.last_sync_date">last_sync_date</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -4800,6 +4855,10 @@ many-to-one relation.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.linkedin_url">linkedin_url</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.longest_streak">longest_streak</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -4826,6 +4885,21 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.num_repeated_relationships">num_repeated_relationships</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.org_earnings">org_earnings</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.organizations">organizations</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -4838,6 +4912,21 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.PERSONAS">PERSONAS</h3>
+
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.models.Profile.portfolio_items">portfolio_items</h3></p>
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.pref_lang_code">pref_lang_code</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -4859,6 +4948,29 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.profile_wallpaper">profile_wallpaper</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.quest_attempts">quest_attempts</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.rank_coder">rank_coder</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.rank_funder">rank_funder</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.rank_org">rank_org</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -4895,6 +5007,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.reliability">reliability</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.remote">remote</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -4922,6 +5038,21 @@ FieldFile when accessed so you can write code like::</p>
 <pre><code>&gt;&gt;&gt; with open('/path/to/hello.world', 'r') as f:
 ...     instance.file = File(f)
 </code></pre>
+<h3 id="dashboard.models.Profile.selected_persona">selected_persona</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.sent_earnings">sent_earnings</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.sent_kudos">sent_kudos</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -4960,11 +5091,21 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.stats">stats</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.success_rate">success_rate</h3>
 
-<p>Returns success rate of user on the platform</p>
-<p>Returns:
-    number: sucess rate of user</p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.suppress_leaderboard">suppress_leaderboard</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -5007,6 +5148,28 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.viewed_by">viewed_by</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.viewed_profiles">viewed_profiles</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.votes">votes</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -5018,6 +5181,57 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.get_average_star_rating">get_average_star_rating</h3>
+
+<pre><code class="python">Profile.get_average_star_rating(self, scale=1)
+</code></pre>
+
+<p>Returns the average star ratings (overall and individual topic)
+for a particular user
+<h3 id="dashboard.models.Profile.calc_activity_level">calc_activity_level</h3></p>
+<pre><code class="python">Profile.calc_activity_level(self)
+</code></pre>
+
+<p>Determines the activity level of a user</p>
+<p>Returns:
+    str: High, Low, Medium, or New</p>
+<h3 id="dashboard.models.Profile.calc_longest_streak">calc_longest_streak</h3>
+
+<pre><code class="python">Profile.calc_longest_streak(self)
+</code></pre>
+
+<p>Determines the longest streak, in workdays, of this user</p>
+<p>Returns:
+    int: a number of weekdays</p>
+<h3 id="dashboard.models.Profile.calc_num_repeated_relationships">calc_num_repeated_relationships</h3>
+
+<pre><code class="python">Profile.calc_num_repeated_relationships(self)
+</code></pre>
+
+<p>the number of repeat relationships that this user has created</p>
+<p>Returns:
+    int: a number of repeat relationships</p>
+<h3 id="dashboard.models.Profile.calc_avg_hourly_rate">calc_avg_hourly_rate</h3>
+
+<pre><code class="python">Profile.calc_avg_hourly_rate(self)
+</code></pre>
+
+<p>Returns:
+    float: the average hourly rate for this user in dollars</p>
+<h3 id="dashboard.models.Profile.calc_success_rate">calc_success_rate</h3>
+
+<pre><code class="python">Profile.calc_success_rate(self)
+</code></pre>
+
+<p>Returns:
+    int; the success percentage for this users bounties as a positive integer.</p>
+<h3 id="dashboard.models.Profile.calc_reliability_ranking">calc_reliability_ranking</h3>
+
+<pre><code class="python">Profile.calc_reliability_ranking(self)
+</code></pre>
+
+<p>Returns:
+    the reliabiliyt ranking that the user has.</p>
 <h3 id="dashboard.models.Profile.is_github_token_valid">is_github_token_valid</h3>
 
 <pre><code class="python">Profile.is_github_token_valid(self)
@@ -5149,19 +5363,10 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
     (dashboard.models.ActivityQuerySet): The query results.</p>
 <h3 id="dashboard.models.Profile.to_dict">to_dict</h3>
 
-<pre><code class="python">Profile.to_dict(self, activities=True, leaderboards=True, network=None, tips=True)
+<pre><code class="python">Profile.to_dict(self)
 </code></pre>
 
 <p>Get the dictionary representation with additional data.</p>
-<p>Args:
-    activities (bool): Whether or not to include activity queryset data.
-        Defaults to: True.
-    leaderboards (bool): Whether or not to include leaderboard position data.
-        Defaults to: True.
-    network (str): The Ethereum network to use for relevant queries.
-        Defaults to: None (Environment specific).
-    tips (bool): Whether or not to include tip data.
-        Defaults to: True.</p>
 <p>Attributes:
     params (dict): The context dictionary to be returned.
     network (str): The bounty network to operate on.
@@ -5295,6 +5500,13 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserAction.point_value">point_value</h3>
+
+<pre><code class="python">UserAction.point_value(self)
+</code></pre>
+
+<p>Returns:
+    int the Point value of this user action</p>
 <h2 id="dashboard.models.CoinRedemption">CoinRedemption</h2>
 
 <pre><code class="python">CoinRedemption(self, *args, **kwargs)
@@ -6126,7 +6338,7 @@ The argument must be an iterable if specified.
 <pre><code class="python">FeedbackEntry(self, *args, **kwargs)
 </code></pre>
 
-<p>FeedbackEntry(id, created_on, modified_on, bounty, sender_profile, receiver_profile, rating, satisfaction_rating, communication_rating, speed_rating, code_quality_rating, recommendation_rating, comment, feedbackType)
+<p>FeedbackEntry(id, created_on, modified_on, bounty, sender_profile, receiver_profile, rating, satisfaction_rating, communication_rating, speed_rating, code_quality_rating, recommendation_rating, comment, feedbackType, private)
 <h3 id="dashboard.models.FeedbackEntry.bounty">bounty</h3></p>
 <p>Accessor to the related object on the forward side of a many-to-one or
 one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
@@ -6179,6 +6391,10 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.FeedbackEntry.private">private</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.FeedbackEntry.rating">rating</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -6221,8 +6437,13 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h2 id="dashboard.models.Coupon">Coupon</h2>
+<h3 id="dashboard.models.FeedbackEntry.visible_to">visible_to</h3>
 
+<pre><code class="python">FeedbackEntry.visible_to(self, user)
+</code></pre>
+
+<p>Whether this user can see the feedback ornot
+<h2 id="dashboard.models.Coupon">Coupon</h2></p>
 <pre><code class="python">Coupon(self, *args, **kwargs)
 </code></pre>
 
@@ -6280,6 +6501,268 @@ object the first time, the query is executed.</p>
 </code></pre>
 
 <h3 id="dashboard.models.Coupon.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="dashboard.models.ProfileView">ProfileView</h2>
+
+<pre><code class="python">ProfileView(self, *args, **kwargs)
+</code></pre>
+
+<p>Records profileviews .
+<h3 id="dashboard.models.ProfileView.get_next_by_created_on">_method</h3></p>
+<pre><code class="python">ProfileView._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.ProfileView.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">ProfileView._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.ProfileView.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">ProfileView._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.ProfileView.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">ProfileView._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.ProfileView.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.ProfileView.target">target</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.ProfileView.target_id">target_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.ProfileView.viewer">viewer</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.ProfileView.viewer_id">viewer_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="dashboard.models.Earning">Earning</h2>
+
+<pre><code class="python">Earning(self, *args, **kwargs)
+</code></pre>
+
+<p>Records Earning - the generic object for all earnings on the platform .
+<h3 id="dashboard.models.Earning.from_profile">from_profile</h3></p>
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.Earning.from_profile_id">from_profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Earning.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">Earning._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.Earning.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">Earning._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.Earning.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">Earning._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.Earning.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">Earning._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.Earning.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Earning.network">network</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Earning.org_profile">org_profile</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.Earning.org_profile_id">org_profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Earning.source">source</h3>
+
+<p>Provide a generic many-to-one relation through the <code>content_type</code> and
+<code>object_id</code> fields.</p>
+<p>This class also doubles as an accessor to the related object (similar to
+ForwardManyToOneDescriptor) by adding itself as a model attribute.</p>
+<h3 id="dashboard.models.Earning.source_id">source_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Earning.source_type">source_type</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.Earning.source_type_id">source_type_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Earning.to_profile">to_profile</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.Earning.to_profile_id">to_profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Earning.url">url</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Earning.value_usd">value_usd</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="dashboard.models.PortfolioItem">PortfolioItem</h2>
+
+<pre><code class="python">PortfolioItem(self, *args, **kwargs)
+</code></pre>
+
+<p>Define the structure of PortfolioItem object.
+<h3 id="dashboard.models.PortfolioItem.get_next_by_created_on">_method</h3></p>
+<pre><code class="python">PortfolioItem._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.PortfolioItem.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">PortfolioItem._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.PortfolioItem.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">PortfolioItem._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.PortfolioItem.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">PortfolioItem._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.PortfolioItem.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.PortfolioItem.link">link</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.PortfolioItem.profile">profile</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.PortfolioItem.profile_id">profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.PortfolioItem.tags">tags</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.PortfolioItem.title">title</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="dashboard.models.ProfileStatHistory">ProfileStatHistory</h2>
+
+<pre><code class="python">ProfileStatHistory(self, *args, **kwargs)
+</code></pre>
+
+<p>ProfileStatHistory - generalizable model for tracking history of a profiles info
+<h3 id="dashboard.models.ProfileStatHistory.get_next_by_created_on">_method</h3></p>
+<pre><code class="python">ProfileStatHistory._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.ProfileStatHistory.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">ProfileStatHistory._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.ProfileStatHistory.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">ProfileStatHistory._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.ProfileStatHistory.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">ProfileStatHistory._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.ProfileStatHistory.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.ProfileStatHistory.key">key</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.ProfileStatHistory.payload">payload</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.ProfileStatHistory.profile">profile</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.ProfileStatHistory.profile_id">profile_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
