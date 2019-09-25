@@ -19,17 +19,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import logging
+import xml.etree.ElementTree as ET
 from tempfile import NamedTemporaryFile
 
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from avatar.helpers import add_rgb_array, hex_to_rgb_array, rgb_array_to_hex, sub_rgb_array
 from dashboard.utils import create_user_action, is_blocked
 from git.utils import org_name
 from marketing.utils import is_deleted_account
 from PIL import Image, ImageOps
-from avatar.helpers import hex_to_rgb_array, rgb_array_to_hex, add_rgb_array, sub_rgb_array
+
 from .models import BaseAvatar, CustomAvatar, SocialAvatar
 from .utils import (
     add_gitcoin_logo_blend, build_avatar_svg, get_avatar, get_err_response, get_user_github_avatar_image,
@@ -37,7 +39,6 @@ from .utils import (
 )
 
 logger = logging.getLogger(__name__)
-import xml.etree.ElementTree as ET 
 avatar_3d_base_path = 'assets/v2/images/avatar3d/avatar.svg'
 
 preview_viewbox = {
@@ -51,10 +52,12 @@ preview_viewbox = {
     'hair': '110 0 110 110',
 }
 
-skin_tones = ['F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26' ]
+skin_tones = ['F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26']
 base_3d_skin_tone = 'F4B990'
 max_skin_tone = 'FFFFF6'
 min_skin_tone = 'FFFFF6'
+
+
 def get_avatar_skin_tone_map():
     avatar_svg_skin_tones = {
         'D68876': 0,
@@ -63,11 +66,12 @@ def get_avatar_skin_tone_map():
         'FFCAA6': 0,
         'D68876': 0,
         'FFDBC2': 0,
-        'F4B990': 0, #base
+        'F4B990': 0,  #base
     }
     for key in avatar_svg_skin_tones.keys():
-        avatar_svg_skin_tones[key] = sub_rgb_array(hex_to_rgb_array(key),hex_to_rgb_array(base_3d_skin_tone))
+        avatar_svg_skin_tones[key] = sub_rgb_array(hex_to_rgb_array(key), hex_to_rgb_array(base_3d_skin_tone))
     return avatar_svg_skin_tones
+
 
 def avatar3d(request):
     """Serve an 3d avatar."""
@@ -76,12 +80,12 @@ def avatar3d(request):
     accept_ids = request.GET.getlist('ids')
     if not accept_ids:
         accept_ids = request.GET.getlist('ids[]')
-    skinTone = request.GET.get('skinTone','F4B990')
-    viewBox = request.GET.get('viewBox','')
-    height = request.GET.get('height','')
-    width = request.GET.get('width','')
-    scale = request.GET.get('scale','')
-    mode = request.GET.get('mode','')
+    skinTone = request.GET.get('skinTone', 'F4B990')
+    viewBox = request.GET.get('viewBox', '')
+    height = request.GET.get('height', '')
+    width = request.GET.get('width', '')
+    scale = request.GET.get('scale', '')
+    mode = request.GET.get('mode', '')
     height = height if height else scale
     width = width if width else scale
     force_show_whole_body = request.GET.get('force_show_whole_body', True)
@@ -101,7 +105,7 @@ def avatar3d(request):
     postpend = '''
 </svg>
 '''
-    
+
     #ensure at least one per category
 
     if bool(int(force_show_whole_body)):
@@ -144,10 +148,7 @@ def avatar3dids_helper():
             category = ele.split("_")[0]
             category_list[category].append(ele)
 
-        response = {
-            'ids': ids,
-            'by_category': category_list,
-        }
+        response = {'ids': ids, 'by_category': category_list, }
         return response
 
 
@@ -155,6 +156,7 @@ def avatar3dids(request):
     """Serve an 3d avatar id list."""
     response = JsonResponse(avatar3dids_helper())
     return response
+
 
 def avatar(request):
     """Serve an avatar."""
