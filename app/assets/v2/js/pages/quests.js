@@ -48,7 +48,7 @@ var start_quiz = async function() {
     for (var i = 0; i < possible_answers.length; i += 1) {
       var ele = possible_answers[i]['answer'];
 
-      html += '<li class=answer>('+(i+1)+') <a href=#>' + ele + '</a></li>';
+      html += '<li class=answer>(' + (i + 1) + ') <a href=#>' + ele + '</a></li>';
     }
     $('#enemy .attack').removeClass('hidden');
     setTimeout(function() {
