@@ -101,9 +101,23 @@ class BaseAvatar(SuperModel):
         try:
             # Convert the provided source to the specified output and store in BytesIO.
             if output_fmt == 'svg':
-                tmpfile_io = convert_wand(source, input_fmt=input_fmt, output_fmt=output_fmt, preferred_method=preferred_method, extra_flags=extra_flags)
+                tmpfile_io = convert_wand(
+                    source,
+                    input_fmt=input_fmt,
+                    output_fmt=output_fmt,
+                    preferred_method=preferred_method,
+                    extra_flags=extra_flags
+                )
             else:
-                tmpfile_io = convert_img(source, input_fmt=input_fmt, output_fmt=output_fmt, height=height, width=width, preferred_method=preferred_method, extra_flags=extra_flags)
+                tmpfile_io = convert_img(
+                    source,
+                    input_fmt=input_fmt,
+                    output_fmt=output_fmt,
+                    height=height,
+                    width=width,
+                    preferred_method=preferred_method,
+                    extra_flags=extra_flags
+                )
             if self.profile:
                 png_name = self.profile.handle
             else:
@@ -160,7 +174,15 @@ class CustomAvatar(BaseAvatar):
                 avatar.svg.save(f"{svg_name}.svg", File(file), save=False)
 
         try:
-            avatar_png = avatar.convert_field(avatar.svg, 'svg', 'png', height=1000, width=1000, preferred_method='inkscape', extra_flags='--export-area-drawing')
+            avatar_png = avatar.convert_field(
+                avatar.svg,
+                'svg',
+                'png',
+                height=1000,
+                width=1000,
+                preferred_method='inkscape',
+                extra_flags='--export-area-drawing'
+            )
             avatar.png = avatar_png
             avatar.hash = BaseAvatar.calculate_hash(Image.open(BytesIO(avatar.png.read())))
             similar_avatar = avatar.find_similar()
@@ -170,7 +192,6 @@ class CustomAvatar(BaseAvatar):
             logger.warning("There was error during avatar conversion")
             logger.exception(e)
         return avatar
-
 
     def select(self, profile):
         new_avatar = CustomAvatar(profile=profile, config=self.config, svg=self.svg, png=self.png, hash=self.hash)

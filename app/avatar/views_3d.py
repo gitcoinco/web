@@ -20,13 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import logging
 import xml.etree.ElementTree as ET
-from dashboard.utils import create_user_action
 
+from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.db import transaction
 
 from avatar.helpers import add_rgb_array, hex_to_rgb_array, rgb_array_to_hex, sub_rgb_array
+from dashboard.utils import create_user_action
 from PIL import Image, ImageOps
 
 from .models import BaseAvatar, CustomAvatar, SocialAvatar
@@ -120,7 +120,7 @@ def avatar3d(request):
         force_show_whole_body = False
     else:
         accept_ids.append('frame')
-        
+
     # setup
     tags = ['{http://www.w3.org/2000/svg}style']
     ET.register_namespace('', "http://www.w3.org/2000/svg")
@@ -179,6 +179,7 @@ def avatar3dids(request):
     response = JsonResponse(avatar3dids_helper())
     return response
 
+
 def save_custom_avatar(request, output):
     """Save the Custom Avatar."""
     response = {'status': 200, 'message': 'Avatar saved'}
@@ -199,5 +200,3 @@ def save_custom_avatar(request, output):
     except Exception as e:
         logger.exception(e)
     return JsonResponse(response, status=response['status'])
-
-

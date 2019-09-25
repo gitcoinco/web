@@ -38,6 +38,7 @@ from .utils import (
 
 logger = logging.getLogger(__name__)
 
+
 def avatar(request):
     """Serve an avatar."""
     skin_tone = f"#{request.GET.get('skin_tone', '3F2918')}"

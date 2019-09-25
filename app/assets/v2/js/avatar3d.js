@@ -100,7 +100,7 @@ $(document).ready(function() {
     var request = $.ajax({
       url: url,
       type: 'POST',
-      data: JSON.stringify({save:true}),
+      data: JSON.stringify({save: true}),
       dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       success: function(response) {
@@ -118,7 +118,7 @@ $(document).ready(function() {
       }
     });
   }
-  $("#save-3d-avatar").click(function(){
+  $('#save-3d-avatar').click(function() {
     save3DAvatar();
   });
 
