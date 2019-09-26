@@ -1,0 +1,22 @@
+{
+  "symbol": "AIC",
+  "address": "0xE64C063C73754a57CB6ba0377cc2751308fE287F",
+  "overview":{
+        "en": "Artificial Intelligence Cash",
+        "zh": "AI链"
+  },
+  "email": "info@aichainos.com",
+  "website": "http://www.aichainos.com",
+  "whitepaper": "http://www.aichainos.com/cn/AIC%E7%99%BD%E7%9A%AE%E4%B9%A61.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-20",
+  "initial_price":{
+        "ETH":"0 ETH",
+        "USD":"0 USD",
+        "BTC":"0 BTC"
+  },
+  "links": {
+	"twitter": "https://twitter.com/ArtificialChain",
+    	"facebook": "https://www.facebook.com/artificialintelligence.chain"
+  }
+}
