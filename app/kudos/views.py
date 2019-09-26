@@ -23,6 +23,7 @@ import logging
 import random
 import re
 import urllib.parse
+import boto3
 
 from django.conf import settings
 from django.contrib import messages
@@ -758,23 +759,39 @@ def receive_bulk(request, secret):
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)
 
 
-@csrf_exempt
 def newkudos(request):
     context = {
         'active': 'newkudos',
         'msg': None,
     }
 
+    if not request.user.is_authenticated:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
     if request.POST:
-        required_fields = ['name', 'description', 'priceFinney', 'artist', 'platform', 'numClonesAllowed', 'tags', 'to_address', 'artwork_url']
+        required_fields = ['name', 'description', 'priceFinney', 'artist', 'platform', 'numClonesAllowed', 'tags', 'to_address']
         validtion_passed = True
         for key in required_fields:
             if not request.POST.get(key):
                 context['msg'] = str(_('You must provide the following fields: ')) + key
                 validtion_passed = False
         if validtion_passed:
+            #upload to s3
+            img = request.FILES.get('photo')
+            session = boto3.Session(
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            )
+
+            s3 = session.resource('s3')
+            key = f'media/uploads/{random.randint(999999999,99999999999)}_{img.name}'
+            response = s3.Bucket(settings.MEDIA_BUCKET).put_object(Key=key, Body=img, ACL='public-read', ContentEncoding='image/svg+xml')
+            artwork_url = f'https://{settings.MEDIA_BUCKET}.s3-us-west-2.amazonaws.com/{key}'
+
             # save / send email
             obj = TokenRequest.objects.create(
+                profile=request.user.profile,
                 name=request.POST['name'],
                 description=request.POST['description'],
                 priceFinney=request.POST['priceFinney'],
@@ -783,7 +800,7 @@ def newkudos(request):
                 numClonesAllowed=request.POST['numClonesAllowed'],
                 tags=",".split(request.POST['tags']),
                 to_address=request.POST['to_address'],
-                artwork_url=request.POST['artwork_url'],
+                artwork_url=artwork_url,
                 network='mainnet',
                 approved=False,
                 metadata={
@@ -792,7 +809,6 @@ def newkudos(request):
                     }
                 )
             new_kudos_request(obj) 
-
 
             context['msg'] = str(_('Your Kudos has been submitted and will be listed within 2 business days if it is accepted.'))
 

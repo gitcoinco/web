@@ -430,13 +430,13 @@ def new_token_request(obj):
 
 def new_kudos_request(obj):
     to_email = 'founders@gitcoin.co'
-    from_email = obj.email
+    from_email = obj.profile.email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
         subject = _("New Kudos Request")
         body_str = _("A new kudos request was completed. You may approve the kudos request here")
-        body = f"{body_str}: https://gitcoin.co/{obj.admin_url} \n\n {obj.email}"
+        body = f"{body_str}: https://gitcoin.co/{obj.admin_url} \n\n {obj.profile.email}"
         if not should_suppress_notification_email(to_email, 'faucet'):
             send_mail(
                 from_email,

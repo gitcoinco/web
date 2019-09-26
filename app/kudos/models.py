@@ -561,10 +561,13 @@ class TokenRequest(SuperModel):
     metadata = JSONField(null=True, default=dict, blank=True)
     tags = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     approved = models.BooleanField(default=True)
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='token_requests', on_delete=models.CASCADE,
+    )
 
     def __str__(self):
         """Define the string representation of a conversion rate."""
-        return f"{self.name} on {self.network}"
+        return f"{self.name} on {self.network} on {self.created_on}; approved: {self.approved} "
 
 
     def approve(self):

@@ -40,16 +40,15 @@
             <img src="{% static "v2/images/tree/party_robot.jpg" %}">
           </div>
         {% endif %}
-        <form class="mt-5" id="newkudos" method="POST">
+        <form class="mt-5" id="newkudos" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
           <div class="form-group">
             <label class="form__label" for="email">{% trans "Contact email address" %}</label>
             <input type="email" name="email" class="form__input" placeholder='you@somewhere' value="{% if email %}{{ email }}{% endif %}" required>
           </div>
           <div class="form-group">
-            <label class="form__label" for="name">{% trans "Artwork" %}</label>
-            <input type="hidden" id="artwork_url" name="artwork_url" value="" required>
+            <label class="form__label" for="name">{% trans "Artwork (.svg)" %}</label>
             <input type="file" name="photo" id="photo" class="form__input">
-            <button type="button" id="upload" class='button button--primary mt-2'>Upload</button>
           </div>
           <div class="form-group">
             <label class="form__label" for="name">{% trans "Name" %}</label>
@@ -69,7 +68,7 @@
           </div>
           <div class="form-group">
             <label class="form__label" for="platform">{% trans "Platform" %}</label>
-            <input type="text" name="platform" class="form__input" placeholder='gitcoin' value="" required>
+            <input type="text" name="platform" class="form__input" placeholder='gitcoin' value="gitcoin" required>
           </div>
           <div class="form-group">
             <label class="form__label" for="tags">{% trans "Tags" %}</label>
@@ -77,11 +76,11 @@
           </div>
           <div class="form-group">
             <label class="form__label" for="artist">{% trans "Artist Name" %}</label>
-            <input type="text" name="artist" class="form__input" placeholder='' value="" required>
+            <input type="text" name="artist" class="form__input" placeholder='' value="Mladen" required>
           </div>
           <div class="form-group">
-            <label class="form__label" for="to_address">{% trans "Artist Address" %}</label>
-            <input type="text" name="to_address" class="form__input" placeholder='0x0...abc109' value="" required>
+            <label class="form__label" for="to_address">{% trans "Owner Address" %}</label>
+            <input type="text" name="to_address" class="form__input" placeholder='0x0...abc109' value="0x00De4B13153673BCAE2616b67bf822500d325Fc3" required>
           </div>
           <div class="terms_container pt-4">
             <div class="form__checkbox">
