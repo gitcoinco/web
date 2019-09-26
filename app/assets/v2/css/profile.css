@@ -117,10 +117,10 @@
   background: #000;
   opacity: 0.7;
   border-radius: 0% 0% 50% 50% / 0% 0% 100% 100%;
-  height: 60px;
+  height: 71px;
   width: 173px;
   position: absolute;
-  top: 122px;
+  top: 113px;
   margin: auto;
   right: 0;
   left: 0;
@@ -439,7 +439,7 @@
 }
 
 .profile-banner-cta {
-  background-color: #000;
+  background-color: transparent;
   padding: 6px 10px;
   border-radius: 2px;
   cursor: pointer;
