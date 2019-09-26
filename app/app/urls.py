@@ -511,6 +511,7 @@ urlpatterns = [
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
     re_path(r'^settings/job/?', marketing.views.job_settings, name='job_settings'),
+    re_path(r'^settings/organizations/?', marketing.views.org_settings, name='org_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views

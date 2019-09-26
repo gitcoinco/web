@@ -1,0 +1,19 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static %}
+{% block settings_content %}
+Organization Permissions
+<p>The users below are able to fund, edit settings, approve contributors, and payout contributors on the bounties of the organization</p>
+
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <div>
+      <img src="{% static "v2/images/mission/want/falcon_1.svg" %}" alt="" width="40" height="40">
+      Metamask
+    </div>
+    <a href="#"><i class="fab fa-github"></i> Manage on GitHub </a>
+  </div>
+  <div class="card-body">
+    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+  </div>
+</div>
+{% endblock %}
