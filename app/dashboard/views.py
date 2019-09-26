@@ -3018,8 +3018,20 @@ def change_bounty(request, bounty_id):
         else:
             raise Http404
 
-    keys = ['experience_level', 'project_length', 'bounty_type', 'featuring_date', 'bounty_categories', 'issue_description',
-            'permission_type', 'project_type', 'reserved_for_user_handle', 'is_featured', 'admin_override_suspend_auto_approval']
+    keys = [
+        'title',
+        'experience_level',
+        'project_length',
+        'bounty_type',
+        'featuring_date',
+        'bounty_categories',
+        'issue_description',
+        'permission_type',
+        'project_type',
+        'reserved_for_user_handle',
+        'is_featured',
+        'admin_override_suspend_auto_approval'
+    ]
 
     if request.body:
         can_change = (bounty.status in Bounty.OPEN_STATUSES) or \
