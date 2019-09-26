@@ -23,7 +23,8 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    BulkTransferCoupon, BulkTransferRedemption, Contract, KudosTransfer, Token, TransferEnabledFor, Wallet, TokenRequest
+    BulkTransferCoupon, BulkTransferRedemption, Contract, KudosTransfer, Token, TokenRequest, TransferEnabledFor,
+    Wallet,
 )
 
 

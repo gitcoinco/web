@@ -21,6 +21,7 @@ import logging
 from io import BytesIO
 
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.files import File
 from django.db import models
 from django.db.models import Q
@@ -29,7 +30,6 @@ from django.dispatch import receiver
 from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.text import slugify
-from django.contrib.postgres.fields import ArrayField, JSONField
 
 import environ
 import pyvips

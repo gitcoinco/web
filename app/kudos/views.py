@@ -23,7 +23,6 @@ import logging
 import random
 import re
 import urllib.parse
-import boto3
 
 from django.conf import settings
 from django.contrib import messages
@@ -39,21 +38,22 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+import boto3
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_nonce, get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
-from marketing.mails import new_kudos_request
 from kudos.utils import kudos_abi
+from marketing.mails import new_kudos_request
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
 
 from .forms import KudosSearchForm
 from .helpers import get_token
-from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, TransferEnabledFor, TokenRequest
+from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, TokenRequest, TransferEnabledFor
 
 logger = logging.getLogger(__name__)
 
@@ -813,4 +813,3 @@ def newkudos(request):
             context['msg'] = str(_('Your Kudos has been submitted and will be listed within 2 business days if it is accepted.'))
 
     return TemplateResponse(request, 'newkudos.html', context)
-

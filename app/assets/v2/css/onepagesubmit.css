@@ -1,23 +1,23 @@
- .slack--brand-tree {
-    max-width:80%;
-    margin: 0px auto;
-  }
+.slack--brand-tree {
+  max-width:80%;
+  margin: 0px auto;
+}
 
 
-  h4 p {
-    background-color: #fee856;
-    padding: 5px 10px;
-  }
+h4 p {
+  background-color: #fee856;
+  padding: 5px 10px;
+}
 
-  @media (max-width: 768px) {
-    .form_container {
-      padding-left: 1.6rem !important;
-      padding-right: 1.6rem !important;
-    }
+@media (max-width: 768px) {
+  .form_container {
+    padding-left: 1.6rem !important;
+    padding-right: 1.6rem !important;
   }
+}
 
-  @media (max-width: 992px) {
-    .slack--brand-tree {
-      max-width: 100%;
-    }
+@media (max-width: 992px) {
+  .slack--brand-tree {
+    max-width: 100%;
   }
+}
