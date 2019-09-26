@@ -144,6 +144,7 @@ def get_ecosystem_history_at_date(date, keyword):
 
 
 def get_codefund_history_at_date(date, keyword):
+    from marketing.models import ManualStat
     date = date.replace(tzinfo=None)
     amount = 0
     # July => Feb 2019
