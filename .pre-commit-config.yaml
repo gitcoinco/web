@@ -13,14 +13,6 @@ repos:
     language: system
     entry: sh -c 'npm run stylelint:fix'
     files: .css$
-- repo: local
-  hooks:
-  - id: yapf
-    name: yapf
-    language: python
-    entry: yapf
-    files: \.py$
-    args: ["-i", "-r", "-e", "app/**/migrations/", "-e", "app/app/settings.py", "-p", "app/avatar/", "app/credits/", "app/dataviz/", "app/enssubdomain/", "app/ethos/", "app/github/"]
 - repo: git://github.com/pre-commit/mirrors-isort
   sha: 'v4.3.4'
   hooks:

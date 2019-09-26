@@ -18,12 +18,12 @@
 {% load i18n static kudos_extras %}
 {% block 'scripts' %}
   {% include 'shared/current_profile.html' %}
-  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
-  <script src="{% static "v2/js/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
   <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script>
@@ -56,7 +56,7 @@
     <div class="my-4">
       {% if kudos.name %}
         <a href="{% url 'kudos_details' kudos.id kudos.name %}"><img src="{% static kudos.image %}" alt="{{ kudos.name }}" width="160" alt="" class="mb-2"></a>
-        <span class="d-block">{{ kudos.name|humanize_name }}</span>
+        <span class="d-block">{{ kudos.ui_name }}</span>
         <p class="hidden" id="kudosid" data-kudosid="{{ kudos.id }}">{{ kudos.id }}</p>
         <p class="hidden" id="tokenid" data-tokenid="{{ kudos.token_id }}">{{ kudos.token_id }}</p>
         <span id="kudosPrice" class="d-block" data-ethprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small>USD</small></span>
@@ -79,16 +79,42 @@
     <input type="hidden" id="token" value="0x0000000000000000000000000000000000000000">
     <input type="hidden" id="kudosNetwork" value="{{ kudos.contract.network }}">
     <input type="hidden" id="amount" value="{{ kudos.price_in_eth }}">
-    <label for="">{% trans "To:" %} 
-      (<a href="#" id="send_to_toggle" class='eth'>{% trans "Send to ETH Address" %}</a>)
+    <label id="to_label" for="">{% trans "To:" %}
     </label>
-    <div class="form-group">
+    <ul id="tip_nav">
+      <li class='github selected'>
+        Github/Gitcoin User
+      </li>
+      <li class='eth'>
+        ETH Address
+      </li>
+      <li class='airdrop'>
+        Anywhere
+      </li>
+    </ul>
+    <input type="hidden" name="send_type" value="github">
+
+    <div class="form-group username">
       <select id="username" class="username-search custom-select" {% if not kudos.name  %}disabled{% endif %}></select>
       <input type="text" placeholder="0x408c49a91e46311ddc35737f8c1aaea6191f36e0" id="to_eth_address" value="" class="form-control eth_address hidden" >
+      <input type="text" placeholder="(link will be displayed after you click Send)" id="airdrop_link" value="" class="form-control airdrop_link hidden" disabled="disabled">
 
     </div>
+
+
+    <div class="form-group redemptions hidden">
+      <label for="">{% trans "Send this many Kudos" %}:</label>
+      <select name='redemptions' class='select2'>
+        {% for num in numbers %}
+        <option value="{{num}}">{{num}} Kudos (~{% widthratio kudos.price_in_usdt 1 num %} USDT)</option>
+        {% endfor %}
+      </select>
+    </div>
+
+
+
     <div class="form-group">
-      <label for="">{% trans "From Github Username:" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/kudos/send">{% trans "Login" %}</a>) {%endif%}</label>
+      <label for="">{% trans "From Github Username:" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/kudos/send" onclick="dataLayer.push({'event': 'login'});">{% trans "Login" %}</a>) {%endif%}</label>
       <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" class="form-control" disabled="disabled">
     </div>
     <div class="form-group">
@@ -134,7 +160,7 @@
     </div>
     <hr>
     <h3 class="font-weight-300">{% blocktrans %}<span id="new_username">the user</span> has been notified{% endblocktrans %}</h3>
-    <p>{% trans "with instructions about how to receive their kudos." %}</p>
+    <p class="notifier">{% trans "with instructions about how to receive their kudos." %}</p>
     <br>
     <a id="" class="btn btn-gc-purple" href="{% url 'kudos_marketplace' %}">⬅ {% trans "Start Over" %}</a>
   </div>

@@ -1,19 +1,30 @@
 .form__input {
   background-color: #FFF;
-  border-radius: 3px;
+  border-radius: 2px;
   border: 1px solid #D3D3D3;
   font-size: 14px;
   padding: 5px 7px;
   width: 100%;
   letter-spacing: -0.09px;
   outline: none;
+  height: 40px;
+}
+
+textarea.form__input {
+  height: auto;
+}
+
+.form__input-lg {
+  font-size: 1rem;
 }
 
 .form__input_lg {
   padding: 8px;
 }
 
-.form__input + label.error {
+.form__input + label.error,
+.cat-error .error,
+.form__select2 .error {
   color: #D50000;
   margin-bottom: 0;
   display: block;
@@ -26,7 +37,7 @@
   background-image: url('/static/v2/images/close-red.png');
   background-repeat: no-repeat;
   background-size: auto 1.313rem;
-  background-position: top 0.3rem right 0.5rem;
+  background-position: top 0.5rem right 0.5rem;
 }
 
 .form__input.valid {
@@ -34,7 +45,7 @@
   background-image: url('/static/v2/images/success.png');
   background-repeat: no-repeat;
   background-size: auto 1.313rem;
-  background-position: top 0.3rem right 0.5rem;
+  background-position: top 0.5rem right 0.5rem;
 }
 
 .form__input::-webkit-input-placeholder {
@@ -55,8 +66,8 @@
 
 .form__input:disabled {
   background-color: #EAEAEA;
-  border: 1px solid #979797;
   color: #9B9B9B;
+  border-color: #EAEAEA;
 }
 
 .form__input-help {

@@ -275,6 +275,21 @@ def bounties():
         )
 
 
+def grants():
+    """Creates a stats entry for 'grants', which stores the total value of all grant contributions in the system to date"""
+    from grants.models import Contribution
+    val = 0
+    for contrib in Contribution.objects.filter(subscription__grant__network='mainnet'):
+        value_in_usdt = contrib.subscription.amount_per_period_usdt
+        if value_in_usdt:
+            val += value_in_usdt
+
+    Stat.objects.create(
+        key='grants',
+        val=val,
+        )
+
+
 def bounties_hourly_rate():
     from dashboard.models import Bounty
     that_time = timezone.now()
@@ -351,6 +366,7 @@ def joe_dominance_index(created_before=timezone.now()):
     joe_addresses = joe_addresses + ['0x5DA565AD870ee827608fC764f76ab8055B3E8474'.lower()]  # justin
     joe_addresses = joe_addresses + ['0x5cdb35fADB8262A3f88863254c870c2e6A848CcA'.lower()]  # aditya
     joe_addresses = joe_addresses + ['0x00de4b13153673bcae2616b67bf822500d325fc3'.lower()]  # kevin
+    joe_addresses = joe_addresses + ['0xe317C793ebc9d4A3732cA66e5a8fC4ffc213B989'.lower()]  # dan
 
 
     for days in [7, 30, 90, 360]:
@@ -446,22 +462,32 @@ def ens():
         )
 
 
-def tips():
+def sendcryptoassets():
+    from revenue.models import DigitalGoodPurchase
     from dashboard.models import Tip
-    tips = Tip.objects.filter(network='mainnet').send_success()
-    val = sum(tip.value_in_usdt for tip in tips if tip.value_in_usdt)
+    from kudos.models import KudosTransfer
 
-    stats_to_create = [
-        ('tips', tips.count()),
-        ('tips_value', val),
-        ]
+    iterate_me = {
+        'tips': Tip,
+        'kudos': KudosTransfer,
+        'dgp': DigitalGoodPurchase,
+    }
 
-    for stat in stats_to_create:
-        #print(stat)
-        Stat.objects.create(
-            key=stat[0],
-            val=stat[1],
-            )
+    for key, SendCryptoAsset in iterate_me.items():
+        objs = SendCryptoAsset.objects.filter(network='mainnet').send_success()
+        val = sum(obj.value_in_usdt for obj in objs if obj.value_in_usdt)
+
+        stats_to_create = [
+            (key, objs.count()),
+            (f'{key}_value', val),
+            ]
+
+        for stat in stats_to_create:
+            print(stat)
+            Stat.objects.create(
+                key=stat[0],
+                val=stat[1],
+                )
 
 
 def tips_received():

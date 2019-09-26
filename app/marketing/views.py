@@ -24,9 +24,12 @@ import logging
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import logout
+from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.db.models import Max
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -35,15 +38,17 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
+from cacheops import cached_view
 from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
-from marketing.utils import get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration
-from retail.emails import ALL_EMAILS
+from marketing.utils import (
+    delete_user_from_mailchimp, get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration,
+)
+from retail.emails import ALL_EMAILS, render_nth_day_email_campaign
 from retail.helpers import get_ip
 
 logger = logging.getLogger(__name__)
@@ -77,6 +82,9 @@ def get_settings_navs(request):
     }, {
         'body': _('Token'),
         'href': reverse('token_settings'),
+    }, {
+        'body': _('Job Status'),
+        'href': reverse('job_settings'),
     }]
 
 
@@ -107,7 +115,7 @@ def settings_helper_get_auth(request, key=None):
     # lazily create profile if needed
     profiles = Profile.objects.none()
     if github_handle:
-        profiles = Profile.objects.prefetch_related('alumni').filter(handle__iexact=github_handle).exclude(email='')
+        profiles = Profile.objects.prefetch_related('alumni').filter(handle__iexact=github_handle)
     profile = None if not profiles.exists() else profiles.first()
     if not profile and github_handle:
         profile = sync_profile(github_handle, user=request.user)
@@ -147,7 +155,7 @@ def privacy_settings(request):
 
     context = {
         'profile': profile,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/privacy',
         'title': _('Privacy Settings'),
         'navs': get_settings_navs(request),
@@ -179,13 +187,12 @@ def matching_settings(request):
 
     """
     # setup
-    __, es, __, is_logged_in = settings_helper_get_auth(request)
+    profile, es, __, is_logged_in = settings_helper_get_auth(request)
     if not es:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
     msg = ''
-
     if request.POST and request.POST.get('submit'):
         github = request.POST.get('github', '')
         keywords = request.POST.get('keywords').split(',')
@@ -193,6 +200,8 @@ def matching_settings(request):
             es.github = github
         if keywords:
             es.keywords = keywords
+            profile.keywords = keywords
+            profile.save()
         es = record_form_submission(request, es, 'match')
         es.save()
         msg = _('Updated your preferences.')
@@ -202,7 +211,7 @@ def matching_settings(request):
         'is_logged_in': is_logged_in,
         'autocomplete_keywords': json.dumps(
             [str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/matching',
         'title': _('Matching Settings'),
         'navs': get_settings_navs(request),
@@ -230,7 +239,7 @@ def feedback_settings(request):
         msg = _('We\'ve received your feedback.')
 
     context = {
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/feedback',
         'title': _('Feedback'),
         'navs': get_settings_navs(request),
@@ -269,11 +278,21 @@ def email_settings(request, key):
         preferred_language = request.POST.get('preferred_language')
         validation_passed = True
         try:
+            email_in_use = User.objects.filter(email=email) | User.objects.filter(profile__email=email)
+            email_used_marketing = EmailSubscriber.objects.filter(email=email).select_related('profile')
+            logged_in = request.user.is_authenticated
+            email_already_used = (email_in_use or email_used_marketing)
+            user = request.user if logged_in else None
+            email_used_by_me = (user and (user.email == email or user.profile.email == email))
+            email_changed = es.email != email
+
+            if email_changed and email_already_used and not email_used_by_me:
+                raise ValueError(f'{request.user} attempting to use an email which is already in use on the platform')
             validate_email(email)
         except Exception as e:
             print(e)
             validation_passed = False
-            msg = _('Invalid Email')
+            msg = str(e)
         if preferred_language:
             if preferred_language not in [i[0] for i in settings.LANGUAGES]:
                 msg = _('Unknown language')
@@ -307,10 +326,11 @@ def email_settings(request, key):
             msg = _('Updated your preferences.')
     pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     context = {
-        'nav': 'internal',
-        'active': '/settings/email',
+        'nav': 'home',
+        'active': '/settings/email/',
         'title': _('Email Settings'),
         'es': es,
+        'nav': 'home',
         'suppression_preferences': json.dumps(es.preferences.get('suppression_preferences', {}) if es else {}),
         'msg': msg,
         'email_types': ALL_EMAILS,
@@ -355,7 +375,7 @@ def slack_settings(request):
     context = {
         'repos': profile.get_slack_repos(join=True) if profile else [],
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/slack',
         'title': _('Slack Settings'),
         'navs': get_settings_navs(request),
@@ -383,6 +403,7 @@ def discord_settings(request):
     if request.POST:
         test = request.POST.get('test')
         submit = request.POST.get('submit')
+        gitcoin_discord_username = request.POST.get('gitcoin_discord_username', '')
         webhook_url = request.POST.get('webhook_url', '')
         repos = request.POST.get('repos', '')
 
@@ -390,6 +411,7 @@ def discord_settings(request):
             response = validate_discord_integration(webhook_url)
 
         if submit or (response and response.get('success')):
+            profile.gitcoin_discord_username = gitcoin_discord_username
             profile.update_discord_integration(webhook_url, repos)
             profile = record_form_submission(request, profile, 'discord')
             if not response.get('output'):
@@ -399,8 +421,9 @@ def discord_settings(request):
 
     context = {
         'repos': profile.get_discord_repos(join=True) if profile else [],
+        'gitcoin_discord_username': profile.gitcoin_discord_username,
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/discord',
         'title': _('Discord Settings'),
         'navs': get_settings_navs(request),
@@ -448,7 +471,7 @@ def token_settings(request):
 
     context = {
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'active': '/settings/tokens',
         'title': _('Token Settings'),
         'navs': get_settings_navs(request),
@@ -479,7 +502,7 @@ def ens_settings(request):
 
     context = {
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
+        'nav': 'home',
         'ens_subdomain': ens_subdomain,
         'active': '/settings/ens',
         'title': _('ENS Settings'),
@@ -492,6 +515,88 @@ def ens_settings(request):
 
 
 def account_settings(request):
+    """Display and save user's Account settings.
+
+    Returns:
+        TemplateResponse: The user's Account settings template response.
+
+    """
+    msg = ''
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not profile or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+        if 'persona_is_funder' or 'persona_is_hunter' in request.POST.keys():
+            profile.persona_is_funder = bool(request.POST.get('persona_is_funder', False))
+            profile.persona_is_hunter = bool(request.POST.get('persona_is_hunter', False))
+            profile.save()
+
+        if 'preferred_payout_address' in request.POST.keys():
+            profile.preferred_payout_address = request.POST.get('preferred_payout_address', '')
+            profile.save()
+            msg = _('Updated your Address')
+        elif request.POST.get('disconnect', False):
+            profile.github_access_token = ''
+            profile = record_form_submission(request, profile, 'account-disconnect')
+            profile.email = ''
+            profile.save()
+            create_user_action(profile.user, 'account_disconnected', request)
+            redirect_url = f'https://www.github.com/settings/connections/applications/{settings.GITHUB_CLIENT_ID}'
+            logout(request)
+            logout_redirect = redirect(redirect_url)
+            logout_redirect['Cache-Control'] = 'max-age=0 no-cache no-store must-revalidate'
+            return logout_redirect
+        elif request.POST.get('delete', False):
+
+            # remove profile
+            profile.hide_profile = True
+            profile = record_form_submission(request, profile, 'account-delete')
+            profile.email = ''
+            profile.save()
+
+            # remove email
+            delete_user_from_mailchimp(es.email)
+
+            if es:
+                es.delete()
+            request.user.delete()
+            AccountDeletionRequest.objects.create(
+                handle=profile.handle,
+                profile={
+                        'ip': get_ip(request),
+                    }
+                )
+            profile.avatar_baseavatar_related.all().delete()
+            try:
+                profile.delete()
+            except:
+                profile.github_access_token = ''
+                profile.user = None
+                profile.hide_profile = True
+                profile.save()
+            messages.success(request, _('Your account has been deleted.'))
+            logout_redirect = redirect(reverse('logout') + '?next=/')
+            return logout_redirect
+        else:
+            msg = _('Error: did not understand your request')
+
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'home',
+        'active': '/settings/account',
+        'title': _('Account Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': msg,
+    }
+    return TemplateResponse(request, 'settings/account.html', context)
+
+
+def job_settings(request):
     """Display and save user's Account settings.
 
     Returns:
@@ -529,16 +634,8 @@ def account_settings(request):
             profile.save()
 
             # remove email
-            try:
-                client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
-                result = client.search_members.get(query=es.email)
-                subscriber_hash = result['exact_matches']['members'][0]['id']
-                client.lists.members.delete(
-                    list_id=settings.MAILCHIMP_LIST_ID,
-                    subscriber_hash=subscriber_hash,
-                )
-            except Exception as e:
-                logger.exception(e)
+            delete_user_from_mailchimp(es.email)
+
             if es:
                 es.delete()
             request.user.delete()
@@ -557,15 +654,15 @@ def account_settings(request):
 
     context = {
         'is_logged_in': is_logged_in,
-        'nav': 'internal',
-        'active': '/settings/account',
-        'title': _('Account Settings'),
+        'nav': 'home',
+        'active': '/settings/job',
+        'title': _('Job Settings'),
         'navs': get_settings_navs(request),
         'es': es,
         'profile': profile,
         'msg': msg,
     }
-    return TemplateResponse(request, 'settings/account.html', context)
+    return TemplateResponse(request, 'settings/job.html', context)
 
 
 def _leaderboard(request):
@@ -575,6 +672,9 @@ def _leaderboard(request):
         TemplateResponse: The leaderboard template response.
 
     """
+    context = {
+        'active': 'leaderboard',
+    }
     return leaderboard(request, '')
 
 
@@ -588,49 +688,45 @@ def leaderboard(request, key=''):
         TemplateResponse: The leaderboard template response.
 
     """
-    if not key:
-        key = 'quarterly_earners'
+    cadences = ['all', 'weekly', 'monthly', 'quarterly', 'yearly']
 
-    keyword_search = request.GET.get('keyword')
+
+    keyword_search = request.GET.get('keyword', '')
+    keyword_search = '' if keyword_search == 'all' else keyword_search
+    limit = request.GET.get('limit', 50)
+    cadence = request.GET.get('cadence', 'quarterly')
+
+    # backwards compatibility fix for old inbound links
+    for ele in cadences:
+        key = key.replace(f"{ele}_", '')
 
     titles = {
-        'quarterly_payers': _('Top Payers'),
-        'quarterly_earners': _('Top Earners'),
-        'quarterly_orgs': _('Top Orgs'),
-        'quarterly_tokens': _('Top Tokens'),
-        'quarterly_keywords': _('Top Keywords'),
-        'quarterly_kudos': _('Top Kudos'),
-        'quarterly_cities': _('Top Cities'),
-        'quarterly_countries': _('Top Countries'),
-        'quarterly_continents': _('Top Continents'),
-        #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
-        #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
-        #        'monthly_fulfilled': 'Monthly Leaderboard',
-        #        'monthly_all': 'Monthly Leaderboard: All Funded Issues',
-        #        'yearly_fulfilled': 'Yearly Leaderboard: Fulfilled Funded Issues',
-        #        'yearly_all': 'Yearly Leaderboard: All Funded Issues',
-        #        'all_fulfilled': 'All-Time Leaderboard: Fulfilled Funded Issues',
-        #        'all_all': 'All-Time Leaderboard: All Funded Issues',
-        # TODO - also include options for weekly, yearly, and all cadences of earning
+        f'payers': _('Top Funders'),
+        f'earners': _('Top Coders'),
+        f'orgs': _('Top Orgs'),
+        f'tokens': _('Top Tokens'),
+        f'keywords': _('Top Keywords'),
+        f'kudos': _('Top Kudos'),
+        f'cities': _('Top Cities'),
+        f'countries': _('Top Countries'),
+        f'continents': _('Top Continents'),
     }
 
-    if settings.ENV != 'prod':
-        # TODO (mbeacom): Re-enable this on live following a fix for leaderboards by location.
-        titles['quarterly_cities'] = _('Top Cities')
-        titles['quarterly_countries'] = _('Top Countries')
-        titles['quarterly_continents'] = _('Top Continents')
+    if not key:
+        key = f'earners'
 
     if key not in titles.keys():
         raise Http404
 
     title = titles[key]
+    which_leaderboard = f"{cadence}_{key}"
+    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard)
     if keyword_search:
-        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key, tech_keywords__icontains=keyword_search)
-    else:
-        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
+        ranks = ranks.filter(tech_keywords__icontains=keyword_search)
 
     amount = ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     items = ranks.order_by('-amount')
+
     top_earners = ''
     technologies = set()
     for profile_keywords in ranks.values_list('tech_keywords'):
@@ -640,25 +736,41 @@ def leaderboard(request, key=''):
 
     if amount:
         amount_max = amount[0][0]
-        top_earners = ranks.order_by('-amount')[0:3].values_list('github_username', flat=True)
+        top_earners = ranks.order_by('-amount')[0:5].values_list('github_username', flat=True)
         top_earners = ['@' + username for username in top_earners]
         top_earners = f'The top earners of this period are {", ".join(top_earners)}'
     else:
         amount_max = 0
 
-    profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
+    profile_keys = ['tokens', 'keywords', 'cities', 'countries', 'continents']
     is_linked_to_profile = any(sub in key for sub in profile_keys)
+
+    cadence_ui = cadence if cadence != 'all' else 'All-Time'
+    page_title = f'{cadence_ui.title()} {keyword_search.title()} Leaderboard: {title.title()}'
     context = {
-        'items': items,
+        'items': items[0:limit],
+        'nav': 'home',
         'titles': titles,
+        'cadence': cadence,
         'selected': title,
         'is_linked_to_profile': is_linked_to_profile,
-        'title': f'Leaderboard: {title}',
-        'card_title': f'Leaderboard: {title}',
+        'title': page_title,
+        'card_title': page_title,
         'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
-        'podium_items': items[:3] if items else [],
-        'technologies': technologies
+        'podium_items': items[:5] if items else [],
+        'technologies': technologies,
+        'active': 'leaderboard',
+        'keyword_search': keyword_search,
+        'cadences': cadences,
     }
+
     return TemplateResponse(request, 'leaderboard.html', context)
+
+@staff_member_required
+def day_email_campaign(request, day):
+    if day not in list(range(1, 3)):
+        raise Http404
+    response_html, _, _, = render_nth_day_email_campaign('foo@bar.com', day, 'staff member')
+    return HttpResponse(response_html)

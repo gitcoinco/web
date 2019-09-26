@@ -18,7 +18,6 @@
 {% load i18n static %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/amounts.js" %}"></script>
-<script src="{% static "onepager/js/web3alert.js" %}"></script>
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
@@ -41,6 +40,6 @@
         <option value="50">50 {% trans "receipients" %}</option>
       </select>
 	</header>
-  <a href="{% url "send_tip_2" %}" id="neweth" class="button button--primary">{% trans "Send Ether" %} <span class="emoji">💰</span></a>
+  <a href="{% url "send_tip_2" %}" id="neweth" class="button button--primary">{% trans "Send Tip" %} <span class="emoji">💰</span></a>
 </section>
 {% endblock %}

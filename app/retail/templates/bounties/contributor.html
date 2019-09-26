@@ -1,0 +1,133 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static cookielaw_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="title" content="Open Source Opportunities for Freelance Developers | Gitcoin">
+    <meta name="description" content="Join the Gitcoin Developer Community to find and complete freelance jobs or bug bounties and get paid in crypto (ETH or any ERC-20 token).">
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <style>.async-hide { opacity: 0 !important} </style>
+    <script>(function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
+    h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+    (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+    })(window,document.documentElement,'async-hide','dataLayer',4000,
+    {'GTM-NP2J8TX':true});</script>
+    {% include 'shared/analytics.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
+  </head>
+  <body class="index d-flex flex-column g-font-muli contributor-page">
+    {% include 'shared/tag_manager_2.html' %}
+    {% cookielaw_banner %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'shared/nav.html' %}
+    <div id="landing_page_wrapper">
+      <div class="container-fluid header header-contributor">
+        {% include 'bounties/contributor/hero.html' %}
+      </div>
+
+      {% include 'shared/onboard_slider.html' %}
+
+      <div class="contributor" id="codefund"></div>
+
+      <div class="container-fluid px-5 pb-5 pt-2 story_container">
+        {% include 'bounties/contributor/story.html' %}
+      </div>
+
+      <div class="container-fluid px-5 pb-5 pt-2 feature_container">
+        {% include 'bounties/contributor/feature.html' %}
+      </div>
+
+      {% if tech_stack %}
+        <div class="container-fluid py-5 px-sm-5 open-bounties">
+          {% include 'bounties/contributor/explorer.html' %}
+        </div>
+      {% endif %}
+
+      <div class="container-fluid py-5 landing__newsletter">
+        {% include 'shared/newsletter.html' %}
+      </div>
+
+      {% if activities|length %}
+        <div class="container-fluid p-5 activity">
+          {% include 'bounties/contributor/activity.html' %}
+        </div>
+      {% endif %}
+
+      <div class="container-fluid p-5 howworks-container howworks-container-contributors">
+        {% include "how_it_works/contributor.html" %}
+      </div>
+
+      <div class="container-fluid p-5 pilot-container projects-container">
+        {% include "bounties/contributor/projects.html" %}
+      </div>
+
+      <div class="container-fluid py-5 px-0 testimonial-container">
+        <div class="row mb-4">
+          <div class="col text-center">
+            <h2 class="light">{% trans "Gitcoin Community" %}</h2>
+          </div>
+        </div>
+        {% include "shared/testimonials.html" %}
+      </div>
+
+      {% include 'bounties/contributor/gitcoiners.html' %}
+
+      <div class="container-fluid py-5 px-0 contributors-cta">
+        <div class="row mb-4 align-items-center">
+          <div class="col-12 col-md-4 offset-lg-1 col-lg-3 text-center">
+            <img src="{% static "v2/images/landing/contributor/robot.png" %}" alt="Robot" class="contributors-cta__robot">
+          </div>
+
+          <div class="col-12 col-md-8 col-lg-6 text-center text-white">
+            <h2 class="join-gitcoin-heading">{% trans "<span class=\"light\">All that's left to do is to join</span> <strong>Gitcoin</strong>" %}</h2>
+            <div class="mt-4 contributors-cta-text light">{% trans "Start exploring" %} <strong>{{ available_bounties_count }}</strong> {% trans "bounties worth" %} <strong>${{ available_bounties_worth }}</strong></div>
+            <div class="mt-5">
+              <a class="btn btn-gc-purple text-purple" role="button" href="{% url "onboard" "contributor" %}" target="_blank" rel="noopener noreferrer">
+                <span class="text-white">{% trans "Get Started" %}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include 'shared/footer.html' %}
+      </div>
+    </div>
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+  </body>
+  {% if tech_stack %}
+    <script>
+      var uri;
+      if(document.location.href.startsWith('https://gitcoin.co'))
+        uri = 'network=mainnet&idx_status=open&keyword={{ tech_stack }}';
+      else
+        uri = 'idx_status=open&keyword={{ tech_stack }}';
+      var additional_callback = function(results){
+        if(results.length < 2){
+          $(".open-bounties").remove();
+        }
+      }
+      fetchBountiesAndAddToList(uri, '.featured-bounties', 5, additional_callback);
+    </script>
+  {% endif %}
+  <script src="https://codefund.app/properties/189/funder.js" async="async"></script>
+</html>
+

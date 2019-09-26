@@ -27,56 +27,54 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-      <div class="col body">
-        <div class="container-fluid no-gutter">
-          <div class="m-4">
-            <div>
-              <div class="request-form" id="primary_form">
-                <h3>{% trans "Request a Bounty" %} <span id="alpha">{% trans "Alpha" %}</span></h3>
-                <p>
-                  {% blocktrans %}
-                  Have an open-source issue that you think would benefit the community?
-                  Suggest it be given a bounty!
-                  {% endblocktrans %}
-                </p>
-                <div class="mb-3">
-                  <label for="requested_by" class="form__label">{% trans 'Your Github Profile' %}
-                    {% if not user.is_authenticated %}
-                    (<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Login' %}</a>)
-                    {% endif %}
-                  </label>
-                  <input name="requested_by" placeholder="{% trans "Please Login First" %}" id="requested_by" class="form__input" type="text" value="{% if github_handle %}{{ github_handle }}{% endif %}" required disabled />
-                </div>
-                <form id="bounty_request_form">
-                  {% for field in form %}
-                    <div class="mb-3">
-                      <label for="id_{{ field.name }}" class="form__label">{{ field.label }}</label>
-                      {{ field }}
-                    </div>
-                  {% endfor %}
-                  <div class="form__footer">
-                    <button class="button button--primary btn-block js-submit" type="submit">{% trans 'Proceed' %}</button>
+      <div class="col-12 body pb-1">
+        <div class="m-4">
+          <div>
+            <div class="request-form" id="primary_form">
+              <h3>{% trans "Request a Bounty" %} <span id="alpha">{% trans "Alpha" %}</span></h3>
+              <p>
+                {% blocktrans %}
+                Have an open-source issue that you think would benefit the community?
+                Suggest it be given a bounty!
+                {% endblocktrans %}
+              </p>
+              <div class="mb-3">
+                <label for="requested_by" class="form__label">{% trans 'Your Github Profile' %}
+                  {% if not user.is_authenticated %}
+                  (<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">{% trans 'Login' %}</a>)
+                  {% endif %}
+                </label>
+                <input name="requested_by" placeholder="{% trans "Please Login First" %}" id="requested_by" class="form__input" type="text" value="{% if github_handle %}{{ github_handle }}{% endif %}" required disabled />
+              </div>
+              <form id="bounty_request_form">
+                {% for field in form %}
+                  <div class="mb-3 {{ field.name }}">
+                    <label for="id_{{ field.name }}" class="form__label">{{ field.label }}</label>
+                    {{ field }}
                   </div>
-                </form>
-              </div>
-            </div>
-            <div id="success_container" class="text-center" style="display: none;">
-              <h3>{% trans 'Bounty Request Received' %}</h3>
-              {% include 'svgs/success.svg' %}
-              <div>
-                <p class="font-header">{% trans 'Hooray!' %}</p>
-                <p>
-                  {% trans 'Your request has been received.' %}
-                  <br>
-                  {% trans 'Thank you for supporting open-source.' %}
-                </p>
-              </div>
+                {% endfor %}
+                <div class="form__footer">
+                  <button class="button button--primary btn-block js-submit" type="submit">{% trans 'Proceed' %}</button>
+                </div>
+              </form>
             </div>
           </div>
-          <div class="col-12 offset-md-1 col-md-10">
-            {% include 'shared/newsletter.html' %}
+          <div id="success_container" class="text-center" style="display: none;">
+            <h3>{% trans 'Bounty Request Received' %}</h3>
+            {% include 'svgs/success.svg' %}
+            <div>
+              <p class="font-header">{% trans 'Hooray!' %}</p>
+              <p>
+                {% trans 'Your request has been received.' %}
+                <br>
+                {% trans 'Thank you for supporting open-source.' %}
+              </p>
+            </div>
           </div>
         </div>
+      </div>
+      <div class="col-12 offset-md-1 col-md-10 my-4">
+        {% include 'shared/newsletter.html' %}
       </div>
     </div>
     {% if comments_prefill %}
@@ -84,11 +82,16 @@
         document.comments_prefill = '{{comments_prefill}}';
       </script>
     {% endif %}
+    <style type="text/css">
+      #bounty_request_form div.eth_address{
+        display: none;
+      }
+    </style>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>
   <script src="{% static "v2/js/pages/bounty_request_form.js" %}"></script>
 </html>

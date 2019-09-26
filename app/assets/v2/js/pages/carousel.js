@@ -1,6 +1,15 @@
 const $slides = $('#slides');
 
 let currentSlide = 0;
+var load_kudos_card_images = function() {
+  for (var i = 0; i < $('.kd-card:visible img').length; i++) {
+    // dont load all at once
+    var ele = $('.kd-card:visible img')[i];
+    var url = $(ele).data('src');
+
+    $(ele).attr('src', url);
+  }
+};
 
 function nextSlide() {
   currentSlide = (currentSlide + 1) % $slides.children().length;

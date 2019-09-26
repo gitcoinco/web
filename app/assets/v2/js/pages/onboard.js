@@ -8,8 +8,17 @@ if ($('.logged-in').length) {
 }
 
 $('.js-select2').each(function() {
-  $(this).select2();
+  $(this).select2({
+    minimumResultsForSearch: Infinity
+  });
 });
+
+// removes tooltip
+if ($('#job').parent().css('display') !== 'none') {
+  $('#job select').each(function(evt) {
+    $('.select2-selection__rendered').tooltip('destroy');
+  });
+}
 
 onboard.showTab = function(num) {
   $($('.step')[num]).addClass('block').outerWidth();
@@ -22,7 +31,7 @@ onboard.showTab = function(num) {
     window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
   }
 
-  if (num === 1 || num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
+  if (num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
     $('.controls').hide();
   } else {
     $('.controls').show();
@@ -65,9 +74,6 @@ onboard.watchMetamask = function() {
         </a>
       </div>`
     );
-    if (current === 1) {
-      $('.controls').hide();
-    }
   } else if (!web3.eth.coinbase) {
     $('.step #metamask').html(`
       <div class="locked">
@@ -78,7 +84,6 @@ onboard.watchMetamask = function() {
       </div>`
     );
     if (current === 1) {
-      $('.controls').hide();
       $('#metamask-video').show();
     }
   } else {
@@ -91,7 +96,7 @@ onboard.watchMetamask = function() {
       document.alreadyFoundMetamask = true;
       $('.controls').show();
       $('#metamask-video').hide();
-      $('#next-btn').click(function(e) {
+      $('#next-btn').on('click', function(e) {
         var eth_address = $('#eth_address').val();
 
         $.get('/onboard/contributor/', {eth_address: eth_address});
@@ -100,7 +105,7 @@ onboard.watchMetamask = function() {
   }
 };
 
-onboard.getFilters = function(savedKeywords) {
+onboard.getFilters = function(savedKeywords, currentKeywords) {
   $('.suggested-tag input[type=checkbox]:checked + span i').removeClass('fa-plus').addClass('fa-check');
   $('.suggested-tag input[type=checkbox]:not(:checked) + span i').removeClass('fa-check').addClass('fa-plus');
 
@@ -115,8 +120,8 @@ onboard.getFilters = function(savedKeywords) {
     });
   }
 
-  if (savedKeywords) {
-    $.each(savedKeywords, function(k, value) {
+  if (currentKeywords) {
+    $.each(currentKeywords, function(k, value) {
       if (keywords.includes(value.toLowerCase())) {
         $('input[type=checkbox][name=tech-stack][value="' + value.toLowerCase() + '"]').prop('checked', true);
       } else {
@@ -144,24 +149,26 @@ onboard.getFilters = function(savedKeywords) {
     $('#selected-skills').css('display', 'inherit');
 
   $('.filter-tags').html(_filters);
-  words = [...new Set(_words)];
-  // TODO: Save Preferences
-  var settings = {
-    url: '/settings/matching',
-    method: 'POST',
-    headers: {'X-CSRFToken': csrftoken},
-    data: JSON.stringify({
-      'keywords': 'JavaScript,CCoffeeScript,CSS,HTML',
-      'submit': 'Go',
-      'github': 'thelostone-mc'
-    })
-  };
 
-  $.ajax(settings).done(function(response) {
-    // TODO : Update keywords for user profile
-  }).fail(function(error) {
-    // TODO: Handle Error
-  });
+  if (savedKeywords) {
+
+    words = [...new Set(_words)];
+    var settings = {
+      url: '/settings/matching',
+      method: 'POST',
+      headers: {'X-CSRFToken': csrftoken},
+      data: {
+        'keywords': words.join(),
+        'submit': 'Go'
+      }
+    };
+
+    $.ajax(settings).done(function(response) {
+      onboard.getFilters(false, response.keywords);
+    }).fail(function(error) {
+      // TODO: Handle Error
+    });
+  }
 };
 
 var changeStep = function(n) {
@@ -169,6 +176,17 @@ var changeStep = function(n) {
     return;
 
   var steps = $('.step');
+
+  if ($($('.step')[current]).attr('link') === 'skills') {
+    var level = $('#experienceLevel').find(':selected').val();
+
+    localStorage['experience_level'] = level;
+    localStorage['referrer'] = 'onboard';
+  }
+
+  if ($($('.step')[current]).attr('link') === 'job') {
+    save_job_status();
+  }
 
   $(steps[current]).removeClass('show');
   $(steps[current]).removeClass('block');
@@ -210,21 +228,21 @@ keywords.forEach(function(keyword) {
 
 $('#skills #suggested-tags').html(suggested_tags);
 
-if ($('.navbar #navbarDropdown').html()) {
-  var url = '/api/v0.1/profile/' + $('.navbar #navbarDropdown').html().trim() + '/keywords';
+if (document.contxt.github_handle) {
+  var url = `/api/v0.1/profile/${document.contxt.github_handle}/keywords`;
 
   $.get(url, function(response) {
-    onboard.getFilters(response.keywords);
+    onboard.getFilters(false, response.keywords);
   });
 }
 
 $('.suggested-tag input[type=checkbox]').change(function(e) {
-  onboard.getFilters();
+  onboard.getFilters(true);
 });
 
 $('.search-area input[type=text]').keypress(function(e) {
   if (e.which == 13) {
-    onboard.getFilters();
+    onboard.getFilters(true);
     e.preventDefault();
   }
 });
@@ -233,11 +251,8 @@ var redirectURL = function() {
   var url = '';
 
   if (flow === 'contributor') {
-    var level = $('#experienceLevel').find(':selected').val();
-
-    localStorage['experience_level'] = level;
-    localStorage['referrer'] = 'onboard';
-    url = '/explorer?q=' + words.join(',');
+    save_job_status();
+    url = '/explorer?keywords=' + words.join(',');
   } else if (flow === 'funder') {
     url = '/funding/new';
   } else if (flow === 'profile') {
@@ -246,3 +261,5 @@ var redirectURL = function() {
 
   document.location.href = url;
 };
+
+localStorage['onboarded_funder'] = true;

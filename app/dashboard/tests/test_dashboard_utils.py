@@ -17,14 +17,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from datetime import datetime
 from unittest.mock import patch
 
+from django.conf import settings
 from django.test.client import RequestFactory
+from django.utils import timezone
 
+import ipfshttpclient
+import pytest
+from dashboard.models import Bounty, Profile
 from dashboard.utils import (
-    clean_bounty_url, create_user_action, get_bounty, get_ordinal_repr, get_web3, getBountyContract,
-    humanize_event_name,
+    IPFSCantConnectException, apply_new_bounty_deadline, clean_bounty_url, create_user_action, get_bounty, get_ipfs,
+    get_ordinal_repr, get_web3, getBountyContract, humanize_event_name, ipfs_cat_ipfsapi, re_market_bounty,
+    release_bounty_to_the_public,
 )
+from pytz import UTC
 from test_plus.test import TestCase
 from web3.main import Web3
 from web3.providers.rpc import HTTPProvider
@@ -42,7 +50,10 @@ class DashboardUtilsTest(TestCase):
             assert isinstance(web3_provider, Web3)
             assert len(web3_provider.providers) == 1
             assert isinstance(web3_provider.providers[0], HTTPProvider)
-            assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io'
+            if settings.INFURA_USE_V3:
+                assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}'
+            else:
+                assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io'
 
     @staticmethod
     def test_get_bounty_contract():
@@ -78,6 +89,7 @@ class DashboardUtilsTest(TestCase):
         """Test the humanized representation of an event name."""
         assert humanize_event_name('start_work') == 'WORK STARTED'
         assert humanize_event_name('remarket_funded_issue') == 'REMARKET_FUNDED_ISSUE'
+        assert humanize_event_name('issue_remarketed') == 'ISSUE RE-MARKETED'
 
     @staticmethod
     @patch('dashboard.utils.UserAction.objects')
@@ -110,3 +122,178 @@ class DashboardUtilsTest(TestCase):
         create_user_action(None, 'Login', request)
         mockUserAction.create.assert_called_once_with(action='Login', metadata={}, user=None,
                                                       utm={'utm_campaign': 'test campaign'})
+
+    @staticmethod
+    def test_get_ipfs():
+        """Test that IPFS connectivity to gateway defined in settings succeeds."""
+        ipfs = get_ipfs()
+        assert type(ipfs) is ipfshttpclient.client.Client
+
+    @staticmethod
+    def test_get_ipfs_with_bad_host():
+        """Test that IPFS connectivity to gateway fails when bad host is passed."""
+        with pytest.raises(IPFSCantConnectException):
+            assert get_ipfs('nohost.com')
+
+    @staticmethod
+    def test_ipfs_cat_ipfsapi():
+        """Test that ipfs_cat_ipfsapi method returns IPFS object."""
+        assert "security-notes" in str(ipfs_cat_ipfsapi('/ipfs/QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv/readme'))
+
+    @staticmethod
+    def test_can_successfully_re_market_a_bounty():
+        bounty = Bounty.objects.create(
+            title='CanRemarketTrueTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+
+        assert bounty.remarketed_count == 0
+
+        result = re_market_bounty(bounty, False)
+
+        assert result['success'] is True
+        assert result['msg'] == f"The issue will appear at the top of the issue explorer. You will be able to remarket this bounty {settings.RE_MARKET_LIMIT - 1} more time if a contributor does not pick this up."
+        assert bounty.remarketed_count == 1
+        assert bounty.last_remarketed > (timezone.now() - timezone.timedelta(minutes=1))
+
+    @staticmethod
+    def test_can_successfully_re_market_a_bounty_twice():
+        if settings.RE_MARKET_LIMIT == 2:
+            bounty = Bounty.objects.create(
+                title='CanRemarketTrueTest',
+                idx_status=0,
+                is_open=True,
+                web3_created=datetime(2008, 10, 31, tzinfo=UTC),
+                expires_date=datetime(2008, 11, 30, tzinfo=UTC),
+                last_remarketed=datetime(2008, 10, 31, tzinfo=UTC),
+                github_url='https://github.com/gitcoinco/web/issues/12345678',
+                raw_data={}
+            )
+
+            result = re_market_bounty(bounty, False)
+            assert result['success'] is True
+            assert result['msg'] == "The issue will appear at the top of the issue explorer. You will be able to remarket this bounty 1 more time if a contributor does not pick this up."
+            assert bounty.remarketed_count == 1
+
+            bounty.last_remarketed = timezone.now() - timezone.timedelta(hours=2)
+
+            result = re_market_bounty(bounty, False)
+            assert result['success'] is True
+            assert result['msg'] == "The issue will appear at the top of the issue explorer. Please note this is the last time the issue is able to be remarketed."
+            assert bounty.remarketed_count == 2
+
+    @staticmethod
+    def test_re_market_fails_after_reaching_re_market_limit():
+        if settings.RE_MARKET_LIMIT == 2:
+            bounty = Bounty.objects.create(
+                title='CanRemarketFalseTest',
+                idx_status=0,
+                is_open=True,
+                web3_created=datetime(2008, 10, 31, tzinfo=UTC),
+                expires_date=datetime(2008, 11, 30, tzinfo=UTC),
+                last_remarketed=datetime(2008, 10, 31, tzinfo=UTC),
+                github_url='https://github.com/gitcoinco/web/issues/12345678',
+                raw_data={}
+            )
+
+            assert bounty.remarketed_count == 0
+            result = re_market_bounty(bounty, False)
+            assert result['success'] is True
+            assert bounty.remarketed_count == 1
+
+            bounty.last_remarketed = timezone.now() - timezone.timedelta(hours=2)
+
+            result = re_market_bounty(bounty, False)
+            assert result['success'] is True
+            assert bounty.remarketed_count == 2
+
+            result = re_market_bounty(bounty, False)
+            assert result['success'] is False
+            assert result['msg'] == "The issue was not remarketed due to reaching the remarket limit (2)."
+
+    @staticmethod
+    def test_re_market_fails_after_re_marketing_in_quick_succession():
+        bounty = Bounty.objects.create(
+            title='CanRemarketFalseTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+
+        assert bounty.remarketed_count == 0
+        result = re_market_bounty(bounty, False)
+        assert result['success'] is True
+        assert bounty.remarketed_count == 1
+
+        result = re_market_bounty(bounty, False)
+        assert result['success'] is False
+
+        assert result['msg'] == f'As you recently remarketed this issue, you need to wait {settings.MINUTES_BETWEEN_RE_MARKETING} minutes before remarketing this issue again.'
+
+    @staticmethod
+    def test_apply_new_bounty_deadline_is_successful_with_re_market():
+        bounty = Bounty.objects.create(
+            title='CanRemarketFalseTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+
+        assert bounty.remarketed_count == 0
+
+        import time
+        deadline = time.time()
+        re_market_result = apply_new_bounty_deadline(bounty, deadline, False)
+        assert bounty.remarketed_count == 1
+        assert re_market_result['success'] is True
+        assert re_market_result['msg'] == "You've extended expiration of this issue. The issue will appear at the top of the issue explorer. You will be able to remarket this bounty 1 more time if a contributor does not pick this up."
+
+        deadline_as_date_time = timezone.make_aware(
+            timezone.datetime.fromtimestamp(deadline),
+            timezone=UTC
+        )
+        assert bounty.expires_date == deadline_as_date_time
+
+    @staticmethod
+    def test_release_bounty_to_public_fails_when_bounty_is_none():
+        assert release_bounty_to_the_public(None) is False
+
+    @staticmethod
+    def test_release_bounty_to_public_is_successful():
+        now = timezone.now()
+        profile = Profile(
+            handle='foo',
+        )
+        bounty = Bounty(
+            title='ReleaseToPublicTrueTest',
+            idx_status='reserved',
+            is_open=True,
+            web3_created=now,
+            expires_date=now + timezone.timedelta(minutes=2),
+            bounty_reserved_for_user=profile,
+            reserved_for_user_from=now,
+            reserved_for_user_expiration=now + timezone.timedelta(minutes=2),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+
+        assert bounty.bounty_reserved_for_user is not None
+        assert bounty.reserved_for_user_from is not None
+        assert bounty.reserved_for_user_expiration is not None
+
+        assert release_bounty_to_the_public(bounty, False) is True
+
+        assert bounty.bounty_reserved_for_user is None
+        assert bounty.reserved_for_user_from is None
+        assert bounty.reserved_for_user_expiration is None

@@ -23,7 +23,7 @@ If you're testing in a staging or production style environment behind a CDN, pas
 
 For example:
 
-`DJANGO_STATIC_HOST='https://gitcoin.co`
+`DJANGO_STATIC_HOST='https://gitcoin.co'`
 
 ## Setup Database
 
@@ -39,7 +39,11 @@ Once you have Postgres installed and running on your system, enter into a Postgr
 
 ```shell
 
-~/$ psql
+# For linux users
+~/$ sudo -u postgres psql
+
+# For macOS users
+~/$ psql -d postgres
 
 ```
 
@@ -47,9 +51,8 @@ Create the database and a new privileged user.
 
 ```sql
 
-CREATE DATABASE gitcoin;
 CREATE USER gitcoin_user WITH PASSWORD 'password';
-GRANT ALL PRIVILEGES ON DATABASE gitcoin TO gitcoin_user;
+CREATE DATABASE gitcoin WITH OWNER gitcoin_user;
 
 ```
 
@@ -57,15 +60,15 @@ Exit Postgres session
 
 ```shell
 
-\q
+~/$ \q
 
 ```
 
-Update ```~/web/app/app/.env``` with the connection details.
+Update ```~/web/app/app/.env``` with the connection details, if required.
 
 ```shell
 
-DATABASE_URL=psql://gitcoin_user:password@localhost:5432/postgres
+DATABASE_URL=psql://gitcoin_user:password@localhost:5432/gitcoin
 
 ```
 
@@ -75,7 +78,7 @@ DATABASE_URL=psql://gitcoin_user:password@localhost:5432/postgres
 
 ```shell
 
-~/web$ python3 -m virtualenv gcoin
+~/web$ virtualenv -p python3.7 gcoin
 ~/web$ source gcoin/bin/activate
 ~/web$ pip3 install -r requirements/test.txt
 
@@ -116,16 +119,11 @@ Navigate to `http://localhost:8000/`.
 
 This can be useful if you'd like data to test with:
 
-```shell
-
-~/web/app$ ./manage.py sync_geth
-
-```
 
 or equivalently:
 
 ```shell
 
-~/web/app$ ./manage.py sync_geth rinkeby 402 99999999999
+~/web/app$ ./manage.py sync_geth rinkeby -20 99999999999
 
 ```

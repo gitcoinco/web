@@ -1,0 +1,60 @@
+
+.banner {
+  background: linear-gradient(161deg, rgba(55,27,181,1) 37%, rgba(255,51,117,1) 100%);
+}
+
+.banner img {
+  margin: 1em;
+  align-items: center;
+  display: flex;
+  transition: all .2s ease-in-out;
+}
+
+.banner .hackathon-logo {
+  max-width: 40rem;
+}
+
+.banner .hackathon-name {
+  font-size: 4rem;
+  letter-spacing: 12px;
+  line-height: 72px;
+  text-transform: uppercase;
+}
+
+.banner img:hover {
+  transform: scale(1.1);
+}
+
+.banner .sponsors-gold img {
+  height: 6rem;
+  margin: 1em;
+}
+
+.banner .sponsors-silver img {
+  height: 3.5rem;
+  margin: 0.8em;
+}
+
+.banner .sponsors-gold {
+  margin-bottom: 1rem;
+}
+
+
+/* ETH Hack 2019 */
+#ethhack_2019 .hackathon-name {
+  font-size: 3rem;
+}
+
+/* Beyond Blockchain 2019 */
+#beyondblockchain_2019 {
+  background: #121315;
+}
+
+/* Grow Ethereum 2019 */
+#grow-ethereum-2019 {
+  border-bottom: solid 0.5px #eee;
+}
+
+#grow-ethereum-2019 .text-white {
+  color: black !important; /* TODO: REMOVE */
+}

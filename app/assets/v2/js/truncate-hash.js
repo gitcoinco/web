@@ -1,4 +1,5 @@
 /* eslint-disable no-new */
+/* eslint-disable no-console */
 
 /**
  * Simple plugin for truncate the hash at the center
@@ -26,9 +27,9 @@
   };
 
   this.truncateHash = function() {
-    var elem = document.querySelectorAll('[data-truncatehash]');
+    const elem = document.querySelectorAll('[data-truncatehash]');
 
-    for (var i = 0; i < elem.length; ++i) {
+    for (let i = 0; i < elem.length; ++i) {
       new truncate(elem[i], elem[i].dataset.truncatehash);
     }
   };
@@ -45,7 +46,7 @@ new truncateHash();
 */
 (function() {
   this.getaddress = function(elem, _address) {
-    var address = !_address ? _address = web3.eth.coinbase : _address;
+    const address = !_address ? _address = web3.eth.coinbase : _address;
 
     if (elem.nodeName == 'INPUT') {
       elem.value = address;
@@ -57,18 +58,25 @@ new truncateHash();
   };
 
   this.metamaskAddress = function() {
-    var currentWallet = web3.eth.coinbase;
-
-    var elem = document.querySelectorAll('[data-metamask-address]');
-    // var elem = $('#wallet-address')
-
-    for (var i = 0; i < elem.length; ++i) {
-      new getaddress(elem[i], currentWallet);
+    try {
+      const currentWallet = web3.eth.coinbase;
+      const elem = document.querySelectorAll('[data-metamask-address]');
+  
+      for (let i = 0; i < elem.length; ++i) {
+        new getaddress(elem[i], currentWallet);
+      }
+    } catch (ignore) {
+      console.log('%c error: web3 not defined. ensure metamask is installed & unlocked', 'color: red');
     }
   };
 }());
+
 new metamaskAddress();
 
-web3.currentProvider.publicConfigStore.on('update', function(e) {
-  new metamaskAddress();
-});
+try {
+  web3.currentProvider.publicConfigStore.on('update', function(e) {
+    new metamaskAddress();
+  });
+} catch (ignore) {
+  console.log('%c error: web3 not defined. ensure metamask is installed & unlocked', 'color: red');
+}

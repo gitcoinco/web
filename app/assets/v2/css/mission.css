@@ -7,7 +7,11 @@
 .mission .icon {
   width: 5rem;
   float: left;
-  margin-right: 4rem;
+  margin-right: 3rem;
+}
+
+.mission #we_interact .icon {
+  margin-right: 1.5rem;
 }
 
 .mission .divider {
@@ -21,10 +25,6 @@
   width: auto;
 }
 
-.mission .header-text {
-  font-weight: 700;
-}
-
 .mission .falcon-wrapper {
   position: relative;
   height: 100%;
@@ -34,54 +34,9 @@
   float: right;
 }
 
-@media(min-width: 768px) and (max-width: 991px)  {
-  .mission .falcon-wrapper .falcon {
-    width: 28rem;
-    height: auto;
-  }
-}
-
-@media(min-width: 992px) and (max-width: 1199px)  {
-  .mission .falcon-wrapper .falcon {
-    width: 25rem;
-    height: auto;
-  }
-}
-
-@media(min-width: 1200px) {
-  .mission .falcon-wrapper .falcon {
-    width: 30rem;
-    height: auto;
-  }
-}
-
-@media(min-width: 768px) and (max-width: 991px)  {
-  .mission .falcon-wrapper .falcon-pull {
-    width: 22rem;
-    height: auto;
-    margin-top: -18rem;
-  }
-}
-
-@media(min-width: 992px) and (max-width: 1199px)  {
-  .mission .falcon-wrapper .falcon-pull {
-    width: 30rem;
-    height: auto;
-    margin-top: -18rem;
-  }
-}
-
-@media(min-width: 1200px) {
-  .mission .falcon-wrapper .falcon-pull {
-    width: 30rem;
-    height: auto;
-    margin-top: -22rem;
-  }
-}
-
 .mission .icon-text {
   font-weight: 500;
-  font-size: 18px;
+  font-size: 1rem;
   color: #666666;
 }
 
@@ -98,4 +53,60 @@
 #we_interact,
 #we_believe {
   padding: 0 10vw;
+}
+
+@media(max-width: 768px) {
+  .falcon-wrapper {
+    display: none;
+  }
+  #mission_hero .row {
+    padding: 1rem !important;
+  }
+  #mission_hero .text{
+    margin-left: 0rem;
+  }
+  #mission_hero .col-2, #mission_hero .col-9 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+@media(min-width: 768px) {
+  .mission .falcon-wrapper .falcon,
+  .mission .falcon-wrapper .falcon-pull {
+    height: auto;
+  }
+}
+
+@media(min-width: 768px) and (max-width: 991px)  {
+  .mission .falcon-wrapper .falcon {
+    width: 28rem;
+  }
+
+  .mission .falcon-wrapper .falcon-pull {
+    width: 22rem;
+    margin-top: -18rem;
+  }
+}
+
+@media(min-width: 992px) {
+  .mission .falcon-wrapper .falcon {
+    width: 25rem;
+  }
+
+  .mission .falcon-wrapper .falcon-pull {
+    width: 30rem;
+  }
+}
+
+@media(min-width: 992px) and (max-width: 1199px)  {
+  .mission .falcon-wrapper .falcon-pull {
+    margin-top: -18rem;
+  }
+}
+
+@media(min-width: 1200px) {
+  .mission .falcon-wrapper .falcon-pull {
+    margin-top: -22rem;
+  }
 }

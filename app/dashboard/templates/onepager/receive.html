@@ -18,10 +18,9 @@
 {% load i18n static %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/secrets.min.js" %}"></script>
-<script src="{% static "v2/js/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
+<script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
 <script src="{% static "v2/js/ipfs.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "onepager/js/receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
 <script src="{% static "onepager/js/bignumber.js" %}"></script>
@@ -39,7 +38,7 @@
   <header>
     <span class="avatar">
       <a href="{% url "tip" %}">
-        <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
+        <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" alt="Helmet" />
       </a>
     </span>
   </header>

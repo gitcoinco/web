@@ -20,13 +20,11 @@
   <div class="row align-items-center px-4 py-2 text-center text-lg-left">
       <div class="col-lg-10 col-sm-12 py-2 px-5">
         <h3>{% trans "Tips for Funding an Issue" %}</h3>
-        <p>
-          <ol class="pl-3 mb-0">
-            <li>{% trans "Create an issue on Github so that we can reference the details of the issue." %}</li>
-            <li>{% trans "What to fund? A new feature, feature improvements, bug fixes, code review, design and more." %}</li>
-            <li>{% trans "Need some bounty ticket inspiration? Take a look at some examples " %}<a href="https://github.com/gitcoinco/Gitcoin-Exemplars" target="_blank">here</a>.</li>
-          </ol>
-        </p>
+        <ol class="pl-3 mb-0 font-smaller-1">
+          <li>{% trans "Create an issue on Github so that we can reference the details of the issue." %}</li>
+          <li>{% trans "What to fund? A new feature, feature improvements, bug fixes, code review, design and more." %}</li>
+          <li>{% trans "Need some bounty ticket inspiration? Take a look at some examples " %}<a href="https://github.com/gitcoinco/Gitcoin-Exemplars" target="_blank">here</a>.</li>
+        </ol>
       </div>
       <div class="col-lg-2 col-sm-12">
         <img src="{% static "v2/images/Lightbulb.svg" %}">
@@ -38,7 +36,7 @@
   <div class="row align-items-center px-4 py-2 text-center text-lg-left">
     <div class="col-lg-10 col-sm-12 py-2 px-5">
       <h3>{% trans "Cancelling a Bounty is Sometimes Necessary" %}</h3>
-      <p>
+      <p class="font-smaller-1">
         {% trans "Don't forget once you cancel you will receive the funds & can reuse it on your next bounty." %}
       </p>
     </div>
@@ -52,12 +50,10 @@
   <div class="row align-items-center px-4 py-2 text-center text-lg-left">
     <div class="col-lg-10 col-sm-12 py-2 px-5">
       <h3>{% trans "Accepting a Submission is Exciting" %}</h3>
-      <p>
-        <ol class="pl-3 mb-0">
-          <li>{% trans "Make sure the submitter has completed the requirements to the specifications of your bounty." %}</li>
-          <li>{% trans "Feedback and gratitude are always nice ways to continue a relationship." %}</li>
-        </ol>
-      </p>
+      <ol class="pl-3 mb-0 font-smaller-1">
+        <li>{% trans "Make sure the submitter has completed the requirements to the specifications of your bounty." %}</li>
+        <li>{% trans "Feedback and gratitude are always nice ways to continue a relationship." %}</li>
+      </ol>
     </div>
     <div class="col-lg-2 col-sm-12">
       <img src="{% static "v2/images/box.svg" %}">
@@ -69,12 +65,10 @@
   <div class="row align-items-center px-4 py-2 text-center text-lg-left">
     <div class="col-lg-10 col-sm-12 py-2 px-5">
       <h3>{% trans "Paying out a bounty is Exciting" %}</h3>
-      <p>
-        <ol class="pl-3 mb-0">
-          <li>{% trans "If you are closing the bounty, make sure the submitters have completed the requirements to the specifications of your bounty." %}</li>
-          <li>{% trans "Feedback and gratitude are always nice ways to continue a relationship." %}</li>
-        </ol>
-      </p>
+      <ol class="pl-3 mb-0 font-smaller-1">
+        <li>{% trans "If you are closing the bounty, make sure the submitters have completed the requirements to the specifications of your bounty." %}</li>
+        <li>{% trans "Feedback and gratitude are always nice ways to continue a relationship." %}</li>
+      </ol>
     </div>
     <div class="col-lg-2 col-sm-12">
       <img src="{% static "v2/images/box.svg" %}">
@@ -86,12 +80,26 @@
   <div class="row align-items-center px-4 py-2 text-center text-lg-left">
     <div class="col-lg-10 col-sm-12 py-2 px-5">
       <h3>{% trans "Submit Work" %}</h3>
-      <p>
+      <p class="font-smaller-1">
         {% trans "You have worked really hard! Time to submit work and get paid" %}
       </p>
     </div>
     <div class="col-lg-2 col-sm-12">
       <i class="fas fa-3x fa-code"></i>
+    </div>
+  </div>
+</div>
+{% elif page == 'refund_bounty_fee' %}
+<div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #d43247;">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12 py-2 px-5">
+      <h3>{% trans "Did you get charged extra fee ?" %}</h3>
+      <p class="font-smaller-1">
+        {% trans "Let us know and we'll look into it" %}
+      </p>
+    </div>
+    <div class="col-lg-2 col-sm-12">
+      <img src="{% static "v2/images/refund.svg" %}">
     </div>
   </div>
 </div>

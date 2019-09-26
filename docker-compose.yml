@@ -42,7 +42,9 @@ services:
       - PYTHONPATH=/code/app
     env_file:
       - app/app/.env
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: gitcoinco/web:latest
     volumes:
       - .:/code

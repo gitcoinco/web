@@ -1,7 +1,5 @@
 .sidebar_search {
-  margin-left: 10px;
-  margin-right: 10px;
-  padding: 20px 20px 10px;
+  padding: 20px 20px 10px 40px;
 }
 
 .subheading {
@@ -17,8 +15,26 @@
   font-size: 0.8rem;
 }
 
+#expand,
+#minimize {
+  display: none;
+}
+
+.close-icon {
+  position: absolute;
+  top: 13px;
+  right: 25px;
+  width: 15px;
+  display: none;
+  cursor: pointer;
+}
+
 .sidebar_search .options .option {
   margin-bottom: 2px;
+}
+
+.sidebar_search .option.Azure-Samples img {
+  border-radius: 0px !important;
 }
 
 .option label:before,
@@ -76,12 +92,24 @@
 }
 
 @media (max-width: 991.98px) {
-  #sidebar_container form,
-  .search-history {
+  #sidebar_container form {
+    height: 0;
     display: none;
+  }
+
+  #expand {
+    display: inherit;
   }
 
   .search_bar div {
     padding-right: 15px !important;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .sidebar_search {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 20px 20px 10px;
   }
 }

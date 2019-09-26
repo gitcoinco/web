@@ -1,0 +1,238 @@
+{% extends '../emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static grants_extra humanize %}
+
+{% block content %}
+
+<style>
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  .grant-info {
+    padding-top: 30px;
+    padding-bottom: 1%;
+  }
+
+  .grant-info a img {
+    margin-bottom: 10px;
+  }
+
+  .grant-info-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #0D0764;
+  }
+
+  .grant-description {
+    max-width: 50rem;
+    margin: 1.5rem auto;
+    text-align: justify;
+  }
+
+  .grant-button {
+    padding: 12px 36px;
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    background-color: #0D0764;
+    color: white;
+  }
+
+  #grow-oss {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .progress {
+    width: 60%;
+    margin-left: 20%;
+    margin-top: 50px;
+    padding-bottom: 75px;
+  }
+
+  #tablePadding {
+    padding-bottom: 25px;
+  }
+
+  .progressbar {
+    height: 15px;
+    background-color: #D8D8D8;
+    border-radius: 2.7px;
+  }
+
+  .progress-completed {
+    height: 100%;
+    background-color: #0FCE7C;
+    border-radius: 2.7px;
+    float: left;
+  }
+
+  .progress-removed {
+    height: 100%;
+    background-color: #CF0E0E;
+    border-top-right-radius: 2.7px;
+    border-bottom-right-radius: 2.7px;
+    float: left;
+  }
+
+  .funding {
+    width: 100%;
+  }
+
+  .left-funding {
+    width: 50%;
+    float: left;
+    text-align: left;
+  }
+
+  .right-funding {
+    width: 50%;
+    float: left;
+    text-align: right;
+  }
+
+  .funding > div > h4 {
+    line-height: 0px;
+    color: #0D0764;
+    padding-top: -50px;
+  }
+
+  .left-funding > h4 {
+    text-align: left;
+  }
+
+  .right-funding > h4 {
+    text-align: right;
+  }
+
+  .progressbar-line {
+    width: 1px;
+    height: 45px;
+    background-color: #979797;
+    float: left;
+    transform: translateY(-20%);
+    margin-right: 20px;
+  }
+
+  .funding > div > p {
+    line-height: 0px;
+    color: #BBBDBF;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  td:nth-child(1) > img {
+    height: 40px;
+  }
+
+</style>
+<img src="{% static "v2/images/transaction-summary.png" %}" alt="{% trans "Transaction Summary" %}"
+  title="{% trans "Transaction Summary" %}">
+<h1 style="margin-bottom:1.25rem">{% trans "Grant" %} '{{ grant.title }}' {% trans "has received more funding" %}!</h1>
+<hr>
+
+<div class="grant-info">
+  <a href="{% url 'grants:details' grant.id grant.slug %}">
+    <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
+  </a>
+  <br>
+  <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">
+    {{ grant.title }}
+  </a>
+  <p class="grant-description">
+    {{ grant.description }}
+  </p>
+</div>
+<hr>
+<div class="progress" id="tablePadding">
+  <h3 style="text-transform: none;">
+    <strong>{% trans "Funding Recieved in the Last 24 Hours" %}</strong>
+  </h3>
+  <table>
+    <!-- Funder queryset mimicing functions found in grants/details.html -->
+    {% for i in 'xxxxxxxxxx' %}
+    <tr>
+      <td>
+        <img src="{{ subscription.contributor_profile_img }}" alt="{% trans "Grant Funder" %}" title="{% trans "Grant Funder" %}"/>
+      </td>
+      <td>
+        <p>{{ subscription.contributor_profile }}</p>
+      </td>
+      <td>
+        <p>
+          <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }}</strong>
+        </p>
+      </td>
+      <td>
+        <p>{{ subscription.contributor_timestamp }}</p>
+      </td>
+      <td>
+        <a href="{{ subscription.contributor_url }}" style="color: #4C33AB;">
+          <strong>{% trans "View Transaction" %}</strong>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<hr>
+<div class="progress">
+  <h3>
+    <strong>{% trans "Total Funds" %}</strong>
+  </h3>
+  <div class="progressbar">
+    <div class="progress-completed" style="width: {{ grant.percentage_done|floatformat:0 }}%;">
+    </div>
+  </div>
+  <div class="funding">
+    <div class="left-funding">
+      <h4>
+        <strong>{{ grant.amount_received }} {% trans "DAI" %}</strong>
+      </h4>
+      <p>{% trans "Current" %}</p>
+    </div>
+    <div class="right-funding">
+      <h4>
+        <strong>{{ grant.amount_goal }} {% trans "DAI" %}</strong>
+      </h4>
+      <p>{% trans "Goal" %}</p>
+    </div>
+  </div>
+</div>
+<hr>
+<br>
+<br>
+<a class="grant-button" href="{% url 'grant:details' grant.id %}">{% trans "View Grant" %}</a>
+<br>
+{% endblock %}

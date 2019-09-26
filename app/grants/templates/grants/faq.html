@@ -1,0 +1,76 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n %}
+<hr>
+<link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+<section class="container-fluid py-3">
+  <div class="container">
+    <h3 id='faq' class="text-center my-5">FAQ</h3>
+
+    <div class="mb-3 faq-item">
+      <h5 class="accordion">{% trans "Where can I find more technical information on how Gitcoin Grants works?" %}</h5>
+      <div class="panel">
+        <p>Checkout <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md">GRANTS.md</a></p>
+      </div>
+    </div>
+
+    <div class="mb-3 faq-item">
+      <h5 class="accordion">I want to implement subscriptions into my own dapp. Where can I do so?</h5>
+      <div class="panel">
+        <p>Checkout <a href="http://1337alliance.com">1337alliance</a></p>
+      </div>
+    </div>
+
+    <div class="mb-3 faq-item">
+      <h5 class="accordion">Are gitcoin grants only available in eth, is there a way to create multi currency grants?</h5>
+      <div class="panel">
+        <p>You can create gitcoin grants in any ERC20 token. Yes, you can create multi currency grants.</p>
+      </div>
+    </div>
+
+    <div class="mb-3 faq-item">
+      <h5 class="accordion">I have a question that's not listed here. Where do I ask it?</h5>
+      <div class="panel">
+        <p>Email <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a></p>
+      </div>
+    </div>
+
+    <div class="mb-3 faq-item">
+      <h5 class="accordion">Who can use Gitcoin Grants?</h5>
+      <div class="panel">
+        <p>Right now, while we're in Alpha, only select users can create a grant. In the long term, the plan is for anyone can use Gitcoin grants.</p>
+      </div>
+    </div>
+
+    <div class="mb-3 faq-item">
+      <h5 class="accordion">Is Gitcoin Grants free?</h5>
+      <div class="panel">
+        <p>Yes, Gitcoin grants is free, although we do deduct a 0.00001% fee from each grant contribution to cover the gas costs of running
+          <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md">our subscription subminer.</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="mb-3 faq-item">
+      <h5 class="accordion">Where can I see my Grant contribution history?</h5>
+      <div class="panel">
+        <p>Go to <a href="https://gitcoin.co/grants/profile">https://gitcoin.co/grants/profile</a> to see your contribution history. </p>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>

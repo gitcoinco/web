@@ -20,11 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import os
 import socket
 
-from django.http import Http404
 from django.utils.translation import gettext_noop
 
 import environ
 import raven
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
@@ -41,6 +43,7 @@ DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test'])
 IS_DEBUG_ENV = ENV in DEBUG_ENVS
 HOSTNAME = env('HOSTNAME', default=socket.gethostname())
 BASE_URL = env('BASE_URL', default='http://localhost:8000/')
+OVERRIDE_NETWORK = env('OVERRIDE_NETWORK', default=None)
 SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
 ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
 BASE_DIR = root()
@@ -76,7 +79,6 @@ INSTALLED_APPS = [
     'autotranslate',
     'django_extensions',
     'easy_thumbnails',
-    'raven.contrib.django.raven_compat',
     'health_check',
     'health_check.db',
     'health_check.cache',
@@ -90,6 +92,7 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
+    'quests',
     'enssubdomain',
     'faucet',
     'tdi',
@@ -102,22 +105,24 @@ INSTALLED_APPS = [
     'linkshortener',
     'credits',
     'gitcoinbot',
-    'external_bounties',
     'dataviz',
     'impersonate',
+    'grants',
     'kudos',
     'django.contrib.postgres',
     'bounty_requests',
     'perftools',
     'revenue',
+    'event_ethdenver2019',
+    'inbox',
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'app.middleware.drop_accept_langauge',
+    # 'app.middleware.bleach_requests',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -128,6 +133,7 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
 ]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
@@ -138,13 +144,13 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'external_bounties/templates/', 'dataviz/templates', 'kudos/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
             'django.template.context_processors.debug', 'django.template.context_processors.request',
             'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
-            'app.context.insert_settings', 'social_django.context_processors.backends',
+            'app.context.preprocess', 'social_django.context_processors.backends',
             'social_django.context_processors.login_redirect',
         ],
     },
@@ -227,78 +233,100 @@ AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
 AWS_DEFAULT_REGION = env('AWS_DEFAULT_REGION', default='us-west-2')
 AWS_LOG_GROUP = env('AWS_LOG_GROUP', default='Gitcoin')
-AWS_LOG_LEVEL = env('AWS_LOG_LEVEL', default='DEBUG')
+AWS_LOG_LEVEL = env('AWS_LOG_LEVEL', default='INFO')
 AWS_LOG_STREAM = env('AWS_LOG_STREAM', default=f'{ENV}-web')
 
+# Sentry
+SENTRY_DSN = env.str('SENTRY_DSN', default='')
+SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default=SENTRY_DSN)
+RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
+RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
+if SENTRY_DSN:
+    sentry_sdk.init(
+        SENTRY_DSN,
+        integrations=[DjangoIntegration()]
+    )
+    RAVEN_CONFIG = {
+        'dsn': SENTRY_DSN,
+    }
+    if RELEASE:
+        RAVEN_CONFIG['release'] = RELEASE
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'host_filter': {
+            '()': 'app.log_filters.HostFilter',
+        }
+    },
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console'],
+    },
+    'formatters': {
+        'simple': {
+            'format': '%(asctime)s %(name)-12s [%(levelname)-8s] %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'INFO',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'django.security.*': {
+            'handlers': ['console'],
+            'level': DEBUG and 'DEBUG' or 'INFO',
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': DEBUG and 'DEBUG' or 'INFO',
+        },
+    },
+}
+
+# Production logging
 if ENV not in ['local', 'test', 'staging', 'preview']:
+    # add AWS monitoring
     boto3_session = Session(
         aws_access_key_id=AWS_ACCESS_KEY_ID,
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         region_name=AWS_DEFAULT_REGION
     )
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': True,
-        'filters': {
-            'host_filter': {
-                '()': 'app.log_filters.HostFilter',
-            }
-        },
-        'root': {
-            'level': 'WARNING',
-            'handlers': ['sentry', 'console', 'watchtower'],
-        },
-        'formatters': {
-            'simple': {
-                'format': '%(asctime)s %(name)-12s [%(levelname)-8s] %(message)s',
-                'datefmt': '%Y-%m-%d %H:%M:%S'
-            },
-            'cloudwatch': {
-                'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
-            },
-            'verbose': {
-                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-            },
-        },
-        'handlers': {
-            'sentry': {
-                'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
-                'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            },
-            'console': {
-                'level': 'DEBUG',
-                'class': 'logging.StreamHandler',
-                'formatter': 'verbose',
-            },
-            'watchtower': {
-                'level': AWS_LOG_LEVEL,
-                'class': 'watchtower.django.DjangoCloudWatchLogHandler',
-                'boto3_session': boto3_session,
-                'log_group': AWS_LOG_GROUP,
-                'stream_name': AWS_LOG_STREAM,
-                'filters': ['host_filter'],
-                'formatter': 'cloudwatch',
-            },
-        },
-        'loggers': {
-            'django.db.backends': {
-                'level': 'WARNING',
-                'handlers': ['console', 'watchtower'],
-                'propagate': False,
-            },
-            'raven': {
-                'level': 'DEBUG',
-                'handlers': ['console', 'watchtower'],
-                'propagate': False,
-            },
-            'sentry.errors': {
-                'level': 'DEBUG',
-                'handlers': ['console', 'watchtower'],
-                'propagate': False,
-            },
-        },
-    }
 
+    LOGGING['formatters']['cloudwatch'] = {
+        'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
+    }
+    LOGGING['handlers']['watchtower'] = {
+            'level': AWS_LOG_LEVEL,
+            'class': 'watchtower.django.DjangoCloudWatchLogHandler',
+            'boto3_session': boto3_session,
+            'log_group': AWS_LOG_GROUP,
+            'stream_name': AWS_LOG_STREAM,
+            'filters': ['host_filter'],
+            'formatter': 'cloudwatch',
+    }
+    LOGGING['loggers']['django.db.backends']['level'] = AWS_LOG_LEVEL
+
+    LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
+    LOGGING['loggers']['django.security.*'] = LOGGING['loggers']['django.db.backends']
+    for ia in INSTALLED_APPS:
+        LOGGING['loggers'][ia] = LOGGING['loggers']['django.db.backends']
+
+    # add elasticsearch monitoring
     if ENABLE_APM:
         LOGGING['handlers']['elasticapm'] = {
             'level': 'WARNING',
@@ -310,13 +338,6 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
             'propagate': False,
         }
         LOGGING['root']['handlers'] = ['sentry', 'elasticapm']
-
-    LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
-    LOGGING['loggers']['django.security.*'] = LOGGING['loggers']['django.db.backends']
-    for ia in INSTALLED_APPS:
-        LOGGING['loggers'][ia] = LOGGING['loggers']['django.db.backends']
-else:
-    LOGGING = {}
 
 GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
@@ -485,6 +506,8 @@ IMAP_PASSWORD = env('IMAP_PASSWORD', default='<password>')
 MAILCHIMP_USER = env.str('MAILCHIMP_USER', default='')
 MAILCHIMP_API_KEY = env.str('MAILCHIMP_API_KEY', default='')
 MAILCHIMP_LIST_ID = env.str('MAILCHIMP_LIST_ID', default='')
+MAILCHIMP_LIST_ID_HUNTERS = env.str('MAILCHIMP_LIST_ID_HUNTERS', default='')
+MAILCHIMP_LIST_ID_FUNDERS = env.str('MAILCHIMP_LIST_ID_FUNDERS', default='')
 
 # Github
 GITHUB_API_BASE_URL = env('GITHUB_API_BASE_URL', default='https://api.github.com')
@@ -507,6 +530,7 @@ SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
 SOCIAL_AUTH_GITHUB_SCOPE = ['read:public_repo', 'read:user', 'user:email', ]
+SOCIAL_AUTH_SANITIZE_REDIRECTS = True
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',
@@ -554,8 +578,20 @@ KUDOS_CONTRACT_ROPSTEN = env('KUDOS_CONTRACT_ROPSTEN', default='0xcd520707fc68d1
 KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0x38c48d14a5bbc38c17ced9cd5f0695894336f426')
 KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
 
-# Reporting Integrations
-MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
+# Grants
+GRANTS_OWNER_ACCOUNT = env('GRANTS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
+GRANTS_PRIVATE_KEY = env('GRANTS_PRIVATE_KEY', default='')
+GRANTS_SPLITTER_ROPSTEN = env('GRANTS_SPLITTER_ROPSTEN', default='0xe2fd6dfe7f371e884e782d46f043552421b3a9d9')
+GRANTS_SPLITTER_MAINNET = env('GRANTS_SPLITTER_MAINNET', default='0xdf869FAD6dB91f437B59F1EdEFab319493D4C4cE')
+GRANTS_NETWORK = env('GRANTS_NETWORK', default='mainnet')
+GITCOIN_DONATION_ADDRESS = env('GITCOIN_DONATION_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+SPLITTER_CONTRACT_ADDRESS = ''
+if GRANTS_NETWORK == 'mainnet':
+    SPLITTER_CONTRACT_ADDRESS = GRANTS_SPLITTER_MAINNET
+else:
+    SPLITTER_CONTRACT_ADDRESS = GRANTS_SPLITTER_ROPSTEN
+
+METATX_GAS_PRICE_THRESHOLD = float(env('METATX_GAS_PRICE_THRESHOLD', default='10000.0'))
 
 GA_PRIVATE_KEY_PATH = env('GA_PRIVATE_KEY_PATH', default='')
 GA_PRIVATE_KEY = ''
@@ -578,20 +614,6 @@ GOOGLE_ANALYTICS_AUTH_JSON = {
     'client_x509_cert_url': env('GA_CLIENT_X509_CERT_URL', default='')
 }
 HOTJAR_CONFIG = {'hjid': env.int('HOTJAR_ID', default=0), 'hjsv': env.int('HOTJAR_SV', default=0), }
-
-# Sentry
-SENTRY_USER = env('SENTRY_USER', default='')
-SENTRY_PASSWORD = env('SENTRY_PASSWORD', default='')
-SENTRY_ADDRESS = env('SENTRY_ADDRESS', default='')
-SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default='')
-SENTRY_PROJECT = env('SENTRY_PROJECT', default='')
-RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if SENTRY_USER else ''
-RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
-if SENTRY_ADDRESS and SENTRY_PROJECT:
-    RAVEN_CONFIG = {
-        'dsn': f'https://{SENTRY_USER}:{SENTRY_PASSWORD}@{SENTRY_ADDRESS}/{SENTRY_PROJECT}',
-        'release': RELEASE,
-    }
 
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
@@ -617,7 +639,7 @@ if not AWS_S3_OBJECT_PARAMETERS:
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': f'max-age={AWS_S3_CACHE_MAX_AGE}', }
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', )
+CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', 'github.com', )
 CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN, )
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
@@ -633,6 +655,8 @@ GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
 
 # Web3
 WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.io')
+INFURA_USE_V3 = env.bool('INFURA_USE_V3', False)
+INFURA_V3_PROJECT_ID = env('INFURA_V3_PROJECT_ID', default='1e0a90928efe4bb78bb1eeceb8aacc27')
 
 # COLO Coin
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO
@@ -649,9 +673,6 @@ IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
 STABLE_COINS = ['DAI', 'USDT', 'TUSD']
-
-BLOCKED_USERS = env('BLOCKED_USERS', default=[])
-
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
@@ -677,3 +698,6 @@ if ENABLE_SILK:
             'name': 'Index View',
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
+
+RE_MARKET_LIMIT = env.int('RE_MARKET_LIMIT', default=2)
+MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=60)

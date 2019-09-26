@@ -1,0 +1,153 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static grants_extra humanize %}
+
+{% block content %}
+
+<style>
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  .grant-header {
+    width: 100%;
+    text-align: center;
+  }
+
+  .left-grant-header {
+    display: inline-block;
+  }
+
+  .right-grant-header {
+    display: inline-block;
+  }
+
+  .right-grant-header > h2 {
+    font-size: 20px;
+    line-height: 1.5em;
+  }
+
+  .grant-info {
+    padding-top: 30px;
+    padding-bottom: 1%;
+    font-size: 1rem;
+  }
+
+  .grant-info a img {
+    margin-bottom: 10px;
+  }
+
+  .grant-info-name {
+    font-size: 20px;
+    color: #0D0764;
+  }
+
+  .grant-description {
+    max-width: 50rem;
+    margin: 1.5rem auto;
+    text-align: center;
+  }
+
+  .grant-button {
+    padding: 12px 36px;
+    border-radius: 3px;
+    font-size: 14px;
+    text-decoration: none;
+    background-color: #0D0764;
+    color: white;
+  }
+
+  #grow-oss {
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+
+  #grant-logo {
+    max-width: 25rem;
+    width: 100%;
+  }
+
+  @media (min-width : 1386px) {
+    .left-grant-header > img {
+      transform: translateY(13.5%);
+    }
+  }
+
+  @media screen and (min-width: 598px) {
+    .right-grant-header {
+      padding-left: 40px;
+      transform: translateY(-12.5%);
+      text-align: left;
+    }
+  }
+
+</style>
+<div class="grant-header">
+  <div class="left-grant-header">
+    <img src="{% static "v2/images/heart-robot.png" %}" alt="{% trans "Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
+  </div>
+  <div class="right-grant-header">
+    <h1 style="text-transform: none;">{% trans "Thank you for supporting" %} {{ grant.title }}!
+    </h1>
+    <h2 style="text-transform: none;">{% trans "The world of open source is a better place because of you." %}
+    </h2>
+  </div>
+</div>
+
+<hr>
+<br>
+<div class="grant-info">
+  <a href="{% url 'grants:details' grant.id grant.slug %}">
+    <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" />
+  </a>
+  <br>
+  <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">
+    {{ grant.title }}
+  </a>
+  <p class="grant-description">
+    {{ grant.description|truncatechars:300 }}
+  </p>
+  <p>
+    {% trans "You have agreed to give" %}
+  </p>
+  <p>
+    <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} </strong>
+      {% if subscription.num_tx_approved > 1 %}
+        {% trans "every" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
+      {% endif %}
+    <strong> {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}</strong>
+
+  </p>
+  <p>{% trans "You can see all the grants you support and your transaction history " %}
+      <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>
+  </p>
+</div>
+
+<br>
+<a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "View Updates" %}</a>
+<br>
+<br>
+<p>{% trans "If you ever need to, you can cancel your support" %}
+  <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}">{% trans "here." %}</a>
+</p>
+<hr>
+{% endblock %}

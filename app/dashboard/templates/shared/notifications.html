@@ -1,0 +1,52 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static humanize %}
+
+  <div id="gc-notifications" class="nav-item dropdown notifications order-md-last">
+    <a href="" class="notification__icon nav-link dropdown-toggle" id="notificationsDropdown" role="button"
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @click="fetchNotifications(1)">
+      <i class="fas fa-bell fa-fw"></i>
+      <span id="notification-dot" class="notification__dot" :class="{'notification__dot_active': unreadNotifications.length > 0}"></span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right animation slideDownIn notifications__box" aria-labelledby="notificationsDropdown">
+      <div class="notifications__header">
+        <div class="notifications__title">
+          {% trans 'Notifications' %} <span id="total-notifications" class="badge badge--greenlight">[[ numNotifications ]]</span>
+        </div> <a id="read-all" href="" class="notifications__link" @click.prevent="markAll">{% trans 'Mark All as Read' %}</a>
+      </div>
+      <ul class="notifications__list" @scroll.passive="onScroll($event)">
+        <li v-for="notification in notifications" class="notifications__item" :key="notification.id">
+          <span class="notifications__item-readed">
+            <b class="notification__dot-small" v-bind:class="{'notification__dot-small_active': !notification.is_read}"></b>
+          </span>
+          <a :href="[[ notification.cta_url ]]" class="notifications_content" @click="e => !notification.is_read && markRead(notification.id)">
+            <p class="line-clamp" v-html="notification.message_html"></p>
+          </a>
+          <time class="notifications__time" :datetime="[[ notification.created_on ]]" :title="[[ notification.created_on ]]">
+            [[ notification.created_on | moment-fromnow ]]
+          </time>
+        </li>
+      </ul>
+      <div class="notifications__no-results" :class="{'d-none': notifications.length > 0}">
+        <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
+        <p>
+          Nothing yet!
+        </p>
+      </div>
+      <a href="{% url 'inbox:inbox_view' %}" class="notifications__button-all notifications__link">{% trans 'See all' %}</a>
+    </div>
+  </div>

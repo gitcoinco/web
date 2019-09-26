@@ -46,20 +46,27 @@ var kudos_address = function() {
   }
 };
 
-var etherscan_tx_url = function(txid) {
-  switch (document.web3network) {
+/**
+ * Returns etherscan link of transaction /
+ * @param {string} id
+ * @param {string} network
+ * @param {enum} type tx | address
+ */
+var get_etherscan_url = function(id, network, type = 'tx') {
+  let _network = network ? network : document.web3network;
+  switch (_network) {
     case 'mainnet':
-      return 'https://etherscan.io/tx/' + txid;
+      return 'https://etherscan.io/' + type + '/' + id;
     case 'ropsten':
-      return 'https://ropsten.etherscan.io/tx/' + txid;
+      return 'https://ropsten.etherscan.io/' + type + '/' + id;
     case 'kovan':
-      return 'https://kovan.etherscan.io/tx/' + txid;
+      return 'https://kovan.etherscan.io/'  + type + '/' + id;
     case 'rinkeby':
-      return 'https://rinkeby.etherscan.io/tx/' + txid;
+      return 'https://rinkeby.etherscan.io/' + type + '/' + id;
     case 'custom network':
-      return 'https://localhost/tx/' + txid;
+      return 'https://localhost/' + type + '/' + id;
     default:
-      return 'https://etherscan.io/tx/' + txid;
+      return 'https://etherscan.io/' + type + '/' + id;
   }
 };
 

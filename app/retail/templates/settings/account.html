@@ -51,7 +51,21 @@
     border: 0.2rem solid #1AB56D;
   }
 </style>
-<form id="settings" method="POST">
+<form id="settings" method="POST" action="{% url 'account_settings' %}" class="col-md-8 m-auto">
+  <div class="form-group mb-5">
+    <h5>{% trans "Account type" %}</h5>
+    <p>{% trans "Let us know your account type so we can optimize your experience" %}</p>
+    <div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" name="persona_is_funder" id="persona_is_funder" {% if profile.persona_is_funder %} checked="checked" {% endif %}>
+        <label class="custom-control-label" for="persona_is_funder">{% trans "I'm a Funder" %}</label>
+      </div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" name="persona_is_hunter" id="persona_is_hunter" {% if profile.persona_is_hunter %} checked="checked" {% endif %}>
+        <label class="custom-control-label" for="persona_is_hunter">{% trans "I'm a Contributor" %}</label>
+      </div>
+    </div>
+  </div>
   <div class="form-group">
     <h5>{% trans "ETH Account Preferences" %}</h5>
   </div>
@@ -63,11 +77,11 @@
   {% csrf_token %}
   <input class='button button--primary' type='submit' name='submit' value="{% trans "Save" %}">
 </form>
-<div>
+<div class="col-md-8 m-auto">
   <h4 class="font-title mb-4 text-left">{% trans "Profile Photo" %}</h4>
   <div class="profile-avatar row mx-0 px-0 major_button_container">
     <div class="col-12 col-md-5 pl-0 pr-0 text-center">
-      <img id="user_avatar" src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+      <img id="user_avatar" src="{% if user.profile.avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
     </div>
     <div class="col-12 col-md-7 row">
       <div class="col-12 mt-2 mb-2">
@@ -115,7 +129,7 @@
 {% block scripts %}
 <script>
   $(document).ready(function() {
-    $("#pull_from_metamask").click(function(e){
+    $("#pull_from_metamask").on('click', function(e){
       if(web3 && typeof web3.eth.coinbase != 'undefined'){
         $("input[name=preferred_payout_address]").val(web3.eth.coinbase);
       } else {
@@ -157,27 +171,23 @@
     });
     $("#use_github_avatar").on('click', function(e) {
       var request = $.ajax({
-        url: '/avatar/save',
+        url: '/avatar/github/save',
         type: 'POST',
-        data: JSON.stringify({
-          use_github_avatar: true
-        }),
-        dataType: 'json',
         cache: false,
-        contentType: 'application/json; charset=utf-8',
         success: function(response) {
           $("#user_avatar").attr("src", response.avatar_url);
           _alert({ message: gettext('Your Github Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
         },
-        error: function() {
-          _alert({ message: gettext('Error occurred while saving. Please try again.')}, 'error');
+        error: function(response) {
+          let text = gettext('Error occurred while saving. Please try again.');
+          if(response.responseJSON && response.responseJSON.message) {
+            text = response.responseJSON.message;
+          }
+          _alert({ message: text}, 'error');
         }
       });
-      console.log(request);
     });
   });
 </script>
-<script>
-
-</script>
+{{ block.super }}
 {% endblock %}

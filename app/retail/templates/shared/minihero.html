@@ -1,38 +1,38 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2019 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
 {% load static %}
-        <div class="minihero row pt-5 pb-5 text-center">
-            {% if position_h1_below_logo %}
-                <div class="col">
-                    {% if not suppress_logo %}
-                        <img class="about-pink-logo" src="{% static "v2/images/logo_gitcoins.png" %}" height="49" />
-                    {% endif %}
-                </div>
-                <div class="w-100"></div>
-                <div class="col header-line font-weight-300 pb-5 pt-3">{{h1}}</div>
-            {% else %}
-                <div class="col header-line font-weight-300">{{h1}}</div>
-                <div class="w-100"></div>
-                <div class="col pb-5 pt-3">
-                    {% if not suppress_logo %}
-                        <img class="about-pink-logo" src="{% static "v2/images/pink-wordmark.png" %}" height="49" />
-                    {% endif %}
-                </div>
-            {% endif %}
-        </div>
-        {% include 'shared/rain.html' with class="grey" %}
+<div class="minihero row pt-5 pb-5 text-center">
+  {% if position_h1_below_logo %}
+    <div class="col">
+      {% if not suppress_logo %}
+        <img class="about-pink-logo mb-2" src="{% static "v2/images/logo_gitcoins.png" %}" height="49" />
+      {% endif %}
+      <div class="w-100"></div>
+      <h1 class="minihero__title">{{h1}}</h1>
+    </div>
+  {% else %}
+    <div class="col">
+      <h1 class="minihero__title mb-2">{{h1}}</h1>
+      <div class="w-100"></div>
+      {% if not suppress_logo %}
+        <img class="about-pink-logo" src="{% static "v2/images/pink-wordmark.png" %}" height="49" />
+      {% endif %}
+    </div>
+  {% endif %}
+  {% include 'shared/rain.html' with class="grey" %}
+</div>

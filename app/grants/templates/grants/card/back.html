@@ -1,0 +1,62 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static humanize grants_extra avatar_tags %}
+<div class="row h-100">
+  {% if grant.active %}
+    {% if grant.activeSubscriptions %}
+      <div class="col-12 my-2">
+        <h3 class="font-subheader font-weight-bold mb-3">{% trans 'Contributors' %} ({{ grant.activeSubscriptions|length }})</h3>
+        {% for handle in grant.activeSubscriptions %}
+          <a class="grant__stakeholders-item ml-2" href="{% url 'profile' handle %}">
+            <img data-src="{% avatar_url handle  %}" />
+          </a>
+        {% endfor %}
+      </div>
+      <div class="col-12 text-center">
+        <p>
+          <a class="font-title btn btn-outline-white" href="{% url 'grants:fund' grant.id grant.slug %}" rel="noreferrer">
+            {% trans 'Fund this Grant' %}
+          </a>
+        </p>
+        <p>
+          <a class="font-title btn btn-outline-white" href="{% url 'grants:details' grant.id grant.slug %}" rel="noreferrer">
+            {% trans 'View Details' %}
+          </a>
+        </p>
+      </div>
+    {% else %}
+      <div class="col-12 mt-2 m-auto text-center">
+        <p class="font-weight-bold">No active subscriptions</p>
+        <p>
+          <a class="font-title btn btn-outline-white" href="{% url 'grants:fund' grant.id grant.slug %}" rel="noreferrer">
+            {% trans 'Fund this Grant' %}
+          </a>
+        </p>
+        <p>
+          <a class="font-title btn btn-outline-white" href="{% url 'grants:details' grant.id grant.slug %}" rel="noreferrer">
+            {% trans 'View Details' %}
+          </a>
+        </p>
+      </div>
+    {% endif %}
+
+  {% else %}
+    <div class="col-12 text-center m-auto">
+      <h3 class="font-title">{% trans 'This grant is no longer active.' %}</h3>
+    </div>
+  {% endif %}
+</div>

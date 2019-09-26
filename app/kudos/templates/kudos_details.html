@@ -5,19 +5,25 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
-    <script src="{% static 'v2/js/tweenlite.js' %}"></script>
     <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
 
   </head>
   <body class="{{ active }} bg-light g-font-muli">
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <header class="container-fluid header">
+    <header class="header">
       {% include 'shared/kudos_nav.html' %}
       <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container pb-5">
         {% include 'shared/kudos_searchbar.html' %}
       </div>
     </header>
+
+    {% if is_staff %}
+    <div class="alpha-warning font-caption mb-0">
+      <span class="font-weight-bold">Staff only</span>
+      <a style="color:white;" href="{{kudos.admin_url}}">{% trans "kudos Admin" %}</a>
+    </div>
+    {% endif %}
 
     <div class="container py-5">
       <a href="{% url 'kudos_marketplace' %}">&lt; {% trans "Kudos Marketplace" %}</a>
@@ -32,14 +38,14 @@
           </div>
           <div id="kudos-image" class="sticky-top w-100">
             {% include 'shared/kudos_levitate.html' %}
-            <img src="{% static kudos.image %}" alt="{{ kudos.name }}" class="w-100">
+            <img src="{% static kudos.image %}" alt="{{ kudos.ui_name }}" class="w-100">
           </div>
         </div>
         <div class="col-md-6 col-lg-5 kudos-details">
           {% if 'cellarius' in kudos.tags %}
             <img src="{% static 'v2/images/kudos/assets/cellarius_logo_horizontal.svg' %}" alt="Cellarius" height="40">
           {% endif %}
-          <h3 id="kudosName" class="kudos-details__title">{{ kudos.name|humanize_name }} {% if kudos.generation %}<small class="lead">Gen {{ kudos.generation }}</small>{% endif %}</h3>
+          <h3 id="kudosName" class="kudos-details__title">{{ kudos.ui_name }} {% if kudos.generation %}<small class="lead">Gen {{ kudos.generation }}</small>{% endif %}</h3>
           <div>Owner Address: <a target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="kudos-details__address" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></div>
           <div class="my-4 font-bigger-1 font-weight-300">
             <p>{{ kudos.description }}</p>
@@ -78,7 +84,22 @@
                 <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
               {% else %}
                 <button type="button" class="btn btn-gc-blue" disabled>{% trans "Not Available" %}</button>
-                <small class="d-block mt-2">{% trans "There are no clones available but you can still look at the beautiful artwork!" %}</small>
+                <small class="d-block mt-2">
+                  {% if send_enabled_for|length %}
+                    {% trans "These users have the power to send this Kudos.  Contact them if you want this Kudos:" %}
+                    <ul>
+                      {% for sef in send_enabled_for %}
+                      <li>
+                        <a href="{% url 'profile' sef.profile.handle %}" title="{{sef.profile.handle}}">
+                        <img src="{% avatar_url sef.profile.handle  %}" alts="{{sef.profile.handle}}" width="70" class="rounded-circle border m-1">
+                        </a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  {% else %}
+                    {% trans "There are no clones available but you can still look at the beautiful artwork!" %}
+                  {% endif %}
+                </small>
               {% endif %}
             </div>
           </div>
@@ -110,21 +131,16 @@
     </section>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
+    <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
     {% include 'shared/footer_scripts.html' with slim=1 %}
-    <script src="{% static "v2/js/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
     <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/amounts.js" %}"></script>
     <script src="{% static "v2/js/eth-price.js" %}"></script>
     <script>
-      var bootstrapTooltip = $.fn.tooltip.noConflict()
-      $.fn.runTooltip = bootstrapTooltip
-      $('[data-toggle="tooltip"]').runTooltip()
-
-
+      $('[data-toggle="tooltip"]').bootstrapTooltip();
     </script>
     <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
-    {% include 'shared/messages.html' %}
+    
   </body>
 </html>

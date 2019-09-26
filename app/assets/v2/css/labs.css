@@ -1,0 +1,167 @@
+body {
+  color: var(--text-dark);
+}
+
+.navbar {
+  flex-shrink: 0;
+}
+
+.lab-hero-bg {
+  position: relative;
+  align-content: center;
+  height: 200px;
+}
+
+.lab-hero-bg-container{
+  position: absolute;
+  top: 20px;
+  height: 500px;
+  width: 500px;
+}
+
+.lab-hero-container {
+  position: relative;
+  overflow-y: hidden;
+}
+
+.header-line-lab {
+  color: antiquewhite;
+  font-style: normal;
+}
+
+.subheader-line-lab {
+  color: antiquewhite;
+  font-style: normal;
+}
+
+.header-labs {
+  background-image: url('/static/v2/images/labs/lab_background.png');
+  background-color: rgb(165, 53, 138);
+  will-change: transform;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.grey-bg {
+  background-color: #f8f9fb;
+}
+
+.dark-text {
+  color: rgba(7, 7, 7, 0.993);
+}
+
+.roadmap {
+  margin-top: 1.5rem;
+}
+
+.roadmap a {
+  margin: 0 2rem 0 0;
+}
+
+.profile-img {
+  width: 100px;
+}
+
+.profile-icon {
+  margin-right: 1.5rem;
+}
+
+.card {
+  height: 19rem;
+}
+
+.card .content {
+  min-height: 5rem;
+}
+
+.card .content .title {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.card img {
+  height: 115px;
+}
+
+.lab-cards {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.lab-card {
+  background: #fff;
+  border-radius: 6px;
+  display: inline-block;
+  margin: 1em 2em 1em 0;
+  position: relative;
+  border: 1px solid #D3D3D3;
+}
+
+.lab-card .content {
+  margin: 15px 20px;
+  min-height: 170px;
+  position: relative;
+}
+
+.lab-card .content .title {
+  color: rgb(7, 7, 7);
+}
+
+.lab-card .img {
+  overflow-y: hidden;
+  text-align: center;
+}
+
+.lab-card img {
+  width: 100%;
+}
+
+.magenta-link {
+  color: #a12f77;
+}
+
+.read-more {
+  float: left;
+}
+
+.row {
+  padding: 1rem;
+}
+
+@media (max-width: 991px) {
+  .labs-hero-bg {
+    display: none;
+  }
+
+  .row {
+    padding: 1rem;
+    justify-content: center;
+  }
+
+  .sub-title {
+    align-content: center;
+    text-align: center;
+  }
+
+  .landing_page_wrapper {
+    margin-left: 1em !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .landing_page_wrapper {
+    margin-left: 1em !important;
+  }
+
+  .social {
+    margin-top: 0.2rem;
+  }
+
+  .lab-cards {
+    justify-content: center;
+  }
+
+  .lab-card {
+    margin: 1em;
+  }
+}

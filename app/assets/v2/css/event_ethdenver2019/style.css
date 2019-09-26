@@ -1,0 +1,116 @@
+/* name-spaces:
+    .<event>-<page>-<freetext>
+    .ethdenver2019-nli:
+      - not logged in
+    .ethdenver2019-texts:
+      - page
+*/
+
+.ethdenver2019-nli-kudos {
+  height: 30em;
+}
+
+.ethdenver2019-texts-black {
+  color: #000000 !important;
+}
+
+.ethdenver2019-texts-headers {
+  font-size: 40px;
+  line-height: 36px;
+  color: #ffffff;
+  font-family: canada-type-gibson, sans-serif;
+  font-weight: bold;
+  text-align: center;
+}
+
+.ethdenver2019-nli-prizes {
+  background-color: #281840;
+}
+
+.container {
+  margin-left: 0.25em;
+  margin-right: 0.25em;
+  width: 100%;
+  max-width: 100% !important;
+}
+
+.ethdenver2019-col-center {
+  color: #ffffff;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.ethdenver2019-col-prize-img {
+  height: 260px;
+  vertical-align: text-bottom;
+  text-align: center;
+}
+
+.ethdenver2019-button-getstarted {
+  width: 200px;
+  height: 63px;
+  border-radius: 5px;
+  background-color: #fc5090;
+  float: none;
+  margin: 0 auto;
+  display: inline-grid;
+}
+
+.ethdenver2019-button-getstarted-text {
+  font-size: 20px;
+  line-height: 36px;
+  color: #ffffff;
+  align-self: center;
+  font-family: canada-type-gibson, sans-serif;
+  text-align: center;
+}
+
+.ethdenver2019-button-getstarted-text a:link {
+  color: #ffffff;
+}
+
+/* visited link */
+.ethdenver2019-button-getstarted-text a:visited {
+  color: #ffffff;
+}
+
+/* mouse over link */
+.ethdenver2019-button-getstarted-text a:hover {
+  color: #ffffff;
+}
+
+/* selected link */
+.ethdenver2019-button-getstarted-text a:active {
+  color: #ffffff;
+}
+
+.peekicorn {
+  position: absolute;
+  top: -100px;
+}
+
+.bufficorn {
+  position: absolute;
+  left: 10em;
+  top: -13em;
+}
+
+.received-equals-False {
+  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
+}
+
+.ethdenver2019-prog-header {
+  background-image: url("{% static 'v2/images/event_ethdenver2019/background.png' %}");
+  background-size: 100% 100%;
+}
+
+.circle-cutter {
+  border-radius: 50%;
+}
+
+.ethdenver2019-texts-white {
+  color: #ffffff;
+}

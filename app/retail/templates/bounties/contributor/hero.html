@@ -1,0 +1,47 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div class="row px-lg-5 contributors-hero-container my-5 mx-lg-5 pt-5">
+  <div class="col-12 col-lg-6">
+    <div class="col header-line header-line-contributors font-weight-semibold">
+      <h1>{% trans "Freelance" %} {% if tech_stack %} {{tech_stack|title}} {% endif %}</h1>
+      <h1>{% trans "Programming Jobs /" %}</h1>
+      <h1>{% trans "Open Bug Bounties" %}</h1>
+    </div>
+    <div class="col subheader-line subheader-line-contributors mt-4 mb-5">
+      <p class="mb-4">
+        {% trans "Find software development jobs" %}
+        {% if tech_stack %} in {{ tech_stack }} {% endif %}
+        {% trans "for freelance or remote workers and get paid immediately." %}
+      </p>
+      <p>{% trans "Build your resume with work from renowned projects like Metamask and Aragon." %}</p>
+    </div>
+    <div class="col d-flex mt-3 mb-5">
+      <div class="text-center">
+        <div>
+          <a class="btn btn-gc-purple text-purple white get-started-btn font-weight-semibold" role="button" href="/explorer{% if tech_stack %}?keywords={{ tech_stack }}{% endif %}" target="_blank" rel="noopener noreferrer">            
+            <span>Browse {% if tech_stack %} {{ tech_stack|title }} {% endif %} Bounties</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-6 text-center">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/DJartWzDn0E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+</div>
+{% include 'shared/rain.html' with class="grey" %}

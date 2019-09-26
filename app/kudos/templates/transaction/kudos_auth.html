@@ -15,28 +15,32 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static is_in_list %}
-<div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2">
+<div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between">
   <a class="navbar-brand p-1" href="{% url 'kudos_marketplace' %}">
     <img class="mw-100 mx-4" src="{% static "v2/images/kudos/logo.svg" %}" alt="kudos" height="50">
     {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/faucets" %}
-      <img id="addon" src="{% static "v2/images/gas_white.gif" %}"/>
+      <img id="addon" src="{% static "v2/images/gas_logo.gif" %}"/>
       <p style="color:white; font-size: 12px;">{% trans "Gas Station" %}</p>
     {% endif %}
   </a>
 
-  <div class="navbar-network ml-5 py-1 px-2 hidden">
+  <div class="navbar-network ml-xl-5 py-1 px-2 hidden">
     <i class="fas fa-circle pr-1"></i>
     <span id="current-network"></span>
   </div>
 
   {% if user.is_authenticated %}
-  <a class="nav-link login" href="{% url 'profile' %}">
-    <img class="nav_avatar" width=25 height=25
-      src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
-    {{ user }}
-  </a>
+  <div class="d-flex order-0 order-md-last">
+    <a class="nav-link login" href="{% url 'profile' %}">
+      <img class="nav_avatar" width=25 height=25
+      src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+      {{ user }}
+    </a>
+    {% include 'shared/notifications.html' %}
+  </div>
+
   {% else %}
-  <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">
+  <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
     <i class="fab fa-github"></i>{% trans "Login" %}
   </a>
   {% endif %}
@@ -54,7 +58,6 @@
   }
 
   .nav_avatar {
-    margin-bottom: -7px;
     margin-right: 10px;
   }
 
@@ -64,7 +67,6 @@
   }
 
   .nav-link.login {
-    position: absolute;
     top:15px;
     right: 15px;
     text-transform: none;

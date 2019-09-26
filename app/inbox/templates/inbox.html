@@ -1,0 +1,93 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not,see
+  <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+  <body class="{{ active }} bg-lightblue g-font-muli">
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'shared/nav.html' %}
+    <header class="container-fluid header">
+      {% include 'shared/minihero.html' with h1='Notifications' suppress_logo=1 %}
+    </header>
+    <section class="container inbox__notifications" id="gc-inbox">
+
+      <div class="notifications_button-group">
+        <div class="align-items-center d-flex">
+          <div class="btn-group mr-5" v-cloak>
+            <div class="gc-checkbox">
+              <input type="checkbox" id="select-all" v-model="selectAll">
+              <label for="select-all"></label>
+            </div>
+            <button type="button" class="btn btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div class="dropdown-menu font-smaller-3">
+              <a class="dropdown-item" href="#" @click.prevent="selectAll=true">All</a>
+              <a class="dropdown-item" href="#" @click.prevent="selectAll=false">None</a>
+              <a class="dropdown-item" href="#" @click.prevent="selectRead">Read</a>
+              <a class="dropdown-item" href="#" @click.prevent="selectUnread">Unread</a>
+            </div>
+          </div>
+
+          <div v-show="selectedNotifications.length" v-cloak>
+            <button @click="toggleRead()" class="btn-clean"><i class="fas fa-envelope-open"></i> Mark as Read</button>
+            <button @click="toggleRead(true)" class="btn-clean"><i class="fas fa-envelope"></i> Mark as Unread</button>
+            <button @click="deleteNotification()" class="btn-clean btn-clean--danger"><i class="fas fa-trash-alt"></i> Delete</button>
+          </div>
+        </div>
+        <div class="" v-cloak>
+          Selected [[ selectedNotifications.length ]] of [[ numNotifications ]]
+        </div>
+      </div>
+      <ul class="list-unstyled inbox__list" @scroll.passive="onScroll($event)">
+        <li v-for="notification in notifications" class="notifications__item inbox__item" :key="notification.id" v-cloak>
+          <div class="gc-checkbox mr-3">
+            <input type="checkbox" :id="'not-'+ [[notification.id]]" :value="notification.id" v-model="selectedNotifications">
+            <label :for="'not-'+ [[notification.id]]"></label>
+          </div>
+          <span class="notifications__item-readed">
+            <b class="notification__dot-small" v-bind:class="{'notification__dot-small_active': !notification.is_read}"></b>
+          </span>
+          <a :href="[[ notification.cta_url ]]" class="notifications_content" @click="e => !notification.is_read && markRead(notification.id)">
+            <img class="notifications__avatar" :src="'/dynamic/avatar/' + [[ notification.username ]]" width="28" height="28">
+            <p class="line-clamp" v-html="notification.message_html"></p>
+          </a>
+          <time class="notifications__time" :datetime="[[ notification.created_on ]]" :title="[[ notification.created_on ]]">
+            [[ notification.created_on | moment ]]
+          </time>
+        </li>
+      </ul>
+      <div class="notifications__no-results" :class="{'d-none': notifications.length > 0}" v-cloak>
+        <img src="{% static 'v2/images/shrug_bot.png' %}" alt="" width="316" height="221">
+        <p>
+          Nothing yet!
+        </p>
+      </div>
+    </section>
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+  </body>
+</html>

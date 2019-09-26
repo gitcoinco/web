@@ -1,0 +1,93 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static humanize grants_extra %}
+<a href="{% url 'grants:details' grant.id grant.slug %}">
+  <div class="grant-item__img">
+    <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+  </div>
+  <div class="grant-item__content py-4 px-3">
+    <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title|truncatechars:60 }}</a></h2>
+    <p class="grant-item__pitch font-caption">{{ grant.description|truncatechars:145 }}</p>
+    <div class="grant-item__footer">
+      <div class="grant-item__owner">
+        <span class="grant-item__owner-handle font-body">{% trans 'by' %}</span>
+        <a href="{% url 'profile' grant.admin_profile.handle %}" target="_blank" rel="noopener noreferrer">
+          <div class="grant-item__owner mt-3 mb-4">
+            <div class="grant-item__owner-image ml-2">
+              <img src="{% if grant.admin_profile.avatar_url %}{{ grant.admin_profile.avatar_url }}{% else %}https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg{% endif %}">
+            </div>
+            <div class="grant-item__owner-handle font-body">
+              <span class="ml-2">
+                  {{ grant.admin_profile.handle|default:'anonymous' }}
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="row progress-container mb-4">
+        <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
+        {% if clr_active %}
+          {% include 'grants/card/clr_estimate.html' %}
+        {% else %}
+          <p class="sub-title mb-0 font-caption">MONTHLY RECURRING</p>
+          <p class="font-title mb-0 font-weight-bold">
+            {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
+          </p>
+          <p class="font-caption {% if grant.clr_matching %} my-2 {% endif %}">
+            of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal
+          </p>
+
+        {% endif %}
+
+        </div>
+
+        <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6">
+          <p class="sub-title mb-0 font-caption">TOTAL FUNDED</p>
+          <p class="font-title mb-0 font-weight-bold">
+            {{ grant.amount_received_with_phantom_funds|floatformat:0|intcomma }} DAI
+          </p>
+
+          {% include 'grants/card/clr_estimate_prev.html' %}
+
+        </div>
+      </div>
+
+      <div class="grant-item__state mt-5 row">
+        <div class="col-6">
+          {% if grant.active %}
+            <div class="grant-item__state-active">
+              <div class="inner"></div>
+            </div>
+            <span class="grant-item__state-label font-caption">Active</span>
+          {% else %}
+            <div class="grant-item__state-completed">
+              <div class="inner"></div>
+            </div>
+            <span class="grant-item__state-label font-caption">Completed</span>
+          {% endif %}
+        </div>
+        {% if grant.active and grant.activeSubscriptions %}
+          <div class="col-6 text-right my-auto font-caption font-weight-semibold">
+            {{ grant.activeSubscriptions|length}}
+            subscription{% if grant.activeSubscriptions|length > 1 %}s{% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</a>

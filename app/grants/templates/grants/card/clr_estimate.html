@@ -1,0 +1,11 @@
+{% load i18n static humanize grants_extra %}
+
+          <div class="clr position-absolute text-center">
+            <h2 class="font-caption font-weight-bold my-0 p-1">
+              Round 3 CLR Match estimate: {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma }} DAI
+            </h2>
+            <p class="my-0"> + $1 contrib: +<span id="clr-grant-match">{{ grant.clr_prediction_curve.1.2|floatformat:0|intcomma }}</span> DAI</p>
+            <p class="my-0"> + $10 contrib: +<span id="clr-grant-match">{{ grant.clr_prediction_curve.2.2|floatformat:0|intcomma }}</span> DAI</p>
+            <p class="my-0"> + $100 contrib: +<span id="clr-grant-match">{{ grant.clr_prediction_curve.3.2|floatformat:0|intcomma }}</span> DAI</p>
+            <p class="my-0 mb-2"> + $1k contrib: +<span id="clr-grant-match">{{ grant.clr_prediction_curve.4.2|floatformat:0|intcomma }}</span> DAI</p>
+          </div>

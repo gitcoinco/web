@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,13 +16,12 @@
 
 {% endcomment %}
 {% load humanize i18n static %}
-<div class="row box activity {{ row.activity_type }}">
+<div class="row box activity {{ row.activity_type }} infinite-item">
   <div class="col-12 col-md-1">
     <div class="activity-avatar">
       <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>
-      {% if row.metadata.to_username %}
-        <img class="avatar" src="/dynamic/avatar/{{ row.metadata.to_username|cut:'@' }}" style="
-      width: 30px; height: 30px; bottom: 0; right: 0; position: absolute;"/>
+      {% if row.secondary_avatar_url %}
+        <img class="avatar secondary_avatar" src="{{row.secondary_avatar_url}}" />
       {% endif %}
     </div>
   </div>
@@ -37,12 +36,49 @@
           @{{ row.metadata.to_username }}
         </a>
       {% elif row.activity_type == 'new_kudos' %}
-        {% trans "send a" %}
-        {{ row.i18n_name|lower }}
+        {% trans "sent a" %}
+        Kudos
+        {% if row.metadata.to_username %}
         {% trans "to" %}
+        {% endif %}
         <a href="/profile/{{ row.metadata.to_username|cut:'@' }}">
           {{ row.metadata.to_username }}
         </a>
+      {% elif row.activity_type == 'new_grant' %}
+        {% trans "created" %}
+        <a href="{{ row.metadata.grant_url }}" target="_blank">
+          {{ row.metadata.title }}
+        </a>
+      {% elif row.activity_type == 'joined' %}
+        {% trans "joined Gitcoin" %}
+      {% elif row.activity_type == 'update_grant' %}
+        {% trans "updated" %}
+        <a href="{{ row.metadata.grant_url }}" target="_blank">
+          {{ row.metadata.title }}
+        </a>
+      {% elif row.activity_type == 'killed_grant' %}
+        {% trans "cancelled" %}
+        <a href="{{ row.metadata.grant_url }}" target="_blank">
+          {{ row.metadata.title }}
+        </a>
+      {% elif row.activity_type == 'new_grant_contribution' %}
+        {% trans "contributed to" %}
+        <a href="{{ row.metadata.grant_url }}" target="_blank">
+          {{ row.metadata.title }}
+        </a>
+      {% elif row.activity_type == 'new_grant_subscription' %}
+        {% trans "subscribed to" %}
+        <a href="{{ row.metadata.grant_url }}" target="_blank">
+          {{ row.metadata.title }}
+        </a>
+      {% elif row.activity_type == 'killed_grant_contribution' %}
+        {% trans "unsubscribed from" %}
+        <a href="{{ row.metadata.grant_url }}" target="_blank">
+          {{ row.metadata.title }}
+        </a>
+      {% elif row.activity_type == 'status_update' %}
+        {% trans "updated status" %}
+        <b>{{ row.metadata.title }}</b>
       {% elif row.activity_type == 'new_bounty' %}
         <span>{% trans "funded a new issue: " %}</span>{{ row.urled_title | safe }}
       {% elif row.activity_type == 'start_work' %}
@@ -53,8 +89,13 @@
         <span>{% trans "canceled bounty: " %}</span>{{ row.urled_title | safe }}
       {% elif row.activity_type == 'increased_bounty' %}
         <span>{% trans "increased funding: " %}</span>{{ row.urled_title | safe }}
+      {% elif row.activity_type == 'updated_avatar' %}
+        <span>{% trans "updated their avatar" %}</span>
+      {% elif row.activity_type == 'unknown_event' %}
+        <span>{% trans "made an update to: " %}</span>{{ row.urled_title | safe }}
       {% else %}
         {{ row.i18n_name }}
+        {{row.humanized_activity_type }}
         {% if row.bounty %}
           : <a href="{{ row.bounty.url }}">{{ row.bounty.title }}</a>
         {% endif %}
@@ -62,24 +103,36 @@
     </div>
     <div class="font-caption" >
       <div class="activity-tags activity-tag-first align-items-center">
-        <div class="tag token">
-          <p>
-            {% if row.value_in_token_disp %}
-            <span>{{ row.value_in_token_disp }} {{row.token_name}}</span>
-            {% elif row.metadata.value_in_eth %}
-            <span>{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
-            {% else %}
-            <span>{{row.metadata.value_in_token_old}}  - {{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
-            {% endif %}
-          </p>
-        </div>
+        {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token %}
+          <div class="tag token">
+            <p>
+              {% if row.value_in_token_disp %}
+                <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
+              {% elif row.metadata.value_in_eth %}
+                <span class="value_in_eth">{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
+              {% elif row.metadata.value_in_token %}
+                <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
+              {% else %}
+              {% endif %}
+            </p>
+          </div>
+        {% endif %}
+        {% if row.value_in_usdt_now %}
         <div class="tag usd">
           <p>
             <span>{{ row.value_in_usdt_now }} USD</span>
           </p>
         </div>
+        {% endif %}
+        {% if row.bounty.network and row.bounty.network != 'mainnet' %}
+        <div class="tag network_warning">
+          <p>
+            <span>{{ activity.bounty.network }}</span>
+          </p>
+        </div>
+        {% endif %}
         <span class="mx-2">
-          {{ row.created | naturaltime }}
+          {{ row.created_human_time }}
         </span>
       </div>
     </div>
@@ -87,7 +140,7 @@
   <div class="col-12 col-md-1 text-center">
     {% if row.kudos %}
       <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
-        <img src="{% static row.kudos_data.image %}" alt="" class="w-100">
+        <img src="{% static row.kudos_data.image %}" alt="" class="w-100" style="max-width:100px;">
       </a>
     {% else %}
       <i class="far {{ row.icon }} last-icon"></i>

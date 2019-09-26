@@ -1,0 +1,143 @@
+.milestones-edit {
+  float: right;
+  font-weight: 600;
+}
+
+.grant_milestones {
+  background-color: #f2f6f9;
+}
+
+.grant_milestones .milestones-form {
+  background-color: #fff;
+}
+
+.milestones-container {
+  border: 1px solid #CECECE;
+  border-radius: 3px;
+  padding: 30px;
+}
+
+.grant_milestones .milestones-container {
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid #CECECE;
+}
+
+#completion_date-error {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.grant_milestones a {
+  color: #0D0764;
+}
+
+ul.milestones-list {
+  padding-left: 15px;
+  margin-top: -1px;
+}
+
+ul.milestones-list li {
+  padding-left: 33px;
+  list-style: none;
+  position: relative;
+  margin-bottom: 0;
+  padding-bottom: 2.5em;
+}
+
+ul.milestones-list li:last-child {
+  padding-bottom: 0;
+}
+
+ul.milestones-list li:after {
+  content: url('/static/v2/images/list-icon-green.svg');
+  position: absolute;
+  left: -25px;
+  top: 10px;
+}
+
+ul.milestones-list li:before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  border-left: 2px solid #CACACA;
+  height: 100%;
+  width: 1px;
+}
+
+ul.milestones-list li:first-child:before {
+  top: 15px;
+}
+
+ul.milestones-list li:last-child:before {
+  height: 15px;
+}
+
+ul.milestones-list .milestone-title {
+  font-size: 1.2rem;
+}
+
+ul.milestones-list .milestone-date {
+  margin-bottom: 0.3rem;
+  font-size: 14px;
+  color: #000;
+}
+
+ul.milestones-list .milestone-date form {
+  display: inline;
+}
+
+ul.milestones-list .milestone-date input {
+  border: 1px solid;
+  font-size: 14px;
+  color: #999;
+}
+
+ul.milestones-list .milestone-date .error {
+  color: #D50000;
+  font-size: 0.75rem;
+}
+
+ul.milestones-list .milestone-date a {
+  float: right;
+  margin-right: 0.3rem;
+}
+
+ul.milestones-list .milestone-description {
+  font-size: .85rem;
+  color: #43484D;
+}
+
+.milestones-input input,
+.milestones-input textarea {
+  margin-top: 20px;
+}
+
+ul.milestones-list .button {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+ul.milestones-list .button:hover {
+  color: #fff;
+}
+
+input[type="date"]:before {
+  content: attr(placeholder) !important;
+  color: #aaa;
+  margin-right: 0.5em;
+}
+
+input[type="date"]:focus:before,
+input[type="date"]:valid:before {
+  content: "";
+}
+
+#completed_label {
+  display: flex;
+}
+
+#due_label {
+  margin: 0px;
+}

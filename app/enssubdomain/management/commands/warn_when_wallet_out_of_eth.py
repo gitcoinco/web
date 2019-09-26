@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -25,14 +25,15 @@ from marketing.mails import warn_account_out_of_eth
 
 class Command(BaseCommand):
 
-    help = 'warns the admins when the ENS_OWNER_ACCOUNT is out of gas'
+    help = 'warns the admins when any of the monitored_accounts is out of gas'
 
     def handle(self, *args, **options):
-        account = settings.ENS_OWNER_ACCOUNT
-        balance_eth_threshold = 0.07
+        monitored_accounts = [settings.ENS_OWNER_ACCOUNT, settings.KUDOS_OWNER_ACCOUNT, settings.GRANTS_OWNER_ACCOUNT]
+        for account in monitored_accounts:
+            balance_eth_threshold = 0.07
 
-        balance_wei = w3.eth.getBalance(account)
-        balance_eth = balance_wei / 10**18
+            balance_wei = w3.eth.getBalance(account)
+            balance_eth = balance_wei / 10**18
 
-        if balance_eth < balance_eth_threshold:
-            warn_account_out_of_eth(account, balance_eth, 'ETH')
+            if balance_eth < balance_eth_threshold:
+                warn_account_out_of_eth(account, balance_eth, 'ETH')

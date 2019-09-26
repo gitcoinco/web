@@ -1,9 +1,25 @@
 /* eslint-disable no-console */
 window.onload = function() {
+
+  // Check Radio-box
+  $('.rating input:radio').attr('checked', false);
+
+  $('.rating input').click(function() {
+    $('.rating span').removeClass('checked');
+    $(this).parent().addClass('checked');
+  });
+
+  $('input:radio').change(
+    function() {
+      var userRating = this.value;
+    });
+
   // a little time for web3 injection
   setTimeout(function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
     var account = web3.eth.accounts[0];
+
+    $('#payoutAddress').val(account);
 
     if (typeof localStorage['githubUsername'] != 'undefined') {
       if (!$('input[name=githubUsername]').val()) {
@@ -36,7 +52,6 @@ window.onload = function() {
         });
 
         disabled.attr('disabled', 'disabled');
-        mixpanel.track('Claim Bounty Clicked', {});
 
         // setup
         loading_button($('.js-submit'));
@@ -82,10 +97,6 @@ window.onload = function() {
 
           if (error) {
             console.error(error);
-            mixpanel.track('Fulfill Bounty Error', {
-              step: '_callback',
-              error: error
-            });
             ignore_error = String(error).indexOf('BigNumber') != -1;
           }
           document.ipfsDataHash = result; // Cache IPFS data hash
@@ -98,6 +109,7 @@ window.onload = function() {
           if (run_main) {
             if (!ignore_error) {
               var web3Callback = function(error, result) {
+                indicateMetamaskPopup(true);
                 var next = function() {
                   // setup inter page state
                   localStorage[issueURL] = JSON.stringify({
@@ -107,19 +119,18 @@ window.onload = function() {
                     txid: result
                   });
 
-                  dataLayer.push({ event: 'claimissue' });
-                  _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
-                  setTimeout(function() {
-                    mixpanel.track('Fulfill Bounty Success', {});
-                    document.location.href = '/funding/details?url=' + issueURL;
-                  }, 1000);
+                  var finishedComment = function() {
+                    dataLayer.push({ event: 'claimissue' });
+                    _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
+                    setTimeout(() => {
+                      document.location.href = '/funding/details?url=' + issueURL;
+                    }, 1000);
+                  };
+
+                  finishedComment();
                 };
 
                 if (error) {
-                  mixpanel.track('Fulfill Bounty Error', {
-                    step: 'callback',
-                    error: error
-                  });
                   console.error('err', error);
                   _alert({ message: gettext('There was an error') });
                   unloading_button($('.js-submit'));
@@ -129,7 +140,7 @@ window.onload = function() {
               };
 
               // Get bountyId from the database
-              var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+              var uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
               $.get(uri, function(results, status) {
                 results = sanitizeAPIResults(results);
@@ -144,6 +155,7 @@ window.onload = function() {
 
                 var bountyId = result['standard_bounties_id'];
 
+                indicateMetamaskPopup();
                 bounty.fulfillBounty(
                   bountyId,
                   document.ipfsDataHash,

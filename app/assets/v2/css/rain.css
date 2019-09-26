@@ -25,7 +25,8 @@
   display: none;
 }
 
-.transaction .rain {
+.transaction .rain,
+.tips .rain {
   position: fixed;
 }
 

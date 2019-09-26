@@ -151,6 +151,7 @@ class Command(BaseCommand):
         parser.add_argument('--debug', help='turn on debug statements', action='store_true')
         parser.add_argument('--live', help='whether or not to deploy the proposed changes live', action='store_true')
         parser.add_argument('--filter', default='', type=str, dest='kudos_filter')
+        parser.add_argument('--filter_svg', default='', type=str, dest='kudos_filter_svg')
 
     def handle(self, *args, **options):
         # config
@@ -162,6 +163,7 @@ class Command(BaseCommand):
         gitcoin_account = options['gitcoin_account']
         gas_price_gwei = options['gas_price_gwei']
         kudos_filter = options['kudos_filter']
+        kudos_filter_svg = options['kudos_filter_svg']
 
         if gitcoin_account:
             account = settings.KUDOS_OWNER_ACCOUNT
@@ -179,7 +181,10 @@ class Command(BaseCommand):
             all_kudos = yaml.load(f)
 
         for __, kudos in enumerate(all_kudos):
-            if kudos_filter not in kudos['name']:
+            is_match = (kudos_filter and kudos_filter in kudos['name']) or (kudos_filter_svg and kudos_filter_svg in kudos.get('image', ''))
+            if not kudos_filter and not kudos_filter_svg:
+                is_match = True
+            if not is_match:
                 continue
             mint_kudos(
                 kudos_contract, kudos, account, private_key, gas_price_gwei, options['mint_to'], options['live'],

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -23,7 +23,7 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     AccountDeletionRequest, Alumni, EmailEvent, EmailSubscriber, EmailSupressionList, GithubEvent,
-    GithubOrgToTwitterHandleMapping, LeaderboardRank, Match, SlackPresence, SlackUser, Stat,
+    GithubOrgToTwitterHandleMapping, Keyword, LeaderboardRank, MarketingCallback, Match, SlackPresence, SlackUser, Stat,
 )
 
 
@@ -114,12 +114,14 @@ class SlackUserAdmin(admin.ModelAdmin):
 
 
 
+admin.site.register(MarketingCallback, GeneralAdmin)
 admin.site.register(AccountDeletionRequest, GeneralAdmin)
 admin.site.register(EmailSupressionList, GeneralAdmin)
 admin.site.register(Alumni, AlumniAdmin)
 admin.site.register(GithubEvent, GithubEventAdmin)
 admin.site.register(Match, MatchAdmin)
 admin.site.register(Stat, GeneralAdmin)
+admin.site.register(Keyword, GeneralAdmin)
 admin.site.register(EmailEvent, EmailEventAdmin)
 admin.site.register(EmailSubscriber, EmailSubscriberAdmin)
 admin.site.register(LeaderboardRank, LeaderboardRankAdmin)

@@ -1,25 +1,39 @@
 :root {
+  --gc-light-blue: #16a8d5;
   --gc-blue: #3E00FF;
   --gc-blue-hover: #5b24ff;
   --gc-purple: #0D0764;
   --gc-purple-hover: #0b0d9d;
-  --gc-green: #05B66A;
-  --gc-green-hover: #15ef91;
+  --gc-green: #0FCE7C;
+  --gc-green-hover: #25E899;
+  --gc-pink: #f9006c;
+  --gc-pink-hover: #f167a3;
+
+  --gc-white: #ffffff;
+  --gc-light-violet: #bbafd0;
+  --gc-dark-violet: #130b88;
+  --gc-black: #0d023a;
+  --t: #ccc;
+
+  --gc-grey: #fafafa;
+  --gc-blue-grey: #f2f6f9;
+  --gc-dark-grey: #868789;
+  --gc-darker-grey: #3d3d3d;
 
   --text-light: #D8D8D8;
-  --text-dark: #666; /* 😈 */
+  --text-dark: var(--gc-black);
 }
 
 .text-highlight-purple {
-  color: #8E2ABE;
+  color: var(--gc-purple);
 }
 
 .text-highlight-green {
-  color: #12c971;
+  color: var(--gc-green);
 }
 
 .text-highlight-dark-blue {
-  color: #220e90;
+  color: var(--gc-blue);
 }
 
 .text-highlight-gc-purple {
@@ -31,9 +45,9 @@
 }
 
 .text-highlight-light-blue {
-  color: #1A96D5;
+  color: var(--gc-light-blue);
 }
 
 .text-highlight-pink {
-  color: #da086b;
+  color: var(--gc-pink);
 }

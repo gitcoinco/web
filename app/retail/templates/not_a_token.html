@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -28,16 +28,16 @@
   <body class="{{ active }} g-font-futura">
 
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <div class="header">
+      {% include 'home/nav.html' %}
       {% include 'shared/minihero.html' with suppress_logo=True h1='Why Gitcoin didn’t do a Utility Token ICO' position_h1_below_logo=1 %}
     </div>
 
     <section class="container-fluid bg-light py-5">
       <div class="row justify-content-center my-5">
         <div class="col-11">
-          <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row" data-id="1">
+          <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row">
             <div class="col-md-3 align-self-center text-center mr-md-3 mb-3">
               <img class="mw-100" src="{% static "v2/images/no-token/ethereum.svg" %}" alt="ethereum">
             </div>
@@ -46,7 +46,7 @@
               <h3 class="font-bigger-2">{% trans "We believe that tokens / tokenization are just an early use case of the 'open source financial system'.  Being first doesnt mean it's the best." %}</h3>
             </div>
           </div>
-          <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row" data-id="1">
+          <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row">
             <div class="col-md-3 align-self-center text-center ml-md-3 mb-3 order-md-1">
               <img class="mw-100" src="{% static "v2/images/no-token/no-token.svg" %}" alt="no token">
             </div>
@@ -55,7 +55,7 @@
               <h3 class="font-bigger-2">{% trans "Gitcoin didn't want to launch with a token before finding product-market fit.  We don't think it's the morally right move to raise a bunch of money before having a product; and we don't think it's the right monetization strategy long term." %}</h3>
             </div>
           </div>
-          <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row" data-id="1">
+          <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row">
             <div class="col-md-3 align-self-center text-center mr-md-3 mb-3">
               <img class="mw-100" src="{% static "v2/images/no-token/microscope.svg" %}" alt="microscope">
             </div>
@@ -85,7 +85,7 @@
       <div class="row justify-content-center">
         <div class="col-11 pb-5">
           <div class="card-deck flex-column flex-lg-row">
-            <div class="card text-center p-5 m-3 border-0" data-id="1">
+            <div class="card text-center p-5 m-3 border-0">
               <img class="mw-100 mx-auto mb-4 mt-4" width="100" src="{% static "v2/images/vision/future.png" %}"/>
               <h2 class="mb-3">{% trans "ERC721" %}</h2>
               <p class="h5">{% trans " Trading cards on the blockchain. Known as “Non fungible tokens” (NFTs) in the space." %}</p>
@@ -93,7 +93,7 @@
                 <a href="https://github.com/ethereum/EIPs/issues/721" target=blank rel=noopener>Read More &gt;</a>
               </p>
             </div>
-            <div class="card text-center p-5 m-3 border-0" data-id="2">
+            <div class="card text-center p-5 m-3 border-0">
               <img class="mw-100 mx-auto mb-4 mt-4" width="100" src="{% static "v2/images/vision/blockchain.png" %}"/>
               <h2 class="mb-3">{% trans "ERC948" %}</h2>
               <p class="h5">{% trans "Subscription services on the blockchain. Known as SAAS to us startup geeks." %}</p>
@@ -101,7 +101,7 @@
                 <a href="https://github.com/ethereum/EIPs/issues/948" target=blank rel=noopener>Read More &gt;</a>
               </p>
             </div>
-            <div class="card text-center p-5 m-3 border-0" data-id="3">
+            <div class="card text-center p-5 m-3 border-0">
               <img class="mw-100 mx-auto mb-4 mt-4" width="100" src="{% static "v2/images/mission/want/incentive.svg" %}"/>
               <h2 class="mb-3">{% trans "ERC1081" %}</h2>
               <p class="h5">{% trans "Standard for Bounties on the blockchain." %}</p>
@@ -126,6 +126,6 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/sentry.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>
 </html>

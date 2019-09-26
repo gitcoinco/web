@@ -1,47 +1,4 @@
 $(document).ready(function() {
-  $('[data-toggle=popover]').popover({
-    html: true,
-    trigger: 'focus',
-    template: '<div class="popover wallet-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
-    content: function() {
-      var content = $(this).attr('data-popover-content');
-
-      return $(content).children('.popover-body').html();
-    },
-    title: function() {
-      var title = $(this).attr('data-popover-content');
-
-      return $(title).children('.popover-heading').html();
-    }
-  });
-
-  if (!document.hasPreferredPayoutAddress) {
-    $('[data-toggle=popover]').popover('show');
-  }
-
-  $('body').on('submit', '#form-wallets', function(e) {
-    e.preventDefault();
-
-    var data = $('#form-wallets').serializeArray();
-
-    data.push({'page': 2});
-
-    var postWallets = fetchData(
-      e.currentTarget.action,
-      e.currentTarget.method,
-      data
-    );
-
-    $.when(postWallets).then(function(response) {
-      var walletAddress = response.wallets[0];
-      var newAddress = new truncate(walletAddress);
-
-      $('#preferred-address').text(newAddress.elem);
-      $('#preferred-address').prop('title', walletAddress);
-      $('#kudos-section').html(response.kudos_html);
-    });
-  });
-
   $('#kudos-section').on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a')) {
       e.stopPropagation();
@@ -54,8 +11,10 @@ $(document).ready(function() {
 
   const tabSection = document.querySelector('#activity-tabs-sections');
   const updateViewBtn = document.querySelector('#update-view-btn');
+
   let fetchInProgress = false;
 
+  // update activity views when scroll happens
   function updateView(ignoreScrollOffset) {
     window.setTimeout(updateView, 300);
 
@@ -63,8 +22,15 @@ $(document).ready(function() {
       return;
     }
 
+    const is_on_activity_tab = $('.profile-bounties--activities').length > 0;
+    const are_there_no_tabs = $('#tab_controller .nav-link.active').length == 0;
+
+    if (!is_on_activity_tab && !are_there_no_tabs) {
+      return;
+    }
+
     const activityContainer = document.querySelector('.tab-section.active .activities');
-    const activityCount = parseInt(activityContainer.getAttribute('count')) || 0;
+    const activityCount = activityContainer ? parseInt(activityContainer.getAttribute('count')) || 0 : 0;
     const loadingImg = document.querySelector('.loading_img');
 
     if (activityContainer.children.length < activityCount) {
@@ -76,12 +42,14 @@ $(document).ready(function() {
 
     if (ignoreScrollOffset || window.scrollY >= tabSection.scrollHeight) {
       const activityName = activityContainer.id;
-      let page = parseInt(activityContainer.getAttribute('page')) || 1;
+      let page = parseInt(activityContainer.getAttribute('page')) || 0;
 
       fetchInProgress = true;
       loadingImg.className = loadingImg.className.replace('hidden', 'visible');
 
-      fetch(document.location.href + '?p=' + (++page) + '&a=' + activityName).then(
+      const fetch_url = location.href.replace(location.hash, '').replace('?', '').replace('#', '');
+
+      fetch(fetch_url + '?p=' + (++page) + '&a=' + activityName).then(
         function(response) {
           if (response.status === 200) {
             response.text().then(
@@ -129,6 +97,84 @@ $(document).ready(function() {
 });
 
 (function($) {
+
+  $('.tooltip').bootstrapTooltip();
+
+  // rep graph
+  if ($('#earn_dataviz').length) {
+    // Set the dimensions of the canvas / graph
+    const margin = {top: 30, right: 30, bottom: 30, left: 70};
+    const width = $('.container.position-relative').width() - margin.left - margin.right;
+    const height = 120 - margin.top - margin.bottom;
+
+    // Parse the date / time
+    const parseDate = d3.time.format('%d-%b-%y').parse;
+
+    // Set the ranges
+    const x = d3.time.scale().range([ 0, width ]);
+    const y = d3.scale.linear().range([ height, 0 ]);
+
+    // Define the axes
+    var xAxis = d3.svg.axis().scale(x)
+      .orient('bottom').ticks(5);
+
+    var yAxis = d3.svg.axis().scale(y)
+      .orient('left').ticks(3);
+
+    // Define the line
+    var valueline = d3.svg.line()
+      .x(function(d) {
+        return x(d.date);
+      })
+      .y(function(d) {
+        return y(d.close);
+      });
+        
+    // Adds the svg canvas
+    var svg = d3.select('#earn_dataviz')
+      .append('svg')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform',
+        'translate(' + margin.left + ',' + margin.top + ')');
+
+    // Get the data
+    d3.csv(document.graph_url, function(error, data) {
+      data.forEach(function(d) {
+        d.date = parseDate(d.date);
+        d.close = +d.close;
+      });
+
+      // Scale the range of the data
+      x.domain(d3.extent(data, function(d) {
+        return d.date;
+      }));
+      y.domain([ 0, d3.max(data, function(d) {
+        return d.close;
+      }) ]);
+
+      // Add the valueline path.
+      svg.append('path')
+        .attr('class', 'line')
+        .attr('d', valueline(data));
+
+      // Add the X Axis
+      svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(xAxis);
+
+      // Add the Y Axis
+      svg.append('g')
+        .attr('class', 'y axis')
+        .call(yAxis);
+
+    });
+
+  }
+
+
   $(document).on('click', '.load-more', function() {
     var address = $('#preferred-address').prop('title');
     var link = $(this);

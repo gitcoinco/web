@@ -1,7 +1,8 @@
 {% extends 'onepager/base.html' %}
 {% load i18n static %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/jquery.js"%}"></script>
+<link rel="canonical" href="{% url 'gas' %}">
+<script src="{% static "v2/js/lib/jquery.js"%}"></script>
 <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
 <script src="{% static "v2/js/pages/gas.js" %}"></script>
 
@@ -45,7 +46,7 @@ div.tooltip {
 
 {% block 'main' %}
 
-<section id=main>
+<section id=main style="max-width: 90%;">
 {% include 'shared/gas_nav.html' %}
 
 {% include 'shared/gas_advisories.html' %}
@@ -95,7 +96,7 @@ div.tooltip {
     });
 
     var margin = {top: 20, right: 20, bottom: 50, left: 70},
-        width = window.innerWidth - 100 - margin.left - margin.right,
+        width = window.innerWidth - 300 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
     var initialWidth = width;

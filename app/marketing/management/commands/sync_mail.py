@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -23,22 +23,28 @@ from mailchimp3 import MailChimp
 from marketing.models import EmailSubscriber
 from marketing.utils import get_or_save_email_subscriber as process_email
 
+hours_ago = 12 #if you change, this make sure you change the crontab file to ...
+# make it inclusive of all users since last run of this job
+
 
 def pull_to_db():
+    # setup
+    before_timestamp = timezone.now() - timezone.timedelta(hours=hours_ago)
+
     print('- pull_to_db')
     print("- profile")
     from dashboard.models import Profile
     # right now, we only take profiles that've given us an access token
-    profiles = Profile.objects.exclude(email='').all()
+    profiles = Profile.objects.exclude(email='').filter(modified_on__gt=before_timestamp).all()
     # in the future, though, we could take ALL github profiles in the system and use those
     # profiles = Profile.objects.exclude(email='').all()
-    for profile in profiles:
-        process_email(profile.email, 'profile_email')
+    for email in profiles.values_list('email', flat=True):
+        process_email(email, 'profile_email')
 
     print("- match")
     from marketing.models import Match
-    for match in Match.objects.all():
-        process_email(match.email, 'match')
+    for email in Match.objects.filter(modified_on__gt=before_timestamp).values_list('email', flat=True):
+        process_email(email, 'match')
 
     get_size = 50
     client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
@@ -58,8 +64,7 @@ def pull_to_db():
     print('local')
     print("- dashboard_sub")
     from dashboard.models import Subscription
-    for sub in Subscription.objects.all():
-        email = sub.email
+    for email in Subscription.objects.filter(modified_on__gt=before_timestamp).values_list('email', flat=True):
         process_email(email, 'dashboard_subscription')
 
     print("- tip, Kudos")
@@ -67,7 +72,7 @@ def pull_to_db():
     from kudos.models import KudosTransfer
     objects = [Tip, KudosTransfer]
     for obj in objects:
-        for _this in obj.objects.all():
+        for _this in obj.objects.filter(modified_on__gt=before_timestamp):
             # do not add receive tip emails to the mailing list,
             # don't want to spam people at 4 diff email addresses
             # for email in tip.emails:
@@ -79,7 +84,7 @@ def pull_to_db():
 
     print("- bounty")
     from dashboard.models import Bounty
-    for b in Bounty.objects.prefetch_related('fulfillments').all():
+    for b in Bounty.objects.filter(modified_on__gt=before_timestamp).prefetch_related('fulfillments').all():
         email_list = []
         if b.bounty_owner_email:
             email_list.append(b.bounty_owner_email)
@@ -91,26 +96,22 @@ def pull_to_db():
 
     print("- tdi")
     from tdi.models import WhitepaperAccess, WhitepaperAccessRequest
-    for wa in WhitepaperAccess.objects.all():
-        process_email(wa.email, 'whitepaperaccess')
+    for email in WhitepaperAccess.objects.filter(modified_on__gt=before_timestamp).values_list('email', flat=True):
+        process_email(email, 'whitepaperaccess')
 
-    for wa in WhitepaperAccessRequest.objects.all():
-        process_email(wa.email, 'whitepaperaccessrequest')
+    for email in WhitepaperAccessRequest.objects.filter(modified_on__gt=before_timestamp).values_list('email', flat=True):
+        process_email(email, 'whitepaperaccessrequest')
 
     print('/pull_to_db')
 
-
-def push_to_mailchimp():
-    print('- push_to_mailchimp')
-    client = MailChimp(settings.MAILCHIMP_API_KEY, settings.MAILCHIMP_USER)
-    created_after = timezone.now() - timezone.timedelta(hours=2)
-    eses = EmailSubscriber.objects.filter(active=True, created_on__gt=created_after).order_by('-pk')
+def sync_mailchimp_list(eses, list_id):
     print("- {} emails".format(eses.count()))
-    for es in eses:
+    client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
+    for es in eses.values_list('email', flat=True):
         email = es.email
         print(email)
         try:
-            client.lists.members.create(settings.MAILCHIMP_LIST_ID, {
+            client.lists.members.create(list_id, {
                 'email_address': email,
                 'status': 'subscribed'
             })
@@ -118,6 +119,33 @@ def push_to_mailchimp():
         except Exception:
             # print("already on the list")
             pass
+
+
+def push_to_mailchimp():
+    print('- push_to_mailchimp')
+    client = MailChimp(settings.MAILCHIMP_API_KEY, settings.MAILCHIMP_USER)
+    created_after = timezone.now() - timezone.timedelta(hours=12)
+
+    eses_funder = EmailSubscriber.objects.filter(
+        active=True, created_on__gt=created_after,
+        profile__persona_is_funder=True).order_by('-pk')
+    print("funder emails")
+    print("- {} emails".format(eses_funder.count()))
+    sync_mailchimp_list(eses_funder, settings.MAILCHIMP_LIST_ID_FUNDERS)
+
+    eses_hunter = EmailSubscriber.objects.filter(
+        active=True, created_on__gt=created_after,
+        profile__persona_is_hunter=True).order_by('-pk')
+    print("hunter emails")
+    print("- {} emails".format(eses_hunter.count()))
+    sync_mailchimp_list(eses_hunter, settings.MAILCHIMP_LIST_ID_HUNTERS)
+
+    eses = EmailSubscriber.objects.filter(active=True,
+        created_on__gt=created_after).order_by('-pk')
+    print("all emails")
+    print("- {} emails".format(eses.count()))
+    sync_mailchimp_list(eses, settings.MAILCHIMP_LIST_ID)
+
     print('/push_to_mailchimp')
 
 

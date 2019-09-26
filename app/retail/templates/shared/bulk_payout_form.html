@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,13 +22,13 @@
     border-top: none;
   }
 
-  #payout_table tr td .percent {
+  #payout_table tr td .input_amount {
     border-radius: 2px;
     border: 1px solid;
 
   }
 
-  #payout_table tr td .percent,
+  #payout_table tr td .input_amount,
   #payout_table tr td .amount {
     padding-top: 9px;
     padding-bottom: 9px;
@@ -43,7 +43,7 @@
         <thead>
           <tr>
             <th>{% trans 'Github Username'%}</th>
-            <th>{% trans 'Percent'%}(%)</th>
+            <th>{% trans 'Input'%}<a href="#" class="toggleType" data-type="pct">(%)</a></th>
             <th>{% trans 'Amount'%}</th>
             <th></th>
           </tr>
@@ -55,9 +55,3 @@
     <input type="submit" class="button button--primary button__small add_another" value="Add (+)" />
   </div>
 </div>
-
-
-
-
-
-

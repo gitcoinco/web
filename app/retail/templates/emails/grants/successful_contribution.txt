@@ -1,0 +1,20 @@
+{% load i18n %}
+
+{% trans "Gitcoin Heart Robot" %}
+
+{% trans "Your contribution was successful!" %} {{ grant.title }}
+
+{% trans "The world of open source is a better place because of you." %}
+
+{{ grant.description }}
+
+{% trans "You have agreed to give" %}
+
+{{ transaction.value_true }} {{ transaction.token_name }} {% trans "per" %} {{ transaction.frequency }}
+
+{% trans "You can see the transaction on etherscan" %} {{ transaction.link }} {% trans "here." %}
+
+{% trans "View Grant" %} at {% url 'grants:details' grant.id grant.slug %}
+
+{% trans "If you ever need to you can cancel your support." %} at
+{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}

@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -93,10 +93,7 @@
         <h2>{% trans 'Administrative Tasks' %}</h2>
 
         <ul>
-            <a href="/_administrationfaucet/faucetrequest/">Process Faucet Requests</a>
-        </ul>
-        <ul>
-            <a href="/_administrationexternal_bounties/externalbounty/">Process Universal Bounties</a>
+            <a href="/_administrationfaucet/faucetrequest/?fulfilled=f&rejected=f">Process Faucet Requests</a>
         </ul>
         <ul>
             <a href="/_administrationtdi/whitepaperaccessrequest/">Process Whitepaper Requests</a>

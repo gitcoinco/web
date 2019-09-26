@@ -17,26 +17,35 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import base64
 import json
 import logging
 from json.decoder import JSONDecodeError
 
 from django.conf import settings
+from django.utils import timezone
 
-import ipfsapi
+import ipfshttpclient
 import requests
 from app.utils import sync_profile
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Activity, Bounty, Profile, UserAction
+from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
-from ipfsapi.exceptions import CommunicationError
+from ipfshttpclient.exceptions import CommunicationError
+from pytz import UTC
 from web3 import HTTPProvider, Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
 
+from .notifications import maybe_market_to_slack
+
 logger = logging.getLogger(__name__)
+
+SEMAPHORE_BOUNTY_SALT = '1'
+SEMAPHORE_BOUNTY_NS = 'bounty_processor'
+
 
 def all_sendcryptoasset_models():
     from revenue.models import DigitalGoodPurchase
@@ -89,7 +98,8 @@ def humanize_event_name(name):
         'killed_bounty': 'Cancelled funded issue',
         'worker_approved': 'Worker approved',
         'worker_rejected': 'Worker rejected',
-        'work_done': 'Work done'
+        'work_done': 'Work done',
+        'issue_remarketed': 'Issue re-marketed'
     }
 
     return humanized_event_names.get(name, name).upper()
@@ -182,7 +192,8 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
 
     Args:
         host (str): The IPFS host to connect to.
-            Defaults to environment variable: IPFS_HOST.
+            Defaults to environment variable: IPFS_HOST.  The host name should be of the form 'ipfs.infura.io' and not 
+            include 'https://'.
         port (int): The IPFS port to connect to.
             Defaults to environment variable: env IPFS_API_PORT.
 
@@ -191,14 +202,15 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
             communication error with IPFS.
 
     Returns:
-        ipfsapi.client.Client: The IPFS connection client.
+        ipfshttpclient.client.Client: The IPFS connection client.
 
     """
     if host is None:
-        host = f'https://{settings.IPFS_HOST}'
-
+        clientConnectString = f'/dns/{settings.IPFS_HOST}/tcp/{settings.IPFS_API_PORT}/{settings.IPFS_API_SCHEME}'
+    else:
+        clientConnectString = f'/dns/{host}/tcp/{settings.IPFS_API_PORT}/https'
     try:
-        return ipfsapi.connect(host, port)
+        return ipfshttpclient.connect(clientConnectString)
     except CommunicationError as e:
         logger.exception(e)
         raise IPFSCantConnectException('Failed while attempt to connect to IPFS')
@@ -233,7 +245,7 @@ def ipfs_cat_ipfsapi(key):
 
 def ipfs_cat_requests(key):
     try:
-        url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
+        url = f'https://ipfs.infura.io:5001/api/v0/cat?arg={key}'
         response = requests.get(url, timeout=1)
         return response.text, response.status_code
     except:
@@ -256,9 +268,16 @@ def get_web3(network, sockets=False):
     """
     if network in ['mainnet', 'rinkeby', 'ropsten']:
         if sockets:
-            provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
+            if settings.INFURA_USE_V3:
+                provider = WebsocketProvider(f'wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}')
+            else:
+                provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
         else:
-            provider = HTTPProvider(f'https://{network}.infura.io')
+            if settings.INFURA_USE_V3:
+                provider = HTTPProvider(f'https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}')
+            else:
+                provider = HTTPProvider(f'https://{network}.infura.io')
+
         w3 = Web3(provider)
         if network == 'rinkeby':
             w3.middleware_stack.inject(geth_poa_middleware, layer=0)
@@ -267,6 +286,62 @@ def get_web3(network, sockets=False):
         return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
 
     raise UnsupportedNetworkException(network)
+
+
+def get_profile_from_referral_code(code):
+    """Returns a profile from the unique code
+
+    Returns:
+        A unique string for each profile
+    """
+    return base64.urlsafe_b64decode(code.encode()).decode()
+
+
+def get_bounty_invite_url(inviter, bounty_id):
+    """Returns a unique url for each bounty and one who is inviting
+
+    Returns:
+        A unique string for each bounty
+    """
+    salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
+    string = str(inviter) + salt + str(bounty_id)
+    return base64.urlsafe_b64encode(string.encode()).decode()
+
+
+def get_bounty_from_invite_url(invite_url):
+    """Returns a unique url for each bounty and one who is inviting
+
+    Returns:
+        A unique string for each bounty
+    """
+    salt = "X96gRAVvwx52uS6w4QYCUHRfR3OaoB"
+    decoded_string = base64.urlsafe_b64decode(invite_url.encode()).decode()
+    data_array = decoded_string.split(salt)
+    inviter = data_array[0]
+    bounty = data_array[1]
+    return {'inviter': inviter, 'bounty': bounty}
+
+
+def get_unrated_bounties_count(user):
+    if not user:
+        return 0
+    unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
+        .filter(interested__status='okay') \
+        .filter(interested__pending=False).filter(idx_status='done') \
+        .exclude(
+            feedbacks__feedbackType='worker',
+            feedbacks__sender_profile=user
+        )
+    unrated_funded = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+    .filter(
+        bounty_owner_github_username__iexact=user.handle,
+        idx_status='done'
+    ).exclude(
+        feedbacks__feedbackType='approver',
+        feedbacks__sender_profile=user,
+    )
+    unrated_count = unrated_funded.count() + unrated_contributed.count()
+    return unrated_count
 
 
 def getStandardBountiesContractAddresss(network):
@@ -357,6 +432,7 @@ def get_bounty(bounty_enum, network):
         'token': token,
         'fulfillments': fulfillments,
         'network': network,
+        'review': bounty_data.get('review',{}),
     }
     return bounty
 
@@ -370,24 +446,22 @@ def web3_process_bounty(bounty_data):
         print(f"--*--")
         return None
 
-    #semaphor_key = f"bounty_processor_{bounty_data['id']}_1"
-    #semaphor = get_semaphor(semaphor_key)
-    #with semaphor:
-    if True: # KO 20181107 -- removing semaphor processing code for time being, due to downtime last night
-        did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
+    did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
-        if did_change and new_bounty:
-            _from = old_bounty.pk if old_bounty else None
-            print(f"- processing changes, {_from} => {new_bounty.pk}")
-            process_bounty_changes(old_bounty, new_bounty)
+    if did_change and new_bounty:
+        _from = old_bounty.pk if old_bounty else None
+        print(f"- processing changes, {_from} => {new_bounty.pk}")
+        process_bounty_changes(old_bounty, new_bounty)
 
-        return did_change, old_bounty, new_bounty
+    return did_change, old_bounty, new_bounty
 
 
 def has_tx_mined(txid, network):
     web3 = get_web3(network)
     try:
         transaction = web3.eth.getTransaction(txid)
+        if not transaction:
+            return False
         return transaction.blockHash != HexBytes('0x0000000000000000000000000000000000000000000000000000000000000000')
     except Exception:
         return False
@@ -504,6 +578,18 @@ def get_ordinal_repr(num):
     return f'{num}{suffix}'
 
 
+def record_funder_inaction_on_fulfillment(bounty_fulfillment):
+    payload = {
+        'profile': bounty_fulfillment.bounty.bounty_owner_profile,
+        'metadata': {
+            'bounties': list(bounty_fulfillment.bounty.pk),
+            'bounty_fulfillment_pk': bounty_fulfillment.pk,
+            'needs_review': True
+        }
+    }
+    Activity.objects.create(activity_type='bounty_abandonment_escalation_to_mods', bounty=bounty_fulfillment.bounty, **payload)
+
+
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):
     """Record User actions and activity for the associated Interest."""
     payload = {
@@ -613,6 +699,16 @@ def generate_pub_priv_keypair():
     return priv.to_string().hex(), pub.hex(), checksum_encode(address)
 
 
+def get_bounty_semaphore_ns(standard_bounty_id):
+    return f'{SEMAPHORE_BOUNTY_NS}_{standard_bounty_id}_{SEMAPHORE_BOUNTY_SALT}'
+
+
+def release_bounty_lock(standard_bounty_id):
+    from app.utils import release_semaphore
+    ns = get_bounty_semaphore_ns(standard_bounty_id)
+    release_semaphore(ns)
+
+
 def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
     """Define the profile helper.
 
@@ -658,6 +754,8 @@ def get_tx_status(txid, network, created_on):
     from dashboard.utils import get_web3
     import pytz
 
+    DROPPED_DAYS = 4
+
     # get status
     status = None
     if txid == 'override':
@@ -666,7 +764,7 @@ def get_tx_status(txid, network, created_on):
         web3 = get_web3(network)
         tx = web3.eth.getTransactionReceipt(txid)
         if not tx:
-            drop_dead_date = created_on + timezone.timedelta(days=3)
+            drop_dead_date = created_on + timezone.timedelta(days=DROPPED_DAYS)
             if timezone.now() > drop_dead_date:
                 status = 'dropped'
             else:
@@ -683,9 +781,9 @@ def get_tx_status(txid, network, created_on):
         else:
             status = 'unknown'
     except Exception as e:
-        logger.error(f'Failure in get_tx_status for {txid} - ({e})')
+        logger.debug(f'Failure in get_tx_status for {txid} - ({e})')
         status = 'unknown'
-    
+
     # get timestamp
     timestamp = None
     try:
@@ -696,3 +794,105 @@ def get_tx_status(txid, network, created_on):
     except:
         pass
     return status, timestamp
+
+
+def is_blocked(handle):
+    return BlockedUser.objects.filter(handle__iexact=handle, active=True).exists()
+
+
+def get_nonce(network, address):
+    # this function solves the problem of 2 pending tx's writing over each other
+    # by checking both web3 RPC *and* the local DB for the nonce
+    # and then using the higher of the two as the tx nonce
+    from perftools.models import JSONStore
+    from dashboard.utils import get_web3
+    w3 = get_web3(network)
+
+    # web3 RPC node: nonce
+    nonce_from_web3 = w3.eth.getTransactionCount(address)
+
+    # db storage
+    key = f"nonce_{network}_{address}"
+    view = 'get_nonce'
+    nonce_from_db = 0
+    try:
+        nonce_from_db = JSONStore.objects.get(key=key, view=view).data[0]
+        nonce_from_db += 1 # increment by 1 bc we need to be 1 higher than last txid
+    except:
+        pass
+
+    new_nonce = max(nonce_from_db, nonce_from_web3)
+
+    # update JSONStore
+    JSONStore.objects.filter(key=key, view=view).all().delete()
+    JSONStore.objects.create(key=key, view=view, data=[new_nonce])
+
+    return new_nonce
+
+
+def re_market_bounty(bounty, auto_save = True):
+    remarketed_count = bounty.remarketed_count
+    if remarketed_count < settings.RE_MARKET_LIMIT:
+        now = timezone.now()
+        minimum_wait_after_remarketing = bounty.last_remarketed + timezone.timedelta(minutes=settings.MINUTES_BETWEEN_RE_MARKETING) if bounty.last_remarketed else now
+        if now >= minimum_wait_after_remarketing:
+            bounty.remarketed_count = remarketed_count + 1
+            bounty.last_remarketed = now
+
+            if auto_save:
+                bounty.save()
+
+            maybe_market_to_slack(bounty, 'issue_remarketed')
+
+            result_msg = 'The issue will appear at the top of the issue explorer. '
+            further_permitted_remarket_count = settings.RE_MARKET_LIMIT - bounty.remarketed_count
+            if further_permitted_remarket_count >= 1:
+                result_msg += f'You will be able to remarket this bounty {further_permitted_remarket_count} more time if a contributor does not pick this up.'
+            elif further_permitted_remarket_count == 0:
+                result_msg += 'Please note this is the last time the issue is able to be remarketed.'
+
+            return {
+                "success": True,
+                "msg": result_msg
+            }
+        else:
+            time_delta_wait_time = minimum_wait_after_remarketing - now
+            minutes_to_wait = round(time_delta_wait_time.total_seconds() / 60)
+            return {
+                "success": False,
+                "msg": f'As you recently remarketed this issue, you need to wait {minutes_to_wait} minutes before remarketing this issue again.'
+            }
+    else:
+        return {
+            "success": False,
+            "msg": f'The issue was not remarketed due to reaching the remarket limit ({settings.RE_MARKET_LIMIT}).'
+        }
+
+
+def apply_new_bounty_deadline(bounty, deadline, auto_save = True):
+    bounty.expires_date = timezone.make_aware(
+        timezone.datetime.fromtimestamp(deadline),
+        timezone=UTC)
+    result = re_market_bounty(bounty, False)
+
+    if auto_save:
+        bounty.save()
+
+    base_result_msg = "You've extended expiration of this issue."
+    result['msg'] = base_result_msg + " " + result['msg']
+
+    return result
+
+
+def release_bounty_to_the_public(bounty, auto_save = True):
+    if bounty:
+        bounty.reserved_for_user_handle = None
+        bounty.reserved_for_user_from = None
+        bounty.reserved_for_user_expiration = None
+
+        if auto_save:
+            bounty.save()
+
+        return True
+    else:
+        return False

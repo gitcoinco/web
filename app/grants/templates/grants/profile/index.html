@@ -1,0 +1,98 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href="{% static "v2/css/grants/profile.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
+  </head>
+  <body class="interior {{ active }} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+    </div>
+
+    {% if grants|length != 0 or sub_grants|length != 0 %}
+      <div class="container pt-5">
+        <div id="grant-profile-tabs" class="tab-container font-body mb-3">
+          <button type="button" id="supported" class="section-tab">{% trans "Supported" %} ({{ sub_grants|length }})</button>
+          <button type="button" id="created" class="section-tab">{% trans "Created" %} ({{ grants|length }})</button>
+        </div>
+
+        <div id="grant-profile-tabs-sections" class="tab-sections section">
+          <div id="section-supported" class="tab-section active">
+            {% if sub_grants|length != 0 %}
+              <div class="container px-0">
+                <div class="row mb-3 py-2 px-0 mx-sm-0">
+                  <div class="col-12 px-0">
+                    {% include 'grants/profile/body.html' with grants=sub_grants history=sub_history %}
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              {% include 'grants/profile/none.html' with tab='support' %}
+            {% endif %}
+          </div>
+          <div id="section-created" class="tab-section">
+            {% if grants|length != 0 %}
+              <div class="container px-0">
+                <div class="row mb-3 py-2 px-0 mx-sm-0">
+                  <div class="col-12 px-0">
+                    {% include 'grants/profile/body.html' with grants=grants history=history %}
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              {% include 'grants/profile/none.html' with tab='create' %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="container py-5">
+        {% include 'grants/profile/none.html' %}
+      </div>
+    {% endif %}
+  </body>
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/footer.html' %}
+  {% include 'grants/shared/shared_scripts.html' %}
+
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+  <script src="{% static "v2/js/grants/shared.js" %}"></script>
+  <script src="{% static "v2/js/grants/index.js" %}"></script>
+  <script>
+    $(document).ready(function() {
+      setupTabs('#grant-profile-tabs');
+    });
+
+    if (localStorage['grants_quickstart_disable'] !== 'true' &&
+        {{ sub_grants|length }} == 0 && {{ grants|length }} == 0) {
+      window.location = document.location.origin + '/grants/quickstart';
+    }
+  </script>
+<html>
