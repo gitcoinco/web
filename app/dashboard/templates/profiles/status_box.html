@@ -3,29 +3,35 @@
   {% csrf_token %}
   <textarea
     id="textarea"
-    class="form__input"
+    class="form__input p-2"
     placeholder="What are you thinking?"
     style="resize: none"
   ></textarea>
 
-  <div class="btn-group-toggle activity_type_selector" data-toggle="buttons">
-    <label class="btn btn-radio frontend mr-2 font-weight-bold py-2 px-4" >
-      <input type="checkbox" name="activity_type" id="" value="mentor" autocomplete="off" required="">
-        <i class="fas fa-terminal mr-2"></i>
+  <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
+    <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-2 px-3" >
+      <input type="checkbox" name="activity_type" value="mentor" autocomplete="off">
+      <i class="fas fa-terminal mr-2"></i>
       Looking for Mentor
     </label>
-    <label class="btn btn-radio job mr-2 font-weight-bold py-2 px-4 ">
-      <input type="checkbox" name="activity_type" id="" value="job" autocomplete="off" required=""><i class="fas fa-code mr-2"></i> Looking for Job
+    <label class="btn btn-radio mr-2 mb-2 mb-md-0 job font-weight-semibold font-caption py-2 px-3">
+      <input type="checkbox" name="activity_type" value="job" autocomplete="off">
+      <i class="fas fa-code mr-2"></i>
+      Looking for Job
     </label>
-    <label class="btn btn-radio help mr-2 font-weight-bold py-2 px-4 ">
-      <input type="checkbox" name="activity_type" id="" value="help" autocomplete="off" required=""><i class="fas fa-laptop-code mr-2"></i> Looking for Help
+    <label class="btn btn-radio mr-2 mb-2 mb-md-0 help font-weight-semibold font-caption py-2 px-3">
+      <input type="checkbox" name="activity_type" value="help" autocomplete="off">
+      <i class="fas fa-laptop-code mr-2"></i>
+      Looking for Help
     </label>
-    <label class="btn btn-radio custom font-weight-bold py-2 px-4 ">
-      <input type="checkbox" name="activity_type" id="" value="custom" autocomplete="off" required=""><i class="fas fa-briefcase mr-2"></i> Custom
+    <label class="btn btn-radio custom mb-2 mb-md-0 font-weight-semibold font-caption py-2 px-3">
+      <input type="checkbox" name="activity_type" value="custom" autocomplete="off">
+      <i class="fas fa-briefcase mr-2"></i>
+      Custom
     </label>
   </div>
 
-  <div class="text-right">
-    <button class="btn btn-gc-blue" id="btn_post" disabled="true">Post!</button>
+  <div class="text-center text-md-right">
+    <button class="btn btn-gc-blue font-caption" id="btn_post" disabled="true">SHARE</button>
   </div>
 </div>

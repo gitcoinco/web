@@ -266,7 +266,7 @@ button:focus {
 }
 
 .btn-radio {
-  border: 2px solid #D3D3D3;
+  border: 1px solid #D3D3D3;
 }
 
 .btn-radio.active {

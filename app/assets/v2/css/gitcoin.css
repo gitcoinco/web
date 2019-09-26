@@ -402,12 +402,12 @@ div.button-pink {
 
 #tabs .nav-link span {
   position: relative;
-  font-size: 0.3rem;
+  font-size: 8px;
   font-weight: bold;
   background-color: #ddd;
   border-radius: 10px;
-  padding: 3px 5px;
-  top: -5px;
+  padding: 2px 5px;
+  top: -10px
 }
 
 .nav-link:visited {

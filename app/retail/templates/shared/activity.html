@@ -17,16 +17,16 @@
 {% endcomment %}
 {% load humanize i18n static %}
 <div class="row box activity {{ row.activity_type }} infinite-item">
-  <div class="col-12 col-md-1">
-    <div class="activity-avatar">
+  <div class="col-12 col-md-1 {% if row.secondary_avatar_url %} secondary {% endif %}">
+    <div class="activity-avatar my-auto py-2">
       <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>
       {% if row.secondary_avatar_url %}
-        <img class="avatar secondary_avatar" src="{{row.secondary_avatar_url}}" />
+        <img class="avatar my-auto secondary_avatar" src="{{row.secondary_avatar_url}}" />
       {% endif %}
     </div>
   </div>
-  <div class="col-12 col-md-10 activity-info">
-    <div class="activity-status mb-2">
+  <div class="col-12 col-md-10 activity-info my-auto {% if row.secondary_avatar_url %} position-relative {% endif %}">
+    <div class="activity-status font-body mb-1">
       <a href="https://gitcoin.co/profile/{{ row.profile.handle }}" target="_blank">
         @{{ row.profile.handle }}
       </a>
@@ -118,18 +118,18 @@
           </div>
         {% endif %}
         {% if row.value_in_usdt_now %}
-        <div class="tag usd">
-          <p>
-            <span>{{ row.value_in_usdt_now }} USD</span>
-          </p>
-        </div>
+          <div class="tag usd">
+            <p>
+              <span>{{ row.value_in_usdt_now }} USD</span>
+            </p>
+          </div>
         {% endif %}
         {% if row.bounty.network and row.bounty.network != 'mainnet' %}
-        <div class="tag network_warning">
-          <p>
-            <span>{{ activity.bounty.network }}</span>
-          </p>
-        </div>
+          <div class="tag network_warning">
+            <p>
+              <span>{{ activity.bounty.network }}</span>
+            </p>
+          </div>
         {% endif %}
         <span class="mx-2">
           {{ row.created_human_time }}
@@ -137,7 +137,7 @@
       </div>
     </div>
   </div>
-  <div class="col-12 col-md-1 text-center">
+  <div class="col-12 col-md-1 text-center my-auto">
     {% if row.kudos %}
       <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
         <img src="{% static row.kudos_data.image %}" alt="" class="w-100" style="max-width:100px;">
