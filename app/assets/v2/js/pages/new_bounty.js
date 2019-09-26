@@ -312,11 +312,10 @@ $(function() {
 
   // fetch issue URL related info
   $('input[name=amount]').keyup(setUsdAmount);
-  $('input[name=amount]').blur(setUsdAmount);
   $('input[name=usd_amount]').keyup(usdToAmount);
-  $('input[name=usd_amount]').blur(usdToAmount);
   $('input[name=hours]').keyup(setUsdAmount);
   $('input[name=hours]').blur(setUsdAmount);
+
   $('input[name=amount]').on('change', function() {
     const amount = $('input[name=amount]').val();
 
