@@ -3,7 +3,12 @@
 {% block submit_buttons_bottom %}
     {{ block.super }}
     <div class="submit-row">
-            <input type="submit" value="Recalculate Profile Frontend" name="_recalc_flontend" value="1">
+        {% if 'dashboard/profile' in request.build_absolute_uri %}
             <input type="submit" value="Impersonate" name="_impersonate" value="1">
+            <input type="submit" value="Recalculate Profile Frontend" name="_recalc_flontend" value="1">
+        {% endif %}
+        {% if 'kudos/tokenrequest' in request.build_absolute_uri %}
+            <input type="submit" value="Mint Kudos" name="_mint_kudos" value="1">
+        {% endif %}
     </div>
 {% endblock %}

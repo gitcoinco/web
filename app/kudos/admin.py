@@ -38,6 +38,12 @@ class TokenRequestAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
     raw_id_fields = ['profile']
 
+    def response_change(self, request, obj):
+        if "_mint_kudos" in request.POST:
+            obj.mint()
+            self.message_user(request, "Mint done")
+        return super().response_change(request, obj)
+
 
 class TransferEnabledForAdmin(admin.ModelAdmin):
     ordering = ['-id']

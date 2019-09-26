@@ -561,6 +561,7 @@ class TokenRequest(SuperModel):
     metadata = JSONField(null=True, default=dict, blank=True)
     tags = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     approved = models.BooleanField(default=True)
+    processed = models.BooleanField(default=False)
     profile = models.ForeignKey(
         'dashboard.Profile', related_name='token_requests', on_delete=models.CASCADE,
     )
@@ -570,11 +571,10 @@ class TokenRequest(SuperModel):
         return f"{self.name} on {self.network} on {self.created_on}; approved: {self.approved} "
 
 
-    def approve(self):
+    def mint(self):
         """Approve / mint this token."""
-        # TODO - make this available via web interface
         from gas.utils import recommend_min_gas_price_to_confirm_in_time
-        from kudos.management.commands import mint_all_kudos
+        from kudos.management.commands.mint_all_kudos import mint_kudos
         from kudos.utils import KudosContract
         account = settings.KUDOS_OWNER_ACCOUNT
         private_key = settings.KUDOS_PRIVATE_KEY
@@ -592,6 +592,7 @@ class TokenRequest(SuperModel):
         kudos_contract = KudosContract(network=self.network)
         gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(5)
         mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True)
+        self.processed = True
         self.approved = True
         self.save()
         
