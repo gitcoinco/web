@@ -2412,6 +2412,24 @@ def profile_filter_activities(activities, activity_name, activity_tabs):
     return activities.filter(activity_type=activity_name)
 
 
+@login_required
+def profile_github_perms(request):
+    groups = request.user.groups.all()
+    perms = {'organizations': [],
+             'repos': []}
+    for group in groups:
+        print(group)
+        if 'repo' in group.name:
+            perms['repos'].append(
+                {'repo': group.name.split('-')[2],
+                 'members': [u.profile.handle for u in group.users_set.all()]})
+        elif 'role' in group.name:
+            perms['organizations'].append(
+                {'organization': group.name.split('-')[0],
+                 'members': [u.profile.handle for u in group.users_set.all()]})
+    return JsonResponse(perms, status=200)
+
+
 def profile(request, handle, tab=None):
     """Display profile details.
 
@@ -2433,7 +2451,7 @@ def profile(request, handle, tab=None):
     default_tab = 'activity'
     tab = tab if tab else default_tab
     handle = handle.replace("@", "")
-    
+
     # make sure tab param is correct
     all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people']
     tab = default_tab if tab not in all_tabs else tab
@@ -2441,7 +2459,7 @@ def profile(request, handle, tab=None):
         # someone trying to go to their own profile?
         tab = handle
         handle = request.user.profile.handle
-    
+
     # user only tabs
     if not handle and request.user.is_authenticated:
         handle = request.user.username

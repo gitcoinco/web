@@ -100,6 +100,7 @@ urlpatterns = [
     url(r'^api/v0.1/profile/(.*)?/viewers.csv', dashboard.views.profile_viewers, name='profile_viewers'),
     url(r'^api/v0.1/profile/(.*)?/spent.csv', dashboard.views.profile_spent, name='profile_spent'),
     url(r'^api/v0.1/profile/banner', dashboard.views.change_user_profile_banner, name='change_user_profile_banner'),
+    url(r'^api/v0.1/profile_org_permissions', dashboard.views.profile_github_perms, name='profile_github_perms'),
     url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
     url(
         r'^api/v0.1/profile/(.*)?/jobopportunity',
