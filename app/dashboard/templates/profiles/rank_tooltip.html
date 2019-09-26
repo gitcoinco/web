@@ -1,25 +1,37 @@
   <label id="tooltip" class="float-right mt-2">
-    <i class='fa fa-info-circle' title="{{name}}Rank is Gitcoin's modified version of PageRank, which measures the influence of different {{name}}s on the network. 
-    <BR>
-    <BR>
-      There are 3 types of ranks on the Gitcoin network: 
-    <li>
-      <strong>OrganizationRank</strong> - The measure of an Organization's influence on the network.
-    </li>
-    <li>
-      <strong>FunderRank</strong> - The measure of an Funder's influence on the network.
-    </li>
-    <li>
-      <strong>ContributorRank</strong> - The measure of an Contributor's influence on the network.
-    </li>
-    <BR>
-    Fun facts about these algorithms:
-    <li>
-      <strong>Range from 1-10</strong> - Each *Rank is scored on a range between 1 (lowest) and 10 (highest).
-    </li>
-    <li>
-      <strong>Compounding</strong> - If you are funded by a connector in the network, then that Rank is worth than if you are funded by a solitary user.
-    </li>
+    <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="
 
+    <p>{{name}} Rank is Gitcoin's modified version of PageRank, which measures the<br>
+      influence of different {{name}}s on the network.
+    </p>
+    <p>There are 3 types of ranks on the Gitcoin network:</p>
+    <ul>
+      <li>
+        <strong>OrganizationRank</strong> - The measure of an Organization's influence on the network.
+      </li>
+      <li>
+        <strong>FunderRank</strong> - The measure of an Funder's influence on the network.
+      </li>
+      <li>
+        <strong>ContributorRank</strong> - The measure of an Contributor's influence on the network.
+      </li>
+    </ul>
+    <p>Fun facts about these algorithms:</p>
+    <ul>
+      <li>
+        <strong>Range from 1-10</strong> - Each *Rank is scored on a range between 1 (lowest) and 10 (highest).
+      </li>
+      <li>
+        <strong>Compounding</strong> - If you are funded by a connector in the network, then that Rank is <br>
+        worth than if you are funded by a solitary user.
+      </li>
+    </ul>
     "></i>
   </label>
+
+  <style>
+    .tooltip-inner {
+      max-width: 100% !important;
+      text-align: left;
+    }
+  </style>
