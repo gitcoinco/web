@@ -141,9 +141,9 @@
                     </div>
                   </div>
                 </div>
-                <div>
-                  <a target="_blank" :href="`/issue/fulfill?pk=${bounty.id}`" title="Submit work" class="btn btn-sm btn-gc-blue m-2">Submit Work</a>
-                  <button @click="stopWork(key, bounty.id, authProfile, 'contributorBounties', 'work_in_progress')" class="btn btn-sm btn-outline-gc-blue m-2" title="Stop work" :disabled="key === disabledBtn">Stop Work</button>
+                <div class="d-flex flex-column justify-content-center mx-2">
+                  <a target="_blank" :href="`/issue/fulfill?pk=${bounty.id}`" title="Submit work" class="btn btn-sm btn-gc-blue m-2 px-4">Submit Work</a>
+                  <button @click="stopWork(key, bounty.id, authProfile, 'contributorBounties', 'work_in_progress')" class="btn btn-sm btn-outline-gc-blue mb-2 mx-2 px-4" title="Stop work" :disabled="key === disabledBtn">Stop Work</button>
                 </div>
               </div>
             </li>
