@@ -199,6 +199,13 @@ class Grant(SuperModel):
     weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
     contribution_count = models.PositiveIntegerField(blank=True, default=0)
     contributor_count = models.PositiveIntegerField(blank=True, default=0)
+    defer_clr_to = models.ForeignKey(
+        'grants.Grant',
+        related_name='defered_clr_from',
+        on_delete=models.CASCADE,
+        help_text=_('The Grant that this grant defers it CLR contributions to (if any).'),
+        null=True,
+    )
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
