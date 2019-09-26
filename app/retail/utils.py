@@ -179,7 +179,7 @@ def get_codefund_history_at_date(date, keyword):
     if date > timezone.datetime(2019, 9, 9):
         amount += 52000
     if date > timezone.datetime(2019, 10, 9):
-        amount += 0 # october month to date
+        amount += sum(ManualStat.objects.filter(date__gt=date).values_list('val', flat=True))
     return amount
 
 

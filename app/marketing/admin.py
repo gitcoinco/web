@@ -23,7 +23,7 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     AccountDeletionRequest, Alumni, EmailEvent, EmailSubscriber, EmailSupressionList, GithubEvent,
-    GithubOrgToTwitterHandleMapping, Keyword, LeaderboardRank, MarketingCallback, Match, SlackPresence, SlackUser, Stat,
+    GithubOrgToTwitterHandleMapping, Keyword, LeaderboardRank, MarketingCallback, Match, SlackPresence, SlackUser, Stat, ManualStat
 )
 
 
@@ -120,6 +120,7 @@ admin.site.register(EmailSupressionList, GeneralAdmin)
 admin.site.register(Alumni, AlumniAdmin)
 admin.site.register(GithubEvent, GithubEventAdmin)
 admin.site.register(Match, MatchAdmin)
+admin.site.register(ManualStat, GeneralAdmin)
 admin.site.register(Stat, GeneralAdmin)
 admin.site.register(Keyword, GeneralAdmin)
 admin.site.register(EmailEvent, EmailEventAdmin)
