@@ -19,6 +19,7 @@
 {% block 'content' %}
 <script type='text/javascript' src='//www.midijs.net/lib/midi.js'></script>
 <link rel="stylesheet" href="{% static 'v2/css/jquery-ui.css' %}" />
+<link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 
 {% if not hidden and is_staff %}
@@ -31,7 +32,7 @@
     <a href=/quests>Quests</a> &gt;&gt; <a href={{quest.url}}>{{quest.title}}</a>
   </div>
   <div id="gameboard">
-    <div id="background" style="background: url('/static/v2/images/quests/{{quest.background}}.png') no-repeat;">
+    <div id="background">
       &nbsp;
     </div>
     <div id="enemy" class="character tr hidden">
@@ -72,8 +73,8 @@
     </div>
     <div id="menu" class="br">
       <span>
-        <a class="button button_sm skip_intro" href="#">Skip Intro</a>
-        <a class="button button_sm music_toggle" href="#">Sound On 🎵</a>
+        <a class="skip_intro" href="#">Skip Intro</a> |
+        <a class="music_toggle" href="#">Sound On 🎵</a>
       </span>
     </div>
     <div id="timer" class="br hidden">

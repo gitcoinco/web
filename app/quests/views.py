@@ -124,6 +124,7 @@ def details(request, obj_id, name):
 
     params = {
         'quest': quest,
+        'hide_col': True,
         'body_class': 'quest_battle',
         'title': quest.title,
         'card_desc': quest.description,
