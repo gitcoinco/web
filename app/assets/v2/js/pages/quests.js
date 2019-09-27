@@ -17,6 +17,13 @@ var start_quiz = async function() {
       'answers': answers
     });
 
+    // manage state transitoin
+    console.log('question from', question_number, ' to', question_number + 1);
+    for (var p = 0; p < 10; p += 1) {
+      $('body').removeClass('question_number_' + p);
+    }
+    $('body').addClass('question_number_' + question_number);
+
     question_number += 1;
     var can_continue = response['can_continue'];
     var did_win = response['did_win'];
@@ -220,7 +227,7 @@ var advance_to_state = async function(new_state) {
     await sleep(500);
     $('.skip_intro').remove();
     await $('#enemy').removeClass('hidden');
-    start_music_midi('bossmusic');
+    start_music_midi('boss-battle');
     start_quiz();
 
   }

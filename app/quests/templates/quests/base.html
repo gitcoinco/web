@@ -30,7 +30,7 @@
       {% include 'home/nav.html' %}
     </div>
     <div class="row">
-      <div class="col-12 col-sm-10 m-auto">
+      <div class="{% if not hide_col %}col-12 col-sm-10 m-auto{%endif %}" style="{% if hide_col %}width:100%;{%endif %}">
         {% block 'content' %}
         {% endblock %}
       </div>
