@@ -50,7 +50,7 @@ SENDGRID_API_KEY=xxx
 CONTACT_EMAIL=xxx
 ```
 
-```
+```shell
 # Be VERY CAREFUL when changing this setting.  You don't want to accidently
 # send a bunch of github notifications :)
 ENABLE_NOTIFICATIONS_ON_NETWORK=None
@@ -65,7 +65,7 @@ Copy the application ID found on the page as the `GITCOINBOT_APP_ID` environment
 
 Make sure you disable gitcoinbot notifications on your local, unless you are specifically testing that feature
 
-```
+```shell
 # Be VERY CAREFUL when changing this setting.  You don't want to accidentally
 # send a bunch of github notifications :)
 ENABLE_NOTIFICATIONS_ON_NETWORK=None

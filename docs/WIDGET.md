@@ -97,7 +97,7 @@ Repos that have this widget can expect to see 35% more interest in their repo's 
 ### Code
 
 Place the following code into your repo readme:
-```
+```html
 <a href="https://gitcoin.co/explorer?q=YOUR_REPO_NAME">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/YOUR_ORG_NAME/YOUR_REPO_NAME">
 </a>
