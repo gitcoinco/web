@@ -31,14 +31,17 @@
   <body class="{{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="container-fluid header">
-      {% include 'shared/nav.html' %}
+    <div class="header">
+      {% include 'home/nav.html' %}
       {% include 'shared/minihero.html' with h1='Mission' position_h1_below_logo=1 %}
     </div>
 
     <div class="container-fluid" id="mission_hero">
       <div class="row p-5 p-5">
-        <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column text-center">
+        <div class="offset-lg-1 col-2 flex-sm-row flex-column text-center">
+            {% include 'shared/tree.html' %}
+        </div>
+        <div class="col-9 col-lg-9 offset-md-0 d-flex flex-sm-row flex-column text-center">
           <div class="text">
             <div class="font-title-xl">
               {% blocktrans %}
@@ -74,7 +77,7 @@
         <div class="col-md-12 col-lg-8 col-xl-6">
           <div class="row mb-5">
             <div class="col-md-10 d-flex align-items-center">
-              <img class="icon" src="{% static "v2/images/mission/want/rocket_man.svg" %}" />
+              <img class="icon" src="{% static "v2/images/mission/want/rocket_man.svg" %}" alt="Rocket man" />
               <span class="icon-text font-body">
               {% blocktrans %}
                 We want to build a world in which everyone has the <strong>financial
@@ -142,7 +145,7 @@
             <div class="col-md-6 mx-auto mb-5 d-flex align-items-center">
               <img class="icon" src="{% static "v2/images/mission/believe/blockchain.png" %}" />
               <span class="icon-text">
-                {% trans "We believe that blockchain is a game-changer for funding of Open Source. We believe that Open Source Funding and Open Source Jobs will be built on Open Source Money" %}
+                {% trans "We believe that blockchain is a game-changer for funding of Open Source. We believe that Open Source Funding and Open Source Jobs will be built on Open Source Money" %}.
               </span>
             </div>
 
@@ -150,7 +153,7 @@
               <img class="icon" src="{% static "v2/images/mission/believe/no_token.png" %}" />
               <span class="icon-text">
               {% blocktrans %}
-                We believe that an ICO and tokenization is not the best business model for our dapp. We do not have a token
+                We believe that an ICO and tokenization is not the best business model for our dapp. We do not have a token.
               {% endblocktrans %}
               </span>
             </div>
@@ -212,7 +215,7 @@
           {% for interaction in interactions %}
             <div class="col-12 col-md-6 my-4 d-flex align-items-center">
               <img class="icon" src="{% static interaction.img %}" alt="{{ value.alt }}" />
-              <span class="icon-text">{{ interaction.text }}</span>
+              <span class="icon-text">{{ interaction.text | safe }}</span>
             </div>
           {% endfor %}
         </div>
@@ -238,6 +241,6 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>
 </html>

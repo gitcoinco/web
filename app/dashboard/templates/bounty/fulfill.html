@@ -22,6 +22,7 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
   </head>
   <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -44,11 +45,11 @@
           <div id="form_container">
             <div class="row d-flex justify-content-center my-5">
               <div id="robot_error" class="hidden">
-                <img src="{% static "v2/images/prime.png" %}">
+                <img src="{% static "v2/images/prime.png" %}" alt="Prime">
               </div>
               <div id="primary_form" class="col-lg-7 col-sm-12">
                 <h1 class="text-center title">{% trans "Submit Work" %}</h1>
-                <div class="" id="primary_subform">                  
+                <div class="" id="primary_subform">
                   <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
                     <div class="w-100">
                       <label class="form__label" for="issueURL">{% trans "Issue URL" %}</label>
@@ -59,8 +60,9 @@
                       {% include 'shared/notification_email.html' %}
                     </div>
                     {% include 'shared/github_link.html' %}
+                    {% include 'shared/payout_address.html' %}
                     {% include 'shared/hours_worked.html' %}
-                    {% include 'shared/rating.html' with counterparty='funder' %}
+                    {% include 'shared/rating.html' with counterparty='contributor' id='str' data='true' label="Rate this funder"%}
                     <div id="gas-section" class="mt-4">
                       {% include 'shared/bounty_actions_hidden_vars.html' %}
                       {% include 'shared/wallet_estimate.html' %}
@@ -97,16 +99,20 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>
-
-  <!-- jQuery -->
+  <script>
+    $('[data-toggle="popover"]').popover()
+    $('[data-toggle="tooltip"]').bootstrapTooltip();
+  </script>
+  <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
+  <script src="{% static "v2/js/rating.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/pages/fulfill_bounty.js" %}"></script>
-  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
 
 </html>

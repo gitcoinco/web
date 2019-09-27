@@ -1,5 +1,7 @@
 // outside of document.ready to be in global scope
 var compiledSubscription;
+var compiledSplitter;
+var contractVersion;
 
 // Waiting State screen
 var enableWaitState = container => {
@@ -41,11 +43,16 @@ var waitingStateActive = function() {
  * @param {string} message
  */
 const notifyOwnerAddressMismatch = (username, address, button, message) => {
-  if (!web3 || !web3.eth)
+
+  if (!web3 || !web3.eth || !username || !document.contxt.github_handle) {
     return;
+  }
+
   web3.eth.getAccounts((error, accounts) => {
-    if (document.contxt.github_handle == username &&
-        accounts[0] != address) {
+    if (
+      document.contxt && document.contxt.github_handle == username &&
+      accounts[0] && accounts[0] != address
+    ) {
       if ($(button).attr('disabled') != 'disabled') {
         $(button).attr('disabled', 'disabled');
         _alert({
@@ -86,7 +93,7 @@ const addGrantLogo = () => {
 
 const show_error_banner = (result, web3_not_found) => {
   if ($('#grants_form').length) {
-    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
+    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1 && !document.suppress_faucet_solicitation;
 
     if (typeof web3 == 'undefined' || web3_not_found) {
       $('#no_metamask_error').css('display', 'block');
@@ -142,15 +149,22 @@ const show_error_banner = (result, web3_not_found) => {
 
 $(document).ready(function() {
 
-  let contractVersion = $('#contract_version').val();
+  contractVersion = $('#contract_version').val();
 
   if (contractVersion) {
     if (contractVersion == 0) {
       compiledSubscription = compiledSubscription0;
+    } else if (contractVersion == 1) {
+      compiledSubscription = compiledSubscription1;
     }
   }
 
+  compiledSplitter = compiledSplitter0 ? compiledSplitter0 : null;
+
   const listen_web3_1_changes = () => {
+    if (typeof web3 == 'undefined' || typeof web3.eth.getCoinbase() == 'undefined') {
+      return;
+    }
     web3.eth.getCoinbase().then(function(result) {
       show_error_banner(result);
       if (result) {

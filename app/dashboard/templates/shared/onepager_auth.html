@@ -21,7 +21,7 @@
   <a class="navbar-brand py-0 text-center" href="/">
     <img id="logo" src="{% static "v2/images/logo_large.png" %}" width="150" height="50" />
     {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/heatmap,/gas/guzzlers,/gas/faucets" %}
-    <img id="addon" src="{% static "v2/images/gas_white.gif" %}"/>
+    <img id="addon" src="{% static "v2/images/gas_logo.gif" %}"/>
     <p style="color:white; font-size: 12px;">Gas Station</p>
     {% endif %}
   </a>
@@ -41,7 +41,7 @@
     {% include 'shared/notifications.html' %}
   </div>
   {% else %}
-  <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">
+  <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
     <i class="fab fa-github"></i>{% trans "Login" %}
   </a>
   {% endif %}
@@ -49,9 +49,10 @@
 
 <style>
   #addon{
-    max-height: 35px;
+    max-height: 45px;
     margin-left: 7px;
-    margin-bottom: 2px;
+    margin-top: 20px;
+    margin-bottom: -25px;
     max-width: 50px;
   }
 

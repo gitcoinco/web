@@ -23,8 +23,14 @@
   <div style="text-align: left! important">
     <p>{% trans "Hello" %} @{{ user.handle }},</p>
     <p>
-      {% trans "Good news! An "%} <a href="{{ bounty.url }}">{% trans "issue" %}</a>.  {% trans " has been reserved for you on gitcoin. "%} 
-      {% trans "Please start working on the issue, in the next 72 hours, before it is opened up for other bounty hunters to try as well." %}
+      {% trans "Good news! An "%} <a href="{{ bounty.url }}">{% trans "issue" %}</a>  {% trans " has been reserved for you on gitcoin. "%}
+      {% if bounty.total_reserved_length_label == "indefinitely" %}
+        {% trans "Please start working on the issue and release it to the public if you cannot commit to the work." %}
+      {% else %}
+        {% blocktrans with total_reserved_length_label=bounty.total_reserved_length_label %}
+          Please start working on the issue, within the next {{ total_reserved_length_label }}, before it is opened up for other bounty hunters to try as well.
+        {% endblocktrans %}
+      {% endif %}
     </p>
     <br>
     {% include 'emails/bounty.html' with bounty=bounty %}

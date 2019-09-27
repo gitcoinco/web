@@ -25,7 +25,7 @@ from functools import wraps
 
 from django.conf import settings
 
-import ipfsapi
+import ipfshttpclient
 from dashboard.utils import get_web3
 from eth_utils import to_checksum_address
 from git.utils import get_emails_master
@@ -160,8 +160,8 @@ class KudosContract:
 
         self._w3 = get_web3(self.network, sockets=sockets)
 
-        host = f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}'
-        self._ipfs = ipfsapi.connect(host=host, port=settings.IPFS_API_PORT)
+        ipfsConnectionString = f'/dns/{settings.IPFS_HOST}/tcp/{settings.IPFS_API_PORT}/{settings.IPFS_API_SCHEME}'
+        self._ipfs = ipfshttpclient.connect(ipfsConnectionString)
         self._contract = self._get_contract()
 
         self.address = self._get_contract_address()
@@ -283,6 +283,9 @@ class KudosContract:
         kudos['network'] = self.network
         try:
             kudos_token = Token.objects.get(token_id=kudos_id)
+            if kudos_token.suppress_sync:
+                logger.info(f'Skipped sync-ing "{kudos_token.name}" kudos to the database because suppress_sync.')
+                return
             kudos['txid'] = kudos_token.txid
             Token.objects.create(token_id=kudos_id, **kudos)
         except Token.DoesNotExist:
@@ -317,6 +320,14 @@ class KudosContract:
 
         # Update an existing Kudos in the database or create a new one
         kudos['txid'] = txid
+
+        existing_tokens = Token.objects.filter(token_id=kudos_id, contract=contract)
+        if existing_tokens.exists():
+            kudos_token = existing_tokens.first()
+            if kudos_token.suppress_sync:
+                logger.info(f'Skipped sync-ing "{kudos_token.name}" kudos to the database because suppress_sync.')
+                return
+
         kudos_token, created = Token.objects.update_or_create(token_id=kudos_id, contract=contract, defaults=kudos)
         # Update the cloned_from_id kudos.  Namely the num_clones_in_wild field should be updated.
         if created:

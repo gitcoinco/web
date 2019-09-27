@@ -1,0 +1,49 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n staticfiles avatar_tags%}
+
+<div class="col-12 col-md-1">
+  <div class="activity-avatar">
+    <img height="72" width="72" class="avatar card-rating__avatar rounded-circle" src="{% avatar_url feedback.sender_profile %}"/>
+    <img height="72" width="72" class="avatar secondary_avatar rounded-circle align-self-end" style="right: -2.5rem;" src="{% avatar_url feedback.receiver_profile %}" />
+  </div>
+</div>
+
+<div class="col-12 col-md-11 pl-5">
+  <div class="d-flex flex-column mt-2">
+    <div class="sender-profile d-flex flex-column">
+      {% if feedback.private %}
+        <div style="float: right; font-size: 12px;">
+          <i class="fas fa-eye"></i> <span>Only visible to you</span>
+        </div>
+      {% endif %}
+      <span class="font-weight-bold">@{{feedback.sender_profile}}</span>
+      <small>for {{feedback.bounty.org_name}}:
+        <a class="align-self-center" href="{{ feedback.bounty.url }}">{{feedback.bounty.title}}</a>
+      </small>
+    </div>
+    <div class="static-stars">
+      {% for rating in ratings %}
+        <i class="fa fa-star {% if feedback.rating != 0 and rating <= feedback.rating %}fas{% endif %}"></i>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% if feedback.comment %}
+  <small class="review-comment">{{ feedback.comment }}</small>
+{% endif %}

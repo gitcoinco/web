@@ -1,0 +1,58 @@
+{% load humanize %}
+{% if not profile.is_org %}
+  <li>
+    Last Seen: <b>{{profile.last_visit|naturaltime}}</b>
+  </li>
+  <li>
+    Reliability: <b>{{profile.reliability}}</b>
+     <a href="#" style="color: black; text-decoration: underline;  font-size: 12px;" data-toggle="collapse" data-target="#reliability_details">(Details)
+     </a>
+         <label id="tooltip" class="float-right">
+      <i class='fa fa-info-circle' title="Gitcoin's perception of how reliable this user is.
+      <BR>
+      <BR>
+      Reliability on Gitcoin is calculated by looking at the number of attempts that have been made at forming a reltionship; and then adding reliability points:
+      <li>for a high success rate</li>
+      <li>for a high repeat relationship rate</li>
+      <li>for a good reviews</li>
+      <li>for a low abandonment rate</li>
+      <li>for a low dispute rate</li>
+        "></i>
+    </label>
+  </li>
+  <div id="reliability_details" class="collapse">
+    <li>
+      Joined: <b>{{profile.created_on|naturaltime}}</b>
+    </li>
+    {% if profile.success_rate != -1 %}
+      <li>
+        <label id="tooltip">
+          <i class='fa fa-info-circle' title="The percentage of bounties that this user has been involved with that was successful."></i>
+        </label>
+        Success Rate: <b>{{profile.success_rate}}</b>% 
+      </li>
+    {% endif %}
+    <li>
+      <label id="tooltip">
+        <i class='fa fa-info-circle' title="The number of users with whom this user has worked with more than one time.."></i>
+      </label>
+      Repeat {% if profile.persona_is_funder %}Workers{%else%}Funders{%endif%}: <b>{{profile.num_repeated_relationships}}</b>
+    </li>
+    {% if profile.persona_is_hunter %}
+      <li class=''>
+        <label id="tooltip">
+          <i class='fa fa-info-circle' title="How many weekdays in a row has the user been active on Gitcoin?"></i>
+        </label>
+          Longest Streak: <b>{{profile.longest_streak}} weekdays</b>
+      </li>
+    {% endif %}
+  </div>
+  {% if profile.avg_hourly_rate %}
+  <li class=''>
+    <label id="tooltip">
+      <i class='fa fa-info-circle' title="The average hourly rate of bounties that this user has been involved in."></i>
+    </label>
+    Avg Hourly Rate <b>${{profile.avg_hourly_rate|floatformat:2}}</b>
+  </li>
+  {% endif %}
+{% endif %}

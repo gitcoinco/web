@@ -16,35 +16,46 @@
 
 {% endcomment %}
 {% load static %}
-<script type="text/javascript">
+<script>
   var static_url = "{{ STATIC_URL }}";
   var media_url = "{{ MEDIA_URL }}";
+  document.contxt = {{ json_context|safe }};
 </script>
-<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
-<script src="{% static "v2/js/jquery.js" %}"></script>
+<script src="{% url 'javascript-catalog' %}"></script>
+<script src="{% static "v2/js/lib/jquery.js" %}"></script>
 {% if user.is_authenticated and env == 'prod' %}
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 {% elif user.is_authenticated %}
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {% endif %}
 {% include 'shared/sentry.html' %}
-<script src="{% static "v2/js/jquery.cookie.js" %}"></script>
+<script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+<script>
+  const bootstrapTooltip = $.fn.tooltip.noConflict()
+  $.fn.bootstrapTooltip = bootstrapTooltip;
+  const bootstrapModal = $.fn.modal.noConflict();
+  $.fn.bootstrapModal = bootstrapModal;
+
+</script>
+
+<script src="{% static "v2/js/lib/jquery.cookie.js" %}"></script>
 {% if not slim %}
-  <script src="{% static "v2/js/jquery-ui.js" %}"></script>
-  <script src="{% static "v2/js/tooltip.js" %}"></script>
+  <script src="{% static "v2/js/lib/jquery-ui.js" %}"></script>
+  <script src="{% static "v2/js/lib/tooltip.js" %}"></script>
 {% endif %}
-<script src="{% static "v2/js/jquery.modal.min.js" %}"></script>
-<script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
-<script src="{% static "v2/js/jquery.validate.min.js" %}"></script>
-<script src="{% static "v2/js/jsrender.js" %}"></script>
-<script src="{% static "v2/js/moment.min.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.modal.min.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.select2.min.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
+<script src="{% static "v2/js/lib/jsrender.js" %}"></script>
+<script src="{% static "v2/js/lib/moment.min.js" %}"></script>
+<script src="{% static "v2/js/ajax-helper.js" %}"></script>
 <script src="{% static "v2/js/base.js" %}"></script>
-<script src="{% static "v2/js/purify.min.js" %}"></script>
+<script src="{% static "v2/js/lib/purify.min.js" %}"></script>
 <script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/truncate-hash.js" %}"></script>
 <script defer src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
 <script src="{% static "v2/js/note.js" %}"></script>
-<script src="{% static "v2/js/ajax-helper.js" %}"></script>
 <script src="{% static "v2/js/pages/carousel.js" %}"></script>
 {% if user.is_authenticated %}
   <script src="{% static "v2/js/notifications.js" %}"></script>
@@ -62,7 +73,7 @@
 </script>
 
 {% if recommend_gas_price %}
-<script type="text/javascript">
+<script>
   setInterval(function(){
     defaultGasPrice = parseInt(10**9 * {{ recommend_gas_price }});
   }, 1000);
@@ -79,7 +90,4 @@
 </script>
 {% endif %}
 
-<script>
-  document.contxt = {{ json_context|safe }};
-</script>
 {% include 'shared/messages.html' %}

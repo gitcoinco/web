@@ -18,12 +18,12 @@
 {% load i18n static %}
 {% block 'scripts' %}
   {% include 'shared/current_profile.html' %}
-  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
-  <script src="{% static "v2/js/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
   <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "onepager/js/send.js" %}"></script>
@@ -71,7 +71,7 @@
   <header>
     <span class="avatar">
       <a href="{% url "tip" %}">
-        <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
+        <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" alt="Helmet" />
       </a>
     </span>
   </header>
@@ -92,7 +92,7 @@
       <select id="username" class="username-search custom-select" style="max-width: 400px; margin-left: auto; margin-right: auto;"></select>
     </div>
     <div>
-      <label>{% trans "From Github Username" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/tip">{% trans "Login" %}</a>) {%endif%}</label>
+      <label>{% trans "From Github Username" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/tip" onclick="dataLayer.push({'event': 'login'});">{% trans "Login" %}</a>) {%endif%}</label>
       <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" style="max-width: 400px; margin-left: auto; margin-right: auto; margin-bottom: 15px; background-color: #eee;" disabled="disabled"  >
     </div>
     <div>
@@ -147,7 +147,7 @@
     <p id="loading_trans">
       <a href="" target="_blank" rel="noopener noreferrer" id="trans_link2" >{% trans "The transaction is still pending." %}</a><br>{% trans "This page will auto-update when the transaction is confirmed" %} <br>({% trans "but you can close the browser window if you want" %}).
       <br>
-      <img src="{% static "onepager/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;">
+      <img src="{% static "onepager/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;" alt="Loading ...">
     </p>
     <hr>
     <h1>{% blocktrans %}<span id="new_username"></span> has been notified{% endblocktrans %}</h1>

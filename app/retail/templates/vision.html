@@ -31,8 +31,8 @@
 
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="container-fluid header">
-      {% include 'shared/nav.html' %}
+    <div class="header">
+      {% include 'home/nav.html' %}
       {% include 'shared/minihero.html' with h1='Our Vision' position_h1_below_logo=1 suppress_logo=1 %}
     </div>
 
@@ -210,6 +210,15 @@
           </div>
         </div>
       </div>
+
+      <div class="row justify-content-center">
+        <div class="col col-md-4">
+          <div class="text-center mb-5 mx-auto">
+            <p>{% trans "Want to read more of our articles about the blockchain space?  The ones that were authored from 2017 to 2019 are online on Medium." %}</p>
+            <a href="https://medium.com/gitcoin/tagged/vision" target="_blank" class="btn btn-block btn-gc-purple">{% trans "Read Our Vision At Medium" %}</a>
+          </div>
+        </div>
+      </div>
       <div class="row justify-content-center">
         <div class="col col-md-4">
           <div class="text-center mb-5 mx-auto">
@@ -231,6 +240,6 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>
 </html>

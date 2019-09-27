@@ -69,15 +69,6 @@
   overflow-y: scroll;
 }
 
-.close-icon {
-  position: absolute;
-  top: 13px;
-  right: 25px;
-  width: 15px;
-  display: none;
-  cursor: pointer;
-}
-
 #search_nav li {
   background-color: #fff;
   border: 1px solid #d3d6e2;

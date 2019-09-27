@@ -34,6 +34,17 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
+def return_to_sender(tip, msg, comments_public):
+    old_from = tip.from_name
+    tip.from_name = 'gitcoinbot'
+    tip.metadata['payout_comments'] = msg
+    print("     " + msg)
+    tip.comments_public = comments_public
+    tip.save()
+    tip = assign_tip_to(tip, old_from)
+    tip.save()
+
+
 def assign_tip_to(tip, handle):
     tip.username = handle
     tip.emails = get_emails_master(handle)
@@ -65,49 +76,21 @@ class Command(BaseCommand):
                             ######################################################
                             print(" - 1 ")
                             # assign tip to fulfiller and email them
-                            tip = assign_tip_to(tip, fulfillment.fulfiller_github_username)
                             msg = f'auto assigneed on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment'
                             print("     " + msg)
                             tip.metadata['payout_comments'] = msg
                             tip.save()
+                            tip = assign_tip_to(tip, fulfillment.fulfiller_github_username)
+                            tip.save()
                         else:
                             ######################################################
-                            # was sent with bulk payout.  send to bulk payout_ees
+                            # was sent with bulk payout.  return to sender
                             ######################################################
                             print(" - 2 ")
-                            bpts = bounty.bulk_payout_tips
-                            bpts_ids = bpts.values_list('pk', flat=True)
-                            bpts_total_amount = sum(bpts.values_list('amount', flat=True))
-                            num_payees = bpts.count()
-                            for bpt in bpts:
-                                print(f"    - {bpt.pk} ")
-                                cloned_tip = bpt
-                                cloned_tip.pk = None  # effectively clones the bpt and inserts a new one
-                                cloned_tip.receive_txid = ''
-                                cloned_tip.amount = (bpt.amount / bpts_total_amount) * tip.amount
-                                cloned_tip.receive_address = ''
-                                cloned_tip.recipient_profile = None
-                                cloned_tip.is_for_bounty_fulfiller = False
-                                cloned_tip.username = bpt.username
-                                cloned_tip.tokenAddress = tip.tokenAddress
-                                cloned_tip.tokenName = tip.tokenName
-                                cloned_tip.emails = []
-                                cloned_tip.metadata = tip.metadata
-                                cloned_tip.metadata['is_clone'] = True
-                                cloned_tip.metadata['debug_info'] = f'created in order to facilitate payout of a crowdfund tip {tip.pk}'
-                                cloned_tip.save()
-                                print(f"    - {cloned_tip.pk} ")
-                                cloned_tip = assign_tip_to(cloned_tip, cloned_tip.username)
-                                cloned_tip.save()
-
-                            tip.receive_txid = f'cloned-and-paid-via-clones-:{bpts_ids}'
-                            tip.metadata['is_for_bounty_fulfiller_handled'] = True
-                            msg = f'auto assigneed on {timezone.now()} to via recipients of {bpts_ids}; as done ' \
-                                  'bounty w no bountyfulfillment'
-                            print("     ", msg)
-                            # TODO: email recipients of the cloned tip
-                            tip.metadata['payout_comments'] = msg
-                            tip.save()
+                            old_from = tip.from_name
+                            comments_public = "[gitcoinbot message] This crowdfunding was auto-returned to you because Gitcoin could not figure out how to distribute the funds.  We recommend that you payout these funds to the bounty hunters, at your discretion, via https://gitcoin.co/tip ."
+                            msg = f'auto assigneed on {timezone.now()}; as bulk payout bounty.  tip was from {tip.from_name}'
+                            return_to_sender(tip, msg, comments_public)
                     elif bounty.status == 'cancelled':
                         ######################################################
                         # return to funder
@@ -115,13 +98,9 @@ class Command(BaseCommand):
                         print(" - 3 ")
                         # assign tip to fulfiller and email them
                         old_from = tip.from_name
-                        tip.from_name = 'gitcoinbot'
-                        tip = assign_tip_to(tip, old_from)
+                        comments_public = "[gitcoinbot message] This funding was auto-returned to you because the bounty it was associated with was cancelled."
                         msg = f'auto assigneed on {timezone.now()}; as cancelled bounty.  tip was from {tip.from_name}'
-                        tip.metadata['payout_comments'] = msg
-                        print("     " + msg)
-                        tip.comments_public = "[bot message] This funding was auto-returned to you because the bounty it was associated with was cancelled."
-                        tip.save()
+                        return_to_sender(tip, msg, comments_public)
             except Exception as e:
                 print(e)
                 logger.exception(e)

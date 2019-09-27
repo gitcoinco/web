@@ -38,8 +38,11 @@
     </div>
     <div class="col-12 col-md-5 offset-md-2 my-auto mt-4 order-md-2 g-fadein" data-fade-duration=1000 data-fade-direction="right">
       <p>
-        There are open issues in our Issues Explorer for all Python, JavaScript, Rust, Go, Solidity,
-        Node.js, and many more developers.
+        There are open issues & bug bounties in our <a href="{% url 'explorer' %}">Issue Explorer</a> for 
+        {% for subject in contributor_list %}
+          <a href="{% url 'contributor_bounties' tech_stack=subject.link %}">{{subject.text}}</a>, 
+        {% endfor %}
+          and much more.
       </p>
     </div>
   </div>

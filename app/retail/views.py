@@ -36,7 +36,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Profile
+from dashboard.models import Activity, Bounty, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
@@ -64,7 +64,11 @@ def get_activities(tech_stack=None, num_activities=15):
     activities = activities[0:num_activities]
     return [a.view_props for a in activities]
 
+
 def index(request):
+
+    user = request.user.profile if request.user.is_authenticated else None
+
     products = [
         {
             'group' : 'grow_oss',
@@ -148,7 +152,7 @@ def index(request):
             'img': 'v2/images/press/ibtimes.jpg'
         },
         {
-            'link': 'https://www.forbes.com/sites/curtissilver/2017/09/25/https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
+            'link': 'https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
             'img': 'v2/images/press/forbes.jpg'
         },
         {
@@ -166,27 +170,31 @@ def index(request):
         {
             'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
             'img': 'v2/images/press/ethnews.jpg'
+        },
+        {
+            'link': 'https://www.hostingadvice.com/blog/grow-open-source-projects-with-gitcoin/',
+            'img': 'v2/images/press/hosting-advice.png'
         }
     ]
 
     articles = [
         {
             'link': 'https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0',
-            'img': 'https://cdn-images-1.medium.com/max/2000/1*ErCNRMzIJguUGUgXgVc-xw.png',
+            'img': static("v2/images/medium/1.png"),
             'title': _('Progressive Elaboration of Scope on Gitcoin'),
             'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
             'alt': 'gitcoin scope'
         },
         {
             'link': 'https://medium.com/gitcoin/commit-reveal-scheme-on-ethereum-25d1d1a25428',
-            'img': 'https://cdn-images-1.medium.com/max/1600/1*GTEu2R4xIxAApx50rAV_qw.png',
+            'img': static("v2/images/medium/2.png"),
             'title': _('Commit Reveal Scheme on Ethereum'),
             'description': _('Hiding Actions and Generating Random Numbers'),
             'alt': 'commit reveal scheme'
         },
         {
             'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',
-            'img': 'https://cdn-images-1.medium.com/max/2000/1*iPQYV3M-JOlYeFFC-iqfcg.png',
+            'img': static("v2/images/medium/3.png"),
             'title': _('Announcing Open Kudos'),
             'description': _('Our vision for integrating Kudos in any (d)App'),
             'alt': 'open kudos'
@@ -198,7 +206,10 @@ def index(request):
         'know_us': know_us,
         'press': press,
         'articles': articles,
-        'title': _('Grow Open Source: Find Freelance Developers & Open Source Bug Bounties - Gitcoin')
+        'hide_newsletter_caption': True,
+        'hide_newsletter_consent': True,
+        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
+        'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
     }
     return TemplateResponse(request, 'home/index.html', context)
 
@@ -323,8 +334,30 @@ def subscribe(request):
     return TemplateResponse(request, 'pricing/subscribe.html', context)
 
 
+def funder_bounties_redirect(request):
+    return redirect(funder_bounties)
+
 
 def funder_bounties(request):
+
+    onboard_slides = [
+        {
+            'img': static("v2/images/presskit/illustrations/prime.svg"),
+            'title': _('Are you a developer or designer?'),
+            'subtitle': _('Contribute to exciting OSS project and get paid!'),
+            'type': 'contributor',
+            'active': 'active',
+            'more': '/bounties/contributor'
+        },
+        {
+            'img': static("v2/images/presskit/illustrations/regulus-white.svg"),
+            'title': _('Are you a funder or project organizer?'),
+            'subtitle': _('Fund your OSS bounties and get work done!'),
+            'type': 'funder',
+            'more': '/how/funder'
+        }
+    ]
+
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
          _("Once we had merged in multiple language support from a bounty, it unblocked the \
@@ -361,6 +394,7 @@ def funder_bounties(request):
     )
 
     context = {
+        'onboard_slides': onboard_slides,
         'activities': get_activities(),
         'is_outside': True,
         'slides': slides,
@@ -376,7 +410,29 @@ def funder_bounties(request):
     return TemplateResponse(request, 'bounties/funder.html', context)
 
 
+def contributor_bounties_redirect(request, tech_stack):
+    return redirect(contributor_bounties, tech_stack= '/'+ tech_stack)
+
+
 def contributor_bounties(request, tech_stack):
+
+    onboard_slides = [
+        {
+            'img': static("v2/images/presskit/illustrations/regulus-white.svg"),
+            'title': _('Are you a funder or project organizer?'),
+            'subtitle': _('Fund your OSS bounties and get work done!'),
+            'type': 'funder',
+            'active': 'active',
+            'more': '/bounties/funder'
+        },
+        {
+            'img': static("v2/images/presskit/illustrations/prime.svg"),
+            'title': _('Are you a developer or designer?'),
+            'subtitle': _('Contribute to exciting OSS project and get paid!'),
+            'type': 'contributor',
+            'more': '/how/contributor'
+        }
+    ]
 
     slides = [
         ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
@@ -489,6 +545,7 @@ def contributor_bounties(request, tech_stack):
 
     # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
+        'onboard_slides': onboard_slides,
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
@@ -497,7 +554,20 @@ def contributor_bounties(request, tech_stack):
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
         'projects': projects,
+        'contributor_list': [
+            { 'link': "/python", 'text': "Python"},
+            { 'link': "/javascript", 'text': "JavaScript"},
+            { 'link': "/rust", 'text': "Rust"},
+            { 'link': "/solidity", 'text': "Solidity"},
+            { 'link': "/design", 'text': "Design"},
+            { 'link': "/html", 'text': "HTML"},
+            { 'link': "/ruby", 'text': "Ruby"},
+            { 'link': "/css", 'text': "CSS"},
+        ]
     }
+
+    if tech_stack == 'new':
+        return redirect('new_funding_short')
 
     try:
         new_context = JSONStore.objects.get(view='contributor_landing_page', key=tech_stack).data
@@ -556,112 +626,184 @@ def robotstxt(request):
 def about(request):
     core_team = [
         (
-            static("v2/images/team/kevin-owocki.png"),
             "Kevin Owocki",
             "All the things",
             "owocki",
             "owocki",
             "The Community",
-            "Avocado Toast"
+            "Avocado Toast",
+            "kevin",
+            "Summoner of Bots",
+            "owocki",
+            True
         ),
         (
-            static("v2/images/team/alisa-march.jpg"),
+            "Joe Lubin",
+            "Consensys",
+            "",
+            "",
+            "Meshiness",
+            "",
+            "joe",
+            "Harbringer of Decentralization",
+            "ethereumJoseph",
+            True
+        ),
+        (
             "Alisa March",
             "User Experience Design",
             "PixelantDesign",
             "pixelant",
             "Tips",
-            "Apple Cider Doughnuts"
+            "Apple Cider Doughnuts",
+            "alisa",
+            "Pixel Mage",
+            "pixelant",
+            True
         ),
         (
-            static("v2/images/team/eric-berry.jpg"),
             "Eric Berry",
             "OSS Funding",
             "coderberry",
             "ericberry",
             "Chrome/Firefox Extension",
-            "Pastel de nata"
+            "Pastel de nata",
+            "eric",
+            "Burnout Healer",
+            "coderberry",
+            True
         ),
         (
-            static("v2/images/team/vivek-singh.jpg"),
             "Vivek Singh",
             "Community Buidl-er",
             "vs77bb",
             "vivek-singh-b5a4b675",
             "Gitcoin Requests",
-            "Tangerine Gelato"
+            "Tangerine Gelato",
+            "vivek",
+            "Campfire StoryTeller",
+            "vsinghdothings",
+            True
         ),
         (
-            static("v2/images/team/aditya-anand.jpg"),
             "Aditya Anand M C",
             "Engineering",
             "thelostone-mc",
             "aditya-anand-m-c-95855b65",
             "The Community",
-            "Cocktail Samosa"
+            "Cocktail Samosa",
+            "aditya",
+            "Block Welder",
+            "thelostone_mc",
+            True
         ),
         (
-            static("v2/images/team/saptaks.jpg"),
-            "Saptak Sengupta",
-            "Engineering",
-            "saptaks",
-            "saptaks",
-            "Everything Open Source",
-            "daab chingri"
-        ),
-        (
-            static("v2/images/team/scott.jpg"),
             "Scott Moore",
             "Biz Dev",
             "ceresstation",
             "scott-moore-a2970075",
             "Issue Explorer",
-            "Teriyaki Chicken"
+            "Teriyaki Chicken",
+            "scott",
+            "Phase Shifter",
+            "notscottmoore",
+            True
         ),
         (
-            static("v2/images/team/octavio-amu.png"),
             "Octavio Amuchástegui",
             "Front End Dev",
             "octavioamu",
             "octavioamu",
             "The Community",
-            "Homemade italian pasta"
+            "Homemade italian pasta",
+            "octavio",
+            "Bugs Breeder",
+            "octavioamu",
+            True
         ),
         (
-            static("v2/images/team/frank-chen.png"),
             "Frank Chen",
             "Data & Product",
             "frankchen07",
             "frankchen07",
             "Kudos!",
-            "Crispy pork belly"
+            "Crispy pork belly",
+            "frank",
+            "Hashed Scout",
+            "",
+            True
         ),
         (
-            static("v2/images/team/austin-griffith.jpg"),
-            "Austin Griffith",
-            "Gitcoin Labs",
-            "austintgriffith",
-            None,
-            "The #BUIDL",
-            "Drunken Noodles"
-        ),
-        (
-            static("v2/images/team/nate-hopkins.png"),
             "Nate Hopkins",
             "Engineering",
             "hopsoft",
             None,
             "Bounties",
-            "Chicken tikka masala"
+            "Chicken tikka masala",
+            "nate",
+            "Lord of Night's Watch",
+            "hopsoft",
+            True
         ),
         (
-            static("v2/images/team/dan-lipert.png"),
+            "Alessandro Voto",
+            "DevRel",
+            "avotofuture",
+            None,
+            "Devvies",
+            "Tacos",
+            "alex",
+            "Starship Captain",
+            "avotofuture",
+            True
+        ),
+        (
             "Dan Lipert",
             "Engineering",
             "danlipert",
             "danlipert",
             "EIP 1337",
-            "Tantan Ramen"
+            "Tantan Ramen",
+            "dan",
+            "Blockchain Artificer",
+            "dan_lipert",
+            True
+        ),
+        (
+            "Connor O'Day",
+            "DevRel",
+            "connoroday",
+            "connoroday",
+            "the lols",
+            "Robertas Pizza",
+            "connor",
+            "Druid of The Chain",
+            "connoroday0",
+            True
+        ),
+        (
+            "Joseph Chen",
+            "Operations",
+            "josephchen",
+            "josephchen",
+            "Ethical Ads",
+            "DIY",
+            "joseph",
+            "Arithmagician",
+            "",
+            True
+        ),
+        (
+            "gitcoinbot",
+            "beep boop bop",
+            "gitcoinbot",
+            "gitcoinbot",
+            "everything that's automated",
+            "bits",
+            "gitcoinbot",
+            "Loveable Companion",
+            "",
+            False
         )
 
     ]
@@ -696,7 +838,7 @@ def mission(request):
 
     values = [
         {
-            'name': _('Collaboration'),
+            'name': _('Self Reliance'),
             'img': 'v2/images/mission/value/collaborative.svg',
             'alt': 'we-collobarate-icon'
         },
@@ -769,7 +911,7 @@ def mission(request):
             'alt': 'microscope-icon'
         },
         {
-            'text': _('We care about people (not just tasks)'),
+            'text': _('We care about people (not just tasks).'),
             'img': 'v2/images/mission/interact/people_care.svg',
             'alt': 'care-icon'
         },
@@ -796,6 +938,41 @@ def mission(request):
         'interactions': interactions
     }
     return TemplateResponse(request, 'mission.html', context)
+
+
+def jobs(request):
+    job_listings = [
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Software Engineer",
+            'description': [
+                "Gitcoin is always looking for a few good software engineers.",
+                "If you are an active member of the community, have python + django + html chops",
+                "then we want to talk to you!"]
+        },
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Community Manager",
+            'description': [
+                "We believe that community management is an important skill in the blockchain space.",
+                "We're looking for a solid community, proactive thinker, and someone who loves people",
+                "to be our next community manager.  Sound like you?  Apply below!"]
+        },
+        {
+            'link': "mailto:founders@gitcoin.co",
+            'title': "Ad Sales Engineer",
+            'description': [
+                "CodeFund is growing like a weed.  We could use a helping hand",
+                "to put CodeFund in front of more great advertisers and publishers.",
+                "If you want to be our next highly technical, highly engaging, sales engineer apply below!"]
+        }
+    ]
+    context = {
+        'active': 'jobs',
+        'title': 'Jobs',
+        'job_listings': job_listings
+    }
+    return TemplateResponse(request, 'jobs.html', context)
 
 
 def vision(request):
@@ -894,6 +1071,8 @@ def results(request, keyword=None):
         raise Http404
     context = JSONStore.objects.get(view='results', key=keyword).data
     context['is_outside'] = True
+    import json
+    context['kudos_tokens'] = [json.loads(obj) for obj in context['kudos_tokens']]
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
@@ -901,12 +1080,13 @@ def results(request, keyword=None):
 def activity(request):
     """Render the Activity response."""
     page_size = 15
-    activities = Activity.objects.all().order_by('-created')
+    activities = Activity.objects.all().order_by('-created_on')
     p = Paginator(activities, page_size)
-    page = request.GET.get('page', 1)
+    page = int(request.GET.get('page', 1))
 
     context = {
         'p': p,
+        'next_page': page + 1,
         'page': p.get_page(page),
         'title': _('Activity Feed'),
     }
@@ -914,6 +1094,28 @@ def activity(request):
 
     return TemplateResponse(request, 'activity.html', context)
 
+@ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
+def create_status_update(request):
+    response = {}
+    if request.POST:
+        profile = request.user.profile
+        kwargs = {
+            'activity_type': 'status_update',
+            'metadata': {
+                'title': request.POST.get('data'),
+                'ask': request.POST.get('ask'),
+            }
+        }
+        kwargs['profile'] = profile
+        try:
+            Activity.objects.create(**kwargs)
+            response['status'] = 200
+            response['message'] = 'Status updated!'
+        except Exception as e:
+            response['status'] = 400
+            response['message'] = 'Bad Request'
+            logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
+    return JsonResponse(response)
 
 def help(request):
     faq = {
@@ -1244,6 +1446,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
     }
     return TemplateResponse(request, 'help.html', context)
 
+
 def verified(request):
     user = request.user if request.user.is_authenticated else None
     profile = request.user.profile if user and hasattr(request.user, 'profile') else None
@@ -1254,6 +1457,7 @@ def verified(request):
         'profile': profile,
     }
     return TemplateResponse(request, 'verified.html', context)
+
 
 def presskit(request):
 
@@ -1397,6 +1601,7 @@ def slack(request):
     context = {
         'active': 'slack',
         'msg': None,
+        'nav': 'home',
     }
 
     if request.POST:
@@ -1417,6 +1622,7 @@ def slack(request):
                 context['msg'] = _('Invalid email')
 
     return TemplateResponse(request, 'slack.html', context)
+
 
 @csrf_exempt
 def newtoken(request):
@@ -1458,13 +1664,15 @@ def btctalk(request):
 def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
 
+def blog(request):
+    return redirect('https://gitcoin.co/blog')
 
 def livestream(request):
     return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')
 
 
 def twitter(request):
-    return redirect('http://twitter.com/getgitcoin')
+    return redirect('http://twitter.com/gitcoin')
 
 
 def fb(request):

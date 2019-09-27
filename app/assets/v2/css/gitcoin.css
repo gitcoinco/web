@@ -12,6 +12,13 @@ h4,
   padding-top: 40px;
 }
 
+#indicate-popup {
+  position: fixed;
+  top: 0.25rem;
+  right: 2rem;
+  z-index: 9999999999999;
+}
+
 .lighter {
   font-weight: lighter;
 }
@@ -44,6 +51,10 @@ h4,
   color: #3e24fb
 }
 
+.text-darkblue {
+  color: var(--gc-purple);
+}
+
 .gitcoin-gray {
   color: lightgray !important;
 }
@@ -64,6 +75,12 @@ h4,
 .minihero {
   overflow: hidden;
   position: relative;
+}
+
+.minihero__title{
+  font-weight: var(--fw-light);
+  font-size: var(--fs-title-xl);
+  color: var(--gc-green);
 }
 
 .header.dash {
@@ -104,6 +121,18 @@ h4,
   color: #ffffff;
 }
 
+.text-black-60 {
+  color: rgba(0, 0, 0, 0.6)!important;
+}
+
+.text-black-70 {
+  color: rgba(0, 0, 0, 0.7)!important;
+}
+
+.text-current {
+  color: currentColor !important;
+}
+
 .underline {
   text-decoration: underline;
 }
@@ -113,27 +142,27 @@ h4,
 }
 
 .font-title-xl {
-  font-size: 1.8rem;
+  font-size: var(--fs-title-xl);
 }
 
 .font-title-lg {
-  font-size: 22px;
+  font-size: var(--fs-title-lg);
 }
 
 .font-title {
-  font-size: 1.25rem;
+  font-size: var(--fs-title);
 }
 
 .font-header {
-  font-size: 1.125rem;
+  font-size: var(--fs-header);
 }
 
 .font-subheader {
-  font-size: 1rem;
+  font-size: var(--fs-subheader);
 }
 
 .font-body {
-  font-size: 0.875rem;
+  font-size: var(--fs-body);
 }
 
 .font-caption {
@@ -237,6 +266,10 @@ div.button-pink {
   background-color: #EFF3F6;
 }
 
+.bg-lightpurple {
+  background-color: #F5F2FF;
+}
+
 .white-light-bg {
   background-color: white;
   background-image: url('/static/v2/images/light-bg.png');
@@ -335,42 +368,46 @@ div.button-pink {
 }
 
 .dash-filter-label {
-  font-weight: 300;
+  font-weight: var(--fw-light);
   font-size: 0.9rem;
   letter-spacing: 0.1em;
 }
 
 .footer__main {
-  background-image: url('/static/v2/images/footer.png');
   background-color: #0d023b;
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
-  max-width: 1000px;
-  margin: 0 auto;
-  min-height: 300px;
+  min-height: 20rem;
 }
 
-.footer__top {
-  max-width: 1000px;
-  margin: 0 auto;
+.footer__text,
+.footer__text a {
+  color: white;
 }
 
-.footer__social .nav-link {
-  margin-bottom: 1rem;
-}
-
-.footer .navbar-brand {
-  flex-grow: 1;
+.footer__text a {
+  text-decoration: underline;
 }
 
 .footer {
   background-color: #0d023b;
+  padding-top: 4rem;
 }
 
 .footer .nav-link {
   font-size: 0.8rem !important;
   margin-right: 0.5rem;
+}
+
+#tabs .nav-link span {
+  position: relative;
+  font-size: 0.3rem;
+  font-weight: bold;
+  background-color: #ddd;
+  border-radius: 10px;
+  padding: 3px 5px;
+  top: -5px;
 }
 
 .nav-link:visited {
@@ -444,7 +481,7 @@ div.button-pink {
   border: 1px solid #eee;
   outline: none;
   padding-left: 10px;
-  font-weight: 300;
+  font-weight: var(--fw-light);
 }
 
 .gc-border-black {
@@ -469,7 +506,7 @@ div.button-pink {
   border: 1px solid #eee;
   outline: none;
   padding-left: 10px;
-  font-weight: 300;
+  font-weight: var(--fw-light);
 }
 
 .dash-link {
@@ -580,6 +617,10 @@ div.button-pink {
 @media (max-width: 767.98px) {
   .navbar-collapse {
     margin-top: 1.5rem;
+  }
+
+  #indicate-popup {
+    display: none;
   }
 }
 
@@ -696,7 +737,7 @@ div.button-pink {
   width: auto;
 }
 
-#payout_table td div.percent,
+#payout_table td div.input_amount,
 #payout_table td a.remove,
 #payout_table td div.amount {
   position: relative;
@@ -724,6 +765,7 @@ div.button-pink {
   -webkit-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
 }
+
 .slideDownIn {
   -webkit-animation-name: slideDownIn;
   animation-name: slideDownIn;
@@ -736,5 +778,4 @@ div.button-pink {
   100% {
     -webkit-transform: translateY(0) scale(1, 1);
   }
-
 }

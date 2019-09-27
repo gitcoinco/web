@@ -56,12 +56,12 @@
         <div class="col-12 mb-5">
           <div class="row">
             <div id="robot_error" class="hidden">
-              <img src="{% static "v2/images/prime.png" %}">
+              <img src="{% static "v2/images/prime.png" %}" alt="Prime">
             </div>
             <div class="mt-5" id="primary_form">
               <div class="media">
                 <div class="align-self-center ">
-                  <img src="{% static "v2/images/helmet_front.png" %}">
+                  <img src="{% static "v2/images/helmet_front.png" %}" alt="Helmet front">
                 </div>
                 <div class="media-body align-self-center">
                   <h4 class="text-left">{% trans "Cancel Bounty and Reclaim Funds" %}</h4>
@@ -149,9 +149,10 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>
 
+  <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>

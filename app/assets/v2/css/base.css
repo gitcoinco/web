@@ -1,7 +1,6 @@
 /* stylelint-disable no-descending-specificity */
 
 /* ...because sometimes descending-specificity is a PIA to clean up */
-
 div.body {
   min-height: 400px;
 }
@@ -73,6 +72,7 @@ a {
   font-size: 0.9rem;
   padding-left: 1rem;
   text-align: left;
+  margin-top: 5px;
 }
 
 .navbar-nav .dropdown-menu {
@@ -261,7 +261,7 @@ p a {
 }
 
 #gas-section .gas-image {
-  height: 5rem;
+  height: 4.5rem;
 }
 
 #gas-section .font-body {
@@ -270,6 +270,7 @@ p a {
 
 #gas-section .recommended-prices {
   cursor: pointer;
+  text-align: center;
 }
 
 #gas-section .gas-dark-bg {
@@ -277,7 +278,7 @@ p a {
 }
 
 #gas-section .gas-rates .active {
-  font-weight: bolder;
+  font-weight: 600;
   background-color: #0ECF7C;
 }
 
@@ -346,6 +347,15 @@ p a {
   color: #25e899;
 }
 
+.link-current {
+  color: currentColor;
+}
+
+.link-current:hover {
+  color: currentColor;
+  text-decoration: none;
+}
+
 .cta-green {
   background-color: var(--gc-green);
   text-align: center;
@@ -379,6 +389,10 @@ p a {
   max-height: 50px;
   max-width: 50px;
   border-radius: 100%;
+}
+.dashboard .body .avatar.Azure-Samples,
+.rounded-circle.Azure-Samples {
+  border-radius: 0%!important;
 }
 
 .body .nonefound {
@@ -513,14 +527,6 @@ input[type=text].loading {
   max-width: 100px;
 }
 
-#primary_form small {
-  display: inline;
-}
-
-#primary_form #amount {
-  height: 37px;
-}
-
 .bounty_nav {
   border-bottom: 2px solid #212529;
   padding: 0;
@@ -568,12 +574,14 @@ input[type=text].loading {
   color: white;
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 10px 20px;
   margin-bottom: 1px;
   position: fixed;
   top: 0px;
   width: 100%;
   z-index: 999999;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .alert .message {
@@ -587,8 +595,12 @@ input[type=text].loading {
 }
 
 .alert .message::before {
-  content: url('/static/v2/images/info.svg');
+  font-family: 'Font Awesome\ 5 Free', sans-serif;
+  content: "\f06a";
   margin-right: 10px;
+  font-size: 1.25rem;
+  position: relative;
+  top: 1px;
 }
 
 .alert a {
@@ -601,8 +613,7 @@ input[type=text].loading {
 }
 
 .alert.error .message::before {
-  content: url('/static/v2/images/close.svg');
-  height: 30px;
+  content: "\f057";
 }
 
 .alert.success {
@@ -610,8 +621,7 @@ input[type=text].loading {
 }
 
 .alert.success .message::before {
-  content: url('/static/v2/images/success.svg');
-  height: 30px;
+  content: "\f058";
 }
 
 .alert.info {
@@ -619,17 +629,15 @@ input[type=text].loading {
 }
 
 .alert.info .message::before {
-  content: url('/static/v2/images/info.svg');
-  height: 30px;
+  content: "\f05a";
 }
 
 .alert.warning {
-  background-color: #F2A700
+  background-color: #FF7F00;
 }
 
 .alert.warning .message::before {
-  content: url('/static/v2/images/warning.svg');
-  height: 28px;
+  content: "\f071";
 }
 
 /* The close button */
@@ -673,6 +681,34 @@ input[type=text].loading {
   color: white;
   width: 100%;
   margin-left: 0px;
+}
+
+.bottom_notification-beyond {
+  background: #000;
+  position: relative;
+  background-image: linear-gradient(90deg, #000, rgba(15, 206, 124, 0.7), #000), url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' opacity='1' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' y='0.5' width='20' height='20' rx='3.5' stroke='rgba(15, 206, 124, 0.7)'/%3E%3C/svg%3E%0A");
+  background-repeat: no-repeat, repeat-x;
+  background-size:  100%, 24px;
+  background-position: center, 100% center;
+  animation: bg-move 17s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite;
+}
+@keyframes bg-move {
+  0% {
+    background-position: center, 0 center;
+  }
+  100% {
+    background-position: center, 100% center;
+  }
+}
+
+.bottom_notification-yellow {
+  background-color: #ffce08;
+  color: #000;
+}
+
+.bottom_notification-pink {
+  background-color: #9f80ff;
+  color: #000;
 }
 
 .metamask_recc {
@@ -722,7 +758,7 @@ input[type=text].loading {
 }
 
 .bottom_notification a {
-  color: white;
+  color: currentColor;
   text-decoration: underline;
   margin-left: 5px;
 }
@@ -825,14 +861,6 @@ input.is-invalid {
 
 .faucet_response {
   display: none;
-}
-
-.faucet_response .frheader {
-  font-size: xx-large;
-}
-
-.faucet_response .frmessage {
-  font-size: large;
 }
 
 .tooltip-info {
@@ -1020,76 +1048,28 @@ input.is-invalid {
   width: auto;
 }
 
-.rating {
-  width:160px;
-}
-.rating span { float:right; position:relative; }
-.rating span input {
-  position:absolute;
-  top:0px;
-  left:0px;
-  opacity:0;
-}
-.rating span label {
-  display:inline-block;
-  width:30px;
-  height:30px;
-  text-align:center;
-  color:#FFF;
-  font-size:25px;
-  margin-right:2px;
-  line-height:30px;
-  border-radius:50%;
-  -webkit-border-radius:50%;
-}
-.rating span label i {
-  color:#ccc;
-}
-
-.rating span:hover ~ span label i,
-.rating span:hover label i {
-  opacity: 0.5;
-}
-.rating span.checked label i,
-.rating span.checked ~ span label i
-{
-  opacity: 1;
-}
-
-.rating span:hover ~ span label i,
-.rating span:hover label i,
-.rating span.checked label i,
-.rating span.checked ~ span label i {
-  color: rgb(18,199,113);
-}
-
 .bounty_box {
-  border: 5px solid white;
+  box-shadow: 0px 0px 0px 3px #15003e;
   width: 100%;
   display: block;
   padding: 30px 30px;
-  background-color: #15003e;
-  color: white;
+  background-color: white;
+  color: black;
   text-decoration: none;
+  transition: all 100ms linear;
 }
 
 .bounty_box.disabled, .bounty_box.disabled:hover {
   cursor: not-allowed;
-  background-color: #5f445b;
+  background-color: rgb(245, 245, 245);
   text-decoration: none;
 }
 
 .bounty_box:hover {
-  background-color: #35305e;
   text-decoration: none;
-}
-
-.bounty_box h5 {
-  color: white;
-}
-
-.bounty_box span {
-  color: white;
+  transition: box-shadow 100ms ease-out;
+  box-shadow: 0px 0px 0px 6px #15003e;
+  color: #000;
 }
 
 .morecontent span {
@@ -1441,63 +1421,6 @@ input.is-invalid {
   padding: 0.25rem 1.25rem;
 }
 
-/* Results */
-
-.results h2 {
-  font-size: 1.8rem;
-  font-weight: 700;
-}
-
-.results h3 {
-  font-weight: 700;
-}
-
-.results h5 {
-  font-weight: 700;
-  text-decoration: underline;
-}
-
-.results .bounty_status {
-  margin-top: 1.5rem;
-}
-
-.results .bounty_status p {
-  font-size: 1.2rem;
-}
-
-.results #price_per_hour img{
-  width: 100%;
-}
-
-.results .bounty_status .box_1,
-.box_2,
-.box_3,
-.box_4,
-.box_5,
-.box_6 {
-  float: left;
-  width: 1rem;
-  height: 1rem;
-  margin-top: .2rem;
-  margin-right: 1rem;
-}
-
-.results ul#programming_languages {
-  text-align: center;
-}
-
-.results ul#programming_languages li {
-  list-style: none;
-  padding: 0.5rem 2rem;
-  margin-bottom: 1.5rem;
-  display: inline-block;
-  border: 1px solid #999;
-}
-
-.results ul#programming_languages li.selected{
-  background-color: #eee;
-}
-
 .box_1 {
   color: #011f4b;
   border: 10px solid #011f4b;
@@ -1528,16 +1451,6 @@ input.is-invalid {
   border: 10px solid #d3ddf0;
 }
 
-.results .icon {
-  height: 6rem;
-  width: auto;
-}
-
-.results p {
-  font-size: 1.3rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
 
 @keyframes busyOverlay {
   from {
@@ -1634,6 +1547,10 @@ div.busyOverlay {
   max-width: 482px;
 }
 
+.popover_card {
+  border-radius: 5px;
+  border: 1px solid #E5E5E5;
+}
 /* Custom icons */
 
 .g-icon {
@@ -1653,4 +1570,80 @@ div.busyOverlay {
 .g-icon__dot-circle:before {
   border: 0.25em solid currentColor;
   border-radius: 100px;
+}
+
+.cta-blue {
+  background: #0D0764;
+  color: white;
+  padding: 1.8rem;
+  border-radius: 0.2rem;
+}
+
+.privaterepo-instructions {
+  background: #F8F8F8;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .privaterepo-instructions {
+    width: 75%;
+  }
+
+}
+
+.g-modal .modal-header,
+.g-modal .modal-footer {
+  border: none;
+}
+
+.inner-tooltip {
+  pointer-events: none;
+}
+
+/* Gitcoin Updates */
+.dynamic-content img {
+  max-width: 100%;
+}
+
+.dynamic-content h2 {
+  font-size: 1.8em;
+}
+
+.dynamic-content h3 {
+  font-size: 1.6em;
+}
+
+.dynamic-content h4 {
+  font-size: 1.4em;
+}
+
+.dynamic-content h5 {
+  font-size: 1.3em;
+}
+
+.dynamic-content h6 {
+  font-size: 1.2em;
+}
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+  background-color: #3E00FF !important;
+}
+
+.daterangepicker .ranges li.active {
+  background-color: #5b24ff !important;
+}
+
+.admin_only {
+  background-color: #f2f5ea !important;
+  border-radius: 3px;
+}
+
+.only_visible_to_me_color {
+  background-color: #d3e3f7;
+}
+
+.only_visible_to_me {
+  padding: 3px 5px;
+  border-radius: 3px;
 }

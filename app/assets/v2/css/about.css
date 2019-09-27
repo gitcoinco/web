@@ -20,6 +20,7 @@ h4 {
   font-weight: bold;
 }
 
+
 #team p,
 #jobs p,
 #origin_story p {
@@ -31,6 +32,13 @@ h4 {
   max-width: 400px;
 }
 
+.problem img{
+  filter: grayscale(90%);
+}
+.problem img:hover{
+  filter: grayscale(20%);
+}
+
 #origin_story img {
   max-height: 200px;
   max-width: 300px;
@@ -38,17 +46,21 @@ h4 {
 }
 
 #team .card  {
-  box-shadow: 0px 3px 15px rgba(0,0,0,0.2);
   border-radius: 0;
+  font-size: 16px;
+  border: none;
   background:#FFFFFF;
   padding: 1.5rem 1.5rem 0;
   margin: auto;
   margin-top: 1em;
   margin-bottom: 1em;
-  width: 14em;
+  width: 100%;
   text-align: center;
 }
-
+#team .card p {
+  font-size: 14px;
+  margin-bottom: 3px;
+}
 #team .card-small {
   padding-left: .5rem;
   padding-right: .5rem;
@@ -62,20 +74,60 @@ h4 {
   color: #999;
 }
 
+#team .role {
+  font-weight: 555;
+}
+#team .role span{
+  font-weight: 888;
+}
+
 #team .card .desc {
   font-weight: bolder;
 }
 
-#team .avatar {
+#community .avatar {
   border: 0.1rem solid #1AB56D;
-  width: 77px;
-  height: 77px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   margin: auto;
   margin-bottom: 10px;
 }
 
-#team .name {
+#team .avatar {
+  width: 225px;
+  height: 285px;
+  margin: auto;
+  margin-bottom: 10px;
+  opacity: .9;
+}
+
+#team .avatar:hover {
+  width: 235px;
+  height: 295px;
+  opacity: 1;
+}
+
+#team .avatar.nate {
+  height: 385px;
+  margin-bottom: -90px;
+}
+
+#team .avatar.joe {
+  width: 255px;
+  margin-left: -15px;
+}
+
+#team .avatar.joe:hover {
+  width: 265px;
+  margin-left: -15px;
+}
+
+#team .avatar.jobs {
+  height: 275px;
+}
+
+#team .name, #team .name a{
   color: #1AB56D;
   margin-bottom: 5px;
 }
@@ -85,7 +137,7 @@ h4 {
 }
 
 #team .social-links a i {
-  font-size: 1.25em;
+  font-size: 1.75em;
   transition: all 0.3s;
   color: black;
 }
@@ -107,13 +159,15 @@ h4 {
 
 #team .social-links a {
   display: inline-block;
+  padding-right: 1em;
+  padding-left: 1em;
 }
 
 .gitcoin-svg {
   background-size: cover !important;
-  background-image: url("/static/v2/images/gitcoin.svg");
-  width: 2em;
-  height: 2em;
+  background-image: url("/static/v2/images/helmet.svg");
+  width: 1.5em;
+  height: 2.3em;
   position: relative;
   top: 4px;
 }

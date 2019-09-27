@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static matches %}
+{% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark g-font-muli">
   <a class="navbar-brand pt-0 pb-0" href="/">
     <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
@@ -33,7 +33,7 @@
       <div class="nav-item dropdown interior">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {% trans "Our Products" %}
+          {% trans "Products" %}
         </a>
         <div class="dropdown-menu dropdown-menu-right" id="why-gitcoin" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url "funder_bounties" %}">
@@ -61,17 +61,23 @@
       <div class="nav-item dropdown interior">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {% trans "Our Mission" %}
+          {% trans "Network" %}
         </a>
         <div class="dropdown-menu dropdown-menu-right" id="how-it-works" aria-labelledby="navbarDropdownHow">
           <a class="dropdown-item" href="{% url "vision" %}">
             {% trans "Vision" %}
           </a>
           <a class="dropdown-item" href="{% url "mission" %}">
-            {% trans "Values" %}
+            {% trans "Mission" %}
           </a>
           <a class="dropdown-item" href="{% url "results" %}">
             {% trans "Results" %}
+          </a>
+          <a class="dropdown-item" href="{% url "leaderboard" "" %}">
+            {% trans "Leaderboard" %}
+          </a>
+          <a class="dropdown-item" href="{% url "activity" %}">
+            {% trans "Activity Feed" %}
           </a>
         </div>
       </div>
@@ -82,6 +88,9 @@
           {% trans "Company" %}
         </a>
         <div class="dropdown-menu dropdown-menu-right" id="how-it-works" aria-labelledby="navbarDropdownHow">
+          <a class="dropdown-item" href="{% url "about" %}">
+            {% trans "About" %}
+          </a>
           <a class="dropdown-item" href="{% url "about" %}#team">
             {% trans "Team" %}
           </a>
@@ -89,18 +98,21 @@
             {% trans "Blog" %}
           </a>
           <a class="dropdown-item" href="{% url "not_a_token" %}">
-            {% trans "No Token" %}
+            {% trans "No Utility Token ICO" %}
+          </a>
+          <a class="dropdown-item" href="{% url "jobs" %}">
+            {% trans "Jobs" %}
           </a>
         </div>
       </div>
 
       <!-- <a class="nav-link interior" href="{% url "pricing" %}">{% trans "Pricing" %}</a> -->
     </nav>
-    <nav class="navbar-nav mr-3">      
+    <nav class="navbar-nav mr-3">
       {% if user.is_authenticated %}
         {% include 'shared/nav_auth.html' with source='authed' %}
       {% else %}
-        <a href="{% url 'social:begin' 'github' %}?next=/" class="nav-link interior">
+        <a href="{% url 'social:begin' 'github' %}?next=/" onclick="dataLayer.push({'event': 'login'});" class="nav-link interior">
           <i class="fab fa-github mr-1" role="aria-hidden"></i>
           {% trans "LOG IN" %}
         </a>
@@ -109,3 +121,4 @@
   </div>
 
 </nav>
+{% cookielaw_banner %}

@@ -1,0 +1,85 @@
+{% load i18n static %}
+{% if is_editable %}
+  <div class="tab3">
+    {% include "shared/rate_bounties.html" %}
+  </div>
+{% endif %}
+<div class="static-stars my-3 d-flex">
+  {% for i in ratings %}
+    <i class="fa fa-star align-self-center {% if avg_rating_scaled.overall != 0 and i <= avg_rating_scaled.overall %}fas{% endif %}"></i>
+  {% endfor %}
+  <div class="font-weight-bold">
+	  &nbsp;&nbsp;{{ avg_rating_scaled.total_rating }} {% trans "rating" %}{{avg_rating_scaled.total_rating | pluralize}}
+  </div>
+</div>
+<div class="row">
+  <div class="col-4">
+	  <div class="row">
+		  <div class="col-5">
+			<span>Satisfaction</span>
+		  </div>
+		  <div class="col-7">
+		    <div class="progress mt-2" style="height: 6px;">
+			  <div title="{{avg_rating_scaled.satisfaction_rating|floatformat:0}}%" class="progress-bar bg-success" role="progressbar" style="width: {{avg_rating_scaled.satisfaction_rating}}%" aria-valuenow="{{avg_rating_scaled.satisfaction_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
+			</div>
+		  </div>
+	  </div>
+  </div>
+  <div class="col-4">
+	  <div class="row">
+		  <div class="col-5">
+			<span>Speed</span>
+		  </div>
+		  <div class="col-7">
+		    <div class="progress mt-2" style="height: 6px;">
+			  <div title="{{avg_rating_scaled.speed_rating|floatformat:0}}%" class="progress-bar bg-success" role="progressbar" style="width: {{avg_rating_scaled.speed_rating}}%" aria-valuenow="{{avg_rating_scaled.speed_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
+			</div>
+		  </div>
+	  </div>
+  </div>
+  <div class="col-4">
+	  <div class="row">
+		  <div class="col-5">
+			<span>Recommend to other funders</span>
+		  </div>
+		  <div class="col-7">
+		    <div class="progress mt-2" style="height: 6px;">
+			  <div title="{{avg_rating_scaled.recommendation_rating|floatformat:0}}%"  class="progress-bar bg-success" role="progressbar" style="width: {{avg_rating_scaled.recommendation_rating}}%" aria-valuenow="{{avg_rating_scaled.recommendation_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
+			</div>
+		  </div>
+	  </div>
+  </div>
+  <div class="col-4">
+	  <div class="row">
+		  <div class="col-5">
+			<span>Communication/Responsivess</span>
+		  </div>
+		  <div class="col-7">
+		    <div class="progress mt-2" style="height: 6px;">
+			  <div title="{{avg_rating_scaled.communication_rating|floatformat:0}}%"  class="progress-bar bg-success" role="progressbar" style="width: {{avg_rating_scaled.communication_rating}}%" aria-valuenow="{{avg_rating_scaled.communication_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
+			</div>
+		  </div>
+	  </div>
+  </div>
+  <div class="col-4">
+	  <div class="row">
+		  <div class="col-5">
+			<span>Quality of Code Submission</span>
+		  </div>
+		  <div class="col-7">
+		    <div class="progress mt-2" style="height: 6px;">
+			  <div title="{{avg_rating_scaled.code_quality_rating|floatformat:0}}%"  class="progress-bar bg-success" role="progressbar" style="width: {{avg_rating_scaled.code_quality_rating}}%" aria-valuenow="{{avg_rating_scaled.code_quality_rating}}" aria-valuemin="0" aria-valuemax="5"></div>
+			</div>
+		  </div>
+	  </div>
+  </div>
+</div>
+<div class="border-bottom my-3"></div>
+<div class="tab-reviews">
+  <h6 class="font-weight-bold">Reviews</h6>
+  {% for feedback in feedbacks_got %}
+    <div class="d-flex activity row mb-0 {% cycle 'odd' 'even' %} pt-3 pb-3">
+      {% include "shared/feedback.html" %}
+    </div>
+  {% endfor %}
+</div>

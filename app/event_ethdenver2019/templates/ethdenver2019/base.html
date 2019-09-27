@@ -21,7 +21,7 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
-    <script type="text/javascript">
+    <script>
       var static_url = "{{ STATIC_URL }}";
       var media_url = "{{ MEDIA_URL }}";
     </script>
@@ -33,10 +33,10 @@
     <div class="container">
       <div class="row mt-4 mb-4">
         <div class="col-12">
-          <img src="{% static 'v2/images/event_ethdenver2019/ethdenver_logo.png' %}" class="rounded mx-auto d-block">
+          <img src="{% static 'v2/images/event_ethdenver2019/ethdenver_logo.png' %}" class="rounded mx-auto d-block" alt="ETHDenver logo">
         </div>
-      </div>  
-    </div>    
+      </div>
+    </div>
 
     <!-- Wrapper -->
     <main id="wrapper">

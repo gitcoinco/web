@@ -191,7 +191,6 @@ body {
 }
 
 @media (max-width: 991.98px) {
-
   .bounty_row {
     padding-left: 1rem;
     padding-right: 1rem;
@@ -231,8 +230,23 @@ body {
   letter-spacing: 1.7px;
 }
 
+.hackathon-alt {
+  font-size: 11px;
+  color: #0d0764;
+  font-weight: 700;
+  letter-spacing: 1.7px;
+}
+
+.hackathon-explorer .hackathon-alt {
+  display: none;
+}
+
 .status-open {
   color: #00A652;
+}
+
+.status-reserved {
+  color: #d58512;
 }
 
 .status-started {

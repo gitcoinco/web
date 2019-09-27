@@ -48,14 +48,31 @@ body {
   text-transform: capitalize;
 }
 
-#title {
-  text-align: left;
-  padding-top: 2em;
-  padding-bottom: 15px;
+.invite-user .avatar {
+  width: 5.5rem;
+  height: 5.5rem;
 }
 
-#avatar_url {
-  padding-top: 3em;
+.quote-container {
+  width: 55%;
+  z-index: 2;
+}
+
+.quote-container img {
+  top: 3rem;
+  left: -2rem;
+  position: relative;
+}
+
+.quote-container .quote_text {
+  font-size: 1.1rem;
+  color: #4A4A4A;
+}
+
+.quote-container .quote_author {
+  color: #4A4A4A;
+  font-size: 1rem;
+  font-style: italic;
 }
 
 .bounty_details .avatar {
@@ -64,6 +81,10 @@ body {
   margin: 0px auto;
   border-radius: 50px;
   margin-top: 0px;
+}
+
+.bounty_details .avatar.Azure-Samples {
+  border-radius: 0px;
 }
 
 #avatar_url .avatar {
@@ -75,6 +96,30 @@ body {
   color: #00A55E;
   text-transform: uppercase;
   margin-bottom: 5px;
+}
+
+.stat-card {
+  background: #ecf0fa;
+  border-radius: 4px;
+}
+
+.stat-card h2,
+.stat-card p,
+.related-bounties li .bounty-org,
+.popover-bounty__content .summary {
+  color: #717171;
+}
+
+.related-bounties {
+  list-style-type: none;
+}
+
+.related-bounties .bounty-title {
+  color: #3E00FF;
+}
+
+.related-bounties .static-stars .far {
+  font-size: 0.8rem;
 }
 
 .box {
@@ -130,10 +175,6 @@ body {
 
 #issue_description {
   color: #000000;
-}
-
-#issue_description pre, code {
-  padding: 1em 0;
 }
 
 #bounty-info-row {
@@ -244,6 +285,7 @@ body {
 
 .transaction-status a{
   color: white;
+  text-decoration: underline;
 }
 
 .red_warning,
@@ -468,9 +510,8 @@ a.btn {
   margin-bottom: 2em;
 }
 
-.code-snippet {
-  background-color: #F2F6F9;
-  padding: 1rem;
+#funder_notif_info:empty {
+  display: none;
 }
 
 #funder_notif_info .bounty-notification {
@@ -489,7 +530,6 @@ a.btn {
   position: relative;
   top: -2px;
 }
-
 
 #bounty_details #issue_description img {
   max-height: 30rem;
@@ -655,7 +695,6 @@ a.btn {
   width: auto;
 }
 
-
 .btn-interested,
 .btn-extend,
 .btn-cancel {
@@ -677,6 +716,7 @@ a.btn {
 .modal .magnify {
   width: auto;
   max-width: 100%;
+  overflow-y: scroll;
 }
 
 .bg-container {
@@ -700,28 +740,6 @@ a.btn {
   text-align: center;
 }
 
-.bounty_details .quote-container,
-.grant_waiting .quote-container {
-  width: 55%;
-  margin: 4rem auto;
-  font-weight: 700;
-  z-index: 2;
-}
-
-.bounty_details .quote_text,
-.grant_waiting .quote_text {
-  margin-top: 50px;
-  font-size: 1.1rem;
-  color: #4A4A4A;
-}
-
-.bounty_details .quote_author,
-.grant_waiting .quote_author {
-  color: #4A4A4A;
-  margin: 1rem auto;
-  font-size: 1rem;
-}
-
 .ethereum-issue {
   width:100%;
   color: #ffffff;
@@ -731,6 +749,13 @@ a.btn {
 .issue-url {
   font-size: 1.2rem;
   text-align: center;
+}
+
+.hackathon-alt {
+  font-size: 11px;
+  color: #0d0764;
+  font-weight: 700;
+  letter-spacing: 1.7px;
 }
 
 .rocket {
@@ -825,7 +850,6 @@ a.btn {
     display: none;
   }
 
-  #title,
   #funder_notif_info {
     text-align: center;
   }
@@ -844,11 +868,6 @@ a.btn {
 
   .rocket {
     right: 11rem;
-  }
-
-  #extend_deadline {
-    min-width: 40rem;
-    max-width: 0;
   }
 }
 

@@ -30,17 +30,16 @@ from marketing.utils import func_name, get_or_save_email_subscriber, should_supp
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     render_admin_contact_funder, render_bounty_changed, render_bounty_expire_warning, render_bounty_feedback,
-    render_bounty_startwork_expire_warning, render_bounty_unintersted, render_change_grant_owner_accept,
-    render_change_grant_owner_reject, render_change_grant_owner_request, render_faucet_rejected, render_faucet_request,
+    render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
     render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent,
     render_gdpr_update, render_grant_cancellation_email, render_kudos_email, render_match_email, render_new_bounty,
     render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email,
-    render_new_supporter_email, render_new_work_submission, render_notify_ownership_change,
-    render_nth_day_email_campaign, render_quarterly_stats, render_reserved_issue, render_share_bounty,
-    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
-    render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
-    render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
-    render_tip_email, render_weekly_recap,
+    render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder, render_nth_day_email_campaign,
+    render_quarterly_stats, render_reserved_issue, render_share_bounty, render_start_work_applicant_about_to_expire,
+    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
+    render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
+    render_support_cancellation_email, render_thank_you_for_supporting_email, render_tip_email,
+    render_unread_notification_email_weekly_roundup, render_weekly_recap,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -103,13 +102,12 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
     except UnauthorizedError as e:
-        logger.error(f'-- Sendgrid Mail failure - Unauthorized - Check sendgrid credentials')
-        logger.error(e)
+        logger.debug(f'-- Sendgrid Mail failure - {_to_email} / {categories} - Unauthorized - Check sendgrid credentials')
+        logger.debug(e)
     except HTTPError as e:
-        logger.error(f'-- Sendgrid Mail failure - {e}')
+        logger.debug(f'-- Sendgrid Mail failure - {_to_email} / {categories} - {e}')
 
     return response
-
 
 def nth_day_email_campaign(nth, subscriber):
     firstname = subscriber.email.split('@')[0]
@@ -133,6 +131,15 @@ def nth_day_email_campaign(nth, subscriber):
 
 def featured_funded_bounty(from_email, bounty):
     to_email = bounty.bounty_owner_email
+    if not to_email:
+        if bounty.bounty_owner_profile:
+            to_email = bounty.bounty_owner_profile.email
+    if not to_email:
+        if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+            to_email = bounty.bounty_owner_profile.user.email
+    if not to_email:
+        return
+
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -147,6 +154,12 @@ def featured_funded_bounty(from_email, bounty):
 def new_grant(grant, profile):
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    if not to_email:
+        return
+
     cur_language = translation.get_language()
 
     try:
@@ -159,60 +172,11 @@ def new_grant(grant, profile):
         translation.activate(cur_language)
 
 
-def change_grant_owner_request(grant, profile):
-    from_email = settings.CONTACT_EMAIL
-    to_email = profile.email
-    cur_language = translation.get_language()
-
-    try:
-        setup_lang(to_email)
-        html, text, subject = render_change_grant_owner_request(grant)
-
-        if not should_suppress_notification_email(to_email, 'change_owner'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
-    finally:
-        translation.activate(cur_language)
-
-
-def change_grant_owner_accept(grant, new_profile, old_profile):
-    from_email = settings.CONTACT_EMAIL
-    to_new_owner_email = new_profile.email
-    to_old_owner_email = old_profile.email
-    cur_language = translation.get_language()
-
-    try:
-        setup_lang(to_new_owner_email)
-        html, text, subject = render_change_grant_owner_accept(grant)
-        if not should_suppress_notification_email(to_new_owner_email, 'change_owner'):
-            send_mail(from_email, to_new_owner_email, subject, text, html, categories=['transactional', func_name()])
-
-        setup_lang(to_old_owner_email)
-        html, text, subject = render_notify_ownership_change(grant)
-        if not should_suppress_notification_email(to_old_owner_email, 'change_owner'):
-            send_mail(from_email, to_old_owner_email, subject, text, html, categories=['transactional', func_name()])
-
-    finally:
-        translation.activate(cur_language)
-
-
-def change_grant_owner_reject(grant, profile):
-    from_email = settings.CONTACT_EMAIL
-    to_email = profile.email
-    cur_language = translation.get_language()
-
-    try:
-        setup_lang(to_email)
-        html, text, subject = render_change_grant_owner_reject(grant)
-
-        if not should_suppress_notification_email(to_email, 'change_owner'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
-    finally:
-        translation.activate(cur_language)
-
-
 def new_supporter(grant, subscription):
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
+    if not to_email:
+        to_email = grant.admin_profile.user.email
     cur_language = translation.get_language()
 
     try:
@@ -228,6 +192,8 @@ def new_supporter(grant, subscription):
 def thank_you_for_supporting(grant, subscription):
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
+    if not to_email:
+        to_email = subscription.contributor_profile.user.email
     cur_language = translation.get_language()
 
     try:
@@ -303,6 +269,14 @@ def successful_contribution(grant, subscription, contribution):
 def admin_contact_funder(bounty, text, from_user):
     from_email = from_user.email
     to_email = bounty.bounty_owner_email
+    if not to_email:
+        if bounty.bounty_owner_profile:
+            to_email = bounty.bounty_owner_profile.email
+    if not to_email:
+        if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+            to_email = bounty.bounty_owner_profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -361,6 +335,14 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
             to_email = accepted_fulfillments.first().fulfiller_email if accepted_fulfillments.exists() else ""
         elif persona == 'funder':
             to_email = bounty.bounty_owner_email
+            if not to_email:
+                if bounty.bounty_owner_profile:
+                    to_email = bounty.bounty_owner_profile.email
+            if not to_email:
+                if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+                    to_email = bounty.bounty_owner_profile.user.email
+        if not to_email:
+            return
 
         subject = bounty.github_url
         __, text = render_bounty_feedback(bounty, persona, previous_bounties)
@@ -545,12 +527,32 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
         return html
 
 
-def share_bounty(emails, msg, profile):
+def no_applicant_reminder(to_email, bounty):
+    from_email = settings.SERVER_EMAIL
+    subject = "Get more applicants on your bounty"
+    html, text = render_no_applicant_reminder(bounty=bounty)
+    try:
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            text,
+            html,
+            from_name="No Reply from Gitcoin.co",
+            categories=['marketing', func_name()],
+        )
+    except Exception as e:
+        logger.warning(e)
+        return False
+    return True
+
+
+def share_bounty(emails, msg, profile, invite_url=None, kudos_invite=False):
     for email in emails:
         to_email = email
-        from_email = profile.email
-        subject = "You have been invited to work on a bounty."
-        html, text = render_share_bounty(to_email, msg, profile)
+        from_email = settings.CONTACT_EMAIL
+        subject = f"@{profile.handle} invited you to to work on a bounty."
+        html, text = render_share_bounty(to_email, msg, profile, invite_url, kudos_invite)
         send_mail(
             from_email,
             to_email,
@@ -639,7 +641,7 @@ def weekly_roundup(to_emails=None):
             setup_lang(to_email)
             html, text, subject = render_new_bounty_roundup(to_email)
             from_email = settings.PERSONAL_CONTACT_EMAIL
-            
+
             if not html:
                 print("no content")
                 return
@@ -685,6 +687,33 @@ def weekly_recap(to_emails=None):
                 print('supressed')
         finally:
             translation.activate(cur_language)
+
+def unread_notification_email_weekly_roundup(to_emails=None):
+    if to_emails is None:
+        to_emails = []
+
+    cur_language = translation.get_language()
+    for to_email in to_emails:
+        try:
+            setup_lang(to_email)
+            html, text, subject = render_unread_notification_email_weekly_roundup(to_email)
+            from_email = settings.PERSONAL_CONTACT_EMAIL
+
+            if not should_suppress_notification_email(to_email, 'weeklyrecap'):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    from_name="Kevin Owocki (Gitcoin.co)",
+                    categories=['marketing', func_name()],
+                )
+            else:
+                print('supressed')
+        finally:
+            translation.activate(cur_language)
+
 
 def gdpr_update(to_emails=None):
     if to_emails is None:
@@ -756,6 +785,8 @@ def new_bounty_rejection(bounty, to_emails=None):
 
 
 def new_bounty_acceptance(bounty, to_emails=None):
+    from dashboard.models import Profile
+    from dashboard.utils import get_unrated_bounties_count
     if not bounty or not bounty.value_in_usdt_now:
         return
 
@@ -766,10 +797,12 @@ def new_bounty_acceptance(bounty, to_emails=None):
 
     for to_email in to_emails:
         cur_language = translation.get_language()
+        profile = Profile.objects.filter(email=to_email).first()
+        unrated_count = get_unrated_bounties_count(profile)
         try:
             setup_lang(to_email)
             from_email = settings.CONTACT_EMAIL
-            html, text = render_new_bounty_acceptance(to_email, bounty)
+            html, text = render_new_bounty_acceptance(to_email, bounty, unrated_count)
 
             if not should_suppress_notification_email(to_email, 'bounty'):
                 send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
@@ -933,6 +966,11 @@ def bounty_uninterested(to_email, bounty, interest):
 def start_work_approved(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = interest.profile.email
+    if not to_email:
+        if interest.profile and interest.profile.user:
+            to_email = interest.profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -947,6 +985,11 @@ def start_work_approved(interest, bounty):
 def start_work_rejected(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = interest.profile.email
+    if not to_email:
+        if interest.profile and interest.profile.user:
+            to_email = interest.profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -961,6 +1004,14 @@ def start_work_rejected(interest, bounty):
 def start_work_new_applicant(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = bounty.bounty_owner_email
+    if not to_email:
+        if bounty.bounty_owner_profile:
+            to_email = bounty.bounty_owner_profile.email
+    if not to_email:
+        if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+            to_email = bounty.bounty_owner_profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -975,6 +1026,14 @@ def start_work_new_applicant(interest, bounty):
 def start_work_applicant_about_to_expire(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = bounty.bounty_owner_email
+    if not to_email:
+        if bounty.bounty_owner_profile:
+            to_email = bounty.bounty_owner_profile.email
+    if not to_email:
+        if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+            to_email = bounty.bounty_owner_profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -989,6 +1048,14 @@ def start_work_applicant_about_to_expire(interest, bounty):
 def start_work_applicant_expired(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = bounty.bounty_owner_email
+    if not to_email:
+        if bounty.bounty_owner_profile:
+            to_email = bounty.bounty_owner_profile.email
+    if not to_email:
+        if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+            to_email = bounty.bounty_owner_profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -1075,6 +1142,11 @@ def new_funding_limit_increase_request(profile, cleaned_data):
 def bounty_request_feedback(profile):
     from_email = 'vivek.singh@consensys.net'
     to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    if not to_email:
+        return
     cur_language = translation.get_language()
 
     try:

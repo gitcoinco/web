@@ -21,7 +21,7 @@ $('.modal-link').click(function(e) {
 const sendInvites = (users) => {
   let usersId = [];
   let msg = $('#shareText').val();
-  const url = document.issueURL;
+  const bountyId = document.result.pk;
 
   $.each(users, function(index, elem) {
     usersId.push(elem.id);
@@ -30,7 +30,7 @@ const sendInvites = (users) => {
   var sendEmail = fetchData(
     '/api/v0.1/social_contribution_email/',
     'POST',
-    {usersId, msg, url},
+    {usersId, msg, bountyId},
     {'X-CSRFToken': csrftoken}
   );
 

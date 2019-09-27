@@ -10,13 +10,19 @@ var filters = [
   'idx_status',
   'project_type',
   'permission_type',
-  'misc'
+  'misc',
+  'applicants'
 ];
 var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
 local_storage_keys.push('keywords');
 local_storage_keys.push('org');
-results_limit = 15;
+
+results_limit = 10;
+
+if (document.hackathon) {
+  results_limit = 10;
+}
 
 var localStorage;
 
@@ -54,6 +60,34 @@ var paint_search_tabs = function() {
   target.html(html);
 };
 
+function scrollSlider(element, cardSize) {
+  const arrowLeft = $('#arrowLeft');
+  const arrowRight = $('#arrowRight');
+
+  arrowLeft.on('click', function() {
+    element[0].scrollBy({left: -cardSize, behavior: 'smooth'});
+  });
+  arrowRight.on('click', function() {
+    element[0].scrollBy({left: cardSize, behavior: 'smooth'});
+  });
+
+  element.on('scroll mouseenter', function() {
+    if (this.clientWidth === (this.scrollWidth - this.scrollLeft)) {
+      arrowRight.hide();
+    } else {
+      arrowRight.show();
+    }
+
+    if (this.scrollLeft < 10) {
+      arrowLeft.hide();
+    } else {
+      arrowLeft.show();
+    }
+  });
+}
+
+scrollSlider($('#featured-card-container'), 288);
+
 function debounce(func, wait, immediate) {
   var timeout;
 
@@ -74,6 +108,8 @@ function debounce(func, wait, immediate) {
   };
 }
 
+const scrub = value => value.replace(/[\W]+/g, '');
+
 /**
  * Fetches all filters options from the URI
  */
@@ -85,6 +121,10 @@ var getActiveFilters = function() {
   let _filters = filters.slice();
 
   _filters.push('keywords', 'order_by', 'org');
+  if (document.hackathon) {
+    resetFilters(true);
+    filters.push('org');
+  }
   _filters.forEach(filter => {
     if (getParam(filter)) {
       localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
@@ -118,24 +158,26 @@ var save_sidebar_latest = function() {
 
   filters.forEach((filter) => {
     localStorage[filter] = '';
-
-    $('input[name="' + filter + '"]:checked').each(function() {
-      localStorage[filter] += $(this).val() + ',';
-    });
+    if (filter === 'applicants') {
+      localStorage[filter] = $('#applicants_box').val();
+    } else {
+      $('input[name="' + filter + '"]:checked').each(function() {
+        localStorage[filter] += $(this).val() + ',';
+      });
+    }
 
     localStorage[filter] = localStorage[filter].replace(/^,|,\s*$/g, '');
   });
 };
 
 // saves search information default
-var set_sidebar_defaults = function() {
-  // Special handling to support adding keywords from url query param
-  var q = getParam('q');
-  var keywords;
-  var org;
+const set_sidebar_defaults = () => {
+  const q = getParam('q');
+  const org = getParam('org');
+  const applicants = getParam('applicants');
 
   if (q) {
-    keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
+    const keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
 
     if (localStorage['keywords']) {
       keywords.split(',').forEach(function(v, k) {
@@ -146,11 +188,13 @@ var set_sidebar_defaults = function() {
     } else {
       localStorage['keywords'] = keywords;
     }
+  }
 
+  if (org) {
     if (localStorage['org']) {
-      org.split(',').forEach(function(v, k) {
-        if (localStorage['org'].indexOf(v) === -1) {
-          localStorage['org'] += ',' + v;
+      org.split(',').forEach(function(value) {
+        if (localStorage['org'].indexOf(value) === -1) {
+          localStorage['org'] += ',' + value;
         }
       });
     } else {
@@ -158,6 +202,11 @@ var set_sidebar_defaults = function() {
     }
   }
 
+  if (applicants) {
+    if (localStorage['applicants']) {
+      localStorage['applicants'] = applicants;
+    }
+  }
   getActiveFilters();
 
   if (localStorage['order_by']) {
@@ -167,6 +216,10 @@ var set_sidebar_defaults = function() {
 
   filters.forEach((filter) => {
     if (localStorage[filter]) {
+      if (filter === 'applicants') {
+        $('#applicants_box').val(localStorage[filter]).trigger('change.select2');
+      }
+
       localStorage[filter].split(',').forEach(function(val) {
         $('input[name="' + filter + '"][value="' + val + '"]').prop('checked', true);
       });
@@ -212,9 +265,8 @@ var addTechStackKeywordFilters = function(value) {
   } else {
     localStorage['keywords'] = value;
   }
-
-  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
-    '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
+  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + scrub(value) + '</span>' +
+    '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + scrub(value) + '\')"></i></a>');
 };
 
 var addTechStackOrgFilters = function(value) {
@@ -233,8 +285,8 @@ var addTechStackOrgFilters = function(value) {
     localStorage['org'] = value;
   }
 
-  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
-    '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + value + '\')"></i></a>');
+  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + scrub(value) + '</span>' +
+    '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + scrub(value) + '\')"></i></a>');
 };
 
 var getFilters = function() {
@@ -251,15 +303,15 @@ var getFilters = function() {
 
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
-      _filters.push('<a class="filter-tag keywords"><span>' + v + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + v + '\')"></i></a>');
+      _filters.push('<a class="filter-tag keywords"><span>' + scrub(v) + '</span>' +
+        '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + scrub(v) + '\')"></i></a>');
     });
   }
 
   if (localStorage['org']) {
     localStorage['org'].split(',').forEach(function(v, k) {
-      _filters.push('<a class="filter-tag keywords"><span>' + v + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + v + '\')"></i></a>');
+      _filters.push('<a class="filter-tag keywords"><span>' + scrub(v) + '</span>' +
+        '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + scrub(v) + '\')"></i></a>');
     });
   }
 
@@ -281,10 +333,9 @@ var removeFilter = function(key, value) {
 };
 
 var get_search_URI = function(offset, order) {
-  var uri = '/api/v0.1/bounties/?';
+  var uri = '/api/v0.1/bounties/slim/?';
   var keywords = '';
   var org = '';
-
 
   filters.forEach((filter) => {
     var active_filters = [];
@@ -312,6 +363,9 @@ var get_search_URI = function(offset, order) {
         } else if (_value === 'fulfilledByMe') {
           _key = 'fulfiller_github_username';
           _value = document.contxt.github_handle;
+        } else if (_value === 'reservedForMe') {
+          _key = 'reserved_for_user_handle';
+          _value = document.contxt.github_handle;
         }
 
         if (_value !== 'any') {
@@ -326,6 +380,9 @@ var get_search_URI = function(offset, order) {
         filter = 'bounty_owner_address';
         val = 'myself';
       }
+    }
+    if (filter === 'applicants') {
+      val = $('#applicants_box').val();
     }
 
     if (val && val !== 'any' &&
@@ -347,7 +404,7 @@ var get_search_URI = function(offset, order) {
   }
 
   if (keywords) {
-    uri += '&raw_data=' + keywords;
+    uri += '&keywords=' + keywords;
   }
 
   if (localStorage['org']) {
@@ -370,11 +427,17 @@ var get_search_URI = function(offset, order) {
     order_by = localStorage['order_by'];
   }
 
+  if (document.hackathon) {
+    uri += `&event_tag=${document.hackathon}`;
+  }
+
   if (typeof order_by !== 'undefined') {
     uri += '&order_by=' + order_by;
   }
+
   uri += '&offset=' + offset;
   uri += '&limit=' + results_limit;
+
   return uri;
 };
 
@@ -413,6 +476,8 @@ var reset_offset = function() {
   document.offset = 0;
 };
 
+let organizations = [];
+
 var refreshBounties = function(event, offset, append, do_save_search) {
 
   // Allow search for freeform text
@@ -420,31 +485,36 @@ var refreshBounties = function(event, offset, append, do_save_search) {
   var orgInput = $('#org')[0];
 
   $('#results-count span.num').html('<i class="fas fa-spinner fa-spin"></i>');
-  if (searchInput.value.length > 0) {
+  if (searchInput && searchInput.value.length > 0) {
     addTechStackKeywordFilters(searchInput.value.trim());
     searchInput.value = '';
     searchInput.blur();
     $('.close-icon').hide();
   }
 
-  if (orgInput.value.length > 0) {
-    addTechStackOrgFilters(orgInput.value.trim());
-    orgInput.value = '';
-    orgInput.blur();
-    $('.close-icon').hide();
-  }
-
-  save_sidebar_latest();
-  toggleAny(event);
-  getFilters();
-  if (do_save_search) {
-    if (!is_search_already_saved()) {
-      save_search();
+  if (!document.hackathon) {
+    if (orgInput.value.length > 0) {
+      addTechStackOrgFilters(orgInput.value.trim());
+      orgInput.value = '';
+      orgInput.blur();
+      $('.close-icon').hide();
     }
-  }
-  paint_search_tabs();
 
-  window.history.pushState('', '', '/explorer?' + buildURI());
+    save_sidebar_latest();
+    toggleAny(event);
+    getFilters();
+    if (do_save_search) {
+      if (!is_search_already_saved()) {
+        save_search();
+      }
+
+      paint_search_tabs();
+      window.history.pushState('', '', window.location.pathname + '?' + buildURI());
+    }
+  } else {
+    toggleAny(event);
+    localStorage['order_by'] = $('#sort_option').val();
+  }
 
   if (!append) {
     $('.nonefound').css('display', 'none');
@@ -473,7 +543,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     results = sanitizeAPIResults(results);
 
     if (results.length === 0 && !append) {
-      if (localStorage['referrer'] === 'onboard') {
+      if (localStorage['referrer'] === 'onboard' && !document.hackathon) {
         $('.no-results').removeClass('hidden');
         $('#dashboard-content').addClass('hidden');
       } else {
@@ -569,6 +639,12 @@ var resetFilters = function(resetKeyword) {
         $('input[name="' + filter + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
 
+    if (resetKeyword && filter === 'applicants' && !document.hackathon) {
+      $('#applicants_box').val('ALL').trigger('change.select2');
+    } else if (resetKeyword && filter === 'applicants' && document.hackathon) {
+      localStorage.setItem(filter, '');
+    }
+
     // Defaults to mainnet on clear filters to make it less confusing
     $('input[name="network"][value="mainnet"]').prop('checked', true);
   });
@@ -587,7 +663,7 @@ var resetFilters = function(resetKeyword) {
 };
 
 (function() {
-  if (localStorage['referrer'] === 'onboard') {
+  if (localStorage['referrer'] === 'onboard' && !document.hackathon) {
     $('#sidebar_container').addClass('invisible');
     $('#dashboard-title').addClass('hidden');
     $('#onboard-dashboard').removeClass('hidden');
@@ -624,6 +700,30 @@ var resetFilters = function(resetKeyword) {
 })();
 
 $(document).ready(function() {
+
+  $('.js-select2').each(function() {
+    $(this).select2({
+      minimumResultsForSearch: Infinity
+    });
+  });
+
+  $('#expand').on('click', () => {
+    $('#expand').hide();
+    $('#minimize').show();
+    $('#sidebar_container form').css({
+      'height': 'auto',
+      'display': 'inherit'
+    });
+  });
+
+  $('#minimize').on('click', () => {
+    $('#minimize').hide();
+    $('#expand').show();
+    $('#sidebar_container form').css({
+      'height': 0,
+      'display': 'none'
+    });
+  });
 
   // Sort select menu
   $('#sort_option').selectmenu({
@@ -738,20 +838,10 @@ $(document).ready(function() {
   });
 
   // sidebar filters
-  $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
-    reset_offset();
-    refreshBounties(null, 0, false, true);
-    e.preventDefault();
-  });
-
-  // sidebar filters
-  $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
-    reset_offset();
-    refreshBounties(null, 0, false, true);
-    e.preventDefault();
-  });
-
-  $('#org').change(function(e) {
+  $(`.sidebar_search input[type=radio],
+      .sidebar_search input[type=checkbox],
+      .sidebar_search .js-select2,
+      #org`).change(function(e) {
     reset_offset();
     refreshBounties(null, 0, false, true);
     e.preventDefault();

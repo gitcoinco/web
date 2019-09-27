@@ -23,8 +23,9 @@ import logging
 from json.decoder import JSONDecodeError
 
 from django.conf import settings
+from django.utils import timezone
 
-import ipfsapi
+import ipfshttpclient
 import requests
 from app.utils import sync_profile
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
@@ -32,10 +33,13 @@ from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
-from ipfsapi.exceptions import CommunicationError
+from ipfshttpclient.exceptions import CommunicationError
+from pytz import UTC
 from web3 import HTTPProvider, Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
+
+from .notifications import maybe_market_to_slack
 
 logger = logging.getLogger(__name__)
 
@@ -94,7 +98,8 @@ def humanize_event_name(name):
         'killed_bounty': 'Cancelled funded issue',
         'worker_approved': 'Worker approved',
         'worker_rejected': 'Worker rejected',
-        'work_done': 'Work done'
+        'work_done': 'Work done',
+        'issue_remarketed': 'Issue re-marketed'
     }
 
     return humanized_event_names.get(name, name).upper()
@@ -187,7 +192,8 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
 
     Args:
         host (str): The IPFS host to connect to.
-            Defaults to environment variable: IPFS_HOST.
+            Defaults to environment variable: IPFS_HOST.  The host name should be of the form 'ipfs.infura.io' and not 
+            include 'https://'.
         port (int): The IPFS port to connect to.
             Defaults to environment variable: env IPFS_API_PORT.
 
@@ -196,14 +202,15 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
             communication error with IPFS.
 
     Returns:
-        ipfsapi.client.Client: The IPFS connection client.
+        ipfshttpclient.client.Client: The IPFS connection client.
 
     """
     if host is None:
-        host = f'https://{settings.IPFS_HOST}'
-
+        clientConnectString = f'/dns/{settings.IPFS_HOST}/tcp/{settings.IPFS_API_PORT}/{settings.IPFS_API_SCHEME}'
+    else:
+        clientConnectString = f'/dns/{host}/tcp/{settings.IPFS_API_PORT}/https'
     try:
-        return ipfsapi.connect(host, port)
+        return ipfshttpclient.connect(clientConnectString)
     except CommunicationError as e:
         logger.exception(e)
         raise IPFSCantConnectException('Failed while attempt to connect to IPFS')
@@ -238,7 +245,7 @@ def ipfs_cat_ipfsapi(key):
 
 def ipfs_cat_requests(key):
     try:
-        url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
+        url = f'https://ipfs.infura.io:5001/api/v0/cat?arg={key}'
         response = requests.get(url, timeout=1)
         return response.text, response.status_code
     except:
@@ -313,6 +320,28 @@ def get_bounty_from_invite_url(invite_url):
     inviter = data_array[0]
     bounty = data_array[1]
     return {'inviter': inviter, 'bounty': bounty}
+
+
+def get_unrated_bounties_count(user):
+    if not user:
+        return 0
+    unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
+        .filter(interested__status='okay') \
+        .filter(interested__pending=False).filter(idx_status='done') \
+        .exclude(
+            feedbacks__feedbackType='worker',
+            feedbacks__sender_profile=user
+        )
+    unrated_funded = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+    .filter(
+        bounty_owner_github_username__iexact=user.handle,
+        idx_status='done'
+    ).exclude(
+        feedbacks__feedbackType='approver',
+        feedbacks__sender_profile=user,
+    )
+    unrated_count = unrated_funded.count() + unrated_contributed.count()
+    return unrated_count
 
 
 def getStandardBountiesContractAddresss(network):
@@ -799,3 +828,71 @@ def get_nonce(network, address):
     JSONStore.objects.create(key=key, view=view, data=[new_nonce])
 
     return new_nonce
+
+
+def re_market_bounty(bounty, auto_save = True):
+    remarketed_count = bounty.remarketed_count
+    if remarketed_count < settings.RE_MARKET_LIMIT:
+        now = timezone.now()
+        minimum_wait_after_remarketing = bounty.last_remarketed + timezone.timedelta(minutes=settings.MINUTES_BETWEEN_RE_MARKETING) if bounty.last_remarketed else now
+        if now >= minimum_wait_after_remarketing:
+            bounty.remarketed_count = remarketed_count + 1
+            bounty.last_remarketed = now
+
+            if auto_save:
+                bounty.save()
+
+            maybe_market_to_slack(bounty, 'issue_remarketed')
+
+            result_msg = 'The issue will appear at the top of the issue explorer. '
+            further_permitted_remarket_count = settings.RE_MARKET_LIMIT - bounty.remarketed_count
+            if further_permitted_remarket_count >= 1:
+                result_msg += f'You will be able to remarket this bounty {further_permitted_remarket_count} more time if a contributor does not pick this up.'
+            elif further_permitted_remarket_count == 0:
+                result_msg += 'Please note this is the last time the issue is able to be remarketed.'
+
+            return {
+                "success": True,
+                "msg": result_msg
+            }
+        else:
+            time_delta_wait_time = minimum_wait_after_remarketing - now
+            minutes_to_wait = round(time_delta_wait_time.total_seconds() / 60)
+            return {
+                "success": False,
+                "msg": f'As you recently remarketed this issue, you need to wait {minutes_to_wait} minutes before remarketing this issue again.'
+            }
+    else:
+        return {
+            "success": False,
+            "msg": f'The issue was not remarketed due to reaching the remarket limit ({settings.RE_MARKET_LIMIT}).'
+        }
+
+
+def apply_new_bounty_deadline(bounty, deadline, auto_save = True):
+    bounty.expires_date = timezone.make_aware(
+        timezone.datetime.fromtimestamp(deadline),
+        timezone=UTC)
+    result = re_market_bounty(bounty, False)
+
+    if auto_save:
+        bounty.save()
+
+    base_result_msg = "You've extended expiration of this issue."
+    result['msg'] = base_result_msg + " " + result['msg']
+
+    return result
+
+
+def release_bounty_to_the_public(bounty, auto_save = True):
+    if bounty:
+        bounty.reserved_for_user_handle = None
+        bounty.reserved_for_user_from = None
+        bounty.reserved_for_user_expiration = None
+
+        if auto_save:
+            bounty.save()
+
+        return True
+    else:
+        return False

@@ -57,7 +57,7 @@
       }
     </style>
 
-    <script type="text/javascript">
+    <script>
       var static_url = "{{ STATIC_URL }}";
       var media_url = "{{ MEDIA_URL }}";
     </script>
@@ -72,9 +72,9 @@
 
     <!-- Wrapper -->
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% cookielaw_banner %}
     <div id="wrapper" class="container-fluid">
       {% include 'shared/onepager_auth.html' with source='authed' %}
-      {% cookielaw_banner %}
       <!-- Main -->
       {% block 'main' %} {% endblock %}
       <footer id="footer" class="copyright d-flex font-smaller-1 justify-content-center mt-5 p-4">
@@ -86,7 +86,6 @@
     </div>
     {% include 'shared/rain.html' with class="color" %}
     <!-- Scripts -->
-    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
     {% include 'shared/footer_scripts.html' with slim=1 %}
 
     {% block 'scripts' %}{% endblock %}

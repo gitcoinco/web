@@ -21,14 +21,7 @@
 <script src="{% static "v2/js/pages/kudos_bulk_receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
 
-{% endblock %}
 <!-- Main -->
-{% block 'world' %}
-<div>
-  <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
-</div>
-{% endblock %}
-{% block 'main' %}
 <section id="main" class="box-transaction">
   <header class="text-center">
   <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
@@ -62,13 +55,13 @@
         <img src="{% static coupon.token.image %}" style="width: 100%;" alt="{{ coupon.token.name }}" >
       </div>
 
-      
+
       <br>
       <span id="kudosComment" class="d-block">
         <h3><a style='color:black; text-decoration: underline;' href="{{coupon.token.url}}"><span id="kudosName" data-kudosname="{{ coupon.token.name }}" >{{ coupon.token.humanized_name }} </span>{% trans "Kudos" %}</a></h3>
         {% if coupon.comments_to_put_in_kudos_transfer %}
-        with an attached message, just for you: 
-        <p style="  
+        with an attached message, just for you:
+        <p style="
     width: 80%;
     height: 100px;
     background-color: #D0DEEB;
@@ -98,7 +91,7 @@
       <div class="form-group">
         <hr>
         <h3 class="text-center" style="margin: 0px auto;">👇 Redeem It Here 👇</h3>
-        {% trans "Logged in as" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>) {%endif%}
+        {% trans "Logged in as" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">{% trans "Login" %}</a>) {%endif%}
         <input type="text" placeholder="@username" id="user" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" disabled="disabled" class='form-control'  required >
         {% if not request.user.is_authenticated %}
         <p style="color:red;">{% trans "You must be logged in to receive this kudos." %}</p>
@@ -157,11 +150,9 @@
     }
   }
 </style>
-<script src="{% static 'v2/js/tweenlite.js' %}"></script>
+<script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
 <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
-{% include 'shared/footer_scripts.html' with slim=1 %}
-<script src="{% static "v2/js/popper.min.js" %}"></script>
 <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
 <script>
   document.network = '{{coupon.token.contract.network}}';
@@ -173,4 +164,9 @@
     document.suppress_kudos_levitate_hover = true;
   })
 </script>
+{% endblock %}
+{% block 'world' %}
+<div>
+  <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
+</div>
 {% endblock %}

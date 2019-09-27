@@ -1,0 +1,42 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+<div class="col-12 sponsors mt-5 mb-3">
+  {% if sponsors %}
+    <p class="font-weight-semibold font-subheader mb-4">SUPPORTED BY</p>
+    {% if sponsors.sponsors_gold %}
+      <div class="d-flex flex-wrap justify-content-center mb-5">
+        {% for sponsor in sponsors.sponsors_gold %}
+          <div class="sponsors-gold my-auto mx-2">
+            <img src="{{sponsor.logo}}" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if sponsors.sponsors_silver %}
+      <div class="d-flex flex-wrap justify-content-center mb-4">
+        {% for sponsor in sponsors.sponsors_silver %}
+          <div class="sponsors-silver my-auto mx-2">
+            <img src="{{sponsor.logo}}" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
+</div>

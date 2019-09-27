@@ -29,9 +29,75 @@
       <div class="filter-tags"></div> <!-- Populate the filters -->
     </div>
   </div>
+
+  <p id="expand" class="text-right font-caption font-weight-semibold">
+    {% trans "Expand Filter" %}
+    <i class="fas fa-chevron-down"></i>
+  </p>
+  <p id="minimize" class="text-right font-caption font-weight-semibold">
+    {% trans "Minimize Filter" %}
+    <i class="fas fa-chevron-up"></i>
+  </p>
+
   <form>
 
-    <div class="col my-1">
+    <div class="col">
+      <div class="col-12 subheading">
+        {% trans "Status" %}
+        <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-content='{% include "shared/status_tooltip.html" %}'></i>
+      </div>
+      <div class="col-12 options">
+        <div class="form__radio option">
+          <input name="idx_status" id="status_open" type="radio" value="open" val-ui='Open' checked />
+          <label class="filter-label" for=status_open>1 {% trans "Open" %}</label>
+        </div>
+
+        <div class="form__radio option">
+          <input name="idx_status" id="status_started" type="radio" value="started" val-ui='Work Started' />
+          <label class="filter-label" for=status_started>2 {% trans "Work Started" %}</label>
+        </div>
+
+        <div class="form__radio option">
+          <input name="idx_status" id="status_submitted" type="radio" value="submitted" val-ui='Work Submitted' />
+          <label class="filter-label" for=status_submitted>3 {% trans "Work Submitted" %}</label>
+        </div>
+
+        <div class="form__radio option">
+          <input name="idx_status" id="status_done" type="radio" value="done" val-ui='Work Done' />
+          <label class="filter-label" for=status_done>4 {% trans "Work Done" %}</label>
+        </div>
+
+        <div class="form__radio option">
+          <input name="idx_status" id="status_expired" type="radio" value="expired" val-ui='Expired' />
+          <label class="filter-label" for=status_expired>{% trans "Expired" %}</label>
+        </div>
+
+        <div class="form__radio option">
+          <input name="idx_status" id="status_canceled" type="radio" value="cancelled" val-ui='Cancelled' />
+          <label class="filter-label" for=status_canceled>{% trans "Cancelled" %}</label>
+        </div>
+
+        <div class="form__radio option mb-2">
+          <input name="idx_status" id="any_status" type="radio" value="any" />
+          <label class="filter-label" for=any_status>{% trans "Any" %}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-12 subheading">
+        Applicants
+      </div>
+      <div class="col-12 options">
+        <select class="w-100 js-select2" name="applicants" id="applicants_box">
+          <option value="ALL">ALL</option>
+          <option value="0">0</option>
+          <option value="1-5">1-5</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col my-1 mt-3">
       <div class="col-12 subheading">
         {% trans "Organization name" %}
         <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-content='{% include "shared/organization_tooltip.html" %}'></i>
@@ -127,6 +193,11 @@
         </div>
 
         <div class="form__radio option">
+          <input name="idx_status" id="status_reserved" type="radio" value="reserved" val-ui='Reserved' />
+          <label class="filter-label" for=status_reserved>{% trans "Reserved" %}</label>
+        </div>
+
+        <div class="form__radio option">
           <input name="idx_status" id="status_expired" type="radio" value="expired" val-ui='Expired' />
           <label class="filter-label" for=status_expired>{% trans "Expired" %}</label>
         </div>
@@ -140,6 +211,19 @@
           <input name="idx_status" id="any_status" type="radio" value="any" />
           <label class="filter-label" for=any_status>{% trans "Any" %}</label>
         </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-12 subheading">
+        {% trans "Applicants" %}
+      </div>
+      <div class="col-12 options">
+        <select class="w-100 js-select2" name="applicants" id="applicants_box">
+          <option value="ALL">{% trans "ALL" %}</option>
+          <option value="0">0</option>
+          <option value="1-5">1-5</option>
+        </select>
       </div>
     </div>
 
@@ -163,6 +247,10 @@
               <div class="form__radio option">
                 <input name="bounty_filter" id="FulfilledByMe" type="radio" value="fulfilledByMe" val-ui='Fulfilled'/>
                 <label class="filter-label" for=FulfilledByMe>{% trans "Fulfilled By Me" %}</label>
+              </div>
+              <div class="form__radio option">
+                <input name="bounty_filter" id="ReservedForMe" type="radio" value="reservedForMe" val-ui='Reserved For Me'/>
+                <label class="filter-label" for=ReservedForMe>{% trans "Reserved For Me" %}</label>
               </div>
               <div class="form__radio option">
                 <input name="bounty_filter" id="all_bounty" type="radio" value="any" checked/>
@@ -295,20 +383,6 @@
         <div class="col">
           <div class="col-12 subheading">{% trans "Network" %}</div>
           <div class="col-12 options">
-            <div class="checkbox_container">
-              <input name="network" id="local" type="checkbox" value="local" val-ui='Custom Network' />
-              <span class="checkbox"></span>
-              <div class="filter-label">
-                <label for=local>{% trans "Custom" %}</label>
-              </div>
-            </div>
-            <div class="checkbox_container">
-              <input name="network" id="ropsten" type="checkbox" value="ropsten" val-ui='Ropsten' />
-              <span class="checkbox"></span>
-              <div class="filter-label">
-                <label for=ropsten>{% trans "Ropsten" %}</label>
-              </div>
-            </div>
             <div class="checkbox_container">
               <input name="network" id="rinkeby" type="checkbox" value="rinkeby" val-ui='Rinkeby' />
               <span class="checkbox"></span>

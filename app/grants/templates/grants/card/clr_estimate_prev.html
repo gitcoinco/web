@@ -1,0 +1,8 @@
+{% load i18n static humanize grants_extra %}
+{% if grant.clr_matching %}
+<div class="clr text-center">
+  <h2 class="font-caption font-weight-bold my-0 p-1" style="max-width: 105px;">
+    including {{ grant.clr_matching|floatformat:0 }} DAI from CLR Rounds 1/2
+  </h2>
+</div>
+{% endif %}
