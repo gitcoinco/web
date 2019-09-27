@@ -8,7 +8,7 @@
   "email": "operation@coinness.com",
   "website": "https://cnns.io",
   "whitepaper": "https://cnns.io/static/whitepaper/CNNS-White_Paper.pdf?v=201900423",
-  "state": "LOCKED | NORMAL",
+  "state": "NORMAL",
   "published_on": "2019-03-17",
   "initial_price":{
         "ETH":"0.00000101 ETH",
