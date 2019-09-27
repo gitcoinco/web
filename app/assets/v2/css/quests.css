@@ -3,11 +3,11 @@
 }
 .character h3{
   font-weight: 900;
-  background-color: #ccc;
+  background-color: #666;
   width: 70%;
 }
 .character p{
-  background-color: #aaa;
+  background-color: #444;
   width: 65%;
 }
 .character .info{
@@ -21,7 +21,12 @@
   left: 120px;
 }
 .character .info h3{
-  font-size: 20px;
+  font-size: 16px;
+  padding: 5px 10px;
+  text-transform: uppercase;
+}
+.character .info p{
+  padding: 5px 10px;
 }
 .character img{
   width: 150px;
@@ -94,6 +99,7 @@ body.quest_battle p{
   padding: 10px;
   z-index: 9999;
   font-size: 20px;
+  text-transform: uppercase;
 }
 #header.fail{
   color: #F9006C;
@@ -119,6 +125,10 @@ body.quest_battle p{
   margin-top: 10%;
   width: 60%;
   text-align: center;
+}
+#cta_button a{
+  margin-top: 10%;
+  text-transform: uppercase;
 }
 body.stage_1 #cta_button{
   margin-top: 25%;
@@ -278,9 +288,10 @@ body.quest_battle{
   border: 1px solid white;
   padding: 10px;
   cursor: pointer;
-  margin: 5px;
+  margin: 10px !important;
   width: 75%;
   margin: 0px auto;
+  text-transform: uppercase;
 }
 .answer.selected{
   background-color: #3E00FF;
