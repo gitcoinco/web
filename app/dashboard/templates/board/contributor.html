@@ -43,14 +43,14 @@
     <div class="row">
       <div class="col-12">
         <div class="bg-white rounded border my-4">
-          <div class="d-flex justify-content-between p-4 border-bottom btn-gc-blue btn-sm" @click="skills[0] ? (toggleCollapse(1, 'bountiesMatch'), fetchMatchingBounties()) : redirect('/settings/matching')">
-            <div v-if="skills[0]">
+          <div class="d-flex justify-content-between p-4 border-bottom btn-gc-blue btn-sm" @click="skills && skills[0] ? (toggleCollapse(1, 'bountiesMatch'), fetchMatchingBounties()) : redirect('/settings/matching')">
+            <div v-if="skills && skills[0]">
               Bounties matching your skills: <b>[[ skills.join(', ') ]]</b> <a href="{% url 'matching_settings' %}" class="white underline">(Update Skills)</a>
             </div>
             <div v-else>
               Update your skills to get the right matches <a href="{% url 'matching_settings' %}" class="white underline">Update Skills</a>
             </div>
-            <div v-show="skills[0]">
+            <div v-show="skills && skills[0]">
               View Matching Bounties <i class="fa fa-fw" :class="isExpanded(1, 'bountiesMatch')? 'fa-chevron-up': 'fa-chevron-down'"></i>
             </div>
           </div>
