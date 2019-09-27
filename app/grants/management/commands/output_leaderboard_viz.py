@@ -17,43 +17,75 @@ colors = ["#011f4b", "#03396c", "#005b96", "#6497b1", '#b3cde0', '#d3ddf0', '#DD
 for i in range(0, 3):
     colors = colors + colors + colors + colors + colors + colors + colors + colors
 
+label_spec = 'handle'
+label_spec = 'titles'
 
-def get_graph_plot(this_date, limit=5):
-    amounts, labels, counts, total_amount = get_tree_plot(this_date, limit=limit, append_amounts_to_labels=False)
+graph_type = 'chart'
+graph_type = 'tree'
+graph_type = 'scatter'
+
+aggregation_function=sum
+
+def get_graph_plot(d1, this_date, limit=5):
+    amounts, labels, counts, total_amount = get_tree_plot(d1, this_date, limit=limit, append_amounts_to_labels=False)
 
     crowd_amounts = []
     match_amounts = []
 
     for label in labels:
-        contributions = Contribution.objects.filter(subscription__network='mainnet', subscription__grant__title=label, created_on__lt=this_date)
-        matching_usernames = ['ceresstation', 'owocki', 'vs77bb']
-        kwargs = {
-            'subscription__contributor_profile__handle__in': matching_usernames
-        }
-        crowd_contributions = contributions.exclude(**kwargs).values_list('subscription__amount_per_period_usdt', flat=True)
-        match_contributions = contributions.filter(**kwargs).values_list('subscription__amount_per_period_usdt', flat=True)
-        crowd_amounts.append(float(sum(crowd_contributions)))
-        match_amounts.append(float(sum(match_contributions)))
+        contributions = Contribution.objects.filter(subscription__network='mainnet', subscription__grant__title=label, created_on__lt=this_date, created_on__gt=d1)
+        if label_spec == 'handle':
+            contributions = Contribution.objects.filter(subscription__network='mainnet', subscription__contributor_profile__handle=label, created_on__lt=this_date, created_on__gt=d1)
+        crowd_contributions = contributions.values_list('subscription__amount_per_period_usdt', flat=True)
+        match_contributions = contributions.none().values_list('subscription__amount_per_period_usdt', flat=True)
+        crowd_amounts.append(float(aggregation_function(crowd_contributions)))
+        match_amounts.append(float(aggregation_function(match_contributions)))
 
     return crowd_amounts, match_amounts, labels, total_amount
 
 
-def get_tree_plot(this_date, limit=5, append_amounts_to_labels=True):
-    contributions = Contribution.objects.filter(subscription__network='mainnet', created_on__lt=this_date)
+def get_tree_plot(d1, this_date, limit=5, append_amounts_to_labels=True):
+    contributions = Contribution.objects.filter(subscription__network='mainnet', created_on__lt=this_date,  created_on__gt=d1)
     total_amount = 0
-    sums = {}
+    plot_me = {}
     counts = {}
     for cont in contributions:
         key = cont.subscription.grant.title
+        if label_spec == 'handle':
+            key = cont.subscription.contributor_profile.handle
         if not counts.get(key, None):
             counts[key] = []
-        if not sums.get(key, None):
-            sums[key] = 0
+        if not plot_me.get(key, None):
+            plot_me[key] = 0
         counts[key].append(cont.subscription.pk)
-        sums[key] += float(cont.subscription.amount_per_period_usdt)
-        total_amount += float(cont.subscription.amount_per_period_usdt)
+        if aggregation_function == sum:
+            plot_me[key] += float(cont.subscription.amount_per_period_usdt)
+            total_amount += float(cont.subscription.amount_per_period_usdt)
+        else:
+            plot_me[key] += 1
+            total_amount += 1
 
-    sorted_by_value = sorted(sums.items(), key=lambda kv: kv[1], reverse=True)
+    # phantom contribs
+    from grants.models import PhantomFunding
+    contributions = PhantomFunding.objects.filter(grant__network='mainnet', created_on__lt=this_date,  created_on__gt=d1)
+    for cont in contributions:
+        key = cont.grant.title
+        if label_spec == 'handle':
+            key = cont.profile.handle
+        if not counts.get(key, None):
+            counts[key] = []
+        if not plot_me.get(key, None):
+            plot_me[key] = 0
+        counts[key].append(cont.pk)
+        if aggregation_function == sum:
+            plot_me[key] += float(cont.value)
+            total_amount += float(cont.value)
+        else:
+            plot_me[key] += 1
+            total_amount += 1
+
+
+    sorted_by_value = sorted(plot_me.items(), key=lambda kv: kv[1], reverse=True)
     sizes = []
     labels = []
     return_counts = []
@@ -74,22 +106,19 @@ class Command(BaseCommand):
     help = 'outputs grants leaderboard over time'
 
     def handle(self, *args, **options):
-        graph_type = 'scatter'
-        graph_type = 'tree'
-        graph_type = 'chart'
         clear_cache()
 
-        d1 = Contribution.objects.first().created_on
+        d1 = timezone.now() - timezone.timedelta(days=11)
         d2 = timezone.now()
 
-        for i in range((d2 - d1).days + 1):
-            this_date = d1 + timezone.timedelta(days=i)
+        for i in range((d2 - d1).days * 24 + 1):
+            this_date = d1 + timezone.timedelta(hours=i)
             _plt = plt
             _plt.figure(figsize=(20, 10))
-            this_date_str = this_date.strftime("%Y-%m-%d")
+            this_date_str = this_date.strftime("%Y-%m-%d %H:%M")
             if graph_type == 'chart':
 
-                crowd, matching, labels, total_amount = get_graph_plot(this_date)
+                crowd, matching, labels, total_amount = get_graph_plot(d1, this_date)
                 if not len(crowd):
                     continue
 
@@ -110,7 +139,7 @@ class Command(BaseCommand):
 
                 # write the tree plot
                 try:
-                    sizes, labels, _, total_amount = get_tree_plot(this_date, limit=99999999)
+                    sizes, labels, _, total_amount = get_tree_plot(d1, this_date, limit=99999999)
                     for j in range(0, len(labels)):
                         if len(labels) > 6:
                             if j > (len(labels)*1/3):
@@ -120,7 +149,7 @@ class Command(BaseCommand):
                 except Exception as e:
                     print(e)
             else:
-                sizes, labels, counts, total_amount = get_tree_plot(this_date, limit=99999999)
+                sizes, labels, counts, total_amount = get_tree_plot(d1, this_date, limit=99999999)
                 if not len(sizes):
                     continue
                 x = sizes
@@ -136,7 +165,7 @@ class Command(BaseCommand):
                     _plt.text(sizes[j]+.03, counts[j]+.03, labels[j], fontsize=9)
 
 
-            title = f"Gitcoin Grants Funding at {this_date_str}: ${round(total_amount)}"
+            title = f"Gitcoin Grants CLR Round 3 Funding at {this_date_str}: ${round(total_amount)}"
             _plt.title(title)
             filename = str(i).rjust(10, '0')
             png_file = f'cache/frames/{filename}.jpg'
