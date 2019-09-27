@@ -29,6 +29,11 @@
   border-radius: 70px;
   border: 5px solid #ccc;
 }
+#enemy.character img{
+  width: 250px;
+  height: 250px;
+  margin-left: -75px;
+}
 .answer a{
   color: white;
 }
@@ -137,13 +142,13 @@ body.stage_3 #header{
   margin-top: -5%;
 }
 body.stage_4{
-  background: url('/static/v2/images/quests/backs/1.gif') repeat;
+  background: url('/static/v2/images/quests/backs/1.gif') repeat !important;
 }
 body.stage_4.question_number_1{
-  background: url('/static/v2/images/quests/backs/2.gif') repeat;
+  background: url('/static/v2/images/quests/backs/2.gif') repeat !important;
 }
 body.stage_4.question_number_2{
-  background: url('/static/v2/images/quests/backs/3.gif') repeat;
+  background: url('/static/v2/images/quests/backs/3.gif') repeat !important;
 }
 
 body.stage_4 #header{
@@ -274,6 +279,8 @@ body.quest_battle{
   padding: 10px;
   cursor: pointer;
   margin: 5px;
+  width: 75%;
+  margin: 0px auto;
 }
 .answer.selected{
   background-color: #3E00FF;
