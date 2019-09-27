@@ -16,8 +16,6 @@
   position: absolute;
   width: 240px;
   padding: 10px;
-}
-.character .info{
   text-align: left;
   bottom: 10px;
   left: 120px;
@@ -31,6 +29,21 @@
   border-radius: 70px;
   border: 5px solid #ccc;
 }
+.answer a{
+  color: white;
+}
+.flair div{
+  position: absolute;
+  top: -15px;
+  font-size: 36px;
+}
+
+body.quest_battle a,
+body.quest_battle div,
+body.quest_battle p{
+  color: white;
+}
+
 .character.harm h3,
 .character.harm p{
   background-color:  #F9006C;
@@ -146,17 +159,8 @@ body.quest_battle .top-nav,
 body.quest_battle .header.dash{
   display: none !important;
 }
-body.quest_battle{
-  font-family: 'Press Start 2P', cursive !important;
-}
 body.quest_battle .bottom_notification{
   display: none;
-}
-body.quest_battle a,
-body.quest_battle div,
-body.quest_battle p
-{
-  color: white;
 }
 
 .button{
@@ -216,14 +220,6 @@ body.quest_battle p
   color: red;
 }
 
-.flair div{
-  position: absolute;
-  top: -15px;
-  font-size: 36px;
-}
-.answer a{
-  color: white;
-}
 .quest-card.locked div,
 .quest-card.locked div a{
   color: #aaa !important;
@@ -245,6 +241,7 @@ body.quest_battle p
   height: 100%;
 }
 body.quest_battle{
+  font-family: 'Press Start 2P', cursive !important;
   background: url('/static/v2/images/quests/backs/0.gif') repeat;
   background-size: 150%;
   font-size: 0.7em;

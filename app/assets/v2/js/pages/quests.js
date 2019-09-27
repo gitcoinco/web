@@ -18,7 +18,7 @@ var start_quiz = async function() {
     });
 
     // manage state transitoin
-    console.log('question from', question_number, ' to', question_number+1);
+    console.log('question from', question_number, ' to', question_number + 1);
     for (var p = 0; p < 10; p += 1) {
       $('body').removeClass('question_number_' + p);
     }
