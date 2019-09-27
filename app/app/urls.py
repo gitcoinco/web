@@ -591,6 +591,12 @@ if settings.DEBUG:
         re_path(r'^500/$', retail.views.handler500, name='500'),
     ]
 
+
+    urlpatterns += [
+        re_path(r'^(.*)/(.*)?', dashboard.views.profile, name='profile_min_by_tab'),
+        re_path(r'^(.*)', dashboard.views.profile, name='profile_min'),
+    ]
+
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'
 handler500 = 'retail.views.handler500'

@@ -50,6 +50,7 @@ import pytz
 import requests
 from app.utils import get_upload_filename
 from dashboard.tokens import addr_to_token, token_by_name
+from dashboard.utils import get_url_first_indexes
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -3075,7 +3076,11 @@ class Profile(SuperModel):
         return self.handle
 
     def get_relative_url(self, preceding_slash=True):
-        return f"{'/' if preceding_slash else ''}profile/{self.handle}"
+        prefix = ''
+        if self.handle in get_url_first_indexes():
+            # handle collision
+            prefix = 'profile/'
+        return f"{'/' if preceding_slash else ''}{prefix}{self.handle}"
 
     def get_absolute_url(self):
         return settings.BASE_URL + self.get_relative_url(preceding_slash=False)

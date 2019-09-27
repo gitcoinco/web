@@ -114,6 +114,7 @@ def preprocess(request):
         'is_moderator': profile.is_moderator if profile else False,
         'persona_is_funder': profile.persona_is_funder if profile else False,
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
+        'profile_url': profile.url if profile else False,
     }
     context['json_context'] = json.dumps(context)
 
