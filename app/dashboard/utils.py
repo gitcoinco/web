@@ -373,7 +373,7 @@ def getBountyContract(network, contract_version='1'):
      Returns:
         Bounty Contract
     """
-    web3 = get_web3(network)
+    web3 = get_web3(network, sockets=True)
     standardbounties_abi = ''
     standardbounties_addr = ''
 
@@ -395,10 +395,13 @@ def get_bounty(bounty_enum, network, contract_version='1'):
         return {}
 
     standard_bounties = getBountyContract(network, contract_version)
-
     try:
+        bountydata = None
+        contract_deadline = None
+        deadline = None
+        num_fulfillments = 0
+        fulfillmentAmount = 0
         loaded_bounty = standard_bounties.functions.getBounty(bounty_enum).call()
-        print(loaded_bounty)
         if contract_version == '1':
             issuer, contract_deadline, fulfillmentAmount, paysTokens, bountyStage, balance = loaded_bounty
             bountydata = standard_bounties.functions.getBountyData(bounty_enum).call()
@@ -407,9 +410,25 @@ def get_bounty(bounty_enum, network, contract_version='1'):
             num_fulfillments = int(standard_bounties.functions.getNumFulfillments(bounty_enum).call())
 
         elif contract_version == '2':
-            issuer = loaded_bounty[0][0]
-            approvers = loaded_bounty[1]
-            deadline = loaded_bounty[2]
+            web3 = get_web3(network, sockets=True)
+            current_block = web3.eth.getBlock('latest')
+            from_block = current_block.number - 200
+            bounty_event_filter = standard_bounties.events.BountyIssued().createFilter(
+                fromBlock=from_block, toBlock='latest', argument_filters={"_bountyId": bounty_enum}
+            )
+
+            bounty_event_logs = bounty_event_filter.get_all_entries()
+
+            if len(bounty_event_logs) <= 0:
+                return None
+
+            bounty_issued_event_data_args = bounty_event_logs[0]['args']
+
+            bountydata = bounty_issued_event_data_args['_data']
+            issuers = bounty_issued_event_data_args['_issuers']
+            approvers = bounty_issued_event_data_args['_approvers']
+            deadline = bounty_issued_event_data_args['_deadline']
+            contract_deadline = loaded_bounty[2]
             tokenAddress = loaded_bounty[3]
             tokenVersion = loaded_bounty[4]
             balance = loaded_bounty[5]
@@ -420,13 +439,10 @@ def get_bounty(bounty_enum, network, contract_version='1'):
             # not sure here
             bountyStage = 0 if not hasPaidOut else 1
             paysTokens = False if tokenVersion == 0 else True
-            fulfillmentAmount = 0
             arbiter = approvers[0]
+            issuer = issuers[0]
             token = tokenAddress
-
             num_fulfillments = len(fulfillments)
-
-        bountydata = loaded_bounty
 
     except BadFunctionCallOutput:
         raise BountyNotFoundException
@@ -434,7 +450,6 @@ def get_bounty(bounty_enum, network, contract_version='1'):
 
     bounty_data_str = ipfs_cat(bountydata)
     bounty_data = json.loads(bounty_data_str)
-
     # fulfillments
     fulfillments = []
 
@@ -468,7 +483,7 @@ def get_bounty(bounty_enum, network, contract_version='1'):
 
     # https://github.com/Bounties-Network/StandardBounties/issues/25
     ipfs_deadline = bounty_data.get('payload', {}).get('expire_date', False)
-    deadline = contract_deadline
+    deadline = contract_deadline if not None else deadline
     if ipfs_deadline:
         deadline = ipfs_deadline
 
@@ -479,7 +494,7 @@ def get_bounty(bounty_enum, network, contract_version='1'):
         'deadline': deadline,
         'contract_deadline': contract_deadline,
         'ipfs_deadline': ipfs_deadline,
-        'fulfillmentAmount': fulfillmentAmount,
+        'fulfillmentAmount': fulfillmentAmount if not None else 0,
         'paysTokens': paysTokens,
         'bountyStage': bountyStage,
         'balance': balance,
@@ -487,14 +502,14 @@ def get_bounty(bounty_enum, network, contract_version='1'):
         'arbiter': arbiter,
         'token': token,
         'fulfillments': fulfillments,
-        'network': network,
-        'review': bounty_data.get('review',{}),
+        'network': network
+        # 'review': bounty_data['review'] if contract_version == '2' else bounty_data.get('review',{}),
     }
     return bounty
 
 
 # processes a bounty returned by get_bounty
-def web3_process_bounty(bounty_data):
+def web3_process_bounty(bounty_data, contract_version = '1'):
     """Process web3 bounty data by creating new or updated Bounty objects."""
     # Check whether or not the bounty data payload is for mainnet and env is prod or other network and not mainnet.
     if not bounty_data or (settings.DEBUG or settings.ENV != 'prod') and bounty_data.get('network') == 'mainnet':
@@ -502,7 +517,7 @@ def web3_process_bounty(bounty_data):
         print(f"--*--")
         return None
 
-    did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
+    did_change, old_bounty, new_bounty = process_bounty_details(bounty_data, contract_version)
 
     if did_change and new_bounty:
         _from = old_bounty.pk if old_bounty else None

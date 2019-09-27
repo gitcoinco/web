@@ -34,17 +34,16 @@ logger = logging.getLogger(__name__)
 default_start_id = 0 if not settings.DEBUG else 402
 
 
-def get_bounty_id(_id, network, contract_version):
+def get_bounty_id(_id, network, contract_version = '1'):
     if _id > 0:
         return _id
     contract = getBountyContract(network, contract_version)
-
+    bounty_id = None
     if contract_version == '2':
-        # TODO: std_bounties_2_contract
-        return _id
-    elif contract_version == '1'
+        bounty_id = contract.functions.numBounties().call() - 1
+    elif contract_version == '1':
         bounty_id = contract.functions.getNumBounties().call() - 1
-        return bounty_id + _id
+    return bounty_id + _id
 
 
 class Command(BaseCommand):
@@ -79,9 +78,8 @@ class Command(BaseCommand):
         hour = datetime.datetime.now().hour
         day = datetime.datetime.now().day
         month = datetime.datetime.now().month
-
-        start_id = get_bounty_id(options['start_id'], network)
-        end_id = get_bounty_id(options['end_id'], network)
+        start_id = get_bounty_id(options['start_id'], network, contract_version)
+        end_id = get_bounty_id(options['end_id'], network, contract_version)
 
         # iterate through all the bounties
         bounty_enum = int(start_id)
@@ -93,7 +91,7 @@ class Command(BaseCommand):
                 print(f"[{month}/{day} {hour}:00] Getting bounty {bounty_enum}")
                 bounty = get_bounty(bounty_enum, network, contract_version)
                 print(f"[{month}/{day} {hour}:00] Processing bounty {bounty_enum}")
-                web3_process_bounty(bounty)
+                web3_process_bounty(bounty, contract_version)
 
             except BountyNotFoundException:
                 more_bounties = False

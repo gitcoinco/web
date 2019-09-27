@@ -637,7 +637,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         latest_old_bounty.save()
 
 
-def process_bounty_details(bounty_details):
+def process_bounty_details(bounty_details, contract_version = '1'):
     """Process bounty details.
 
     Args:
@@ -656,7 +656,6 @@ def process_bounty_details(bounty_details):
     """
     from dashboard.utils import get_bounty_semaphore_ns
     # See dashboard/utils.py:get_bounty from details on this data
-    print(bounty_details)
     bounty_id = bounty_details.get('id', {})
     bounty_data = bounty_details.get('data') or {}
     bounty_payload = bounty_data.get('payload', {})
