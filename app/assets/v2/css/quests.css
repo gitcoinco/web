@@ -3,30 +3,57 @@
 }
 .character h3{
   font-weight: 900;
-  font-size: 48px;
-  background-color: #ccc;
+  background-color: #666;
   width: 70%;
-  margin: 0px auto;
 }
 .character p{
-  font-size: 18px;
-  background-color: #aaa;
+  background-color: #444;
   width: 65%;
-  margin: 0px auto;
 }
 .character .info{
   margin-top: -60px;
   z-index: 999;
   position: absolute;
-  bottom: -50px;
-  width: 100%;
+  width: 240px;
+  padding: 10px;
+  text-align: left;
+  bottom: 10px;
+  left: 120px;
+}
+.character .info h3{
+  font-size: 16px;
+  padding: 5px 10px;
+  text-transform: uppercase;
+}
+.character .info p{
+  padding: 5px 10px;
 }
 .character img{
-  width: 350px;
-  height: 350px;
-  border-radius: 200px;
+  width: 150px;
+  height: 150px;
+  border-radius: 70px;
   border: 5px solid #ccc;
 }
+#enemy.character img{
+  width: 250px;
+  height: 250px;
+  margin-left: -75px;
+}
+.answer a{
+  color: white;
+}
+.flair div{
+  position: absolute;
+  top: -15px;
+  font-size: 36px;
+}
+
+body.quest_battle a,
+body.quest_battle div,
+body.quest_battle p{
+  color: white;
+}
+
 .character.harm h3,
 .character.harm p{
   background-color:  #F9006C;
@@ -41,15 +68,12 @@
 .prize{
   margin-top:60px; 
   margin-left: 20px;
-  background-color: #fafafa;
   border-radius: 5px;
   padding: 10px;
-  border-top: 1px solid #bbb;
-  border-left: 2px solid #bbb;
 }
 .prize img{
-  height: 100px;
-  width: 85px;
+  height: 80px;
+  width: 65px;
 }
 .character.harm img{
   border: 5px solid #F9006C;
@@ -58,54 +82,56 @@
   border: 5px solid #0fce7c;
 }
 .prize span{
-  font-size: 12px;
   display: block;
 }
 
 .damage, .heal{
   z-index: 99999;
   position: absolute;
-  font-size: 85px;
   margin: 0px auto;
 }
 
 #header{
   font-weight: bold;
-  font-size: 36px;
   width: 60%;
   text-align: center;
-  background-color: white;
   font-style: italic;
   padding: 10px;
   z-index: 9999;
+  font-size: 20px;
+  text-transform: uppercase;
 }
 #header.fail{
-  background-color: #F9006C;
+  color: #F9006C;
   padding: 20px; 
-  color: white;
   margin-top: 5% !important;
 }
 #header.success{
-  background-color: #0fce7c;
+  color: #0fce7c;
   padding: 20px; 
-  color: white;
 }
 #desc{
-  font-size: 14px;
   width: 60%;
   text-align: center;
-  background-color: white;
+  color: white;
   padding: 10px;
   margin-top: 100px;
   z-index: 9999;
+}
+#desc li{
+  text-decoration: underline;
 }
 #cta_button{
   margin-top: 10%;
   width: 60%;
   text-align: center;
 }
+#cta_button a{
+  margin-top: 10%;
+  text-transform: uppercase;
+}
 body.stage_1 #cta_button{
-  margin-top: 30%;
+  margin-top: 25%;
 }
 body.stage_2 #cta_button{
   margin-top: 20%;
@@ -125,9 +151,18 @@ body.stage_3 #cta_button{
 body.stage_3 #header{
   margin-top: -5%;
 }
+body.stage_4{
+  background: url('/static/v2/images/quests/backs/1.gif') repeat !important;
+}
+body.stage_4.question_number_1{
+  background: url('/static/v2/images/quests/backs/2.gif') repeat !important;
+}
+body.stage_4.question_number_2{
+  background: url('/static/v2/images/quests/backs/3.gif') repeat !important;
+}
+
 body.stage_4 #header{
   margin-top: -12%;
-  font-size: 24px;
 }
 body.stage_4 #cta_button{
   margin-top: 25%;
@@ -139,10 +174,12 @@ body.quest_battle .top-nav,
 body.quest_battle .header.dash{
   display: none !important;
 }
+body.quest_battle .bottom_notification{
+  display: none;
+}
 
 .button{
   font-weight: bold;
-  font-size: 36px;
   color: white;
   background-color: #3E00FF;
   border: 2px solid white;
@@ -151,16 +188,14 @@ body.quest_battle .header.dash{
 .button.button_sm{
   font-weight: normal;
   border: 0px solid white;
-  font-size: 16px;
   padding: 5px;
-  background-color: #666;
+  background-color: none;
 }
 .button.button_sm.off{
-  background-color: #aaa;
+  color: #aaa;
 }
 #cta_button p{ 
   margin-top: 20px;
-  font-size: 14px;
   font-weight: normal;
   color: white; 
 }
@@ -173,42 +208,33 @@ body.quest_battle .header.dash{
 
 .tr{
   position: absolute;
-  top:0px;
-  right: 0px;
+  top: 80px;
+  right: 150px;
 }
 .tl{
   position: absolute;
-  top:0px;
-  left: 0px;
+  top: 10px;
+  left: 10px;
 }
 .br{
   position: absolute;
-  bottom: -50px;
-  right: 0px;
+  bottom: 0px;
+  right: 10px;
 }
 .bl{
   position: absolute;
-  bottom:0px;
-  left: 0px;
+  bottom: 20px;
+  left: 20px;
 }
 
 #timer{
-  bottom: -26px;
-  font-size: 51px;
+  bottom: 26px;
   color: #888;
 }
 #timer.red{
   color: red;
 }
 
-.flair div{
-  position: absolute;
-  font-size: 85px;
-  top: 15px;
-}
-.answer a{
-  color: white;
-}
 .quest-card.locked div,
 .quest-card.locked div a{
   color: #aaa !important;
@@ -227,16 +253,19 @@ body.quest_battle .header.dash{
 }
 #gameboard { 
   width: 100%;
-  height: 520px;
+  height: 100%;
+}
+body.quest_battle{
+  font-family: 'Press Start 2P', cursive !important;
+  background: url('/static/v2/images/quests/backs/0.gif') repeat;
+  background-size: 150%;
+  font-size: 0.7em;
 }
 #background { 
   position: absolute;
   z-index: -999999;
   width: 100%;
   height: 100%;
-  background-size: 300% !important;
-  background-position: -600px !important;
-  opacity:0.5;
 }
 #leaderboard {
   font-size: 25px;
@@ -255,14 +284,16 @@ body.quest_battle .header.dash{
 
 .answer{
   list-style: none;
-  font-size: 24px;
-  background-color: #aaa;
+  background-color: transparent;
   border: 1px solid white;
   padding: 10px;
   cursor: pointer;
+  width: 75%;
+  margin: 10px auto;
+  text-transform: uppercase;
 }
 .answer.selected{
-  background-color: #0fce7c;
+  background-color: #3E00FF;
 }
 
 #enemy img,
@@ -270,5 +301,14 @@ body.quest_battle .header.dash{
   border: none !important;
 }
 #breadcrumbs, #breadcrumbs a{
-  color: black;
+  color: color;
+}
+#breadcrumbs{
+  position: absolute;
+  top: 0px;
+  left: 10px;
+}
+
+.alpha-warning{
+  background-color: black;
 }
