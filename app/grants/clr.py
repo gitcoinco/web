@@ -64,6 +64,10 @@ def generate_grant_pair(grant):
             else:
                 unique_contributions[profile] = amount
 
+    if len(unique_contributions) == 1:
+        profile = next(iter(unique_contributions))
+        unique_contributions['_' + profile] = 1
+
     profile_pairs = list(combinations(unique_contributions.keys(), 2))
     contribution_pairs = list(combinations(unique_contributions.values(), 2))
 
