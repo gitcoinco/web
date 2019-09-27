@@ -2492,7 +2492,7 @@
 <p><strong>Order By</strong></p>
 <p>By passing an <code>order_by</code> parameter you can order the data by the provided key. Ex: <code>?order_by=expires_date</code>. To sort in the opposite direction you can add a <code>-</code> in from the the key <code>?order_by=-expires_date</code>.</p>
 <h4 id="example-request">Example Request</h4>
-<pre><code>~ % curl &quot;https://gitcoin.co/api/v0.1/bounties/?&amp;order_by=web3_created&quot;
+<pre><code class="shell">~ % curl &quot;https://gitcoin.co/api/v0.1/bounties/?&amp;order_by=web3_created&quot;
 
 [
   {
@@ -2532,7 +2532,7 @@
 
 <h1 id="web3-api">WEB3 API</h1>
 <p>You may interact with the HTTPS API as follows</p>
-<pre><code>truffle(development)&gt; BountyIndex.at('0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd').bountydetails.call('https://github.com/owocki/pytrader/pull/83');
+<pre><code class="shell">truffle(development)&gt; BountyIndex.at('0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd').bountydetails.call('https://github.com/owocki/pytrader/pull/83');
 [ { [String: '100000000000000000'] s: 1, e: 17, c: [ 1000 ] },
   '0x0000000000000000000000000000000000000000',
   '0xd3d280c2866eaa795fc72bd850c48e7cce166e23',

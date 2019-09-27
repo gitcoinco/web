@@ -2299,7 +2299,7 @@ All Gitcoin UI styled classes are prefixed with <code>g-</code> to distincly ide
 <h2 id="forms">Forms</h2>
 <h3 id="mutiselect-using-select2">Mutiselect (using select2)</h3>
 <p><em>usage</em></p>
-<pre><code>&lt;div class=&quot;form__select2 g-multiselect&quot;&gt;
+<pre><code class="html">&lt;div class=&quot;form__select2 g-multiselect&quot;&gt;
     &lt;select class=&quot;js-select2&quot; multiple&gt;
     &lt;/select&gt;
 &lt;/div&gt;
@@ -2309,23 +2309,22 @@ All Gitcoin UI styled classes are prefixed with <code>g-</code> to distincly ide
 <a href="https://github.com/gitcoinco/web/blob/master/app/assets/v2/css/forms/select.css">select.css</a></p>
 <h3 id="copy-to-clipboard">Copy to clipboard</h3>
 <p><em>usage</em></p>
-<pre><code>&lt;script src=&quot;{% static 'v2/js/clipboard.js' %}&quot;&gt;&lt;/script&gt;
+<pre><code class="html">&lt;script src=&quot;{% static 'v2/js/clipboard.js' %}&quot;&gt;&lt;/script&gt;
 </code></pre>
 
-<pre><code>&lt;textarea id=&quot;matchid&quot;&gt;This text will be copied&lt;/textarea&gt;
+<pre><code class="html">&lt;textarea id=&quot;matchid&quot;&gt;This text will be copied&lt;/textarea&gt;
 &lt;button data-copyclipboard=&quot;#matchid&quot;&gt;Copy Text&lt;/button&gt;
 </code></pre>
 
 <p><em>usage with class</em></p>
-<pre><code>
-&lt;input type=&quot;text&quot; class=&quot;matchclass&quot; value=&quot;This text will be copied&quot;&gt;
+<pre><code class="html">&lt;input type=&quot;text&quot; class=&quot;matchclass&quot; value=&quot;This text will be copied&quot;&gt;
 &lt;button data-copyclipboard=&quot;.matchclass&quot;&gt;Copy Text&lt;/button&gt;
 </code></pre>
 
 <p><em>Note: You can use it with <code>textarea</code> or <code>input</code> elements.</em></p>
 <h3 id="slider">Slider</h3>
 <p><em>usage</em></p>
-<pre><code>&lt;label class=&quot;g-switch&quot;&gt;
+<pre><code class="html">&lt;label class=&quot;g-switch&quot;&gt;
     &lt;input id=&quot;package-period&quot; type=&quot;checkbox&quot;&gt;
     &lt;span class=&quot;slider&quot;&gt;&lt;/span&gt;
 &lt;/label&gt;
