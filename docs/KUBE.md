@@ -63,11 +63,11 @@ http://grafana.com/dashboards
 prometheus -- out of the box alerts /logs
 did you know that you can run your standard docker commands in kubectl? neato
 
-    ```shell
+```shell
 kubectl get pods --namespace=gc-production
 kubectl get services --namespace=monitoring
 kbuectl get ingress web --namespace notifications
-    ```
+```
 
 http://github.com/helm 
     predefined deployments you can use.
