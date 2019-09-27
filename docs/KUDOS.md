@@ -4,7 +4,7 @@
 
 First be aware to update your `.env` with this entries
 
-```
+```shell
 KUDOS_NETWORK=rinkeby
 KUDOS_OWNER_ACCOUNT= YOUR_ADDRESS
 KUDOS_LOCAL_SYNC=off
