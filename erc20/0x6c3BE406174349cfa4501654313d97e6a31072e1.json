@@ -16,13 +16,9 @@
         "BTC":"0.00000002 BTC"
   },
   "links": {
-    "blog": "",
     "twitter": "https://twitter.com/CoinNessCom",
     "telegram": "https://t.me/coinnessofficial",
-    "github": "",
     "facebook": "https://www.facebook.com/CoinNessCom",
-    "reddit": "https://www.reddit.com/r/CoinNessOfficial",
-    "slack": "",
-    "medium": ""
+    "reddit": "https://www.reddit.com/r/CoinNessOfficial"
   }
 }
