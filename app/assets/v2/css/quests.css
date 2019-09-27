@@ -288,9 +288,8 @@ body.quest_battle{
   border: 1px solid white;
   padding: 10px;
   cursor: pointer;
-  margin: 10px !important;
   width: 75%;
-  margin: 0px auto;
+  margin: 10px auto;
   text-transform: uppercase;
 }
 .answer.selected{
