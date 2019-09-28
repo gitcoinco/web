@@ -323,3 +323,77 @@ body.quest_battle{
 .alpha-warning{
   background-color: black;
 }
+
+@media (max-width: 1110px) {
+  .tr{
+    position: absolute;
+    top: 20px;
+  }
+  .tl{
+    position: absolute;
+    top: 00px;
+    left: 0px;
+  }
+  .bl{
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+  }  
+  #cta_button{
+    margin-top: 20%;
+  }
+  #enemy img{
+    max-width: 130px;
+  }
+  #enemy.character .info{
+    left: 0px;
+    bottom: 50px;
+  }
+  #desc{
+    margin-top: 10%;
+    height: 210px;
+    overflow-y: scroll;
+  }
+  #desc img{
+    max-width: 80px;
+    max-height: 80px;
+  }
+  body.stage_2 #cta_button{
+    margin-top: 45%;
+  }
+  body.stage_3 #cta_button{
+    margin-top: 28%;
+  }
+  body.stage_4 #header{
+    margin-top: -6%;
+    font-size: 12px;
+  }
+  body.stage_4 #cta_button{
+    margin-top: 38%;
+  }
+  body.stage_4 #desc{
+    margin-top: 5%;
+    font-size: 12px;
+    width: 80%;
+    right: 10%;
+    height: 150px;
+  }
+  body.stage_4 #desc li{
+    padding: 3px;
+    font-size: 9px;
+  }
+  #timer{
+    font-size: 18px;
+    color: #888;
+  }
+
+}
+@media (max-width: 700px) {
+  #desc{
+    margin-top: 10%;
+    height: 100px;
+    overflow-y: scroll;
+  }
+
+}
+

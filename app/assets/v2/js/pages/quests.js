@@ -75,7 +75,9 @@ var start_quiz = async function() {
 
     while (timer > 0 && !document.submitted_answer) {
       await sleep(100);
-      timer -= 100;
+      if (!document.pause) {
+        timer -= 100;
+      }
       $('#timer').removeClass('hidden').html(timer / 1000 + 's left');
       if (timer < 7500) {
         $('#timer').addClass('yellow');
