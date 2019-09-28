@@ -1,4 +1,5 @@
 import json
+import logging
 import random
 import re
 
@@ -10,10 +11,30 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
+from dashboard.models import Activity
 from kudos.models import BulkTransferCoupon
 from kudos.views import get_profile
 from quests.models import Quest, QuestAttempt
 from ratelimit.decorators import ratelimit
+
+logger = logging.getLogger(__name__)
+
+def record_quest_activity(quest, associated_profile, event_name, override_created=None):
+    kwargs = {
+        'created_on': timezone.now() if not override_created else override_created,
+        'activity_type': event_name,
+        'profile': associated_profile,
+        'metadata': {
+            'quest_url': quest.url,
+            'quest_title': quest.title,
+            'quest_reward': quest.enemy_img_url if quest.enemy_img_url else None,
+        }
+    }
+
+    try:
+        Activity.objects.create(**kwargs)
+    except Exception as e:
+        logger.exception(e)
 
 
 # Create your views here.
@@ -63,18 +84,21 @@ def details(request, obj_id, name):
                     profile=request.user.profile,
                     state=0,
                     )
+                record_quest_activity(quest, request.user.profile, 'played_quest')
             else:
                 qas = QuestAttempt.objects.filter(quest=quest, profile=request.user.profile, state=(qn-1), created_on__gt=(timezone.now()-timezone.timedelta(minutes=5)))
                 qa = qas.order_by('-pk').first()
-                correct_answers = [ele['answer'] for ele in quest.questions[qn-1]['responses'] if ele['correct']]
+                this_question = quest.questions[qn-1]
+                correct_answers = [ele['answer'] for ele in this_question['responses'] if ele['correct']]
                 their_answers = payload.get('answers')
-                did_they_do_correct = set(correct_answers) == set(their_answers) or (payload.get('any_correct', False) and len(their_answers))
+                did_they_do_correct = set(correct_answers) == set(their_answers) or (this_question.get('any_correct', False) and len(their_answers))
                 can_continue = did_they_do_correct
                 if can_continue:
                     qa.state += 1
                     qa.save()
                 did_win = can_continue and len(quest.questions) <= qn
                 if did_win:
+                    record_quest_activity(quest, request.user.profile, 'beat_quest')
                     btc = BulkTransferCoupon.objects.create(
                         token=quest.kudos_reward,
                         num_uses_remaining=1,
@@ -117,7 +141,7 @@ def details(request, obj_id, name):
         'hide_col': True,
         'body_class': 'quest_battle',
         'title': "Quest: " + quest.title + (f" (and win a *{quest.kudos_reward.humanized_name}* Kudos)" if quest.kudos_reward else ""),
-        'avatar_url': '/static/' + quest.game_metadata.get('enemy',{}).get('art','').replace('svg','png'),
+        'avatar_url': quest.enemy_img_url,
         'card_desc': quest.description,
         'quest_json': quest.to_json_dict(exclude="questions"),
     }

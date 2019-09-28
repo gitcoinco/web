@@ -108,10 +108,11 @@ $(document).ready(function() {
     // space
     // enter
     if (e.keyCode == 32 || e.keyCode == 13) {
-      if (document.quiz_started) {
-        return;
+      if (!document.quiz_started) {
+        advance_to_state(document.quest_state + 1);
+      } else {
+        $('#cta_button a').click();
       }
-      advance_to_state(document.quest_state + 1);
       document.typewriter_speed = 40;
       e.preventDefault();
       
@@ -121,10 +122,6 @@ $(document).ready(function() {
     // space
     // enter
     if (e.keyCode == 32 || e.keyCode == 13) {
-      if (document.quiz_started) {
-        return;
-      }
-      advance_to_state(document.quest_state + 1);
       document.typewriter_speed = 5;
       e.preventDefault();
       

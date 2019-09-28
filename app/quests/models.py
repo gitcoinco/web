@@ -27,6 +27,11 @@ class Quest(SuperModel):
     def url(self):
         return f"/quests/{self.pk}/{slugify(self.title)}"
 
+
+    @property
+    def enemy_img_url(self):
+        return '/static/'+self.game_metadata.get('enemy', {}).get('art', '').replace('svg', 'png')
+
     @property
     def background(self):
         backgrounds = [

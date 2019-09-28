@@ -81,9 +81,10 @@ var start_quiz = async function() {
       $('#timer').removeClass('hidden').html(timer / 1000 + 's left');
       if (timer < 7500) {
         $('#timer').addClass('yellow');
-      }
-      if (timer < 2000) {
+      } else if (timer < 2000) {
         $('#timer').addClass('orange');
+      } else {
+        $('#timer').removeClass('orange').removeClass('yellow').removeClass('red');
       }
     }
     timer = 2 * 1000;
