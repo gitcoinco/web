@@ -16,6 +16,7 @@ class Quest(SuperModel):
     kudos_reward = models.ForeignKey('kudos.Token', blank=True, null=True, related_name='quests_reward', on_delete=models.SET_NULL)
     unlocked_by = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='unblocks', on_delete=models.SET_NULL)
     cooldown_minutes = models.IntegerField(default=5)
+    visible = models.BooleanField(default=True)
 
     def __str__(self):
         """Return the string representation of this obj."""
