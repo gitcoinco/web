@@ -1,0 +1,21 @@
+{
+  "symbol": "BCS",
+  "address": "0x31274db8b609Df99E5988ee527071643b5160Fc3",
+  "overview": {
+      "en": "BCS Using self-optimized POBC (goodwill certification) as the underlying consensus mechanism, and introducing the real world credit system to provide better operation and support for anonymous block chain network. BCS Focus on the new retail industry with rich landing scenarios, aiming at creating a supply chain traceability, quantifiable credit, transparent data, consumer shopping, membership services, precision marketing, centralized procurement scenarios in one, forming online e-commerce transactions, offline shopping experience, and building a new retail public chain ecology with multi-participation and multi-benefit.",
+      "zh": "BCS（商信链）采用自身优化的POBC（商誉证明）作为底层共识机制，同时引入现实世界的信用体系，来为匿名的区块链网络提供更好的运营和支撑。 BCS聚焦具有丰富落地场景的新零售行业，旨在打造成一个供应链可追溯、信用可量化，数据公开透明， 集消费购物，会员服务，精准营销，集中采购等场景于一体，形成线上电商交易、线下购物体验，构建多方参与、多方受益的新零售公链生态。"
+  },
+  "email": "bcachain@gmail.com",
+  "website": "http://www.bcachain.org/",
+  "whitepaper": "http://www.bcachain.org/source/BCS.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-23",
+  "initial_price": {
+      "ETH": "0.000033333 ETH"
+  },
+  "links": {
+      "twitter": "https://twitter.com/BCAChain",
+      "telegram": "https://t.me/bcachainglobal",
+      "github": "https://github.com/BusinessCredit"
+  }
+}
