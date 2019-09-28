@@ -1038,6 +1038,16 @@ def products(request):
         }
     ]
 
+    if settings.QUESTS_LIVE:
+        products.append({
+            'name': 'quests',
+            'heading': _("Engaging Onboarding Experiences for the Web3 Ecosystem"),
+            'description': _("Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, earn rewards, and level up your decentralization-fu!"),
+            'link': '/quests',
+            'img': static('v2/images/products/graphics-Quests.png'),
+            'logo': static('v2/images/products/quests-symbol.svg')
+        })
+
     context = {
         'is_outside': True,
         'active': 'products',

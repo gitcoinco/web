@@ -20,6 +20,15 @@
   color: #ffffff;
 }
 
+.quests{
+  background-color: #55508e;
+  color: #ffffff;
+}
+
+.quests span img{
+  max-width: 50px;
+}
+
 .codefund{
   background-color: #4c008f;
   color: #ffffff;
@@ -120,6 +129,10 @@
 }
 .button-bounties{
   background-color: #3e00ff;
+  color: #fff;
+}
+.button-quests{
+  background-color: #4b0f8d;
   color: #fff;
 }
 

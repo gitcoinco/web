@@ -261,17 +261,7 @@ var death = async function() {
   await sleep(500);
   $('#protagonist').effect('explode');
   setInterval(function() {
-    var r = Math.random();
-
-    if (r < 0.3) {
-      $('#enemy').effect('shake');
-    } else if (r < 0.6) {
-      $('#enemy').effect('pulsate');
-    } else if (r < 0.8) {
-      $('#enemy').effect('bounce');
-    } else {
-      $('#enemy').effect('highlight');
-    }
+    random_taunt_effect($("enemy"));
   }, 2000);
 };
 
@@ -303,7 +293,18 @@ var start_quest = function() {
 };
 
 $(document).ready(function() {
+  
+  $('.quest-card.available').click(function(e) {
+    e.preventDefault();
+    document.location.href = $(this).find('.btn').attr('href');
+  });
+  $('.quest-card.available').mouseover(function(e) {
+    random_attn_effect($(this).find('.btn'));
+  });
+
+
   $('#protagonist h3').html(trim_dots($('#protagonist h3').text(), 8));
+
   $(document).on('click', '.answer', function(e) {
     e.preventDefault();
     $(this).toggleClass('selected');

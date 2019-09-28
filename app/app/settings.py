@@ -38,6 +38,7 @@ env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
 env.read_env(str(root.path('app/.env')))  # reading .env file
 
 DEBUG = env.bool('DEBUG', default=True)
+QUESTS_LIVE = DEBUG
 ENV = env('ENV', default='local')
 DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test'])
 IS_DEBUG_ENV = ENV in DEBUG_ENVS

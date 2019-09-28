@@ -1,82 +1,105 @@
 {% extends 'quests/base.html' %}
 {% load humanize static i18n %}
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2018 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% block 'content' %}
-  <div class=row>
-  <h1 class="mt-3">Available Quests</h1>
-  <div>
-    {% for unlocked, beaten, cooldown, quest in quests %}
-      <div style="{% cycle 'background-color: #fafafa;' '' %}; width: 330px; display: block; float: left; border-radius: 10px; height: 650px; text-align: center;" class="m-3 p-2 quest-card {%if not unlocked%}locked{%endif%}{%if beaten%}beaten{%endif%} {%if cooldown%}cooldown{%endif%}">
-        <img style="height: 200px; width: 200px; margin: 0px auto;" src="/static/{{quest.game_metadata.enemy.art}}">
-        <div style="background-color: #eee; border-top: 3px solid #bbb; border-radius: 5px;" class="p-3 mt-3">
-            <span style="position: relative; top: -50px; font-size: 50px;">
-              {%if beaten%}
-                ✅
-              {%elif cooldown%}
-                🥶
-              {%elif unlocked%}
-                🔐
-              {%else%}
-                🔒
-              {%endif%}
-            </span>
-        <a href="{{quest.url}}">
-            <h2 style="margin-top: -50px;">
-  
-              {{quest.title}}
-            </h2>
-          </a> 
-          <p style="color: #222; font-size: 10px;">Created {{quest.created_on|naturaltime}} | Attempted {{quest.attempts.count}} times | Beaten {{quest.attempts.count}} times</p>
-          <p style=" max-height: 130px; overflow-y: scroll;">{{quest.description}}</p>
+<div class="row">
+  <div class="container py-5 ">
+    <div class="quests-hero white my-3">
+      <div class="row">
+        <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
+          <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/xxxxx?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
+          </div>
         </div>
-        <div>
-          <br>
+        <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
+          <h1 class="font-title-xl font-weight-semibold">A New Way to Explore the Web3 Ecosystem</h1>
+          <p class="my-4 pt-1 font-header">
+            Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!
+          </p>
+          <a id=explore_quests class="btn btn-gc-blue" href="#available_quests">
+            <img class="mr-1 white-icon" src="{% static "v2/images/products/quests-symbol.svg" %}">
+            Explore Quests
+          </a>
         </div>
-        {%if beaten%}
-          ( ✅ You've already beaten this quest)
-        {%elif cooldown%}
-          ( 🥶 Try again after the cooldown period)
-        {%elif unlocked%}
-          <a style="position: relative; bottom: -20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Accept Quest</a>
-        {%else%}
-          🔒Locked Until <a href="{{quest.unlocked_by.url}}">{{quest.unlocked_by.title}}</a> is beaten.
-        {%endif%}
       </div>
-    {% endfor %}
-  </div>
-  </div>
-
-  {% if leaderboard|length %}
-  <div class=row>
-    <h1 class="mt-3">Leaderboard</h1>
-  </div>
-  <div class=row>
-    <div id=leaderboard>
-      {% for item in leaderboard %}
-      <div class="inner_row" style="{% cycle 'background-color: #fafafa;' '' %}";>
-        <div class="float-left mr-2 ml-2 pt-3">{{ forloop.counter }}</div>
-        <div class="float-left mr-2 ml-2"><img src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
-        <div style="position: relative; right: -400px; top:30px;">{{item.1}} quest{{item.1|pluralize}} beaten</div>
-      </div>
-      {% endfor %}
     </div>
   </div>
-  {% endif %}
+</div>
+<div class="row indent_on_mobile">
+  <h1 id=available_quests class="mt-3">Available Quests</h1>
+  <div>
+    {% for unlocked, beaten, cooldown, quest in quests %}
+    <div style="{% cycle 'background-color: #fafafa;' '' %}; width: 250px; display: block; float: left; border-radius: 10px; height: 450px; text-align: center;" class="m-3 p-2 quest-card {%if not unlocked%}locked{%elif beaten%}beaten{%else%}available{%endif%} {%if cooldown%}cooldown{%endif%}">
+      <img style="height: 120px; width: 120px; margin: 0px auto; margin-bottom: 20px;" src="/static/{{quest.game_metadata.enemy.art}}">
+      <div style="background-color: #eee; border-top: 3px solid #bbb; border-radius: 5px;" class="pr-3 pt-3 pl-3 pb-1 mt-3">
+        <span style="position: relative; top: -50px; font-size: 30px;">
+          {%if beaten%}
+          ✅
+          {%elif cooldown%}
+          🥶
+          {%elif unlocked%}
+          🔐
+          {%else%}
+          🔒
+          {%endif%}
+        </span>
+        <a href="{{quest.url}}">
+          <h2 style="margin-top: -50px; font-size: 20px;">
+
+            {{quest.title}}
+          </h2>
+        </a> 
+        <p style="color: #222; font-size: 11px;">Created {{quest.created_on|naturaltime}} | Attempted {{quest.attempts.count}} times | Beaten {{quest.success_count}} times</p>
+        <p class="desc" style=" max-height: 90px; overflow-y: scroll; font-size: 10px; border-top: 1px solid #333;">{{quest.description}}</p>
+      </div>
+      <div>
+        <br>
+      </div>
+      {%if beaten%}
+      ( ✅ You've already beaten this quest)
+      {%elif cooldown%}
+      ( 🥶 Try again after the cooldown period)
+      {%elif unlocked%}
+      <a style="position: relative; bottom: 20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Accept Quest</a>
+      {%else%}
+      🔒Locked Until <a href="{{quest.unlocked_by.url}}">{{quest.unlocked_by.title}}</a> is beaten.
+      {%endif%}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% if leaderboard|length %}
+<div class="row indent_on_mobile">
+  <h1 class="mt-3">Leaderboard</h1>
+</div>
+<div class="row indent_on_mobile">
+  <div id=leaderboard>
+    {% for item in leaderboard %}
+    <div class="inner_row" style="{% cycle 'background-color: #fafafa;' '' %}";>
+      <div class="float-left mr-2 ml-2 pt-3">{{ forloop.counter }}</div>
+      <div class="float-left mr-2 ml-2"><img src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
+      <div style="position: relative; right: -400px; top:30px;">{{item.1}} quest{{item.1|pluralize}} beaten</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
 
 
 {% endblock %}

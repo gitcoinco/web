@@ -1,3 +1,8 @@
+#quests_logo{
+  margin-top: 10px;
+  margin-left: -30px;
+  max-width: 300px; 
+}
 .character{
   text-align: center;
 }
@@ -72,6 +77,12 @@ body.quest_battle p{
 #helpful_guide img{
   border: none !important;
 }
+#explore_quests img{
+  max-width: 30px;
+  max-height: 30px;
+  margin-top: -10px;
+  margin-left: -10px;
+}
 #enemy.character img{
   width: 250px;
   height: 250px;
@@ -137,10 +148,35 @@ body.quest_battle p{
   margin-top: 5px;
   text-decoration: underline;
 }
+.quest-card.available:hover{
+  background-color: #aea0df !important;
+  cursor: pointer;
+}
+.quest-card.available:hover .pr-3{
+  background-color: #4e40af !important;
+  border-top: 3px solid #2e208f !important;
+}
 .quest-card.locked div,
 .quest-card.locked div a{
   color: #aaa !important;
 }
+.quest-card.available:hover .pr-3,
+.quest-card.available:hover .pr-3 a,
+.quest-card.available:hover .pr-3 p{
+  color: white !important;
+}
+.quest-card.available:hover a.btn{
+  font-size: 18px;
+}
+.back_gradient {
+  background: linear-gradient(to right top, #0fce7c, #00a5a1, #0077b5, #0046a1, #0d0764) no-repeat;
+  animation: gradient 40s ease infinite;
+  background-size: 100% 350px !important;
+}
+.quest-card.available:hover .pr-3 p.desc{
+  border-top: 1px solid white !important;
+}
+
 #cta_button{
   margin-top: 10%;
   width: 60%;
@@ -323,7 +359,6 @@ body.quest_battle{
 .alpha-warning{
   background-color: black;
 }
-
 @media (max-width: 1110px) {
   .tr{
     position: absolute;
@@ -386,13 +421,26 @@ body.quest_battle{
     font-size: 18px;
     color: #888;
   }
-
+  .back_gradient {
+    background-size: 100% 400px !important;
+  }
 }
-@media (max-width: 700px) {
+@media (max-width: 900px) {
+  .back_gradient {
+    background-size: 100% 400px !important;
+  }
+}
+@media (max-width: 768px) {
+  .row.indent_on_mobile{
+    margin-left: 20%;
+  }
   #desc{
     margin-top: 10%;
     height: 100px;
     overflow-y: scroll;
+  }
+  .back_gradient {
+    background-size: 100% 700px !important;
   }
 
 }
