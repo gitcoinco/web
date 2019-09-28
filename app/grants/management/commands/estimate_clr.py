@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.clr import predict_clr
@@ -32,20 +33,25 @@ class Command(BaseCommand):
     help = 'calculate CLR estimates for all grants'
 
     def handle(self, *args, **options):
-        clr_prediction_curves = predict_clr(random_data=False, save_to_db=True)
+        d1 = timezone.now() - timezone.timedelta(days=12)
+        d2 = timezone.now()
 
-        # Uncomment these for debugging and sanity checking
-        # for grant in clr_prediction_curves:
-            #print("CLR predictions for grant {}".format(grant['grant']))
-            #print("All grants: {}".format(grant['grants_clr']))
-            #print("prediction curve: {}\n\n".format(grant['clr_prediction_curve']))
+        for i in range((d2 - d1).days * 24 + 1):
+            this_date = d1 + timezone.timedelta(hours=i)
+            clr_prediction_curves = predict_clr(random_data=False, save_to_db=True, from_date=this_date)
 
-        # sanity check: sum all the estimated clr distributions - should be close to CLR_DISTRIBUTION_AMOUNT
-        clr_data = [g['grants_clr'] for g in clr_prediction_curves]
+            # Uncomment these for debugging and sanity checking
+            # for grant in clr_prediction_curves:
+                #print("CLR predictions for grant {}".format(grant['grant']))
+                #print("All grants: {}".format(grant['grants_clr']))
+                #print("prediction curve: {}\n\n".format(grant['clr_prediction_curve']))
 
-        # print(clr_data)
+            # sanity check: sum all the estimated clr distributions - should be close to CLR_DISTRIBUTION_AMOUNT
+            clr_data = [g['grants_clr'] for g in clr_prediction_curves]
 
-        total_clr_funds = sum([each_grant['clr_amount'] for each_grant in clr_data[0]])
-        print("allocated CLR funds:{}".format(total_clr_funds))
+            # print(clr_data)
 
-        print("finished CLR estimates")
+            total_clr_funds = sum([each_grant['clr_amount'] for each_grant in clr_data[0]])
+            print("allocated CLR funds:{}".format(total_clr_funds))
+
+            print(f"finished CLR estimates for {this_date}")

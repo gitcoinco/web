@@ -5,12 +5,13 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from grants.models import Grant, Contribution
-from numpy import array
-from gas.management.commands.output_gas_viz import convert_to_movie, clear_cache, upload_to_s3
 import matplotlib.pyplot as plt
-import squarify    # pip install squarify (algorithm for treemap)
 import numpy as np
+import squarify  # pip install squarify (algorithm for treemap)
+from gas.management.commands.output_gas_viz import clear_cache, convert_to_movie, upload_to_s3
+from grants.models import Contribution, Grant
+from numpy import array
+from perftools.models import JSONStore
 
 colors = ["#011f4b", "#03396c", "#005b96", "#6497b1", '#b3cde0', '#d3ddf0', '#DDDDDD']
 # hack to make infinite
@@ -23,6 +24,11 @@ label_spec = 'titles'
 graph_type = 'chart'
 graph_type = 'tree'
 graph_type = 'scatter'
+
+opposing_axis = 'counts'
+opposing_axis = 'clr'
+
+days_ago = 12
 
 aggregation_function=sum
 
@@ -44,6 +50,19 @@ def get_graph_plot(d1, this_date, limit=5):
     return crowd_amounts, match_amounts, labels, total_amount
 
 
+def clr_amount_at_time(grant, d1):
+    jsonstores = JSONStore.objects.filter(
+        created_on__gt=(d1-timezone.timedelta(hours=1)),
+        created_on__lte=d1,
+        view='clr_contribution',
+        key=f'{grant.id}',
+        )
+    if jsonstores.exists():
+        jsonstore = jsonstores.first()
+        return jsonstore.data[0][1]
+
+    return 0
+
 def get_tree_plot(d1, this_date, limit=5, append_amounts_to_labels=True):
     contributions = Contribution.objects.filter(subscription__network='mainnet', created_on__lt=this_date,  created_on__gt=d1)
     total_amount = 0
@@ -57,7 +76,12 @@ def get_tree_plot(d1, this_date, limit=5, append_amounts_to_labels=True):
             counts[key] = []
         if not plot_me.get(key, None):
             plot_me[key] = 0
-        counts[key].append(cont.subscription.pk)
+        if opposing_axis == 'counts':
+            counts[key].append(cont.subscription.pk)
+        else:
+            counts[key] = [clr_amount_at_time(cont.subscription.grant, this_date)]
+            #if cont.subscription.grant.pk == 25:
+            #    print(key, this_date, counts[key],)
         if aggregation_function == sum:
             plot_me[key] += float(cont.subscription.amount_per_period_usdt)
             total_amount += float(cont.subscription.amount_per_period_usdt)
@@ -76,7 +100,10 @@ def get_tree_plot(d1, this_date, limit=5, append_amounts_to_labels=True):
             counts[key] = []
         if not plot_me.get(key, None):
             plot_me[key] = 0
-        counts[key].append(cont.pk)
+        if opposing_axis == 'counts':
+            counts[key].append(cont.pk)
+        else:
+            counts[key] = [clr_amount_at_time(cont.grant, this_date)]
         if aggregation_function == sum:
             plot_me[key] += float(cont.value)
             total_amount += float(cont.value)
@@ -95,9 +122,16 @@ def get_tree_plot(d1, this_date, limit=5, append_amounts_to_labels=True):
         if sv[1]:
             sizes.append(sv[1])
             label = sv[0]
-            return_counts.append(len(set(counts[label])))
+            if opposing_axis == 'counts':
+                return_counts.append(len(set(counts[label])))
+            else:
+                return_counts.append(sum((counts[label])))
             if append_amounts_to_labels:
-                label = f"{label}\n${round(sv[1])}"
+                _label = label
+                label = f"{label}\n\${round(sv[1])} "
+                if opposing_axis == 'clr':
+                    clr_sum = round(((counts[_label][0])))
+                    label += f"+ \${clr_sum} CLR"
             labels.append(label)
     return sizes, labels, return_counts, total_amount
 
@@ -108,11 +142,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         clear_cache()
 
-        d1 = timezone.now() - timezone.timedelta(days=11)
+        d1 = timezone.now() - timezone.timedelta(days=days_ago)
         d2 = timezone.now()
 
         for i in range((d2 - d1).days * 24 + 1):
             this_date = d1 + timezone.timedelta(hours=i)
+            #print(this_date)
             _plt = plt
             _plt.figure(figsize=(20, 10))
             this_date_str = this_date.strftime("%Y-%m-%d %H:%M")
@@ -158,9 +193,15 @@ class Command(BaseCommand):
                 _plt.scatter(x, y, c=_colors, s=sizes, alpha=0.3,
                             cmap='viridis')
                 _plt.legend((0, 0), ('Crowd', 'Matching'))
-                _plt.xlabel('Value of all Contributions')
-                _plt.ylabel('Num Contributors')
-                _plt.axis([-1, 10000, -1, 40])
+                _plt.xlabel('Value of all Contributions (\$\$)')
+                if opposing_axis == 'counts':
+                    _plt.ylabel('Num Contributors')
+                    y_axis_height = 40
+                else:
+                    _plt.ylabel('CLR Match Estimate ($)')
+                    y_axis_height = max(counts) + 1000
+                x_axis_height = max(sizes) + 1000
+                _plt.axis([-1, x_axis_height, -1, y_axis_height])
                 for j in range(0, len(sizes)):
                     _plt.text(sizes[j]+.03, counts[j]+.03, labels[j], fontsize=9)
 

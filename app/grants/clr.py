@@ -24,6 +24,7 @@ import math
 from itertools import combinations
 
 from grants.models import Contribution, Grant, PhantomFunding
+from perftools.models import JSONStore
 
 CLR_DISTRIBUTION_AMOUNT = 100000
 CLR_START_DATE = dt.datetime(2019, 9, 15, 0, 0)
@@ -239,9 +240,9 @@ def calculate_clr_for_donation(donation_grant, donation_amount, total_pot, base_
     print('error: could not find grant in final grants_clr data')
     return (None, None)
 
-def predict_clr(random_data=False, save_to_db=False):
+def predict_clr(random_data=False, save_to_db=False, from_date=None):
     # get all the eligible contributions and calculate total
-    contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=CLR_START_DATE)
+    contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=CLR_START_DATE, created_on__lte=from_date)
     debug_output = []
     grants = Grant.objects.all()
 
@@ -254,7 +255,7 @@ def predict_clr(random_data=False, save_to_db=False):
             g_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id)
 
             # put in correct format
-            phantom_funding_profiles = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=CLR_START_DATE)
+            phantom_funding_profiles = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=CLR_START_DATE, created_on__lte=from_date)
             all_contributing_profile_ids = list(set([c.subscription.contributor_profile.id for c in g_contributions] + [p.profile_id for p in phantom_funding_profiles]))
             all_summed_contributions = []
 
@@ -263,7 +264,7 @@ def predict_clr(random_data=False, save_to_db=False):
                 profile_g_contributions = g_contributions.filter(subscription__contributor_profile_id=profile_id)
                 sum_of_each_profiles_contributions = float(sum([c.subscription.get_converted_monthly_amount() for c in profile_g_contributions]))
 
-                phantom_funding = PhantomFunding.objects.filter(created_on__gte=CLR_START_DATE, grant_id=grant.id, profile_id=profile_id)
+                phantom_funding = PhantomFunding.objects.filter(created_on__gte=CLR_START_DATE, grant_id=grant.id, profile_id=profile_id, created_on__lte=from_date)
                 if phantom_funding.exists():
                     sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
 
@@ -276,8 +277,8 @@ def predict_clr(random_data=False, save_to_db=False):
         # use random contribution data for testing
         contrib_data = generate_random_contribution_data()
 
-    print('\n\ncontributions data:')
-    print(contrib_data)
+    #print('\n\ncontributions data:')
+    #print(contrib_data)
 
     # calculate clr given additional donations
     for grant in grants:
@@ -292,10 +293,15 @@ def predict_clr(random_data=False, save_to_db=False):
 
         if save_to_db:
             grant.clr_prediction_curve = list(zip(potential_donations, potential_clr))
-            grant.save()
             base = grant.clr_prediction_curve[0][1]
             grant.clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in grant.clr_prediction_curve ]
-            grant.save()
+            JSONStore.objects.create(
+                created_on=from_date,
+                view='clr_contribution',
+                key=f'{grant.id}',
+                data=grant.clr_prediction_curve,
+                )
+            print(len(contrib_data), grant.clr_prediction_curve)
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
     return debug_output
