@@ -28,20 +28,25 @@ from grants.models import Grant
 # > To prevent a winner-takes-all effect from grants with already the most funding being shown at the top, how about a randomized sort, where your probability of being first is equal to (your expected CLR match) / (total expected CLR match) and then you just do that recursively to position everyone?
 
 
-def weighted_select(ints):
-    stop = random.randrange(sum(ints))
+def weighted_select(items):
+    stop = random.randrange(sum([ele[1] for ele in items]))
     pos = 0
-    for i in ints:
+    for ele in items:
+        i = ele[1]
         if (pos + i) > stop:
             return i
         pos += i
 
-def weighted_shuffle(ints): 
-    ints = ints[::]
+def custom_index(arr, item):
+    for i in range(0, len(arr)):
+        if arr[i][1] == item:
+            return i
+
+def weighted_shuffle(items):
     o = []
-    while ints:
-        o.append(weighted_select(ints))
-        ints.pop(ints.index(o[-1]))
+    while items:
+        o.append(weighted_select(items))
+        items.pop(custom_index(items, o[-1]))
     return o
 
 class Command(BaseCommand):
@@ -49,8 +54,23 @@ class Command(BaseCommand):
     help = 'grant weighted shuffle'
 
     def handle(self, *args, **options):
-        grants = Grant.objects.all()
-        ws = weighted_shuffle(list(range(1, grants.count()+1)))
-        for grant in grants:
-            grant.weighted_shuffle = ws.pop()
+
+        # set default, for when no CLR match enabled
+        for grant in Grant.objects.all():
+            grant.weighted_shuffle = 99999
             grant.save()
+
+        # get grants, and apply weighted shuffle rank to them
+        grants = Grant.objects.filter(clr_prediction_curve__0__1__isnull=False).order_by('pk')
+        weighted_list = [(grant, int(max(1, grant.clr_prediction_curve[0][1]))) for grant in grants]
+        og_weighted_list = weighted_list.copy()
+        ws = weighted_shuffle(weighted_list)
+        counter = 0
+
+        # update grants in db
+        for ele in ws:
+            grant_idx = custom_index(og_weighted_list, ele)
+            grant = grants[grant_idx]
+            grant.weighted_shuffle = counter
+            grant.save()
+            counter+=1
