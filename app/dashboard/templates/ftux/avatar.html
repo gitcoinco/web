@@ -188,7 +188,7 @@
         </div>
       <div class="action-buttons">
         {% for category, ids in 3d_avatar_params.by_category.items %}
-          <a href="#" class="select_avatar_type" data-target="{{category}}">{{category}}</a>
+          <a href="#" class="select_avatar_type {{category}}" data-target="{{category}}">{{category}}</a>
         {% endfor %}
       </div>
       <div class="targets">

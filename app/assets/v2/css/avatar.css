@@ -74,6 +74,9 @@
   border-bottom: 1px solid #9a9a9a;
   margin: 0px auto;
 }
+.select_avatar_type.frame{
+  display: none;
+}
 .select_avatar_type:hover{
   color: #9a9a9a;
   font-weight: bold;
