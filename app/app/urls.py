@@ -155,7 +155,7 @@ urlpatterns = [
 
     # quests
     path('quests/', quests.views.index, name='quests_index'),
-    re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='kudos_details'),
+    re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
 
     # Contributor dashboard
     path(
