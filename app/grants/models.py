@@ -196,6 +196,7 @@ class Grant(SuperModel):
         ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
+    weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -226,6 +227,27 @@ class Grant(SuperModel):
             return org_name(self.reference_url)
         except Exception:
             return None
+
+    @property
+    def contribution_count(self):
+        num = 0
+        for sub in self.subscriptions.all():
+            for contrib in sub.subscription_contribution.filter(success=True):
+                num += 1
+        for pf in self.phantom_funding.all():
+            num+=1
+        return num
+
+    @property
+    def contributor_count(self):
+        contributors = []
+        for sub in self.subscriptions.all():
+            for contrib in sub.subscription_contribution.filter(success=True):
+                contributors.append(contrib.subscription.contributor_profile.handle)
+        for pf in self.phantom_funding.all():
+            contributors.append(pf.profile.handle)
+        return len(set(contributors))
+
 
     @property
     def org_profile(self):
