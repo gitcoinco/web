@@ -152,6 +152,7 @@ $(document).ready(function() {
   $('.skip_intro').on('click', async function(e) {
     e.preventDefault();
     $(this).remove();
+    document.typewriter_speed = 5;
     while (document.state_transitioning) {
       await sleep(10);
     }
