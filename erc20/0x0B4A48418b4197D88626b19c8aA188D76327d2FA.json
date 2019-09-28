@@ -3,7 +3,7 @@
   "address": "0x0B4A48418b4197D88626b19c8aA188D76327d2FA",
   "overview":{
         "en": "GPC is a new generation of decentralized and stable ecosystem built on smart contracts from a world-renowned technical team. By building a decentralized cryptocurrency payment ecosystem, it provides scalable cross-chain contract payment solutions. The program creates a secure, efficient, convenient, and shared digital asset payment service for users.",
-        "zh": "GPCÊÇ»ùÓÚÊÀ½çÖªÃû¼¼ÊõÍÅ¶ÓµÄÖÇÄÜºÏÔ¼¹¹½¨µÄĞÂÒ»´ú·ÖÉ¢£¬ÎÈ¶¨µÄÉúÌ¬ÏµÍ³¡£Í¨¹ı¹¹½¨È¥ÖĞĞÄ»¯µÄ¼ÓÃÜ»õ±ÒÖ§¸¶ÉúÌ¬ÏµÍ³£¬ËüÌá¹©ÁË¿ÉÀ©Õ¹µÄ¿çÁ´ºÏÍ¬Ö§¸¶½â¾ö·½°¸¡£¸Ã³ÌĞòÎªÓÃ»§´´½¨ÁË°²È«£¬¸ßĞ§£¬±ã½İºÍ¹²ÏíµÄÊı×Ö×Ê²úÖ§¸¶·şÎñ¡£"
+        "zh": "GPCæ˜¯åŸºäºä¸–ç•ŒçŸ¥åæŠ€æœ¯å›¢é˜Ÿçš„æ™ºèƒ½åˆçº¦æ„å»ºçš„æ–°ä¸€ä»£åˆ†æ•£ï¼Œç¨³å®šçš„ç”Ÿæ€ç³»ç»Ÿã€‚é€šè¿‡æ„å»ºå»ä¸­å¿ƒåŒ–çš„åŠ å¯†è´§å¸æ”¯ä»˜ç”Ÿæ€ç³»ç»Ÿï¼Œå®ƒæä¾›äº†å¯æ‰©å±•çš„è·¨é“¾åˆåŒæ”¯ä»˜è§£å†³æ–¹æ¡ˆã€‚è¯¥ç¨‹åºä¸ºç”¨æˆ·åˆ›å»ºäº†å®‰å…¨ï¼Œé«˜æ•ˆï¼Œä¾¿æ·å’Œå…±äº«çš„æ•°å­—èµ„äº§æ”¯ä»˜æœåŠ¡ã€‚"
   },
   "email": "globalgpe@163.com",
   "website": "http://gbc.gpepay.com/",
@@ -11,7 +11,7 @@
   "state": "NORMAL",
   "published_on": "2019-09-28",
   "initial_price":{
-        "USD":"0.03 USD",
+        "USD":"0.03 USD"
   },
   "links": {
     "medium": "http://gbc.gpepay.com/"
