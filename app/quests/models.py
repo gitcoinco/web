@@ -8,6 +8,13 @@ from economy.models import SuperModel
 
 
 class Quest(SuperModel):
+    DIFFICULTIES = [
+        ('Beginner', 'Beginner'),
+        ('Intermediate', 'Intermediate'),
+        ('Advanced', 'Advanced'),
+    ]
+
+
     title = models.CharField(max_length=1000)
     description = models.TextField(default='', blank=True)
     game_schema = JSONField(default=dict, blank=True)
@@ -17,6 +24,7 @@ class Quest(SuperModel):
     unlocked_by = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='unblocks', on_delete=models.SET_NULL)
     cooldown_minutes = models.IntegerField(default=5)
     visible = models.BooleanField(default=True)
+    difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES)
 
     def __str__(self):
         """Return the string representation of this obj."""

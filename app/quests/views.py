@@ -40,7 +40,14 @@ def record_quest_activity(quest, associated_profile, event_name, override_create
 # Create your views here.
 def index(request):
 
-    quests = [(ele.is_unlocked_for(request.user), ele.is_beaten(request.user), ele.is_within_cooldown_period(request.user), ele) for ele in Quest.objects.filter(visible=True)]
+    quests = []
+    for diff in Quest.DIFFICULTIES:
+        quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True)
+        quest_package = [(ele.is_unlocked_for(request.user), ele.is_beaten(request.user), ele.is_within_cooldown_period(request.user), ele) for ele in quest_qs]
+        package = (diff[0], quest_package)
+        if quest_qs.exists():
+            quests.append(package)
+
     leaderboard = QuestAttempt.objects.filter(success=True).order_by('profile').values_list('profile__handle').annotate(amount=Count('quest', distinct=True)).order_by('-amount')
     params = {
         'quests': quests,

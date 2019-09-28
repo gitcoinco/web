@@ -41,7 +41,7 @@
     <nav class="navbar-nav ml-auto mr-3">
       <a class="nav-link selected interior" href="{% url 'quests_index' %}">{% trans "Quests Explorer" %}</a>
       <a class="nav-link interior" href="{% url 'quests_index' %}#leaderboard">{% trans "Leaderboard" %}</a>
-      <a class="nav-link{% if active == 'new_grant' %} selected {% endif %} interior" href="{% url 'grants:new' %}"><i class="fab fa-ethereum mr-1" role="aria-hidden"></i> {% trans "Create Quest" %}</a>
+      <a class="nav-link interior" href="https://gitcoin.typeform.com/to/cfBRgm"><i class="fab fa-ethereum mr-1" role="aria-hidden"></i> {% trans "Create Quest" %}</a>
 
       {% if not user.is_authenticated %}
         <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="nav-link interior" onclick="dataLayer.push({'event': 'login'});">
