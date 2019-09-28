@@ -95,8 +95,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% for item in leaderboard %}
     <div class="inner_row" style="{% cycle 'background-color: #fafafa;' '' %}";>
       <div class="float-left mr-2 ml-2 pt-3">{{ forloop.counter }}</div>
-      <div class="float-left mr-2 ml-2"><img src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
-      <div style="position: relative; right: -400px; top:30px;">{{item.1}} quest{{item.1|pluralize}} beaten</div>
+      <div class="float-left mr-2 ml-2"><img src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px; width: 150px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
+      <div style="float: right; width: 500px; text-align: right;">
+      {% for btr in item.2%}
+      <img src="{{btr.0}}" title="{{btr.1}}" style="height: 50px; width: 50px; border-radius: 0px;">
+      {% endfor %}
+      {{item.1}} quest{{item.1|pluralize}} beaten</div>
     </div>
     {% endfor %}
   </div>

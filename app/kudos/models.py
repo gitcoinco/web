@@ -516,6 +516,7 @@ class BulkTransferCoupon(SuperModel):
 
     sender_address = models.CharField(max_length=255, blank=True)
     sender_pk = models.CharField(max_length=255, blank=True)
+    tag = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         """Return the string representation of a model."""

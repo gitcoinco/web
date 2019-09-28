@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity
-from kudos.models import BulkTransferCoupon
+from kudos.models import BulkTransferCoupon, BulkTransferRedemption
 from kudos.views import get_profile
 from quests.models import Quest, QuestAttempt
 from ratelimit.decorators import ratelimit
@@ -48,7 +48,9 @@ def index(request):
         if quest_qs.exists():
             quests.append(package)
 
+    kudos_to_show_per_leaderboard_entry = 5
     leaderboard = QuestAttempt.objects.filter(success=True).order_by('profile').values_list('profile__handle').annotate(amount=Count('quest', distinct=True)).order_by('-amount')
+    leaderboard = [[ele[0], ele[1], list(set([(_ele.coupon.token.img_url, _ele.coupon.token.humanized_name) for _ele in BulkTransferRedemption.objects.filter(coupon__tag='quest',redeemed_by__handle=ele[0]).order_by('-created_on')]))[:kudos_to_show_per_leaderboard_entry]] for ele in leaderboard]
     params = {
         'quests': quests,
         'leaderboard': leaderboard,
@@ -108,6 +110,7 @@ def details(request, obj_id, name):
                     record_quest_activity(quest, request.user.profile, 'beat_quest')
                     btc = BulkTransferCoupon.objects.create(
                         token=quest.kudos_reward,
+                        tag='quest',
                         num_uses_remaining=1,
                         num_uses_total=1,
                         current_uses=0,
