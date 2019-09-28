@@ -261,7 +261,7 @@ var death = async function() {
   await sleep(500);
   $('#protagonist').effect('explode');
   setInterval(function() {
-    random_taunt_effect($("#enemy"));
+    random_taunt_effect($('#enemy'));
   }, 2000);
 };
 

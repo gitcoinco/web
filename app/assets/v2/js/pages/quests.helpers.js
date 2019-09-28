@@ -16,41 +16,43 @@ var show_prize = function() {
 };
 
 var random_taunt_effect = function(ele) {
-    if(ele.data('effect')){
-      return;
-    }
-    ele.data('effect', 1);
-    var r = Math.random();
-    if (r < 0.3) {
-      ele.effect('shake');
-    } else if (r < 0.6) {
-      ele.effect('pulsate');
-    } else if (r < 0.8) {
-      ele.effect('bounce');
-    } else {
-      ele.effect('highlight');
-    }
-    setTimeout(function(){
-      ele.data('effect', 0);
-    },1000);
+  if (ele.data('effect')) {
+    return;
+  }
+  ele.data('effect', 1);
+  var r = Math.random();
+
+  if (r < 0.3) {
+    ele.effect('shake');
+  } else if (r < 0.6) {
+    ele.effect('pulsate');
+  } else if (r < 0.8) {
+    ele.effect('bounce');
+  } else {
+    ele.effect('highlight');
+  }
+  setTimeout(function() {
+    ele.data('effect', 0);
+  }, 1000);
 };
 
 var random_attn_effect = function(ele) {
-    if(ele.data('effect')){
-      return;
-    }
-    ele.data('effect', 1);
-    var r = Math.random();
-    if (r < 0.3) {
-      ele.effect('highlight');
-    } else if (r < 0.6) {
-      ele.effect('bounce');
-    } else {
-      ele.effect('highlight');
-    }
-    setTimeout(function(){
-      ele.data('effect', 0);
-    },1000);
+  if (ele.data('effect')) {
+    return;
+  }
+  ele.data('effect', 1);
+  var r = Math.random();
+
+  if (r < 0.3) {
+    ele.effect('highlight');
+  } else if (r < 0.6) {
+    ele.effect('bounce');
+  } else {
+    ele.effect('highlight');
+  }
+  setTimeout(function() {
+    ele.data('effect', 0);
+  }, 1000);
 };
 
 var post_state = async(data) => {
