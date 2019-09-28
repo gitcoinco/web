@@ -270,7 +270,6 @@ var death = async function() {
       $('#enemy').effect('highlight');
     }
   }, 2000);
-  document.location.reload();
 };
 
 var winner = async function(prize_url) {
@@ -291,7 +290,7 @@ var winner = async function(prize_url) {
   $('#desc').html(span + "<img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>');
   $('.prize').fadeOut();
   $('#desc').fadeIn();
-  await sleep(1000);
+  await sleep(3000);
   document.location.href = prize_url;
 };
 

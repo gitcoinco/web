@@ -68,7 +68,7 @@ def details(request, obj_id, name):
                 qa = qas.order_by('-pk').first()
                 correct_answers = [ele['answer'] for ele in quest.questions[qn-1]['responses'] if ele['correct']]
                 their_answers = payload.get('answers')
-                did_they_do_correct = set(correct_answers) == set(their_answers) or (payload.get('any_correct', True) and len(their_answers))
+                did_they_do_correct = set(correct_answers) == set(their_answers) or (payload.get('any_correct', False) and len(their_answers))
                 can_continue = did_they_do_correct
                 if can_continue:
                     qa.state += 1
