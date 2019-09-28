@@ -591,10 +591,15 @@ def get_interested_actions(github_url, username, email=''):
     return actions_by_interested_party
 
 
-def get_user(user, sub_path='', auth=_AUTH):
+def get_user(user, sub_path='', scope='', auth=_AUTH):
     """Get the github user details."""
-    user = user.replace('@', '')
-    url = f'https://api.github.com/users/{user}{sub_path}'
+    if scope is not '':
+        print(scope)
+        url = f'https://api.github.com/user/{scope}'
+    else:
+        user = user.replace('@', '')
+        url = f'https://api.github.com/users/{user}{sub_path}'
+
     response = requests.get(url, auth=auth, headers=HEADERS)
 
     try:

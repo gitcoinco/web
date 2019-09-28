@@ -207,7 +207,7 @@ def sync_profile(handle, user=None, hide_profile=True):
     # store the org info in postgres
     try:
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
-        orgs = get_user(handle, '/orgs')
+        orgs = get_user(handle, '', scope='orgs')
         profile.organizations = [ele['login'] for ele in orgs]
         print("Profile:", profile, "- created" if created else "- updated")
         keywords = []

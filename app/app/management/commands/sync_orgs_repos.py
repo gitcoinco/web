@@ -56,7 +56,6 @@ class Command(BaseCommand):
                         return lsynced
 
                     members_to_sync = []
-                    print(profile.organizations)
                     if profile.organizations is None:
                         print("no profile")
                         return []
@@ -158,15 +157,18 @@ class Command(BaseCommand):
 
                         return lsynced
                 except Exception as exc:
-                    print("here")
+                    print('unexpected error occured:')
                     print(exc)
 
             for user in all_users:
                 # get profile data now creates or gets the new organization data for each user
                 try:
-                    synced = recursive_sync(synced, user.profile.handle)
+                    if user and user.profile and user.profile.handle:
+                        synced = recursive_sync(synced, user.profile.handle)
                 except ValueError as loop_exc:
+                    print(f'Error syncing user id:{user.id}')
                     print(loop_exc)
+
             print("Sync Completed")
         except ValueError as e:
             print(e)
