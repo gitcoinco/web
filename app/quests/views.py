@@ -116,7 +116,7 @@ def details(request, obj_id, name):
         'quest': quest,
         'hide_col': True,
         'body_class': 'quest_battle',
-        'title': quest.title + (f"( and win a *{quest.kudos_reward.humanized_name}* Kudos)" if quest.kudos_reward else ""),
+        'title': "Quest: " + quest.title + (f" (and win a *{quest.kudos_reward.humanized_name}* Kudos)" if quest.kudos_reward else ""),
         'avatar_url': '/static/' + quest.game_metadata.get('enemy',{}).get('art','').replace('svg','png'),
         'card_desc': quest.description,
         'quest_json': quest.to_json_dict(exclude="questions"),
