@@ -4,7 +4,8 @@
 .character h3{
   font-weight: 900;
   background-color: #666;
-  width: 70%;
+  max-width: 90%;
+  display: inline-block;
 }
 .character p{
   background-color: #444;
@@ -49,8 +50,9 @@ body.quest_battle p{
   border: 5px solid #ccc;
 }
 .prize img{
-  height: 80px;
-  width: 65px;
+  height: 140px;
+  width: 125px;
+  margin: 5px 10px;
 }
 .character.harm img{
   border: 5px solid #F9006C;
@@ -123,14 +125,16 @@ body.quest_battle p{
   padding: 20px; 
 }
 #desc{
-  width: 60%;
+  width: 50%;
   text-align: center;
   color: white;
   padding: 10px;
   margin-top: 100px;
   z-index: 9999;
+  right: 25%;
 }
 #desc li{
+  margin-top: 5px;
   text-decoration: underline;
 }
 .quest-card.locked div,
@@ -230,7 +234,7 @@ body.quest_battle .bottom_notification{
 .tl{
   position: absolute;
   top: 10px;
-  left: 10px;
+  left: 0px;
 }
 .br{
   position: absolute;
@@ -245,7 +249,14 @@ body.quest_battle .bottom_notification{
 
 #timer{
   bottom: 26px;
+  font-size: 30px;
   color: #888;
+}
+#timer.yellow{
+  color: yellow;
+}
+#timer.orange{
+  color: orange;
 }
 #timer.red{
   color: red;

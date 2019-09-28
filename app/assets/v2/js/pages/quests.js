@@ -5,6 +5,9 @@ var start_quiz = async function() {
   var question_number = 0;
   var should_continue = true;
 
+  start_music_midi('boss-battle');
+  await sleep(100);
+
   while (should_continue) {
     document.submitted_answer = false;
     var answers = [];
@@ -74,6 +77,12 @@ var start_quiz = async function() {
       await sleep(100);
       timer -= 100;
       $('#timer').removeClass('hidden').html(timer / 1000 + 's left');
+      if (timer < 7500) {
+        $('#timer').addClass('yellow');
+      }
+      if (timer < 2000) {
+        $('#timer').addClass('orange');
+      }
     }
     timer = 2 * 1000;
 
@@ -101,7 +110,7 @@ var advance_to_state = async function(new_state) {
 
   // confirm
   if (new_state == 4) {
-    var sure = confirm('are you sure?  make sure you study up. if you fail the quest, you cannot try again until after the cooldown period (30 mins).');
+    var sure = confirm('are you sure?  make sure you study up. if you fail the quest, you cannot try again until after the cooldown period (' + document.quest['cooldown_minutes'] + ') mins).');
 
     if (!sure) {
       await $('#cta_button').removeClass('hidden').fadeIn();
@@ -227,7 +236,6 @@ var advance_to_state = async function(new_state) {
     await sleep(500);
     $('.skip_intro').remove();
     await $('#enemy').removeClass('hidden');
-    start_music_midi('boss-battle');
     start_quiz();
 
   }
@@ -241,8 +249,11 @@ var death = async function() {
   await $('#header').fadeOut();
   await $('#cta_button').fadeOut();
   await $('#desc').fadeOut();
+  start_music_midi('dead');
   await toggle_character_class($('#protagonist'), [ 'harm', '' ]);
   await sleep(500);
+  await $('.prize').effect('explode');
+  await sleep(200);
   await $('#header').addClass('fail').fadeIn().html('You Lose');
   await sleep(500);
   $('#protagonist').effect('explode');
@@ -275,6 +286,8 @@ var winner = async function(prize_url) {
   await $('#header').addClass('success').fadeIn().html('You Win');
   var span = '<span style="display:block; font-weight: bold; font-size: 24px;">🏆Quest Prize🏅</span>';
 
+  start_music_midi('secret-discovery');
+
   $('#desc').html(span + "<img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>');
   $('.prize').fadeOut();
   $('#desc').fadeIn();
@@ -288,7 +301,7 @@ var start_quest = function() {
 };
 
 $(document).ready(function() {
-
+  $('#protagonist h3').html(trim_dots($('#protagonist h3').text(), 8));
   $(document).on('click', '.answer', function(e) {
     e.preventDefault();
     $(this).toggleClass('selected');

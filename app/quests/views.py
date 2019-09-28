@@ -19,18 +19,13 @@ from ratelimit.decorators import ratelimit
 # Create your views here.
 def index(request):
 
-    # stopgap while this is admin only
-    if not request.user.is_authenticated or (not request.user.is_staff and not request.user.groups.filter(name='quests').exists()):
-        messages.info(request, 'You dont have permissions to access this alpha feature. Pls contact an admin')
-        return redirect('/')
-
     quests = [(ele.is_unlocked_for(request.user), ele.is_beaten(request.user), ele.is_within_cooldown_period(request.user), ele) for ele in Quest.objects.all()]
     leaderboard = QuestAttempt.objects.filter(success=True).order_by('profile').values_list('profile__handle').annotate(amount=Count('quest', distinct=True)).order_by('-amount')
     params = {
         'quests': quests,
         'leaderboard': leaderboard,
         'title': 'Quests on Gitcoin',
-        'card_desc': 'Use Gitcoin to learn about the Ethereum ecosystem and level up while you do it!',
+        'card_desc': 'Use Gitcoin to learn about the web3 ecosystem, earn rewards, and level up while you do it!',
     }
     return TemplateResponse(request, 'quests/index.html', params)
 
@@ -40,11 +35,6 @@ def details(request, obj_id, name):
 
     if not request.user.is_authenticated and request.GET.get('login'):
         return redirect('/login/github?next=' + request.get_full_path())
-
-    # stopgap while this is admin only
-    if not request.user.is_authenticated or (not request.user.is_staff and not request.user.groups.filter(name='quests').exists()):
-        messages.info(request, 'You dont have permissions to access this alpha feature. Pls contact an admin')
-        return redirect('/')
 
     """Render the Kudos 'detail' page."""
     if not re.match(r'\d+', obj_id):
@@ -78,7 +68,7 @@ def details(request, obj_id, name):
                 qa = qas.order_by('-pk').first()
                 correct_answers = [ele['answer'] for ele in quest.questions[qn-1]['responses'] if ele['correct']]
                 their_answers = payload.get('answers')
-                did_they_do_correct = set(correct_answers) == set(their_answers)
+                did_they_do_correct = set(correct_answers) == set(their_answers) or (payload.get('any_correct', True) and len(their_answers))
                 can_continue = did_they_do_correct
                 if can_continue:
                     qa.state += 1
@@ -111,11 +101,11 @@ def details(request, obj_id, name):
 
     if quest.is_within_cooldown_period(request.user):
         if request.user.is_staff:
-            messages.info(request, 'You are within this quest\'s 30 min cooldown period. Normally wed send you to another quest.. but..  since ur staff u can try it!')
+            messages.info(request, f'You are within this quest\'s {quest.cooldown_minutes} min cooldown period. Normally wed send you to another quest.. but..  since ur staff u can try it!')
         else:
-            messages.info(request, 'ou are within this quest\'s 30 min cooldown period. Try again later.')
+            messages.info(request, f'You are within this quest\'s {quest.cooldown_minutes} min cooldown period. Try again later.')
             return redirect('/quests');
-    if quest.is_beaten(request.user):
+    elif quest.is_beaten(request.user):
         if request.user.is_staff:
             messages.info(request, 'You have beaten this quest.  Normally wed send you to another quest.. but.. since ur staff u can try it again!')
         else:
@@ -126,7 +116,8 @@ def details(request, obj_id, name):
         'quest': quest,
         'hide_col': True,
         'body_class': 'quest_battle',
-        'title': quest.title,
+        'title': quest.title + (f"( and win a *{quest.kudos_reward.humanized_name}* Kudos)" if quest.kudos_reward else ""),
+        'avatar_url': '/static/' + quest.game_metadata.get('enemy',{}).get('art','').replace('svg','png'),
         'card_desc': quest.description,
         'quest_json': quest.to_json_dict(exclude="questions"),
     }

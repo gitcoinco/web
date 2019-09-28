@@ -2,6 +2,13 @@ const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 };
 
+var trim_dots = function(_str, _chars) {
+  if (_str.length > _chars) {
+    _str = _str.substring(0, _chars) + '....';
+  }
+  return _str;
+};
+
 var show_prize = function() {
   var kudos_html = "<div class='tl prize'><span>🏆Quest Prize🏅</span><img src=" + document.kudos_reward['img'] + '></div>';
 
@@ -105,6 +112,20 @@ $(document).ready(function() {
         return;
       }
       advance_to_state(document.quest_state + 1);
+      document.typewriter_speed = 40;
+      e.preventDefault();
+      
+    }
+  });
+  $('body').keydown(function(e) {
+    // space
+    // enter
+    if (e.keyCode == 32 || e.keyCode == 13) {
+      if (document.quiz_started) {
+        return;
+      }
+      advance_to_state(document.quest_state + 1);
+      document.typewriter_speed = 5;
       e.preventDefault();
       
     }
