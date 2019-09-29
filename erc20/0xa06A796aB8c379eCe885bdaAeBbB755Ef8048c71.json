@@ -1,0 +1,22 @@
+{
+    "symbol": "MLC",
+    "address": "0xa06A796aB8c379eCe885bdaAeBbB755Ef8048c71",
+    "overview": {
+        "en": "The MLC brand is composed by its art retail stores, art trade markets and art auction companies. MLC coins are released from the official channel, and theybare also released synchronously while arts are trading. Users also can use the MLC trade platform to easily exchange electronic currencies. Currently we are researching and attempting to keep reinforcing the consensus of the connection with the third party based on the ethereum ecology. Also, MLC platform supports large art galleries and art auction companies with the form of block chain, so that all the information of collecting, purchse, transfer and delivery of the work of all art gurus,consumer arts, art derivatives, and art copy rights as well as intellectual rights will be put in all the nodes on the block chain. ",
+        "zh": "MLC由旗下艺术品新零售商城、艺术品交易市场、艺术品拍卖行等几个生态组成MLC品牌，目前仅由官方渠道发放，也通过艺术品的交易流通中同步释放，同时用户通过MLC交易平台可轻松实现币币兑换。目前在其DApp的尝试及探索中，并继续加强与第三方基于以太坊生态的连接共识。同样，MLC支持以区块链的模式介入各大艺术品商城和艺术品交易所，贯穿艺术大师作品、消费级艺术品、艺术衍生品和艺术品版权、产权等方面的收藏、购买、转让、交割的全节点。"
+    },
+    "email": "wo1818@126.com",
+    "website": "https://www.mlgo.co/",
+    "whitepaper": "https://file.mlgo.co/MLC_whitePaper_.pdf",
+	"published_on": "2019-09-05",
+	"initial_price":{
+        "ETH":"0.0002 ETH"
+	},
+    "state": "NORMAL",
+    "links": {
+        "twitter": "https://twitter.com/mlcgogroup",
+        "telegram": "https://t.me/mlcgoGroup",
+        "Beyong": "https://0.plus/mlcgogroup",
+        "Weibo": "https://weibo.com/mlcgo"
+    }
+}
