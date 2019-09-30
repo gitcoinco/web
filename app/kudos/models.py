@@ -21,6 +21,7 @@ import logging
 from io import BytesIO
 
 from django.conf import settings
+from django.contrib.postgres.fields import JSONField
 from django.core.files import File
 from django.db import models
 from django.db.models import Q
@@ -516,6 +517,8 @@ class BulkTransferCoupon(SuperModel):
 
     sender_address = models.CharField(max_length=255, blank=True)
     sender_pk = models.CharField(max_length=255, blank=True)
+    tag = models.CharField(max_length=255, blank=True)
+    metadata = JSONField(default=dict, blank=True)
 
     def __str__(self):
         """Return the string representation of a model."""

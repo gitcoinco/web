@@ -8,6 +8,13 @@ from economy.models import SuperModel
 
 
 class Quest(SuperModel):
+    DIFFICULTIES = [
+        ('Beginner', 'Beginner'),
+        ('Intermediate', 'Intermediate'),
+        ('Advanced', 'Advanced'),
+    ]
+
+
     title = models.CharField(max_length=1000)
     description = models.TextField(default='', blank=True)
     game_schema = JSONField(default=dict, blank=True)
@@ -17,6 +24,7 @@ class Quest(SuperModel):
     unlocked_by = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='unblocks', on_delete=models.SET_NULL)
     cooldown_minutes = models.IntegerField(default=5)
     visible = models.BooleanField(default=True)
+    difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES)
 
     def __str__(self):
         """Return the string representation of this obj."""
@@ -33,6 +41,10 @@ class Quest(SuperModel):
         return '/static/'+self.game_metadata.get('enemy', {}).get('art', '').replace('svg', 'png')
 
     @property
+    def enemy_img_name(self):
+        return '/static/'+self.game_metadata.get('enemy', {}).get('title', '')
+
+    @property
     def background(self):
         backgrounds = [
             'camping',
@@ -46,6 +58,24 @@ class Quest(SuperModel):
     @property
     def success_count(self):
         return self.attempts.filter(success=True).count()
+
+    @property
+    def tags(self):
+        tags = [
+            self.difficulty,
+            "hard" if self.success_pct < 20 else ( "medium" if self.success_pct < 70 else "easy"),
+        ]
+        if (timezone.now() - self.created_on).days < 5:
+            tags.append('new')
+        if self.attempts.count() > 40:
+            tags.append('popular')
+
+        return tags
+
+
+    @property
+    def success_pct(self):
+        return round(self.success_count * 100 / self.attempts.count())
 
     def is_unlocked_for(self, user):
         if not self.unlocked_by:
@@ -75,7 +105,6 @@ class Quest(SuperModel):
         except:
             return None
 
-
     def is_within_cooldown_period(self, user):
         if not user.is_authenticated:
             return False
@@ -84,7 +113,11 @@ class Quest(SuperModel):
         is_completed = user.profile.quest_attempts.filter(success=False, quest=self, created_on__gt=(timezone.now() - timezone.timedelta(minutes=cooldown_period_mins))).exists()
         return is_completed
 
-        
+    def last_failed_attempt(self, user):
+        if not user.is_authenticated:
+            return False
+
+        return user.profile.quest_attempts.filter(success=False).order_by('-pk').first()
 
 
 class QuestAttempt(SuperModel):

@@ -3,6 +3,7 @@ import logging
 import random
 import re
 
+from django.conf import settings
 from django.contrib import messages
 from django.db.models import Count
 from django.http import Http404, JsonResponse
@@ -12,7 +13,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity
-from kudos.models import BulkTransferCoupon
+from kudos.models import BulkTransferCoupon, BulkTransferRedemption
 from kudos.views import get_profile
 from quests.models import Quest, QuestAttempt
 from ratelimit.decorators import ratelimit
@@ -40,8 +41,17 @@ def record_quest_activity(quest, associated_profile, event_name, override_create
 # Create your views here.
 def index(request):
 
-    quests = [(ele.is_unlocked_for(request.user), ele.is_beaten(request.user), ele.is_within_cooldown_period(request.user), ele) for ele in Quest.objects.filter(visible=True)]
+    quests = []
+    for diff in Quest.DIFFICULTIES:
+        quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True)
+        quest_package = [(ele.is_unlocked_for(request.user), ele.is_beaten(request.user), ele.is_within_cooldown_period(request.user), ele) for ele in quest_qs]
+        package = (diff[0], quest_package)
+        if quest_qs.exists():
+            quests.append(package)
+
+    kudos_to_show_per_leaderboard_entry = 5
     leaderboard = QuestAttempt.objects.filter(success=True).order_by('profile').values_list('profile__handle').annotate(amount=Count('quest', distinct=True)).order_by('-amount')
+    leaderboard = [[ele[0], ele[1], list(set([(_ele.coupon.token.img_url, _ele.coupon.token.humanized_name) for _ele in BulkTransferRedemption.objects.filter(coupon__tag='quest',redeemed_by__handle=ele[0]).order_by('-created_on')]))[:kudos_to_show_per_leaderboard_entry]] for ele in leaderboard]
     params = {
         'quests': quests,
         'leaderboard': leaderboard,
@@ -99,16 +109,28 @@ def details(request, obj_id, name):
                 did_win = can_continue and len(quest.questions) <= qn
                 if did_win:
                     record_quest_activity(quest, request.user.profile, 'beat_quest')
-                    btc = BulkTransferCoupon.objects.create(
+                    btcs = BulkTransferCoupon.objects.filter(
                         token=quest.kudos_reward,
-                        num_uses_remaining=1,
-                        num_uses_total=1,
-                        current_uses=0,
-                        secret=random.randint(10**19, 10**20),
-                        comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
-                        sender_profile=get_profile('gitcoinbot'),
-                        )
-                    prize_url = btc.url
+                        tag='quest',
+                        metadata__recipient=request.user.profile.pk)
+                    btc = None
+                    if btcs.exists():
+                        btc = btcs.first()
+                    else:
+                        btc = BulkTransferCoupon.objects.create(
+                            token=quest.kudos_reward,
+                            tag='quest',
+                            num_uses_remaining=1,
+                            num_uses_total=1,
+                            current_uses=0,
+                            secret=random.randint(10**19, 10**20),
+                            comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
+                            sender_profile=get_profile('gitcoinbot'),
+                            metadata={
+                                'recipient': request.user.profile.pk,
+                            },
+                            )
+                    prize_url = f"{btc.url}?tweet_url={settings.BASE_URL}{quest.url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
                     qa.success=True
                     qa.save()
 
@@ -123,21 +145,19 @@ def details(request, obj_id, name):
         print(e)
         pass
 
-    if quest.is_within_cooldown_period(request.user):
-        if request.user.is_staff:
-            messages.info(request, f'You are within this quest\'s {quest.cooldown_minutes} min cooldown period. Normally wed send you to another quest.. but..  since ur staff u can try it!')
-        else:
-            messages.info(request, f'You are within this quest\'s {quest.cooldown_minutes} min cooldown period. Try again later.')
-            return redirect('/quests');
-    elif quest.is_beaten(request.user):
-        if request.user.is_staff:
-            messages.info(request, 'You have beaten this quest.  Normally wed send you to another quest.. but.. since ur staff u can try it again!')
-        else:
-            messages.info(request, 'Youve already conquered this quest! Congrats.')
-            return redirect('/quests');
+    override_cooldown = request.user.is_staff and request.GET.get('force', False)
+    if quest.is_within_cooldown_period(request.user) and not override_cooldown:
+        cooldown_time_left = (timezone.now() - quest.last_failed_attempt(request.user).created_on).seconds
+        cooldown_time_left = round((quest.cooldown_minutes - cooldown_time_left/60),1)
+        messages.info(request, f'You are within this quest\'s {quest.cooldown_minutes} min cooldown period. Try again in {cooldown_time_left} mins.')
+        return redirect('/quests');
+
+    attempts = quest.attempts.filter(profile=request.user.profile) if request.user.is_authenticated else quest.attempts.none()
 
     params = {
         'quest': quest,
+        'attempt_count': attempts.count(),
+        'success_count': attempts.filter(success=True).count(),
         'hide_col': True,
         'body_class': 'quest_battle',
         'title': "Quest: " + quest.title + (f" (and win a *{quest.kudos_reward.humanized_name}* Kudos)" if quest.kudos_reward else ""),

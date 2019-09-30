@@ -23,9 +23,9 @@
 
 
 {% if not hidden and is_staff %}
-<div class="alpha-warning font-caption mb-0">
-  <span class="font-weight-bold">Staff only</span>
-  <a style="color:white;" href="{{quest.admin_url}}">{% trans "Quest Admin" %}</a>
+<div class="alpha-warning font-caption mb-0" style=" text-align: right;">
+  <span class="font-weight-bold">Staff only</span> |
+  <a style="color:white; margin-right: 20px;" href="{{quest.admin_url}}">{% trans "Quest Admin" %}</a>
 </div>
 {% endif %}
   <div id="breadcrumbs" class="mt-2 mb-2">
@@ -52,6 +52,8 @@
     {% include 'quests/shared/alts_to_characters.html' %}
     </div>
     <div id="protagonist" class="character bl ">
+      <img class="item orb" src="/static/v2/images/quests/orb-0.svg">
+      <img class="item staff" src="/static/v2/images/quests/staff.svg">
       <img src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
       <div class='info'>
         <h3>@{% if user and user.username %}{{ user.username }}{% else %}me{% endif %}</h3>
@@ -73,7 +75,19 @@
     </div>
     <div id="menu" class="br">
       <span>
+        <span>
+          Attempt #{{attempt_count}}
+        </span>
+        {% if success_count %}
+        <span>
+           |
+          Beaten {{success_count}} time{{success_count|pluralize}}
+        </span>
+        {% endif %}
+        <br>
+        {% if github_handle %}
         <a class="skip_intro" href="#">Skip Intro |</a>
+        {% endif %}
         <a class="music_toggle" href="#">Sound On 🎵</a>
       </span>
     </div>
@@ -88,6 +102,10 @@
       'img': '{{quest.kudos_reward.preview_img_url}}'
     };
     document.quest = {{quest_json|safe}};
+    document.attempts = {
+      'success_count': parseInt('{{success_count}}'),
+      'attempt_count': parseInt('{{attempt_count}}'),
+    };
     document.music_enabled = true;
   </script>
 {% endblock %}

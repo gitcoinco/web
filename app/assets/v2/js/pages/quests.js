@@ -6,9 +6,10 @@ var start_quiz = async function() {
   var should_continue = true;
 
   start_music_midi('boss-battle');
-  await sleep(100);
+  await sleep(1500);
 
   while (should_continue) {
+    orb_state(Math.min(question_number + 1, 4));
     document.submitted_answer = false;
     var answers = [];
 
@@ -113,7 +114,7 @@ var advance_to_state = async function(new_state) {
 
   // confirm
   if (new_state == 4) {
-    var sure = confirm('are you sure?  make sure you study up. if you fail the quest, you cannot try again until after the cooldown period (' + document.quest['cooldown_minutes'] + ') mins).');
+    var sure = confirm('are you sure?  make sure you study up. if you fail the quest, you cannot try again until after the cooldown period (' + document.quest['cooldown_minutes'] + ' mins).');
 
     if (!sure) {
       await $('#cta_button').removeClass('hidden').fadeIn();
@@ -248,6 +249,7 @@ var advance_to_state = async function(new_state) {
 };
 
 var death = async function() {
+  orb_state('dead');
   $('#protagonist .ded').removeClass('hidden');
   await $('#header').fadeOut();
   await $('#cta_button').fadeOut();
@@ -261,21 +263,12 @@ var death = async function() {
   await sleep(500);
   $('#protagonist').effect('explode');
   setInterval(function() {
-    var r = Math.random();
-
-    if (r < 0.3) {
-      $('#enemy').effect('shake');
-    } else if (r < 0.6) {
-      $('#enemy').effect('pulsate');
-    } else if (r < 0.8) {
-      $('#enemy').effect('bounce');
-    } else {
-      $('#enemy').effect('highlight');
-    }
+    random_taunt_effect($('#enemy'));
   }, 2000);
 };
 
 var winner = async function(prize_url) {
+  orb_state('final');
   $('#enemy .ded').removeClass('hidden');
   await $('#header').fadeOut();
   await $('#cta_button').fadeOut();
@@ -303,7 +296,21 @@ var start_quest = function() {
 };
 
 $(document).ready(function() {
+  // force the music to load
+  start_music_midi('boss-battle');
+  pause_music_midi('boss-battle');
+
+  $('.quest-card.available').click(function(e) {
+    e.preventDefault();
+    document.location.href = $(this).find('.btn').attr('href');
+  });
+  $('.quest-card.available').mouseover(function(e) {
+    random_attn_effect($(this).find('.btn'));
+  });
+
+
   $('#protagonist h3').html(trim_dots($('#protagonist h3').text(), 8));
+
   $(document).on('click', '.answer', function(e) {
     e.preventDefault();
     $(this).toggleClass('selected');
