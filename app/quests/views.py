@@ -20,6 +20,8 @@ from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
+x_frame_option = 'allow-from https://onemilliondevs.com/'
+
 def record_quest_activity(quest, associated_profile, event_name, override_created=None):
     kwargs = {
         'created_on': timezone.now() if not override_created else override_created,
@@ -140,7 +142,10 @@ def details(request, obj_id, name):
                 "did_win": did_win,
                 "prize_url": prize_url,
             }
-            return JsonResponse(response)
+            response = JsonResponse(response)
+            response['X-Frame-Options'] = x_frame_option
+            return response
+
     except Exception as e:
         print(e)
         pass
@@ -165,4 +170,6 @@ def details(request, obj_id, name):
         'card_desc': quest.description,
         'quest_json': quest.to_json_dict(exclude="questions"),
     }
-    return TemplateResponse(request, 'quests/quest.html', params)
+    response = TemplateResponse(request, 'quests/quest.html', params)
+    response['X-Frame-Options'] = x_frame_option
+    return response
