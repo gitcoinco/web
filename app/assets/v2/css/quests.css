@@ -217,6 +217,12 @@ body.quest_battle p{
   margin-top: 5px;
   text-decoration: underline;
 }
+.quest-card .card_head img{
+  filter: grayscale(100%);
+}
+.quest-card .card_head:hover img{
+  filter: grayscale(0%);
+}
 .quest-card.available:hover{
   background-color: #aea0df !important;
   cursor: pointer;
