@@ -308,9 +308,10 @@ $(document).ready(function() {
 
   $('.demo').click(function(e) {
     e.preventDefault();
-    $(this).fadeOut(function(){
+    $(this).fadeOut(function() {
       $('.demo').fadeIn();
       var src = $('.demo').attr('src') + '?';
+      
       $('.demo').attr('src', src);
     });
   });
