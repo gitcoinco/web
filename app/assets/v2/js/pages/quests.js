@@ -261,7 +261,7 @@ var death = async function() {
   await sleep(200);
   await $('#header').addClass('fail').fadeIn().html('You Lose - Try again in ' + document.quest['cooldown_minutes'] + ' mins. ');
   await sleep(500);
-  await $('#desc').html('<a href=/quests>More Quests &gt;&gt;</a>').fadeIn()
+  await $('#desc').html('<a href=/quests>More Quests &gt;&gt;</a>').fadeIn();
   await sleep(1000);
   $('#protagonist').effect('explode');
   setInterval(function() {
@@ -299,17 +299,20 @@ var start_quest = function() {
 
 $(document).ready(function() {
   // force the music to load
-  setTimeout(function(){
-    if(document.quest){
+  setTimeout(function() {
+    if (document.quest) {
       start_music_midi('boss-battle');
-      pause_music_midi('boss-battle');    
+      pause_music_midi('boss-battle');
     }
   }, 100);
 
   $('.demo').click(function(e) {
     e.preventDefault();
-    var src = $(this).attr('src') + "?";
-    $(this).attr('src', src);
+    $(this).fadeOut(function(){
+      $('.demo').fadeIn();
+      var src = $('.demo').attr('src') + '?';
+      $('.demo').attr('src', src);
+    });
   });
 
   $('.quest-card.available').click(function(e) {

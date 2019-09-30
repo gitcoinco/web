@@ -7,8 +7,10 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+
 from dashboard.models import Profile
 from kudos.models import BulkTransferCoupon, Token
+
 plaque_kudos = Token.objects.filter(Q(name__contains=name_contains)).filter(contract__network='mainnet')
 
 if do_create_airdrop_links_for_sponsors:
