@@ -113,7 +113,9 @@ body.quest_battle div,
 body.quest_battle p{
   color: white;
 }
-
+._hj_poll_container{
+  display: none;
+}
 .character .info p{
   padding: 5px 10px;
 }
@@ -140,7 +142,7 @@ body.quest_battle p{
 .quest-card .card_head img{
   filter: grayscale(100%);
 }
-.quest-card .card_head:hover img{
+.quest-card:hover .card_head img{
   filter: grayscale(0%);
 }
 

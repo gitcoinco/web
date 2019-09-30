@@ -156,7 +156,7 @@ def details(request, obj_id, name):
 
     params = {
         'quest': quest,
-        'attempt_count': attempts.count(),
+        'attempt_count': attempts.count() + 1,
         'success_count': attempts.filter(success=True).count(),
         'hide_col': True,
         'body_class': 'quest_battle',
