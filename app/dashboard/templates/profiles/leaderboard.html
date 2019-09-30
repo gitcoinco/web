@@ -1,0 +1,30 @@
+{% load i18n static avatar_tags humanize %}
+{% if not hidden %}
+
+<div class="tab-projects d-flex flex-column">
+  <h3>Leaderboard</h3>
+  {% if leaderboard|length == 0 %}
+    None Found
+  {% endif %}
+  {% for item in leaderboard %}
+    <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} pt-1 pb-1">
+      <div class="m-3" style="font-size: 2em; color: #bbb;">
+        {{ forloop.counter }}
+      </div>
+      <div class="activity-avatar ml-5">
+        <img height="72" width="72" class="avatar card-rating__avatar rounded-circle" src="{% avatar_url profile.handle %}"/>
+        <img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" style="margin-left: -30px; margin-top:30px;" src="{% avatar_url item.0 %}" />
+      </div>
+      <div class="tab-projects__item-details ml-5" style="width: 70%">
+        <div class="d-flex">
+          <h5 class="font-weight-semibold">@{{item.0}}</h5>&nbsp;
+        </div>
+          <a class="btn btn-gc-blue btn-sm " href="/profile/{{item.0}}">View Profile &gt;</a>
+          <div class="float-right">
+            {{item.1}} transaction{{item.1|pluralize}} / ${{item.2|floatformat:0|intcomma}}
+          </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}    

@@ -1,0 +1,22 @@
+{% load i18n static avatar_tags %}
+<div class="col-12 col-lg-6">
+  <div class="profile-header__stats profile-header__stats--contributor card mb-4">
+    <div class="card-header font-subheader">
+      {% if profile.activity_level %}
+        <b>{{ profile.activity_level }}</b>
+      {% else %}
+        <b>&nbsp;</b>
+      {% endif %}
+      {% trans "Activity Level" %}
+         <label id="tooltip" class="float-right mt-2">
+      <i class='fa fa-info-circle' title="How active this user has been on Gitcoin recently.
+        "></i>
+    </label>
+    </div>
+    <div class="card-body">
+      <ul>
+        {% include 'profiles/activity_stats.html' %}
+      </ul>
+    </div>
+  </div>
+</div>

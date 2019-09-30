@@ -886,7 +886,8 @@ const appendGithubSyncButton = function(result) {
         '/sync/get_issue_details?url=' + encodeURIComponent(result['github_url']) + '&token=' + currentProfile.githubToken
       ).then(function(result) {
         const payload = JSON.stringify({
-          issue_description: result.description
+          issue_description: result.description,
+          title: result.title
         });
 
         return $.post('/bounty/change/' + bountyId, payload).then(

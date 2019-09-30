@@ -88,7 +88,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <ol>
                 {% for phantom_fund in phantom_funds %}
                   <li style="padding: 5px; {% cycle 'background-color: #eeeeee;' '' %}">
-                    <a href={{ele.grant.url}}>{{phantom_fund.grant.title}}</a> for <strong>${{phantom_fund.value|floatformat:2}}</strong> + $<strong><span class="phantom_clr_increase">0</span></strong> in matching.
+                    <a href="{{phantom_fund.grant.url}}">{{phantom_fund.grant.title}}</a> for <strong>${{phantom_fund.value|floatformat:2}}</strong> + $<strong><span class="phantom_clr_increase{{phantom_fund.grant.id}}">0</span></strong> in matching.
                   </li>
                 {% endfor %}
                 </ol>
@@ -364,6 +364,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
       {% if phantom_funds %}
         const phantom_value = {{ phantom_funds.0.value }};
+        let clr_prediction_curve_per_grant = {};
+        {% for phantom_fund in phantom_funds %}
+        clr_prediction_curve_per_grant[{{ phantom_fund.grant.id }}] = {{ phantom_fund.grant.clr_prediction_curve }};
+        {% endfor %}
       {% else %}
         const phantom_value = 5;
       {% endif %}

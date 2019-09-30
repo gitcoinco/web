@@ -15,20 +15,30 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static avatar_tags %}
+<div class="col-12 col-lg-2">
+  &nbsp;
+</div>
 <div class="col-12 col-lg-4">
   <div class="profile-header__stats profile-header__stats--contributor card mb-4">
     <div class="card-header font-subheader">
-      {% if scoreboard_position_org %}
-        <b>#{{ scoreboard_position_org }}</b> 
-      {% else %}
-        <b>&nbsp;</b> 
-      {% endif %}
-      {% trans "Organization" %}
+      {% include "profiles/rank_tooltip.html" with name="Organization" %}
+      <b>{{ profile.rank_org }}</b> 
+      {% trans "OrganizationRank" %}
     </div>
     <div class="card-body font-subheader">
       <ul>
-        <li><b>{{ count_bounties_on_repo }}</b> {% trans "bounties" %}</li>
-        <li><b>{{ sum_eth_on_repos|floatformat:2 }}</b> {% trans "ETH" %}</li>
+        <li><b>{{ count_bounties_on_repo }}</b> {% trans "Bounties" %}</li>
+        <li><b>{{ sum_eth_on_repos|floatformat:2 }}</b> {% trans "ETH" %} Spent</li>
+        <li>
+        {% if scoreboard_position_org %}
+          <li>
+            <b>#{{ scoreboard_position_org }}</b>
+            {% trans "On Leaderboard" %}
+          <a style="font-size: 12px; color: black; text-decoration: underline;" href="{% url 'leaderboard' orgs %}">(View)</a>
+          </li>
+          {% endif %}
+        </li>
+
         <li class="works_with_list">
           {% if works_with_org|length %}
             <span class="font-body"><i class="fa fa-code"></i> {% trans "Contributors" %}:</span>
@@ -47,4 +57,5 @@
       </ul>
     </div>
   </div>
+  {% include "profiles/activity_stats.html" %}
 </div>

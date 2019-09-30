@@ -1,0 +1,86 @@
+{% load i18n static avatar_tags %}
+<div class="col-12 col-lg-6">
+  <div class="row">
+    <div class="col-12 col-lg-6">
+      <div class="profile-header__stats profile-header__stats--contributor card mb-4">
+        <div class="card-header font-subheader">
+          <b>{{ profile.rank_coder }}</b>
+          {% trans "ContributorRank" %}
+          {% include "profiles/rank_tooltip.html" with name="Contributor" %}
+        </div>
+        <div class="card-body">
+          <ul>
+            {% if is_my_profile %}
+              <li>
+                Persona: <b>Contributor</b>   <a id="rank_link" href="javascript:show_persona_modal();">(Toggle)</a>
+              </li>
+            {% endif %}
+            <li>
+              <b>{{ earnings_count }}</b> Transaction{{earnings_count|pluralize}}
+             <a href="#" style="color: black; text-decoration: underline; font-size: 12px;" data-toggle="collapse" data-target="#tx_details">(Details)
+             </a>
+            </li>
+            <div id="tx_details" class="collapse">
+              <li>
+                - <b>{{ count_bounties_completed }}</b>
+                Bounties Completed
+              </li>
+              {% if no_times_been_removed %}
+                <li>
+                  - {% trans "Removed From" %}
+                  <b>{{ no_times_been_removed }}</b>
+                  {% trans "Bounties" %}
+                </li>
+              {% endif %}
+              <li>
+                - <b>{{ hackathons_participated_in }}</b> Hackathon{{hackathons_participated_in|pluralize}} participated
+              </li>
+              <li>
+                - <b>{{ total_tips_received }}</b>
+                Tip{{total_tips_received|pluralize}} received
+              </li>
+              <li>
+                - <b>{{ total_kudos_received_count }}</b>
+                Kudo{{total_kudos_received_count|pluralize}} received
+              </li>
+              <li>
+                - <b>{{ total_grant_created }}</b>
+                Grant{{total_grant_created|pluralize}} created
+              </li> 
+            </div>
+            <li>
+              <b>${{ earnings_total }}</b>
+              {% trans "Earned" %}
+            </li>
+            {% if scoreboard_position_contributor %}
+            <li>
+              <b>#{{ scoreboard_position_contributor }}</b>
+              {% trans "On Leaderboard" %}
+              <a style="font-size: 12px; color: black; text-decoration: underline;" href="{% url 'leaderboard' link %}">(View)</a>
+            </li>
+            {% endif %}
+            <li class="works_with_list">
+              {% if works_with_collected|length %}
+                <span class="font-body"><i class="fa fa-code"></i> Contributes To:</span>
+                {% for profile, num_times in works_with_collected.items %}
+                  {% if forloop.counter < 6 %}
+                    <a href="{% url 'profile' profile %} ">
+                      <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                    </a>
+                  {% endif %}
+                {% endfor %}
+                {% if works_with_collected|length > 5 %}
+                  <div href="" class="plus-img" data-container="body" data-toggle="popover" data-template='<div class="popover big-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>' data-html="true" data-placement="bottom" data-trigger="hover click" data-content='{% for profile, num_times in works_with_collected.items %}<a href="{% url "profile" profile %}"><img class="rounded-circle m-1" width="30" height="30" title="{{profile}}: {{ num_times }} times" src="{% avatar_url profile %}"/></a>{% endfor %}'><span>+{{works_with_collected|length|add:"-5"}}</span></div>
+                {% endif %}
+              {% endif %}
+            </li>
+          </ul>
+          <div class="tag-list mt-1">
+            {% for keyword in profile.keywords %}
+              <small class="tag-list__item">{{keyword}}</small>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include "profiles/activity_level.html"%}

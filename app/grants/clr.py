@@ -293,6 +293,9 @@ def predict_clr(random_data=False, save_to_db=False):
         if save_to_db:
             grant.clr_prediction_curve = list(zip(potential_donations, potential_clr))
             grant.save()
+            base = grant.clr_prediction_curve[0][1]
+            grant.clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in grant.clr_prediction_curve ]
+            grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
     return debug_output

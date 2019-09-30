@@ -65,28 +65,32 @@
           </p>
         </div>
       [[/if]]
-      <div class="tag token">
-        <p>
-          [[:rounded_amount]]
-          <span>[[:token_name]]</span>
-          [[if tokens]]
-            <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i>
-            <img class="m-0" style="position: relative; top: -2px;" src="{% static 'v2/images/coin.svg' %}">
-          [[/if]]
-        </p>
-        [[if tokens ]]
-          <button class="btn-expand-token" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">
-            {% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i>
-          </button>
-        [[/if]]
-      </div>
-      [[if value_in_usdt]]
-        <div class="tag usd">
+      [[if rounded_amount <= 0.001]]
+        <div class="tag token"><span>See Prize</span></div>
+      [[else]]
+        <div class="tag token">
           <p>
-            [[:value_in_usdt]]
-            <span>USD</span>
+            [[:rounded_amount]]
+            <span>[[:token_name]]</span>
+            [[if tokens]]
+              <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i>
+              <img class="m-0" style="position: relative; top: -2px;" src="{% static 'v2/images/coin.svg' %}">
+            [[/if]]
           </p>
+          [[if tokens ]]
+            <button class="btn-expand-token" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">
+              {% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i>
+            </button>
+          [[/if]]
         </div>
+        [[if value_in_usdt]]
+          <div class="tag usd">
+            <p>
+              [[:value_in_usdt]]
+              <span>USD</span>
+            </p>
+          </div>
+        [[/if]]
       [[/if]]
     </div>
   </div>

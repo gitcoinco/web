@@ -1,0 +1,92 @@
+{% extends 'quests/base.html' %}
+{% load humanize static i18n %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% block 'content' %}
+<script type='text/javascript' src='//www.midijs.net/lib/midi.js'></script>
+<link rel="stylesheet" href="{% static 'v2/css/jquery-ui.css' %}" />
+
+
+{% if not hidden and is_staff %}
+<div class="alpha-warning font-caption mb-0">
+  <span class="font-weight-bold">Staff only</span>
+  <a style="color:white;" href="{{quest.admin_url}}">{% trans "Quest Admin" %}</a>
+</div>
+{% endif %}
+  <div id="breadcrumbs" class="mt-2 mb-2">
+    <a href=/quests>Quests</a> &gt;&gt; <a href={{quest.url}}>{{quest.title}}</a>
+  </div>
+  <div id="gameboard">
+    <div id="background" style="background: url('/static/v2/images/quests/{{quest.background}}.png') no-repeat;">
+      &nbsp;
+    </div>
+    <div id="enemy" class="character tr hidden">
+      <img src="/static/{{quest.game_metadata.enemy.art}}">
+      <div class='info'>
+        <h3>{{quest.game_metadata.enemy.title}}</h3>
+        <p>Level {{quest.game_metadata.enemy.level}} Opponent</p>
+      </div>
+    {% include 'quests/shared/alts_to_characters.html' %}
+    </div>
+    <div id="helpful_guide" class="character tr">
+      <img src="/static/v2/images/quests/enemies/helpful_guide.svg">
+      <div class='info'>
+        <h3>@guide</h3>
+        <p>Your Quests Conceirge</p>
+      </div>
+    {% include 'quests/shared/alts_to_characters.html' %}
+    </div>
+    <div id="protagonist" class="character bl ">
+      <img src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+      <div class='info'>
+        <h3>@{% if user and user.username %}{{ user.username }}{% else %}me{% endif %}</h3>
+        <p>Level 1 Etherean</p>
+      </div>
+      {% include 'quests/shared/alts_to_characters.html' %}
+    </div>
+
+    <div id="header" class="cen">
+    </div>
+    <div id="desc" class="cen hidden">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed vulputate odio ut enim blandit volutpat maecenas volutpat blandit. Nunc mi ipsum faucibus vitae aliquet nec. Risus nec feugiat in fermentum posuere urna nec tincidunt praesent. Ultrices sagittis orci a scelerisque purus semper eget duis. Massa id neque aliquam vestibulum morbi blandit cursus risus at. Consectetur adipiscing elit duis tristique sollicitudin nibh sit. Est ultricies integer quis auctor. Amet justo donec enim diam vulputate. Id nibh tortor id aliquet lectus proin. Semper quis lectus nulla at volutpat diam ut venenatis tellus. Lacus viverra vitae congue eu. Eget mi proin sed libero enim sed. Libero enim sed faucibus turpis in eu. Sed risus ultricies tristique nulla aliquet enim tortor at auctor. Sed cras ornare arcu dui vivamus arcu felis bibendum.
+
+
+    </div>
+    <div id="cta_button" class="cen">
+      <a class="button" href="#">Enter Quest 🏔</a>
+      <p>(Spacebar or Enter)</p>
+    </div>
+    <div id="menu" class="br">
+      <span>
+        <a class="button button_sm skip_intro" href="#">Skip Intro</a>
+        <a class="button button_sm music_toggle" href="#">Sound On 🎵</a>
+      </span>
+    </div>
+    <div id="timer" class="br hidden">
+      10:00
+    </div>
+
+  </div>
+  <script>
+    document.kudos_reward = {
+      'name': '{{quest.kudos_reward.ui_name}}',
+      'img': '{{quest.kudos_reward.preview_img_url}}'
+    };
+    document.quest = {{quest_json|safe}};
+    document.music_enabled = true;
+  </script>
+{% endblock %}

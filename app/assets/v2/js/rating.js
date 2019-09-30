@@ -14,6 +14,7 @@ const ratingModal = (bountyId, receiver, elem) => {
     $('#modalRating').bootstrapModal('show');
     $('[data-toggle="tooltip"]').bootstrapTooltip();
     $('input[name="review[rating]"]').filter('[value="' + elem.val() + '"]').prop('checked', true);
+    $('input[name="review[public]"]').filter('[value="' + elem.val() + '"]').prop('checked', true);
 
     $('#ratingForm').on('submit', function(e) {
       e.preventDefault();
