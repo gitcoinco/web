@@ -3,6 +3,7 @@ import logging
 import random
 import re
 
+from django.conf import settings
 from django.contrib import messages
 from django.db.models import Count
 from django.http import Http404, JsonResponse
@@ -18,6 +19,7 @@ from quests.models import Quest, QuestAttempt
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
+
 
 def record_quest_activity(quest, associated_profile, event_name, override_created=None):
     kwargs = {
@@ -129,7 +131,7 @@ def details(request, obj_id, name):
                                 'recipient': request.user.profile.pk,
                             },
                             )
-                    prize_url = btc.url
+                    prize_url = f"{btc.url}?tweet_url={settings.BASE_URL}{quest.url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
                     qa.success=True
                     qa.save()
 
@@ -144,7 +146,8 @@ def details(request, obj_id, name):
         print(e)
         pass
 
-    if quest.is_within_cooldown_period(request.user):
+    override_cooldown = request.user.is_staff and request.GET.get('force', False)
+    if quest.is_within_cooldown_period(request.user) and not override_cooldown:
         cooldown_time_left = (timezone.now() - quest.last_failed_attempt(request.user).created_on).seconds
         cooldown_time_left = round((quest.cooldown_minutes - cooldown_time_left/60),1)
         messages.info(request, f'You are within this quest\'s {quest.cooldown_minutes} min cooldown period. Try again in {cooldown_time_left} mins.')

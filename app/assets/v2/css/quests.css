@@ -59,6 +59,22 @@
 .character{
   text-align: center;
 }
+.character img.item{
+  border: none !important;
+  position: absolute;
+}
+.character img.orb{
+  width: 70px;
+  height: 70px;
+  bottom: 160px;
+  left: 63px;
+}
+.character img.staff{
+  width: 59px;
+  height: 122px;
+  bottom: 60px;
+  left: 106px;
+}
 .character h3{
   font-weight: 900;
   background-color: #666;

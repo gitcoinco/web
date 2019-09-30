@@ -9,6 +9,7 @@ var start_quiz = async function() {
   await sleep(1500);
 
   while (should_continue) {
+    orb_state(Math.min(question_number + 1, 4));
     document.submitted_answer = false;
     var answers = [];
 
@@ -248,6 +249,7 @@ var advance_to_state = async function(new_state) {
 };
 
 var death = async function() {
+  orb_state('dead');
   $('#protagonist .ded').removeClass('hidden');
   await $('#header').fadeOut();
   await $('#cta_button').fadeOut();
@@ -266,6 +268,7 @@ var death = async function() {
 };
 
 var winner = async function(prize_url) {
+  orb_state('final');
   $('#enemy .ded').removeClass('hidden');
   await $('#header').fadeOut();
   await $('#cta_button').fadeOut();

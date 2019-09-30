@@ -42,7 +42,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 </div>
 <div class="row indent_on_mobile available_quests">
   {% for difficulty_level, the_quests in quests%}
-  <h1 class="mt-3">{{difficulty_level}} Quests</h1>
+  <h1 class="mt-3">{{difficulty_level}} Quests <span id="alpha">Alpha</span></h1>
   <div>
     {% for unlocked, beaten, cooldown, quest in the_quests %}
     <div style="{% cycle 'background-color: #fafafa;' '' %}; width: 250px; display: block; float: left; border-radius: 10px; height: 490px; text-align: center;" class="m-3 p-2 quest-card {%if not unlocked%}locked{%elif beaten%}beaten{%else%}available{%endif%} {%if cooldown%}cooldown{%endif%}">

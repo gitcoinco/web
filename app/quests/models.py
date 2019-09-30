@@ -41,6 +41,10 @@ class Quest(SuperModel):
         return '/static/'+self.game_metadata.get('enemy', {}).get('art', '').replace('svg', 'png')
 
     @property
+    def enemy_img_name(self):
+        return '/static/'+self.game_metadata.get('enemy', {}).get('title', '')
+
+    @property
     def background(self):
         backgrounds = [
             'camping',

@@ -52,6 +52,8 @@
     {% include 'quests/shared/alts_to_characters.html' %}
     </div>
     <div id="protagonist" class="character bl ">
+      <img class="item orb" src="/static/v2/images/quests/orb-0.svg">
+      <img class="item staff" src="/static/v2/images/quests/staff.svg">
       <img src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
       <div class='info'>
         <h3>@{% if user and user.username %}{{ user.username }}{% else %}me{% endif %}</h3>

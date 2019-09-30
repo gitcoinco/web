@@ -134,6 +134,10 @@ var pause_music_midi = function(name) {
   }
   MIDIjs.pause();
 };
+var orb_state = function(state) {
+  var src = "/static/v2/images/quests/orb-"+state+".svg";
+  $("img.orb").attr('src', src);
+};
 
 $(document).ready(function() {
 
