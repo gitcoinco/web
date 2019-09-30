@@ -23,9 +23,9 @@
 
 
 {% if not hidden and is_staff %}
-<div class="alpha-warning font-caption mb-0">
-  <span class="font-weight-bold">Staff only</span>
-  <a style="color:white;" href="{{quest.admin_url}}">{% trans "Quest Admin" %}</a>
+<div class="alpha-warning font-caption mb-0" style=" text-align: right;">
+  <span class="font-weight-bold">Staff only</span> |
+  <a style="color:white; margin-right: 20px;" href="{{quest.admin_url}}">{% trans "Quest Admin" %}</a>
 </div>
 {% endif %}
   <div id="breadcrumbs" class="mt-2 mb-2">
@@ -81,9 +81,11 @@
            |
           Beaten {{success_count}} time{{success_count|pluralize}}
         </span>
-        <br>
         {% endif %}
+        <br>
+        {% if github_handle %}
         <a class="skip_intro" href="#">Skip Intro |</a>
+        {% endif %}
         <a class="music_toggle" href="#">Sound On 🎵</a>
       </span>
     </div>

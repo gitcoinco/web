@@ -48,16 +48,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div style="{% cycle 'background-color: #fafafa;' '' %}; width: 250px; display: block; float: left; border-radius: 10px; height: 490px; text-align: center;" class="m-3 p-2 quest-card {%if not unlocked%}locked{%elif beaten%}beaten{%else%}available{%endif%} {%if cooldown%}cooldown{%endif%}">
       <div class="card_head">
         <span class="boss">#boss</span>
-        <img class="card_img boss" src="/static/{{quest.game_metadata.enemy.art}}">
+        <img class="card_img boss" src="/static/{{quest.game_metadata.enemy.art}}" title="{{quest.game_metadata.enemy.title}}">
         <span class="reward">#prize</span>
-        <img class="card_img reward" src="{{quest.kudos_reward.img_url}}">
+        <img class="card_img reward" src="{{quest.kudos_reward.img_url}}" title="{{quest.kudos_reward.humanized_name}} Kudos">
       </div>
       <div style="background-color: #eee; border-top: 3px solid #bbb; border-radius: 5px;" class="pr-3 pt-3 pl-3 pb-1 mt-3">
         <span style="position: relative; top: -50px; font-size: 30px;">
-          {%if beaten%}
-          ✅
-          {%elif cooldown%}
+          {%if cooldown%}
           🥶
+          {%elif beaten%}
+          ✅
           {%elif unlocked%}
           🔐
           {%else%}
@@ -71,22 +71,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </a>
         <ul class='tags mb-1'>
           {% for tag in quest.tags %} 
-            <li>{{tag|title}}</li>
+            <li>#{{tag|lower}}</li>
           {% endfor %}
         </ul>
         <p style="color: #222; font-size: 11px; margin-bottom: 3px;"><strong>{{quest.attempts.count}}</strong> Attempts | Beaten <strong>{{quest.success_pct}}%</strong> Attempts </p>
-        <p style="color: #222; font-size: 11px; margin-bottom: 3px;">Prize: <a style="color: black; font-weight:bold; text-decoration: underline;" href="{{quest.kudos_reward.url}}">{{quest.kudos_reward.humanized_name}} Kudos</a> </p>
         <p class="desc" style=" max-height: 90px; overflow-y: scroll; font-size: 10px; border-top: 1px solid #333;">{{quest.description}}</p>
       </div>
       <div>
         <br>
       </div>
       {%if beaten%}
-      ( ✅ You've already beaten this quest)
+      ( ✅ Quest Beaten)
       {%elif cooldown%}
-      ( 🥶 Try again after the cooldown period)
+      ( 🥶 In Cooldown Period)
       {%elif unlocked%}
       <a style="position: relative; bottom: 20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Accept Quest</a>
+        <p style="color: #777; font-size: 10px; margin-bottom: 3px;"><a style="color: #555555; text-decoration: underline;" href="{{quest.kudos_reward.url}}">View Prize: {{quest.kudos_reward.humanized_name}} Kudos</a> </p>
       {%else%}
       🔒Locked Until <a href="{{quest.unlocked_by.url}}">{{quest.unlocked_by.title}}</a> is beaten.
       {%endif%}

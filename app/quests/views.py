@@ -108,16 +108,27 @@ def details(request, obj_id, name):
                 did_win = can_continue and len(quest.questions) <= qn
                 if did_win:
                     record_quest_activity(quest, request.user.profile, 'beat_quest')
-                    btc = BulkTransferCoupon.objects.create(
+                    btcs = BulkTransferCoupon.objects.filter(
                         token=quest.kudos_reward,
                         tag='quest',
-                        num_uses_remaining=1,
-                        num_uses_total=1,
-                        current_uses=0,
-                        secret=random.randint(10**19, 10**20),
-                        comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
-                        sender_profile=get_profile('gitcoinbot'),
-                        )
+                        metadata__recipient=request.user.profile.pk)
+                    btc = None
+                    if btcs.exists():
+                        btc = btcs.first()
+                    else:
+                        btc = BulkTransferCoupon.objects.create(
+                            token=quest.kudos_reward,
+                            tag='quest',
+                            num_uses_remaining=1,
+                            num_uses_total=1,
+                            current_uses=0,
+                            secret=random.randint(10**19, 10**20),
+                            comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
+                            sender_profile=get_profile('gitcoinbot'),
+                            metadata={
+                                'recipient': request.user.profile.pk,
+                            },
+                            )
                     prize_url = btc.url
                     qa.success=True
                     qa.save()
@@ -139,7 +150,7 @@ def details(request, obj_id, name):
         messages.info(request, f'You are within this quest\'s {quest.cooldown_minutes} min cooldown period. Try again in {cooldown_time_left} mins.')
         return redirect('/quests');
 
-    attempts = quest.attempts.filter(profile=request.user.profile)
+    attempts = quest.attempts.filter(profile=request.user.profile) if request.user.is_authenticated else quest.attempts.none()
 
     params = {
         'quest': quest,

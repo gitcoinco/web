@@ -6,7 +6,7 @@ var start_quiz = async function() {
   var should_continue = true;
 
   start_music_midi('boss-battle');
-  await sleep(100);
+  await sleep(1500);
 
   while (should_continue) {
     document.submitted_answer = false;
@@ -294,6 +294,11 @@ var start_quest = function() {
 
 $(document).ready(function() {
   
+
+  // force the music to load
+  start_music_midi('boss-battle');
+  pause_music_midi('boss-battle');
+
   $('.quest-card.available').click(function(e) {
     e.preventDefault();
     document.location.href = $(this).find('.btn').attr('href');
