@@ -75,7 +75,10 @@ class Quest(SuperModel):
 
     @property
     def success_pct(self):
-        return round(self.success_count * 100 / self.attempts.count())
+        attempts = self.attempts.count()
+        if not attempts:
+            return 0
+        return round(self.success_count * 100 / attempts)
 
     def is_unlocked_for(self, user):
         if not self.unlocked_by:
