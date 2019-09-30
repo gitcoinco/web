@@ -134,20 +134,17 @@ def details(request, obj_id, name):
         pass
 
     if quest.is_within_cooldown_period(request.user):
-        if request.user.is_staff:
-            messages.info(request, f'You are within this quest\'s {quest.cooldown_minutes} min cooldown period. Normally wed send you to another quest.. but..  since ur staff u can try it!')
-        else:
-            messages.info(request, f'You are within this quest\'s {quest.cooldown_minutes} min cooldown period. Try again later.')
-            return redirect('/quests');
-    elif quest.is_beaten(request.user):
-        if request.user.is_staff:
-            messages.info(request, 'You have beaten this quest.  Normally wed send you to another quest.. but.. since ur staff u can try it again!')
-        else:
-            messages.info(request, 'Youve already conquered this quest! Congrats.')
-            return redirect('/quests');
+        cooldown_time_left = (timezone.now() - quest.last_failed_attempt(request.user).created_on).seconds
+        cooldown_time_left = round((quest.cooldown_minutes - cooldown_time_left/60),1)
+        messages.info(request, f'You are within this quest\'s {quest.cooldown_minutes} min cooldown period. Try again in {cooldown_time_left} mins.')
+        return redirect('/quests');
+
+    attempts = quest.attempts.filter(profile=request.user.profile)
 
     params = {
         'quest': quest,
+        'attempt_count': attempts.count(),
+        'success_count': attempts.filter(success=True).count(),
         'hide_col': True,
         'body_class': 'quest_battle',
         'title': "Quest: " + quest.title + (f" (and win a *{quest.kudos_reward.humanized_name}* Kudos)" if quest.kudos_reward else ""),

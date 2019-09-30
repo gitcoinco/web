@@ -1,3 +1,56 @@
+.card_head {
+  height: 140px;
+}
+.card_head span{
+  background-color: #e7f0fa;
+  color: var(--gc-blue);
+  font-size: 10px;
+  display: inline-block;
+  list-style: none;
+  padding: 5px;
+  transform: rotate(-15deg);
+  position: relative;
+}
+.card_head span.reward{
+  top: -45px;
+  left: -75px;
+  z-index: 999;
+}
+.card_head span.boss{
+  top: -50px;
+  left: -20px;
+  z-index: 999;
+}
+.card_img{
+  height: 120px; 
+  width: 120px;
+  margin: 0px auto;
+  margin-bottom: 20px;
+  position: relative;
+}
+.card_img.reward{
+  width: 110px;
+  top: -120px;
+  right: -50px;
+}
+.card_img.boss{
+  top: 0px;
+  left: -50px;
+}
+.tags{
+  text-align: center;
+  margin-left: 0px;
+  padding-left: 0px;
+}
+.tags li{
+  background-color: #e7f0fa;
+  color: var(--gc-blue);
+  font-size: 10px;
+  display: inline-block;
+  list-style: none;
+  padding: 5px;
+}
+
 #quests_logo{
   margin-top: 10px;
   margin-left: -30px;
@@ -298,10 +351,10 @@ body.quest_battle .bottom_notification{
   color: red;
 }
 
-.quest-card.beaten div{
+.quest-card.beaten div.pt-3{
   background-color: #c0eec0 !important;
 }
-.quest-card.cooldown div{
+.quest-card.cooldown div.pt-3{
   background-color: #aad4e5 !important;
 }
 #protagonist .flair div{

@@ -55,6 +55,24 @@ class Quest(SuperModel):
     def success_count(self):
         return self.attempts.filter(success=True).count()
 
+    @property
+    def tags(self):
+        tags = [
+            self.difficulty,
+            "hard" if self.success_pct < 20 else ( "medium" if self.success_pct < 70 else "easy"),
+        ]
+        if (timezone.now() - self.created_on).days < 5:
+            tags.append('new')
+        if self.attempts.count() > 40:
+            tags.append('popular')
+
+        return tags
+
+
+    @property
+    def success_pct(self):
+        return round(self.success_count * 100 / self.attempts.count())
+
     def is_unlocked_for(self, user):
         if not self.unlocked_by:
             return True
@@ -83,7 +101,6 @@ class Quest(SuperModel):
         except:
             return None
 
-
     def is_within_cooldown_period(self, user):
         if not user.is_authenticated:
             return False
@@ -92,7 +109,11 @@ class Quest(SuperModel):
         is_completed = user.profile.quest_attempts.filter(success=False, quest=self, created_on__gt=(timezone.now() - timezone.timedelta(minutes=cooldown_period_mins))).exists()
         return is_completed
 
-        
+    def last_failed_attempt(self, user):
+        if not user.is_authenticated:
+            return False
+
+        return user.profile.quest_attempts.filter(success=False).order_by('-pk').first()
 
 
 class QuestAttempt(SuperModel):

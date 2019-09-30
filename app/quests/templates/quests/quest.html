@@ -73,6 +73,16 @@
     </div>
     <div id="menu" class="br">
       <span>
+        <span>
+          Attempt #{{attempt_count}}
+        </span>
+        {% if success_count %}
+        <span>
+           |
+          Beaten {{success_count}} time{{success_count|pluralize}}
+        </span>
+        <br>
+        {% endif %}
         <a class="skip_intro" href="#">Skip Intro |</a>
         <a class="music_toggle" href="#">Sound On 🎵</a>
       </span>
@@ -88,6 +98,10 @@
       'img': '{{quest.kudos_reward.preview_img_url}}'
     };
     document.quest = {{quest_json|safe}};
+    document.attempts = {
+      'success_count': parseInt('{{success_count}}'),
+      'attempt_count': parseInt('{{attempt_count}}'),
+    };
     document.music_enabled = true;
   </script>
 {% endblock %}
