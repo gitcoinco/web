@@ -1,3 +1,7 @@
+.demo {
+  max-width: 600px;
+  cursor: pointer;
+}
 .card_head {
   height: 140px;
 }
@@ -438,6 +442,9 @@ body.quest_battle{
   background-color: black;
 }
 @media (max-width: 1110px) {
+  .demo{
+    width: 400px;
+  }
   .tr{
     position: absolute;
     top: 20px;
@@ -504,11 +511,17 @@ body.quest_battle{
   }
 }
 @media (max-width: 900px) {
+  .demo{
+    width: 300px;
+  }  
   .back_gradient {
     background-size: 100% 400px !important;
   }
 }
 @media (max-width: 768px) {
+  .demo{
+    width: 500px;
+  }  
   .row.indent_on_mobile{
     margin-left: 20%;
   }

@@ -259,8 +259,10 @@ var death = async function() {
   await sleep(500);
   await $('.prize').effect('explode');
   await sleep(200);
-  await $('#header').addClass('fail').fadeIn().html('You Lose');
+  await $('#header').addClass('fail').fadeIn().html('You Lose - Try again in ' + document.quest['cooldown_minutes'] + ' mins. ');
   await sleep(500);
+  await $('#desc').html('<a href=/quests>More Quests &gt;&gt;</a>').fadeIn()
+  await sleep(1000);
   $('#protagonist').effect('explode');
   setInterval(function() {
     random_taunt_effect($('#enemy'));
@@ -297,8 +299,18 @@ var start_quest = function() {
 
 $(document).ready(function() {
   // force the music to load
-  start_music_midi('boss-battle');
-  pause_music_midi('boss-battle');
+  setTimeout(function(){
+    if(document.quest){
+      start_music_midi('boss-battle');
+      pause_music_midi('boss-battle');    
+    }
+  }, 100);
+
+  $('.demo').click(function(e) {
+    e.preventDefault();
+    var src = $(this).attr('src') + "?";
+    $(this).attr('src', src);
+  });
 
   $('.quest-card.available').click(function(e) {
     e.preventDefault();
