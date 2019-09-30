@@ -137,6 +137,13 @@ body.quest_battle p{
 .quest-card.locked img{
   filter: grayscale(1);
 }
+.quest-card .card_head img{
+  filter: grayscale(100%);
+}
+.quest-card .card_head:hover img{
+  filter: grayscale(0%);
+}
+
 #leaderboard img {
   height: 80px;
   width: 80px;
@@ -216,12 +223,6 @@ body.quest_battle p{
 #desc li{
   margin-top: 5px;
   text-decoration: underline;
-}
-.quest-card .card_head img{
-  filter: grayscale(100%);
-}
-.quest-card .card_head:hover img{
-  filter: grayscale(0%);
 }
 .quest-card.available:hover{
   background-color: #aea0df !important;
