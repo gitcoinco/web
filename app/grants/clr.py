@@ -23,6 +23,7 @@ import json
 import math
 from itertools import combinations
 
+from django.utils import timezone
 from grants.models import Contribution, Grant, PhantomFunding
 from perftools.models import JSONStore
 
@@ -302,8 +303,8 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None):
                 data=grant.clr_prediction_curve,
                 )
             print(len(contrib_data), grant.clr_prediction_curve)
-            if from_date > (timezone.now() - timezone.timedelta(hours=1))
-            grant.save()
+            if from_date > (timezone.now() - timezone.timedelta(hours=1)):
+                grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
     return debug_output
