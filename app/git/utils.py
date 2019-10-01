@@ -594,7 +594,6 @@ def get_interested_actions(github_url, username, email=''):
 def get_user(user, sub_path='', scope='', auth=_AUTH):
     """Get the github user details."""
     if scope is not '':
-        print(scope)
         url = f'https://api.github.com/user/{scope}'
     else:
         user = user.replace('@', '')

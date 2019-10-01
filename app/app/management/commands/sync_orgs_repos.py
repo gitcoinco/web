@@ -63,73 +63,77 @@ class Command(BaseCommand):
                     if profile.organizations is None:
                         print("no organizations to sync")
                         return []
+
+                    print(profile.organizations)
                     for org in profile.organizations:
-                        if org in orgs_synced:
-                            continue
-
-                        orgs_synced.append(org)
-                        db_org = Organization.objects.get_or_create(name=org)[0]
-
-                        print(f'Syncing Organization: {db_org.name}')
-                        profile.profile_organizations.add(db_org)
-                        org_members = get_organization(
-                            db_org.name,
-                            '/members'
-                        )
-
-                        if 'message' in org_members:
-                            print(org_members['message'])
-                            continue
-
-                        for member in org_members:
-
-                            try:
-
-                                member_profile_obj = Profile.objects.get(
-                                    handle=member['login'],
-                                    user__is_active=True
-                                )
-                                membership = get_organization(
-                                    db_org.name,
-                                    f'/memberships/{member["login"]}'
-                                )
-                                role = membership['role'] if not None else "member"
-                                db_group = Group.objects.get_or_create(name=f'{db_org.name}-role-{role}')[0]
-                                db_org.groups.add(db_group)
-                                member_profile_obj.user.groups.add(db_group)
-                                members_to_sync.append(member['login'])
-                                lsynced = recursive_sync(lsynced, member['login'])
-                            except Exception as e:
-                                print(f'Profile for Github Handle does not exist: {member["login"]}')
+                        try:
+                            print(org)
+                            if org in orgs_synced:
+                                print(f'{org} has been synced already')
                                 continue
 
-                        org_repos = get_organization(
-                            db_org.name,
-                            '/repos'
-                        )
+                            orgs_synced.append(org)
+                            db_org = Organization.objects.get_or_create(name=org)[0]
 
-                        if 'message' in org_repos:
-                            print(org_repos['message'])
-                            continue
-
-                        for repo in org_repos:
-                            db_repo = Repo.objects.get_or_create(name=repo['name'])[0]
-                            db_org.repos.add(db_repo)
-                            print(db_org)
-                            print(f'Syncing Repo: {db_repo.name}')
-                            repo_collabs = get_repo(
-                                repo['full_name'],
-                                '/collaborators',
-                                (handle, access_token)
+                            print(f'Syncing Organization: {db_org.name}')
+                            profile.profile_organizations.add(db_org)
+                            org_members = get_organization(
+                                db_org.name,
+                                '/members'
                             )
-                            if 'message' in repo_collabs:
-                                print(repo_collabs['message'])
+
+                            if 'message' in org_members:
+                                print(org_members['message'])
                                 continue
 
-                            for collaborator in repo_collabs:
+                            for member in org_members:
+
                                 try:
-                                    member_user_profile = Profile.objects.get(handle=collaborator['login'],
-                                                                              user__is_active=True)
+                                    membership = get_organization(
+                                        db_org.name,
+                                        f'/memberships/{member["login"]}',
+                                        (handle, access_token)
+                                    )
+                                    if 'message' in membership:
+                                        print(membership['message'])
+                                        continue
+                                    role = membership['role'] if not None else "member"
+                                    db_group = Group.objects.get_or_create(name=f'{db_org.name}-role-{role}')[0]
+                                    db_org.groups.add(db_group)
+                                    member_profile_obj = Profile.objects.get(
+                                        handle=member['login'],
+                                        user__is_active=True
+                                    )
+                                    member_profile_obj.user.groups.add(db_group)
+                                    members_to_sync.append(member['login'])
+                                    lsynced = recursive_sync(lsynced, member['login'])
+                                except Exception as e:
+                                    print(f'An exception happened in the Organization Loop: handle {member["login"]} {e}')
+                                    continue
+
+                            org_repos = get_organization(
+                                db_org.name,
+                                '/repos'
+                            )
+
+                            if 'message' in org_repos:
+                                print(org_repos['message'])
+                                continue
+
+                            for repo in org_repos:
+                                db_repo = Repo.objects.get_or_create(name=repo['name'])[0]
+                                db_org.repos.add(db_repo)
+                                print(f'Syncing Repo: {db_repo.name}')
+                                repo_collabs = get_repo(
+                                    repo['full_name'],
+                                    '/collaborators',
+                                    (handle, access_token)
+                                )
+                                if 'message' in repo_collabs:
+                                    print(repo_collabs['message'])
+                                    continue
+
+                                for collaborator in repo_collabs:
 
                                     if collaborator['permissions']['admin']:
                                         permission = "admin"
@@ -143,26 +147,29 @@ class Command(BaseCommand):
                                     db_group = Group.objects.get_or_create(
                                         name=f'{db_org.name}-repo-{repo["name"]}-{permission}')[0]
                                     db_org.groups.add(db_group)
-                                    member_user_profile.user.groups.add(db_group)
-                                    member_user_profile.repos.add(db_repo)
 
-                                    if collaborator['login'] not in members_to_sync or collaborator[
-                                        'login'] not in lsynced:
-                                        members_to_sync.append(collaborator['login'])
-                                    for x in members_to_sync:
-                                        print(x)
-                                        try:
-                                            lsynced = lsynced + recursive_sync(lsynced, x)
-                                        except ValueError as members_loop_exec:
+                                    try:
+                                        member_user_profile = Profile.objects.get(handle=collaborator['login'],
+                                                                                  user__is_active=True)
+                                        member_user_profile.user.groups.add(db_group)
+                                        member_user_profile.repos.add(db_repo)
+                                        if collaborator['login'] not in members_to_sync or \
+                                            collaborator['login'] not in lsynced:
+                                            members_to_sync.append(collaborator['login'])
+                                    except Exception as e:
+                                        print(f'An exception happened in the Collaborators sync Loop: handle: {collaborator["login"]} {e}')
 
-                                            print(members_loop_exec)
-                                except Exception as e:
-                                    print(e)
-                                    continue
-
-                        return lsynced
+                                for x in members_to_sync:
+                                    try:
+                                        lsynced = lsynced + recursive_sync(lsynced, x)
+                                    except Exception as e:
+                                        print(f'An exception happened in the Members sync Loop: handle: {handle} {e}')
+                        except Exception as e:
+                            print(f'An exception happened in the Organization Loop: handle {handle} {e}')
                 except Exception as exc:
                     print(f'Unhandled Exception occurred: {exc}')
+
+                return lsynced
 
             for profile in all_users:
                 try:
