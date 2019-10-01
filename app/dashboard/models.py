@@ -22,9 +22,12 @@ import base64
 import collections
 import json
 import logging
+
+from bleach import clean
 from datetime import datetime, timedelta
 from decimal import Decimal
 from urllib.parse import urlsplit
+
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -1974,7 +1977,9 @@ class Activity(SuperModel):
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']
-        activity['title'] = obj.get('title', '')
+
+        activity['title'] = clean(obj.get('title', ''), strip=True)
+
         if 'id' in obj:
             if 'category' not in obj or obj['category'] == 'bounty': # backwards-compatible for category-lacking metadata
                 activity['bounty_url'] = Bounty.objects.get(pk=obj['id']).get_relative_url()
@@ -2624,7 +2629,7 @@ class Profile(SuperModel):
         if visits_last_month > med_threshold:
             return "Med"
         return "Low"
-            
+
 
 
     def calc_longest_streak(self):
@@ -3421,7 +3426,7 @@ class Profile(SuperModel):
         sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
-        
+
         sum_all_funded_tokens = self.get_all_tokens_sum(sum_type='funded', bounties=funded_bounties, network=network)
         sum_all_collected_tokens = self.get_all_tokens_sum(
             sum_type='collected', bounties=fulfilled_bounties, network=network

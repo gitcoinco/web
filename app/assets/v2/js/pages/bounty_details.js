@@ -25,7 +25,7 @@ var gitcoin_ize = function(key, val) {
 
 var email_ize = function(key, val) {
 
-  if (val == 'Anonymous' || val == '') {
+  if (!validateEmail(val)) {
     $('#bounty_owner_email').remove();
     $('#bounty_owner_email_label').remove();
   }
@@ -243,6 +243,9 @@ var callbacks = {
     var tags = [];
 
     keywords.forEach(function(keyword) {
+
+     keyword = keyword.replace(/[\W_]+/g, "");
+
       tags.push('<a href="/explorer/?q=' + keyword.trim() + '"><div class="tag keyword">' + keyword + '</div></a>');
     });
     return [ 'issue_keywords', tags ];

@@ -22,9 +22,11 @@ import json
 import logging
 import os
 import time
+
 from copy import deepcopy
 from datetime import datetime
 from decimal import Decimal
+from bleach import clean
 
 from django.conf import settings
 from django.contrib import messages
@@ -1820,12 +1822,12 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 # Currently its not finding anyting in the database
                 if bounty.title and bounty.org_name:
                     params['card_title'] = f'{bounty.title} | {bounty.org_name} Funded Issue Detail | Gitcoin'
-                    params['title'] = params['card_title']
-                    params['card_desc'] = ellipses(bounty.issue_description_text, 255)
+                    params['title'] = clean(params['card_title'], strip=True)
+                    params['card_desc'] = ellipses(clean(bounty.issue_description_text, strip=True), 255)
                     params['noscript'] = {
-                        'title': bounty.title,
+                        'title': clean(bounty.title, strip=True),
                         'org_name': bounty.org_name,
-                        'issue_description_text': bounty.issue_description_text,
+                        'issue_description_text': clean(bounty.issue_description_text, strip=True),
                         'keywords': ', '.join(bounty.keywords.split(','))}
 
                 if bounty.event and bounty.event.slug:
@@ -2433,7 +2435,7 @@ def profile(request, handle, tab=None):
     default_tab = 'activity'
     tab = tab if tab else default_tab
     handle = handle.replace("@", "")
-    
+
     # make sure tab param is correct
     all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people']
     tab = default_tab if tab not in all_tabs else tab
@@ -2441,7 +2443,7 @@ def profile(request, handle, tab=None):
         # someone trying to go to their own profile?
         tab = handle
         handle = request.user.profile.handle
-    
+
     # user only tabs
     if not handle and request.user.is_authenticated:
         handle = request.user.username
