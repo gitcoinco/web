@@ -197,6 +197,8 @@ class Grant(SuperModel):
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
     weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
+    contribution_count = models.PositiveIntegerField(blank=True, default=0)
+    contributor_count = models.PositiveIntegerField(blank=True, default=0)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -229,7 +231,7 @@ class Grant(SuperModel):
             return None
 
     @property
-    def contribution_count(self):
+    def get_contribution_count(self):
         num = 0
         for sub in self.subscriptions.all():
             for contrib in sub.subscription_contribution.filter(success=True):
@@ -239,7 +241,7 @@ class Grant(SuperModel):
         return num
 
     @property
-    def contributor_count(self):
+    def get_contributor_count(self):
         contributors = []
         for sub in self.subscriptions.all():
             for contrib in sub.subscription_contribution.filter(success=True):
@@ -758,7 +760,8 @@ next_valid_timestamp: {next_valid_timestamp}
 
 @receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
 def psave_grant(sender, instance, **kwargs):
-
+    instance.contribution_count = instance.get_contribution_count
+    instance.contributor_count = instance.get_contributor_count
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
     #print(instance.id)
