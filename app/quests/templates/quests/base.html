@@ -21,16 +21,16 @@
   <head>
     {% include 'shared/head.html' %}
     <link rel="stylesheet" href="{% static "v2/css/quests.css" %}" />
-    {% include 'shared/cards.html' %}
+    {% include 'shared/cards_pic.html' %}
   </head>
   <body class="g-font-muli {{body_class}}">
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <div class="container-fluid header dash">
-      {% include 'home/nav.html' %}
+      {% include 'quests/nav.html' %}
     </div>
-    <div class="row">
-      <div class="col-12 col-sm-10 m-auto">
+    <div class="row back_gradient">
+      <div class="{% if not hide_col %}col-12 col-sm-10 m-auto{%endif %}" style="{% if hide_col %}width:100%;{%endif %}">
         {% block 'content' %}
         {% endblock %}
       </div>
