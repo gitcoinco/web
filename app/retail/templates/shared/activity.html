@@ -66,6 +66,16 @@
         <a href="{{ row.metadata.grant_url }}" target="_blank">
           {{ row.metadata.title }}
         </a>
+      {% elif row.activity_type == 'played_quest' %}
+        {% trans "played" %}
+        <a href="{{ row.metadata.quest_url }}" target="_blank">
+           Quest: {{ row.metadata.quest_title }}
+        </a>
+      {% elif row.activity_type == 'beat_quest' %}
+        {% trans "beat " %}
+        <a href="{{ row.metadata.quest_url }}" target="_blank">
+           Quest: {{ row.metadata.quest_title }}
+        </a>
       {% elif row.activity_type == 'new_grant_subscription' %}
         {% trans "subscribed to" %}
         <a href="{{ row.metadata.grant_url }}" target="_blank">
@@ -142,6 +152,8 @@
       <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
         <img src="{% static row.kudos_data.image %}" alt="" class="w-100" style="max-width:100px;">
       </a>
+    {% elif row.metadata.quest_reward %}
+      <img src="{{row.metadata.quest_reward}}" alt="" class="w-100" style="max-width:100px;">
     {% else %}
       <i class="far {{ row.icon }} last-icon"></i>
     {% endif %}

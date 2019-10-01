@@ -1858,6 +1858,8 @@ class Activity(SuperModel):
         ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
         ('joined', 'Joined Gitcoin'),
+        ('played_quest', 'Played Quest'),
+        ('beat_quest', 'Beat Quest'),
         ('updated_avatar', 'Updated Avatar'),
     ]
 

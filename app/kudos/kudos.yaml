@@ -5463,3 +5463,92 @@
    - sponsor
    - etherealblocks
   image: sponsor-04.svg
+- name: devcon_quest_pegasys
+  description: You spin up DAPPS with Pegasys on the weekend, just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: pegasys.svg
+- name: devcon_quest_narly
+  description: You spin up Narly DAPPS on the weekend, just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: narly.svg
+- name: devcon_quest_mythx
+  description: You spin up DAPPS on the weekend, using Mythx, just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: mythx.svg
+- name: devcon_quest_metamask
+  description: You spin up DAPPS with Metamask on the weekend, just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: metamask.svg
+- name: devcon_quest_infura
+  description: You spin up DAPPS on the weekend, using Infura, just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: _infura.svg
+- name: devcon_quest_gitcoin
+  description: You spin up DAPPS on the weekend, just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: gitcoin.svg
+- name: devcon_quest_deva
+  description: You are at Devcon!
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: deva.svg
+- name: devcon_quest_alethio
+  description: You spin up DAPPS on the weekend, and analyse them Alethio -- just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: alethio.svg
+
