@@ -70,7 +70,7 @@
       {% endif %}
 
       <div class="grant-item__state mt-2 row">
-        <div class="col-6">
+        <div class="col-4">
           {% if grant.active %}
             <div class="grant-item__state-active">
               <div class="inner"></div>
@@ -84,7 +84,7 @@
           {% endif %}
         </div>
         {% if grant.active and grant.activeSubscriptions %}
-          <div class="col-6 text-right my-auto font-caption font-weight-semibold">
+          <div class="col-8 text-right my-auto font-caption font-weight-semibold">
             {{ grant.activeSubscriptions|length}}
             subscription{% if grant.activeSubscriptions|length > 1 %}s{% endif %}
           </div>
