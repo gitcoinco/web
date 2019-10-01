@@ -2,6 +2,10 @@
   max-width: 600px;
   cursor: pointer;
 }
+.difficulty_tab{
+  display: block;
+  width: 100%;
+}
 .card_head {
   height: 140px;
 }

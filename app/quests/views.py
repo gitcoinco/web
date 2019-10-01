@@ -54,9 +54,22 @@ def index(request):
     kudos_to_show_per_leaderboard_entry = 5
     leaderboard = QuestAttempt.objects.filter(success=True).order_by('profile').values_list('profile__handle').annotate(amount=Count('quest', distinct=True)).order_by('-amount')
     leaderboard = [[ele[0], ele[1], list(set([(_ele.coupon.token.img_url, _ele.coupon.token.humanized_name) for _ele in BulkTransferRedemption.objects.filter(coupon__tag='quest',redeemed_by__handle=ele[0]).order_by('-created_on')]))[:kudos_to_show_per_leaderboard_entry]] for ele in leaderboard]
+
+    rewards_schedule = []
+    for i in range(1, 4):
+        reward_denominator = 2 ** i;
+        rewards_schedule.append({
+                'layer': i,
+                'reward_denominator': reward_denominator,
+                'reward_multiplier': 1/reward_denominator,
+            })
+
+
     params = {
         'quests': quests,
         'leaderboard': leaderboard,
+        'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
+        'rewards_schedule': rewards_schedule,
         'title': 'Quests on Gitcoin',
         'card_desc': 'Use Gitcoin to learn about the web3 ecosystem, earn rewards, and level up while you do it!',
     }

@@ -2235,6 +2235,7 @@ class Profile(SuperModel):
     rank_funder = models.IntegerField(default=0)
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
+    referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2264,6 +2265,10 @@ class Profile(SuperModel):
         if not self.is_org:
             return Profile.objects.none()
         return Profile.objects.filter(organizations__icontains=self.handle)
+
+    @property
+    def ref_code(self):
+        return hex(self.pk).replace("0x",'')
 
     @property
     def get_org_kudos(self):

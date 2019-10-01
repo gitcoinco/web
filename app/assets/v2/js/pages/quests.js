@@ -316,6 +316,15 @@ $(document).ready(function() {
     });
   });
 
+  $('#tabs a').click(function(e) {
+    e.preventDefault();
+    var target = $(this).data('href');
+    $('.difficulty_tab').addClass('hidden');
+    $('.nav-link').removeClass('active');
+    $(this).addClass('active');
+    $('.difficulty_tab.'+target).removeClass('hidden');
+  });
+
   $('.quest-card.available').click(function(e) {
     e.preventDefault();
     document.location.href = $(this).find('.btn').attr('href');
