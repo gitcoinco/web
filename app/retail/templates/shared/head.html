@@ -76,8 +76,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 {% if meta_title %}<meta name="title" content="{{meta_title}}" />{% endif %}
 {% if meta_description %}<meta name="description" content="{{meta_description}}" />{% endif %}
+<script>
+  window.fortmatic_api_key = '{{ fortmatic_api_key }}'
+</script>
+<script async src="{% static "v2/js/lib/watch.js" %}"></script>
+<script async src="{% static "v2/js/lib/web3-0.20.7.min.js" %}"></script>
 <script async src="{% static "v2/js/metamask-approval.js" %}"></script>
-
 
 {% if env == 'prod' %}
 <!-- Hotjar Tracking Code for gitcoin.co -->

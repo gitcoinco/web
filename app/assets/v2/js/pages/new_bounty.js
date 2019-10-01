@@ -675,7 +675,6 @@ $('#submitBounty').validate({
     localStorage['githubUsername'] = githubUsername;
     localStorage['tokenAddress'] = tokenAddress;
     localStorage.removeItem('bountyId');
-
     // setup web3
     // TODO: web3 is using the web3.js file.  In the future we will move
     // to the node.js package.  github.com/ethereum/web3.js
@@ -718,9 +717,9 @@ $('#submitBounty').validate({
 
       issuePackage['timestamp'] = timestamp();
       localStorage[issueURL] = JSON.stringify(issuePackage);
-
       _alert({ message: gettext('Submission sent to web3.') }, 'info');
       setTimeout(() => {
+        window.isWeb3Fired = false;
         delete localStorage['issueURL'];
         document.location.href = '/funding/details/?url=' + issueURL;
       }, 1000);
@@ -755,13 +754,14 @@ $('#submitBounty').validate({
       // update localStorage issuePackage
       var issuePackage = JSON.parse(localStorage[issueURL]);
 
-      issuePackage['txid'] = result;
+      // fortmatic returns a big number as the txid, so this check is necessary
+      issuePackage['txid'] = typeof result === 'string' ? result : ('0x' + result.toString(16));
       localStorage[issueURL] = JSON.stringify(issuePackage);
 
       syncDb();
     }
 
-    function newIpfsCallback(error, result) {
+    function newIpfsCallback(error, result, batch) {
       indicateMetamaskPopup();
       if (error) {
         console.error(error);
@@ -785,28 +785,44 @@ $('#submitBounty').validate({
 
       var eth_amount = isETH ? amount : 0;
       var _paysTokens = !isETH;
-      var bountyIndex = bounty.issueAndActivateBounty(
-        account, // _issuer
-        mock_expire_date, // _deadline
-        result, // _data (ipfs hash)
-        amount, // _fulfillmentAmount
-        0x0, // _arbiter
-        _paysTokens, // _paysTokens
-        tokenAddress, // _tokenContract
-        amount, // _value
-        {
-        // {from: x, to: y}
-          from: account,
-          value: eth_amount,
-          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
-          gas: web3.toHex(318730),
-          gasLimit: web3.toHex(318730)
-        },
-        web3Callback // callback for web3
-      );
+      var issueAndActivateBountyParams = {
+        from: account,
+        value: web3.toHex(eth_amount),
+        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+        gas: web3.toHex(318730),
+        gasLimit: web3.toHex(318730)
+      };
+
+      if (batch) {
+        batch.add(bounty.issueAndActivateBounty.request(
+          account, // _issuer
+          mock_expire_date, // _deadline
+          result, // _data (ipfs hash)
+          amount, // _fulfillmentAmount
+          0x0, // _arbiter
+          _paysTokens, // _paysTokens
+          tokenAddress, // _tokenContract
+          amount, // _value
+          issueAndActivateBountyParams, web3Callback));
+        batch.execute();
+      } else {
+        bounty.issueAndActivateBounty(
+          account, // _issuer
+          mock_expire_date, // _deadline
+          result, // _data (ipfs hash)
+          amount, // _fulfillmentAmount
+          0x0, // _arbiter
+          _paysTokens, // _paysTokens
+          tokenAddress, // _tokenContract
+          amount, // _value
+          issueAndActivateBountyParams,
+          web3Callback // callback for web3
+        );
+      }
     }
 
     var do_bounty = function(callback) {
+      console.log('do_bounty');
       handleTokenAuth().then(() => {
         const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
         const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
@@ -817,25 +833,41 @@ $('#submitBounty').validate({
           deductBountyAmount(fee, '');
         } else {
           if (isETH) {
-            web3.eth.sendTransaction({
+            const params = {
               to: to_address,
               from: web3.eth.coinbase,
               value: web3.toWei(fee, 'ether'),
               gasPrice: gas_price
-            }, function(error, txnId) {
-              indicateMetamaskPopup(true);
-              if (error) {
-                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
-              } else {
-                deductBountyAmount(fee, txnId);
-                saveAttestationData(
-                  result,
-                  fee,
-                  '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
-                  'bountyfee'
-                );
-              }
-            });
+            };
+
+            window.isWeb3Fired = true;
+            if (web3.currentProvider.isFortmatic) {
+              const batch = web3.createBatch();
+
+              batch.add(web3.eth.sendTransaction.request(params, function(error) {
+                indicateMetamaskPopup(true);
+                if (error) {
+                  _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+                }
+              }));
+              deductBountyAmount(fee, '', batch);
+              saveAttestationData(
+                result,
+                fee,
+                '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+                'bountyfee'
+              );
+            } else {
+              web3.eth.sendTransaction(params, function(error, txnId) {
+                indicateMetamaskPopup(true);
+                if (error) {
+                  _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+                } else {
+                  if (window.web3.currentProvider.isMetaMask || txnId)
+                    deductBountyAmount(fee, txnId);
+                }
+              });
+            }
           } else {
             const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
             const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
@@ -856,11 +888,14 @@ $('#submitBounty').validate({
       });
     };
 
-    const deductBountyAmount = function(fee, txnId) {
+    const deductBountyAmount = function(fee, txnId, batch) {
+      console.log('deduct bounty amount');
       ipfsBounty.payload.issuer.address = account;
       ipfsBounty.payload.fee_tx_id = txnId;
       ipfsBounty.payload.fee_amount = fee;
-      ipfs.addJson(ipfsBounty, newIpfsCallback);
+      ipfs.addJson(ipfsBounty, function(error, result) {
+        newIpfsCallback(error, result, batch);
+      });
       if (typeof ga != 'undefined') {
         if (fee == 0)
           dataLayer.push({
@@ -918,8 +953,7 @@ $('#submitBounty').validate({
         gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
         gas: web3.toHex(318730),
         gasLimit: web3.toHex(318730)
-      },
-      function(error, result) {
+      }, function(error, result) {
         indicateMetamaskPopup(true);
         if (error) {
           _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');

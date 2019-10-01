@@ -99,7 +99,8 @@ $(document).ready(function($) {
         }
       };
       var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-      var gas_dict = { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) };
+      var account = web3.eth.coinbase;
+      var gas_dict = { from: account, gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) };
 
       indicateMetamaskPopup();
       bounty.killBounty(

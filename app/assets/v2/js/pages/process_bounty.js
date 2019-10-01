@@ -29,7 +29,17 @@ window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
-    var account = web3.eth.accounts[0];
+
+    var account = null;
+    var fortmatic = localStorage.getItem('fortmatic');
+
+    if (fortmatic) {
+      account = fortmatic;
+    } else if (window.web3) {
+      account = window.web3.eth.accounts[0];
+    } else {
+      console.error('User does not have a connected wallet');
+    }
 
     if (getParam('source')) {
       $('#issueURL').html(getParam('source'));
@@ -257,7 +267,7 @@ window.onload = function() {
         };
         // just sent payout
         var send_payout = function() {
-          bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
+          bounty.acceptFulfillment(bountyId, fulfillmentId, {from: account, gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
         };
 
         // send both tip and payout

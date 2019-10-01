@@ -523,6 +523,9 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
+# Fortmatic
+FORTMATIC_API_KEY =  env('FORTMATIC_API_KEY', default='')
+
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'

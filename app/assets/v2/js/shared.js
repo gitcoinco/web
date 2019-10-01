@@ -204,7 +204,7 @@ var getTimeFromDate = function(date) {
 };
 
 var waitforWeb3 = function(callback) {
-  if (document.web3network) {
+  if (window.web3 && document.web3network) {
     callback();
   } else {
     var wait_callback = function() {
@@ -676,7 +676,6 @@ const randomElement = array => {
 
   return array[randomIndex];
 };
-
 /* eslint-disable no-lonely-if */
 var currentNetwork = function(network) {
 
@@ -693,7 +692,7 @@ var currentNetwork = function(network) {
       $('#navbar-network-banner').removeClass('network-banner--warning');
       $('#navbar-network-banner').addClass('hidden');
     } else {
-      if (!network) {
+      if (!network || network !== 'not-provider') {
         info = gettext('Web3 disabled. Please install ') +
           '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
         $('#current-network').text(gettext('Metamask Not Enabled'));
@@ -752,7 +751,7 @@ var currentNetwork = function(network) {
           $('#navbar-network-banner').html(info);
         }
       } else {
-        info = gettext('Connect to Rinkeby / Custom RPC via Metamask');
+        info = gettext('Connect to Rinkeby / Custom RPC via Metamask/Fortmatic');
         $('#current-network').text(gettext('Unsupported Network'));
         $('#navbar-network-banner').html(info);
       }
@@ -884,17 +883,6 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#faucet_form').addClass('hidden');
       return;
     }
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      if (errors) {
-        return;
-      }
-      var balance = result.toNumber();
-
-      if (balance == 0) {
-        $('#zero_balance_error').css('display', 'block');
-        $('#admin_faucet_form').remove();
-      }
-    });
   }
 };
 
@@ -917,71 +905,76 @@ function getNetwork(id) {
 
 // figure out what version of web3 this is, whether we're logged in, etc..
 var listen_for_web3_changes = async function() {
-
   if (document.location.pathname.indexOf('grants') === -1) {
     if (!document.listen_for_web3_iterations) {
       document.listen_for_web3_iterations = 1;
     } else {
       document.listen_for_web3_iterations += 1;
     }
-
-    if (typeof web3 == 'undefined') {
-      currentNetwork();
-      trigger_form_hooks();
-    } else if (typeof web3.eth == 'undefined') {
-      currentNetwork('locked');
-      trigger_form_hooks();
-    } else {
-      var cb;
-
-      try {
-        // invoke infura synchronous call, if it fails metamask is locked
-        cb = web3.eth.coinbase;
-      } catch (error) {
-        // catch error so sentry doesn't alert on metamask call failure
-        console.log('web3.eth.coinbase could not be loaded');
-      }
-      if (typeof cb == 'undefined' || !cb) {
+    if (!window.isWeb3Fired) {
+      if (typeof web3 == 'undefined') {
+        currentNetwork();
+        trigger_form_hooks();
+      } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined') {
         currentNetwork('locked');
         trigger_form_hooks();
       } else {
-        is_metamask_unlocked = true;
-        web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-          if (errors) {
-            return;
-          }
-          if (typeof result != 'undefined' && result !== null) {
-            document.balance = result.toNumber();
-          }
-        });
+        var cb;
 
-        web3.version.getNetwork(function(error, netId) {
-          if (error) {
-            currentNetwork();
-          } else {
-            var network = getNetwork(netId);
+        try {
+        // invoke infura synchronous call, if it fails metamask is locked
+          cb = web3.eth.coinbase;
+        } catch (error) {
+        // catch error so sentry doesn't alert on metamask call failure
+          console.log('web3.eth.coinbase could not be loaded');
+        }
+        if (typeof cb == 'undefined' || !cb) {
+          currentNetwork('not-provider');
+          is_metamask_unlocked = true;
+          trigger_form_hooks();
+        } else {
+          is_metamask_unlocked = true;
+          web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+            if (errors) {
+              return;
+            }
+            if (typeof result != 'undefined' && result !== null) {
+              document.balance = result.toNumber();
+              if (document.balance == 0) {
+                $('#zero_balance_error').css('display', 'block');
+                $('#admin_faucet_form').remove();
+              }
+            }
+          });
 
-            currentNetwork(network);
-            trigger_form_hooks();
-          }
-        });
+          web3.version.getNetwork(function(error, netId) {
+            if (error) {
+              currentNetwork();
+            } else {
+              var network = getNetwork(netId);
+
+              currentNetwork(network);
+              trigger_form_hooks();
+            }
+          });
+        }
       }
     }
-  }
 
-  if (window.ethereum && !document.has_checked_for_ethereum_enable && window.ethereum._metamask) {
-    document.has_checked_for_ethereum_enable = true;
-    is_metamask_approved = await window.ethereum._metamask.isApproved();
-    is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
-    if (is_metamask_approved && is_metamask_unlocked) {
-      var start_time = ((new Date()).getTime() / 1000);
+    if (window.ethereum && !document.has_checked_for_ethereum_enable && window.ethereum._metamask) {
+      document.has_checked_for_ethereum_enable = true;
+      is_metamask_approved = await window.ethereum._metamask.isApproved();
+      is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
+      if (is_metamask_approved && is_metamask_unlocked) {
+        var start_time = ((new Date()).getTime() / 1000);
 
-      await ethereum.enable();
-      var now_time = ((new Date()).getTime() / 1000);
-      var did_request_and_user_respond = (now_time - start_time) > 1.0;
+        await ethereum.enable();
+        var now_time = ((new Date()).getTime() / 1000);
+        var did_request_and_user_respond = (now_time - start_time) > 1.0;
 
-      if (did_request_and_user_respond) {
-        document.location.reload();
+        if (did_request_and_user_respond) {
+          document.location.reload();
+        }
       }
     }
   }

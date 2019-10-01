@@ -122,6 +122,8 @@ def preprocess(request):
     }
     context['json_context'] = json.dumps(context)
 
+    context['fortmatic_api_key'] = settings.FORTMATIC_API_KEY
+
     if context['github_handle']:
         context['unclaimed_tips'] = Tip.objects.filter(
             expires_date__gte=timezone.now(),
