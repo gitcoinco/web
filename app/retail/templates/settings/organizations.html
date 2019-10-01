@@ -1,32 +1,51 @@
 {% extends 'settings/settings.html' %}
 {% load i18n static %}
 {% block settings_content %}
-<h2 class="text-center">Organization Permissions</h2>
-<p class="text-center">The users below are able to fund, edit settings, approve contributors, and payout contributors on the bounties of the organization</p>
+<h2 class="font-bigger-2 text-center">Organization Permissions</h2>
+<p class="text-center font-subheader text-black-50">The users below are able to fund, edit settings, approve contributors, and payout contributors on the bounties of the organization</p>
 
-<div class="card">
-  <div class="card-header d-flex align-items-center justify-content-between">
+<div class="card my-5">
+  <div class="card-header bg-white d-flex align-items-center justify-content-between">
     <div>
-      <img src="/dynamic/avatar/metamask" alt="" width="40" height="40">
-      Metamask
+      <img src="/dynamic/avatar/metamask" class="rounded-circle mr-2" alt="" width="32" height="32">
+      <b>Metamask</b>
     </div>
-    <a href="https://github.com/orgs/gitcoinco/people" target="_blank"><i class="fab fa-github"></i> Manage on GitHub </a>
+    <a href="https://github.com/orgs/gitcoinco/people" target="_blank"><i class="fab fa-github align-text-top font-bigger-1"></i> Manage on GitHub </a>
   </div>
   <div class="card-body">
-    <div class="py-2 px-3 d-flex align-items-center">
-      <img src="/dynamic/avatar/octavioamu" class="rounded-circle mr-3" alt="" width="40" height="40">
+    <div class="py-2 px-5 d-flex align-items-center">
+      <img src="/dynamic/avatar/octavioamu" class="rounded-circle mr-3" alt="" width="52" height="52">
       <div class="d-flex flex-column">
         <span>Octavio Amuchástegui</span>
-        <a href="/profile/octavioamu">octavioamu</a>
+        <a href="/profile/octavioamu" class="font-smaller-1">octavioamu</a>
       </div>
     </div>
-    <div class="py-2 px-3 d-flex align-items-center">
-      <img src="/dynamic/avatar/octavioamu" class="rounded-circle mr-3" alt="" width="40" height="40">
+    <div class="py-2 px-5 d-flex align-items-center">
+      <img src="/dynamic/avatar/thelostone-mc" class="rounded-circle mr-3" alt="" width="52" height="52">
       <div class="d-flex flex-column">
-        <span>Octavio Amuchástegui</span>
-        <a href="/profile/octavioamu">octavioamu</a>
+        <span>Aditya Anand M C</span>
+        <a href="/profile/thelostone-mc" class="font-smaller-1">thelostone-mc</a>
       </div>
     </div>
   </div>
 </div>
+
+<div class="card my-5">
+    <div class="card-header bg-white d-flex align-items-center justify-content-between">
+      <div>
+        <img src="/dynamic/avatar/gitcoinco" class="rounded-circle mr-2" alt="" width="32" height="32">
+        <b>Gitcoin</b>
+      </div>
+      <a href="https://github.com/orgs/gitcoinco/people" target="_blank"><i class="fab fa-github align-text-top font-bigger-1"></i> Manage on GitHub </a>
+    </div>
+    <div class="card-body">
+      <div class="py-2 px-5 d-flex align-items-center">
+        <img src="/dynamic/avatar/thelostone-mc" class="rounded-circle mr-3" alt="" width="52" height="52">
+        <div class="d-flex flex-column">
+          <span>Aditya Anand M C</span>
+          <a href="/profile/thelostone-mc" class="font-smaller-1">thelostone-mc</a>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
