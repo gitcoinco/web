@@ -2152,8 +2152,9 @@ class Repo(SuperModel):
 
 class Organization(SuperModel):
     name = models.CharField(max_length=255)
-    groups = models.ManyToManyField('auth.group', blank=True)
+    groups = models.ManyToManyField('auth.Group', blank=True)
     repos = models.ManyToManyField(Repo, blank=True)
+
     class Meta:
         ordering = ('name',)
 
@@ -2209,7 +2210,7 @@ class Profile(SuperModel):
     )
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
-    orgs = models.ManyToManyField(Organization, blank=True)
+    profile_organizations = models.ManyToManyField(Organization, blank=True)
     repos = models.ManyToManyField(Repo, blank=True)
     form_submission_records = JSONField(default=list, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
