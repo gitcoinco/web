@@ -12,6 +12,14 @@
   }
 }
 
+.ql-editor {
+  font-family: 'Muli';
+}
+
+.ql-editor[contenteditable="false"] {
+  padding: 12px 15px !important;
+}
+
 .grant_details {
   background-color: #F8FAFC;
 }
