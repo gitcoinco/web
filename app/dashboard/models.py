@@ -3257,8 +3257,8 @@ class Profile(SuperModel):
                 logger.exception(e)
                 pass
 
-        # if sum_type == 'collected':
-        #     eth_sum = eth_sum + float(sum([amount.value_in_eth for amount in self.tips])) if self.tips else eth_sum
+        if sum_type == 'collected' and self.tips:
+            eth_sum = eth_sum + sum([ float(amount.value_in_eth) for amount in self.tips ])
 
         return eth_sum
 

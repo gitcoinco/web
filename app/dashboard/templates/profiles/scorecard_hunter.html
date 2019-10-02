@@ -12,12 +12,14 @@
           <ul>
             {% if is_my_profile %}
               <li>
-                Persona: <b>Contributor</b>   <a id="rank_link" href="javascript:show_persona_modal();">(Toggle)</a>
+                Persona: <b>Contributor</b>
+                <a id="rank_link" href="javascript:show_persona_modal();">( Toggle )</a>
               </li>
             {% endif %}
             <li>
-              <b>{{ earnings_count }}</b> Transaction{{earnings_count|pluralize}}
-             <a href="#" style="color: black; text-decoration: underline; font-size: 12px;" data-toggle="collapse" data-target="#tx_details">(Details)
+              <b>{{ earnings_count }}</b>
+              Transaction{{earnings_count|pluralize}}
+             <a href="#" style="color: black; text-decoration: underline; font-size: 12px;" data-toggle="collapse" data-target="#tx_details">( Details )
              </a>
             </li>
             <div id="tx_details" class="collapse">
@@ -33,7 +35,8 @@
                 </li>
               {% endif %}
               <li>
-                - <b>{{ hackathons_participated_in }}</b> Hackathon{{hackathons_participated_in|pluralize}} participated
+                - <b>{{ hackathons_participated_in }}</b>
+                Hackathon{{hackathons_participated_in|pluralize}} participated
               </li>
               <li>
                 - <b>{{ total_tips_received }}</b>
@@ -56,7 +59,7 @@
             <li>
               <b>#{{ scoreboard_position_contributor }}</b>
               {% trans "On Leaderboard" %}
-              <a style="font-size: 12px; color: black; text-decoration: underline;" href="{% url 'leaderboard' link %}">(View)</a>
+              <a style="font-size: 12px; color: black; text-decoration: underline;" href="{% url 'leaderboard' link %}">( View )</a>
             </li>
             {% endif %}
             <li class="works_with_list">
