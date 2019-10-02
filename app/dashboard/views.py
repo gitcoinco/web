@@ -54,8 +54,7 @@ from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
-    ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms,
-    profile_helper
+    ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
 )
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
