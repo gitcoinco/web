@@ -42,6 +42,7 @@ V3HEADERS = {'Accept': 'application/vnd.github.v3.text-match+json'}
 JSON_HEADER = {'Accept': 'application/json', 'User-Agent': settings.GITHUB_APP_NAME, 'Origin': settings.BASE_URL}
 TIMELINE_HEADERS = {'Accept': 'application/vnd.github.mockingbird-preview'}
 TOKEN_URL = '{api_url}/applications/{client_id}/tokens/{oauth_token}'
+PER_PAGE_LIMIT = 100
 
 
 def github_connect(token=None):
@@ -594,10 +595,10 @@ def get_interested_actions(github_url, username, email=''):
 def get_user(user, sub_path='', scope='', auth=_AUTH):
     """Get the github user details."""
     if scope is not '':
-        url = f'https://api.github.com/user/{scope}'
+        url = f'https://api.github.com/user/{scope}?per_page={PER_PAGE_LIMIT}'
     else:
         user = user.replace('@', '')
-        url = f'https://api.github.com/users/{user}{sub_path}'
+        url = f'https://api.github.com/users/{user}{sub_path}?per_page={PER_PAGE_LIMIT}'
 
     response = requests.get(url, auth=auth, headers=HEADERS)
 
@@ -609,9 +610,9 @@ def get_user(user, sub_path='', scope='', auth=_AUTH):
 
 
 def get_organization(org, sub_path='', auth=_AUTH):
-    """Get the github user details."""
+    """Get the github organization details."""
     org = org.replace('@', '')
-    url = f'https://api.github.com/orgs/{org}{sub_path}'
+    url = f'https://api.github.com/orgs/{org}{sub_path}?per_page={PER_PAGE_LIMIT * 2}'
     response = requests.get(url, auth=auth, headers=HEADERS)
     try:
         response_dict = response.json()
@@ -621,12 +622,12 @@ def get_organization(org, sub_path='', auth=_AUTH):
 
 
 def get_repo(repo_full_name, sub_path='', auth=_AUTH, is_user=False):
-    """Get the github user details."""
+    """Get the github repo details."""
     repo_full_name = repo_full_name.replace('@', '')
     if is_user:
-        url = f'https://api.github.com/user/repos'
+        url = f'https://api.github.com/user/repos?per_page={PER_PAGE_LIMIT}'
     else:
-        url = f'https://api.github.com/repos/{repo_full_name}{sub_path}'
+        url = f'https://api.github.com/repos/{repo_full_name}{sub_path}?per_page={PER_PAGE_LIMIT}'
 
     response = requests.get(url, auth=auth, headers=HEADERS)
 

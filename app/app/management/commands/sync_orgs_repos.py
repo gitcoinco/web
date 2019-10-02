@@ -64,10 +64,8 @@ class Command(BaseCommand):
                         print("no organizations to sync")
                         return []
 
-                    print(profile.organizations)
                     for org in profile.organizations:
                         try:
-                            print(org)
                             if org in orgs_synced:
                                 print(f'{org} has been synced already')
                                 continue
@@ -97,7 +95,7 @@ class Command(BaseCommand):
                                     if 'message' in membership:
                                         print(membership['message'])
                                         continue
-                                    role = membership['role'] if not None else "member"
+                                    role = membership['role'] if 'role' in membership else "member"
                                     db_group = Group.objects.get_or_create(name=f'{db_org.name}-role-{role}')[0]
                                     db_org.groups.add(db_group)
                                     member_profile_obj = Profile.objects.get(
@@ -106,15 +104,16 @@ class Command(BaseCommand):
                                     )
                                     member_profile_obj.user.groups.add(db_group)
                                     members_to_sync.append(member['login'])
-                                    lsynced = recursive_sync(lsynced, member['login'])
                                 except Exception as e:
                                     print(f'An exception happened in the Organization Loop: handle {member["login"]} {e}')
                                     continue
 
                             org_repos = get_organization(
                                 db_org.name,
-                                '/repos'
+                                '/repos',
+                                (handle, access_token)
                             )
+
 
                             if 'message' in org_repos:
                                 print(org_repos['message'])
@@ -157,13 +156,14 @@ class Command(BaseCommand):
                                             collaborator['login'] not in lsynced:
                                             members_to_sync.append(collaborator['login'])
                                     except Exception as e:
-                                        print(f'An exception happened in the Collaborators sync Loop: handle: {collaborator["login"]} {e}')
+                                        print(f'An exception happened in the Collaborators sync Loop: handle: '
+                                              f'{collaborator["login"]} {e}')
 
-                                for x in members_to_sync:
-                                    try:
-                                        lsynced = lsynced + recursive_sync(lsynced, x)
-                                    except Exception as e:
-                                        print(f'An exception happened in the Members sync Loop: handle: {handle} {e}')
+                            for x in members_to_sync:
+                                try:
+                                    lsynced = lsynced + recursive_sync(lsynced, x)
+                                except Exception as e:
+                                    print(f'An exception happened in the Members sync Loop: handle: {handle} {e}')
                         except Exception as e:
                             print(f'An exception happened in the Organization Loop: handle {handle} {e}')
                 except Exception as exc:
