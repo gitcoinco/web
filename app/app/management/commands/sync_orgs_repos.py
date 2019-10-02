@@ -167,7 +167,7 @@ class Command(BaseCommand):
                         except Exception as e:
                             print(f'An exception happened in the Organization Loop: handle {handle} {e}')
                 except Exception as exc:
-                    print(f'Unhandled Exception occurred: {exc}')
+                    print(f'Exception occurred inside recursive_sync: {exc}')
 
                 return lsynced
 
