@@ -36,6 +36,7 @@ import pyvips
 from dashboard.models import SendCryptoAsset
 from economy.models import SuperModel
 from eth_utils import to_checksum_address
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from pyvips.error import Error as VipsError
 
 logger = logging.getLogger(__name__)
@@ -573,9 +574,8 @@ class TokenRequest(SuperModel):
 
     def mint(self):
         """Approve / mint this token."""
-        from gas.utils import recommend_min_gas_price_to_confirm_in_time
-        from kudos.management.commands.mint_all_kudos import mint_kudos
-        from kudos.utils import KudosContract
+        from kudos.management.commands.mint_all_kudos import mint_kudos # avoid circular import
+        from kudos.utils import KudosContract # avoid circular import
         account = settings.KUDOS_OWNER_ACCOUNT
         private_key = settings.KUDOS_PRIVATE_KEY
         kudos = {

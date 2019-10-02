@@ -23,6 +23,7 @@ import logging
 import random
 import re
 import urllib.parse
+import uuid
 
 from django.conf import settings
 from django.contrib import messages
@@ -771,12 +772,12 @@ def newkudos(request):
 
     if request.POST:
         required_fields = ['name', 'description', 'priceFinney', 'artist', 'platform', 'numClonesAllowed', 'tags', 'to_address']
-        validtion_passed = True
+        validation_passed = True
         for key in required_fields:
             if not request.POST.get(key):
                 context['msg'] = str(_('You must provide the following fields: ')) + key
-                validtion_passed = False
-        if validtion_passed:
+                validation_passed = False
+        if validation_passed:
             #upload to s3
             img = request.FILES.get('photo')
             session = boto3.Session(
@@ -785,7 +786,7 @@ def newkudos(request):
             )
 
             s3 = session.resource('s3')
-            key = f'media/uploads/{random.randint(999999999,99999999999)}_{img.name}'
+            key = f'media/uploads/{uuid.uuid4()}_{img.name}'
             response = s3.Bucket(settings.MEDIA_BUCKET).put_object(Key=key, Body=img, ACL='public-read', ContentEncoding='image/svg+xml')
             artwork_url = f'https://{settings.MEDIA_BUCKET}.s3-us-west-2.amazonaws.com/{key}'
 
