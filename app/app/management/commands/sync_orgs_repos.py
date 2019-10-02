@@ -78,6 +78,7 @@ class Command(BaseCommand):
                             org_members = get_organization(
                                 db_org.name,
                                 '/members'
+                                (handle, access_token)
                             )
 
                             if 'message' in org_members:

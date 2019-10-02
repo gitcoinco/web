@@ -240,7 +240,7 @@ class GitUtilitiesTest(TestCase):
     @responses.activate
     def test_get_user(self):
         """Test the github utility get_user method."""
-        url = 'https://api.github.com/users/gitcoin'
+        url = 'https://api.github.com/users/gitcoin?per_page=100''
         responses.add(responses.GET, url, headers=HEADERS, json={}, status=200)
         get_user('@gitcoin')
 
@@ -249,7 +249,7 @@ class GitUtilitiesTest(TestCase):
     @responses.activate
     def test_get_user_subpath(self):
         """Test the github utility get_user method with a subpath."""
-        url = 'https://api.github.com/users/gitcoin/test'
+        url = 'https://api.github.com/users/gitcoin/test?per_page=100''
         responses.add(responses.GET, url, headers=HEADERS, json={}, status=200)
         get_user('@gitcoin', '/test')
 
