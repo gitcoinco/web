@@ -73,12 +73,17 @@
     <div id="section-nav-contributors" class="">
       <div class="grant__stakeholders-list d-flex flex-wrap">
         {% for contribution in contributors %}
-          <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' contribution.subscription.contributor_profile.handle %}">
+          {% if contribution.subscription %}
+            {% trans  contribution.subscription.contributor_profile.handle  as handle %}
+          {% else %}
+            {% trans  contribution.profile.handle  as handle %}
+          {% endif %}
+          <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' handle %}">
             <div class="mr-2 d-inline-block">
-              <img src="{{ contribution.subscription.contributor_profile.avatar_url }}" />
+              <img src="/dynamic/avatar/{{handle}}" />
             </div>
             <div class="mt-1 d-inline-block">
-              <span class="grant-profile font-weight-semibold">{{ contribution.subscription.contributor_profile.handle }}</span>
+              <span class="grant-profile font-weight-semibold">{{ handle }}</span>
             </div>
           </a>
 
