@@ -55,7 +55,7 @@
           {% if forloop.counter|divisibleby:2 %}
             <div class="d-flex flex-column col-md-6 product-left py-md-5 py-2 align-self-center">
               <span class="g-font-futura mb-2 product-name d-flex align-items-center">
-                <img src="{% static 'v2/images/products/kudos-logo.svg' %}" alt="{{ product.name }}-logo">
+                <img src="{{ product.logo }}" alt="{{ product.name }}-logo">
                 &nbsp &nbsp {{ product.name|upper }}
               </span>
               <span class=" mb-2 product-heading">{{ product.heading }}</span>
