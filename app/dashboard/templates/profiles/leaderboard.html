@@ -2,27 +2,27 @@
 {% if not hidden %}
 
 <div class="tab-projects d-flex flex-column">
-  <h3>Leaderboard</h3>
+  <h3 class="font-body mb-3">Leaderboard</h3>
   {% if leaderboard|length == 0 %}
-    None Found
+    <p class="text-center">None Found</p>
   {% endif %}
   {% for item in leaderboard %}
-    <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} pt-1 pb-1">
-      <div class="m-3" style="font-size: 2em; color: #bbb;">
+    <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} py-2">
+      <div class="my-auto font-body mx-1">
         {{ forloop.counter }}
       </div>
-      <div class="activity-avatar ml-5">
-        <img height="72" width="72" class="avatar card-rating__avatar rounded-circle" src="{% avatar_url profile.handle %}"/>
-        <img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" style="margin-left: -30px; margin-top:30px;" src="{% avatar_url item.0 %}" />
+      <div class="activity-avatar ml-2 ml-md-5 my-auto">
+        <img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" src="{% avatar_url item.0 %}" />
       </div>
-      <div class="tab-projects__item-details ml-5" style="width: 70%">
-        <div class="d-flex">
-          <h5 class="font-weight-semibold">@{{item.0}}</h5>&nbsp;
+      <div class="tab-projects__item-details ml-2 ml-md-5 my-auto w-100">
+        <div class="font-body d-inline">
+          <a href="/profile/{{item.0}}">
+            @{{item.0}}
+          </a>
         </div>
-          <a class="btn btn-gc-blue btn-sm " href="/profile/{{item.0}}">View Profile &gt;</a>
-          <div class="float-right">
-            {{item.1}} transaction{{item.1|pluralize}} / ${{item.2|floatformat:0|intcomma}}
-          </div>
+        <div class="font-body earning">
+          {{item.1}} transaction{{item.1|pluralize}} / ${{item.2|floatformat:0|intcomma}}
+        </div>
       </div>
     </div>
   {% endfor %}

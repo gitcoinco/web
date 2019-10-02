@@ -80,7 +80,7 @@ By passing an `order_by` parameter you can order the data by the provided key. E
 
 #### Example Request
 
-```
+```shell
 ~ % curl "https://gitcoin.co/api/v0.1/bounties/?&order_by=web3_created"
 
 [
@@ -123,7 +123,7 @@ By passing an `order_by` parameter you can order the data by the provided key. E
 
 You may interact with the HTTPS API as follows
 
-```
+```shell
 truffle(development)> BountyIndex.at('0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd').bountydetails.call('https://github.com/owocki/pytrader/pull/83');
 [ { [String: '100000000000000000'] s: 1, e: 17, c: [ 1000 ] },
   '0x0000000000000000000000000000000000000000',

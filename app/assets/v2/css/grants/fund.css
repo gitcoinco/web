@@ -177,7 +177,7 @@
   border-radius: 5px;
   border: 2px solid #10cd7a;
   text-align: left;
-  width: 250px;
+  width: 265px;
   padding: 1rem 15px;
   position: absolute;
   top: 0px;
@@ -214,6 +214,7 @@
   font-size: 12px;
   text-transform: uppercase;
   width: 150px;
+  font-weight: bold;
 }
 
 .clr_estimate h3 span {
