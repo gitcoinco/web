@@ -344,6 +344,24 @@ $(document).ready(function() {
     random_attn_effect($(this).find('.btn'));
   });
 
+  // makes the reflink sticky
+  if (getParam('cb')) {
+    var cb = getParam('cb');
+    // only if user is not logged in tho
+
+    if (cb.indexOf('ref') != -1 && !document.contxt.github_handle) {
+      localStorage.setItem('cb', cb);
+    }
+  }
+  // if there exists a sticky reflink but the user navigated away from the link in the course of logging in...
+  if (localStorage.getItem('cb') && document.contxt.github_handle && !getParam('cb')) {
+    var url = new URL(document.location.href);
+
+    url.searchParams.append('cb', localStorage.getItem('cb'));
+    url.search = url.search.replace('%3A', ':');
+    localStorage.setItem('cb', '');
+    document.location.href = url;
+  }
 
   $('#protagonist h3').html(trim_dots($('#protagonist h3').text(), 8));
 

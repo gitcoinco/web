@@ -1,3 +1,12 @@
+.referrals img {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+}
+.referrals a{
+  color: #3E00FF;
+  font-size: 14px;
+}
 #announce{
   width: 100%;
   display: block;
@@ -465,7 +474,15 @@ body.quest_battle{
 .alpha-warning{
   background-color: black;
 }
+.refer_friend .top_img{
+  max-width: 200px; 
+  margin-top: -170px;
+}
+
 @media (max-width: 1110px) {
+  .refer_friend .top_img{
+    margin-top: -230px;
+  }
   .demo{
     width: 400px;
   }
@@ -535,6 +552,10 @@ body.quest_battle{
   }
 }
 @media (max-width: 900px) {
+  .refer_friend .w-50{
+    width: 100% !important;
+  }
+
   .demo{
     width: 300px;
   }  
@@ -547,7 +568,7 @@ body.quest_battle{
     width: 500px;
   }  
   .row.indent_on_mobile{
-    margin-left: 20%;
+    margin-left: 5%;
   }
   #desc{
     margin-top: 10%;
@@ -555,7 +576,7 @@ body.quest_battle{
     overflow-y: scroll;
   }
   .back_gradient {
-    background-size: 100% 700px !important;
+    background-size: 100% 650px !important;
   }
 
 }

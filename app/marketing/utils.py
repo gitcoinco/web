@@ -335,8 +335,6 @@ def handle_marketing_callback(_input, request):
                         target_profile = request.user.profile
                         target_profile.referrer = profile
                         target_profile.save()
-            else:
-                messages.info(request, "You have been selected to receive a $5.00 Gitcoin Grants voucher. Login to use it.")
         # add user to a group
         if callback_reference.split(':')[0] == 'add_to_group':
             if request.user.is_authenticated:

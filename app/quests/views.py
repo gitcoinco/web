@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 x_frame_option = 'allow-from https://onemilliondevs.com/'
 
-max_ref_depth = 7
+max_ref_depth = 4
 
 def record_quest_activity(quest, associated_profile, event_name, override_created=None):
     kwargs = {
@@ -130,6 +130,7 @@ def index(request):
 
 
     params = {
+        'profile': request.user.profile if request.user.is_authenticated else None,
         'quests': quests,
         'leaderboard': get_leaderboard(),
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
@@ -187,6 +188,8 @@ def details(request, obj_id, name):
                     qa.save()
                 did_win = can_continue and len(quest.questions) <= qn
                 if did_win:
+                    was_already_beaten = quest.is_beaten(request.user)
+                    first_time_beaten = not was_already_beaten
                     record_quest_activity(quest, request.user.profile, 'beat_quest')
                     btcs = BulkTransferCoupon.objects.filter(
                         token=quest.kudos_reward,
@@ -212,7 +215,8 @@ def details(request, obj_id, name):
                     prize_url = f"{btc.url}?cb=ref:{request.user.profile.ref_code}&tweet_url={settings.BASE_URL}{quest.url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
                     qa.success=True
                     qa.save()
-                    record_award_helper(qa, qa.profile)
+                    if first_time_beaten:
+                        record_award_helper(qa, qa.profile)
 
             response = {
                 "question": quest.questions_safe(qn),

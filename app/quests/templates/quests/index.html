@@ -110,13 +110,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <h1 id=refer class="mt-3">Better with Friends</h1>
 </div>
 
-<div class="row indent_on_mobile mt-0" style="background-color: #fafafa;">
+<div class="row indent_on_mobile mt-0 refer_friend" style="background-color: #fafafa;">
   <div class="container-fluid py-0 text-center">
-    <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 200px; margin-top: -170px;" />
+    <img src="{% static 'v2/images/grants/robots.png' %}" class=top_img />
   </div>
 </div>
 
-<div class="row indent_on_mobile" style="background-color: #fafafa;">
+<div class="row indent_on_mobile refer_friend" style="background-color: #fafafa;">
   <div class="container-fluid py-4">
     <div class="container w-50 float-left">
       <strong>Gitcoin Quests are a team sport!</strong>.
@@ -161,6 +161,35 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </tr>
         {% endfor %}
       </table>
+      <div class="referrals">
+        {% if profile %}
+        You were referred by:
+          {% if profile.referrer %}
+            <a href="{{ref.handle}}">
+              <img src="/dynamic/avatar/{{profile.referrer.handle}}">
+              @{{profile.referrer.handle}}
+            </a>
+          {% else %}
+            (not referred)
+          {% endif %}
+        <br>
+        You have referred {{profile.referred.count}} user{{profile.referred.count|pluralize}}
+          {% if profile.referred.count %}
+          :
+            {% for ref in profile.referred.all %}
+              <a href="{{ref.handle}}">
+                <img src="/dynamic/avatar/{{ref.handle}}">
+                @{{ref.handle}}
+              </a>
+            {% endfor %}
+          {% else %}
+          .
+          {% endif %}
+        {% else %}
+          <BR>
+          <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">Login</a> to see your referrals.
+        {% endif %}
+      </div>
     </div>
   </div>
 </div>
