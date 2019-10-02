@@ -3907,7 +3907,7 @@ class HackathonEvent(SuperModel):
         return f'{self.name} - {self.start_date}'
 
     @property
-    def bounties(self):
+    def get_current_bounties(self):
         return Bounty.objects.filter(event=self, network='mainnet').current()
 
     @property
@@ -3915,10 +3915,10 @@ class HackathonEvent(SuperModel):
         stats = {
             'range': f"{self.start_date.strftime('%m/%d/%Y')} to {self.end_date.strftime('%m/%d/%Y')}",
             'logo': self.logo.url if self.logo else None,
-            'num_bounties': self.bounties.count(),
-            'num_bounties_done': self.bounties.filter(idx_status='done').count(),
-            'num_bounties_open': self.bounties.filter(idx_status='open').count(),
-            'total_volume': sum(self.bounties.values_list('_val_usd_db', flat=True)),
+            'num_bounties': self.get_current_bounties.count(),
+            'num_bounties_done': self.get_current_bounties.filter(idx_status='done').count(),
+            'num_bounties_open': self.get_current_bounties.filter(idx_status='open').count(),
+            'total_volume': sum(self.get_current_bounties.values_list('_val_usd_db', flat=True)),
         }
         return stats
 
