@@ -720,7 +720,7 @@ def receive_bulk(request, secret):
     coupon = coupons.first()
     _class = request.GET.get('class', '')
     if coupon.num_uses_remaining <= 0:
-        messages.info(request, f'Sorry but the coupon for a free kudos has has expired.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
+        messages.info(request, f'Sorry but the coupon for a free kudos has been used already.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
         return redirect(coupon.token.url)
 
     error = False
@@ -752,6 +752,7 @@ def receive_bulk(request, secret):
         'class': _class,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
-        'tweet_text': urllib.parse.quote_plus(tweet_text)
+        'tweet_text': urllib.parse.quote_plus(tweet_text),
+        'tweet_url': coupon.token.url if not request.GET.get('tweet_url') else request.GET.get('tweet_url'),
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)

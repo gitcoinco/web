@@ -57,8 +57,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
       <div class="container-fluid py-4 grants-results">
         <div class="container">
-          <strong>Gitcoin Grants</strong> has facilitated the distribution of <strong>${{grant_amount|floatformat:0}}k</strong> to Open Source since it's launch in January 2019.  <br>
+          <strong>Gitcoin Grants</strong> has facilitated the distribution of <strong>${{grant_amount|floatformat:0}}k</strong> to Open Source since it's launch in January 2019.  
           <a class="font-body" href="/results">See more results</a>.
+          <br>
+          <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 100px;" class="mt-1" />
+
         </div>
       </div>
 
@@ -66,20 +69,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div class="container">
           <div class="row">
           <div class="col-md-6">
-            <h1 class="mb-1 font-subtitle">$100k Round 3 is live NOW!</h2>
+            <h3 class="mb-1 font-subtitle">$100k Round 3 has been extended!</h3>
             <p class="mb-2 mt-2">
-            From 9/16 through 9/30 we will be matching contributions with quadratic funding.  <a href=https://gitcoin.co/blog/gitcoins-q3-match-100k-to-oss-projects/>More details here &gt;&gt;
+            From 9/16 through <strong>10/2 at 16:59 PST</strong> we will be matching contributions with quadratic funding.  <a href=https://gitcoin.co/blog/gitcoins-q3-match-100k-to-oss-projects/>More details here &gt;&gt;
               </a>
             </p>
 
-            <h2 class="mb-1 font-title">Gitcoin is the largest pilot for Quadratic Funding around!</h2>
-            <p class="mb-4">
-              Want to help fund open source in the 'mathematically optimal' way?
+              Gitcoin Grants is the largest pilot for Quadratic Funding around! Want to help fund open source in the 'mathematically optimal' way?
               </a>
             </p>
 
             {% if not user.is_authenticated %}
-              <a class="btn btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">{% trans 'Become a Matching Partner' %}</a>
+              <a class="btn btn-gc-blue" href="mailto:founders@gitcoin.co">{% trans 'Become a Matching Partner' %}</a>
             {% else %}
               <div class="btn btn-gc-blue font-subtitle font-weight-semibold" onclick="processPayment()">
                 {% trans 'Become a Matching Partner' %}
@@ -87,11 +88,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% endif %}
           </div>
           <div class="col-md-6">
-            <img src="{% static 'v2/images/grants/robots.png' %}" class="rounded mx-auto d-block"/>
-          </div>
-        </div>
         {% if current_partners or past_partners %}
-          <ul class="nav nav-tabs my-5" role="tablist">
+          <ul class="nav nav-tabs my-0" role="tablist">
             <li class="nav-item">
               <a class="nav-link nav-line active" id="currentpartners-tab" data-toggle="tab" href="#currentpartners" role="tab" aria-controls="currentpartners" aria-selected="true">Current Partners</a>
             </li>
@@ -130,7 +128,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {% endfor %}
             </div>
           </div>
-        {% endif %}
+        {% endif %}          </div>
+        </div>
       </div>
     </div>
 
@@ -172,6 +171,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <div class="heading">{% trans "SORT" %}</div>
               <select name="sort_option" id="sort_option">
 
+                <option value="weighted_shuffle">{% trans "Weighted Shuffle" %}</option>
                 <option value="match_pledge_amount_1">{% trans "Round 3 - $1 Contrib Matching Amount" %}</option>
                 <option value="match_pledge_amount_10">{% trans "Round 3 - $10 Contrib Matching Amount" %}</option>
                 <option value="match_pledge_amount_100">{% trans "Round 3 - $100 Contrib Matching Amount" %}</option>
@@ -186,6 +186,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <option value="amount_goal">{% trans "Goal: Lowest" %}</option>
                 <option value="-amount_received">{% trans "Amount Raised: Highest" %}</option>
                 <option value="amount_received">{% trans "Amount Raised: Lowest" %}</option>
+                <option value="-contribution_count">{% trans "Most Contributions" %}</option>
+                <option value="-contributor_count">{% trans "Most Contributors" %}</option>
               </select>
             </div>
           </div>
