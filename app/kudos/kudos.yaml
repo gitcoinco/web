@@ -5851,7 +5851,7 @@
    - ethereum
    - eth
   image: wave.svg
-  - name: road_to_devcon
+- name: road_to_devcon
   description: Congrats on submitting your project for the Road to Devcon hackathon!
   priceFinney: 5
   numClonesAllowed: 200
