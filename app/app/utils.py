@@ -183,7 +183,7 @@ def get_upload_filename(instance, filename):
 
 
 def sync_profile(handle, user=None, hide_profile=True):
-    from dashboard.models import Profile
+    from dashboard.models import Profile, Organization
     handle = handle.strip().replace('@', '').lower()
     data = get_user(handle)
     email = ''
@@ -207,9 +207,10 @@ def sync_profile(handle, user=None, hide_profile=True):
     # store the org info in postgres
     try:
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
-        print("Profile:", profile, "- created" if created else "- updated")
-        orgs = get_user(handle, '/orgs')
+        access_token = profile.user.social_auth.filter(provider='github').latest('pk').access_token
+        orgs = get_user(handle, '', scope='orgs', auth=(profile.handle, access_token))
         profile.organizations = [ele['login'] for ele in orgs]
+        print("Profile:", profile, "- created" if created else "- updated")
         keywords = []
         for repo in profile.repos_data_lite:
             language = repo.get('language') if repo.get('language') else ''
