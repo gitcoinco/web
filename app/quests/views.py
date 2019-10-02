@@ -18,6 +18,7 @@ from kudos.models import BulkTransferCoupon, BulkTransferRedemption
 from kudos.views import get_profile
 from quests.models import Quest, QuestAttempt, QuestPointAward
 from ratelimit.decorators import ratelimit
+from inbox.utils import send_notification_to_user
 
 logger = logging.getLogger(__name__)
 
@@ -49,14 +50,17 @@ def record_award_helper(qa, profile, layer=1):
         return
 
     # record points
+    value = 1/(1**layer)
     QuestPointAward.objects.create(
         questattempt=qa,
         profile=profile,
-        value=1/(1**layer)
+        value=value
         )
 
     # record kudos
-    if layer > 1:
+    if layer > 1 or settings.DEBUG:
+        gitcoinbot = get_profile('gitcoinbot')
+        quest = qa.quest
         btc = BulkTransferCoupon.objects.create(
             token=quest.kudos_reward,
             tag='quest',
@@ -65,12 +69,15 @@ def record_award_helper(qa, profile, layer=1):
             current_uses=0,
             secret=random.randint(10**19, 10**20),
             comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
-            sender_profile=get_profile('gitcoinbot'),
+            sender_profile=gitcoinbot,
             metadata={
                 'recipient': profile.pk,
             }
             )
-        # TODO : record inbox msg
+        cta_url = btc.url
+        cta_text = 'Redeem Kudos'
+        msg_html = f"@{qa.profile.handle} just beat '{qa.quest.title}'.  You earned {round(value,2)} quest points & a kudos for referring them."
+        send_notification_to_user(gitcoinbot.user, profile.user, cta_url, cta_text, msg_html)
 
     # recursively record points for your referals quest
     if profile.referrer:
