@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
+import hashlib
 import json
 
 from django.core.management.base import BaseCommand
@@ -34,7 +35,7 @@ anonymize = True
 
 def do_anonymize(handle):
     if anonymize:
-        handle = "fdsfsdf"
+        handle = hashlib.sha224(handle.encode('utf-8')).hexdigest()
     return handle
 
 
