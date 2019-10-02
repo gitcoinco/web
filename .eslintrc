@@ -85,6 +85,7 @@
     "newline-after-var": [
       "error", "always"
     ],
+    "no-descending-specificity": "warn",
     "no-console": "warn",
     "no-div-regex": "error",
     "no-else-return": "error",
