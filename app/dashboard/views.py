@@ -96,6 +96,35 @@ confirm_time_minutes_target = 4
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 
+def org_perms(request):
+    if request.user.is_authenticated and getattr(request.user, 'profile', None):
+        profile = request.user.profile
+    else:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+             status=401)
+    orgs = profile.profile_organizations.all()
+
+    response_data = []
+    for org in orgs:
+        print(org)
+        org_perms = {'name': org.name, 'users': []}
+        groups = org.groups.all().filter(user__isnull=False)
+        for g in groups: # "admin", "write", "pull", "none"
+            print(g)
+            group_data = g.name.split('-')
+            if group_data[1] != "role" and group_data[1] != "member": #skip repo level groups
+                continue
+            print(g.user_set.prefetch_related('profile').all())
+            org_perms['users'].append(
+                *[{'handle': u.profile.handle,
+                   'role': group_data[2],
+                   'name': '{} {}'.format(u.first_name, u.last_name)}
+                for u in g.user_set.prefetch_related('profile').all()])
+        response_data.append(org_perms)
+    return JsonResponse({'orgs': response_data}, safe=False)
+
+
 def record_user_action(user, event_name, instance):
     instance_class = instance.__class__.__name__.lower()
     kwargs = {
@@ -2433,7 +2462,7 @@ def profile(request, handle, tab=None):
     default_tab = 'activity'
     tab = tab if tab else default_tab
     handle = handle.replace("@", "")
-    
+
     # make sure tab param is correct
     all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people']
     tab = default_tab if tab not in all_tabs else tab
@@ -2441,7 +2470,7 @@ def profile(request, handle, tab=None):
         # someone trying to go to their own profile?
         tab = handle
         handle = request.user.profile.handle
-    
+
     # user only tabs
     if not handle and request.user.is_authenticated:
         handle = request.user.username
