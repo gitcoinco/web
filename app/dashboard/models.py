@@ -2626,7 +2626,7 @@ class Profile(SuperModel):
         if visits_last_month > med_threshold:
             return "Med"
         return "Low"
-            
+
 
 
     def calc_longest_streak(self):
@@ -3256,8 +3256,8 @@ class Profile(SuperModel):
                 logger.exception(e)
                 pass
 
-        if sum_type == 'collected' and self.tips:
-            eth_sum = eth_sum + sum([ float(amount.value_in_eth) for amount in self.tips ])
+        # if sum_type == 'collected' and self.tips:
+        #     eth_sum = eth_sum + sum([ float(amount.value_in_eth) for amount in self.tips ])
 
         return eth_sum
 
@@ -3423,7 +3423,7 @@ class Profile(SuperModel):
         sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
-        
+
         sum_all_funded_tokens = self.get_all_tokens_sum(sum_type='funded', bounties=funded_bounties, network=network)
         sum_all_collected_tokens = self.get_all_tokens_sum(
             sum_type='collected', bounties=fulfilled_bounties, network=network
