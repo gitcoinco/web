@@ -7,13 +7,6 @@
   margin-top: 5px;
   padding-top: 0px;
 }
-#announce img{
-  margin: 0px auto;
-  margin-top: -150px;
-  margin-bottom: -50px;
-  width: 200px;
-  height: 200px;
-}
 .demo {
   max-width: 600px;
   cursor: pointer;
@@ -169,7 +162,13 @@ body.quest_battle p{
 .quest-card:hover .card_head img{
   filter: grayscale(0%);
 }
-
+#announce img{
+  margin: 0px auto;
+  margin-top: -150px;
+  margin-bottom: -50px;
+  width: 200px;
+  height: 200px;
+}
 #leaderboard img {
   height: 40px;
   width: 40px;
