@@ -243,9 +243,7 @@ var callbacks = {
     var tags = [];
 
     keywords.forEach(function(keyword) {
-
-     keyword = keyword.replace(/[\W_]+/g, "");
-
+      keyword = keyword.replace(/[\W_]+/g, '');
       tags.push('<a href="/explorer/?q=' + keyword.trim() + '"><div class="tag keyword">' + keyword + '</div></a>');
     });
     return [ 'issue_keywords', tags ];

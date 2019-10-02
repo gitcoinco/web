@@ -159,19 +159,16 @@ var sanitizeDict = function(d, keyToIgnore) {
 };
 
 var sanitizeAPIResults = function(results, keyToIgnore) {
+  if (results.length >= 1) {
+    for (var i = 0; i < results.length; i++) {
+      results[i] = sanitizeDict(results[i], keyToIgnore);
+    }
+    return results;
+  }
 
-	if (results.length >= 1) {
-		for (var i = 0; i < results.length; i++) {
-			results[i] = sanitizeDict(results[i], keyToIgnore);
-		}
-
-		return results;
-	} else {
-		results = [results];
-		results[0] = sanitizeDict(results[0], keyToIgnore);
-
-		return results[0];
-	}
+  results = [results];
+  results[0] = sanitizeDict(results[0], keyToIgnore);
+  return results[0];
 };
 
 function ucwords(str) {
@@ -185,7 +182,7 @@ var sanitize = function(str) {
     return str;
   }
   result = DOMPurify.sanitize(str);
-  result = result.replace(/(<([^>]+)>)/ig,"");
+  result = result.replace(/(<([^>]+)>)/ig, '');
 
   return result;
 };
@@ -643,9 +640,9 @@ var retrieveIssueDetails = function() {
 
   $.get(request_url, function(result) {
     result = sanitizeAPIResults(result);
-	if (result['keywords']) {
+    if (result['keywords']) {
       var keywords = result['keywords'];
-
+	  
       showChoices('#keyword-suggestions', '#keywords', keywords);
       $('#keywords').select2({
         placeholder: 'Select tags',
@@ -656,11 +653,9 @@ var retrieveIssueDetails = function() {
       }).trigger('change');
 
     }
-
     target_eles['title'].val(result['title']);
     target_eles['description'].val(result['description']);
     $('#no-issue-banner').hide();
-
     $('#issue-details, #issue-details-edit').show();
 
     // $('#title--text').html(result['title']); // TODO: Refactor
