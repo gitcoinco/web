@@ -189,7 +189,12 @@ body.quest_battle p{
   height: 250px;
   margin-left: -75px;
 }
-
+.reward_schedule tr{
+  border-radius: 5px;
+}
+.reward_schedule tr td{
+  padding: 3px 5px;
+}
 .character.harm h3,
 .character.harm p{
   background-color:  #F9006C;

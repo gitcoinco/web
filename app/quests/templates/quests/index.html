@@ -135,7 +135,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">Login</a> to get your personal reflink.
       {% endif %}
     </div>
-    <div class="container w-50 float-right reward_schedulle">
+    <div class="container w-50 float-right reward_schedule">
       <table class="w-100">
         <tr style="font-weight: bold;">
           <td>
@@ -146,7 +146,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </td>
         </tr>
         {% for row in rewards_schedule %}
-        <tr style="{% cycle 'background-color: #fafafa;' '' %}">
+        <tr style="{% cycle 'background-color: #fafafa;' 'background-color: #eaeaea;' %}">
           <td>
             {{row.layer}}
           </td>
