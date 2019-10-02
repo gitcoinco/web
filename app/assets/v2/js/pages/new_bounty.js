@@ -221,7 +221,7 @@ const handleTokenAuth = () => {
       isTokenAuthed = false;
       tokenAuthAlert(isTokenAuthed);
       resolve(isTokenAuthed);
-    } else if (tokenName == 'ETH') {
+    } else if (tokenName == 'ETH' || tokenName == 'BTC') {
       tokenAuthAlert(isTokenAuthed);
       resolve(isTokenAuthed);
     } else {
@@ -514,7 +514,19 @@ $('#neverExpires').on('click', () => {
   togggleEnabled('#neverExpires', '#expirationTimeDelta', false, true);
 });
 
+$('#submitBountyGeneric').validate({
+  submitHandler: function(form) {
+    // Generic Cross-Chain
+    console.log('submit bounty generic');
+
+    $('#payment-modal').bootstrapModal();
+    new QRCode(document.getElementById("qrcode"), "http://jindo.dev.naver.com/collie");
+
+  }
+});
+
 $('#submitBounty').validate({
+
   errorPlacement: function(error, element) {
     if (element.attr('name') == 'bounty_category') {
       error.appendTo($(element).parents('.btn-group-toggle').next('.cat-error'));
@@ -527,6 +539,7 @@ $('#submitBounty').validate({
     select2Start: {
       required: 'Please select the right keywords.'
     }
+
   },
   submitHandler: function(form) {
     try {
@@ -616,7 +629,9 @@ $('#submitBounty').validate({
     if ($('#neverExpires').is(':checked')) {
       expire_date = mock_expire_date;
     }
+
     // https://github.com/ConsenSys/StandardBounties/issues/21
+
     var ipfsBounty = {
       payload: {
         title: metadata.issueTitle,
@@ -1001,6 +1016,7 @@ $('#submitBounty').validate({
       }
     }
   }
+
 });
 
 $('[name=permission_type]').on('change', function() {

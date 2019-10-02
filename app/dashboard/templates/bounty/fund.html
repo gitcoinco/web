@@ -25,6 +25,8 @@
   <meta name="description" content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
   <link rel="stylesheet" href={% static "v2/css/lib/daterangepicker.css" %}>
   <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+  <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
+
 </head>
 
 <body class="interior {{active}} g-font-muli" style="background-color: #FFFFFF;">
@@ -49,7 +51,7 @@
         <img src="{% static "v2/images/prime.png" %}">
       </div>
       <div class="col-lg-8 col-sm-12 my-5" id="primary_form">
-        <form id="submitBounty" class="pt-5">
+        <form id="submitBountyGeneric" class="pt-5">
 
           <div id="about-section" class="pt-2 bg-white rounded p-5">
             <h1 class="text-center title">{% trans "Fund Issue" %}</h1>
@@ -431,11 +433,38 @@
     </div>
   </div>
 
+  <div class="modal" tabindex="-1" role="dialog" id="payment-modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Bounty Fee</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Scan the QR Code to pay the fee to create your bounty.</p>
+          <div id="qrcode"></div>
+          <div class="clearfix">
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <span>Waiting for transaction to be mined...</span>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {% include 'shared/bottom_notification.html' %}
   {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts_lite.html' %}
   {% include 'shared/footer.html' %}
-  
+
 </body>
 
 {% include 'shared/current_profile.html' %}
