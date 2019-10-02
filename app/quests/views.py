@@ -14,11 +14,11 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity
+from inbox.utils import send_notification_to_user
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption
 from kudos.views import get_profile
 from quests.models import Quest, QuestAttempt, QuestPointAward
 from ratelimit.decorators import ratelimit
-from inbox.utils import send_notification_to_user
 
 logger = logging.getLogger(__name__)
 

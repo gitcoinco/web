@@ -106,17 +106,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
   {% endfor %}
 </div>
-<div class="row indent_on_mobile mt-5">
+<div class="row indent_on_mobile pt-2" style="margin-top: 100px; background-color: #fafafa;">
   <h1 id=refer class="mt-3">Better with Friends</h1>
 </div>
 
-<div class="row indent_on_mobile mt-2">
+<div class="row indent_on_mobile mt-0" style="background-color: #fafafa;">
   <div class="container-fluid py-0 text-center">
-    <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 200px; margin-top: -110px" />
+    <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 200px; margin-top: -170px;" />
   </div>
 </div>
 
-<div class="row indent_on_mobile">
+<div class="row indent_on_mobile" style="background-color: #fafafa;">
   <div class="container-fluid py-4">
     <div class="container w-50 float-left">
       <strong>Gitcoin Quests are a team sport!</strong>.
@@ -168,7 +168,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% if leaderboard|length %}
 <div class="row indent_on_mobile">
-  <h1 class="mt-3">Leaderboard</h1>
+  <h1 style="margin-top: 100px;">Leaderboard</h1>
+  <div id="announce">
+    <img class="mr-1" src="{% static "v2/images/quests/enemies/samurai.svg" %}">
+    <h4><strong>The Devcon 5 Challenge is Live!</strong></h4>
+    <p>Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day Sunday 10/6 will <strong>win a KeepKey hardware wallet.</strong>
+  </div>
+
 </div>
 <div class="row indent_on_mobile">
   <div id=leaderboard>
