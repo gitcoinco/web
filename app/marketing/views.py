@@ -40,7 +40,7 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from cacheops import cached_view
 from dashboard.models import Profile, TokenApproval
-from dashboard.utils import create_user_action
+from dashboard.utils import create_user_action, get_orgs_perms
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_feedback
@@ -723,7 +723,7 @@ def org_settings(request):
     #         return logout_redirect
     #     else:
     #         msg = _('Error: did not understand your request')
-
+    orgs = get_orgs_perms(profile)
     context = {
         'is_logged_in': is_logged_in,
         'nav': 'home',
@@ -731,6 +731,7 @@ def org_settings(request):
         'title': _('Organizations Settings'),
         'navs': get_settings_navs(request),
         'es': es,
+        'orgs': orgs,
         'profile': profile,
         'msg': msg,
     }

@@ -53,7 +53,10 @@ import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
 from dashboard.context import quickstart as qs
-from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
+from dashboard.utils import (
+    ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms,
+    profile_helper
+)
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -99,29 +102,30 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 def org_perms(request):
     if request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
+        response_data = get_orgs_perms(profile)
     else:
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
              status=401)
-    orgs = profile.profile_organizations.all()
+    # orgs = profile.profile_organizations.all()
 
-    response_data = []
-    for org in orgs:
-        print(org)
-        org_perms = {'name': org.name, 'users': []}
-        groups = org.groups.all().filter(user__isnull=False)
-        for g in groups: # "admin", "write", "pull", "none"
-            print(g)
-            group_data = g.name.split('-')
-            if group_data[1] != "role": #skip repo level groups
-                continue
-            print(g.user_set.prefetch_related('profile').all())
-            org_perms['users'].append(
-                *[{'handle': u.profile.handle,
-                   'role': group_data[2],
-                   'name': '{} {}'.format(u.first_name, u.last_name)}
-                for u in g.user_set.prefetch_related('profile').all()])
-        response_data.append(org_perms)
+    # response_data = []
+    # for org in orgs:
+    #     print(org)
+    #     org_perms = {'name': org.name, 'users': []}
+    #     groups = org.groups.all().filter(user__isnull=False)
+    #     for g in groups: # "admin", "write", "pull", "none"
+    #         print(g)
+    #         group_data = g.name.split('-')
+    #         if group_data[1] != "role": #skip repo level groups
+    #             continue
+    #         print(g.user_set.prefetch_related('profile').all())
+    #         org_perms['users'].append(
+    #             *[{'handle': u.profile.handle,
+    #                'role': group_data[2],
+    #                'name': '{} {}'.format(u.first_name, u.last_name)}
+    #             for u in g.user_set.prefetch_related('profile').all()])
+    #     response_data.append(org_perms)
     return JsonResponse({'orgs': response_data}, safe=False)
 
 
