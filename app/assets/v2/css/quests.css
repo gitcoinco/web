@@ -1,6 +1,19 @@
+#announce{
+  width: 100%;
+  display: block;
+  background-color: #fef3c0;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 5px;
+  padding-top: 0px;
+}
 .demo {
   max-width: 600px;
   cursor: pointer;
+}
+.difficulty_tab{
+  display: block;
+  width: 100%;
 }
 .card_head {
   height: 140px;
@@ -149,10 +162,16 @@ body.quest_battle p{
 .quest-card:hover .card_head img{
   filter: grayscale(0%);
 }
-
+#announce img{
+  margin: 0px auto;
+  margin-top: -150px;
+  margin-bottom: -50px;
+  width: 200px;
+  height: 200px;
+}
 #leaderboard img {
-  height: 80px;
-  width: 80px;
+  height: 40px;
+  width: 40px;
   border-radius: 50px;
 }
 #enemy img,
@@ -170,7 +189,12 @@ body.quest_battle p{
   height: 250px;
   margin-left: -75px;
 }
-
+.reward_schedule tr{
+  border-radius: 5px;
+}
+.reward_schedule tr td{
+  padding: 3px 5px;
+}
 .character.harm h3,
 .character.harm p{
   background-color:  #F9006C;
@@ -410,8 +434,8 @@ body.quest_battle{
   width: 100%;
 }
 #leaderboard .inner_row {
-  height: 120px;
-  padding: 20px;
+  height: 70px;
+  padding: 10px;
   width: 100%;
 }
 

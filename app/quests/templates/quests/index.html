@@ -39,11 +39,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
 </div>
 <div class="row indent_on_mobile available_quests">
+  <h1 class="mt-3" style="width: 100%;">Quests <span id="alpha">Alpha</span></h1>
+  <div id="tabs">
+    <div class="container">
+      <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+      {% for difficulty_level, the_quests in quests%}
+        <li class="nav-item">
+          <a class="nav-link nav-line {% if difficulty_level == 'Beginner' %}active{%endif%}" href="#" data-href="{{difficulty_level}}">
+          {{difficulty_level}} Quests
+          </a>
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
   {% for difficulty_level, the_quests in quests%}
-  <h1 class="mt-3" style="width: 100%;">{{difficulty_level}} Quests <span id="alpha">Alpha</span></h1>
-  <div>
+  <div class="difficulty_tab {{difficulty_level}} {% if difficulty_level != 'Beginner' %}hidden{%endif%}">
     {% for unlocked, beaten, cooldown, quest in the_quests %}
-    <div style="{% cycle 'background-color: #fafafa;' '' %}; width: 250px; display: block; float: left; border-radius: 10px; height: 490px; text-align: center;" class="m-3 p-2 quest-card {%if not unlocked%}locked{%elif beaten%}beaten{%else%}available{%endif%} {%if cooldown%}cooldown{%endif%}">
+    <div id="{{difficulty_level}}" style="{% cycle 'background-color: #fafafa;' '' %}; width: 250px; display: block; float: left; border-radius: 10px; height: 490px; text-align: center;" class="m-3 p-2 quest-card {%if not unlocked%}locked{%elif beaten%}beaten{%else%}available{%endif%} {%if cooldown%}cooldown{%endif%}">
       <div class="card_head">
         <span class="boss">#boss</span>
         <img class="card_img boss" src="/static/{{quest.game_metadata.enemy.art}}" title="{{quest.game_metadata.enemy.title}}">
@@ -93,22 +106,87 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
   {% endfor %}
 </div>
+<div class="row indent_on_mobile pt-2" style="margin-top: 100px; background-color: #fafafa;">
+  <h1 id=refer class="mt-3">Better with Friends</h1>
+</div>
+
+<div class="row indent_on_mobile mt-0" style="background-color: #fafafa;">
+  <div class="container-fluid py-0 text-center">
+    <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 200px; margin-top: -170px;" />
+  </div>
+</div>
+
+<div class="row indent_on_mobile" style="background-color: #fafafa;">
+  <div class="container-fluid py-4">
+    <div class="container w-50 float-left">
+      <strong>Gitcoin Quests are a team sport!</strong>.
+      You can climb the leaderboard, and earn points, faster, by referring friends to share tips & play together.  
+      <br>
+      <br>
+      After each quest you complete you will be invited to show off your quest completion + share a referral link.  You will earn points for every user who join completes a quest after joining with your referral link.
+      <br>
+      {% if REFER_LINK %}
+        <BR>
+        Your personal referral link:
+        <br>
+        <input id=reflink type="text" value="{{REFER_LINK}}" class="w-100" readonly="readonly">
+        <br>
+      {% else %}
+      <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">Login</a> to get your personal reflink.
+      {% endif %}
+    </div>
+    <div class="container w-50 float-right reward_schedule">
+      <table class="w-100">
+        <tr style="font-weight: bold;">
+          <td>
+            Degree of Seperation From You
+          </td>
+          <td>
+            Your Bonus Quest Point Reward When They Complete Quest
+          </td>
+        </tr>
+        {% for row in rewards_schedule %}
+        <tr style="{% cycle 'background-color: #fafafa;' 'background-color: #eaeaea;' %}">
+          <td>
+            {{row.layer}}
+          </td>
+          <td>
+            {% if row.reward_denominator == 1 %}
+              {{row.reward_denominator}}
+            {% else %}
+              1/{{row.reward_denominator}}
+            {% endif %}
+            point{{row.reward_denominator|pluralize}} + <img style="width:17px; height: 17px;" src="{% static "v2/images/quests/rando_kudos.gif" %}"> quest kudos 
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+
 
 {% if leaderboard|length %}
 <div class="row indent_on_mobile">
-  <h1 class="mt-3">Leaderboard</h1>
+  <h1 style="margin-top: 100px;">Leaderboard</h1>
+  <div id="announce">
+    <img class="mr-1" src="{% static "v2/images/quests/enemies/samurai.svg" %}">
+    <h4><strong>The Devcon 5 Challenge is Live!</strong></h4>
+    <p>Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day Sunday 10/6 will <strong>win a KeepKey hardware wallet.</strong>
+  </div>
+
 </div>
 <div class="row indent_on_mobile">
   <div id=leaderboard>
     {% for item in leaderboard %}
     <div class="inner_row" style="{% cycle 'background-color: #fafafa;' '' %}";>
-      <div class="float-left mr-2 ml-2 pt-3">{{ forloop.counter }}</div>
-      <div class="float-left mr-2 ml-2"><img src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px; width: 150px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
+      <div class="float-left mr-2 ml-2">{{ forloop.counter }}</div>
+      <div class="float-left mr-2 ml-2"><img src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px; width: 120px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
       <div style="float: right; width: 500px; text-align: right;">
       {% for btr in item.2%}
       <img src="{{btr.0}}" title="{{btr.1}}" style="height: 50px; width: 50px; border-radius: 0px;">
       {% endfor %}
-      {{item.1}} quest{{item.1|pluralize}} beaten</div>
+      {{item.1}} point{{item.1|pluralize}}</div>
     </div>
     {% endfor %}
   </div>
