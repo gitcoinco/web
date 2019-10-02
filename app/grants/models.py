@@ -231,6 +231,16 @@ class Grant(SuperModel):
             return None
 
     @property
+    def tags(self):
+        from grants.views import nav_options
+        tags = []
+        for ele in nav_options:
+            if Grant.objects.keyword(ele['keyword']).filter(pk=self.pk).exists():
+                tags.append(ele['label'])
+        return tags
+
+
+    @property
     def get_contribution_count(self):
         num = 0
         for sub in self.subscriptions.all():

@@ -65,6 +65,19 @@ if True:
     clr_matching_banners_style = 'results'
     matching_live = ''
 
+nav_options = [
+    {'label': 'All', 'keyword': ''},
+    {'label': 'Security', 'keyword': 'security'},
+    {'label': 'Scalability', 'keyword': 'scalability'},
+    {'label': 'UI/UX', 'keyword': 'UI'},
+    {'label': 'DeFI', 'keyword': 'defi'},
+    {'label': 'Education', 'keyword': 'education'},
+    {'label': 'Wallets', 'keyword': 'wallet'},
+    {'label': 'Community', 'keyword': 'community'},
+    {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
+    {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
+]
+
 def get_keywords():
     """Get all Keywords."""
     return json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)])
@@ -107,20 +120,6 @@ def grants(request):
         ).order_by('-pk')
     if grant_stats.exists():
         grant_amount = grant_stats.first().val / 1000
-
-
-    nav_options = [
-        {'label': 'All', 'keyword': ''},
-        {'label': 'Security', 'keyword': 'security'},
-        {'label': 'Scalability', 'keyword': 'scalability'},
-        {'label': 'UI/UX', 'keyword': 'UI'},
-        {'label': 'DeFI', 'keyword': 'defi'},
-        {'label': 'Education', 'keyword': 'education'},
-        {'label': 'Wallets', 'keyword': 'wallet'},
-        {'label': 'Community', 'keyword': 'community'},
-        {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
-        {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
-    ]
 
     now = datetime.datetime.now()
     params = {
