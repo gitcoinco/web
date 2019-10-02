@@ -155,8 +155,8 @@ body.quest_battle p{
 }
 
 #leaderboard img {
-  height: 80px;
-  width: 80px;
+  height: 40px;
+  width: 40px;
   border-radius: 50px;
 }
 #enemy img,
@@ -414,8 +414,8 @@ body.quest_battle{
   width: 100%;
 }
 #leaderboard .inner_row {
-  height: 120px;
-  padding: 20px;
+  height: 70px;
+  padding: 10px;
   width: 100%;
 }
 

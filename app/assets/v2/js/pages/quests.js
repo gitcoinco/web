@@ -306,6 +306,16 @@ $(document).ready(function() {
     }
   }, 100);
 
+  $('#reflink').click(function() {
+    $(this).focus();
+    $(this).select();
+    document.execCommand('copy');
+    $(this).after('<div class=after_copy>Copied to clipboard</div>');
+    setTimeout(function() {
+      $('.after_copy').remove();
+    }, 500);
+  });
+
   $('.demo').click(function(e) {
     e.preventDefault();
     $(this).fadeOut(function() {
@@ -319,10 +329,11 @@ $(document).ready(function() {
   $('#tabs a').click(function(e) {
     e.preventDefault();
     var target = $(this).data('href');
+
     $('.difficulty_tab').addClass('hidden');
     $('.nav-link').removeClass('active');
     $(this).addClass('active');
-    $('.difficulty_tab.'+target).removeClass('hidden');
+    $('.difficulty_tab.' + target).removeClass('hidden');
   });
 
   $('.quest-card.available').click(function(e) {

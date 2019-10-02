@@ -312,23 +312,32 @@ def get_platform_wide_stats(since_last_n_days=90):
     }
 
 
-def handle_marketing_callback(key, request):
+def handle_marketing_callback(_input, request):
+    #config
     from marketing.models import MarketingCallback
+    from dashboard.models import Profile
+
+    #setup
+    key = _input if not ':' in _input else _input.split(':')[0]
     callbacks = MarketingCallback.objects.filter(key=key)
     if callbacks.exists():
         callback_reference = callbacks.first().val
-        if callback_reference.split(':')[0] == 'ref':
+        #set user referrer
+        if key == 'ref':
             if request.user.is_authenticated:
                 from django.contrib.auth.models import User
-                value = callback_reference.split(':')[1]
+                value = _input.split(':')[1]
                 pk = int(value, 16)
-                users = User.objects.filter(pk=pk)
-                if users.exists():
-                    user = users.first()
-                    request.user.profile.referrer = user.profile
-                    request.user.profile.save()
+                profs = Profile.objects.filter(pk=pk)
+                if profs.exists():
+                    profile = profs.first()
+                    if profile.pk != request.user.profile.pk:
+                        target_profile = request.user.profile
+                        target_profile.referrer = profile
+                        target_profile.save()
             else:
                 messages.info(request, "You have been selected to receive a $5.00 Gitcoin Grants voucher. Login to use it.")
+        # add user to a group
         if callback_reference.split(':')[0] == 'add_to_group':
             if request.user.is_authenticated:
                 from django.contrib.auth.models import Group

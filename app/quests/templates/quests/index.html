@@ -106,13 +106,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
   {% endfor %}
 </div>
-<div class="row indent_on_mobile">
-  <h1 id=refer class="mt-3">Refer a Friend</h1>
+<div class="row indent_on_mobile mt-5">
+  <h1 id=refer class="mt-3">Better with Friends</h1>
 </div>
 
-<div class="row indent_on_mobile">
-  <div class="container-fluid py-4">
-    <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 200px;" class="mt-1" />
+<div class="row indent_on_mobile mt-2">
+  <div class="container-fluid py-0 text-center">
+    <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 200px; margin-top: -110px" />
   </div>
 </div>
 
@@ -122,10 +122,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <strong>Gitcoin Quests are a team sport!</strong>.
       You can climb the leaderboard, and earn points, faster, by referring friends to share tips & play together.  
       <br>
+      <br>
+      After each quest you complete you will be invited to show off your quest completion + share a referral link.  You will earn points for every user who join completes a quest after joining with your referral link.
+      <br>
       {% if REFER_LINK %}
-        Your personal referal link:
+        <BR>
+        Your personal referral link:
         <br>
-        <input type="text" value="{{REFER_LINK}}" class="w-100">
+        <input id=reflink type="text" value="{{REFER_LINK}}" class="w-100" readonly="readonly">
         <br>
       {% else %}
       <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">Login</a> to get your personal reflink.
@@ -138,7 +142,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             Degree of Seperation From You
           </td>
           <td>
-            Point Reward
+            Your Bonus Quest Point Reward When They Complete Quest
           </td>
         </tr>
         {% for row in rewards_schedule %}
@@ -147,7 +151,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {{row.layer}}
           </td>
           <td>
-            1/{{row.reward_denominator}}
+            {% if row.reward_denominator == 1 %}
+              {{row.reward_denominator}}
+            {% else %}
+              1/{{row.reward_denominator}}
+            {% endif %}
+            point{{row.reward_denominator|pluralize}} + <img style="width:17px; height: 17px;" src="{% static "v2/images/quests/rando_kudos.gif" %}"> quest kudos 
           </td>
         </tr>
         {% endfor %}
@@ -165,8 +174,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <div id=leaderboard>
     {% for item in leaderboard %}
     <div class="inner_row" style="{% cycle 'background-color: #fafafa;' '' %}";>
-      <div class="float-left mr-2 ml-2 pt-3">{{ forloop.counter }}</div>
-      <div class="float-left mr-2 ml-2"><img src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px; width: 150px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
+      <div class="float-left mr-2 ml-2">{{ forloop.counter }}</div>
+      <div class="float-left mr-2 ml-2"><img src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px; width: 120px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
       <div style="float: right; width: 500px; text-align: right;">
       {% for btr in item.2%}
       <img src="{{btr.0}}" title="{{btr.1}}" style="height: 50px; width: 50px; border-radius: 0px;">
