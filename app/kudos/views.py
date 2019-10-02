@@ -23,6 +23,7 @@ import logging
 import random
 import re
 import urllib.parse
+import uuid
 
 from django.conf import settings
 from django.contrib import messages
@@ -38,6 +39,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+import boto3
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_nonce, get_web3
@@ -45,13 +47,14 @@ from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
 from kudos.utils import kudos_abi
+from marketing.mails import new_kudos_request
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
 
 from .forms import KudosSearchForm
 from .helpers import get_token
-from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, TransferEnabledFor
+from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, TokenRequest, TransferEnabledFor
 
 logger = logging.getLogger(__name__)
 
@@ -756,3 +759,59 @@ def receive_bulk(request, secret):
         'tweet_url': coupon.token.url if not request.GET.get('tweet_url') else request.GET.get('tweet_url'),
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)
+
+
+def newkudos(request):
+    context = {
+        'active': 'newkudos',
+        'msg': None,
+    }
+
+    if not request.user.is_authenticated:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+        required_fields = ['name', 'description', 'priceFinney', 'artist', 'platform', 'numClonesAllowed', 'tags', 'to_address']
+        validation_passed = True
+        for key in required_fields:
+            if not request.POST.get(key):
+                context['msg'] = str(_('You must provide the following fields: ')) + key
+                validation_passed = False
+        if validation_passed:
+            #upload to s3
+            img = request.FILES.get('photo')
+            session = boto3.Session(
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            )
+
+            s3 = session.resource('s3')
+            key = f'media/uploads/{uuid.uuid4()}_{img.name}'
+            response = s3.Bucket(settings.MEDIA_BUCKET).put_object(Key=key, Body=img, ACL='public-read', ContentEncoding='image/svg+xml')
+            artwork_url = f'https://{settings.MEDIA_BUCKET}.s3-us-west-2.amazonaws.com/{key}'
+
+            # save / send email
+            obj = TokenRequest.objects.create(
+                profile=request.user.profile,
+                name=request.POST['name'],
+                description=request.POST['description'],
+                priceFinney=request.POST['priceFinney'],
+                artist=request.POST['artist'],
+                platform=request.POST['platform'],
+                numClonesAllowed=request.POST['numClonesAllowed'],
+                tags=",".split(request.POST['tags']),
+                to_address=request.POST['to_address'],
+                artwork_url=artwork_url,
+                network='mainnet',
+                approved=False,
+                metadata={
+                    'ip': get_ip(request),
+                    'email': request.POST.get('email'),
+                    }
+                )
+            new_kudos_request(obj) 
+
+            context['msg'] = str(_('Your Kudos has been submitted and will be listed within 2 business days if it is accepted.'))
+
+    return TemplateResponse(request, 'newkudos.html', context)

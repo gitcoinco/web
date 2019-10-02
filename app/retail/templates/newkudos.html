@@ -18,7 +18,6 @@
 {% load i18n static %}
 {% block body %}
 <link rel="stylesheet" href="{% static "v2/css/onepagesubmit.css" %}">
-
 <div class="container-fluid">
   <div class="row">
     <div class="col-12 col-md-5 pb-4">
@@ -29,7 +28,7 @@
     <div class="col-12 col-md-6 pr-2 pl-2 pb-4 form_container">
       <div style="max-width: 500px; margin: 0px auto;">
         <h4>
-          {% trans "New Token Request Form" %}
+          {% trans "New Kudos Submission Form" %}
         </h4>
         {% if msg %}
           <p>
@@ -41,26 +40,47 @@
             <img src="{% static "v2/images/tree/party_robot.jpg" %}">
           </div>
         {% endif %}
-        <form class="mt-5" id="newtoken" method="POST">
+        <form class="mt-5" id="newkudos" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
           <div class="form-group">
-            <label class="form__label" for="email">{% trans "Email address" %}</label>
+            <label class="form__label" for="email">{% trans "Contact email address" %}</label>
             <input type="email" name="email" class="form__input" placeholder='you@somewhere' value="{% if email %}{{ email }}{% endif %}" required>
           </div>
           <div class="form-group">
-            <label class="form__label" for="address">{% trans "Token Address" %}</label>
-            <input type="text" name="address" class="form__input" placeholder='0xabcdef' value="" required>
+            <label class="form__label" for="name">{% trans "Artwork (.svg)" %}</label>
+            <input type="file" name="photo" id="photo" class="form__input">
           </div>
           <div class="form-group">
-            <label class="form__label" for="symbol">{% trans "Token Symbol" %}</label>
-            <input type="text" name="symbol" class="form__input" placeholder='FOOBAR' value="" required>
+            <label class="form__label" for="name">{% trans "Name" %}</label>
+            <input type="text" name="name" class="form__input" placeholder='foo_bar' value="" required>
           </div>
           <div class="form-group">
-            <label class="form__label" for="decimals">{% trans "Token Decimal Places" %}</label>
-            <input type="number" name="decimals" class="form__input" placeholder='18' value="" required>
+            <label class="form__label" for="description">{% trans "Description" %}</label>
+            <input type="text" name="description" class="form__input" placeholder='This kudos is for those who foo the bar!' value="" required>
           </div>
           <div class="form-group">
-            <label class="form__label" for="network">{% trans "Token Network" %}</label>
-            <input type="text" name="network" class="form__input" placeholder='mainnet' value="mainnet" required>
+            <label class="form__label" for="priceFinney">{% trans "Price in Finney (1/1000 ETH)" %}</label>
+            <input type="number" name="priceFinney" class="form__input" placeholder='5' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="numClonesAllowed">{% trans "Number of Clones Allowed" %}</label>
+            <input type="number" name="numClonesAllowed" class="form__input" placeholder='150' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="platform">{% trans "Platform" %}</label>
+            <input type="text" name="platform" class="form__input" placeholder='gitcoin' value="gitcoin" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="tags">{% trans "Tags" %}</label>
+            <input type="text" name="tags" class="form__input" placeholder='tags, comma, dilimeted' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="artist">{% trans "Artist Name" %}</label>
+            <input type="text" name="artist" class="form__input" placeholder='' value="Mladen" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="to_address">{% trans "Owner Address" %}</label>
+            <input type="text" name="to_address" class="form__input" placeholder='0x0...abc109' value="0x00De4B13153673BCAE2616b67bf822500d325Fc3" required>
           </div>
           <div class="terms_container pt-4">
             <div class="form__checkbox">
@@ -73,8 +93,8 @@
 
           <div class="w-100 mt-2 terms_container">
             <div class="form__checkbox">
-              <input name='not_security' id='not_security' type="checkbox" value=1 required />
-              <label class="form__label" for=not_security style="display: flex;">{% blocktrans %}This token is not a security token.{% endblocktrans %}</label>
+              <input name='own_ip' id='own_ip' type="checkbox" value=1 required />
+              <label class="form__label" for=own_ip style="display: flex;">{% blocktrans %}I certify that I own the IP for this Kudos, and that I liscense it to users of the mainnet Kudos web3 smart contract..{% endblocktrans %}</label>
             </div>
           </div>
 
@@ -87,14 +107,7 @@
   </div>
 </div>
 {% block scripts %}
-<script>
-  $('#newtoken').validate();
-  $(document).ready(() => {
-    $('#newtoken input.btn-go').on('click', () => {
-      setTimeout(() => {
-        $('#newtoken input.btn-go').attr('disabled','disabled');
-      }, 1);
-    });
-  });
-</script>
+<!-- jQuery -->
+<script src="{% static "v2/js/pages/newkudos.js" %}"></script>
+
 {% endblock %}
