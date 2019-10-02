@@ -330,8 +330,11 @@ $(function() {
     const token_val = $('select[name=denomination]').val();
     const tokendetails = tokenAddressToDetails(token_val);
     var token = tokendetails['name'];
-
-
+    if (token == 'BTC') {
+      $('#gas-section').hide();
+    } else {
+      $('#gas-section').show();
+    }
     $('#summary-bounty-token').html(token);
     $('#summary-fee-token').html(token);
     populateBountyTotal();
@@ -514,14 +517,30 @@ $('#neverExpires').on('click', () => {
   togggleEnabled('#neverExpires', '#expirationTimeDelta', false, true);
 });
 
+function crossChainSubmit(data) {
+    const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
+    $('#payment-modal').bootstrapModal(fee);
+    var qr_string = "bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=" + fee;
+    new QRCode(document.getElementById("qrcode"), qr_string);
+}
+
 $('#submitBountyGeneric').validate({
   submitHandler: function(form) {
     // Generic Cross-Chain
-    console.log('submit bounty generic');
+    var data = {};
+    var disabled = $(form)
+      .find(':input:disabled')
+      .removeAttr('disabled');
 
-    $('#payment-modal').bootstrapModal();
-    new QRCode(document.getElementById("qrcode"), "http://jindo.dev.naver.com/collie");
+    $.each($(form).serializeArray(), function() {
+      if (data[this.name]) {
+        data[this.name] += ',' + this.value;
+      } else {
+        data[this.name] = this.value;
+      }
+    });
 
+    crossChainSubmit(data);
   }
 });
 
@@ -826,12 +845,13 @@ $('#submitBounty').validate({
         const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
         const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
         const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
-
         indicateMetamaskPopup();
         if (FEE_PERCENTAGE == 0) {
           deductBountyAmount(fee, '');
         } else {
-          if (isETH) {
+          if (tokenAddress == 'bitcoin') {
+            crossChainSubmit(fee);
+          } else if (isETH) {
             web3.eth.sendTransaction({
               to: to_address,
               from: web3.eth.coinbase,
