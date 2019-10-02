@@ -77,7 +77,8 @@ class Command(BaseCommand):
                             profile.profile_organizations.add(db_org)
                             org_members = get_organization(
                                 db_org.name,
-                                '/members'
+                                '/members',
+                                (handle, access_token)
                             )
 
                             if 'message' in org_members:

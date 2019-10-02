@@ -113,7 +113,7 @@ def org_perms(request):
         for g in groups: # "admin", "write", "pull", "none"
             print(g)
             group_data = g.name.split('-')
-            if group_data[1] != "role" and group_data[1] != "member": #skip repo level groups
+            if group_data[1] != "role": #skip repo level groups
                 continue
             print(g.user_set.prefetch_related('profile').all())
             org_perms['users'].append(
