@@ -28,7 +28,14 @@ graph_type = 'scatter'
 opposing_axis = 'counts'
 opposing_axis = 'clr'
 
-days_ago = 12
+start_date = timezone.datetime(2019, 9, 16)
+#skip_until_start_date = timezone.datetime(2019, 9, 30)
+output_extra_frames_at_date = timezone.datetime(2019, 10, 1) #useful because after 10/1 we didnt have the prod compute power to do more than 1 frame per 4 hours
+num_output_extra_frames = 4
+skip_until_start_date = start_date
+end_date = timezone.datetime(2019, 10, 2)
+offset = 300
+y_axis_limit = 1005
 
 aggregation_function=sum
 
@@ -142,11 +149,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         clear_cache()
 
-        d1 = timezone.now() - timezone.timedelta(days=days_ago)
-        d2 = timezone.now()
+        d1 = start_date
+        d2 = end_date
 
         for i in range((d2 - d1).days * 24 + 1):
+            export_frame = True
             this_date = d1 + timezone.timedelta(hours=i)
+            if this_date < skip_until_start_date:
+                continue
             #print(this_date)
             _plt = plt
             _plt.figure(figsize=(20, 10))
@@ -200,6 +210,9 @@ class Command(BaseCommand):
                 else:
                     _plt.ylabel('CLR Match Estimate ($)')
                     y_axis_height = max(counts) + 1000
+                print(y_axis_height)
+                if y_axis_height < y_axis_limit:
+                    export_frame = False
                 x_axis_height = max(sizes) + 1000
                 _plt.axis([-1, x_axis_height, -1, y_axis_height])
                 for j in range(0, len(sizes)):
@@ -208,12 +221,17 @@ class Command(BaseCommand):
 
             title = f"Gitcoin Grants CLR Round 3 Funding at {this_date_str}: ${round(total_amount)}"
             _plt.title(title)
-            filename = str(i).rjust(10, '0')
-            png_file = f'cache/frames/{filename}.jpg'
-            print(this_date, filename)
-            _plt.tight_layout()
-            _plt.savefig(png_file)
-            _plt.close()
+            if export_frame:
+                num_frames_to_output = num_output_extra_frames if this_date > output_extra_frames_at_date else 1
+                for extra_offset in range(0, num_frames_to_output):
+                    if extra_offset:
+                        offset+=1
+                    filename = str(i+offset).rjust(10, '0')
+                    png_file = f'cache/frames/{filename}.jpg'
+                    print(this_date, filename)
+                    _plt.tight_layout()
+                    _plt.savefig(png_file)
+                    _plt.close()
         convert_to_movie(framerate=10)
         #url = upload_to_s3()
         #print(url)
