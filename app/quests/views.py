@@ -136,6 +136,7 @@ def index(request):
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'rewards_schedule': rewards_schedule,
         'title': 'Quests on Gitcoin',
+        'avatar_url': '/static/v2/images/quests/card.png',
         'card_desc': 'Use Gitcoin to learn about the web3 ecosystem, earn rewards, and level up while you do it!',
     }
     return TemplateResponse(request, 'quests/index.html', params)
