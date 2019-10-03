@@ -258,12 +258,14 @@ var death = async function() {
   await toggle_character_class($('#protagonist'), [ 'harm', '' ]);
   await sleep(500);
   await $('.prize').effect('explode');
-  await sleep(200);
-  await $('#header').addClass('fail').fadeIn().html('You Lose - Try again in ' + document.quest['cooldown_minutes'] + ' mins. ');
-  await sleep(500);
-  await $('#desc').html('<a href=/quests>More Quests &gt;&gt;</a>').fadeIn();
   await sleep(1000);
   $('#protagonist').effect('explode');
+  await sleep(200);
+  await $('#header').addClass('fail').fadeIn().html('You Lose - Try again in ' + document.quest['cooldown_minutes'] + ' mins. ');
+  await sleep(2500);
+  await $('#header').fadeOut();
+  await sleep(500);
+  await $('#desc').html('<a class=button href=/quests>More Quests &gt;&gt;</a>').fadeIn();
   setInterval(function() {
     random_taunt_effect($('#enemy'));
   }, 2000);
@@ -338,7 +340,7 @@ $(document).ready(function() {
 
   $('.quest-card.available').click(function(e) {
     e.preventDefault();
-    document.location.href = $(this).find('.btn').attr('href');
+    document.location.href = $(this).find('a').attr('href');
   });
   $('.quest-card.available').mouseover(function(e) {
     random_attn_effect($(this).find('.btn'));

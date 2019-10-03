@@ -118,7 +118,7 @@ var start_music_midi = function(name) {
   if (!MIDIjs) {
     return;
   }
-  try{
+  try {
     MIDIjs.play(get_midi(name));
   } catch (e) {
     console.error(e);

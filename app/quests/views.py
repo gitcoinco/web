@@ -145,6 +145,9 @@ def index(request):
 @ratelimit(key='ip', rate='10/s', method=ratelimit.UNSAFE, block=True)
 def details(request, obj_id, name):
 
+    time_per_answer = 15
+    time_per_answer_buffer = 5
+
     if not request.user.is_authenticated and request.GET.get('login'):
         return redirect('/login/github?next=' + request.get_full_path())
 
@@ -182,8 +185,9 @@ def details(request, obj_id, name):
                 this_question = quest.questions[qn-1]
                 correct_answers = [ele['answer'] for ele in this_question['responses'] if ele['correct']]
                 their_answers = payload.get('answers')
+                is_out_of_time = (timezone.now() - qa.modified_on).seconds > time_per_answer + time_per_answer_buffer
                 did_they_do_correct = set(correct_answers) == set(their_answers) or (this_question.get('any_correct', False) and len(their_answers))
-                can_continue = did_they_do_correct
+                can_continue = did_they_do_correct and not is_out_of_time
                 if can_continue:
                     qa.state += 1
                     qa.save()
@@ -215,9 +219,9 @@ def details(request, obj_id, name):
                             )
                     prize_url = f"{btc.url}?cb=ref:{request.user.profile.ref_code}&tweet_url={settings.BASE_URL}{quest.url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
                     qa.success=True
-                    qa.save()
                     if first_time_beaten:
                         record_award_helper(qa, qa.profile)
+                qa.save()
 
             response = {
                 "question": quest.questions_safe(qn),
