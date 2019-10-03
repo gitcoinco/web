@@ -968,10 +968,10 @@ Back to shipping,
         'title': 'Keep Ethereum Secure',
         'image_url': '',
         'link': 'http://bit.ly/mythx-gitcoin-weekly',
-        'cta': 'Register Now',
+        'cta': 'Get Started Now',
         'body': [
             'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
-            'Start scanning for security vulnerabilities immediately using your favorite developer tools. Now with Pro options for complete peace of mind.'
+            'Scan for security vulnerabilities right away from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
         ]
     }
     
