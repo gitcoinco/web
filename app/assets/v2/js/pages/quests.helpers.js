@@ -118,7 +118,11 @@ var start_music_midi = function(name) {
   if (!MIDIjs) {
     return;
   }
-  MIDIjs.play(get_midi(name));
+  try{
+    MIDIjs.play(get_midi(name));
+  } catch (e) {
+    console.error(e);
+  }
 };
 var resume_music_midi = function(name) {
   // get_audio('bossmusic.mid').play();
