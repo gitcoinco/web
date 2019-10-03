@@ -84,7 +84,7 @@ def record_award_helper(qa, profile, layer=1):
         return record_award_helper(qa, profile.referrer, layer+1)
 
 
-def get_leaderboard():
+def get_leaderboard(max_entries=25):
     #setup
     kudos_to_show_per_leaderboard_entry = 5
     leaderboard = {}
@@ -105,7 +105,7 @@ def get_leaderboard():
         display_pts = int(ele[1]) if not ele[1] % 1 else round(ele[1],1)
         this_ele = [ele[0], display_pts, kudii]
         return_leaderboard.append(this_ele)
-    return return_leaderboard
+    return return_leaderboard[:max_entries]
 
 # Create your views here.
 def index(request):
