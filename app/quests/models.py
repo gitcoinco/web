@@ -137,3 +137,17 @@ class QuestAttempt(SuperModel):
     def __str__(self):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.profile.handle} => {self.quest.title} state: {self.state} success: {self.success}'
+
+class QuestPointAward(SuperModel):
+
+    questattempt = models.ForeignKey('quests.QuestAttempt', related_name='pointawards', on_delete=models.CASCADE)
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        on_delete=models.CASCADE,
+        related_name='questpointawards',
+    )
+    value = models.FloatField()
+
+    def __str__(self):
+        """Return the string representation of this obj."""
+        return f'{self.value}, {self.profile.handle}'
