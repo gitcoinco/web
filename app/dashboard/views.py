@@ -744,7 +744,7 @@ def onboard(request, flow=None):
         'steps': steps or onboard_steps,
         'flow': flow,
         'profile': profile,
-        '3d_avatar_params': none if 'avatar' not in steps else avatar3dids_helper(),
+        '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(),
         'possible_skin_tones': skin_tones,
         'possible_hair_tones': hair_tones,
     }
