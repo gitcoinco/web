@@ -12,20 +12,24 @@
           <ul>
             {% if is_my_profile %}
               <li>
-                Persona: <b>Funder</b>   <a id="rank_link" href="javascript:show_persona_modal();">(Toggle)</a>
+                Persona: <b>Funder</b>
+                <a id="rank_link" href="javascript:show_persona_modal();">( Toggle )</a>
               </li>
             {% endif %}
             <li>
-              <b>{{ spent_count }}</b> Transaction{{spent_count|pluralize}}
-             <a href="#" style="color: black; text-decoration: underline; font-size: 12px;" data-toggle="collapse" data-target="#tx_details">(Details)
+              <b>{{ spent_count }}</b>
+              Transaction{{spent_count|pluralize}}
+             <a href="#" style="color: black; text-decoration: underline; font-size: 12px;" data-toggle="collapse" data-target="#tx_details">( Details )
              </a>
             </li>
             <div id="tx_details" class="collapse">
               <li>
-                - <b>{{ funded_bounties_count }}</b> Bountie{{funded_bounties_count|pluralize}} Funded
+                - <b>{{ funded_bounties_count }}</b>
+                Bountie{{funded_bounties_count|pluralize}} Funded
               </li>
               <li>
-                - <b>{{ hackathons_funded }}</b> Hackathon{{hackathons_funded|pluralize}} Participated
+                - <b>{{ hackathons_funded }}</b>
+                Hackathon{{hackathons_funded|pluralize}} Participated
               </li>
               <li>
                 - <b>{{ total_tips_sent }}</b>
@@ -41,13 +45,14 @@
               </li>
             </div>
             <li>
-              <b>${{ spent_total }}</b> {% trans "Funded" %}
+              <b>${{ spent_total }}</b>
+              {% trans "Funded" %}
             </li>
             {% if scoreboard_position_funder %}
             <li>
               <b>#{{ scoreboard_position_funder }}</b>
               {% trans "On Leaderboard" %}
-              <a style="font-size: 12px; color: black; text-decoration: underline;" href="{% url 'leaderboard' link %}payers">(View)</a>
+              <a style="font-size: 12px; color: black; text-decoration: underline;" href="{% url 'leaderboard' link %}payers">( View )</a>
             </li>
             {% endif %}
 

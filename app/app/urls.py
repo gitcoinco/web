@@ -88,6 +88,7 @@ urlpatterns = [
     re_path(r'^kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
+    re_path(r'^kudos/new/?', kudos.views.newkudos, name='newkudos'),
 
     # mailing list
     url('mailing_list/funders/', dashboard.views.funders_mailing_list),
@@ -155,7 +156,7 @@ urlpatterns = [
 
     # quests
     path('quests/', quests.views.index, name='quests_index'),
-    re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='kudos_details'),
+    re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
 
     # Contributor dashboard
     path(

@@ -605,10 +605,10 @@ def get_temp_image_file(image):
     return temp_io
 
 
-def svg_to_png(svg_content, width=100, height=100, scale=1, index=None, preferred_method='', extra_flags=''):
+def svg_to_png(svg_content, width=100, height=100, scale=1, index=None, prefer=None):
     print('creating svg with pyvips')
     png = None
-    if not preferred_method or preferred_method == 'pyvips':
+    if not prefer or prefer == 'pyvips':
         png = svg_to_png_pyvips(svg_content, scale=scale)
     if not png:
         if not index:
@@ -692,7 +692,7 @@ def convert_img(obj, input_fmt='svg', output_fmt='png', height=215, width=215, p
         None: If there is an exception, the method returns None.
 
     """
-    return svg_to_png(obj.read(), height=width, width=width, preferred_method=preferred_method, extra_flags=extra_flags)
+    return svg_to_png(obj.read(), height=width, width=width, prefer=preferred_method, extra_flags=extra_flags)
 
 
 def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):

@@ -341,6 +341,9 @@ class KudosContract:
                 logger.warning(f'No KudosTransfer object found for Kudos ID {kudos_id}')
                 # raise KudosTransferNotFound(kudos_id, 'No KudosTransfer object found')
                 # raise
+        except KudosTransfer.MultipleObjectsReturned:
+            pass
+
         else:
             # Store the foreign key reference if the kudos_transfer object exists
             kudos_transfer.kudos_token = kudos_token

@@ -19,19 +19,20 @@
 {% block 'content' %}
 <script type='text/javascript' src='//www.midijs.net/lib/midi.js'></script>
 <link rel="stylesheet" href="{% static 'v2/css/jquery-ui.css' %}" />
+<link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 
 {% if not hidden and is_staff %}
-<div class="alpha-warning font-caption mb-0">
-  <span class="font-weight-bold">Staff only</span>
-  <a style="color:white;" href="{{quest.admin_url}}">{% trans "Quest Admin" %}</a>
+<div class="alpha-warning font-caption mb-0" style=" text-align: right;">
+  <span class="font-weight-bold">Staff only</span> |
+  <a style="color:white; margin-right: 20px;" href="{{quest.admin_url}}">{% trans "Quest Admin" %}</a>
 </div>
 {% endif %}
   <div id="breadcrumbs" class="mt-2 mb-2">
     <a href=/quests>Quests</a> &gt;&gt; <a href={{quest.url}}>{{quest.title}}</a>
   </div>
   <div id="gameboard">
-    <div id="background" style="background: url('/static/v2/images/quests/{{quest.background}}.png') no-repeat;">
+    <div id="background">
       &nbsp;
     </div>
     <div id="enemy" class="character tr hidden">
@@ -46,11 +47,13 @@
       <img src="/static/v2/images/quests/enemies/helpful_guide.svg">
       <div class='info'>
         <h3>@guide</h3>
-        <p>Your Quests Conceirge</p>
+        <p>Quests Concierge</p>
       </div>
     {% include 'quests/shared/alts_to_characters.html' %}
     </div>
     <div id="protagonist" class="character bl ">
+      <img class="item orb" src="/static/v2/images/quests/orb-0.svg">
+      <img class="item staff" src="/static/v2/images/quests/staff.svg">
       <img src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
       <div class='info'>
         <h3>@{% if user and user.username %}{{ user.username }}{% else %}me{% endif %}</h3>
@@ -72,8 +75,20 @@
     </div>
     <div id="menu" class="br">
       <span>
-        <a class="button button_sm skip_intro" href="#">Skip Intro</a>
-        <a class="button button_sm music_toggle" href="#">Sound On 🎵</a>
+        <span>
+          Attempt #{{attempt_count}}
+        </span>
+        {% if success_count %}
+        <span>
+           |
+          Beaten {{success_count}} time{{success_count|pluralize}}
+        </span>
+        {% endif %}
+        <br>
+        {% if github_handle %}
+        <a class="skip_intro" href="#">Skip Intro |</a>
+        {% endif %}
+        <a class="music_toggle" href="#">Sound On 🎵</a>
       </span>
     </div>
     <div id="timer" class="br hidden">
@@ -87,6 +102,10 @@
       'img': '{{quest.kudos_reward.preview_img_url}}'
     };
     document.quest = {{quest_json|safe}};
+    document.attempts = {
+      'success_count': parseInt('{{success_count}}'),
+      'attempt_count': parseInt('{{attempt_count}}'),
+    };
     document.music_enabled = true;
   </script>
 {% endblock %}

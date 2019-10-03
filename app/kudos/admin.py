@@ -23,13 +23,26 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    BulkTransferCoupon, BulkTransferRedemption, Contract, KudosTransfer, Token, TransferEnabledFor, Wallet,
+    BulkTransferCoupon, BulkTransferRedemption, Contract, KudosTransfer, Token, TokenRequest, TransferEnabledFor,
+    Wallet,
 )
 
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+
+class TokenRequestAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['profile']
+
+    def response_change(self, request, obj):
+        if "_mint_kudos" in request.POST:
+            obj.mint()
+            self.message_user(request, "Mint done")
+        return super().response_change(request, obj)
 
 
 class TransferEnabledForAdmin(admin.ModelAdmin):
@@ -94,6 +107,7 @@ admin.site.register(TransferEnabledFor, TransferEnabledForAdmin)
 admin.site.register(Token, TokenAdmin)
 admin.site.register(KudosTransfer, TransferAdmin)
 admin.site.register(Wallet, GeneralAdmin)
+admin.site.register(TokenRequest, TokenRequestAdmin)
 admin.site.register(BulkTransferCoupon, BulkTransferCouponAdmin)
 admin.site.register(BulkTransferRedemption, BulkTransferRedemptionAdmin)
 admin.site.register(Contract, GeneralAdmin)

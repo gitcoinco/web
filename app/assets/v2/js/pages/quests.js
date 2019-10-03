@@ -5,7 +5,11 @@ var start_quiz = async function() {
   var question_number = 0;
   var should_continue = true;
 
+  start_music_midi('boss-battle');
+  await sleep(1500);
+
   while (should_continue) {
+    orb_state(Math.min(question_number + 1, 4));
     document.submitted_answer = false;
     var answers = [];
 
@@ -16,6 +20,13 @@ var start_quiz = async function() {
       'question_number': question_number,
       'answers': answers
     });
+
+    // manage state transitoin
+    console.log('question from', question_number, ' to', question_number + 1);
+    for (var p = 0; p < 10; p += 1) {
+      $('body').removeClass('question_number_' + p);
+    }
+    $('body').addClass('question_number_' + question_number);
 
     question_number += 1;
     var can_continue = response['can_continue'];
@@ -65,8 +76,17 @@ var start_quiz = async function() {
 
     while (timer > 0 && !document.submitted_answer) {
       await sleep(100);
-      timer -= 100;
+      if (!document.pause) {
+        timer -= 100;
+      }
       $('#timer').removeClass('hidden').html(timer / 1000 + 's left');
+      if (timer < 7500) {
+        $('#timer').addClass('yellow');
+      } else if (timer < 2000) {
+        $('#timer').addClass('orange');
+      } else {
+        $('#timer').removeClass('orange').removeClass('yellow').removeClass('red');
+      }
     }
     timer = 2 * 1000;
 
@@ -94,7 +114,7 @@ var advance_to_state = async function(new_state) {
 
   // confirm
   if (new_state == 4) {
-    var sure = confirm('are you sure?  make sure you study up. if you fail the quest, you cannot try again until after the cooldown period (30 mins).');
+    var sure = confirm('are you sure?  make sure you study up. if you fail the quest, you cannot try again until after the cooldown period (' + document.quest['cooldown_minutes'] + ' mins).');
 
     if (!sure) {
       await $('#cta_button').removeClass('hidden').fadeIn();
@@ -220,7 +240,6 @@ var advance_to_state = async function(new_state) {
     await sleep(500);
     $('.skip_intro').remove();
     await $('#enemy').removeClass('hidden');
-    start_music_midi('bossmusic');
     start_quiz();
 
   }
@@ -230,32 +249,30 @@ var advance_to_state = async function(new_state) {
 };
 
 var death = async function() {
+  orb_state('dead');
   $('#protagonist .ded').removeClass('hidden');
   await $('#header').fadeOut();
   await $('#cta_button').fadeOut();
   await $('#desc').fadeOut();
+  start_music_midi('dead');
   await toggle_character_class($('#protagonist'), [ 'harm', '' ]);
   await sleep(500);
-  await $('#header').addClass('fail').fadeIn().html('You Lose');
-  await sleep(500);
+  await $('.prize').effect('explode');
+  await sleep(1000);
   $('#protagonist').effect('explode');
+  await sleep(200);
+  await $('#header').addClass('fail').fadeIn().html('You Lose - Try again in ' + document.quest['cooldown_minutes'] + ' mins. ');
+  await sleep(2500);
+  await $('#header').fadeOut();
+  await sleep(500);
+  await $('#desc').html('<a class=button href=/quests>More Quests &gt;&gt;</a>').fadeIn();
   setInterval(function() {
-    var r = Math.random();
-
-    if (r < 0.3) {
-      $('#enemy').effect('shake');
-    } else if (r < 0.6) {
-      $('#enemy').effect('pulsate');
-    } else if (r < 0.8) {
-      $('#enemy').effect('bounce');
-    } else {
-      $('#enemy').effect('highlight');
-    }
+    random_taunt_effect($('#enemy'));
   }, 2000);
-  document.location.reload();
 };
 
 var winner = async function(prize_url) {
+  orb_state('final');
   $('#enemy .ded').removeClass('hidden');
   await $('#header').fadeOut();
   await $('#cta_button').fadeOut();
@@ -268,10 +285,12 @@ var winner = async function(prize_url) {
   await $('#header').addClass('success').fadeIn().html('You Win');
   var span = '<span style="display:block; font-weight: bold; font-size: 24px;">🏆Quest Prize🏅</span>';
 
+  start_music_midi('secret-discovery');
+
   $('#desc').html(span + "<img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>');
   $('.prize').fadeOut();
   $('#desc').fadeIn();
-  await sleep(1000);
+  await sleep(3000);
   document.location.href = prize_url;
 };
 
@@ -281,6 +300,72 @@ var start_quest = function() {
 };
 
 $(document).ready(function() {
+  // force the music to load
+  setTimeout(function() {
+    if (document.quest) {
+      start_music_midi('boss-battle');
+      pause_music_midi('boss-battle');
+    }
+  }, 100);
+
+  $('#reflink').click(function() {
+    $(this).focus();
+    $(this).select();
+    document.execCommand('copy');
+    $(this).after('<div class=after_copy>Copied to clipboard</div>');
+    setTimeout(function() {
+      $('.after_copy').remove();
+    }, 500);
+  });
+
+  $('.demo').click(function(e) {
+    e.preventDefault();
+    $(this).fadeOut(function() {
+      $('.demo').fadeIn();
+      var src = $('.demo').attr('src') + '?';
+      
+      $('.demo').attr('src', src);
+    });
+  });
+
+  $('#tabs a').click(function(e) {
+    e.preventDefault();
+    var target = $(this).data('href');
+
+    $('.difficulty_tab').addClass('hidden');
+    $('.nav-link').removeClass('active');
+    $(this).addClass('active');
+    $('.difficulty_tab.' + target).removeClass('hidden');
+  });
+
+  $('.quest-card.available').click(function(e) {
+    e.preventDefault();
+    document.location.href = $(this).find('a').attr('href');
+  });
+  $('.quest-card.available').mouseover(function(e) {
+    random_attn_effect($(this).find('.btn'));
+  });
+
+  // makes the reflink sticky
+  if (getParam('cb')) {
+    var cb = getParam('cb');
+    // only if user is not logged in tho
+
+    if (cb.indexOf('ref') != -1 && !document.contxt.github_handle) {
+      localStorage.setItem('cb', cb);
+    }
+  }
+  // if there exists a sticky reflink but the user navigated away from the link in the course of logging in...
+  if (localStorage.getItem('cb') && document.contxt.github_handle && !getParam('cb')) {
+    var url = new URL(document.location.href);
+
+    url.searchParams.append('cb', localStorage.getItem('cb'));
+    url.search = url.search.replace('%3A', ':');
+    localStorage.setItem('cb', '');
+    document.location.href = url;
+  }
+
+  $('#protagonist h3').html(trim_dots($('#protagonist h3').text(), 8));
 
   $(document).on('click', '.answer', function(e) {
     e.preventDefault();
