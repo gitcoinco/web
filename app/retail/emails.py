@@ -964,17 +964,17 @@ Back to shipping,
     }, ]
 
     sponsor = {
-        'name': 'Solana',
-        'title': 'Build on Solana: Join the Private Beta',
+        'name': 'MythX',
+        'title': 'Keep Ethereum Secure',
         'image_url': '',
-        'link': 'http://bit.ly/solana-beta',
-        'cta': 'Join the Private Beta',
+        'link': 'http://bit.ly/mythx-gitcoin-weekly',
+        'cta': 'Register Now',
         'body': [
-            'Solana is a Lightning-fast distributed ledger technology for mission-critical decentralized apps.',
-            'We are currently taking applications for an incredibly limited beta program for early adopters of Solana to launch their projects alongside our mainnet later in 2019.'
+            'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
+            'Start scanning for security vulnerabilities immediately using your favorite developer tools. Now with Pro options for complete peace of mind.'
         ]
     }
-
+    
     bounties_spec = [{
         'url': 'https://github.com/harmonylion/ideamarkets/issues/4',
         'primer': 'replace legacy code & write tests',
