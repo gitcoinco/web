@@ -137,7 +137,7 @@ def index(request):
         'rewards_schedule': rewards_schedule,
         'title': 'Quests on Gitcoin',
         'avatar_url': '/static/v2/images/quests/card.png',
-        'card_desc': 'Use Gitcoin to learn about the web3 ecosystem, earn rewards, and level up while you do it!',
+        'card_desc': 'Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!',
     }
     return TemplateResponse(request, 'quests/index.html', params)
 
