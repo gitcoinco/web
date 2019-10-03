@@ -2870,8 +2870,107 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h2 id="kudos.models.TransferEnabledFor">TransferEnabledFor</h2>
+<h2 id="kudos.models.TokenRequest">TokenRequest</h2>
 
+<pre><code class="python">TokenRequest(self, *args, **kwargs)
+</code></pre>
+
+<p>Define the TokenRequest model.
+<h3 id="kudos.models.TokenRequest.approved">approved</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.artist">artist</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.artwork_url">artwork_url</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.description">description</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">TokenRequest._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="kudos.models.TokenRequest.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">TokenRequest._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="kudos.models.TokenRequest.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">TokenRequest._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="kudos.models.TokenRequest.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">TokenRequest._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="kudos.models.TokenRequest.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.metadata">metadata</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.name">name</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.network">network</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.numClonesAllowed">numClonesAllowed</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.platform">platform</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.priceFinney">priceFinney</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.processed">processed</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.profile">profile</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="kudos.models.TokenRequest.profile_id">profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.tags">tags</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.to_address">to_address</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="kudos.models.TokenRequest.mint">mint</h3>
+
+<pre><code class="python">TokenRequest.mint(self)
+</code></pre>
+
+<p>Approve / mint this token.
+<h2 id="kudos.models.TransferEnabledFor">TransferEnabledFor</h2></p>
 <pre><code class="python">TransferEnabledFor(self, *args, **kwargs)
 </code></pre>
 
