@@ -280,7 +280,8 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None):
                 all_summed_contributions.append({str(profile_id): sum_of_each_profiles_contributions})
 
             # for each grant, list the contributions in key value pairs like {'profile id': sum of contributions}
-            contrib_data.append({'id': grant.id, 'contributions': all_summed_contributions})
+            grant_id = grant.defer_clr_to.pk if grant.defer_clr_to else grant.id
+            contrib_data.append({'id': grant_id, 'contributions': all_summed_contributions})
 
     else:
         # use random contribution data for testing
