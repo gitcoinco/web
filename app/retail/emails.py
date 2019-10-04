@@ -970,8 +970,8 @@ Back to shipping,
         'link': 'http://bit.ly/mythx-gitcoin-weekly',
         'cta': 'Get Started Now',
         'body': [
-            'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
-            'Scan for security vulnerabilities right away from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
+           'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
+           'Scan for security vulnerabilities right away, from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
         ]
     }
     
