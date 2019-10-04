@@ -1,6 +1,28 @@
+.referrals img {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+}
+.referrals a{
+  color: #3E00FF;
+  font-size: 14px;
+}
+#announce{
+  width: 100%;
+  display: block;
+  background-color: #fef3c0;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 5px;
+  padding-top: 0px;
+}
 .demo {
   max-width: 600px;
   cursor: pointer;
+}
+.difficulty_tab{
+  display: block;
+  width: 100%;
 }
 .card_head {
   height: 140px;
@@ -106,8 +128,9 @@
 }
 .flair div{
   position: absolute;
-  top: -15px;
-  font-size: 36px;
+  top: 50px;
+  left: -70px;
+  font-size: 48px;
 }
 .answer a{
   color: white;
@@ -149,10 +172,16 @@ body.quest_battle p{
 .quest-card:hover .card_head img{
   filter: grayscale(0%);
 }
-
+#announce img{
+  margin: 0px auto;
+  margin-top: -150px;
+  margin-bottom: -50px;
+  width: 200px;
+  height: 200px;
+}
 #leaderboard img {
-  height: 80px;
-  width: 80px;
+  height: 40px;
+  width: 40px;
   border-radius: 50px;
 }
 #enemy img,
@@ -170,7 +199,12 @@ body.quest_battle p{
   height: 250px;
   margin-left: -75px;
 }
-
+.reward_schedule tr{
+  border-radius: 5px;
+}
+.reward_schedule tr td{
+  padding: 3px 5px;
+}
 .character.harm h3,
 .character.harm p{
   background-color:  #F9006C;
@@ -225,10 +259,6 @@ body.quest_battle p{
   margin-top: 100px;
   z-index: 9999;
   right: 25%;
-}
-#desc li{
-  margin-top: 5px;
-  text-decoration: underline;
 }
 .quest-card.available:hover{
   background-color: #aea0df !important;
@@ -391,7 +421,7 @@ body.quest_battle .bottom_notification{
 }
 #gameboard { 
   width: 100%;
-  height: 100%;
+  height: 95%;
 }
 body.quest_battle{
   font-family: 'Press Start 2P', cursive !important;
@@ -410,12 +440,13 @@ body.quest_battle{
   width: 100%;
 }
 #leaderboard .inner_row {
-  height: 120px;
-  padding: 20px;
+  height: 70px;
+  padding: 10px;
   width: 100%;
 }
 
-.answer{
+#desc li {
+  text-decoration: underline;
   list-style: none;
   background-color: transparent;
   border: 1px solid white;
@@ -425,7 +456,10 @@ body.quest_battle{
   margin: 10px auto;
   text-transform: uppercase;
 }
-.answer.selected{
+#desc li:hover {
+  background-color: #0c0861;
+}
+#desc li.selected{
   background-color: #3E00FF;
 }
 
@@ -441,7 +475,15 @@ body.quest_battle{
 .alpha-warning{
   background-color: black;
 }
+.refer_friend .top_img{
+  max-width: 200px; 
+  margin-top: -170px;
+}
+
 @media (max-width: 1110px) {
+  .refer_friend .top_img{
+    margin-top: -230px;
+  }
   .demo{
     width: 400px;
   }
@@ -479,7 +521,7 @@ body.quest_battle{
     max-height: 80px;
   }
   body.stage_2 #cta_button{
-    margin-top: 45%;
+    margin-top: 35%;
   }
   body.stage_3 #cta_button{
     margin-top: 28%;
@@ -511,6 +553,35 @@ body.quest_battle{
   }
 }
 @media (max-width: 900px) {
+  .tr{
+    right: 70px;
+  }
+  .prize img{
+    height: 100px;
+    width: 90px;
+    margin: 5px 10px;
+  }
+  .character .info h3{
+    font-size: 12px;
+  }
+  .character .info p{
+    font-size: 8px;
+    width: 40%;
+  }
+  #header{
+    font-size: 12px;
+  }
+  #desc{
+    height: 180px;
+    font-size: 10px;
+  }
+  .refer_friend .w-50{
+    width: 100% !important;
+  }
+  .button{
+    padding: 10px;
+    font-size: 12px;
+  }
   .demo{
     width: 300px;
   }  
@@ -519,19 +590,46 @@ body.quest_battle{
   }
 }
 @media (max-width: 768px) {
+  .character img{
+    width: 110px;
+    height: 110px;
+    border-radius: 70px;
+    border: 5px solid #ccc;
+  }
+  .character img.orb{
+    left: 23px;
+  }
+  .character img.staff{
+    left: 66px;
+  }
+  .character .info{
+    left: 80px;
+  }
   .demo{
     width: 500px;
   }  
   .row.indent_on_mobile{
-    margin-left: 20%;
+    margin-left: 5%;
+  }
+  .button{
+    padding: 10px;
+    font-size: 5px;
   }
   #desc{
+    width: 80%;
+    right: 10%;
     margin-top: 10%;
-    height: 100px;
+    height: 120px;
     overflow-y: scroll;
   }
+  .character .info h3{
+    max-width: 100px;
+  }
   .back_gradient {
-    background-size: 100% 700px !important;
+    background-size: 100% 650px !important;
+  }
+  .flair div{
+    font-size: 36px;
   }
 
 }
