@@ -34,7 +34,7 @@ output_extra_frames_at_date = timezone.datetime(2019, 10, 1) #useful because aft
 num_output_extra_frames = 4
 skip_until_start_date = start_date
 end_date = timezone.datetime(2019, 10, 2)
-offset = 300
+base_offset = 300
 y_axis_limit = 1005
 
 aggregation_function=sum
@@ -152,6 +152,7 @@ class Command(BaseCommand):
         d1 = start_date
         d2 = end_date
 
+        offset = 0
         for i in range((d2 - d1).days * 24 + 1):
             export_frame = True
             this_date = d1 + timezone.timedelta(hours=i)
@@ -223,15 +224,12 @@ class Command(BaseCommand):
             _plt.title(title)
             if export_frame:
                 num_frames_to_output = num_output_extra_frames if this_date > output_extra_frames_at_date else 1
-                for extra_offset in range(0, num_frames_to_output):
-                    if extra_offset:
-                        offset+=1
-                    filename = str(i+offset).rjust(10, '0')
-                    png_file = f'cache/frames/{filename}.jpg'
-                    print(this_date, filename)
-                    _plt.tight_layout()
-                    _plt.savefig(png_file)
-                    _plt.close()
+                filename = str(i+offset+base_offset).rjust(10, '0')
+                png_file = f'cache/frames/{filename}.jpg'
+                print(this_date, filename)
+                _plt.tight_layout()
+                _plt.savefig(png_file)
+                _plt.close()
         convert_to_movie(framerate=10)
         #url = upload_to_s3()
         #print(url)
