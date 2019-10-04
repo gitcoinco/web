@@ -979,8 +979,8 @@ Back to shipping,
         'url': 'https://github.com/prysmaticlabs/prysm/issues/3598',
         'primer': 'Explore Compression Formats for Persistent Byte Data',
     }, {
-        'url': 'Python script that updates SQL tables',
-        'primer': 'Ethereum Grab Bag',
+        'url': 'https://github.com/mainnebula/SPACE_TASKS/issues/6',
+        'primer': 'Python script that updates SQL tables',
     }, {
         'url': 'https://github.com/wearekickback/app/issues/185',
         'primer': 'Add to calendar',
