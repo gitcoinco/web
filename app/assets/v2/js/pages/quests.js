@@ -365,20 +365,22 @@ $(document).ready(function() {
     document.location.href = url;
   }
 
-  if($('#protagonist').length){
-    var preload_assets = async function(){
-      var items = ["stage_4", "question_number_1", "question_number_2"];
-      for(var i=0;i<3;i+=1){
+  if ($('#protagonist').length) {
+    var preload_assets = async function() {
+      var items = [ 'stage_4', 'question_number_1', 'question_number_2' ];
+
+      for (var i = 0; i < 3; i += 1) {
         await sleep(10);
-        await $("body").addClass(items[i]);
-        console.log($("body").attr('class'))
+        await $('body').addClass(items[i]);
+        console.log($('body').attr('class'));
       }
-      for(var i=0;i<3;i+=1){
+      for (var j = 0; j < 3; j += 1) {
         await sleep(10);
-        await $("body").removeClass(items[i]);
+        await $('body').removeClass(items[j]);
       }
-    }
-    await preload_backgrounds();
+    };
+
+    preload_backgrounds();
   }
 
   $('#protagonist h3').html(trim_dots($('#protagonist h3').text(), 8));
