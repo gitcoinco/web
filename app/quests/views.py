@@ -1,3 +1,4 @@
+
 import json
 import logging
 import random
@@ -13,14 +14,17 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity
+from inbox.utils import send_notification_to_user
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption
 from kudos.views import get_profile
-from quests.models import Quest, QuestAttempt
+from quests.models import Quest, QuestAttempt, QuestPointAward
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
 x_frame_option = 'allow-from https://onemilliondevs.com/'
+
+max_ref_depth = 4
 
 def record_quest_activity(quest, associated_profile, event_name, override_created=None):
     kwargs = {
@@ -40,6 +44,69 @@ def record_quest_activity(quest, associated_profile, event_name, override_create
         logger.exception(e)
 
 
+def record_award_helper(qa, profile, layer=1):
+    #max depth
+    if layer > max_ref_depth:
+        return
+
+    # record points
+    value = 1/(1**layer)
+    QuestPointAward.objects.create(
+        questattempt=qa,
+        profile=profile,
+        value=value
+        )
+
+    # record kudos
+    if layer > 1 or settings.DEBUG:
+        gitcoinbot = get_profile('gitcoinbot')
+        quest = qa.quest
+        btc = BulkTransferCoupon.objects.create(
+            token=quest.kudos_reward,
+            tag='quest',
+            num_uses_remaining=1,
+            num_uses_total=1,
+            current_uses=0,
+            secret=random.randint(10**19, 10**20),
+            comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
+            sender_profile=gitcoinbot,
+            metadata={
+                'recipient': profile.pk,
+            }
+            )
+        cta_url = btc.url
+        cta_text = 'Redeem Kudos'
+        msg_html = f"@{qa.profile.handle} just beat '{qa.quest.title}'.  You earned {round(value,2)} quest points & a kudos for referring them."
+        send_notification_to_user(gitcoinbot.user, profile.user, cta_url, cta_text, msg_html)
+
+    # recursively record points for your referals quest
+    if profile.referrer:
+        return record_award_helper(qa, profile.referrer, layer+1)
+
+
+def get_leaderboard(max_entries=25):
+    #setup
+    kudos_to_show_per_leaderboard_entry = 5
+    leaderboard = {}
+
+    #pull totals for each qpa
+    for qpa in QuestPointAward.objects.all():
+        key = qpa.profile.handle
+        if key not in leaderboard.keys():
+            leaderboard[key] = 0
+        leaderboard[key] += qpa.value
+    leaderboard = sorted(leaderboard.items(), key=lambda x: x[1], reverse=True)
+
+    # add kudos to each leadervoard item
+    return_leaderboard = []
+    for ele in leaderboard:
+        btr = BulkTransferRedemption.objects.filter(coupon__tag='quest',redeemed_by__handle=ele[0]).order_by('-created_on')
+        kudii = list(set([(_ele.coupon.token.img_url, _ele.coupon.token.humanized_name) for _ele in btr]))[:kudos_to_show_per_leaderboard_entry]
+        display_pts = int(ele[1]) if not ele[1] % 1 else round(ele[1],1)
+        this_ele = [ele[0], display_pts, kudii]
+        return_leaderboard.append(this_ele)
+    return return_leaderboard[:max_entries]
+
 # Create your views here.
 def index(request):
 
@@ -51,20 +118,35 @@ def index(request):
         if quest_qs.exists():
             quests.append(package)
 
-    kudos_to_show_per_leaderboard_entry = 5
-    leaderboard = QuestAttempt.objects.filter(success=True).order_by('profile').values_list('profile__handle').annotate(amount=Count('quest', distinct=True)).order_by('-amount')
-    leaderboard = [[ele[0], ele[1], list(set([(_ele.coupon.token.img_url, _ele.coupon.token.humanized_name) for _ele in BulkTransferRedemption.objects.filter(coupon__tag='quest',redeemed_by__handle=ele[0]).order_by('-created_on')]))[:kudos_to_show_per_leaderboard_entry]] for ele in leaderboard]
+    rewards_schedule = []
+    for i in range(0, max_ref_depth):
+        reward_denominator = 2 ** i;
+        layer = i if i else 'You'
+        rewards_schedule.append({
+                'layer': layer,
+                'reward_denominator': reward_denominator,
+                'reward_multiplier': 1/reward_denominator
+            })
+
+
     params = {
+        'profile': request.user.profile if request.user.is_authenticated else None,
         'quests': quests,
-        'leaderboard': leaderboard,
+        'leaderboard': get_leaderboard(),
+        'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
+        'rewards_schedule': rewards_schedule,
         'title': 'Quests on Gitcoin',
-        'card_desc': 'Use Gitcoin to learn about the web3 ecosystem, earn rewards, and level up while you do it!',
+        'avatar_url': '/static/v2/images/quests/card.png',
+        'card_desc': 'Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!',
     }
     return TemplateResponse(request, 'quests/index.html', params)
 
 @csrf_exempt
 @ratelimit(key='ip', rate='10/s', method=ratelimit.UNSAFE, block=True)
 def details(request, obj_id, name):
+
+    time_per_answer = 15
+    time_per_answer_buffer = 5
 
     if not request.user.is_authenticated and request.GET.get('login'):
         return redirect('/login/github?next=' + request.get_full_path())
@@ -103,13 +185,16 @@ def details(request, obj_id, name):
                 this_question = quest.questions[qn-1]
                 correct_answers = [ele['answer'] for ele in this_question['responses'] if ele['correct']]
                 their_answers = payload.get('answers')
+                is_out_of_time = (timezone.now() - qa.modified_on).seconds > time_per_answer + time_per_answer_buffer
                 did_they_do_correct = set(correct_answers) == set(their_answers) or (this_question.get('any_correct', False) and len(their_answers))
-                can_continue = did_they_do_correct
+                can_continue = did_they_do_correct and not is_out_of_time
                 if can_continue:
                     qa.state += 1
                     qa.save()
                 did_win = can_continue and len(quest.questions) <= qn
                 if did_win:
+                    was_already_beaten = quest.is_beaten(request.user)
+                    first_time_beaten = not was_already_beaten
                     record_quest_activity(quest, request.user.profile, 'beat_quest')
                     btcs = BulkTransferCoupon.objects.filter(
                         token=quest.kudos_reward,
@@ -132,9 +217,11 @@ def details(request, obj_id, name):
                                 'recipient': request.user.profile.pk,
                             },
                             )
-                    prize_url = f"{btc.url}?tweet_url={settings.BASE_URL}{quest.url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
+                    prize_url = f"{btc.url}?cb=ref:{request.user.profile.ref_code}&tweet_url={settings.BASE_URL}{quest.url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
                     qa.success=True
-                    qa.save()
+                    if first_time_beaten:
+                        record_award_helper(qa, qa.profile)
+                qa.save()
 
             response = {
                 "question": quest.questions_safe(qn),

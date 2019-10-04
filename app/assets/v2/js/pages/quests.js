@@ -258,12 +258,14 @@ var death = async function() {
   await toggle_character_class($('#protagonist'), [ 'harm', '' ]);
   await sleep(500);
   await $('.prize').effect('explode');
-  await sleep(200);
-  await $('#header').addClass('fail').fadeIn().html('You Lose - Try again in ' + document.quest['cooldown_minutes'] + ' mins. ');
-  await sleep(500);
-  await $('#desc').html('<a href=/quests>More Quests &gt;&gt;</a>').fadeIn();
   await sleep(1000);
   $('#protagonist').effect('explode');
+  await sleep(200);
+  await $('#header').addClass('fail').fadeIn().html('You Lose - Try again in ' + document.quest['cooldown_minutes'] + ' mins. ');
+  await sleep(2500);
+  await $('#header').fadeOut();
+  await sleep(500);
+  await $('#desc').html('<a class=button href=/quests>More Quests &gt;&gt;</a>').fadeIn();
   setInterval(function() {
     random_taunt_effect($('#enemy'));
   }, 2000);
@@ -306,6 +308,16 @@ $(document).ready(function() {
     }
   }, 100);
 
+  $('#reflink').click(function() {
+    $(this).focus();
+    $(this).select();
+    document.execCommand('copy');
+    $(this).after('<div class=after_copy>Copied to clipboard</div>');
+    setTimeout(function() {
+      $('.after_copy').remove();
+    }, 500);
+  });
+
   $('.demo').click(function(e) {
     e.preventDefault();
     $(this).fadeOut(function() {
@@ -316,14 +328,42 @@ $(document).ready(function() {
     });
   });
 
+  $('#tabs a').click(function(e) {
+    e.preventDefault();
+    var target = $(this).data('href');
+
+    $('.difficulty_tab').addClass('hidden');
+    $('.nav-link').removeClass('active');
+    $(this).addClass('active');
+    $('.difficulty_tab.' + target).removeClass('hidden');
+  });
+
   $('.quest-card.available').click(function(e) {
     e.preventDefault();
-    document.location.href = $(this).find('.btn').attr('href');
+    document.location.href = $(this).find('a').attr('href');
   });
   $('.quest-card.available').mouseover(function(e) {
     random_attn_effect($(this).find('.btn'));
   });
 
+  // makes the reflink sticky
+  if (getParam('cb')) {
+    var cb = getParam('cb');
+    // only if user is not logged in tho
+
+    if (cb.indexOf('ref') != -1 && !document.contxt.github_handle) {
+      localStorage.setItem('cb', cb);
+    }
+  }
+  // if there exists a sticky reflink but the user navigated away from the link in the course of logging in...
+  if (localStorage.getItem('cb') && document.contxt.github_handle && !getParam('cb')) {
+    var url = new URL(document.location.href);
+
+    url.searchParams.append('cb', localStorage.getItem('cb'));
+    url.search = url.search.replace('%3A', ':');
+    localStorage.setItem('cb', '');
+    document.location.href = url;
+  }
 
   $('#protagonist h3').html(trim_dots($('#protagonist h3').text(), 8));
 

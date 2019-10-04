@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Quest, QuestAttempt
+from .models import Quest, QuestAttempt, QuestPointAward
 
 
 class QuestAdmin(admin.ModelAdmin):
@@ -14,5 +14,11 @@ class QuestAttemptAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
 
+class QuestPointAwardAdmin(admin.ModelAdmin):
+    raw_id_fields = ['questattempt', 'profile']
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+
+admin.site.register(QuestPointAward, QuestPointAwardAdmin)
 admin.site.register(Quest, QuestAdmin)
 admin.site.register(QuestAttempt, QuestAttemptAdmin)
