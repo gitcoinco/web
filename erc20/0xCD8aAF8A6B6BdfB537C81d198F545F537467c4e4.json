@@ -2,16 +2,16 @@
   "symbol": "RBSC",
   "address": "0xCD8aAF8A6B6BdfB537C81d198F545F537467c4e4",
   "overview":{
-        "en": "RBSC is an open source communication platform and a mobile application for interacting with decentralized applications running on the Ethereum network.",
-        "zh": "RBSC是一款开源通讯平台，也是一款用于与运行在以太坊网络上的去中心化应用进行交互的移动应用。"
+    "en": "RBSC is an open source communication platform and a mobile application for interacting with decentralized applications running on the Ethereum network.",
+    "zh": "RBSC是一款开源通讯平台，也是一款用于与运行在以太坊网络上的去中心化应用进行交互的移动应用。"
   },
   "email": "rbscchain@gmail.com",
   "website": "http://www.rbscchain.com",
   "whitepaper": "http://www.rbscchain.com/static/RBSC-WhitePaper.pdf",
   "state": "NORMAL",
-  "published_on": "2019-9-20",
+  "published_on": "2019-09-20",
   "initial_price":{
-        "USD":"1 USD"
+    "USD":"1 USD"
   },
   "links": {
     "github": "https://github.com/RBSC-2019",
