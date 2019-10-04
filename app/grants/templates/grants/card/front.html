@@ -41,7 +41,7 @@
 
       <div class="row progress-container mb-2">
         <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
-          {% if clr_active or show_past_clr %}
+          {% if clr_active %}
             {% include 'grants/card/clr_match.html' %}
           {% else %}
             <p class="sub-title font-weight-semibold font-caption mb-1 py-1">MONTHLY RECURRING</p>
@@ -70,7 +70,7 @@
       {% endif %}
 
       <div class="grant-item__state mt-2 row">
-        <div class="col-4">
+        <div class="col-3">
           {% if grant.active %}
             <div class="grant-item__state-active">
               <div class="inner"></div>
@@ -84,7 +84,7 @@
           {% endif %}
         </div>
         {% if grant.active and grant.activeSubscriptions %}
-          <div class="col-8 text-right my-auto font-caption font-weight-semibold">
+          <div class="col-9 text-right mt-1 font-caption font-weight-semibold">
             {{ grant.contribution_count}}
             contribution{% if grant.contribution_count > 1 %}s{% endif %} by {{ grant.contributor_count}}
             contributor{% if grant.contributor_count > 1 %}s{% endif %}
