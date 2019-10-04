@@ -898,7 +898,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "New Features, CLR, and More!"
+    subject = "Devcon Awaits!"
     new_kudos_pks = [4012, 4019, 4032]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
@@ -920,22 +920,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    We hope you've all had a lovely week. In the world of Gitcoin, our team has been working furiously to ship new features for your viewing pleasure. With release 1.31.1, a suite of new features come to the Gitcoin platform: profiles have a makeover; CLR estimates are now sortable; this email has a fresh coat of paint; skills now populate when inviting users to a bounty; and so much more. Kudos to our development team for shipping these features in record time. Bugs? Comments? File an issue <a href="https://github.com/gitcoinco/web/issues/">here.</a>
+    Devcon is only days away, and we're stoked to be in town. If you want to catch up with us, tweet at us <a href="https://twitter.com/gitcoin">@gitcoin</a> or attend one of our events. Alongside Infura, ethBounties, and Consensys Audits, we're hosting the Grow Open Source Day. If you're in Japan, be sure to make it to this event. You can register and snag a free ticket on <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347625">this Eventbrite page.</a> 
 </p>
 <p>
-    Grants CLR Round 3 is only days from wrapping up. We encourage you to participate in the allocation of our $100k matching fund by voting. Check out the CLR homepage <a href="https://gitcoin.co/grants/">here</a> and use our $5 voucher to vote <a href="https://gitcoin.co/grants?cb=grants_signal_fund_enable">here.</a>
+    Grants CLR Round 3 was a massive, massive success: we had such a positive response that we extended the matching period two extra days. You can take a look at all of the noise we generated on our <a href="https://twitter.com/gitcoin">Twitter profile,</a> and can view the current status at <a href="https://gitcoin.co/grants">gitcoin.co/grants.</a> Thank you to @0xEffAlt for donating $25k as a matching partner, @meeseeking for donating $20k+ across projects, and of course the Ethereum Foundation for supporting our endeavors from the beginning. Expect an recap blog post in the next few days.
 </p>
 <p>
-    Last, only seven days remain in the Road to Devcon hackathon. Thousands of dollars are up for grabs, and we encourage you to put together a submission even if you're hopping in during these final days! Take a look at our sponsors and learn more about participation on the hackathon homepage <a href="https://gitcoin.co/blog/announcing-the-road-to-devcon-hackathon/">here</a>.
+    The Road to Devcon is nearing its end. With less than 24 hours to go before submissions are due, we want to remind you to do your due diligence and get your contributions in. Make sure you submit all work by the end of the day at 11:59pm ET, and post your project in the Discord channel #project-4-kudos. Also, be sure to tune in to the livestream at 2PM ET on Friday, as we'll have participants presenting their work! Great job on this one, all. We're excited to see what you came up with.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is scheduled for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.</a>
+        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.</a>
         </li>
         <li>
-        The final wrap up post for Ethereal Blocks was released last week. <a href="https://gitcoin.co/blog/ethereal-blocks-retro-sponsors-winners-and-more/">Celebrate the accomplishments of the Gitcoin ecosystem by taking a look.</a>
+        You asked, we listened. Over the next few weeks, we'll be uploading past livestream recordings to our <a href="https://www.youtube.com/gitcoinmedia">YouTube channel, Gitcoin Media.</a> Have a request for a particular one to be uploaded soon? Email Ryan at ryan@gitcoin.co.
         </li>
     </ul>
 </p>
@@ -944,22 +944,22 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'aminlatifi',
+        'who': 'alexjg',
         'who_link': True,
-        'what': 'Date of Donations on Milestones has a confusing UI',
-        'link': 'https://gitcoin.co/issue/Giveth/giveth-dapp/604/2480',
+        'what': 'Fixes to UI for composing a reply',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/7781/3407',
         'link_copy': 'View more',
     }, {
-        'who': 'antonyip',
+        'who': 'eswarasai',
         'who_link': True,
-        'what': 'Implement arbitrary size Waksman network',
-        'link': 'https://gitcoin.co/issue/matter-labs/sapling-crypto/2/2457',
+        'what': 'Add support for MYTHX_ACCESS_TOKEN',
+        'link': 'https://gitcoin.co/issue/b-mueller/sabre/95/3513',
         'link_copy': 'View more',
     }, {
-        'who': 'tbenr',
+        'who': 'mrdavey',
         'who_link': True,
-        'what': 'Other profile screen UI',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8071/3214',
+        'what': 'Deploying Full stack Dapp to Google Cloud',
+        'link': 'https://gitcoin.co/issue/kauri-io/Content/52/3464',
         'link_copy': 'View more',
     }, ]
 
@@ -976,14 +976,14 @@ Back to shipping,
     }
     
     bounties_spec = [{
-        'url': 'https://github.com/harmonylion/ideamarkets/issues/4',
-        'primer': 'replace legacy code & write tests',
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/3598',
+        'primer': 'Explore Compression Formats for Persistent Byte Data',
     }, {
-        'url': 'https://github.com/gitcoinco/skunkworks/issues/130',
+        'url': 'Python script that updates SQL tables',
         'primer': 'Ethereum Grab Bag',
     }, {
-        'url': 'https://github.com/ConsenSys/ConsenSysGrants-Challenges/issues/5',
-        'primer': 'Social Impact Challenge',
+        'url': 'https://github.com/wearekickback/app/issues/185',
+        'primer': 'Add to calendar',
 }, ]
 
 
