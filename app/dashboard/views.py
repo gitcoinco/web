@@ -43,6 +43,7 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import escape, strip_tags
+from django.utils.http import is_safe_url
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -75,9 +76,9 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    Earning, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile,
-    ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction,
-    UserVerificationModel,
+    Earning, FeedbackEntry, HackathonEvent, HackathonRegistration, HackathonSponsor, Interest, LabsResearch,
+    PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Subscription,
+    Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -212,12 +213,23 @@ def get_interest_modal(request):
     except Bounty.DoesNotExist:
         raise Http404
 
+    print (request.user.profile.hackathons.all())
+    print(bounty.event)
+    if bounty.event and request.user.is_authenticated:
+        is_registered = request.user.profile.hackathons.filter(hackathon_id=bounty.event.id).first() or None
+        print(is_registered)
+    else:
+        is_registered = None
+
+
     context = {
         'bounty': bounty,
         'gitcoin_discord_username': request.user.profile.gitcoin_discord_username if request.user.is_authenticated else None,
         'active': 'get_interest_modal',
         'title': _('Add Interest'),
         'user_logged_in': request.user.is_authenticated,
+        # 'is_registered': request.user.profile.hackathons.all(),
+        'is_registered': is_registered,
         'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
     }
     return TemplateResponse(request, 'addinterest.html', context)
@@ -2437,7 +2449,7 @@ def profile(request, handle, tab=None):
     default_tab = 'activity'
     tab = tab if tab else default_tab
     handle = handle.replace("@", "")
-    
+
     # make sure tab param is correct
     all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people']
     tab = default_tab if tab not in all_tabs else tab
@@ -2445,7 +2457,7 @@ def profile(request, handle, tab=None):
         # someone trying to go to their own profile?
         tab = handle
         handle = request.user.profile.handle
-    
+
     # user only tabs
     if not handle and request.user.is_authenticated:
         handle = request.user.username
@@ -3277,18 +3289,71 @@ def hackathon(request, hackathon=''):
 
 
 def hackathon_onboard(request, hackathon=''):
+    referer = request.META.get('HTTP_REFERER', '')
 
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        is_registered = request.user.profile.hackathons.filter(hackathon_id=hackathon_event.pk).first() if request.user.is_authenticated else None
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
+
     params = {
         'active': 'hackathon_onboard',
         'title': 'Hackathon Onboard',
         'hackathon': hackathon_event,
+        'referer': referer,
+        'is_registered': is_registered,
     }
     return TemplateResponse(request, 'dashboard/hackathon_onboard.html', params)
 
+
+@csrf_exempt
+@require_POST
+def hackathon_registration(request):
+    """Claim Work for a Bounty.
+
+    :request method: POST
+
+    Args:
+        bounty_id (int): ID of the Bounty.
+
+    Returns:
+        dict: The success key with a boolean value and accompanying error.
+
+    """
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    hackathon = request.POST.get('name')
+    referer = request.POST.get('referer')
+    print(hackathon, referer)
+
+    # return redirect('hackathon', hackathon=hackathon)
+    if not profile:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+    try:
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        registration_data = HackathonRegistration.objects.get_or_create(
+            name=hackathon,
+            hackathon= hackathon_event,
+            referer=referer,
+            registrant=profile
+        )[0]
+
+        profile.hackathons.add(registration_data)
+    except Exception as e:
+        logger.error('Error while saving registration', e)
+
+    if referer and is_safe_url(referer, request.get_host()):
+        messages.success(request, _(f'You have successfully registered to {hackathon_event.name}. Happy hacking!'))
+        # return redirect(referer)
+        redirect = referer
+    else:
+        messages.success(request, _(f'You have successfully registered to {hackathon_event.name}. Happy hacking!'))
+        # return redirect('hackathon', hackathon=hackathon)
+        redirect = f'/hackathon/{hackathon}'
+
+    return JsonResponse({'redirect': redirect})
 
 def get_hackathons(request):
     """Handle rendering all Hackathons."""

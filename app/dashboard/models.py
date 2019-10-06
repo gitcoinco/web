@@ -2142,6 +2142,30 @@ class ProfileQuerySet(models.QuerySet):
         return self.filter(hide_profile=True)
 
 
+class HackathonRegistration(SuperModel):
+    """Defines the Hackthon profiles registrations"""
+    name = models.CharField(max_length=255, help_text='Hackathon slug')
+    hackathon = models.OneToOneField(
+        'HackathonEvent',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    referer = models.URLField(null=True, blank=True, help_text='Url comes from')
+    registrant = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='hackathon_registration',
+        on_delete=models.CASCADE,
+        help_text='User profile'
+    )
+
+    class Meta:
+        ordering = ('name',)
+
+    def __str__(self):
+        return f"Name: {self.name}; Hackathon: {self.hackathon}; Referer: {self.referer}; Registrant: {self.registrant}"
+
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
@@ -2236,6 +2260,8 @@ class Profile(SuperModel):
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True)
+    hackathons = models.ManyToManyField(HackathonRegistration, blank=True)
+
 
     objects = ProfileQuerySet.as_manager()
 
