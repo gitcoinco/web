@@ -160,7 +160,7 @@ var sanitizeDict = function(d, keyToIgnore) {
 
 var sanitizeAPIResults = function(results, keyToIgnore) {
   if (results.length >= 1) {
-    for (var i = 0; i < results.length; i++) {
+    for (let i = 0; i < results.length; i++) {
       results[i] = sanitizeDict(results[i], keyToIgnore);
     }
     return results;
@@ -641,8 +641,8 @@ var retrieveIssueDetails = function() {
   $.get(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result['keywords']) {
-      var keywords = result['keywords'];
-	  
+      let keywords = result['keywords'];
+
       showChoices('#keyword-suggestions', '#keywords', keywords);
       $('#keywords').select2({
         placeholder: 'Select tags',
