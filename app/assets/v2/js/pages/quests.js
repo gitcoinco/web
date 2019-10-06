@@ -5,7 +5,7 @@ var start_quiz = async function() {
   var question_number = 0;
   var should_continue = true;
 
-  start_music_midi('boss-battle');
+  start_music_midi(document.music);
   await sleep(1500);
 
   while (should_continue) {
@@ -150,15 +150,17 @@ var advance_to_state = async function(new_state) {
   }
   $('body').addClass('stage_' + new_state);
 
+  // force login
+  if (!document.contxt['github_handle']) {
+    document.location.href = document.location.href.replace('#', '') + '?login=1';
+  }
+
 
   // -- individual transitions callbacks --
 
   // 0 to 1
   if (old_state == 0 && new_state == 1) {
     await sleep(1000);
-    if (!document.contxt['github_handle']) {
-      document.location.href = document.location.href.replace('#', '') + '?login=1';
-    }
     await $('#header').html('Quest Intro');
     await $('#header').fadeIn();
     await sleep(1000);
@@ -303,8 +305,8 @@ $(document).ready(function() {
   // force the music to load
   setTimeout(function() {
     if (document.quest) {
-      start_music_midi('boss-battle');
-      pause_music_midi('boss-battle');
+      start_music_midi(document.music);
+      pause_music_midi(document.music);
     }
   }, 100);
 
@@ -380,7 +382,7 @@ $(document).ready(function() {
       }
     };
 
-    preload_backgrounds();
+    preload_assets();
   }
 
   $('#protagonist h3').html(trim_dots($('#protagonist h3').text(), 8));
@@ -389,6 +391,7 @@ $(document).ready(function() {
     e.preventDefault();
     $(this).toggleClass('selected');
   });
+
   if (document.quest) {
     start_quest();
   }

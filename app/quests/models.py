@@ -47,13 +47,25 @@ class Quest(SuperModel):
     @property
     def background(self):
         backgrounds = [
-            'camping',
-            'back_city',
-            'city',
-            'night',
+            'back0',
+            'back1',
+            'back2',
+            'back3',
         ]
         which_back = self.pk % len(backgrounds)
         return backgrounds[which_back]
+
+    @property
+    def music(self):
+        musics = [
+            'boss-battle',
+            'boss-battle1',
+            'boss-battle2',
+            'boss-battle3',
+            'boss-battle4',
+        ]
+        idx = self.pk % len(musics)
+        return musics[idx]
 
     @property
     def success_count(self):

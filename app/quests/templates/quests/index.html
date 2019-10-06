@@ -25,11 +25,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <img class="mr-1 demo" src="{% static "v2/images/quests/demo.gif" %}">
         </div>
         <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
-          <h1 class="font-title-xl font-weight-semibold">A New Way to Explore the Web3 Ecosystem</h1>
-          <p class="my-4 pt-1 font-header">
+          <h1 class="font-title-xl font-weight-semibold hero-p-mobile">A New Way to Explore the Web3 Ecosystem</h1>
+          <p class="hero-p-mobile my-4 pt-1 font-header">
             Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!
           </p>
-          <a id=explore_quests class="btn btn-gc-blue" href="#available_quests">
+          <a id=explore_quests class="hero-p-mobile btn btn-gc-blue" href="#available_quests">
             <img class="mr-1 white-icon" src="{% static "v2/images/products/quests-symbol.svg" %}">
             Explore Quests
           </a>
@@ -208,9 +208,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <div class="row indent_on_mobile">
   <div id=leaderboard>
     {% for item in leaderboard %}
-    <div class="inner_row" style="{% cycle 'background-color: #fafafa;' '' %}";>
+    <div class="inner_row" style="{% if item.0 == github_handle %}background-color: #edf5fc;{%else%}{% cycle 'background-color: #fafafa;' '' %}{%endif%}";>
       <div class="float-left mr-2 ml-2">{{ forloop.counter }}</div>
       <div class="float-left mr-2 ml-2"><img src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px; width: 120px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
+      {% if item.0 == github_handle %}
+        <div id=you style="margin-top: 10px;" class="float-left mr-4 ml-2">You</div>
+      {% endif %}
       <div style="float: right; width: 500px; text-align: right;">
       {% for btr in item.2%}
       <img src="{{btr.0}}" title="{{btr.1}}" style="height: 50px; width: 50px; border-radius: 0px;">

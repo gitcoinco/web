@@ -101,6 +101,8 @@
       'name': '{{quest.kudos_reward.ui_name}}',
       'img': '{{quest.kudos_reward.preview_img_url}}'
     };
+    
+    document.music = '{{quest.music}}';
     document.quest = {{quest_json|safe}};
     document.attempts = {
       'success_count': parseInt('{{success_count}}'),
