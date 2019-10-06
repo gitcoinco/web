@@ -52,6 +52,7 @@ from django.views.decorators.http import require_GET, require_POST
 import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
+from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
 from dashboard.context import quickstart as qs
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
@@ -744,6 +745,9 @@ def onboard(request, flow=None):
         'steps': steps or onboard_steps,
         'flow': flow,
         'profile': profile,
+        '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(),
+        'possible_skin_tones': skin_tones,
+        'possible_hair_tones': hair_tones,
     }
     params.update(get_avatar_context_for_user(request.user))
     return TemplateResponse(request, 'ftux/onboard.html', params)
