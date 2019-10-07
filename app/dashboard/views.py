@@ -18,6 +18,7 @@
 '''
 from __future__ import print_function, unicode_literals
 
+import hashlib
 import json
 import logging
 import os
@@ -60,7 +61,6 @@ from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
-import hashlib
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from mailchimp3 import MailChimp
