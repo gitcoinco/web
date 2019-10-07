@@ -215,14 +215,10 @@ def get_interest_modal(request):
     except Bounty.DoesNotExist:
         raise Http404
 
-    print (request.user.profile.hackathons.all())
-    print(bounty.event)
     if bounty.event and request.user.is_authenticated:
         is_registered = request.user.profile.hackathons.filter(hackathon_id=bounty.event.id).first() or None
-        print(is_registered)
     else:
         is_registered = None
-
 
     context = {
         'bounty': bounty,
@@ -230,7 +226,6 @@ def get_interest_modal(request):
         'active': 'get_interest_modal',
         'title': _('Add Interest'),
         'user_logged_in': request.user.is_authenticated,
-        # 'is_registered': request.user.profile.hackathons.all(),
         'is_registered': is_registered,
         'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
     }
@@ -3326,9 +3321,7 @@ def hackathon_registration(request):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     hackathon = request.POST.get('name')
     referer = request.POST.get('referer')
-    print(hackathon, referer)
 
-    # return redirect('hackathon', hackathon=hackathon)
     if not profile:
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},

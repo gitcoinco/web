@@ -63,12 +63,6 @@
             </div>
             <div>
             {% if bounty.event %}
-            {{registration}}
-            {{registration.hackathon_id}}
-            //
-
-              event:
-            {{bounty.event.id}}
               <div class="d-flex">
                 <div class="filter-label ml-0 mb-3">
                   <label for="checkbox2 mb-0">
@@ -76,7 +70,6 @@
                   </label>
                   <input type="text" id="discord_username" name="discord_username" class="form__input font-body" placeholder="vivek#9746" value="{{gitcoin_discord_username}}" required/>
                   <span class="font-caption"><a target="_blank" href="https://discord.gg/TxRKTn8">Join Discord</a> to get updates from our sponsors prizes and find help</span>
-
                 </div>
               </div>
               {% endif %}

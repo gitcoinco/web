@@ -50,8 +50,6 @@
     </div>
 
     <div class="container-fluid p-5">
-      {{referer}}
-
       {% if hackathon.end_date|timesince >= "1 min" %}
         <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
       {% endif %}
@@ -182,8 +180,6 @@
             <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
             <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
           {% endif %}
-            {{hackathon.pk}}
-            <!-- profi {{ profile.hackathons.all}} -->
         </div>
       {% endif %}
     </div>
@@ -198,7 +194,6 @@
       const hackathon_slug = '{{ hackathon.slug|safe }}';
       const redirect = '{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}';
       const csrftoken = $('[name=csrfmiddlewaretoken]').val();
-
       const register = (name, referer) => {
         if (is_registered) {
           return;
@@ -210,39 +205,19 @@
         $.when(sendRegister).then((response) => {
           console.log(response)
             document.location.href = response.redirect;
-
-          // if (referer.indexOf(location.origin) > -1) {
-          //   document.location.href = referer;
-          // } else {
-          //   document.location.href = redirect
-          // }
-          // redirect
         });
-
       }
-
-      //logged in, not registered > click > send registration > redirect if same hostname
-
-      // not logged login > register > redirect if same hostname (avoid click 2 times)
       const params = new URLSearchParams(window.location.search);
+
       if (params.get('referer')) {
-        // send data
-        // redirect
         register(hackathon_slug, params.get('referer'))
-
       }
-
-
-
-    $('[data-registration]').on('click', function(e) {
-      e.preventDefault();
-      let name = $(this).data('registration');
-      let referer = $(this).data('referer');
-      register(name, referer)
-    });
-
-
-
+      $('[data-registration]').on('click', function(e) {
+        e.preventDefault();
+        let name = $(this).data('registration');
+        let referer = $(this).data('referer');
+        register(name, referer)
+      });
     </script>
 
   </body>
