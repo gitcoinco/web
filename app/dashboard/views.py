@@ -60,8 +60,10 @@ from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
+import hashlib
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
+from mailchimp3 import MailChimp
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import (
@@ -3333,24 +3335,52 @@ def hackathon_registration(request):
             status=401)
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
-        registration_data = HackathonRegistration.objects.get_or_create(
+        registration_data = HackathonRegistration.objects.create(
             name=hackathon,
             hackathon= hackathon_event,
             referer=referer,
             registrant=profile
-        )[0]
+        )
 
-        profile.hackathons.add(registration_data)
+        profile.hackathons.add(registration_data.id)
     except Exception as e:
         logger.error('Error while saving registration', e)
 
+    client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
+    mailchimp_data = {
+            'email_address': profile.email,
+            'status_if_new': 'subscribed',
+            'status': 'subscribed',
+
+            'merge_fields': {
+                'HANDLE': profile.handle,
+                'HACKATHON': hackathon,
+            },
+        }
+
+    user_email_hash = hashlib.md5(profile.email.encode('utf')).hexdigest()
+
+    try:
+        client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
+        client.lists.members.tags.update(
+            settings.MAILCHIMP_LIST_ID_HACKERS,
+            user_email_hash,
+            {
+                'tags': [
+                    {'name': hackathon, 'status': 'active'},
+                ],
+            }
+        )
+        print('pushed_to_list')
+    except Exception as e:
+        logger.error(f"error in record_action: {e} - {instance}")
+        pass
+
     if referer and is_safe_url(referer, request.get_host()):
         messages.success(request, _(f'You have successfully registered to {hackathon_event.name}. Happy hacking!'))
-        # return redirect(referer)
         redirect = referer
     else:
         messages.success(request, _(f'You have successfully registered to {hackathon_event.name}. Happy hacking!'))
-        # return redirect('hackathon', hackathon=hackathon)
         redirect = f'/hackathon/{hackathon}'
 
     return JsonResponse({'redirect': redirect})

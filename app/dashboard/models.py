@@ -2145,7 +2145,8 @@ class ProfileQuerySet(models.QuerySet):
 class HackathonRegistration(SuperModel):
     """Defines the Hackthon profiles registrations"""
     name = models.CharField(max_length=255, help_text='Hackathon slug')
-    hackathon = models.OneToOneField(
+
+    hackathon = models.ForeignKey(
         'HackathonEvent',
         on_delete=models.SET_NULL,
         null=True,
