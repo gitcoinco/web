@@ -1,0 +1,16 @@
+{
+  "symbol":"BBLM",
+  "address":"0x96A77dC0d28aDbFf31ff728aC94D7473C540Ef38",
+  "overview":{
+        "en":"BitbenCommunity Is The Most Professional Block Chain Live Platform",
+        "zh":"币本社区是目前国内最专业的区块链直播视频平台"
+  },
+  "email":"bitben@foxmail.com",
+  "website":"http://www.bitben.com/",
+  "state":"NORMAL",
+  "published_on":"2019-09-25",
+  "initial_price":{
+        "USD":"0.01 USD"
+  },
+  "links":{}
+}
