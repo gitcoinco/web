@@ -1,0 +1,23 @@
+{
+  "symbol": "EVC",
+  "address": "0xA8B9cd2577d20224Af856C19aF20040290705932",
+  "overview":{
+        "en": "ELEENT VALUE CHAIN is a decentralized inventory aggregation ecosystem. EVC is used for the circulation and encouragement of its ecosystem, enabling the ecosystem to operate efficiently and automatically, and to achieve autonomous management within its ecosystem, and to improve the conversion rate and profitability of advertising resources.",
+        "zh": "ELEENT VALUE CHAIN是一个去中心化广告资源聚合生态体系。EVC用于其生态体系的流通和激励，使得生态体系可以高效自动 的运转，并且实现其生态内部的自治管理，提高广告资源的的转 化率覆盖率和收益率。 "
+  },
+  "email": "evcblock@gmail.com",
+  "website": "http://evcblock.tech",
+  "whitepaper": "https://github.com/evchain555/evc/raw/master/EVC/English%20language/White%20Paper/Eleent%20Value%20Chain%20white%20paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-28",
+  "initial_price":{
+        "ETH":"0.000058 ETH",
+        "USD":"0.01 USD",
+        "BTC":"0.00000125 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/EXCELLENTVALUE2",
+    "telegram": "https://t.me/excellentvalue",
+    "facebook": "https://www.facebook.com/excellentvalue.chain"
+  }
+}
