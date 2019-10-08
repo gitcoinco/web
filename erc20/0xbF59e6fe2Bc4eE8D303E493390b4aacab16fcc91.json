@@ -1,0 +1,22 @@
+{
+    "symbol": "CCC",
+    "address": "0xbF59e6fe2Bc4eE8D303E493390b4aacab16fcc91",
+    "overview": {
+        "en": "Clipper Coin Capital is an innovative crypto brokerage and investment bank with global reach."
+    },
+    "email": "info@clippercoin.com",
+    "website": "http://clippercoin.com/",
+    "whitepaper": "http://clipperadvisor.com/static/EClipper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-08",
+    "initial_price": {
+        "ETH": "0.00000900 ETH",
+        "USD": "0.006575 USD",
+        "BTC": "0.0000007543 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/ClipperCoinCap",
+        "telegram": "https://t.me/CCC_official"，
+        "facebook": "https://www.facebook.com/clippercoincapital"
+    }
+}
