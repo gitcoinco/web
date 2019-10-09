@@ -1,0 +1,27 @@
+{
+  "symbol": "YTA",
+  "address": "0x5EdC1a266E8b2c5E8086d373725dF0690af7e3Ea",
+  "overview":{
+        "en": "YottaChain is a public chain created by Wang Donglin, one of the Top 10 Young Scientists in China, together with his team for blockchain storage. It builds a massive interstellar storage pool by connecting the distributed resources around the world. The pool overwhelms the existing centralized storage technology with ten thousand times higher reliability, a fraction of the original cost, DDoS resistance, and disaster tolerance and other features, so as to guarantee the data sovereignty of each user. With TruPrivacy, the patented core technology of blockchain storage in hand, YottaChain has obtained over 200 patented technologies at home and abroad. It changes the pattern of storage industry because it is the only one supporting data deduplication after encryption in the world.",
+        "zh": "YottaChain是由中国十大青年科学家王东临带队打造的区块链存储公链，YottaChain通过连接全球分散的存储资源，打造一个规模浩瀚的星际存储池，能确保每个人的数据主权，比现有中心化存储具有压倒性优势（可靠性提升万倍、成本降低数倍，并具备抗DDoS和容灾等特性）。YottaChain掌握区块链存储核心科技，拥有200多项国内外专利技术，其核心TruPrivacy技术是全球唯一能实现加密后去重的技术，并荣获全球专利，从而改变存储行业格局。"
+  },
+  "email": "Email",
+  "website": "https://www.yottachain.io/",
+  "whitepaper": "https://www.yottachain.io/static/pdf/YottaChain%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-09-30",
+  "initial_price":{
+        "ETH":"0.00007843 ETH",
+        "USD":"0.0140647 USD",
+        "BTC":"0.00000173 BTC"
+  },
+  "links": {
+    "email": "yottaofficial@yottachain.io",
+    "twitter": "https://twitter.com/Yottachain",
+    "telegram": "https://t.me/YottaChain02",
+    "facebook": "https://www.facebook.com/yotta.chain.1",
+    "reddit": "https://www.reddit.com/user/YottaChain",
+    "medium": "https://medium.com/@yottachain",
+    "youtube": "https://www.youtube.com/channel/UCBU4S9IYdBKU3T4teNL9mDw?view_as=subscriber"
+  }
+}
