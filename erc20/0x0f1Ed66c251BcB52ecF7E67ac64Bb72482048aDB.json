@@ -1,4 +1,4 @@
-﻿{
+{
   "symbol": "SEER",
   "address": "0x0f1ed66c251bcb52ecf7e67ac64bb72482048adb",
   "overview":{
@@ -21,8 +21,8 @@
     "telegram": "https://t.me/Seer_English_Group",
     "github": "https://github.com/seer-project",
     "facebook": "https://www.facebook.com/groups/SEERatBITFINEX/",
-    "reddit": "#",
-    "slack": "#",
-    "medium": "#"
+    "reddit": "",
+    "slack": "",
+    "medium": ""
   }
 }
