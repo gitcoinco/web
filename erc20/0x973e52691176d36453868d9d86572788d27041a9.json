@@ -11,7 +11,7 @@
   "state": "NORMAL",
   "published_on": "2018-08-03",
   "initial_price":{
-        "USD":"0.0014USD"
+        "USD":"0.0014 USD"
   },
   "links": {
     "blog": "https://blog.dxchain.com/",
