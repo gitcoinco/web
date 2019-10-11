@@ -38,6 +38,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
   </div>
 </div>
+
 <div class="row indent_on_mobile available_quests">
   <h1 class="mt-3" style="width: 100%;">Quests <span id="alpha">Alpha</span></h1>
   <div id="tabs">
@@ -106,6 +107,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
   {% endfor %}
 </div>
+
 <div class="row indent_on_mobile pt-2" style="margin-top: 100px; background-color: #fafafa;">
   <h1 id=refer class="mt-3">Better with Friends</h1>
 </div>
@@ -200,8 +202,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <h1 style="margin-top: 100px;">Leaderboard</h1>
   <div id="announce">
     <img class="mr-1" src="{% static "v2/images/quests/enemies/samurai.svg" %}">
-    <h4><strong>The Devcon 5 Challenge is Live!</strong></h4>
-    <p>Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day JST Sunday 10/13 will <strong>win a KeepKey hardware wallet.</strong>
+    <h4><strong>The Post-Devcon 5 Challenge is Live!</strong></h4>
+    <p>Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day JST Friday 10/18 will <strong>win a KeepKey hardware wallet.</strong>
   </div>
 
 </div>
@@ -224,6 +226,27 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
 </div>
 {% endif %}
+
+<div class="container-fluid py-1 announce-bot indent_on_mobile">
+  <div class="container">
+    <img src="{% static 'v2/images/quests/lovebot.svg' %}" />
+  </div>
+</div>
+
+<div class="container-fluid py-1 announce indent_on_mobile">
+  <div class="container">
+    
+    <h4 class="pt-0">We &lt;3 Feedback.</h4>
+    <strong>Gitcoin Quests</strong> has been played <strong>{{attempt_count}} times</strong> by <strong>{{user_count}} community members</strong>.  About <strong>{{success_ratio}}% </strong> of quest attempts are sucessful.  
+
+    <br>
+    Quests is still in ALPHA and is evolving.  Got feedback?
+    <BR>
+    <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5298">
+      Let us know
+    </a>
+  </div>
+</div>
 
 
 {% endblock %}

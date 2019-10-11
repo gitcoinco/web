@@ -1,4 +1,4 @@
-var seconds_per_question = 15;
+var seconds_per_question = 30;
 
 var start_quiz = async function() {
   document.quiz_started = true;

@@ -128,10 +128,15 @@ def index(request):
                 'reward_multiplier': 1/reward_denominator
             })
 
-
+    attempt_count = QuestAttempt.objects.count()
+    success_count = QuestAttempt.objects.filter(success=True).count()
     params = {
         'profile': request.user.profile if request.user.is_authenticated else None,
         'quests': quests,
+        'attempt_count': attempt_count,
+        'success_count': success_count,
+        'success_ratio': int(success_count/attempt_count * 100),
+        'user_count': QuestAttempt.objects.distinct('profile').count(),
         'leaderboard': get_leaderboard(),
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'rewards_schedule': rewards_schedule,
@@ -145,7 +150,7 @@ def index(request):
 @ratelimit(key='ip', rate='10/s', method=ratelimit.UNSAFE, block=True)
 def details(request, obj_id, name):
 
-    time_per_answer = 15
+    time_per_answer = 30
     time_per_answer_buffer = 5
 
     if not request.user.is_authenticated and request.GET.get('login'):
