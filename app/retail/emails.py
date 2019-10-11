@@ -926,7 +926,7 @@ Hey Gitcoiners,
     Back to reality. Web3 World is our latest hackathon! It's a two-week virtual gettogether where Gitcoin community members and entrepreneurs from around the globe will collaborate to push blockchain and Web3 applications to new frontiers of business, technology, and social change. Is this your thing? <a href="https://hackathons.gitcoin.co/web3-world/">Check the landing page for details to come.</a> 
 </p>
 <p>
-    What were your favorite stories from Devcon? What were the best talks? As we board our planes and head back to our normal lives, we want to hear your thoughts. Send us a Tweet with your biggest takeaway — be it about the future of the open internet or how to make sharding better.  Mention us <a href="https://twitter.com/gitcoin">@gitcoin.</a> W  
+    What were your favorite stories from Devcon? What were the best talks? As we board our planes and head back to our normal lives, we want to hear your thoughts. Send us a Tweet with your biggest takeaway — be it about the future of the open internet or how to make sharding better.  Mention us <a href="https://twitter.com/gitcoin">@gitcoin.</a>
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
