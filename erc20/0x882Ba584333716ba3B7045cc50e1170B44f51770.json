@@ -15,11 +15,9 @@
         "BTC":"0.00002 BTC"
   },
   "links": {
-    "blog": "https://yoacoin.ghost.io",
-    "twitter": "https://twitter.com/ProjectYoa",
-    "telegram": "https://t.me/yoaproject",
-    "reddit": "https://www.reddit.com/yoacoin/",
-    "github": " https://github.com/YOACOIN",
-    "facebook": "https://www.facebook.com/YoaProject"
-  }
+        "blog": "https://yoacoin.ghost.io",
+        "twitter": "https://twitter.com/ProjectYoa",
+        "github": "https://github.com/YOACOIN",
+        "facebook": "https://www.facebook.com/YoaProject"
+    }
 }
