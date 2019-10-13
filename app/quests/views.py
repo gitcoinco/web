@@ -156,6 +156,8 @@ def index(request):
     attempt_count = QuestAttempt.objects.count()
     success_count = QuestAttempt.objects.filter(success=True).count()
     leaderboard = get_leaderboard()
+    point_history = request.user.profile.questpointawards.all() if request.user.is_authenticated else QuestPointAward.objects.none()
+    point_value = sum(point_history.values_list('value', flat=True))
     params = {
         'profile': request.user.profile if request.user.is_authenticated else None,
         'quests': quests,
@@ -167,7 +169,9 @@ def index(request):
         'leaderboard_hero': leaderboard[1],
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'rewards_schedule': rewards_schedule,
-        'title': 'Quests on Gitcoin',
+        'title': 'Quests',
+        'point_history': point_history,
+        'point_value': point_value,
         'avatar_url': '/static/v2/images/quests/orb.png',
         'card_desc': 'Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!',
     }
