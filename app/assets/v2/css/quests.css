@@ -112,6 +112,7 @@
   padding-left: 0px;
 }
 #you,
+.tag,
 .tags li{
   background-color: #e7f0fa;
   color: var(--gc-blue);
@@ -522,6 +523,104 @@ body.back5.quest_battle{
   width: 100%;
   height: 100%;
 }
+#leaderboard_hero{
+  width: 100%;
+  background-color: #d9d8e7;
+  background-size: 100%;
+  background-position-y: -220px;
+  margin-top: 20px;
+  background-repeat: no-repeat;
+}
+#leaderboard_hero .inner_row{
+  width: 34%;
+  margin: 0;
+  display: inline-block;
+  height: 400px;
+  vertical-align: top;
+  text-align: center;
+  position: relative;
+  padding-top: 10px;
+}
+#leaderboard_hero .inner_row.one{
+  width: 40%;
+}
+#leaderboard_hero .inner_row img.avatar{
+  width: 100%;
+  margin: 0px auto;
+  border-radius: 50%;
+  margin-right: 30%;
+}
+#leaderboard_hero .inner_row.one img.avatar{
+  border: 5px solid rgba(255,215,0, 0.5);
+}
+#leaderboard_hero .inner_row.two img.avatar{
+  border: 3px solid rgba(192, 192, 192, 0.5);
+}
+#leaderboard_hero .inner_row.three img.avatar{
+  border: 2px solid rgba(205, 127, 50, 0.5);
+}
+
+#leaderboard_hero .inner_row img.kudii{
+  width: 100%;
+  margin: 0px auto;
+}
+#leaderboard_hero .inner_row.one img.kudii{
+  -webkit-filter: drop-shadow(12px 12px 7px rgba(255,215,0, 0.5));
+  filter: drop-shadow(12px 12px 7px rgba(255,215,0, 0.5));
+}
+#leaderboard_hero .inner_row.two img.kudii{
+  -webkit-filter: drop-shadow(12px 12px 7px rgba(192,192,192, 0.5));
+  filter: drop-shadow(12px 12px 7px rgba(192,192,192, 0.5));
+}
+#leaderboard_hero .inner_row.three img.kudii{
+  -webkit-filter: drop-shadow(12px 12px 7px rgba(205, 127, 50, 0.5));
+  filter: drop-shadow(12px 12px 7px rgba(205, 127, 50, 0.5));
+}
+#leaderboard_hero .inner_row.two{
+  padding-top: 40px;
+}
+#leaderboard_hero .inner_row.three{
+  width: 25%;
+  padding-top: 70px;
+}
+#leaderboard_hero .inner_row .package{
+  width: 100%;
+}
+#leaderboard_hero .kudos_container,
+#leaderboard_hero .handle_container{
+  position: relative;
+  text-align: left;
+}
+#leaderboard_hero .handle_container{
+  left: 20%;
+  width: 40%;
+}
+#leaderboard_hero .kudos_container{
+  position: relative;
+  top: -130px;
+  left: 50%;
+  width: 40%;
+}
+#leaderboard_hero .three .kudos_container{
+  top: -70px;
+}
+#leaderboard_hero .inner_row .trophy_case{
+  position: absolute;
+  bottom: 10px;
+  background-color:rgb(200,200,200,0.5);
+  border-radius: 5px;
+  padding: 5px;
+  width: 100%;
+}
+
+#leaderboard_hero .inner_row .tag{
+  transform: rotate(-15deg);
+  float:left;
+  vertical-align: top;
+  z-index: 9999;
+}
+
+
 #leaderboard {
   font-size: 25px;
   width: 100%;
@@ -653,7 +752,17 @@ body.back3 .tl{
     background-size: 100% 400px !important;
   }
 }
+@media (max-width: 1028px) {
+  #leaderboard_hero .inner_row {
+    width: 32%;
+    height: 400px;
+  }
+}
 @media (max-width: 900px) {
+  #leaderboard_hero .inner_row {
+    width: 32%;
+    height: 350px;
+  }
   .tr{
     right: 70px;
   }
@@ -691,6 +800,18 @@ body.back3 .tl{
   }
 }
 @media (max-width: 768px) {
+  #leaderboard_hero{
+    background-image: none !important;
+  }
+  #leaderboard_hero .inner_row {
+    width: 100% !important;
+    padding-top: 0px !important;
+    height: 400px;
+  }
+  #leaderboard_hero .kudos_container,
+  #leaderboard_hero .handle_container{
+    width: 30%;
+  }
   .character img{
     width: 110px;
     height: 110px;

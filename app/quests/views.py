@@ -15,7 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity
 from inbox.utils import send_notification_to_user
-from kudos.models import BulkTransferCoupon, BulkTransferRedemption
+from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
 from kudos.views import get_profile
 from quests.models import Quest, QuestAttempt, QuestPointAward
 from ratelimit.decorators import ratelimit
@@ -99,13 +99,38 @@ def get_leaderboard(max_entries=25):
 
     # add kudos to each leadervoard item
     return_leaderboard = []
+    reward_kudos = {
+        1: 621,
+        2: 618,
+        3: 622,
+    }
+
+    # assemble leaderboard
+    counter = 0
     for ele in leaderboard:
+        counter += 1
         btr = BulkTransferRedemption.objects.filter(coupon__tag='quest',redeemed_by__handle=ele[0]).order_by('-created_on')
         kudii = list(set([(_ele.coupon.token.img_url, _ele.coupon.token.humanized_name) for _ele in btr]))[:kudos_to_show_per_leaderboard_entry]
         display_pts = int(ele[1]) if not ele[1] % 1 else round(ele[1],1)
-        this_ele = [ele[0], display_pts, kudii]
+        reward_kudos_pk = reward_kudos.get(counter)
+        reward_kudos_url = Token.objects.get(pk=reward_kudos_pk) if reward_kudos_pk else None
+        this_ele = [ele[0], display_pts, kudii, reward_kudos_url, counter]
         return_leaderboard.append(this_ele)
-    return return_leaderboard[:max_entries]
+
+    # return values
+    leaderboard_hero = return_leaderboard
+    if len(leaderboard) < 3:
+        leaderboard_hero = []
+    else:
+        leaderboard = leaderboard[3:]
+        # swap locationms of 1 and 2
+        tmp = None
+        tmp = leaderboard_hero[0]
+        leaderboard_hero[0] = leaderboard_hero[1]
+        leaderboard_hero[1] = tmp
+        leaderboard_hero = leaderboard_hero[:3]
+        return_leaderboard = return_leaderboard[3:]
+    return return_leaderboard, leaderboard_hero
 
 # Create your views here.
 def index(request):
@@ -130,6 +155,7 @@ def index(request):
 
     attempt_count = QuestAttempt.objects.count()
     success_count = QuestAttempt.objects.filter(success=True).count()
+    leaderboard = get_leaderboard()
     params = {
         'profile': request.user.profile if request.user.is_authenticated else None,
         'quests': quests,
@@ -137,7 +163,8 @@ def index(request):
         'success_count': success_count,
         'success_ratio': int(success_count/attempt_count * 100),
         'user_count': QuestAttempt.objects.distinct('profile').count(),
-        'leaderboard': get_leaderboard(),
+        'leaderboard': leaderboard[0],
+        'leaderboard_hero': leaderboard[1],
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'rewards_schedule': rewards_schedule,
         'title': 'Quests on Gitcoin',
