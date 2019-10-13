@@ -50,7 +50,7 @@ def record_award_helper(qa, profile, layer=1):
         return
 
     # record points
-    value = 1/(1**layer)
+    value = 1/(2**(layer-1))
     QuestPointAward.objects.create(
         questattempt=qa,
         profile=profile,
