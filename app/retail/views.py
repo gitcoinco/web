@@ -992,6 +992,14 @@ def products(request):
     """Render the Products response."""
     products = [
         {
+            'name': 'hackathons',
+            'heading': _("Hack with the best companies in web3."),
+            'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
+            'link': 'https://hackathons.gitcoin.co',
+            'img': static('v2/images/products/graphics-hackathons.png'),
+            'logo': static('v2/images/products/hackathons-logo.svg')
+        },
+        {
             'name': 'bounties',
             'heading': _("Solve bounties. Get paid. Contribute to open source"),
             'description': _("Collaborate and monetize your skills while working on Open Source projects \
