@@ -605,7 +605,7 @@ def get_temp_image_file(image):
     return temp_io
 
 
-def svg_to_png(svg_content, width=100, height=100, scale=1, index=None, prefer=None):
+def svg_to_png(svg_content, width=100, height=100, scale=1, index=None, prefer=None, extra_flags=''):
     print('creating svg with pyvips')
     png = None
     if not prefer or prefer == 'pyvips':
