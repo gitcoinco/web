@@ -91,7 +91,7 @@
         <div class="font-body mb-2">
           <i style="width: 14px;" class="fas fa-coins mr-2 text-center"></i>
           <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="ERC20 Token">
-            Grants accepts {{ grant.token_symbol }}
+            Grant accepts {{ grant.token_symbol }}
           </p>
         </div>
       {% endif %}
@@ -141,41 +141,35 @@
         </div>
       {% endif %}
 
-      <div class="row progress-container {% if not is_admin %} mt-4 {% endif %}">
-        <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
-          <p class="sub-title mb-0 font-caption">MONTHLY RECURRING</p>
-          <p class="font-title-xl mb-0 font-weight-bold">
-            {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
-          </p>
-          <p>of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal</p>
-        </div>
 
-        <div class="offset-2 col-8 text-center text-xl-left offset-xl-0 col-xl-6">
-          <p class="sub-title mb-0 font-caption">TOTAL FUNDED</p>
-          <p class="font-title-xl mb-0 font-weight-bold">
-            {{ grant.amount_received|floatformat:0|intcomma }} DAI
-          </p>
-
-          {% if grant.clr_matching %}
-            <span class="mr-2">+{{ grant.clr_matching|floatformat:0 }} DAI</span>
-            <img src="{% static "v2/images/grants/clr.svg" %}">
+      <div class="row progress-container  {% if clr_active %} mb-2 {% endif %} {% if not is_admin %} mt-4 {% endif %}">
+        <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6 mb-xl-0 ">
+          {% if clr_active %}
+            {% include 'grants/card/clr_match.html' %}
+          {% else %}
+            <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">MONTHLY RECURRING</p>
+            <p class="font-title mb-0 font-weight-bold">
+              {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
+            </p>
+            <p>of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal</p>
           {% endif %}
         </div>
 
-      </div>
-    </div>
+        <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6">
+          <p class="sub-title mb-1 font-weight-semibold font-caption mb-1 pt-1">TOTAL FUNDED</p>
+          <p class="font-title mb-0 font-weight-bold">
+            {{ grant.amount_received_with_phantom_funds|floatformat:0|intcomma }} DAI
+          </p>
 
-    {% if is_admin and not grant_is_inactive %}
-      <!-- OWNER ACTIONS -->
-      <div class="font-body grant-item__owner mb-4 mt-2">
-        <p class="sub-title mb-0" data-toggle="tooltip" data-placement="bottom" title="This owner can update grant data , milestones and description">GRANT OWNER</p>
-        <div class="form__select2">
-          <select id="grant-admin" class="form__input" name="grant-admin" disabled>
-            <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
-          </select>
+          {% include 'grants/card/clr_estimate_prev.html' %}
         </div>
+
       </div>
-    {% endif %}
+
+      {% if clr_active %}
+        {% include 'grants/card/clr_estimate.html' %}
+      {% endif %}
+    </div>
 
     <!-- TEAM MEMBERS -->
     <div class="grant-item__member my-4 font-body">
@@ -285,24 +279,25 @@
         </div>
       </div>
 
-      <div class="grant-item__owner my-4">
-        <div class="font-body">
-          <p class="sub-title mb-0" data-toggle="tooltip" data-placement="bottom" title="This address can cancel the grant.">Contract Owner Address</p>
-          <input id="contract_owner_address" class="p-0 m-0 inline-edit font-caption" name="contract_owner_address" value="{{ grant.contract_owner_address }}" disabled>
-          <div id="contract_owner_button-container" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="Contract Owner address hasn't changed. Update the above field to enable this.">
-            <button id="contract_owner_button" data-toggle="tooltip" data-placement="bottom" title='Clicking this will trigger a metamask confirmation' class="mt-2 disable-tooltip btn btn-outline-black button--full hidden shadow-none font-weight-semibold font-body">
-              <i class="fas fa-user mr-2"></i>
-              {% trans "Change Contract Owner" %}
-            </button>
+      <div class="font-body grant-item__owner my-4">
+        <div class="mb-3">
+          <p class="sub-title" data-toggle="tooltip" data-placement="bottom">Grant Owner</p>
+          <div class="mr-2 d-inline-block">
+            <img src="{{ grant.admin_profile.avatar_url }}">
           </div>
+          <div class="mt-1 d-inline-block">
+            <span id="grant-admin" class="font-weight-semibold ">{{ grant.admin_profile.handle|default:'anonymous' }}</span>
+          </div>
+        </div>
+        <div>
+          <p class="sub-title mb-0" data-toggle="tooltip" data-placement="bottom" title="Address used to create this grant.">Contract Owner Address</p>
+          <p id="contract_owner_address" class="p-0 m-0 font-body">{{ grant.contract_owner_address }}</p>
         </div>
       </div>
 
     {% endif %}
 
     <span id="grant_contract_owner_address" class="hidden">{{ grant.contract_owner_address }}</span>
-
-    {% include 'grants/detail/matching.html' %}
 
   </div>
 </div>

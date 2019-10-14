@@ -25,6 +25,8 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import logout
+from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.db.models import Max
 from django.http import Http404, HttpResponse
@@ -185,13 +187,12 @@ def matching_settings(request):
 
     """
     # setup
-    __, es, __, is_logged_in = settings_helper_get_auth(request)
+    profile, es, __, is_logged_in = settings_helper_get_auth(request)
     if not es:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
     msg = ''
-
     if request.POST and request.POST.get('submit'):
         github = request.POST.get('github', '')
         keywords = request.POST.get('keywords').split(',')
@@ -199,6 +200,8 @@ def matching_settings(request):
             es.github = github
         if keywords:
             es.keywords = keywords
+            profile.keywords = keywords
+            profile.save()
         es = record_form_submission(request, es, 'match')
         es.save()
         msg = _('Updated your preferences.')
@@ -275,11 +278,21 @@ def email_settings(request, key):
         preferred_language = request.POST.get('preferred_language')
         validation_passed = True
         try:
+            email_in_use = User.objects.filter(email=email) | User.objects.filter(profile__email=email)
+            email_used_marketing = EmailSubscriber.objects.filter(email=email).select_related('profile')
+            logged_in = request.user.is_authenticated
+            email_already_used = (email_in_use or email_used_marketing)
+            user = request.user if logged_in else None
+            email_used_by_me = (user and (user.email == email or user.profile.email == email))
+            email_changed = es.email != email
+
+            if email_changed and email_already_used and not email_used_by_me:
+                raise ValueError(f'{request.user} attempting to use an email which is already in use on the platform')
             validate_email(email)
         except Exception as e:
             print(e)
             validation_passed = False
-            msg = _('Invalid Email')
+            msg = str(e)
         if preferred_language:
             if preferred_language not in [i[0] for i in settings.LANGUAGES]:
                 msg = _('Unknown language')
@@ -314,7 +327,7 @@ def email_settings(request, key):
     pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     context = {
         'nav': 'home',
-        'active': '/settings/email',
+        'active': '/settings/email/',
         'title': _('Email Settings'),
         'es': es,
         'nav': 'home',
@@ -390,6 +403,7 @@ def discord_settings(request):
     if request.POST:
         test = request.POST.get('test')
         submit = request.POST.get('submit')
+        gitcoin_discord_username = request.POST.get('gitcoin_discord_username', '')
         webhook_url = request.POST.get('webhook_url', '')
         repos = request.POST.get('repos', '')
 
@@ -397,6 +411,7 @@ def discord_settings(request):
             response = validate_discord_integration(webhook_url)
 
         if submit or (response and response.get('success')):
+            profile.gitcoin_discord_username = gitcoin_discord_username
             profile.update_discord_integration(webhook_url, repos)
             profile = record_form_submission(request, profile, 'discord')
             if not response.get('output'):
@@ -406,6 +421,7 @@ def discord_settings(request):
 
     context = {
         'repos': profile.get_discord_repos(join=True) if profile else [],
+        'gitcoin_discord_username': profile.gitcoin_discord_username,
         'is_logged_in': is_logged_in,
         'nav': 'home',
         'active': '/settings/discord',
@@ -528,8 +544,10 @@ def account_settings(request):
             profile.email = ''
             profile.save()
             create_user_action(profile.user, 'account_disconnected', request)
-            messages.success(request, _('Your account has been disconnected from Github'))
-            logout_redirect = redirect(reverse('logout') + '?next=/')
+            redirect_url = f'https://www.github.com/settings/connections/applications/{settings.GITHUB_CLIENT_ID}'
+            logout(request)
+            logout_redirect = redirect(redirect_url)
+            logout_redirect['Cache-Control'] = 'max-age=0 no-cache no-store must-revalidate'
             return logout_redirect
         elif request.POST.get('delete', False):
 

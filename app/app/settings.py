@@ -38,11 +38,13 @@ env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
 env.read_env(str(root.path('app/.env')))  # reading .env file
 
 DEBUG = env.bool('DEBUG', default=True)
+QUESTS_LIVE = DEBUG
 ENV = env('ENV', default='local')
 DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test'])
 IS_DEBUG_ENV = ENV in DEBUG_ENVS
 HOSTNAME = env('HOSTNAME', default=socket.gethostname())
 BASE_URL = env('BASE_URL', default='http://localhost:8000/')
+OVERRIDE_NETWORK = env('OVERRIDE_NETWORK', default=None)
 SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
 ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
 BASE_DIR = root()
@@ -91,6 +93,7 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
+    'quests',
     'enssubdomain',
     'faucet',
     'tdi',
@@ -121,7 +124,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'app.middleware.drop_accept_langauge',
-    'app.middleware.bleach_requests',
+    # 'app.middleware.bleach_requests',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -143,7 +146,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -698,9 +701,14 @@ if ENABLE_SILK:
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
 
+
 # Gitcoin Bounty Funding Fee settings
 FEE_ADDRESS = env('FEE_ADDRESS', default='')
 FEE_ADDRESS_PRIVATE_KEY = env('FEE_ADDRESS_PRIVATE_KEY', default='')
 SLIPPAGE = env.float('SLIPPAGE', default=0.05)
 UNISWAP_LIQUIDITY_FEE = env.float('UNISWAP_LIQUDITY_FEE', default=0.003)
 UNISWAP_TRADE_DEADLINE = env.int('UNISWAP_TRADE_DEADLINE', default=300)
+
+RE_MARKET_LIMIT = env.int('RE_MARKET_LIMIT', default=2)
+MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=60)
+

@@ -50,7 +50,9 @@
             </div>
             <div class="col-5 col-md-2 font-body my-auto txn-link">
               <a id="tx_link" href="https://etherscan.io/tx/{{transaction.cont.tx_id}}" target="_blank" rel="noopener noreferrer">
-                View Etherscan
+                  {% if transaction.cont.tx_id %}
+                  View Etherscan
+                  {%endif%}
               </a>
               <input type="hidden" id="tx_id" name="tx_id" value="{{ transaction.cont.tx_id }}"/>
             </div>

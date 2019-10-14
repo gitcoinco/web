@@ -70,6 +70,7 @@ def premailer_transform(html):
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
 
+
 def render_featured_funded_bounty(bounty):
     params = {'bounty': bounty}
     response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
@@ -97,43 +98,12 @@ def render_nth_day_email_campaign(to_email, nth, firstname):
 
     return response_html, response_txt, subject
 
+
 def render_new_grant_email(grant):
     params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
     response_txt = render_to_string("emails/grants/new_grant.txt", params)
     subject = _("Your Gitcoin Grant")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_request(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_request.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_request.txt", params)
-    subject = _("You've been chosen to be the owner for a Gitcoin Grant")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_accept(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_accept.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_accept.txt", params)
-    subject = _("Grant Owner has changed")
-    return response_html, response_txt, subject
-
-
-def render_notify_ownership_change(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_notify.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_notify.txt", params)
-    subject = _("Grant ownership has been changed")
-    return response_html, response_txt, subject
-
-
-def render_change_grant_owner_reject(grant):
-    params = {'grant': grant}
-    response_html = premailer_transform(render_to_string("emails/grants/change_owner_reject.html", params))
-    response_txt = render_to_string("emails/grants/change_owner_reject.txt", params)
-    subject = _("Grant has no change in ownership")
     return response_html, response_txt, subject
 
 
@@ -248,34 +218,6 @@ def new_grant(request):
     return HttpResponse(response_html)
 
 
-@staff_member_required
-def change_grant_owner_request(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_request(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def notify_ownership_change(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_notify_ownership_change(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_accept(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_accept(grant)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def change_grant_owner_reject(request):
-    grant = Grant.objects.first()
-    response_html, __, __ = render_change_grant_owner_reject(grant)
-    return HttpResponse(response_html)
-
-
 def render_tip_email(to_email, tip, is_new):
     warning = tip.network if tip.network != 'mainnet' else ""
     already_redeemed = bool(tip.receive_txid)
@@ -366,7 +308,6 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     params = {**quarterly_stats, **platform_wide_stats}
     params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
-    print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
 
@@ -377,6 +318,16 @@ def render_funder_payout_reminder(**kwargs):
     kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(fulfiller_github_username=kwargs['github_username']).last()
     response_html = premailer_transform(render_to_string("emails/funder_payout_reminder.html", kwargs))
     response_txt = ''
+    return response_html, response_txt
+
+
+def render_no_applicant_reminder(bounty):
+    params = {
+        'bounty': bounty,
+        'directory_link': '/users?skills=' + bounty.keywords.lower()
+    }
+    response_html = premailer_transform(render_to_string("emails/bounty/no_applicant_reminder.html", params))
+    response_txt = render_to_string("emails/bounty/no_applicant_reminder.txt", params)
     return response_html, response_txt
 
 
@@ -519,13 +470,15 @@ appreciate you being a part of the community and let me know if you'd like some 
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3):
+    email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
         'subscriber': sub,
         'keywords': ",".join(sub.keywords),
+        'email_style': email_style,
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -850,6 +803,18 @@ def render_reserved_issue(to_email, user, bounty):
     return response_html, response_txt, subject
 
 
+def render_bounty_request(to_email, model, base_url):
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'model': model,
+        'base_url': base_url
+    }
+    subject = _("New Bounty Request")
+    response_html = premailer_transform(render_to_string("emails/bounty_request.html", params))
+    response_txt = render_to_string("emails/bounty_request.txt", params)
+    return response_html, response_txt, subject
+
+
 def render_start_work_approved(interest, bounty):
     to_email = interest.profile.email
     params = {
@@ -929,12 +894,19 @@ def render_start_work_applicant_expired(interest, bounty):
 
     return response_html, response_txt, subject
 
+
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "The Grow Ethereum Hackathon Draws Nearer"
-    new_kudos_pks = [4284, 4282, 4281]
+    subject = "Devcon Awaits!"
+    new_kudos_pks = [4012, 4019, 4032]
     new_kudos_size_px = 150
+    if settings.DEBUG and False:
+        # for debugging email styles
+        email_style = 2
+    else:
+        offset = 2
+        email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
 <h3>Happy Kudos Friday!</h3>
@@ -948,22 +920,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-The Grow Ethereum Hackathon is right around the corner -- only 11 days remain until the hacking begins❗️ We are expecting great sponsors, including confirmation from the Ethereum Foundation itself (!) and UNICEF. Build projects together with top Ethereum companies and enterprises, win crypto, and unleash a new era of decentralized global infrastructure. The link to register is <a href="https://hackathons.gitcoin.co/grow-ethereum/" target="_blank">here.</a> 🌱
+    Devcon is only days away, and we're stoked to be in town. If you want to catch up with us, tweet at us <a href="https://twitter.com/gitcoin">@gitcoin</a> or attend one of our events. Alongside Infura, ethBounties, and Consensys Audits, we're hosting the Grow Open Source Day. If you're in Japan, be sure to make it to this event. You can register and snag a free ticket on <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347625">this Eventbrite page.</a> 
 </p>
 <p>
-Working on an Ethereum ecosystem project and need funding? Get ready. Round 3 of the Gitcoin Grants CLR matching is right around the corner. Pick up some funding to help sustain your work and ease your worries: a funding opportunity awaits. <a href="https://gitcoin.co/grants/">Create a Gitcoin Grant & let the community know your progress!</a>
+    Grants CLR Round 3 was a massive, massive success: we had such a positive response that we extended the matching period two extra days. You can take a look at all of the noise we generated on our <a href="https://twitter.com/gitcoin">Twitter profile,</a> and can view the current status at <a href="https://gitcoin.co/grants">gitcoin.co/grants.</a> Thank you to @0xEffAlt for donating $25k as a matching partner, @meeseeking for donating $20k+ across projects, and of course the Ethereum Foundation for supporting our endeavors from the beginning. Expect an recap blog post in the next few days.
 </p>
 <p>
-
+    The Road to Devcon is nearing its end. With less than 24 hours to go before submissions are due, we want to remind you to do your due diligence and get your contributions in. Make sure you submit all work by the end of the day at 11:59pm ET, and post your project in the Discord channel #project-4-kudos. Also, be sure to tune in to the livestream at 2PM ET on Friday, as we'll have participants presenting their work! Great job on this one, all. We're excited to see what you came up with.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday to see some of the top Beyond Blockchain projects present.
+        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.</a>
         </li>
         <li>
-            Interested in the future of ads on the internet? <a href="https://media.consensys.net/how-ethical-advertising-will-transform-the-blockchain-industry-31c2c4f2bd45">Check out this primer on Ethical Advertising from Connor O'Day, part of the Codefund team.</a>
+        You asked, we listened. Over the next few weeks, we'll be uploading past livestream recordings to our <a href="https://www.youtube.com/gitcoinmedia">YouTube channel, Gitcoin Media.</a> Have a request for a particular one to be uploaded soon? Email Ryan at ryan@gitcoin.co.
         </li>
     </ul>
 </p>
@@ -972,48 +944,49 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'IgorShadurin',
+        'who': 'alexjg',
         'who_link': True,
-        'what': 'Provable Emails, thanks to IgorShadurin and josh-richardson',
-        'link': 'https://gitcoin.co/issue/ArweaveTeam/Bounties/5/3164',
+        'what': 'Fixes to UI for composing a reply',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/7781/3407',
         'link_copy': 'View more',
     }, {
-        'who': 'sanchaymittal',
+        'who': 'eswarasai',
         'who_link': True,
-        'what': 'Docs are complete!',
-        'link': 'https://gitcoin.co/issue/MrElliwood/audio-router/1/3213',
+        'what': 'Add support for MYTHX_ACCESS_TOKEN',
+        'link': 'https://gitcoin.co/issue/b-mueller/sabre/95/3513',
         'link_copy': 'View more',
     }, {
-        'who': 'cpurta',
+        'who': 'mrdavey',
         'who_link': True,
-        'what': 'Raiden Hackathon Completion!',
-        'link': 'https://gitcoin.co/issue/raiden-network/hackathons/3/3170',
+        'what': 'Deploying Full stack Dapp to Google Cloud',
+        'link': 'https://gitcoin.co/issue/kauri-io/Content/52/3464',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Solana',
-        'title': 'Solana is the most performant blockchain in the world with speeds over 50,000 TPS (while being decentralized and secure).',
-        'image_url': 'https://s3.us-west-2.amazonaws.com/gitcoin-static/jDSk7ZTfpY19PWdwwsk8puNd.png',
-        'link': 'http://bit.ly/TourDeSOL',
-        'cta': 'Sign Up for Tour de SOL',
+        'name': 'MythX',
+        'title': 'Keep Ethereum Secure',
+        'image_url': '',
+        'link': 'http://bit.ly/mythx-gitcoin-weekly',
+        'cta': 'Get Started Now',
         'body': [
-            'We just announced Tour de SOL, or our incentivized testnet event. Are you a validator? Earn token and race against the best in the world. Deadline is July 21st.'
+           'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
+           'Scan for security vulnerabilities right away, from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
         ]
     }
-
+    
     bounties_spec = [{
-        'url': 'https://github.com/RibbonBlockchain/IncentivesMVP/issues/19',
-        'primer': 'Create Initial Pilot phase for Ribbon blockchain',
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/3598',
+        'primer': 'Explore Compression Formats for Persistent Byte Data',
     }, {
-        'url': 'https://github.com/RibbonBlockchain/IncentivesMVP/issues/8',
-        'primer': 'Enable camera on front end for capture passport on patient and practitioner onboarding',
+        'url': 'https://github.com/mainnebula/SPACE_TASKS/issues/6',
+        'primer': 'Python script that updates SQL tables',
     }, {
-        'url': 'https://github.com/centrifuge/precise-proofs/issues/88',
-        'primer': 'Optimize the fixed height tree implementation',
+        'url': 'https://github.com/wearekickback/app/issues/185',
+        'primer': 'Add to calendar',
 }, ]
-    
-    
+
+
     num_leadboard_items = 5
     highlight_kudos_ids = []
     num_kudos_to_show = 15
@@ -1033,6 +1006,7 @@ Back to shipping,
             'items': [],
         },
     }
+
 
     from kudos.models import KudosTransfer
     if highlight_kudos_ids:
@@ -1071,6 +1045,7 @@ Back to shipping,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
         'sponsor': sponsor,
+        'email_style': email_style,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
@@ -1171,7 +1146,7 @@ def new_bounty(request):
     from dashboard.models import Bounty
     bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties, int(request.GET.get('offset', 2)))
     return HttpResponse(response_html)
 
 
@@ -1220,6 +1195,26 @@ def funder_payout_reminder(request):
     github_username = request.GET.get('username', '@foo')
     response_html, _ = render_funder_payout_reminder(bounty=bounty, github_username=github_username)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def no_applicant_reminder(request):
+    """Display the no applicant for bounty reminder email template.
+
+    Params:
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    from dashboard.models import Bounty
+    bounty = Bounty.objects.filter(
+        idx_status='open', current_bounty=True, interested__isnull=True
+    ).first()
+    response_html, _ = render_no_applicant_reminder(bounty=bounty)
+    return HttpResponse(response_html)
+
 
 @staff_member_required
 def funder_stale(request):

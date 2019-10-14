@@ -15,12 +15,12 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div id="extend_deadline" class="white-light-bg">
-  <div class="row">
-    <div class="col-12 closebtn">
-      <a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">
+<div id="extend_deadline" class="">
+  <div class="">
+    <div class="modal-header border-0 py-0">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
-      </a>
+      </button>
     </div>
     <div class="col-12">
       <h5 class="text-center font-title">{% trans "Extend Issue Deadline" %}</h5>
@@ -33,19 +33,12 @@
             <input type="hidden" name="currentExpire" value="{{ bounty.expires_date }}" />
             <div id="deadline-section" class="pt-2">
               <p class="my-2">{% trans "Current Expiration" %}: {{ bounty.expires_date }} </p>
-              <label class="form__label font-weight-bold" for="expirationTimeDelta">{% trans "Extend by:" %}</label>
-              <div class="form__select2">
-                <select class="js-select2" name="expirationTimeDelta">
-                  <option value="86400">{% trans "1 day" %}</option>
-                  <option value="259200">{% trans "3 days" %}</option>
-                  <option value="604800">{% trans "1 week" %}</option>
-                  <option value="1209600">{% trans "2 weeks" %}</option>
-                  <option value="2592000">{% trans "1 month" %}</option>
-                  <option value="7776000">{% trans "3 months" %}</option>
-                  <option value="15552000">{% trans "6 months" %}</option>
-                  <option value="31536000" selected="">{% trans "1 year" %}</option>
-                  <option value="9999999999">{% trans "Never" %}</option>
-                </select>
+              <label class="form__label font-weight-bold" for="expirationTimeDelta">{% trans "Update to:" %}</label>
+              <input name='expirationTimeDelta' id="expirationTimeDelta" class="form__input" type="text" placeholder="" required/>
+              <div class="form__checkbox">
+                <input name='neverExpires' id='neverExpires' type="checkbox"  />
+                <label class="form__label" for=neverExpires>{% trans "Never expire" %}
+                </label>
               </div>
             </div>
             <input type="hidden" name="updatedExpires" />
@@ -59,7 +52,7 @@
             </div>
           </div>
           <button class="row button button--primary btn-extend" type="submit">{% trans "Submit" %}</button>
-          <button class="row button button--primary-o btn-cancel" type="button">{% trans "Cancel" %}</button>
+          <button type="button" class="row button button--primary-o btn-cancel" data-dismiss="modal" aria-label="Close">{% trans "Cancel" %}</button>
         </form>
       </div>
     {% else %}

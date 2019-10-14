@@ -374,12 +374,11 @@ div.button-pink {
 }
 
 .footer__main {
-  background-image: url('/static/v2/images/footer.png');
   background-color: #0d023b;
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
-  min-height: 520px;
+  min-height: 20rem;
 }
 
 .footer__text,
@@ -393,11 +392,22 @@ div.button-pink {
 
 .footer {
   background-color: #0d023b;
+  padding-top: 4rem;
 }
 
 .footer .nav-link {
   font-size: 0.8rem !important;
   margin-right: 0.5rem;
+}
+
+#tabs .nav-link span {
+  position: relative;
+  font-size: 8px;
+  font-weight: bold;
+  background-color: #ddd;
+  border-radius: 10px;
+  padding: 2px 5px;
+  top: -10px
 }
 
 .nav-link:visited {

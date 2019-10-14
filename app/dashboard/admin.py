@@ -24,8 +24,9 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
-    CoinRedemptionRequest, Coupon, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, Profile,
-    RefundFeeRequest, SearchHistory, Sponsor, Tip, TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
+    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch,
+    PortfolioItem, Profile, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Tip, TokenApproval, Tool, ToolVote,
+    UserAction, UserVerificationModel,
 )
 
 
@@ -39,6 +40,25 @@ class BountyFulfillmentAdmin(admin.ModelAdmin):
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+
+class ProfileViewAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    raw_id_fields = ['target', 'viewer']
+    list_display = ['created_on', '__str__']
+
+
+class PortfolioItemAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['profile']
+
+
+class EarningAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['from_profile', 'to_profile']
+    search_fields = ['from_profile__handle', 'to_profile__handle']
 
 
 class ToolAdmin(admin.ModelAdmin):
@@ -86,23 +106,39 @@ class FeedbackAdmin(admin.ModelAdmin):
     ordering = ['-id']
     raw_id_fields = ['sender_profile', 'receiver_profile', 'bounty']
 
+def recalculate_profile(modeladmin, request, queryset):
+    for profile in queryset:
+        profile.calculate_all()
+        profile.save()
+recalculate_profile.short_description = "Recalculate Profile Frontend Info"
 
 class ProfileAdmin(admin.ModelAdmin):
-    raw_id_fields = ['user', 'preferred_kudos_wallet']
+    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer']
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
     readonly_fields = ['active_bounties_list']
+    actions = [recalculate_profile]
 
     def active_bounties_list(self, instance):
         interests = instance.active_bounties
         htmls = []
         for interest in interests:
-            bounty = Bounty.objects.get(interested=interest, current_bounty=True)
-            htmls.append(f"<a href='{bounty.url}'>{bounty.title_or_desc}</a>")
+            bounties = Bounty.objects.filter(interested=interest, current_bounty=True)
+            for bounty in bounties:
+                htmls.append(f"<a href='{bounty.url}'>{bounty.title_or_desc}</a>")
         html = format_html("<BR>".join(htmls))
         return html
 
+    def response_change(self, request, obj):
+        if "_recalc_flontend" in request.POST:
+            obj.calculate_all()
+            obj.save()
+            self.message_user(request, "Recalc done")
+        if "_impersonate" in request.POST:
+            from django.shortcuts import redirect
+            return redirect(f"/impersonate/{obj.user.pk}")
+        return super().response_change(request, obj)
 
 class VerificationAdmin(admin.ModelAdmin):
     raw_id_fields = ['user']
@@ -112,7 +148,7 @@ class SearchHistoryAdmin(admin.ModelAdmin):
     raw_id_fields = ['user']
     ordering = ['-id']
     search_fields = ['user', 'data']
-    list_display = ['user', 'data']
+    list_display = ['user', 'search_type', 'data']
 
 
 class TipAdmin(admin.ModelAdmin):
@@ -271,7 +307,7 @@ class HackathonEventAdmin(admin.ModelAdmin):
     """The admin object for the HackathonEvent model."""
 
     list_display = ['pk', 'img', 'name', 'start_date', 'end_date', 'explorer_link']
-    readonly_fields = ['img', 'explorer_link']
+    readonly_fields = ['img', 'explorer_link', 'stats']
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
@@ -309,7 +345,10 @@ class CouponAdmin(admin.ModelAdmin):
 
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
+admin.site.register(Earning, EarningAdmin)
 admin.site.register(BlockedUser, GeneralAdmin)
+admin.site.register(PortfolioItem, PortfolioItemAdmin)
+admin.site.register(ProfileView, ProfileViewAdmin)
 admin.site.register(UserAction, UserActionAdmin)
 admin.site.register(Interest, InterestAdmin)
 admin.site.register(Profile, ProfileAdmin)

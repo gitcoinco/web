@@ -1,8 +1,3 @@
-const round = function(num, decimals) {
-  return Math.round(num * 10 ** decimals) / 10 ** decimals;
-};
-
-
 const rateUser = (elem) => {
   let userSelected = $(elem).select2('data')[0].text;
 

@@ -97,6 +97,8 @@
                             <option value="all">All</option>
                           </select>
                         </div>
+                      {% else %}
+                        <input type="hidden" id="tech-keyword" name="tech-keyword" val="">
                       {% endif %}
                     </div>
 
@@ -143,7 +145,7 @@
                             </div>
                           </td>
                           <td style="white-space: nowrap" class="col-2 d-flex align-items-center">
-                            {{item.count}} Bounties
+                            {{item.count}} transaction{{item.count|pluralize}}
                           </td>
                           <td class="col-2 d-flex align-items-center hidemobile">
                             ${{item.amount|floatformat:2|intcomma}}
@@ -166,7 +168,7 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
+    
 
   </body>
 

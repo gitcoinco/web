@@ -17,17 +17,19 @@
 
 '''
 import logging
+import re
 import sys
 from datetime import datetime, timedelta
 
 from django.conf import settings
+from django.contrib import messages
 from django.templatetags.static import static
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 import requests
 from mailchimp3 import MailChimp
-from marketing.models import AccountDeletionRequest, LeaderboardRank
+from marketing.models import AccountDeletionRequest, EmailSupressionList, LeaderboardRank
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 
@@ -201,6 +203,16 @@ def should_suppress_notification_email(email, email_type):
 
 
 def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=None):
+    # Prevent syncing for those who match the suppression list
+    suppressions = EmailSupressionList.objects.all()
+    for suppression in suppressions:
+        if re.match(str(suppression.email), email):
+            return None
+
+    # GDPR fallback just in case
+    if re.match("c.*d.*v.*c@g.*com", email):
+        return None
+
     from marketing.models import EmailSubscriber
     defaults = {'source': source, 'email': email}
 
@@ -298,6 +310,41 @@ def get_platform_wide_stats(since_last_n_days=90):
         "total_transaction_in_usd": total_transaction_in_usd,
         "total_transaction_in_eth": total_transaction_in_eth,
     }
+
+
+def handle_marketing_callback(_input, request):
+    #config
+    from marketing.models import MarketingCallback
+    from dashboard.models import Profile
+
+    #setup
+    key = _input if not ':' in _input else _input.split(':')[0]
+    callbacks = MarketingCallback.objects.filter(key=key)
+    if callbacks.exists():
+        callback_reference = callbacks.first().val
+        #set user referrer
+        if key == 'ref':
+            if request.user.is_authenticated:
+                from django.contrib.auth.models import User
+                value = _input.split(':')[1]
+                pk = int(value, 16)
+                profs = Profile.objects.filter(pk=pk)
+                if profs.exists():
+                    profile = profs.first()
+                    if profile.pk != request.user.profile.pk:
+                        target_profile = request.user.profile
+                        target_profile.referrer = profile
+                        target_profile.save()
+        # add user to a group
+        if callback_reference.split(':')[0] == 'add_to_group':
+            if request.user.is_authenticated:
+                from django.contrib.auth.models import Group
+                group_name = callback_reference.split(':')[1]
+                messages.info(request, "You have redeemed your $5.00 Gitcoin Grants voucher. Browse grants on gitcoin.co/grants and click 'fund' to spend this voucher!")
+                group = Group.objects.get(name=group_name)
+                group.user_set.add(request.user)
+            else:
+                messages.info(request, "You have been selected to receive a $5.00 Gitcoin Grants voucher. Login to use it.")
 
 
 def func_name():

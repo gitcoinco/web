@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load cookielaw_tags static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,8 +24,8 @@
 </head>
 <body class="{{active}} g-font-muli">
   {% include 'shared/tag_manager_2.html' %}
+  {% include 'shared/top_nav.html' with class='d-md-flex' %}
   <div class="container-fluid header">
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% if nav == 'home' %}
       {% include 'home/nav.html' %}
     {% else %}
@@ -35,7 +35,6 @@
       {% include 'shared/minihero.html' with h1=minihero %}
     {% endif %}
   </div>
-  {% cookielaw_banner %}
   <div class="row mt-5 pb-0">
     <div class="col text-center body">
       {% block body %}{% endblock %}
@@ -43,7 +42,7 @@
   </div>
   {% include 'shared/footer.html' %}
   {% include 'shared/footer_scripts.html' %}
-  {% include 'shared/messages.html' %}
+  
 </body>
 {% include 'shared/analytics.html' %}
 {% block scripts %}{% endblock %}

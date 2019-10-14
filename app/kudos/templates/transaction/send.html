@@ -79,7 +79,7 @@
     <input type="hidden" id="token" value="0x0000000000000000000000000000000000000000">
     <input type="hidden" id="kudosNetwork" value="{{ kudos.contract.network }}">
     <input type="hidden" id="amount" value="{{ kudos.price_in_eth }}">
-    <label id="to_label" for="">{% trans "To:" %} 
+    <label id="to_label" for="">{% trans "To:" %}
     </label>
     <ul id="tip_nav">
       <li class='github selected'>
@@ -114,7 +114,7 @@
 
 
     <div class="form-group">
-      <label for="">{% trans "From Github Username:" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/kudos/send">{% trans "Login" %}</a>) {%endif%}</label>
+      <label for="">{% trans "From Github Username:" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/kudos/send" onclick="dataLayer.push({'event': 'login'});">{% trans "Login" %}</a>) {%endif%}</label>
       <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" class="form-control" disabled="disabled">
     </div>
     <div class="form-group">

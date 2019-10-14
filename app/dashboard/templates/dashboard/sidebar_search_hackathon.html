@@ -49,12 +49,12 @@
           <label class="filter-label" for="any_org">All</label>
         </div>
 
-            
+
         {% for org in orgs %}
           <div class="form__radio option {{org.org_name}}">
             <input name="org" id="{{org.org_name}}" type="radio" value="{{org.org_name}}" val-ui="Turing-Chain">
             <label class="filter-label" for="{{org.org_name}}">
-              <img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24"> {{org.display_name}}
+              <img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24" alt="{{org.display_name}}"> {{org.display_name}}
             </label>
           </div>
         {% endfor %}

@@ -1,7 +1,10 @@
 ---
-name: Custom
+name: "\U0001F914 Custom"
 about: Want to report an issue that doesn't fall under any other category? Use this
   template.
+title: ''
+labels: ''
+assignees: ''
 
 ---
 
