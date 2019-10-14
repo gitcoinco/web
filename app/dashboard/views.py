@@ -2082,11 +2082,12 @@ def profile_earnings(request, handle, direction='to'):
     running_balance = 0
     for earning in earnings:
         val = earning[1]
-        running_balance += val
-        datestr = earning[0].strftime('%d-%b-%y')
-        if datestr not in uniqueness:
-            response += f"\n{datestr},{running_balance}"
-            uniqueness.append(datestr)
+        if val:
+            running_balance += val
+            datestr = earning[0].strftime('%d-%b-%y')
+            if datestr not in uniqueness:
+                response += f"\n{datestr},{running_balance}"
+                uniqueness.append(datestr)
 
     mimetype = 'text/x-csv'
     return HttpResponse(response)
