@@ -1614,10 +1614,20 @@ class Tip(SendCryptoAsset):
 class TipPayoutException(Exception):
     pass
 
+
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
     # when a new tip is saved, make sure it doesnt have whitespace in it
     instance.username = instance.username.replace(' ', '')
+    # set missing attributes
+    if not instance.sender_profile:
+        profiles = Profile.objects.filter(handle__iexact=instance.from_username)
+        if profiles.exists():
+            instance.sender_profile = profiles.first()
+    if not instance.recipient_profile:
+        profiles = Profile.objects.filter(handle__iexact=instance.username)
+        if profiles.exists():
+            instance.recipient_profile = profiles.first()
 
 
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
