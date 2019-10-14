@@ -57,7 +57,7 @@ class PortfolioItemAdmin(admin.ModelAdmin):
 class EarningAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
-    raw_id_fields = ['from_profile', 'to_profile']
+    raw_id_fields = ['from_profile', 'to_profile', 'org_profile']
     search_fields = ['from_profile__handle', 'to_profile__handle']
 
 
