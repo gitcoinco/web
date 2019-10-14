@@ -1,0 +1,22 @@
+{
+    "symbol": "ONE",
+    "address": "0x799a4202c12ca952cB311598a024C80eD371a41e",
+    "overview": {
+        "en": "Harmony is a fast and secure blockchain with key innovations in state sharding and peer-to-peer networking. Its sharding uses secure proof-of-stake and decentralized randomness, and its networking achieves optimal cross-shard routing and fast block propagation. Harmony helps businesses build marketplaces of fungible tokens (such as energy credits and loyalty points) and non-fungible assets (such as game collectibles and real estate). Harmony is applying zero-knowledge proofs for data sharing while preserving the consumer’s privacy. Common industry use cases include ad exchanges, credit ratings and many other data consortia that would otherwise take many years to form among competing companies.",
+        "zh": "Harmony是一个基于状态分片和PoS的高性能公链项目，我们的设计利用了安全的随机分片过程，在保证安全性和去中心化的同时，可以极大提高系统的交易处理能力，并且交易处理成本被分摊到多个分片，从而大大降低交易处理成本。Harmony试图解决的问题是当下公链性能瓶颈和成本太高的问题，并且我们旨在打造一个真正去中心化的网络，让无论大小的任何节点都可以参与到其中做贡献。Harmony的目标是为未来的全球去中心化经济体提供最安全和高效的信任基础设施，让所有人都可以在一个互信共赢的经济中获得赢得的回报。"
+    },
+    "email": "info@harmony.one",
+    "website": "https://harmony.one",
+    "whitepaper": "https://harmony.one/pdf/whitepaper.pdf",
+    "published_on": "2019-05-16",
+    "initial_price": {
+        "USD": "0.003175 USD"
+    },
+    "links": {
+	"blog": "https://harmony.one/blog",
+        "twitter": "https://twitter.com/harmonyprotocol",
+        "telegram": "https://t.me/harmony_one",
+        "github": "https://github.com/harmony-one",
+        "linkedin": "https://www.linkedin.com/company/harmony-one"
+    }
+}
