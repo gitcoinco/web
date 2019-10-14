@@ -1855,6 +1855,8 @@ class Activity(SuperModel):
         ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
         ('joined', 'Joined Gitcoin'),
+        ('played_quest', 'Played Quest'),
+        ('beat_quest', 'Beat Quest'),
         ('updated_avatar', 'Updated Avatar'),
     ]
 
@@ -2233,6 +2235,7 @@ class Profile(SuperModel):
     rank_funder = models.IntegerField(default=0)
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
+    referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2262,6 +2265,10 @@ class Profile(SuperModel):
         if not self.is_org:
             return Profile.objects.none()
         return Profile.objects.filter(organizations__icontains=self.handle)
+
+    @property
+    def ref_code(self):
+        return hex(self.pk).replace("0x",'')
 
     @property
     def get_org_kudos(self):
@@ -2624,7 +2631,7 @@ class Profile(SuperModel):
         if visits_last_month > med_threshold:
             return "Med"
         return "Low"
-            
+
 
 
     def calc_longest_streak(self):
@@ -3259,8 +3266,8 @@ class Profile(SuperModel):
                 logger.exception(e)
                 pass
 
-        # if sum_type == 'collected':
-        #     eth_sum = eth_sum + float(sum([amount.value_in_eth for amount in self.tips])) if self.tips else eth_sum
+        # if sum_type == 'collected' and self.tips:
+        #     eth_sum = eth_sum + sum([ float(amount.value_in_eth) for amount in self.tips ])
 
         return eth_sum
 
@@ -3426,7 +3433,7 @@ class Profile(SuperModel):
         sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
-        
+
         sum_all_funded_tokens = self.get_all_tokens_sum(sum_type='funded', bounties=funded_bounties, network=network)
         sum_all_collected_tokens = self.get_all_tokens_sum(
             sum_type='collected', bounties=fulfilled_bounties, network=network
@@ -3905,7 +3912,7 @@ class HackathonEvent(SuperModel):
         return f'{self.name} - {self.start_date}'
 
     @property
-    def bounties(self):
+    def get_current_bounties(self):
         return Bounty.objects.filter(event=self, network='mainnet').current()
 
     @property
@@ -3913,10 +3920,10 @@ class HackathonEvent(SuperModel):
         stats = {
             'range': f"{self.start_date.strftime('%m/%d/%Y')} to {self.end_date.strftime('%m/%d/%Y')}",
             'logo': self.logo.url if self.logo else None,
-            'num_bounties': self.bounties.count(),
-            'num_bounties_done': self.bounties.filter(idx_status='done').count(),
-            'num_bounties_open': self.bounties.filter(idx_status='open').count(),
-            'total_volume': sum(self.bounties.values_list('_val_usd_db', flat=True)),
+            'num_bounties': self.get_current_bounties.count(),
+            'num_bounties_done': self.get_current_bounties.filter(idx_status='done').count(),
+            'num_bounties_open': self.get_current_bounties.filter(idx_status='open').count(),
+            'total_volume': sum(self.get_current_bounties.values_list('_val_usd_db', flat=True)),
         }
         return stats
 

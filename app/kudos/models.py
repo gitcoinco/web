@@ -21,6 +21,7 @@ import logging
 from io import BytesIO
 
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.files import File
 from django.db import models
 from django.db.models import Q
@@ -35,6 +36,7 @@ import pyvips
 from dashboard.models import SendCryptoAsset
 from economy.models import SuperModel
 from eth_utils import to_checksum_address
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from pyvips.error import Error as VipsError
 
 logger = logging.getLogger(__name__)
@@ -310,7 +312,7 @@ class Token(SuperModel):
         with open(file_path, 'rb') as f:
             obj = File(f)
             from avatar.utils import svg_to_png
-            return svg_to_png(obj.read(), scale=3, width=333, height=384, index=self.pk)
+            return svg_to_png(obj.read(), scale=3, width=333, height=384, index=self.pk, prefer='inkscape')
         return None
 
 
@@ -516,6 +518,8 @@ class BulkTransferCoupon(SuperModel):
 
     sender_address = models.CharField(max_length=255, blank=True)
     sender_pk = models.CharField(max_length=255, blank=True)
+    tag = models.CharField(max_length=255, blank=True)
+    metadata = JSONField(default=dict, blank=True)
 
     def __str__(self):
         """Return the string representation of a model."""
@@ -543,6 +547,57 @@ class BulkTransferRedemption(SuperModel):
     def __str__(self):
         """Return the string representation of a model."""
         return f"coupon: {self.coupon} redeemed_by: {self.redeemed_by}"
+
+
+class TokenRequest(SuperModel):
+    """Define the TokenRequest model."""
+
+    name = models.CharField(max_length=255, db_index=True)
+    description = models.TextField(max_length=500, default='')
+    priceFinney = models.IntegerField(default=18)
+    network = models.CharField(max_length=25, db_index=True)
+    artist = models.CharField(max_length=255)
+    platform = models.CharField(max_length=255)
+    to_address = models.CharField(max_length=255)
+    artwork_url = models.CharField(max_length=255)
+    numClonesAllowed = models.IntegerField(default=18)
+    metadata = JSONField(null=True, default=dict, blank=True)
+    tags = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    approved = models.BooleanField(default=True)
+    processed = models.BooleanField(default=False)
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='token_requests', on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        """Define the string representation of a conversion rate."""
+        return f"{self.name} on {self.network} on {self.created_on}; approved: {self.approved} "
+
+
+    def mint(self):
+        """Approve / mint this token."""
+        from kudos.management.commands.mint_all_kudos import mint_kudos # avoid circular import
+        from kudos.utils import KudosContract # avoid circular import
+        account = settings.KUDOS_OWNER_ACCOUNT
+        private_key = settings.KUDOS_PRIVATE_KEY
+        kudos = {
+            'name': self.name,
+            'description': self.description,
+            'priceFinney': self.priceFinney,
+            'artist': self.artist,
+            'platform': self.name,
+            'platform': self.platform,
+            'numClonesAllowed': self.numClonesAllowed,
+            'tags': self.tags,
+            'artwork_url': self.artwork_url,
+        }
+        kudos_contract = KudosContract(network=self.network)
+        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1)
+        mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True)
+        self.processed = True
+        self.approved = True
+        self.save()
+        
 
 class TransferEnabledFor(SuperModel):
     """Model that represents the ability to send a Kudos, i

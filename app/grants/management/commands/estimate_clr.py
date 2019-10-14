@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.clr import predict_clr
@@ -32,7 +33,7 @@ class Command(BaseCommand):
     help = 'calculate CLR estimates for all grants'
 
     def handle(self, *args, **options):
-        clr_prediction_curves = predict_clr(random_data=False, save_to_db=True)
+        clr_prediction_curves = predict_clr(random_data=False, save_to_db=True, from_date=timezone.now())
 
         # Uncomment these for debugging and sanity checking
         # for grant in clr_prediction_curves:

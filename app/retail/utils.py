@@ -144,6 +144,7 @@ def get_ecosystem_history_at_date(date, keyword):
 
 
 def get_codefund_history_at_date(date, keyword):
+    from marketing.models import ManualStat
     date = date.replace(tzinfo=None)
     amount = 0
     # July => Feb 2019
@@ -177,9 +178,9 @@ def get_codefund_history_at_date(date, keyword):
     if date > timezone.datetime(2019, 8, 9):
         amount += 50871
     if date > timezone.datetime(2019, 9, 9):
-        amount += 52000
+        amount += 55000
     if date > timezone.datetime(2019, 10, 9):
-        amount += 0 # october month to date
+        amount += sum(ManualStat.objects.filter(key='codefund_gmv', date__gt=date).values_list('val', flat=True))
     return amount
 
 

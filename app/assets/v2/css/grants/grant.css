@@ -73,25 +73,9 @@
   height: 0.5rem;
 }
 
-.grant-tooltip {
-  text-align: left;
-  display: block;
-  font-size: 14px;
-  color: #0ECF7C;
-  font-weight: 600;
-  line-height: 1.5;
-  width: 300px;
-}
-
 .ui-tooltip {
   padding: 0 !important;
   border-radius: 0.25rem !important;
-}
-
-.grant-tooltip .tooltip-inner {
-  font-size: 12px;
-  padding: 1rem;
-  max-width: 100%;
 }
 
 .progress-container {
