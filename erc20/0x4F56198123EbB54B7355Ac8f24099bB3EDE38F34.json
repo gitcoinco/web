@@ -1,0 +1,18 @@
+{
+"symbol": "ADEX",
+"address": "0x4F56198123EbB54B7355Ac8f24099bB3EDE38F34",
+"overview":{
+"zh": "项目介绍：ADEX是ADEX云孵化交易所的平台币，代币名称为ADEX。发行量恒定为21亿个，每个季度根据平台当季交易量对ADEX进行销毁，销毁记录将会第一时间公布，用户可通过区块链浏览器查询，确保公开透明。并享受持续回购销毁带来的稀缺性提升。ADEX为ADEX社区成员的权益证明，MX持有者可以享受ADEX云孵化交易所的手续费分红，活动空投，社区管理决策，上币投票推荐，理财产品，优先购买等多种权益。"
+  },
+"email": "adextop@163.com",
+"website": "www.adex.top",
+"state": "NORMAL",
+"published_on": "2018-08-25",
+"initial_price":{
+"USD":"0.01 USD"
+  },
+"links": {
+"github": "https://github.com/adextop"
+  }
+}
+
