@@ -14,6 +14,11 @@ class Quest(SuperModel):
         ('Advanced', 'Advanced'),
     ]
 
+    STYLES = [
+        ('Quiz', 'quiz'),
+        ('Example for Demo', 'example_demo'),
+    ]
+
 
     title = models.CharField(max_length=1000)
     description = models.TextField(default='', blank=True)
@@ -25,6 +30,14 @@ class Quest(SuperModel):
     cooldown_minutes = models.IntegerField(default=5)
     visible = models.BooleanField(default=True)
     difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES)
+    style = models.CharField(max_length=100, default='quiz', choices=STYLES)
+    creator = models.ForeignKey(
+        'dashboard.Profile',
+        on_delete=models.CASCADE,
+        related_name='quests_created',
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         """Return the string representation of this obj."""

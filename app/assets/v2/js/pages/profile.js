@@ -6,7 +6,7 @@ $(document).ready(function() {
     }
     $(e.currentTarget).toggleClass('turn');
   });
-  $('#heatmap_parent').animate({ scrollLeft: "+=1000px" }, "fast");
+  $('#heatmap_parent').animate({ scrollLeft: '+=1000px' }, 'fast');
   setupTabs('#activity-tabs');
 
   const tabSection = document.querySelector('#activity-tabs-sections');

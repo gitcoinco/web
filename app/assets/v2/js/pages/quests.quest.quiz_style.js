@@ -310,63 +310,6 @@ $(document).ready(function() {
     }
   }, 100);
 
-  $('#reflink').click(function() {
-    $(this).focus();
-    $(this).select();
-    document.execCommand('copy');
-    $(this).after('<div class=after_copy>Copied to clipboard</div>');
-    setTimeout(function() {
-      $('.after_copy').remove();
-    }, 500);
-  });
-
-  $('.demo').click(function(e) {
-    e.preventDefault();
-    $(this).fadeOut(function() {
-      $('.demo').fadeIn();
-      var src = $('.demo').attr('src') + '?';
-      
-      $('.demo').attr('src', src);
-    });
-  });
-
-  $('#tabs a').click(function(e) {
-    e.preventDefault();
-    var target = $(this).data('href');
-
-    $('.difficulty_tab').addClass('hidden');
-    $('.nav-link').removeClass('active');
-    $(this).addClass('active');
-    $('.difficulty_tab.' + target).removeClass('hidden');
-  });
-
-  $('.quest-card.available').click(function(e) {
-    e.preventDefault();
-    document.location.href = $(this).find('a').attr('href');
-  });
-  $('.quest-card.available').mouseover(function(e) {
-    random_attn_effect($(this).find('.btn'));
-  });
-
-  // makes the reflink sticky
-  if (getParam('cb')) {
-    var cb = getParam('cb');
-    // only if user is not logged in tho
-
-    if (cb.indexOf('ref') != -1 && !document.contxt.github_handle) {
-      localStorage.setItem('cb', cb);
-    }
-  }
-  // if there exists a sticky reflink but the user navigated away from the link in the course of logging in...
-  if (localStorage.getItem('cb') && document.contxt.github_handle && !getParam('cb')) {
-    var url = new URL(document.location.href);
-
-    url.searchParams.append('cb', localStorage.getItem('cb'));
-    url.search = url.search.replace('%3A', ':');
-    localStorage.setItem('cb', '');
-    document.location.href = url;
-  }
-
   if ($('#protagonist').length) {
     var preload_assets = async function() {
       var items = [ 'stage_4', 'question_number_1', 'question_number_2' ];
@@ -395,4 +338,5 @@ $(document).ready(function() {
   if (document.quest) {
     start_quest();
   }
+  
 });

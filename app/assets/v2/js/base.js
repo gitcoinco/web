@@ -9,6 +9,26 @@ $(document).ready(function() {
     });
   }
 
+  // makes the reflink sticky
+  if (getParam('cb')) {
+    var cb = getParam('cb');
+    // only if user is not logged in tho
+
+    if (cb.indexOf('ref') != -1 && !document.contxt.github_handle) {
+      localStorage.setItem('cb', cb);
+    }
+  }
+
+  // if there exists a sticky reflink but the user navigated away from the link in the course of logging in...
+  if (localStorage.getItem('cb') && document.contxt.github_handle && !getParam('cb')) {
+    var this_url = new URL(document.location.href);
+
+    this_url.searchParams.append('cb', localStorage.getItem('cb'));
+    this_url.search = this_url.search.replace('%3A', ':');
+    localStorage.setItem('cb', '');
+    document.location.href = this_url;
+  }
+
   var force_no_www = function() {
     if (document.location.href.indexOf('https://www.gitcoin.co') != -1) {
       var new_url = document.location.href.replace('www.gitcoin.co', 'gitcoin.co');

@@ -761,6 +761,9 @@ body.back3 .tl{
   }
 }
 @media (max-width: 1028px) {
+  body.quest_battle{
+    background-size: 200% !important;
+  }
   #leaderboard_hero{
     background-size: 130%;
   }
@@ -770,6 +773,9 @@ body.back3 .tl{
   }
 }
 @media (max-width: 900px) {
+  body.quest_battle{
+    background-size: 250% !important;
+  }
   #leaderboard_hero .inner_row {
     width: 32%;
     height: 350px;
@@ -811,6 +817,9 @@ body.back3 .tl{
   }
 }
 @media (max-width: 768px) {
+  body.quest_battle{
+    background-size: 350% !important;
+  }
   .hide_on_mobile{
     display: none;
   }
@@ -876,6 +885,9 @@ body.back3 .tl{
 
 }
 @media (max-width: 550px) {
+  body.quest_battle{
+    background-size: 400% !important;
+  }
   .back_gradient {
     background-size: 100% 600px !important;
   }
