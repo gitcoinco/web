@@ -19,6 +19,7 @@ from quests.helpers import (
 )
 from quests.models import Quest, QuestAttempt, QuestPointAward
 from quests.quest_types.quiz_style import details as quiz_style
+from quests.quest_types.example import details as example
 from ratelimit.decorators import ratelimit
 
 
@@ -86,5 +87,7 @@ def details(request, obj_id, name):
 
     if quest.style == 'quiz':
         return quiz_style(request, quest)
+    elif quest.style == 'Example for Demo':
+        return example(request, quest)
     else:
         raise Exception(f'Not supported quest style: {quest.style}')

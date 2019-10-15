@@ -69,6 +69,9 @@
   display: block;
   width: 100%;
 }
+.Example .card_head{
+  display: none;
+}
 .card_head {
   height: 140px;
 }
