@@ -3,7 +3,7 @@
         "en": "HTP consists of data layer,networlayer,consensus layer,incentive layer, contract layer and application layer.",
         "zh": "火链系统由数据层、网络层、共识层、激励层、合约层和应用层组成"
   },
-  "website": "https://huotop.cc/",
+  "website": "https://huotop.cc",
   "whitepaper": "https://github.com/HTPhuotop/white-paper/blob/master/HTP%20white-paper.pdf",
   "state": "NORMAL",
   "published_on": "2018-11-13"
