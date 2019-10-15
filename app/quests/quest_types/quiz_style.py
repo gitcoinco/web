@@ -15,7 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
 from quests.helpers import (
-    get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity,
+    get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity, get_active_attempt_if_any, get_base_quest_view_params
 )
 from quests.models import Quest, QuestAttempt, QuestPointAward
 from ratelimit.decorators import ratelimit
@@ -41,8 +41,7 @@ def details(request, quest):
             if save_attempt:
                 process_start(request, quest)
             else:
-                qas = QuestAttempt.objects.filter(quest=quest, profile=request.user.profile, state=(qn-1), success=False, created_on__gt=(timezone.now()-timezone.timedelta(minutes=quest.cooldown_minutes)))
-                qa = qas.order_by('-pk').first()
+                qa = active_attempt(quest, request.user.profile, state=(qn-1))
                 this_question = quest.questions[qn-1]
                 correct_answers = [ele['answer'] for ele in this_question['responses'] if ele['correct']]
                 their_answers = payload.get('answers')
@@ -81,17 +80,7 @@ def details(request, quest):
 
     # return params
     attempts = quest.attempts.filter(profile=request.user.profile) if request.user.is_authenticated else quest.attempts.none()
-    params = {
-        'quest': quest,
-        'attempt_count': attempts.count() + 1,
-        'success_count': attempts.filter(success=True).count(),
-        'hide_col': True,
-        'body_class': 'quest_battle',
-        'title': "Quest: " + quest.title + (f" (and win a *{quest.kudos_reward.humanized_name}* Kudos)" if quest.kudos_reward else ""),
-        'avatar_url': quest.enemy_img_url,
-        'card_desc': quest.description,
-        'quest_json': quest.to_json_dict(exclude="questions"),
-    }
+    params = get_base_quest_view_params(request.user.profile, quest)
     response = TemplateResponse(request, 'quests/types/quiz_style.html', params)
     #response['X-Frame-Options'] = x_frame_option
     return response

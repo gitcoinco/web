@@ -83,6 +83,40 @@ def record_award_helper(qa, profile, layer=1):
         return record_award_helper(qa, profile.referrer, layer+1)
 
 
+def get_base_quest_view_params(profile, quest):
+    """
+    Gets the base quest view params
+    """
+    attempts = quest.attempts.filter(profile=profile) if profile else quest.attempts.none()
+    params = {
+        'quest': quest,
+        'hide_col': True,
+        'attempt_count': attempts.count() + 1,
+        'success_count': attempts.filter(success=True).count(),
+        'body_class': 'quest_battle',
+        'title': "Quest: " + quest.title + (f" (and win a *{quest.kudos_reward.humanized_name}* Kudos)" if quest.kudos_reward else ""),
+        'avatar_url': quest.enemy_img_url,
+        'card_desc': quest.description,
+        'quest_json': quest.to_json_dict(exclude="questions"),
+    }
+    return params
+
+def get_active_attempt_if_any(profile, quest, state=None):
+    """
+    Gets the active quest attempt if any
+    """
+    active_attempts = QuestAttempt.objects.filter(
+        quest=quest,
+        profile=profile,
+        success=False,
+        created_on__gt=(timezone.now()-timezone.timedelta(minutes=quest.cooldown_minutes))
+    )
+    if state:
+        active_attempts = active_attempts.filter(state=state)
+    active_attempt = active_attempts.order_by('-pk').first()
+    return active_attempt
+
+
 def process_start(request, quest):
     """
     Processes the start of the quest oh behalf of the user
