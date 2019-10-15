@@ -41,7 +41,7 @@ def details(request, quest):
             if save_attempt:
                 process_start(request, quest)
             else:
-                qas = QuestAttempt.objects.filter(quest=quest, profile=request.user.profile, state=(qn-1), created_on__gt=(timezone.now()-timezone.timedelta(minutes=5)))
+                qas = QuestAttempt.objects.filter(quest=quest, profile=request.user.profile, state=(qn-1), success=False, created_on__gt=(timezone.now()-timezone.timedelta(minutes=quest.cooldown_minutes)))
                 qa = qas.order_by('-pk').first()
                 this_question = quest.questions[qn-1]
                 correct_answers = [ele['answer'] for ele in this_question['responses'] if ele['correct']]
@@ -92,6 +92,6 @@ def details(request, quest):
         'card_desc': quest.description,
         'quest_json': quest.to_json_dict(exclude="questions"),
     }
-    response = TemplateResponse(request, 'quests/quest.html', params)
+    response = TemplateResponse(request, 'quests/types/quiz_style.html', params)
     #response['X-Frame-Options'] = x_frame_option
     return response

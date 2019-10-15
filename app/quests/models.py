@@ -31,6 +31,7 @@ class Quest(SuperModel):
     visible = models.BooleanField(default=True)
     difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES)
     style = models.CharField(max_length=100, default='quiz', choices=STYLES)
+    value = models.FloatField(default=1)
     creator = models.ForeignKey(
         'dashboard.Profile',
         on_delete=models.CASCADE,
