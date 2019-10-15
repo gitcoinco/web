@@ -1643,7 +1643,7 @@ def postsave_tip(sender, instance, **kwargs):
                 "from_profile":instance.sender_profile,
                 "to_profile":instance.recipient_profile,
                 "value_usd":instance.value_in_usdt_then,
-                "url":'https"://gitcoin.co/tips',
+                "url":'https://gitcoin.co/tips',
                 "network":instance.network,
             }
             )
