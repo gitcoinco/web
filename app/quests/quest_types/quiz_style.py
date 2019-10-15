@@ -42,7 +42,7 @@ def details(request, quest):
             if save_attempt:
                 process_start(request, quest)
             else:
-                qa = active_attempt(quest, request.user.profile, state=(qn-1))
+                qa = get_active_attempt_if_any(request.user, quest, state=(qn-1))
                 this_question = quest.questions[qn-1]
                 correct_answers = [ele['answer'] for ele in this_question['responses'] if ele['correct']]
                 their_answers = payload.get('answers')
@@ -81,7 +81,7 @@ def details(request, quest):
 
     # return params
     attempts = quest.attempts.filter(profile=request.user.profile) if request.user.is_authenticated else quest.attempts.none()
-    params = get_base_quest_view_params(request.user.profile, quest)
+    params = get_base_quest_view_params(request.user, quest)
     response = TemplateResponse(request, 'quests/types/quiz_style.html', params)
     #response['X-Frame-Options'] = x_frame_option
     return response

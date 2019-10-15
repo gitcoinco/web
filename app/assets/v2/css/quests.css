@@ -692,6 +692,9 @@ body.back3 .tl{
 }
 
 @media (max-width: 1110px) {
+  body.quest_battle{
+    background-size: 250% !important;
+  }
   .refer_friend .top_img{
     margin-top: -230px;
   }
@@ -765,7 +768,7 @@ body.back3 .tl{
 }
 @media (max-width: 1028px) {
   body.quest_battle{
-    background-size: 200% !important;
+    background-size: 250% !important;
   }
   #leaderboard_hero{
     background-size: 130%;

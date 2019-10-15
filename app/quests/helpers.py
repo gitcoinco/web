@@ -84,11 +84,13 @@ def record_award_helper(qa, profile, layer=1):
         return record_award_helper(qa, profile.referrer, layer+1)
 
 
-def get_base_quest_view_params(profile, quest):
+def get_base_quest_view_params(user, quest):
     """
     Gets the base quest view params
     """
-    attempts = quest.attempts.filter(profile=profile) if profile else quest.attempts.none()
+    profile = user.profile if user.is_authenticated else None
+    attempts = quest.attempts.filter(profile=profile) if profile else QuestAttempt.objects.none()
+
     params = {
         'quest': quest,
         'hide_col': True,
@@ -102,10 +104,11 @@ def get_base_quest_view_params(profile, quest):
     }
     return params
 
-def get_active_attempt_if_any(profile, quest, state=None):
+def get_active_attempt_if_any(user, quest, state=None):
     """
     Gets the active quest attempt if any
     """
+    profile = user.profile if user.is_authenticated else None
     active_attempts = QuestAttempt.objects.filter(
         quest=quest,
         profile=profile,

@@ -25,11 +25,13 @@ from ratelimit.decorators import ratelimit
 def details(request, quest):
     # return params
     prize_url = ''
-    active_attempt = get_active_attempt_if_any(request.user.profile, quest)
+    active_attempt = get_active_attempt_if_any(request.user, quest)
     if request.POST.get('start'):
         # game started
-        messages.info(request, f'Quest started.  Journey Forth')
-        process_start(request, quest)
+        if request.user.is_authenticated:
+            messages.info(request, f'Quest started.  Journey Forth')
+            process_start(request, quest)
+        return redirect('/login/github')
     elif request.POST.get('win'):
         # game won
         messages.info(request, f'You win.. Congrats')
@@ -44,7 +46,7 @@ def details(request, quest):
             return redirect('/quests')
 
     attempts = quest.attempts.filter(profile=request.user.profile) if request.user.is_authenticated else quest.attempts.none()
-    params = get_base_quest_view_params(request.user.profile, quest)
+    params = get_base_quest_view_params(request.user, quest)
     params['prize_url'] = prize_url
     params['started'] = request.POST.get('start', '')
     response = TemplateResponse(request, 'quests/types/example.html', params)
