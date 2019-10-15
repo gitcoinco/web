@@ -15,7 +15,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
 from quests.helpers import (
-    get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity, get_active_attempt_if_any, get_base_quest_view_params
+    get_active_attempt_if_any, get_base_quest_view_params, get_leaderboard, max_ref_depth, process_start, process_win,
+    record_award_helper, record_quest_activity,
 )
 from quests.models import Quest, QuestAttempt, QuestPointAward
 from ratelimit.decorators import ratelimit

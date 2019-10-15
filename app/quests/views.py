@@ -18,8 +18,8 @@ from quests.helpers import (
     get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity,
 )
 from quests.models import Quest, QuestAttempt, QuestPointAward
-from quests.quest_types.quiz_style import details as quiz_style
 from quests.quest_types.example import details as example
+from quests.quest_types.quiz_style import details as quiz_style
 from ratelimit.decorators import ratelimit
 
 

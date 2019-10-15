@@ -119,11 +119,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 </div>
 
 <div class="row indent_on_mobile" style="background-color: #fafafa;">
-  <h3 class="mt-0">By completing quests.</h3>
+  <h3 class="mt-0">
+    <i class="ml-1 fab fa-ethereum"></i>
+    By completing quests.
+    </h3>
   <div class="container-fluid py-4 pt-1">
     After each quest you complete you will earn 1 point.
   </div>
-  <h3 class="mt-0">By sharing quests with your friends.</h3>
+  <h3 class="mt-0">
+  <i class="ml-1 fas"><img src="{% static "v2/images/grants/icons/black.svg" %}"></i>
+  By sharing quests with your friends.</h3>
   <div class="container-fluid py-4">
     <div class="container w-50 float-left">
       <strong>Gitcoin Quests are a team sport!</strong>.
@@ -204,7 +209,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% if point_history|length %}
 <div class="row indent_on_mobile point_history" style="background-color: #fafafa;">
-  <h3 class="mt-0">@{{github_handle}} has {{point_value}} Points</h3>
+  <h3 class="mt-0">
+    <i class="ml-1 far fa-chart-bar"></i>
+    @{{github_handle}} has {{point_value}} Points
+  </h3>
   <div class="container-fluid py-4">
     <div class="container w-100 point_history_child">
       <table class="w-100">

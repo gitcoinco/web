@@ -69,11 +69,11 @@
   display: block;
   width: 100%;
 }
-.Example .card_head{
-  display: none;
-}
 .card_head {
   height: 140px;
+}
+.Example .card_head{
+  display: none;
 }
 .card_head span{
   background-color: #e7f0fa;
