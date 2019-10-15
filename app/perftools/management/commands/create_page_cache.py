@@ -33,17 +33,16 @@ from retail.utils import build_stat_results, programming_languages
 
 
 def create_quests_cache():
-    from quests.helpers import get_leaderboard
+    from quests.helpers import generate_leaderboard
     print('quests')
     view = 'quests'
     keyword = 'leaderboard'
-    data = get_leaderboard()
+    data = generate_leaderboard()
     JSONStore.objects.create(
         view=view,
         key=keyword,
         data=json.loads(json.dumps(data, cls=EncodeAnything)),
         )
-
 
 def create_results_cache():
     print('results')
