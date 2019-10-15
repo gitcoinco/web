@@ -30,21 +30,44 @@
   color: #ffffff;
 }
 
-.quests span img{
-  max-width: 50px;
-}
-
 .codefund{
   background-color: #4c008f;
   color: #ffffff;
 }
 
+.matching{
+  background-color: #444;
+  color: #ffffff;
+}
+
+.matching img,
+.hackathons img{
+  max-width: 500px;
+}
+.quests span img{
+  max-width: 50px;
+}
+
 .labs{
   background-color: #bf2781;
   color: #ffffff;
-
 }
 
+.tag
+{
+  background-color: #e7f0fa;
+  color: var(--gc-blue);
+  font-size: 10px;
+  display: block;
+  list-style: none;
+  padding: 5px;
+  width: 66px;
+}
+
+.codefund .tag
+{
+  width: 140px;
+}
 @media(min-width: 1200px) {
   .intro-header{
     font-size:76px;

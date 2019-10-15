@@ -15,7 +15,7 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static humanize %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -60,9 +60,12 @@
               </span>
               <span class=" mb-2 product-heading">{{ product.heading }}</span>
               <span class="mb-4 product-desc">{{ product.description }}</span>
-              <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
-                {% trans "Get Started" %}
-              </a>
+              <span class="mb-4 tag">{{ product.service_level }}</span>
+              {% if product.link %}
+                <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
+                  {% trans "Get Started" %}
+                </a>
+              {% endif %}
             </div>
             <div class="col-md-6 py-md-5 py-2 align-self-center">
               <img class="img-fluid float-right pl-3 pl-md-0" src="{{ product.img }}" alt="{{ product.name }}-image">
@@ -78,9 +81,12 @@
               </span>
               <span class="mb-2 product-heading">{{ product.heading }}</span>
               <span class="mb-4 product-desc">{{ product.description }}</span>
-              <a href="{{ product.link }}" class="button button-{{ product.name }} text-center display-5 ">
-                {% trans "Get Started" %}
-              </a>
+              <span class="mb-4 tag">{{ product.service_level }}</span>
+              {% if product.link %}
+                <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
+                  {% trans "Get Started" %}
+                </a>
+              {% endif %}
             </div>
           {% endif %}
         </div>
@@ -107,6 +113,9 @@
           <p>
             <a href="{% url 'jobs' %}" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
               {% trans "Check our Jobs Page" %}
+            </a>
+            <a href="mailto:founders@gitcoin.co" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
+              {% trans "Contact Us" %}
             </a>
             <a href="{% url 'mission' %}" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
               {% trans "About the mission" %}
