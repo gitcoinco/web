@@ -18,7 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
+import urllib.request
 from io import BytesIO
+from os import path
 
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -141,6 +143,12 @@ class Token(SuperModel):
             self.owner_address = to_checksum_address(self.owner_address)
 
         super().save(*args, **kwargs)
+
+    @property
+    def static_image(self):
+        if 'v2' in self.image:
+            return static(self.image)
+        return self.image
 
     @property
     def ui_name(self):
@@ -309,6 +317,17 @@ class Token(SuperModel):
         """
         root = environ.Path(__file__) - 2  # Set the base directory to two levels.
         file_path = root('assets') + '/' + self.image
+
+        # download it if file is remote
+        if settings.AWS_STORAGE_BUCKET_NAME in self.image:
+            file_path = f'cache/{self.pk}.png'
+            if not path.exists(file_path):
+                filedata = urllib.request.urlopen(self.image)
+                datatowrite = filedata.read()
+                with open(file_path, 'wb') as f:
+                    f.write(datatowrite)
+
+        # serve file
         with open(file_path, 'rb') as f:
             obj = File(f)
             from avatar.utils import svg_to_png
