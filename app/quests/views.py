@@ -3,6 +3,7 @@ import json
 import logging
 import random
 import re
+import time
 
 from django.conf import settings
 from django.contrib import messages
@@ -22,10 +23,12 @@ from quests.quest_types.example import details as example
 from quests.quest_types.quiz_style import details as quiz_style
 from ratelimit.decorators import ratelimit
 
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 def index(request):
 
+    print(f" start at {round(time.time(),2)} ")
     quests = []
     for diff in Quest.DIFFICULTIES:
         quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True)
@@ -34,6 +37,7 @@ def index(request):
         if quest_qs.exists():
             quests.append(package)
 
+    print(f" phase2 at {round(time.time(),2)} ")
     rewards_schedule = []
     for i in range(0, max_ref_depth):
         reward_denominator = 2 ** i;
@@ -44,11 +48,16 @@ def index(request):
                 'reward_multiplier': 1/reward_denominator
             })
 
+    print(f" phase3 at {round(time.time(),2)} ")
     attempt_count = QuestAttempt.objects.count()
     success_count = QuestAttempt.objects.filter(success=True).count()
+    print(f" phase3.1 at {round(time.time(),2)} ")
     leaderboard = get_leaderboard()
+    print(f" phase3.2 at {round(time.time(),2)} ")
     point_history = request.user.profile.questpointawards.all() if request.user.is_authenticated else QuestPointAward.objects.none()
     point_value = sum(point_history.values_list('value', flat=True))
+    print(f" phase4 at {round(time.time(),2)} ")
+
     params = {
         'profile': request.user.profile if request.user.is_authenticated else None,
         'quests': quests,
@@ -66,6 +75,8 @@ def index(request):
         'avatar_url': '/static/v2/images/quests/orb.png',
         'card_desc': 'Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!',
     }
+
+    print(f" phase5 at {round(time.time(),2)} ")
     return TemplateResponse(request, 'quests/index.html', params)
 
 

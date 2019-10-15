@@ -19,7 +19,6 @@ class Quest(SuperModel):
         ('Example for Demo', 'example_demo'),
     ]
 
-
     title = models.CharField(max_length=1000)
     description = models.TextField(default='', blank=True)
     game_schema = JSONField(default=dict, blank=True)
@@ -28,8 +27,8 @@ class Quest(SuperModel):
     kudos_reward = models.ForeignKey('kudos.Token', blank=True, null=True, related_name='quests_reward', on_delete=models.SET_NULL)
     unlocked_by = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='unblocks', on_delete=models.SET_NULL)
     cooldown_minutes = models.IntegerField(default=5)
-    visible = models.BooleanField(default=True)
-    difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES)
+    visible = models.BooleanField(default=True, db_index=True)
+    difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES, db_index=True)
     style = models.CharField(max_length=100, default='quiz', choices=STYLES)
     value = models.FloatField(default=1)
     creator = models.ForeignKey(
@@ -152,7 +151,7 @@ class Quest(SuperModel):
 class QuestAttempt(SuperModel):
 
     quest = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='attempts', on_delete=models.SET_NULL)
-    success = models.BooleanField(default=False)
+    success = models.BooleanField(default=False, db_index=True)
     profile = models.ForeignKey(
         'dashboard.Profile',
         on_delete=models.CASCADE,

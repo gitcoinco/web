@@ -11,6 +11,7 @@ from dashboard.models import Activity
 from inbox.utils import send_notification_to_user
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
 from kudos.views import get_profile
+from perftools.models import JSONStore
 from quests.models import Quest, QuestAttempt, QuestPointAward
 
 logger = logging.getLogger(__name__)
@@ -166,12 +167,15 @@ def process_win(request, qa):
         record_award_helper(qa, qa.profile)
     return prize_url
 
+
 def get_leaderboard(max_entries=25):
+    return JSONStore.objects.filter(view='quests', key='leaderboard').order_by('-pk').first().data
+
+
+def generate_leaderboard(max_entries=25):
     """
     Gets the leaderboard that will be shown on /quests landing page
     """
-    
-
 
     #setup
     kudos_to_show_per_leaderboard_entry = 5

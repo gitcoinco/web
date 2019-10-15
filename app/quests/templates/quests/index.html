@@ -114,7 +114,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 <div class="row indent_on_mobile mt-0 refer_friend" style="background-color: #fafafa;">
   <div class="container-fluid py-0 text-center">
-    <img src="{% static 'v2/images/grants/robots.png' %}" class=top_img />
+    <img data-src="{% static 'v2/images/grants/robots.png' %}" class=top_img />
   </div>
 </div>
 
@@ -127,7 +127,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     After each quest you complete you will earn 1 point.
   </div>
   <h3 class="mt-0">
-  <i class="ml-1 fas"><img src="{% static "v2/images/grants/icons/black.svg" %}"></i>
+  <i class="ml-1 fas"><img data-src="{% static "v2/images/grants/icons/black.svg" %}"></i>
   By sharing quests with your friends.</h3>
   <div class="container-fluid py-4">
     <div class="container w-50 float-left">
@@ -178,7 +178,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         You were referred by:
           {% if profile.referrer %}
             <a href="{{ref.handle}}">
-              <img src="/dynamic/avatar/{{profile.referrer.handle}}">
+              <img data-src="/dynamic/avatar/{{profile.referrer.handle}}">
               @{{profile.referrer.handle}}
             </a>
           {% else %}
@@ -190,7 +190,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           :
             {% for ref in profile.referred.all %}
               <a href="{{ref.handle}}">
-                <img src="/dynamic/avatar/{{ref.handle}}">
+                <img data-src="/dynamic/avatar/{{ref.handle}}">
                 @{{ref.handle}}
               </a>
             {% endfor %}
@@ -245,11 +245,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {{ row.created_on|naturaltime }}
           </td>
           <td>
-            <img src="/dynamic/avatar/{{ row.profile.handle }}" style="width: 15px; height: 15px; border-radius: 10px;">
+            <img data-src="/dynamic/avatar/{{ row.profile.handle }}" style="width: 15px; height: 15px; border-radius: 10px;">
             <a href="{{ row.profile.url }}">@{{ row.profile.handle }}</a>
           </td>
           <td>
-            <img src="{{ row.questattempt.quest.enemy_img_url }}" style="width: 15px; height: 15px; border-radius: 10px">
+            <img data-src="{{ row.questattempt.quest.enemy_img_url }}" style="width: 15px; height: 15px; border-radius: 10px">
             Beat <a href="{{row.questattempt.quest.url}}">{{row.questattempt.quest.title}}</a>
           </td>
         </tr>
@@ -288,10 +288,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </div>
         <div class="trophy_case">
           <div class="kudos_container">
-            <img src="{{item.3.preview_img_url}}" title="{{item.3.humanized_name}}" class="kudii">
+            <img data-src="{{item.3.preview_img_url}}" title="{{item.3.humanized_name}}" class="kudii">
           </div>
           {% for btr in item.2%}
-            <img src="{{btr.0}}" title="{{btr.1}}" style="height: 50px; width: 50px; border-radius: 0px;">
+            <img data-src="{{btr.0}}" title="{{btr.1}}" style="height: 50px; width: 50px; border-radius: 0px;">
           {% endfor %}
         </div>
       </div>
@@ -302,24 +302,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% for item in leaderboard %}
     <div class="inner_row {% if item.4 < 4 %}show_on_mobile{%endif%} " style="{% if item.0 == github_handle %}background-color: #edf5fc;{%else%}{% cycle 'background-color: #fafafa;' '' %}{%endif%}";>
       <div class="float-left mr-2 ml-2">{{ forloop.counter|ordinal }}</div>
-      <div class="float-left mr-2 ml-2"><img src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px; width: 120px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
+      <div class="float-left mr-2 ml-2"><img data-src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px; width: 120px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
       {% if item.0 == github_handle %}
         <div id=you style="margin-top: 10px;" class="float-left mr-4 ml-2">You</div>
       {% endif %}
       <div style="float: right; width: 500px; text-align: right;">
         {% for btr in item.2%}
-          <img src="{{btr.0}}" title="{{btr.1}}" style="height: 50px; width: 50px; border-radius: 0px;">
+          <img data-src="{{btr.0}}" title="{{btr.1}}" style="height: 50px; width: 50px; border-radius: 0px;">
         {% endfor %}
         {{item.1}} point{{item.1|pluralize}}</div>
       </div>
     {% endfor %}
   </div>
+  <p class="float-right">The quests leaderboard is updated every 4 hours.</p>
 </div>
 {% endif %}
 
 <div class="container-fluid py-1 announce-bot indent_on_mobile">
   <div class="container">
-    <img src="{% static 'v2/images/quests/lovebot.svg' %}" />
+    <img data-src="{% static 'v2/images/quests/lovebot.svg' %}" />
   </div>
 </div>
 
@@ -338,11 +339,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
 </div>
 
-<script src="{% static "v2/js/pages/quests.index.js" %}"></script>
-
 {% endblock %}
 
 {% block 'scripts' %}
+<script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
 <script src="{% static "v2/js/pages/quests.index.js" %}"></script>
+<script>
+  $(document).ready(function() {
+    $("img").unveil(200);
+  });
+</script>
 {% endblock %}
 

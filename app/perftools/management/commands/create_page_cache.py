@@ -32,6 +32,19 @@ from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
 
 
+def create_quests_cache():
+    from quests.helpers import get_leaderboard
+    print('quests')
+    view = 'quests'
+    keyword = 'leaderboard'
+    data = get_leaderboard()
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=json.loads(json.dumps(data, cls=EncodeAnything)),
+        )
+
+
 def create_results_cache():
     print('results')
     keywords = ['']
@@ -81,5 +94,6 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
+        create_quests_cache()
         create_results_cache()
         create_contributor_landing_page_context()
