@@ -171,7 +171,12 @@
 
 .button-hackathons{
   background-color: #ffa2de;
-  color: #000;
+  color: white;
+}
+
+.button-matching{
+  background-color: #222;
+  color: white;
 }
 
 .button-labs{
