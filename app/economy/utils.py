@@ -66,8 +66,8 @@ def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
         conversion_rate = ConversionRate.objects.filter(
             from_currency=from_currency,
             to_currency=to_currency,
-            timestamp__gte=timestamp
-        ).order_by('-timestamp').last()
+            timestamp__lte=timestamp
+        ).order_by('-timestamp').first()
     else:
         conversion_rate = ConversionRate.objects.filter(
             from_currency=from_currency,

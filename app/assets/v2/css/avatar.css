@@ -3,6 +3,11 @@
   flex-wrap: wrap;
 }
 
+.avatars-container img {
+ height: 235px;
+ width: 235px;
+}
+
 .avatar-tile {
   height:250px;
   width: 250px;
