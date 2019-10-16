@@ -33,48 +33,21 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
     </div>
-
-    {% if grants|length != 0 or sub_grants|length != 0 %}
-      <div class="container pt-5">
-        <div id="grant-profile-tabs" class="tab-container font-body mb-3">
-          <button type="button" id="supported" class="section-tab">{% trans "Supported" %} ({{ sub_grants|length }})</button>
-          <button type="button" id="created" class="section-tab">{% trans "Created" %} ({{ grants|length }})</button>
-        </div>
-
-        <div id="grant-profile-tabs-sections" class="tab-sections section">
-          <div id="section-supported" class="tab-section active">
-            {% if sub_grants|length != 0 %}
-              <div class="container px-0">
-                <div class="row mb-3 py-2 px-0 mx-sm-0">
-                  <div class="col-12 px-0">
-                    {% include 'grants/profile/body.html' with grants=sub_grants history=sub_history %}
-                  </div>
+        <div id="" class="">
+          {% if history|length != 0 %}
+            <div class="container px-0">
+              <div class="row mb-3 py-2 px-0 mx-sm-0">
+                <div class="col-12 px-0">
+                  {% include 'grants/profile/body.html' with grants=grants history=history %}
                 </div>
               </div>
-            {% else %}
-              {% include 'grants/profile/none.html' with tab='support' %}
-            {% endif %}
-          </div>
-          <div id="section-created" class="tab-section">
-            {% if grants|length != 0 %}
-              <div class="container px-0">
-                <div class="row mb-3 py-2 px-0 mx-sm-0">
-                  <div class="col-12 px-0">
-                    {% include 'grants/profile/body.html' with grants=grants history=history %}
-                  </div>
-                </div>
-              </div>
-            {% else %}
-              {% include 'grants/profile/none.html' with tab='create' %}
-            {% endif %}
-          </div>
+            </div>
+          {% else %}
+            {% include 'grants/profile/none.html' with tab='create' %}
+          {% endif %}
         </div>
       </div>
-    {% else %}
-      <div class="container py-5">
-        {% include 'grants/profile/none.html' %}
-      </div>
-    {% endif %}
+    </div>
   </body>
   {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts.html' %}
