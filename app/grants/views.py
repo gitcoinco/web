@@ -704,43 +704,10 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 @login_required
 def profile(request):
     """Show grants profile of logged in user."""
-    limit = request.GET.get('limit', 25)
-    page = request.GET.get('page', 1)
-    sort = request.GET.get('sort', '-created_on')
-    import time
-    print(round(time.time(), 2))
-    profile = get_profile(request)
-    _grants_pks = Grant.objects.filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).values_list(
-        'pk', flat=True
-    )
-    _grants = Grant.objects.prefetch_related('team_members') \
-        .filter(pk__in=_grants_pks).order_by(sort)
-    sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile).order_by(sort)
-    print(round(time.time(), 2))
-
-    sub_contributions = []
-    contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
-    history = []
-    for ele in contributions:
-        history.append(ele.normalized_data)
-
-    print(round(time.time(), 2))
-    paginator = Paginator(_grants, limit)
-    grants = paginator.get_page(page)
-
-    params = {
-        'active': 'profile',
-        'title': _('My Grants'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
-        'grants': grants,
-        'history': history,
-        'sub_grants': sub_grants,
-        'sub_history': sub_contributions
-    }
-    print(round(time.time(), 2))
-
-    return TemplateResponse(request, 'grants/profile/index.html', params)
-
+    if not request.user.is_authenticated:
+        raise Http404
+    handle = request.user.profile.handle
+    return redirect(f'/profile/{handle}/grant_contribs')
 
 def quickstart(request):
     """Display quickstart guide."""

@@ -17,14 +17,15 @@
 {% load i18n static humanize grants_extra %}
 
   <div class="grants-container">
-    <h2 class="font-title my-3 pb-3 title">{% trans "Transaction History" %}</h2>
+    <h2 class="font-title my-3 pb-3 title">{% trans "Grant Contribution History" %} {% if total_grant_contributions %} ({{total_grant_contributions}})
+    {%endif%}</h2>
     {% for transaction in history %}
           <div class="py-3 mx-sm-0 row transaction-history">
             <div class="col-3 col-md-1 font-subheader text-center my-auto">
               {{ transaction.created_on }}
             </div>
             <div class="col-2 col-md-1 justify-content-center special_tag">
-              <img class="avatar" src="{% if transaction.logo %}{{ transaction.logo }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=transaction.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+              <img class="avatar" style="max-width: 70px;" src="{% if transaction.logo %}{{ transaction.logo }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=transaction.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
             </div>
             <div class="col-7 col-md-5 my-auto">
               <div class="title font-body">

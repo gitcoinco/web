@@ -2382,6 +2382,13 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'people':
         pass
+    elif tab == 'grant_contribs':
+        from grants.models import Contribution
+        contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
+        history = []
+        for ele in contributions:
+            history.append(ele.normalized_data)
+        context['history'] = history
     elif tab == 'active':
         context['active_bounties'] = active_bounties
     elif tab == 'resume':
@@ -2486,7 +2493,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people']
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grant_contribs']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
