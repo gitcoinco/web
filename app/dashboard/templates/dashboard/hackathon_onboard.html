@@ -45,7 +45,8 @@
           {% endif %}
         <h1>{{hackathon.name}} Guide</h1>
         {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
-
+        <BR>
+        <BR>
           {% if is_registered %}
             <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
           {% else %}

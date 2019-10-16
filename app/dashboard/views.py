@@ -3369,7 +3369,7 @@ def hackathon(request, hackathon=''):
 
 def hackathon_onboard(request, hackathon=''):
     referer = request.META.get('HTTP_REFERER', '')
-    
+
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
         is_registered = request.user.profile.hackathons.filter(hackathon_id=hackathon_event.pk).first() if request.user.is_authenticated else None
@@ -3401,6 +3401,7 @@ def hackathon_registration(request):
 
     """
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
     hackathon = request.POST.get('name')
     referer = request.POST.get('referer')
 
@@ -3448,7 +3449,7 @@ def hackathon_registration(request):
         )
         print('pushed_to_list')
     except Exception as e:
-        logger.error(f"error in record_action: {e} - {instance}")
+        logger.error(f"error in record_action: {e}")
         pass
 
     if referer and is_safe_url(referer, request.get_host()):
