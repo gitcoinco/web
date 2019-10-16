@@ -2078,16 +2078,18 @@ def profile_earnings(request, handle, direction='to'):
 
     response = """date,close"""
     earnings = list(earnings.order_by('created_on').values_list('created_on', 'value_usd'))
-    uniqueness = []
-    running_balance = 0
+    balances = {}
     for earning in earnings:
         val = earning[1]
         if val:
-            running_balance += val
-            datestr = earning[0].strftime('%d-%b-%y')
-            if datestr not in uniqueness:
-                response += f"\n{datestr},{running_balance}"
-                uniqueness.append(datestr)
+            datestr = earning[0].strftime('1-%b-%y')
+            if datestr not in balances.keys():
+                balances[datestr] = 0
+            balances[datestr] += val
+
+    for datestr, balance in balances.items():
+        response += f"\n{datestr},{balance}"
+
 
     mimetype = 'text/x-csv'
     return HttpResponse(response)
@@ -2110,11 +2112,15 @@ def profile_viewers(request, handle):
 
     response = """date,close"""
     items = list(profile.viewed_by.order_by('created_on').values_list('created_on', flat=True))
-    running_balance = 0
+    balances = {}
     for item in items:
-        running_balance += 1
         datestr = item.strftime('%d-%b-%y')
-        response += f"\n{datestr},{running_balance}"
+        if datestr not in balances.keys():
+            balances[datestr] = 0
+        balances[datestr] += 1
+
+    for datestr, balance in balances.items():
+        response += f"\n{datestr},{balance}"
 
     mimetype = 'text/x-csv'
     return HttpResponse(response)

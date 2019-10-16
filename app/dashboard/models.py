@@ -4038,6 +4038,9 @@ class ProfileView(SuperModel):
     target = models.ForeignKey('dashboard.Profile', related_name='viewed_by', on_delete=models.CASCADE, db_index=True)
     viewer = models.ForeignKey('dashboard.Profile', related_name='viewed_profiles', on_delete=models.CASCADE, db_index=True)
 
+    class Meta:
+        ordering = ['-pk']
+
     def __str__(self):
         return f"{self.viewer} => {self.target} on {self.created_on}"
 
