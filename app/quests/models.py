@@ -51,14 +51,19 @@ class Quest(SuperModel):
 
     @property
     def art_url(self):
-        url = self.game_metadata['enemy']['art']
+        url = self.game_metadata.get('enemy', {}).get('art', '')
         if "http" in url:
             return url
         return '/static/' + url
 
     @property
     def enemy_img_url(self):
-        return '/static/'+self.game_metadata.get('enemy', {}).get('art', '').replace('svg', 'png')
+        return self.art_url
+
+    @property
+    def enemy_img_url_png(self):
+        # warning: not supported for kudos uploaded quets
+        return self.art_url.replace('svg', 'png')
 
     @property
     def enemy_img_name(self):
