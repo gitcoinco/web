@@ -18,6 +18,7 @@
 '''
 from __future__ import print_function, unicode_literals
 
+import hashlib
 import json
 import logging
 import os
@@ -43,6 +44,7 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import escape, strip_tags
+from django.utils.http import is_safe_url
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -62,6 +64,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
+from mailchimp3 import MailChimp
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import (
@@ -76,9 +79,9 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    Earning, FeedbackEntry, HackathonEvent, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile,
-    ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction,
-    UserVerificationModel,
+    Earning, FeedbackEntry, HackathonEvent, HackathonRegistration, HackathonSponsor, Interest, LabsResearch,
+    PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Subscription,
+    Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -213,12 +216,18 @@ def get_interest_modal(request):
     except Bounty.DoesNotExist:
         raise Http404
 
+    if bounty.event and request.user.is_authenticated:
+        is_registered = request.user.profile.hackathons.filter(hackathon_id=bounty.event.id).first() or None
+    else:
+        is_registered = None
+
     context = {
         'bounty': bounty,
         'gitcoin_discord_username': request.user.profile.gitcoin_discord_username if request.user.is_authenticated else None,
         'active': 'get_interest_modal',
         'title': _('Add Interest'),
         'user_logged_in': request.user.is_authenticated,
+        'is_registered': is_registered,
         'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
     }
     return TemplateResponse(request, 'addinterest.html', context)
@@ -3278,18 +3287,97 @@ def hackathon(request, hackathon=''):
 
 
 def hackathon_onboard(request, hackathon=''):
+    referer = request.META.get('HTTP_REFERER', '')
 
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        is_registered = request.user.profile.hackathons.filter(hackathon_id=hackathon_event.pk).first() if request.user.is_authenticated else None
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
+
     params = {
         'active': 'hackathon_onboard',
         'title': 'Hackathon Onboard',
         'hackathon': hackathon_event,
+        'referer': referer,
+        'is_registered': is_registered,
     }
     return TemplateResponse(request, 'dashboard/hackathon_onboard.html', params)
 
+
+@csrf_exempt
+@require_POST
+def hackathon_registration(request):
+    """Claim Work for a Bounty.
+
+    :request method: POST
+
+    Args:
+        bounty_id (int): ID of the Bounty.
+
+    Returns:
+        dict: The success key with a boolean value and accompanying error.
+
+    """
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    hackathon = request.POST.get('name')
+    referer = request.POST.get('referer')
+
+    if not profile:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+    try:
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        registration_data = HackathonRegistration.objects.create(
+            name=hackathon,
+            hackathon= hackathon_event,
+            referer=referer,
+            registrant=profile
+        )
+
+        profile.hackathons.add(registration_data.id)
+    except Exception as e:
+        logger.error('Error while saving registration', e)
+
+    client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
+    mailchimp_data = {
+            'email_address': profile.email,
+            'status_if_new': 'subscribed',
+            'status': 'subscribed',
+
+            'merge_fields': {
+                'HANDLE': profile.handle,
+                'HACKATHON': hackathon,
+            },
+        }
+
+    user_email_hash = hashlib.md5(profile.email.encode('utf')).hexdigest()
+
+    try:
+        client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
+        client.lists.members.tags.update(
+            settings.MAILCHIMP_LIST_ID_HACKERS,
+            user_email_hash,
+            {
+                'tags': [
+                    {'name': hackathon, 'status': 'active'},
+                ],
+            }
+        )
+        print('pushed_to_list')
+    except Exception as e:
+        logger.error(f"error in record_action: {e} - {instance}")
+        pass
+
+    if referer and is_safe_url(referer, request.get_host()):
+        messages.success(request, _(f'You have successfully registered to {hackathon_event.name}. Happy hacking!'))
+        redirect = referer
+    else:
+        messages.success(request, _(f'You have successfully registered to {hackathon_event.name}. Happy hacking!'))
+        redirect = f'/hackathon/{hackathon}'
+
+    return JsonResponse({'redirect': redirect})
 
 def get_hackathons(request):
     """Handle rendering all Hackathons."""

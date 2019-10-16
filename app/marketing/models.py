@@ -137,6 +137,17 @@ def psave_es(sender, instance, **kwargs):
     instance.build_email_preferences()
 
 
+class ManualStat(SuperModel):
+    """Define the manual stat model; which records stats that are not available on the platform
+    """
+
+    key = models.CharField(max_length=50, db_index=True)
+    date = models.DateTimeField(db_index=True)
+    val = models.FloatField()
+
+    def __str__(self):
+        return f"{self.key}: {self.date}: {self.val}"
+
 class Stat(SuperModel):
 
     key = models.CharField(max_length=50, db_index=True)
