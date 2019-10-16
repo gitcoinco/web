@@ -788,7 +788,7 @@ def newkudos(request):
 
             s3 = session.resource('s3')
             key = f'media/uploads/{uuid.uuid4()}_{img.name}'
-            response = s3.Bucket(settings.MEDIA_BUCKET).put_object(Key=key, Body=img, ACL='public-read', ContentEncoding='image/svg+xml')
+            response = s3.Bucket(settings.MEDIA_BUCKET).put_object(Key=key, Body=img, ACL='public-read', ContentType='image/svg+xml')
             artwork_url = f'https://{settings.MEDIA_BUCKET}.s3-us-west-2.amazonaws.com/{key}'
 
             # save / send email

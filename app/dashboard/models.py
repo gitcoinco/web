@@ -1614,10 +1614,20 @@ class Tip(SendCryptoAsset):
 class TipPayoutException(Exception):
     pass
 
+
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
     # when a new tip is saved, make sure it doesnt have whitespace in it
     instance.username = instance.username.replace(' ', '')
+    # set missing attributes
+    if not instance.sender_profile:
+        profiles = Profile.objects.filter(handle__iexact=instance.from_username)
+        if profiles.exists():
+            instance.sender_profile = profiles.first()
+    if not instance.recipient_profile:
+        profiles = Profile.objects.filter(handle__iexact=instance.username)
+        if profiles.exists():
+            instance.recipient_profile = profiles.first()
 
 
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
@@ -1633,7 +1643,7 @@ def postsave_tip(sender, instance, **kwargs):
                 "from_profile":instance.sender_profile,
                 "to_profile":instance.recipient_profile,
                 "value_usd":instance.value_in_usdt_then,
-                "url":'https"://gitcoin.co/tips',
+                "url":'https://gitcoin.co/tips',
                 "network":instance.network,
             }
             )
@@ -2260,7 +2270,7 @@ class Profile(SuperModel):
     rank_funder = models.IntegerField(default=0)
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
-    referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True)
+    referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
     hackathons = models.ManyToManyField(HackathonRegistration, blank=True)
 
 
@@ -4054,6 +4064,9 @@ class ProfileView(SuperModel):
 
     target = models.ForeignKey('dashboard.Profile', related_name='viewed_by', on_delete=models.CASCADE, db_index=True)
     viewer = models.ForeignKey('dashboard.Profile', related_name='viewed_profiles', on_delete=models.CASCADE, db_index=True)
+
+    class Meta:
+        ordering = ['-pk']
 
     def __str__(self):
         return f"{self.viewer} => {self.target} on {self.created_on}"

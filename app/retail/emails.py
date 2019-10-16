@@ -898,7 +898,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Devcon Awaits!"
+    subject = "Devcon's Done."
     new_kudos_pks = [4012, 4019, 4032]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
@@ -920,13 +920,13 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    Devcon is only days away, and we're stoked to be in town. If you want to catch up with us, tweet at us <a href="https://twitter.com/gitcoin">@gitcoin</a> or attend one of our events. Alongside Infura, ethBounties, and Consensys Audits, we're hosting the Grow Open Source Day. If you're in Japan, be sure to make it to this event. You can register and snag a free ticket on <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347625">this Eventbrite page.</a> 
+    Wow. That was fast. With months of hype leading up to Devcon, it was wild to see it go by in a flash. Gitcoin team members from across the globe met up in Osaka for the week and shook the town by storm. Kevin gave a talk on <a href="https://twitter.com/owocki/status/1182519416124108803">the main stage</a>, we hosted our <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347625">Open Source Summit</a>, and of course, we gave away <a href="https://twitter.com/ConsenSysEvents/status/1182287829600108544">some swag.</a> Have some great memories to share? Tweet at us, at <a href="https://twitter.com/gitcoin">@gitcoin.</a> We'll see y'all next year.
 </p>
 <p>
-    Grants CLR Round 3 was a massive, massive success: we had such a positive response that we extended the matching period two extra days. You can take a look at all of the noise we generated on our <a href="https://twitter.com/gitcoin">Twitter profile,</a> and can view the current status at <a href="https://gitcoin.co/grants">gitcoin.co/grants.</a> Thank you to @0xEffAlt for donating $25k as a matching partner, @meeseeking for donating $20k+ across projects, and of course the Ethereum Foundation for supporting our endeavors from the beginning. Expect an recap blog post in the next few days.
+    Back to reality. Web3 World is our latest hackathon! It's a two-week virtual gettogether where Gitcoin community members and entrepreneurs from around the globe will collaborate to push blockchain and Web3 applications to new frontiers of business, technology, and social change. Is this your thing? <a href="https://hackathons.gitcoin.co/web3-world/">Check the landing page for details to come.</a> 
 </p>
 <p>
-    The Road to Devcon is nearing its end. With less than 24 hours to go before submissions are due, we want to remind you to do your due diligence and get your contributions in. Make sure you submit all work by the end of the day at 11:59pm ET, and post your project in the Discord channel #project-4-kudos. Also, be sure to tune in to the livestream at 2PM ET on Friday, as we'll have participants presenting their work! Great job on this one, all. We're excited to see what you came up with.
+    What were your favorite stories from Devcon? What were the best talks? As we board our planes and head back to our normal lives, we want to hear your thoughts. Send us a Tweet with your biggest takeaway — be it about the future of the open internet or how to make sharding better.  Mention us <a href="https://twitter.com/gitcoin">@gitcoin.</a>
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
@@ -935,7 +935,7 @@ Hey Gitcoiners,
         The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.</a>
         </li>
         <li>
-        You asked, we listened. Over the next few weeks, we'll be uploading past livestream recordings to our <a href="https://www.youtube.com/gitcoinmedia">YouTube channel, Gitcoin Media.</a> Have a request for a particular one to be uploaded soon? Email Ryan at ryan@gitcoin.co.
+        Hacktoberfest is here. Want to contribute to open source and earn some rad prizes? Now is an extra good time to work on open source bounties and get rewards from GitHub for making pull requests. The info? <a href="https://hacktoberfest.digitalocean.com/">It's here.</a>
         </li>
     </ul>
 </p>
@@ -944,22 +944,22 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'alexjg',
+        'who': 'igetgames',
         'who_link': True,
-        'what': 'Fixes to UI for composing a reply',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/7781/3407',
+        'what': 'Fix installation buttons for sticker packs',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/8936/3452',
         'link_copy': 'View more',
     }, {
-        'who': 'eswarasai',
+        'who': 'agbilotia1998',
         'who_link': True,
-        'what': 'Add support for MYTHX_ACCESS_TOKEN',
-        'link': 'https://gitcoin.co/issue/b-mueller/sabre/95/3513',
+        'what': 'Account address rather than account name is showing in staking selection dropdown',
+        'link': 'https://gitcoin.co/issue/cennznet/runanode/75/3424',
         'link_copy': 'View more',
     }, {
-        'who': 'mrdavey',
+        'who': 'chernant',
         'who_link': True,
-        'what': 'Deploying Full stack Dapp to Google Cloud',
-        'link': 'https://gitcoin.co/issue/kauri-io/Content/52/3464',
+        'what': 'Get block hash in get_block_ok test',
+        'link': 'https://gitcoin.co/issue/usetech-llc/polkadot_api_cpp/16/3486',
         'link_copy': 'View more',
     }, ]
 
@@ -976,14 +976,14 @@ Back to shipping,
     }
     
     bounties_spec = [{
-        'url': 'https://github.com/prysmaticlabs/prysm/issues/3598',
-        'primer': 'Explore Compression Formats for Persistent Byte Data',
+        'url': 'https://github.com/Altcoin-Fantasy/documentation/issues/5',
+        'primer': 'Looking for design review (web) - Altcoin Fantasy',
     }, {
-        'url': 'https://github.com/mainnebula/SPACE_TASKS/issues/6',
-        'primer': 'Python script that updates SQL tables',
+        'url': 'https://github.com/MrElliwood/audio-router/issues/5',
+        'primer': 'Javadoc-like documentation for bootstrapper and do',
     }, {
-        'url': 'https://github.com/wearekickback/app/issues/185',
-        'primer': 'Add to calendar',
+        'url': 'https://github.com/nblockchain/DotNetEssentials/issues/1',
+        'primer': 'GitHubActions workflow to build&push to nuget.org',
 }, ]
 
 

@@ -18,7 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
+import urllib.request
 from io import BytesIO
+from os import path
 
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -141,6 +143,12 @@ class Token(SuperModel):
             self.owner_address = to_checksum_address(self.owner_address)
 
         super().save(*args, **kwargs)
+
+    @property
+    def static_image(self):
+        if 'v2' in self.image:
+            return static(self.image)
+        return self.image
 
     @property
     def ui_name(self):
@@ -309,6 +317,17 @@ class Token(SuperModel):
         """
         root = environ.Path(__file__) - 2  # Set the base directory to two levels.
         file_path = root('assets') + '/' + self.image
+
+        # download it if file is remote
+        if settings.AWS_STORAGE_BUCKET_NAME in self.image:
+            file_path = f'cache/{self.pk}.png'
+            if not path.exists(file_path):
+                filedata = urllib.request.urlopen(self.image)
+                datatowrite = filedata.read()
+                with open(file_path, 'wb') as f:
+                    f.write(datatowrite)
+
+        # serve file
         with open(file_path, 'rb') as f:
             obj = File(f)
             from avatar.utils import svg_to_png
@@ -451,15 +470,17 @@ def psave_kt(sender, instance, **kwargs):
     from django.contrib.contenttypes.models import ContentType
     from dashboard.models import Earning
     Earning.objects.update_or_create(
-        created_on=instance.created_on,
-        from_profile=instance.sender_profile,
-        org_profile=instance.org_profile,
-        to_profile=instance.recipient_profile,
-        value_usd=instance.value_in_usdt_then,
         source_type=ContentType.objects.get(app_label='kudos', model='kudostransfer'),
         source_id=instance.pk,
-        url=instance.kudos_token_cloned_from.url,
-        network=instance.network,
+        defaults={
+            "created_on":instance.created_on,
+            "from_profile":instance.sender_profile,
+            "org_profile":instance.org_profile,
+            "to_profile":instance.recipient_profile,
+            "value_usd":instance.value_in_usdt_then,
+            "url":instance.kudos_token_cloned_from.url,
+            "network":instance.network,
+        }
         )
 
 
@@ -593,11 +614,11 @@ class TokenRequest(SuperModel):
         }
         kudos_contract = KudosContract(network=self.network)
         gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1)
-        mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True)
+        tx_id = mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True, dont_wait_for_kudos_id_return_tx_hash_instead=True)
         self.processed = True
         self.approved = True
         self.save()
-        
+        return tx_id 
 
 class TransferEnabledFor(SuperModel):
     """Model that represents the ability to send a Kudos, i
