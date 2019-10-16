@@ -166,9 +166,7 @@ var sanitizeAPIResults = function(results, keyToIgnore) {
     return results;
   }
 
-  results = [results];
-  results[0] = sanitizeDict(results[0], keyToIgnore);
-  return results[0];
+  return sanitizeDict(results, keyToIgnore);
 };
 
 function ucwords(str) {
