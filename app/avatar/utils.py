@@ -605,7 +605,7 @@ def get_temp_image_file(image):
     return temp_io
 
 
-def svg_to_png(svg_content, width=100, height=100, scale=1, index=None, prefer=None):
+def svg_to_png(svg_content, width=100, height=100, scale=1, index=None, prefer=None, extra_flags=''):
     print('creating svg with pyvips')
     png = None
     if not prefer or prefer == 'pyvips':
@@ -614,7 +614,7 @@ def svg_to_png(svg_content, width=100, height=100, scale=1, index=None, prefer=N
         if not index:
             index = random.randint(1000000, 10000000)
         print("failed; using inkscape")
-        return svg_to_png_inkscape(svg_content, height=height, width=width, index=index)
+        return svg_to_png_inkscape(svg_content, height=height, width=width, index=index, extra_flags=extra_flags)
     return png
 
 
@@ -645,7 +645,7 @@ def svg_to_png_pyvips(svg_content, scale=1):
     return None
 
 
-def svg_to_png_inkscape(svg_content, width=333, height=384, index=100):
+def svg_to_png_inkscape(svg_content, width=333, height=384, index=100, extra_flags=''):
     import subprocess  # May want to use subprocess32 instead
     input_file = f'static/tmp/input{index}.svg'
     output_file = f'static/tmp/output{index}.png'
@@ -664,7 +664,7 @@ def svg_to_png_inkscape(svg_content, width=333, height=384, index=100):
 
         cmd_list = [
             '/usr/bin/inkscape', '-z', '--export-png', output_file, '--export-width', f"{width}", '--export-height',
-            f"{height}", input_file
+            f"{height}", input_file, extra_flags
         ]
         print(" ".join(cmd_list))
         p = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -676,7 +676,7 @@ def svg_to_png_inkscape(svg_content, width=333, height=384, index=100):
         return BytesIO(fin.read())
 
 
-def convert_img(obj, input_fmt='svg', output_fmt='png'):
+def convert_img(obj, input_fmt='svg', output_fmt='png', height=215, width=215, preferred_method='', extra_flags=''):
     """Convert the provided buffer to another format.
 
     Args:
@@ -692,7 +692,7 @@ def convert_img(obj, input_fmt='svg', output_fmt='png'):
         None: If there is an exception, the method returns None.
 
     """
-    return svg_to_png(obj.read(), height=215, width=215)
+    return svg_to_png(obj.read(), height=width, width=width, prefer=preferred_method, extra_flags=extra_flags)
 
 
 def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):
