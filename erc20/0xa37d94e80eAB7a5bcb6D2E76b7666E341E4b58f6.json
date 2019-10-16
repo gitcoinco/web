@@ -1,0 +1,20 @@
+{
+  "symbol": "PFC",
+  "address": "0xa37d94e80eAB7a5bcb6D2E76b7666E341E4b58f6",
+  "overview":{
+        "en": "POWER FANS is a blockchain platform developed on the basis of SEER – a public blockchain built on the Graphene toolkit. Serving the sports industry as a platform with its own ecosystem, POWER FANS provides online applications for different scenes in sports competition and offers various services to the audience including neutral and credible market-oriented prediction, sports betting and crowdfunding for competition.",
+        "zh": "POWER FANS是基于石墨烯公链SEER开发的区块链平台，通过运用区块链技术为体育比赛各场景提供线上应用，为观众提供中立且可信的现实预测市场服务，体育竞猜，比赛众筹等功能，是一个服务于体育圈生态下的生态平台。"
+  },
+  "email": "pfchain@hotmail.com",
+  "website": "https://www.powerfans.io/",
+  "whitepaper": "https://www.powerfans.io/static/PowerFans-Whitepaper-CH_Rev_1.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-09-13",
+  "initial_price":{
+        "USD":"0.14 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/PowerFans4",
+    "telegram": "https://t.me/powerfans_cn"
+  }
+}
