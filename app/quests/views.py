@@ -15,6 +15,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
+from marketing.mails import new_quest_request
 from quests.helpers import (
     get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity,
 )
@@ -25,7 +26,101 @@ from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
-# Create your views here.
+
+def newquest(request):
+    """Render the Quests 'new' page."""
+
+    if not request.user.is_authenticated:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    answers = []
+    questions = [{
+        'question': '',
+        'responses': ['','']
+    }]
+    if request.POST:
+        messages.info(request, 'Quest submission received.  We will respond via email in a few business days.  In the meantime, feel free to test your new quest.')
+
+        questions = [{
+            'question': ele,
+            'responses': [],
+        } for ele in request.POST.getlist('question[]', [])]
+
+        # multi dimensional array hack
+        counter = 0
+        answer_idx = 0
+        answers = request.POST.getlist('answer[]',[])
+        answer_correct = request.POST.getlist('answer_correct[]',[])
+        
+        for answer in answers:
+            if answer == '_DELIMITER_':
+                answer_idx += 1
+            else:
+                questions[answer_idx]['responses'].append({
+                    'answer': answer,
+                    'correct': bool(answer_correct[counter]),
+                })
+            counter += 1
+
+        validation_pass = True
+        try:
+            enemy = Token.objects.get(pk=request.POST.get('enemy'))
+            reward = Token.objects.get(pk=request.POST.get('reward'))
+        except Exception as e:
+            messages.error(request, 'Unable to find Kudos')
+            validation_pass = False 
+
+        if validation_pass:
+            game_schema = {
+              "intro": request.POST.get('description'),
+              "rules": f"You will battling a {{enemy.humanized_name}}-. You will have as much time as you need to prep before the battle, but once the battle starts you will have 15 seconds per move.",
+              "prep_materials": [
+                {
+                  "url": request.POST.get('reading_material_url'),
+                  "title": request.POST.get('reading_material_name')
+                }
+              ]
+            }
+            game_metadata = {
+              "enemy": {
+                "art": enemy.img_url,
+                "level": "1",
+                "title": enemy.humanized_name
+              }
+            }
+
+            try:
+                quest = Quest.objects.create(
+                    title=request.POST.get('title'),
+                    description=request.POST.get('description'),
+                    questions=questions,
+                    game_schema=game_schema,
+                    game_metadata=game_metadata,
+                    kudos_reward=reward,
+                    cooldown_minutes=request.POST.get('minutes'),
+                    visible=False,
+                    difficulty=request.POST.get('difficulty'),
+                    style=request.POST.get('style'),
+                    value=request.POST.get('points'),
+                    creator=request.user.profile,
+                    )
+                new_quest_request(quest)
+                return redirect(quest.url)
+            except Exception as e:
+                logger.exception(e)
+                messages.error(request, 'An unexpected error has occured')
+
+    params = {
+        'title': 'New Quest Application',
+        'package': request.POST,
+        'questions': questions,
+        'answer_correct': request.POST.getlist('answer_correct[]',[]),
+        'answer': request.POST.getlist('answer[]',[]),
+    }
+    return TemplateResponse(request, 'quests/new.html', params)
+
+
 def index(request):
 
     print(f" start at {round(time.time(),2)} ")

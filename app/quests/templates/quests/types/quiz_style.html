@@ -36,7 +36,7 @@
       &nbsp;
     </div>
     <div id="enemy" class="character tr hidden">
-      <img src="/static/{{quest.game_metadata.enemy.art}}">
+      <img src="{{quest.art_url}}">
       <div class='info'>
         <h3>{{quest.game_metadata.enemy.title}}</h3>
         <p>Level {{quest.game_metadata.enemy.level}} Opponent</p>
@@ -110,8 +110,8 @@
     };
     document.music_enabled = true;
   </script>
-  <script src="{% static "v2/js/pages/quests.quest.quiz_style.js" %}"></script>
 {% endblock %}
 {% block 'scripts' %}
+<script src="{% static "v2/js/pages/quests.helpers.js" %}"></script>
 <script src="{% static "v2/js/pages/quests.quest.quiz_style.js" %}"></script>
 {% endblock %}

@@ -208,7 +208,8 @@ def generate_leaderboard(max_entries=25):
         kudii = list(set([(_ele.coupon.token.img_url, _ele.coupon.token.humanized_name) for _ele in btr]))[:kudos_to_show_per_leaderboard_entry]
         display_pts = int(ele[1]) if not ele[1] % 1 else round(ele[1],1)
         reward_kudos_pk = reward_kudos.get(counter)
-        reward_kudos_url = Token.objects.get(pk=reward_kudos_pk) if reward_kudos_pk else None
+        reward_kudos = Token.objects.get(pk=reward_kudos_pk) if reward_kudos_pk else None
+        reward_kudos_url = [reward_kudos.preview_img_url, reward_kudos.humanized_name if reward_kudos else None]
         this_ele = [ele[0], display_pts, kudii, reward_kudos_url, counter]
         return_leaderboard.append(this_ele)
 

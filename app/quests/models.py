@@ -50,6 +50,13 @@ class Quest(SuperModel):
 
 
     @property
+    def art_url(self):
+        url = self.game_metadata['enemy']['art']
+        if "http" in url:
+            return url
+        return '/static/' + url
+
+    @property
     def enemy_img_url(self):
         return '/static/'+self.game_metadata.get('enemy', {}).get('art', '').replace('svg', 'png')
 

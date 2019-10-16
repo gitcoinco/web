@@ -28,10 +28,11 @@ def details(request, quest):
     active_attempt = get_active_attempt_if_any(request.user, quest)
     if request.POST.get('start'):
         # game started
-        if request.user.is_authenticated:
-            messages.info(request, f'Quest started.  Journey Forth')
-            process_start(request, quest)
-        return redirect('/login/github')
+        if not request.user.is_authenticated:
+            return redirect('/login/github')
+
+        messages.info(request, f'Quest started.  Journey Forth')
+        process_start(request, quest)
     elif request.POST.get('win'):
         # game won
         messages.info(request, f'You win.. Congrats')
