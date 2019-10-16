@@ -5,9 +5,7 @@
   </li>
   <li>
     Reliability: <b>{{profile.reliability}}</b>
-    <a href="#" style="color: black; text-decoration: underline;  font-size: 12px;" data-toggle="collapse" data-target="#reliability_details">( Details )
-    </a>
-    <div id="tooltip" class="float-right">
+    <div id="tooltip" style="display: inline-block;">
       <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="
         <p>Gitcoin's perception of how reliable this user is.</p>
         <p>Reliability on Gitcoin is calculated by looking at the number of attempts <br>
@@ -23,6 +21,8 @@
       ">
       </i>
     </div>
+    <a href="#" style="color: black; text-decoration: underline;  font-size: 12px;" data-toggle="collapse" data-target="#reliability_details">Details
+    </a>
   </li>
   <div id="reliability_details" class="collapse">
     <li>
@@ -53,10 +53,10 @@
   </div>
   {% if profile.avg_hourly_rate %}
   <li class=''>
+    Avg Hourly Rate <b>${{profile.avg_hourly_rate|floatformat:2}}</b>
     <label id="tooltip">
       <i class='fa fa-info-circle' title="The average hourly rate of bounties that this user has been involved in."></i>
     </label>
-    Avg Hourly Rate <b>${{profile.avg_hourly_rate|floatformat:2}}</b>
   </li>
   {% endif %}
 {% endif %}

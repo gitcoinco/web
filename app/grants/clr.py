@@ -247,6 +247,9 @@ def calculate_clr_for_donation(donation_grant, donation_amount, total_pot, base_
     return (None, None)
 
 def predict_clr(random_data=False, save_to_db=False, from_date=None):
+    # setup
+    clr_calc_start_time = timezone.now()
+
     # get all the eligible contributions and calculate total
     contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=CLR_START_DATE, created_on__lte=from_date)
     debug_output = []
@@ -277,7 +280,8 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None):
                 all_summed_contributions.append({str(profile_id): sum_of_each_profiles_contributions})
 
             # for each grant, list the contributions in key value pairs like {'profile id': sum of contributions}
-            contrib_data.append({'id': grant.id, 'contributions': all_summed_contributions})
+            grant_id = grant.defer_clr_to.pk if grant.defer_clr_to else grant.id
+            contrib_data.append({'id': grant_id, 'contributions': all_summed_contributions})
 
     else:
         # use random contribution data for testing
@@ -308,7 +312,7 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None):
                 data=grant.clr_prediction_curve,
                 )
             print(len(contrib_data), grant.clr_prediction_curve)
-            if from_date > (timezone.now() - timezone.timedelta(hours=1)):
+            if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
                 grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})

@@ -47,7 +47,7 @@
       <div class="container profile-card mt-md-n5 mh-150">
         <div class="row">
           {% if total_kudos_count %}
-            <div id=kudos_header>
+            <div id="kudos_header" class="d-md-block d-none">
               {% for kudos_group in my_kudos %}
                 <img src="{{ kudos_group.kudos_token_cloned_from.preview_img_url }}" title="{{ kudos_group.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="70">
               {% endfor %}
