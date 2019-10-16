@@ -3369,7 +3369,7 @@ def hackathon(request, hackathon=''):
 
 def hackathon_onboard(request, hackathon=''):
     referer = request.META.get('HTTP_REFERER', '')
-
+    
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
         is_registered = request.user.profile.hackathons.filter(hackathon_id=hackathon_event.pk).first() if request.user.is_authenticated else None
