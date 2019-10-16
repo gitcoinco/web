@@ -2258,7 +2258,7 @@ to the kudos_transfer object.  Which means we don't know who the original sender
     txid (str): The transaction hash.</p>
 <h3 id="kudos.utils.KudosContract.mint">mint</h3>
 
-<pre><code class="python">KudosContract.mint(self, *args, account=None, private_key=None, skip_sync=False, gas_price_gwei=None)
+<pre><code class="python">KudosContract.mint(self, *args, account=None, private_key=None, skip_sync=False, gas_price_gwei=None, dont_wait_for_kudos_id_return_tx_hash_instead=False)
 </code></pre>
 
 <p>Contract transaction method.</p>
@@ -2278,6 +2278,13 @@ A clone() operation is only valid for an already existing Gen0 Kudos.</p>
     skip_sync (bool, optional):  If True, don't sync the database after the mint.</p>
 <p>Returns:
     int: If a sync did occur, returns the kudos_id</p>
+<h3 id="kudos.utils.KudosContract.sync_latest">sync_latest</h3>
+
+<pre><code class="python">KudosContract.sync_latest(self, the_buffer=0)
+</code></pre>
+
+<p>Contract transaction method.</p>
+<p>Sync the latest kudos from the chain</p>
 <h3 id="kudos.utils.KudosContract.clone">clone</h3>
 
 <pre><code class="python">KudosContract.clone(self, *args, account=None, private_key=None, skip_sync=False)
