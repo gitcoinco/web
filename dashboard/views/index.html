@@ -2758,6 +2758,22 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 </code></pre>
 
 <p>Handle rendering of HackathonEvents. Reuses the dashboard template.
+<h2 id="dashboard.views.hackathon_registration">hackathon_registration</h2></p>
+<pre><code class="python">hackathon_registration(request)
+</code></pre>
+
+<p>Claim Work for a Bounty.</p>
+<p>:request method: POST</p>
+<p>Args:
+    bounty_id (int): ID of the Bounty.</p>
+<p>Returns:
+    dict: The success key with a boolean value and accompanying error.</p>
+<h3 id="dashboard.views.hackathon_registration.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
 <h2 id="dashboard.views.get_hackathons">get_hackathons</h2></p>
 <pre><code class="python">get_hackathons(request)
 </code></pre>
