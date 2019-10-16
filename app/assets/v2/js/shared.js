@@ -180,7 +180,6 @@ var sanitize = function(str) {
     return str;
   }
   result = DOMPurify.sanitize(str);
-  result = result.replace(/(<([^>]+)>)/ig, '');
 
   return result;
 };
