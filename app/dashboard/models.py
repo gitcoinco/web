@@ -3529,6 +3529,8 @@ class Profile(SuperModel):
         context['total_tips_sent'] = profile.get_sent_tips.count()
         context['total_tips_received'] = profile.get_my_tips.count()
 
+        context['total_quest_attempts'] = profile.quest_attempts.count()
+        context['total_quest_success'] = profile.quest_attempts.filter(success=True).count()
 
         # portfolio
         portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)

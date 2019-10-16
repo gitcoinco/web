@@ -55,9 +55,17 @@
         {% endif %}
         {% if total_grant_contributions %}
           <li class="nav-item">
-            <a class="nav-link nav-line  {% if tab == 'spent' %}active{%endif%}" href="{{profile.url}}/grant_contribs">
+            <a class="nav-link nav-line  {% if tab == 'grant_contribs' %}active{%endif%}" href="{{profile.url}}/grant_contribs">
               Grants
               {% if total_grant_contributions %}<span>{{total_grant_contributions}}</span>{%endif%}                  
+            </a>
+          </li>
+        {% endif %}
+        {% if total_quest_success %}
+          <li class="nav-item">
+            <a class="nav-link nav-line  {% if tab == 'quests' %}active{%endif%}" href="{{profile.url}}/quests">
+              Quests
+              {% if total_quest_success %}<span>{{total_quest_success}}</span>{%endif%}                  
             </a>
           </li>
         {% endif %}
@@ -126,6 +134,8 @@
             {% include 'profiles/tab_spent.html' %}
           {% elif tab == 'grant_contribs' %}
             {% include 'profiles/tab_grant_contribs.html' %}
+          {% elif tab == 'quests' %}
+            {% include 'profiles/tab_quests.html' %}
           {% endif %}
         </div>
       </div>

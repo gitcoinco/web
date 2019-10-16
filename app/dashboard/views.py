@@ -2035,6 +2035,41 @@ def profile_keywords(request, handle):
     return JsonResponse(response)
 
 
+
+
+def profile_grants(request, handle):
+    """Display profile grant contribution details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    from grants.models import Contribution
+    contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
+    history = []
+
+    response = """date,close"""
+    balances = {}
+    for ele in contributions:
+        val = ele.normalized_data.get('amount_per_period_usdt')
+        if val:
+            datestr = ele.created_on.strftime('1-%b-%y')
+            if datestr not in balances.keys():
+                balances[datestr] = 0
+            balances[datestr] += val
+
+    for datestr, balance in balances.items():
+        response += f"\n{datestr},{balance}"
+
+    mimetype = 'text/x-csv'
+    return HttpResponse(response)
+
+
 def profile_activity(request, handle):
     """Display profile activity details.
 
@@ -2382,6 +2417,8 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'people':
         pass
+    elif tab == 'quests':
+        context['quest_wins'] = profile.quest_attempts.filter(success=True)
     elif tab == 'grant_contribs':
         from grants.models import Contribution
         contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
@@ -2493,7 +2530,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grant_contribs']
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grant_contribs', 'quests']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
