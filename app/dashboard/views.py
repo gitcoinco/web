@@ -2057,6 +2057,38 @@ def profile_spent(request, handle):
     return profile_earnings(request, handle, 'from')
 
 
+def profile_ratings(request, handle, attr):
+    """Display profile ratings details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    response = """date,close"""
+    items = list(profile.feedbacks_got.values_list('created_on', attr))
+    balances = {}
+    for ele in items:
+        val = ele[1]
+        if val and val > 0:
+            datestr = ele[0].strftime('1-%b-%y')
+            if datestr not in balances.keys():
+                balances[datestr] = {'sum': 0, 'count':0}
+            balances[datestr]['sum'] += val
+            balances[datestr]['count'] += 1
+
+    for datestr, balance in balances.items():
+        balance = balance['sum'] / balance['count']
+        response += f"\n{datestr},{balance}"
+
+    mimetype = 'text/x-csv'
+    return HttpResponse(response)
+
+
 def profile_earnings(request, handle, direction='to'):
     """Display profile earnings details.
 
@@ -2089,7 +2121,6 @@ def profile_earnings(request, handle, direction='to'):
 
     for datestr, balance in balances.items():
         response += f"\n{datestr},{balance}"
-
 
     mimetype = 'text/x-csv'
     return HttpResponse(response)
