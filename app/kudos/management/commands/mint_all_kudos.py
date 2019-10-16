@@ -35,7 +35,12 @@ logger = logging.getLogger(__name__)
 formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
 
 
-def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=False, skip_sync=True):
+def sync_latest(the_buffer=0, network='mainnet'):
+    kudos_contract = KudosContract(network=network)
+    kudos_contract.sync_latest(the_buffer)
+
+
+def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=False, skip_sync=True, dont_wait_for_kudos_id_return_tx_hash_instead=False):
     image_path = kudos.get('artwork_url')
     if not image_path:
         image_name = urllib.parse.quote(kudos.get('image'))
@@ -115,17 +120,19 @@ def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint
     else:
         mint_to = kudos_contract._w3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
 
+    response = None
     is_live = live
     if is_live:
         try:
             token_uri_url = kudos_contract.create_token_uri_url(**metadata)
             args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], token_uri_url)
-            kudos_contract.mint(
+            response = kudos_contract.mint(
                 *args,
                 account=account,
                 private_key=private_key,
                 skip_sync=skip_sync,
                 gas_price_gwei=gas_price_gwei,
+                dont_wait_for_kudos_id_return_tx_hash_instead=dont_wait_for_kudos_id_return_tx_hash_instead,
             )
             print('Live run - Name: ', readable_name, ' - Account: ', account, 'Minted!')
         except Exception as e:
@@ -133,6 +140,7 @@ def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint
     else:
         print('Dry run - Name: ', readable_name, ' - Account: ', account, 'Skipping!')
 
+    return response
 
 
 class Command(BaseCommand):

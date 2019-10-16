@@ -614,11 +614,11 @@ class TokenRequest(SuperModel):
         }
         kudos_contract = KudosContract(network=self.network)
         gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1)
-        mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True)
+        tx_id = mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True, dont_wait_for_kudos_id_return_tx_hash_instead=True)
         self.processed = True
         self.approved = True
         self.save()
-        
+        return tx_id 
 
 class TransferEnabledFor(SuperModel):
     """Model that represents the ability to send a Kudos, i
