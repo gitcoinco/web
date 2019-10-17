@@ -99,6 +99,7 @@ urlpatterns = [
     url(r'^api/v0.1/profile/(.*)?/activity.json', dashboard.views.profile_activity, name='profile_activity'),
     url(r'^api/v0.1/profile/(.*)?/earnings.csv', dashboard.views.profile_earnings, name='profile_earnings'),
     url(r'^api/v0.1/profile/(.*)?/grants.csv', dashboard.views.profile_grants, name='profile_grants'),
+    url(r'^api/v0.1/profile/(.*)?/quests.csv', dashboard.views.profile_quests, name='profile_quests'),
     url(r'^api/v0.1/profile/(.*)?/ratings/(.*).csv', dashboard.views.profile_ratings, name='profile_ratings'),
     url(r'^api/v0.1/profile/(.*)?/viewers.csv', dashboard.views.profile_viewers, name='profile_viewers'),
     url(r'^api/v0.1/profile/(.*)?/spent.csv', dashboard.views.profile_spent, name='profile_spent'),

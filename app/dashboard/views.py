@@ -2035,6 +2035,40 @@ def profile_keywords(request, handle):
     return JsonResponse(response)
 
 
+def profile_quests(request, handle):
+    """Display profile quest points details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    from quests.models import QuestPointAward
+    qpas = QuestPointAward.objects.filter(profile=profile).order_by('created_on')
+    history = []
+
+    response = """date,close"""
+    balances = {}
+    running_balance = 0
+    for ele in qpas:
+        val = ele.value
+        if val:
+            running_balance += val
+            datestr = ele.created_on.strftime('%d-%b-%y')
+            if datestr not in balances.keys():
+                balances[datestr] = 0
+            balances[datestr] = val
+
+    for datestr, balance in balances.items():
+        response += f"\n{datestr},{balance}"
+
+    mimetype = 'text/x-csv'
+    return HttpResponse(response)
+
 
 
 def profile_grants(request, handle):

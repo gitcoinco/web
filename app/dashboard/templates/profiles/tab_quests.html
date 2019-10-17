@@ -2,10 +2,15 @@
 {% if not hidden %}
 
 <div class="tab-projects d-flex flex-column">
-  <h3>Quests Beaten</h3>
+
+  <h3 class="font-body mt-1 mb-1">Cumulative Quest Points</h3>
+  {% include "profiles/earningsgraph.html" with graph_type="quests" %}
+
   {% if quest_wins.count == 0 %}
     No Quest Wins
   {% endif %}
+
+  <h3 class="font-body mt-1 mb-1">Quests Beaten ({{quest_wins.count}})<h3>
   {% for quest in quest_wins %}
     <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} pt-1 pb-1">
       <div class="activity-avatar ml-5">
