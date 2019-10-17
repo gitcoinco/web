@@ -3423,17 +3423,6 @@ def hackathon_onboard(request, hackathon=''):
 @csrf_exempt
 @require_POST
 def hackathon_registration(request):
-    """Claim Work for a Bounty.
-
-    :request method: POST
-
-    Args:
-        bounty_id (int): ID of the Bounty.
-
-    Returns:
-        dict: The success key with a boolean value and accompanying error.
-
-    """
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
     hackathon = request.POST.get('name')
@@ -3472,6 +3461,7 @@ def hackathon_registration(request):
 
     try:
         client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
+        '''
         client.lists.members.tags.update(
             settings.MAILCHIMP_LIST_ID_HACKERS,
             user_email_hash,
@@ -3481,6 +3471,7 @@ def hackathon_registration(request):
                 ],
             }
         )
+        '''
         print('pushed_to_list')
     except Exception as e:
         logger.error(f"error in record_action: {e}")
