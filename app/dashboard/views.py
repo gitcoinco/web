@@ -3406,7 +3406,8 @@ def hackathon_onboard(request, hackathon=''):
 
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
-        is_registered = request.user.profile.hackathons.filter(hackathon_id=hackathon_event.pk).first() if request.user.is_authenticated else None
+        profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+        is_registered = HackathonRegistration.objects.filter(registrant=profile) if profile else None
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
