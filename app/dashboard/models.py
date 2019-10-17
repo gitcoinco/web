@@ -1867,6 +1867,7 @@ class Activity(SuperModel):
         ('joined', 'Joined Gitcoin'),
         ('played_quest', 'Played Quest'),
         ('beat_quest', 'Beat Quest'),
+        ('created_quest', 'Created Quest'),
         ('updated_avatar', 'Updated Avatar'),
     ]
 

@@ -44,6 +44,7 @@ def newquest(request):
 
         questions = [{
             'question': ele,
+            'seconds_to_respond': 30,
             'responses': [],
         } for ele in request.POST.getlist('question[]', [])]
 
@@ -52,14 +53,19 @@ def newquest(request):
         answer_idx = 0
         answers = request.POST.getlist('answer[]',[])
         answer_correct = request.POST.getlist('answer_correct[]',[])
-        
+        seconds_to_respond = request.POST.getlist('seconds_to_respond[]',[])
+
+        # continue building questions object
+        for i in range(0, len(seconds_to_respond)):
+            questions[i]['seconds_to_respond'] = int(seconds_to_respond[i])
+
         for answer in answers:
             if answer == '_DELIMITER_':
                 answer_idx += 1
             else:
                 questions[answer_idx]['responses'].append({
                     'answer': answer,
-                    'correct': bool(answer_correct[counter]),
+                    'correct': bool(answer_correct[counter] == "YES"),
                 })
             counter += 1
 
@@ -72,9 +78,11 @@ def newquest(request):
             validation_pass = False 
 
         if validation_pass:
+            seconds_per_question = request.POST.get('seconds_per_question', 30)
             game_schema = {
               "intro": request.POST.get('description'),
-              "rules": f"You will battling a {{enemy.humanized_name}}-. You will have as much time as you need to prep before the battle, but once the battle starts you will have 15 seconds per move.",
+              "rules": f"You will battling a {{enemy.humanized_name}}-. You will have as much time as you need to prep before the battle, but once the battle starts you will have only seconds per move (keep an eye on the timer in the bottom right; don't run out of time!).",
+              "seconds_per_question": seconds_per_question,
               "prep_materials": [
                 {
                   "url": request.POST.get('reading_material_url'),
@@ -116,6 +124,7 @@ def newquest(request):
         'package': request.POST,
         'questions': questions,
         'answer_correct': request.POST.getlist('answer_correct[]',[]),
+        'seconds_to_respond': request.POST.getlist('seconds_to_respond[]',[]),
         'answer': request.POST.getlist('answer[]',[]),
     }
     return TemplateResponse(request, 'quests/new.html', params)
@@ -191,7 +200,7 @@ def details(request, obj_id, name):
     except:
         raise Http404
 
-    if quest.style == 'quiz':
+    if quest.style.lower() == 'quiz':
         return quiz_style(request, quest)
     elif quest.style == 'Example for Demo':
         return example(request, quest)

@@ -6,10 +6,11 @@
         {% if 'dashboard/profile' in request.build_absolute_uri %}
             <input type="submit" value="Impersonate" name="_impersonate" value="1">
             <input type="submit" value="Recalculate Profile Frontend" name="_recalc_flontend" value="1">
-        {% endif %}
-        {% if 'kudos/tokenrequest' in request.build_absolute_uri %}
+        {% elif 'kudos/tokenrequest' in request.build_absolute_uri %}
             <input type="submit" value="Mint Kudos" name="_mint_kudos" value="1">
             <input type="submit" value="Sync Kudos" name="_sync_kudos" value="1">
+        {% elif 'quests/quest' in request.build_absolute_uri %}
+            <input type="submit" value="Approve Request" name="_approve_quest" value="1">
         {% endif %}
     </div>
 {% endblock %}

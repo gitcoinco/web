@@ -40,7 +40,7 @@ def record_quest_activity(quest, associated_profile, event_name, override_create
         logger.exception(e)
 
 
-def record_award_helper(qa, profile, layer=1):
+def record_award_helper(qa, profile, layer=1, action='Beat', value_multiplier=1):
     """
     Awards point awards (and referral rewards) to a winner
     """
@@ -50,11 +50,12 @@ def record_award_helper(qa, profile, layer=1):
         return
 
     # record points
-    value = qa.quest.value/(2**(layer-1))
+    value = value_multiplier * qa.quest.value/(2**(layer-1))
     QuestPointAward.objects.create(
         questattempt=qa,
         profile=profile,
-        value=value
+        value=value,
+        action=action,
         )
 
     # record kudos
@@ -81,7 +82,7 @@ def record_award_helper(qa, profile, layer=1):
 
     # recursively record points for your referals quest
     if profile.referrer:
-        return record_award_helper(qa, profile.referrer, layer+1)
+        return record_award_helper(qa, profile.referrer, layer+1, action, value_multiplier)
 
 
 def get_base_quest_view_params(user, quest):
@@ -100,6 +101,7 @@ def get_base_quest_view_params(user, quest):
         'title': "Quest: " + quest.title + (f" (and win a *{quest.kudos_reward.humanized_name}* Kudos)" if quest.kudos_reward else ""),
         'avatar_url': quest.enemy_img_url,
         'card_desc': quest.description,
+        'seconds_per_question': quest.game_schema.get('seconds_per_question', 30),
         'quest_json': quest.to_json_dict(exclude="questions"),
     }
     return params
@@ -113,7 +115,7 @@ def get_active_attempt_if_any(user, quest, state=None):
         quest=quest,
         profile=profile,
         success=False,
-        created_on__gt=(timezone.now()-timezone.timedelta(minutes=quest.cooldown_minutes))
+        modified_on__gt=(timezone.now()-timezone.timedelta(minutes=quest.cooldown_minutes))
     )
     if state:
         active_attempts = active_attempts.filter(state=state)
