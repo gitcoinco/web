@@ -992,13 +992,32 @@ def products(request):
     """Render the Products response."""
     products = [
         {
+            'name': 'matching engine',
+            'heading': _("Find the Right Dev. Every Time."),
+            'description': _("It's not about finding *a* developer.  It's about finding *the right developer for your needs*. Our matching engine powers each of our products, and can target the right community members for you."),
+            'link': '/users',
+            'img': static('v2/images/products/engine.svg'),
+            'logo': static('v2/images/products/engine-logo.png'),
+            'service_level': 'Integrated',
+        },
+        {
+            'name': 'hackathons',
+            'heading': _("Hack with the best companies in web3."),
+            'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
+            'link': 'https://hackathons.gitcoin.co',
+            'img': static('v2/images/products/graphics-hackathons.png'),
+            'logo': static('v2/images/products/hackathons-logo.svg'),
+            'service_level': 'Full Service',
+        },
+        {
             'name': 'bounties',
             'heading': _("Solve bounties. Get paid. Contribute to open source"),
             'description': _("Collaborate and monetize your skills while working on Open Source projects \
                             through bounties."),
             'link': '/explorer',
             'img': static('v2/images/products/graphics-Bounties.png'),
-            'logo': static('v2/images/products/gitcoin-logo.svg')
+            'logo': static('v2/images/products/gitcoin-logo.svg'),
+            'service_level': 'Self Service',
         },
         {
             'name': 'kudos',
@@ -1007,7 +1026,8 @@ def products(request):
                             It's also a way to showcase special skills that a member might have."),
             'link': '/kudos',
             'img': static('v2/images/products/graphics-Kudos.png'),
-            'logo': static('v2/images/products/kudos-logo.svg')
+            'logo': static('v2/images/products/kudos-logo.svg'),
+            'service_level': 'Self Service',
         },
         {
             'name': 'grants',
@@ -1016,7 +1036,8 @@ def products(request):
                             contributions to your favorite OSS maintainers. Powered by EIP1337."),
             'link': '/grants',
             'img': static('v2/images/products/graphics-Grants.png'),
-            'logo': static('v2/images/products/grants-logo.svg')
+            'logo': static('v2/images/products/grants-logo.svg'),
+            'service_level': 'Self Service',
         },
         {
             'name': 'codefund',
@@ -1025,7 +1046,8 @@ def products(request):
                             source ecosystem"),
             'link': 'https://codefund.app/',
             'img': static('v2/images/products/graphics-Codefund.svg'),
-            'logo': static('v2/images/products/codefund-logo.svg')
+            'logo': static('v2/images/products/codefund-logo.svg'),
+            'service_level': 'Self Service or Full Service',
         },
         {
             'name': 'labs',
@@ -1034,7 +1056,8 @@ def products(request):
                             making Ethereum dapps fast, usable, and secure."),
             'link': '/labs',
             'img': static('v2/images/products/graphics-Labs.png'),
-            'logo': static('v2/images/products/labs-logo.svg')
+            'logo': static('v2/images/products/labs-logo.svg'),
+            'service_level': 'Self Service',
         }
     ]
 
@@ -1045,7 +1068,8 @@ def products(request):
             'description': _("Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, earn rewards, and level up your decentralization-fu!"),
             'link': '/quests',
             'img': static('v2/images/products/graphics-Quests.png'),
-            'logo': static('v2/images/products/quests-symbol.svg')
+            'logo': static('v2/images/products/quests-symbol.svg'),
+            'service_level': 'Self Service',
         })
 
     context = {

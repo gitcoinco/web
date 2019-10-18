@@ -2036,6 +2036,75 @@ def profile_keywords(request, handle):
     return JsonResponse(response)
 
 
+def profile_quests(request, handle):
+    """Display profile quest points details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    from quests.models import QuestPointAward
+    qpas = QuestPointAward.objects.filter(profile=profile).order_by('created_on')
+    history = []
+
+    response = """date,close"""
+    balances = {}
+    running_balance = 0
+    for ele in qpas:
+        val = ele.value
+        if val:
+            running_balance += val
+            datestr = ele.created_on.strftime('%d-%b-%y')
+            if datestr not in balances.keys():
+                balances[datestr] = 0
+            balances[datestr] = val
+
+    for datestr, balance in balances.items():
+        response += f"\n{datestr},{balance}"
+
+    mimetype = 'text/x-csv'
+    return HttpResponse(response)
+
+
+
+def profile_grants(request, handle):
+    """Display profile grant contribution details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    from grants.models import Contribution
+    contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
+    history = []
+
+    response = """date,close"""
+    balances = {}
+    for ele in contributions:
+        val = ele.normalized_data.get('amount_per_period_usdt')
+        if val:
+            datestr = ele.created_on.strftime('1-%b-%y')
+            if datestr not in balances.keys():
+                balances[datestr] = 0
+            balances[datestr] += val
+
+    for datestr, balance in balances.items():
+        response += f"\n{datestr},{balance}"
+
+    mimetype = 'text/x-csv'
+    return HttpResponse(response)
+
+
 def profile_activity(request, handle):
     """Display profile activity details.
 
@@ -2071,6 +2140,38 @@ def profile_spent(request, handle):
     return profile_earnings(request, handle, 'from')
 
 
+def profile_ratings(request, handle, attr):
+    """Display profile ratings details.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    response = """date,close"""
+    items = list(profile.feedbacks_got.values_list('created_on', attr))
+    balances = {}
+    for ele in items:
+        val = ele[1]
+        if val and val > 0:
+            datestr = ele[0].strftime('1-%b-%y')
+            if datestr not in balances.keys():
+                balances[datestr] = {'sum': 0, 'count':0}
+            balances[datestr]['sum'] += val
+            balances[datestr]['count'] += 1
+
+    for datestr, balance in balances.items():
+        balance = balance['sum'] / balance['count']
+        response += f"\n{datestr},{balance}"
+
+    mimetype = 'text/x-csv'
+    return HttpResponse(response)
+
+
 def profile_earnings(request, handle, direction='to'):
     """Display profile earnings details.
 
@@ -2092,15 +2193,17 @@ def profile_earnings(request, handle, direction='to'):
 
     response = """date,close"""
     earnings = list(earnings.order_by('created_on').values_list('created_on', 'value_usd'))
-    uniqueness = []
-    running_balance = 0
+    balances = {}
     for earning in earnings:
         val = earning[1]
-        running_balance += val
-        datestr = earning[0].strftime('%d-%b-%y')
-        if datestr not in uniqueness:
-            response += f"\n{datestr},{running_balance}"
-            uniqueness.append(datestr)
+        if val:
+            datestr = earning[0].strftime('1-%b-%y')
+            if datestr not in balances.keys():
+                balances[datestr] = 0
+            balances[datestr] += val
+
+    for datestr, balance in balances.items():
+        response += f"\n{datestr},{balance}"
 
     mimetype = 'text/x-csv'
     return HttpResponse(response)
@@ -2123,11 +2226,15 @@ def profile_viewers(request, handle):
 
     response = """date,close"""
     items = list(profile.viewed_by.order_by('created_on').values_list('created_on', flat=True))
-    running_balance = 0
+    balances = {}
     for item in items:
-        running_balance += 1
         datestr = item.strftime('%d-%b-%y')
-        response += f"\n{datestr},{running_balance}"
+        if datestr not in balances.keys():
+            balances[datestr] = 0
+        balances[datestr] += 1
+
+    for datestr, balance in balances.items():
+        response += f"\n{datestr},{balance}"
 
     mimetype = 'text/x-csv'
     return HttpResponse(response)
@@ -2345,6 +2452,15 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'people':
         pass
+    elif tab == 'quests':
+        context['quest_wins'] = profile.quest_attempts.filter(success=True)
+    elif tab == 'grant_contribs':
+        from grants.models import Contribution
+        contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
+        history = []
+        for ele in contributions:
+            history.append(ele.normalized_data)
+        context['history'] = history
     elif tab == 'active':
         context['active_bounties'] = active_bounties
     elif tab == 'resume':
@@ -2449,7 +2565,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people']
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grant_contribs', 'quests']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -3291,7 +3407,8 @@ def hackathon_onboard(request, hackathon=''):
 
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
-        is_registered = request.user.profile.hackathons.filter(hackathon_id=hackathon_event.pk).first() if request.user.is_authenticated else None
+        profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+        is_registered = HackathonRegistration.objects.filter(registrant=profile, hackathon=hackathon_event) if profile else None
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
@@ -3308,18 +3425,8 @@ def hackathon_onboard(request, hackathon=''):
 @csrf_exempt
 @require_POST
 def hackathon_registration(request):
-    """Claim Work for a Bounty.
-
-    :request method: POST
-
-    Args:
-        bounty_id (int): ID of the Bounty.
-
-    Returns:
-        dict: The success key with a boolean value and accompanying error.
-
-    """
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
     hackathon = request.POST.get('name')
     referer = request.POST.get('referer')
 
@@ -3356,6 +3463,7 @@ def hackathon_registration(request):
 
     try:
         client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
+
         client.lists.members.tags.update(
             settings.MAILCHIMP_LIST_ID_HACKERS,
             user_email_hash,
@@ -3367,7 +3475,7 @@ def hackathon_registration(request):
         )
         print('pushed_to_list')
     except Exception as e:
-        logger.error(f"error in record_action: {e} - {instance}")
+        logger.error(f"error in record_action: {e}")
         pass
 
     if referer and is_safe_url(referer, request.get_host()):

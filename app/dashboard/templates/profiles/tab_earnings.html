@@ -6,6 +6,7 @@
 {% if not profile.is_org %}
   <div class="container px-md-0 tab2">
     <div class="row">
+      <h3 class="font-body mt-1 mb-1">Monthly Summary</h3>
       {% if earnings_type == 'spent' %}
         {% include "profiles/earningsgraph.html" with amount=spent_total graph_type="spent" %}
       {% else %}

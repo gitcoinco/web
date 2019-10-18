@@ -20,13 +20,14 @@
   color: #ffffff;
 }
 
-.quests{
-  background-color: #55508e;
+.hackathons{
+  background-color: #ff92be;
   color: #ffffff;
 }
 
-.quests span img{
-  max-width: 50px;
+.quests{
+  background-color: #55508e;
+  color: #ffffff;
 }
 
 .codefund{
@@ -34,12 +35,39 @@
   color: #ffffff;
 }
 
+.matching{
+  background-color: #444;
+  color: #ffffff;
+}
+
+.matching img,
+.hackathons img{
+  max-width: 500px;
+}
+.quests span img{
+  max-width: 50px;
+}
+
 .labs{
   background-color: #bf2781;
   color: #ffffff;
-
 }
 
+.tag
+{
+  background-color: #e7f0fa;
+  color: var(--gc-blue);
+  font-size: 10px;
+  display: block;
+  list-style: none;
+  padding: 5px;
+  width: 66px;
+}
+
+.codefund .tag
+{
+  width: 140px;
+}
 @media(min-width: 1200px) {
   .intro-header{
     font-size:76px;
@@ -139,6 +167,16 @@
 .button-grants{
   background-color: #25e899;
   color: #000;
+}
+
+.button-hackathons{
+  background-color: #ffa2de;
+  color: white;
+}
+
+.button-matching{
+  background-color: #222;
+  color: white;
 }
 
 .button-labs{

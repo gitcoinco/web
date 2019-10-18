@@ -898,8 +898,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Devcon Awaits!"
-    new_kudos_pks = [4012, 4019, 4032]
+    subject = "Spooky Season Salutations"
+    new_kudos_pks = [52, 1821, 2050]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -920,22 +920,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    Devcon is only days away, and we're stoked to be in town. If you want to catch up with us, tweet at us <a href="https://twitter.com/gitcoin">@gitcoin</a> or attend one of our events. Alongside Infura, ethBounties, and Consensys Audits, we're hosting the Grow Open Source Day. If you're in Japan, be sure to make it to this event. You can register and snag a free ticket on <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347625">this Eventbrite page.</a> 
+    The jet lag from Devcon is slowly fading away — back at home, we've caught up from our absence and are buckling down for the next few months. With that said, it's time to kick off Web3 World, our newest virtual hackathon. It's a two-week virtual hang where Gitcoin community members and entrepreneurs from around the globe will work together and push blockchain to new frontiers. Ready to jump in? <a href="https://hackathons.gitcoin.co/web3-world/">Check the landing page for details to come.</a> The hackathon begins on October 28th and ends on the 11th.
 </p>
 <p>
-    Grants CLR Round 3 was a massive, massive success: we had such a positive response that we extended the matching period two extra days. You can take a look at all of the noise we generated on our <a href="https://twitter.com/gitcoin">Twitter profile,</a> and can view the current status at <a href="https://gitcoin.co/grants">gitcoin.co/grants.</a> Thank you to @0xEffAlt for donating $25k as a matching partner, @meeseeking for donating $20k+ across projects, and of course the Ethereum Foundation for supporting our endeavors from the beginning. Expect an recap blog post in the next few days.
+    While our overlords were at Devcon, the product team might have asked you why you're participating in our hackathons. As we hone in on making the best virtual experience for all parties — hackers and sponsors alike — we're asking you for feedback. What problems do you see? How can we do better? What projects would you like to see as sponsors? Send your thoughts to <a href="mailto:frank@gitcoin.co">Frank</a> and we'll be endlessly grateful.
 </p>
 <p>
-    The Road to Devcon is nearing its end. With less than 24 hours to go before submissions are due, we want to remind you to do your due diligence and get your contributions in. Make sure you submit all work by the end of the day at 11:59pm ET, and post your project in the Discord channel #project-4-kudos. Also, be sure to tune in to the livestream at 2PM ET on Friday, as we'll have participants presenting their work! Great job on this one, all. We're excited to see what you came up with.
+    Newsletter readers: the questions continue this week. We'd like to ask you about our humble publication. How do you like our new design? How can we improve our content? Do you like our jokes? <a href="https://consensys1mac.typeform.com/to/gz5aGK">Fill out this 30s survey. We'd love to hear your thoughts.</a>
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.</a>
+        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        You asked, we listened. Over the next few weeks, we'll be uploading past livestream recordings to our <a href="https://www.youtube.com/gitcoinmedia">YouTube channel, Gitcoin Media.</a> Have a request for a particular one to be uploaded soon? Email Ryan at ryan@gitcoin.co.
+        As the title of this email suggests, October is in full effect. You know what that means. Help contribute to open source and earn some rad prizes with Hacktoberfest — now is the perfect time to work on open source bounties and get rewards for making pull requests. The info? Who has it? <a href="https://hacktoberfest.digitalocean.com/">They do.</a>
         </li>
     </ul>
 </p>
@@ -944,22 +944,22 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'alexjg',
+        'who': 'rshtirmer',
         'who_link': True,
-        'what': 'Fixes to UI for composing a reply',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/7781/3407',
+        'what': 'Request for update: granted. Tensorforce support from 0.4.4 to 0.5.2',
+        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/42/3555',
         'link_copy': 'View more',
     }, {
-        'who': 'eswarasai',
+        'who': 'nionis',
         'who_link': True,
-        'what': 'Add support for MYTHX_ACCESS_TOKEN',
-        'link': 'https://gitcoin.co/issue/b-mueller/sabre/95/3513',
+        'what': 'Who loves a good lottery? Nionis.',
+        'link': 'https://gitcoin.co/issue/enigmampc/EnigmaBounties/3/3262',
         'link_copy': 'View more',
     }, {
-        'who': 'mrdavey',
+        'who': 'acolytec3',
         'who_link': True,
-        'what': 'Deploying Full stack Dapp to Google Cloud',
-        'link': 'https://gitcoin.co/issue/kauri-io/Content/52/3464',
+        'what': 'Alcolytec with the seed phrase fixes',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/8938/3528',
         'link_copy': 'View more',
     }, ]
 
@@ -976,14 +976,14 @@ Back to shipping,
     }
     
     bounties_spec = [{
-        'url': 'https://github.com/prysmaticlabs/prysm/issues/3598',
-        'primer': 'Explore Compression Formats for Persistent Byte Data',
-    }, {
         'url': 'https://github.com/mainnebula/SPACE_TASKS/issues/6',
-        'primer': 'Python script that updates SQL tables',
+        'primer': 'Python Scripting: SQL Edition',
     }, {
-        'url': 'https://github.com/wearekickback/app/issues/185',
-        'primer': 'Add to calendar',
+        'url': 'https://github.com/notadamking/tensortrade/issues/41',
+        'primer': 'Manage Contest Across All Components. Make it so.',
+    }, {
+        'url': 'https://github.com/ETHSydney/meetup-token/issues/3',
+        'primer': 'Are you familiar with zero knowledge tools? Present!',
 }, ]
 
 
