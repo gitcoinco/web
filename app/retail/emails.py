@@ -898,8 +898,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Devcon's Done."
-    new_kudos_pks = [4012, 4019, 4032]
+    subject = "Spooky Season Salutations"
+    new_kudos_pks = [52, 1821, 2050]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -920,22 +920,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    Wow. That was fast. With months of hype leading up to Devcon, it was wild to see it go by in a flash. Gitcoin team members from across the globe met up in Osaka for the week and shook the town by storm. Kevin gave a talk on <a href="https://twitter.com/owocki/status/1182519416124108803">the main stage</a>, we hosted our <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347625">Open Source Summit</a>, and of course, we gave away <a href="https://twitter.com/ConsenSysEvents/status/1182287829600108544">some swag.</a> Have some great memories to share? Tweet at us, at <a href="https://twitter.com/gitcoin">@gitcoin.</a> We'll see y'all next year.
+    The jet lag from Devcon is slowly fading away — back at home, we've caught up from our absence and are buckling down for the next few months. With that said, it's time to kick off Web3 World, our newest virtual hackathon. It's a two-week virtual hang where Gitcoin community members and entrepreneurs from around the globe will work together and push blockchain to new frontiers. Ready to jump in? <a href="https://hackathons.gitcoin.co/web3-world/">Check the landing page for details to come.</a> The hackathon begins on October 28th and ends on the 11th.
 </p>
 <p>
-    Back to reality. Web3 World is our latest hackathon! It's a two-week virtual gettogether where Gitcoin community members and entrepreneurs from around the globe will collaborate to push blockchain and Web3 applications to new frontiers of business, technology, and social change. Is this your thing? <a href="https://hackathons.gitcoin.co/web3-world/">Check the landing page for details to come.</a> 
+    While our overlords were at Devcon, the product team might have asked you why you're participating in our hackathons. As we hone in on making the best virtual experience for all parties — hackers and sponsors alike — we're asking you for feedback. What problems do you see? How can we do better? What projects would you like to see as sponsors? Send your thoughts to <a href="mailto:frank@gitcoin.co">Frank</a> and we'll be endlessly grateful.
 </p>
 <p>
-    What were your favorite stories from Devcon? What were the best talks? As we board our planes and head back to our normal lives, we want to hear your thoughts. Send us a Tweet with your biggest takeaway — be it about the future of the open internet or how to make sharding better.  Mention us <a href="https://twitter.com/gitcoin">@gitcoin.</a>
+    Newsletter readers: the questions continue this week. We'd like to ask you about our humble publication. How do you like our new design? How can we improve our content? Do you like our jokes? <a href="https://consensys1mac.typeform.com/to/gz5aGK">Fill out this 30s survey. We'd love to hear your thoughts.</a>
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday.</a>
+        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        Hacktoberfest is here. Want to contribute to open source and earn some rad prizes? Now is an extra good time to work on open source bounties and get rewards from GitHub for making pull requests. The info? <a href="https://hacktoberfest.digitalocean.com/">It's here.</a>
+        As the title of this email suggests, October is in full effect. You know what that means. Help contribute to open source and earn some rad prizes with Hacktoberfest — now is the perfect time to work on open source bounties and get rewards for making pull requests. The info? Who has it? <a href="https://hacktoberfest.digitalocean.com/">They do.</a>
         </li>
     </ul>
 </p>
@@ -944,22 +944,22 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'igetgames',
+        'who': 'rshtirmer',
         'who_link': True,
-        'what': 'Fix installation buttons for sticker packs',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8936/3452',
+        'what': 'Request for update: granted. Tensorforce support from 0.4.4 to 0.5.2',
+        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/42/3555',
         'link_copy': 'View more',
     }, {
-        'who': 'agbilotia1998',
+        'who': 'nionis',
         'who_link': True,
-        'what': 'Account address rather than account name is showing in staking selection dropdown',
-        'link': 'https://gitcoin.co/issue/cennznet/runanode/75/3424',
+        'what': 'Who loves a good lottery? Nionis.',
+        'link': 'https://gitcoin.co/issue/enigmampc/EnigmaBounties/3/3262',
         'link_copy': 'View more',
     }, {
-        'who': 'chernant',
+        'who': 'acolytec3',
         'who_link': True,
-        'what': 'Get block hash in get_block_ok test',
-        'link': 'https://gitcoin.co/issue/usetech-llc/polkadot_api_cpp/16/3486',
+        'what': 'Alcolytec with the seed phrase fixes',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/8938/3528',
         'link_copy': 'View more',
     }, ]
 
@@ -976,14 +976,14 @@ Back to shipping,
     }
     
     bounties_spec = [{
-        'url': 'https://github.com/Altcoin-Fantasy/documentation/issues/5',
-        'primer': 'Looking for design review (web) - Altcoin Fantasy',
+        'url': 'https://github.com/mainnebula/SPACE_TASKS/issues/6',
+        'primer': 'Python Scripting: SQL Edition',
     }, {
-        'url': 'https://github.com/MrElliwood/audio-router/issues/5',
-        'primer': 'Javadoc-like documentation for bootstrapper and do',
+        'url': 'https://github.com/notadamking/tensortrade/issues/41',
+        'primer': 'Manage Contest Across All Components. Make it so.',
     }, {
-        'url': 'https://github.com/nblockchain/DotNetEssentials/issues/1',
-        'primer': 'GitHubActions workflow to build&push to nuget.org',
+        'url': 'https://github.com/ETHSydney/meetup-token/issues/3',
+        'primer': 'Are you familiar with zero knowledge tools? Present!',
 }, ]
 
 
