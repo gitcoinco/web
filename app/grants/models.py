@@ -896,6 +896,11 @@ class Contribution(SuperModel):
         null=True,
         help_text=_('The associated Subscription.'),
     )
+    normalized_data = JSONField(
+        default=dict,
+        blank=True,
+        help_text=_('the normalized grant data; for easy consumption on read'),
+    )
 
     def __str__(self):
         """Return the string representation of this object."""
@@ -929,6 +934,27 @@ def psave_contrib(sender, instance, **kwargs):
             "network":instance.subscription.grant.network,
         }
         )
+
+@receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
+def presave_contrib(sender, instance, **kwargs):
+
+    ele = instance
+    sub = ele.subscription
+    grant = sub.grant
+    instance.normalized_data = {
+        'id': grant.id,
+        'logo': grant.logo.url if grant.logo else None,
+        'url': grant.url,
+        'title': grant.title,
+        'created_on': ele.created_on.strftime('%Y-%m-%d'),
+        'frequency': int(sub.frequency),
+        'frequency_unit': sub.frequency_unit,
+        'num_tx_approved': int(sub.num_tx_approved),
+        'token_symbol': sub.token_symbol,
+        'amount_per_period_usdt': float(sub.amount_per_period_usdt),
+        'amount_per_period': float(sub.amount_per_period),
+        'tx_id': ele.tx_id,
+        }
 
 
 def next_month():

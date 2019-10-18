@@ -20,7 +20,9 @@
 <link rel="stylesheet" href="{% static "v2/css/onepagesubmit.css" %}">
 <style type="text/css">
 .add_answer,
-.add_question{
+.add_question,
+.close_question,
+.close_answer{
   font-size: 12px;
 }
 </style>
@@ -109,13 +111,14 @@
             <input type="number" name="points" class="form__input" placeholder='1' value="{{package.points}}" required>
           </div>
           <div class="form-group">
-            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="If someone fails the quest, how many minutes until they can try again?"></i>
             <label class="form__label" for="minutes">{% trans "Cooldown Minutes" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="If someone fails the quest, how many minutes until they can try again?"></i>
             <input type="number" name="minutes" class="form__input" placeholder='3' value="{{package.minutes}}" required>
           </div>
           {% for question in questions %}
-            <div class="form-group question">
-              <label class="form__label" for="points">{% trans "Question & Possible Answers" %}</label>
+            <div class="form-group question pl-3">
+              <a href="#" class="float-right close_question">X</a>
+              <label class="form__label" for="points">{% trans "Question" %}</label>
               <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="This is the meat & potatoes of the event so take care in writing this copy! Other tips:
               <BR>
               <BR>
@@ -123,12 +126,23 @@
               - There can be many correct answers, but not ZERO correct answers.
               - Questions should be about key 'a-ha moments' about the decentralized internet and/or your product.
               "></i>
+              <br>
+              <label class="form__label" for="seconds_to_respond[]">{% trans "Seconds to Respond" %}</label>
+              <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="How many seconds will the user have to respond to this question? Recommending starting point: 30"></i>
+              <input type="text" name="seconds_to_respond[]" class="form__input" placeholder='Seconds To Respond' value="{{question.seconds_to_respond}}" required>
+              <label class="form__label" for="question[]">{% trans "Question Text" %}</label>
               <input type="text" name="question[]" class="form__input" placeholder='Does Ethereum foo the bar?' value="{{question.question}}" required>
               {% for response in question.responses %}
               <span>
+                <hr>
                 <label class="form__label" for="points">{% trans "Correct?" %}</label>
-                <input type="checkbox" name="answer_correct[]" value="1" checked="{% if response.correct%}checked{%endif%}">
+                <a href="#" class="float-right close_answer">X</a>
+                <select type="checkbox" name="answer_correct[]">
+                  <option {% if response.correct %}selected=selected{%endif%} >YES</option>
+                  <option {% if not response.correct %}selected=selected{%endif%} >NO</option>
+                </select>
                 <input type="text" name="answer[]" class="form__input" placeholder='Yes' value="{{response.answer}}" required>
+                <hr>
               </span>
               {% endfor %}
               <a href="#" class="add_answer">[Add Answer]</a>

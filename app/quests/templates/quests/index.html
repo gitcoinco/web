@@ -124,7 +124,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     By completing quests.
     </h3>
   <div class="container-fluid py-4 pt-1">
-    After each quest you complete you will earn 1 point.
+    After each quest you complete you will earn 1 point.      <a href="#available_quests">View Available Quests</a>
+
   </div>
   <h3 class="mt-0">
   <i class="ml-1 fas"><img data-src="{% static "v2/images/grants/icons/black.svg" %}"></i>
@@ -204,6 +205,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
     </div>
   </div>
+  <h3 class="mt-0">
+    <i class="ml-1 fab fa-ethereum"></i>
+    By creating a quest.
+    </h3>
+  <div class="container-fluid py-4 pt-1">
+    Want to teach the world something?  Want to earn 3 points for doing it? 
+    <a href="/quests/new">Create a quest on Gitcoin</a>
+  </div>
+
 </div>
 
 
@@ -250,7 +260,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </td>
           <td>
             <img data-src="{{ row.questattempt.quest.enemy_img_url }}" style="width: 15px; height: 15px; border-radius: 10px">
-            Beat <a href="{{row.questattempt.quest.url}}">{{row.questattempt.quest.title}}</a>
+            {{row.action}} <a href="{{row.questattempt.quest.url}}">{{row.questattempt.quest.title}}</a>
           </td>
         </tr>
         {% endfor %}
@@ -262,7 +272,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 {% if leaderboard|length %}
-<div class="row indent_on_mobile">
+<div class="row indent_on_mobile" id=leaderboard_top>
   <h1 style="margin-top: 100px;">Leaderboard</h1>
   <div id="announce">
     <img class="mr-1" src="{% static "v2/images/quests/enemies/samurai.svg" %}">

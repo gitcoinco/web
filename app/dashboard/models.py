@@ -1867,6 +1867,7 @@ class Activity(SuperModel):
         ('joined', 'Joined Gitcoin'),
         ('played_quest', 'Played Quest'),
         ('beat_quest', 'Beat Quest'),
+        ('created_quest', 'Created Quest'),
         ('updated_avatar', 'Updated Avatar'),
     ]
 
@@ -2271,7 +2272,6 @@ class Profile(SuperModel):
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
-    hackathons = models.ManyToManyField(HackathonRegistration, blank=True)
 
 
     objects = ProfileQuerySet.as_manager()
@@ -3529,6 +3529,8 @@ class Profile(SuperModel):
         context['total_tips_sent'] = profile.get_sent_tips.count()
         context['total_tips_received'] = profile.get_my_tips.count()
 
+        context['total_quest_attempts'] = profile.quest_attempts.count()
+        context['total_quest_success'] = profile.quest_attempts.filter(success=True).count()
 
         # portfolio
         portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)

@@ -1,4 +1,3 @@
-var seconds_per_question = 30;
 
 var start_quiz = async function() {
   document.quiz_started = true;
@@ -52,6 +51,8 @@ var start_quiz = async function() {
       await toggle_character_class($('#enemy'), [ 'harm', '' ]);
     }
     
+    var question_level_seconds_to_respond = response['question']['seconds_to_respond'];
+
     var question = response['question']['question'];
     var possible_answers = response['question']['responses'];
     var html = '';
@@ -72,6 +73,7 @@ var start_quiz = async function() {
     await $('#header').removeClass('hidden').fadeIn();
     await $('#desc').removeClass('hidden').fadeIn();
     await $('#cta_button').removeClass('hidden').fadeIn();
+    var seconds_per_question = question_level_seconds_to_respond != undefined ? question_level_seconds_to_respond : document.seconds_per_question;
     var timer = seconds_per_question * 1000;
 
     while (timer > 0 && !document.submitted_answer) {

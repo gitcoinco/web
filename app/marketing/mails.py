@@ -428,6 +428,28 @@ def new_quest_request(quest):
         translation.activate(cur_language)
 
 
+def new_quest_approved(quest):
+    to_email = quest.creator.email
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("Your Quest is live on Gitcoin.co/quests")
+        body_str = _("Your quest has been approved and is now live at")
+        body = f"{body_str}: {settings.BASE_URL}{quest.url}"
+        if not should_suppress_notification_email(to_email, 'quest'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def new_token_request(obj):
     to_email = 'founders@gitcoin.co'
     from_email = obj.email

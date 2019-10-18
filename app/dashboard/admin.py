@@ -344,7 +344,7 @@ class CouponAdmin(admin.ModelAdmin):
 
 
 class HackathonRegistrationAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name', 'referer']
+    list_display = ['pk', 'name', 'referer', 'registrant']
     raw_id_fields = ['registrant']
 
 admin.site.register(SearchHistory, SearchHistoryAdmin)

@@ -38,7 +38,6 @@ class Quest(SuperModel):
         null=True,
         blank=True,
     )
-
     def __str__(self):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.title}'
@@ -136,6 +135,8 @@ class Quest(SuperModel):
         return is_completed
 
     def questions_safe(self, idx):
+        # strips out all correctness repsonses so that the client may see the question
+        # without being able to see the answer
         try:
             question = self.questions[idx]
             num_responses = question['responses']
@@ -175,6 +176,7 @@ class QuestAttempt(SuperModel):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.profile.handle} => {self.quest.title} state: {self.state} success: {self.success}'
 
+
 class QuestPointAward(SuperModel):
 
     questattempt = models.ForeignKey('quests.QuestAttempt', related_name='pointawards', on_delete=models.CASCADE)
@@ -184,6 +186,7 @@ class QuestPointAward(SuperModel):
         related_name='questpointawards',
     )
     value = models.FloatField()
+    action = models.CharField(max_length=100, default='Beat')
 
     def __str__(self):
         """Return the string representation of this obj."""
