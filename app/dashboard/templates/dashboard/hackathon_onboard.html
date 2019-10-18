@@ -47,13 +47,24 @@
         {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
         <BR>
         <BR>
+        {% if not github_handle %}
+
+        <div class="text-center">
+          <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
+            onclick="dataLayer.push({'event': 'login'});">
+            <i class="fab fa-github"></i>
+            <span>{% trans "Register with GitHub for Hackathon" %}</span>
+          </a>
+          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+        </div>
+        {% else %}
           {% if is_registered %}
             <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
           {% else %}
             <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
             <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
           {% endif %}
-
+        {% endif %}
       </div>
     </div>
 
