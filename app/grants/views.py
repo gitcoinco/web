@@ -831,3 +831,24 @@ def new_matching_partner(request):
         )
 
     return get_json_response("Wrong request.", 400)
+
+
+def invoice(request, contribution_pk):
+    contribution = Contribution.objects.prefetch_related('subscription', 'subscription__grant').get(pk=contribution_pk)
+
+    # only allow invoice viewing if admin or if grant contributor
+    is_contributor = request.user.username.lower().lstrip('@') == contribution.subscription.contributor_profile.handle.lower().lstrip('@')
+    is_staff = request.user.is_staff
+    has_view_privs = is_contributor or is_staff
+    if not has_view_privs:
+        raise Http404
+
+    params = {
+        'contribution': contribution
+    }
+
+    params['total'] = 0
+
+    return TemplateResponse(request, 'grants/invoice.html', params)
+
+
