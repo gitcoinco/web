@@ -105,7 +105,6 @@ class BaseAvatar(SuperModel):
                     source,
                     input_fmt=input_fmt,
                     output_fmt=output_fmt,
-                    preferred_method=preferred_method,
                     extra_flags=extra_flags
                 )
             else:
