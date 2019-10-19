@@ -82,7 +82,7 @@ def newquest(request):
             seconds_per_question = request.POST.get('seconds_per_question', 30)
             game_schema = {
               "intro": request.POST.get('description'),
-              "rules": f"You will battling a {{enemy.humanized_name}}-. You will have as much time as you need to prep before the battle, but once the battle starts you will have only seconds per move (keep an eye on the timer in the bottom right; don't run out of time!).",
+              "rules": f"You will be battling a {enemy.humanized_name}-. You will have as much time as you need to prep before the battle, but once the battle starts you will have only seconds per move (keep an eye on the timer in the bottom right; don't run out of time!).",
               "seconds_per_question": seconds_per_question,
               "prep_materials": [
                 {
