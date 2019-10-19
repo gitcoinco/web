@@ -334,7 +334,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
 </div>
 
-<div class="container-fluid py-1 announce indent_on_mobile">
+<div class="container-fluid py-1 pt-3 announce indent_on_mobile">
   <div class="container">
     
     <h4 class="pt-0">We &lt;3 Feedback.</h4>
@@ -347,6 +347,117 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       Let us know
     </a>
   </div>
+</div>
+
+<div class="container-fluid py-1 announce-bot announce-bot2 indent_on_mobile">
+  <div class="container">
+    <img data-src="{% static 'v2/images/quests/enemies/droid.svg' %}" />
+  </div>
+</div>
+
+<div class="container-fluid py-1 pt-3 announce announce2 indent_on_mobile">
+  <div class="container">
+    
+    <h4 class="pt-0">Quest Engineering Squad Here. What Should we BUIDL?</h4>
+    <strong>Gitcoin Quests is by & for the community.</strong>  As of right now <strong>{{total_visible_quest_count}} quests have been created</strong>; of which <strong>Gitcoin Core created {{gitcoin_created}} of them</strong> and the <strong>community created {{community_created}} of them</strong>.  This means our Quests Economy is designed to be driven by the community. That means you ( yes you ) can help drive the roadmap!  
+    <br>
+    <br>
+    Gitcoin Quests is designed to usher users through their *web3 a-ha moments* in a fun informative way.
+    <br>
+    <BR>
+    Think about it..
+    <BR>
+    <br>
+    <strong>{{total_visible_quest_count}} quests = {{total_visible_quest_count}} a-ha moments</strong>
+    <br>
+    <strong>{{quests_attempts_total}} quest attempts = {{quests_attempts_total}} learning experiences</strong>
+    <br>
+    <strong>{{community_created}} quests created by the community = {{community_created}} web3 experiences gitcoin core didn't dream up</strong>
+    <br>
+    <br>
+    <span style="font-size: 18px;">What were your web3 a-ha moments?  What Quests Topics should we add to the experience?</span>
+    <BR>
+    <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5334">
+      Contribute a Topic Idea (1 minute commitment)
+    </a>
+  </div>
+</div>
+
+
+<div class="container-fluid py-1 announce-bot announce-bot3 indent_on_mobile">
+  <div class="container">
+    <img data-src="{% static 'v2/images/quests/enemies/genie.svg' %}" />
+  </div>
+</div>
+
+<div class="container-fluid py-1 pt-3 announce announce3 indent_on_mobile">
+  <div class="container">
+    
+    <h4 class="pt-0">Want to Write a Gitcoin Quest?</h4>
+    <strong>The Gitcoin Quests Economy is driven by writers just like you... </strong>  
+    <br>
+    <br>
+    Got a web3 a-ha moment you want to tell the world about?
+    <br>
+    <br>
+    Create a Gitcoin Quest.  It takes 10-15 minutes to do, you'll get Quest Points and Kudos for every new person who plays your game, and best of all - you get to help teach people about web3!
+    <BR>
+    <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5334">
+      Write a Quest (15 minute commitment)
+    </a>
+  </div>
+</div>
+
+<div class="container-fluid py-1 announce-bot announce-bot4 indent_on_mobile">
+  <div class="container">
+    <img data-src="{% static 'v2/images/quests/enemies/composability.svg' %}" />
+  </div>
+</div>
+
+<div class="container-fluid py-1 pt-3 announce announce4 indent_on_mobile">
+  <div class="container">
+    
+    <h4 class="pt-0">Want to BUIDL a Gitcoin Quest Game Dynamic?</h4>
+    <strong>The Gitcoin Quests Economy is driven by aspiring game programmers just like you... </strong>  
+    <br>
+    <br>
+    Got a retro game dynamic or game experience that you love?  Want to build it into web-based educational experience?  Want to earn some rewards (Quest Points, ETH) while doing so?
+    <br>
+    <BR>
+    Whats the ROI?
+    <BR>
+    <BR>
+    Well..
+    <BR>
+    <BR>
+    About <strong>{{quests_attempts_per_day}} Quests are played per day</strong> for a <strong>play count of {{quests_attempts_total}} total</strong>; There are <strong>{{quests.count}} Gitcoin Quests</strong>, which are played by a <strong>community of {{user_count}} active users of {{email_count}} total; residing in {{country_count}} countries</strong>.  The <strong>average quest has {{avg_play_count}} plays</strong>.
+    <BR>
+    <BR>
+    Not to put too fine a point on it... but ...
+    <BR>
+    <strong>{{email_count}} users = {{email_count}} potential users of your game</strong>
+    <br>
+    <strong>{{user_count}} active users = {{email_count}} probable users of your game</strong>
+    <br>
+    <strong>average quest has {{avg_play_count}} plays = your quest could get {{avg_play_count}} plays</strong>
+    <BR>
+    <br>
+    <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5334">
+      BUIDL a Gitcoin Quest Game Dynamic ( 7 hour commitment)
+    </a>
+  </div>
+
+  <div class="float-right right-announce2" style="margin-top: 50px; width: 45%;">
+    <img data-src="{% static 'v2/images/quests/enemies/genie.svg' %}" />
+    <p>Quests Stats are real-time (ish); updated every hour or so. </p> 
+  </div>
+
+
+  <div class="float-left right-announce2 right-announce3" style="margin-top: 50px;  width: 45%;">
+    <img data-src="{% static 'v2/images/quests/enemies/goldbot.svg' %}" />
+    <p>No kilobits were harmed in the making of this landing page..</p> 
+  </div>
+
 </div>
 
 {% endblock %}

@@ -7,7 +7,20 @@
   text-align: center;
 }
 .announce-bot img{
-  max-width: 150px;
+  width: 200px;
+  max-width: 200px;
+}
+.announce-bot2 img{
+  width: 250px;
+  max-width: 250px;
+}
+.announce-bot3 img{
+  width: 250px;
+  max-width: 250px;
+}
+.announce-bot4 img{
+  width: 250px;
+  max-width: 250px;
 }
 .announce{
   text-align: center;
@@ -35,13 +48,48 @@
   margin-left: -10px;
   margin-top: -20px;
 }
-.announce h4{
-  padding-bottom: 5px;
-  border-bottom: 3px solid #f2c3c4;
-}
 .announce a{
   background-color: #f2c3c4;
   color: black;
+}
+.announce h4 {
+  border-bottom: 3px solid #fdedee;
+}
+.announce4 h4{
+  border-bottom: 3px solid #fce5ac !important;
+}
+.announce4:after {
+  border-bottom-color: #fce5ac !important;
+}
+.announce4 {
+  background-color: #fce5ac !important;
+}
+.announce4 a{
+  background-color: #dcc58c !important;
+}
+.announce3 h4{
+  border-bottom: 3px solid #d0f9f4 !important;
+}
+.announce3:after {
+  border-bottom-color: #d0f9f4 !important;
+}
+.announce3 {
+  background-color: #d0f9f4 !important;
+}
+.announce3 a{
+  background-color: #b0d9d4 !important;
+}
+.announce2 h4{
+  border-bottom: 3px solid #a4affc !important;
+}
+.announce2:after {
+  border-bottom-color: #a4affc !important;
+}
+.announce2 {
+  background-color: #a4affc !important;
+}
+.announce2 a{
+  background-color: #849ffc !important;
 }
 .referrals img {
   width: 50px;
@@ -60,6 +108,26 @@
   text-align: center;
   margin-top: 5px;
   padding-top: 0px;
+}
+.right-announce2{
+  margin-top: 5px;
+  padding-top: 0px;
+  text-align: right;
+}
+.right-announce2 img{
+  width: 100px;
+}
+.right-announce2 p{
+  border-radius: 5px;
+  background-color: #d9d8e7;
+  padding: 5px;
+  margin-top: 10px;
+}
+.right-announce3{
+  text-align: left;
+}
+.right-announce3 p{
+  background-color: #ffde55;
 }
 .demo {
   max-width: 100%;

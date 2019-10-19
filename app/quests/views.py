@@ -14,8 +14,10 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
+from dashboard.models import Profile
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
 from marketing.mails import new_quest_request
+from marketing.models import EmailSubscriber
 from quests.helpers import (
     get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity,
 )
@@ -161,10 +163,18 @@ def index(request):
     point_history = request.user.profile.questpointawards.all() if request.user.is_authenticated else QuestPointAward.objects.none()
     point_value = sum(point_history.values_list('value', flat=True))
     print(f" phase4 at {round(time.time(),2)} ")
-
+    # community_created
     params = {
         'profile': request.user.profile if request.user.is_authenticated else None,
         'quests': quests,
+        'avg_play_count': round(QuestAttempt.objects.count()/Quest.objects.count(),2),
+        'quests_attempts_total': QuestAttempt.objects.count(),
+        'quests_attempts_per_day': abs(round(QuestAttempt.objects.count()/(QuestAttempt.objects.first().created_on-timezone.now()).days,1)),
+        'total_visible_quest_count': Quest.objects.filter(visible=True).count(),
+        'gitcoin_created': Quest.objects.filter(visible=True).filter(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
+        'community_created': Quest.objects.filter(visible=True).exclude(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
+        'country_count': 87,
+        'email_count': EmailSubscriber.objects.count(),
         'attempt_count': attempt_count,
         'success_count': success_count,
         'success_ratio': int(success_count/attempt_count * 100),
