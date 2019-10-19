@@ -29,6 +29,18 @@ from ratelimit.decorators import ratelimit
 logger = logging.getLogger(__name__)
 
 
+def next_quest(request):
+    """Render the Quests 'random' page."""
+
+    if not request.user.is_authenticated:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    for quest in Quest.objects.filter(visible=True).order_by('?'):
+        if not quest.is_beaten(request.user) and quest.is_unlocked_for(request.user):
+            return redirect(quest.url)
+
+
 def newquest(request):
     """Render the Quests 'new' page."""
 
@@ -84,6 +96,7 @@ def newquest(request):
               "intro": request.POST.get('description'),
               "rules": f"You will be battling a {enemy.humanized_name}-. You will have as much time as you need to prep before the battle, but once the battle starts you will have only seconds per move (keep an eye on the timer in the bottom right; don't run out of time!).",
               "seconds_per_question": seconds_per_question,
+              'est_read_time_mins': request.GET.get('est_read_time_mins', 20),
               "prep_materials": [
                 {
                   "url": request.POST.get('reading_material_url'),

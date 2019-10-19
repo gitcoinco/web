@@ -47,6 +47,14 @@ class Quest(SuperModel):
     def url(self):
         return f"/quests/{self.pk}/{slugify(self.title)}"
 
+    @property
+    def est_read_time_mins(self):
+        return self.game_schema.get('est_read_time_mins', 10)
+
+    @property
+    def est_total_time_required(self):
+        return self.est_read_time_mins + 2
+
     def get_absolute_url(self):
         return self.url
 
@@ -102,6 +110,7 @@ class Quest(SuperModel):
         tags = [
             self.difficulty,
             "hard" if self.success_pct < 20 else ( "medium" if self.success_pct < 70 else "easy"),
+            self.style,
         ]
         if (timezone.now() - self.created_on).days < 5:
             tags.append('new')

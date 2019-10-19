@@ -55,6 +55,18 @@
 .announce h4 {
   border-bottom: 3px solid #fdedee;
 }
+.announce5 h4{
+  border-bottom: 3px solid #def390 !important;
+}
+.announce5:after {
+  border-bottom-color: #def390 !important;
+}
+.announce5 {
+  background-color: #def390 !important;
+}
+.announce5 a{
+  background-color: #cee370 !important;
+}
 .announce4 h4{
   border-bottom: 3px solid #fce5ac !important;
 }

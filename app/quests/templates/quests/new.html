@@ -95,6 +95,8 @@
             <label class="form__label" for="reading_material_name">{% trans "Reading Material Title" %}</label>
             <input type="text" name="reading_material_name" class="form__input" placeholder='Ethereum Whitepaper' value="{{package.reading_material_name}}" required>
           </div>
+            <label class="form__label" for="enemy">{% trans "Reading Material Time Commitment (minutes)" %}</label>
+            <input type="number" name="est_read_time_mins" class="form__input" placeholder='10' value="{{package.est_read_time_mins}}" required>
           <div class="form-group">
             <label class="form__label" for="enemy">{% trans "Enemy Kudos ID" %}</label> <a target="new" href="/kudos/marketplace">(Kudos Marketplace)</a>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="Pull the ID off of the desired Kudos.  So for example to use Kudos <BR><BR>https://gitcoin.co/kudos/5077/limited_edition_samurai1_bot<BR><BR>enter 5077<BR>"></i>
