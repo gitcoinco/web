@@ -9,6 +9,21 @@ $(document).ready(function() {
     });
   }
 
+  function getParam(parameterName) {
+    var result = null;
+    var tmp = [];
+
+    location.search
+      .substr(1)
+      .split('&')
+      .forEach(function(item) {
+        tmp = item.split('=');
+        if (tmp[0] === parameterName)
+          result = decodeURIComponent(tmp[1]);
+      });
+    return result;
+  }
+
   // makes the reflink sticky
   if (getParam('cb')) {
     var cb = getParam('cb');
