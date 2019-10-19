@@ -42,7 +42,6 @@ def newquest(request):
         'responses': ['','']
     }]
     if request.POST:
-        messages.info(request, 'Quest submission received.  We will respond via email in a few business days.  In the meantime, feel free to test your new quest.')
 
         questions = [{
             'question': ele,
@@ -116,7 +115,7 @@ def newquest(request):
                     creator=request.user.profile,
                     )
                 new_quest_request(quest)
-                return redirect(quest.url)
+                messages.info(request, f'Quest submission received.  We will respond via email in a few business days.  In the meantime, feel free to test your new quest @ https://gitcoin.co{quest.url}')
             except Exception as e:
                 logger.exception(e)
                 messages.error(request, 'An unexpected error has occured')
