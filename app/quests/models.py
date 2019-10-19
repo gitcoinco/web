@@ -47,6 +47,8 @@ class Quest(SuperModel):
     def url(self):
         return f"/quests/{self.pk}/{slugify(self.title)}"
 
+    def get_absolute_url(self):
+        return self.url
 
     @property
     def art_url(self):

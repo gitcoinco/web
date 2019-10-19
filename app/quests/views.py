@@ -167,7 +167,7 @@ def index(request):
     params = {
         'profile': request.user.profile if request.user.is_authenticated else None,
         'quests': quests,
-        'avg_play_count': round(QuestAttempt.objects.count()/Quest.objects.count(),2),
+        'avg_play_count': round(QuestAttempt.objects.count()/Quest.objects.count(), 1),
         'quests_attempts_total': QuestAttempt.objects.count(),
         'quests_attempts_per_day': abs(round(QuestAttempt.objects.count()/(QuestAttempt.objects.first().created_on-timezone.now()).days,1)),
         'total_visible_quest_count': Quest.objects.filter(visible=True).count(),
