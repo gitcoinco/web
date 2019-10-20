@@ -1,11 +1,10 @@
-var seconds_per_question = 15;
 
 var start_quiz = async function() {
   document.quiz_started = true;
   var question_number = 0;
   var should_continue = true;
 
-  start_music_midi('boss-battle');
+  start_music_midi(document.music);
   await sleep(1500);
 
   while (should_continue) {
@@ -52,6 +51,8 @@ var start_quiz = async function() {
       await toggle_character_class($('#enemy'), [ 'harm', '' ]);
     }
     
+    var question_level_seconds_to_respond = response['question']['seconds_to_respond'];
+
     var question = response['question']['question'];
     var possible_answers = response['question']['responses'];
     var html = '';
@@ -72,6 +73,7 @@ var start_quiz = async function() {
     await $('#header').removeClass('hidden').fadeIn();
     await $('#desc').removeClass('hidden').fadeIn();
     await $('#cta_button').removeClass('hidden').fadeIn();
+    var seconds_per_question = question_level_seconds_to_respond != undefined ? question_level_seconds_to_respond : document.seconds_per_question;
     var timer = seconds_per_question * 1000;
 
     while (timer > 0 && !document.submitted_answer) {
@@ -150,15 +152,17 @@ var advance_to_state = async function(new_state) {
   }
   $('body').addClass('stage_' + new_state);
 
+  // force login
+  if (!document.contxt['github_handle']) {
+    document.location.href = document.location.href.replace('#', '') + '?login=1';
+  }
+
 
   // -- individual transitions callbacks --
 
   // 0 to 1
   if (old_state == 0 && new_state == 1) {
     await sleep(1000);
-    if (!document.contxt['github_handle']) {
-      document.location.href = document.location.href.replace('#', '') + '?login=1';
-    }
     await $('#header').html('Quest Intro');
     await $('#header').fadeIn();
     await sleep(1000);
@@ -303,67 +307,10 @@ $(document).ready(function() {
   // force the music to load
   setTimeout(function() {
     if (document.quest) {
-      start_music_midi('boss-battle');
-      pause_music_midi('boss-battle');
+      start_music_midi(document.music);
+      pause_music_midi(document.music);
     }
   }, 100);
-
-  $('#reflink').click(function() {
-    $(this).focus();
-    $(this).select();
-    document.execCommand('copy');
-    $(this).after('<div class=after_copy>Copied to clipboard</div>');
-    setTimeout(function() {
-      $('.after_copy').remove();
-    }, 500);
-  });
-
-  $('.demo').click(function(e) {
-    e.preventDefault();
-    $(this).fadeOut(function() {
-      $('.demo').fadeIn();
-      var src = $('.demo').attr('src') + '?';
-      
-      $('.demo').attr('src', src);
-    });
-  });
-
-  $('#tabs a').click(function(e) {
-    e.preventDefault();
-    var target = $(this).data('href');
-
-    $('.difficulty_tab').addClass('hidden');
-    $('.nav-link').removeClass('active');
-    $(this).addClass('active');
-    $('.difficulty_tab.' + target).removeClass('hidden');
-  });
-
-  $('.quest-card.available').click(function(e) {
-    e.preventDefault();
-    document.location.href = $(this).find('a').attr('href');
-  });
-  $('.quest-card.available').mouseover(function(e) {
-    random_attn_effect($(this).find('.btn'));
-  });
-
-  // makes the reflink sticky
-  if (getParam('cb')) {
-    var cb = getParam('cb');
-    // only if user is not logged in tho
-
-    if (cb.indexOf('ref') != -1 && !document.contxt.github_handle) {
-      localStorage.setItem('cb', cb);
-    }
-  }
-  // if there exists a sticky reflink but the user navigated away from the link in the course of logging in...
-  if (localStorage.getItem('cb') && document.contxt.github_handle && !getParam('cb')) {
-    var url = new URL(document.location.href);
-
-    url.searchParams.append('cb', localStorage.getItem('cb'));
-    url.search = url.search.replace('%3A', ':');
-    localStorage.setItem('cb', '');
-    document.location.href = url;
-  }
 
   if ($('#protagonist').length) {
     var preload_assets = async function() {
@@ -380,7 +327,7 @@ $(document).ready(function() {
       }
     };
 
-    preload_backgrounds();
+    preload_assets();
   }
 
   $('#protagonist h3').html(trim_dots($('#protagonist h3').text(), 8));
@@ -389,7 +336,9 @@ $(document).ready(function() {
     e.preventDefault();
     $(this).toggleClass('selected');
   });
+
   if (document.quest) {
     start_quest();
   }
+  
 });

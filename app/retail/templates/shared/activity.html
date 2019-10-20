@@ -71,6 +71,11 @@
         <a href="{{ row.metadata.quest_url }}" target="_blank">
            Quest: {{ row.metadata.quest_title }}
         </a>
+      {% elif row.activity_type == 'created_quest' %}
+        {% trans "created " %}
+        <a href="{{ row.metadata.quest_url }}" target="_blank">
+           Quest: {{ row.metadata.quest_title }}
+        </a>
       {% elif row.activity_type == 'beat_quest' %}
         {% trans "beat " %}
         <a href="{{ row.metadata.quest_url }}" target="_blank">

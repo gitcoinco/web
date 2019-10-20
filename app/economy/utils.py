@@ -61,13 +61,15 @@ def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
     if to_currency in settings.STABLE_COINS:
         to_currency = 'USDT'
 
-    
+
     if timestamp:
         conversion_rate = ConversionRate.objects.filter(
             from_currency=from_currency,
             to_currency=to_currency,
-            timestamp__gte=timestamp
-        ).order_by('-timestamp').last()
+            timestamp__lte=timestamp
+        ).order_by('-timestamp').first()
+        if not conversion_rate:
+            return convert_amount(from_amount, from_currency, to_currency)
     else:
         conversion_rate = ConversionRate.objects.filter(
             from_currency=from_currency,

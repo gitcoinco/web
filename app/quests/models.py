@@ -14,6 +14,10 @@ class Quest(SuperModel):
         ('Advanced', 'Advanced'),
     ]
 
+    STYLES = [
+        ('Quiz', 'quiz'),
+        ('Example for Demo', 'example_demo'),
+    ]
 
     title = models.CharField(max_length=1000)
     description = models.TextField(default='', blank=True)
@@ -23,9 +27,17 @@ class Quest(SuperModel):
     kudos_reward = models.ForeignKey('kudos.Token', blank=True, null=True, related_name='quests_reward', on_delete=models.SET_NULL)
     unlocked_by = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='unblocks', on_delete=models.SET_NULL)
     cooldown_minutes = models.IntegerField(default=5)
-    visible = models.BooleanField(default=True)
-    difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES)
-
+    visible = models.BooleanField(default=True, db_index=True)
+    difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES, db_index=True)
+    style = models.CharField(max_length=100, default='quiz', choices=STYLES)
+    value = models.FloatField(default=1)
+    creator = models.ForeignKey(
+        'dashboard.Profile',
+        on_delete=models.CASCADE,
+        related_name='quests_created',
+        null=True,
+        blank=True,
+    )
     def __str__(self):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.title}'
@@ -37,8 +49,20 @@ class Quest(SuperModel):
 
 
     @property
+    def art_url(self):
+        url = self.game_metadata.get('enemy', {}).get('art', '')
+        if "http" in url:
+            return url
+        return '/static/' + url
+
+    @property
     def enemy_img_url(self):
-        return '/static/'+self.game_metadata.get('enemy', {}).get('art', '').replace('svg', 'png')
+        return self.art_url
+
+    @property
+    def enemy_img_url_png(self):
+        # warning: not supported for kudos uploaded quets
+        return self.art_url.replace('svg', 'png')
 
     @property
     def enemy_img_name(self):
@@ -47,13 +71,25 @@ class Quest(SuperModel):
     @property
     def background(self):
         backgrounds = [
-            'camping',
-            'back_city',
-            'city',
-            'night',
+            'back0',
+            'back1',
+            'back2',
+            'back3',
         ]
         which_back = self.pk % len(backgrounds)
         return backgrounds[which_back]
+
+    @property
+    def music(self):
+        musics = [
+            'boss-battle',
+            'boss-battle1',
+            'boss-battle2',
+            'boss-battle3',
+            'boss-battle4',
+        ]
+        idx = self.pk % len(musics)
+        return musics[idx]
 
     @property
     def success_count(self):
@@ -99,6 +135,8 @@ class Quest(SuperModel):
         return is_completed
 
     def questions_safe(self, idx):
+        # strips out all correctness repsonses so that the client may see the question
+        # without being able to see the answer
         try:
             question = self.questions[idx]
             num_responses = question['responses']
@@ -126,7 +164,7 @@ class Quest(SuperModel):
 class QuestAttempt(SuperModel):
 
     quest = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='attempts', on_delete=models.SET_NULL)
-    success = models.BooleanField(default=False)
+    success = models.BooleanField(default=False, db_index=True)
     profile = models.ForeignKey(
         'dashboard.Profile',
         on_delete=models.CASCADE,
@@ -138,6 +176,7 @@ class QuestAttempt(SuperModel):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.profile.handle} => {self.quest.title} state: {self.state} success: {self.success}'
 
+
 class QuestPointAward(SuperModel):
 
     questattempt = models.ForeignKey('quests.QuestAttempt', related_name='pointawards', on_delete=models.CASCADE)
@@ -147,6 +186,7 @@ class QuestPointAward(SuperModel):
         related_name='questpointawards',
     )
     value = models.FloatField()
+    action = models.CharField(max_length=100, default='Beat')
 
     def __str__(self):
         """Return the string representation of this obj."""

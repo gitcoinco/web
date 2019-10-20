@@ -40,8 +40,15 @@ class TokenRequestAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         if "_mint_kudos" in request.POST:
-            obj.mint()
-            self.message_user(request, "Mint done")
+            tx_id = obj.mint()
+            self.message_user(request, f"Mint submitted to chain: tx {tx_id}.  Once this tx clears pls 'sync kudos'.")
+        if "_sync_kudos" in request.POST:
+            from kudos.management.commands.mint_all_kudos import sync_latest
+            sync_latest(0)
+            sync_latest(1)
+            sync_latest(2)
+            sync_latest(3)
+            self.message_user(request, f"Synced latest 3 kudos from open sea.  If there is a new kudos on chain it will appear in the marketplace")
         return super().response_change(request, obj)
 
 
