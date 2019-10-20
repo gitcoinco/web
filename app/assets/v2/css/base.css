@@ -490,7 +490,7 @@ input[type=text].loading {
 }
 
 #primary_form {
-  max-width: 550px;
+  max-width: 550px; /* TODO: REMOVE */
   margin: 0 auto;
   padding: 0 2em;
 }
@@ -501,7 +501,8 @@ input[type=text].loading {
 }
 
 .submit_bounty #primary_form,
-.fulfill_bounty #primary_form {
+.fulfill_bounty #primary_form,
+.increase_bounty #primary_form {
   max-width: none;
 }
 
