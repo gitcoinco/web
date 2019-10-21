@@ -51,7 +51,7 @@ def record_award_helper(qa, profile, layer=1, action='Beat', value_multiplier=1)
         return
 
     # record points
-    value = value_multiplier * qa.quest.value/(2**(layer-1))
+    value = abs(value_multiplier * qa.quest.value/(2**(layer-1)))
     QuestPointAward.objects.create(
         questattempt=qa,
         profile=profile,
