@@ -101,7 +101,7 @@ class BaseAvatar(SuperModel):
         try:
             # Convert the provided source to the specified output and store in BytesIO.
             if output_fmt == 'svg':
-                tmpfile_io = convert_wand(source, input_fmt=input_fmt, output_fmt=output_fmt, extra_flags=extra_flags)
+                tmpfile_io = convert_wand(source, input_fmt=input_fmt, output_fmt=output_fmt)
             else:
                 tmpfile_io = convert_img(
                     source,
