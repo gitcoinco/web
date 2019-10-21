@@ -828,6 +828,12 @@ $('#submitBounty').validate({
                 _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
               } else {
                 deductBountyAmount(fee, txnId);
+                saveAttestationData(
+                  result,
+                  fee,
+                  '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+                  'bountyfee'
+                );
               }
             });
           } else {
