@@ -3544,6 +3544,7 @@ class Profile(SuperModel):
         context['total_kudos_received_count'] = profile.received_kudos.count()
         context['total_grant_created'] = profile.grant_admin.count()
         context['total_grant_contributions'] = profile.grant_contributor.filter(subscription_contribution__success=True).values_list('subscription_contribution').count() + profile.grant_phantom_funding.count()
+        context['total_grant_actions'] = context['total_grant_created'] + context['total_grant_contributions']
 
         context['total_tips_sent'] = profile.get_sent_tips.count()
         context['total_tips_received'] = profile.get_my_tips.count()
