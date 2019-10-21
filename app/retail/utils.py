@@ -180,7 +180,7 @@ def get_codefund_history_at_date(date, keyword):
     if date > timezone.datetime(2019, 9, 9):
         amount += 55000
     if date > timezone.datetime(2019, 10, 9):
-        amount += sum(ManualStat.objects.filter(key='codefund_gmv', date__gt=date).values_list('val', flat=True))
+        amount += sum(ManualStat.objects.filter(key='codefund_gmv', date__lt=date).values_list('val', flat=True))
     return amount
 
 

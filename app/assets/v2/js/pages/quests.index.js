@@ -47,6 +47,10 @@ $(document).ready(function() {
     $('.nav-link').removeClass('active');
     $(this).addClass('active');
     $('.difficulty_tab.' + target).removeClass('hidden');
+
+    $('html,body').animate({
+        scrollTop: '+=1px'
+    })
   });
 
   $('.quest-card.available').click(function(e) {

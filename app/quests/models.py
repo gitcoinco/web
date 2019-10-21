@@ -53,7 +53,7 @@ class Quest(SuperModel):
 
     @property
     def est_total_time_required(self):
-        return self.est_read_time_mins + 2
+        return self.est_read_time_mins
 
     def get_absolute_url(self):
         return self.url

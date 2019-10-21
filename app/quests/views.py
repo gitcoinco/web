@@ -181,6 +181,7 @@ def index(request):
         'quests': quests,
         'avg_play_count': round(QuestAttempt.objects.count()/Quest.objects.count(), 1),
         'quests_attempts_total': QuestAttempt.objects.count(),
+        'quests_total': Quest.objects.filter(visible=True).count(),
         'quests_attempts_per_day': abs(round(QuestAttempt.objects.count()/(QuestAttempt.objects.first().created_on-timezone.now()).days,1)),
         'total_visible_quest_count': Quest.objects.filter(visible=True).count(),
         'gitcoin_created': Quest.objects.filter(visible=True).filter(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
