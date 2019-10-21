@@ -1,0 +1,19 @@
+{
+  "symbol": "GPC",
+  "address": "0x0B4A48418b4197D88626b19c8aA188D76327d2FA",
+  "overview":{
+        "en": "GPC is a new generation of decentralized and stable ecosystem built on smart contracts from a world-renowned technical team. By building a decentralized cryptocurrency payment ecosystem, it provides scalable cross-chain contract payment solutions. The program creates a secure, efficient, convenient, and shared digital asset payment service for users.",
+        "zh": "GPC是基于世界知名技术团队的智能合约构建的新一代分散，稳定的生态系统。通过构建去中心化的加密货币支付生态系统，它提供了可扩展的跨链合同支付解决方案。该程序为用户创建了安全，高效，便捷和共享的数字资产支付服务。"
+  },
+  "email": "globalgpe@163.com",
+  "website": "http://gbc.gpepay.com/",
+  "whitepaper": "http://gbc.gpepay.com/bps.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-28",
+  "initial_price":{
+        "USD":"0.03 USD"
+  },
+  "links": {
+    "medium": "http://gbc.gpepay.com/"
+  }
+}
