@@ -17,12 +17,6 @@
   },
   "links": {
     "blog": "http://www.polar-chain.com/",
-#    "twitter": "https://twitter.com/your-awesome-project",
-#    "telegram": "https://t.me/joinchat/your-awesome-project",
-    "github": "https://github.com/ipbit",
-#    "facebook": "https://www.facebook.com/",
-#    "reddit": "https://www.reddit.com/r/your-awesome-project/",
-#    "slack": "https://your-awesome-project.slack.com",
-#    "medium": "https://medium.com/your-awesome-project"
-  }
+    "github": "https://github.com/ipbit"
+}
 }
