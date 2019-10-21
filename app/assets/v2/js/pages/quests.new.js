@@ -1,5 +1,11 @@
 
 $(document).ready(function() {
+
+  $(document).on('form#newkudos', 'submit', function(e) {
+    // e.preventDefault();
+    // console.log($(this).formdata);
+    // alert('hi');
+  });
   
   $(document).on('click', '.add_answer', function(e) {
     e.preventDefault();

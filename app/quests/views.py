@@ -14,8 +14,10 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
+from dashboard.models import Profile
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
 from marketing.mails import new_quest_request
+from marketing.models import EmailSubscriber
 from quests.helpers import (
     get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity,
 )
@@ -25,6 +27,18 @@ from quests.quest_types.quiz_style import details as quiz_style
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
+
+
+def next_quest(request):
+    """Render the Quests 'random' page."""
+
+    if not request.user.is_authenticated:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    for quest in Quest.objects.filter(visible=True).order_by('?'):
+        if not quest.is_beaten(request.user) and quest.is_unlocked_for(request.user):
+            return redirect(quest.url)
 
 
 def newquest(request):
@@ -40,7 +54,6 @@ def newquest(request):
         'responses': ['','']
     }]
     if request.POST:
-        messages.info(request, 'Quest submission received.  We will respond via email in a few business days.  In the meantime, feel free to test your new quest.')
 
         questions = [{
             'question': ele,
@@ -81,8 +94,9 @@ def newquest(request):
             seconds_per_question = request.POST.get('seconds_per_question', 30)
             game_schema = {
               "intro": request.POST.get('description'),
-              "rules": f"You will battling a {{enemy.humanized_name}}-. You will have as much time as you need to prep before the battle, but once the battle starts you will have only seconds per move (keep an eye on the timer in the bottom right; don't run out of time!).",
+              "rules": f"You will be battling a {enemy.humanized_name}. You will have as much time as you need to prep before the battle, but once the battle starts you will have only seconds per move (keep an eye on the timer in the bottom right; don't run out of time!).",
               "seconds_per_question": seconds_per_question,
+              'est_read_time_mins': request.GET.get('est_read_time_mins', 20),
               "prep_materials": [
                 {
                   "url": request.POST.get('reading_material_url'),
@@ -114,7 +128,7 @@ def newquest(request):
                     creator=request.user.profile,
                     )
                 new_quest_request(quest)
-                return redirect(quest.url)
+                messages.info(request, f'Quest submission received.  We will respond via email in a few business days.  In the meantime, feel free to test your new quest @ https://gitcoin.co{quest.url}')
             except Exception as e:
                 logger.exception(e)
                 messages.error(request, 'An unexpected error has occured')
@@ -161,10 +175,19 @@ def index(request):
     point_history = request.user.profile.questpointawards.all() if request.user.is_authenticated else QuestPointAward.objects.none()
     point_value = sum(point_history.values_list('value', flat=True))
     print(f" phase4 at {round(time.time(),2)} ")
-
+    # community_created
     params = {
         'profile': request.user.profile if request.user.is_authenticated else None,
         'quests': quests,
+        'avg_play_count': round(QuestAttempt.objects.count()/Quest.objects.count(), 1),
+        'quests_attempts_total': QuestAttempt.objects.count(),
+        'quests_total': Quest.objects.filter(visible=True).count(),
+        'quests_attempts_per_day': abs(round(QuestAttempt.objects.count()/(QuestAttempt.objects.first().created_on-timezone.now()).days,1)),
+        'total_visible_quest_count': Quest.objects.filter(visible=True).count(),
+        'gitcoin_created': Quest.objects.filter(visible=True).filter(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
+        'community_created': Quest.objects.filter(visible=True).exclude(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
+        'country_count': 87,
+        'email_count': EmailSubscriber.objects.count(),
         'attempt_count': attempt_count,
         'success_count': success_count,
         'success_ratio': int(success_count/attempt_count * 100),

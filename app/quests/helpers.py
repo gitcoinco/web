@@ -3,6 +3,7 @@ import logging
 import random
 
 from django.conf import settings
+from django.contrib import messages
 from django.db.models import Count
 from django.shortcuts import redirect, render
 from django.utils import timezone
@@ -168,6 +169,10 @@ def process_win(request, qa):
     prize_url = f"{btc.url}?cb=ref:{request.user.profile.ref_code}&tweet_url={settings.BASE_URL}{quest.url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
     qa.success = True
     qa.save()
+    if not qa.quest.visible:
+        # return a mock prize URL because quiz not approved yet
+        messages.info(request, "cannot redeem prize for a quest thats not live yet! returning you to quests homepage")
+        return "https://gitcoin.co/quests"
     if first_time_beaten:
         record_award_helper(qa, qa.profile)
     return prize_url

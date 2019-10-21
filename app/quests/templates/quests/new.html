@@ -64,7 +64,7 @@
           <div class="form-group">
             <label class="form__label" for="style">{% trans "Type" %}</label>
             <select name="style" class="select2">
-              <option value="quiz">Quiz</option>
+              <option value="quiz" {% if response.style == 'Quiz' %}selected=selected{%endif%}>Quiz</option>
               <option disabled="disabled">More options coming soon</option>
             </select>
           </div>
@@ -72,8 +72,8 @@
             <label class="form__label" for="difficulty">{% trans "Difficulty" %}</label>
             <select name="difficulty" class="select2">
               <option>Beginner</option>
-              <option>Intermediate</option>
-              <option>Advanced</option>
+              <option {% if package.difficulty == "Intermediate" %}selected=selected{%endif%} >Intermediate</option>
+              <option {% if package.difficulty == "Advanced" %}selected=selected{%endif%}>Advanced</option>
             </select>
           </div>
           <div class="form-group">
@@ -95,15 +95,17 @@
             <label class="form__label" for="reading_material_name">{% trans "Reading Material Title" %}</label>
             <input type="text" name="reading_material_name" class="form__input" placeholder='Ethereum Whitepaper' value="{{package.reading_material_name}}" required>
           </div>
+            <label class="form__label" for="enemy">{% trans "Reading Material Time Commitment (minutes)" %}</label>
+            <input type="number" name="est_read_time_mins" class="form__input" placeholder='10' value="{{package.est_read_time_mins}}" required>
           <div class="form-group">
             <label class="form__label" for="enemy">{% trans "Enemy Kudos ID" %}</label> <a target="new" href="/kudos/marketplace">(Kudos Marketplace)</a>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="Pull the ID off of the desired Kudos.  So for example to use Kudos <BR><BR>https://gitcoin.co/kudos/5077/limited_edition_samurai1_bot<BR><BR>enter 5077<BR>"></i>
-            <input type="text" name="enemy" class="form__input" placeholder='5077' value="{{package.enemy}}" required>
+            <input type="number" name="enemy" class="form__input" placeholder='5077' value="{{package.enemy}}" required>
           </div>
           <div class="form-group">
             <label class="form__label" for="reward">{% trans "Reward Kudos ID" %}</label> <a target="new" href="/kudos/marketplace">(Kudos Marketplace)</a>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="Pull the ID off of the desired Kudos.  So for example to use Kudos <BR><BR>https://gitcoin.co/kudos/5077/limited_edition_samurai1_bot<BR><BR>enter 5077<BR>"></i>
-            <input type="text" name="reward" class="form__input" placeholder='5077' value="{{package.reward}}" required>
+            <input type="number" name="reward" class="form__input" placeholder='5077' value="{{package.reward}}" required>
           </div>
           <div class="form-group">
             <label class="form__label" for="points">{% trans "Reward Points Value" %}</label>
@@ -129,7 +131,7 @@
               <br>
               <label class="form__label" for="seconds_to_respond[]">{% trans "Seconds to Respond" %}</label>
               <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="How many seconds will the user have to respond to this question? Recommending starting point: 30"></i>
-              <input type="text" name="seconds_to_respond[]" class="form__input" placeholder='Seconds To Respond' value="{{question.seconds_to_respond}}" required>
+              <input type="number" name="seconds_to_respond[]" class="form__input" placeholder='Seconds To Respond' value="{{question.seconds_to_respond}}" required>
               <label class="form__label" for="question[]">{% trans "Question Text" %}</label>
               <input type="text" name="question[]" class="form__input" placeholder='Does Ethereum foo the bar?' value="{{question.question}}" required>
               {% for response in question.responses %}
@@ -152,7 +154,7 @@
             <a href="#" class="add_question">[Add Question]</a>
             <div class="terms_container pt-4">
               <div class="form__checkbox">
-                <input name='terms' id='terms' type="checkbox" value=1 required checked="{% if package.terms%}checked{%endif%}" />
+                <input name='terms' id='terms' type="checkbox" value=1 required {% if package.terms%}checked=checked{%endif%} />
                   <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
                     <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
                 </label>
