@@ -3428,6 +3428,7 @@ def hackathon_registration(request):
 
     hackathon = request.POST.get('name')
     referer = request.POST.get('referer')
+    email = request.user.email
 
     if not profile:
         return JsonResponse(
@@ -3442,13 +3443,12 @@ def hackathon_registration(request):
             registrant=profile
         )
 
-        profile.hackathons.add(registration_data.id)
     except Exception as e:
         logger.error('Error while saving registration', e)
 
     client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
     mailchimp_data = {
-            'email_address': profile.email,
+            'email_address': email,
             'status_if_new': 'subscribed',
             'status': 'subscribed',
 
@@ -3458,7 +3458,7 @@ def hackathon_registration(request):
             },
         }
 
-    user_email_hash = hashlib.md5(profile.email.encode('utf')).hexdigest()
+    user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
 
     try:
         client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
