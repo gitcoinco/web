@@ -144,6 +144,7 @@ def get_ecosystem_history_at_date(date, keyword):
 
 
 def get_codefund_history_at_date(date, keyword):
+    from marketing.models import ManualStat
     date = date.replace(tzinfo=None)
     amount = 0
     # July => Feb 2019
@@ -177,9 +178,9 @@ def get_codefund_history_at_date(date, keyword):
     if date > timezone.datetime(2019, 8, 9):
         amount += 50871
     if date > timezone.datetime(2019, 9, 9):
-        amount += 52000
+        amount += 55000
     if date > timezone.datetime(2019, 10, 9):
-        amount += 0 # october month to date
+        amount += sum(ManualStat.objects.filter(key='codefund_gmv', date__lt=date).values_list('val', flat=True))
     return amount
 
 
@@ -559,7 +560,7 @@ def build_stat_results(keyword=None):
     context['last_month_amount'] = round(sum(bh)/1000)
     context['last_month_amount_hourly'] = sum(bh) / 30 / 24
     context['last_month_amount_hourly_business_hours'] = context['last_month_amount_hourly'] / 0.222
-    context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.all()]
+    context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.order_by('start_date').all()]
     context['hackathon_total'] = sum([ele[1]['total_volume'] for ele in context['hackathons']])
     from dashboard.models import FeedbackEntry
     reviews = FeedbackEntry.objects.exclude(comment='').filter(created_on__lt=(timezone.now() - timezone.timedelta(days=7))).order_by('-created_on')[0:15]

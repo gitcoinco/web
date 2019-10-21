@@ -2,10 +2,38 @@ const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 };
 
+var trim_dots = function(_str, _chars) {
+  if (_str.length > _chars) {
+    _str = _str.substring(0, _chars) + '....';
+  }
+  return _str;
+};
+
 var show_prize = function() {
   var kudos_html = "<div class='tl prize'><span>🏆Quest Prize🏅</span><img src=" + document.kudos_reward['img'] + '></div>';
 
   $('#gameboard').append(kudos_html);
+};
+
+var random_taunt_effect = function(ele) {
+  if (ele.data('effect')) {
+    return;
+  }
+  ele.data('effect', 1);
+  var r = Math.random();
+
+  if (r < 0.3) {
+    ele.effect('shake');
+  } else if (r < 0.6) {
+    ele.effect('pulsate');
+  } else if (r < 0.8) {
+    ele.effect('bounce');
+  } else {
+    ele.effect('highlight');
+  }
+  setTimeout(function() {
+    ele.data('effect', 0);
+  }, 1000);
 };
 
 var post_state = async(data) => {
@@ -71,7 +99,11 @@ var start_music_midi = function(name) {
   if (!MIDIjs) {
     return;
   }
-  MIDIjs.play(get_midi(name));
+  try {
+    MIDIjs.play(get_midi(name));
+  } catch (e) {
+    console.error(e);
+  }
 };
 var resume_music_midi = function(name) {
   // get_audio('bossmusic.mid').play();
@@ -87,6 +119,11 @@ var pause_music_midi = function(name) {
   }
   MIDIjs.pause();
 };
+var orb_state = function(state) {
+  var src = '/static/v2/images/quests/orb-' + state + '.svg';
+
+  $('img.orb').attr('src', src);
+};
 
 $(document).ready(function() {
 
@@ -101,10 +138,21 @@ $(document).ready(function() {
     // space
     // enter
     if (e.keyCode == 32 || e.keyCode == 13) {
-      if (document.quiz_started) {
-        return;
+      if (!document.quiz_started) {
+        advance_to_state(document.quest_state + 1);
+      } else {
+        $('#cta_button a').click();
       }
-      advance_to_state(document.quest_state + 1);
+      document.typewriter_speed = 40;
+      e.preventDefault();
+      
+    }
+  });
+  $('body').keydown(function(e) {
+    // space
+    // enter
+    if (e.keyCode == 32 || e.keyCode == 13) {
+      document.typewriter_speed = 5;
       e.preventDefault();
       
     }
@@ -134,6 +182,7 @@ $(document).ready(function() {
   $('.skip_intro').on('click', async function(e) {
     e.preventDefault();
     $(this).remove();
+    document.typewriter_speed = 5;
     while (document.state_transitioning) {
       await sleep(10);
     }

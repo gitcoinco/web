@@ -108,7 +108,7 @@ def sync_mailchimp_list(eses, list_id):
     print("- {} emails".format(eses.count()))
     client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
     for es in eses.values_list('email', flat=True):
-        email = es.email
+        email = es
         print(email)
         try:
             client.lists.members.create(list_id, {

@@ -30,12 +30,13 @@
         <li><b>{{ count_bounties_on_repo }}</b> {% trans "Bounties" %}</li>
         <li><b>{{ sum_eth_on_repos|floatformat:2 }}</b> {% trans "ETH" %} Spent</li>
         <li>
-        {% if scoreboard_position_org %}
-          <li>
-            <b>#{{ scoreboard_position_org }}</b>
-            {% trans "On Leaderboard" %}
-          <a style="font-size: 12px; color: black; text-decoration: underline;" href="{% url 'leaderboard' orgs %}">(View)</a>
-          </li>
+          {% if scoreboard_position_org %}
+            <li>
+              <b>#{{ scoreboard_position_org }}</b>
+              {% trans "On Leaderboard" %}
+              <a class="font-caption text-body" style="text-decoration: underline;"
+                href="{% url 'leaderboard' link %}orgs">(View)</a>
+            </li>
           {% endif %}
         </li>
 

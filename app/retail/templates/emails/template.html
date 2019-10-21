@@ -126,10 +126,10 @@
     display: inline-block;
     {% if email_style %}
       max-height: 300px;
+      width: 80%;
     {% else %}
       max-height: 80px;
     {% endif %}
-      max-width: 100%;
   }
 
   #grow-oss {
@@ -185,11 +185,10 @@
   }
 
   #preferred_payout{
+    margin-top: 20px;
     background-color: #eee;
     padding: 10px 50px;
     text-align: center;
-    margin-bottom: 20px;
-
   }
 
   #footer p, #footer a {
@@ -306,6 +305,14 @@
       {% endif %}
     </a>
   </div>
+  {% endif %}
+
+    <div class="primary-content text-center">
+        {% block content %}
+        {% endblock %}
+        <img id="grow-oss" width="259" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
+    </div>
+
   <div id="preferred_payout">
     {% if subscriber.profile.preferred_payout_address %}
       Your Gitcoin preferred payout address is <strong>{{subscriber.profile.preferred_payout_address}}</strong>.  Payments will be auto-sent to this address (unless otherwise specified upon work submission).
@@ -316,14 +323,6 @@
     {% endif %}
 
   </div>
-  {% endif %}
-
-    <div class="primary-content text-center">
-        {% block content %}
-        {% endblock %}
-        <img id="grow-oss" width="259" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
-    </div>
-
   <div id="footer" class="text-center">
     <div>
       <a href="https://www.twitter.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
