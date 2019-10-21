@@ -542,6 +542,11 @@ def build_stat_results(keyword=None):
     from kudos.models import Token as KudosToken
 
     context['kudos_tokens'] = KudosToken.objects.filter(num_clones_in_wild__gt=0).order_by('-num_clones_in_wild')[0:25]
+    context['kudos_tokens'] = [{
+        'name': kt.humanized_name,
+        'url': kt.url,
+        'static_image': kt.preview_img_url,
+    } for kt in context['kudos_tokens']]
     pp.profile_time('kudos_tokens')
     pp.profile_time('final')
     context['keyword'] = keyword
