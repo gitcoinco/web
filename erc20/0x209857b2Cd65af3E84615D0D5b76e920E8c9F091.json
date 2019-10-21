@@ -1,0 +1,17 @@
+{
+    "symbol": "XXL",
+    "address": "0x209857b2Cd65af3E84615D0D5b76e920E8c9F091",
+    "overview":{
+          "en": "XXL is a complete communication ecosystem based on decentralized network. Users can finally build free and meaningful global communication in a completely safe decentralized environment.",
+          "zh": "XXL是基于去中心化网络的完整通讯生态体系，用户在XXL上终于能够在完全安全的去中心化环境中搭建起自由的有意义的全球性通讯。"
+    },
+    "email": "caoxing472@126.com",
+    "website": "http://xingxingl.com/",
+    "whitepaper": "http://xingxingl.com/templet/qukuai/img/XXL_whitepaper_V2.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-10-13",
+    "links": {
+        "blog": "https://weibo.com/StarStarChain",
+        "telegram": "https://t.me/StarStarChain"
+      }
+}
