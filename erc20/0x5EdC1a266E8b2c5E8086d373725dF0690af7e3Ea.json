@@ -1,0 +1,26 @@
+{
+  "symbol": "YTA",
+  "address": "0x5EdC1a266E8b2c5E8086d373725dF0690af7e3Ea",
+  "overview":{
+        "en": "YottaChain is a blockchain storage public chain created by Alex Wang, who is one of the top 10 Chinese young scientists. By connecting scatter storage resources globally, YottaChain builds a vast scale storage pool. Its core technology, TruPrivacy, is the only technology realizes de-duplication after encryption in the world. With this global patent technology, YottaChain will surely transform landscape of storage industry.",
+        "zh": "YottaChain是由中国十大青年科学家王东临带队打造的区块链存储公链，YottaChain通过连接全球分散的存储资源，打造一个规模浩瀚的星际存储池，其核心TruPrivacy技术是全球唯一能实现加密后去重的技术，并荣获全球专利，从而改变存储行业格局。"
+  },
+  "email": "yottaofficial@yottachain.io",
+  "website": "https://www.yottachain.io/",
+  "whitepaper": "https://www.yottachain.io/static/pdf/YottaChain%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-09-30",
+  "initial_price":{
+        "ETH":"0.00007843 ETH",
+        "USD":"0.0140647 USD",
+        "BTC":"0.00000173 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Yottachain",
+    "telegram": "https://t.me/YottaChain02",
+    "facebook": "https://www.facebook.com/yotta.chain.1",
+    "reddit": "https://www.reddit.com/user/YottaChain",
+    "medium": "https://medium.com/@yottachain",
+    "youtube": "https://www.youtube.com/channel/UCBU4S9IYdBKU3T4teNL9mDw?view_as=subscriber"
+  }
+}
