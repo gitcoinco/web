@@ -2276,6 +2276,25 @@ class Profile(SuperModel):
 
     objects = ProfileQuerySet.as_manager()
 
+
+    @property
+    def quest_level(self):
+        return self.quest_attempts.filter(success=True).distinct('quest').count() + 1
+
+    @property
+    def quest_caste(self):
+        castes = [
+            'Etherean',
+            'Ethereal',
+            'BUIDLer',
+            'HODLer',
+            'Whale',
+            'BullBear',
+            'MoonKid',
+        ]
+        i = self.pk % len(castes)
+        return castes[i]
+
     @property
     def get_my_tips(self):
         return Tip.objects.filter(username__iexact=self.handle)

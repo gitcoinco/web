@@ -362,6 +362,9 @@ class Token(SuperModel):
         """
         return f'/kudos/{self.pk}/{slugify(self.name)}'
 
+    @property
+    def is_available(self):
+        return self.num_clones_allowed > 0 and self.num_clones_available_counting_indirect_send > 0
 
     def send_enabled_for(self, user):
         """
@@ -372,8 +375,7 @@ class Token(SuperModel):
         Returns:
             bool: Wehther a send should be enabled for this user
         """
-        are_kudos_available = self.num_clones_allowed != 0 and self.num_clones_available_counting_indirect_send != 0
-        if not are_kudos_available:
+        if not self.is_available:
             return False
         is_enabled_for_user_in_general = self.send_enabled_for_non_gitcoin_admins
         is_enabled_for_this_user = hasattr(user, 'profile') and TransferEnabledFor.objects.filter(profile=user.profile, token=self).exists()

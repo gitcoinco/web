@@ -414,7 +414,7 @@ def new_quest_request(quest):
         setup_lang(to_email)
         subject = _("New Quest Request")
         body_str = _("A new quest request was completed. You may respond to the request here")
-        body = f"{body_str}: {quest.admin_url}"
+        body = f"{body_str}: {settings.BASE_URL}{quest.admin_url}"
         if not should_suppress_notification_email(to_email, 'quest'):
             send_mail(
                 from_email,

@@ -213,7 +213,7 @@ var advance_to_state = async function(new_state) {
     await $('#header').fadeIn();
     await sleep(1000);
     await $('#desc').html('');
-    var text = 'You will be given the following links to prepare for your journey.*';
+    var text = 'You will be given the following links to prepare for your journey (est read time: ' + document.quest.game_schema.est_read_time_mins + ' mins ).*';
     var html = '';
     var iterate_me = document.quest.game_schema.prep_materials;
 
@@ -227,7 +227,7 @@ var advance_to_state = async function(new_state) {
       var new_html = $('#desc').html() + html;
 
       $('#desc').html(new_html);
-    }, 4000);
+    }, 5000);
 
     document.typewriter_id = 'desc';
     document.typewriter_i = 0;
@@ -276,7 +276,9 @@ var death = async function() {
 };
 
 var winner = async function(prize_url) {
+  start_music_midi('hero');
   orb_state('final');
+  await sleep(500);
   $('#enemy .ded').removeClass('hidden');
   await $('#header').fadeOut();
   await $('#cta_button').fadeOut();
@@ -293,9 +295,23 @@ var winner = async function(prize_url) {
 
   $('#desc').html(span + "<img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>');
   $('.prize').fadeOut();
+  await sleep(500);
   $('#desc').fadeIn();
-  await sleep(3000);
-  document.location.href = prize_url;
+  await sleep(500);
+  await $('#cta_button a').data('href', prize_url).html('Claim Prize 🏆').fadeIn();
+  $('#cta_button').css('display', 'block');
+  $('#cta_button p').css('display', 'none');
+
+  var a = $('#cta_button a').clone();
+
+  a.attr('href', '/quests/next');
+  a.html('Play Another ▶️');
+  a.addClass('ml-3');
+  $(a).insertAfter($('#cta_button a'));
+
+  setInterval(function() {
+    random_taunt_effect($('#protagonist'));
+  }, 2000);
 };
 
 var start_quest = function() {

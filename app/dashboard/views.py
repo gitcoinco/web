@@ -3442,13 +3442,12 @@ def hackathon_registration(request):
             registrant=profile
         )
 
-        profile.hackathons.add(registration_data.id)
     except Exception as e:
         logger.error('Error while saving registration', e)
 
     client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
     mailchimp_data = {
-            'email_address': profile.email,
+            'email_address': request.user.email,
             'status_if_new': 'subscribed',
             'status': 'subscribed',
 
