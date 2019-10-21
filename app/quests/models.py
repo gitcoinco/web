@@ -52,6 +52,10 @@ class Quest(SuperModel):
         return self.game_schema.get('est_read_time_mins', 10)
 
     @property
+    def est_skim_time_mins(self):
+        return round(self.est_read_time_mins / 5)
+
+    @property
     def est_total_time_required(self):
         return self.est_read_time_mins
 
