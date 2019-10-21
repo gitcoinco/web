@@ -179,7 +179,7 @@ var advance_to_state = async function(new_state) {
       var new_html = $('#desc').html() + kudos_reward_html;
 
       $('#desc').html(new_html);
-    }, 3500);
+    }, 4500);
 
     await $('#desc').removeClass('hidden').fadeIn();
     await sleep(4000);
