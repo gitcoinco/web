@@ -543,7 +543,7 @@ urlpatterns = [
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
-    url(r'^sitemap.xml/?', perftools.views.sitemap, name='sitemap'),
+    url(r'^sitemap.xml/?', perftools.views.sitemap, name='django.contrib.sitemaps.views.sitemap'),
     # Interests
     path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
