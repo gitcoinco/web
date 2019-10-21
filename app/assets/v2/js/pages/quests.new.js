@@ -38,7 +38,7 @@ $(document).ready(function() {
 
   $(document).on('click', '.close_question', function(e) {
     e.preventDefault();
-    if ($(this).parents('div.question').length <= 1) {
+    if ($('div.question').length <= 1) {
       alert('you cannot have 0 questsions');
       return;
     }
