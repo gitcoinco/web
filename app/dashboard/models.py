@@ -1632,7 +1632,7 @@ def psave_tip(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
 def postsave_tip(sender, instance, **kwargs):
-    is_valid = instance.sender_profile != instance.recipient_profile
+    is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
     if is_valid:
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
