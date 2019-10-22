@@ -321,6 +321,10 @@ def grant_new(request):
             grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
             grant.contract_address = request.POST.get('contract_address', '')
             print(tx_hash, grant.contract_address)
+            messages.info(
+                request,
+                _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
+            )
             grant.save()
             record_grant_activity_helper('new_grant', grant, profile)
             new_grant(grant, profile)
