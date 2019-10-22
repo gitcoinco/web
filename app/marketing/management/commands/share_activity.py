@@ -65,6 +65,6 @@ class Command(BaseCommand):
             try:
                 print(txt)
                 new_tweet = txt
-                #api.PostUpdate(new_tweet)
+                api.PostUpdate(new_tweet)
             except Exception as e:
                 print(e)
