@@ -106,25 +106,6 @@ def org_perms(request):
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
              status=401)
-    # orgs = profile.profile_organizations.all()
-
-    # response_data = []
-    # for org in orgs:
-    #     print(org)
-    #     org_perms = {'name': org.name, 'users': []}
-    #     groups = org.groups.all().filter(user__isnull=False)
-    #     for g in groups: # "admin", "write", "pull", "none"
-    #         print(g)
-    #         group_data = g.name.split('-')
-    #         if group_data[1] != "role": #skip repo level groups
-    #             continue
-    #         print(g.user_set.prefetch_related('profile').all())
-    #         org_perms['users'].append(
-    #             *[{'handle': u.profile.handle,
-    #                'role': group_data[2],
-    #                'name': '{} {}'.format(u.first_name, u.last_name)}
-    #             for u in g.user_set.prefetch_related('profile').all()])
-    #     response_data.append(org_perms)
     return JsonResponse({'orgs': response_data}, safe=False)
 
 
