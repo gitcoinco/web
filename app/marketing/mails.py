@@ -30,16 +30,16 @@ from marketing.utils import func_name, get_or_save_email_subscriber, should_supp
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     render_admin_contact_funder, render_bounty_changed, render_bounty_expire_warning, render_bounty_feedback,
-    render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
-    render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent,
-    render_gdpr_update, render_grant_cancellation_email, render_kudos_email, render_match_email, render_new_bounty,
-    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email,
-    render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder, render_nth_day_email_campaign,
-    render_quarterly_stats, render_reserved_issue, render_share_bounty, render_start_work_applicant_about_to_expire,
-    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
-    render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
-    render_support_cancellation_email, render_thank_you_for_supporting_email, render_tip_email,
-    render_unread_notification_email_weekly_roundup, render_weekly_recap,
+    render_bounty_request, render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected,
+    render_faucet_request, render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale,
+    render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email, render_kudos_email, render_match_email,
+    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
+    render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder,
+    render_nth_day_email_campaign, render_quarterly_stats, render_reserved_issue, render_share_bounty,
+    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
+    render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
+    render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
+    render_tip_email, render_unread_notification_email_weekly_roundup, render_weekly_recap,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -406,6 +406,50 @@ def new_faucet_request(fr):
         translation.activate(cur_language)
 
 
+def new_quest_request(quest):
+    to_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("New Quest Request")
+        body_str = _("A new quest request was completed. You may respond to the request here")
+        body = f"{body_str}: {settings.BASE_URL}{quest.admin_url}"
+        if not should_suppress_notification_email(to_email, 'quest'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
+def new_quest_approved(quest):
+    to_email = quest.creator.email
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("Your Quest is live on Gitcoin.co/quests")
+        body_str = _("Your quest has been approved and is now live at")
+        body = f"{body_str}: {settings.BASE_URL}{quest.url}"
+        if not should_suppress_notification_email(to_email, 'quest'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def new_token_request(obj):
     to_email = 'founders@gitcoin.co'
     from_email = obj.email
@@ -415,6 +459,28 @@ def new_token_request(obj):
         subject = _("New Token Request")
         body_str = _("A new token request was completed. You may fund the token request here")
         body = f"{body_str}: https://gitcoin.co/{obj.admin_url} \n\n {obj.email}"
+        if not should_suppress_notification_email(to_email, 'faucet'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
+def new_kudos_request(obj):
+    to_email = 'founders@gitcoin.co'
+    from_email = obj.profile.email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("New Kudos Request")
+        body_str = _("A new kudos request was completed. You may approve the kudos request here")
+        body = f"{body_str}: https://gitcoin.co/{obj.admin_url} \n\n {obj.profile.email}"
         if not should_suppress_notification_email(to_email, 'faucet'):
             send_mail(
                 from_email,
@@ -1093,20 +1159,33 @@ def new_bounty_request(model):
     to_email = 'vivek.singh@consensys.net'
     from_email = model.requested_by.email or settings.SERVER_EMAIL
     cur_language = translation.get_language()
+
     try:
         setup_lang(to_email)
-        subject = _("New Bounty Request")
-        body_str = _("New Bounty Request from")
-        body = f"{body_str} {model.requested_by}: "\
-            f"{settings.BASE_URL}_administrationbounty_requests/bountyrequest/{model.pk}/change"
+        html, text, subject = render_bounty_request(to_email, model, settings.BASE_URL)
+
         send_mail(
             from_email,
             to_email,
             subject,
-            body,
+            text,
+            html,
             from_name=_("No Reply from Gitcoin.co"),
             categories=['admin', 'new_bounty_request'],
         )
+
+        if model.github_org_email != '':
+            to_email = model.github_org_email
+            setup_lang(to_email)
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', 'new_bounty_request'],
+            )
     finally:
         translation.activate(cur_language)
 

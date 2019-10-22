@@ -88,6 +88,7 @@ urlpatterns = [
     re_path(r'^kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
+    re_path(r'^kudos/new/?', kudos.views.newkudos, name='newkudos'),
 
     # mailing list
     url('mailing_list/funders/', dashboard.views.funders_mailing_list),
@@ -97,6 +98,9 @@ urlpatterns = [
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/profile/(.*)?/activity.json', dashboard.views.profile_activity, name='profile_activity'),
     url(r'^api/v0.1/profile/(.*)?/earnings.csv', dashboard.views.profile_earnings, name='profile_earnings'),
+    url(r'^api/v0.1/profile/(.*)?/grants.csv', dashboard.views.profile_grants, name='profile_grants'),
+    url(r'^api/v0.1/profile/(.*)?/quests.csv', dashboard.views.profile_quests, name='profile_quests'),
+    url(r'^api/v0.1/profile/(.*)?/ratings/(.*).csv', dashboard.views.profile_ratings, name='profile_ratings'),
     url(r'^api/v0.1/profile/(.*)?/viewers.csv', dashboard.views.profile_viewers, name='profile_viewers'),
     url(r'^api/v0.1/profile/(.*)?/spent.csv', dashboard.views.profile_spent, name='profile_spent'),
     url(r'^api/v0.1/profile/banner', dashboard.views.change_user_profile_banner, name='change_user_profile_banner'),
@@ -156,7 +160,9 @@ urlpatterns = [
 
     # quests
     path('quests/', quests.views.index, name='quests_index'),
+    re_path(r'^quests/next?$', quests.views.next_quest, name='next_quest'),
     re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
+    re_path(r'^quests/new/?', quests.views.newquest, name='newquest'),
 
     # Contributor dashboard
     path(
@@ -173,6 +179,7 @@ urlpatterns = [
     path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
     path('hackathon/', dashboard.views.hackathon, name='hackathon_idx'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
+    url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
 
     # action URLs
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),

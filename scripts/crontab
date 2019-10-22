@@ -42,7 +42,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 1 1 1 * * cd gitcoin/coin; bash scripts/run_management_command.bash activity_report $(date --date='-1 month' +%Y/%m/%d) $(date +%Y/%m/%d)  >> /var/log/gitcoin/activity_report.log  2>&1
 
 ## CLR
-0 */4 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr  >> /var/log/gitcoin/estimate_clr.log  2>&1
+### NOT ACTIVE
+#### 0 */4 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr  >> /var/log/gitcoin/estimate_clr.log  2>&1
 
 ## GITCOIN MARKETING
 30 */12 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_mail  >> /var/log/gitcoin/sync_mail.log  2>&1
@@ -70,7 +71,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 
 0 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_gas_history  >> /var/log/gitcoin/create_gas_history.log  2>&1
-5 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_page_cache  >> /var/log/gitcoin/create_page_cache.log  2>&1
+5 */3 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_page_cache  >> /var/log/gitcoin/create_page_cache.log  2>&1
 
 
 ## INFRASTRUCTURE
@@ -88,6 +89,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 */15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash check_gh_ratelimit  >> /var/log/gitcoin/gh_ratelimit.log  2>&1
 1 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash process_faucet_requests  >> /var/log/gitcoin/process_faucet_requests.log  2>&1
 1 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash create_pagerank  > /var/log/gitcoin/create_pagerank.log  2>&1
+
+1 */15 * * * cd gitcoin/coin; bash scripts/run_management_command.bash grant_vitalik_shuffle  > /var/log/gitcoin/grant_vitalik_shuffle.log  2>&1
 
 
 ## USERS

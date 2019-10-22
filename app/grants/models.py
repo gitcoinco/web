@@ -196,6 +196,16 @@ class Grant(SuperModel):
         ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
+    weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
+    contribution_count = models.PositiveIntegerField(blank=True, default=0)
+    contributor_count = models.PositiveIntegerField(blank=True, default=0)
+    defer_clr_to = models.ForeignKey(
+        'grants.Grant',
+        related_name='defered_clr_from',
+        on_delete=models.CASCADE,
+        help_text=_('The Grant that this grant defers it CLR contributions to (if any).'),
+        null=True,
+    )
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -226,6 +236,27 @@ class Grant(SuperModel):
             return org_name(self.reference_url)
         except Exception:
             return None
+
+    @property
+    def get_contribution_count(self):
+        num = 0
+        for sub in self.subscriptions.all():
+            for contrib in sub.subscription_contribution.filter(success=True):
+                num += 1
+        for pf in self.phantom_funding.all():
+            num+=1
+        return num
+
+    @property
+    def get_contributor_count(self):
+        contributors = []
+        for sub in self.subscriptions.all():
+            for contrib in sub.subscription_contribution.filter(success=True):
+                contributors.append(contrib.subscription.contributor_profile.handle)
+        for pf in self.phantom_funding.all():
+            contributors.append(pf.profile.handle)
+        return len(set(contributors))
+
 
     @property
     def org_profile(self):
@@ -736,7 +767,8 @@ next_valid_timestamp: {next_valid_timestamp}
 
 @receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
 def psave_grant(sender, instance, **kwargs):
-
+    instance.contribution_count = instance.get_contribution_count
+    instance.contributor_count = instance.get_contributor_count
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
     #print(instance.id)
@@ -864,6 +896,11 @@ class Contribution(SuperModel):
         null=True,
         help_text=_('The associated Subscription.'),
     )
+    normalized_data = JSONField(
+        default=dict,
+        blank=True,
+        help_text=_('the normalized grant data; for easy consumption on read'),
+    )
 
     def __str__(self):
         """Return the string representation of this object."""
@@ -897,6 +934,27 @@ def psave_contrib(sender, instance, **kwargs):
             "network":instance.subscription.grant.network,
         }
         )
+
+@receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
+def presave_contrib(sender, instance, **kwargs):
+
+    ele = instance
+    sub = ele.subscription
+    grant = sub.grant
+    instance.normalized_data = {
+        'id': grant.id,
+        'logo': grant.logo.url if grant.logo else None,
+        'url': grant.url,
+        'title': grant.title,
+        'created_on': ele.created_on.strftime('%Y-%m-%d'),
+        'frequency': int(sub.frequency),
+        'frequency_unit': sub.frequency_unit,
+        'num_tx_approved': int(sub.num_tx_approved),
+        'token_symbol': sub.token_symbol,
+        'amount_per_period_usdt': float(sub.amount_per_period_usdt),
+        'amount_per_period': float(sub.amount_per_period),
+        'tx_id': ele.tx_id,
+        }
 
 
 def next_month():

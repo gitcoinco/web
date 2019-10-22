@@ -30,16 +30,16 @@
       {% endif %}
       {% if is_editable %}
         <div class="position-relative profile-banner">
-      <div class="container mt-5">
-        <div class="row">
-        <div class="col-12">
-        <span class="profile-banner-cta">
-            <i class="fa fa-camera"></i>
-          Update Header Image
-        </span>
-        </div>
-      </div>
-      </div>
+          <div class="container mt-5">
+            <div class="row">
+              <div class="col-12">
+                <p class="profile-banner-cta text-center">
+                  <i class="fa fa-camera"></i>
+                  Update Header Image
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       {% endif %}
     </div>
@@ -47,7 +47,7 @@
       <div class="container profile-card mt-md-n5 mh-150">
         <div class="row">
           {% if total_kudos_count %}
-            <div id=kudos_header>
+            <div id="kudos_header" class="d-md-block d-none">
               {% for kudos_group in my_kudos %}
                 <img src="{{ kudos_group.kudos_token_cloned_from.preview_img_url }}" title="{{ kudos_group.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="70">
               {% endfor %}

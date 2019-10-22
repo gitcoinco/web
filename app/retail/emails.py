@@ -803,6 +803,18 @@ def render_reserved_issue(to_email, user, bounty):
     return response_html, response_txt, subject
 
 
+def render_bounty_request(to_email, model, base_url):
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'model': model,
+        'base_url': base_url
+    }
+    subject = _("New Bounty Request")
+    response_html = premailer_transform(render_to_string("emails/bounty_request.html", params))
+    response_txt = render_to_string("emails/bounty_request.txt", params)
+    return response_html, response_txt, subject
+
+
 def render_start_work_approved(interest, bounty):
     to_email = interest.profile.email
     params = {
@@ -886,8 +898,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "The Long and Winding Road"
-    new_kudos_pks = [4546, 4550, 4542]
+    subject = "Spooky Season Salutations"
+    new_kudos_pks = [52, 1821, 2050]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -908,22 +920,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    The <i>Long and Winding Road</i> that leads to Devcon draws near; it's time to get excited. We're proud to announce a bricolage of top tier sponsors: the Ethereum Foundation, Algorand, ConsenSys Grants, ConsenSys Labs, and more. Winners of the hackathon will be revealed at <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347624">Gitcoin's Grow Open Source Day in Tokyo.</a> Expect more of the goodness we've captured with our hackathons so far — compelling challenges, glorious prize pools, and impeccible support. Get signed up for the <a href="https://hackathons.gitcoin.co/the-road-to-devcon/">Road to Devcon here.</a>
+    The jet lag from Devcon is slowly fading away — back at home, we've caught up from our absence and are buckling down for the next few months. With that said, it's time to kick off Web3 World, our newest virtual hackathon. It's a two-week virtual hang where Gitcoin community members and entrepreneurs from around the globe will work together and push blockchain to new frontiers. Ready to jump in? <a href="https://hackathons.gitcoin.co/web3-world/">Check the landing page for details to come.</a> The hackathon begins on October 28th and ends on the 11th.
 </p>
 <p>
-    Want $5? Help us decide where the $100k for Gitcoin Grants Round 3 is allocated. The steps are as follows: Step 1) Use this link: https://gitcoin.co/grants?cb=grants_signal_fund_enable Step 2) Click ‘Fund Grant’ any grant you’d like to support. Step 3) Click ‘Use Voucher For This Grant’. Until the 30th of September, we'll be matching contributions to Gitcoin Grants with quadratic voting. Check out the projects on Gitcoin Grants <a href="https://gitcoin.co/grants/">here.</a>
+    While our overlords were at Devcon, the product team might have asked you why you're participating in our hackathons. As we hone in on making the best virtual experience for all parties — hackers and sponsors alike — we're asking you for feedback. What problems do you see? How can we do better? What projects would you like to see as sponsors? Send your thoughts to <a href="mailto:frank@gitcoin.co">Frank</a> and we'll be endlessly grateful.
 </p>
 <p>
-    Speaking of Devcon, <i>Here Comes the Devcon Events</i>. We're excited to host a suite of events during our Grow Open Source Day alongside Infura, Bounties Network, and C-Dili. If you'll be in Japan for Devcon, stop by. Reserve a spot <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347625">here.</a>
+    Newsletter readers: the questions continue this week. We'd like to ask you about our humble publication. How do you like our new design? How can we improve our content? Do you like our jokes? <a href="https://consensys1mac.typeform.com/to/gz5aGK">Fill out this 30s survey. We'd love to hear your thoughts.</a>
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday with Algorand, one of our sponsors for The Road to Devcon. </a>
+        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        Thanks to all who participated in the Ethereal Blocks hackathon. We have the announcement post for the winners ready to drop tomorrow. Keep an eye on the ol' <a href="https://twitter.com/gitcoin">Twitter feed.</a>
+        As the title of this email suggests, October is in full effect. You know what that means. Help contribute to open source and earn some rad prizes with Hacktoberfest — now is the perfect time to work on open source bounties and get rewards for making pull requests. The info? Who has it? <a href="https://hacktoberfest.digitalocean.com/">They do.</a>
         </li>
     </ul>
 </p>
@@ -932,46 +944,46 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'mirshko',  
+        'who': 'rshtirmer',
         'who_link': True,
-        'what': 'Fix Metadata For Subpages',
-        'link': 'https://gitcoin.co/issue/centrifuge/website/144/3449',
+        'what': 'Request for update: granted. Tensorforce support from 0.4.4 to 0.5.2',
+        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/42/3555',
         'link_copy': 'View more',
     }, {
-        'who': 'AshleyOyt',
+        'who': 'nionis',
         'who_link': True,
-        'what': '768px width to 639px, columns get messed up',
-        'link': 'https://gitcoin.co/issue/nateberkopec/speedshop/1/3470',
+        'what': 'Who loves a good lottery? Nionis.',
+        'link': 'https://gitcoin.co/issue/enigmampc/EnigmaBounties/3/3262',
         'link_copy': 'View more',
     }, {
-        'who': 'chuckwagoncomputing',
+        'who': 'acolytec3',
         'who_link': True,
-        'what': 'Create upload pipeline',
-        'link': 'https://gitcoin.co/issue/knocte/DotNetLightning/1/3412',
+        'what': 'Alcolytec with the seed phrase fixes',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/8938/3528',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Solana',
-        'title': 'Build on Solana: Join the Private Beta',
+        'name': 'MythX',
+        'title': 'Keep Ethereum Secure',
         'image_url': '',
-        'link': 'http://bit.ly/solana-beta',
-        'cta': 'Join the Private Beta',
+        'link': 'http://bit.ly/mythx-gitcoin-weekly',
+        'cta': 'Get Started Now',
         'body': [
-            'Solana is a Lightning-fast distributed ledger technology for mission-critical decentralized apps.',
-            'We are currently taking applications for an incredibly limited beta program for early adopters of Solana to launch their projects alongside our mainnet later in 2019.'
+           'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
+           'Scan for security vulnerabilities right away, from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
         ]
     }
-
+    
     bounties_spec = [{
-        'url': 'https://github.com/ArweaveTeam/Bounties/issues/13',
-        'primer': 'Decentralized Discussion Board',
+        'url': 'https://github.com/mainnebula/SPACE_TASKS/issues/6',
+        'primer': 'Python Scripting: SQL Edition',
     }, {
-        'url': 'https://github.com/kauri-io/Content/issues/52',
-        'primer': 'Deploying Full stack Dapp to Google Cloud',
+        'url': 'https://github.com/notadamking/tensortrade/issues/41',
+        'primer': 'Manage Contest Across All Components. Make it so.',
     }, {
-        'url': 'https://github.com/hoprnet/hopr-website/issues/8',
-        'primer': 'Create d3.js chart from Ethereum events via web3.js / Metamask',
+        'url': 'https://github.com/ETHSydney/meetup-token/issues/3',
+        'primer': 'Are you familiar with zero knowledge tools? Present!',
 }, ]
 
 

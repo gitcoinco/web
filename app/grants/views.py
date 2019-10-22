@@ -43,6 +43,7 @@ from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update
+from grants.utils import get_leaderboard
 from kudos.models import BulkTransferCoupon
 from marketing.mails import (
     grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
@@ -59,7 +60,8 @@ clr_matching_banners_style = 'pledging'
 matching_live = '($50K matching live now!) '
 total_clr_pot = 100000
 clr_round = 3
-clr_active = True
+clr_active = False
+show_past_clr = True
 
 if True:
     clr_matching_banners_style = 'results'
@@ -74,7 +76,7 @@ def grants(request):
     """Handle grants explorer."""
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
-    sort = request.GET.get('sort_option', 'match_pledge_amount_1')
+    sort = request.GET.get('sort_option', 'weighted_shuffle')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
@@ -144,7 +146,8 @@ def grants(request):
         'total_clr_pot': total_clr_pot,
         'clr_active': clr_active,
         'sort_by_index': sort_by_index,
-        'clr_round': clr_round
+        'clr_round': clr_round,
+        'show_past_clr': show_past_clr,
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -582,6 +585,7 @@ def grant_fund(request, grant_id, grant_slug):
     fund_reward = None
     round_number = 3
     can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
+    can_phantom_fund = False # round is ded
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
@@ -629,7 +633,7 @@ def grant_fund(request, grant_id, grant_slug):
         'phantom_funds': phantom_funds,
         'clr_round': clr_round,
         'total_clr_pot': total_clr_pot,
-        'clr_active': True
+        'clr_active': clr_active,
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
@@ -700,58 +704,10 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 @login_required
 def profile(request):
     """Show grants profile of logged in user."""
-    limit = request.GET.get('limit', 25)
-    page = request.GET.get('page', 1)
-    sort = request.GET.get('sort', '-created_on')
-
-    profile = get_profile(request)
-    _grants_pks = Grant.objects.filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).values_list(
-        'pk', flat=True
-    )
-    _grants = Grant.objects.prefetch_related('team_members') \
-        .filter(pk__in=_grants_pks).order_by(sort)
-    sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile).order_by(sort)
-
-    sub_contributions = []
-    contributions = []
-
-    for contribution in Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk'):
-        instance = {
-            "cont": contribution,
-            "sub": contribution.subscription,
-            "grant":  contribution.subscription.grant,
-            "profile": contribution.subscription.contributor_profile
-        }
-        sub_contributions.append(instance)
-
-    for _grant in _grants:
-        subs = Subscription.objects.filter(grant=_grant)
-        for _sub in subs:
-            conts = Contribution.objects.filter(subscription=_sub)
-            for _cont in conts:
-                instance = {
-                    "cont": _cont,
-                    "sub": _sub,
-                    "grant":  _grant,
-                    "profile": _sub.contributor_profile
-                }
-                contributions.append(instance)
-
-    paginator = Paginator(_grants, limit)
-    grants = paginator.get_page(page)
-
-    params = {
-        'active': 'profile',
-        'title': _('My Grants'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
-        'grants': grants,
-        'history': contributions,
-        'sub_grants': sub_grants,
-        'sub_history': sub_contributions
-    }
-
-    return TemplateResponse(request, 'grants/profile/index.html', params)
-
+    if not request.user.is_authenticated:
+        raise Http404
+    handle = request.user.profile.handle
+    return redirect(f'/profile/{handle}/grant_contribs')
 
 def quickstart(request):
     """Display quickstart guide."""
@@ -761,40 +717,14 @@ def quickstart(request):
 
 def leaderboard(request):
     """Display leaderboard."""
+
+    # setup dict
     params = {
         'active': 'grants_leaderboard',
         'title': _('Grants Leaderboard'),
         'card_desc': _('View the top contributors to Gitcoin Grants'),
+        'items': get_leaderboard(),
         }
-
-    # setup dict
-    # TODO: in the future, store all of this in perftools.models.JSONStore
-    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)
-    default_dict = {
-        'rank': None,
-        'no': 0,
-        'sum': 0,
-        'handle': None,
-    }
-    users_to_results = { ele : default_dict.copy() for ele in handles }
-
-    # get all contribution attributes
-    for contribution in Contribution.objects.all().select_related('subscription'):
-        key = contribution.subscription.contributor_profile.handle
-        users_to_results[key]['handle'] = key
-        amount = contribution.subscription.get_converted_amount()
-        if amount:
-            users_to_results[key]['no'] += 1
-            users_to_results[key]['sum'] += round(amount)
-    # prepare response for view
-    params['items'] = []
-    counter = 1
-    for item in sorted(users_to_results.items(), key=lambda kv: kv[1]['sum'], reverse=True):
-        item = item[1]
-        if item['no']:
-            item['rank'] = counter
-            params['items'].append(item)
-            counter += 1
     return TemplateResponse(request, 'grants/leaderboard.html', params)
 
 
