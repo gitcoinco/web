@@ -1425,6 +1425,15 @@ def increase_bounty(request):
     params['is_funder'] = json.dumps(is_funder)
     params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
 
+    coupon_code = request.GET.get('coupon', False)
+    if coupon_code:
+        coupon = Coupon.objects.get(code=coupon_code)
+        if coupon.expiry_date > datetime.now().date():
+            params['FEE_PERCENTAGE'] = coupon.fee_percentage
+            params['coupon_code'] = coupon.code
+        else:
+            params['expired_coupon'] = True
+
     return TemplateResponse(request, 'bounty/increase.html', params)
 
 
