@@ -601,8 +601,6 @@ def get_user(user, sub_path='', scope='', scoped=False, auth=_AUTH):
         user = user.replace('@', '')
         url = f'https://api.github.com/users/{user}{sub_path}?per_page={PER_PAGE_LIMIT}'
 
-    print(url)
-
     response = requests.get(url, auth=auth, headers=HEADERS)
 
     try:

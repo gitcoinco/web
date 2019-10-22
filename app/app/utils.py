@@ -192,7 +192,6 @@ def sync_profile(handle, user=None, hide_profile=True):
             data = get_user(handle, '', scoped=True, auth=(handle, access_token))
 
             user = User.objects.get(username = handle)
-            print(data)
             if 'login' in data:
                 profile = user.profile
                 user.username = data['login']
@@ -204,8 +203,6 @@ def sync_profile(handle, user=None, hide_profile=True):
             pass
     else:
         data = get_user(handle)
-
-    print(data)
 
     email = ''
     is_error = 'name' not in data.keys()
@@ -221,7 +218,6 @@ def sync_profile(handle, user=None, hide_profile=True):
         try:
             defaults['github_access_token'] = user.social_auth.filter(provider='github').latest('pk').access_token
             if user and user.email:
-                print(user.email)
                 defaults['email'] = user.email
         except UserSocialAuth.DoesNotExist:
             pass
