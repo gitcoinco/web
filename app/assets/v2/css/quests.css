@@ -485,6 +485,9 @@ body.stage_4 #header{
 body.stage_4 #cta_button{
   margin-top: 25%;
 }
+body.winner #cta_button{
+  margin-top: 5%;
+}
 body.stage_4 #desc{
   margin-top: -2%;
 }
@@ -843,6 +846,9 @@ body.back3 .tl{
   }
   body.stage_4 #cta_button{
     margin-top: 38%;
+  }
+  body.winner #cta_button{
+    margin-top: 10%;
   }
   body.stage_4 #desc{
     margin-top: 5%;

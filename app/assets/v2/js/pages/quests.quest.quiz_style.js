@@ -254,6 +254,7 @@ var advance_to_state = async function(new_state) {
 
 var death = async function() {
   orb_state('dead');
+  $('body').addClass('death');
   $('#protagonist .ded').removeClass('hidden');
   await $('#header').fadeOut();
   await $('#cta_button').fadeOut();
@@ -278,6 +279,7 @@ var death = async function() {
 var winner = async function(prize_url) {
   start_music_midi('hero');
   orb_state('final');
+  $('body').addClass('winner');
   await sleep(500);
   $('#enemy .ded').removeClass('hidden');
   await $('#header').fadeOut();
@@ -304,6 +306,7 @@ var winner = async function(prize_url) {
   $('#cta_button a').data('href', prize_url).html('Claim Prize 🏆').fadeIn();
   $('#cta_button').css('display', 'block');
   $('#cta_button p').css('display', 'none');
+  $('#cta_button').removeClass('hidden');
 
   var a = $('#cta_button a').clone();
 
