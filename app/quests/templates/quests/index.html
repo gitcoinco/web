@@ -107,18 +107,112 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   {% endfor %}
 </div>
 
-<div class="row indent_on_mobile pt-2" style="margin-top: 100px; background-color: #fafafa;">
-  <h1 id=earn class="mt-3">Earn Points</h1>
+<div class="row indent_on_mobile" id=leaderboard_top>
+  <h1 id=leaderboard style="margin-top: 100px;">Leaderboard</h1>
+  <div id="announce">
+    <img class="mr-1" src="{% static "v2/images/quests/enemies/samurai.svg" %}">
+    <h4><strong>Round 2 Challenge is now Live!</strong></h4>
+    <p>Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on October 30 will <strong>win a KeepKey hardware wallet</strong> and a <a href="https://gitcoin.co/kudos/174/diamond">very special Kudos</a>.
+  </div>
+
 </div>
 
-<div class="row indent_on_mobile mt-0 refer_friend" style="background-color: #fafafa;">
-  <div class="container-fluid py-0 text-center">
-    <img data-src="{% static 'v2/images/grants/robots.png' %}" class=top_img />
+
+<div class="row indent_on_mobile" id="leaderboard_nav">
+  <div id="leaderboard_tabs">
+    <div class="container">
+      <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link nav-line" href="#" data-href="how_to_earn">
+          How to Earn Points
+          </a>
+        </li>
+        {% if github_handle %}
+        <li class="nav-item">
+          <a class="nav-link nav-line" href="#" data-href="my_points">
+          @{{github_handle}}'s' Points ({{point_value}})
+          </a>
+        </li>
+        {% endif %}
+      {% for round_number, this_leaderboard in leaderboard.items %}
+        <li class="nav-item">
+          <a class="nav-link nav-line {% if current_round_number == round_number %}active{%endif%}" href="#" data-href="leaderboard_{{round_number}}">
+          Round {{round_number}} Leaderboard
+          </a>
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
   </div>
 </div>
+<div class="row indent_on_mobile leaderboard_tab my_points hidden">
 
+  <div class="row indent_on_mobile point_history w-100" style="background-color: #fafafa; min-height: 400px;">
+    <h3 class="mt-2">
+      <i class="ml-1 far fa-chart-bar"></i>
+      @{{github_handle}} has {{point_value}} Points
+    </h3>
+    {% if not point_history|length or 1 %}
+      <div class="container-fluid py-4">
+        You have no point history.. Complete some Quests to earn points.
+      </div>
+    {% else %}
+    <div class="container-fluid py-4">
+      <div class="container w-100 point_history_child">
+        <table class="w-100">
+          <tr style="font-weight: bold;">
+            <td>
+              #
+            </td>
+            <td>
+              Round
+            </td>
+            <td>
+              Points
+            </td>
+            <td>
+              When
+            </td>
+            <td>
+              Who
+            </td>
+            <td>
+              What
+            </td>
+          </tr>
+          {% for row in point_history %}
+          <tr style="{% cycle 'background-color: #fafafa;' 'background-color: #eaeaea;' %}">
+            <td>
+              {{ forloop.counter|ordinal }}
+            </td>
+            <td>
+              {{ row.round_number }}
+            </td>
+            <td>
+              {{ row.value }}
+            </td>
+            <td>
+              {{ row.created_on|naturaltime }}
+            </td>
+            <td>
+              <img data-src="/dynamic/avatar/{{ row.profile.handle }}" style="width: 15px; height: 15px; border-radius: 10px;">
+              <a href="{{ row.profile.url }}">@{{ row.profile.handle }}</a>
+            </td>
+            <td>
+              <img data-src="{{ row.questattempt.quest.enemy_img_url }}" style="width: 15px; height: 15px; border-radius: 10px">
+              {{row.action}} <a href="{{row.questattempt.quest.url}}">{{row.questattempt.quest.title}}</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>      
+      </div>
+    </div>
+    {% endif %}
+  </div>  
+</div>
+<div class="row indent_on_mobile leaderboard_tab how_to_earn hidden">
 <div class="row indent_on_mobile" style="background-color: #fafafa;">
-  <h3 class="mt-0">
+  <h3 class="mt-3">
     <i class="ml-1 fab fa-ethereum"></i>
     By completing quests.
     </h3>
@@ -220,93 +314,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     Want to BUIDL an 8-bit style game and earn 10 points (and some ETH) for doing it?
     <a href=#create_quest_game_dynamic>Create a quest game dynamic</a>
   </div>
-
 </div>
-
-
-{% if point_history|length %}
-<div class="row indent_on_mobile point_history" style="background-color: #fafafa;">
-  <h3 class="mt-0">
-    <i class="ml-1 far fa-chart-bar"></i>
-    @{{github_handle}} has {{point_value}} Points
-  </h3>
-  <div class="container-fluid py-4">
-    <div class="container w-100 point_history_child">
-      <table class="w-100">
-        <tr style="font-weight: bold;">
-          <td>
-            #
-          </td>
-          <td>
-            Round
-          </td>
-          <td>
-            Points
-          </td>
-          <td>
-            When
-          </td>
-          <td>
-            Who
-          </td>
-          <td>
-            What
-          </td>
-        </tr>
-        {% for row in point_history %}
-        <tr style="{% cycle 'background-color: #fafafa;' 'background-color: #eaeaea;' %}">
-          <td>
-            {{ forloop.counter|ordinal }}
-          </td>
-          <td>
-            {{ row.round_number }}
-          </td>
-          <td>
-            {{ row.value }}
-          </td>
-          <td>
-            {{ row.created_on|naturaltime }}
-          </td>
-          <td>
-            <img data-src="/dynamic/avatar/{{ row.profile.handle }}" style="width: 15px; height: 15px; border-radius: 10px;">
-            <a href="{{ row.profile.url }}">@{{ row.profile.handle }}</a>
-          </td>
-          <td>
-            <img data-src="{{ row.questattempt.quest.enemy_img_url }}" style="width: 15px; height: 15px; border-radius: 10px">
-            {{row.action}} <a href="{{row.questattempt.quest.url}}">{{row.questattempt.quest.title}}</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </table>      
-    </div>
-  </div>
-</div>
-{% endif %}
-
-
-<div class="row indent_on_mobile" id=leaderboard_top>
-  <h1 id=leaderboard style="margin-top: 100px;">Leaderboard</h1>
-  <div id="announce">
-    <img class="mr-1" src="{% static "v2/images/quests/enemies/samurai.svg" %}">
-    <h4><strong>Round 2 Challenge is now Live!</strong></h4>
-    <p>Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on October 30 will <strong>win a KeepKey hardware wallet</strong> and a <a href="https://gitcoin.co/kudos/174/diamond">very special Kudos</a>.
-  </div>
-
-</div>
-<div class="row indent_on_mobile" id="leaderboard_nav">
-  <div id="leaderboard_tabs">
-    <div class="container">
-      <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
-      {% for round_number, this_leaderboard in leaderboard.items %}
-        <li class="nav-item">
-          <a class="nav-link nav-line {% if current_round_number == round_number %}active{%endif%}" href="#" data-href="leaderboard_{{round_number}}">
-          Round {{round_number}} Leaderboard
-          </a>
-        </li>
-      {% endfor %}
-      </ul>
-    </div>
-  </div>
 </div>
 {% for round_number, this_leaderboard in leaderboard.items %}
   <div class="row indent_on_mobile leaderboard_tab leaderboard_{{round_number}}  {% if current_round_number != round_number %}hidden{%endif%}">
