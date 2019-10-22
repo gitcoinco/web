@@ -406,6 +406,28 @@ def new_faucet_request(fr):
         translation.activate(cur_language)
 
 
+def new_grant_admin(grant):
+    to_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("New Grant Request")
+        body_str = _("A new grant request was completed. You may respond to the request here")
+        body = f"{body_str}: {settings.BASE_URL}{grant.admin_url}"
+        if not should_suppress_notification_email(to_email, 'grant'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def new_quest_request(quest):
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL
