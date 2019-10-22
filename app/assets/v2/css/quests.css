@@ -443,6 +443,10 @@ body.quest_battle p{
 #cta_button a{
   margin-top: 10%;
   text-transform: uppercase;
+  line-height: 66px;
+}
+a.button{
+  line-height: 66px;
 }
 body.stage_1 #cta_button{
   margin-top: 25%;
@@ -736,6 +740,15 @@ body.back5.quest_battle{
 #desc li:hover {
   background-color: #0c0861;
 }
+body.back1 #desc li:hover {
+  background-color: #102945;
+}
+body.back3 #desc li:hover {
+  background-color: #f612fe;
+}
+body.stage_1 #desc li:hover {
+  background-color: #102945;
+}
 #desc li.selected{
   background-color: #3E00FF !important;
 }
@@ -774,6 +787,10 @@ body.back3 .tl{
 @media (max-width: 1110px) {
   body.quest_battle{
     background-size: 250% !important;
+  }
+  #cta_button a, a.button{
+    line-height: 46px;
+    padding: 10px;
   }
   .refer_friend .top_img{
     margin-top: -230px;

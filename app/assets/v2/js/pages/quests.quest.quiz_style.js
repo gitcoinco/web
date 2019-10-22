@@ -269,7 +269,7 @@ var death = async function() {
   await sleep(2500);
   await $('#header').fadeOut();
   await sleep(500);
-  await $('#desc').html('<a class=button href=/quests>More Quests &gt;&gt;</a>').fadeIn();
+  await $('#desc').html('<a class=button href=/quests>&lt;&lt; Quests</a><a class="button ml-2" href=/quests/new>Create Quest ^^</a> <a class=button href=/quests/next>Play Next &gt;&gt;</a>').removeClass('hidden').fadeIn();
   setInterval(function() {
     random_taunt_effect($('#enemy'));
   }, 2000);
@@ -296,9 +296,12 @@ var winner = async function(prize_url) {
   $('#desc').html(span + "<img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>');
   $('.prize').fadeOut();
   await sleep(500);
+  $('#desc').removeClass('hidden');
   $('#desc').fadeIn();
-  await sleep(500);
-  await $('#cta_button a').data('href', prize_url).html('Claim Prize 🏆').fadeIn();
+  await sleep(1300);
+  $('#desc').fadeOut();
+  await sleep(1000);
+  $('#cta_button a').data('href', prize_url).html('Claim Prize 🏆').fadeIn();
   $('#cta_button').css('display', 'block');
   $('#cta_button p').css('display', 'none');
 
@@ -308,6 +311,14 @@ var winner = async function(prize_url) {
   a.html('Play Another ▶️');
   a.addClass('ml-3');
   $(a).insertAfter($('#cta_button a'));
+
+  a = $('#cta_button a:first-child').clone();
+
+  a.attr('href', '/quests/new');
+  a.html('Create Quest 👨‍💻');
+  a.addClass('ml-3');
+  a.addClass('hide_on_mobile');
+  $(a).insertAfter($('#cta_button a:first-child'));
 
   setInterval(function() {
     random_taunt_effect($('#protagonist'));
