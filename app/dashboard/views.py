@@ -2061,7 +2061,7 @@ def profile_quests(request, handle):
             datestr = ele.created_on.strftime('%d-%b-%y')
             if datestr not in balances.keys():
                 balances[datestr] = 0
-            balances[datestr] = val
+            balances[datestr] = running_balance
 
     for datestr, balance in balances.items():
         response += f"\n{datestr},{balance}"
