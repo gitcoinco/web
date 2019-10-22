@@ -16,7 +16,7 @@ $(document).ready(function() {
     $(this).fadeOut(function() {
       $('.demo').fadeIn();
       var src = $('.demo').attr('src') + '?';
-      
+
       $('.demo').attr('src', src);
     });
   });
@@ -49,8 +49,8 @@ $(document).ready(function() {
     $('.difficulty_tab.' + target).removeClass('hidden');
 
     $('html,body').animate({
-        scrollTop: '+=1px'
-    })
+      scrollTop: '+=1px'
+    });
   });
 
   $('.quest-card.available').click(function(e) {
