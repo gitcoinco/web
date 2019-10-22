@@ -2153,10 +2153,21 @@ class ProfileQuerySet(models.QuerySet):
         return self.filter(hide_profile=True)
 
 
-
 class Repo(SuperModel):
     name = models.CharField(max_length=255)
-    
+
+    class Meta:
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
+
+
+class Organization(SuperModel):
+    name = models.CharField(max_length=255)
+    groups = models.ManyToManyField('auth.Group', blank=True)
+    repos = models.ManyToManyField(Repo, blank=True)
+
     class Meta:
         ordering = ('name',)
 
@@ -2181,24 +2192,8 @@ class HackathonRegistration(SuperModel):
         on_delete=models.CASCADE,
         help_text='User profile'
     )
-
-    class Meta:
-        ordering = ('name',)
-
     def __str__(self):
         return f"Name: {self.name}; Hackathon: {self.hackathon}; Referer: {self.referer}; Registrant: {self.registrant}"
-
-
-class Organization(SuperModel):
-    name = models.CharField(max_length=255)
-    groups = models.ManyToManyField('auth.Group', blank=True)
-    repos = models.ManyToManyField(Repo, blank=True)
-
-    class Meta:
-        ordering = ('name',)
-
-    def __str__(self):
-        return self.name
 
 
 class Profile(SuperModel):
@@ -2298,9 +2293,7 @@ class Profile(SuperModel):
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
 
-
     objects = ProfileQuerySet.as_manager()
-
 
     @property
     def quest_level(self):
@@ -2712,7 +2705,6 @@ class Profile(SuperModel):
         if visits_last_month > med_threshold:
             return "Med"
         return "Low"
-
 
 
     def calc_longest_streak(self):
