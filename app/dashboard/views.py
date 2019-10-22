@@ -55,6 +55,7 @@ import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
+from bleach import clean
 from dashboard.context import quickstart as qs
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
 from economy.utils import convert_token_to_usdt
@@ -1842,12 +1843,12 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 # Currently its not finding anyting in the database
                 if bounty.title and bounty.org_name:
                     params['card_title'] = f'{bounty.title} | {bounty.org_name} Funded Issue Detail | Gitcoin'
-                    params['title'] = params['card_title']
-                    params['card_desc'] = ellipses(bounty.issue_description_text, 255)
+                    params['title'] = clean(params['card_title'], strip=True)
+                    params['card_desc'] = ellipses(clean(bounty.issue_description_text, strip=True), 255)
                     params['noscript'] = {
-                        'title': bounty.title,
+                        'title': clean(bounty.title, strip=True),
                         'org_name': bounty.org_name,
-                        'issue_description_text': bounty.issue_description_text,
+                        'issue_description_text': clean(bounty.issue_description_text, strip=True),
                         'keywords': ', '.join(bounty.keywords.split(','))}
 
                 if bounty.event and bounty.event.slug:

@@ -49,6 +49,7 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
+from bleach import clean
 from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -1987,7 +1988,7 @@ class Activity(SuperModel):
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']
-        activity['title'] = obj.get('title', '')
+        activity['title'] = clean(obj.get('title', ''), strip=True)
         if 'id' in obj:
             if 'category' not in obj or obj['category'] == 'bounty': # backwards-compatible for category-lacking metadata
                 activity['bounty_url'] = Bounty.objects.get(pk=obj['id']).get_relative_url()
