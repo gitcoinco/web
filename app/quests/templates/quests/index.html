@@ -177,7 +177,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         {% if profile %}
         You were referred by:
           {% if profile.referrer %}
-            <a href="{{ref.handle}}">
+            <a href="/profile/{{ref.handle}}">
               <img data-src="/dynamic/avatar/{{profile.referrer.handle}}">
               @{{profile.referrer.handle}}
             </a>
@@ -189,7 +189,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           {% if profile.referred.count %}
           :
             {% for ref in profile.referred.all %}
-              <a href="{{ref.handle}}">
+              <a href="/profile/{{ref.handle}}">
                 <img data-src="/dynamic/avatar/{{ref.handle}}">
                 @{{ref.handle}}
               </a>
