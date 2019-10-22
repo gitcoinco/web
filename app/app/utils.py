@@ -183,7 +183,7 @@ def get_upload_filename(instance, filename):
 
 
 def sync_profile(handle, user=None, hide_profile=True):
-    from dashboard.models import Profile, Organization
+    from dashboard.models import Profile
     handle = handle.strip().replace('@', '').lower()
     data = get_user(handle)
     email = ''
