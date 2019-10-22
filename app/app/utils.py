@@ -224,6 +224,7 @@ def sync_profile(handle, user=None, hide_profile=True):
 
     except Exception as e:
         logger.error(e)
+        print("we're crashing out here")
         return None
 
     if user and user.email:

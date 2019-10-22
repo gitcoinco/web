@@ -17,7 +17,7 @@ class Command(BaseCommand):
                 if handle not in lsynced:
 
                     print(f'Syncing User Handle: {handle}')
-                    profile = sync_profile(handle)
+                    profile = sync_profile(handle, hide_profile=False)
                     print('Profile from sync')
                     print(profile)
                     access_token = profile.user.social_auth.filter(provider='github').latest('pk').access_token
