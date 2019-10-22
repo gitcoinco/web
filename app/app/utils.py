@@ -193,7 +193,7 @@ def sync_profile(handle, user=None, hide_profile=True):
         logger.warning('Failed to fetch github username', exc_info=True, extra={'handle': handle})
         return None
 
-    defaults = {'last_sync_date': timezone.now(), 'data': data, 'hide_profile': hide_profile, }
+    defaults = {'last_sync_date': timezone.now(), 'data': data}
 
     if user and isinstance(user, User):
         defaults['user'] = user
@@ -206,6 +206,9 @@ def sync_profile(handle, user=None, hide_profile=True):
 
     # store the org info in postgres
     try:
+        profile_exists = Profile.objects.filter(handle=handle).count()
+        if not profile_exists:
+            defaults['hide_profile'] = hide_profile
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         access_token = profile.user.social_auth.filter(provider='github').latest('pk').access_token
         orgs = get_user(handle, '', scope='orgs', auth=(profile.handle, access_token))
