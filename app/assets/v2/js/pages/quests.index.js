@@ -11,15 +11,6 @@ $(document).ready(function() {
     }, 500);
   });
 
-  $('.demo').click(function(e) {
-    e.preventDefault();
-    $(this).fadeOut(function() {
-      $('.demo').fadeIn();
-      var src = $('.demo').attr('src') + '?';
-      
-      $('.demo').attr('src', src);
-    });
-  });
   var random_attn_effect = function(ele) {
     if (ele.data('effect')) {
       return;

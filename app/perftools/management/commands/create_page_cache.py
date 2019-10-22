@@ -107,7 +107,7 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_grants_cache()
         create_quests_cache()
+        create_grants_cache()
         create_results_cache()
         create_contributor_landing_page_context()

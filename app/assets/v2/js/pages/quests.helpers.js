@@ -160,6 +160,7 @@ $(document).ready(function() {
 
   $('#cta_button a').on('click', function(e) {
     var target = $(this).attr('href');
+
     if (target == '#') {
       e.preventDefault();
       $('#cta_button').addClass('hidden');

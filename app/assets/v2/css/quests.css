@@ -143,7 +143,7 @@
 }
 .demo {
   max-width: 100%;
-  cursor: pointer;
+  border: 1px solid #0b57a6;
 }
 .difficulty_tab{
   display: block;
@@ -994,6 +994,9 @@ body.back3 .tl{
 
 }
 @media (max-width: 550px) {
+  .quest-card{
+    margin-left: 20% !important;
+  }
   body.quest_battle{
     background-size: 400% !important;
   }

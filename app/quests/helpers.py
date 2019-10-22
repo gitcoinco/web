@@ -1,4 +1,5 @@
 
+import copy
 import logging
 import random
 
@@ -228,7 +229,7 @@ def generate_leaderboard(max_entries=25, round_number=1):
         return_leaderboard.append(this_ele)
 
     # return values
-    leaderboard_hero = return_leaderboard
+    leaderboard_hero = copy.deepcopy(return_leaderboard)
     if len(leaderboard) < 3:
         leaderboard_hero = []
     else:
