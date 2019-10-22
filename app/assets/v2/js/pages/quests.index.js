@@ -53,6 +53,20 @@ $(document).ready(function() {
     });
   });
 
+  $('#leaderboard_tabs a').click(function(e) {
+    e.preventDefault();
+    var target = $(this).data('href');
+
+    $('.leaderboard_tab').addClass('hidden');
+    $('.nav-link').removeClass('active');
+    $(this).addClass('active');
+    $('.' + target).removeClass('hidden');
+
+    $('html,body').animate({
+      scrollTop: '+=1px'
+    });
+  });
+
   $('.quest-card.available').click(function(e) {
     e.preventDefault();
     document.location.href = $(this).find('a').attr('href');

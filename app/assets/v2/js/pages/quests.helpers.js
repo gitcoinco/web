@@ -159,10 +159,12 @@ $(document).ready(function() {
   });
 
   $('#cta_button a').on('click', function(e) {
-    e.preventDefault();
-    $('#cta_button').addClass('hidden');
-    advance_to_state(document.quest_state + 1);
-
+    var target = $(this).attr('href');
+    if (target == '#') {
+      e.preventDefault();
+      $('#cta_button').addClass('hidden');
+      advance_to_state(document.quest_state + 1);
+    }
   });
 
   $('.music_toggle').on('click', function(e) {

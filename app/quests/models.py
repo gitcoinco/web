@@ -202,6 +202,7 @@ class QuestPointAward(SuperModel):
     )
     value = models.FloatField()
     action = models.CharField(max_length=100, default='Beat')
+    round_number = models.IntegerField(default=1)
 
     def __str__(self):
         """Return the string representation of this obj."""

@@ -20,7 +20,7 @@ var start_quiz = async function() {
       'answers': answers
     });
 
-    // manage state transitoin
+    // manage state transition
     console.log('question from', question_number, ' to', question_number + 1);
     for (var p = 0; p < 10; p += 1) {
       $('body').removeClass('question_number_' + p);
@@ -303,7 +303,7 @@ var winner = async function(prize_url) {
   await sleep(1300);
   $('#desc').fadeOut();
   await sleep(1000);
-  $('#cta_button a').data('href', prize_url).html('Claim Prize 🏆').fadeIn();
+  $('#cta_button a').attr('href', prize_url).html('Claim Prize 🏆').fadeIn();
   $('#cta_button').css('display', 'block');
   $('#cta_button p').css('display', 'none');
   $('#cta_button').removeClass('hidden');
