@@ -2459,7 +2459,7 @@ class Profile(SuperModel):
     def bounties(self):
         fulfilled_bounty_ids = self.fulfilled.all().values_list('bounty_id')
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
-        for interested in self.interested.all():
+        for interested in self.interested.all().nocache():
             bounties = bounties | Bounty.objects.filter(interested=interested, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(pk__in=fulfilled_bounty_ids, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
