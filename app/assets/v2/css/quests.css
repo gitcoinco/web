@@ -278,7 +278,7 @@ body.quest_battle div,
 body.quest_battle p{
   color: white;
 }
-._hj_poll_container{
+#_hj_poll_container{
   display: none;
 }
 .character .info p{
