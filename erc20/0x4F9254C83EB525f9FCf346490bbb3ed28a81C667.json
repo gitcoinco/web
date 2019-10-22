@@ -1,0 +1,24 @@
+{
+  "symbol": "CELR",
+  "address": "0x4F9254C83EB525f9FCf346490bbb3ed28a81C667",
+  "overview": {
+    "en": "Celer Network is a layer-2 scaling platform to build fast, easy-to-use, low-cost and secure blockchain applications at internet scale using off-chain scaling techniques and incentive-aligned cryptoeconomics.",
+    "zh": "Celer Network是一个二层扩容平台，通过新颖的链下扩容技术和加密经济学模型，帮助区块链应用极大地降低交易手续费和延迟，达到传统互联网的规模和体验。"
+  },
+  "email": "info@celer.network",
+  "website": "https://celer.network",
+  "whitepaper": "https://celer.network/assets/doc/CelerNetwork-Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-03-18",
+  "initial_price": {
+    "USD": "0.0067 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/celernetwork",
+    "telegram": "https://t.me/joinchat/celernetwork",
+    "github": "https://github.com/celer-network",
+    "facebook": "https://www.facebook.com/celernetwork",
+    "reddit": "https://reddit.com/r/celernetwork",
+    "medium": "https://medium.com/celer-network"
+  }
+}
