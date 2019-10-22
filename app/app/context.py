@@ -60,7 +60,6 @@ def preprocess(request):
         record_visit = not profile.last_visit or profile.last_visit < (
             timezone.now() - timezone.timedelta(seconds=RECORD_VISIT_EVERY_N_SECONDS)
         )
-
         if record_visit:
             ip_address = get_ip(request)
             profile.last_visit = timezone.now()
@@ -69,7 +68,11 @@ def preprocess(request):
                 profile.save()
             except Exception as e:
                 logger.exception(e)
-            metadata = {'useragent': request.META['HTTP_USER_AGENT'], }
+            metadata = {
+                'useragent': request.META['HTTP_USER_AGENT'],
+                'referrer': request.META.get('HTTP_REFERER', None),
+                'path': request.META.get('PATH_INFO', None),
+            }
             UserAction.objects.create(
                 user=request.user,
                 profile=profile,
@@ -114,6 +117,7 @@ def preprocess(request):
         'is_moderator': profile.is_moderator if profile else False,
         'persona_is_funder': profile.persona_is_funder if profile else False,
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
+        'quests_live': settings.QUESTS_LIVE,
     }
     context['json_context'] = json.dumps(context)
 

@@ -45,12 +45,30 @@
           {% endif %}
         <h1>{{hackathon.name}} Guide</h1>
         {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+        <BR>
+        <BR>
+        {% if not github_handle %}
 
+        <div class="text-center">
+          <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
+            onclick="dataLayer.push({'event': 'login'});">
+            <i class="fab fa-github"></i>
+            <span>{% trans "Register with GitHub for Hackathon" %}</span>
+          </a>
+          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+        </div>
+        {% else %}
+          {% if is_registered %}
+            <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
+          {% else %}
+            <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
+            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+          {% endif %}
+        {% endif %}
       </div>
     </div>
 
     <div class="container-fluid p-5">
-
       {% if hackathon.end_date|timesince >= "1 min" %}
         <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
       {% endif %}
@@ -162,12 +180,63 @@
           </div>
         </div>
       </div>
-      <div class="text-center">
-          <a class="btn btn-lg btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
-      </div>
+      {% if not github_handle %}
+
+        <div class="text-center">
+          <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
+            onclick="dataLayer.push({'event': 'login'});">
+            <i class="fab fa-github"></i>
+            <span>{% trans "Register with GitHub for Hackathon" %}</span>
+          </a>
+          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+        </div>
+
+      {% else %}
+        <div class="text-center">
+          {% if is_registered %}
+            <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
+          {% else %}
+            <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
+            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+          {% endif %}
+        </div>
+      {% endif %}
     </div>
+    {% csrf_token %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
+
+    <script>
+      // Send registration
+      const is_registered = {{ is_registered|yesno:"true,false" }};
+      const hackathon_slug = '{{ hackathon.slug|safe }}';
+      const redirect = '{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}';
+      const csrftoken = $('[name=csrfmiddlewaretoken]').val();
+      const register = (name, referer) => {
+        if (is_registered) {
+          return;
+        }
+        const url = '/register_hackathon/'
+        const data = { 'name': name, 'referer': referer}
+        const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
+        _alert('You have now registered for this hackathon.', 'success');
+        $.when(sendRegister).then((response) => {
+          console.log(response)
+            document.location.href = response.redirect;
+        });
+      }
+      const params = new URLSearchParams(window.location.search);
+
+      if (params.get('referer')) {
+        register(hackathon_slug, params.get('referer'))
+      }
+      $('[data-registration]').on('click', function(e) {
+        e.preventDefault();
+        let name = $(this).data('registration');
+        let referer = $(this).data('referer');
+        register(name, referer)
+      });
+    </script>
 
   </body>

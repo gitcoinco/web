@@ -143,12 +143,12 @@ def bounty_to_city(bounty):
 def bounty_index_terms(bounty):
     index_terms = []
     if not should_suppress_leaderboard(bounty.bounty_owner_github_username):
-        index_terms.append(bounty.bounty_owner_github_username)
+        index_terms.append(bounty.bounty_owner_github_username.lower())
     if bounty.org_name:
-        index_terms.append(bounty.org_name)
+        index_terms.append(bounty.org_name.lower())
     for fulfiller in bounty.fulfillments.filter(accepted=True):
         if not should_suppress_leaderboard(fulfiller.fulfiller_github_username):
-            index_terms.append(fulfiller.fulfiller_github_username)
+            index_terms.append(fulfiller.fulfiller_github_username.lower())
     index_terms.append(bounty.token_name)
     for keyword in bounty_to_city(bounty):
         index_terms.append(keyword)
@@ -164,11 +164,11 @@ def bounty_index_terms(bounty):
 def tip_index_terms(tip):
     index_terms = []
     if not should_suppress_leaderboard(tip.username):
-        index_terms.append(tip.username)
+        index_terms.append(tip.username.lower())
     if not should_suppress_leaderboard(tip.from_username):
-        index_terms.append(tip.from_username)
+        index_terms.append(tip.from_username.lower())
     if not should_suppress_leaderboard(tip.org_name):
-        index_terms.append(tip.org_name)
+        index_terms.append(tip.org_name.lower())
     if not should_suppress_leaderboard(tip.tokenName):
         index_terms.append(tip.tokenName)
     for keyword in tip_to_country(tip):

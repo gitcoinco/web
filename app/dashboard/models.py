@@ -1614,10 +1614,20 @@ class Tip(SendCryptoAsset):
 class TipPayoutException(Exception):
     pass
 
+
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
     # when a new tip is saved, make sure it doesnt have whitespace in it
     instance.username = instance.username.replace(' ', '')
+    # set missing attributes
+    if not instance.sender_profile:
+        profiles = Profile.objects.filter(handle__iexact=instance.from_username)
+        if profiles.exists():
+            instance.sender_profile = profiles.first()
+    if not instance.recipient_profile:
+        profiles = Profile.objects.filter(handle__iexact=instance.username)
+        if profiles.exists():
+            instance.recipient_profile = profiles.first()
 
 
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
@@ -1633,7 +1643,7 @@ def postsave_tip(sender, instance, **kwargs):
                 "from_profile":instance.sender_profile,
                 "to_profile":instance.recipient_profile,
                 "value_usd":instance.value_in_usdt_then,
-                "url":'https"://gitcoin.co/tips',
+                "url":'https://gitcoin.co/tips',
                 "network":instance.network,
             }
             )
@@ -1855,6 +1865,9 @@ class Activity(SuperModel):
         ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
         ('joined', 'Joined Gitcoin'),
+        ('played_quest', 'Played Quest'),
+        ('beat_quest', 'Beat Quest'),
+        ('created_quest', 'Created Quest'),
         ('updated_avatar', 'Updated Avatar'),
     ]
 
@@ -2162,6 +2175,27 @@ class Organization(SuperModel):
         return self.name
 
 
+class HackathonRegistration(SuperModel):
+    """Defines the Hackthon profiles registrations"""
+    name = models.CharField(max_length=255, help_text='Hackathon slug')
+
+    hackathon = models.ForeignKey(
+        'HackathonEvent',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    referer = models.URLField(null=True, blank=True, help_text='Url comes from')
+    registrant = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='hackathon_registration',
+        on_delete=models.CASCADE,
+        help_text='User profile'
+    )
+    def __str__(self):
+        return f"Name: {self.name}; Hackathon: {self.hackathon}; Referer: {self.referer}; Registrant: {self.registrant}"
+
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
@@ -2257,8 +2291,27 @@ class Profile(SuperModel):
     rank_funder = models.IntegerField(default=0)
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
+    referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
 
     objects = ProfileQuerySet.as_manager()
+
+    @property
+    def quest_level(self):
+        return self.quest_attempts.filter(success=True).distinct('quest').count() + 1
+
+    @property
+    def quest_caste(self):
+        castes = [
+            'Etherean',
+            'Ethereal',
+            'BUIDLer',
+            'HODLer',
+            'Whale',
+            'BullBear',
+            'MoonKid',
+        ]
+        i = self.pk % len(castes)
+        return castes[i]
 
     @property
     def get_my_tips(self):
@@ -2286,6 +2339,10 @@ class Profile(SuperModel):
         if not self.is_org:
             return Profile.objects.none()
         return Profile.objects.filter(organizations__icontains=self.handle)
+
+    @property
+    def ref_code(self):
+        return hex(self.pk).replace("0x",'')
 
     @property
     def get_org_kudos(self):
@@ -2648,7 +2705,6 @@ class Profile(SuperModel):
         if visits_last_month > med_threshold:
             return "Med"
         return "Low"
-            
 
 
     def calc_longest_streak(self):
@@ -3278,8 +3334,8 @@ class Profile(SuperModel):
                 logger.exception(e)
                 pass
 
-        # if sum_type == 'collected':
-        #     eth_sum = eth_sum + float(sum([amount.value_in_eth for amount in self.tips])) if self.tips else eth_sum
+        # if sum_type == 'collected' and self.tips:
+        #     eth_sum = eth_sum + sum([ float(amount.value_in_eth) for amount in self.tips ])
 
         return eth_sum
 
@@ -3445,7 +3501,7 @@ class Profile(SuperModel):
         sum_eth_collected = self.get_eth_sum(bounties=fulfilled_bounties)
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
-        
+
         sum_all_funded_tokens = self.get_all_tokens_sum(sum_type='funded', bounties=funded_bounties, network=network)
         sum_all_collected_tokens = self.get_all_tokens_sum(
             sum_type='collected', bounties=fulfilled_bounties, network=network
@@ -3509,6 +3565,8 @@ class Profile(SuperModel):
         context['total_tips_sent'] = profile.get_sent_tips.count()
         context['total_tips_received'] = profile.get_my_tips.count()
 
+        context['total_quest_attempts'] = profile.quest_attempts.count()
+        context['total_quest_success'] = profile.quest_attempts.filter(success=True).count()
 
         # portfolio
         portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
@@ -3924,7 +3982,7 @@ class HackathonEvent(SuperModel):
         return f'{self.name} - {self.start_date}'
 
     @property
-    def bounties(self):
+    def get_current_bounties(self):
         return Bounty.objects.filter(event=self, network='mainnet').current()
 
     @property
@@ -3932,10 +3990,10 @@ class HackathonEvent(SuperModel):
         stats = {
             'range': f"{self.start_date.strftime('%m/%d/%Y')} to {self.end_date.strftime('%m/%d/%Y')}",
             'logo': self.logo.url if self.logo else None,
-            'num_bounties': self.bounties.count(),
-            'num_bounties_done': self.bounties.filter(idx_status='done').count(),
-            'num_bounties_open': self.bounties.filter(idx_status='open').count(),
-            'total_volume': sum(self.bounties.values_list('_val_usd_db', flat=True)),
+            'num_bounties': self.get_current_bounties.count(),
+            'num_bounties_done': self.get_current_bounties.filter(idx_status='done').count(),
+            'num_bounties_open': self.get_current_bounties.filter(idx_status='open').count(),
+            'total_volume': sum(self.get_current_bounties.values_list('_val_usd_db', flat=True)),
         }
         return stats
 
@@ -4044,6 +4102,9 @@ class ProfileView(SuperModel):
 
     target = models.ForeignKey('dashboard.Profile', related_name='viewed_by', on_delete=models.CASCADE, db_index=True)
     viewer = models.ForeignKey('dashboard.Profile', related_name='viewed_profiles', on_delete=models.CASCADE, db_index=True)
+
+    class Meta:
+        ordering = ['-pk']
 
     def __str__(self):
         return f"{self.viewer} => {self.target} on {self.created_on}"

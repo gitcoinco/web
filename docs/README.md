@@ -191,7 +191,7 @@ We may introduce Arbitration [via Delphi](http://delphi.network/) at some point 
 #### Showing Support to Individuals
 
 - via [Tips](https://gitcoin.co/tips) 
-  - A free, fast way to show immediate gratitude towards an individual via github username or email adress
+  - A free, fast way to show immediate gratitude towards an individual via github username or email address
   
 - via [Kudos](https://gitcoin.co/kudos)
   - Showcases special skills and appreciation towards other Gitcoin members.
