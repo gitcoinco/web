@@ -759,38 +759,44 @@ body.back9.quest_battle{
 #desc li:hover {
   background-color: #0c0861;
 }
-body.back1 #desc li:hover {
+#desc li.selected{
+  background-color: #3E00FF;
+}
+body.back1 #desc li:hover,
+body.back1 #desc li.selected {
   background-color: #102945;
 }
-body.back2 #desc li:hover {
+body.back2 #desc li:hover,
+body.back2 #desc li.selected {
   background-color: #102945;
 }
-body.back3 #desc li:hover {
+body.back3 #desc li:hover,
+body.back3 #desc li.selected {
   background-color: #f6126e;
 }
-body.back4 #desc li:hover {
+body.back4 #desc li:hover,
+body.back4 #desc li.selected {
   background-color: #17366d;
 }
-body.back5 #desc li:hover {
+body.back5 #desc li:hover,
+body.back5 #desc li.selected {
   background-color: #101061;
 }
-body.back6 #desc li:hover {
+body.back6 #desc li:hover,
+body.back6 #desc li.selected {
   background-color: #8ab2b2;
 }
-body.back7 #desc li:hover {
+body.back7 #desc li:hover,
+body.back7 #desc li.selected {
   background-color: #0e151e;
 }
-body.back8 #desc li:hover {
+body.back8 #desc li:hover,
+body.back8 #desc li.selected {
   background-color: #0a061e;
 }
-body.back9 #desc li:hover {
+body.back9 #desc li:hover,
+body.back9 #desc li.selected {
   background-color: #1c1135;
-}
-body.stage_1 #desc li:hover {
-  background-color: #102945;
-}
-#desc li.selected{
-  background-color: #3E00FF !important;
 }
 
 #breadcrumbs, #breadcrumbs a{
