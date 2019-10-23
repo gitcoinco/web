@@ -179,7 +179,8 @@ urlpatterns = [
     # Hackathons / special events
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
     path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
-    re_path(r'^hackathon/?$', dashboard.views.hackathon, name='hackathon_idx'),
+    re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
+    re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
 
