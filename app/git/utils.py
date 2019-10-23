@@ -42,6 +42,7 @@ V3HEADERS = {'Accept': 'application/vnd.github.v3.text-match+json'}
 JSON_HEADER = {'Accept': 'application/json', 'User-Agent': settings.GITHUB_APP_NAME, 'Origin': settings.BASE_URL}
 TIMELINE_HEADERS = {'Accept': 'application/vnd.github.mockingbird-preview'}
 TOKEN_URL = '{api_url}/applications/{client_id}/tokens/{oauth_token}'
+PER_PAGE_LIMIT = 100
 
 
 def github_connect(token=None):
@@ -590,11 +591,17 @@ def get_interested_actions(github_url, username, email=''):
     return actions_by_interested_party
 
 
-def get_user(user, sub_path=''):
+def get_user(user, sub_path='', scope='', scoped=False, auth=_AUTH):
     """Get the github user details."""
-    user = user.replace('@', '')
-    url = f'https://api.github.com/users/{user}{sub_path}'
-    response = requests.get(url, auth=_AUTH, headers=HEADERS)
+    if scope is not '':
+        url = f'https://api.github.com/user/{scope}?per_page={PER_PAGE_LIMIT}'
+    elif scoped:
+        url = f'https://api.github.com/user'
+    else:
+        user = user.replace('@', '')
+        url = f'https://api.github.com/users/{user}{sub_path}?per_page={PER_PAGE_LIMIT}'
+
+    response = requests.get(url, auth=auth, headers=HEADERS)
 
     try:
         response_dict = response.json()
