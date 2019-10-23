@@ -8,7 +8,7 @@ function kudosSearch(elem) {
     var auto_terms = [ 'rare', 'common', 'ninja', 'soft skills', 'programming' ];
     var name = $(this).attr('name');
     if (name == 'enemy'){
-      auto_terms = [ 'samurai', 'evil', 'undead', 'bot', 'cellarius', 'devcon', 'meme', 'doge',  'bowtie',];
+      auto_terms = [ 'samurai', 'evil', 'undead', 'bot', 'cellarius', 'devcon', 'meme', 'doge', 'bowtie', 'moloch'];
     }
     if (name == 'reward'){
       auto_terms = [ 'common', 'diamond', 'fun', 'bot', 'eth', 'hummingbird', 'holy hand grenade'];
