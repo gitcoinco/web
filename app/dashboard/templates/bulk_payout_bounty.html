@@ -60,40 +60,47 @@
               <img src="{% static "v2/images/prime.png" %}">
             </div>
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
-              <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
-                <div class="w-100 text-center">
+              <div class="mt-5" id="primary_subform">
+                <div class="text-center">
                   <h3>{% trans "Advanced Payout" %}</h3>
                   <p><a href="{{ action_urls.accept }}">{% trans "Switch to Basic Payout" %}</a></p>
                 </div>
-                <div class="w-100">
-                  <label for=issueURL>{% trans "Issue URL:" %}</label>
-                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{% endif %}" disabled/>
-                  <input type="hidden" name="bounty_id" id="bountyId" value="{{ bounty.id }}">
+                <div>
+                  <label for="issueURL">{% trans "Issue Title" %}</label>
+                  <p name="issueTitle" class="font-subheader">{{ bounty.title }}</p>
                 </div>
-                <div class="w-100 mt-2">
-                  <label for=amount>{% trans "Amount:" %}</label>
-                  <input name='amount' id="amount" class="w-20 gc-round-text-input" type="number" placeholder="amount" value="{{ bounty.value_true }}" disabled/>
-                  <input type="hidden" id="standard_bounties_id" value="{{ bounty.standard_bounties_id }}">
-                  <input type="hidden" id="token_address" value="{{ bounty.token_address }}">
-                  <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
-                  <span id="token_name">{{ bounty.token_name }}</span>
-                  {% if bounty.additional_funding_summary %}
-                    <div class="my-2">
-                      {% trans '+ Crowdfunding' %}
-                      {% for key, token in bounty.additional_funding_summary.items %}
-                        <input name='crowdfundedAmount' class="w-20 gc-round-text-input" type="number" value="{{ token.amount }}" disabled style="width: 80px;"/> {{ key }}
-                      {% endfor %}
+                <div>
+                  <label for="issueURL">{% trans "Issue URL" %}</label>
+                  <p id="issueURL" name="issueURL" class="font-subheader">{{ bounty.github_url }}</p>
+                </div>
+                <div>
+                  <label for="amount">{% trans "Amount" %}</label>
+                  <p name="amount" class="font-subheader">
+                    <span id="amount">{{ bounty.value_true }}</span>
+                    <span id="token_name">{{ bounty.token_name }}</span>
+                  </p>
+                </div>
 
-                    </div>
-                    <div class="row btn-metamask mt-4 mx-1 py-3 br-2">
-                      <i class="col-3 col-lg-2 fas fa-exclamation-triangle font-title-xl my-auto text-center"></i>
-                      <p class="col-9 col-lg-10 pl-lg-0 font-body my-auto font-weight-semibold">
-                        {% trans "To include crowdfunding as part of this payout, please use Basic Payout." %}
+                {% if bounty.additional_funding_summary %}
+                  <div>
+                    <label for="crowdfundedAmount">{% trans "Crowdfunded Amount" %}</label>
+                    {% for key, token in bounty.additional_funding_summary.items %}
+                      <p name='crowdfundedAmount' class="font-body mb-0">
+                        <span>{{ token.amount }}</span>
+                        <span>{{ key }}</span>
                       </p>
-                    </div>
-                  {% endif %}
-                </div>
-                <div class="w-100 mt-2 terms_container">
+                    {% endfor %}
+                  </div>
+
+                  <div class="row btn-metamask mt-4 mx-1 py-3 br-2">
+                    <i class="col-3 col-lg-2 fas fa-exclamation-triangle font-title-xl my-auto text-center"></i>
+                    <p class="col-9 col-lg-10 pl-lg-0 font-body my-auto font-weight-semibold">
+                      {% trans "To include crowdfunding as part of this payout, please use Basic Payout." %}
+                    </p>
+                  </div>
+                {% endif %}
+
+                <div class="mt-3 terms_container">
                   <input name="pay_with_bounty" id="pay_with_bounty" type="checkbox" value=1 checked="checked" onchange="update_registry()"/>
                   <label for=pay_with_bounty>{% trans "Pay using bounty funds." %}<label id="tooltip" class="pay_with_bounty-hover"><i class='fa fa-info-circle'></i></label></label>
                 </div>
@@ -170,15 +177,19 @@
                     {% include 'shared/bounty_actions_hidden_vars.html' %}
                     {% include 'shared/wallet_estimate.html' %}
                   </div>
-                  <div class="w-100 mt-2 terms_container">
+                  <div class="w-100 mt-4 terms_container">
                     <input name='terms' id='terms' type="checkbox" value=1 required />
                     <label for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
                   </div>
                   <div class="w-100 mt-2 text-center">
-                    <a id="acceptBounty" class="button button--primary btn-block js-submit mt-3 mb-2 pulseClick submitBounty" name="submit" style="width: 100%; text-transform: uppercase; text-align: center; color: white;">
+                    <a id="acceptBounty" class="btn btn-gc-blue font-weight-semibold text-center font-subheader js-submit mt-3 pulseClick submitBounty" name="submit" style="width: 100%; text-transform: uppercase; color: white;">
                       {% trans "Payout Bounty" %}
                     </a>
                   </div>
+                  <input type="hidden" name="bounty_id" id="bountyId" value="{{ bounty.id }}">
+                  <input type="hidden" id="standard_bounties_id" value="{{ bounty.standard_bounties_id }}">
+                  <input type="hidden" id="token_address" value="{{ bounty.token_address }}">
+                  <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
                 </div>
               </div>
               <div id="ethinfo-tooltip" class="tooltip-hover">
@@ -205,7 +216,7 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    
+
   </body>
   <script>
     $('[data-toggle="popover"]').popover()

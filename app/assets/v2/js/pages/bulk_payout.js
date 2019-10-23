@@ -90,7 +90,7 @@ $(document).ready(function($) {
           sendTransaction(i + 1);
 
           // tell frontend that this issue has a pending tx
-          localStorage[$('#issueURL').val()] = JSON.stringify({
+          localStorage[$('#issueURL').text()] = JSON.stringify({
             timestamp: timestamp(),
             dataHash: null,
             issuer: web3.eth.coinbase,
@@ -110,34 +110,46 @@ $(document).ready(function($) {
 
     } else {
       // get form data
-      var email = '';
-      var github_url = $('#issueURL').val();
-      var from_name = document.contxt['github_handle'];
-      var username = transaction['data']['to'];
-      var amountInEth = transaction['data']['amount'];
-      var comments_priv = '';
-      var comments_public = '';
-      var from_email = '';
-      var accept_tos = $('#terms').is(':checked');
-      var tokenAddress = transaction['data']['token_address'];
-      var expires = 9999999999;
+      const email = '';
+      const github_url = $('#issueURL').text();
+      const from_name = document.contxt['github_handle'];
+      const username = transaction['data']['to'];
+      const amountInEth = transaction['data']['amount'];
+      const comments_priv = '';
+      const comments_public = '';
+      const from_email = '';
+      const accept_tos = $('#terms').is(':checked');
+      const tokenAddress = transaction['data']['token_address'];
+      const expires = 9999999999;
 
       var success_callback = function(txid) {
-        var url = 'https://' + etherscanDomain() + '/tx/' + txid;
-        var msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+        const url = 'https://' + etherscanDomain() + '/tx/' + txid;
+        const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
 
-        // send msg to frontend
         _alert(msg, 'info');
-
-        // text transaction
-        sendTransaction(i + 1);
+        sendTransaction(i + 1); // text transaction
       };
+
       var failure_callback = function() {
-        // do nothing
-        $.noop();
+        $.noop(); // do nothing
       };
 
-      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
+      return sendTip(
+        email,
+        github_url,
+        from_name,
+        username,
+        amountInEth,
+        comments_public,
+        comments_priv,
+        from_email,
+        accept_tos,
+        tokenAddress,
+        expires,
+        success_callback,
+        failure_callback,
+        false
+      );
     }
   };
 
@@ -179,7 +191,7 @@ $(document).ready(function($) {
 });
 
 var get_amount = function(percent) {
-  var total_amount = $('#amount').val();
+  const total_amount = $('#amount').text();
 
   return percent * 0.01 * total_amount;
 };
