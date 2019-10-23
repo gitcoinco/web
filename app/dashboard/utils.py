@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import base64
 import json
 import logging
+import re
 from json.decoder import JSONDecodeError
 
 from django.conf import settings
@@ -941,7 +942,8 @@ def get_url_first_indexes():
 
     urls = []
     for p in list_urls(urlconf.urlpatterns):
-        url = ''.join(p).split('/')[0].replace('^', '').replace('\\', '').replace('\$', '')
-        urls += url
+        url = p[0].split('/')[0]
+        url = re.sub(r'\W+', '', url)
+        urls.append(url)
 
     return set(urls)
