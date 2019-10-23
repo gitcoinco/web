@@ -135,7 +135,7 @@ def check_github(profile):
 
 
 def search_github(q):
-    params = (('q', q), ('sort', 'updated'), )
+    params = (('q', q), ('sort', 'updated'),)
     response = requests.get('https://api.github.com/search/users', headers=HEADERS, params=params)
     return response.json()
 
@@ -230,7 +230,7 @@ def get_auth_url(redirect_uri='/'):
         str: The Github authentication URL.
 
     """
-    github_callback = reverse('social:begin', args=('github', ))
+    github_callback = reverse('social:begin', args=('github',))
     redirect_params = {'next': BASE_URI + redirect_uri}
     redirect_uri = urlencode(redirect_params, quote_via=quote_plus)
 
@@ -327,7 +327,7 @@ def get_github_event_emails(oauth_token, username):
                 name = author.get('name', {})
                 if name and username and user_name:
                     append_email = name.lower() == username.lower() or name.lower() == user_name.lower() \
-                        and email and 'noreply.github.com' not in email
+                                   and email and 'noreply.github.com' not in email
                     if append_email:
                         emails.append(email)
 
@@ -396,7 +396,7 @@ def search(query):
         request.Response: The github search response.
 
     """
-    params = (('q', query), ('sort', 'updated'), )
+    params = (('q', query), ('sort', 'updated'),)
 
     try:
         response = requests.get('https://api.github.com/search/users', auth=_AUTH, headers=V3HEADERS, params=params)
@@ -468,7 +468,8 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None):
     params = {
         'sort': 'created',
         'direction': 'desc',
-        'per_page': 100,  # TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
+        'per_page': 100,
+    # TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
     }
     if issue:
         if comment_id:
@@ -600,6 +601,35 @@ def get_user(user, sub_path='', scope='', scoped=False, auth=_AUTH):
     else:
         user = user.replace('@', '')
         url = f'https://api.github.com/users/{user}{sub_path}?per_page={PER_PAGE_LIMIT}'
+
+    response = requests.get(url, auth=auth, headers=HEADERS)
+
+    try:
+        response_dict = response.json()
+    except JSONDecodeError:
+        response_dict = {}
+    return response_dict
+
+
+def get_organization(org, sub_path='', auth=_AUTH):
+    """Get the github organization details."""
+    org = org.replace('@', '')
+    url = f'https://api.github.com/orgs/{org}{sub_path}?per_page={PER_PAGE_LIMIT * 2}'
+    response = requests.get(url, auth=auth, headers=HEADERS)
+    try:
+        response_dict = response.json()
+    except JSONDecodeError:
+        response_dict = {}
+    return response_dict
+
+
+def get_repo(repo_full_name, sub_path='', auth=_AUTH, is_user=False):
+    """Get the github repo details."""
+    repo_full_name = repo_full_name.replace('@', '')
+    if is_user:
+        url = f'https://api.github.com/user/repos?per_page={PER_PAGE_LIMIT}'
+    else:
+        url = f'https://api.github.com/repos/{repo_full_name}{sub_path}?per_page={PER_PAGE_LIMIT}'
 
     response = requests.get(url, auth=auth, headers=HEADERS)
 

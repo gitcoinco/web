@@ -2163,6 +2163,28 @@ class ProfileQuerySet(models.QuerySet):
         return self.filter(hide_profile=True)
 
 
+class Repo(SuperModel):
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
+
+
+class Organization(SuperModel):
+    name = models.CharField(max_length=255)
+    groups = models.ManyToManyField('auth.Group', blank=True)
+    repos = models.ManyToManyField(Repo, blank=True)
+
+    class Meta:
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
+
+
 class HackathonRegistration(SuperModel):
     """Defines the Hackthon profiles registrations"""
     name = models.CharField(max_length=255, help_text='Hackathon slug')
@@ -2180,10 +2202,6 @@ class HackathonRegistration(SuperModel):
         on_delete=models.CASCADE,
         help_text='User profile'
     )
-
-    class Meta:
-        ordering = ('name',)
-
     def __str__(self):
         return f"Name: {self.name}; Hackathon: {self.hackathon}; Referer: {self.referer}; Registrant: {self.registrant}"
 
@@ -2236,6 +2254,8 @@ class Profile(SuperModel):
     )
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    profile_organizations = models.ManyToManyField(Organization, blank=True)
+    repos = models.ManyToManyField(Repo, blank=True)
     form_submission_records = JSONField(default=list, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
@@ -2283,9 +2303,7 @@ class Profile(SuperModel):
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
 
-
     objects = ProfileQuerySet.as_manager()
-
 
     @property
     def quest_level(self):
@@ -2697,7 +2715,6 @@ class Profile(SuperModel):
         if visits_last_month > med_threshold:
             return "Med"
         return "Low"
-
 
 
     def calc_longest_streak(self):
