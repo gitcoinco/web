@@ -547,14 +547,6 @@ input[type=text].loading {
   color: white;
 }
 
-.submit_bounty #network_status div {
-  display: inline;
-}
-
-#network_status div span {
-  color: #4aeba8;
-}
-
 .submit_bounty select[name=denomination] {
   text-align: left;
 }
