@@ -22,8 +22,9 @@ class Command(BaseCommand):
                     print(profile)
                     access_token = profile.user.social_auth.filter(provider='github').latest('pk').access_token
                     print('Removing Stale Organizations and Groups')
-                    remove_org_groups = [x for x in profile.profile_organizations.all() if
-                                         x.name not in profile.organizations]
+                    remove_org_groups = [
+                        x for x in profile.profile_organizations.all() if x.name not in profile.organizations
+                    ]
                     for y in remove_org_groups:
                         profile.profile_organizations.remove(y)
                         profile.user.groups.filter(name__contains=y.name).delete()
@@ -40,11 +41,9 @@ class Command(BaseCommand):
                     for y in user_access_repos:
                         current_user_repos.append(y['name'])
 
-                    remove_user_repos_names = [x for x in profile.repos.all() if
-                                               x.name not in current_user_repos]
+                    remove_user_repos_names = [x for x in profile.repos.all() if x.name not in current_user_repos]
 
-                    remove_user_repos = Repo.objects.filter(name__in=remove_user_repos_names,
-                                                            profile__handle=handle)
+                    remove_user_repos = Repo.objects.filter(name__in=remove_user_repos_names, profile__handle=handle)
                     for y in remove_user_repos:
                         profile.repos.remove(y)
 
@@ -68,11 +67,7 @@ class Command(BaseCommand):
 
                         print(f'Syncing Organization: {db_org.name}')
                         profile.profile_organizations.add(db_org)
-                        org_members = get_organization(
-                            db_org.name,
-                            '/members',
-                            (handle, access_token)
-                        )
+                        org_members = get_organization(db_org.name, '/members', (handle, access_token))
 
                         if 'message' in org_members:
                             print(org_members['message'])
@@ -82,9 +77,7 @@ class Command(BaseCommand):
 
                             try:
                                 membership = get_organization(
-                                    db_org.name,
-                                    f'/memberships/{member["login"]}',
-                                    (handle, access_token)
+                                    db_org.name, f'/memberships/{member["login"]}', (handle, access_token)
                                 )
                                 if 'message' in membership:
                                     print(membership['message'])
@@ -92,21 +85,14 @@ class Command(BaseCommand):
                                 role = membership['role'] if 'role' in membership else "member"
                                 db_group = Group.objects.get_or_create(name=f'{db_org.name}-role-{role}')[0]
                                 db_org.groups.add(db_group)
-                                member_profile_obj = Profile.objects.get(
-                                    handle=member['login'],
-                                    user__is_active=True
-                                )
+                                member_profile_obj = Profile.objects.get(handle=member['login'], user__is_active=True)
                                 member_profile_obj.user.groups.add(db_group)
                                 members_to_sync.append(member['login'])
                             except Exception as e:
                                 # print(f'An exception happened in the Organization Loop: handle {member["login"]} {e}')
                                 continue
 
-                        org_repos = get_organization(
-                            db_org.name,
-                            '/repos',
-                            (handle, access_token)
-                        )
+                        org_repos = get_organization(db_org.name, '/repos', (handle, access_token))
 
                         if 'message' in org_repos:
                             print(org_repos['message'])
@@ -116,11 +102,7 @@ class Command(BaseCommand):
                             db_repo = Repo.objects.get_or_create(name=repo['name'])[0]
                             db_org.repos.add(db_repo)
                             print(f'Syncing Repo: {db_repo.name}')
-                            repo_collabs = get_repo(
-                                repo['full_name'],
-                                '/collaborators',
-                                (handle, access_token)
-                            )
+                            repo_collabs = get_repo(repo['full_name'], '/collaborators', (handle, access_token))
                             if 'message' in repo_collabs:
                                 print(repo_collabs['message'])
                                 continue
@@ -137,12 +119,14 @@ class Command(BaseCommand):
                                     permission = "none"
 
                                 db_group = Group.objects.get_or_create(
-                                    name=f'{db_org.name}-repo-{repo["name"]}-{permission}')[0]
+                                    name=f'{db_org.name}-repo-{repo["name"]}-{permission}'
+                                )[0]
                                 db_org.groups.add(db_group)
 
                                 try:
-                                    member_user_profile = Profile.objects.get(handle=collaborator['login'],
-                                                                              user__is_active=True)
+                                    member_user_profile = Profile.objects.get(
+                                        handle=collaborator['login'], user__is_active=True
+                                    )
                                     member_user_profile.user.groups.add(db_group)
                                     member_user_profile.repos.add(db_repo)
                                     if collaborator['login'] not in members_to_sync or \
@@ -168,9 +152,7 @@ class Command(BaseCommand):
         try:
 
             print("Loading Users....")
-            all_users = Profile.objects.filter(
-                user__is_active=True
-            ).prefetch_related('user')
+            all_users = Profile.objects.filter(user__is_active=True).prefetch_related('user')
 
             synced = []
             orgs_synced = []
