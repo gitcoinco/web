@@ -64,13 +64,13 @@ urlpatterns = [
     url(r'^create?', dashboard.views.new_bounty, name='create_bounty'),  # TODO: Remove
 
     # inbox
-    path('inbox/', include('inbox.urls', namespace='inbox')),
+    re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
 
     # board
-    path('dashboard/', dashboard.views.board, name='dashboard'),
+    re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
 
     # kudos
-    path('kudos/', kudos.views.about, name='kudos_main'),
+    re_path(r'^kudos/?', kudos.views.about, name='kudos_main'),
     path('kudos/about/', kudos.views.about, name='kudos_about'),
     path('kudos/marketplace/', kudos.views.marketplace, name='kudos_marketplace'),
     path('kudos/mint/', kudos.views.mint, name='kudos_mint'),
@@ -178,7 +178,7 @@ urlpatterns = [
     # Hackathons / special events
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
     path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
-    path('hackathon/', dashboard.views.hackathon, name='hackathon_idx'),
+    re_path(r'^hackathon/?', dashboard.views.hackathon, name='hackathon_idx'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
 
