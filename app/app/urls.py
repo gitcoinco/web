@@ -70,11 +70,11 @@ urlpatterns = [
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
 
     # kudos
-    re_path(r'^kudos/?', kudos.views.about, name='kudos_main'),
-    re_path(r'^kudos/about/?', kudos.views.about, name='kudos_about'),
-    re_path(r'^kudos/marketplace/?', kudos.views.marketplace, name='kudos_marketplace'),
-    re_path(r'^kudos/mint/?', kudos.views.mint, name='kudos_mint'),
-    re_path(r'^kudos/send/?', kudos.views.send_2, name='kudos_send'),
+    re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
+    re_path(r'^kudos/about/?$', kudos.views.about, name='kudos_about'),
+    re_path(r'^kudos/marketplace/?$', kudos.views.marketplace, name='kudos_marketplace'),
+    re_path(r'^kudos/mint/?$', kudos.views.mint, name='kudos_mint'),
+    re_path(r'^kudos/send/?$', kudos.views.send_2, name='kudos_send'),
     path('kudos/send/3/', kudos.views.send_3, name='kudos_send_3'),
     path('kudos/send/4/', kudos.views.send_4, name='kudos_send_4'),
     re_path(r'^lazy_load_kudos/$', dashboard.views.lazy_load_kudos, name='lazy_load_kudos'),
@@ -142,7 +142,8 @@ urlpatterns = [
     re_path(r'^spec/?', healthcheck.views.spec, name='spec'),
 
     # grant views
-    re_path(r'^grants/?', include('grants.urls', namespace='grants')),
+    path('grants/', include('grants.urls', namespace='grants')),
+    re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall')),
 
     # dashboard views
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
@@ -160,7 +161,7 @@ urlpatterns = [
     ),
 
     # quests
-    re_path(r'^quests/?', quests.views.index, name='quests_index'),
+    re_path(r'^quests/?$', quests.views.index, name='quests_index'),
     re_path(r'^quests/next?$', quests.views.next_quest, name='next_quest'),
     re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
     re_path(r'^quests/new/?', quests.views.newquest, name='newquest'),
@@ -178,7 +179,7 @@ urlpatterns = [
     # Hackathons / special events
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
     path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
-    re_path(r'^hackathon/?', dashboard.views.hackathon, name='hackathon_idx'),
+    re_path(r'^hackathon/?$', dashboard.views.hackathon, name='hackathon_idx'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
 
