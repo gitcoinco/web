@@ -7,9 +7,6 @@
     {% endif %}
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    {% if not hidden %}
-      <link rel="canonical" href="{{profile.url}}/{{tab}}" />
-    {% endif %}
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
     <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
