@@ -592,7 +592,9 @@ def get_interested_actions(github_url, username, email=''):
     return actions_by_interested_party
 
 
-def get_user(user, sub_path='', scope='', scoped=False, auth=_AUTH):
+def get_user(user, sub_path='', scope='', scoped=False, auth=None):
+    if not auth:
+        auth = _AUTH
     """Get the github user details."""
     if scope is not '':
         url = f'https://api.github.com/user/{scope}?per_page={PER_PAGE_LIMIT}'
