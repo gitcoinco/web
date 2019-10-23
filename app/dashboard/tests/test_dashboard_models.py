@@ -477,7 +477,7 @@ class DashboardModelsTest(TestCase):
         assert profile.tips.first() == tip
         assert profile.desc == '@gitcoinco is a organization who has participated in 1 funded issue on Gitcoin'
         assert profile.github_url == 'https://github.com/gitcoinco'
-        assert profile.get_relative_url() == '/gitcoinco'
+        assert profile.get_relative_url() == '/profile/gitcoinco'
 
     def test_tool(self):
         """Test the dashboard Tool model."""
