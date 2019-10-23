@@ -762,8 +762,17 @@ body.back9.quest_battle{
 body.back1 #desc li:hover {
   background-color: #102945;
 }
+body.back2 #desc li:hover {
+  background-color: #102945;
+}
 body.back3 #desc li:hover {
-  background-color: #f612fe;
+  background-color: #f6126e;
+}
+body.back4 #desc li:hover {
+  background-color: #17366d;
+}
+body.back5 #desc li:hover {
+  background-color: #101061;
 }
 body.back6 #desc li:hover {
   background-color: #8ab2b2;
