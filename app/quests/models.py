@@ -89,6 +89,12 @@ class Quest(SuperModel):
             'back1',
             'back2',
             'back3',
+            'back4',
+            'back5',
+            'back6',
+            'back7',
+            'back8',
+            'back9',
         ]
         which_back = self.pk % len(backgrounds)
         return backgrounds[which_back]
