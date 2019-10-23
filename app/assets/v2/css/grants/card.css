@@ -116,3 +116,18 @@
 #CLR_banner .logo {
   float: right;
 }
+
+.grant-item__info a {
+  border-color: white;
+  background-color: #6144FF;
+  color: white;
+}
+
+.grant-item__info a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.h-90 {
+  height: 90% !important;
+}

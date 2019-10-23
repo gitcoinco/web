@@ -59,7 +59,7 @@ $(document).ready(function() {
     e.preventDefault();
     loading_button($(this));
 
-    var issueURL = $('input[name=issueURL]').val();
+    var issueURL = $('#issueURL').html();
     var amount = $('input[name=amount]').val();
     var tokenAddress = $('select[name=denomination]').val();
 

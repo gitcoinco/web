@@ -49,6 +49,7 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
+from bleach import clean
 from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -62,9 +63,7 @@ from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
 
-from .notifications import (
-    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_slack,
-)
+from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack
 from .signals import m2m_changed_interested
 
 logger = logging.getLogger(__name__)
@@ -1784,7 +1783,6 @@ def auto_user_approve(interest, bounty):
     maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
     maybe_market_to_slack(bounty, 'worker_approved')
     maybe_market_to_user_slack(bounty, 'worker_approved')
-    maybe_market_to_twitter(bounty, 'worker_approved')
 
 
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
@@ -1922,6 +1920,18 @@ class Activity(SuperModel):
                f"needs review: {self.needs_review}"
 
     @property
+    def action_url(self):
+        if self.bounty:
+            return self.bounty.url
+        if self.grant:
+            return self.grant.url
+        if self.kudos:
+            return self.kudos.url
+        if self.profile:
+            return self.profile.url
+        return ""
+
+    @property
     def humanized_activity_type(self):
         """Turn snake_case into Snake Case.
 
@@ -1987,7 +1997,7 @@ class Activity(SuperModel):
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']
-        activity['title'] = obj.get('title', '')
+        activity['title'] = clean(obj.get('title', ''), strip=True)
         if 'id' in obj:
             if 'category' not in obj or obj['category'] == 'bounty': # backwards-compatible for category-lacking metadata
                 activity['bounty_url'] = Bounty.objects.get(pk=obj['id']).get_relative_url()

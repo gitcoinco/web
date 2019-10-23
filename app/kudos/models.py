@@ -349,6 +349,8 @@ class Token(SuperModel):
     def url(self):
         return f'{settings.BASE_URL}kudos/{self.pk}/{slugify(self.name)}'
 
+    def get_absolute_url(self):
+        return self.url
 
     def get_relative_url(self):
         """Get the relative URL for the Bounty.
