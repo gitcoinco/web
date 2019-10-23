@@ -613,8 +613,10 @@ def get_user(user, sub_path='', scope='', scoped=False, auth=None):
     return response_dict
 
 
-def get_organization(org, sub_path='', auth=_AUTH):
+def get_organization(org, sub_path='', auth=None):
     """Get the github organization details."""
+    if not auth:
+        auth = _AUTH
     org = org.replace('@', '')
     url = f'https://api.github.com/orgs/{org}{sub_path}?per_page={PER_PAGE_LIMIT * 2}'
     response = requests.get(url, auth=auth, headers=HEADERS)
