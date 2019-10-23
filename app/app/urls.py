@@ -71,10 +71,10 @@ urlpatterns = [
 
     # kudos
     re_path(r'^kudos/?', kudos.views.about, name='kudos_main'),
-    path('kudos/about/', kudos.views.about, name='kudos_about'),
-    path('kudos/marketplace/', kudos.views.marketplace, name='kudos_marketplace'),
-    path('kudos/mint/', kudos.views.mint, name='kudos_mint'),
-    path('kudos/send/', kudos.views.send_2, name='kudos_send'),
+    re_path(r'^kudos/about/?', kudos.views.about, name='kudos_about'),
+    re_path(r'^kudos/marketplace/?', kudos.views.marketplace, name='kudos_marketplace'),
+    re_path(r'^kudos/mint/?', kudos.views.mint, name='kudos_mint'),
+    re_path(r'^kudos/send/?', kudos.views.send_2, name='kudos_send'),
     path('kudos/send/3/', kudos.views.send_3, name='kudos_send_3'),
     path('kudos/send/4/', kudos.views.send_4, name='kudos_send_4'),
     re_path(r'^lazy_load_kudos/$', dashboard.views.lazy_load_kudos, name='lazy_load_kudos'),
