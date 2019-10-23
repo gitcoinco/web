@@ -123,6 +123,7 @@ urlpatterns = [
         dashboard.views.social_contribution_email,
         name='social_contribution_email'
     ),
+    url(r'^api/v0.1/org_perms', dashboard.views.org_perms, name='org_perms'),
     url(r'^api/v0.1/bulk_invite', dashboard.views.bulk_invite, name='bulk_invite'),
     url(r'^api/v0.1/bountydocument', dashboard.views.bounty_upload_nda, name='bounty_upload_nda'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
@@ -519,6 +520,7 @@ urlpatterns = [
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
     re_path(r'^settings/job/?', marketing.views.job_settings, name='job_settings'),
+    re_path(r'^settings/organizations/?', marketing.views.org_settings, name='org_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views

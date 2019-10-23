@@ -57,7 +57,9 @@ from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
 from dashboard.context import quickstart as qs
-from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
+from dashboard.utils import (
+    ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
+)
 from economy.utils import convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -98,6 +100,17 @@ confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
+
+
+def org_perms(request):
+    if request.user.is_authenticated and getattr(request.user, 'profile', None):
+        profile = request.user.profile
+        response_data = get_orgs_perms(profile)
+    else:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+             status=401)
+    return JsonResponse({'orgs': response_data}, safe=False)
 
 
 def record_user_action(user, event_name, instance):

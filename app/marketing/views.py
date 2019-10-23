@@ -40,7 +40,7 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from cacheops import cached_view
 from dashboard.models import Profile, TokenApproval
-from dashboard.utils import create_user_action
+from dashboard.utils import create_user_action, get_orgs_perms
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_feedback
@@ -85,6 +85,9 @@ def get_settings_navs(request):
     }, {
         'body': _('Job Status'),
         'href': reverse('job_settings'),
+    }, {
+        'body': _('Organizations'),
+        'href': reverse('org_settings'),
     }]
 
 
@@ -663,6 +666,35 @@ def job_settings(request):
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/job.html', context)
+
+
+def org_settings(request):
+    """Display and save user's Account settings.
+
+    Returns:
+        TemplateResponse: The user's Account settings template response.
+
+    """
+    msg = ''
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not profile or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    orgs = get_orgs_perms(profile)
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'home',
+        'active': '/settings/organizations',
+        'title': _('Organizations Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'orgs': orgs,
+        'profile': profile,
+        'msg': msg,
+    }
+    return TemplateResponse(request, 'settings/organizations.html', context)
 
 
 def _leaderboard(request):
