@@ -272,9 +272,6 @@ def grant_details(request, grant_id, grant_slug):
 @login_required
 def grant_new(request):
     """Handle new grant."""
-    if not request.user.has_perm('grants.add_grant'):
-        return redirect('https://gitcoin.typeform.com/to/C2IocD')
-
     profile = get_profile(request)
 
     if request.method == 'POST':
