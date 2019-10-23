@@ -3165,7 +3165,12 @@ class Profile(SuperModel):
         return self.handle
 
     def get_relative_url(self, preceding_slash=True):
-        return f"{'/' if preceding_slash else ''}profile/{self.handle}"
+        from dashboard.utils import get_url_first_indexes # avoid circular import
+        prefix = ''
+        if self.handle in get_url_first_indexes():
+            # handle collision
+            prefix = 'profile/'
+        return f"{'/' if preceding_slash else ''}{prefix}{self.handle}"
 
     def get_absolute_url(self):
         return settings.BASE_URL + self.get_relative_url(preceding_slash=False)

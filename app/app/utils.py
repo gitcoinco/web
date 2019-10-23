@@ -208,7 +208,7 @@ def sync_profile(handle, user=None, hide_profile=True):
     is_error = 'name' not in data.keys()
     if is_error:
         print("- error main")
-        logger.warning('Failed to fetch github username', exc_info=True, extra={'handle': handle})
+        logger.warning(f'Failed to fetch github username {handle}', exc_info=True, extra={'handle': handle})
         return None
 
     defaults = {'last_sync_date': timezone.now(), 'data': data}
