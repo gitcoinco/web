@@ -46,7 +46,8 @@ class Quest(SuperModel):
 
     @property
     def url(self):
-        return f"/quests/{self.pk}/{slugify(self.title)}"
+        from django.conf import settings
+        return settings.BASE_URL + f"quests/{self.pk}/{slugify(self.title)}"
 
     @property
     def est_read_time_mins(self):
