@@ -40,13 +40,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 </div>
 
 <div class="row indent_on_mobile available_quests" id="available_quests">
-  <h1 class="mt-3" style="width: 100%;">Quests <span id="alpha">Alpha</span></h1>
+  <div class="w-100">
+    <form method="GET">
+      <input class="float-right mt-3 mr-4 w-25" type="text" name="q" value="{{query}}" placeholder="Search">
+    </form>
+    <h1 class="mt-3" style="width: 100%;">{{query|title}} Quests <span id="alpha">Alpha</span></h1>
+  </div>
   <div id="tabs">
     <div class="container">
       <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
       {% for difficulty_level, the_quests in quests%}
         <li class="nav-item">
-          <a class="nav-link nav-line {% if difficulty_level == 'Beginner' %}active{%endif%}" href="#" data-href="{{difficulty_level}}">
+          <a class="nav-link nav-line {% if difficulty_level == selected_tab %}active{%endif%}" href="#" data-href="{{difficulty_level}}">
           {{difficulty_level}} Quests
           </a>
         </li>
@@ -55,7 +60,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
   </div>
   {% for difficulty_level, the_quests in quests%}
-  <div class="difficulty_tab {{difficulty_level}} {% if difficulty_level != 'Beginner' %}hidden{%endif%}">
+  <div class="difficulty_tab {{difficulty_level}} {% if difficulty_level != selected_tab %}hidden{%endif%}">
+    {% if the_quests|length == 0 %}
+      <div style='min-height: 400px; text-align: center; vertical-align: middle; padding: 100px; border-left: 2px solid #fafafa; '>
+      <h3>No Quests Found</h3>
+      <BR>
+      <a href="/quests/new/"><img id="logo" src="{% static 'v2/images/kudos/assets/no-kudos.gif' %}"  width="500" class="mw-100" /></a>
+      <BR>
+      Try again or <a href="/quests/new/">create your own</a>.
+    </div>
+    {% endif %}
     {% for unlocked, beaten, cooldown, quest in the_quests %}
     <div id="{{difficulty_level}}" style="{% cycle 'background-color: #fafafa;' '' %}; width: 250px; display: block; float: left; border-radius: 10px; height: 530px; text-align: center;" class="{{quest.style}} m-3 p-2 quest-card {%if not unlocked%}locked{%elif beaten%}beaten{%else%}available{%endif%} {%if cooldown%}cooldown{%endif%}">
       <div class="card_head">

@@ -7,7 +7,7 @@ import time
 
 from django.conf import settings
 from django.contrib import messages
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
@@ -145,13 +145,23 @@ def newquest(request):
     return TemplateResponse(request, 'quests/new.html', params)
 
 
+def get_package_helper(quest_qs, request):
+    return [(ele.is_unlocked_for(request.user), ele.is_beaten(request.user), ele.is_within_cooldown_period(request.user), ele) for ele in quest_qs]
+
+
 def index(request):
 
     print(f" start at {round(time.time(),2)} ")
+    query = request.GET.get('q', '')
     quests = []
+    if query:
+        quest_qs = Quest.objects.filter(visible=True).filter(Q(title__icontains=query) | Q(description__icontains=query) | Q(questions__icontains=query) | Q(game_schema__icontains=query) | Q(game_metadata__icontains=query))
+        quest_package = get_package_helper(quest_qs, request)
+        package = ('Search', quest_package)
+        quests.append(package)
     for diff in Quest.DIFFICULTIES:
         quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True)
-        quest_package = [(ele.is_unlocked_for(request.user), ele.is_beaten(request.user), ele.is_within_cooldown_period(request.user), ele) for ele in quest_qs]
+        quest_package = get_package_helper(quest_qs, request)
         package = (diff[0], quest_package)
         if quest_qs.exists():
             quests.append(package)
@@ -198,7 +208,9 @@ def index(request):
         'leaderboard': leaderboard,
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'rewards_schedule': rewards_schedule,
-        'title': 'Quests',
+        'query': query,
+        'selected_tab': 'Search' if query else 'Beginner',
+        'title': f' {query.capitalize()} Quests',
         'point_history': point_history,
         'point_value': point_value, 
         'current_round_number': current_round_number,

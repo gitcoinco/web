@@ -625,6 +625,18 @@ body.back9.quest_battle{
   background: url('/static/v2/images/quests/backs/back9.png') repeat;
   background-size: 120%;
 }
+body.red.quest_battle{
+  background-image: linear-gradient(90deg, #ff6161, #ff0000);
+  background-size: 100% !important;
+}
+body.blue.quest_battle{
+  background-image: linear-gradient(90deg, #6161ff, #0000ff);
+  background-size: 100% !important;
+}
+body.green.quest_battle{
+  background-image: linear-gradient(90deg, #3CB371, #2E8B57);
+  background-size: 100% !important;
+}
 #background { 
   position: absolute;
   z-index: -999999;
@@ -798,6 +810,18 @@ body.back9 #desc li:hover,
 body.back9 #desc li.selected {
   background-color: #1c1135;
 }
+body.red #desc li:hover,
+body.red #desc li.selected {
+  background-color: red;
+}
+body.blue #desc li:hover,
+body.blue #desc li.selected {
+  background-color: blue;
+}
+body.green #desc li:hover,
+body.green #desc li.selected {
+  background-color: #2E8B57;
+}
 
 #breadcrumbs, #breadcrumbs a{
   color: color;
@@ -852,6 +876,24 @@ body.back9 #desc,
 body.back9 .br,
 body.back9 .tl{
   background-color:rgb(28, 17, 53, 0.6);
+}
+body.red #header,
+body.red #desc,
+body.red .br,
+body.red .tl{
+  background-color:rgb(255, 0, 0, 0.6);
+}
+body.blue #header,
+body.blue #desc,
+body.blue .br,
+body.blue .tl{
+  background-color:rgb(0, 0, 255, 0.6);
+}
+body.green #header,
+body.green #desc,
+body.green .br,
+body.green .tl{
+  background-color:rgb(46,139,87);
 }
 
 @media (max-width: 1110px) {
