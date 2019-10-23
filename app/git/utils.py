@@ -627,8 +627,10 @@ def get_organization(org, sub_path='', auth=None):
     return response_dict
 
 
-def get_repo(repo_full_name, sub_path='', auth=_AUTH, is_user=False):
+def get_repo(repo_full_name, sub_path='', auth=None, is_user=False):
     """Get the github repo details."""
+    if not auth:
+        auth = _AUTH
     repo_full_name = repo_full_name.replace('@', '')
     if is_user:
         url = f'https://api.github.com/user/repos?per_page={PER_PAGE_LIMIT}'
