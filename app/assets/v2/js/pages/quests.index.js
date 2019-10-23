@@ -20,6 +20,7 @@ $(document).ready(function() {
       $('.demo').attr('src', src);
     });
   });
+
   var random_attn_effect = function(ele) {
     if (ele.data('effect')) {
       return;
@@ -47,6 +48,20 @@ $(document).ready(function() {
     $('.nav-link').removeClass('active');
     $(this).addClass('active');
     $('.difficulty_tab.' + target).removeClass('hidden');
+
+    $('html,body').animate({
+      scrollTop: '+=1px'
+    });
+  });
+
+  $('#leaderboard_tabs a').click(function(e) {
+    e.preventDefault();
+    var target = $(this).data('href');
+
+    $('.leaderboard_tab').addClass('hidden');
+    $('.nav-link').removeClass('active');
+    $(this).addClass('active');
+    $('.' + target).removeClass('hidden');
 
     $('html,body').animate({
       scrollTop: '+=1px'

@@ -314,9 +314,9 @@
             </div>
             <div class="col-md-12 p-3">
               <div>
-                {% for kudos in kudos_tokens %}
-                  <a href="/kudos/{{ kudos.id }}/{{ kudos.name }}" title="{{kudos.name|humanize_name}}">
-                    <img data-src="{{kudos.static_image}}" alts="{{kudos.name|humanize_name}}"  style="max-width: 100px; max-height: 100px; margin: 5px;">
+                {% for kudos in kudos_tokens %} 
+                  <a href="{{kudos.url}}" title="{{kudos.name}}">
+                    <img data-src="{{kudos.static_image}}" alts="{{kudos.name}}"  style="max-width: 100px; max-height: 100px; margin: 5px;">
                   </a>
                 {% endfor %}
               </div>

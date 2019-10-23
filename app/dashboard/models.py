@@ -1631,7 +1631,7 @@ def psave_tip(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
 def postsave_tip(sender, instance, **kwargs):
-    is_valid = instance.sender_profile != instance.recipient_profile
+    is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
     if is_valid:
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
@@ -2469,7 +2469,7 @@ class Profile(SuperModel):
     def bounties(self):
         fulfilled_bounty_ids = self.fulfilled.all().values_list('bounty_id')
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
-        for interested in self.interested.all():
+        for interested in self.interested.all().nocache():
             bounties = bounties | Bounty.objects.filter(interested=interested, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(pk__in=fulfilled_bounty_ids, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
@@ -3554,6 +3554,7 @@ class Profile(SuperModel):
         context['total_kudos_received_count'] = profile.received_kudos.count()
         context['total_grant_created'] = profile.grant_admin.count()
         context['total_grant_contributions'] = profile.grant_contributor.filter(subscription_contribution__success=True).values_list('subscription_contribution').count() + profile.grant_phantom_funding.count()
+        context['total_grant_actions'] = context['total_grant_created'] + context['total_grant_contributions']
 
         context['total_tips_sent'] = profile.get_sent_tips.count()
         context['total_tips_received'] = profile.get_my_tips.count()

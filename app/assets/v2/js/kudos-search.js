@@ -152,7 +152,7 @@ $('document').ready(function() {
   $('body').on('click', '.kudos_autocomplete', function(e) {
     var search_term = $(this).text();
 
-    select2Search($('.kudos-search'), search_term);
+    select2Search($(this).parents('.kudos-module').find('.kudos-search'), search_term);
     e.preventDefault();
   });
 

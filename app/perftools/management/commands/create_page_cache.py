@@ -46,15 +46,17 @@ def create_grants_cache():
 
 def create_quests_cache():
     from quests.helpers import generate_leaderboard
-    print('quests')
-    view = 'quests'
-    keyword = 'leaderboard'
-    data = generate_leaderboard()
-    JSONStore.objects.create(
-        view=view,
-        key=keyword,
-        data=json.loads(json.dumps(data, cls=EncodeAnything)),
-        )
+    from quests.views import current_round_number
+    for i in range(1, current_round_number+1):
+        print(f'quests_{i}')
+        view = 'quests'
+        keyword = f'leaderboard_{i}'
+        data = generate_leaderboard(round_number=i)
+        JSONStore.objects.create(
+            view=view,
+            key=keyword,
+            data=json.loads(json.dumps(data, cls=EncodeAnything)),
+            )
 
 def create_results_cache():
     print('results')
@@ -105,7 +107,7 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_grants_cache()
         create_quests_cache()
+        create_grants_cache()
         create_results_cache()
         create_contributor_landing_page_context()

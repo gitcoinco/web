@@ -1,4 +1,5 @@
 
+import copy
 import logging
 import random
 
@@ -51,12 +52,14 @@ def record_award_helper(qa, profile, layer=1, action='Beat', value_multiplier=1)
         return
 
     # record points
-    value = value_multiplier * qa.quest.value/(2**(layer-1))
+    value = abs(value_multiplier * qa.quest.value/(2**(layer-1)))
+    from quests.views import current_round_number
     QuestPointAward.objects.create(
         questattempt=qa,
         profile=profile,
         value=value,
         action=action,
+        round_number=current_round_number,
         )
 
     # record kudos
@@ -178,11 +181,14 @@ def process_win(request, qa):
     return prize_url
 
 
-def get_leaderboard(max_entries=25):
-    return JSONStore.objects.filter(view='quests', key='leaderboard').order_by('-pk').first().data
+def get_leaderboard(max_entries=25, round_number=1):
+    try:
+        return JSONStore.objects.filter(view='quests', key=f'leaderboard_{round_number}').order_by('-pk').first().data
+    except:
+        return {}
 
 
-def generate_leaderboard(max_entries=25):
+def generate_leaderboard(max_entries=25, round_number=1):
     """
     Gets the leaderboard that will be shown on /quests landing page
     """
@@ -192,7 +198,7 @@ def generate_leaderboard(max_entries=25):
     leaderboard = {}
 
     #pull totals for each qpa
-    for qpa in QuestPointAward.objects.all():
+    for qpa in QuestPointAward.objects.filter(round_number=round_number):
         key = qpa.profile.handle
         if key not in leaderboard.keys():
             leaderboard[key] = 0
@@ -223,7 +229,7 @@ def generate_leaderboard(max_entries=25):
         return_leaderboard.append(this_ele)
 
     # return values
-    leaderboard_hero = return_leaderboard
+    leaderboard_hero = copy.deepcopy(return_leaderboard)
     if len(leaderboard) < 3:
         leaderboard_hero = []
     else:

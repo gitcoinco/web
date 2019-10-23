@@ -20,7 +20,7 @@ var start_quiz = async function() {
       'answers': answers
     });
 
-    // manage state transitoin
+    // manage state transition
     console.log('question from', question_number, ' to', question_number + 1);
     for (var p = 0; p < 10; p += 1) {
       $('body').removeClass('question_number_' + p);
@@ -179,7 +179,7 @@ var advance_to_state = async function(new_state) {
       var new_html = $('#desc').html() + kudos_reward_html;
 
       $('#desc').html(new_html);
-    }, 3500);
+    }, 4500);
 
     await $('#desc').removeClass('hidden').fadeIn();
     await sleep(4000);
@@ -254,6 +254,7 @@ var advance_to_state = async function(new_state) {
 
 var death = async function() {
   orb_state('dead');
+  $('body').addClass('death');
   $('#protagonist .ded').removeClass('hidden');
   await $('#header').fadeOut();
   await $('#cta_button').fadeOut();
@@ -269,7 +270,7 @@ var death = async function() {
   await sleep(2500);
   await $('#header').fadeOut();
   await sleep(500);
-  await $('#desc').html('<a class=button href=/quests>More Quests &gt;&gt;</a>').fadeIn();
+  await $('#desc').html('<a class=button href=/quests>&lt;&lt; Quests</a><a class="button ml-2" href=/quests/new>Create Quest ^^</a> <a class=button href=/quests/next>Play Next &gt;&gt;</a>').removeClass('hidden').fadeIn();
   setInterval(function() {
     random_taunt_effect($('#enemy'));
   }, 2000);
@@ -278,6 +279,7 @@ var death = async function() {
 var winner = async function(prize_url) {
   start_music_midi('hero');
   orb_state('final');
+  $('body').addClass('winner');
   await sleep(500);
   $('#enemy .ded').removeClass('hidden');
   await $('#header').fadeOut();
@@ -296,11 +298,15 @@ var winner = async function(prize_url) {
   $('#desc').html(span + "<img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>');
   $('.prize').fadeOut();
   await sleep(500);
+  $('#desc').removeClass('hidden');
   $('#desc').fadeIn();
-  await sleep(500);
-  await $('#cta_button a').data('href', prize_url).html('Claim Prize 🏆').fadeIn();
+  await sleep(1300);
+  $('#desc').fadeOut();
+  await sleep(1000);
+  $('#cta_button a').attr('href', prize_url).html('Claim Prize 🏆').fadeIn();
   $('#cta_button').css('display', 'block');
   $('#cta_button p').css('display', 'none');
+  $('#cta_button').removeClass('hidden');
 
   var a = $('#cta_button a').clone();
 
@@ -308,6 +314,14 @@ var winner = async function(prize_url) {
   a.html('Play Another ▶️');
   a.addClass('ml-3');
   $(a).insertAfter($('#cta_button a'));
+
+  a = $('#cta_button a:first-child').clone();
+
+  a.attr('href', '/quests/new');
+  a.html('Create Quest 👨‍💻');
+  a.addClass('ml-3');
+  a.addClass('hide_on_mobile');
+  $(a).insertAfter($('#cta_button a:first-child'));
 
   setInterval(function() {
     random_taunt_effect($('#protagonist'));

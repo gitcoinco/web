@@ -31,6 +31,7 @@ class Quest(SuperModel):
     difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES, db_index=True)
     style = models.CharField(max_length=100, default='quiz', choices=STYLES)
     value = models.FloatField(default=1)
+    override_background = models.CharField(default='', max_length=100, blank=True)
     creator = models.ForeignKey(
         'dashboard.Profile',
         on_delete=models.CASCADE,
@@ -84,11 +85,19 @@ class Quest(SuperModel):
 
     @property
     def background(self):
+        if self.override_background:
+            return self.override_background
         backgrounds = [
             'back0',
             'back1',
             'back2',
             'back3',
+            'back4',
+            'back5',
+            'back6',
+            'back7',
+            'back8',
+            'back9',
         ]
         which_back = self.pk % len(backgrounds)
         return backgrounds[which_back]
@@ -202,6 +211,7 @@ class QuestPointAward(SuperModel):
     )
     value = models.FloatField()
     action = models.CharField(max_length=100, default='Beat')
+    round_number = models.IntegerField(default=1)
 
     def __str__(self):
         """Return the string representation of this obj."""

@@ -2066,7 +2066,7 @@ def profile_quests(request, handle):
             datestr = ele.created_on.strftime('%d-%b-%y')
             if datestr not in balances.keys():
                 balances[datestr] = 0
-            balances[datestr] = val
+            balances[datestr] = running_balance
 
     for datestr, balance in balances.items():
         response += f"\n{datestr},{balance}"
@@ -2347,7 +2347,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     if profile.cascaded_persona == 'org':
         active_bounties = profile.bounties.filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
     elif profile.cascaded_persona == 'funder':
-        active_bounties = Bounty.objects.current().filter(bounty_owner_github_username=profile.handle).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
+        active_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
     elif profile.cascaded_persona == 'hunter':
         active_bounties = Bounty.objects.filter(pk__in=profile.active_bounties.filter(pending=False).values_list('bounty', flat=True)).filter(network='mainnet')
     else:
@@ -3433,6 +3433,7 @@ def hackathon_registration(request):
 
     hackathon = request.POST.get('name')
     referer = request.POST.get('referer')
+    email = request.user.email
 
     if not profile:
         return JsonResponse(
@@ -3452,7 +3453,7 @@ def hackathon_registration(request):
 
     client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
     mailchimp_data = {
-            'email_address': request.user.email,
+            'email_address': email,
             'status_if_new': 'subscribed',
             'status': 'subscribed',
 
@@ -3462,7 +3463,7 @@ def hackathon_registration(request):
             },
         }
 
-    user_email_hash = hashlib.md5(profile.email.encode('utf')).hexdigest()
+    user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
 
     try:
         client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)

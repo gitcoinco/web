@@ -22,16 +22,39 @@
     <h3 class="font-body mt-1 mb-1">Monthly Summary</h3>
     {% include "profiles/earningsgraph.html" with graph_type="grants" %}
 
-    <h3 class="font-body mt-1 mb-1">Transaction Detail</h3>
+    <h3 class="font-body mt-1 mb-1">Grants Created ({{profile.grant_admin.count}})</h3>
+    {% if not profile.grant_admin.count %}
+    <p class="p-3">
+      No Grants Created. <a href=grants/new>Create a Grant &gt;</a>
+    </p>
+    {% endif %}
+    {% for transaction in profile.grant_admin.all %}
+          <div class="py-3 mx-sm-0 row transaction-history">
+            <div class="col-3 col-md-2 font-subheader text-center my-auto">
+              {{ transaction.created_on|date:"Y-m-d" }}
+            </div>
+            <div class="col-2 col-md-2 justify-content-center special_tag">
+              <img class="avatar" style="max-width: 70px;" src="{% if transaction.logo %}{{ transaction.logo }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=transaction.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+            </div>
+            <div class="col-7 col-md-5 my-auto">
+              <div class="title font-body">
+                <a href="{{ transaction.url }}">{{ transaction.title }}</a>
+              </div>
+              <div class="info font-caption">
+              </div>
+            </div>
+          </div>
+    {% endfor %}
+    <h3 class="font-body mt-1 mb-1">Grant Contribution History ({{history|length}})</h3>
     {% for transaction in history %}
           <div class="py-3 mx-sm-0 row transaction-history">
-            <div class="col-3 col-md-1 font-subheader text-center my-auto">
+            <div class="col-3 col-md-2 font-subheader text-center my-auto">
               {{ transaction.created_on }}
             </div>
             <div class="col-2 col-md-1 justify-content-center special_tag">
               <img class="avatar" style="max-width: 70px;" src="{% if transaction.logo %}{{ transaction.logo }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=transaction.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
             </div>
-            <div class="col-7 col-md-5 my-auto">
+            <div class="col-7 col-md-4 my-auto">
               <div class="title font-body">
                 <a href="{{ transaction.url }}">{{ transaction.title }}</a>
               </div>
