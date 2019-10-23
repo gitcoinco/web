@@ -1,0 +1,28 @@
+{
+  "symbol": "BGA",
+  "address": "0xc668715818831645CDF0Eee3A9b84590Fa979E65",
+  "overview":{
+        "en": "B-Games Alliance,BGA is a blockchain game alliance. We set up global game developer alliance, distribution alliance system and game player alliance. The distribution alliance system and  game player system help to expand the market share of online blockchain games so that we can achieve win-win for all parties.",
+        "zh": "BGA(B-Games Alliance) 区块链游戏联盟，BGA是一个区块链游戏联盟，通过搭建全球游戏开发者联盟，分销联盟体系和游戏玩家联盟，由分销联盟体系和游戏玩家联盟帮助游戏开发者扩大在线区块链游戏市场份额，实现多方共赢。"
+  },
+  "email": "bbgagit@gmail.com",
+  "website": "https://miraclekingdom.io/",
+  "whitepaper": "https://www.miraclekingdom.io/static/whitepaper.pdf",
+  "state": "LOCKED | NORMAL",
+  "published_on": "2019-09-01",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
+  "links": {
+    "blog": "https://your-awesome-project.com/blog",
+    "twitter": "https://twitter.com/your-awesome-project",
+    "telegram": "https://t.me/joinchat/your-awesome-project",
+    "github": "https://github.com/your-awesome-project",
+    "facebook": "https://www.facebook.com/your-awesome-project",
+    "reddit": "https://www.reddit.com/r/your-awesome-project/",
+    "slack": "https://your-awesome-project.slack.com",
+    "medium": "https://medium.com/your-awesome-project"
+  }
+}
