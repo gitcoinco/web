@@ -63,7 +63,13 @@
               <div class="mt-5" id="primary_subform">
                 <div class="text-center">
                   <h3>{% trans "Advanced Payout" %}</h3>
-                  <p><a href="{{ action_urls.accept }}">{% trans "Switch to Basic Payout" %}</a></p>
+                  <p>
+                    <a class="d-block" href="{{ bounty.url }}">
+                      <i class="fas fa-chevron-left mr-1" style="font-size: 10px; position: relative;top: -1px;"></i>
+                      Back to Bounty
+                    </a>
+                    <a href="{{action_urls.accept}}">{% trans "Switch to Basic Payout" %}</a>
+                  </p>
                 </div>
                 <div>
                   <label for="issueURL">{% trans "Issue Title" %}</label>
