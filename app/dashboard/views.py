@@ -1326,6 +1326,7 @@ def social_contribution_email(request):
     return JsonResponse(response)
 
 
+@login_required
 def payout_bounty(request):
     """Payout the bounty.
 
@@ -1351,6 +1352,7 @@ def payout_bounty(request):
     return TemplateResponse(request, 'payout_bounty.html', params)
 
 
+@login_required
 def bulk_payout_bounty(request):
     """Payout the bounty.
 
