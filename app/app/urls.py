@@ -524,6 +524,7 @@ urlpatterns = [
     re_path(r'^settings/job/?', marketing.views.job_settings, name='job_settings'),
     re_path(r'^settings/organizations/?', marketing.views.org_settings, name='org_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
+    re_path(r'^settings$', marketing.views.org_settings, name='settings2'),
 
     # marketing views
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
