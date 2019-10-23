@@ -17,10 +17,6 @@ body {
   top: -1px;
 }
 
-#expires_date {
-  float: right;
-}
-
 #extended-expiration-date #extended-days {
   border-bottom: 1px solid black;
 }
@@ -177,51 +173,30 @@ body {
   color: #000000;
 }
 
-#bounty-info-row {
-  margin-left: 1px;
-}
-
 .bounty-subheading {
   font-weight: lighter;
   font-size: 14px;
 }
 
 .bounty-info div {
-  display: inline-block;
-  margin-right: 15px;
   font-weight: 500;
 }
 
 .bounty-info-heading {
   color: #0D0764;
-  font-weight: 500;
+  font-weight: 600;
+  text-transform: capitalize;
 }
 
-.bounty-info-row-div {
-  width: 100%;
-}
-
-.bounty-info-row-div i {
-  position: absolute;
-  top: 4px;
-}
-
-.bounty-info-row-span-left {
-  float: left;
-}
-
-.bounty-info-row-span-right {
-  float: right;
+.bounty-info i {
+  font-size: 11px;
+  top: -1px;
+  position: relative;
 }
 
 .bounty-info-text {
   color: #717171;
-}
-
-@media (min-width: 1200px) {
-  .col-xl-4.bounty-info .bounty-info-row-div .bounty-info-text.bounty-info-row-span-right {
-    margin-right: 3.2em;
-  }
+  text-transform: capitalize;
 }
 
 .started-status-column div {
@@ -828,9 +803,9 @@ a.btn {
     margin-bottom: 10px;
   }
 
-  .bounty-info div {
+  /* .bounty-info div {
     width: 100%;
-  }
+  } */
 
   .loading .issue-url {
     font-size: 1rem;
