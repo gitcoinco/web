@@ -37,8 +37,8 @@ from dashboard.models import (
     UserAction,
 )
 from dashboard.notifications import (
-    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
-    maybe_market_to_user_discord, maybe_market_to_user_slack,
+    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord,
+    maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import ConversionRateNotFoundError, convert_amount
@@ -887,7 +887,6 @@ def process_bounty_changes(old_bounty, new_bounty):
     # marketing
     if event_name != 'unknown_event':
         print("============ posting ==============")
-        did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name)
         did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
         did_post_to_user_slack = maybe_market_to_user_slack(new_bounty, event_name)
         did_post_to_user_discord = maybe_market_to_user_discord(new_bounty, event_name)

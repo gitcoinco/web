@@ -63,9 +63,7 @@ from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
 
-from .notifications import (
-    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_slack,
-)
+from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack
 from .signals import m2m_changed_interested
 
 logger = logging.getLogger(__name__)
@@ -1785,7 +1783,6 @@ def auto_user_approve(interest, bounty):
     maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
     maybe_market_to_slack(bounty, 'worker_approved')
     maybe_market_to_user_slack(bounty, 'worker_approved')
-    maybe_market_to_twitter(bounty, 'worker_approved')
 
 
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
@@ -1921,6 +1918,18 @@ class Activity(SuperModel):
         """Define the string representation of an interested profile."""
         return f"{self.profile.handle} type: {self.activity_type} created: {naturalday(self.created)} " \
                f"needs review: {self.needs_review}"
+
+    @property
+    def action_url(self):
+        if self.bounty:
+            return self.bounty.url
+        if self.grant:
+            return self.grant.url
+        if self.kudos:
+            return self.kudos.url
+        if self.profile:
+            return self.profile.url
+        return ""
 
     @property
     def humanized_activity_type(self):
