@@ -280,13 +280,14 @@ class Grant(SuperModel):
             from grants.abi import abi_v1
             return abi_v1
 
-
     @property
     def url(self):
         """Return grants url."""
         from django.urls import reverse
         return reverse('grants:details', kwargs={'grant_id': self.pk, 'grant_slug': self.slug})
 
+    def get_absolute_url(self):
+        return self.url
 
     @property
     def contract(self):

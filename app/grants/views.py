@@ -46,7 +46,7 @@ from grants.models import Contribution, Grant, MatchPledge, Milestone, PhantomFu
 from grants.utils import get_leaderboard
 from kudos.models import BulkTransferCoupon
 from marketing.mails import (
-    grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
+    grant_cancellation, new_grant, new_grant_admin, new_supporter, subscription_terminated, support_cancellation,
     thank_you_for_supporting,
 )
 from marketing.models import Keyword, Stat
@@ -299,8 +299,10 @@ def grant_new(request):
                 'metadata': receipt,
                 'admin_profile': profile,
                 'logo': logo,
+                'hidden': True,
             }
             grant = Grant.objects.create(**grant_kwargs)
+            new_grant_admin(grant)
             team_members.append(profile.id)
             grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
             return JsonResponse({
@@ -319,6 +321,10 @@ def grant_new(request):
             grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
             grant.contract_address = request.POST.get('contract_address', '')
             print(tx_hash, grant.contract_address)
+            messages.info(
+                request,
+                _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
+            )
             grant.save()
             record_grant_activity_helper('new_grant', grant, profile)
             new_grant(grant, profile)
@@ -349,8 +355,6 @@ def grant_new(request):
 @login_required
 def grant_new_v0(request):
     """Create a v0 version of a grant contract."""
-    if not request.user.has_perm('grants.add_grant'):
-        return redirect('https://gitcoin.typeform.com/to/C2IocD')
     profile = get_profile(request)
 
     if request.method == 'POST':
