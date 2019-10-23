@@ -34,11 +34,20 @@ $(document).ready(function() {
 
     ele.remove();
   });
+  $(document).on('click', '.remove', function(e) {
+    e.preventDefault();
+    $(this).parents('.form-group').find('.hidden').removeClass('hidden');
+    $(this).parents('.form-group').find('.default_kudos').remove();
+    $(this).parents('.form-group').find('input[name=enemy]').remove();
+    $(this).parents('.form-group').find('[name=enemy2]').attr('name', 'enemy');
+    $(this).parents('.form-group').find('[name=reward2]').attr('name', 'reward');
+    $(this).remove();
+  });
 
 
   $(document).on('click', '.close_question', function(e) {
     e.preventDefault();
-    if ($(this).parents('div.question').length <= 1) {
+    if ($('div.question').length <= 1) {
       alert('you cannot have 0 questsions');
       return;
     }

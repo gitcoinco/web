@@ -28,6 +28,7 @@ from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
+current_round_number = 2
 
 def next_quest(request):
     """Render the Quests 'random' page."""
@@ -170,7 +171,9 @@ def index(request):
     attempt_count = QuestAttempt.objects.count()
     success_count = QuestAttempt.objects.filter(success=True).count()
     print(f" phase3.1 at {round(time.time(),2)} ")
-    leaderboard = get_leaderboard()
+    leaderboard = {}
+    for i in range(1, current_round_number+1):
+        leaderboard[i] = get_leaderboard(round_number=i)
     print(f" phase3.2 at {round(time.time(),2)} ")
     point_history = request.user.profile.questpointawards.all() if request.user.is_authenticated else QuestPointAward.objects.none()
     point_value = sum(point_history.values_list('value', flat=True))
@@ -192,13 +195,13 @@ def index(request):
         'success_count': success_count,
         'success_ratio': int(success_count/attempt_count * 100),
         'user_count': QuestAttempt.objects.distinct('profile').count(),
-        'leaderboard': leaderboard[0],
-        'leaderboard_hero': leaderboard[1],
+        'leaderboard': leaderboard,
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'rewards_schedule': rewards_schedule,
         'title': 'Quests',
         'point_history': point_history,
-        'point_value': point_value,
+        'point_value': point_value, 
+        'current_round_number': current_round_number,
         'avatar_url': '/static/v2/images/quests/orb.png',
         'card_desc': 'Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!',
     }

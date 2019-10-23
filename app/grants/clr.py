@@ -198,7 +198,7 @@ def grants_clr_calculate (total_pot, grant_contributions, min_threshold, max_thr
     threshold = (max_threshold + min_threshold) / 2
     total_clr, grants_clrs = calculate_clr(threshold, grant_contributions)
 
-    if iterations == 100 or total_pot == threshold or previous_threshold == threshold:
+    if iterations == 200 or total_pot == threshold or previous_threshold == threshold:
         # No more accuracy to be had
         return grants_clrs, total_clr, threshold, iterations
     if total_clr > total_pot:

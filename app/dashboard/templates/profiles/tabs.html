@@ -53,11 +53,11 @@
             </a>
           </li>
         {% endif %}
-        {% if total_grant_contributions %}
+        {% if total_grant_actions %}
           <li class="nav-item">
             <a class="nav-link nav-line  {% if tab == 'grant_contribs' %}active{%endif%}" href="{{profile.url}}/grant_contribs">
               Grants
-              {% if total_grant_contributions %}<span>{{total_grant_contributions}}</span>{%endif%}                  
+              {% if total_grant_actions %}<span>{{total_grant_actions}}</span>{%endif%}                  
             </a>
           </li>
         {% endif %}

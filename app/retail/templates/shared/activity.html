@@ -147,7 +147,9 @@
           </div>
         {% endif %}
         <span class="mx-2">
-          {{ row.created_human_time }}
+          {% if not hide_date %}
+            {{ row.created_human_time }}
+          {% endif %}
         </span>
       </div>
     </div>

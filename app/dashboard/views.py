@@ -55,6 +55,7 @@ import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
+from bleach import clean
 from dashboard.context import quickstart as qs
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, profile_helper
 from economy.utils import convert_token_to_usdt
@@ -84,8 +85,7 @@ from .models import (
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
-    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord,
-    maybe_market_to_user_slack,
+    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_unrated_bounties_count, get_web3,
@@ -195,7 +195,6 @@ def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
     maybe_market_to_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
     maybe_market_to_user_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
     maybe_market_to_user_discord(bounty, 'start_work' if not approval_required else 'worker_applied')
-    maybe_market_to_twitter(bounty, 'start_work' if not approval_required else 'worker_applied')
     return interest
 
 
@@ -514,7 +513,6 @@ def remove_interest(request, bounty_id):
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
         maybe_market_to_user_discord(bounty, 'stop_work')
-        maybe_market_to_twitter(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
             'errors': [_('You haven\'t expressed interest on this bounty.')],
@@ -1697,7 +1695,6 @@ def helper_handle_approvals(request, bounty):
                 maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
                 maybe_market_to_slack(bounty, 'worker_approved')
                 maybe_market_to_user_slack(bounty, 'worker_approved')
-                maybe_market_to_twitter(bounty, 'worker_approved')
                 record_bounty_activity(bounty, request.user, 'worker_approved', interest)
             else:
                 start_work_rejected(interest, bounty)
@@ -1708,7 +1705,6 @@ def helper_handle_approvals(request, bounty):
 
                 maybe_market_to_slack(bounty, 'worker_rejected')
                 maybe_market_to_user_slack(bounty, 'worker_rejected')
-                maybe_market_to_twitter(bounty, 'worker_rejected')
 
             messages.success(request, _(f'{worker} has been {mutate_worker_action_past_tense}'))
         else:
@@ -1842,12 +1838,12 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 # Currently its not finding anyting in the database
                 if bounty.title and bounty.org_name:
                     params['card_title'] = f'{bounty.title} | {bounty.org_name} Funded Issue Detail | Gitcoin'
-                    params['title'] = params['card_title']
-                    params['card_desc'] = ellipses(bounty.issue_description_text, 255)
+                    params['title'] = clean(params['card_title'], strip=True)
+                    params['card_desc'] = ellipses(clean(bounty.issue_description_text, strip=True), 255)
                     params['noscript'] = {
-                        'title': bounty.title,
+                        'title': clean(bounty.title, strip=True),
                         'org_name': bounty.org_name,
-                        'issue_description_text': bounty.issue_description_text,
+                        'issue_description_text': clean(bounty.issue_description_text, strip=True),
                         'keywords': ', '.join(bounty.keywords.split(','))}
 
                 if bounty.event and bounty.event.slug:
@@ -2070,7 +2066,7 @@ def profile_quests(request, handle):
             datestr = ele.created_on.strftime('%d-%b-%y')
             if datestr not in balances.keys():
                 balances[datestr] = 0
-            balances[datestr] = val
+            balances[datestr] = running_balance
 
     for datestr, balance in balances.items():
         response += f"\n{datestr},{balance}"
@@ -2351,7 +2347,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     if profile.cascaded_persona == 'org':
         active_bounties = profile.bounties.filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
     elif profile.cascaded_persona == 'funder':
-        active_bounties = Bounty.objects.current().filter(bounty_owner_github_username=profile.handle).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
+        active_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
     elif profile.cascaded_persona == 'hunter':
         active_bounties = Bounty.objects.filter(pk__in=profile.active_bounties.filter(pending=False).values_list('bounty', flat=True)).filter(network='mainnet')
     else:
@@ -3437,6 +3433,7 @@ def hackathon_registration(request):
 
     hackathon = request.POST.get('name')
     referer = request.POST.get('referer')
+    email = request.user.email
 
     if not profile:
         return JsonResponse(
@@ -3456,7 +3453,7 @@ def hackathon_registration(request):
 
     client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
     mailchimp_data = {
-            'email_address': request.user.email,
+            'email_address': email,
             'status_if_new': 'subscribed',
             'status': 'subscribed',
 
@@ -3466,7 +3463,7 @@ def hackathon_registration(request):
             },
         }
 
-    user_email_hash = hashlib.md5(profile.email.encode('utf')).hexdigest()
+    user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
 
     try:
         client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)

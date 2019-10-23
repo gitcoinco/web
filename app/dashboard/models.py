@@ -49,6 +49,7 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
+from bleach import clean
 from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -62,9 +63,7 @@ from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
 
-from .notifications import (
-    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_slack,
-)
+from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack
 from .signals import m2m_changed_interested
 
 logger = logging.getLogger(__name__)
@@ -1632,7 +1631,7 @@ def psave_tip(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
 def postsave_tip(sender, instance, **kwargs):
-    is_valid = instance.sender_profile != instance.recipient_profile
+    is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
     if is_valid:
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
@@ -1784,7 +1783,6 @@ def auto_user_approve(interest, bounty):
     maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
     maybe_market_to_slack(bounty, 'worker_approved')
     maybe_market_to_user_slack(bounty, 'worker_approved')
-    maybe_market_to_twitter(bounty, 'worker_approved')
 
 
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
@@ -1922,6 +1920,18 @@ class Activity(SuperModel):
                f"needs review: {self.needs_review}"
 
     @property
+    def action_url(self):
+        if self.bounty:
+            return self.bounty.url
+        if self.grant:
+            return self.grant.url
+        if self.kudos:
+            return self.kudos.url
+        if self.profile:
+            return self.profile.url
+        return ""
+
+    @property
     def humanized_activity_type(self):
         """Turn snake_case into Snake Case.
 
@@ -1987,7 +1997,7 @@ class Activity(SuperModel):
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']
-        activity['title'] = obj.get('title', '')
+        activity['title'] = clean(obj.get('title', ''), strip=True)
         if 'id' in obj:
             if 'category' not in obj or obj['category'] == 'bounty': # backwards-compatible for category-lacking metadata
                 activity['bounty_url'] = Bounty.objects.get(pk=obj['id']).get_relative_url()
@@ -2477,7 +2487,7 @@ class Profile(SuperModel):
     def bounties(self):
         fulfilled_bounty_ids = self.fulfilled.all().values_list('bounty_id')
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
-        for interested in self.interested.all():
+        for interested in self.interested.all().nocache():
             bounties = bounties | Bounty.objects.filter(interested=interested, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(pk__in=fulfilled_bounty_ids, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
@@ -3561,6 +3571,7 @@ class Profile(SuperModel):
         context['total_kudos_received_count'] = profile.received_kudos.count()
         context['total_grant_created'] = profile.grant_admin.count()
         context['total_grant_contributions'] = profile.grant_contributor.filter(subscription_contribution__success=True).values_list('subscription_contribution').count() + profile.grant_phantom_funding.count()
+        context['total_grant_actions'] = context['total_grant_created'] + context['total_grant_contributions']
 
         context['total_tips_sent'] = profile.get_sent_tips.count()
         context['total_tips_received'] = profile.get_my_tips.count()

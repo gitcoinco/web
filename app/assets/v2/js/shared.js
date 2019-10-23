@@ -159,10 +159,14 @@ var sanitizeDict = function(d, keyToIgnore) {
 };
 
 var sanitizeAPIResults = function(results, keyToIgnore) {
-  for (var i = 0; i < results.length; i++) {
-    results[i] = sanitizeDict(results[i], keyToIgnore);
+  if (results.length >= 1) {
+    for (let i = 0; i < results.length; i++) {
+      results[i] = sanitizeDict(results[i], keyToIgnore);
+    }
+    return results;
   }
-  return results;
+
+  return sanitizeDict(results, keyToIgnore);
 };
 
 function ucwords(str) {
@@ -176,6 +180,7 @@ var sanitize = function(str) {
     return str;
   }
   result = DOMPurify.sanitize(str);
+
   return result;
 };
 
@@ -633,7 +638,7 @@ var retrieveIssueDetails = function() {
   $.get(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result['keywords']) {
-      var keywords = result['keywords'];
+      let keywords = result['keywords'];
 
       showChoices('#keyword-suggestions', '#keywords', keywords);
       $('#keywords').select2({
