@@ -31,6 +31,7 @@ class Quest(SuperModel):
     difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES, db_index=True)
     style = models.CharField(max_length=100, default='quiz', choices=STYLES)
     value = models.FloatField(default=1)
+    override_background = models.CharField(default='', max_length=100)
     creator = models.ForeignKey(
         'dashboard.Profile',
         on_delete=models.CASCADE,
@@ -84,6 +85,8 @@ class Quest(SuperModel):
 
     @property
     def background(self):
+        if self.override_background:
+            return self.override_background
         backgrounds = [
             'back0',
             'back1',
