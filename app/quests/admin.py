@@ -17,6 +17,12 @@ class QuestAdmin(admin.ModelAdmin):
                 from quests.helpers import record_quest_activity, record_award_helper
                 from quests.models import QuestAttempt
                 from marketing.mails import new_quest_approved
+                from django.conf import settings
+
+                if obj.kudos_reward.owner_address.lower() != settings.KUDOS_OWNER_ACCOUNT.lower():
+                    self.message_user(request, f"Cannot approve quest. The owner address is not the Gitcoin Airdropper")
+                    return super().response_change(request, obj)
+
                 quest = obj
                 qa = QuestAttempt.objects.create(
                     quest=obj,
