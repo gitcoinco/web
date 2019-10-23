@@ -142,7 +142,7 @@ urlpatterns = [
     re_path(r'^spec/?', healthcheck.views.spec, name='spec'),
 
     # grant views
-    path('grants/', include('grants.urls', namespace='grants')),
+    re_path(r'^grants/?', include('grants.urls', namespace='grants')),
 
     # dashboard views
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
@@ -160,7 +160,7 @@ urlpatterns = [
     ),
 
     # quests
-    path('quests/', quests.views.index, name='quests_index'),
+    re_path(r'^quests/?', quests.views.index, name='quests_index'),
     re_path(r'^quests/next?$', quests.views.next_quest, name='next_quest'),
     re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
     re_path(r'^quests/new/?', quests.views.newquest, name='newquest'),
@@ -599,6 +599,11 @@ if settings.DEBUG:
         re_path(r'^403/$', retail.views.handler403, name='403'),
         re_path(r'^404/$', retail.views.handler404, name='404'),
         re_path(r'^500/$', retail.views.handler500, name='500'),
+    ]
+
+    urlpatterns += [
+        re_path(r'^(.*)/(.*)?', dashboard.views.profile, name='profile_min_by_tab'),
+        re_path(r'^(.*)', dashboard.views.profile, name='profile_min'),
     ]
 
 handler403 = 'retail.views.handler403'
