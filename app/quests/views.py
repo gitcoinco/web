@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 current_round_number = 2
 
+
 def next_quest(request):
     """Render the Quests 'random' page."""
 
@@ -41,6 +42,8 @@ def next_quest(request):
         if not quest.is_beaten(request.user) and quest.is_unlocked_for(request.user):
             return redirect(quest.url)
 
+    messages.info(request, f'You have beaten every available quest!')
+    return redirect('/quests')
 
 def newquest(request):
     """Render the Quests 'new' page."""
