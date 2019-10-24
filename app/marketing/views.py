@@ -55,7 +55,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_settings_navs(request):
-    return [{
+    tabs = [{
         'body': _('Email'),
         'href': reverse('email_settings', args=('', ))
     }, {
@@ -85,10 +85,15 @@ def get_settings_navs(request):
     }, {
         'body': _('Job Status'),
         'href': reverse('job_settings'),
-    }, {
-        'body': _('Organizations'),
-        'href': reverse('org_settings'),
     }]
+
+    if request.user.is_staff:
+        tabs.append({
+            'body': _('Organizations'),
+            'href': reverse('org_settings'),
+        })
+
+    return tabs
 
 
 def settings_helper_get_auth(request, key=None):
@@ -668,6 +673,7 @@ def job_settings(request):
     return TemplateResponse(request, 'settings/job.html', context)
 
 
+@staff_member_required
 def org_settings(request):
     """Display and save user's Account settings.
 
