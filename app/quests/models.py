@@ -25,6 +25,7 @@ class Quest(SuperModel):
     game_metadata = JSONField(default=dict, blank=True)
     questions = JSONField(default=dict, blank=True)
     kudos_reward = models.ForeignKey('kudos.Token', blank=True, null=True, related_name='quests_reward', on_delete=models.SET_NULL)
+    reward_token = models.ForeignKey('marketing.TokenAirdrop', blank=True, null=True, related_name='quests_reward_token', on_delete=models.SET_NULL)
     unlocked_by = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='unblocks', on_delete=models.SET_NULL)
     cooldown_minutes = models.IntegerField(default=5)
     visible = models.BooleanField(default=True, db_index=True)
@@ -51,7 +52,7 @@ class Quest(SuperModel):
 
     @property
     def est_read_time_mins(self):
-        return self.game_schema.get('est_read_time_mins', 10)
+        return float(self.game_schema.get('est_read_time_mins', 10))
 
     @property
     def est_skim_time_mins(self):
@@ -59,7 +60,7 @@ class Quest(SuperModel):
 
     @property
     def est_total_time_required(self):
-        return self.est_read_time_mins
+        return float(self.est_read_time_mins)
 
     def get_absolute_url(self):
         return self.url

@@ -44,6 +44,37 @@ $(document).ready(function() {
     $(this).remove();
   });
 
+  var update_total_amount = function() {
+    var total = parseFloat($('#token_amount').val()) * parseInt($('#max_winners').val());
+
+    $('#total_tokens').val(total);
+  };
+
+  $('#token_amount').keyup(update_total_amount);
+  $('#max_winners').keyup(update_total_amount);
+
+  $('#myTab a').click(function(e) {
+    e.preventDefault();
+    var target = $(this).data('href');
+
+    $('.target_tab').addClass('hidden');
+    $('.nav-link').removeClass('active');
+    $(this).addClass('active');
+    $('.target_tab.' + target).removeClass('hidden');
+    $('#token_reward').val(target);
+    $('html,body').animate({
+      scrollTop: '+=1px'
+    });
+  });
+
+  load_tokens();
+  $('select[name=denomination]').select2();
+  setTimeout(function() {
+    if (document.denomination) {
+      $('select[name=denomination] option[value="' + document.denomination + '"]').prop('selected', 'selected').change();
+      $('select[name=denomination]').trigger('select2');
+    }
+  }, 1500);
 
   $(document).on('click', '.close_question', function(e) {
     e.preventDefault();

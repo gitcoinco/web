@@ -105,6 +105,10 @@
     document.music = '{{quest.music}}';
     document.seconds_per_question = parseInt('{{seconds_per_question}}');
     document.quest = {{quest_json|safe}};
+    document.reward_token = {
+      'token': '{{quest.reward_token.token.symbol}}',
+      'token_amount': '{{quest.reward_token.token_amount}}'
+    };
     document.attempts = {
       'success_count': parseInt('{{success_count}}'),
       'attempt_count': parseInt('{{attempt_count}}'),

@@ -5,7 +5,7 @@ from .models import Quest, QuestAttempt, QuestPointAward
 
 
 class QuestAdmin(admin.ModelAdmin):
-    raw_id_fields = ['kudos_reward', 'unlocked_by', 'creator']
+    raw_id_fields = ['kudos_reward', 'unlocked_by', 'creator', 'reward_token']
     ordering = ['-id']
     list_display = ['created_on', '__str__']
 

@@ -76,7 +76,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <span class="boss">#boss</span>
         <img class="card_img boss" src="{{quest.art_url}}" title="{{quest.game_metadata.enemy.title}}">
         <span class="reward">#prize</span>
-        <img class="card_img reward" src="{{quest.kudos_reward.img_url}}" title="{{quest.kudos_reward.humanized_name}} Kudos">
+        {% if quest.kudos_reward %}
+          <img class="card_img reward" src="{{quest.kudos_reward.img_url}}" title="{{quest.kudos_reward.humanized_name}} Kudos">
+        {% else %}
+            <div class="card_img reward p-3" style="font-size: 22px;">
+            {{quest.reward_token.token_amount}}  {{quest.reward_token.token.symbol}}
+          </div>
+        {% endif %}
       </div>
       <div style="background-color: #eee; border-top: 3px solid #bbb; border-radius: 5px;" class="pr-3 pt-3 pl-3 pb-1 mb-1 mt-3">
         <span style="position: relative; top: -50px; font-size: 30px;">

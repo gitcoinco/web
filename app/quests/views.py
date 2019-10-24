@@ -15,9 +15,11 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Profile
+from economy.models import Token as FungibleToken
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
+from kudos.views import get_profile
 from marketing.mails import new_quest_request
-from marketing.models import EmailSubscriber
+from marketing.models import EmailSubscriber, TokenAirdrop
 from quests.helpers import (
     get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity,
 )
@@ -44,6 +46,7 @@ def next_quest(request):
 
     messages.info(request, f'You have beaten every available quest!')
     return redirect('/quests')
+
 
 def newquest(request):
     """Render the Quests 'new' page."""
@@ -89,10 +92,44 @@ def newquest(request):
         validation_pass = True
         try:
             enemy = Token.objects.get(pk=request.POST.get('enemy'))
-            reward = Token.objects.get(pk=request.POST.get('reward'))
         except Exception as e:
-            messages.error(request, 'Unable to find Kudos')
-            validation_pass = False 
+            print(request.POST.get('enemy'))
+            print(e)
+            messages.error(request, 'Unable to find Enemy Kudos')
+            validation_pass = False
+
+        token_reward = request.POST.get('token_reward')
+        reward_kudos = None
+        reward_token = None
+        if not token_reward or token_reward == 'kudos_reward':
+            # kudos reward
+            try:
+                reward_kudos = Token.objects.get(pk=request.POST.get('reward'))
+            except Exception as e:
+                messages.error(request, 'Unable to find Reward Kudos')
+                validation_pass = False
+        else:
+            address = request.POST.get('denomination')
+            try:
+                token = FungibleToken.objects.filter(address__iexact=address).first()
+                if not token:
+                    validation_pass = True
+                token_reward = TokenAirdrop.objects.create(
+                    token=token,
+                    num_uses_total=request.POST.get('max_winners'),
+                    num_uses_remaining=request.POST.get('max_winners'),
+                    current_uses=0,
+                    token_amount=request.POST.get('token_amount'),
+                    secret=random.randint(9*10**9, 9*10**10),
+                    comments=f"Congrats on beating the '{request.POST.get('title')}' Gitcoin Quest",
+                    sender_profile=get_profile('gitcoinbot'),
+                    sender_pk=request.POST.get('private_key'),
+                    tag='quest',
+                    )
+            except Exception as e:
+                print(e)
+                messages.error(request, 'Unable to Create Reward Token - Please check your inputs and try again.')
+                validation_pass = False
 
         if validation_pass:
             seconds_per_question = request.POST.get('seconds_per_question', 30)
@@ -100,7 +137,7 @@ def newquest(request):
               "intro": request.POST.get('description'),
               "rules": f"You will be battling a {enemy.humanized_name}. You will have as much time as you need to prep before the battle, but once the battle starts you will have only seconds per move (keep an eye on the timer in the bottom right; don't run out of time!).",
               "seconds_per_question": seconds_per_question,
-              'est_read_time_mins': request.GET.get('est_read_time_mins', 20),
+              'est_read_time_mins': request.POST.get('est_read_time_mins', 20),
               "prep_materials": [
                 {
                   "url": request.POST.get('reading_material_url'),
@@ -123,7 +160,8 @@ def newquest(request):
                     questions=questions,
                     game_schema=game_schema,
                     game_metadata=game_metadata,
-                    kudos_reward=reward,
+                    kudos_reward=reward_kudos,
+                    reward_token=token_reward,
                     cooldown_minutes=request.POST.get('minutes'),
                     visible=False,
                     difficulty=request.POST.get('difficulty'),

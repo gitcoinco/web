@@ -1,0 +1,60 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div id="add-token-section" class="mt-0">
+  <div class="d-flex row mb-2">
+    <div class="col-12 col-md-3">
+      <label class="form__label" for="amount">{% trans "Denomination" %}</label>
+      <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="What token will the reward be denominated on? (prefilled with tokens on your current network -- so if it's not loading; switch to a web3 browser on the mainnet)"></i>
+      <div class="form__select2">
+        <select name='denomination' id='token'></select>
+      </div>
+    </div>
+    <script>
+      document.denomination = '{{package.denomination}}';
+    </script>
+    <div class="col-12 col-md-3">
+      <label class="form__label" for="token_amount">{% trans "Number of Tokens Per Winner" %}</label>
+      <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="For each winner, how many tokens will be distributed?"></i>
+      <input name='token_amount' id='token_amount'  class="form__input" type="number" value="{{package.token_amount|default:'1'}}" step="0.001" min="0.001"/>
+    </div>
+    <div class="col-12 col-md-3" id="usd-amount-wrapper">
+      <label class="form__label" for="max_winners">{% trans "Max Winners" %}</label>
+      <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="How many winners can claim the reward before the rewards run out?"></i>
+      <input name='max_winners' id='max_winners'  class="form__input" type="number" min="0.00" value="{{package.max_winners|default:'10'}}" />
+    </div>
+    <div class="col-12 col-md-3">
+    <label class="form__label" for="total_tokens">{% trans "Total Number of Tokens" %}</label>
+    <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The total number of tokens that can be distributed in this quest."></i>
+    <input name='total_tokens' id='total_tokens'  class="form__input" type="number" disabled="disabled" value="{{package.total_tokens|default:'10'}}" step="1"
+    min="1" required="required"/>
+    </div>
+  </div>
+  <div class="d-flex row mb-2">
+    <div class="col-12 col-md-12">
+      <label class="form__label" for="private_key">{% trans "Private Key" %} </label>
+      <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="A private key of an account that contains the tokens which will be distributed at the end of this quest."></i>
+      <input name='private_key' id='private_key'  class="form__input" type="text" value="{{package.private_key}}" required="required"/>
+
+    </div>
+  </div>
+  <small class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="usd_amount_text"></small>
+
+</div>
+<script src="/dynamic/js/tokens_dynamic.js"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+

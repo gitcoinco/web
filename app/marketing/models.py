@@ -371,3 +371,35 @@ class MarketingCallback(SuperModel):
 
     def __str__(self):
         return f"{self.key} - {self.val}"
+
+
+class TokenAirdrop(SuperModel):
+
+    """Model representing a bulk send of Token Airdrop
+    """
+    token = models.ForeignKey(
+        'economy.Token', related_name='airdrops', on_delete=models.CASCADE
+    )
+    num_uses_total = models.IntegerField()
+    num_uses_remaining = models.IntegerField()
+    token_amount = models.FloatField()
+    current_uses = models.IntegerField(default=0)
+    secret = models.CharField(max_length=255, unique=True)
+    comments = models.CharField(max_length=255, blank=True)
+    sender_profile = models.ForeignKey(
+        'dashboard.Profile', related_name='airdrops', on_delete=models.CASCADE
+    )
+    sender_pk = models.CharField(max_length=255, blank=True)
+    tag = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        """Return the string representation of a model."""
+        return f"Token: {self.token} num_uses_total: {self.num_uses_total}"
+
+    @property
+    def url(self):
+        return f"/tip/redeem/{self.secret}"
+
+    def get_absolute_url(self):
+        return self.url
+

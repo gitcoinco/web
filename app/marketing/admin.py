@@ -24,13 +24,19 @@ from django.utils.safestring import mark_safe
 from .models import (
     AccountDeletionRequest, Alumni, EmailEvent, EmailSubscriber, EmailSupressionList, GithubEvent,
     GithubOrgToTwitterHandleMapping, Keyword, LeaderboardRank, ManualStat, MarketingCallback, Match, SlackPresence,
-    SlackUser, Stat,
+    SlackUser, Stat, TokenAirdrop,
 )
 
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+
+class TokenAirdropAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['sender_profile', 'token']
 
 
 class LeaderboardRankAdmin(admin.ModelAdmin):
@@ -114,7 +120,6 @@ class SlackUserAdmin(admin.ModelAdmin):
             return 'Unknown'
 
 
-
 admin.site.register(MarketingCallback, GeneralAdmin)
 admin.site.register(AccountDeletionRequest, GeneralAdmin)
 admin.site.register(EmailSupressionList, GeneralAdmin)
@@ -124,6 +129,7 @@ admin.site.register(Match, MatchAdmin)
 admin.site.register(ManualStat, GeneralAdmin)
 admin.site.register(Stat, GeneralAdmin)
 admin.site.register(Keyword, GeneralAdmin)
+admin.site.register(TokenAirdrop, TokenAirdropAdmin)
 admin.site.register(EmailEvent, EmailEventAdmin)
 admin.site.register(EmailSubscriber, EmailSubscriberAdmin)
 admin.site.register(LeaderboardRank, LeaderboardRankAdmin)

@@ -173,10 +173,13 @@ var advance_to_state = async function(new_state) {
     document.typewriter_txt = document.quest.game_schema.intro;
     document.typewriter_speed = 30;
     typeWriter();
-    var kudos_reward_html = " <BR><BR> If you're successful in this quest, you'll earn this limited edition <strong>" + document.kudos_reward['name'] + "</strong> Kudos: <BR> <BR> <img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>';
+    var reward_html = " <BR><BR> If you're successful in this quest, you'll earn this limited edition <strong>" + document.kudos_reward['name'] + "</strong> Kudos: <BR> <BR> <img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>';
+    if(document.reward_token['token']){
+    var reward_html = " <BR><BR> If you're successful in this quest, you'll earn <strong>" + document.reward_token['token_amount'] + " " + document.reward_token['token'] + "</strong>";
 
+    }
     setTimeout(function() {
-      var new_html = $('#desc').html() + kudos_reward_html;
+      var new_html = $('#desc').html() + reward_html;
 
       $('#desc').html(new_html);
     }, 4500);

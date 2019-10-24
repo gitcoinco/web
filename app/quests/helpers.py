@@ -140,6 +140,37 @@ def process_start(request, quest):
     record_quest_activity(quest, request.user.profile, 'played_quest')
 
 
+def get_or_create_prize_url(quest, profile):
+    tweet_url = f"{settings.BASE_URL}{quest.url}".replace('gitcoin.co//', 'gitcoin.co/') #total hack but prevents https://github.com/gitcoinco/web/issues/5298#issuecomment-545657239
+    add_params = f"?cb=ref:{profile.ref_code}&tweet_url={tweet_url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
+    if quest.reward_token:
+        return f"{quest.reward_token.url}{add_params}"
+    else:
+        btcs = get_existing_prizes_for(quest, profile)
+        btc = BulkTransferCoupon.objects.filter(
+            token=quest.kudos_reward,
+            tag='quest',
+            metadata__recipient=profile.pk)
+        if btcs.exists():
+            btc = btcs.first()
+        else:
+            btc = BulkTransferCoupon.objects.create(
+                token=quest.kudos_reward,
+                tag='quest',
+                num_uses_remaining=1,
+                num_uses_total=1,
+                current_uses=0,
+                secret=random.randint(10**19, 10**20),
+                comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
+                sender_profile=get_profile('gitcoinbot'),
+                metadata={
+                    'recipient': profile.pk,
+                },
+            )
+        prize_url = f"{btc.url}{add_params}"
+        return prize_url
+
+
 def process_win(request, qa):
     """
     Processes the win on behalf of the user
@@ -148,29 +179,6 @@ def process_win(request, qa):
     was_already_beaten = quest.is_beaten(request.user)
     first_time_beaten = not was_already_beaten
     record_quest_activity(quest, request.user.profile, 'beat_quest')
-    btcs = BulkTransferCoupon.objects.filter(
-        token=quest.kudos_reward,
-        tag='quest',
-        metadata__recipient=request.user.profile.pk)
-    btc = None
-    if btcs.exists():
-        btc = btcs.first()
-    else:
-        btc = BulkTransferCoupon.objects.create(
-            token=quest.kudos_reward,
-            tag='quest',
-            num_uses_remaining=1,
-            num_uses_total=1,
-            current_uses=0,
-            secret=random.randint(10**19, 10**20),
-            comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
-            sender_profile=get_profile('gitcoinbot'),
-            metadata={
-                'recipient': request.user.profile.pk,
-            },
-            )
-    tweet_url = f"{settings.BASE_URL}{quest.url}".replace('gitcoin.co//', 'gitcoin.co/') #total hack but prevents https://github.com/gitcoinco/web/issues/5298#issuecomment-545657239
-    prize_url = f"{btc.url}?cb=ref:{request.user.profile.ref_code}&tweet_url={tweet_url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
     qa.success = True
     qa.save()
     if not qa.quest.visible:
@@ -179,6 +187,7 @@ def process_win(request, qa):
         return "https://gitcoin.co/quests"
     if first_time_beaten:
         record_award_helper(qa, qa.profile)
+    prize_url = get_or_create_prize_url(quest, request.user.profile)
     return prize_url
 
 

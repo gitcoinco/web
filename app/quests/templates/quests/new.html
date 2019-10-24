@@ -118,19 +118,38 @@
             {% endif %}
           </div>
           <div class="form-group">
-            <label class="form__label" for="reward">{% trans "Reward Kudos " %}</label>
-            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The reward kudos to be minted if the hero wins the quest"></i>
-            {% if package.reward %}
-              <BR>
-              <span class=default_kudos>Kudos ID {{package.reward}}</span> 
-              <input name=reward type="hidden" value={{package.reward}}>
-              <a class="remove" href=#>Remove</a>
-              <div class=hidden>
-                {% include 'shared/add_kudos.html' with name='reward2' %}
-              </div>
-            {% else %}
-              {% include 'shared/add_kudos.html' with name='reward' %}
-            {% endif %}
+
+            <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link nav-line {% if not package.token_reward or package.token_reward == 'kudos_reward' %}active{%endif%}" href="#" data-href="kudos_reward">
+                Reward with a Kudos <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="Winners of this quest will winner a prize: A Gitcoin Kudos! (https://gitcoin.co/kudos)"></i>
+                </a>
+              </li>
+              <li>
+                <a class="nav-link nav-line {% if package.token_reward == 'token_reward' %}active{%endif%}" href="#" data-href="token_reward">
+                Reward with a ERC-20 Token <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="Winners of this quest will winner a prize: An airdrop of the tokens in this account."></i>
+                </a>
+              </li>
+            </ul>
+            <input type="hidden" id="token_reward" name="token_reward" value="{{package.token_reward}}">
+            <div class="target_tab kudos_reward {% if package.token_reward == 'token_reward' %}hidden{%endif%}">
+              <label class="form__label" for="reward">{% trans "Reward Kudos " %}</label>
+              {% if package.reward %}
+                <BR>
+                <span class=default_kudos>Kudos ID {{package.reward}}</span> 
+                <input name=reward type="hidden" value={{package.reward}}>
+                <a class="remove" href=#>Remove</a>
+                <div class=hidden>
+                  {% include 'shared/add_kudos.html' with name='reward2' %}
+                </div>
+              {% else %}
+                {% include 'shared/add_kudos.html' with name='reward' %}
+              {% endif %}
+            <small class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="usd_amount_text"></small>
+            </div>
+            <div class="target_tab token_reward {% if package.token_reward != 'token_reward' %}hidden{%endif%}">
+              {% include 'shared/add_token.html' %}
+            </div>
           </div>
           <div class="form-group">
             <label class="form__label" for="points">{% trans "Reward Points Value" %}</label>
