@@ -22,7 +22,9 @@ class QuestAdmin(admin.ModelAdmin):
                 if obj.kudos_reward.owner_address.lower() != settings.KUDOS_OWNER_ACCOUNT.lower():
                     self.message_user(request, f"Cannot approve quest. The owner address is not the Gitcoin Airdropper")
                     return super().response_change(request, obj)
-
+                if obj.is_dead_end:
+                    self.message_user(request, f"Cannot approve quest. The quest has a dead end question in it!")
+                    return super().response_change(request, obj)
                 quest = obj
                 qa = QuestAttempt.objects.create(
                     quest=obj,

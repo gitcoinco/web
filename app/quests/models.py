@@ -54,6 +54,19 @@ class Quest(SuperModel):
         return self.game_schema.get('est_read_time_mins', 10)
 
     @property
+    def is_dead_end(self):
+        """
+        returns True IFF the quest has a question for which there is no possible winning path
+
+        """
+        is_dead_end = False
+        for question in self.questions:
+            is_this_question_dead_end = not any(ele['correct'] for ele in question['responses'])
+            if is_this_question_dead_end:
+                is_dead_end = True
+        return is_dead_end
+
+    @property
     def est_skim_time_mins(self):
         return round(self.est_read_time_mins / 5)
 
