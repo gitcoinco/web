@@ -1,5 +1,7 @@
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -39,6 +41,7 @@ class Quest(SuperModel):
         null=True,
         blank=True,
     )
+    ui_data = JSONField(default=dict, blank=True)
     def __str__(self):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.title}'
@@ -197,6 +200,17 @@ class Quest(SuperModel):
             return False
 
         return user.profile.quest_attempts.filter(success=False).order_by('-pk').first()
+
+
+@receiver(pre_save, sender=Quest, dispatch_uid="psave_quest")
+def psave_quest(sender, instance, **kwargs):
+    instance.ui_data['attempts_count'] = instance.attempts.count()
+    instance.ui_data['tags'] = instance.tags
+    instance.ui_data['success_pct'] = instance.success_pct
+    instance.ui_data['creator'] = {
+        'url': instance.creator.url,
+        'handle': instance.creator.handle,
+    }
 
 
 class QuestAttempt(SuperModel):
