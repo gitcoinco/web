@@ -5,7 +5,7 @@ $(document).ready(function() {
   var clearBtn = $('.clear-search');
 
   if (queryParam && queryParam.q) {
-    $('#kudos-search').val(queryParam.q);
+    $('#kudos-search').val(queryParam.q.replace(/\+/g, " "));
     clearBtn.removeClass('hidden');
   }
 
