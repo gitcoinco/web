@@ -169,8 +169,8 @@ def process_win(request, qa):
                 'recipient': request.user.profile.pk,
             },
             )
-    tweet_url = f"{quest.url}"
-    prize_url = f"{btc.url}?cb=ref:{request.user.profile.ref_code}&tweet_url={tweet_url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
+    tweet_url = f"{quest.url}?cb=ref:{request.user.profile.ref_code}"
+    prize_url = f"{btc.url}?tweet_url={tweet_url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
     qa.success = True
     qa.save()
     if not qa.quest.visible:

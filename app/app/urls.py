@@ -308,6 +308,7 @@ urlpatterns = [
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     re_path(r'^funding/avatar/?', avatar.views.handle_avatar, name='avatar'),
+    re_path(r'^dynamic/avatar/(.*)', avatar.views.handle_avatar, name='org_avatar2'),
     re_path(r'^dynamic/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
     re_path(r'^dynamic/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
     re_path(r'^dynamic/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
@@ -604,10 +605,10 @@ if settings.DEBUG:
         re_path(r'^500/$', retail.views.handler500, name='500'),
     ]
 
-    urlpatterns += [
-        re_path(r'^(.*)/(.*)?', dashboard.views.profile, name='profile_min_by_tab'),
-        re_path(r'^(.*)', dashboard.views.profile, name='profile_min'),
-    ]
+urlpatterns += [
+    re_path(r'^(.*)/(.*)?', dashboard.views.profile, name='profile_min_by_tab'),
+    re_path(r'^(.*)', dashboard.views.profile, name='profile_min'),
+]
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'
