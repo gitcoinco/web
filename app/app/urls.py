@@ -308,7 +308,7 @@ urlpatterns = [
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     re_path(r'^funding/avatar/?', avatar.views.handle_avatar, name='avatar'),
-    re_path(r'^dynamic/avatar/(.*)', avatar.views.handle_avatar, name='org_avatar'),
+    re_path(r'^dynamic/avatar/(.*)', avatar.views.handle_avatar, name='org_avatar2'),
     re_path(r'^dynamic/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
     re_path(r'^dynamic/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
     re_path(r'^dynamic/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
