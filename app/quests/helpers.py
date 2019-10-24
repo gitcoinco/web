@@ -169,7 +169,7 @@ def process_win(request, qa):
                 'recipient': request.user.profile.pk,
             },
             )
-    tweet_url = f"{settings.BASE_URL}{quest.url}".replace('gitcoin.co//', 'gitcoin.co/') #total hack but prevents https://github.com/gitcoinco/web/issues/5298#issuecomment-545657239
+    tweet_url = f"{quest.url}"
     prize_url = f"{btc.url}?cb=ref:{request.user.profile.ref_code}&tweet_url={tweet_url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
     qa.success = True
     qa.save()
