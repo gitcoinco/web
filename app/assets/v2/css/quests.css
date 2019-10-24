@@ -812,11 +812,11 @@ body.back9 #desc li.selected {
 }
 body.red #desc li:hover,
 body.red #desc li.selected {
-  background-color: red;
+  background-color: #fc4240;
 }
 body.blue #desc li:hover,
 body.blue #desc li.selected {
-  background-color: blue;
+  background-color: #4040ff;
 }
 body.green #desc li:hover,
 body.green #desc li.selected {
