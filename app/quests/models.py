@@ -68,7 +68,7 @@ class Quest(SuperModel):
 
     @property
     def est_skim_time_mins(self):
-        return round(self.est_read_time_mins / 5)
+        return round(int(self.est_read_time_mins) / 5)
 
     @property
     def est_total_time_required(self):
