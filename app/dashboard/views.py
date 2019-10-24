@@ -2631,6 +2631,10 @@ def profile(request, handle, tab=None):
         }
         return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
+    # make sure we're on the right profile route + redirect if we dont
+    if request.path not in profile.url and tab == default_tab:
+        return redirect(profile.url)
+
     # setup context for visit
 
     context['is_my_profile'] = is_my_profile
