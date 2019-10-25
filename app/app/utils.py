@@ -191,7 +191,7 @@ def sync_profile(handle, user=None, hide_profile=True):
             access_token = user.social_auth.filter(provider='github').latest('pk').access_token
             data = get_user(handle, '', scoped=True, auth=(handle, access_token))
 
-            user = User.objects.get(username=handle)
+            user = User.objects.get(username__iexact=handle)
             if 'login' in data:
                 profile = user.profile
                 user.username = data['login']
