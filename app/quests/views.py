@@ -11,6 +11,7 @@ from django.db.models import Count, Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
@@ -217,7 +218,7 @@ def index(request):
         'point_history': point_history,
         'point_value': point_value, 
         'current_round_number': current_round_number,
-        'avatar_url': '/static/v2/images/quests/orb.png',
+        'avatar_url': static('v2/images/quests/orb_small.png'),
         'card_desc': 'Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!',
     }
 

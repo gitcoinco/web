@@ -97,6 +97,13 @@ class Quest(SuperModel):
         return self.art_url.replace('svg', 'png')
 
     @property
+    def avatar_url_png(self):
+        # warning: not supported for kudos uploaded quets
+        if self.kudos_reward:
+            return self.kudos_reward.img_url
+        return self.art_url.replace('svg', 'png')
+
+    @property
     def enemy_img_name(self):
         return '/static/'+self.game_metadata.get('enemy', {}).get('title', '')
 
