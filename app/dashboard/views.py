@@ -228,7 +228,7 @@ def get_interest_modal(request):
         raise Http404
 
     if bounty.event and request.user.is_authenticated:
-        is_registered = request.user.profile.hackathons.filter(hackathon_id=bounty.event.id).first() or None
+        is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile, hackathon_id=bounty.event.id) or None
     else:
         is_registered = None
 

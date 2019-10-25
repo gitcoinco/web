@@ -29,7 +29,7 @@
               {% if not fund_reward %}
                 <img class="icon w-75 h-75" src="{% static "v2/images/grants/torchbearer.svg" %}" />
                 <h5>Thanks for Contributing!</h5>
-                <span>{% trans "Tell your network about this Gitcoin Grant. If they fund a grant, the grant owner will get even more Matching Funds!" %}</span>
+                <span>{% trans "Tell your network about this Gitcoin Grant!" %}</span>
               {% else %}
                 <img class="icon w-75 h-75" src="{{fund_reward.token.preview_img_url}}" />
                 <h5>Thanks for Contributing! You Earned a Kudos</h5>
