@@ -159,12 +159,12 @@ def index(request):
     query = request.GET.get('q', '')
     quests = []
     if query:
-        quest_qs = Quest.objects.filter(visible=True).filter(Q(title__icontains=query) | Q(description__icontains=query) | Q(questions__icontains=query) | Q(game_schema__icontains=query) | Q(game_metadata__icontains=query))
+        quest_qs = Quest.objects.filter(visible=True).filter(Q(title__icontains=query) | Q(description__icontains=query) | Q(questions__icontains=query) | Q(game_schema__icontains=query) | Q(game_metadata__icontains=query)).order_by('-ui_data__success_pct')
         quest_package = get_package_helper(quest_qs, request)
         package = ('Search', quest_package)
         quests.append(package)
     for diff in Quest.DIFFICULTIES:
-        quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True)
+        quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True).order_by('-ui_data__success_pct')
         quest_package = get_package_helper(quest_qs, request)
         package = (diff[0], quest_package)
         if quest_qs.exists():

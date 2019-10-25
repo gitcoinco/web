@@ -44,7 +44,7 @@ class Quest(SuperModel):
     ui_data = JSONField(default=dict, blank=True)
     def __str__(self):
         """Return the string representation of this obj."""
-        return f'{self.pk}, {self.title}'
+        return f'{self.pk}, {self.title} (approved: {self.approved})'
 
 
     @property
