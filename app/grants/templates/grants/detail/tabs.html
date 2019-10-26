@@ -79,8 +79,12 @@
               <img src="{{ contribution.subscription.contributor_profile.avatar_url }}" />
             </div>
             <div class="mt-1 d-inline-block">
-              <span class="grant-profile font-weight-semibold">{{ contribution.subscription.contributor_profile.handle }}</span>
+              <span class="grant-profile font-weight-semibold">{{ contribution.subscription.contributor_profile.handle }}</span><br>
+            <a href="{%  url "grants:subscription_invoice" contribution.subscription.id  %}">Get invoice</a>
             </div>
+
+
+
           </a>
 
         {% empty %}

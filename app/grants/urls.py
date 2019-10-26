@@ -20,9 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    grant_details, grant_fund, grant_new, grant_new_v0, grants, leaderboard, milestones, new_matching_partner, profile,
-    quickstart, subscription_cancel,
-    invoice)
+    grant_details, grant_fund, grant_new, grant_new_v0, grants, invoice, leaderboard, milestones, new_matching_partner,
+    profile, quickstart, subscription_cancel,
+)
 
 app_name = 'grants'
 urlpatterns = [
@@ -43,8 +43,8 @@ urlpatterns = [
     re_path(r'^leaderboard', leaderboard, name='leaderboard'),
     re_path(r'^matching-partners/new', new_matching_partner, name='new_matching_partner'),
     path(
-        'invoice/contribution/<int:contribution_pk>',
+        'invoice/subscription/<int:subscription_pk>',
         invoice,
-        name='contribution_invoice'
+        name='subscription_invoice'
     ),
 ]

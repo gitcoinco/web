@@ -667,7 +667,7 @@ next_valid_timestamp: {next_valid_timestamp}
                 return None
 
     def get_converted_monthly_amount(self):
-        converted_amount = self.get_converted_amount()
+        converted_amount = self.get_converted_amount() or 0
 
         total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
 
