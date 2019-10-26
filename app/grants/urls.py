@@ -43,8 +43,8 @@ urlpatterns = [
     re_path(r'^leaderboard', leaderboard, name='leaderboard'),
     re_path(r'^matching-partners/new', new_matching_partner, name='new_matching_partner'),
     path(
-        'invoice/subscription/<int:subscription_pk>',
+        'invoice/contribution/<int:contribution_pk>',
         invoice,
-        name='subscription_invoice'
+        name='contribution_invoice'
     ),
 ]

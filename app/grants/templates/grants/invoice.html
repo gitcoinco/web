@@ -121,8 +121,8 @@
                 </td>
 
                 <td>
-                  {% trans "Invoice" %} #: {{subscription.pk}}<br>
-                  {% trans "Created" %}: {{subscription.created_on}}<br>
+                  {% trans "Invoice" %} #: {{contribution.pk}}<br>
+                  {% trans "Created" %}: {{contribution.created_on}}<br>
                   {% trans "Status" %}: {{subscription.status}}<br>
                   {% trans "For" %}: <a href="{{subscription.grant.url}}">{% trans "Gitcoin Grant" %} {{subscription.grant.pk}}</a> <br>
                 </td>
@@ -187,12 +187,11 @@
           <tr class="item">
             <td>
               {% trans "Contribution from " %}{{subscription.contributor_profile.handle}} {{subscription.contributor_address}}<br>
-                    {{subscription.num_tx_approved|floatformat:"0" }} {% trans "period of " %} {{subscription.frequency}} {{subscription.frequency_unit}}
+              {{subscription.num_tx_approved|floatformat:"0" }} {% trans "period of " %} {{subscription.frequency}} {{subscription.frequency_unit}} ({{subscription.subscription_contribution.count}} / {{subscription.num_tx_approved|floatformat:"0" }})
             </td>
 
             <td>
-              {{ subscription.amount_per_period}} {{subscription.token_symbol}} (${{amount_per_period|default:0.0|floatformat:'2'}} USD)<br>
-               ({{subscription.subscription_contribution.count}} / {{subscription.num_tx_approved|floatformat:"0" }})
+              {{ subscription.amount_per_period}} {{subscription.token_symbol}} (${{amount_per_period|default:0.0|floatformat:2}} USD)
               <br>
             </td>
           </tr>
@@ -200,8 +199,8 @@
 
         <tr class="total">
           <td>
-            {% if total %}
-               {% trans "Total:" %} ${{total|floatformat:2}} USD
+            {% if amount_per_period %}
+               {% trans "Total:" %} ${{amount_per_period|default:0.0|floatformat:'2'}} USD
             {%else%}
                {% trans "Total:" %} $0.00 USD
             {%endif%}
