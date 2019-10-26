@@ -1,6 +1,6 @@
 
 $(document).ready(function() {
-  var QUESTIONS_LIMIT=6;
+  const QUESTIONS_LIMIT = 6;
 
   $(document).on('form#newkudos', 'submit', function(e) {
     // e.preventDefault();
@@ -10,8 +10,10 @@ $(document).ready(function() {
 
   $(document).on('click', '.add_answer', function(e) {
     e.preventDefault();
+
     var dupe_me = $(this).parents('.form-group').find('span:last');
     var clone = dupe_me.clone();
+
     // Clean element copied
     clone.find('input').val('');
     clone.find('option').attr('selected', false);
@@ -33,8 +35,10 @@ $(document).ready(function() {
       alert('Questions limit exceed');
       return;
     }
+
     var dupe_me = $('.form-group.question:last');
     var clone = dupe_me.clone();
+
     // Clean element copied
     clone.find('input').val('');
     clone.find('option').attr('selected', false);
