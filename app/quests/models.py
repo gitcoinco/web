@@ -44,7 +44,7 @@ class Quest(SuperModel):
     ui_data = JSONField(default=dict, blank=True)
     def __str__(self):
         """Return the string representation of this obj."""
-        return f'{self.pk}, {self.title}'
+        return f'{self.pk}, {self.title} (visible: {self.visible})'
 
 
     @property
@@ -94,6 +94,13 @@ class Quest(SuperModel):
     @property
     def enemy_img_url_png(self):
         # warning: not supported for kudos uploaded quets
+        return self.art_url.replace('svg', 'png')
+
+    @property
+    def avatar_url_png(self):
+        # warning: not supported for kudos uploaded quets
+        if self.kudos_reward:
+            return self.kudos_reward.img_url
         return self.art_url.replace('svg', 'png')
 
     @property
