@@ -312,11 +312,10 @@ $(function() {
 
   // fetch issue URL related info
   $('input[name=amount]').keyup(setUsdAmount);
-  $('input[name=amount]').blur(setUsdAmount);
   $('input[name=usd_amount]').keyup(usdToAmount);
-  $('input[name=usd_amount]').blur(usdToAmount);
   $('input[name=hours]').keyup(setUsdAmount);
   $('input[name=hours]').blur(setUsdAmount);
+
   $('input[name=amount]').on('change', function() {
     const amount = $('input[name=amount]').val();
 
@@ -421,8 +420,20 @@ $(function() {
 
 });
 
-$('#reservedFor').on('select2:select', function(e) {
+$('#reservedFor').on('select2:select', (e) => {
   $('#permissionless').click();
+  $('#releaseAfterFormGroup').show();
+  $('#releaseAfter').attr('required', true);
+});
+
+$('#reservedFor').on('select2:unselect', (e) => {
+  $('#releaseAfterFormGroup').hide();
+  $('#releaseAfter').attr('required', false);
+  $('#releaseAfterFormGroup').addClass('releaseAfterFormGroupRequired');
+});
+
+$('#releaseAfter').on('change', () => {
+  $('#releaseAfterFormGroup').removeClass('releaseAfterFormGroupRequired');
 });
 
 $('#sync-issue').on('click', function(event) {
@@ -526,7 +537,11 @@ $('#submitBounty').validate({
       return;
     }
     if (typeof ga != 'undefined') {
-      ga('send', 'event', 'new_bounty', 'new_bounty_form_submit');
+      dataLayer.push({
+        'event': 'new_bounty',
+        'category': 'new_bounty',
+        'action': 'new_bounty_form_submit'
+      });
     }
 
     var data = {};
@@ -562,6 +577,7 @@ $('#submitBounty').validate({
     var decimalDivisor = Math.pow(10, decimals);
     var expirationTimeDelta = $('#expirationTimeDelta').data('daterangepicker').endDate.utc().unix();
     let reservedFor = $('.username-search').select2('data')[0];
+    let releaseAfter = $('#releaseAfter').children('option:selected').val();
     let inviteContributors = $('#invite-contributors.js-select2').select2('data').map((user) => {
       return user.profile__id;
     });
@@ -583,6 +599,7 @@ $('#submitBounty').validate({
       repo_type: data.repo_type,
       featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
       reservedFor: reservedFor ? reservedFor.text : '',
+      releaseAfter: releaseAfter !== 'Release To Public After' ? releaseAfter : '',
       tokenName,
       invite: inviteContributors,
       bounty_categories: data.bounty_category
@@ -726,7 +743,12 @@ $('#submitBounty').validate({
       }
 
       if (typeof ga != 'undefined') {
-        ga('send', 'event', 'new_bounty', 'metamask_signature_achieved');
+        dataLayer.push({
+          'event': 'new_bounty',
+          'category': 'new_bounty',
+          'action': 'metamask_signature_achieved'
+        });
+
       }
 
 
@@ -806,6 +828,12 @@ $('#submitBounty').validate({
                 _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
               } else {
                 deductBountyAmount(fee, txnId);
+                saveAttestationData(
+                  result,
+                  fee,
+                  '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+                  'bountyfee'
+                );
               }
             });
           } else {
@@ -835,9 +863,17 @@ $('#submitBounty').validate({
       ipfs.addJson(ipfsBounty, newIpfsCallback);
       if (typeof ga != 'undefined') {
         if (fee == 0)
-          ga('send', 'event', 'new_bounty', 'new_bounty_no_fees');
+          dataLayer.push({
+            'event': 'new_bounty',
+            'category': 'new_bounty',
+            'action': 'new_bounty_no_fees'
+          });
         else
-          ga('send', 'event', 'new_bounty', 'new_bounty_fee_paid');
+          dataLayer.push({
+            'event': 'new_bounty',
+            'category': 'new_bounty',
+            'action': 'new_bounty_fee_paid'
+          });
       }
     };
 

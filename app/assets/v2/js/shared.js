@@ -159,10 +159,14 @@ var sanitizeDict = function(d, keyToIgnore) {
 };
 
 var sanitizeAPIResults = function(results, keyToIgnore) {
-  for (var i = 0; i < results.length; i++) {
-    results[i] = sanitizeDict(results[i], keyToIgnore);
+  if (results.length >= 1) {
+    for (let i = 0; i < results.length; i++) {
+      results[i] = sanitizeDict(results[i], keyToIgnore);
+    }
+    return results;
   }
-  return results;
+
+  return sanitizeDict(results, keyToIgnore);
 };
 
 function ucwords(str) {
@@ -176,6 +180,7 @@ var sanitize = function(str) {
     return str;
   }
   result = DOMPurify.sanitize(str);
+
   return result;
 };
 
@@ -633,7 +638,7 @@ var retrieveIssueDetails = function() {
   $.get(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result['keywords']) {
-      var keywords = result['keywords'];
+      let keywords = result['keywords'];
 
       showChoices('#keyword-suggestions', '#keywords', keywords);
       $('#keywords').select2({
@@ -774,7 +779,7 @@ var currentNetwork = function(network) {
  */
 var trigger_primary_form_web3_hooks = function() {
   if ($('#primary_form').length) {
-    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
+    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1 && !document.suppress_faucet_solicitation;
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
@@ -923,30 +928,44 @@ var listen_for_web3_changes = async function() {
     if (typeof web3 == 'undefined') {
       currentNetwork();
       trigger_form_hooks();
-    } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+    } else if (typeof web3.eth == 'undefined') {
       currentNetwork('locked');
       trigger_form_hooks();
     } else {
-      is_metamask_unlocked = true;
-      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-        if (errors) {
-          return;
-        }
-        if (typeof result != 'undefined' && result !== null) {
-          document.balance = result.toNumber();
-        }
-      });
+      var cb;
 
-      web3.version.getNetwork(function(error, netId) {
-        if (error) {
-          currentNetwork();
-        } else {
-          var network = getNetwork(netId);
+      try {
+        // invoke infura synchronous call, if it fails metamask is locked
+        cb = web3.eth.coinbase;
+      } catch (error) {
+        // catch error so sentry doesn't alert on metamask call failure
+        console.log('web3.eth.coinbase could not be loaded');
+      }
+      if (typeof cb == 'undefined' || !cb) {
+        currentNetwork('locked');
+        trigger_form_hooks();
+      } else {
+        is_metamask_unlocked = true;
+        web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+          if (errors) {
+            return;
+          }
+          if (typeof result != 'undefined' && result !== null) {
+            document.balance = result.toNumber();
+          }
+        });
 
-          currentNetwork(network);
-          trigger_form_hooks();
-        }
-      });
+        web3.version.getNetwork(function(error, netId) {
+          if (error) {
+            currentNetwork();
+          } else {
+            var network = getNetwork(netId);
+
+            currentNetwork(network);
+            trigger_form_hooks();
+          }
+        });
+      }
     }
   }
 

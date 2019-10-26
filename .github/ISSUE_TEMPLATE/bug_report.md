@@ -1,6 +1,9 @@
 ---
-name: 🐛 Bug report
+name: "\U0001F41B Bug report"
 about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
 
 ---
 
@@ -25,7 +28,7 @@ Provide a general summary of the issue in the title above and use relevant field
 <!-- A clear and concise description of what you expected to happen. -->
 
 **Screenshots**
-<!-- If applicable, add screenshots to help explain your problem.)
+<!-- If applicable, add screenshots to help explain your problem.) -->
 
 **Desktop (please complete the following information):**
 

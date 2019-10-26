@@ -37,8 +37,8 @@ from dashboard.models import (
     UserAction,
 )
 from dashboard.notifications import (
-    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
-    maybe_market_to_user_discord, maybe_market_to_user_slack,
+    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord,
+    maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import ConversionRateNotFoundError, convert_amount
@@ -570,6 +570,8 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
             msg += " #" + keyword
         for user_id in bounty_invitees:
             profile = Profile.objects.get(id=int(user_id))
+            if not profile.user:
+                continue
             bounty_invite = BountyInvites.objects.create(
                 status='pending'
             )
@@ -599,12 +601,18 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         for activity in latest_old_bounty.activities.all().nocache():
             new_bounty.activities.add(activity)
 
-
     bounty_reserved_for_user = metadata.get('reservedFor', '')
-    if bounty_reserved_for_user:
+    release_to_public_after = metadata.get('releaseAfter', '')
+    if bounty_reserved_for_user and release_to_public_after:
+        new_bounty.reserved_for_user_from = timezone.now()
+        if release_to_public_after == "3-days":
+            new_bounty.reserved_for_user_expiration = new_bounty.reserved_for_user_from + timezone.timedelta(days=3)
+        elif release_to_public_after == "1-week":
+            new_bounty.reserved_for_user_expiration = new_bounty.reserved_for_user_from + timezone.timedelta(weeks=1)
+
         new_bounty.reserved_for_user_handle = bounty_reserved_for_user
         new_bounty.save()
-        if new_bounty.bounty_reserved_for_user:
+        if new_bounty.bounty_reserved_for_user and new_bounty.status == 'reserved':
             # notify a user that a bounty has been reserved for them
             new_reserved_issue('founders@gitcoin.co', new_bounty.bounty_reserved_for_user, new_bounty)
 
@@ -739,7 +747,7 @@ def get_fulfillment_data_for_activity(fulfillment):
     return data
 
 
-def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None):
+def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None, override_created=None):
     """Records activity based on bounty changes
 
     Args:
@@ -779,6 +787,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
 
     if user_profile:
         return Activity.objects.create(
+            created_on=timezone.now() if not override_created else override_created,
             profile=user_profile,
             activity_type=event_name,
             bounty=new_bounty,
@@ -878,7 +887,6 @@ def process_bounty_changes(old_bounty, new_bounty):
     # marketing
     if event_name != 'unknown_event':
         print("============ posting ==============")
-        did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name)
         did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
         did_post_to_user_slack = maybe_market_to_user_slack(new_bounty, event_name)
         did_post_to_user_discord = maybe_market_to_user_discord(new_bounty, event_name)

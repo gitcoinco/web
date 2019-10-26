@@ -101,7 +101,7 @@
                     <img src="{% static 'v2/images/loading_v2.gif' %}" class="d-block m-auto" style="max-width: 122px;max-height: 122px;">
                   </div>
                 </div>
-                {% include 'shared/add_kudos.html' %}
+                {% include 'shared/add_kudos.html' with name='kudos-search' keywords=bounty.keywords %}
                 <div id="gas-section">
                   {% include 'shared/bounty_actions_hidden_vars.html' %}
                   {% include 'shared/wallet_estimate.html' %}
@@ -136,7 +136,7 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>
 
   <script>

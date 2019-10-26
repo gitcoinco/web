@@ -5126,3 +5126,739 @@
   - DAI
   - MakerDAO
   image: dai.svg
+- name: grants_round_3_contributor_-_Popart_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Popart_bot.svg
+- name: grants_round_3_contributor_-_noir_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: noir_bot.svg
+- name: grants_round_3_contributor_-_japaneseArt_ninjaBot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: japaneseArt_ninjaBot.svg
+- name: grants_round_3_contributor_-_origami_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: origami_bot.svg
+- name: grants_round_3_contributor_-_popart_gitcoin
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: popart_gitcoin.svg
+- name: grants_round_3_contributor_-_ramen_eating_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: ramen_eating_bot.svg
+- name: grants_round_3_contributor_-_samurai_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: samurai_bot.svg
+- name: grants_round_3_contributor_-_watercolour_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: watercolour_bot.svg
+- name: grants_round_3_contributor_-_gitcoin_spraybot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: gitcoin_spraybot.svg
+- name: grants_round_3_contributor_-_japanese-bot-sketch
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: japanese-bot-sketch.svg
+- name: grants_round_3_contributor_-_kendo-bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: kendo-bot.svg
+- name: grants_round_3_contributor_-_snowgitcoin_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: snowgitcoin_bot.svg
+- name: grants_round_3_contributor_-_Futurism_bot
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Futurism_bot.svg
+- name: grants_round_3_contributor_-_Koibot.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Koibot.svg
+- name: grants_round_3_contributor_-_samurai_bot.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: samurai_bot.svg
+- name: grants_round_3_contributor_-_bounty_bot_koi.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: bounty_bot_koi.svg
+- name: grants_round_3_contributor_-_bot_with_mount_fuji.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: bot_with_mount_fuji.svg
+- name: grants_round_3_contributor_-_Noodle_Fighter.svg
+  description: This is a very rare Kudos; only granted to Gitcoin Grant Round 3 contributors.
+  priceFinney: 30
+  numClonesAllowed: 100
+  can_be_sent_by: gitcoinbot
+  marketplace_listed: True
+  tags:
+   - gitcoin grants
+   - grow open source
+   - rare
+   - limited edition
+  image: Noodle_Fighter.svg
+- name: Ethereal Summit - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-01.svg
+- name: Gitcoin - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-06.svg
+- name: Ethereum Foundation - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-07.svg
+- name: Airswap - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-08.svg
+- name: Bancor - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-09.svg
+- name: Portis - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-10.svg
+- name: eToro - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-11.svg
+- name: GoodDollar - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-02.svg
+- name: eToroX - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-05.svg
+- name: Matic - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-03.svg
+- name: Status - Ethereal Blocks
+  description: Ethereal Blocks - Sponsor Kudos
+  artist: mladen
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - sponsor
+   - etherealblocks
+  image: sponsor-04.svg
+- name: devcon_quest_pegasys
+  description: You spin up DAPPS with Pegasys on the weekend, just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: pegasys.svg
+- name: devcon_quest_narly
+  description: You spin up Narly DAPPS on the weekend, just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: narly.svg
+- name: devcon_quest_mythx
+  description: You spin up DAPPS on the weekend, using Mythx, just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: mythx.svg
+- name: devcon_quest_metamask
+  description: You spin up DAPPS with Metamask on the weekend, just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: metamask.svg
+- name: devcon_quest_infura
+  description: You spin up DAPPS on the weekend, using Infura, just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: _infura.svg
+- name: devcon_quest_gitcoin
+  description: You spin up DAPPS on the weekend, just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: gitcoin.svg
+- name: devcon_quest_deva
+  description: You are at Devcon!
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: deva.svg
+- name: devcon_quest_alethio
+  description: You spin up DAPPS on the weekend, and analyse them Alethio -- just for fun
+  priceFinney: 1
+  numClonesAllowed: 100
+  marketplace_listed: True
+  tags:
+   - hackathon
+   - hacker
+   - ethereum
+   - eth
+  image: alethio.svg
+- name: limited_edition_Big_wave
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: Big_wave.svg
+- name: limited_edition_Divine-vs-Kaiju
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: Divine-vs-Kaiju.svg
+- name: limited_edition_Dragon
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: Dragon.svg
+- name: limited_edition_Flying-Regulus
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: Flying-Regulus.svg
+- name: limited_edition_Gaiju-astrobot
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: Gaiju-astrobot.svg
+- name: limited_edition_Japan_elements
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: Japan_elements.svg
+- name: limited_edition_Noodle Fighter
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: Noodle Fighter.svg
+- name: limited_edition_Regulus-Iron-Fist
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: Regulus-Iron-Fist.svg
+- name: limited_edition_Ridin-Kaiju-Over-Osaka
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: Ridin-Kaiju-Over-Osaka.svg
+- name: limited_edition_geisha_bot
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: geisha_bot.svg
+- name: limited_edition_gitcoin-impressionist
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: gitcoin-impressionist.svg
+- name: limited_edition_gitcoin-renaissant
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: gitcoin-renaissant.svg
+- name: limited_edition_japan_devcon_bot
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: japan_devcon_bot.svg
+- name: limited_edition_japanese_ladyart
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: japanese_ladyart.svg
+- name: limited_edition_kaiju_fighting_bot
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: kaiju_fighting_bot.svg
+- name: limited_edition_kaiju_vs_bot2
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: kaiju_vs_bot2.svg
+- name: limited_edition_kaiju_vs_bot3
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: kaiju_vs_bot3.svg
+- name: limited_edition_kanagawa_surfbot
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: kanagawa_surfbot.svg
+- name: limited_edition_kimono_bot
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: kimono_bot.svg
+- name: limited_edition_koi fish
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: koi fish.svg
+- name: limited_edition_koi_fish_bot
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: koi_fish_bot.svg
+- name: limited_edition_lotus
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: lotus.svg
+- name: limited_edition_new_lotus
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: new_lotus.svg
+- name: limited_edition_new_wave
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: new_wave.svg
+- name: limited_edition_ninja_bot
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: ninja_bot.svg
+- name: limited_edition_origami
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: origami.svg
+- name: limited_edition_samurai1_bot
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: samurai1_bot.svg
+- name: limited_edition_samuria
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: samuria.svg
+- name: limited_edition_ultraman_bot
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: ultraman_bot.svg
+- name: limited_edition_wave
+  description: Special Edition - Minted for Devcon V in Osaka!
+  priceFinney: 5
+  numClonesAllowed: 300
+  marketplace_listed: True
+  tags:
+   - limited_edition
+   - ethereum
+   - eth
+  image: wave.svg
+- name: road_to_devcon
+  description: Congrats on submitting your project for the Road to Devcon hackathon!
+  priceFinney: 5
+  numClonesAllowed: 200
+  marketplace_listed: True
+  tags:
+   - gitcoin
+   - hackathon
+   - eth
+  image: rtd.svg
+  

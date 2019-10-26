@@ -115,6 +115,11 @@ $(document).ready(function() {
       $('#trans_link').attr('href', url);
       $('#trans_link2').attr('href', url);
       unloading_button($(this));
+      dataLayer.push({
+        'event': 'sendtip',
+        'category': 'sendtip',
+        'action': 'sendtip'
+      });
     };
     var failure_callback = function() {
       unloading_button($('#send'));

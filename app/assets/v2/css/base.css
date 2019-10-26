@@ -347,6 +347,15 @@ p a {
   color: #25e899;
 }
 
+.link-current {
+  color: currentColor;
+}
+
+.link-current:hover {
+  color: currentColor;
+  text-decoration: none;
+}
+
 .cta-green {
   background-color: var(--gc-green);
   text-align: center;
@@ -481,7 +490,7 @@ input[type=text].loading {
 }
 
 #primary_form {
-  max-width: 550px;
+  max-width: 550px; /* TODO: REMOVE */
   margin: 0 auto;
   padding: 0 2em;
 }
@@ -492,7 +501,8 @@ input[type=text].loading {
 }
 
 .submit_bounty #primary_form,
-.fulfill_bounty #primary_form {
+.fulfill_bounty #primary_form,
+.increase_bounty #primary_form {
   max-width: none;
 }
 
@@ -694,6 +704,11 @@ input[type=text].loading {
 
 .bottom_notification-yellow {
   background-color: #ffce08;
+  color: #000;
+}
+
+.bottom_notification-pink {
+  background-color: #9f80ff;
   color: #000;
 }
 
@@ -1586,6 +1601,31 @@ div.busyOverlay {
   pointer-events: none;
 }
 
+/* Gitcoin Updates */
+.dynamic-content img {
+  max-width: 100%;
+}
+
+.dynamic-content h2 {
+  font-size: 1.8em;
+}
+
+.dynamic-content h3 {
+  font-size: 1.6em;
+}
+
+.dynamic-content h4 {
+  font-size: 1.4em;
+}
+
+.dynamic-content h5 {
+  font-size: 1.3em;
+}
+
+.dynamic-content h6 {
+  font-size: 1.2em;
+}
+
 .daterangepicker td.active,
 .daterangepicker td.active:hover {
   background-color: #3E00FF !important;
@@ -1593,4 +1633,18 @@ div.busyOverlay {
 
 .daterangepicker .ranges li.active {
   background-color: #5b24ff !important;
+}
+
+.admin_only {
+  background-color: #f2f5ea !important;
+  border-radius: 3px;
+}
+
+.only_visible_to_me_color {
+  background-color: #d3e3f7;
+}
+
+.only_visible_to_me {
+  padding: 3px 5px;
+  border-radius: 3px;
 }
