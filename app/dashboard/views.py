@@ -2298,6 +2298,18 @@ def invalid_file_response(uploaded_file, supported):
                 'status': 415,
                 'message': 'Invalid File Type'
             }
+
+        try:
+            with uploaded_file.file as file:
+                # TODO: some sort of black listed list of search queries
+                if file.getvalue().find(b'<script>') != -1:
+                    response = {
+                        'status': 422,
+                        'message': 'Invalid File contents'
+                    }
+        except Exception as e:
+            print(e)
+
     return response
 
 @csrf_exempt
