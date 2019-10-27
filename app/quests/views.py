@@ -11,6 +11,7 @@ from django.db.models import Count, Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
@@ -158,12 +159,12 @@ def index(request):
     query = request.GET.get('q', '')
     quests = []
     if query:
-        quest_qs = Quest.objects.filter(visible=True).filter(Q(title__icontains=query) | Q(description__icontains=query) | Q(questions__icontains=query) | Q(game_schema__icontains=query) | Q(game_metadata__icontains=query))
+        quest_qs = Quest.objects.filter(visible=True).filter(Q(title__icontains=query) | Q(description__icontains=query) | Q(questions__icontains=query) | Q(game_schema__icontains=query) | Q(game_metadata__icontains=query)).order_by('-ui_data__success_pct')
         quest_package = get_package_helper(quest_qs, request)
         package = ('Search', quest_package)
         quests.append(package)
     for diff in Quest.DIFFICULTIES:
-        quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True)
+        quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True).order_by('-ui_data__success_pct')
         quest_package = get_package_helper(quest_qs, request)
         package = (diff[0], quest_package)
         if quest_qs.exists():
@@ -217,7 +218,7 @@ def index(request):
         'point_history': point_history,
         'point_value': point_value, 
         'current_round_number': current_round_number,
-        'avatar_url': '/static/v2/images/quests/orb.png',
+        'avatar_url': static('v2/images/quests/orb_small.png'),
         'card_desc': 'Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!',
     }
 
