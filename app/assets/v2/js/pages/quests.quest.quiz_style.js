@@ -53,7 +53,7 @@ var start_quiz = async function() {
     }
     
     var question_level_seconds_to_respond = response['question']['seconds_to_respond'];
-    var prefix = "(" + question_number +  "/" + question_count + ") - ";
+    var prefix = '(' + question_number + '/' + question_count + ') - ';
     var question = prefix + response['question']['question'];
     var possible_answers = response['question']['responses'];
     var html = '';
