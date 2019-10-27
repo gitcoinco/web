@@ -11,6 +11,7 @@ var start_quiz = async function() {
     orb_state(Math.min(question_number + 1, 4));
     document.submitted_answer = false;
     var answers = [];
+    var question_count = document.num_questions;
 
     for (var d = 0; d < $('.answer.selected').length; d += 1) {
       answers[d] = $('.answer.selected a')[d].innerHTML;
@@ -52,8 +53,8 @@ var start_quiz = async function() {
     }
     
     var question_level_seconds_to_respond = response['question']['seconds_to_respond'];
-
-    var question = response['question']['question'];
+    var prefix = "(" + question_number +  "/" + question_count + ") - ";
+    var question = prefix + response['question']['question'];
     var possible_answers = response['question']['responses'];
     var html = '';
 
