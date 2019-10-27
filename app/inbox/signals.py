@@ -131,20 +131,33 @@ def create_notification(sender, **kwargs):
         )
 
     if activity.activity_type == 'funder_none_response_in_issue':
+        bounty = activity.bounty
         message = """Your bounty hunters haven't responded on this issue
          in a few days. Remove them if you haven't heard from them?"""
+        send_notification_to_user(
+            activity.profile.user,
+            get_user_model().objects.get(username__iexact=bounty.bounty_owner_github_username),
+            bounty.url,
+            'funder_none_response_in_issue',
+            message
+        )
 
     if activity.activity_type == 'funder_bounty_expiring':
         bounty = activity.bounty
         message = 'Your bounty is expiring soon.'
+        send_notification_to_user(
+            activity.profile.user,
+            get_user_model().objects.get(username__iexact=bounty.bounty_owner_github_username),
+            bounty.url,
+            'funder_bounty_expiring',
+            message
+        )
 
 
     if activity.activity_type == 'hunter_none_response':
         bounty = activity.bounty
-
-        '''todo: calculate this'''
-        days = 3
-        message = f'You haven\'t responded to this issue in {days} days.'
+        days_without_response = activity.metadata['days_without_response']
+        message = f'You haven\'t responded to this issue in {days_without_response} days.'
         send_notification_to_user(
             activity.profile.user,
             get_user_model().objects.get(username__iexact=bounty.bounty_owner_github_username),
@@ -189,7 +202,7 @@ def create_notification(sender, **kwargs):
 
     if activity.activity_type == 'hunter_issue_funding_increased':
         bounty = activity.bounty
-        message = f'Funding has increased on a {bounty.title} that you’re working on.'
+        message = 'Funding has increased on a bounty that you’re working on.'
         send_notification_to_user(
             activity.profile.user,
             get_user_model().objects.get(username__iexact=bounty.bounty_owner_github_username),
