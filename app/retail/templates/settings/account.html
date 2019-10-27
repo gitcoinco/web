@@ -90,7 +90,7 @@
         </button>
       </div>
       <div class="col-12">
-        <form id="build_avatar" method="GET" action="/onboard/contributor">
+        <form id="build_avatar" method="GET" action="/onboard/contributor/">
           {% csrf_token %}
           <input type="hidden" name="steps" value="avatar" />
           <button type="submit" class="button button--primary-o">
