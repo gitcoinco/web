@@ -46,6 +46,7 @@ def combine_profiles(p1, p2):
     p1.hide_profile = False
     p1.suppress_leaderboard = any([p1.suppress_leaderboard, p2.suppress_leaderboard])
     p1.user = p2.user if p2.user else p1.user
+    p1.created_on = p2.created_on if p2.created_on > p1.created_on else p1.created_on
     # tips, bounties, fulfillments, and interests , activities, actions
     for obj in p2.received_tips.all():
         obj.recipient_profile = p1

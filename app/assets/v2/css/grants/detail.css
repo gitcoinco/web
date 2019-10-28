@@ -3,13 +3,21 @@
     max-width: 85vw
   }
 
-  #editor.ql-bubble .ql-editor {
+  #editor.ql-bubble .ql-editor[contenteditable='false'] {
     padding: 0;
   }
 
   #editor .ql-editor p {
     font-size: 1rem;
   }
+}
+
+.ql-editor {
+  font-family: 'Muli';
+}
+
+.ql-editor[contenteditable="false"] {
+  padding: 12px 15px !important;
 }
 
 .grant_details {
@@ -183,7 +191,8 @@ textarea.editable {
 
 .grant__stakeholders-list img,
 .grant-item__members img,
-.grant-item__owner-image img {
+.grant-item__owner-image img,
+.grant-item__owner img {
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -207,10 +216,6 @@ textarea.editable {
 
 .milestones-list li:last-child {
   padding-bottom: 0 !important;
-}
-
-#contract_owner_button-container {
-  outline: none;
 }
 
 .disable-tooltip {

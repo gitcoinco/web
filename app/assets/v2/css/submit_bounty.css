@@ -1,7 +1,8 @@
 /* stylelint-disable selector-pseudo-class-no-unknown */
 
 .submit_bounty .submit_bounty_content,
-.fulfill_bounty .submit_bounty_content {
+.fulfill_bounty .submit_bounty_content,
+.increase_bounty .submit_bounty_content {
   background-color: #f2f6f9;
 }
 
@@ -42,7 +43,7 @@ input:read-only {
   text-transform: none;
 }
 
-#primary_form .font-subheader {
+#primary_form #fee-section .font-subheader {
   color: #666666;
   font-weight: bold;
 }
@@ -226,4 +227,14 @@ input:read-only {
 
 .letter-spacing {
   letter-spacing: 0.1em;
+}
+
+.release-after-form-group {
+  display: none;
+  margin-top: 0.75em;
+}
+
+.release-after-form-group-required {
+  border: 1px solid red;
+  padding: 5px;
 }

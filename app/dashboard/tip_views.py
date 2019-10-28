@@ -60,8 +60,9 @@ def send_tip(request):
     return TemplateResponse(request, 'onepager/send1.html', params)
 
 
-def record_tip_activity(tip, github_handle, event_name):
+def record_tip_activity(tip, github_handle, event_name, override_created=None):
     kwargs = {
+        'created_on': timezone.now() if not override_created else override_created,
         'activity_type': event_name,
         'tip': tip,
         'metadata': {

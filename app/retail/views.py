@@ -180,21 +180,21 @@ def index(request):
     articles = [
         {
             'link': 'https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0',
-            'img': 'https://cdn-images-1.medium.com/max/2000/1*ErCNRMzIJguUGUgXgVc-xw.png',
+            'img': static("v2/images/medium/1.png"),
             'title': _('Progressive Elaboration of Scope on Gitcoin'),
             'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
             'alt': 'gitcoin scope'
         },
         {
             'link': 'https://medium.com/gitcoin/commit-reveal-scheme-on-ethereum-25d1d1a25428',
-            'img': 'https://cdn-images-1.medium.com/max/1600/1*GTEu2R4xIxAApx50rAV_qw.png',
+            'img': static("v2/images/medium/2.png"),
             'title': _('Commit Reveal Scheme on Ethereum'),
             'description': _('Hiding Actions and Generating Random Numbers'),
             'alt': 'commit reveal scheme'
         },
         {
             'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',
-            'img': 'https://cdn-images-1.medium.com/max/2000/1*iPQYV3M-JOlYeFFC-iqfcg.png',
+            'img': static("v2/images/medium/3.png"),
             'title': _('Announcing Open Kudos'),
             'description': _('Our vision for integrating Kudos in any (d)App'),
             'alt': 'open kudos'
@@ -631,7 +631,23 @@ def about(request):
             "owocki",
             "owocki",
             "The Community",
-            "Avocado Toast"
+            "Avocado Toast",
+            "kevin",
+            "Summoner of Bots",
+            "owocki",
+            True
+        ),
+        (
+            "Joe Lubin",
+            "Consensys",
+            "",
+            "",
+            "Meshiness",
+            "",
+            "joe",
+            "Harbringer of Decentralization",
+            "ethereumJoseph",
+            True
         ),
         (
             "Alisa March",
@@ -639,7 +655,11 @@ def about(request):
             "PixelantDesign",
             "pixelant",
             "Tips",
-            "Apple Cider Doughnuts"
+            "Apple Cider Doughnuts",
+            "alisa",
+            "Pixel Mage",
+            "pixelant",
+            True
         ),
         (
             "Eric Berry",
@@ -647,7 +667,11 @@ def about(request):
             "coderberry",
             "ericberry",
             "Chrome/Firefox Extension",
-            "Pastel de nata"
+            "Pastel de nata",
+            "eric",
+            "Burnout Healer",
+            "coderberry",
+            True
         ),
         (
             "Vivek Singh",
@@ -655,7 +679,11 @@ def about(request):
             "vs77bb",
             "vivek-singh-b5a4b675",
             "Gitcoin Requests",
-            "Tangerine Gelato"
+            "Tangerine Gelato",
+            "vivek",
+            "Campfire StoryTeller",
+            "vsinghdothings",
+            True
         ),
         (
             "Aditya Anand M C",
@@ -663,7 +691,11 @@ def about(request):
             "thelostone-mc",
             "aditya-anand-m-c-95855b65",
             "The Community",
-            "Cocktail Samosa"
+            "Cocktail Samosa",
+            "aditya",
+            "Block Welder",
+            "thelostone_mc",
+            True
         ),
         (
             "Scott Moore",
@@ -671,7 +703,11 @@ def about(request):
             "ceresstation",
             "scott-moore-a2970075",
             "Issue Explorer",
-            "Teriyaki Chicken"
+            "Teriyaki Chicken",
+            "scott",
+            "Phase Shifter",
+            "notscottmoore",
+            True
         ),
         (
             "Octavio Amuchástegui",
@@ -679,7 +715,11 @@ def about(request):
             "octavioamu",
             "octavioamu",
             "The Community",
-            "Homemade italian pasta"
+            "Homemade italian pasta",
+            "octavio",
+            "Bugs Breeder",
+            "octavioamu",
+            True
         ),
         (
             "Frank Chen",
@@ -687,7 +727,11 @@ def about(request):
             "frankchen07",
             "frankchen07",
             "Kudos!",
-            "Crispy pork belly"
+            "Crispy pork belly",
+            "frank",
+            "Hashed Scout",
+            "",
+            True
         ),
         (
             "Nate Hopkins",
@@ -695,7 +739,23 @@ def about(request):
             "hopsoft",
             None,
             "Bounties",
-            "Chicken tikka masala"
+            "Chicken tikka masala",
+            "nate",
+            "Lord of Night's Watch",
+            "hopsoft",
+            True
+        ),
+        (
+            "Alessandro Voto",
+            "DevRel",
+            "avotofuture",
+            None,
+            "Devvies",
+            "Tacos",
+            "alex",
+            "Starship Captain",
+            "avotofuture",
+            True
         ),
         (
             "Dan Lipert",
@@ -703,7 +763,47 @@ def about(request):
             "danlipert",
             "danlipert",
             "EIP 1337",
-            "Tantan Ramen"
+            "Tantan Ramen",
+            "dan",
+            "Blockchain Artificer",
+            "dan_lipert",
+            True
+        ),
+        (
+            "Connor O'Day",
+            "DevRel",
+            "connoroday",
+            "connoroday",
+            "the lols",
+            "Robertas Pizza",
+            "connor",
+            "Druid of The Chain",
+            "connoroday0",
+            True
+        ),
+        (
+            "Joseph Chen",
+            "Operations",
+            "josephchen",
+            "josephchen",
+            "Ethical Ads",
+            "DIY",
+            "joseph",
+            "Arithmagician",
+            "",
+            True
+        ),
+        (
+            "gitcoinbot",
+            "beep boop bop",
+            "gitcoinbot",
+            "gitcoinbot",
+            "everything that's automated",
+            "bits",
+            "gitcoinbot",
+            "Loveable Companion",
+            "",
+            False
         )
 
     ]
@@ -892,13 +992,32 @@ def products(request):
     """Render the Products response."""
     products = [
         {
+            'name': 'matching engine',
+            'heading': _("Find the Right Dev. Every Time."),
+            'description': _("It's not about finding *a* developer.  It's about finding *the right developer for your needs*. Our matching engine powers each of our products, and can target the right community members for you."),
+            'link': '/users',
+            'img': static('v2/images/products/engine.svg'),
+            'logo': static('v2/images/products/engine-logo.png'),
+            'service_level': 'Integrated',
+        },
+        {
+            'name': 'hackathons',
+            'heading': _("Hack with the best companies in web3."),
+            'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
+            'link': 'https://hackathons.gitcoin.co',
+            'img': static('v2/images/products/graphics-hackathons.png'),
+            'logo': static('v2/images/products/hackathons-logo.svg'),
+            'service_level': 'Full Service',
+        },
+        {
             'name': 'bounties',
             'heading': _("Solve bounties. Get paid. Contribute to open source"),
             'description': _("Collaborate and monetize your skills while working on Open Source projects \
                             through bounties."),
             'link': '/explorer',
             'img': static('v2/images/products/graphics-Bounties.png'),
-            'logo': static('v2/images/products/gitcoin-logo.svg')
+            'logo': static('v2/images/products/gitcoin-logo.svg'),
+            'service_level': 'Self Service',
         },
         {
             'name': 'kudos',
@@ -907,7 +1026,8 @@ def products(request):
                             It's also a way to showcase special skills that a member might have."),
             'link': '/kudos',
             'img': static('v2/images/products/graphics-Kudos.png'),
-            'logo': static('v2/images/products/kudos-logo.svg')
+            'logo': static('v2/images/products/kudos-logo.svg'),
+            'service_level': 'Self Service',
         },
         {
             'name': 'grants',
@@ -916,7 +1036,8 @@ def products(request):
                             contributions to your favorite OSS maintainers. Powered by EIP1337."),
             'link': '/grants',
             'img': static('v2/images/products/graphics-Grants.png'),
-            'logo': static('v2/images/products/grants-logo.svg')
+            'logo': static('v2/images/products/grants-logo.svg'),
+            'service_level': 'Self Service',
         },
         {
             'name': 'codefund',
@@ -925,7 +1046,8 @@ def products(request):
                             source ecosystem"),
             'link': 'https://codefund.app/',
             'img': static('v2/images/products/graphics-Codefund.svg'),
-            'logo': static('v2/images/products/codefund-logo.svg')
+            'logo': static('v2/images/products/codefund-logo.svg'),
+            'service_level': 'Self Service or Full Service',
         },
         {
             'name': 'labs',
@@ -934,9 +1056,21 @@ def products(request):
                             making Ethereum dapps fast, usable, and secure."),
             'link': '/labs',
             'img': static('v2/images/products/graphics-Labs.png'),
-            'logo': static('v2/images/products/labs-logo.svg')
+            'logo': static('v2/images/products/labs-logo.svg'),
+            'service_level': 'Self Service',
         }
     ]
+
+    if settings.QUESTS_LIVE:
+        products.append({
+            'name': 'quests',
+            'heading': _("Engaging Onboarding Experiences for the Web3 Ecosystem"),
+            'description': _("Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, earn rewards, and level up your decentralization-fu!"),
+            'link': '/quests',
+            'img': static('v2/images/products/graphics-Quests.png'),
+            'logo': static('v2/images/products/quests-symbol.svg'),
+            'service_level': 'Self Service',
+        })
 
     context = {
         'is_outside': True,
@@ -972,7 +1106,6 @@ def results(request, keyword=None):
     context = JSONStore.objects.get(view='results', key=keyword).data
     context['is_outside'] = True
     import json
-    context['kudos_tokens'] = [json.loads(obj) for obj in context['kudos_tokens']]
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
@@ -980,7 +1113,7 @@ def results(request, keyword=None):
 def activity(request):
     """Render the Activity response."""
     page_size = 15
-    activities = Activity.objects.all().order_by('-created')
+    activities = Activity.objects.all().order_by('-created_on')
     p = Paginator(activities, page_size)
     page = int(request.GET.get('page', 1))
 
@@ -994,6 +1127,28 @@ def activity(request):
 
     return TemplateResponse(request, 'activity.html', context)
 
+@ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
+def create_status_update(request):
+    response = {}
+    if request.POST:
+        profile = request.user.profile
+        kwargs = {
+            'activity_type': 'status_update',
+            'metadata': {
+                'title': request.POST.get('data'),
+                'ask': request.POST.get('ask'),
+            }
+        }
+        kwargs['profile'] = profile
+        try:
+            Activity.objects.create(**kwargs)
+            response['status'] = 200
+            response['message'] = 'Status updated!'
+        except Exception as e:
+            response['status'] = 400
+            response['message'] = 'Bad Request'
+            logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
+    return JsonResponse(response)
 
 def help(request):
     faq = {

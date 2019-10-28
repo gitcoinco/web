@@ -1,15 +1,16 @@
 
-#activity_stream .avatar {
-  width: 50px;
-  height: 50px;
+.activity_stream .avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-height: 2.5rem;
   margin: 0px auto;
   border-radius: 50px;
   margin-top: 0px;
 }
 
-.box {
-  padding: 1.2rem;
-  border-bottom: 1px solid #DBDBDB;
+.activity_stream .box {
+  padding: 0.75rem 1.2rem;
+  border-bottom: 1px solid #EFEFEF;
 }
 
 #avatar_url .avatar {
@@ -17,18 +18,19 @@
   height: 80px;
 }
 
+.activity .secondary_avatar {
+  top: 1rem;
+  right: 0rem;
+  position: absolute;
+}
+
 .funder-avatar,
 .activity-avatar {
   text-align: center;
 }
 
-.funder-avatar,
-.activity div {
-  margin: auto;
-}
-
 .last-icon {
-  font-size: 30px;
+  font-size: 1.25rem;
   color: #0D0764;
 }
 
@@ -42,4 +44,24 @@
 .bounty_abandonment_warning .activity-tags .tag,
 .activity.new_kudos .activity-tags .tag {
   display: none;
+}
+
+@media (min-width: 768px) {
+  .activity .secondary {
+    position: relative;
+    left: -10px;
+  }
+}
+
+@media (max-width: 767.98px) {
+
+  .activity-info {
+    text-align: center;
+  }
+
+  .activity_stream .activity .avatar.secondary_avatar {
+    position: unset;
+    margin-left: -20px;
+    margin-top: 20px;
+  }
 }

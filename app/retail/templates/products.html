@@ -37,7 +37,7 @@
       <div class="row justify-content-center">
         <div class="d-flex flex-column align-items-center ">
           <img class="img-fluid px-3 px-md-0 "
-            src="{% static 'v2/images/products/grow_open_source.png' %}">
+            src="{% static 'v2/images/products/grow_open_source.png' %}" alt="Grow open source">
           <span class="intro-header text-center">
             {% trans "Grow Open Source" %}
           </span>
@@ -55,14 +55,17 @@
           {% if forloop.counter|divisibleby:2 %}
             <div class="d-flex flex-column col-md-6 product-left py-md-5 py-2 align-self-center">
               <span class="g-font-futura mb-2 product-name d-flex align-items-center">
-                <img src="{% static 'v2/images/products/kudos-logo.svg' %}" alt="{{ product.name }}-logo">
+                <img src="{{ product.logo }}" alt="{{ product.name }}-logo">
                 &nbsp &nbsp {{ product.name|upper }}
               </span>
               <span class=" mb-2 product-heading">{{ product.heading }}</span>
               <span class="mb-4 product-desc">{{ product.description }}</span>
-              <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
-                {% trans "Get Started" %}
-              </a>
+              <span class="mb-4 tag">{{ product.service_level }}</span>
+              {% if product.link %}
+                <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
+                  {% trans "Get Started" %}
+                </a>
+              {% endif %}
             </div>
             <div class="col-md-6 py-md-5 py-2 align-self-center">
               <img class="img-fluid float-right pl-3 pl-md-0" src="{{ product.img }}" alt="{{ product.name }}-image">
@@ -78,9 +81,12 @@
               </span>
               <span class="mb-2 product-heading">{{ product.heading }}</span>
               <span class="mb-4 product-desc">{{ product.description }}</span>
-              <a href="{{ product.link }}" class="button button-{{ product.name }} text-center display-5 ">
-                {% trans "Get Started" %}
-              </a>
+              <span class="mb-4 tag">{{ product.service_level }}</span>
+              {% if product.link %}
+                <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
+                  {% trans "Get Started" %}
+                </a>
+              {% endif %}
             </div>
           {% endif %}
         </div>
@@ -98,7 +104,7 @@
           </p>
         </div>
         <div class="col-12 offset-md-3 col-md-6">
-          <img class="img-fluid my-4" width="800" src="{% static 'v2/images/products/oss_cycle_with_gitcoin.svg' %}">
+          <img class="img-fluid my-4" width="800" src="{% static 'v2/images/products/oss_cycle_with_gitcoin.svg' %}" alt="OSS Cycle with Gitcoin">
         </div>
         <div class="col-12 text-center mb-5">
           <p class="product-desc text-center my-2">
@@ -107,6 +113,9 @@
           <p>
             <a href="{% url 'jobs' %}" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
               {% trans "Check our Jobs Page" %}
+            </a>
+            <a href="mailto:founders@gitcoin.co" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
+              {% trans "Contact Us" %}
             </a>
             <a href="{% url 'mission' %}" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
               {% trans "About the mission" %}
@@ -118,6 +127,6 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>
 </html>

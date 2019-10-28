@@ -65,12 +65,14 @@
 
 <div>
     <h1>Reject Faucet Request For {{obj.github_username}}</h1>
-    <form method=POST id="reject_faucet_form">
-    {% csrf_token %}
-    <textarea style="width: 500px; height: 200px;" name="reject_comments">{% trans "Please tell us what you're planning on using these funds for in the comments section!  Thanks." %}</textarea>
-    <br>
-    <input type="submit" name="rejectFaucet" id="rejectFaucet" value="Submit">
-    </form>
+    {% for rejection_reason in common_rejection_reasons %}
+      <form method=POST class="reject_faucet_form">
+      {% csrf_token %}
+      <textarea style="width: 200px; height: 50px;" name="reject_comments">{{rejection_reason}}</textarea>
+      <br>
+      <input type="submit" name="rejectFaucet" id="rejectFaucet" value="Submit">
+      </form>
+    {% endfor %}
 
 </div>
 

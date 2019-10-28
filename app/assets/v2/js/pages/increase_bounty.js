@@ -22,6 +22,7 @@ $(document).ready(function() {
   waitforWeb3(function() {
     if (!is_funder()) {
       $('input, select').removeAttr('disabled');
+      $('#increase_funding_explainer').html("Your transaction is secured by the Gitcoin's crowdfunding technology on the Ethereum blockchain. Learn more here.");
     }
   });
 
@@ -58,7 +59,7 @@ $(document).ready(function() {
     e.preventDefault();
     loading_button($(this));
 
-    var issueURL = $('input[name=issueURL]').val();
+    var issueURL = $('#issueURL').html();
     var amount = $('input[name=amount]').val();
     var tokenAddress = $('select[name=denomination]').val();
 

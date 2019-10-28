@@ -20,6 +20,7 @@ h4 {
   font-weight: bold;
 }
 
+
 #team p,
 #jobs p,
 #origin_story p {
@@ -29,6 +30,13 @@ h4 {
 .grow_hero img{
   width: 100%;
   max-width: 400px;
+}
+
+.problem img{
+  filter: grayscale(90%);
+}
+.problem img:hover{
+  filter: grayscale(20%);
 }
 
 #origin_story img {
@@ -51,6 +59,7 @@ h4 {
 }
 #team .card p {
   font-size: 14px;
+  margin-bottom: 3px;
 }
 #team .card-small {
   padding-left: .5rem;
@@ -65,17 +74,57 @@ h4 {
   color: #999;
 }
 
+#team .role {
+  font-weight: 555;
+}
+#team .role span{
+  font-weight: 888;
+}
+
 #team .card .desc {
   font-weight: bolder;
 }
 
-#team .avatar {
+#community .avatar {
   border: 0.1rem solid #1AB56D;
   width: 150px;
   height: 150px;
   border-radius: 50%;
   margin: auto;
   margin-bottom: 10px;
+}
+
+#team .avatar {
+  width: 225px;
+  height: 285px;
+  margin: auto;
+  margin-bottom: 10px;
+  opacity: .9;
+}
+
+#team .avatar:hover {
+  width: 235px;
+  height: 295px;
+  opacity: 1;
+}
+
+#team .avatar.nate {
+  height: 385px;
+  margin-bottom: -90px;
+}
+
+#team .avatar.joe {
+  width: 255px;
+  margin-left: -15px;
+}
+
+#team .avatar.joe:hover {
+  width: 265px;
+  margin-left: -15px;
+}
+
+#team .avatar.jobs {
+  height: 275px;
 }
 
 #team .name, #team .name a{
@@ -88,7 +137,7 @@ h4 {
 }
 
 #team .social-links a i {
-  font-size: 1.25em;
+  font-size: 1.75em;
   transition: all 0.3s;
   color: black;
 }

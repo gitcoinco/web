@@ -1,0 +1,27 @@
+{% load i18n static avatar_tags humanize %}
+{% if not hidden %}
+
+  <div class="tab-projects d-flex flex-column mb-4">
+    <h3 class="font-body mb-3">Core Team</h3>
+    {% if profile.team|length == 0 %}
+      <p class="text-center">No Members</p>
+    {% endif %}
+    {% for org in profile.team %}
+      <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} py-2 my-auto">
+        <div class="activity-avatar ml-5">
+          <img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" src="{% avatar_url org %}" />
+        </div>
+        <div class="tab-projects__item-details ml-5 my-auto w-100">
+          <div class="font-body d-inline">
+            <a class="font-body" href="/profile/{{org}}">
+              {{org}}
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% include 'profiles/leaderboard.html' with leaderboard=profile.org_leaderboard %}
+
+{% endif %}    

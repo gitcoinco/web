@@ -144,6 +144,7 @@ def get_ecosystem_history_at_date(date, keyword):
 
 
 def get_codefund_history_at_date(date, keyword):
+    from marketing.models import ManualStat
     date = date.replace(tzinfo=None)
     amount = 0
     # July => Feb 2019
@@ -167,13 +168,19 @@ def get_codefund_history_at_date(date, keyword):
     if date > timezone.datetime(2019, 3, 9):
         amount += 18726
     if date > timezone.datetime(2019, 4, 9):
-        amount += 32802
+        amount += 35461
     if date > timezone.datetime(2019, 5, 9):
-        amount += 39304
+        amount += 41073
     if date > timezone.datetime(2019, 6, 9):
         amount += 38287.22
     if date > timezone.datetime(2019, 7, 9):
-        amount += 17937
+        amount += 40269
+    if date > timezone.datetime(2019, 8, 9):
+        amount += 50871
+    if date > timezone.datetime(2019, 9, 9):
+        amount += 55000
+    if date > timezone.datetime(2019, 10, 9):
+        amount += sum(ManualStat.objects.filter(key='codefund_gmv', date__lt=date).values_list('val', flat=True))
     return amount
 
 
@@ -410,7 +417,7 @@ def build_stat_results(keyword=None):
     Args:
         keyword (str): The keyword to build statistic results.
     """
-    from dashboard.models import Bounty, Tip
+    from dashboard.models import Bounty, HackathonEvent, Tip
     context = {
         'active': 'results',
         'title': _('Results'),
@@ -535,6 +542,11 @@ def build_stat_results(keyword=None):
     from kudos.models import Token as KudosToken
 
     context['kudos_tokens'] = KudosToken.objects.filter(num_clones_in_wild__gt=0).order_by('-num_clones_in_wild')[0:25]
+    context['kudos_tokens'] = [{
+        'name': kt.humanized_name,
+        'url': kt.url,
+        'static_image': kt.preview_img_url,
+    } for kt in context['kudos_tokens']]
     pp.profile_time('kudos_tokens')
     pp.profile_time('final')
     context['keyword'] = keyword
@@ -553,5 +565,11 @@ def build_stat_results(keyword=None):
     context['last_month_amount'] = round(sum(bh)/1000)
     context['last_month_amount_hourly'] = sum(bh) / 30 / 24
     context['last_month_amount_hourly_business_hours'] = context['last_month_amount_hourly'] / 0.222
+    context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.order_by('start_date').all()]
+    context['hackathon_total'] = sum([ele[1]['total_volume'] for ele in context['hackathons']])
+    from dashboard.models import FeedbackEntry
+    reviews = FeedbackEntry.objects.exclude(comment='').filter(created_on__lt=(timezone.now() - timezone.timedelta(days=7))).order_by('-created_on')[0:15]
+    context['reviews'] = [(ele.rating, ele.anonymized_comment) for ele in reviews]
+    context['ratings'] = [1, 2, 3, 4, 5]
 
     return context

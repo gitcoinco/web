@@ -15,7 +15,6 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load staticfiles %}
 {% load humanize i18n static %}
 {% load kudos_extras %}
 
@@ -40,8 +39,8 @@
     <div class="content-block content-block--white">
       <div class="container">
         <h2 class="content-block__title">
-          ${{ universe_total_usd|floatformat:2|intcomma }} of {% blocktrans %}
-           Total Platform Value
+          ${{ universe_total_usd|floatformat:0|intcomma }} of {% blocktrans %}
+           Gross Marketplace Value
           {% endblocktrans %}
           {% if keyword %}({{keyword}}){%endif%}
         </h2>
@@ -101,7 +100,7 @@
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
-            <h3 class="single-stat__title">{% trans "13,174" %}</h3>
+            <h3 class="single-stat__title">{% trans "13,212" %}</h3>
             <p class="single-stat__subtitle">{% trans "Monthly Active Users" %}</p>
             <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
           </div>
@@ -133,6 +132,29 @@
       </div>
     </div>
 
+    <div class="content-block content-block--grey">
+      <div class="container" >
+        <h2 class="content-block__title">{{hackathons | length }} {% trans "Virtual Hackathons" %} worth ${{hackathon_total|floatformat:0|intcomma}}.</h2>
+
+        <div class="hackathon-breakdown">
+          {% for hackathon in hackathons %}
+            <div>
+              {% if hackathon.1.logo %}
+                <img src="{{hackathon.1.logo}}"/>
+              {%endif %}
+              <h4>{{hackathon.0.name}}</h4>
+              {% if hackathon.1.num_bounties %}
+                <p>{{hackathon.1.num_bounties}} Bounties</p>
+                <p>${{hackathon.1.total_volume|floatformat:0|intcomma}} In Prizes</p>
+              {% endif %}
+              <p>{{hackathon.1.range}}</p>
+              <a href="{% url 'hackathon' hackathon.0.slug %}">View Prize Explorer</a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
     <div class="content-block content-block--white" id="repo_transaction">
       <div class="container" >
         <h2 class="content-block__title">{% trans "Bounty Status Breakdown" %} {% if keyword %}({{keyword}}){%endif%}</h2>
@@ -152,7 +174,7 @@
           </div>
         </div>
 
-        <script type="text/javascript">
+        <script>
           document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ pct_open }}],  [ 'Bounties w. started work', {{ pct_started }}],  [ 'Completed bounties', {{ pct_done }} ] ];
         </script>
       </div>
@@ -292,9 +314,9 @@
             </div>
             <div class="col-md-12 p-3">
               <div>
-                {% for kudos in kudos_tokens %}
-                  <a href="/kudos/{{ kudos.id }}/{{ kudos.name }}" title="{{kudos.name|humanize_name}}">
-                    <img data-src="{% static kudos.image %}" alts="{{kudos.name|humanize_name}}"  style="max-width: 100px; max-height: 100px; margin: 5px;">
+                {% for kudos in kudos_tokens %} 
+                  <a href="{{kudos.url}}" title="{{kudos.name}}">
+                    <img data-src="{{kudos.static_image}}" alts="{{kudos.name}}"  style="max-width: 100px; max-height: 100px; margin: 5px;">
                   </a>
                 {% endfor %}
               </div>
@@ -335,8 +357,35 @@
       </div>
     </div>
 
-    <div class="content-block content-block--blue-grey">
-      <div class="container" id="bounty_universe">
+    <div class="content-block content-block--white">
+      <div class="container" id="bounty_jdi">
+        <h2 class="content-block__title">{% trans "Reviews" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+        <div class="row py-1">
+          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+            <p style="text-align: center; font-size: 0.9rem;">Feedback is a gift.  Here are some anonymized reviews left from & to users on the Gitcoin network   </p>
+          </div>
+          <div class="col-12" style="font-size: 14px; max-height: 700px; overflow-y: scroll;">
+            {% for review in reviews %}
+              <div class="pt-2 pb-2" style="{% cycle 'background-color: #eee;' '' %}">
+                <span style="font-style: italic;">{{review.1}}</span>
+                |
+                <span class="static-stars my-3">
+                  {% for i in ratings %}
+                    <i class="far fa-star {% if review.0 != 0 and i <= review.0 %}fas{% endif %}"></i>
+                  {% endfor %}
+                  |
+                  <small class="text-muted">several days ago</small>
+                </span>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="content-block content-block--white">
+      <div class="container" id="">
         <h2 class="content-block__title">{% trans "Community Growth" %} {% if keyword %}({{keyword}}){%endif%}</h2>
         <div class="row py-5">
           <script>
@@ -381,32 +430,20 @@
       </div>
     </div>
 
-    {% if user.is_staff %}
-      <div class="row py-5">
-        <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-          <h2 class="text-center">{% trans "Browse More Results, By Programming Language" %}</h2>
-        </div>
+    <div class="row mt-5 pb-5 text-center">
+      <div class="col">
+        <h2>Platform Activities</h2>
+        <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
       </div>
-      <div class="row py-1">
-        <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-          <ul id="programming_languages">
-            {% for pl in programming_languages %}
-              <li class="button button--primary-o {% if pl == keyword or pl == 'All' and keyword == '' %}selected{%endif%}">
-                <a href="{% url 'results' %}/{% if pl != 'All' %}{{pl}}{%endif%}">
-                  {{pl}}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-    {% endif %}
-
+    </div>
+    <div id="activities">
+      {% include 'shared/activity_container.html' with target="/activity" %}
+    </div>
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/messages.html' %}
+    
 
     <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
     <script>
@@ -415,7 +452,9 @@
       });
     </script>
 
+    {% include 'shared/activity_scripts.html' %}
+
   </body>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>
 </html>

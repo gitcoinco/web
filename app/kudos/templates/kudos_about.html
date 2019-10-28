@@ -26,7 +26,7 @@
   </head>
   <body class="{{ active }} g-font-muli">
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <header class="container-fluid header">
+    <header class="header">
       {% include 'shared/kudos_nav.html' %}
       <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container text-center mt-5">
@@ -332,7 +332,7 @@
         <div class="mb-3 faq-item">
           <h5 class="accordion">How is Kudos' privacy managed?</h5>
           <div class="panel">
-            <p>When you send a kudos, you making an attestion about an attribute of the person who controls a web3 address.</p>
+            <p>When you send a kudos, you are making an attestation about an attribute of the person who controls a web3 address.</p>
             <p>Technically speaking, the attestation is an Ethereum transaction of a <strong>non-fungible token (NFT)</strong> being sent from a <strong>sender</strong> to a <strong>receiver</strong></p>
             <p>When you send a kudos through the Gitcoin UI, you are sending the NFT to a secure proxy web3 address.</p>
             <p>The recipient can decide to accept it or reject it.</p>
@@ -439,5 +439,5 @@
         setInterval(load_kudos_card_images, 300);
       });
     </script>
-    {% include 'shared/messages.html' %}
+
   </body>
