@@ -40,7 +40,7 @@ $(document).ready(function() {
       return;
     }
 
-    if (ignoreScrollOffset || window.scrollY >= tabSection.scrollHeight) {
+    if (activityContainer && (ignoreScrollOffset || window.scrollY >= tabSection.scrollHeight)) {
       const activityName = activityContainer.id;
       let page = parseInt(activityContainer.getAttribute('page')) || 0;
 
