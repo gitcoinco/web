@@ -42,7 +42,7 @@ from django.views.decorators.csrf import csrf_exempt
 import boto3
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
-from dashboard.utils import get_nonce, get_web3
+from dashboard.utils import get_nonce, get_web3, is_valid_eth_address
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
@@ -583,20 +583,24 @@ def receive(request, key, txid, network):
         )
         messages.info(request, message)
     elif request.GET.get('receive_txid') and not kudos_transfer.receive_txid:
-        params = request.GET
+        params = request.GET # Should be request.POST, and CSRF protection should be enforced 
+                             # Note: transaction/receive.html seems to already send POST request, is this a mistake ?
 
         # db mutations
         try:
+            profile = get_profile(kudos_transfer.username.replace('@', ''))
+            eth_address = params['forwarding_address']
+            if not is_valid_eth_address(eth_address):
+                eth_address = profile.preferred_payout_address
             if params['save_addr']:
-                profile = get_profile(kudos_transfer.username.replace('@', ''))
                 if profile:
                     # TODO: Does this mean that the address the user enters in the receive form
                     # Will overwrite an already existing preferred_payout_address?  Should we
                     # ask the user to confirm this?
-                    profile.preferred_payout_address = params['forwarding_address']
+                    profile.preferred_payout_address = eth_address
                     profile.save()
             kudos_transfer.receive_txid = params['receive_txid']
-            kudos_transfer.receive_address = params['forwarding_address']
+            kudos_transfer.receive_address = eth_address
             kudos_transfer.received_on = timezone.now()
             if request.user.is_authenticated:
                 kudos_transfer.recipient_profile = request.user.profile
