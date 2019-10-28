@@ -47,12 +47,9 @@
                   {% endblocktrans %}
                 </p>
                 <div class="faucet-form-img">
-                  <div class="faucet-form-svg">
+                  <div class="faucet-form-svg mb-3">
                     {% include 'svgs/gas.svg' %}
                   </div>
-                </div>
-                <div class="hidden-mobile">
-                  {% include 'shared/faucet_network_status.html' %}
                 </div>
                 <input type="hidden" id="currentFaucet" name="currentFaucet" value="{{ faucet_amount }}">
                 <p class="hidden-mobile">
