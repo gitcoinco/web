@@ -350,6 +350,7 @@ urlpatterns = [
     url(r'^extension/firefox/?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
     path('how/<str:work_type>', retail.views.how_it_works, name='how_it_works'),
+    re_path(r'^tribes', retail.views.tribes, name='tribes'),
 
     # basic redirect retail views
     re_path(r'^press/?', retail.views.presskit, name='press'),

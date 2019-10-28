@@ -1797,3 +1797,118 @@ def increase_funding_limit_request(request):
     }
 
     return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)
+
+@staff_member_required
+def tribes(request):
+    plans= [
+        {
+            'type': 'lite',
+            'img': '/v2/images/tribes/landing/tribe-one.svg',
+            'price': '10k',
+            'features': [
+                '1 Hackthon Credit'
+            ],
+            'features_na': [
+                'Access to Gitcoin Pro Tools'
+            ]
+        },
+        {
+            'type': 'pro',
+            'img': '/v2/images/tribes/landing/tribe-two.svg',
+            'discount': '40%',
+            'price': '6k',
+            'features': [
+                {
+                    'title': '3 Hackathon Credits',
+                    'info': '18k year total'
+                },
+                'Access to Gitcoin Pro Tools'
+            ]
+        },
+        {
+            'type': 'launch',
+            'img': '/v2/images/tribes/logo.svg',
+            'price': '4k',
+            'features': [
+                {
+                    'title': '5 Hackathon Credits',
+                    'info': '20k year total'
+                },
+                'Access to Gitcoin Pro Tools'
+            ]
+        }
+    ]
+
+    companies = [
+        {
+            'name': 'Bancor',
+            'img': static('v2/images/project_logos/bancor.svg')
+        },
+        {
+            'name': 'Consensys Labs',
+            'img': static('v2/images/project_logos/consensys_labs.svg')
+        },
+        {
+            'name': 'Ethereum Foundation',
+            'img': static('v2/images/project_logos/eth_foundation.svg')
+        },
+        {
+            'name': 'Algorand',
+            'img': static('v2/images/project_logos/algorand.svg')
+        },
+        {
+            'name': 'Consensys Grants',
+            'img': static('v2/images/project_logos/consensys_grants.svg')
+        },
+        {
+            'name': 'AirSwap',
+            'img': static('v2/images/project_logos/airswap.svg')
+        },
+        {
+            'name': 'Portis',
+            'img': static('v2/images/project_logos/portis_text.svg')
+        },
+        {
+            'name': 'Status',
+            'img': static('v2/images/project_logos/status.svg')
+        },
+        {
+            'name': 'Matic',
+            'img': static('v2/images/project_logos/matic.svg')
+        },
+        {
+            'name': 'BZX',
+            'img': static('v2/images/project_logos/bzx.svg')
+        }
+    ]
+
+    testimonials = [
+        {
+            'text': 'I had a lot of fun (during Beyond Blockchain) meeting people and building tangible rapidly. Glad to have a winning submission!',
+            'author': 'VirajA',
+            'designation': 'Hacker',
+            'photo': 'https://c.gitcoin.co/avatars/58ef080697b34b1eab840bc60e2ee92b/viraja1.png'
+        },
+        {
+            'text': 'Gitcoin has a fantastic community that is our target audience -- Web 3 developers who want to build.',
+            'author': 'Sam Williams',
+            'designation': 'CEO, Arweave',
+            'photo': 'https://i0.wp.com/www.coininsider.com/wp-content/uploads/2018/10/Sam-Williams.jpg?resize=418%2C418&ssl=1',
+            'org_photo': static('v2/images/project_logos/arweave.svg')
+        },
+        {
+            'text': '"Relationships with developers" is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.',
+            'author': 'Scott Gralnick',
+            'designation': 'Co-Founder, Portis',
+            'photo': 'https://everipedia-storage.s3-accelerate.amazonaws.com/ProfilePics/__87296.png',
+            'org_photo': static('v2/images/project_logos/portis.svg')
+        }
+    ]
+
+    context = {
+        'plans': plans,
+        'companies': companies,
+        'testimonials': testimonials
+    }
+
+    return TemplateResponse(request, 'tribes/landing.html', context)
