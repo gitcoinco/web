@@ -33,7 +33,7 @@ class Quest(SuperModel):
     difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES, db_index=True)
     style = models.CharField(max_length=100, default='quiz', choices=STYLES)
     value = models.FloatField(default=1)
-    override_background = models.CharField(default='', max_length=100, blank=True)
+    background = models.CharField(default='', max_length=100, blank=True)
     creator = models.ForeignKey(
         'dashboard.Profile',
         on_delete=models.CASCADE,
@@ -108,23 +108,13 @@ class Quest(SuperModel):
         return '/static/'+self.game_metadata.get('enemy', {}).get('title', '')
 
     @property
-    def background(self):
+    def assign_background(self):
         if self.override_background:
             return self.override_background
-        backgrounds = [
-            'back0',
-            'back1',
-            'back2',
-            'back3',
-            'back4',
-            'back5',
-            'back6',
-            'back7',
-            'back8',
-            'back9',
-        ]
-        which_back = self.pk % len(backgrounds)
-        return backgrounds[which_back]
+        backgrounds = list(range(0, 11 + 1))
+        which_back_idx = self.pk % len(backgrounds)
+        which_back = backgrounds[which_back_idx]
+        return f"back{which_back}"
 
     @property
     def music(self):
@@ -211,6 +201,8 @@ class Quest(SuperModel):
 
 @receiver(pre_save, sender=Quest, dispatch_uid="psave_quest")
 def psave_quest(sender, instance, **kwargs):
+    if not instance.background:
+        instance.background = instance.assign_background
     instance.ui_data['attempts_count'] = instance.attempts.count()
     instance.ui_data['tags'] = instance.tags
     instance.ui_data['success_pct'] = instance.success_pct

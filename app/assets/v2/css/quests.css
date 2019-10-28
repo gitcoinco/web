@@ -625,6 +625,18 @@ body.back9.quest_battle{
   background: url('/static/v2/images/quests/backs/back9.png') repeat;
   background-size: 120%;
 }
+body.back10.quest_battle{
+  background: url('/static/v2/images/quests/backs/back10.png') repeat;
+  background-size: 120%;
+}
+body.back11.quest_battle{
+  background: url('/static/v2/images/quests/backs/back11.png') repeat;
+  background-size: 100%;
+}
+body.back12.quest_battle{
+  background: url('/static/v2/images/quests/backs/back12.png') repeat;
+  background-size: 120%;
+}
 body.red.quest_battle{
   background-image: linear-gradient(90deg, #ff6161, #ff0000);
   background-size: 100% !important;
@@ -906,6 +918,9 @@ body.green .tl{
   body.back9.quest_battle{
     background-size: 120% !important;
   }
+  body.back11.quest_battle{
+    background-size: 100% !important;
+  }
   #cta_button a, a.button{
     line-height: 46px;
     padding: 10px;
@@ -998,6 +1013,9 @@ body.green .tl{
   body.back9.quest_battle{
     background-size: 120% !important;
   }
+  body.back11.quest_battle{
+    background-size: 180% !important;
+  }
   #leaderboard_hero{
     background-size: 130%;
   }
@@ -1015,6 +1033,9 @@ body.green .tl{
   body.back8.quest_battle,
   body.back9.quest_battle{
     background-size: 140% !important;
+  }
+  body.back11.quest_battle{
+    background-size: 220% !important;
   }
   #leaderboard_hero .inner_row {
     width: 32%;
@@ -1065,6 +1086,9 @@ body.green .tl{
   body.back8.quest_battle,
   body.back9.quest_battle{
     background-size: 200% !important;
+  }
+  body.back11.quest_battle{
+    background-size: 250% !important;
   }
   .hide_on_mobile{
     display: none;
