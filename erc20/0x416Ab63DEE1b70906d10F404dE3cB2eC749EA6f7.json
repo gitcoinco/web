@@ -1,0 +1,19 @@
+{
+  "symbol": "WPK",
+  "address": "0x416Ab63DEE1b70906d10F404dE3cB2eC749EA6f7",
+  "overview":{
+        "en": "WPK is named after the famous World Player Killing.The 2010 World Cup in South Africa, which correctly predicted the results of all German matches, is based on the SEER public chain of the competitive forecast platform. Is currently Singapore WPK Foundation to build a plate.WPK will use block chain technology to play its open, transparent, tamper-proof characteristics. To solve the traditional guessing industry funds operation is not transparent, the proportion of commission is high, users trust the cost of high pain points. In the future, in the WPK platform, each player can pay a certain amount of WPK pass as a deposit to create their own guess room (including guess content, guess reward, etc.), and attract other players to use WPK to participate in the guess. WPK will enter the $60 billion guessing market through football guessing.",
+        "zh": "WPK 名字源于著名的 world PlayerKilling（world PlayerKilling在2010 南非世界杯成功预测对了德国队所有比赛的结果），是一款基于SEER 公链的竞猜预测平台。是目前新加坡WPK基金会全力打造的一个板块。 WPK 将通过区块链技术，发挥其公开透明、不可篡改的特性。 解决传统竞猜行业资金运作不透明，抽佣比例高，用户信任成本高等痛点。未来，在 WPK 平台，每个玩家都可以支付一定量的 WPK 通证做为押金自行创建竞猜房间（包括竞猜内容，竞猜奖励等）， 并吸引其他玩家使用 WPK 参与竞猜。WPK 将通过足球竞猜切入 600 亿美金的竞猜市场。"
+  },
+  "email": "wpkchain@yahoo.com",
+  "website": "https://wpkchain.com",
+  "whitepaper": "https://wpkchain.com/files/%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-27",
+  "initial_price":{
+        "USD":"0.15 USD"
+  },
+  "links": {
+    "blog": "https://wpkchain.com/listPage.html"
+  }
+}
