@@ -102,7 +102,7 @@ def get_base_quest_view_params(user, quest):
         'attempt_count': attempts.count() + 1,
         'success_count': attempts.filter(success=True).count(),
         'body_class': 'quest_battle',
-        'title': "Quest: " + quest.title + (f" (and win a *{quest.kudos_reward.humanized_name}* Kudos)" if quest.kudos_reward else ""),
+        'title': "Play the *" + quest.title + (f"* Gitcoin Quest and win a *{quest.kudos_reward.humanized_name}* Kudos" if quest.kudos_reward else ""),
         'avatar_url': quest.avatar_url_png,
         'card_desc': quest.description,
         'seconds_per_question': quest.game_schema.get('seconds_per_question', 30),
