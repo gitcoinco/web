@@ -898,9 +898,12 @@ def process_bounty_changes(old_bounty, new_bounty):
         profile_pairs = build_profile_pairs(new_bounty)
 
     # Send an Email if this is a LowBall bounty
-    if(not old_bounty or old_bounty.value_in_usdt != new_bounty.value_in_usdt):
-        if is_lowball_bounty(new_bounty.value_in_usdt):
-            notify_of_lowball_bounty(new_bounty)
+    try:
+        if(not old_bounty or old_bounty.value_in_usdt != new_bounty.value_in_usdt):
+                if is_lowball_bounty(new_bounty.value_in_usdt):
+                    notify_of_lowball_bounty(new_bounty)
+    except Exception as e:
+        logger.error(f'{e} during check for Lowball Bounty')
 
     # marketing
     if event_name != 'unknown_event':
