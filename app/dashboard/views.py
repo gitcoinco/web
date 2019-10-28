@@ -2279,6 +2279,7 @@ def profile_job_opportunity(request, handle):
 
 def invalid_file_response(uploaded_file, supported):
     response = None
+    forbidden_content = ['<script>']
     if not uploaded_file:
         response = {
             'status': 400,
@@ -2300,13 +2301,23 @@ def invalid_file_response(uploaded_file, supported):
             }
 
         try:
-            with uploaded_file.file as file:
-                # TODO: some sort of black listed list of search queries
-                if file.getvalue().find(b'<script>') != -1:
-                    response = {
-                        'status': 422,
-                        'message': 'Invalid File contents'
-                    }
+            forbidden = False
+            while forbidden is False:
+                chunk = next(uploaded_file.chunks())
+                if not chunk:
+                    break
+                for ele in forbidden_content:
+                    # could add in other ways to determine forbidden content
+                    q = ele.encode('ascii')
+
+                    if chunk.find(q) != -1:
+                        forbidden = True
+                        response = {
+                            'status': 422,
+                            'message': 'Invalid File contents'
+                        }
+                        break
+
         except Exception as e:
             print(e)
 
