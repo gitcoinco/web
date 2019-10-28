@@ -964,14 +964,14 @@ Back to shipping,
     }, ]
 
     sponsor = {
-        'name': 'MythX',
-        'title': 'Keep Ethereum Secure',
+        'name': 'Arweave',
+        'title': 'Get paid to build dApps on the permaweb 🛠🌐',
         'image_url': '',
-        'link': 'http://bit.ly/mythx-gitcoin-weekly',
-        'cta': 'Get Started Now',
+        'link': 'http://bit.ly/arweave-gitcoin-weekly',
+        'cta': 'Start hacking today!',
         'body': [
-           'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
-           'Scan for security vulnerabilities right away, from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
+           'The permaweb is a decentralized, immutable new web, built on top of a globally distributed, permanent hard drive - the Arweave network.',
+           'We want the permaweb to be accessible to everyone, but we want you to be a part of making that a reality. That\'s why we\'re looking for talented developers to build decentralized apps on the permaweb.'
         ]
     }
     
