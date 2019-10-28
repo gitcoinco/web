@@ -27,7 +27,7 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.files import File
 from django.db import models
 from django.db.models import Q
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.templatetags.static import static
 from django.utils import timezone
@@ -105,6 +105,8 @@ class Token(SuperModel):
     price_finney = models.IntegerField()
     num_clones_allowed = models.IntegerField(null=True, blank=True)
     num_clones_in_wild = models.IntegerField(null=True, blank=True)
+    num_clones_available_counting_indirect_send = models.IntegerField(blank=True, default=0)
+
     cloned_from_id = models.IntegerField()
     popularity = models.IntegerField(default=0)
     popularity_week = models.IntegerField(default=0)
@@ -274,7 +276,7 @@ class Token(SuperModel):
         return related_kudos_transfers.values_list('recipient_profile__handle', flat=True)
 
     @property
-    def num_clones_available_counting_indirect_send(self):
+    def _num_clones_available_counting_indirect_send(self):
         return self.num_clones_allowed - self.num_clones_in_wild_counting_indirect_send
 
     @property
@@ -383,6 +385,11 @@ class Token(SuperModel):
         is_enabled_for_this_user = hasattr(user, 'profile') and TransferEnabledFor.objects.filter(profile=user.profile, token=self).exists()
         is_enabled_because_staff = user.is_authenticated and user.is_staff
         return is_enabled_for_this_user or is_enabled_for_user_in_general or is_enabled_because_staff
+
+
+@receiver(pre_save, sender=Token, dispatch_uid="psave_token")
+def psave_token(sender, instance, **kwargs):
+    instance.num_clones_available_counting_indirect_send = instance._num_clones_available_counting_indirect_send
 
 
 class KudosTransfer(SendCryptoAsset):
