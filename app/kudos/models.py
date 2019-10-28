@@ -27,7 +27,7 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.files import File
 from django.db import models
 from django.db.models import Q
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.templatetags.static import static
 from django.utils import timezone
@@ -629,7 +629,7 @@ class TokenRequest(SuperModel):
         self.processed = True
         self.approved = True
         self.save()
-        return tx_id 
+        return tx_id
 
 class TransferEnabledFor(SuperModel):
     """Model that represents the ability to send a Kudos, i
