@@ -33,7 +33,7 @@ $(document).ready(function() {
     const activityCount = activityContainer ? parseInt(activityContainer.getAttribute('count')) || 0 : 0;
     const loadingImg = document.querySelector('.loading_img');
 
-    if (activityContainer.children.length < activityCount) {
+    if (activityContainer && activityContainer.children.length < activityCount) {
       updateViewBtn.style['visibility'] = 'visible';
     } else {
       updateViewBtn.style['visibility'] = 'hidden';
