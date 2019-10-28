@@ -1,0 +1,24 @@
+{
+	"symbol": "XinBi Token",
+	"address": "0xce43921b2fbf3C7F4CF47E28b8261E8e31bc6106",
+	"overview": {
+		"en": "XB is short for XinBi Token and its full name is XinBi Global Eco-Integral. XB is a de-centralized digital asset based on ETF, which is issued by XinBi Group. XB is an integral system based on block chain issuance and management, which can be used in many scenarios within the XinBi and under the XinBi ecosystem. XB has been applied to the global business and various applications of the global ecosystem of the XinBi Group, and has become an important hub for the support of the ecosystem of the XinBi Group. The holder enjoys the corresponding rights and interests of the whole ecosystem of the XinBi. And get the ecological sub-passport award, and enjoy the scarcity of XinBi continued repurchase and destruction brought about by the promotion.",
+		"zh": "XB为XinBiToken的简称，全名为新币全球生态积分。XB是基于以太坊的去中心化数字资产，由新币集团发行。XB是基于区块链发行和管理的积分系统，可在新币内部以及新币生态体系下的多场景中使用。XB应用到新币集团全球业务与全球生态体系的各类应用中，成为新币集团生态体系支撑的重要枢纽。持有者享受新币全生态的相应权益。并得到生态子通证奖励，以及享受新币持续回购销毁带来的稀缺性提升。"
+	},
+	"email": "admin@xinbipro.com",
+	"website": "https://www.xinbipro.com/",
+	"whitepaper": "https://www.xinbipro.com/",
+	"state": "NORMAL",
+	"published_on": "2019-10-01",
+	"initial_price":{
+		"USD":"0.1 USD"
+	},
+	"links": {
+		"blog": "https://weibo.com/xinbipro",
+		"twitter": "https://twitter.com/xinbipro",
+		"telegram": "http://t.me/xinbipro",
+		"reddit": "https://www.reddit.com/user/XinBiPro",
+		"github": "https://github.com/xinbipro/open-api",
+		"facebook": "https://www.facebook.com/xinbipro"
+	}
+}
