@@ -1,0 +1,18 @@
+{
+    "symbol": "COC",
+    "address": "0x524fD2AAedDa15869e7F648E56690645AC303f6B",
+    "overview":{
+          "en": "The decentralized advertising trading platform established by Contacts circle Token is further deepened based on the programmatic trading method to make the data play the maximum value for all parties in the ecosystem.",
+          "zh": "Contacts circle Token所建立的去中心化的广告交易平台基于程序化交易的方式进一步深化，让数据为生态内的各方发挥最大化的价值。"
+    },
+    "email": "postmaster@rmqcoc.com",
+    "website": "http://www.rmqcoc.com/",
+    "whitepaper": "http://www.rmqcoc.com/templet/qukuai/img/coc_whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-10-16",
+    "links": {
+        "blog": "https://weibo.com/CocOfficialGroup",
+        "facebook": "https://www.facebook.com/CocOfficialGroup",
+        "telegram": "https://t.me/CocOfficialGroup"
+      }
+}
