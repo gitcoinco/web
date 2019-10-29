@@ -350,8 +350,8 @@ class HackathonRegistrationAdmin(admin.ModelAdmin):
 
 
 class HackathonProjectAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'img', 'name', 'prize_url', 'hackathon', 'usernames', 'status', 'sponsor']
-    raw_id_fields = ['profiles', 'prize_url', 'hackathon']
+    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon', 'usernames', 'status', 'sponsor']
+    raw_id_fields = ['profiles', 'bounty', 'hackathon']
     search_fields = ['name', 'summary', 'status']
 
     def img(self, instance):
@@ -372,7 +372,7 @@ class HackathonProjectAdmin(admin.ModelAdmin):
 
     def sponsor(self, obj):
         """Get the profile handle."""
-        return obj.prize_url.org_name
+        return obj.bounty.org_name
 
 
 admin.site.register(SearchHistory, SearchHistoryAdmin)

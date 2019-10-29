@@ -3444,11 +3444,12 @@ def hackathon_onboard(request, hackathon=''):
 
 
 def hackathon_results(request, hackathon=''):
-    q = request.GET.get('q')
-    print(q)
+    q = request.GET.get('q', '')
     order_by = request.GET.get('order_by', '-created_on')
-    referer = request.META.get('HTTP_REFERER', '')
+    filters = request.GET.get('filters', '')
+    print(q)
 
+    page = request.GET.get('page', 1)
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
         profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
@@ -3456,23 +3457,39 @@ def hackathon_results(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
-    projects = HackathonProject.objects.filter(hackathon=hackathon_event).prefetch_related('profiles')
+    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles').order_by(order_by)
+
     if q:
         projects = projects.filter(
             Q(name__icontains=q) |
             Q(summary__icontains=q) |
             Q(profiles__handle__icontains=q)
         )
+    if filters == 'winners':
+        projects = projects.filter(
+            Q(badge__isnull=False)
+        )
+
+    projects_paginator = Paginator(projects, 3)
+
+    try:
+        projects_paginated = projects_paginator.page(page)
+    except PageNotAnInteger:
+        projects_paginated = projects_paginator.page(1)
+    except EmptyPage:
+        projects_paginated = projects_paginator.page(projects_paginator.num_pages)
 
     params = {
         'active': 'hackathon_onboard',
         'title': 'Hackathon Results',
         'hackathon': hackathon_event,
-        'referer': referer,
         'is_registered': is_registered,
-        'projects': projects,
+        'projects': projects_paginated,
+        'order_by': order_by,
+        'filters': filters,
         'query': q.split
     }
+
     return TemplateResponse(request, 'dashboard/hackathon_results.html', params)
 
 

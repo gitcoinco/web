@@ -4055,7 +4055,7 @@ class HackathonProject(SuperModel):
     )
     work_url = models.URLField(help_text='Repo or PR url')
     summary = models.TextField(default='', blank=True)
-    prize_url = models.ForeignKey(
+    bounty = models.ForeignKey(
         'dashboard.Bounty',
         related_name='project_bounty',
         on_delete=models.CASCADE,

@@ -71,6 +71,7 @@
                   <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue">Join</a>
                 {% endif %}
                 <a href="{% url 'hackathon' hackathon.slug %}" class="btn btn-gc-blue">Prizes</a>
+                <a href="{% url 'hackathon_results' hackathon.slug %}" class="btn btn-gc-blue">Results</a>
               </div>
             </div>
           </div>
@@ -81,5 +82,5 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    
+
   </body>
