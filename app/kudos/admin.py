@@ -37,6 +37,7 @@ class TokenRequestAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
     raw_id_fields = ['profile']
+    readonly_fields = ['preview']
 
     def response_change(self, request, obj):
         if "_mint_kudos" in request.POST:
@@ -50,6 +51,10 @@ class TokenRequestAdmin(admin.ModelAdmin):
             sync_latest(3)
             self.message_user(request, f"Synced latest 3 kudos from open sea.  If there is a new kudos on chain it will appear in the marketplace")
         return super().response_change(request, obj)
+
+    def preview(self, instance):
+        html = f"<img style='max-width: 400px;' src='{instance.artwork_url}'>"
+        return mark_safe(html)
 
 
 class TransferEnabledForAdmin(admin.ModelAdmin):
