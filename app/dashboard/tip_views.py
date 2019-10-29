@@ -367,9 +367,25 @@ def send_tip_2(request):
         TemplateResponse: Render the submission form.
 
     """
+
+    username = request.GET.get('username', None)
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
+
+    user = {}
+    if username:
+        profiles = Profile.objects.filter(handle__icontains=username)
+
+        if profiles.exists():
+            profile = profiles.first()
+            user['id'] = profile.id
+            user['text'] = profile.handle
+
+            if profile.avatar_baseavatar_related.exists():
+                user['avatar_id'] = profile.avatar_baseavatar_related.first().pk
+                user['avatar_url'] = profile.avatar_baseavatar_related.first().avatar_url
+                user['preferred_payout_address'] = profile.preferred_payout_address
 
     params = {
         'issueURL': request.GET.get('source'),
@@ -379,5 +395,7 @@ def send_tip_2(request):
         'from_handle': from_username,
         'title': 'Send Tip | Gitcoin',
         'card_desc': 'Send a tip to any github user at the click of a button.',
+        'user_json': user,
+        'username': username
     }
     return TemplateResponse(request, 'onepager/send2.html', params)
