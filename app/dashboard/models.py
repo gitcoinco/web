@@ -4033,6 +4033,47 @@ class HackathonSponsor(SuperModel):
         default='G',
     )
 
+
+class HackathonProject(SuperModel):
+    PROJECT_STATUS = [
+        ('invalid', 'invalid'),
+        ('pending', 'pending'),
+        ('accepted', 'accepted'),
+        ('completed', 'completed'),
+    ]
+    name = models.CharField(max_length=255)
+    hackathon = models.ForeignKey(
+        'HackathonEvent',
+        related_name='project_event',
+        on_delete=models.CASCADE,
+        help_text='Hackathon event'
+    )
+    logo = models.ImageField(blank=True)
+    profiles = models.ManyToManyField(
+        'dashboard.Profile',
+        related_name='project_profiles',
+    )
+    work_url = models.URLField(help_text='Repo or PR url')
+    summary = models.TextField(default='', blank=True)
+    prize_url = models.ForeignKey(
+        'dashboard.Bounty',
+        related_name='project_bounty',
+        on_delete=models.CASCADE,
+        help_text='bounty prize url'
+    )
+    badge = models.URLField(
+        blank=True,
+        null=True,
+        db_index=True,
+        help_text='badge img url'
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=PROJECT_STATUS,
+        blank=True
+    )
+
+
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
         'dashboard.Bounty',

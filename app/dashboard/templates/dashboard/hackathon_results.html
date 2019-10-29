@@ -1,0 +1,142 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
+    <style>
+      .onboard-banner {
+        background: {% firstof hackathon.background_color or 'white' %};
+        color: {% firstof hackathon.text_color or 'black' %};
+      }
+    </style>
+  </head>
+  <body class="interior {{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+      <div class="onboard-banner text-center p-4">
+          {% firstof hackathon.logo_svg or hackathon.logo as logo %}
+          {% if logo %}
+            <img class="" width="364" src="{{MEDIA_URL}}{{logo}}"/>
+          {% else %}
+            <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center text-white">
+              {{ hackathon.name }}
+            </div>
+          {% endif %}
+        <h1>{{hackathon.name}} Guide</h1>
+        {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+      </div>
+    </div>
+
+    <div class="container-fluid p-5">
+      {% if hackathon.end_date|timesince >= "1 min" %}
+        <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
+      {% endif %}
+      <div class="row py-5">
+        <div class="col-12">
+          <h2 class="text-center">Results</h2>
+          <form action="{% url 'hackathon_results' hackathon.slug %}" method="get">
+              <div class="input-group">
+                <input type="text" class="form-control form-control-lg" name="q" id="kudos-search" placeholder="{% trans "Search Projects" %}">
+
+                <div class="input-group-append">
+                  <a href="{% url 'kudos_marketplace' %}" class="btn btn-dark btn-lg clear-search hidden"><i class="fas fa-times"></i></a>
+                  <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
+                </div>
+              </div>
+              {% for q in query %}
+              {{q}}
+              {% endfor %}
+          </form>
+          <div style="    display: grid;
+          grid-template-columns: 1fr 1fr 1fr;">
+            {% for project in projects %}
+              <div class="">
+                {% if project.badge %}
+                <img class="" width="200" src="{{project.badge}}" alt="Hackathon logo" />
+                {% endif %}
+                {% if project.logo %}
+                  <img class="" width="200" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
+                {% else %}
+                <img class="" width="200" src="{% firstof project.prize_url.admin_override_org_logo or project.prize_url.avatar_url %}" alt="Hackathon logo" />
+                {% endif %}
+                <br>
+                {{ project.name }}
+                <div>
+                  <b>Team members</b>
+                  <br>
+                  {% for profile in project.profiles.all %}
+                    <a href="{% url 'profile' profile %}" class="">@{{profile}}</a>
+                  {% endfor %}
+                </div>
+                <div>
+                  <b>Repo / PR</b>
+                  <a href="{{project.work_url}}">{{project.work_url}}</a>
+                </div>
+                <div>
+                  <b>Project summary</b>
+                  {{project.summary}}
+                </div>
+                <div>
+                  <a href="{{project.prize_url.url}}">Prize bounty</a>
+                </div>
+                <div class="">
+                  <b>Sponsor</b>
+                  <img class="" width="20" src="{% firstof project.prize_url.admin_override_org_logo or project.prize_url.avatar_url %}" alt="Hackathon logo" />
+                  {{project.prize_url.org_name}}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+
+            <!-- Project Name
+            Fluence Ketos
+
+            Github repo/PR url
+            github.com/bakaoh/ketos-dapp
+
+            Gitcoin usernames
+            @bakaoh
+
+            Project summary
+            A Fluence application that allows uploading and executing Ketos scripts
+
+            Prize bounty url
+            gitcoin.co/issue/fluencelabs/Bounties/2/3291
+
+            Sponsor
+            fluence
+
+            Internal
+            Kudos/image url -->
+
+        </div>
+
+      </div>
+    </div>
+    {% csrf_token %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+  </body>

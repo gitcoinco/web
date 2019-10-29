@@ -81,9 +81,7 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    Earning, FeedbackEntry, HackathonEvent, HackathonRegistration, HackathonSponsor, Interest, LabsResearch,
-    PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Subscription,
-    Tool, ToolVote, UserAction, UserVerificationModel,
+    Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -3443,6 +3441,39 @@ def hackathon_onboard(request, hackathon=''):
         'is_registered': is_registered,
     }
     return TemplateResponse(request, 'dashboard/hackathon_onboard.html', params)
+
+
+def hackathon_results(request, hackathon=''):
+    q = request.GET.get('q')
+    print(q)
+    order_by = request.GET.get('order_by', '-created_on')
+    referer = request.META.get('HTTP_REFERER', '')
+
+    try:
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+        is_registered = HackathonRegistration.objects.filter(registrant=profile, hackathon=hackathon_event) if profile else None
+    except HackathonEvent.DoesNotExist:
+        hackathon_event = HackathonEvent.objects.last()
+
+    projects = HackathonProject.objects.filter(hackathon=hackathon_event).prefetch_related('profiles')
+    if q:
+        projects = projects.filter(
+            Q(name__icontains=q) |
+            Q(summary__icontains=q) |
+            Q(profiles__handle__icontains=q)
+        )
+
+    params = {
+        'active': 'hackathon_onboard',
+        'title': 'Hackathon Results',
+        'hackathon': hackathon_event,
+        'referer': referer,
+        'is_registered': is_registered,
+        'projects': projects,
+        'query': q.split
+    }
+    return TemplateResponse(request, 'dashboard/hackathon_results.html', params)
 
 
 @csrf_exempt
