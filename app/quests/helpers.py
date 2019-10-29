@@ -115,11 +115,12 @@ def get_active_attempt_if_any(user, quest, state=None):
     Gets the active quest attempt if any
     """
     profile = user.profile if user.is_authenticated else None
+    minutes = quest.cooldown_minutes if quest.cooldown_minutes >= 1 else 3
     active_attempts = QuestAttempt.objects.filter(
         quest=quest,
         profile=profile,
         success=False,
-        modified_on__gt=(timezone.now()-timezone.timedelta(minutes=quest.cooldown_minutes))
+        modified_on__gt=(timezone.now()-timezone.timedelta(minutes=minutes))
     )
     if state:
         active_attempts = active_attempts.filter(state=state)
