@@ -765,6 +765,7 @@ def newkudos(request):
     context = {
         'active': 'newkudos',
         'msg': None,
+        'nav': 'kudos',
     }
 
     if not request.user.is_authenticated:
