@@ -1,8 +1,12 @@
 ---
-name: ❓Discussion
+name: "❓Discussion"
 about: Want to start a discussion? Use this template.
+title: ''
+labels: ''
+assignees: ''
 
 ---
+
 <!--
 Hello Gitcoiner!
 

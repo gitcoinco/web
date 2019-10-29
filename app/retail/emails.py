@@ -308,7 +308,6 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     params = {**quarterly_stats, **platform_wide_stats}
     params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
-    print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
 
@@ -319,6 +318,16 @@ def render_funder_payout_reminder(**kwargs):
     kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(fulfiller_github_username=kwargs['github_username']).last()
     response_html = premailer_transform(render_to_string("emails/funder_payout_reminder.html", kwargs))
     response_txt = ''
+    return response_html, response_txt
+
+
+def render_no_applicant_reminder(bounty):
+    params = {
+        'bounty': bounty,
+        'directory_link': '/users?skills=' + bounty.keywords.lower()
+    }
+    response_html = premailer_transform(render_to_string("emails/bounty/no_applicant_reminder.html", params))
+    response_txt = render_to_string("emails/bounty/no_applicant_reminder.txt", params)
     return response_html, response_txt
 
 
@@ -461,13 +470,15 @@ appreciate you being a part of the community and let me know if you'd like some 
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3):
+    email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
         'subscriber': sub,
         'keywords': ",".join(sub.keywords),
+        'email_style': email_style,
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -792,6 +803,18 @@ def render_reserved_issue(to_email, user, bounty):
     return response_html, response_txt, subject
 
 
+def render_bounty_request(to_email, model, base_url):
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'model': model,
+        'base_url': base_url
+    }
+    subject = _("New Bounty Request")
+    response_html = premailer_transform(render_to_string("emails/bounty_request.html", params))
+    response_txt = render_to_string("emails/bounty_request.txt", params)
+    return response_html, response_txt, subject
+
+
 def render_start_work_approved(interest, bounty):
     to_email = interest.profile.email
     params = {
@@ -871,12 +894,19 @@ def render_start_work_applicant_expired(interest, bounty):
 
     return response_html, response_txt, subject
 
+
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Funding for Open Source. More Hackathons."
-    new_kudos_pks = [1926, 1819, 1895]
+    subject = "❗ A New Quest"
+    new_kudos_pks = [5065, 1921, 73]
     new_kudos_size_px = 150
+    if settings.DEBUG and False:
+        # for debugging email styles
+        email_style = 2
+    else:
+        offset = 2
+        email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
 <h3>Happy Kudos Friday!</h3>
@@ -890,22 +920,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-After months of planning, we're happy to announce that the next round of Gitcoin Grants CLR Matching is right around the corner. With over $150k of funds committed, we will be kicking off the matching process in September! Interested in Gitcoin Grants? Check it out <a href="https://gitcoin.co/grants/">here.</a>
+    We’re proud to announce that this week marks the launch of our newest product, Gitcoin Quests. Quests is an enjoyable, gamified way to learn about the Web3 ecosystem, compete with your friends, earn rewards, and level up your knowledge. We’ve been working hard for the past couple months and are excited to see how you like it. <a href="https://gitcoin.co/blog/gitcoin-quests-is-now-live/">To begin your adventure, click here.</a>
 </p>
 <p>
-And yes, we have another hackathon we're proud to announce: Ethereal Blocks. Join us alongside Ethereal Summit in this incredible display of Web3 and more. Over $50k of prizes are up for grabs. The details live <a href="https://hackathons.gitcoin.co/ethereal-blocks/">here.</a>
+    ⏰ It’s almost that time. Web3 World is around the corner, and we’re stoked to offer another tremendous invitation for learning, earning, and of course, hacking. Watch out for a tweet later today with an official announcement post. Not following us on Twitter yet? <a href="https://twitter.com/gitcoin">Let’s fix that.</a>
 </p>
 <p>
-Have any questions about our platform? Have any feedback that we should take into consideration? Please reach out. We'd love to hear it. Send us an email at <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a> or reach out to us on Twitter.
+    Speaking of hackathons—the Road to Devcon wrap up has completed. All winners of the Hackathon prizes are announced, and on Monday, we’ll have a blog post detailing all the incredible projects you all put together. Again, congratulations to all of the participants; we’re so glad to have you as a part of the Gitcoin universe. 
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is back this week! Join us and some of the winners of Grow Ethereum <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday. </a>
+        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        The Gitcoin team is on the road this month, with planned visits to ETHBerlin and Web3. Follow our travel on our valiant leader's Twitter, <a href="https://twitter.com/owocki/">@owocki.</a>
+        Colorado Gitcoiners: are you attending ETHDenver 2020? Well, we are. Get your applications in starting on November 10th. The form lives <a href="https://www.ethdenver.com/">here.</a>
         </li>
     </ul>
 </p>
@@ -914,48 +944,49 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'Allenskywalker92',
+        'who': 'imwatsi',
         'who_link': True,
-        'what': 'Bugfixes and maps are in!',
-        'link': 'https://gitcoin.co/issue/ark-mod/ArkBot/96/3316',
+        'what': 'Simple Scraping Script so SQL Storage Syncs. Alliteration!',
+        'link': 'https://gitcoin.co/issue/mainnebula/SPACE_TASKS/1/3511',
         'link_copy': 'View more',
     }, {
-        'who': 'bitsikka',
+        'who': 'SharksT',
         'who_link': True,
-        'what': 'My profile edit and share screens, done!',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8069/3205',
+        'what': 'Test CI Pipeline, do do do do do do.',
+        'link': 'https://gitcoin.co/issue/nblockchain/grin-wallet/1/3560',
         'link_copy': 'View more',
     }, {
-        'who': 'srisankethu',
+        'who': 'janus',
         'who_link': True,
-        'what': 'Full stack Dapp on Azure, deployed.',
-        'link': 'https://gitcoin.co/issue/kauri-io/Content/53/3187', 
+        'what': 'Documentation, done.',
+        'link': 'https://gitcoin.co/issue/MrElliwood/audio-router/3/3235',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Blockmason',
-        'title': 'Build and deploy your whole laundry list of microservices in a single afternoon.',
-        'image_url': 'https://blockmason.link/wp-content/uploads/2018/11/logo.svg',
-        'link': 'http://bit.ly/2L5IA2n',
-        'cta': 'Get Started Now',
+        'name': 'Arweave',
+        'title': 'Get paid to build dApps on the permaweb 🛠🌐',
+        'image_url': '',
+        'link': 'http://bit.ly/arweave-gitcoin-weekly',
+        'cta': 'Start hacking today!',
         'body': [
-            'Link creates web-based APIs from your code, so you can deploy microservices instantly.'
+           'The permaweb is a decentralized, immutable new web, built on top of a globally distributed, permanent hard drive - the Arweave network.',
+           'We want the permaweb to be accessible to everyone, but we want you to be a part of making that a reality. That\'s why we\'re looking for talented developers to build decentralized apps on the permaweb.'
         ]
     }
-
+    
     bounties_spec = [{
-        'url': 'https://github.com/DigixGlobal/dao-server/issues/69',
-        'primer': 'Email Notifications on Comments',
+        'url': 'https://github.com/ironcoinext/IronCoin/issues/7',
+        'primer': 'Validate their hosts!',
     }, {
-        'url': 'https://github.com/protofire/solhint/issues/140',
-        'primer': 'Document the structure of the project',
+        'url': 'https://github.com/unlock-protocol/unlock/issues/5114',
+        'primer': 'A bounty? For a Ghost? In October? This is too good.',
     }, {
-        'url': 'https://github.com/ethresearch/eth-wiki/issues/9',
-        'primer': 'Correcting Merkle Patricia Trie Example',
+        'url': 'https://github.com/eth1x-finality-gadget-working-group/pm/issues/1',
+        'primer': 'Notetakers: rally.',
 }, ]
-    
-    
+
+
     num_leadboard_items = 5
     highlight_kudos_ids = []
     num_kudos_to_show = 15
@@ -975,6 +1006,7 @@ Back to shipping,
             'items': [],
         },
     }
+
 
     from kudos.models import KudosTransfer
     if highlight_kudos_ids:
@@ -1013,6 +1045,7 @@ Back to shipping,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
         'sponsor': sponsor,
+        'email_style': email_style,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
@@ -1113,7 +1146,7 @@ def new_bounty(request):
     from dashboard.models import Bounty
     bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties, int(request.GET.get('offset', 2)))
     return HttpResponse(response_html)
 
 
@@ -1162,6 +1195,26 @@ def funder_payout_reminder(request):
     github_username = request.GET.get('username', '@foo')
     response_html, _ = render_funder_payout_reminder(bounty=bounty, github_username=github_username)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def no_applicant_reminder(request):
+    """Display the no applicant for bounty reminder email template.
+
+    Params:
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    from dashboard.models import Bounty
+    bounty = Bounty.objects.filter(
+        idx_status='open', current_bounty=True, interested__isnull=True
+    ).first()
+    response_html, _ = render_no_applicant_reminder(bounty=bounty)
+    return HttpResponse(response_html)
+
 
 @staff_member_required
 def funder_stale(request):

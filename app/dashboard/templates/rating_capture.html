@@ -29,9 +29,8 @@
               {% trans 'How was your bounty experience?' %}
           </h2>
           <p class="font-smaller-1 text-black-60 mx-3 px-2 mt-4">{% trans 'You’ve recently completed one or more bounties on Gitcoin. Help us improve Gitcoin by rating your bounty experience!' %}</p>
-          <p class="p-2 mx-3 font-smaller-1 text-black-60">{% trans 'Only Gitcoin admins are able to see your feedback.' %}</p>
           <div class="my-4">
-            <a href="{% url "profile" %}#ratingTabs" class="button button--primary shadow-none">{% trans 'Rate your bounty experience' %}</a>
+            <a href="{% url "profile" %}{{github_handle}}/ratings#ratingTabs" class="button button--primary shadow-none">{% trans 'Rate your bounty experience' %}</a>
           </div>
         </div>
       </div>

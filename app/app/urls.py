@@ -44,6 +44,8 @@ import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
+import perftools.views
+import quests.views
 import retail.emails
 import retail.views
 import revenue.views
@@ -62,17 +64,17 @@ urlpatterns = [
     url(r'^create?', dashboard.views.new_bounty, name='create_bounty'),  # TODO: Remove
 
     # inbox
-    path('inbox/', include('inbox.urls', namespace='inbox')),
+    re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
 
     # board
-    path('dashboard/', dashboard.views.board, name='dashboard'),
+    re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
 
     # kudos
-    path('kudos/', kudos.views.about, name='kudos_main'),
-    path('kudos/about/', kudos.views.about, name='kudos_about'),
-    path('kudos/marketplace/', kudos.views.marketplace, name='kudos_marketplace'),
-    path('kudos/mint/', kudos.views.mint, name='kudos_mint'),
-    path('kudos/send/', kudos.views.send_2, name='kudos_send'),
+    re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
+    re_path(r'^kudos/about/?$', kudos.views.about, name='kudos_about'),
+    re_path(r'^kudos/marketplace/?$', kudos.views.marketplace, name='kudos_marketplace'),
+    re_path(r'^kudos/mint/?$', kudos.views.mint, name='kudos_mint'),
+    re_path(r'^kudos/send/?$', kudos.views.send_2, name='kudos_send'),
     path('kudos/send/3/', kudos.views.send_3, name='kudos_send_3'),
     path('kudos/send/4/', kudos.views.send_4, name='kudos_send_4'),
     re_path(r'^lazy_load_kudos/$', dashboard.views.lazy_load_kudos, name='lazy_load_kudos'),
@@ -87,6 +89,7 @@ urlpatterns = [
     re_path(r'^kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
+    re_path(r'^kudos/new/?', kudos.views.newkudos, name='newkudos'),
 
     # mailing list
     url('mailing_list/funders/', dashboard.views.funders_mailing_list),
@@ -94,7 +97,15 @@ urlpatterns = [
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
+    url(r'^api/v0.1/profile/(.*)?/activity.json', dashboard.views.profile_activity, name='profile_activity'),
+    url(r'^api/v0.1/profile/(.*)?/earnings.csv', dashboard.views.profile_earnings, name='profile_earnings'),
+    url(r'^api/v0.1/profile/(.*)?/grants.csv', dashboard.views.profile_grants, name='profile_grants'),
+    url(r'^api/v0.1/profile/(.*)?/quests.csv', dashboard.views.profile_quests, name='profile_quests'),
+    url(r'^api/v0.1/profile/(.*)?/ratings/(.*).csv', dashboard.views.profile_ratings, name='profile_ratings'),
+    url(r'^api/v0.1/profile/(.*)?/viewers.csv', dashboard.views.profile_viewers, name='profile_viewers'),
+    url(r'^api/v0.1/profile/(.*)?/spent.csv', dashboard.views.profile_spent, name='profile_spent'),
     url(r'^api/v0.1/profile/banner', dashboard.views.change_user_profile_banner, name='change_user_profile_banner'),
+    url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
     url(
         r'^api/v0.1/profile/(.*)?/jobopportunity',
         dashboard.views.profile_job_opportunity,
@@ -112,6 +123,8 @@ urlpatterns = [
         dashboard.views.social_contribution_email,
         name='social_contribution_email'
     ),
+    url(r'^api/v0.1/org_perms', dashboard.views.org_perms, name='org_perms'),
+    url(r'^api/v0.1/bulk_invite', dashboard.views.bulk_invite, name='bulk_invite'),
     url(r'^api/v0.1/bountydocument', dashboard.views.bounty_upload_nda, name='bounty_upload_nda'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
@@ -130,10 +143,12 @@ urlpatterns = [
 
     # grant views
     path('grants/', include('grants.urls', namespace='grants')),
+    re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall')),
 
     # dashboard views
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
+    re_path(r'^onboard/?$', dashboard.views.onboard, name='onboard'),
     url(r'^postcomment/', dashboard.views.post_comment, name='post_comment'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
 
@@ -144,6 +159,12 @@ urlpatterns = [
         dashboard.views.funder_dashboard_bounty_info,
         name='funder_dashboard_bounty_info'
     ),
+
+    # quests
+    re_path(r'^quests/?$', quests.views.index, name='quests_index'),
+    re_path(r'^quests/next?$', quests.views.next_quest, name='next_quest'),
+    re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
+    re_path(r'^quests/new/?', quests.views.newquest, name='newquest'),
 
     # Contributor dashboard
     path(
@@ -157,8 +178,12 @@ urlpatterns = [
 
     # Hackathons / special events
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
-    path('hackathon/', dashboard.views.hackathon, name='hackathon_idx'),
+    path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
+    re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
+    re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
+    path('hackathon-list', dashboard.views.get_hackathons, name='get_hackathons2'),
+    url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
 
     # action URLs
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
@@ -196,6 +221,7 @@ urlpatterns = [
     ),
 
     # Rating
+    path('modal/rating/<int:bounty_id>/<str:username>', dashboard.views.rating_modal, name='rating_modal2'),
     path('modal/rating/<int:bounty_id>/<str:username>/', dashboard.views.rating_modal, name='rating_modal'),
     path('modal/rating_capture/', dashboard.views.rating_capture, name='rating_capture'),
     url(r'^api/v0.1/unrated_bounties/', dashboard.views.unrated_bounties, name='unrated_bounties'),
@@ -263,6 +289,7 @@ urlpatterns = [
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
 
     # Alpha functionality
+    re_path(r'^profile/(.*)/(.*)?', dashboard.views.profile, name='profile_by_tab'),
     re_path(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
     re_path(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
     path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
@@ -283,6 +310,7 @@ urlpatterns = [
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     re_path(r'^funding/avatar/?', avatar.views.handle_avatar, name='avatar'),
+    re_path(r'^dynamic/avatar/(.*)', avatar.views.handle_avatar, name='org_avatar2'),
     re_path(r'^dynamic/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
     re_path(r'^dynamic/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
     re_path(r'^dynamic/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
@@ -480,6 +508,11 @@ urlpatterns = [
         retail.emails.funder_payout_reminder,
         name='funder_payout_reminder'
     ),
+    re_path(
+        r'^_administration/email/no_applicant_reminder$',
+        retail.emails.no_applicant_reminder,
+        name='no_applicant_reminder'
+    ),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
@@ -492,7 +525,9 @@ urlpatterns = [
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
     re_path(r'^settings/job/?', marketing.views.job_settings, name='job_settings'),
+    re_path(r'^settings/organizations/?', marketing.views.org_settings, name='org_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
+    re_path(r'^settings$', marketing.views.org_settings, name='settings2'),
 
     # marketing views
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
@@ -516,7 +551,7 @@ urlpatterns = [
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
-    url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    url(r'^sitemap.xml/?', perftools.views.sitemap, name='django.contrib.sitemaps.views.sitemap'),
     # Interests
     path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
@@ -531,6 +566,7 @@ urlpatterns = [
     path('legacy/', include('legacy.urls', namespace='legacy')),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     re_path(r'^gh-login/$', dashboard.views.gh_login, name='gh_login'),
+    re_path(r'^login/github$', dashboard.views.gh_login, name='gh_login_'),
     path('', include('social_django.urls', namespace='social')),
     # webhook routes
     # sendgrid webhook processing
@@ -571,6 +607,11 @@ if settings.DEBUG:
         re_path(r'^404/$', retail.views.handler404, name='404'),
         re_path(r'^500/$', retail.views.handler500, name='500'),
     ]
+
+urlpatterns += [
+    re_path(r'^(.*)/(.*)?', dashboard.views.profile, name='profile_min_by_tab'),
+    re_path(r'^(.*)', dashboard.views.profile, name='profile_min'),
+]
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'

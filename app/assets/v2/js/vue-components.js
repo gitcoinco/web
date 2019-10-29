@@ -1,6 +1,6 @@
 Vue.component('modal', {
-  props: [ 'user', 'size' ],
-  template: `<div class="vue-modal modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+  props: [ 'user', 'size', 'id', 'issueDetails' ],
+  template: `<div class="vue-modal modal fade" :id="id" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" :class="size" role="document">
           <div class="modal-content">
             <div class="modal-header border-0">
@@ -52,7 +52,9 @@ Vue.component('select2', {
   },
   watch: {
     value: function(value) {
-      if ([...value].sort().join(',') !== [...$(this.$el).val()].sort().join(',')) {
+      if (value === undefined) {
+        $(this.$el).empty().select2({ data: this.options });
+      } else if ([...value].sort().join(',') !== [...$(this.$el).val()].sort().join(',')) {
         $(this.$el).val(value).trigger('change');
       }
     },

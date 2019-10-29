@@ -25,7 +25,7 @@ var gitcoin_ize = function(key, val) {
 
 var email_ize = function(key, val) {
 
-  if (val == 'Anonymous' || val == '') {
+  if (!validateEmail(val)) {
     $('#bounty_owner_email').remove();
     $('#bounty_owner_email_label').remove();
   }
@@ -243,6 +243,7 @@ var callbacks = {
     var tags = [];
 
     keywords.forEach(function(keyword) {
+      keyword = keyword.replace(/[\W_]+/g, '');
       tags.push('<a href="/explorer/?q=' + keyword.trim() + '"><div class="tag keyword">' + keyword + '</div></a>');
     });
     return [ 'issue_keywords', tags ];
@@ -448,10 +449,7 @@ var callbacks = {
   },
   'reserved_for_user_handle': function(key, val, bounty) {
     if (val) {
-      const reservedForHoursLeft = 72 - Math.abs(new Date() - new Date(bounty['created_on'])) / 3600000;
-
-      // check if 24 hours have passed before setting the issue as reserved
-      if (Math.round(reservedForHoursLeft) > 0) {
+      if (bounty['is_reserved'] && bounty['status'] === 'reserved') {
         const reservedForHtmlLink = '<a href="/profile/' + val + '">' + val + '</a>';
         const reservedForAvatar = '<img class="rounded-circle" src="/dynamic/avatar/' + val + '" width="25" height="25"/>';
 
@@ -475,10 +473,7 @@ const isAvailableIfReserved = function(bounty) {
       return true;
     }
 
-    const reservedForHoursLeft = 72 - Math.abs(new Date() - new Date(bounty['created_on'])) / 3600000;
-
-    // check if 24 hours have passed before setting the issue as reserved
-    if (Math.round(reservedForHoursLeft) > 0) {
+    if (bounty['is_reserved']) {
       return false;
     }
   }
@@ -684,6 +679,7 @@ var show_interest_modal = function() {
       }
 
       let actionPlanForm = $('#action_plan');
+      let discord_username = $('#discord_username');
       let issueMessage = $('#issue_message');
 
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
@@ -721,7 +717,8 @@ var show_interest_modal = function() {
               _alert(response.message, 'info');
               add_interest(document.result['pk'], {
                 issue_message: msg,
-                signed_nda: response.bounty_doc_id
+                signed_nda: response.bounty_doc_id,
+                discord_username: $('#discord_username').length ? $('#discord_username').val() : null
               }).then(success => {
                 if (success) {
                   $(self).attr('href', '/uninterested');
@@ -742,7 +739,8 @@ var show_interest_modal = function() {
           });
         } else {
           add_interest(document.result['pk'], {
-            issue_message: msg
+            issue_message: msg,
+            discord_username: $('#discord_username').length ? $('#discord_username').val() : null
           }).then(success => {
             if (success) {
               $(self).attr('href', '/uninterested');
@@ -889,7 +887,8 @@ const appendGithubSyncButton = function(result) {
         '/sync/get_issue_details?url=' + encodeURIComponent(result['github_url']) + '&token=' + currentProfile.githubToken
       ).then(function(result) {
         const payload = JSON.stringify({
-          issue_description: result.description
+          issue_description: result.description,
+          title: result.title
         });
 
         return $.post('/bounty/change/' + bountyId, payload).then(
@@ -1034,24 +1033,35 @@ var do_actions = function(result) {
   var is_status_done = result['status'] == 'done';
   var is_status_cancelled = result['status'] == 'cancelled';
   var can_submit_after_expiration_date = result['can_submit_after_expiration_date'];
-  var is_still_on_happy_path = result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
+  var is_still_on_happy_path = result['status'] == 'reserved' || result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
   var needs_review = result['needs_review'];
   const is_open = result['is_open'];
   let bounty_path = result['network'] + '/' + result['standard_bounties_id'];
 
 
-  // Find interest information
   const is_interested = is_current_user_interested(result);
 
-  const has_fulfilled = result['fulfillments'].filter(fulfiller => caseInsensitiveCompare(fulfiller.fulfiller_github_username, document.contxt['github_handle'])).length > 0;
+  const has_fulfilled = result['fulfillments'].filter(fulfiller =>
+    caseInsensitiveCompare(fulfiller.fulfiller_github_username, document.contxt['github_handle'])
+  ).length > 0;
 
   document.interested = is_interested;
 
   const current_user_is_approved = is_current_user_approved(result);
-  // which actions should we show?
-  const should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
-  let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work &&
-    is_open && !isBountyOwner(result) && isAvailableIfReserved(result);
+
+  const should_block_from_starting_work =
+    !is_interested &&
+    result['project_type'] == 'traditional' &&
+    (result['status'] == 'started' || result['status'] == 'submitted');
+
+  let show_start_stop_work =
+    is_still_on_happy_path &&
+    !should_block_from_starting_work &&
+    is_open &&
+    !isBountyOwner(result) &&
+    isAvailableIfReserved(result) &&
+    !has_fulfilled;
+
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
   let show_submit_work = is_open && !has_fulfilled;
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
@@ -1118,7 +1128,7 @@ var do_actions = function(result) {
     let text;
 
     if (result['permission_type'] === 'approval')
-      text = is_interested ? gettext('Stop') : gettext('Express Interest');
+      text = is_interested ? gettext('Stop Work') : gettext('Express Interest');
     else
       text = is_interested ? gettext('Stop Work') : gettext('Start Work');
 
@@ -1133,6 +1143,21 @@ var do_actions = function(result) {
     };
 
     actions.push(interest_entry);
+  }
+
+  if (result['is_reserved'] && result['status'] === 'reserved' &&
+      caseInsensitiveCompare(result['reserved_for_user_handle'], document.contxt['github_handle'])) {
+    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+
+    const release_to_public_entry = {
+      enabled: true,
+      href: result['url'] + connector_char + 'release_to_public=1',
+      text: gettext('Release Bounty'),
+      parent: 'bounty_actions',
+      title: gettext('Release this reserved bounty to the public')
+    };
+
+    actions.push(release_to_public_entry);
   }
 
   if (show_kill_bounty) {

@@ -15,9 +15,13 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 <script>
+  document.messages = []
   {% for message in messages %}
+  if (document.messages.indexOf('{{ message }}') == -1) {
     setTimeout(function(){
       _alert({message: gettext('{{ message }}')}, '{{ message.tags }}');
     }, 1000);
+    document.messages.push('{{ message }}');
+  }
   {% endfor %}
 </script>

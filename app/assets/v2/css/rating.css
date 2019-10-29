@@ -95,3 +95,7 @@ fieldset:disabled .rating {
 .static-stars .fas {
   color: #25E899;
 }
+
+.static-stars.rating--small > i {
+  font-size: 1em;
+}
