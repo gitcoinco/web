@@ -242,7 +242,8 @@ def sync_profile(handle, user=None, hide_profile=True):
 
         profile.keywords = keywords
         profile.save()
-
+    except UserSocialAuth.DoesNotExist:
+        pass
     except Exception as e:
         logger.error(e)
         return None
