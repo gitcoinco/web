@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models.signals import pre_save
@@ -109,10 +111,12 @@ class Quest(SuperModel):
 
     @property
     def assign_background(self):
-        if self.override_background:
-            return self.override_background
+        if self.background:
+            return self.background
         backgrounds = list(range(0, 11 + 1))
-        which_back_idx = self.pk % len(backgrounds)
+        which_back_idx = random.choice(backgrounds)
+        if self.pk:
+            which_back_idx = self.pk % len(backgrounds)
         which_back = backgrounds[which_back_idx]
         return f"back{which_back}"
 
