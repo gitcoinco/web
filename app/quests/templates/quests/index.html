@@ -52,7 +52,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% for difficulty_level, the_quests in quests%}
         <li class="nav-item">
           <a class="nav-link nav-line {% if difficulty_level == selected_tab %}active{%endif%}" href="#" data-href="{{difficulty_level}}">
-          {{difficulty_level}} Quests
+          {{difficulty_level}} <span>{{the_quests|length}}</span>
           </a>
         </li>
       {% endfor %}

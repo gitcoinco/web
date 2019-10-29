@@ -46,6 +46,7 @@ def next_quest(request):
     messages.info(request, f'You have beaten every available quest!')
     return redirect('/quests')
 
+
 def newquest(request):
     """Render the Quests 'new' page."""
 
@@ -155,20 +156,40 @@ def get_package_helper(quest_qs, request):
 
 def index(request):
 
+    # setup
     print(f" start at {round(time.time(),2)} ")
     query = request.GET.get('q', '')
+    hours_new = 48 if not settings.DEBUG else 300
     quests = []
+    selected_tab = 'Search' if query else 'Beginner'
+    # search tab
     if query:
         quest_qs = Quest.objects.filter(visible=True).filter(Q(title__icontains=query) | Q(description__icontains=query) | Q(questions__icontains=query) | Q(game_schema__icontains=query) | Q(game_metadata__icontains=query)).order_by('-ui_data__success_pct')
         quest_package = get_package_helper(quest_qs, request)
         package = ('Search', quest_package)
         quests.append(package)
+    # beaten/unbeaten
+    if request.user.is_authenticated:
+        attempts = request.user.profile.quest_attempts
+        if attempts.exists():
+            beaten = Quest.objects.filter(pk__in=attempts.filter(success=True).values_list('quest', flat=True))
+            unbeaten = Quest.objects.filter(pk__in=attempts.filter(success=False).exclude(quest__in=beaten).values_list('quest', flat=True))
+            if unbeaten.exists():
+                quests.append(('Attempted', get_package_helper(unbeaten, request)))
+                selected_tab = 'Attempted'
+            if beaten.exists():
+                quests.append(('Beaten', get_package_helper(beaten, request)))
+    # difficulty tab
     for diff in Quest.DIFFICULTIES:
         quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True).order_by('-ui_data__success_pct')
         quest_package = get_package_helper(quest_qs, request)
         package = (diff[0], quest_package)
         if quest_qs.exists():
             quests.append(package)
+    # new quests!
+    new_quests = Quest.objects.filter(visible=True, created_on__gt=(timezone.now() - timezone.timedelta(hours=hours_new))).order_by('-ui_data__success_pct')
+    if new_quests.exists():
+        quests.append(('New', get_package_helper(new_quests, request)))
 
     print(f" phase2 at {round(time.time(),2)} ")
     rewards_schedule = []
@@ -213,7 +234,7 @@ def index(request):
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'rewards_schedule': rewards_schedule,
         'query': query,
-        'selected_tab': 'Search' if query else 'Beginner',
+        'selected_tab': selected_tab,
         'title': f' {query.capitalize()} Quests',
         'point_history': point_history,
         'point_value': point_value, 

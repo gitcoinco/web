@@ -132,6 +132,7 @@ def tweetify_prize_url(url, quest, user):
     prize_url = f"{url}?tweet_url={tweet_url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
     return prize_url
 
+
 def get_active_attempt_if_any(user, quest, state=None):
     """
     Gets the active quest attempt if any
