@@ -311,10 +311,26 @@ $(function() {
   setTimeout(setUsdAmount, 1000);
 
   // fetch issue URL related info
-  $('input[name=amount]').keyup(setUsdAmount);
-  $('input[name=usd_amount]').keyup(usdToAmount);
   $('input[name=hours]').keyup(setUsdAmount);
   $('input[name=hours]').blur(setUsdAmount);
+  $('input[name=amount]').keyup(setUsdAmount);
+
+  $('input[name=usd_amount]').on('focusin', function() {
+    $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
+  });
+
+  $('input[name=usd_amount]').on('focusout', function() {
+    $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
+  });
+
+  $('input[name=usd_amount]').keyup(() => {
+    const prev_usd_amount = $('input[name=usd_amount]').attr('prev_usd_amount');
+    const usd_amount = $('input[name=usd_amount').val();
+
+    if (prev_usd_amount != usd_amount) {
+      usdToAmount(usd_amount);
+    }
+  });
 
   $('input[name=amount]').on('change', function() {
     const amount = $('input[name=amount]').val();
