@@ -1244,7 +1244,7 @@ def bulk_invite(request):
     organisation = request.POST.get('params[organisation]', '')
     bounty_id = request.POST.get('bountyId')
 
-    if None in (skills, bounty_id, inviter):
+    if None in (bounty_id, inviter):
         return JsonResponse({'success': False}, status=400)
 
     bounty = Bounty.objects.current().get(id=int(bounty_id))
