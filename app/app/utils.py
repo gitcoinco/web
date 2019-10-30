@@ -230,7 +230,13 @@ def sync_profile(handle, user=None, hide_profile=True):
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         access_token = profile.user.social_auth.filter(provider='github').latest('pk').access_token
         orgs = get_user(handle, '', scope='orgs', auth=(profile.handle, access_token))
+
+        # get_user returns a list of orgs here if successful, otherwise a dict
+        # like {'message': 'some error', 'documentation_url': 'www.example.com'}
+        # therefore using a list comprehension directly will cause errors if
+        # the permissions haven't been granted; TypeError below catches. - DL
         profile.organizations = [ele['login'] for ele in orgs]
+
         print("Profile:", profile, "- created" if created else "- updated")
         keywords = []
         for repo in profile.repos_data_lite:
@@ -242,7 +248,10 @@ def sync_profile(handle, user=None, hide_profile=True):
 
         profile.keywords = keywords
         profile.save()
-
+    except UserSocialAuth.DoesNotExist:
+        pass
+    except TypeError:
+        pass
     except Exception as e:
         logger.error(e)
         return None
