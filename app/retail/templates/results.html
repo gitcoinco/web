@@ -437,8 +437,14 @@
       </div>
     </div>
     <div id="activities">
-      {% include 'shared/activity_container.html' with target="/activity" %}
+      {% include 'shared/activity_container.html' %}
     </div>
+
+        <div class="row mt-5 pb-5 text-center">
+          <div class="col">
+            <a class="button button--primary" role="button" href="/activity">{% trans "See more activity" %}</a>
+          </div>
+        </div>
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}

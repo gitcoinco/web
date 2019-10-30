@@ -65,7 +65,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div style='min-height: 400px; text-align: center; vertical-align: middle; padding: 100px; border-left: 2px solid #fafafa; '>
       <h3>No Quests Found</h3>
       <BR>
-      <a href="/quests/new/"><img id="logo" src="{% static 'v2/images/kudos/assets/no-kudos.gif' %}"  width="500" class="mw-100" /></a>
+      <a href="/quests/new/"><img id="logo" data-src="{% static 'v2/images/kudos/assets/no-kudos.gif' %}"  width="500" class="mw-100" /></a>
       <BR>
       Try again or <a href="/quests/new/">create your own</a>.
     </div>
@@ -74,9 +74,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div id="{{difficulty_level}}" style="{% cycle 'background-color: #fafafa;' '' %}; width: 250px; display: block; float: left; border-radius: 10px; height: 530px; text-align: center;" class="{{quest.style}} m-3 p-2 quest-card {%if not unlocked%}locked{%elif beaten%}beaten{%else%}available{%endif%} {%if cooldown%}cooldown{%endif%}">
       <div class="card_head">
         <span class="boss">#boss</span>
-        <img class="card_img boss" src="{{quest.art_url}}" title="{{quest.game_metadata.enemy.title}}">
+        <img class="card_img boss" data-src="{{quest.art_url}}" title="{{quest.game_metadata.enemy.title}}">
         <span class="reward">#prize</span>
-        <img class="card_img reward" src="{{quest.kudos_reward.img_url}}" title="{{quest.kudos_reward.humanized_name}} Kudos">
+        <img class="card_img reward" data-src="{{quest.kudos_reward.img_url}}" title="{{quest.kudos_reward.humanized_name}} Kudos">
       </div>
       <div style="background-color: #eee; border-top: 3px solid #bbb; border-radius: 5px;" class="pr-3 pt-3 pl-3 pb-1 mb-1 mt-3">
         <span style="position: relative; top: -50px; font-size: 30px;">
@@ -124,7 +124,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <div class="row indent_on_mobile" id=leaderboard_top>
   <h1 id=leaderboard style="margin-top: 100px;">Leaderboard</h1>
   <div id="announce">
-    <img class="mr-1" src="{% static "v2/images/quests/enemies/samurai.svg" %}">
+    <img class="mr-1" data-src="{% static "v2/images/quests/enemies/samurai.svg" %}">
     <h4><strong>Round 2 Challenge is now Live!</strong></h4>
     <p>Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on October 30 will <strong>win a KeepKey hardware wallet</strong> and a <a href="https://gitcoin.co/kudos/174/diamond">very special Kudos</a>.
   </div>
@@ -276,7 +276,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% else %}
               1/{{row.reward_denominator}}
             {% endif %}
-            point{{row.reward_denominator|pluralize}} + <img style="width:17px; height: 17px;" src="{% static "v2/images/quests/rando_kudos.gif" %}"> quest kudos 
+            point{{row.reward_denominator|pluralize}} + <img style="width:17px; height: 17px;" data-src="{% static "v2/images/quests/rando_kudos.gif" %}"> quest kudos 
           </td>
         </tr>
         {% endfor %}
@@ -332,7 +332,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 </div>
 {% for round_number, this_leaderboard in leaderboard.items %}
   <div class="row indent_on_mobile leaderboard_tab leaderboard_{{round_number}}  {% if current_round_number != round_number %}hidden{%endif%}">
-    <div id=leaderboard_hero class="hide_on_mobile" style='background-image:url("{% static 'v2/images/kudos/kudos-bg.png' %}")'>
+    <div class="leaderboard_hero hide_on_mobile">
       {% for item in this_leaderboard.1 %}
       <div class="inner_row {{ item.4|apnumber }}"> 
         <h3 class="mr-2 ml-2" style="font-weight:bold;">
@@ -344,7 +344,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% if item.0 == github_handle %}
               <div id=you class="tag" class="mr-2 mt-2">You</div>
             {% endif %}
-            <img title="@{{item.0}}" src="/dynamic/avatar/{{item.0}}" class="avatar">
+            <img title="@{{item.0}}" data-src="/dynamic/avatar/{{item.0}}" class="avatar">
           </div>
           <div class="trophy_case">
             <div class="kudos_container">
@@ -536,7 +536,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <script src="{% static "v2/js/pages/quests.index.js" %}"></script>
 <script>
   $(document).ready(function() {
-    $("img").unveil(200);
+    $("#available_quests img").unveil(200);
+    setInterval(function(){
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollTop > 500 && !document.offset_loaded){
+        $("img").unveil(200);
+        document.offset_loaded = true; 
+      }
+    }, 3000);
+    setTimeout(function(){
+      $('.leaderboard_hero').css('background-image', 'url("{% static 'v2/images/kudos/kudos-bg.png' %}")');
+    }, 1000);
   });
 </script>
 {% endblock %}
