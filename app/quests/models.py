@@ -17,7 +17,8 @@ class Quest(SuperModel):
     DIFFICULTIES = [
         ('Beginner', 'Beginner'),
         ('Intermediate', 'Intermediate'),
-        ('Advanced', 'Advanced'),
+        ('Hard', 'Hard'),
+        ('Expert', 'Expert'),
     ]
 
     BACKGROUNDS = [
