@@ -2185,6 +2185,14 @@ class Organization(SuperModel):
         return self.name
 
 
+class BlockedURLFilter(SuperModel):
+    expression = models.CharField(max_length=255, help_text='the expression to search for in order to block that github url (or website)')
+    comment = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.expression
+
+
 class HackathonRegistration(SuperModel):
     """Defines the Hackthon profiles registrations"""
     name = models.CharField(max_length=255, help_text='Hackathon slug')

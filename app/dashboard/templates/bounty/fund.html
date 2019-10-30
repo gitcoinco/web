@@ -442,6 +442,7 @@
 
 <script>
   document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
+  document.blocked_urls = {{blocked_urls|safe}};
   {% if expired_coupon %}
     _alert({ message: 'This coupon has expired.' }, 'error');
   {% endif %}
