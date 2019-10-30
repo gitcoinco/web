@@ -1,3 +1,5 @@
+/* stylelint-disable no-descending-specificity */
+
 .show_on_mobile {
   display: none;
 }
@@ -560,15 +562,15 @@ body.quest_battle p {
 .back_gradient {
   background: linear-gradient(to right top, #0fce7c, #00a5a1, #0077b5, #0046a1, #0d0764) no-repeat;
   animation: gradient 40s ease infinite;
-  background-size: 100% 400px !important;
+  background-size: 100% 380px !important;
 }
 
 .quest-card.available:hover .pr-3 p.desc {
   border-top: 1px solid white !important;
 }
 
-#cta_button {
-  margin-top: 10%;
+#cta_button{
+  margin-top: 28%;
   width: 60%;
   text-align: center;
 }
@@ -1310,6 +1312,12 @@ body.green .tl {
   background-color: rgb(46, 139, 87);
 }
 
+@media (max-width: 1200px) {
+
+  #cta_button{
+    margin-top: 30%;
+  }
+}
 
 @media (max-width: 1110px) {
 
@@ -1366,8 +1374,8 @@ body.green .tl {
     left: 20px;
   }
 
-  #cta_button {
-    margin-top: 20%;
+  #cta_button{
+    margin-top: 32%;
   }
 
   #enemy img {
@@ -1434,7 +1442,7 @@ body.green .tl {
   }
 
   .back_gradient {
-    background-size: 100% 400px !important;
+    background-size: 100% 370px !important;
   }
 }
 
@@ -1477,10 +1485,6 @@ body.green .tl {
   .character .info p {
     font-size: 8px;
     width: 40%;
-  }
-
-  #header {
-    font-size: 12px;
   }
 
   #desc {
