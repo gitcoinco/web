@@ -33,14 +33,14 @@ $(document).ready(function() {
     const activityCount = activityContainer ? parseInt(activityContainer.getAttribute('count')) || 0 : 0;
     const loadingImg = document.querySelector('.loading_img');
 
-    if (activityContainer.children.length < activityCount) {
+    if (activityContainer && activityContainer.children.length < activityCount) {
       updateViewBtn.style['visibility'] = 'visible';
     } else {
       updateViewBtn.style['visibility'] = 'hidden';
       return;
     }
 
-    if (ignoreScrollOffset || window.scrollY >= tabSection.scrollHeight) {
+    if (activityContainer && (ignoreScrollOffset || window.scrollY >= tabSection.scrollHeight)) {
       const activityName = activityContainer.id;
       let page = parseInt(activityContainer.getAttribute('page')) || 0;
 

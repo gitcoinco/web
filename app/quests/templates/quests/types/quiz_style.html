@@ -102,6 +102,7 @@
       'img': '{{quest.kudos_reward.preview_img_url}}'
     };
     
+    document.num_questions = parseInt('{{quest.questions|length}}');
     document.music = '{{quest.music}}';
     document.seconds_per_question = parseInt('{{seconds_per_question}}');
     document.quest = {{quest_json|safe}};

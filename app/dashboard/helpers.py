@@ -902,7 +902,7 @@ def process_bounty_changes(old_bounty, new_bounty):
             'did_post_to_slack': did_post_to_slack,
             'did_post_to_user_slack': did_post_to_user_slack,
             'did_post_to_user_discord': did_post_to_user_discord,
-            'did_post_to_twitter': did_post_to_twitter,
+            'did_post_to_twitter': False,
         }
 
         print("changes processed: ")
