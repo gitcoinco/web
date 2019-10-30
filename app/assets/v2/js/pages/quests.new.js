@@ -1,15 +1,22 @@
 
 $(document).ready(function() {
   const QUESTIONS_LIMIT = 6;
+  const ANSWERS_LIMIT = 10;
 
   $(document).on('form#newkudos', 'submit', function(e) {
     // e.preventDefault();
     // console.log($(this).formdata);
     // alert('hi');
+
   });
 
   $(document).on('click', '.add_answer', function(e) {
     e.preventDefault();
+
+    if ($(this).parents('.question').children('span').length >= ANSWERS_LIMIT) {
+      alert('The number of answers for each question are limited to ' + ANSWERS_LIMIT);
+      return;
+    }
 
     var dupe_me = $(this).parents('.form-group').find('span:last');
     var clone = dupe_me.clone();
