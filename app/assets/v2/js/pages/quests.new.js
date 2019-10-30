@@ -16,7 +16,7 @@ $(document).ready(function() {
     e.preventDefault();
 
     if ($(this).parents('.question').children('span').length >= ANSWERS_LIMIT) {
-      alert('The number of answers for each question are limited to ' + ANSWERS_LIMIT);
+      alert(gettext('The number of answers for each question are limited to ') + ANSWERS_LIMIT);
       return;
     }
 
@@ -38,7 +38,7 @@ $(document).ready(function() {
     e.preventDefault();
 
     if ($('.form-group.question').length > QUESTIONS_LIMIT) {
-      alert('The number of questions are limited to ' + QUESTIONS_LIMIT);
+      alert(gettext('The number of questions are limited to ') + QUESTIONS_LIMIT);
       return;
     }
 
@@ -51,7 +51,7 @@ $(document).ready(function() {
   $(document).on('click', '.close_answer', function(e) {
     e.preventDefault();
     if ($(this).parents('.question').find('span').length <= 1) {
-      alert('you cannot have 0 answers per question');
+      alert(gettext('You cannot have 0 answers per question'));
       return;
     }
     var ele = $(this).parents('span');
@@ -72,7 +72,7 @@ $(document).ready(function() {
   $(document).on('click', '.close_question', function(e) {
     e.preventDefault();
     if ($('div.question').length <= 1) {
-      alert('you cannot have 0 questsions');
+      alert(gettext('you cannot have 0 questsions'));
       return;
     }
     var ele = $(this).parents('div.question');
