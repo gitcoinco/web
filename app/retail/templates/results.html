@@ -454,7 +454,13 @@
     <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
     <script>
       $(document).ready(function() {
-        $("img").unveil(200);
+        setInterval(function(){
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          if (scrollTop > 500 && !document.offset_loaded){
+            $("img").unveil(200);
+            document.offset_loaded = true; 
+          }
+        }, 3000);
       });
     </script>
 
