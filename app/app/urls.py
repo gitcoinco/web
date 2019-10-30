@@ -564,6 +564,7 @@ urlpatterns = [
     path('legacy/', include('legacy.urls', namespace='legacy')),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     re_path(r'^gh-login/$', dashboard.views.gh_login, name='gh_login'),
+    re_path(r'^login/github$', dashboard.views.gh_login, name='gh_login2'),
     path('', include('social_django.urls', namespace='social')),
     # webhook routes
     # sendgrid webhook processing
