@@ -97,11 +97,10 @@ function userSearch(elem, showAddress, theme, initialData, allowClear, suppress_
       let existent_properties = {};
 
       if (base_user.element) {
-        let attr = base_user.element.attributes;
-        let attr_length = attr.length;
+        const attr = base_user.element.attributes;
+        const attr_length = attr.length;
 
-
-        for (var i = 0; i < attr_length; i++) {
+        for (let i = 0; i < attr_length; i++) {
           existent_properties[attr[i].nodeName] = attr[i].nodeValue;
         }
       }
