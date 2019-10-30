@@ -179,7 +179,8 @@ def index(request):
             unbeaten = Quest.objects.filter(pk__in=attempts.filter(success=False).exclude(quest__in=beaten).values_list('quest', flat=True))
             if unbeaten.exists():
                 quests.append(('Attempted', get_package_helper(unbeaten, request)))
-                selected_tab = 'Attempted'
+                if selected_tab != 'Search':
+                    selected_tab = 'Attempted'
             if beaten.exists():
                 quests.append(('Beaten', get_package_helper(beaten, request)))
             created_quests = request.user.profile.quests_created.filter(visible=True)
