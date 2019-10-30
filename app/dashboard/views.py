@@ -3442,10 +3442,10 @@ def hackathon_onboard(request, hackathon=''):
         'referer': referer,
         'is_registered': is_registered,
     }
-    return TemplateResponse(request, 'dashboard/hackathon_onboard.html', params)
+    return TemplateResponse(request, 'dashboard/hackathon/onboard.html', params)
 
 
-def hackathon_results(request, hackathon=''):
+def hackathon_projects(request, hackathon=''):
     q = request.GET.get('q', '')
     order_by = request.GET.get('order_by', '-created_on')
     filters = request.GET.get('filters', '')
@@ -3483,7 +3483,7 @@ def hackathon_results(request, hackathon=''):
 
     params = {
         'active': 'hackathon_onboard',
-        'title': 'Hackathon Results',
+        'title': 'Hackathon Projects',
         'hackathon': hackathon_event,
         'is_registered': is_registered,
         'projects': projects_paginated,
@@ -3492,7 +3492,7 @@ def hackathon_results(request, hackathon=''):
         'query': q.split
     }
 
-    return TemplateResponse(request, 'dashboard/hackathon_results.html', params)
+    return TemplateResponse(request, 'dashboard/hackathon/projects.html', params)
 
 
 @csrf_exempt
@@ -3573,7 +3573,7 @@ def get_hackathons(request):
         'title': 'hackathons',
         'hackathons': events,
     }
-    return TemplateResponse(request, 'dashboard/hackathons.html', params)
+    return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
 
 
 @login_required

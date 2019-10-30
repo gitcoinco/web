@@ -3988,6 +3988,7 @@ class HackathonEvent(SuperModel):
     text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
+    show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
 
     def __str__(self):
         """String representation for HackathonEvent.

@@ -97,22 +97,22 @@
               {{ hackathon.name }}
             </div>
           {% endif %}
-        <h1>{{hackathon.name}} Results</h1>
+        <h1>{{hackathon.name}} Projects</h1>
         {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
       </div>
     </div>
 
     <div class="container-fluid p-5">
-      {% if hackathon.end_date|timesince <= "1 min" and not projects%}
+      {% if hackathon.end_date|timeuntil >= "1 min" and not projects%}
         <p class="p-3 mt-3 alert-warning">This hackathon event is running until {{hackathon.end_date}}, please check again later.</p>
       {% endif %}
       <div class="row py-3">
         <div class="col-12 col-md-4">
-          <form action="{% url 'hackathon_results' hackathon.slug %}" method="get">
+          <form action="{% url 'hackathon_projects' hackathon.slug %}" method="get">
             <div class="input-group">
               <input type="text" class="form-control form-control" name="q" id="project-search" placeholder="{% trans "Search Projects" %}">
               <div class="input-group-append">
-                <a href="{% url 'hackathon_results' hackathon.slug %}" class="btn btn-dark clear-search {% if not query %}hidden{% endif %}"><i class="fas fa-times"></i></a>
+                <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-dark clear-search {% if not query %}hidden{% endif %}"><i class="fas fa-times"></i></a>
                 <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
               </div>
             </div>
@@ -122,13 +122,13 @@
           </form>
         </div>
         <div class="col-12 col-md-4 text-md-center">
-          <a href="{% url 'hackathon_results' hackathon.slug %}" class="{% ifequal filters '' %}underline{% endifequal %}">See all</a> |
-          <a href="{% url 'hackathon_results' hackathon.slug %}?filters=winners" class="{% ifequal filters 'winners' %}underline{% endifequal %}">See winners</a>
+          <a href="{% url 'hackathon_projects' hackathon.slug %}" class="{% ifequal filters '' %}underline{% endifequal %}">See all</a> |
+          <a href="{% url 'hackathon_projects' hackathon.slug %}?filters=winners" class="{% ifequal filters 'winners' %}underline{% endifequal %}">See winners</a>
         </div>
         <div class="col-12 col-md-4 text-md-right">
           Order by:
-          <a href="{% url 'hackathon_results' hackathon.slug %}?order_by=-created_on" class="{% ifequal order_by '-created_on' %}underline{% endifequal %}">Newest</a> |
-          <a href="{% url 'hackathon_results' hackathon.slug %}?order_by=created_on" class="{% ifequal order_by 'created_on' %}underline{% endifequal %}">Oldest</a>
+          <a href="{% url 'hackathon_projects' hackathon.slug %}?order_by=-created_on" class="{% ifequal order_by '-created_on' %}underline{% endifequal %}">Newest</a> |
+          <a href="{% url 'hackathon_projects' hackathon.slug %}?order_by=created_on" class="{% ifequal order_by 'created_on' %}underline{% endifequal %}">Oldest</a>
         </div>
       </div>
       <div class="row py-5">
