@@ -10,6 +10,8 @@ from django.utils.text import slugify
 # Create your models here.
 from economy.models import SuperModel
 
+num_backgrounds = 12
+
 
 class Quest(SuperModel):
     DIFFICULTIES = [
@@ -17,6 +19,12 @@ class Quest(SuperModel):
         ('Intermediate', 'Intermediate'),
         ('Advanced', 'Advanced'),
     ]
+
+    BACKGROUNDS = [
+        ('red', 'red'),
+        ('green', 'green'),
+        ('blue', 'blue'),
+    ] + [(f'back{i}', f'back{i}') for i in range(0, num_backgrounds + 1)]
 
     STYLES = [
         ('Quiz', 'quiz'),
@@ -35,7 +43,7 @@ class Quest(SuperModel):
     difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES, db_index=True)
     style = models.CharField(max_length=100, default='quiz', choices=STYLES)
     value = models.FloatField(default=1)
-    background = models.CharField(default='', max_length=100, blank=True)
+    background = models.CharField(default='', max_length=100, blank=True, choices=BACKGROUNDS)
     creator = models.ForeignKey(
         'dashboard.Profile',
         on_delete=models.CASCADE,
@@ -113,7 +121,7 @@ class Quest(SuperModel):
     def assign_background(self):
         if self.background:
             return self.background
-        backgrounds = list(range(0, 11 + 1))
+        backgrounds = list(range(0, num_backgrounds + 1))
         which_back_idx = random.choice(backgrounds)
         if self.pk:
             which_back_idx = self.pk % len(backgrounds)
