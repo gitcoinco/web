@@ -149,12 +149,11 @@ class Quest(SuperModel):
     def tags(self):
         tags = [
             self.difficulty,
-            "hard" if self.success_pct < 20 else ( "medium" if self.success_pct < 70 else "easy"),
             self.style,
         ]
         if (timezone.now() - self.created_on).days < 5:
             tags.append('new')
-        if self.attempts.count() > 40:
+        if self.attempts.count() > 400:
             tags.append('popular')
 
         return tags
