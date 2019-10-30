@@ -898,8 +898,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "❗ A New Quest"
-    new_kudos_pks = [5065, 1921, 73]
+    subject = "Updates, Updates, Updates"
+    new_kudos_pks = [588, 151, 116]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -920,13 +920,13 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    We’re proud to announce that this week marks the launch of our newest product, Gitcoin Quests. Quests is an enjoyable, gamified way to learn about the Web3 ecosystem, compete with your friends, earn rewards, and level up your knowledge. We’ve been working hard for the past couple months and are excited to see how you like it. <a href="https://gitcoin.co/blog/gitcoin-quests-is-now-live/">To begin your adventure, click here.</a>
+    🌱 Gitcoin Grants CLR Round 3 was a massive, massive success. With wide ranging support from across the entire Ethereum ecosystem, we were blown away with the support you provided: 1,982 unique contributions to 68 projects worth $170,000. If you'd like to take a closer look at where the record $270k ended up, take a look at our blog post. <a href="https://gitcoin.co/blog/gitcoins-q3-match/">It's living here.</a>
 </p>
 <p>
-    ⏰ It’s almost that time. Web3 World is around the corner, and we’re stoked to offer another tremendous invitation for learning, earning, and of course, hacking. Watch out for a tweet later today with an official announcement post. Not following us on Twitter yet? <a href="https://twitter.com/gitcoin">Let’s fix that.</a>
+    🚨Kudos Alert!🚨 We've released a brand new feature with Kudos – the ability to mint your own. Like your favorite cappuccino machine, it lets you make your own delicious <strike>coffee</strike> Kudos all by yourself. If you have Kudos you want to put on the marketplace, all you've have to do is fill out a form, add your artwork, and watch as it makes its way to the Gitcoin Kudos marketplace! How neat is that. Check out the self serve feature <a href="https://gitcoin.co/kudos/new">here.</a>
 </p>
 <p>
-    Speaking of hackathons—the Road to Devcon wrap up has completed. All winners of the Hackathon prizes are announced, and on Monday, we’ll have a blog post detailing all the incredible projects you all put together. Again, congratulations to all of the participants; we’re so glad to have you as a part of the Gitcoin universe. 
+    Web3 World is well under way, and we have another great set of challenges for you to work on this go around. If you fancy, check out the <a href="https://gitcoin.co/blog/web3-world-around-the-aave/">Aave highlight post</a>, and then stroll down to the hackathon <a href="https://hackathons.gitcoin.co/web3-world/">homepage to complete registration and start hacking.</a> We'd love to see you participate.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
@@ -935,7 +935,7 @@ Hey Gitcoiners,
         The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        Colorado Gitcoiners: are you attending ETHDenver 2020? Well, we are. Get your applications in starting on November 10th. The form lives <a href="https://www.ethdenver.com/">here.</a>
+        A follow up from last week's newsletter: the retro post for The Road to Devcon is now up for your viewing pleasure. Feast your eyes on this one, folks. The post lives <a href="https://gitcoin.co/blog/gitcoins-q3-match/"> here. </a>
         </li>
     </ul>
 </p>
@@ -944,46 +944,46 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'imwatsi',
+        'who': 'acolytec3',
         'who_link': True,
-        'what': 'Simple Scraping Script so SQL Storage Syncs. Alliteration!',
-        'link': 'https://gitcoin.co/issue/mainnebula/SPACE_TASKS/1/3511',
+        'what': 'Scan that QR code, acolytec3.',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/8960/3557',
         'link_copy': 'View more',
     }, {
-        'who': 'SharksT',
+        'who': 'mwbrulhardt',
         'who_link': True,
-        'what': 'Test CI Pipeline, do do do do do do.',
-        'link': 'https://gitcoin.co/issue/nblockchain/grin-wallet/1/3560',
+        'what': 'String Initialization.',
+        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/33/3548',
         'link_copy': 'View more',
     }, {
-        'who': 'janus',
+        'who': 'rshtirmer',
         'who_link': True,
-        'what': 'Documentation, done.',
-        'link': 'https://gitcoin.co/issue/MrElliwood/audio-router/3/3235',
+        'what': 'TensorFlow, you've updated. Bask in the glory of freshness.',
+        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/42/3555',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'MythX',
-        'title': 'Keep Ethereum Secure',
+        'name': 'Arweave',
+        'title': 'Get paid to build dApps on the permaweb 🛠🌐',
         'image_url': '',
-        'link': 'http://bit.ly/mythx-gitcoin-weekly',
-        'cta': 'Get Started Now',
+        'link': 'http://bit.ly/arweave-gitcoin-weekly',
+        'cta': 'Start hacking today!',
         'body': [
-           'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
-           'Scan for security vulnerabilities right away, from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
+           'The permaweb is a decentralized, immutable new web, built on top of a globally distributed, permanent hard drive - the Arweave network.',
+           'We want the permaweb to be accessible to everyone, but we want you to be a part of making that a reality. That\'s why we\'re looking for talented developers to build decentralized apps on the permaweb.'
         ]
     }
     
     bounties_spec = [{
-        'url': 'https://github.com/ironcoinext/IronCoin/issues/7',
-        'primer': 'Validate their hosts!',
+        'url': 'https://github.com/ethereum/ethereum-org-website/issues/358',
+        'primer': 'Dutch translators: do this!',
     }, {
-        'url': 'https://github.com/unlock-protocol/unlock/issues/5114',
-        'primer': 'A bounty? For a Ghost? In October? This is too good.',
+        'url': 'https://github.com/status-im/status-react/issues/8837',
+        'primer': 'Save Password prompt when signing transaction',
     }, {
-        'url': 'https://github.com/eth1x-finality-gadget-working-group/pm/issues/1',
-        'primer': 'Notetakers: rally.',
+        'url': 'https://github.com/gitcoinco/web/issues/5418',
+        'primer': 'Unable to click submit :( fix me!',
 }, ]
 
 
