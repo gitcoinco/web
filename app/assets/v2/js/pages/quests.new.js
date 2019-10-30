@@ -2,6 +2,8 @@
 $(document).ready(function() {
   const QUESTIONS_LIMIT = 6;
   const ANSWERS_LIMIT = 10;
+  const question_template = $('.form-group.question:last').clone();
+  const answer_template = question_template.children('span:last').clone();
 
   $(document).on('form#newkudos', 'submit', function(e) {
     // e.preventDefault();
@@ -18,13 +20,9 @@ $(document).ready(function() {
       return;
     }
 
-    var dupe_me = $(this).parents('.form-group').find('span:last');
-    var clone = dupe_me.clone();
+    var last_answer = $(this).parents('.form-group.question').children('span:last');
 
-    // Clean element copied
-    clone.find('input').val('');
-    clone.find('option').attr('selected', false);
-    dupe_me.after(clone);
+    last_answer.after(answer_template.clone());
   });
   $(document).on('click', '.new_quest_background', function(e) {
     e.preventDefault();
@@ -38,18 +36,15 @@ $(document).ready(function() {
 
   $(document).on('click', '.add_question', function(e) {
     e.preventDefault();
+
     if ($('.form-group.question').length > QUESTIONS_LIMIT) {
-      alert('Questions limit exceed');
+      alert('The number of questions are limited to ' + QUESTIONS_LIMIT);
       return;
     }
 
-    var dupe_me = $('.form-group.question:last');
-    var clone = dupe_me.clone();
+    var last_question = $('.form-group.question:last');
 
-    // Clean element copied
-    clone.find('input').val('');
-    clone.find('option').attr('selected', false);
-    dupe_me.after(clone);
+    last_question.after(question_template.clone());
   });
 
 
