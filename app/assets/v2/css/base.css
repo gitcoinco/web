@@ -502,7 +502,8 @@ input[type=text].loading {
 
 .submit_bounty #primary_form,
 .fulfill_bounty #primary_form,
-.increase_bounty #primary_form {
+.increase_bounty #primary_form,
+.payout_bounty #primary_form {
   max-width: none;
 }
 
