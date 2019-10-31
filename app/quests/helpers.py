@@ -116,6 +116,8 @@ def get_prize_url_if_redeemable(user, quest):
     """
     Gets the prize_url if redeemable (IFF quest beaten and not already redeemed)
     """
+    if not quest.visible:
+        return None
     if not user.is_authenticated:
         return None
     btcs = BulkTransferCoupon.objects.filter(
