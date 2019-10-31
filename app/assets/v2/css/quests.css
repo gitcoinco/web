@@ -611,67 +611,96 @@ body.quest_battle{
   font-family: 'Press Start 2P', cursive !important;
   font-size: 0.7em;
 }
-
+.new_quest_background{
+  width: 130px;
+  max-width: 130px;
+  max-height: 130px;
+  margin: 10px;
+  background-repeat: none !important;
+  cursor: pointer;
+  display: inline-block;
+  border: 2px solid white;
+  height: 65px;
+}
+.new_quest_background.selected{
+  border: 2px solid #F9006C;
+}
+div.back0,
 body.back0.quest_battle{
   background: url('/static/v2/images/quests/backs/0.gif') repeat;
   background-size: 150%;
 }
+div.back1,
 body.back1.quest_battle{
   background: url('/static/v2/images/quests/backs/back1.png') repeat;
   background-size: 100%;
 }
+div.back2,
 body.back2.quest_battle{
   background: url('/static/v2/images/quests/backs/back2.png') repeat;
   background-size: 170%;
 }
+div.back3,
 body.back3.quest_battle{
   background: url('/static/v2/images/quests/backs/back3.png') repeat;
   background-size: 160%;
 }
+div.back4,
 body.back4.quest_battle{
   background: url('/static/v2/images/quests/backs/back4.png') repeat;
   background-size: 160%;
 }
+div.back5,
 body.back5.quest_battle{
   background: url('/static/v2/images/quests/backs/back5.png') repeat;
   background-size: 160%;
 }
+div.back6,
 body.back6.quest_battle{
   background: url('/static/v2/images/quests/backs/back6.jpg') repeat;
   background-size: 110%;
 }
+div.back7,
 body.back7.quest_battle{
   background: url('/static/v2/images/quests/backs/back7.png') repeat;
   background-size: 110%;
 }
+div.back8,
 body.back8.quest_battle{
   background: url('/static/v2/images/quests/backs/back8.png') repeat;
   background-size: 120%;
 }
+div.back9,
 body.back9.quest_battle{
   background: url('/static/v2/images/quests/backs/back9.png') repeat;
   background-size: 120%;
 }
+div.back10,
 body.back10.quest_battle{
   background: url('/static/v2/images/quests/backs/back10.png') repeat;
   background-size: 120%;
 }
+div.back11,
 body.back11.quest_battle{
   background: url('/static/v2/images/quests/backs/back11.png') repeat;
   background-size: 100%;
 }
+div.back12,
 body.back12.quest_battle{
   background: url('/static/v2/images/quests/backs/back12.png') repeat;
   background-size: 120%;
 }
+div.red,
 body.red.quest_battle{
   background-image: linear-gradient(90deg, #ff6161, #ff0000);
   background-size: 100% !important;
 }
+div.blue,
 body.blue.quest_battle{
   background-image: linear-gradient(90deg, #6161ff, #0000ff);
   background-size: 100% !important;
 }
+div.green,
 body.green.quest_battle{
   background-image: linear-gradient(90deg, #3CB371, #2E8B57);
   background-size: 100% !important;

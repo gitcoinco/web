@@ -177,6 +177,17 @@
               <input type="hidden" name="answer_correct[]" value="_DELIMITER_">
             </div>
             <a href="#" class="add_question">[Add Question]</a>
+          {% endfor %}
+
+            <div class="background_container pt-4">
+              <label class="form__label" for="reading_material_url">{% trans "Arena" %}</label>
+              <BR>
+              {% for bg in backgrounds %}
+                <div data-value="{{bg}}" class="new_quest_background {{bg}} {% if bg == package.background %}selected{% endif %}">&nbsp;</div>
+              {% endfor %}
+              <input type="hidden" name="background" id="background" value="{{package.background}}">
+            </div>
+
             <div class="terms_container pt-4">
               <div class="form__checkbox">
                 <input name='terms' id='terms' type="checkbox" value=1 required {% if package.terms%}checked=checked{%endif%} />
@@ -185,7 +196,7 @@
                 </label>
               </div>
             </div>
-          {% endfor %}
+
 
           {% csrf_token %}
           <button class='button button--primary joinslack mt-2 float-right' style="font-size: 35px; padding-top: 20px;" type='submit' name='submit' value="Submit Quest">
@@ -206,4 +217,10 @@
   $('[data-toggle="tooltip"]').bootstrapTooltip();
 </script>
 
+<script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+<script>
+  $(document).ready(function() {
+    $("img").unveil(200);
+  });
+</script>
 {% endblock %}
