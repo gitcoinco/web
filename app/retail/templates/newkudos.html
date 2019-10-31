@@ -28,10 +28,13 @@
     <div class="col-12 col-md-6 pr-2 pl-2 pb-4 form_container">
       <div style="max-width: 500px; margin: 0px auto;">
         <h4>
-          {% trans "New Kudos Submission Form" %}
+          {% trans "Create a New Kudos" %}
         </h4>
+        <p>
+          Please checkout the <a href="https://github.com/gitcoinco/kudosbadges/blob/master/README.md#to-create-a-new-kudos">Kudos Creation Guide</a> and especially the <a href="https://github.com/gitcoinco/creative/blob/master/Product/kudos_guide/kudosguide_latest.pdf">Kudos Design Guide</a> and <a href="https://github.com/gitcoinco/kudosbadges/blob/master/kudos_template.svg">SVG template</a> before submitting this form!
+        </p>
         {% if msg %}
-          <p>
+          <p style="background-color: #ddd;">
             {{ msg | safe }}
           </p>
         {% endif %}
