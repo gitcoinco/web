@@ -1,6 +1,7 @@
 
 $(document).ready(function() {
-  const QUESTIONS_LIMIT = 6;
+  const QUESTIONS_LIMIT = 10;
+  const ANSWERS_LIMIT = 5;
 
   $(document).on('form#newkudos', 'submit', function(e) {
     // e.preventDefault();
@@ -10,8 +11,14 @@ $(document).ready(function() {
 
   $(document).on('click', '.add_answer', function(e) {
     e.preventDefault();
+    const parent = $(this).parents('.form-group');
 
-    var dupe_me = $(this).parents('.form-group').find('span:last');
+    if (parent.find('span').length >= ANSWERS_LIMIT) {
+      alert('Sorry, the max allowed answers for a question is ' + ANSWERS_LIMIT);
+      return;
+    }
+
+    var dupe_me = parent.find('span:last');
     var clone = dupe_me.clone();
 
     // Clean element copied
@@ -23,7 +30,7 @@ $(document).ready(function() {
   $(document).on('click', '.add_question', function(e) {
     e.preventDefault();
     if ($('.form-group.question').length > QUESTIONS_LIMIT) {
-      alert('Questions limit exceed');
+      alert('Sorry, the max allowed questions is ' + QUESTIONS_LIMIT);
       return;
     }
 
