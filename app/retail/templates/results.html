@@ -181,7 +181,7 @@
           <div id="repo_repos">
             {% for org in top_orgs %}
               <a class="repo-icon" href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" />
+                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" title="{{org}}" />
               </a>
             {% endfor %}
           </div>
@@ -198,7 +198,7 @@
           <div id="repo_repos_top">
             {% for org in top_funders %}
               <a class="repo-icon" href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" />
+                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" title="{{org}}" />
               </a>
             {% endfor %}
           </div>
@@ -212,13 +212,13 @@
 
         <div class="col-md-12 align-items-center">
             <a class="mega-founder" href="https://ethereum.org" title="Ethereum Foundation">
-              <img data-src="{% static 'v2/images/metafunders/ethereum-foundation.png' %}" alts="Ethereum Foundation">
+              <img data-src="{% static 'v2/images/metafunders/ethereum-foundation.png' %}" alts="Ethereum Foundation"  title="Ethereum Foundation">
             </a>
             <a class="mega-founder" href="https://ecf.network" title="Ethereum Community Fund">
-              <img data-src="{% static 'v2/images/metafunders/ecf_logo.svg' %}" alts="Ethereum Community Fund">
+              <img data-src="{% static 'v2/images/metafunders/ecf_logo.svg' %}" alts="Ethereum Community Fund" title="Ethereum Community Fund">
             </a>
             <a class="mega-founder" href="http://consensys.net/" title="Consensys">
-              <img data-src="{% static 'v2/images/metafunders/consensys_logo.png' %}" alts="Consensys">
+              <img data-src="{% static 'v2/images/metafunders/consensys_logo.png' %}" alts="Consensys" title="Consensys">
             </a>
         </div>
       </div>
@@ -232,7 +232,7 @@
           <div>
             {% for org in top_coders %}
               <a href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" style="border-radius: 50px; width: 100px;" />
+                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" title="{{org}}" style="border-radius: 50px; width: 100px;" />
               </a>
             {% endfor %}
           </div>
@@ -308,7 +308,32 @@
               <div>
                 {% for kudos in kudos_tokens %} 
                   <a href="{{kudos.url}}" title="{{kudos.name}}">
-                    <img data-src="{{kudos.static_image}}" alts="{{kudos.name}}"  style="max-width: 100px; max-height: 100px; margin: 5px;">
+                    <img data-src="{{kudos.static_image}}" alts="{{kudos.name}}" title="{{kudos.name}}"  style="max-width: 100px; max-height: 100px; margin: 5px;">
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if not keyword and top_quests %}
+      <div class="content-block content-block--grey">
+        <div class="container" id="bounty_universe">
+          <h2 class="content-block__title">{% trans "Top Quests" %}</h2>
+
+          <div class="row">
+            <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center p-3 ">
+              <p style="text-align: center; font-size: 0.9rem;">Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!
+              Want to give it a shot? <a href="/quests">Explore Quests Today!</a>
+            </p>
+            </div>
+            <div class="col-md-12 p-3">
+              <div>
+                {% for quest in top_quests %} 
+                  <a href="{{quest.url}}" title="{{quest.title}}">
+                    <img data-src="{{quest.img}}" alts="{{quest.title}}: {{quest.plays}} plays" title="{{quest.title}}: {{quest.plays}} plays"  style="max-width: 100px; max-height: 100px; margin: 5px;">
                   </a>
                 {% endfor %}
               </div>
@@ -418,6 +443,29 @@
           <div class="col ">
             <p class="mt-5 mb-5"> {% trans "Meet software developers, futurists, and funders who are building web3" %} </p>
             <a class="button button--primary" role="button" href="{% url "slack" %}">{% trans "Join Our Slack" %}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block content-block--white">
+      <div class="container" id="3d_humans_container">
+      <h2 class="content-block__title">{% trans "By & For 3-Dimensional Humans" %}</h2>
+      <p style="margin-bottom: 10px;">
+        Each user of Gitcoin is a 3-dimensional human, with a different background, skillset, life experience, communication patterns, and biases.  Our <a href="/mission">Mission</a> is to provide new & better economic opportunities to 3-dimensional humans, inclusive of all cultures and geographies, across the world.  BUIDLing is global!
+      </p>
+        <div class="row mt-2 pb-2 text-center">
+          <div class="col" style="">
+            <div id="mesh_network_jobs_holder">
+              <img data-src="{% static 'v2/images/animated_avatars.gif' %}" id="3d_humans" style="border-radius: 100px; max-width: 100%;">
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-2 pb-5 text-center">
+          <div class="col">
+            <p class="mt-2 mb-5"> {% trans "We've invested in some fun & engaging tools to allow you to represent yourself fully online, like an avatar builder, a fully customizable profile, and a social network share it with! Want to get started customizing your profile?" %} </p>
+            <a class="button button--primary" role="button" href="/profile">{% trans "View your Profile" %}</a>
           </div>
         </div>
       </div>

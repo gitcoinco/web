@@ -458,6 +458,17 @@ def build_stat_results(keyword=None):
     context['count_active_30d'] = count_active_30d
     pp.profile_time('count_*')
 
+    from quests.models import Quest
+    num_quests = 15
+    top_quests = Quest.objects.filter(visible=True).order_by('-ui_data__attempts_count')[0:num_quests]
+    context['top_quests'] = [{
+        'title': quest.title,
+        'url': quest.url,
+        'plays': quest.ui_data.get('attempts_count', 0),
+        'img': quest.enemy_img_url,
+
+    } for quest in top_quests]
+
     # Leaderboard
     num_to_show = 30
     context['top_funders'] = base_leaderboard.filter(active=True, leaderboard='quarterly_payers') \
