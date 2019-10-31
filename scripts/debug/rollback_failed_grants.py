@@ -2,9 +2,11 @@
 # where has_tx-mined incorrectly reported yes and thereby transactions were marked as 
 # failures when they werent marked 'succcess' status in the subminer
 
-from grants.models import Subscription
 from django.utils import timezone
+
 from grants.management.commands.subminer import *
+from grants.models import Subscription
+
 subs = Subscription.objects.filter(subminer_comments__contains='tx status from RPC is pending not success,')
 subs = subs.filter(modified_on__gt=(timezone.now() - timezone.timedelta(hours=48)))
 print(subs.count())

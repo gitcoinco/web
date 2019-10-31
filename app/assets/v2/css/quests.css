@@ -103,6 +103,18 @@
 .announce2 a{
   background-color: #849ffc !important;
 }
+.announce6 h4{
+  border-bottom: 3px solid #fde9ed !important;
+}
+.announce6:after {
+  border-bottom-color: #fde9ed !important;
+}
+.announce6 {
+  background-color: #fde9ed !important;
+}
+.announce6 a{
+  background-color: #ddb9bd !important;
+}
 .referrals img {
   width: 50px;
   height: 50px;
@@ -132,6 +144,20 @@
 .right-announce2 p{
   border-radius: 5px;
   background-color: #d9d8e7;
+  padding: 5px;
+  margin-top: 10px;
+}
+.right-announce4{
+  margin-top: 5px;
+  padding-top: 0px;
+  text-align: right;
+}
+.right-announce4 img{
+  width: 100px;
+}
+.right-announce4 p{
+  border-radius: 5px;
+  background-color: #da7474;
   padding: 5px;
   margin-top: 10px;
 }

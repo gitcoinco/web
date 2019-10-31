@@ -129,7 +129,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <h4><strong>Round 2 Challenge is now Live!</strong></h4>
       <p>Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on October 30 will <strong>win a KeepKey hardware wallet</strong> and a <a href="https://gitcoin.co/kudos/174/diamond">very special Kudos</a>.
     {% else %}
-    <h4><strong>Round 2 Challenge has ended!</strong></h4>
+    <h4><strong>Round 2 Challenge ended on 10/30!</strong></h4>
     <p class="mb-0">Congratulations to</p> 
       <ol style='display: inline-block; margin: 0px auto;'>
         {% for rw in latest_round_winners %}
@@ -425,7 +425,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <div class="container-fluid py-1 pt-3 announce announce2 indent_on_mobile">
   <div class="container">
     
-    <h4 class="pt-0">Quest Engineering Squad Here. What Should we BUIDL?</h4>
+    <h4 class="pt-0">Quest Content Squad Here; Looking for new Quest Topic Ideas..</h4>
     <strong>Gitcoin Quests is by & for the community.</strong>  As of right now <strong>{{total_visible_quest_count}} quests have been created</strong>; of which <strong>Gitcoin Core created {{gitcoin_created}} of them</strong> and the <strong>community created {{community_created}} of them</strong>.  This means our Quests Economy is designed to be driven by the community. That means you ( yes you ) can help drive the roadmap!  
     <br>
     <br>
@@ -446,6 +446,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <BR>
     <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5334">
       Contribute a Topic Idea (1 minute commitment)
+    </a>
+  </div>
+</div>
+
+
+<div class="container-fluid py-1 announce-bot announce-bot6 indent_on_mobile">
+  <div class="container">
+    <img data-src="{% static 'v2/images/quests/enemies/super_bot.svg' %}" />
+  </div>
+</div>
+
+<div class="container-fluid py-1 pt-3 announce announce6 indent_on_mobile">
+  <div class="container">
+    
+    <h4 class="pt-0">Our Roadmap is Decentralized. Vote on what we should BUIDL next.</h4>
+    We are proud to say that our quest product roadmap is open to all.. You can even vote on what we BUIDL next!
+    <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5436">
+      Vote on Product Roadmap (1 minute commitment)
     </a>
   </div>
 </div>
@@ -529,7 +547,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     We'll automagically choose your next quest for you.
     <br>
   <a class="hero-p-mobile btn btn-gc-blue my-4" href="/quests/next">
-      Play Next Quest ( 5 min - 30 min commitment)
+      Play Next Quest ( 2 min - 20 min commitment)
     </a>
   </div>
 
@@ -539,11 +557,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
 
 
-  <div class="float-left right-announce2 right-announce3" style="margin-top: 50px;  width: 45%;">
+  <div class="float-left right-announce3" style="margin-top: 50px;  width: 45%;">
     <img data-src="{% static 'v2/images/quests/enemies/goldbot.svg' %}" />
     <p>No kilobits were harmed in the making of this landing page..</p> 
   </div>
 
+  </div>
+</div>
+
+<div class="container-fluid py-1 pt-1 indent_on_mobile">
+  <div class="container">
+
+  <div class="float-right right-announce4" style="margin-top: 50px; width: 45%;">
+    <img data-src="{% static 'v2/images/quests/enemies/spider_bot.svg' %}" />
+    <p>Psst.. Hey you, kid. Check out the <a style="font-weight: bold; color: black;" href="/products">rest of our products</a>. </p> 
+  </div>
+
+  </div>
 </div>
 
 {% endblock %}
