@@ -613,14 +613,14 @@ body.quest_battle{
 }
 .new_quest_background{
   width: 130px;
-  max-width: 130px;
-  max-height: 130px;
+  max-width: 149px;
+  max-height: 149px;
   margin: 10px;
   background-repeat: none !important;
   cursor: pointer;
   display: inline-block;
   border: 2px solid white;
-  height: 65px;
+  height: 75px;
 }
 .new_quest_background.selected{
   border: 2px solid #F9006C;
@@ -668,12 +668,12 @@ body.back7.quest_battle{
 div.back8,
 body.back8.quest_battle{
   background: url('/static/v2/images/quests/backs/back8.png') repeat;
-  background-size: 120%;
+  background-size: 100%;
 }
 div.back9,
 body.back9.quest_battle{
   background: url('/static/v2/images/quests/backs/back9.png') repeat;
-  background-size: 120%;
+  background-size: 110%;
 }
 div.back10,
 body.back10.quest_battle{
@@ -683,7 +683,7 @@ body.back10.quest_battle{
 div.back11,
 body.back11.quest_battle{
   background: url('/static/v2/images/quests/backs/back11.png') repeat;
-  background-size: 100%;
+  background-size: 105%;
 }
 div.back12,
 body.back12.quest_battle{
