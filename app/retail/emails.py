@@ -898,7 +898,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Updates, Updates, Updates"
+    subject = "The Quadratic Freelancer"
     new_kudos_pks = [588, 151, 116]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
@@ -920,10 +920,13 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    🌱 Gitcoin Grants CLR Round 3 was a massive, massive success. With wide ranging support from across the entire Ethereum ecosystem, we were blown away with the support you provided: 1,982 unique contributions to 68 projects worth $170,000. If you'd like to take a closer look at where the record $270k ended up, take a look at our blog post. <a href="https://gitcoin.co/blog/gitcoins-q3-match/">It's living here.</a>
+    🌱 Gitcoin Grants CLR Round 3 was a massive, massive success. With wide ranging support from across the entire Ethereum ecosystem, we were blown away with the support you provided: 1,982 unique contributions to 68 projects worth $170,000. <a href="https://gitcoin.co/blog/gitcoins-q3-match/"></a>In total, between individual contributions the round ended up worth $270k.</a>
 </p>
 <p>
-    🚨Kudos Alert!🚨 We've released a brand new feature with Kudos – the ability to mint your own. Like your favorite cappuccino machine, it lets you make your own delicious <strike>coffee</strike> Kudos all by yourself. If you have Kudos you want to put on the marketplace, all you've have to do is fill out a form, add your artwork, and watch as it makes its way to the Gitcoin Kudos marketplace! How neat is that. Check out the self serve feature <a href="https://gitcoin.co/kudos/new">here.</a>
+    In a review of Gitcoin Grants Round 3, Ethereum cofounder Vitalik Buterin said "If Gitcoin Grants does continue operating regularly, and attracts and expands its pool of donations, we could be very close to seeing the first 'quadratic freelancer' - someone directly 'working for the public', funded by donations boosted by quadratic matching subsidies." <a href="https://vitalik.ca/general/2019/10/24/gitcoin.html">Click here to read the article.</a>
+</p>
+<p>
+    🚨New Kudos Feature Alert!🚨 We've released a brand new feature for Kudos – the ability to mint your own <i>without</i> asking us to help. Like your favorite cappuccino machine, it lets you make your own delicious <strike>coffee</strike> Kudos all by yourself. If you have Kudos you want to put on the marketplace, all you've have to do is fill out a form, add your artwork, and watch as it makes its way to the Gitcoin Kudos marketplace! How neat is that. <a href="https://gitcoin.co/kudos/new">Check out the self serve feature here.</a>
 </p>
 <p>
     Web3 World is well under way, and we have another great set of challenges for you to work on this go around. If you fancy, check out the <a href="https://gitcoin.co/blog/web3-world-around-the-aave/">Aave highlight post</a>, and then stroll down to the hackathon <a href="https://hackathons.gitcoin.co/web3-world/">homepage to complete registration and start hacking.</a> We'd love to see you participate.
@@ -932,7 +935,7 @@ Hey Gitcoiners,
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
+        The Gitcoin Livestream is on for this week! Kevin Owocki will be presenting Gitcoin Quests. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
         A follow up from last week's newsletter: the retro post for The Road to Devcon is now up for your viewing pleasure. Feast your eyes on this one, folks. The post lives <a href="https://gitcoin.co/blog/gitcoins-q3-match/"> here. </a>
