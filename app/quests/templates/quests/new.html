@@ -126,10 +126,10 @@
               <input name=reward type="hidden" value={{package.reward}}>
               <a class="remove" href=#>Remove</a>
               <div class=hidden>
-                {% include 'shared/add_kudos.html' with name='reward2' %}
+                {% include 'shared/add_kudos.html' with name='reward2' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
               </div>
             {% else %}
-              {% include 'shared/add_kudos.html' with name='reward' %}
+              {% include 'shared/add_kudos.html' with name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
             {% endif %}
           </div>
           <div class="form-group">

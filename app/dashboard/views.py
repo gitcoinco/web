@@ -3316,12 +3316,15 @@ def get_kudos(request):
     if request.is_ajax():
         q = request.GET.get('term')
         network = request.GET.get('network', None)
+        filter_by_address = request.GET.get('filter_by_address', '')
         eth_to_usd = convert_token_to_usdt('ETH')
         kudos_by_name = Token.objects.filter(name__icontains=q)
         kudos_by_desc = Token.objects.filter(description__icontains=q)
         kudos_by_tags = Token.objects.filter(tags__icontains=q)
         kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
         kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False, num_clones_allowed__gt=0).order_by('name')
+        if filter_by_address:
+            kudos = kudos.filter(owner_address=filter_by_address)
         is_staff = request.user.is_staff if request.user.is_authenticated else False
         if not is_staff:
             kudos = kudos.filter(send_enabled_for_non_gitcoin_admins=True)
