@@ -164,7 +164,8 @@ urlpatterns = [
     re_path(r'^quests/?$', quests.views.index, name='quests_index'),
     re_path(r'^quests/next?$', quests.views.next_quest, name='next_quest'),
     re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
-    re_path(r'^quests/new/?', quests.views.newquest, name='newquest'),
+    re_path(r'^quests/new/?', quests.views.editquest, name='newquest'),
+    re_path(r'^quests/edit/(?P<pk>\d+)/?', quests.views.editquest, name='editquest'),
 
     # Contributor dashboard
     path(

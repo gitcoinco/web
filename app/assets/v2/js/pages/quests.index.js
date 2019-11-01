@@ -68,10 +68,7 @@ $(document).ready(function() {
     });
   });
 
-  $('.quest-card.available').click(function(e) {
-    e.preventDefault();
-    document.location.href = $(this).find('a').attr('href');
-  });
+
   $('.quest-card.available').mouseover(function(e) {
     random_attn_effect($(this).find('.btn'));
   });

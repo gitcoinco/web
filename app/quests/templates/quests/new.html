@@ -38,8 +38,13 @@
       <div style="text-align:center;">
         <img src="{% static 'v2/images/grants/robots.png' %}" style="margin: 0px auto;" />
         <h4>
-          {% trans "New Quest Application" %}
+          {% if not the_quest %}
+            {% trans "New Quest Application" %}
+          {% else %}
+            {% trans "Edit Quest" %}
+          {% endif %}
         </h4>
+        {% if not the_quest %}
         <p>
           Hello and thank you for your interest in submitting an application to host your content on Gitcoin Quests.
         </p>
@@ -50,8 +55,13 @@
           We look forward to guiding your community through an engaging decentralization learning experience, and working with you to do so! 
         </p>
         <p>
-          <3 <a href="/about#team">Team Gitcoin</a>
+          &lt;3 <a href="/about#team">Team Gitcoin</a>
         </p>
+        {% else %}
+        <p>
+          <a href="{{the_quest.url}}">View Quest</a>
+        </p>
+        {% endif %}
       </div>
       <div>
         {% if msg %}
@@ -179,6 +189,15 @@
             <a href="#" class="add_question">[Add Question]</a>
           {% endfor %}
 
+
+          {% if the_quest %}
+            <div class="background_container pt-4">
+              <label class="form__label" for="reading_material_url">{% trans "Edit Comment (Viewable only by admins)" %}</label>
+              <textarea class="w-100" style="height: 100px;" name="comment">{{package.comment}}</textarea>
+            </div>
+          {% endif %}
+
+
             <div class="background_container pt-4">
               <label class="form__label" for="reading_material_url">{% trans "Arena" %}</label>
               <BR>
@@ -197,11 +216,12 @@
               </div>
             </div>
 
+          <input name=pk type="hidden" value="{% if the_quest %}{{the_quest.pk}}{%else%}{{package.pk}}{%endif%}">
 
           {% csrf_token %}
           <button class='button button--primary joinslack mt-2 float-right' style="font-size: 35px; padding-top: 20px;" type='submit' name='submit' value="Submit Quest">
           <img src="{% static 'v2/images/quests/orb.png' %}" style="max-width: 80px; margin-top: -20px" />
-          Create Quest
+          {% if not the_quest %} Create {% else %} Edit {% endif %} Quest
           </button>
         </form>
       </div>

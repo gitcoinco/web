@@ -111,10 +111,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <p style="font-size: 10px;"><span style="font-weight: bold;">Play Time:</span><BR>{{quest.est_total_time_required}} mins (reading)
       <BR>{{quest.est_skim_time_mins}} mins (skimming)</p>
 
-      <a style="position: relative; bottom: 20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Accept Quest</a>
+      <a style="position: relative; bottom: 20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Play Quest</a>
       {%else%}
       🔒Locked Until <a href="{{quest.unlocked_by.url}}">{{quest.unlocked_by.title}}</a> is beaten.
       {%endif%}
+      {% if difficulty_level == 'Created' %}
+        <BR>
+        <a class="mt-2" role="button" href="{{quest.edit_url}}">(Edit Quest)</a>
+      {% endif %}
     </div>
     {% endfor %}
   </div>
