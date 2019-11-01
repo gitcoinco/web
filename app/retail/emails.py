@@ -961,7 +961,7 @@ Back to shipping,
     }, {
         'who': 'rshtirmer',
         'who_link': True,
-        'what': 'TensorFlow, you've updated. Bask in the glory of freshness.',
+        'what': 'TensorFlow, you\'ve updated. Bask in the glory of freshness.',
         'link': 'https://gitcoin.co/issue/notadamking/tensortrade/42/3555',
         'link_copy': 'View more',
     }, ]
