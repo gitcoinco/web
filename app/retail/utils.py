@@ -567,6 +567,13 @@ def build_stat_results(keyword=None):
     context['title'] = f"${round(context['universe_total_usd'] / 1000000, 1)}m in " + f"{keyword.capitalize() if keyword else ''} Results"
     context['programming_languages'] = ['All'] + programming_languages
 
+    from marketing.models import ManualStat
+    try:
+        context['pct_breakeven'] = ManualStat.objects.filter(key='pct_breakeven').values_list('val', flat=True)[0]
+    except Exception as e:
+        print(e)
+        context['pct_breakeven'] = 0
+    context['pct_not_breakeven'] = 100 - context['pct_breakeven']
 
     # last month data
     today = timezone.now()

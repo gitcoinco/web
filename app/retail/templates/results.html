@@ -448,6 +448,30 @@
       </div>
     </div>
 
+    <div class="content-block content-block--white" id="repo_transaction">
+      <div class="container" >
+        <h2 class="content-block__title">{% trans "The Path to Break-Even" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+            <p style="text-align: center; font-size: 0.9rem;">We believe that companies, even those in the blockchain-ecosystem, should fully prove out their founder-mission-product-market fit & have revenue.  We believe that software developers at Gitcoin Core need to put food on the table, pay their mortages, and buy extra hard drives -- and that we can do it while living our values; especially without become a rent-seeking-monopolistic intermediary.  We're a little crazy like that! 😜 As such, we are founding members of the <a href="https://bit.ly/web3businessmodels">ETHMagicians Business Models Ring</a> and are practicing what we preach; building a network that makes money to cover it's burn.  Follow our path to a breakeven monthly runrate below: </p>
+          </div>
+
+        <div class="bounty-status-breakdown">
+          <div id="breakeven_chart"></div>
+          <div class="bounty-status-list">
+            {% blocktrans %}
+              <p><span class="box box_2"></span> &nbsp;&nbsp;&nbsp; {{ pct_breakeven }}% burn covered by revenue</p>
+            {% endblocktrans %}
+            {% blocktrans %}
+              <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp; {{ pct_not_breakeven }}% burn not covered by revenue</p>
+            {% endblocktrans %}
+          </div>
+        </div>
+
+        <script>
+          document.breakeven_stats = [  [ 'Repo', 'Bounties' ], [ 'Burn not covered by revenue', {{ pct_not_breakeven }}],  [ 'burn covered by revenue', {{ pct_breakeven }}] ];
+        </script>
+      </div>
+    </div>
     <div class="content-block content-block--white">
       <div class="container" id="3d_humans_container">
       <h2 class="content-block__title">{% trans "By & For 3-Dimensional Humans" %}</h2>
@@ -494,6 +518,9 @@
       </div>
     </div>
 
+    <div style="font-size: 12px;" class="p-2">
+      Disclaimer: The numbers on this page are good-faith representations of the Gitcoin network, but are provided without warranty.  While we strive to provide these numbers as accurately as possible, we cannot guarantee their 100% accuracy. Do not make any financial decisions based upon these numbers.
+    </div>
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
@@ -514,7 +541,6 @@
     </script>
 
     {% include 'shared/activity_scripts.html' %}
-
   </body>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>

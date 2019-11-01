@@ -33,7 +33,7 @@ function kudosSearch(elem) {
           let query = {
             term: params.term[0] === '@' ? params.term.slice(1) : params.term,
             network: document.web3network,
-            filter_by_address: typeof filter_by_address != 'undefined' && filter_by_address ? filter_by_address : '',
+            filter_by_address: typeof filter_by_address != 'undefined' && filter_by_address ? filter_by_address : ''
           };
 
           return query;
