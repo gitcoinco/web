@@ -4049,7 +4049,12 @@ class HackathonProject(SuperModel):
         on_delete=models.CASCADE,
         help_text='Hackathon event'
     )
-    logo = models.ImageField(blank=True)
+    logo = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('Project Logo')
+    )
     profiles = models.ManyToManyField(
         'dashboard.Profile',
         related_name='project_profiles',

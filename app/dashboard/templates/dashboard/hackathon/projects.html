@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2019 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -116,9 +116,9 @@
                 <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
               </div>
             </div>
-            {% for q in query %}
-              Results for: {{q}}
-            {% endfor %}
+            {% if query %}
+              Results for: {% for q in query %}{{ q }} {% endfor %}
+            {% endif %}
           </form>
         </div>
         <div class="col-12 col-md-4 text-md-center">
@@ -140,6 +140,13 @@
                 {% if project.badge %}
                   <img class="position-absolute card-badge" width="50" src="{{project.badge}}" alt="badge" />
                 {% endif %}
+
+                {% for profile in project.profiles.all %}
+                  {% if profile_id == profile.id %}
+                    <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
+                  {% endif %}
+                {% endfor %}
+
 
                 <div class="card-bg rounded-top" style="background-image: url({% firstof project.profiles.first.profile_wallpaper or '/static/wallpapers/burst-pink.png' %})">
                   {% if project.logo %}
@@ -217,4 +224,9 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/current_profile.html' %}
+    <script src="{% static "v2/js/user-search.js" %}"></script>
+    <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
+
+
   </body>

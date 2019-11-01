@@ -3496,6 +3496,86 @@ def hackathon_projects(request, hackathon=''):
 
 
 @csrf_exempt
+def hackathon_get_project(request, bounty_id, project_id=None):
+
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    try:
+        bounty = Bounty.objects.get(id=bounty_id)
+        projects = HackathonProject.objects.filter(bounty=bounty, profiles__id=profile.id).nocache()
+        print(projects)
+    except HackathonProject.DoesNotExist:
+        pass
+
+    if project_id:
+        project_selected = projects.filter(id=project_id).first()
+    else:
+        project_selected = None
+
+    params = {
+        # 'profile': profile,
+        'bounty_id': bounty_id,
+        'bounty': bounty,
+        'projects': projects,
+        'project_selected': project_selected
+    }
+    return TemplateResponse(request, 'dashboard/hackathon/project_new.html', params)
+
+
+@csrf_exempt
+@require_POST
+def hackathon_save_project(request):
+
+    project_id = request.POST.get('project_id')
+    bounty_id = request.POST.get('bounty_id')
+    profiles = request.POST.getlist('profiles[]')
+
+    print(project_id, bounty_id, profiles)
+    print('request.POST', request.POST)
+    print('request.FILES.get("")',request.FILES.get('logo', None))
+
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    if profile is None:
+        return JsonResponse({
+            'success': False,
+            'msg': '',
+        })
+
+    bounty_obj = Bounty.objects.get(pk=bounty_id)
+    # TODO FIX CLEARING LOGO ON UPDATE WITH NO CHANGES
+    kwargs = {
+        'name': request.POST.get('name'),
+        'hackathon': bounty_obj.event,
+        'logo': request.FILES.get('logo'),
+        # 'profiles': profiles,
+        'bounty': bounty_obj,
+        'summary': request.POST.get('summary'),
+        'work_url': request.POST.get('work_url')
+    }
+
+    if project_id:
+        try :
+            project = HackathonProject.objects.filter(id=project_id, profiles__id=profile.id)
+            print(project)
+            project.update(**kwargs)
+            profiles.append(str(profile.id))
+            project.first().profiles.add(*list(filter(lambda profile_id: profile_id > 0, map(int, profiles))))
+
+        except HackathonProject.DoesNotExist:
+            pass
+    else:
+        project = HackathonProject.objects.create(**kwargs)
+        project.save()
+        profiles.append(str(profile.id))
+        project.profiles.add(*list(filter(lambda profile_id: profile_id > 0, map(int, profiles))))
+
+    return JsonResponse({
+            'success': True,
+            'msg': 'Finished.'
+        })
+
+
+@csrf_exempt
 @require_POST
 def hackathon_registration(request):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
