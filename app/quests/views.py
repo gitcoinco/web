@@ -102,7 +102,7 @@ def newquest(request):
               "intro": request.POST.get('description'),
               "rules": f"You will be battling a {enemy.humanized_name}. You will have as much time as you need to prep before the battle, but once the battle starts you will have only seconds per move (keep an eye on the timer in the bottom right; don't run out of time!).",
               "seconds_per_question": seconds_per_question,
-              'est_read_time_mins': request.GET.get('est_read_time_mins', 20),
+              'est_read_time_mins': request.POST.get('est_read_time_mins', 20),
               "prep_materials": [
                 {
                   "url": request.POST.get('reading_material_url'),
