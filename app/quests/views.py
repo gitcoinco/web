@@ -66,9 +66,9 @@ def editquest(request, pk=None):
             quest = Quest.objects.get(pk=pk)
             if not request.user.is_authenticated:
                 raise Exception('no')
-            if quest.creator != request.user.profile or not request.user.is_staff:
-                raise Exception('no')
-
+            if quest.creator != request.user.profile:
+                if not request.user.is_staff:
+                    raise Exception('no')
         except:
             raise Http404
 
@@ -195,7 +195,7 @@ def editquest(request, pk=None):
         package['minutes'] = quest.cooldown_minutes
 
     params = {
-        'title': 'New Quest Application',
+        'title': 'New Quest Application' if not quest else "Edit Quest",
         'pk': pk if not quest else quest.pk,
         'package': package,
         'the_quest': quest,
