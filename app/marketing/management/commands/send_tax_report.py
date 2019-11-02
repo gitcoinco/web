@@ -39,12 +39,14 @@ TIP = 'tip'
 GRANT = 'grant'
 
 FUNDERS_DIR = 'funders_csv'
-TAX_YEAR = '2019'
+TAX_YEAR = 2019
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+us_workers = {}
 
-def create_csv_record(wt_obj, worker_type):
+
+def create_csv_record(profiles_obj, wt_obj, worker_type):
     record = {DATETIME: wt_obj.web3_created}
 
     if worker_type == BOUNTY:
@@ -52,7 +54,10 @@ def create_csv_record(wt_obj, worker_type):
         counter_party_location = []
         for fulfiller in wt_obj.fulfillments.filter(accepted=True):
             counter_party_name.append(fulfiller.fulfiller_github_username)
-            profiles = Profile.objects.filter(handle__iexact=fulfiller.fulfiller_github_username)
+            if fulfiller.fulfiller_github_username not in us_workers.keys():
+                us_workers[fulfiller.fulfiller_github_username] = 0
+            us_workers[fulfiller.fulfiller_github_username] += wt_obj._val_usd_db
+            profiles = profiles_obj.filter(handle__iexact=fulfiller.fulfiller_github_username)
             if profiles.exists():
                 profile = profiles.first()
                 if profile.location:
@@ -92,37 +97,50 @@ def create_csv_record(wt_obj, worker_type):
     return record
 
 
+def create_1099():
+    print('1099')
+
+
 class Command(BaseCommand):
     help = 'the tax report for last year'
 
     def handle(self, *args, **options):
         profiles = Profile.objects.all()
-        us_workers = {}
         funders = {}
-
         for p in profiles:
+            # Bounty
             for b in p.get_sent_bounties:
-                if not b._val_usd_db or b.status != 'done' or b.is_open is True or b.network != WEB3_NETWORK or p.username != b.bounty_owner_github_username or b.fulfillment_accepted_on.date().year != TAX_YEAR:
+                if not b._val_usd_db or b.status != 'done' or b.is_open is True or b.network != WEB3_NETWORK or p.username != b.bounty_owner_github_username:
                     continue
                 else:
-                    print(b.fulfillment_accepted_on.date().year)
-                    if p.username not in funders.keys():
-                        funders[p.username] = []
-                    funders[p.username].append(create_csv_record(b, BOUNTY))
+                    if b.fulfillment_accepted_on.date().year == TAX_YEAR:
+                        if p.username not in funders.keys():
+                            funders[p.username] = []
+                        funders[p.username].append(create_csv_record(profiles, b, BOUNTY))
+            # Tip
             for t in p.get_sent_tips:
                 if not t.value_in_usdt_now or t.network != WEB3_NETWORK or p.username != t.from_username:
                     continue
                 else:
                     if p.username not in funders.keys():
                         funders[p.username] = []
-                    funders[p.username].append(create_csv_record(t, TIP))
+                    funders[p.username].append(create_csv_record(profiles, t, TIP))
+            # Grant
             for g in p.get_my_grants:
                 if g.network != WEB3_NETWORK:
                     continue
                 else:
                     if p.username not in funders.keys():
                         funders[p.username] = []
-                    funders[p.username].append(create_csv_record(g, GRANT))
+                    funders[p.username].append(create_csv_record(profiles, g, GRANT))
+
+        # check for create 1099
+        for us_w, usd_value in us_workers.items():
+            print(us_w)
+            print(usd_value)
+            profile = profiles.filter(handle__iexact=us_w)
+            print(profile)
+            # if value > 600$ then create 1099s for user
 
         csv_columns = [DATETIME, COUNTER_PARTY_NAME, COUNTER_PARTY_LOCATION, TOKEN_AMOUNT, TOKEN_NAME, USD_VALUE, WORKER_TYPE]
         if not os.path.isdir(os.path.join(os.getcwd(), FUNDERS_DIR)):
