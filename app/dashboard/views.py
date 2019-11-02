@@ -73,6 +73,7 @@ from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
 from marketing.models import Keyword
+from oauth2_provider.views.generic import ProtectedResourceView
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -100,6 +101,23 @@ confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
+
+
+@login_required()
+def oauth_connect(request, *args, **kwargs):
+    print(request.user)
+
+
+    active_user_profile = Profile.objects.filter(user_id=request.user.id).select_related()[0]
+
+    user_profile = {
+        "login": active_user_profile.handle,
+        "email": active_user_profile.user.email,
+        "name": active_user_profile.user.get_full_name(),
+        "handle": active_user_profile.handle,
+        "id": active_user_profile.user.id,
+    }
+    return JsonResponse(user_profile, status=200, safe=False)
 
 
 def org_perms(request):

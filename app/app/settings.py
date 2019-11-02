@@ -117,6 +117,7 @@ INSTALLED_APPS = [
     'event_ethdenver2019',
     'inbox',
     'feeswapper',
+    'oauth2_provider'
 ]
 
 MIDDLEWARE = [
@@ -134,12 +135,14 @@ MIDDLEWARE = [
     'ratelimit.middleware.RatelimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
 ]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
 AUTHENTICATION_BACKENDS = (
+    'oauth2_provider.backends.OAuth2Backend',
     'social_core.backends.github.GithubOAuth2',  # for Github authentication
     'django.contrib.auth.backends.ModelBackend',
 )
