@@ -1103,7 +1103,9 @@ def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:
         raise Http404
-    context = JSONStore.objects.get(view='results', key=keyword).data
+    js = JSONStore.objects.get(view='results', key=keyword)
+    context = js.data
+    context['updated'] = js.created_on
     context['is_outside'] = True
     context['prefix'] = 'data-'
     context['target'] = "/activity?page=" + str(request.GET.get('page', 0) + 1)
