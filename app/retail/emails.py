@@ -964,14 +964,14 @@ Back to shipping,
     }, ]
 
     sponsor = {
-        'name': 'Arweave',
-        'title': 'Get paid to build dApps on the permaweb 🛠🌐',
+        'name': 'Sarchy',
+        'title': '5 minute thinking game with Ether for winner',
         'image_url': '',
-        'link': 'http://bit.ly/arweave-gitcoin-weekly',
-        'cta': 'Start hacking today!',
+        'link': 'http://bit.ly/sarchy-gitcoin-weekly',
+        'cta': 'Play the \'Trusting Trust\' game',
         'body': [
-           'The permaweb is a decentralized, immutable new web, built on top of a globally distributed, permanent hard drive - the Arweave network.',
-           'We want the permaweb to be accessible to everyone, but we want you to be a part of making that a reality. That\'s why we\'re looking for talented developers to build decentralized apps on the permaweb.'
+           'Due to data manipulation by big tech companies, Trust is becoming a key issue in the internet.',
+           '"Trusting Trust" is a game about Trust. It uses the "Prisoners Dilemma" concept. This concept has even been used in the movie "The Dark Knight" by the Joker in the climax scene.'
         ]
     }
     
