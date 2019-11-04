@@ -704,13 +704,11 @@ var currentNetwork = function(network) {
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
           $('#current-network').text(gettext('Metamask Locked'));
           $('#navbar-network-banner').html(info);
-        } else {
-          if (window.ethereum._metamask) {
+        } else if (window.ethereum._metamask) {
             info = gettext('Metamask not connected. ') +
               '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
             $('#current-network').text(gettext('Metamask Not Connected'));
             $('#navbar-network-banner').html(info);
-          }
         }
       } else {
         info = gettext('Connect to Mainnet via Metamask');
@@ -747,13 +745,11 @@ var currentNetwork = function(network) {
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
           $('#current-network').text(gettext('Metamask Locked'));
           $('#navbar-network-banner').html(info);
-        } else {
-          if (window.ethereum._metamask) {
+        } else if (window.ethereum._metamask) {
             info = gettext('Metamask not connected. ') +
               '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
             $('#current-network').text(gettext('Metamask Not Connected'));
             $('#navbar-network-banner').html(info);
-          }
         }
       } else {
         info = gettext('Connect to Rinkeby / Custom RPC via Metamask');
