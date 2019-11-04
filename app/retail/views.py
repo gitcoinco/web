@@ -1893,14 +1893,14 @@ def tribes(request):
             'text': 'Gitcoin has a fantastic community that is our target audience -- Web 3 developers who want to build.',
             'author': 'Sam Williams',
             'designation': 'CEO, Arweave',
-            'photo': 'https://i0.wp.com/www.coininsider.com/wp-content/uploads/2018/10/Sam-Williams.jpg?resize=418%2C418&ssl=1',
+            'photo':  static('v2/images/tribes/landing/sam.jpg'),
             'org_photo': static('v2/images/project_logos/arweave.svg')
         },
         {
             'text': '"Relationships with developers" is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.',
             'author': 'Scott Gralnick',
             'designation': 'Co-Founder, Portis',
-            'photo': 'https://everipedia-storage.s3-accelerate.amazonaws.com/ProfilePics/__87296.png',
+            'photo': static('v2/images/tribes/landing/scott.png'),
             'org_photo': static('v2/images/project_logos/portis.svg')
         }
     ]
