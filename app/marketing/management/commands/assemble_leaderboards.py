@@ -24,6 +24,7 @@ from django.utils import timezone
 
 from cacheops import CacheMiss, cache
 from dashboard.models import Bounty, Profile, Tip
+from grants.models import Contribution
 from kudos.models import KudosTransfer
 from marketing.models import LeaderboardRank
 
@@ -112,6 +113,22 @@ def bounty_to_location(bounty):
     return locations
 
 
+def grant_to_location(grant):
+    return profile_to_location(grant.subscription.contributor_profile.handle) + profile_to_location(grant.subscription.grant.admin_profile.handle)
+
+
+def grant_to_country(grant):
+    return list(set(ele['country_name'] for ele in grant_to_location(grant) if ele and ele.get('country_name')))
+
+
+def grant_to_continent(grant):
+    return list(set(ele['continent_name'] for ele in grant_to_location(grant) if ele and ele.get('continent_name')))
+
+
+def grant_to_city(grant):
+    return list(set(ele['city'] for ele in grant_to_location(grant) if ele and ele.get('city')))
+
+
 def tip_to_location(tip):
     return profile_to_location(tip.username) + profile_to_location(tip.from_username)
 
@@ -120,20 +137,20 @@ def tip_to_country(tip):
     return list(set(ele['country_name'] for ele in tip_to_location(tip) if ele and ele.get('country_name')))
 
 
-def bounty_to_country(bounty):
-    return list(set(ele['country_name'] for ele in bounty_to_location(bounty) if ele and ele.get('country_name')))
-
-
 def tip_to_continent(tip):
     return list(set(ele['continent_name'] for ele in tip_to_location(tip) if ele and ele.get('continent_name')))
 
 
-def bounty_to_continent(bounty):
-    return list(set(ele['continent_name'] for ele in bounty_to_location(bounty) if ele and ele.get('continent_name')))
-
-
 def tip_to_city(tip):
     return list(set(ele['city'] for ele in tip_to_location(tip) if ele and ele.get('city')))
+
+
+def bounty_to_country(bounty):
+    return list(set(ele['country_name'] for ele in bounty_to_location(bounty) if ele and ele.get('country_name')))
+
+
+def bounty_to_continent(bounty):
+    return list(set(ele['continent_name'] for ele in bounty_to_location(bounty) if ele and ele.get('continent_name')))
 
 
 def bounty_to_city(bounty):
@@ -176,6 +193,26 @@ def tip_index_terms(tip):
     for keyword in tip_to_city(tip):
         index_terms.append(keyword)
     for keyword in tip_to_continent(tip):
+        index_terms.append(keyword)
+    return index_terms
+
+
+
+def grant_index_terms(gc):
+    index_terms = []
+    if not should_suppress_leaderboard(gc.subscription.contributor_profile.handle):
+        index_terms.append(gc.subscription.contributor_profile.handle.lower())
+    if not should_suppress_leaderboard(gc.subscription.grant.admin_profile.handle):
+        index_terms.append(gc.subscription.grant.admin_profile.handle.lower())
+    if not should_suppress_leaderboard(gc.subscription.grant.org_name):
+        index_terms.append(gc.subscription.grant.org_name.lower())
+    if not should_suppress_leaderboard(gc.subscription.token_symbol):
+        index_terms.append(gc.subscription.token_symbol)
+    for keyword in grant_to_country(gc):
+        index_terms.append(keyword)
+    for keyword in grant_to_city(gc):
+        index_terms.append(keyword)
+    for keyword in grant_to_continent(gc):
         index_terms.append(keyword)
     return index_terms
 
@@ -284,6 +321,40 @@ def sum_tips(t, index_terms):
             sum_tip_helper(t, YEARLY, index_term, val_usd)
 
 
+def sum_grants(t, index_terms):
+    val_usd = t.subscription.amount_per_period_usdt
+    for index_term in index_terms:
+        sum_grant_helper(t, ALL, index_term, val_usd)
+        if t.created_on > WEEKLY_CUTOFF:
+            sum_grant_helper(t, WEEKLY, index_term, val_usd)
+        if t.created_on > MONTHLY_CUTOFF:
+            sum_grant_helper(t, MONTHLY, index_term, val_usd)
+        if t.created_on > QUARTERLY_CUTOFF:
+            sum_grant_helper(t, QUARTERLY, index_term, val_usd)
+        if t.created_on > YEARLY_CUTOFF:
+            sum_grant_helper(t, YEARLY, index_term, val_usd)
+
+
+
+def sum_grant_helper(gc, time, index_term, val_usd):
+    add_element(f'{time}_{ALL}', index_term, val_usd)
+    add_element(f'{time}_{FULFILLED}', index_term, val_usd)
+    if gc.subscription.grant.admin_profile.handle.lower() == index_term:
+        add_element(f'{time}_{EARNERS}', index_term, val_usd)
+    if gc.subscription.contributor_profile.handle.lower() == index_term:
+        add_element(f'{time}_{PAYERS}', index_term, val_usd)
+    if gc.subscription.grant.org_name.lower() == index_term:
+        add_element(f'{time}_{ORGS}', index_term, val_usd)
+    if gc.subscription.token_symbol == index_term:
+        add_element(f'{time}_{TOKENS}', index_term, val_usd)
+    if index_term in grant_to_country(gc):
+        add_element(f'{time}_{COUNTRIES}', index_term, val_usd)
+    if index_term in grant_to_city(gc):
+        add_element(f'{time}_{CITIES}', index_term, val_usd)
+    if index_term in grant_to_continent(gc):
+        add_element(f'{time}_{CONTINENTS}', index_term, val_usd)
+
+
 def should_suppress_leaderboard(handle):
     if not handle:
         return True
@@ -300,6 +371,14 @@ class Command(BaseCommand):
     help = 'creates leaderboard objects'
 
     def handle(self, *args, **options):
+        
+        # get grants
+        grants = Contribution.objects.filter(subscription__network='mainnet')[0:5]
+        # iterate
+        for gc in grants:
+            index_terms = grant_index_terms(gc)
+            sum_grants(gc, index_terms)
+
         # get bounties
         bounties = Bounty.objects.current().filter(network='mainnet')
 
