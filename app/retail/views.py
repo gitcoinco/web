@@ -40,7 +40,7 @@ from dashboard.models import Activity, Bounty, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
-from marketing.models import Alumni, LeaderboardRank
+from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
@@ -941,32 +941,7 @@ def mission(request):
 
 
 def jobs(request):
-    job_listings = [
-        {
-            'link': "mailto:founders@gitcoin.co",
-            'title': "Software Engineer",
-            'description': [
-                "Gitcoin is always looking for a few good software engineers.",
-                "If you are an active member of the community, have python + django + html chops",
-                "then we want to talk to you!"]
-        },
-        {
-            'link': "mailto:founders@gitcoin.co",
-            'title': "Community Manager",
-            'description': [
-                "We believe that community management is an important skill in the blockchain space.",
-                "We're looking for a solid community, proactive thinker, and someone who loves people",
-                "to be our next community manager.  Sound like you?  Apply below!"]
-        },
-        {
-            'link': "mailto:founders@gitcoin.co",
-            'title': "Ad Sales Engineer",
-            'description': [
-                "CodeFund is growing like a weed.  We could use a helping hand",
-                "to put CodeFund in front of more great advertisers and publishers.",
-                "If you want to be our next highly technical, highly engaging, sales engineer apply below!"]
-        }
-    ]
+    job_listings = Job.objects.filter(active=True)
     context = {
         'active': 'jobs',
         'title': 'Jobs',
