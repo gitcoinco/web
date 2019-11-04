@@ -152,7 +152,7 @@ class ProfileAdmin(admin.ModelAdmin):
             self.message_user(request, "Recalc done")
             return redirect(obj.url)
         if "_impersonate" in request.POST:
-            return redirect(f"/impersonate/{obj.user.pk}")
+            return redirect(f"/impersonate/{obj.user.pk}/")
         return super().response_change(request, obj)
 
 class VerificationAdmin(admin.ModelAdmin):
