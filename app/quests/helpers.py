@@ -102,24 +102,52 @@ def get_base_quest_view_params(user, quest):
         'attempt_count': attempts.count() + 1,
         'success_count': attempts.filter(success=True).count(),
         'body_class': 'quest_battle',
-        'title': "Quest: " + quest.title + (f" (and win a *{quest.kudos_reward.humanized_name}* Kudos)" if quest.kudos_reward else ""),
+        'title': "Play the *" + quest.title + (f"* Gitcoin Quest and win a *{quest.kudos_reward.humanized_name}* Kudos" if quest.kudos_reward else ""),
         'avatar_url': quest.avatar_url_png,
         'card_desc': quest.description,
         'seconds_per_question': quest.game_schema.get('seconds_per_question', 30),
         'quest_json': quest.to_json_dict(exclude="questions"),
+        'prize_url': get_prize_url_if_redeemable(user, quest),
     }
     return params
+
+
+def get_prize_url_if_redeemable(user, quest):
+    """
+    Gets the prize_url if redeemable (IFF quest beaten and not already redeemed)
+    """
+    if not quest.visible:
+        return None
+    if not user.is_authenticated:
+        return None
+    btcs = BulkTransferCoupon.objects.filter(
+        token=quest.kudos_reward,
+        tag='quest',
+        metadata__recipient=user.profile.pk,
+        num_uses_remaining__gt=0,
+        )
+    if btcs.exists():
+        return tweetify_prize_url(btcs.first().url, quest, user)
+    return None
+
+
+def tweetify_prize_url(url, quest, user):
+    tweet_url = f"{quest.url}?cb=ref:{user.profile.ref_code}"
+    prize_url = f"{url}?tweet_url={tweet_url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
+    return prize_url
+
 
 def get_active_attempt_if_any(user, quest, state=None):
     """
     Gets the active quest attempt if any
     """
     profile = user.profile if user.is_authenticated else None
+    minutes = quest.cooldown_minutes if quest.cooldown_minutes >= 1 else 3
     active_attempts = QuestAttempt.objects.filter(
         quest=quest,
         profile=profile,
         success=False,
-        modified_on__gt=(timezone.now()-timezone.timedelta(minutes=quest.cooldown_minutes))
+        modified_on__gt=(timezone.now()-timezone.timedelta(minutes=minutes))
     )
     if state:
         active_attempts = active_attempts.filter(state=state)
@@ -169,8 +197,7 @@ def process_win(request, qa):
                 'recipient': request.user.profile.pk,
             },
             )
-    tweet_url = f"{quest.url}?cb=ref:{request.user.profile.ref_code}"
-    prize_url = f"{btc.url}?tweet_url={tweet_url}&tweet=I just won a {quest.kudos_reward.humanized_name} Kudos by beating the '{quest.title} Quest' on @gitcoin quests."
+    prize_url = tweetify_prize_url(btc.url, quest, request.user)
     qa.success = True
     qa.save()
     if not qa.quest.visible:

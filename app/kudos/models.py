@@ -561,6 +561,16 @@ class BulkTransferCoupon(SuperModel):
     def url(self):
         return f"/kudos/redeem/{self.secret}"
 
+
+@receiver(pre_save, sender=BulkTransferCoupon, dispatch_uid="psave_BulkTransferCoupon")
+def psave_BulkTransferCoupon(sender, instance, **kwargs):
+    is_owned_by_gitcoin = instance.token.owner_address.lower() == "0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F".lower()
+    is_kudos_token_deployed_to_gitcoin = not bool(instance.sender_pk)
+
+    if not is_owned_by_gitcoin and is_kudos_token_deployed_to_gitcoin:
+        raise Exception("This bulk transfer kudos has been created to airdrop a kudos.. But the kudos is not owned by Gitcoin... If this kudos goes live, people will redeem it and it will deplete the ETH in the kudos airdropper; which is bad!  Please correct the kudos to either be one that is owned by Gitcoin, or one that has a seperate source of ETH (by sending sender_pk).  Thank you and have a nice day -- Kevin Owocki, protector of Gitcoin's ETH")
+
+
 class BulkTransferRedemption(SuperModel):
 
     """Model representing a bulk send of Kudos

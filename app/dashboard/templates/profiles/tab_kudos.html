@@ -10,4 +10,11 @@
       {% endif %}
     </div>
   </div>
+  <script>
+    setInterval(function(){
+      if($ && $('.load-more').length && $(".load-more").isInViewport()){
+        $('.load-more').click();
+      }
+    }, 1000);
+  </script>
 {% endif %}

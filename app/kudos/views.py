@@ -765,6 +765,7 @@ def newkudos(request):
     context = {
         'active': 'newkudos',
         'msg': None,
+        'nav': 'kudos',
     }
 
     if not request.user.is_authenticated:
@@ -800,7 +801,7 @@ def newkudos(request):
                 artist=request.POST['artist'],
                 platform=request.POST['platform'],
                 numClonesAllowed=request.POST['numClonesAllowed'],
-                tags=",".split(request.POST['tags']),
+                tags=request.POST['tags'].split(","),
                 to_address=request.POST['to_address'],
                 artwork_url=artwork_url,
                 network='mainnet',

@@ -82,6 +82,9 @@
         <span>
            |
           Beaten {{success_count}} time{{success_count|pluralize}}
+          {% if prize_url %}
+          | <a href="{{prize_url}}">Redeem Prize</a>
+          {% endif %}
         </span>
         {% endif %}
         <br>

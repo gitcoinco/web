@@ -30,20 +30,30 @@ function drawChart() {
 }
 
 function repoChart() {
-  var data = google.visualization.arrayToDataTable(document.platform_stats);
+  var pie_charts = [
+    [ 'repo_chart', document.platform_stats ],
+    [ 'breakeven_chart', document.breakeven_stats ]
+  ];
 
-  var options = {
-    pieHole: 0.8,
-    pieSliceText: 'none',
-    legend: 'none',
-    height: 300,
-    width: 300,
-    colors: [ '#011f4b', '#03396c', '#005b96' ]
-  };
+  for (var i = 0; i < pie_charts.length; i += 1) {
+    var stats = pie_charts[i][1];
+    var id = pie_charts[i][0];
+    var data = google.visualization.arrayToDataTable(stats);
 
-  var chart = new google.visualization.PieChart(document.getElementById('repo_chart'));
+    var options = {
+      pieHole: 0.8,
+      pieSliceText: 'none',
+      legend: 'none',
+      height: 300,
+      width: 300,
+      colors: [ '#011f4b', '#03396c', '#005b96' ]
+    };
 
-  chart.draw(data, options);
+    var chart = new google.visualization.PieChart(document.getElementById(id));
+
+    chart.draw(data, options);
+  }
+
 }
 
 function communityChart() {

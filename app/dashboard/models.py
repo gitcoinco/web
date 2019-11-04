@@ -3587,7 +3587,7 @@ class Profile(SuperModel):
         # portfolio
         portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
         portfolio_keywords = {}
-        for fulfillment in portfolio_bounties:
+        for fulfillment in portfolio_bounties.nocache():
             for keyword in fulfillment.bounty.keywords_list:
                 keyword = keyword.lower()
                 if keyword not in portfolio_keywords.keys():

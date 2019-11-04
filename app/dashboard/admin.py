@@ -145,12 +145,13 @@ class ProfileAdmin(admin.ModelAdmin):
         return html
 
     def response_change(self, request, obj):
+        from django.shortcuts import redirect
         if "_recalc_flontend" in request.POST:
             obj.calculate_all()
             obj.save()
             self.message_user(request, "Recalc done")
+            return redirect(obj.url)
         if "_impersonate" in request.POST:
-            from django.shortcuts import redirect
             return redirect(f"/impersonate/{obj.user.pk}")
         return super().response_change(request, obj)
 
