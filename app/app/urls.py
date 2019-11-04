@@ -146,7 +146,7 @@ urlpatterns = [
     re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall')),
 
     # dashboard views
-    re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
+    re_path(r'^onboard/(?P<flow>\w+)/?$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
     re_path(r'^onboard/?$', dashboard.views.onboard, name='onboard'),
     url(r'^postcomment/', dashboard.views.post_comment, name='post_comment'),
@@ -164,7 +164,8 @@ urlpatterns = [
     re_path(r'^quests/?$', quests.views.index, name='quests_index'),
     re_path(r'^quests/next?$', quests.views.next_quest, name='next_quest'),
     re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
-    re_path(r'^quests/new/?', quests.views.newquest, name='newquest'),
+    re_path(r'^quests/new/?', quests.views.editquest, name='newquest'),
+    re_path(r'^quests/edit/(?P<pk>\d+)/?', quests.views.editquest, name='editquest'),
 
     # Contributor dashboard
     path(

@@ -38,8 +38,13 @@
       <div style="text-align:center;">
         <img src="{% static 'v2/images/grants/robots.png' %}" style="margin: 0px auto;" />
         <h4>
-          {% trans "New Quest Application" %}
+          {% if not the_quest %}
+            {% trans "New Quest Application" %}
+          {% else %}
+            {% trans "Edit Quest" %}
+          {% endif %}
         </h4>
+        {% if not the_quest %}
         <p>
           Hello and thank you for your interest in submitting an application to host your content on Gitcoin Quests.
         </p>
@@ -50,8 +55,13 @@
           We look forward to guiding your community through an engaging decentralization learning experience, and working with you to do so! 
         </p>
         <p>
-          <3 <a href="/about#team">Team Gitcoin</a>
+          &lt;3 <a href="/about#team">Team Gitcoin</a>
         </p>
+        {% else %}
+        <p>
+          <a href="{{the_quest.url}}">View Quest</a>
+        </p>
+        {% endif %}
       </div>
       <div>
         {% if msg %}
@@ -126,10 +136,10 @@
               <input name=reward type="hidden" value={{package.reward}}>
               <a class="remove" href=#>Remove</a>
               <div class=hidden>
-                {% include 'shared/add_kudos.html' with name='reward2' %}
+                {% include 'shared/add_kudos.html' with name='reward2' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
               </div>
             {% else %}
-              {% include 'shared/add_kudos.html' with name='reward' %}
+              {% include 'shared/add_kudos.html' with name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
             {% endif %}
           </div>
           <div class="form-group">
@@ -177,6 +187,26 @@
               <input type="hidden" name="answer_correct[]" value="_DELIMITER_">
             </div>
             <a href="#" class="add_question">[Add Question]</a>
+          {% endfor %}
+
+
+          {% if the_quest %}
+            <div class="background_container pt-4">
+              <label class="form__label" for="reading_material_url">{% trans "Edit Comment (Viewable only by admins)" %}</label>
+              <textarea class="w-100" style="height: 100px;" name="comment">{{package.comment}}</textarea>
+            </div>
+          {% endif %}
+
+
+            <div class="background_container pt-4">
+              <label class="form__label" for="reading_material_url">{% trans "Arena" %}</label>
+              <BR>
+              {% for bg in backgrounds %}
+                <div data-value="{{bg}}" class="new_quest_background {{bg}} {% if bg == package.background %}selected{% endif %}">&nbsp;</div>
+              {% endfor %}
+              <input type="hidden" name="background" id="background" value="{{package.background}}">
+            </div>
+
             <div class="terms_container pt-4">
               <div class="form__checkbox">
                 <input name='terms' id='terms' type="checkbox" value=1 required {% if package.terms%}checked=checked{%endif%} />
@@ -185,12 +215,13 @@
                 </label>
               </div>
             </div>
-          {% endfor %}
+
+          <input name=pk type="hidden" value="{% if the_quest %}{{the_quest.pk}}{%else%}{{package.pk}}{%endif%}">
 
           {% csrf_token %}
           <button class='button button--primary joinslack mt-2 float-right' style="font-size: 35px; padding-top: 20px;" type='submit' name='submit' value="Submit Quest">
           <img src="{% static 'v2/images/quests/orb.png' %}" style="max-width: 80px; margin-top: -20px" />
-          Create Quest
+          {% if not the_quest %} Create {% else %} Edit {% endif %} Quest
           </button>
         </form>
       </div>
@@ -206,4 +237,10 @@
   $('[data-toggle="tooltip"]').bootstrapTooltip();
 </script>
 
+<script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+<script>
+  $(document).ready(function() {
+    $("img").unveil(200);
+  });
+</script>
 {% endblock %}

@@ -256,7 +256,7 @@ var redirectURL = function() {
   } else if (flow === 'funder') {
     url = '/funding/new';
   } else if (flow === 'profile') {
-    url = '/profile';
+    url = '/profile/';
   }
 
   document.location.href = url;
