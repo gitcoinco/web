@@ -246,33 +246,14 @@ def get_completion_rate(keyword):
 
 
 def get_funder_receiver_stats(keyword):
-    from dashboard.models import Bounty, BountyFulfillment, Tip
-    base_bounties = Bounty.objects.current().filter(network='mainnet')
-    if keyword:
-        base_bounties = base_bounties.filter(raw_data__icontains=keyword)
+    from dashboard.models import Earning
+    earnings = Earning.objects.filter(network='mainnet')
 
-    eligible_bounties = base_bounties
-    eligible_bounty_fulfillments = BountyFulfillment.objects.filter(bounty__in=base_bounties)
-    eligible_tips = Tip.objects.filter(network='mainnet')
-
-    bounty_funders = list(eligible_bounties.values_list('bounty_owner_address', flat=True))
-    tip_funders = list(eligible_tips.values_list('from_address', flat=True))
-    tip_recipients = list(eligible_tips.values_list('receive_address', flat=True))
-    bounty_recipients = list(eligible_bounty_fulfillments.values_list('fulfiller_address', flat=True))
-
-    tip_values = [tip.value_in_usdt for tip in eligible_tips]
-    bounty_values = [bounty.value_in_usdt for bounty in eligible_bounties]
-    all_values = bounty_values + tip_values
-
-    bounty_value = sum([float(ele) for ele in bounty_values if ele])
-    tip_value = sum([float(ele) for ele in tip_values if ele])
-    all_value = [float(ele) for ele in all_values if ele]
-
-    num_funders = len(set(bounty_funders + tip_funders))
-    num_recipients = len(set(bounty_recipients + tip_recipients))
-    num_transactions = eligible_tips.count() + eligible_bounties.count()
-
-    total_value = bounty_value + tip_value
+    num_funders = len(set(earnings.values_list("from_profile__handle", flat=True)))
+    num_recipients = len(set(earnings.values_list("to_profile__handle", flat=True)))
+    num_transactions = earnings.count()
+    all_value = earnings.exclude(value_usd__isnull=True).values_list('value_usd', flat=True)
+    total_value = sum(all_value)
     avg_value = round(total_value / num_transactions)
     median_value = statistics.median(all_value)
 
