@@ -3675,7 +3675,7 @@ def funder_dashboard(request, bounty_type):
             Q(idx_status='open') | Q(override_status='open'),
             current_bounty=True,
             network=network,
-            bounty_owner_github_username=profile.handle,
+            bounty_owner_github_username__iexact=profile.handle,
             ).order_by('-interested__created', '-web3_created'))
         interests = list(Interest.objects.filter(
             bounty__pk__in=[b.pk for b in bounties],
@@ -3687,7 +3687,7 @@ def funder_dashboard(request, bounty_type):
             Q(idx_status='started') | Q(override_status='started'),
             current_bounty=True,
             network=network,
-            bounty_owner_github_username=profile.handle,
+            bounty_owner_github_username__iexact=profile.handle,
             ).order_by('-interested__created', '-web3_created'))
         interests = list(Interest.objects.filter(
             bounty__pk__in=[b.pk for b in bounties],
@@ -3700,7 +3700,7 @@ def funder_dashboard(request, bounty_type):
             current_bounty=True,
             network=network,
             fulfillments__accepted=False,
-            bounty_owner_github_username=profile.handle,
+            bounty_owner_github_username__iexact=profile.handle,
             )
         bounties.order_by('-fulfillments__created_on')
         return JsonResponse(serialize_funder_dashboard_submitted_rows(bounties), safe=False)
@@ -3710,7 +3710,7 @@ def funder_dashboard(request, bounty_type):
             Q(idx_status='expired') | Q(override_status='expired'),
             current_bounty=True,
             network=network,
-            bounty_owner_github_username=profile.handle,
+            bounty_owner_github_username__iexact=profile.handle,
             ).order_by('-expires_date')
 
         return JsonResponse([{'title': b.title,
