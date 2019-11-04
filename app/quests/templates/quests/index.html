@@ -41,7 +41,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 <div class="row indent_on_mobile available_quests" id="available_quests">
   <div class="w-100">
-    <form method="GET">
+    <form method="GET" id=search_form>
       <input class="float-right mt-3 mr-4 w-25" type="text" name="q" value="{{query}}" placeholder="Search">
     </form>
     <h1 class="mt-3" style="width: 100%;">{{query|title}} Quests <span id="alpha">Alpha</span></h1>
@@ -59,6 +59,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </ul>
     </div>
   </div>
+    <div class="loading w-100 {% if not show_loading %}hidden{% endif %}">
+      <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ..." style="max-width: 200px; margin: 0px 30% 100px 30%;">
+    </div>
   {% for difficulty_level, the_quests in quests%}
   <div class="difficulty_tab {{difficulty_level}} {% if difficulty_level != selected_tab %}hidden{%endif%}">
     {% if the_quests|length == 0 %}
@@ -536,7 +539,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <script src="{% static "v2/js/pages/quests.index.js" %}"></script>
 <script>
   $(document).ready(function() {
-    $("img").unveil(200);
+    setInterval(function(){
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollTop > 500 && !document.offset_loaded){
+        $("img").unveil(200);
+        document.offset_loaded = true; 
+      }
+    }, 3000);
+    setTimeout(function(){
+      $('.leaderboard_hero').css('background-image', 'url("{% static 'v2/images/kudos/kudos-bg.png' %}")');
+    }, 1000);
   });
 </script>
 {% endblock %}

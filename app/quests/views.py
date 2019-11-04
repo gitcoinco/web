@@ -158,17 +158,55 @@ def index(request):
     print(f" start at {round(time.time(),2)} ")
     query = request.GET.get('q', '')
     quests = []
-    if query:
-        quest_qs = Quest.objects.filter(visible=True).filter(Q(title__icontains=query) | Q(description__icontains=query) | Q(questions__icontains=query) | Q(game_schema__icontains=query) | Q(game_metadata__icontains=query)).order_by('-ui_data__success_pct')
-        quest_package = get_package_helper(quest_qs, request)
-        package = ('Search', quest_package)
-        quests.append(package)
-    for diff in Quest.DIFFICULTIES:
-        quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True).order_by('-ui_data__success_pct')
-        quest_package = get_package_helper(quest_qs, request)
-        package = (diff[0], quest_package)
-        if quest_qs.exists():
+    selected_tab = 'Search' if query else 'Beginner'
+    show_quests = request.GET.get('show_quests', False)
+    show_loading = not show_quests
+
+    if show_quests:
+        # search tab
+        if query:
+            quest_qs = Quest.objects.filter(visible=True).filter(Q(title__icontains=query) | Q(description__icontains=query) | Q(questions__icontains=query) | Q(game_schema__icontains=query) | Q(game_metadata__icontains=query)).order_by('-ui_data__success_pct')
+            quest_package = get_package_helper(quest_qs, request)
+            package = ('Search', quest_package)
             quests.append(package)
+        print(f" phase1.1 at {round(time.time(),2)} ")
+
+        # beaten/unbeaten
+        if request.user.is_authenticated:
+            attempts = request.user.profile.quest_attempts
+            if attempts.exists():
+                beaten = Quest.objects.filter(pk__in=attempts.filter(success=True).values_list('quest', flat=True))
+                unbeaten = Quest.objects.filter(pk__in=attempts.filter(success=False).exclude(quest__in=beaten).values_list('quest', flat=True))
+                if unbeaten.exists():
+                    quests.append(('Attempted', get_package_helper(unbeaten, request)))
+                    if selected_tab != 'Search':
+                        selected_tab = 'Attempted'
+                if beaten.exists():
+                    quests.append(('Beaten', get_package_helper(beaten, request)))
+                created_quests = request.user.profile.quests_created.filter(visible=True)
+                if created_quests:
+                    quests.append(('Created', get_package_helper(created_quests, request)))
+
+        print(f" phase1.2 at {round(time.time(),2)} ")
+        # difficulty tab
+        for diff in Quest.DIFFICULTIES:
+            quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True).order_by('-ui_data__success_pct')
+            quest_package = get_package_helper(quest_qs, request)
+            package = (diff[0], quest_package)
+            if quest_qs.exists():
+                quests.append(package)
+
+        print(f" phase1.3 at {round(time.time(),2)} ")
+        # new quests!
+        new_quests = Quest.objects.filter(visible=True, created_on__gt=(timezone.now() - timezone.timedelta(hours=hours_new))).order_by('-ui_data__success_pct')
+        if new_quests.exists():
+            quests.append(('New', get_package_helper(new_quests, request)))
+
+        print(f" phase1.4 at {round(time.time(),2)} ")
+        # popular quests
+        popular = Quest.objects.filter(visible=True).order_by('-ui_data__attempts_count')[0:5]
+        if popular.exists():
+            quests.append(('Popular', get_package_helper(popular, request)))
 
     print(f" phase2 at {round(time.time(),2)} ")
     rewards_schedule = []
@@ -216,7 +254,8 @@ def index(request):
         'selected_tab': 'Search' if query else 'Beginner',
         'title': f' {query.capitalize()} Quests',
         'point_history': point_history,
-        'point_value': point_value, 
+        'point_value': point_value,
+        'show_loading': show_loading,
         'current_round_number': current_round_number,
         'avatar_url': static('v2/images/quests/orb_small.png'),
         'card_desc': 'Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!',
