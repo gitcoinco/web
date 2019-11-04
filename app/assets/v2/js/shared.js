@@ -705,10 +705,10 @@ var currentNetwork = function(network) {
           $('#current-network').text(gettext('Metamask Locked'));
           $('#navbar-network-banner').html(info);
         } else if (window.ethereum._metamask) {
-            info = gettext('Metamask not connected. ') +
+          info = gettext('Metamask not connected. ') +
               '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
-            $('#current-network').text(gettext('Metamask Not Connected'));
-            $('#navbar-network-banner').html(info);
+          $('#current-network').text(gettext('Metamask Not Connected'));
+          $('#navbar-network-banner').html(info);
         }
       } else {
         info = gettext('Connect to Mainnet via Metamask');
@@ -746,10 +746,10 @@ var currentNetwork = function(network) {
           $('#current-network').text(gettext('Metamask Locked'));
           $('#navbar-network-banner').html(info);
         } else if (window.ethereum._metamask) {
-            info = gettext('Metamask not connected. ') +
+          info = gettext('Metamask not connected. ') +
               '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
-            $('#current-network').text(gettext('Metamask Not Connected'));
-            $('#navbar-network-banner').html(info);
+          $('#current-network').text(gettext('Metamask Not Connected'));
+          $('#navbar-network-banner').html(info);
         }
       } else {
         info = gettext('Connect to Rinkeby / Custom RPC via Metamask');
