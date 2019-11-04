@@ -442,18 +442,32 @@ def build_stat_results(keyword=None):
 
     context['alumni_count'] = base_alumni.count()
     pp.profile_time('alumni')
-    context['count_open'] = base_bounties.filter(network='mainnet', idx_status__in=['open']).count()
-    context['count_started'] = base_bounties.filter(
-        network='mainnet', idx_status__in=['started', 'submitted']
-    ).count()
-    context['count_done'] = base_bounties.filter(network='mainnet', idx_status__in=['done']).count()
 
-    total_count = context['count_started'] + context['count_open'] + context['count_done']
-    context['pct_done'] = round(100 * context['count_done'] / total_count)
-    context['pct_started'] = round(100 * context['count_started'] / total_count)
-    context['pct_open'] = round(100 * context['count_open'] / total_count)
-
+    from marketing.models import EmailSubscriber, EmailEvent
+    # todo: add preferences__suppression_preferences__roundup ?
+    total_count = EmailSubscriber.objects.count()
+    count_active_30d = EmailEvent.objects.filter(event='open', created_on__gt=(timezone.now() - timezone.timedelta(days=30))).distinct('email').count()
+    count_active_90d = EmailEvent.objects.filter(event='open', created_on__gt=(timezone.now() - timezone.timedelta(days=90))).distinct('email').count()
+    count_active_90d -= count_active_30d
+    count_inactive = total_count - count_active_30d - count_active_90d
+    context['pct_inactive'] = round(100 * count_inactive / total_count)
+    context['pct_active_90d'] = round(100 * count_active_90d / total_count)
+    context['pct_active_30d'] = round(100 * count_active_30d / total_count)
+    context['count_inactive'] = count_inactive
+    context['count_active_90d'] = count_active_90d
+    context['count_active_30d'] = count_active_30d
     pp.profile_time('count_*')
+
+    from quests.models import Quest
+    num_quests = 15
+    top_quests = Quest.objects.filter(visible=True).order_by('-ui_data__attempts_count')[0:num_quests]
+    context['top_quests'] = [{
+        'title': quest.title,
+        'url': quest.url,
+        'plays': quest.ui_data.get('attempts_count', 0),
+        'img': quest.enemy_img_url,
+
+    } for quest in top_quests]
 
     # Leaderboard
     num_to_show = 30
@@ -553,6 +567,13 @@ def build_stat_results(keyword=None):
     context['title'] = f"${round(context['universe_total_usd'] / 1000000, 1)}m in " + f"{keyword.capitalize() if keyword else ''} Results"
     context['programming_languages'] = ['All'] + programming_languages
 
+    from marketing.models import ManualStat
+    try:
+        context['pct_breakeven'] = ManualStat.objects.filter(key='pct_breakeven').values_list('val', flat=True)[0]
+    except Exception as e:
+        print(e)
+        context['pct_breakeven'] = 0
+    context['pct_not_breakeven'] = 100 - context['pct_breakeven']
 
     # last month data
     today = timezone.now()

@@ -898,8 +898,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Spooky Season Salutations"
-    new_kudos_pks = [52, 1821, 2050]
+    subject = "The Quadratic Freelancer"
+    new_kudos_pks = [588, 151, 116]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -920,22 +920,25 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    The jet lag from Devcon is slowly fading away — back at home, we've caught up from our absence and are buckling down for the next few months. With that said, it's time to kick off Web3 World, our newest virtual hackathon. It's a two-week virtual hang where Gitcoin community members and entrepreneurs from around the globe will work together and push blockchain to new frontiers. Ready to jump in? <a href="https://hackathons.gitcoin.co/web3-world/">Check the landing page for details to come.</a> The hackathon begins on October 28th and ends on the 11th.
+    🌱 Gitcoin Grants CLR Round 3 was a massive, massive success. With wide ranging support from across the entire Ethereum ecosystem, we were blown away with the support you provided: 1,982 unique contributions to 68 projects worth $170,000. <a href="https://gitcoin.co/blog/gitcoins-q3-match/"></a>In total, between individual contributions the round ended up worth $270k.</a>
 </p>
 <p>
-    While our overlords were at Devcon, the product team might have asked you why you're participating in our hackathons. As we hone in on making the best virtual experience for all parties — hackers and sponsors alike — we're asking you for feedback. What problems do you see? How can we do better? What projects would you like to see as sponsors? Send your thoughts to <a href="mailto:frank@gitcoin.co">Frank</a> and we'll be endlessly grateful.
+    In a review of Gitcoin Grants Round 3, Ethereum cofounder Vitalik Buterin said "If Gitcoin Grants does continue operating regularly, and attracts and expands its pool of donations, we could be very close to seeing the first 'quadratic freelancer' - someone directly 'working for the public', funded by donations boosted by quadratic matching subsidies." <a href="https://vitalik.ca/general/2019/10/24/gitcoin.html">Click here to read the article.</a>
 </p>
 <p>
-    Newsletter readers: the questions continue this week. We'd like to ask you about our humble publication. How do you like our new design? How can we improve our content? Do you like our jokes? <a href="https://consensys1mac.typeform.com/to/gz5aGK">Fill out this 30s survey. We'd love to hear your thoughts.</a>
+    🚨New Kudos Feature Alert!🚨 We've released a brand new feature for Kudos – the ability to mint your own <i>without</i> asking us to help. Like your favorite cappuccino machine, it lets you make your own delicious <strike>coffee</strike> Kudos all by yourself. If you have Kudos you want to put on the marketplace, all you've have to do is fill out a form, add your artwork, and watch as it makes its way to the Gitcoin Kudos marketplace! How neat is that. <a href="https://gitcoin.co/kudos/new">Check out the self serve feature here.</a>
+</p>
+<p>
+    Web3 World is well under way, and we have another great set of challenges for you to work on this go around. If you fancy, check out the <a href="https://gitcoin.co/blog/web3-world-around-the-aave/">Aave highlight post</a>, and then stroll down to the hackathon <a href="https://hackathons.gitcoin.co/web3-world/">homepage to complete registration and start hacking.</a> We'd love to see you participate.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
+        The Gitcoin Livestream is on for this week! Kevin Owocki will be presenting Gitcoin Quests. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        As the title of this email suggests, October is in full effect. You know what that means. Help contribute to open source and earn some rad prizes with Hacktoberfest — now is the perfect time to work on open source bounties and get rewards for making pull requests. The info? Who has it? <a href="https://hacktoberfest.digitalocean.com/">They do.</a>
+        A follow up from last week's newsletter: the retro post for The Road to Devcon is now up for your viewing pleasure. Feast your eyes on this one, folks. The post lives <a href="https://gitcoin.co/blog/gitcoins-q3-match/"> here. </a>
         </li>
     </ul>
 </p>
@@ -944,46 +947,46 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'rshtirmer',
-        'who_link': True,
-        'what': 'Request for update: granted. Tensorforce support from 0.4.4 to 0.5.2',
-        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/42/3555',
-        'link_copy': 'View more',
-    }, {
-        'who': 'nionis',
-        'who_link': True,
-        'what': 'Who loves a good lottery? Nionis.',
-        'link': 'https://gitcoin.co/issue/enigmampc/EnigmaBounties/3/3262',
-        'link_copy': 'View more',
-    }, {
         'who': 'acolytec3',
         'who_link': True,
-        'what': 'Alcolytec with the seed phrase fixes',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8938/3528',
+        'what': 'Scan that QR code, acolytec3.',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/8960/3557',
+        'link_copy': 'View more',
+    }, {
+        'who': 'mwbrulhardt',
+        'who_link': True,
+        'what': 'String Initialization.',
+        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/33/3548',
+        'link_copy': 'View more',
+    }, {
+        'who': 'rshtirmer',
+        'who_link': True,
+        'what': 'TensorFlow, you\'ve updated. Bask in the glory of freshness.',
+        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/42/3555',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'MythX',
-        'title': 'Keep Ethereum Secure',
+        'name': 'Sarchy',
+        'title': '5 minute thinking game with Ether for winner',
         'image_url': '',
-        'link': 'http://bit.ly/mythx-gitcoin-weekly',
-        'cta': 'Get Started Now',
+        'link': 'http://bit.ly/sarchy-gitcoin-weekly',
+        'cta': 'Play the \'Trusting Trust\' game',
         'body': [
-           'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
-           'Scan for security vulnerabilities right away, from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
+           'Due to data manipulation by big tech companies, Trust is becoming a key issue in the internet.',
+           '"Trusting Trust" is a game about Trust. It uses the "Prisoners Dilemma" concept. This concept has even been used in the movie "The Dark Knight" by the Joker in the climax scene.'
         ]
     }
     
     bounties_spec = [{
-        'url': 'https://github.com/mainnebula/SPACE_TASKS/issues/6',
-        'primer': 'Python Scripting: SQL Edition',
+        'url': 'https://github.com/ethereum/ethereum-org-website/issues/358',
+        'primer': 'Dutch translators: do this!',
     }, {
-        'url': 'https://github.com/notadamking/tensortrade/issues/41',
-        'primer': 'Manage Contest Across All Components. Make it so.',
+        'url': 'https://github.com/status-im/status-react/issues/8837',
+        'primer': 'Save Password prompt when signing transaction',
     }, {
-        'url': 'https://github.com/ETHSydney/meetup-token/issues/3',
-        'primer': 'Are you familiar with zero knowledge tools? Present!',
+        'url': 'https://github.com/gitcoinco/web/issues/5418',
+        'primer': 'Unable to click submit :( fix me!',
 }, ]
 
 

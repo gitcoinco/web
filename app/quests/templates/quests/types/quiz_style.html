@@ -82,6 +82,9 @@
         <span>
            |
           Beaten {{success_count}} time{{success_count|pluralize}}
+          {% if prize_url %}
+          | <a href="{{prize_url}}">Redeem Prize</a>
+          {% endif %}
         </span>
         {% endif %}
         <br>
@@ -102,6 +105,7 @@
       'img': '{{quest.kudos_reward.preview_img_url}}'
     };
     
+    document.num_questions = parseInt('{{quest.questions|length}}');
     document.music = '{{quest.music}}';
     document.seconds_per_question = parseInt('{{seconds_per_question}}');
     document.quest = {{quest_json|safe}};

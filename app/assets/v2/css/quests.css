@@ -103,6 +103,18 @@
 .announce2 a{
   background-color: #849ffc !important;
 }
+.announce6 h4{
+  border-bottom: 3px solid #fde9ed !important;
+}
+.announce6:after {
+  border-bottom-color: #fde9ed !important;
+}
+.announce6 {
+  background-color: #fde9ed !important;
+}
+.announce6 a{
+  background-color: #ddb9bd !important;
+}
 .referrals img {
   width: 50px;
   height: 50px;
@@ -132,6 +144,20 @@
 .right-announce2 p{
   border-radius: 5px;
   background-color: #d9d8e7;
+  padding: 5px;
+  margin-top: 10px;
+}
+.right-announce4{
+  margin-top: 5px;
+  padding-top: 0px;
+  text-align: right;
+}
+.right-announce4 img{
+  width: 100px;
+}
+.right-announce4 p{
+  border-radius: 5px;
+  background-color: #da7474;
   padding: 5px;
   margin-top: 10px;
 }
@@ -380,6 +406,7 @@ body.quest_battle p{
   z-index: 9999;
   font-size: 20px;
   text-transform: uppercase;
+  top: 28%;
 }
 #header.fail{
   color: #F9006C;
@@ -584,55 +611,96 @@ body.quest_battle{
   font-family: 'Press Start 2P', cursive !important;
   font-size: 0.7em;
 }
-
+.new_quest_background{
+  width: 130px;
+  max-width: 149px;
+  max-height: 149px;
+  margin: 10px;
+  background-repeat: none !important;
+  cursor: pointer;
+  display: inline-block;
+  border: 2px solid white;
+  height: 75px;
+}
+.new_quest_background.selected{
+  border: 2px solid #F9006C;
+}
+div.back0,
 body.back0.quest_battle{
   background: url('/static/v2/images/quests/backs/0.gif') repeat;
   background-size: 150%;
 }
+div.back1,
 body.back1.quest_battle{
   background: url('/static/v2/images/quests/backs/back1.png') repeat;
   background-size: 100%;
 }
+div.back2,
 body.back2.quest_battle{
   background: url('/static/v2/images/quests/backs/back2.png') repeat;
   background-size: 170%;
 }
+div.back3,
 body.back3.quest_battle{
   background: url('/static/v2/images/quests/backs/back3.png') repeat;
   background-size: 160%;
 }
+div.back4,
 body.back4.quest_battle{
   background: url('/static/v2/images/quests/backs/back4.png') repeat;
   background-size: 160%;
 }
+div.back5,
 body.back5.quest_battle{
   background: url('/static/v2/images/quests/backs/back5.png') repeat;
   background-size: 160%;
 }
+div.back6,
 body.back6.quest_battle{
   background: url('/static/v2/images/quests/backs/back6.jpg') repeat;
   background-size: 110%;
 }
+div.back7,
 body.back7.quest_battle{
   background: url('/static/v2/images/quests/backs/back7.png') repeat;
   background-size: 110%;
 }
+div.back8,
 body.back8.quest_battle{
   background: url('/static/v2/images/quests/backs/back8.png') repeat;
-  background-size: 120%;
+  background-size: 100%;
 }
+div.back9,
 body.back9.quest_battle{
   background: url('/static/v2/images/quests/backs/back9.png') repeat;
+  background-size: 110%;
+}
+div.back10,
+body.back10.quest_battle{
+  background: url('/static/v2/images/quests/backs/back10.png') repeat;
   background-size: 120%;
 }
+div.back11,
+body.back11.quest_battle{
+  background: url('/static/v2/images/quests/backs/back11.png') repeat;
+  background-size: 105%;
+}
+div.back12,
+body.back12.quest_battle{
+  background: url('/static/v2/images/quests/backs/back12.png') repeat;
+  background-size: 120%;
+}
+div.red,
 body.red.quest_battle{
   background-image: linear-gradient(90deg, #ff6161, #ff0000);
   background-size: 100% !important;
 }
+div.blue,
 body.blue.quest_battle{
   background-image: linear-gradient(90deg, #6161ff, #0000ff);
   background-size: 100% !important;
 }
+div.green,
 body.green.quest_battle{
   background-image: linear-gradient(90deg, #3CB371, #2E8B57);
   background-size: 100% !important;
@@ -643,7 +711,7 @@ body.green.quest_battle{
   width: 100%;
   height: 100%;
 }
-#leaderboard_hero{
+.leaderboard_hero{
   width: 100%;
   background-color: #d9d8e7;
   background-size: 100%;
@@ -651,7 +719,7 @@ body.green.quest_battle{
   margin-top: 20px;
   background-repeat: no-repeat;
 }
-#leaderboard_hero .inner_row{
+.leaderboard_hero .inner_row{
   width: 32%;
   margin: 0;
   display: inline-block;
@@ -662,7 +730,7 @@ body.green.quest_battle{
   padding-top: 10px;
   overflow-y: hidden;
 }
-#leaderboard_hero .inner_row img.avatar{
+.leaderboard_hero .inner_row img.avatar{
   width: 30%;
   margin: 0px auto;
   border-radius: 50%;
@@ -670,37 +738,37 @@ body.green.quest_battle{
   position: relative;
   margin-bottom: 10px;
 }
-#leaderboard_hero .inner_row.one img.avatar{
+.leaderboard_hero .inner_row.one img.avatar{
   border: 5px solid rgba(255,215,0, 0.5);
 }
-#leaderboard_hero .inner_row.two img.avatar{
+.leaderboard_hero .inner_row.two img.avatar{
   border: 3px solid rgba(192, 192, 192, 0.5);
 }
-#leaderboard_hero .inner_row.three img.avatar{
+.leaderboard_hero .inner_row.three img.avatar{
   border: 2px solid rgba(205, 127, 50, 0.5);
 }
 
-#leaderboard_hero .inner_row img.kudii{
+.leaderboard_hero .inner_row img.kudii{
   width: 100%;
   margin: 0px auto;
 }
-#leaderboard_hero .inner_row .package{
+.leaderboard_hero .inner_row .package{
   width: 100%;
 }
-#leaderboard_hero .kudos_container,
-#leaderboard_hero .handle_container{
+.leaderboard_hero .kudos_container,
+.leaderboard_hero .handle_container{
   position: relative;
   text-align: left;
 }
-#leaderboard_hero .handle_container{
+.leaderboard_hero .handle_container{
   width: 100%;
 }
-#leaderboard_hero .kudos_container{
+.leaderboard_hero .kudos_container{
   position: relative;
   width: 25%;
   margin: 5px auto 15px;
 }
-#leaderboard_hero .inner_row .trophy_case{
+.leaderboard_hero .inner_row .trophy_case{
   text-align: center;
   bottom: 3px;
   border-radius: 5px;
@@ -710,35 +778,35 @@ body.green.quest_battle{
   overflow-y: hidden;
   margin: 20px auto 0px;
 }
-#leaderboard_hero .inner_row.one .trophy_case{
+.leaderboard_hero .inner_row.one .trophy_case{
   filter: drop-shadow(7px -7px 7px rgba(255,215,0, 0.5));
   border-left: 2px solid #ecbe6d;
   border-top: 4px solid #ecbe6d;
   background-color: #dcae5d;
 }
-#leaderboard_hero .inner_row.two .trophy_case{
+.leaderboard_hero .inner_row.two .trophy_case{
   filter: drop-shadow(-5px -5px 5px rgba(192,192,192, 0.5));
   border-left: 2px solid #e1e1e2;
   border-top: 4px solid #e1e1e2;
   background-color: #d1d1d2;
 }
-#leaderboard_hero .inner_row.three .trophy_case{
+.leaderboard_hero .inner_row.three .trophy_case{
   filter: drop-shadow(3px -3px 3px rgba(205, 127, 50, 0.5));
   border-left: 2px solid #e18f6d;
   border-top: 4px solid #e18f6d;
   background-color: #c18e4d;
 }
-#leaderboard_hero .inner_row.three .handle_container{
+.leaderboard_hero .inner_row.three .handle_container{
   margin-top:  60px;
 }
-#leaderboard_hero .inner_row.one .kudos_container{
+.leaderboard_hero .inner_row.one .kudos_container{
   width: 35%;
 }
-#leaderboard_hero .inner_row.two .handle_container{
+.leaderboard_hero .inner_row.two .handle_container{
   margin-top:  30px;
 }
 
-#leaderboard_hero .inner_row .tag{
+.leaderboard_hero .inner_row .tag{
   transform: rotate(-15deg);
   vertical-align: top;
   z-index: 9999;
@@ -820,7 +888,7 @@ body.blue #desc li.selected {
 }
 body.green #desc li:hover,
 body.green #desc li.selected {
-  background-color: #2E8B57;
+  background-color: #9EaB97;
 }
 
 #breadcrumbs, #breadcrumbs a{
@@ -831,7 +899,6 @@ body.green #desc li.selected {
   top: 0px;
   left: 10px;
 }
-
 .alpha-warning{
   background-color: black;
 }
@@ -905,6 +972,9 @@ body.green .tl{
   body.back8.quest_battle,
   body.back9.quest_battle{
     background-size: 120% !important;
+  }
+  body.back11.quest_battle{
+    background-size: 100% !important;
   }
   #cta_button a, a.button{
     line-height: 46px;
@@ -998,10 +1068,13 @@ body.green .tl{
   body.back9.quest_battle{
     background-size: 120% !important;
   }
-  #leaderboard_hero{
+  body.back11.quest_battle{
+    background-size: 180% !important;
+  }
+  .leaderboard_hero{
     background-size: 130%;
   }
-  #leaderboard_hero .inner_row {
+  .leaderboard_hero .inner_row {
     width: 32%;
     height: 400px;
   }
@@ -1016,7 +1089,10 @@ body.green .tl{
   body.back9.quest_battle{
     background-size: 140% !important;
   }
-  #leaderboard_hero .inner_row {
+  body.back11.quest_battle{
+    background-size: 220% !important;
+  }
+  .leaderboard_hero .inner_row {
     width: 32%;
     height: 350px;
   }
@@ -1066,22 +1142,25 @@ body.green .tl{
   body.back9.quest_battle{
     background-size: 200% !important;
   }
+  body.back11.quest_battle{
+    background-size: 250% !important;
+  }
   .hide_on_mobile{
     display: none;
   }
   .show_on_mobile{
     display: block;
   }
-  #leaderboard_hero{
+  .leaderboard_hero{
     background-image: none !important;
   }
-  #leaderboard_hero .inner_row {
+  .leaderboard_hero .inner_row {
     width: 100% !important;
     padding-top: 0px !important;
     height: 400px;
   }
-  #leaderboard_hero .kudos_container,
-  #leaderboard_hero .handle_container{
+  .leaderboard_hero .kudos_container,
+  .leaderboard_hero .handle_container{
     width: 30%;
   }
   .character img{

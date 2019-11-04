@@ -1041,10 +1041,10 @@ var setUsdAmount = function(event) {
   });
 };
 
-var usdToAmount = function(event) {
-  var usdAmount = $('input[name=usd_amount').val();
-  var denomination = $('#token option:selected').text();
-  var estimate = getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
+var usdToAmount = function(usdAmount) {
+  const denomination = $('#token option:selected').text();
+
+  getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
     if (amountEstimate['value']) {
       $('#amount').val(amountEstimate['value']);
       $('#usd_amount_text').html(amountEstimate['rate_text']);

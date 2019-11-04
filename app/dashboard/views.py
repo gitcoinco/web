@@ -228,7 +228,7 @@ def get_interest_modal(request):
         raise Http404
 
     if bounty.event and request.user.is_authenticated:
-        is_registered = request.user.profile.hackathons.filter(hackathon_id=bounty.event.id).first() or None
+        is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile, hackathon_id=bounty.event.id) or None
     else:
         is_registered = None
 
@@ -1244,7 +1244,7 @@ def bulk_invite(request):
     organisation = request.POST.get('params[organisation]', '')
     bounty_id = request.POST.get('bountyId')
 
-    if None in (skills, bounty_id, inviter):
+    if None in (bounty_id, inviter):
         return JsonResponse({'success': False}, status=400)
 
     bounty = Bounty.objects.current().get(id=int(bounty_id))
@@ -3320,12 +3320,15 @@ def get_kudos(request):
     if request.is_ajax():
         q = request.GET.get('term')
         network = request.GET.get('network', None)
+        filter_by_address = request.GET.get('filter_by_address', '')
         eth_to_usd = convert_token_to_usdt('ETH')
         kudos_by_name = Token.objects.filter(name__icontains=q)
         kudos_by_desc = Token.objects.filter(description__icontains=q)
         kudos_by_tags = Token.objects.filter(tags__icontains=q)
         kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
         kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False, num_clones_allowed__gt=0).order_by('name')
+        if filter_by_address:
+            kudos = kudos.filter(owner_address=filter_by_address)
         is_staff = request.user.is_staff if request.user.is_authenticated else False
         if not is_staff:
             kudos = kudos.filter(send_enabled_for_non_gitcoin_admins=True)
@@ -3672,7 +3675,7 @@ def funder_dashboard(request, bounty_type):
             Q(idx_status='open') | Q(override_status='open'),
             current_bounty=True,
             network=network,
-            bounty_owner_github_username=profile.handle,
+            bounty_owner_github_username__iexact=profile.handle,
             ).order_by('-interested__created', '-web3_created'))
         interests = list(Interest.objects.filter(
             bounty__pk__in=[b.pk for b in bounties],
@@ -3684,7 +3687,7 @@ def funder_dashboard(request, bounty_type):
             Q(idx_status='started') | Q(override_status='started'),
             current_bounty=True,
             network=network,
-            bounty_owner_github_username=profile.handle,
+            bounty_owner_github_username__iexact=profile.handle,
             ).order_by('-interested__created', '-web3_created'))
         interests = list(Interest.objects.filter(
             bounty__pk__in=[b.pk for b in bounties],
@@ -3697,7 +3700,7 @@ def funder_dashboard(request, bounty_type):
             current_bounty=True,
             network=network,
             fulfillments__accepted=False,
-            bounty_owner_github_username=profile.handle,
+            bounty_owner_github_username__iexact=profile.handle,
             )
         bounties.order_by('-fulfillments__created_on')
         return JsonResponse(serialize_funder_dashboard_submitted_rows(bounties), safe=False)
@@ -3707,7 +3710,7 @@ def funder_dashboard(request, bounty_type):
             Q(idx_status='expired') | Q(override_status='expired'),
             current_bounty=True,
             network=network,
-            bounty_owner_github_username=profile.handle,
+            bounty_owner_github_username__iexact=profile.handle,
             ).order_by('-expires_date')
 
         return JsonResponse([{'title': b.title,

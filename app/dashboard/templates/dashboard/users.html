@@ -65,24 +65,25 @@
             <div class="pb-4 border-bottom form-group">
               <label for="bounty-completed" class="font-weight-bold">Bounties Completed</label>
               <div class="form__select2">
-                <select2 v-model="params.bounties_completed" data-minimum-results-for-search="Infinity" class="form-control">
+                <select2 v-model.trim="params.bounties_completed" data-tags="true" class="form-control">
                   <option value="" selected="true">All</option>
-                  <option value="0,5">0-5</option>
-                  <option value="5,10">5-10</option>
-                  <option value="10,15">10-15</option>
-                  <option value="15,20">15-20</option>
+                  <option value="0,5">0,5</option>
+                  <option value="5,10">5,10</option>
+                  <option value="10,15">10,15</option>
+                  <option value="15,20">15,20</option>
                 </select2>
               </div>
             </div>
             <div class="pb-4 border-bottom form-group">
               <label for="leaderboard_rank" class="font-weight-bold">Leaderboard Rank</label>
               <div class="form__select2">
-                <select2 v-model="params.leaderboard_rank" data-minimum-results-for-search="Infinity" class="form-control">
+                <select2 v-model.trim="params.leaderboard_rank" data-tags="true" class="form-control">
                   <option value="" selected="true">All</option>
-                  <option value="0,5">0-5</option>
-                  <option value="5,10">5-10</option>
-                  <option value="10,15">10-15</option>
-                  <option value="15,20">15-20</option>
+                  <option value="1,5">1,5</option>
+                  <option value="5,10">5,10</option>
+                  <option value="10,15">10,15</option>
+                  <option value="15,20">15,20</option>
+                  <option value="20,25">20,25</option>
                 </select2>
               </div>
             </div>
@@ -127,7 +128,7 @@
               <p class="font-body mx-2 mb-2 mt-4">
                 <span class="font-weight-bold">[[ numUsers ]]</span> users found
               </p>
-              <button v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params.skills && params.skills.length)" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
+              <button v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
                 Invite all to bounty
               </button>
             {% endif %}
@@ -300,7 +301,7 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    
+
 
     <script>
       $('body').bootstrapTooltip({

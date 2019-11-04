@@ -85,8 +85,22 @@ class ToolVoteAdmin(admin.ModelAdmin):
 
 
 class BountyInvitesAdmin(admin.ModelAdmin):
-    raw_id_fields = ['bounty']
+    raw_id_fields = ['bounty', 'inviter', 'invitee']
     ordering = ['-id']
+    readonly_fields = [ 'from_inviter', 'to_invitee']
+    list_display = [ 'id', 'from_inviter', 'to_invitee', 'bounty_url']
+
+    def bounty_url(self, obj):
+        bounty = obj.bounty.first()
+        return format_html("<a href={}>{}</a>", mark_safe(bounty.url), mark_safe(bounty.url))
+
+    def from_inviter(self, obj):
+        """Get the profile handle."""
+        return "\n".join([p.username for p in obj.inviter.all()])
+
+    def to_invitee(self, obj):
+        """Get the profile handle."""
+        return "\n".join([p.username for p in obj.invitee.all()])
 
 
 class InterestAdmin(admin.ModelAdmin):
@@ -131,13 +145,14 @@ class ProfileAdmin(admin.ModelAdmin):
         return html
 
     def response_change(self, request, obj):
+        from django.shortcuts import redirect
         if "_recalc_flontend" in request.POST:
             obj.calculate_all()
             obj.save()
             self.message_user(request, "Recalc done")
+            return redirect(obj.url)
         if "_impersonate" in request.POST:
-            from django.shortcuts import redirect
-            return redirect(f"/impersonate/{obj.user.pk}")
+            return redirect(f"/impersonate/{obj.user.pk}/")
         return super().response_change(request, obj)
 
 class VerificationAdmin(admin.ModelAdmin):

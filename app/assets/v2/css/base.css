@@ -547,14 +547,6 @@ input[type=text].loading {
   color: white;
 }
 
-.submit_bounty #network_status div {
-  display: inline;
-}
-
-#network_status div span {
-  color: #4aeba8;
-}
-
 .submit_bounty select[name=denomination] {
   text-align: left;
 }
@@ -1413,13 +1405,8 @@ input.is-invalid {
   letter-spacing: 0;
 }
 
-.modal.delete_account,
-.modal.notify_policy_update {
+.modal.delete_account {
   max-width: 34rem;
-}
-
-.notify_policy_update .button {
-  padding: 0.25rem 1.25rem;
 }
 
 .box_1 {
