@@ -748,7 +748,7 @@ var show_interest_modal = function() {
               $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
               modals.bootstrapModal('hide');
               if (document.result.event) {
-                projectModal(document.result.pk)
+                projectModal(document.result.pk);
               }
             }
           }).catch((error) => {
@@ -1471,6 +1471,10 @@ var pull_bounty_from_api = function() {
         render_activity(result, results);
 
         document.result = result;
+
+        if (document.result.event && localStorage['pendingProject']) {
+          projectModal(document.result.pk);
+        }
 
         if (typeof promptPrivateInstructions !== 'undefined' && result.repo_type === 'private') {
           repoInstructions();
