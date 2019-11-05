@@ -704,9 +704,9 @@ var currentNetwork = function(network) {
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
           $('#current-network').text(gettext('Metamask Locked'));
           $('#navbar-network-banner').html(info);
-        } else {
+        } else if (window.ethereum._metamask) {
           info = gettext('Metamask not connected. ') +
-            '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
+              '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
           $('#current-network').text(gettext('Metamask Not Connected'));
           $('#navbar-network-banner').html(info);
         }
@@ -745,9 +745,9 @@ var currentNetwork = function(network) {
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
           $('#current-network').text(gettext('Metamask Locked'));
           $('#navbar-network-banner').html(info);
-        } else {
+        } else if (window.ethereum._metamask) {
           info = gettext('Metamask not connected. ') +
-            '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
+              '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
           $('#current-network').text(gettext('Metamask Not Connected'));
           $('#navbar-network-banner').html(info);
         }
