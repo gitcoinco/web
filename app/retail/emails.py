@@ -477,7 +477,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'old_bounties': old_bounties,
         'bounties': bounties,
         'subscriber': sub,
-        'keywords': ",".join(sub.keywords),
+        'keywords': ",".join(sub.keywords) if sub and sub.keywords else '',
         'email_style': email_style,
     }
 
