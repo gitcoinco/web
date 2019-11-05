@@ -77,7 +77,7 @@ const previewFile = function(elem) {
     getImageSize(imageURL, function(imageWidth, imageHeight) {
       if (imageWidth !== imageHeight) {
         elem.val('');
-        preview.src = `/dynamic/avatar/${document.result.org_name}`;
+        preview.src = elem.data('imgplaceholder');
         return alert('The image format need to be square');
       }
       preview.src = reader.result;

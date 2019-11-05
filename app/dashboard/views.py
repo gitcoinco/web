@@ -3529,7 +3529,13 @@ def hackathon_save_project(request):
     project_id = request.POST.get('project_id')
     bounty_id = request.POST.get('bounty_id')
     profiles = request.POST.getlist('profiles[]')
+    logo = request.FILES.get('logo')
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    error_response = invalid_file_response(logo, supported=['image/png', 'image/jpeg', 'image/jpg'])
+    # 400 is ok because file upload is optional here
+    if error_response and error_response['status'] != 400:
+        return JsonResponse(error_response)
 
     if profile is None:
         return JsonResponse({

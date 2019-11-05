@@ -48,7 +48,7 @@
                   <img src="{% firstof project_selected.bounty.admin_override_org_logo or project_selected.bounty.avatar_url %}" width="90" height="90" id="img-preview" class="border rounded">
                 {% endif %}
                 <div class="d-inline-block align-middle ml-4">
-                  <input type="file" class="form-control-file" id="project_logo" name="logo" aria-describedby="logoHelp" accept="image/jpeg, image/png">
+                  <input type="file" class="form-control-file" id="project_logo" name="logo" aria-describedby="logoHelp" accept="image/jpeg, image/png" data-imgplaceholder="{% firstof project_selected.bounty.admin_override_org_logo or project_selected.bounty.avatar_url %}">
                   <small id="logoHelp" class="form-text text-muted">
                     If there's no Project Logo, we will use the prize sponsor logo.
                   </small>
@@ -92,7 +92,7 @@
                 <label for="project_logo" class="d-block">Project logo</label>
                 <img src="{% firstof bounty.admin_override_org_logo or bounty.avatar_url %}" width="90" height="90" id="img-preview" class="border rounded">
                 <div class="d-inline-block align-middle ml-4">
-                  <input type="file" class="form-control-file" id="project_logo" name="logo" aria-describedby="logoHelp" accept="image/jpeg, image/png">
+                  <input type="file" class="form-control-file" id="project_logo" name="logo" aria-describedby="logoHelp" accept="image/jpeg, image/png" data-imgplaceholder="{% firstof project_selected.bounty.admin_override_org_logo or project_selected.bounty.avatar_url %}">
                   <small id="logoHelp" class="form-text text-muted">
                     If there's no Project Logo, we will use the prize sponsor logo.
                   </small>
