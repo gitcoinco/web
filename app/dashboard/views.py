@@ -3473,7 +3473,7 @@ def hackathon_projects(request, hackathon=''):
             Q(badge__isnull=False)
         )
 
-    projects_paginator = Paginator(projects, 3)
+    projects_paginator = Paginator(projects, 9)
 
     try:
         projects_paginated = projects_paginator.page(page)

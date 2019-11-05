@@ -45,7 +45,7 @@ const projectModal = (bountyId, projectId) => {
         if (!response.success) {
           return _alert(response.msg, 'error');
         }
-        delete sessionStorage['pendingProject'];
+        delete localStorage['pendingProject'];
         $('#modalProject').bootstrapModal('hide');
         return _alert({message: response.msg}, 'info');
 
