@@ -10,11 +10,6 @@
   "whitepaper": "http://www.amodule.io/Amodule%20Network%20(v1.0).pdf",
   "state": "NORMAL",
   "published_on": "2019-10-30",
-  "initial_price":{
-        "ETH":"",
-        "USD":"",
-        "BTC":""
-  },
   "links": {
     "biyong": "https://0.plus/AmoDulea",
     "github": "https://github.com/amodulenetwork/AmoduleNetwork"
