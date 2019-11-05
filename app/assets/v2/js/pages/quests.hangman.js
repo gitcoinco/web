@@ -3,7 +3,7 @@ window.onload = function () {
   var alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
         'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
         't', 'u', 'v', 'w', 'x', 'y', 'z'];
-  
+  var pressedKeys = [];
   var categories;         // Array of topics
   var chosenCategory;     // Selected category
   var getHint ;          // Word getHint
@@ -21,7 +21,46 @@ window.onload = function () {
   var getHint = document.getElementById("hint");
   var showClue = document.getElementById("clue");
 
+ // kb utility
+  function countInArray(array, what) {
+    var count = 0;
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] === what) {
+            count++;
+        }
+    }
+    return count;
+  }
 
+
+  // kb listener function
+  function kblisten(event){
+    pressedKeys.push(event.key)
+    if (countInArray(pressedKeys, event.key) > 1) {
+      // pass
+    } else {
+      var elms = document.querySelectorAll("[id='letter']");
+    var selectedLetter = alphabet.indexOf(event.key);
+    elms[selectedLetter].setAttribute("class", "active");
+    
+    var guess = event.key;
+    for (var i = 0; i < word.length; i++) {
+      if (word[i] === guess) {
+        guesses[i].innerHTML = guess;
+        counter += 1;
+      } 
+    }
+    var j = (word.indexOf(guess));
+    if (j === -1) {
+      lives -= 1;
+      comments();
+      animate();
+    } else {
+      comments();
+    }
+    }
+  }
+  window.addEventListener('keydown', kblisten, true);
 
   // create alphabet ul
   var buttons = function () {
@@ -81,10 +120,12 @@ window.onload = function () {
       showTimer.style.display = "none";
       myButtons = document.getElementById('buttons');
       myButtons.style.display = "none";
+      window.removeEventListener('keydown', kblisten, true)
     }
     for (var i = 0; i < guesses.length; i++) {
       if (counter + space === guesses.length) {
         showTimer.style.display = "none";
+        window.removeEventListener('keydown', kblisten, true)
         showLives.innerHTML = "<strong>Congrats! You won a Kudo!</strong> – <a href=\"#\">(Redeem)</a>";
       }
     }
@@ -223,6 +264,7 @@ window.onload = function () {
           myButtons = document.getElementById('buttons');
           myButtons.style.display = "none";
           _death()
+          window.removeEventListener('keydown', kblisten, true);
 
         }
     }, 1000);
