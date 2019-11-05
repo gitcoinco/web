@@ -725,6 +725,11 @@ body.back18.quest_battle{
   background: url('/static/v2/images/quests/backs/back18.png') repeat;
   background-size: 100%;
 }
+div.back20,
+body.back20.quest_battle{
+  background: url('/static/v2/images/quests/backs/back20.png') repeat;
+  background-size: 120%;
+}
 
 div.red,
 body.red.quest_battle{
@@ -926,6 +931,10 @@ body.back19 #desc li:hover,
 body.back19 #desc li.selected {
   background-color: #fc4240;
 }
+body.back20 #desc li:hover,
+body.back20 #desc li.selected {
+  background-color: #ace4f9;
+}
 body.blue #desc li:hover,
 body.blue #desc li.selected {
   background-color: #4040ff;
@@ -999,6 +1008,12 @@ body.red #desc,
 body.red .br,
 body.red .tl{
   background-color:rgb(255, 0, 0, 0.6);
+}
+body.back20 #header,
+body.back20 #desc,
+body.back20 .br,
+body.back20 .tl{
+  background-color:rgb(156, 212, 244, 0.6);
 }
 body.back19 #header,
 body.back19 #desc,
