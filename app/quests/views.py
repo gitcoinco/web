@@ -25,6 +25,7 @@ from quests.helpers import (
 from quests.models import Quest, QuestAttempt, QuestPointAward
 from quests.quest_types.example import details as example
 from quests.quest_types.quiz_style import details as quiz_style
+from quests.quest_types.hangman import details as hangman
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
@@ -313,7 +314,7 @@ def index(request):
         'selected_tab': selected_tab,
         'title': f' {query.capitalize()} Quests',
         'point_history': point_history,
-        'point_value': point_value, 
+        'point_value': point_value,
         'current_round_number': current_round_number,
         'avatar_url': static('v2/images/quests/orb_small.png'),
         'card_desc': 'Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!',
@@ -343,5 +344,7 @@ def details(request, obj_id, name):
         return quiz_style(request, quest)
     elif quest.style == 'Example for Demo':
         return example(request, quest)
+    elif quest.style == 'Hangman':
+        return hangman(request, quest)
     else:
         raise Exception(f'Not supported quest style: {quest.style}')

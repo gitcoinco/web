@@ -1,0 +1,254 @@
+body {
+  background-image: url("assets/back6.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-color: #464646;
+  
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  color: #fff;
+  height: 100%;
+  text-align: center;
+  font-size: 12px;
+}
+
+a{
+  text-decoration: none;
+  color: white;
+}
+
+#alphabet, .background {
+  background-color: rgba(1,1,1,0.5);
+  border-radius: 10px;
+  padding: 5px;
+  max-width: 400px;
+  margin: 50px auto;
+}
+#alphabet{
+    padding: 25px;
+}
+
+.wrapper {
+  width: 100%;
+  margin: 0 auto;
+  z-index: 9999;
+}
+.wrapper:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+canvas {
+  color: #fff;
+  border: #fff dashed 2px;
+  padding: 15px;
+}
+
+h1, h2, h3 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 100;
+  
+  margin: 5px 0;
+}
+
+h1 {
+  font-size: 2.6em;
+}
+
+h2 {
+  font-size: 1.6em;
+}
+
+p {
+  font-size: 1.6em;
+}
+
+#alphabet {
+  margin: 15px auto;
+  padding: 25px;
+  max-width: 600px;
+  text-align: center;
+}
+#alphabet:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+#alphabet li {
+  float: left;
+  margin: 0 10px 10px 0;
+  list-style: none;
+  width: 25px;
+  height: 20px;
+  padding-top: 3px;
+  background: #fff;
+  color: #006699;
+  font-size: 14px;
+  cursor: pointer;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -khtml-border-radius: 5px;
+  border: solid 1px #fff;
+}
+#alphabet li:hover {
+  background: #8E2ABE;
+  border: solid 1px #fff;
+  color: #fff;
+}
+
+#my-word {
+  margin: 0;
+  display: block;
+  padding: 0;
+  display: block;
+  font-size: 28px;
+}
+
+#my-word li {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  display: inline-block;
+  padding: 0 10px;
+  font-size: 1.6em;
+}
+.prize, #enemy{
+  z-index: -99999;
+}
+.active {
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  -moz-transition: all 1s ease-in;
+  -moz-transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  cursor: default;
+}
+.active:hover {
+  -moz-transition: all 1s ease-in;
+  -moz-transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  -moz-transition: all 1s ease-in;
+  -moz-transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+}
+
+#mylives {
+  font-size: 1.6em;
+  text-align: center;
+  display: block;
+}
+
+button {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -khtml-border-radius: 5px;
+  background: #fff;
+  color: #006699;
+  border: solid 1px #fff;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 2em;
+  padding: 18px 10px;
+  width: 180px;
+  margin: 10px;
+  outline: none;
+}
+button:hover {
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  background: #8E2ABE;
+  border: solid 1px #fff;
+  color: #fff;
+}
+
+@media (max-width: 767px) {
+  #alphabet {
+    padding: 0 0 0 15px;
+  }
+}
+@media (max-width: 480px) {
+  #alphabet {
+    padding: 0 0 0 25px;
+  }
+}
+
+#stickman{
+    background-color: rgba(2,2,2,0.8)
+}
+
+div.back0,
+body.back0{
+  background: url('/static/v2/images/quests/backs/0.gif') repeat;
+  background-size: 150%;
+}
+div.back1,
+body.back1{
+  background: url('/static/v2/images/quests/backs/back1.png') repeat;
+  background-size: 100%;
+}
+div.back2,
+body.back2{
+  background: url('/static/v2/images/quests/backs/back2.png') repeat;
+  background-size: 170%;
+}
+div.back3,
+body.back3{
+  background: url('/static/v2/images/quests/backs/back3.png') repeat;
+  background-size: 160%;
+}
+div.back4,
+body.back4{
+  background: url('/static/v2/images/quests/backs/back4.png') repeat;
+  background-size: 160%;
+}
+div.back5,
+body.back5{
+  background: url('/static/v2/images/quests/backs/back5.png') repeat;
+  background-size: 160%;
+}
+div.back6,
+body.back6{
+  background: url('/static/v2/images/quests/backs/back6.jpg') repeat;
+  background-size: 110%;
+}
+div.back7,
+body.back7{
+  background: url('/static/v2/images/quests/backs/back7.png') repeat;
+  background-size: 110%;
+}
+div.back8,
+body.back8{
+  background: url('/static/v2/images/quests/backs/back8.png') repeat;
+  background-size: 100%;
+}
+div.back9,
+body.back9{
+  background: url('/static/v2/images/quests/backs/back9.png') repeat;
+  background-size: 110%;
+}
+div.back10,
+body.back10{
+  background: url('/static/v2/images/quests/backs/back10.png') repeat;
+  background-size: 120%;
+}
+div.back11,
+body.back11{
+  background: url('/static/v2/images/quests/backs/back11.png') repeat;
+  background-size: 105%;
+}
+div.back12,
+body.back12{
+  background: url('/static/v2/images/quests/backs/back12.png') repeat;
+  background-size: 120%;
+}

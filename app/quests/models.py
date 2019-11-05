@@ -29,6 +29,7 @@ class Quest(SuperModel):
 
     STYLES = [
         ('Quiz', 'quiz'),
+        ('Hangman', 'hangman'),
         ('Example for Demo', 'example_demo'),
     ]
 

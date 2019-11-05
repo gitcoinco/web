@@ -35,14 +35,8 @@
     <div id="background">
       &nbsp;
     </div>
-    <div id="enemy" class="character tr hidden">
-      <img src="{{quest.art_url}}">
-      <div class='info'>
-        <h3>{{quest.game_metadata.enemy.title}}</h3>
-        <p>Level {{quest.game_metadata.enemy.level}} Opponent</p>
-      </div>
-    {% include 'quests/shared/alts_to_characters.html' %}
-    </div>
+    {% include "quests/protagonist.html" %}
+    {% include "quests/enemy.html" %}
     <div id="helpful_guide" class="character tr">
       <img src="/static/v2/images/quests/enemies/helpful_guide.svg">
       <div class='info'>
@@ -50,16 +44,6 @@
         <p>Quests Concierge</p>
       </div>
     {% include 'quests/shared/alts_to_characters.html' %}
-    </div>
-    <div id="protagonist" class="character bl ">
-      <img class="item orb" src="/static/v2/images/quests/orb-0.svg">
-      <img class="item staff" src="/static/v2/images/quests/staff.svg">
-      <img src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
-      <div class='info'>
-        <h3>@{% if user and user.username %}{{ user.username }}{% else %}me{% endif %}</h3>
-        <p>Level {{user.profile.quest_level}} {{user.profile.quest_caste}}</p>
-      </div>
-      {% include 'quests/shared/alts_to_characters.html' %}
     </div>
 
     <div id="header" class="cen">

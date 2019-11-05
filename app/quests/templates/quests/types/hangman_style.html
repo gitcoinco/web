@@ -1,0 +1,54 @@
+{% load i18n static %}
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{% static 'v2/css/quests.css' %}" />
+    <link rel="stylesheet" href="{% static 'v2/css/quests.hangman.css' %}" />
+    <link rel="stylesheet" href="{% static 'v2/css/base.css' %}" />
+  </head>
+  <body class="{{quest.background}}">
+
+{% if not hidden and is_staff %}
+<div class="alpha-warning font-caption mb-0" style=" text-align: right;">
+  <span class="font-weight-bold">Staff only</span> |
+  <a style="color:white; margin-right: 20px;" href="{{quest.admin_url}}">{% trans "Quest Admin" %}</a>
+</div>
+{% endif %}
+    {% include "quests/protagonist.html" %}
+    {% include "quests/enemy.html" with suppress_hidden=1 %}
+    <div class="tl prize"><span>🏆Quest Prize🏅</span><img src="{{quest.kudos_reward.preview_img_url}}"></div>
+
+    <br>
+<div class="wrapper">
+    <div id="buttons">
+    </div>  
+    <div class=background>
+      <p id="categoryName"></p>
+      <div id="hold">
+      </div>
+      <p><span id="mylives"></span><span id="time"></span></p>
+      <p id="clue"></p>  
+       <canvas id="stickman">Your browser doesn't support HTML Canvas tags</canvas>
+    </div>
+    <div class="container">
+      <button id="hint">Hint</button>
+      <a href="/"><button id="reset">Play again</button></a>
+    </div>
+</div>
+  <script type="text/javascript">
+
+    document.hint = ['{{hint}}'];
+    document.category = ['{{cateogry}}'];
+    document.word = ['{{word}}'];
+
+  </script>
+  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+  <script src="{% static "v2/js/lib/jquery-ui.js" %}"></script>
+  <script src="{% static "v2/js/pages/quests.helpers.js" %}"></script>
+  <script src="{% static "v2/js/pages/quests.hangman.js" %}"></script>
+  </body>
+</html>
+
