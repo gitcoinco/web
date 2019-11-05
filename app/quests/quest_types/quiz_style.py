@@ -21,7 +21,6 @@ from quests.helpers import (
 from quests.models import Quest, QuestAttempt, QuestPointAward
 from ratelimit.decorators import ratelimit
 
-
 html_escape_table = {
     "&": "&amp;",
     '"': "&quot;",
