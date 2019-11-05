@@ -78,7 +78,7 @@ const previewFile = function(elem) {
       if (imageWidth !== imageHeight) {
         elem.val('');
         preview.src = elem.data('imgplaceholder');
-        return alert('The image format need to be square');
+        return alert('Please use a square image');
       }
       preview.src = reader.result;
     });

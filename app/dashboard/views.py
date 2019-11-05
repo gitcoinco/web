@@ -3447,12 +3447,11 @@ def hackathon_onboard(request, hackathon=''):
 
 
 def hackathon_projects(request, hackathon=''):
-    q = request.GET.get('q', '')
-    order_by = request.GET.get('order_by', '-created_on')
-    filters = request.GET.get('filters', '')
-    print(q)
-
+    q = clean(request.GET.get('q', ''), strip=True)
+    order_by = clean(request.GET.get('order_by', '-created_on'), strip=True)
+    filters = clean(request.GET.get('filters', ''), strip=True)
     page = request.GET.get('page', 1)
+
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
         profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
@@ -3498,13 +3497,11 @@ def hackathon_projects(request, hackathon=''):
 
 @csrf_exempt
 def hackathon_get_project(request, bounty_id, project_id=None):
-    # TODO FIX cache problem
-
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
     try:
         bounty = Bounty.objects.current().get(id=bounty_id)
         projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache()
-        print(projects)
     except HackathonProject.DoesNotExist:
         pass
 
@@ -3531,9 +3528,8 @@ def hackathon_save_project(request):
     profiles = request.POST.getlist('profiles[]')
     logo = request.FILES.get('logo')
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
-
     error_response = invalid_file_response(logo, supported=['image/png', 'image/jpeg', 'image/jpg'])
-    # 400 is ok because file upload is optional here
+
     if error_response and error_response['status'] != 400:
         return JsonResponse(error_response)
 
@@ -3546,12 +3542,12 @@ def hackathon_save_project(request):
     bounty_obj = Bounty.objects.current().get(pk=bounty_id)
 
     kwargs = {
-        'name': request.POST.get('name'),
+        'name': clean(request.POST.get('name'),  strip=True),
         'hackathon': bounty_obj.event,
         'logo': request.FILES.get('logo'),
         'bounty': bounty_obj,
-        'summary': request.POST.get('summary'),
-        'work_url': request.POST.get('work_url')
+        'summary': clean(request.POST.get('summary'), strip=True),
+        'work_url': clean(request.POST.get('work_url'), strip=True)
     }
 
     if project_id:
