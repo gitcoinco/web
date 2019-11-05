@@ -56,15 +56,12 @@
               </div>
               <div class="form-group">
                 <label for="project_name">Project Name</label>
-                <input type="text" value="{{project_selected.name}}" class="form-control" name="name" id="project_name" placeholder="My project">
+                <input type="text" value="{{project_selected.name}}" class="form-control" name="name" id="project_name" placeholder="My project" required>
               </div>
               <div class="from-group mb-3">
                 <label for="project_profiles">Team members</label>
                 <div class="form__select2 g-multiselect">
-                  <!-- TODO population with id -->
-                  <!-- <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp" data-initial="{{project_selected.profiles.all|join:', ' }}">
-                  </select> -->
-                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp">
+                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp" required>
                       {% for profile in project_selected.profiles.all %}
                       <option selected="selected"  value="{{ profile.id }}">{{ profile }}</option>
                     {% endfor %}
@@ -76,11 +73,11 @@
               </div>
               <div class="form-group">
                 <label for="work_url">Project Repo or PR</label>
-                <input type="url" class="form-control" name="work_url" id="work_url" value="{{project_selected.work_url}}" placeholder="https://github.com/gitcoinco/web">
+                <input type="url" class="form-control" name="work_url" id="work_url" value="{{project_selected.work_url}}" placeholder="https://github.com/gitcoinco/web" required>
               </div>
               <div class="form-group">
                 <label for="project_summary">Project Summary</label>
-                <textarea class="form-control" name="summary" id="project_summary" maxlength="100" cols="10" rows="2" placeholder="Tell us a few lines about your project">{{project_selected.summary}}</textarea>
+                <textarea class="form-control" name="summary" id="project_summary" maxlength="100" cols="10" rows="2" placeholder="Tell us a few lines about your project" required>{{project_selected.summary}}</textarea>
               </div>
               <div class="d-flex align-items-center flex-fill">
                 <p class="text-muted mb-0 font-smaller-3">You can modify your project details anytime on the projects page or when you submit work.</p>
@@ -103,12 +100,12 @@
               </div>
               <div class="form-group">
                 <label for="project_name">Project Name</label>
-                <input type="text" class="form-control" id="project_name" name="name" placeholder="My project">
+                <input type="text" class="form-control" id="project_name" name="name" placeholder="My project" required>
               </div>
               <div class="from-group mb-3">
                 <label for="project_profiles">Team members</label>
                 <div class="form__select2 g-multiselect">
-                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp">
+                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp" required>
                   </select>
                 </div>
                 <small id="profilesHelp" class="form-text text-muted">
@@ -117,11 +114,11 @@
               </div>
               <div class="form-group">
                 <label for="work_url">Project Repo or PR</label>
-                <input type="url" class="form-control" name="work_url" id="work_url" placeholder="https://github.com/gitcoinco/web">
+                <input type="url" class="form-control" name="work_url" id="work_url" placeholder="https://github.com/gitcoinco/web" required>
               </div>
               <div class="form-group">
                 <label for="project_summary">Project Summary</label>
-                <textarea class="form-control" name="summary" id="project_summary" cols="10" rows="2" placeholder="Tell us a few lines about your project"></textarea>
+                <textarea class="form-control" name="summary" id="project_summary" cols="10" rows="2" placeholder="Tell us a few lines about your project" required></textarea>
               </div>
               <div class="d-flex align-items-center flex-fill">
                 <p class="text-muted mb-0 font-smaller-3">You can modify your project details anytime on the projects page or when you submit work.</p>

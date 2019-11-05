@@ -56,6 +56,7 @@ from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
+from cacheops import invalidate_obj
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -3497,11 +3498,12 @@ def hackathon_projects(request, hackathon=''):
 
 @csrf_exempt
 def hackathon_get_project(request, bounty_id, project_id=None):
+    # TODO FIX cache problem
 
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     try:
-        bounty = Bounty.objects.get(id=bounty_id)
-        projects = HackathonProject.objects.filter(bounty=bounty, profiles__id=profile.id).nocache()
+        bounty = Bounty.objects.current().get(id=bounty_id)
+        projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache()
         print(projects)
     except HackathonProject.DoesNotExist:
         pass
@@ -3512,7 +3514,6 @@ def hackathon_get_project(request, bounty_id, project_id=None):
         project_selected = None
 
     params = {
-        # 'profile': profile,
         'bounty_id': bounty_id,
         'bounty': bounty,
         'projects': projects,
@@ -3528,11 +3529,6 @@ def hackathon_save_project(request):
     project_id = request.POST.get('project_id')
     bounty_id = request.POST.get('bounty_id')
     profiles = request.POST.getlist('profiles[]')
-
-    print(project_id, bounty_id, profiles)
-    print('request.POST', request.POST)
-    print('request.FILES.get("")',request.FILES.get('logo', None))
-
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
     if profile is None:
@@ -3541,13 +3537,12 @@ def hackathon_save_project(request):
             'msg': '',
         })
 
-    bounty_obj = Bounty.objects.get(pk=bounty_id)
-    # TODO FIX CLEARING LOGO ON UPDATE WITH NO CHANGES
+    bounty_obj = Bounty.objects.current().get(pk=bounty_id)
+
     kwargs = {
         'name': request.POST.get('name'),
         'hackathon': bounty_obj.event,
         'logo': request.FILES.get('logo'),
-        # 'profiles': profiles,
         'bounty': bounty_obj,
         'summary': request.POST.get('summary'),
         'work_url': request.POST.get('work_url')
@@ -3556,13 +3551,21 @@ def hackathon_save_project(request):
     if project_id:
         try :
             project = HackathonProject.objects.filter(id=project_id, profiles__id=profile.id)
-            print(project)
-            project.update(**kwargs)
-            profiles.append(str(profile.id))
-            project.first().profiles.add(*list(filter(lambda profile_id: profile_id > 0, map(int, profiles))))
 
-        except HackathonProject.DoesNotExist:
-            pass
+            kwargs.update({
+                'logo': request.FILES.get('logo', project.first().logo)
+            })
+            project.update(**kwargs)
+
+            profiles.append(str(profile.id))
+            project.first().profiles.set(profiles)
+
+            invalidate_obj(project.first())
+
+        except Exception as e:
+            logger.error(f"error in record_action: {e}")
+            return JsonResponse({'error': _('Error trying to save project')},
+            status=401)
     else:
         project = HackathonProject.objects.create(**kwargs)
         project.save()
@@ -3571,7 +3574,7 @@ def hackathon_save_project(request):
 
     return JsonResponse({
             'success': True,
-            'msg': 'Finished.'
+            'msg': _('Project saved.')
         })
 
 

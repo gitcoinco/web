@@ -4079,6 +4079,12 @@ class HackathonProject(SuperModel):
         blank=True
     )
 
+    class Meta:
+        ordering = ['-name']
+
+    def __str__(self):
+        return f"{self.name} - {self.bounty} on {self.created_on}"
+
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
