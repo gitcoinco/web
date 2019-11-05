@@ -395,11 +395,11 @@ def send_tip_2(request):
         'from_handle': from_username,
         'title': 'Send Tip | Gitcoin',
         'card_desc': 'Send a tip to any github user at the click of a button.',
-        'username': username,
     }
 
     if user:
         params['user_json'] = user
-
+    else:
+        params['username'] = username
 
     return TemplateResponse(request, 'onepager/send2.html', params)
