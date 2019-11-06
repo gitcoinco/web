@@ -900,7 +900,7 @@ def process_bounty_changes(old_bounty, new_bounty):
     # Send an Email if this is a LowBall bounty
     try:
         if(not old_bounty or old_bounty.value_in_usdt != new_bounty.value_in_usdt):
-                if is_lowball_bounty(new_bounty.value_in_usdt):
+                if is_lowball_bounty(new_bounty.value_in_usdt) and new_bounty.network == 'mainnet':
                     notify_of_lowball_bounty(new_bounty)
     except Exception as e:
         logger.error(f'{e} during check for Lowball Bounty')

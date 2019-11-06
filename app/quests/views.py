@@ -144,9 +144,11 @@ def editquest(request, pk=None):
             try:
                 funct = Quest.objects.create
                 edit_comments = ""
+                visible = False
                 if pk:
                     funct = Quest.objects.filter(pk=pk).update
                     edit_comments = quest.edit_comments
+                    visible = True
                 if package.get('comment'):
                     edit_comments += f"\n {timezone.now().strftime('%Y-%m-%dT%H:%M')}: {package['comment']} "
 
@@ -159,7 +161,7 @@ def editquest(request, pk=None):
                     kudos_reward=reward,
                     cooldown_minutes=package.get('minutes'),
                     background=package.get('background'),
-                    visible=False,
+                    visible=visible,
                     difficulty=package.get('difficulty'),
                     style=package.get('style'),
                     value=package.get('points'),
