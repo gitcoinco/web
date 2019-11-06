@@ -690,6 +690,47 @@ body.back12.quest_battle{
   background: url('/static/v2/images/quests/backs/back12.png') repeat;
   background-size: 120%;
 }
+div.back13,
+body.back13.quest_battle{
+  background: url('/static/v2/images/quests/backs/back13.png') repeat;
+  background-size: 100%;
+}
+div.back14,
+body.back14.quest_battle{
+  background: url('/static/v2/images/quests/backs/back14.png') repeat;
+  background-size: 100%;
+}
+div.back15,
+body.back15.quest_battle{
+  background: url('/static/v2/images/quests/backs/back15.png') repeat;
+  background-size: 100%;
+}
+div.back16,
+body.back16.quest_battle{
+  background: url('/static/v2/images/quests/backs/back16.png') repeat;
+  background-size: 100%;
+}
+div.back19,
+body.back19.quest_battle{
+  background: url('/static/v2/images/quests/backs/back19.png') repeat;
+  background-size: 100%;
+}
+div.back17,
+body.back17.quest_battle{
+  background: url('/static/v2/images/quests/backs/back17.png') repeat;
+  background-size: 100%;
+}
+div.back18,
+body.back18.quest_battle{
+  background: url('/static/v2/images/quests/backs/back18.png') repeat;
+  background-size: 100%;
+}
+div.back20,
+body.back20.quest_battle{
+  background: url('/static/v2/images/quests/backs/back20.png') repeat;
+  background-size: 120%;
+}
+
 div.red,
 body.red.quest_battle{
   background-image: linear-gradient(90deg, #ff6161, #ff0000);
@@ -854,6 +895,10 @@ body.back3 #desc li:hover,
 body.back3 #desc li.selected {
   background-color: #f6126e;
 }
+body.back14 #desc li:hover,
+body.back14 #desc li.selected {
+  background-color: #f6126e;
+}
 body.back4 #desc li:hover,
 body.back4 #desc li.selected {
   background-color: #17366d;
@@ -881,6 +926,14 @@ body.back9 #desc li.selected {
 body.red #desc li:hover,
 body.red #desc li.selected {
   background-color: #fc4240;
+}
+body.back19 #desc li:hover,
+body.back19 #desc li.selected {
+  background-color: #fc4240;
+}
+body.back20 #desc li:hover,
+body.back20 #desc li.selected {
+  background-color: #ace4f9;
 }
 body.blue #desc li:hover,
 body.blue #desc li.selected {
@@ -920,6 +973,12 @@ body.back3 .br,
 body.back3 .tl{
   background-color:rgb(239,72,134, 0.6);
 }
+body.back14 #header,
+body.back14 #desc,
+body.back14 .br,
+body.back14 .tl{
+  background-color:rgb(239,72,134, 0.6);
+}
 body.back6 #header,
 body.back6 #desc,
 body.back6 .br,
@@ -950,6 +1009,18 @@ body.red .br,
 body.red .tl{
   background-color:rgb(255, 0, 0, 0.6);
 }
+body.back20 #header,
+body.back20 #desc,
+body.back20 .br,
+body.back20 .tl{
+  background-color:rgb(156, 212, 244, 0.6);
+}
+body.back19 #header,
+body.back19 #desc,
+body.back19 .br,
+body.back19 .tl{
+  background-color:rgb(255, 0, 0, 0.6);
+}
 body.blue #header,
 body.blue #desc,
 body.blue .br,
@@ -973,6 +1044,13 @@ body.green .tl{
   body.back9.quest_battle{
     background-size: 120% !important;
   }
+  body.back19.quest_battle,
+  body.back18.quest_battle,
+  body.back17.quest_battle,
+  body.back14.quest_battle,
+  body.back15.quest_battle,
+  body.back16.quest_battle,
+  body.back13.quest_battle,
   body.back11.quest_battle{
     background-size: 100% !important;
   }

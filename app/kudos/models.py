@@ -100,6 +100,7 @@ class Token(SuperModel):
 
         verbose_name_plural = 'Kudos'
         index_together = [['name', 'description', 'tags'], ]
+        unique_together = ('token_id', 'contract',)
 
     # Kudos Struct (also in contract)
     price_finney = models.IntegerField()
@@ -324,7 +325,8 @@ class Token(SuperModel):
         if settings.AWS_STORAGE_BUCKET_NAME in self.image:
             file_path = f'cache/{self.pk}.png'
             if not path.exists(file_path):
-                filedata = urllib.request.urlopen(self.image)
+                safe_url = self.image.replace(' ', '%20')
+                filedata = urllib.request.urlopen(safe_url)
                 datatowrite = filedata.read()
                 with open(file_path, 'wb') as f:
                     f.write(datatowrite)
