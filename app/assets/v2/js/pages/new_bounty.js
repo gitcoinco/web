@@ -463,10 +463,10 @@ $('#sync-issue').on('click', function(event) {
 
 $('#issueURL').focusout(function() {
   for (var i = 0; i <= document.blocked_urls.length; i++) {
-    var this_url_filter = document.blocked_urls[i];
+    let this_url_filter = document.blocked_urls[i];
 
     if ($('input[name=issueURL]').val().toLowerCase().indexOf(this_url_filter.toLowerCase()) != -1) {
-      alert('this repo is not bountyable at the request of the maintainer.');
+      _alert('This repo is not bountyable at the request of the maintainer.');
       $('input[name=issueURL]').val('');
       return false;
     }
