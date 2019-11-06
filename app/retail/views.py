@@ -1901,7 +1901,7 @@ def tribes(request):
             'author': 'Scott Gralnick',
             'designation': 'Co-Founder, Portis',
             'photo': static('v2/images/tribes/landing/scott.png'),
-            'org_photo': static('v2/images/project_logos/portis.svg')
+            'org_photo': static('v2/images/project_logos/portis.png')
         }
     ]
 
