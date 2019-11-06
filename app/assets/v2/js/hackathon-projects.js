@@ -1,12 +1,7 @@
 // document.result.pk
 const projectModal = (bountyId, projectId) => {
   $('#modalProject').bootstrapModal('hide');
-
-  let modalUrl = `/modal/new_project/${bountyId}/`;
-
-  if (projectId) {
-    modalUrl = `/modal/new_project/${bountyId}/${projectId}/`;
-  }
+  const modalUrl = projectId ? `/modal/new_project/${bountyId}/${projectId}/` : `/modal/new_project/${bountyId}/`;
 
   $.ajax({
     url: modalUrl,
