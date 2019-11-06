@@ -1846,19 +1846,19 @@ def tribes(request):
         },
         {
             'name': 'Consensys Labs',
-            'img': static('v2/images/project_logos/consensys_labs.svg')
+            'img': static('v2/images/project_logos/consensys_labs.png')
         },
         {
             'name': 'Ethereum Foundation',
-            'img': static('v2/images/project_logos/eth_foundation.svg')
+            'img': static('v2/images/project_logos/eth_foundation.png')
         },
         {
             'name': 'Algorand',
-            'img': static('v2/images/project_logos/algorand.svg')
+            'img': static('v2/images/project_logos/algorand.png')
         },
         {
             'name': 'Consensys Grants',
-            'img': static('v2/images/project_logos/consensys_grants.svg')
+            'img': static('v2/images/project_logos/consensys_grants.png')
         },
         {
             'name': 'AirSwap',
@@ -1866,7 +1866,7 @@ def tribes(request):
         },
         {
             'name': 'Portis',
-            'img': static('v2/images/project_logos/portis_text.svg')
+            'img': static('v2/images/project_logos/portis_text.png')
         },
         {
             'name': 'Status',
@@ -1878,7 +1878,7 @@ def tribes(request):
         },
         {
             'name': 'BZX',
-            'img': static('v2/images/project_logos/bzx.svg')
+            'img': static('v2/images/project_logos/bzx.png')
         }
     ]
 

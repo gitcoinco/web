@@ -210,7 +210,7 @@ beyond_blocks_2019 = {
         },
         {
             'name'  : 'Portis',
-            'logo'  : static('v2/images/companies-logo/portis_text.svg')
+            'logo'  : static('v2/images/project_logos/portis_text.png')
         },
         {
             'name'  : 'Pegasys',
