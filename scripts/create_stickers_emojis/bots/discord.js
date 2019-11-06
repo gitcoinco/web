@@ -1,5 +1,9 @@
 const fs = require('fs');
-const { askQuestion, readImagesPath, createTempFolder, convertAndResizeSvg, deleteTempFolderRecursive } = require('./common');
+const { askQuestion, 
+        readImagesPath, 
+        createTempFolder, 
+        convertAndResizeSvg, 
+        deleteTempFolderRecursive } = require('./common');
 const open = require('open');
 const readline = require('readline');
 const { discordBotToken, discordBotClientId, discordServerId } = require('../config');
@@ -10,18 +14,17 @@ const colors = require('../colors');
 
 // Script Vars
 const DISCORD_EMOJI_SIZE = 128;
-const DISCORD_TEMP_FOLDER = __dirname + '/discord_images';
+const DISCORD_TEMP_FOLDER = __dirname + '/discord_emojis';
 
 // upload the converted PNG's to discord via the bot
 const uploadEmojisToDiscord = async() => {
   try {
 
     const emojis = await readImagesPath(DISCORD_TEMP_FOLDER);
-    console.log(emojis);
 
     if (emojis.length > 0) {
 
-      for (var i = 0; i < 2; i++) {
+      for (var i = 0; i < emojis.length; i++) {
 
         const emojiPath = DISCORD_TEMP_FOLDER + '/' + emojis[i];
         const emojiBase64 = fs.readFileSync(emojiPath, 'base64');
@@ -30,8 +33,6 @@ const uploadEmojisToDiscord = async() => {
                         image: `data:image/png;base64,${emojiBase64}`,
                       });
 
-      
-
         const options = {
             hostname: 'discordapp.com',
             port: 443,
@@ -39,25 +40,26 @@ const uploadEmojisToDiscord = async() => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Content-Length': data.length,
               'Authorization': `Bot ${discordBotToken}` 
             }
         };
 
         const req = https.request(options, res => {
-          console.log(`statusCode: ${res.statusCode}`)
 
           res.on('data', d => {
-            process.stdout.write(d)
+            const emoji = JSON.parse(d.toString());
+            console.log(emoji);
+            const msg = "Emoji Created: " + emoji.name;
+            console.log(colors.FgGreen, msg, colors.Reset);
           });
 
         });
 
         req.on('error', error => {
-          console.error(error)
+          console.log(colors.FgRed, error, colors.Reset);
         });
 
-        req.write(data);
+        req.write(emojiData);
         req.end();
 
       }
@@ -66,7 +68,9 @@ const uploadEmojisToDiscord = async() => {
 
   } 
   catch(error) {
-
+    console.log("");
+    console.log(colors.FgRed, error, colors.Reset);
+    console.log("");
   }
 
 };
@@ -108,7 +112,9 @@ const createEmoji = async (imagesPath) => {
 
   }
   catch (error) {
-     console.log(error);
+    console.log("");
+    console.log(colors.FgRed, error, colors.Reset);
+    console.log("");
   }
 
 };
