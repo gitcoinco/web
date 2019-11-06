@@ -40,7 +40,7 @@ from dashboard.models import Activity, Bounty, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
-from marketing.models import Alumni, LeaderboardRank
+from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
@@ -941,32 +941,7 @@ def mission(request):
 
 
 def jobs(request):
-    job_listings = [
-        {
-            'link': "mailto:founders@gitcoin.co",
-            'title': "Software Engineer",
-            'description': [
-                "Gitcoin is always looking for a few good software engineers.",
-                "If you are an active member of the community, have python + django + html chops",
-                "then we want to talk to you!"]
-        },
-        {
-            'link': "mailto:founders@gitcoin.co",
-            'title': "Community Manager",
-            'description': [
-                "We believe that community management is an important skill in the blockchain space.",
-                "We're looking for a solid community, proactive thinker, and someone who loves people",
-                "to be our next community manager.  Sound like you?  Apply below!"]
-        },
-        {
-            'link': "mailto:founders@gitcoin.co",
-            'title': "Ad Sales Engineer",
-            'description': [
-                "CodeFund is growing like a weed.  We could use a helping hand",
-                "to put CodeFund in front of more great advertisers and publishers.",
-                "If you want to be our next highly technical, highly engaging, sales engineer apply below!"]
-        }
-    ]
+    job_listings = Job.objects.filter(active=True)
     context = {
         'active': 'jobs',
         'title': 'Jobs',
@@ -1103,10 +1078,12 @@ def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:
         raise Http404
-    context = JSONStore.objects.get(view='results', key=keyword).data
+    js = JSONStore.objects.get(view='results', key=keyword)
+    context = js.data
+    context['updated'] = js.created_on
     context['is_outside'] = True
     context['prefix'] = 'data-'
-    context['target'] = "/activity?page=" + str(request.GET.get('page', 0) + 1)
+    context['target'] = "/activity?page=" + str(int(request.GET.get('page', 0)) + 1)
     import json
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
@@ -1795,3 +1772,118 @@ def increase_funding_limit_request(request):
     }
 
     return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)
+
+@staff_member_required
+def tribes(request):
+    plans= [
+        {
+            'type': 'lite',
+            'img': '/v2/images/tribes/landing/tribe-one.svg',
+            'price': '10k',
+            'features': [
+                '1 Hackthon Credit'
+            ],
+            'features_na': [
+                'Access to Gitcoin Pro Tools'
+            ]
+        },
+        {
+            'type': 'pro',
+            'img': '/v2/images/tribes/landing/tribe-two.svg',
+            'discount': '40%',
+            'price': '6k',
+            'features': [
+                {
+                    'title': '3 Hackathon Credits',
+                    'info': '18k year total'
+                },
+                'Access to Gitcoin Pro Tools'
+            ]
+        },
+        {
+            'type': 'launch',
+            'img': '/v2/images/tribes/logo.svg',
+            'price': '4k',
+            'features': [
+                {
+                    'title': '5 Hackathon Credits',
+                    'info': '20k year total'
+                },
+                'Access to Gitcoin Pro Tools'
+            ]
+        }
+    ]
+
+    companies = [
+        {
+            'name': 'Bancor',
+            'img': static('v2/images/project_logos/bancor.svg')
+        },
+        {
+            'name': 'Consensys Labs',
+            'img': static('v2/images/project_logos/consensys_labs.png')
+        },
+        {
+            'name': 'Ethereum Foundation',
+            'img': static('v2/images/project_logos/eth_foundation.png')
+        },
+        {
+            'name': 'Algorand',
+            'img': static('v2/images/project_logos/algorand.png')
+        },
+        {
+            'name': 'Consensys Grants',
+            'img': static('v2/images/project_logos/consensys_grants.png')
+        },
+        {
+            'name': 'AirSwap',
+            'img': static('v2/images/project_logos/airswap.svg')
+        },
+        {
+            'name': 'Portis',
+            'img': static('v2/images/project_logos/portis_text.png')
+        },
+        {
+            'name': 'Status',
+            'img': static('v2/images/project_logos/status.svg')
+        },
+        {
+            'name': 'Matic',
+            'img': static('v2/images/project_logos/matic.svg')
+        },
+        {
+            'name': 'BZX',
+            'img': static('v2/images/project_logos/bzx.png')
+        }
+    ]
+
+    testimonials = [
+        {
+            'text': 'I had a lot of fun (during Beyond Blockchain) meeting people and building tangible rapidly. Glad to have a winning submission!',
+            'author': 'VirajA',
+            'designation': 'Hacker',
+            'photo': 'https://c.gitcoin.co/avatars/58ef080697b34b1eab840bc60e2ee92b/viraja1.png'
+        },
+        {
+            'text': 'Gitcoin has a fantastic community that is our target audience -- Web 3 developers who want to build.',
+            'author': 'Sam Williams',
+            'designation': 'CEO, Arweave',
+            'photo':  static('v2/images/tribes/landing/sam.jpg'),
+            'org_photo': static('v2/images/project_logos/arweave.svg')
+        },
+        {
+            'text': '"Relationships with developers" is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.',
+            'author': 'Scott Gralnick',
+            'designation': 'Co-Founder, Portis',
+            'photo': static('v2/images/tribes/landing/scott.png'),
+            'org_photo': static('v2/images/project_logos/portis.png')
+        }
+    ]
+
+    context = {
+        'plans': plans,
+        'companies': companies,
+        'testimonials': testimonials
+    }
+
+    return TemplateResponse(request, 'tribes/landing.html', context)

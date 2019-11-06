@@ -101,7 +101,7 @@ beyondblockchain_2019 = {
         },
         {
             'name'  : 'Portis',
-            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/portis.svg')
+            'logo'  : static('v2/images/project_logos/portis_text.png')
         },
     ],
     'sponsors_silver' : [

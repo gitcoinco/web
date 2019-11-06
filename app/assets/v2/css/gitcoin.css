@@ -737,13 +737,6 @@ div.button-pink {
   width: auto;
 }
 
-#payout_table td div.input_amount,
-#payout_table td a.remove,
-#payout_table td div.amount {
-  position: relative;
-  top: 10px;
-}
-
 @media (min-width: 768px) {
 
   .d-md-block {

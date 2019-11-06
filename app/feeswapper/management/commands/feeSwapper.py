@@ -165,7 +165,7 @@ class Command(BaseCommand):
                                 response = self.sg.client.mail.send.post(request_body=mail.get())
                 else:
                         # Email Gitcoin staff if token balance exists in wallet where previous attempt convert to ETH failed
-                        mail = Mail(Email(settings.CONTACT_EMAIL),'Token in Fee Wallet with previous failed fee conversion', Email(settings.CONTACT_EMAIL),Content('text/plain', tokenSymbol+' conversion to ETH failed previously so no conversion was attempted.'))                        
+                        mail = Mail(Email('kevin@gitcoin.co'),'Token in Fee Wallet with previous failed fee conversion', Email(settings.CONTACT_EMAIL),Content('text/plain', tokenSymbol+' conversion to ETH failed previously so no conversion was attempted.'))                        
                         response = self.sg.client.mail.send.post(request_body=mail.get())
                         
 

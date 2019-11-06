@@ -371,3 +371,13 @@ class MarketingCallback(SuperModel):
 
     def __str__(self):
         return f"{self.key} - {self.val}"
+
+class Job(SuperModel):
+
+    title = models.CharField(max_length=255)
+    description = models.TextField(max_length=5000, blank=True)
+    link = models.CharField(max_length=255)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.title}"

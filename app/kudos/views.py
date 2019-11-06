@@ -178,7 +178,7 @@ def image(request, kudos_id, name):
     return response
 
 
-def details_by_address_and_token_id(request, address, token_id, name):
+def details_by_address_and_token_id(request, address, token_id, name=None):
     kudos = get_token(token_id=token_id, network=settings.KUDOS_NETWORK, address=address)
     return redirect(f'/kudos/{kudos.id}/{kudos.name}')
 

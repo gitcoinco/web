@@ -502,7 +502,8 @@ input[type=text].loading {
 
 .submit_bounty #primary_form,
 .fulfill_bounty #primary_form,
-.increase_bounty #primary_form {
+.increase_bounty #primary_form,
+.payout_bounty #primary_form {
   max-width: none;
 }
 
@@ -545,14 +546,6 @@ input[type=text].loading {
 .bounty_nav li.active {
   background-color: #212529;
   color: white;
-}
-
-.submit_bounty #network_status div {
-  display: inline;
-}
-
-#network_status div span {
-  color: #4aeba8;
 }
 
 .submit_bounty select[name=denomination] {

@@ -303,6 +303,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
         indicateMetamaskPopup();
         if (isSendingETH) {
           web3.eth.sendTransaction({
+            from: fromAccount,
             to: destinationAccount,
             value: amountInDenom,
             gasPrice: web3.toHex(get_gas_price())

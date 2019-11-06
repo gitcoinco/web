@@ -10,7 +10,7 @@ from django.utils.text import slugify
 # Create your models here.
 from economy.models import SuperModel
 
-num_backgrounds = 12
+num_backgrounds = 20
 
 
 class Quest(SuperModel):
@@ -53,6 +53,8 @@ class Quest(SuperModel):
         blank=True,
     )
     ui_data = JSONField(default=dict, blank=True)
+    edit_comments = models.TextField(default='', blank=True)
+    
     def __str__(self):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.title} (visible: {self.visible})'
@@ -62,6 +64,11 @@ class Quest(SuperModel):
     def url(self):
         from django.conf import settings
         return settings.BASE_URL + f"quests/{self.pk}/{slugify(self.title)}"
+
+    @property
+    def edit_url(self):
+        from django.conf import settings
+        return settings.BASE_URL + f"quests/edit/{self.pk}"
 
     @property
     def est_read_time_mins(self):

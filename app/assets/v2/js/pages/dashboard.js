@@ -108,7 +108,7 @@ function debounce(func, wait, immediate) {
   };
 }
 
-const scrub = value => value.replace(/[\W]+/g, '');
+const scrub = value => value.replace(/[!@#$%^&*(),.?":{}|<>]+/g, '');
 
 /**
  * Fetches all filters options from the URI
