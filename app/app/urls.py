@@ -610,8 +610,9 @@ if settings.DEBUG:
     ]
 
 urlpatterns += [
-    re_path(r'^(.*)/(.*)?', dashboard.views.profile, name='profile_min_by_tab'),
-    re_path(r'^(.*)', dashboard.views.profile, name='profile_min'),
+    re_path(r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$', dashboard.views.profile, name='profile_min'),
+
+    re_path(r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'),
 ]
 
 handler403 = 'retail.views.handler403'
