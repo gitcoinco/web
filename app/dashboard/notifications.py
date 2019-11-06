@@ -235,6 +235,10 @@ def build_message_for_integration(bounty, event_name):
 
     """
     from dashboard.utils import humanize_event_name
+    event_name_in_msg = humanize_event_name(event_name)
+    if event_name == 'killed_bounty':
+        if (bounty.bulk_payout_tips.count()):
+            event_name_in_msg = humanize_event_name('work_done')
     conv_details = ""
     usdt_details = ""
     try:
@@ -244,7 +248,7 @@ def build_message_for_integration(bounty, event_name):
         pass  # no USD conversion rate
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = f"*{humanize_event_name(event_name)}*" \
+    msg = f"*{event_name_in_msg}*" \
           f"\n*Issue*: {title}" \
           f"\n*Bounty value*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
           f"\n{bounty.get_absolute_url()}"
@@ -371,6 +375,10 @@ def maybe_market_tip_to_slack(tip, event_name):
     """
     if not tip.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
+
+    if tip.bounty:
+        if tip in tip.bounty.bulk_payout_tips:
+            event_name = 'Payout'
 
     msg = f"{event_name} worth {round(tip.amount, 4)} {tip.tokenName}"
 
