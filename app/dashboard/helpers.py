@@ -842,7 +842,7 @@ def is_lowball_bounty(bounty_value_usdt):
       bool: True if bounty value is less than the threshold
 
     """
-    return bounty_value_usdt < settings.LOWBALL_BOUNTY_THRESHOLD
+    return bounty_value_usdt < settings.LOWBALL_BOUNTY_THRESHOLD if bounty_value_usdt else False
 
 
 def process_bounty_changes(old_bounty, new_bounty):
