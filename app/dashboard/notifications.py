@@ -27,6 +27,7 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.templatetags.static import static
 from django.utils import timezone, translation
 from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 
 import requests
 import twitter
@@ -40,6 +41,31 @@ from retail.emails import render_new_kudos_email
 from slackclient import SlackClient
 
 logger = logging.getLogger(__name__)
+
+
+def notify_of_lowball_bounty(bounty):
+    """Send an email to founders@gitcoin.co with the lowball bounty info
+
+    Args:
+        bounty (dashboard.models.Bounty): The lowball bounty object
+
+    """
+    to_email = 'founders@gitcoin.co'
+    from_email = settings.CONTACT_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("Low Bounty Notification")
+        body = \
+            f"Bounty: {bounty}\n\n" \
+            f"url: {bounty.url}\n\n" \
+            f"Owner Name: {bounty.bounty_owner_name}\n\n" \
+            f"Owner Email: {bounty.bounty_owner_email}\n\n" \
+            f"Owner Address: {bounty.bounty_owner_address}\n\n" \
+            f"Owner Profile: {bounty.bounty_owner_profile}"
+        send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"), categories=['admin'], )
+    finally:
+        translation.activate(cur_language)
 
 
 def github_org_to_twitter_tags(github_org):
