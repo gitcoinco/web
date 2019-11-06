@@ -322,7 +322,7 @@ class Token(SuperModel):
         file_path = root('assets') + '/' + self.image
 
         # download it if file is remote
-        if settings.AWS_STORAGE_BUCKET_NAME in self.image:
+        if settings.AWS_STORAGE_BUCKET_NAME and settings.AWS_STORAGE_BUCKET_NAME in self.image:
             file_path = f'cache/{self.pk}.png'
             if not path.exists(file_path):
                 safe_url = self.image.replace(' ', '%20')
