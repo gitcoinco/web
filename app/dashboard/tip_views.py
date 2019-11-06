@@ -399,7 +399,5 @@ def send_tip_2(request):
 
     if user:
         params['user_json'] = user
-    else:
-        params['username'] = username
 
     return TemplateResponse(request, 'onepager/send2.html', params)
