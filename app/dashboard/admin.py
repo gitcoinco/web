@@ -24,9 +24,9 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
-    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonRegistration, HackathonSponsor,
-    Interest, LabsResearch, PortfolioItem, Profile, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Tip,
-    TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
+    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
+    HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView, RefundFeeRequest, SearchHistory,
+    Sponsor, Tip, TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 
 
@@ -362,6 +362,33 @@ class HackathonRegistrationAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name', 'referer', 'registrant']
     raw_id_fields = ['registrant']
 
+
+class HackathonProjectAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon', 'usernames', 'status', 'sponsor']
+    raw_id_fields = ['profiles', 'bounty', 'hackathon']
+    search_fields = ['name', 'summary', 'status']
+
+    def img(self, instance):
+        """Returns a formatted HTML img node or 'n/a' if the HackathonProject has no logo.
+
+        Returns:
+            str: A formatted HTML img node or 'n/a' if the HackathonProject has no logo.
+        """
+        logo = instance.logo
+        if not logo:
+            return 'n/a'
+        img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(logo.url))
+        return img_html
+
+    def usernames(self, obj):
+        """Get the profile handle."""
+        return "\n".join([p.handle for p in obj.profiles.all()])
+
+    def sponsor(self, obj):
+        """Get the profile handle."""
+        return obj.bounty.org_name
+
+
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Earning, EarningAdmin)
@@ -385,6 +412,7 @@ admin.site.register(Sponsor, SponsorAdmin)
 admin.site.register(HackathonEvent, HackathonEventAdmin)
 admin.site.register(HackathonSponsor, HackathonSponsorAdmin)
 admin.site.register(HackathonRegistration, HackathonRegistrationAdmin)
+admin.site.register(HackathonProject, HackathonProjectAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)

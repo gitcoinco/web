@@ -35,10 +35,6 @@
   width: 100%;
 }
 
-.form__select2 select {
-  display: none;
-}
-
 .form__select select[multiple] {
   height: auto;
 }

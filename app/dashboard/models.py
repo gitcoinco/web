@@ -3988,6 +3988,7 @@ class HackathonEvent(SuperModel):
     text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
+    show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -4032,6 +4033,58 @@ class HackathonSponsor(SuperModel):
         choices=SPONSOR_TYPES,
         default='G',
     )
+
+
+class HackathonProject(SuperModel):
+    PROJECT_STATUS = [
+        ('invalid', 'invalid'),
+        ('pending', 'pending'),
+        ('accepted', 'accepted'),
+        ('completed', 'completed'),
+    ]
+    name = models.CharField(max_length=255)
+    hackathon = models.ForeignKey(
+        'HackathonEvent',
+        related_name='project_event',
+        on_delete=models.CASCADE,
+        help_text='Hackathon event'
+    )
+    logo = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('Project Logo')
+    )
+    profiles = models.ManyToManyField(
+        'dashboard.Profile',
+        related_name='project_profiles',
+    )
+    work_url = models.URLField(help_text='Repo or PR url')
+    summary = models.TextField(default='', blank=True)
+    bounty = models.ForeignKey(
+        'dashboard.Bounty',
+        related_name='project_bounty',
+        on_delete=models.CASCADE,
+        help_text='bounty prize url'
+    )
+    badge = models.URLField(
+        blank=True,
+        null=True,
+        db_index=True,
+        help_text='badge img url'
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=PROJECT_STATUS,
+        blank=True
+    )
+
+    class Meta:
+        ordering = ['-name']
+
+    def __str__(self):
+        return f"{self.name} - {self.bounty} on {self.created_on}"
+
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(

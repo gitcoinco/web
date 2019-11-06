@@ -53,6 +53,11 @@
           {% endif %}
           <span class="d-block font-title-lg">
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+            {% if hackathon.end_date|timeuntil >= "1 min" %}
+              <p class="font-smaller-1 text-uppercase"> Ends in
+                {{hackathon.end_date|timeuntil}}
+              </p>
+            {% endif %}
           </span>
         </div>
         {% include 'shared/hackathon_sponsors.html' %}

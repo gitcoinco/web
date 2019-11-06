@@ -56,6 +56,7 @@ from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
+from cacheops import invalidate_obj
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -81,9 +82,9 @@ from web3 import HTTPProvider, Web3
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
     Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    Earning, FeedbackEntry, HackathonEvent, HackathonRegistration, HackathonSponsor, Interest, LabsResearch,
-    PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Subscription,
-    Tool, ToolVote, UserAction, UserVerificationModel,
+    Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest,
+    LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor,
+    Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -3445,7 +3446,138 @@ def hackathon_onboard(request, hackathon=''):
         'referer': referer,
         'is_registered': is_registered,
     }
-    return TemplateResponse(request, 'dashboard/hackathon_onboard.html', params)
+    return TemplateResponse(request, 'dashboard/hackathon/onboard.html', params)
+
+
+def hackathon_projects(request, hackathon=''):
+    q = clean(request.GET.get('q', ''), strip=True)
+    order_by = clean(request.GET.get('order_by', '-created_on'), strip=True)
+    filters = clean(request.GET.get('filters', ''), strip=True)
+    page = request.GET.get('page', 1)
+
+    try:
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+    except HackathonEvent.DoesNotExist:
+        hackathon_event = HackathonEvent.objects.last()
+
+    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles').order_by(order_by)
+
+    if q:
+        projects = projects.filter(
+            Q(name__icontains=q) |
+            Q(summary__icontains=q) |
+            Q(profiles__handle__icontains=q)
+        )
+    if filters == 'winners':
+        projects = projects.filter(
+            Q(badge__isnull=False)
+        )
+
+    projects_paginator = Paginator(projects, 9)
+
+    try:
+        projects_paginated = projects_paginator.page(page)
+    except PageNotAnInteger:
+        projects_paginated = projects_paginator.page(1)
+    except EmptyPage:
+        projects_paginated = projects_paginator.page(projects_paginator.num_pages)
+
+    params = {
+        'active': 'hackathon_onboard',
+        'title': 'Hackathon Projects',
+        'hackathon': hackathon_event,
+        'projects': projects_paginated,
+        'order_by': order_by,
+        'filters': filters,
+        'query': q.split
+    }
+
+    return TemplateResponse(request, 'dashboard/hackathon/projects.html', params)
+
+
+@csrf_exempt
+def hackathon_get_project(request, bounty_id, project_id=None):
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    try:
+        bounty = Bounty.objects.current().get(id=bounty_id)
+        projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache()
+    except HackathonProject.DoesNotExist:
+        pass
+
+    if project_id:
+        project_selected = projects.filter(id=project_id).first()
+    else:
+        project_selected = None
+
+    params = {
+        'bounty_id': bounty_id,
+        'bounty': bounty,
+        'projects': projects,
+        'project_selected': project_selected
+    }
+    return TemplateResponse(request, 'dashboard/hackathon/project_new.html', params)
+
+
+@csrf_exempt
+@require_POST
+def hackathon_save_project(request):
+
+    project_id = request.POST.get('project_id')
+    bounty_id = request.POST.get('bounty_id')
+    profiles = request.POST.getlist('profiles[]')
+    logo = request.FILES.get('logo')
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    error_response = invalid_file_response(logo, supported=['image/png', 'image/jpeg', 'image/jpg'])
+
+    if error_response and error_response['status'] != 400:
+        return JsonResponse(error_response)
+
+    if profile is None:
+        return JsonResponse({
+            'success': False,
+            'msg': '',
+        })
+
+    bounty_obj = Bounty.objects.current().get(pk=bounty_id)
+
+    kwargs = {
+        'name': clean(request.POST.get('name'),  strip=True),
+        'hackathon': bounty_obj.event,
+        'logo': request.FILES.get('logo'),
+        'bounty': bounty_obj,
+        'summary': clean(request.POST.get('summary'), strip=True),
+        'work_url': clean(request.POST.get('work_url'), strip=True)
+    }
+
+    if project_id:
+        try :
+            project = HackathonProject.objects.filter(id=project_id, profiles__id=profile.id)
+
+            kwargs.update({
+                'logo': request.FILES.get('logo', project.first().logo)
+            })
+            project.update(**kwargs)
+
+            profiles.append(str(profile.id))
+            project.first().profiles.set(profiles)
+
+            invalidate_obj(project.first())
+
+        except Exception as e:
+            logger.error(f"error in record_action: {e}")
+            return JsonResponse({'error': _('Error trying to save project')},
+            status=401)
+    else:
+        project = HackathonProject.objects.create(**kwargs)
+        project.save()
+        profiles.append(str(profile.id))
+        project.profiles.add(*list(filter(lambda profile_id: profile_id > 0, map(int, profiles))))
+
+    return JsonResponse({
+            'success': True,
+            'msg': _('Project saved.')
+        })
 
 
 @csrf_exempt
@@ -3526,7 +3658,7 @@ def get_hackathons(request):
         'title': 'hackathons',
         'hackathons': events,
     }
-    return TemplateResponse(request, 'dashboard/hackathons.html', params)
+    return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
 
 
 @login_required
