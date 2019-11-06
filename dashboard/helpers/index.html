@@ -2322,6 +2322,16 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     new_bounty (Bounty): The new Bounty object.</p>
 <p>Raises:
     Exception: Log all exceptions that occur during fulfillment checks.</p>
+<h2 id="dashboard.helpers.is_lowball_bounty">is_lowball_bounty</h2>
+
+<pre><code class="python">is_lowball_bounty(bounty_value_usdt)
+</code></pre>
+
+<p>Determine if a bounty value is less than a threshold</p>
+<p>Args:
+  bounty_value_usdt (Decimal): The value of the bounty</p>
+<p>Returns:
+  bool: True if bounty value is less than the threshold</p>
 <h2 id="dashboard.helpers.process_bounty_changes">process_bounty_changes</h2>
 
 <pre><code class="python">process_bounty_changes(old_bounty, new_bounty)
