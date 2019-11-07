@@ -720,8 +720,8 @@ class Bounty(SuperModel):
         # standard bounties
         is_traditional_bounty_type = self.project_type == 'traditional'
         try:
-            has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
-            if has_tips and is_traditional_bounty_type:
+            has_tips = True
+            if has_tips and self.idx_status in ['cancelled']:
                 return 'done'
             if not self.is_open:
                 if self.accepted:
