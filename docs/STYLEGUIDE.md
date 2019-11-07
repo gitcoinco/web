@@ -73,7 +73,7 @@ Container has a fade in animation when it becomes into viewport.
 
 _values_
 
-`data-fade-direction`: `left` | `mid` | `right` _(defaut: `mid`)_
+`data-fade-direction`: `left` | `mid` | `right` _(default: `mid`)_
 `data-fade-duration`: `Number` _(default: `1500`)_
 
 _usage_
