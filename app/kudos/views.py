@@ -593,10 +593,8 @@ def receive(request, key, txid, network):
             'Please wait a moment before submitting the receive form.'
         )
         messages.info(request, message)
-    elif request.GET.get('receive_txid') and not kudos_transfer.receive_txid:
-        params = request.GET # Should be request.POST, and CSRF protection should be enforced 
-                             # Note: transaction/receive.html seems to already send POST request, is this a mistake ?
-
+    elif request.POST.get('receive_txid') and not kudos_transfer.receive_txid:
+        params = request.POST
         # db mutations
         try:
             profile = get_profile(kudos_transfer.username.replace('@', ''))
@@ -748,7 +746,7 @@ def receive_bulk(request, secret):
     coupons = BulkTransferCoupon.objects.filter(secret=secret)
     if not coupons.exists():
         raise Http404
-    
+
     coupon = coupons.first()
     _class = request.GET.get('class', '')
     if coupon.num_uses_remaining <= 0:
