@@ -348,8 +348,19 @@ def details(request, obj_id, name, allow_feedback=False):
 
     # handle user feedback
     if allow_feedback and request.user.is_authenticated and request.POST.get('feedback'):
-        feedback = request.POST.get('feedback')
-        send_user_feedback(quest, feedback, request.user)
+        comment = request.POST.get('feedback')
+        vote = int(request.POST.get('polarity'))
+        if vote not in [-1, 1]:
+            vote = 0
+        from quests.models import QuestFeedback
+        QuestFeedback.objects.create(
+            profile=request.user.profile,
+            quest=quest,
+            comment=comment,
+            vote=vote,
+            )
+        if comment:
+            send_user_feedback(quest, comment, request.user)
         return JsonResponse({'status': 'ok'})
     if quest.style.lower() == 'quiz':
         return quiz_style(request, quest)

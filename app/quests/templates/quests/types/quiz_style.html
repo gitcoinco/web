@@ -81,10 +81,6 @@
     </div>
     <div id="menu" class="br">
       <span>
-        {% if github_handle %}
-        <a class="give_feedback" href="#">Quest Feedback</a>
-        <BR>
-        {% endif %}
         <span>
           Attempt #{{attempt_count}}
         </span>
@@ -99,7 +95,11 @@
         {% endif %}
         <br>
         {% if github_handle %}
-        <a class="skip_intro" href="#">Skip Intro |</a>
+          <span id="vote_container">
+            <a class="give_feedback" href="#" data-direction='1'>Upvote ⬆️</a> | <a class="give_feedback" href="#" data-direction='-1'>Downvote ⬇️</a>
+            <BR>
+          </span>
+          <a class="skip_intro" href="#">Skip Intro ⏩</a>
         {% endif %}
         <a class="music_toggle" href="#">Sound On 🎵</a>
       </span>

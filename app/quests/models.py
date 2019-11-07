@@ -59,7 +59,6 @@ class Quest(SuperModel):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.title} (visible: {self.visible})'
 
-
     @property
     def url(self):
         from django.conf import settings
@@ -74,6 +73,23 @@ class Quest(SuperModel):
     def feedback_url(self):
         from django.conf import settings
         return settings.BASE_URL + f"quests/{self.pk}/feedback"
+
+    @property
+    def feedbacks(self):
+        stats = {1 : 0, -1 : 0, 0 : 0}
+        for fb in self.feedback.all():
+            stats[fb.vote] += 1
+        ratio_upvotes = 0
+        if self.feedback.count():
+            ratio_upvotes = stats[1]/self.feedback.count()
+        return_me = {
+            'ratio': ratio_upvotes,
+            'stats': stats,
+            'feedback': []
+        }
+        for fb in self.feedback.all():
+            return_me['feedback'].append(fb.comment)
+        return return_me
 
     @property
     def est_read_time_mins(self):
@@ -230,6 +246,7 @@ def psave_quest(sender, instance, **kwargs):
     instance.ui_data['attempts_count'] = instance.attempts.count()
     instance.ui_data['tags'] = instance.tags
     instance.ui_data['success_pct'] = instance.success_pct
+    instance.ui_data['feedbacks'] = instance.feedbacks
     instance.ui_data['creator'] = {
         'url': instance.creator.url,
         'handle': instance.creator.handle,
@@ -250,6 +267,22 @@ class QuestAttempt(SuperModel):
     def __str__(self):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.profile.handle} => {self.quest.title} state: {self.state} success: {self.success}'
+
+
+class QuestFeedback(SuperModel):
+
+    quest = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='feedback', on_delete=models.SET_NULL)
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        on_delete=models.CASCADE,
+        related_name='quest_feedback',
+    )
+    vote = models.IntegerField(default=1)
+    comment = models.TextField(default='', blank=True)
+
+    def __str__(self):
+        """Return the string representation of this obj."""
+        return f'{self.pk}, {self.profile.handle} => {self.quest.title} ({self.comment})'
 
 
 class QuestPointAward(SuperModel):

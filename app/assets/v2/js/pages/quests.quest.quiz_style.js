@@ -162,6 +162,8 @@ var advance_to_state = async function(new_state) {
   // -- individual transitions callbacks --
 
   // 0 to 1
+  var new_html;
+
   if (old_state == 0 && new_state == 1) {
     await sleep(1000);
     await $('#header').html('Quest Intro');
@@ -178,7 +180,9 @@ var advance_to_state = async function(new_state) {
     await wait_for_typewriter();
 
     var kudos_reward_html = " <BR><BR> If you're successful in this quest, you'll earn this limited edition <strong>" + document.kudos_reward['name'] + "</strong> Kudos: <BR> <BR> <img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>';
-    var new_html = $('#desc').html() + kudos_reward_html;
+
+    new_html = $('#desc').html() + kudos_reward_html;
+
     $('#desc').html(new_html);
 
     await $('#desc').removeClass('hidden').fadeIn();
@@ -233,7 +237,8 @@ var advance_to_state = async function(new_state) {
 
     await $('#desc').removeClass('hidden').fadeIn();
     await wait_for_typewriter();
-    var new_html = $('#desc').html() + html;
+    new_html = $('#desc').html() + html;
+
     $('#desc').html(new_html);
 
     await sleep(100);

@@ -205,18 +205,18 @@ $(document).ready(function() {
 
   $('.give_feedback').on('click', async function(e) {
     e.preventDefault();
-    var feedback = prompt('Please enter your feedback for the quest author.', 'Is question #3 wrong? I tried everyhing!');
-
-    if (!feedback) {
-      return;
-    }
+    var feedback = prompt('Any comments for the quest author? (optional)', 'Is question #3 wrong? I tried everyhing!');
+    var polarity = $(this).data('direction');
+    
     var params = {
+      'polarity': polarity,
       'feedback': feedback
     };
     var url = document.quest_feedback_url;
 
     $.post(url, params, function(response) {
-      _alert('Feedback sent', 'success');
+      _alert('Thank you for your feedback on this quest.', 'success');
+      $('#vote_container').remove();
     });
   });
 

@@ -573,6 +573,7 @@ body.quest_battle .bottom_notification{
   bottom: 0px;
   right: 10px;
 }
+
 .bl{
   position: absolute;
   bottom: 20px;
@@ -1053,6 +1054,16 @@ body.green .tl{
   body.back13.quest_battle,
   body.back11.quest_battle{
     background-size: 100% !important;
+  }
+  .br a{
+    display: inline-block;
+    padding: 5px 5px;
+    margin: 4px 4px;
+    background-color: rgba(256,256,256,0.3);
+  }
+  .br a:hover{
+    background-color: rgba(256,256,256,0.7);
+    text-decoration: none;
   }
   #cta_button a, a.button{
     line-height: 46px;
