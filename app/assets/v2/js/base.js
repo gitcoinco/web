@@ -2,6 +2,14 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 $(document).ready(function() {
+  $.fn.isInViewport = function() {
+    var elementTop = $(this).offset().top;
+    var elementBottom = elementTop + $(this).outerHeight();
+    var viewportTop = $(window).scrollTop();
+    var viewportBottom = viewportTop + $(window).height();
+
+    return elementBottom > viewportTop && elementTop < viewportBottom;
+  };
 
   if (typeof ($('body').tooltip) != 'undefined') {
     $('body').tooltip({
@@ -246,38 +254,6 @@ const _alert = function(msg, _class) {
 
   $('body').append(html);
 };
-
-
-if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_update']) {
-  localStorage['notify_policy_update'] = true;
-
-  const content = $.parseHTML(
-    `<div id="notify_policy_update" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content px-4 py-3">
-          <div class="col-12">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-          </div>
-          <div class="col-12 pt-2 pb-2 text-center">
-            <h2 class="font-title">${gettext('We Care About Your Privacy')}</h2>
-          </div>
-          <div class="col-12 pt-2 pb-2 font-body">
-            <p>${gettext('As a Web 3.0 company, we think carefully about user data and privacy and how the internet is evolving. We hope Web 3.0 will bring more control of data to users. With this ethos in mind, we are always careful about how we use your information.')}</p>
-            <p>${gettext('We recently reviewed our Privacy Policy to comply with requirements of General Data Protection Regulation (GDPR), improving our Terms of Use, Privacy Policy and Cookie Policy. These changes are in effect and your continued use of the Gitcoin will be subjected to our updated Terms of Use and Privacy Policy.')}</p>
-          </div>
-          <div class="col-12 font-caption">
-            <a href="/legal/policy" target="_blank">${gettext('Read Our Updated Terms')}</a>
-          </div>
-          <div class="col-12 mt-4 mb-2 text-right font-caption">
-            <button type="button" class="button button--primary" data-dismiss="modal">ok</button>
-          </div>
-        </div>
-      </div>
-    </div>`);
-
-  $(content).appendTo('body');
-  $('#notify_policy_update').bootstrapModal('show');
-}
 
 var show_persona_modal = function(e) {
   const content = $.parseHTML(

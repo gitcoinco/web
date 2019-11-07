@@ -119,6 +119,8 @@ window.onload = function() {
                     txid: result
                   });
 
+                  localStorage['pendingProject'] = true;
+
                   var finishedComment = function() {
                     dataLayer.push({ event: 'claimissue' });
                     _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');

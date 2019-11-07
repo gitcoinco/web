@@ -38,7 +38,7 @@ from dashboard.models import (
 )
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord,
-    maybe_market_to_user_slack,
+    maybe_market_to_user_slack, notify_of_lowball_bounty,
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import ConversionRateNotFoundError, convert_amount
@@ -832,6 +832,19 @@ def record_user_action(event_name, old_bounty, new_bounty):
             })
 
 
+def is_lowball_bounty(bounty_value_usdt):
+    """Determine if a bounty value is less than a threshold
+
+    Args:
+      bounty_value_usdt (Decimal): The value of the bounty
+
+    Returns:
+      bool: True if bounty value is less than the threshold
+
+    """
+    return bounty_value_usdt < settings.LOWBALL_BOUNTY_THRESHOLD if bounty_value_usdt else False
+
+
 def process_bounty_changes(old_bounty, new_bounty):
     """Process Bounty changes.
 
@@ -884,6 +897,14 @@ def process_bounty_changes(old_bounty, new_bounty):
     if new_bounty.fulfillments.exists():
         profile_pairs = build_profile_pairs(new_bounty)
 
+    # Send an Email if this is a LowBall bounty
+    try:
+        if(not old_bounty or old_bounty.value_in_usdt != new_bounty.value_in_usdt):
+                if is_lowball_bounty(new_bounty.value_in_usdt):
+                    notify_of_lowball_bounty(new_bounty)
+    except Exception as e:
+        logger.error(f'{e} during check for Lowball Bounty')
+
     # marketing
     if event_name != 'unknown_event':
         print("============ posting ==============")
@@ -902,7 +923,7 @@ def process_bounty_changes(old_bounty, new_bounty):
             'did_post_to_slack': did_post_to_slack,
             'did_post_to_user_slack': did_post_to_user_slack,
             'did_post_to_user_discord': did_post_to_user_discord,
-            'did_post_to_twitter': did_post_to_twitter,
+            'did_post_to_twitter': False,
         }
 
         print("changes processed: ")

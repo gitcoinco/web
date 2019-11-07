@@ -21,11 +21,12 @@ import json
 from datetime import date, datetime, timedelta
 from unittest.mock import patch
 
+from django.conf import settings
 from django.test.client import RequestFactory
 
 import pytz
 import requests_mock
-from dashboard.helpers import amount, issue_details, normalize_url, process_bounty_details
+from dashboard.helpers import amount, is_lowball_bounty, issue_details, normalize_url, process_bounty_details
 from dashboard.models import Bounty
 from economy.models import ConversionRate
 from marketing.mails import featured_funded_bounty
@@ -51,6 +52,10 @@ class DashboardHelpersTest(TestCase):
         params = {'amount': '5', 'denomination': 'ETH'}
         request = self.factory.get('/sync/get_amount', params)
         assert amount(request).content == b'{"eth": 5.0, "usdt": 10.0}'
+
+    def test_lowball_bounty(self):
+        assert is_lowball_bounty(settings.LOWBALL_BOUNTY_THRESHOLD - 1.0)
+        assert not is_lowball_bounty(settings.LOWBALL_BOUNTY_THRESHOLD)
 
     def test_normalize_url(self):
         """Test the dashboard helper normalize_url method."""

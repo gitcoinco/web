@@ -86,6 +86,11 @@ urlpatterns = [
         kudos.views.details_by_address_and_token_id,
         name='kudos_details_by_address_and_token_id'
     ),
+    re_path(
+        r'^kudos/(?P<address>\w*)/(?P<token_id>\d+)',
+        kudos.views.details_by_address_and_token_id,
+        name='kudos_details_by_address_and_token_id2'
+    ),
     re_path(r'^kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
@@ -146,7 +151,7 @@ urlpatterns = [
     re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall')),
 
     # dashboard views
-    re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
+    re_path(r'^onboard/(?P<flow>\w+)/?$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
     re_path(r'^onboard/?$', dashboard.views.onboard, name='onboard'),
     url(r'^postcomment/', dashboard.views.post_comment, name='post_comment'),
@@ -164,7 +169,8 @@ urlpatterns = [
     re_path(r'^quests/?$', quests.views.index, name='quests_index'),
     re_path(r'^quests/next?$', quests.views.next_quest, name='next_quest'),
     re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
-    re_path(r'^quests/new/?', quests.views.newquest, name='newquest'),
+    re_path(r'^quests/new/?', quests.views.editquest, name='newquest'),
+    re_path(r'^quests/edit/(?P<pk>\d+)/?', quests.views.editquest, name='editquest'),
 
     # Contributor dashboard
     path(
@@ -179,9 +185,14 @@ urlpatterns = [
     # Hackathons / special events
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
     path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
+    path('hackathon/projects/<str:hackathon>/', dashboard.views.hackathon_projects, name='hackathon_projects'),
+    path('modal/new_project/<int:bounty_id>/', dashboard.views.hackathon_get_project, name='hackathon_get_project'),
+    path('modal/new_project/<int:bounty_id>/<int:project_id>/', dashboard.views.hackathon_get_project, name='hackathon_edit_project'),
+    path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),
     re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
     re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
+    path('hackathon-list', dashboard.views.get_hackathons, name='get_hackathons2'),
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
 
     # action URLs
@@ -220,6 +231,7 @@ urlpatterns = [
     ),
 
     # Rating
+    path('modal/rating/<int:bounty_id>/<str:username>', dashboard.views.rating_modal, name='rating_modal2'),
     path('modal/rating/<int:bounty_id>/<str:username>/', dashboard.views.rating_modal, name='rating_modal'),
     path('modal/rating_capture/', dashboard.views.rating_capture, name='rating_capture'),
     url(r'^api/v0.1/unrated_bounties/', dashboard.views.unrated_bounties, name='unrated_bounties'),
@@ -347,6 +359,7 @@ urlpatterns = [
     url(r'^extension/firefox/?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
     path('how/<str:work_type>', retail.views.how_it_works, name='how_it_works'),
+    re_path(r'^tribes', retail.views.tribes, name='tribes'),
 
     # basic redirect retail views
     re_path(r'^press/?', retail.views.presskit, name='press'),
@@ -564,6 +577,7 @@ urlpatterns = [
     path('legacy/', include('legacy.urls', namespace='legacy')),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     re_path(r'^gh-login/$', dashboard.views.gh_login, name='gh_login'),
+    re_path(r'^login/github$', dashboard.views.gh_login, name='gh_login_'),
     path('', include('social_django.urls', namespace='social')),
     # webhook routes
     # sendgrid webhook processing
@@ -606,8 +620,9 @@ if settings.DEBUG:
     ]
 
 urlpatterns += [
-    re_path(r'^(.*)/(.*)?', dashboard.views.profile, name='profile_min_by_tab'),
-    re_path(r'^(.*)', dashboard.views.profile, name='profile_min'),
+    re_path(r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$', dashboard.views.profile, name='profile_min'),
+
+    re_path(r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'),
 ]
 
 handler403 = 'retail.views.handler403'

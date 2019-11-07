@@ -532,7 +532,7 @@ SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
-SOCIAL_AUTH_GITHUB_SCOPE = ['read:public_repo', 'read:user', 'user:email', 'read:org', 'repo']
+SOCIAL_AUTH_GITHUB_SCOPE = ['read:user', 'user:email', 'read:org']
 SOCIAL_AUTH_SANITIZE_REDIRECTS = True
 
 SOCIAL_AUTH_PIPELINE = (
@@ -702,6 +702,8 @@ if ENABLE_SILK:
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
 
+# Sending an email when a bounty is funded below a threshold
+LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)
 
 # Gitcoin Bounty Funding Fee settings
 FEE_ADDRESS = env('FEE_ADDRESS', default='')

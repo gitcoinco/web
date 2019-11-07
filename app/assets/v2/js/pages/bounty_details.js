@@ -747,6 +747,9 @@ var show_interest_modal = function() {
               $(self).find('span').text(gettext('Stop Work'));
               $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
               modals.bootstrapModal('hide');
+              if (document.result.event) {
+                projectModal(document.result.pk);
+              }
             }
           }).catch((error) => {
             if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
@@ -1468,6 +1471,10 @@ var pull_bounty_from_api = function() {
         render_activity(result, results);
 
         document.result = result;
+
+        if (document.result.event && localStorage['pendingProject']) {
+          projectModal(document.result.pk);
+        }
 
         if (typeof promptPrivateInstructions !== 'undefined' && result.repo_type === 'private') {
           repoInstructions();
