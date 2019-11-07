@@ -91,10 +91,14 @@ $(document).ready(function() {
       if (err) {
         _alert(err.message.split('\n')[0], 'error');
       } else {
-        document.location.href = window.location.href.split('?')[0] +
-        '?receive_txid=' + txid +
-        '&forwarding_address=' + $('#forwarding_address').val() +
-        '&save_addr=' + ($('#save_addr').is(':checked') ? '1' : '0');
+        var url = window.location.href.split('?')[0];
+        var form = $('<form action="' + url + '" method="post">' +
+          '<input type="text" name="receive_txid" value="' + txid + '" />' +
+          '<input type="text" name="forwarding_address" value="' + $('#forwarding_address').val() + '" />' +
+          '<input type="text" name="save_addr" value="' + ($('#save_addr').is(':checked') ? '1' : '0') + '" />' +
+          '</form>');
+        $('body').append(form);
+        form.submit();
       }
     };
 

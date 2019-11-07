@@ -135,9 +135,8 @@ def receive_tip_v3(request, key, txid, network):
         messages.info(request, f'This tx {tip.txid}, failed.  Please contact the sender and ask them to send the tx again.')
     elif not_mined_yet:
         messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
-    elif request.GET.get('receive_txid') and is_redeemable:
-        params = request.GET # Should be request.POST, and CSRF protection should be enforced
-                             # Note: app/dashboard/templates/onepager/receive.html seems to already send POST request, is this a mistake ?
+    elif request.POST.get('receive_txid') and is_redeemable:
+        params = request.POST
 
         # db mutations
         try:
