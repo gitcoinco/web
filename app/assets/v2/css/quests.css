@@ -291,6 +291,21 @@
 .answer a{
   color: white;
 }
+.br a{
+  display: inline-block;
+  padding: 5px 5px;
+  margin: 4px 4px;
+  background-color: rgba(256,256,256,0.3);
+}
+body.quest_battle a,
+body.quest_battle div,
+body.quest_battle p{
+  color: white;
+}
+.br a:hover{
+  background-color: rgba(256,256,256,0.7);
+  text-decoration: none;
+}
 body.quest_battle .footer{
   display: none;
 }
@@ -298,11 +313,6 @@ body.quest_battle .footer{
 body.quest_battle .modal,
 body.quest_battle .modal-backdrop{
   display: none !important;
-}
-body.quest_battle a,
-body.quest_battle div,
-body.quest_battle p{
-  color: white;
 }
 #_hj_poll_container{
   display: none;
@@ -573,7 +583,6 @@ body.quest_battle .bottom_notification{
   bottom: 0px;
   right: 10px;
 }
-
 .bl{
   position: absolute;
   bottom: 20px;
@@ -1054,16 +1063,6 @@ body.green .tl{
   body.back13.quest_battle,
   body.back11.quest_battle{
     background-size: 100% !important;
-  }
-  .br a{
-    display: inline-block;
-    padding: 5px 5px;
-    margin: 4px 4px;
-    background-color: rgba(256,256,256,0.3);
-  }
-  .br a:hover{
-    background-color: rgba(256,256,256,0.7);
-    text-decoration: none;
   }
   #cta_button a, a.button{
     line-height: 46px;
