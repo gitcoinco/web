@@ -73,6 +73,7 @@ var toggle_character_class = async function(sel, classes) {
 function typeWriter() {
   if (document.typewriter_i == 0) {
     document.typewriter_offset = 0;
+    document.is_typewriter = true;
   }
   if (document.typewriter_offset + document.typewriter_i < document.typewriter_txt.length) {
     var char = document.typewriter_txt.charAt(document.typewriter_i);
@@ -84,8 +85,16 @@ function typeWriter() {
     document.getElementById(document.typewriter_id).innerHTML += char;
     document.typewriter_i++;
     setTimeout(typeWriter, document.typewriter_speed);
+  } else {
+    document.is_typewriter = false;
   }
 }
+
+var wait_for_typewriter = async function() {
+  while (document.is_typewriter) {
+    await sleep(100);
+  }
+};
 
 var get_midi = function(name) {
   return '/static/v2/audio/' + name + '.mid';
