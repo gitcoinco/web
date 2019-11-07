@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Profile
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
-from marketing.mails import new_quest_request
+from marketing.mails import new_quest_request, send_user_feedback
 from marketing.models import EmailSubscriber
 from quests.helpers import (
     get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity,
@@ -326,13 +326,18 @@ def index(request):
 
 
 @csrf_exempt
-@ratelimit(key='ip', rate='10/s', method=ratelimit.UNSAFE, block=True)
-def details(request, obj_id, name):
-    """Render the Quests 'detail' page."""
+@ratelimit(key='ip', rate='1/m', method=ratelimit.UNSAFE, block=True)
+def feedback(request, obj_id):
+    return details(request, obj_id, '', allow_feedback=True)
 
+
+@csrf_exempt
+@ratelimit(key='ip', rate='10/s', method=ratelimit.UNSAFE, block=True)
+def details(request, obj_id, name, allow_feedback=False):
+    """Render the Quests 'detail' page."""
+    # lookup quest
     if not re.match(r'\d+', obj_id):
         raise ValueError(f'Invalid obj_id found.  ID is not a number:  {obj_id}')
-
     try:
         quest = Quest.objects.get(pk=obj_id)
         if not quest.is_unlocked_for(request.user):
@@ -341,6 +346,11 @@ def details(request, obj_id, name):
     except:
         raise Http404
 
+    # handle user feedback
+    if allow_feedback and request.user.is_authenticated and request.POST.get('feedback'):
+        feedback = request.POST.get('feedback')
+        send_user_feedback(quest, feedback, request.user)
+        return JsonResponse({'status': 'ok'})
     if quest.style.lower() == 'quiz':
         return quiz_style(request, quest)
     elif quest.style == 'Example for Demo':

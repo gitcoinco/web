@@ -194,6 +194,24 @@ $(document).ready(function() {
   });
 
 
+  $('.give_feedback').on('click', async function(e) {
+    e.preventDefault();
+    var feedback = prompt('Please enter your feedback for the quest author.', 'Is question #3 wrong? I tried everyhing!');
+
+    if (!feedback) {
+      return;
+    }
+    var params = {
+      'feedback': feedback
+    };
+    var url = document.quest_feedback_url;
+
+    $.post(url, params, function(response) {
+      _alert('Feedback sent', 'success');
+    });
+  });
+
+
   if (document.quest) {
     start_quest();
   }

@@ -81,6 +81,10 @@
     </div>
     <div id="menu" class="br">
       <span>
+        {% if github_handle %}
+        <a class="give_feedback" href="#">Quest Feedback</a>
+        <BR>
+        {% endif %}
         <span>
           Attempt #{{attempt_count}}
         </span>
@@ -115,6 +119,8 @@
     document.music = '{{quest.music}}';
     document.seconds_per_question = parseInt('{{seconds_per_question}}');
     document.quest = {{quest_json|safe}};
+    document.quest_url = '{{quest.url}}';
+    document.quest_feedback_url = '{{quest.feedback_url}}';
     document.attempts = {
       'success_count': parseInt('{{success_count}}'),
       'attempt_count': parseInt('{{attempt_count}}'),

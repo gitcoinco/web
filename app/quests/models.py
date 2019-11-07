@@ -71,6 +71,11 @@ class Quest(SuperModel):
         return settings.BASE_URL + f"quests/edit/{self.pk}"
 
     @property
+    def feedback_url(self):
+        from django.conf import settings
+        return settings.BASE_URL + f"quests/{self.pk}/feedback"
+
+    @property
     def est_read_time_mins(self):
         return self.game_schema.get('est_read_time_mins', 10)
 
