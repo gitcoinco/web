@@ -898,7 +898,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Welcome to Waterloo"
+    subject = "Waterloo Sunrise"
     new_kudos_pks = [5163, 5077, 5126]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
@@ -920,13 +920,13 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    I'm back on the road again, hitting the tarmac to join the hacking goodness and celebrations at ETH Waterloo. If you'll be attending, be sure to say hello. You can check out the schedule <a href="https://ethwaterloo.com/#schedule"> with more information about my talk here.</a> Looking forward to seeing all of your incredible faces. 
+    I'm back on the road again, hitting the tarmac once more to join the hacking goodness and celebration at ETH Waterloo. If you'll be attending, be sure to say hello: I'm looking forward to seeing all of your incredible faces.  You can check out the schedule <a href="https://ethwaterloo.com/#schedule"> with more information about my talk here.</a> Tweet at me: I'm <a href="https://twitter.com/owocki"> @owocki.</a>
 </p>
 <p>
-    The development team is hard at work again with the push to release another version of Gitcoin web. If you'd like to take a look at our release notes (with fun goodies such as new kudos, new quests, and boundless bug fixes) be sure to take a look at our Github repo. The latest release notes live <a href="https://github.com/gitcoinco/web/releases/tag/20191106master"> here</a>.
+    The development team is hard at work again with the successful push to release another version of Gitcoin. If you'd like to take a look at our release notes (with fun goodies such as new Kudos, fresh quests, and boundless bug fixes) be sure to take a look at our Github repo. The latest release notes live <a href="https://github.com/gitcoinco/web/releases/tag/20191106master"> here</a>.
 </p>
 <p>
-    Web3 World is progressing along! If you're joining us for this fall/winter hack, be sure to get your submissions in by 11:59 PM EST on November 11th. We're excited to see your work and projects you've put together!
+    Web3 World is progressing along! If you're joining us for this fall/winter hack, be sure to get your submissions in by 11:59 PM EST on November 11th. We're excited to see your work and projects you've put together.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
@@ -944,22 +944,22 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'acolytec3',
+        'who': 'nionis',
         'who_link': True,
-        'what': 'Scan that QR code, acolytec3.',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8960/3557',
+        'what': 'Create HOPR Widget According To Design Mockup',
+        'link': 'https://gitcoin.co/issue/hoprnet/hopr-website/16/3607',
         'link_copy': 'View more',
     }, {
-        'who': 'mwbrulhardt',
+        'who': 'frippo40',
         'who_link': True,
-        'what': 'String Initialization.',
-        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/33/3548',
+        'what': 'Ultimate Package Tracker',
+        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/23/3420',
         'link_copy': 'View more',
     }, {
-        'who': 'rshtirmer',
+        'who': 'janus',
         'who_link': True,
-        'what': 'TensorFlow, you\'ve updated. Bask in the glory of freshness.',
-        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/42/3555',
+        'what': 'Ethereum Anemometer',
+        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/24/3421',
         'link_copy': 'View more',
     }, ]
 
@@ -976,14 +976,14 @@ Back to shipping,
     }
     
     bounties_spec = [{
-        'url': 'https://github.com/ethereum/ethereum-org-website/issues/358',
-        'primer': 'Dutch translators: do this!',
+        'url': 'https://github.com/diadata-org/diadata/issues/181',
+        'primer': 'Scraper For Bitflyer Futures',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/8837',
-        'primer': 'Save Password prompt when signing transaction',
+        'url': 'https://gitcoin.co/issue/fsprojects/fantomas/555/3664',
+        'primer': 'SpaceBeforeArguments Inconsistency: Should Apply To Functions That Receive `Unit` Arg Too',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/5418',
-        'primer': 'Unable to click submit :( fix me!',
+        'url': 'https://gitcoin.co/issue/gitcoinco/skunkworks/134/3661',
+        'primer': 'Web3 Sustain Event Page',
 }, ]
 
 
