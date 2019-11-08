@@ -920,7 +920,7 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    I'm back on the road again, hitting the tarmac once more to join the hacking goodness and celebration at ETH Waterloo. If you'll be attending, be sure to say hello: I'm looking forward to seeing all of your incredible faces.  You can check out the schedule <a href="https://ethwaterloo.com/#schedule"> with more information about my talk here.</a> Tweet at me: I'm <a href="https://twitter.com/owocki"> @owocki.</a>
+    I'm back on the road again, hitting the tarmac once more to join the hacking goodness and celebration at ETH Waterloo. If you'll be attending, be sure to say hello: I'm looking forward to seeing all of your incredible faces.  You can check out the schedule <a href="https://ethwaterloo.com/#schedule"> with more information about my talk here.</a> Tweet at me: I'm <a href="https://twitter.com/owocki">@owocki.</a>
 </p>
 <p>
     The development team is hard at work again with the successful push to release another version of Gitcoin. If you'd like to take a look at our release notes (with fun goodies such as new Kudos, fresh quests, and boundless bug fixes) be sure to take a look at our Github repo. The latest release notes live <a href="https://github.com/gitcoinco/web/releases/tag/20191106master"> here</a>.
@@ -979,10 +979,10 @@ Back to shipping,
         'url': 'https://github.com/diadata-org/diadata/issues/181',
         'primer': 'Scraper For Bitflyer Futures',
     }, {
-        'url': 'https://gitcoin.co/issue/fsprojects/fantomas/555/3664',
+        'url': 'https://github.com/fsprojects/fantomas/issues/555',
         'primer': 'SpaceBeforeArguments Inconsistency: Should Apply To Functions That Receive `Unit` Arg Too',
     }, {
-        'url': 'https://gitcoin.co/issue/gitcoinco/skunkworks/134/3661',
+        'url': 'https://github.com/gitcoinco/skunkworks/issues/134',
         'primer': 'Web3 Sustain Event Page',
 }, ]
 
