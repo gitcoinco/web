@@ -709,7 +709,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
         except Exception as e:
             error = "Could not redeem your kudos.  Please try again soon."
             if "replacement transaction underpriced" in str(e):
-                error = "There is already an airdrop transfer in progress. Please try again in a minute or two.. (note: in the future we will add 'queue'-ing so you dont have to resubmit, as soon as this ticket (https://github.com/gitcoinco/web/issues/4976) is deployed</a>)"
+                error = "There is already an airdrop transfer in progress. Please try again in a minute or two.. (note: in the future we will add 'queue'-ing so you dont have to resubmit, as soon as this ticket (https://github.com/gitcoinco/web/issues/4976) is deployed)"
             return None, error, None
 
     return True, None, kudos_transfer
