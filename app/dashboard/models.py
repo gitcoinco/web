@@ -2302,6 +2302,8 @@ class Profile(SuperModel):
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
+    related_profiles = ArrayField(models.CharField(max_length=25), default=list, blank=True)
+    match_profiles = ArrayField(models.CharField(max_length=25), default=list, blank=True)
 
     objects = ProfileQuerySet.as_manager()
 

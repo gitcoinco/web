@@ -83,4 +83,5 @@ websocket-client
 bleach
 python-magic
 scikit-surprise
+pandas
 

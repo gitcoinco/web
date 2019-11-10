@@ -2495,6 +2495,10 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'people':
         pass
+    elif tab == 'related':
+        pass
+    elif tab == 'matches':
+        pass
     elif tab == 'quests':
         context['quest_wins'] = profile.quest_attempts.filter(success=True)
     elif tab == 'grant_contribs':
@@ -2608,7 +2612,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grant_contribs', 'quests']
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grant_contribs', 'quests', 'related', 'matches']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?

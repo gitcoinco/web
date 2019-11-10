@@ -100,6 +100,20 @@
             </a>
           </li>
         {% endif %}
+        {% if profile.related_profiles|length %}
+          <li class="nav-item">
+            <a class="nav-link nav-line  {% if tab == 'related' %}active{%endif%}" href="{{profile.url}}/related">
+              Related <span>{{profile.related_profiles|length}}</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if profile.match_profiles|length %}
+          <li class="nav-item">
+            <a class="nav-link nav-line  {% if tab == 'matches' %}active{%endif%}" href="{{profile.url}}/matches">
+              Matches <span>{{profile.match_profiles|length}}</span>
+            </a>
+          </li>
+        {% endif %}
       </ul>
     </div>
 {% endif %}
@@ -134,8 +148,10 @@
             {% include 'profiles/tab_spent.html' %}
           {% elif tab == 'grant_contribs' %}
             {% include 'profiles/tab_grant_contribs.html' %}
-          {% elif tab == 'quests' %}
-            {% include 'profiles/tab_quests.html' %}
+          {% elif tab == 'related' %}
+            {% include 'profiles/tab_matches.html' with title="Related Profiles" items=profile.related_profiles %}
+          {% elif tab == 'matches' %}
+            {% include 'profiles/tab_matches.html' with title="Matched Profiles" items=profile.match_profiles %}
           {% endif %}
         </div>
       </div>
