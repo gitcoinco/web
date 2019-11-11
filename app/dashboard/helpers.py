@@ -42,7 +42,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import ConversionRateNotFoundError, convert_amount
-from git.utils import get_gh_issue_details, get_url_dict
+from git.utils import get_gh_issue_details, get_url_dict, org_name
 from jsondiff import diff
 from marketing.mails import new_reserved_issue
 from pytz import UTC
@@ -441,6 +441,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         if not latest_old_bounty:
             print("no latest old bounty")
             schemes = bounty_payload.get('schemes', {})
+            funding_organisation = metadata.get('fundingOrganisation') if metadata.get('fundingOrganisation') else org_name(url)
             unsigned_nda = None
             if bounty_payload.get('unsigned_nda', None):
                 unsigned_nda = BountyDocuments.objects.filter(
@@ -470,7 +471,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'network': bounty_details.get('network'),
                 'bounty_type': metadata.get('bountyType', ''),
                 'bounty_categories': metadata.get('bounty_categories', '').split(','),
-                'funding_organisation': metadata.get('fundingOrganisation', ''),
+                'funding_organisation': funding_organisation,
                 'project_length': metadata.get('projectLength', ''),
                 'estimated_hours': metadata.get('estimatedHours'),
                 'experience_level': metadata.get('experienceLevel', ''),
@@ -624,7 +625,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         new_bounty.canceled_on = canceled_on
         new_bounty.save()
 
-    # migrate fulfillments, and only take the ones from 
+    # migrate fulfillments, and only take the ones from
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bounty_details.get('fulfillments', {})
     if fulfillments:
@@ -639,7 +640,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     new_bounty.is_featured = True if latest_old_bounty and latest_old_bounty.is_featured is True else False
     if new_bounty.is_featured == True:
         new_bounty.save()
-    
+
     if latest_old_bounty:
         latest_old_bounty.current_bounty = False
         latest_old_bounty.save()
