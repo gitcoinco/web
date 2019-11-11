@@ -1,0 +1,19 @@
+{
+    "symbol": "BMC",
+    "address": "0x74ded052DB9519A33B6601C656756783D2e2334b",
+    "overview": {
+        "en": "BMC is an asset management system that provides a one-stop solution for digital asset management. It provides a high level of security and quality services, especially in the efficient and secure exchange of digital currency. It is an integrated secure asset aanagement, ledger pairing execution and scalable payment networks. The leading combination system, innovative hot and cold wallet combination technology, and hardware security solutions enable users to efficiently and securely store and exchange digital currencies while providing high-quality services to global digital currency users and small and micro-economies.",
+        "zh": "BMC是普惠性质的数字资产管理系统，提供数字资产管理一站式解决方案，尤其是在数字货币与各个国家法币间的高效安全兑换提供高级别的安全保障与优质服务，是一个集成安全资产管理、账本配对执行、清算中心保管以及可扩展支付的网络。采用领先的撮合系统，创新的冷热钱包结合技术，搭配硬件安全方案，让用户在数字货币之间高效安全存储和交换的同时，致力为全球数字货币用户和小微经济体提供优质的服务。"
+    },
+    "email": "xaaset_adm@outlook.com",
+    "website": "https://bmcbank.io/",
+    "whitepaper": "https://bmcbank.io/whitepaper/1.3.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-09-30",
+    "initial_price": {
+        "USD": "0.05 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/ChainBm"
+    }
+}
