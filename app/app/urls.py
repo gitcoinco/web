@@ -59,9 +59,9 @@ from kudos.router import router as kdrouter
 from .sitemaps import sitemaps
 
 urlpatterns = [
-    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    # oauth providers
+    # oauth2 provider
     url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     # create bounty
     url(r'^create?', dashboard.views.new_bounty, name='create_bounty'),  # TODO: Remove
 
@@ -140,7 +140,7 @@ urlpatterns = [
 
 
     # chat
-    url(r'^chat/', chat.views.inbox, name='chat'),
+    url(r'^chat/', chat.views.embed, name='chat'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
