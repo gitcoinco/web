@@ -1,0 +1,15 @@
+{
+  "symbol": "SPC",
+  "address": "0x48887755B1811Aeced308dBC564180E113F90670",
+  "overview":{
+   "en": "The Spreader-Chain token is referred to as SPC, which aims to change the mining method through the POM mechanism to make the data transmission on the chain more reliable and decentralized.",
+   "zh": "Spreader-Chain（共识链）代币简称SPC，旨在通过POM机制改变挖矿方式，使链上数据传输更加可靠、去中心化。"
+  },
+ "email": "service@spchain.org",
+ "website": "https://www.spchain.org/",
+ "whitepaper": "https://www.spchain.org/src/pdf/pom.pdf",
+ "state": "NORMAL",
+   "initial_price":{
+  },
+"links": {}
+}
