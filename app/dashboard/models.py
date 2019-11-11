@@ -2834,7 +2834,7 @@ class Profile(SuperModel):
 
         #calculate base rating
         num_earnings = self.earnings.count() + self.sent_earnings.count()
-        if num_earnings == 0:
+        if num_earnings < 2:
             return "Unproven"
 
         if num_earnings > high_threshold:
