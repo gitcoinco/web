@@ -33,7 +33,7 @@ class QuestTest(TestCase):
         self.assertTrue(status.is_success(response.status_code))
 
     def test_new_quests_should_redirect_to_login_when_no_user_is_logged(self):
-        """Test abs function on seconds to prevent set negative second to respond on quests questions"""
+        """Test when an anonymus user send a request to create a quest he should be redirected to login page """
         data = urlencode({
             'points': -10,
             'seconds_to_respond[]': -10,
