@@ -239,7 +239,8 @@ var callbacks = {
     if (!result.keywords || result.keywords.length == 0)
       return [ 'issue_keywords', null ];
 
-    var keywords = result.keywords.split(',');
+
+    var keywords = result.keywords && result.keywords.split ? result.keywords.split(',') : result.keywords;
     var tags = [];
 
     keywords.forEach(function(keyword) {

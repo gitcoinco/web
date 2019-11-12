@@ -927,8 +927,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "The Quadratic Freelancer"
-    new_kudos_pks = [588, 151, 116]
+    subject = "Waterloo Sunrise"
+    new_kudos_pks = [5163, 5077, 5126]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -949,25 +949,22 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    🌱 Gitcoin Grants CLR Round 3 was a massive, massive success. With wide ranging support from across the entire Ethereum ecosystem, we were blown away with the support you provided: 1,982 unique contributions to 68 projects worth $170,000. <a href="https://gitcoin.co/blog/gitcoins-q3-match/"></a>In total, between individual contributions the round ended up worth $270k.</a>
+    I'm back on the road again, hitting the tarmac once more to join the hacking goodness and celebration at ETH Waterloo. If you'll be attending, be sure to say hello: I'm looking forward to seeing all of your incredible faces.  You can check out the schedule <a href="https://ethwaterloo.com/#schedule"> with more information about my talk here.</a> Tweet at me: I'm <a href="https://twitter.com/owocki">@owocki.</a>
 </p>
 <p>
-    In a review of Gitcoin Grants Round 3, Ethereum cofounder Vitalik Buterin said "If Gitcoin Grants does continue operating regularly, and attracts and expands its pool of donations, we could be very close to seeing the first 'quadratic freelancer' - someone directly 'working for the public', funded by donations boosted by quadratic matching subsidies." <a href="https://vitalik.ca/general/2019/10/24/gitcoin.html">Click here to read the article.</a>
+    The development team is hard at work again with the successful push to release another version of Gitcoin. If you'd like to take a look at our release notes (with fun goodies such as new Kudos, fresh quests, and boundless bug fixes) be sure to take a look at our Github repo. The latest release notes live <a href="https://github.com/gitcoinco/web/releases/tag/20191106master"> here</a>.
 </p>
 <p>
-    🚨New Kudos Feature Alert!🚨 We've released a brand new feature for Kudos – the ability to mint your own <i>without</i> asking us to help. Like your favorite cappuccino machine, it lets you make your own delicious <strike>coffee</strike> Kudos all by yourself. If you have Kudos you want to put on the marketplace, all you've have to do is fill out a form, add your artwork, and watch as it makes its way to the Gitcoin Kudos marketplace! How neat is that. <a href="https://gitcoin.co/kudos/new">Check out the self serve feature here.</a>
-</p>
-<p>
-    Web3 World is well under way, and we have another great set of challenges for you to work on this go around. If you fancy, check out the <a href="https://gitcoin.co/blog/web3-world-around-the-aave/">Aave highlight post</a>, and then stroll down to the hackathon <a href="https://hackathons.gitcoin.co/web3-world/">homepage to complete registration and start hacking.</a> We'd love to see you participate.
+    Web3 World is progressing along! If you're joining us for this fall/winter hack, be sure to get your submissions in by 11:59 PM EST on November 11th. We're excited to see your work and projects you've put together.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week! Kevin Owocki will be presenting Gitcoin Quests. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
+        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        A follow up from last week's newsletter: the retro post for The Road to Devcon is now up for your viewing pleasure. Feast your eyes on this one, folks. The post lives <a href="https://gitcoin.co/blog/gitcoins-q3-match/"> here. </a>
+        As we mentioned earlier this week, YouTube recordings of our livestreams are finally being released. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
         </li>
     </ul>
 </p>
@@ -976,22 +973,22 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'acolytec3',
+        'who': 'nionis',
         'who_link': True,
-        'what': 'Scan that QR code, acolytec3.',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8960/3557',
+        'what': 'Create HOPR Widget According To Design Mockup',
+        'link': 'https://gitcoin.co/issue/hoprnet/hopr-website/16/3607',
         'link_copy': 'View more',
     }, {
-        'who': 'mwbrulhardt',
+        'who': 'frippo40',
         'who_link': True,
-        'what': 'String Initialization.',
-        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/33/3548',
+        'what': 'Ultimate Package Tracker',
+        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/23/3420',
         'link_copy': 'View more',
     }, {
-        'who': 'rshtirmer',
+        'who': 'janus',
         'who_link': True,
-        'what': 'TensorFlow, you\'ve updated. Bask in the glory of freshness.',
-        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/42/3555',
+        'what': 'Ethereum Anemometer',
+        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/24/3421',
         'link_copy': 'View more',
     }, ]
 
@@ -1008,14 +1005,14 @@ Back to shipping,
     }
     
     bounties_spec = [{
-        'url': 'https://github.com/ethereum/ethereum-org-website/issues/358',
-        'primer': 'Dutch translators: do this!',
+        'url': 'https://github.com/diadata-org/diadata/issues/181',
+        'primer': 'Scraper For Bitflyer Futures',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/8837',
-        'primer': 'Save Password prompt when signing transaction',
+        'url': 'https://github.com/fsprojects/fantomas/issues/555',
+        'primer': 'SpaceBeforeArguments Inconsistency: Should Apply To Functions That Receive `Unit` Arg Too',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/5418',
-        'primer': 'Unable to click submit :( fix me!',
+        'url': 'https://github.com/gitcoinco/skunkworks/issues/134',
+        'primer': 'Web3 Sustain Event Page',
 }, ]
 
 

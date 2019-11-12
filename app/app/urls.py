@@ -168,6 +168,7 @@ urlpatterns = [
     # quests
     re_path(r'^quests/?$', quests.views.index, name='quests_index'),
     re_path(r'^quests/next?$', quests.views.next_quest, name='next_quest'),
+    re_path(r'^quests/(?P<obj_id>\d+)/feedback', quests.views.feedback, name='quest_feedback'),
     re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
     re_path(r'^quests/new/?', quests.views.editquest, name='newquest'),
     re_path(r'^quests/edit/(?P<pk>\d+)/?', quests.views.editquest, name='editquest'),
@@ -187,7 +188,11 @@ urlpatterns = [
     path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
     path('hackathon/projects/<str:hackathon>/', dashboard.views.hackathon_projects, name='hackathon_projects'),
     path('modal/new_project/<int:bounty_id>/', dashboard.views.hackathon_get_project, name='hackathon_get_project'),
-    path('modal/new_project/<int:bounty_id>/<int:project_id>/', dashboard.views.hackathon_get_project, name='hackathon_edit_project'),
+    path(
+        'modal/new_project/<int:bounty_id>/<int:project_id>/',
+        dashboard.views.hackathon_get_project,
+        name='hackathon_edit_project'
+    ),
     path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),
     re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
     re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
@@ -620,8 +625,11 @@ if settings.DEBUG:
     ]
 
 urlpatterns += [
-    re_path(r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$', dashboard.views.profile, name='profile_min'),
-
+    re_path(
+        r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
+        dashboard.views.profile,
+        name='profile_min'
+    ),
     re_path(r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'),
 ]
 

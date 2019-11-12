@@ -429,6 +429,28 @@ def new_grant_admin(grant):
             translation.activate(cur_language)
 
 
+def send_user_feedback(quest, feedback, user):
+    to_email = quest.creator.email
+    from_email = user.email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = f"New Gitcoin Quest Feedback: {quest.title}"
+        body_str = f"quest: {quest.title}\nurl: {quest.url}\nedit: {quest.edit_url}\n\n> {feedback}\n\nfrom: {user.email} ( {user.profile.url} )"
+        body = f"{body_str}"
+        if not should_suppress_notification_email(to_email, 'quest'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=f"@{user.profile.handle} on gitcoin.co",
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def new_quest_request(quest, is_edit):
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL

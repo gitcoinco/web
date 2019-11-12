@@ -360,10 +360,22 @@ body.quest_battle .modal-backdrop {
   display: none !important;
 }
 
+.br a {
+  display: inline-block;
+  padding: 5px 5px;
+  margin: 4px 4px;
+  background-color: rgba(256,256,256,0.3);
+}
+
 body.quest_battle a,
 body.quest_battle div,
 body.quest_battle p {
   color: white;
+}
+
+.br a:hover {
+  background-color: rgba(256,256,256,0.7);
+  text-decoration: none;
 }
 
 #_hj_poll_container {

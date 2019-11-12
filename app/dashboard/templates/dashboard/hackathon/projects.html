@@ -152,7 +152,7 @@
                   {% if project.logo %}
                     <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
                   {% else %}
-                    <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{% firstof project.bounty.admin_override_org_logo or project.bounty.avatar_url %}" alt="Hackathon logo" />
+                    <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
                   {% endif %}
                 </div>
                 <div class="card-body">
@@ -179,7 +179,7 @@
                   </div>
                   <div class="font-smaller-2">
                     <b class="text-muted">Sponsor</b>
-                    <img class="" width="20" src="{% firstof project.bounty.admin_override_org_logo or project.bounty.avatar_url %}" alt="Hackathon logo" />
+                    <img class="" width="20" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
                     <a href="{% url 'profile' project.bounty.org_name %}">{{project.bounty.org_name}}</a>
                   </div>
                 </div>
