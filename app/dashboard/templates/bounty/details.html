@@ -25,6 +25,8 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
+      <div class="col-12 text-center pb-3" id="moderator-admin-actions"></div>
+
       <div class="col-12 col-lg-2 left-rails text-center" style="background: #F2F6F9;">
         <div class="explorer font-body">
           {% if event_tag %}
@@ -47,7 +49,6 @@
           <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %}Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
         </div>
 
-        <div class="col-12" id="moderator-admin-actions"></div>
         <div class="col-12" id="bounty_details">
           <div class="row font-body align-items-center mt-4 mb-3">
             <div class="d-none d-lg-block col-lg-2 col-xl-1">
@@ -74,7 +75,6 @@
                   </div>
 
                 </div>
-                <div class="notif-info mb-3 font-caption" id="funder_notif_info"></div>
               </div>
             </div>
           </div>
@@ -135,20 +135,35 @@
               </div>
             </div>
           </div>
+
           <div class="row">
-            <div class="col-12 bounty-actions">
+            <div class="notif-info mt-4 font-caption" id="funder_notif_info"></div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 bounty-actions mt-4 pb-1">
                 <div class="col-12">
                   <div id="right_actions">
-                    <button type="button" class="modal-link button button--primary float-right" data-toggle="modal" data-target=".share-modal">
-                      <span class="font-caption"><i class="fas fa-share-alt mr-2"></i> Share</span>
-                    </button>
+                    <div class="dropdown show float-right pt-2">
+                      <a class="font-caption font-weight-semibold dropdown-toggle" href="#" role="button" 
+                        id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Bounty Options
+                      </a>                    
+                      <div id="bounty-options-link" class="dropdown-menu font-caption" aria-labelledby="bounty-options">
+                      </div>
+                    </div>
+          
                     <div id="bounty_actions" class="d-inline-block"></div>
                     <div id="github_actions" class="d-inline-block"></div>
+                    <a class="modal-link button button--secondary font-caption" href="" data-toggle="modal" data-target=".share-modal">
+                      <i class="fas fa-share-alt font-caption mr-2"></i>
+                      <span>Share</span>
+                    </a>
                   </div>
                 </div>
             </div>
-            <div class="col-12">
-              <h5 class="bounty-heading" id="description">{% trans "Description" %}</h5>
+            <div class="col-12 mt-2">
+              <h5 class="bounty-heading mt-0 pt-4" id="description">{% trans "Description" %}</h5>
               <div class="bounty-text" id="issue_description"></div>
             </div>
             <div class="col-12">
@@ -209,8 +224,8 @@
           <a class="button button--primary accept [[if !enabled]]disabled[[/if]]" role="button" href="[[:href]]" target="[[:target]]">
             <span class="font-caption">[[:text]] ( [[:pending_acceptance]] )</span>
           </a>
-        [[else color == 'white']]
-          <a class="btn btn-small [[if !enabled]]disabled[[/if]] [[:buttonclass]]" id="btn-white" role="button" target="_blank" href="[[:href]]" target="[[:target]]">
+        [[else color == 'comments']]
+          <a class="button button--secondary mr-2 font-caption" role="button" target="_blank" href="[[:href]]" target="[[:target]]">
             [[if comments]]
               <span class="font-caption d-inline-flex">
                 [[:text]]
@@ -226,23 +241,9 @@
             [[/if]]
           </a>
         [[else]]
-          [[if edit_dropdown]]
-              <div class="dropdown show" style="display: inline;">
-                <a class="button button--primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {% trans "Update Issue" %}
-                </a>
-
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                  <a class="dropdown-item" href="[[:edit_issue_href]]">{% trans "Edit Issue Details" %}</a>
-                  [[if show_extend_expiration]] <a class="dropdown-item" href="[[:extend_expiration_href]]">{% trans "Extend Expiration" %}</a> [[/if]]
-                  [[if show_remarket]] <a class="dropdown-item [[if !remarket_enabled]]disabled[[/if]]" href="[[:remarket_url]]">{% trans "Re-market Issue" %}</a> [[/if]]
-                </div>
-              </div>
-          [[else]]
-            <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
-              <span class="font-caption">[[:text]]</span>
-            </a>
-          [[/if]]
+          <a class="button [[if primary]]button--primary[[else]]button--secondary[[/if]] mr-2 font-caption [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
+            <span class="font-caption">[[:text]]</span>
+          </a>
         [[/if]]
       </span>
     </script>
@@ -416,7 +417,10 @@
             <div class="activity-time">[[:age]]</div>
           </div>
           [[if issue_message && activity_type == 'worker_applied' || issue_message && permission_type == 'permissionless' && activity_type == 'start_work' ]]
-            <p class="bg-lightblue p-2 rounded mt-3 mb-0 w-100 overflow-auto" style="resize: vertical;height: 50px;word-break: break-word;white-space: pre-wrap;"><b>Work Plan:</b> [[:issue_message.issue_message]]</p>
+            <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto" style="max-height: 8rem;">
+              <p class="font-weight-bold mb-2">Work Plan</p>
+              <p class="mb-0">[[:issue_message.issue_message]]</p>
+            </div>
           [[/if]]
         </div>
       [[/if]]

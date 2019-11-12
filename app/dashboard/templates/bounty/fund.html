@@ -85,7 +85,7 @@
             <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{issueURL}}{%endif%}" required/>
             <div class="text-right mt-2">
               <p class="font-caption" id="last-synced">{% trans "Last Synced " %}<span></span></p>
-              <button id="sync-issue" class="btn btn-gc-blue disabled">
+              <button id="sync-issue" class="button button--primary disabled">
                 <i class="fas fa-sync mr-1"></i> {% trans "Sync with Github" %}
               </button>
             </div>
@@ -104,7 +104,7 @@
             </div>
             <div id="issue-details-edit" class="mt-2">
               <div class="text-right">
-                <a id="edit-issue" class="btn btn-gc-blue" href="#" target="_blank" rel="noopener noreferrer">
+                <a id="edit-issue" class="button button--primary" href="#" target="_blank" rel="noopener noreferrer">
                   {% trans "Edit on Github" %} <i class="fab fa-github ml-1"></i>
                 </a>
               </div>

@@ -280,6 +280,31 @@ def email_settings(request, key):
     email = ''
     level = ''
     msg = ''
+    email_types = {}
+    from retail.emails import ALL_EMAILS
+    for em in ALL_EMAILS:
+        email_types[em[0]] = str(em[1])
+    email_type = request.GET.get('type')
+    if email_type in email_types:
+        email = request.user.profile.email
+        if es:
+            key = get_or_save_email_subscriber(email, 'settings')
+            es.email = email
+            unsubscribed_email_type = {}
+            unsubscribed_email_type[email_type] = True
+            es.build_email_preferences(unsubscribed_email_type)
+            es = record_form_submission(request, es, 'email')
+            ip = get_ip(request)
+            if not es.metadata.get('ip', False):
+        	    es.metadata['ip'] = [ip]
+            else:
+                es.metadata['ip'].append(ip)
+            es.save()
+        context = {
+            'title': _('Email unsubscription successful'),
+            'type': email_types[email_type]
+        }
+        return TemplateResponse(request, 'email_unsubscribed.html', context)
     if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
