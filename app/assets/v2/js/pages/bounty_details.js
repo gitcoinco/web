@@ -1144,8 +1144,8 @@ var do_actions = function(result) {
       text: text,
       parent: 'bounty_actions',
       title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
-      color: is_interested ? '' : '',
-      id: 'interest'
+      id: 'interest',
+      primary: true
     };
 
     actions.push(interest_entry);
@@ -1171,7 +1171,7 @@ var do_actions = function(result) {
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['payout'],
-      text: `<i class="fab fa-ethereum mr-2"></i> Payout Bounty`,
+      text: '<i class=\'fab fa-ethereum mr-2\'></i> Payout Bounty',
       title: gettext('Payout the bounty to one or more submitters.'),
       primary: true,
       parent: 'bounty_actions'
@@ -1186,7 +1186,7 @@ var do_actions = function(result) {
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['contribute'],
-      text: gettext('Contribute'),
+      text: gettext('Contribute Funds'),
       parent: 'bounty_actions',
       title: gettext('Help by funding or promoting this issue')
     };
