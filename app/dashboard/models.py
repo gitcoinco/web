@@ -1290,8 +1290,6 @@ class BountyEvent(SuperModel):
         ('expire_bounty', 'Expire Bounty'),
         ('extend_expiration', 'Extend Expiration'),
         ('close_bounty', 'Close Bounty'),
-        ('increase_bounty', 'Increase Bounty'),
-        ('sync_issue', 'Sync Issue'),
     )
 
     bounty = models.ForeignKey('dashboard.Bounty', on_delete=models.CASCADE,

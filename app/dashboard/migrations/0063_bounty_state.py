@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
                 ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('event_type', models.CharField(choices=[('accept_worker', 'Accept Worker'), ('cancel_bounty', 'Cancel Bounty'), ('submit_work', 'Submit Work'), ('stop_work', 'Stop Work'), ('express_interest', 'Express Interest'), ('payout_bounty', 'Payout Bounty'), ('expire_bounty', 'Expire Bounty'), ('extend_expiration', 'Extend Expiration'), ('close_bounty', 'Close Bounty'), ('increase_bounty', 'Increase Bounty'), ('sync_issue', 'Sync Issue')], max_length=50)),
+                ('event_type', models.CharField(choices=[('accept_worker', 'Accept Worker'), ('cancel_bounty', 'Cancel Bounty'), ('submit_work', 'Submit Work'), ('stop_work', 'Stop Work'), ('express_interest', 'Express Interest'), ('payout_bounty', 'Payout Bounty'), ('expire_bounty', 'Expire Bounty'), ('extend_expiration', 'Extend Expiration'), ('close_bounty', 'Close Bounty')], max_length=50)),
                 ('metadata', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict)),
                 ('bounty', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='events', to='dashboard.Bounty')),
                 ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='events', to='dashboard.Profile')),
