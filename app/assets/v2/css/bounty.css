@@ -785,6 +785,10 @@ a.btn {
   top: 7rem;
 }
 
+#bounty-options {
+  padding: 0 25px;
+}
+
 @media (max-width: 575.98px) {
 
   #timer {

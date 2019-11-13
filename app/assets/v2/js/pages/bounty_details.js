@@ -1226,7 +1226,10 @@ var do_actions = function(result) {
 
     if (result['can_remarket']) {
       $('#bounty-options-link').append(
-        `<a href="${remarket_url}" class="dropdown-item p-2">Remarket Issue</a>`
+        `<a href="${remarket_url}" class="dropdown-item p-2">
+          <i class="fas fa-bullhorn mr-2"></i>
+          Remarket Issue
+        </a>`
       );
     }
   }
