@@ -346,22 +346,6 @@ a.btn {
   text-align: center;
 }
 
-.started-status-column .button--primary,
-#right_actions .button--primary,
-#btn-white {
-  padding: 6px 15px;
-  box-shadow: none;
-  font-size: 12px;
-}
-
-#right_actions .button--primary {
-  margin-right: 5px;
-  position: relative;
-  top: 1px;
-  display: inline-block;
-  margin-bottom: 10px;
-}
-
 .sticky {
   position: fixed;
   top: 0;

@@ -4,7 +4,8 @@
   color: #fff;
   cursor: pointer;
   font-size: 14px;
-  padding: 6px 20px;
+  padding: 5px 20px;
+  border: 1px solid transparent;
 }
 
 .button:hover {
@@ -24,17 +25,17 @@
 }
 
 .button--primary:hover {
-  background-color: #3f00ff;
+  background-color: var(--gc-blue-hover);
 }
 
 .button--secondary {
-  color: #3E00FF;
-  border: 1px solid #3E00FF;
+  color: var(--gc-blue);
+  border: 1px solid var(--gc-blue);
 }
 
 .button--secondary:hover {
-  color: #3f00ff;
-  border-color: #3f00ff;
+  color: var(--gc-blue-hover);
+  border-color: var(--gc-blue-hover);
 }
 
 .button--primary-o {
