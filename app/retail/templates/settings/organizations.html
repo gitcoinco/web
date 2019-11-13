@@ -1,6 +1,27 @@
 {% extends 'settings/settings.html' %}
 {% load i18n static avatar_tags %}
 {% block settings_content %}
+
+  <h2>Create an Organization</h2>
+  <p>
+    Funders in an organization can:
+  </p>
+  <ul>
+    <li>✅ Fund issues on behalf of other team members</li>
+    <li>✅ Modify bounty settings on behalf of other team members</li>
+    <li>✅ Approve contributors for bounties on behalf of other team members</li>
+    <li>✅ Payout bounties created on behalf of other team members</li>
+  </ul>
+
+  <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?extrascope=orgs"
+    >
+    <i class="fab fa-github"></i>
+    <span>{% trans "Sync with GitHub" %}</span>
+  </a>
+
+
+
+
   <h2 class="font-bigger-2 text-center">Organization Permissions</h2>
   <p class="text-center font-subheader text-black-50">The users below are able to fund, edit settings, approve contributors, and payout contributors on the bounties of the organization</p>
   {% if orgs %}

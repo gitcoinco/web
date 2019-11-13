@@ -41,6 +41,9 @@ from app.utils import sync_profile
 from cacheops import cached_view
 from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms
+from app.utils import CustomGithubOAuth2
+from social_core.backends.github import GithubOAuth2
+
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_feedback
@@ -712,7 +715,8 @@ def org_settings(request):
     if not user or not profile or not is_logged_in:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
-
+    # scope = super(GithubOAuth2, self).get_scope()
+    # print(user.data)
     orgs = get_orgs_perms(profile)
     context = {
         'is_logged_in': is_logged_in,

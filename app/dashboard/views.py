@@ -218,6 +218,12 @@ def gh_login(request):
     return redirect('social:begin', backend='github')
 
 
+@csrf_exempt
+def gh_org_login(request):
+    """Attempt to redirect the user to Github for authentication."""
+    return redirect('social:begin', backend='gh-custom')
+
+
 def get_interest_modal(request):
     bounty_id = request.GET.get('pk')
     if not bounty_id:
