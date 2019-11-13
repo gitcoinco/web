@@ -62,8 +62,7 @@ def generate_grant_pair(grant):
     for contribution in grant_contributions:
         for profile, amount in contribution.items():
             if unique_contributions.get(profile):
-                donation = unique_contributions[profile] + amount
-                unique_contributions[profile] = donation
+                unique_contributions[profile] += amount
             else:
                 unique_contributions[profile] = amount
 
@@ -76,7 +75,7 @@ def generate_grant_pair(grant):
 
     sqrt_of_product_pairs = []
     for contribution_1, contribution_2 in contribution_pairs:
-        sqrt_of_product = round(math.sqrt(contribution_1 * contribution_2))
+        sqrt_of_product = math.sqrt(contribution_1 * contribution_2)
         sqrt_of_product_pairs.append(sqrt_of_product)
 
     grant = {
@@ -154,10 +153,7 @@ def calculate_clr(threshold, grant_contributions):
             lr_contribution = 0
             sqrt_of_product_pair = grant["sqrt_of_product_pairs"][index]
 
-            if threshold >= sqrt_of_product_pair:
-                lr_contribution = sqrt_of_product_pair
-            else:
-                lr_contribution = threshold * (sqrt_of_product_pair / group_by_pair.get(_pair))
+            lr_contribution = sqrt_of_product_pair * min(1, threshold / group_by_pair.get(_pair))
 
             lr_contributions.append(lr_contribution)
             grant_clr += lr_contribution
