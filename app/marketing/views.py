@@ -41,8 +41,6 @@ from app.utils import sync_profile
 from cacheops import cached_view
 from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms
-from app.utils import CustomGithubOAuth2
-from social_core.backends.github import GithubOAuth2
 
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
