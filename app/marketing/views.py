@@ -711,12 +711,16 @@ def org_settings(request):
     """
     msg = ''
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
+    current_scopes = []
 
     if not user or not profile or not is_logged_in:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
-    # scope = super(GithubOAuth2, self).get_scope()
-    # print(user.data)
+
+    social_auth = user.social_auth.first()
+    if social_auth and social_auth.extra_data:
+        current_scopes = social_auth.extra_data.get('scope').split(',')
+    print(current_scopes)
     orgs = get_orgs_perms(profile)
     context = {
         'is_logged_in': is_logged_in,
@@ -728,6 +732,7 @@ def org_settings(request):
         'orgs': orgs,
         'profile': profile,
         'msg': msg,
+        'current_scopes': current_scopes,
     }
     return TemplateResponse(request, 'settings/organizations.html', context)
 

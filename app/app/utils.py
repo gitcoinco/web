@@ -461,13 +461,17 @@ def get_profile(request):
     return profile
 
 class CustomGithubOAuth2(GithubOAuth2):
-    print('GithubOAuth2', GithubOAuth2)
-    # name = 'github-custom'
+    EXTRA_DATA = [
+        ('scope', 'scope'),
+    ]
     def get_scope(self):
         scope = super(CustomGithubOAuth2, self).get_scope()
         print(self.data)
         if self.data.get('extrascope'):
             scope += ['public_repo', 'read:org']
             print(scope)
+            from dashboard.management.commands.sync_orgs_repos import Command
+            print('running')
+            Command().handle()
         print(scope)
         return scope
