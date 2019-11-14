@@ -927,8 +927,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Waterloo Sunrise"
-    new_kudos_pks = [5163, 5077, 5126]
+    subject = "Hackathons, Hackathons, & Hackathons..."
+    new_kudos_pks = [5062, 5125, 5070]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -949,22 +949,25 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    I'm back on the road again, hitting the tarmac once more to join the hacking goodness and celebration at ETH Waterloo. If you'll be attending, be sure to say hello: I'm looking forward to seeing all of your incredible faces.  You can check out the schedule <a href="https://ethwaterloo.com/#schedule"> with more information about my talk here.</a> Tweet at me: I'm <a href="https://twitter.com/owocki">@owocki.</a>
+    Another Gitcoin hackathon in the books. Web3 World wrapped up Monday, and it was the most successful one yet. Every single bounty put up by sponsor’s had at least one project submission, so no prize money went to waste! Judging is in progress, but if you’d like to see what was built you can browse all submissions on our brand new <a href="https://gitcoin.co/hackathon/projects/web3-world">projects</a> page.
 </p>
 <p>
-    The development team is hard at work again with the successful push to release another version of Gitcoin. If you'd like to take a look at our release notes (with fun goodies such as new Kudos, fresh quests, and boundless bug fixes) be sure to take a look at our Github repo. The latest release notes live <a href="https://github.com/gitcoinco/web/releases/tag/20191106master"> here</a>.
+    Next week Yale is hosting an Open Climate Collabathon with an in person event followed by a virtual hackathon. You can learn more about the mission <a href="https://www.collabathon.openclimate.earth/">here</a> and sign up for the online portion on Gitcoin <a href="https://gitcoin.co/hackathon/onboard/open-climate-collabathon/">here</a>.
 </p>
 <p>
-    Web3 World is progressing along! If you're joining us for this fall/winter hack, be sure to get your submissions in by 11:59 PM EST on November 11th. We're excited to see your work and projects you've put together.
+    Finally, our last virtual hackathon of 2019 is called Global Communities and will run from December 2nd - 16th. The goal of this event is to acknowledge the hard work the Gitcoin and Blockchain communities have put in this year, and we’ll celebrate with in person satellite events hosted by the <a href="https://www.buidlnetwork.net/">BUIDL Network</a> and a special community judged prize. Learn more and register on our <a href="https://hackathons.gitcoin.co/global-communities">landing page</a>.
+</p>
+<p>
+    Moving on to meatspace hackathons, the team and I are back from another successful ETH Waterloo. It was great to see everyone and spend some time hacking - I built Cerebro, a machine learning matching system for Gitcoin (that we plan to integrate soon!). If you missed my talk, I posted a <a href="https://twitter.com/owocki/status/1193275598472404998">tweet storm</a> of my slides and presentation for you to check out.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
+        The Gitcoin Livestream is on for this week featuring hackers from Web3 World presenting their projects! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        As we mentioned earlier this week, YouTube recordings of our livestreams are finally being released. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
+        As we mentioned last week, we're updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
         </li>
     </ul>
 </p>
@@ -973,46 +976,45 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'nionis',
+        'who': 'jorropo',
         'who_link': True,
-        'what': 'Create HOPR Widget According To Design Mockup',
-        'link': 'https://gitcoin.co/issue/hoprnet/hopr-website/16/3607',
+        'what': 'Built Pipelines for Spacemesh Virtual Machine',
+        'link': 'https://gitcoin.co/issue/spacemeshos/svm/7/3656',
         'link_copy': 'View more',
     }, {
-        'who': 'frippo40',
+        'who': 'imerkle',
         'who_link': True,
-        'what': 'Ultimate Package Tracker',
-        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/23/3420',
+        'what': 'Auto-generated the svm_wasmer.h file for the svm-runtime-c-api',
+        'link': 'https://gitcoin.co/issue/spacemeshos/svm/12/3655',
         'link_copy': 'View more',
     }, {
         'who': 'janus',
         'who_link': True,
-        'what': 'Ethereum Anemometer',
-        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/24/3421',
+        'what': 'Wrote Tests For Approve() And Transfer_from() In Erc20 Module',
+        'link': 'https://gitcoin.co/issue/docknetwork/substrate-warmup/32/3674',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Sarchy',
-        'title': '5 minute thinking game with Ether for winner',
+        'name': 'Arweave',
+        'title': 'Get paid to build dApps on the permaweb :hammer_and_wrench::globe_with_meridians:',
         'image_url': '',
-        'link': 'http://bit.ly/sarchy-gitcoin-weekly',
-        'cta': 'Play the \'Trusting Trust\' game',
+        'link': 'http://bit.ly/Arweave1',
+        'cta': 'Start hacking today!',
         'body': [
-           'Due to data manipulation by big tech companies, Trust is becoming a key issue in the internet.',
-           '"Trusting Trust" is a game about Trust. It uses the "Prisoners Dilemma" concept. This concept has even been used in the movie "The Dark Knight" by the Joker in the climax scene.'
+           'The permaweb is a decentralized, immutable new web, built on top of a globally distributed, permanent hard drive - the Arweave network. We want the permaweb to be accessible to everyone, but we want you to be a part of making that a reality. That’s why we’re looking for talented developers to build decentralized apps on the permaweb.'
         ]
     }
     
     bounties_spec = [{
-        'url': 'https://github.com/diadata-org/diadata/issues/181',
-        'primer': 'Scraper For Bitflyer Futures',
+        'url': 'https://github.com/Loopring/trusted_setup/issues/11',
+        'primer': 'Loopring 3.0 Trusted Setup MPC Ceremony',
     }, {
-        'url': 'https://github.com/fsprojects/fantomas/issues/555',
-        'primer': 'SpaceBeforeArguments Inconsistency: Should Apply To Functions That Receive `Unit` Arg Too',
+        'url': 'https://github.com/ArweaveTeam/Bounties/issues/17',
+        'primer': 'IPFS+Arweave UI Competition',
     }, {
-        'url': 'https://github.com/gitcoinco/skunkworks/issues/134',
-        'primer': 'Web3 Sustain Event Page',
+        'url': 'https://github.com/gitcoinco/web/issues/5465',
+        'primer': 'DESIGN - BOT Creatives - Winter 2019; 6th Edition',
 }, ]
 
 
