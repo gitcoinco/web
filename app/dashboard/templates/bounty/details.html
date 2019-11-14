@@ -145,14 +145,14 @@
                 <div class="col-12">
                   <div id="right_actions">
                     <div class="dropdown show float-right pt-2">
-                      <a class="font-caption font-weight-semibold dropdown-toggle" href="#" role="button" 
+                      <a class="font-caption font-weight-semibold dropdown-toggle" href="#" role="button"
                         id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Bounty Options
-                      </a>                    
+                      </a>
                       <div id="bounty-options-link" class="dropdown-menu font-caption" aria-labelledby="bounty-options">
                       </div>
                     </div>
-          
+
                     <div id="bounty_actions" class="d-inline-block"></div>
                     <div id="github_actions" class="d-inline-block"></div>
                     <a class="modal-link button button--secondary font-caption" href="" data-toggle="modal" data-target=".share-modal">
@@ -193,6 +193,44 @@
               <h5 class="bounty-heading">{% trans "All Activity" %}</h5>
               <div id="activities" class="font-body"></div>
             </div>
+            {% if prize_projects %}
+              <div class="col-12">
+                <h5 class="bounty-heading">{% trans "Projects" %}</h5>
+                <div class="row">
+                  {% for project in prize_projects %}
+                    <div class="col-12 col-md-4">
+
+                      <div class="card m-3 p-1">
+                        {% for profile in project.profiles.all %}
+                          {% if profile_id == profile.id %}
+                            <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
+                          {% endif %}
+                        {% endfor %}
+                        {% if project.logo %}
+                          <img class="card-project-logo m-auto mw-100 rounded border" height="65" width="65" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
+                        {% else %}
+                          <img class="card-project-logo m-auto mw-100 rounded border" height="65" width="65" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
+                        {% endif %}
+
+                        <div class="text-center mt-3">
+                          <a href="{{project.work_url}}" target="_blank" class="font-weight-bold card-subtitle">{{project.name}}</a>
+                          <div class="mb-2">
+                            <b class="text-muted font-smaller-2">Team Members</b>
+                            <div class="mt-1">
+                              {% for profile in project.profiles.all %}
+                                <a href="{% url 'profile' profile %}" class="">
+                                  <img src="{{profile.avatar_url}}" alt="{{profile}}" title="@{{profile}}" width="30" height="30" class="rounded-circle">
+                                </a>
+                              {% endfor %}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
             <div class="col-12">
               <h5 class="bounty-heading">{% trans "Funder" %}</h5>
               <div class="row box">

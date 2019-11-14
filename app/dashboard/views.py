@@ -1874,6 +1874,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
+                    params['prize_projects'] = HackathonProject.objects.filter(hackathon=bounty.event, bounty=bounty).exclude(status='invalid').prefetch_related('profiles')
+                    print(params['prize_projects'])
 
                 helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)
