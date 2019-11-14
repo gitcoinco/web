@@ -916,11 +916,11 @@ def get_orgs_perms(profile):
             if group_data[1] != "role": #skip repo level groups
                 continue
             print(g.user_set.prefetch_related('profile').all())
-            org_perms['users'].append(
-                *[{'handle': u.profile.handle,
-                   'role': group_data[2],
-                   'name': '{} {}'.format(u.first_name, u.last_name)}
-                for u in g.user_set.prefetch_related('profile').all()])
+            org_perms['users'] = [{
+                'handle': u.profile.handle,
+                'role': group_data[2],
+                'name': '{} {}'.format(u.first_name, u.last_name)
+            } for u in g.user_set.prefetch_related('profile').all()]
         response_data.append(org_perms)
     return response_data
 
