@@ -207,12 +207,12 @@
                           {% endif %}
                         {% endfor %}
                         {% if project.logo %}
-                          <img class="card-project-logo m-auto mw-100 rounded border" height="65" width="65" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
+                          <img class="card-project-logo mx-auto mt-2 mw-100 rounded border" height="65" width="65" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
                         {% else %}
-                          <img class="card-project-logo m-auto mw-100 rounded border" height="65" width="65" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
+                          <img class="card-project-logo mx-auto mt-2 mw-100 rounded border" height="65" width="65" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
                         {% endif %}
 
-                        <div class="text-center mt-3">
+                        <div class="text-center mt-2">
                           <a href="{{project.work_url}}" target="_blank" class="font-weight-bold card-subtitle">{{project.name}}</a>
                           <div class="mb-2">
                             <b class="text-muted font-smaller-2">Team Members</b>
