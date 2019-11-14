@@ -34,7 +34,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
-from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Avg, Count, Prefetch, Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
@@ -3476,6 +3476,7 @@ def hackathon_projects(request, hackathon=''):
     q = clean(request.GET.get('q', ''), strip=True)
     order_by = clean(request.GET.get('order_by', '-created_on'), strip=True)
     filters = clean(request.GET.get('filters', ''), strip=True)
+    sponsor = clean(request.GET.get('sponsor', ''), strip=True)
     page = request.GET.get('page', 1)
 
     try:
@@ -3483,7 +3484,17 @@ def hackathon_projects(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
-    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles').order_by(order_by)
+    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles').order_by(order_by).select_related('bounty')
+
+    sponsors_list = []
+    for project in projects:
+        sponsor_item = {
+            'avatar_url': project.bounty.avatar_url,
+            'org_name': project.bounty.org_name
+        }
+        sponsors_list.append(sponsor_item)
+
+    sponsors_list = list({v['org_name']:v for v in sponsors_list}.values())
 
     if q:
         projects = projects.filter(
@@ -3491,6 +3502,14 @@ def hackathon_projects(request, hackathon=''):
             Q(summary__icontains=q) |
             Q(profiles__handle__icontains=q)
         )
+
+    if sponsor:
+        projects_sponsor=[]
+        for project in projects:
+            if sponsor == project.bounty.org_name:
+                projects_sponsor.append(project)
+        projects = projects_sponsor
+
     if filters == 'winners':
         projects = projects.filter(
             Q(badge__isnull=False)
@@ -3509,6 +3528,8 @@ def hackathon_projects(request, hackathon=''):
         'active': 'hackathon_onboard',
         'title': 'Hackathon Projects',
         'hackathon': hackathon_event,
+        'sponsors_list': sponsors_list,
+        'sponsor': sponsor,
         'projects': projects_paginated,
         'order_by': order_by,
         'filters': filters,
