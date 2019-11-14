@@ -1247,9 +1247,7 @@ var do_actions = function(result) {
       text: (result['repo_type'] === 'private' ? '<i class="fas fa-lock mr-2"></i> ' +
         gettext('Private Repo') : '<i class="fab fa-github mr-2"></i>' + gettext('View On Github')),
       parent: 'github_actions',
-      title: gettext('View issue details and comments on Github'),
-      comments: result['github_comments'],
-      color: 'comments'
+      title: gettext('View issue details and comments on Github')
     };
 
     actions.push(_entry);
