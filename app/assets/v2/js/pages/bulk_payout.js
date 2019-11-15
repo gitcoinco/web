@@ -108,6 +108,7 @@ $(document).ready(function($) {
       bounty.killBounty(
         $('#standard_bounties_id').val(),
         gas_dict,
+        {from: web3.eth.accounts[0]},
         callback
       );
 
