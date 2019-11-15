@@ -15,5 +15,24 @@ class SearchResult(SuperModel):
     visible_to = models.ForeignKey('dashboard.Profile', related_name='search_results_visible', on_delete=models.CASCADE, db_index=True, null=True)
 
     def __str__(self):
-        return f"{self.url}"
+        return f"{self.source_type}; {self.url}"
+
+
+class ProgrammingLanguage(SuperModel):
+    """Records ProgrammingLanguage - the list for programming langauges"""
+    val = models.CharField(max_length=255, default='')
+
+    def __str__(self):
+        return f"{self.val}"
+
+
+
+class Page(SuperModel):
+    """Records ProgrammingLanguage - the list for programming langauges"""
+    title = models.CharField(max_length=255, default='')
+    key = models.CharField(max_length=255, default='')
+    description = models.TextField(default='', blank=True)
+
+    def __str__(self):
+        return f"{self.key} / {self.title}"
 

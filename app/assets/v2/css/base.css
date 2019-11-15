@@ -1630,23 +1630,27 @@ div.busyOverlay {
   padding: 3px 5px;
   border-radius: 3px;
 }
+/* search */
 .navbar-nav .select2-selection__placeholder{
   color: white;
 }
 .navbar-nav .select2{
   height: 14px;
 }
-.select2-dropdown{
+.select2-container--search .select2-dropdown{
   width: 200px !important;
   left: -200px !important;
 }
-.navbar-nav .select2-selection.select2-selection--single{
+.navbar-nav .select2-container--search .select2-selection.select2-selection--single{
   border: none !important;
   float: right;
   font-size: 14px;
   margin-top: 5px;
 }
-
+.select2-container--search .select2-results__option:hover{
+  background-color: yellow;
+  cursor: pointer;
+}
 #search{
   width: 20px;
 }

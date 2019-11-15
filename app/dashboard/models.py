@@ -1687,6 +1687,25 @@ def psave_bounty(sender, instance, **kwargs):
             if profiles.exists():
                 instance.bounty_owner_profile = profiles.first()
 
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    if instance.current_bounty:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='dashboard', model='bounty'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.web3_created,
+                "title":instance.title,
+                "description":instance.issue_description,
+                "url":instance.url,
+                "visible_to":None,
+            }
+            )
+        # delete any old bounties
+        if self.prev_bounty:
+            for sr in SearchResult.objects.filter(source=self.prev_bounty):
+                sr.delete()
+
 
 @receiver(post_save, sender=BountyFulfillment, dispatch_uid="psave_bounty_fulfill")
 def psave_bounty_fulfilll(sender, instance, **kwargs):
@@ -4016,6 +4035,10 @@ class HackathonEvent(SuperModel):
         return Bounty.objects.filter(event=self, network='mainnet').current()
 
     @property
+    def url(self):
+        return settings.SITE_URL + self.slug
+
+    @property
     def stats(self):
         stats = {
             'range': f"{self.start_date.strftime('%m/%d/%Y')} to {self.end_date.strftime('%m/%d/%Y')}",
@@ -4033,6 +4056,23 @@ class HackathonEvent(SuperModel):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+# method for updating
+@receiver(pre_save, sender=HackathonEvent, dispatch_uid="psave_hackathonevent")
+def psave_hackathonevent(sender, instance, **kwargs):
+
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    SearchResult.objects.update_or_create(
+        source_type=ContentType.objects.get(app_label='dashboard', model='hackathonevent'),
+        source_id=instance.pk,
+        defaults={
+            "created_on":instance.created_on,
+            "title":instance.name,
+            "description":instance.stats['range'],
+            "url":instance.url,
+            "visible_to":None,
+        }
+        )
 
 class HackathonSponsor(SuperModel):
     SPONSOR_TYPES = [

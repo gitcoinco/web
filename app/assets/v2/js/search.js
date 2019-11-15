@@ -66,9 +66,11 @@ function search(elem) {
       document.selected_element = null;
       e.preventDefault();
     });
-    $(selectItem).on('select2:selecting', function(e) {
-      e.preventDefault();
-      alert('todo - forward to this url')
+    $(selectItem).on('select2:select', function(e) {
+      console.log(e);
+      console.log($("#search").val());
+      var data = e.params.data; 
+      console.log(data);
     });
   });
 }
@@ -76,21 +78,14 @@ function search(elem) {
 $('document').ready(function() {
   $("#search_container").html('<select id=search name="search" class="custom-select gc-border-blue"><option></option></select>');
   search();
+
   $('body').on('click', '.search_autocomplete', function(e) {
     var search_term = $(this).text();
-    select2SiteSearch($(this).parents('.element-module').find('#search'), search_term);
     e.preventDefault();
   });
+
+  $(document).on ('click', '.element-search-result', function(){
+    document.location.href = $(this).data('url');
+  })
 });
 
-function select2SiteSearch(elem, term, select) {
-  elem.select2('open');
-  var $search = elem.data('select2').dropdown.$search || elem.data('select2').selection.$search;
-  $search.val(term);
-  $search.trigger('input');
-  if (select) {
-    setTimeout(function() {
-      $('.select2-results__option').trigger('mouseup');
-    }, 500);
-  }
-}
