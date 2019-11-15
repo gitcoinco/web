@@ -308,7 +308,6 @@ def email_settings(request, key):
     if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
-        preferred_language = request.POST.get('preferred_language')
         validation_passed = True
         try:
             email_in_use = User.objects.filter(email=email) | User.objects.filter(profile__email=email)
@@ -326,16 +325,7 @@ def email_settings(request, key):
             print(e)
             validation_passed = False
             msg = str(e)
-        if preferred_language:
-            if preferred_language not in [i[0] for i in settings.LANGUAGES]:
-                msg = _('Unknown language')
-                validation_passed = False
         if validation_passed:
-            if profile:
-                profile.pref_lang_code = preferred_language
-                profile.save()
-                request.session[LANGUAGE_SESSION_KEY] = preferred_language
-                translation.activate(preferred_language)
             if es:
                 key = get_or_save_email_subscriber(email, 'settings')
                 es.preferences['level'] = level

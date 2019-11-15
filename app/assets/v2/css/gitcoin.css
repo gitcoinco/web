@@ -571,12 +571,12 @@ div.button-pink {
 }
 
 .dropdown-menu .dropdown-item {
-  padding: 12px 25px;
+  padding: 12px 25px !important;
 }
 
 .dropdown-menu .dropdown-item:hover {
-  background-color: #0D0764;
-  color: #FFFFFF;
+  background-color: #3E00FF;
+  color: #FFFFFF !important;
 }
 
 #why-gitcoin .dropdown-item {

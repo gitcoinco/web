@@ -77,7 +77,7 @@ When you [open an issue](https://github.com/gitcoinco/web), you'll notice four t
 ## Discussions And General Help
 
 As Gitcoin is still at its early stages, drop by
-[gitcoin.co/slack](gitcoin.co/slack) and say hi to know what's next / to get
+[gitcoin.co/slack](https://gitcoin.co/slack) and say hi to know what's next / to get
 your answers cleared up.
 
 ## Pull Requests
@@ -230,7 +230,7 @@ def foo(bar='bar'):
       bar (str): The foo suffix. Defaults to: bar.
 
     Attributes:
-      foobar (str): The foo string concatentated with the provided bar variable.
+      foobar (str): The foo string concatenated with the provided bar variable.
 
     Returns:
       str: The concatenated string.
