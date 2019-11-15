@@ -2499,7 +2499,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'quests':
         context['quest_wins'] = profile.quest_attempts.filter(success=True)
-    elif tab == 'grant_contribs':
+    elif tab == 'grants':
         from grants.models import Contribution
         contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
         history = []
@@ -2610,7 +2610,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grant_contribs', 'quests']
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2626,7 +2626,7 @@ def profile(request, handle, tab=None):
     owned_kudos = None
     sent_kudos = None
     context = {}
-
+    import ipdb; ipdb.set_trace()
     # get this user
     try:
         if not handle and not request.user.is_authenticated:

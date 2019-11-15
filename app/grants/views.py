@@ -699,7 +699,7 @@ def profile(request):
     if not request.user.is_authenticated:
         raise Http404
     handle = request.user.profile.handle
-    return redirect(f'/profile/{handle}/grant_contribs')
+    return redirect(f'/profile/{handle}/grants')
 
 def quickstart(request):
     """Display quickstart guide."""
