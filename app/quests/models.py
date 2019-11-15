@@ -255,7 +255,7 @@ def psave_quest(sender, instance, **kwargs):
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
     SearchResult.objects.update_or_create(
-        source_type=ContentType.objects.get(app_label='quests', model='Quest'),
+        source_type=ContentType.objects.get(app_label='quests', model='quest'),
         source_id=instance.pk,
         defaults={
             "created_on":instance.created_on,
