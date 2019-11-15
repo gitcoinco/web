@@ -780,6 +780,11 @@ var currentNetwork = function(network) {
 var trigger_primary_form_web3_hooks = function() {
   if ($('#primary_form').length) {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1 && !document.suppress_faucet_solicitation;
+    var is_metamask = typeof web3 !== 'undefined' && web3.currentProvider.isMetaMask === true;
+
+    if (!is_metamask){
+      w3 = new Web3(window.web3.currentProvider);
+    }
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
@@ -789,7 +794,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
-    } else if (is_metamask_unlocked && !is_metamask_approved) {
+    } else if (is_metamask && is_metamask_unlocked && !is_metamask_approved) {
       $('#connect_metamask_error').css('display', 'block');
       $('#unlock_metamask_error').css('display', 'none');
       $('#zero_balance_error').css('display', 'none');
@@ -797,7 +802,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#primary_form, .primary_form-meta').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
-    } else if (!web3.eth.coinbase) {
+    } else if (web3.eth !== undefined && !web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
@@ -836,18 +841,19 @@ var trigger_faucet_form_web3_hooks = function() {
 
     $('#ethAddress').val(web3.eth.accounts[0]);
     var faucet_amount = parseInt($('#currentFaucet').val() * (Math.pow(10, 18)));
+    var is_metamask = web3.currentProvider.isMetaMask === true;
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
       return;
-    } else if (is_metamask_unlocked && !is_metamask_approved) {
+    } else if (is_metamask && is_metamask_unlocked && !is_metamask_approved) {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'block');
       $('#over_balance_error').css('display', 'none');
       $('#faucet_form').addClass('hidden');
-    } else if (!web3.eth.coinbase) {
+    } else if (web3.eth !== undefined && !web3.eth.coinbase) {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'block');
       $('#connect_metamask_error').css('display', 'none');
@@ -874,12 +880,12 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#faucet_form').addClass('hidden');
       return;
     }
-    if (is_metamask_unlocked && !is_metamask_approved) {
+    if (is_metamask && is_metamask_unlocked && !is_metamask_approved) {
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
     }
-    if (!web3.eth.coinbase) {
+    if (web3.eth !== undefined && !web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
       return;

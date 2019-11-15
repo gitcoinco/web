@@ -74,7 +74,7 @@ onboard.watchMetamask = function() {
         </a>
       </div>`
     );
-  } else if (!web3.eth.coinbase) {
+  } else if (web3.eth !== undefined && !web3.eth.coinbase) {
     $('.step #metamask').html(`
       <div class="locked">
         <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">

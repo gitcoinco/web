@@ -220,7 +220,7 @@ $(document).ready(function() {
       _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
       return;
     }
-    if (!web3.eth.coinbase) {
+    if (web3.eth !== undefined && !web3.eth.coinbase) {
       _alert({ message: gettext('Please unlock metamask.') }, 'warning');
       return;
     }

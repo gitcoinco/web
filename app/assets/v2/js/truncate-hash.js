@@ -71,12 +71,15 @@ new truncateHash();
   };
 }());
 
-new metamaskAddress();
-
-try {
-  web3.currentProvider.publicConfigStore.on('update', function(e) {
-    new metamaskAddress();
-  });
-} catch (ignore) {
-  console.log('%c error: web3 not defined. ensure metamask is installed & unlocked', 'color: red');
-}
+window.addEventListener('load', function() {
+  new metamaskAddress();
+  try {
+    if (web3.currentProvider.isMetamask !== undefined) {
+      web3.currentProvider.publicConfigStore.on('update', function(e) {
+        new metamaskAddress();
+      });
+    }
+  } catch (ignore) {
+    console.log('%c error: web3 not defined. ensure metamask is installed & unlocked', 'color: red');
+  }
+});
