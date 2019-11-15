@@ -148,7 +148,7 @@ def editquest(request, pk=None):
                 if pk:
                     funct = Quest.objects.filter(pk=pk).update
                     edit_comments = quest.edit_comments
-                    visible = True
+                    visible = quest.visible
                 if package.get('comment'):
                     edit_comments += f"\n {timezone.now().strftime('%Y-%m-%dT%H:%M')}: {package['comment']} "
 
