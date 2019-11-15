@@ -271,17 +271,6 @@ def index(request):
         if popular.exists():
             quests.append(('Popular', get_package_helper(popular, request)))
 
-        print(f" phase1.3 at {round(time.time(),2)} ")
-        # new quests!
-        new_quests = Quest.objects.filter(visible=True, created_on__gt=(timezone.now() - timezone.timedelta(hours=hours_new))).order_by('-ui_data__success_pct')
-        if new_quests.exists():
-            quests.append(('New', get_package_helper(new_quests, request)))
-
-        print(f" phase1.4 at {round(time.time(),2)} ")
-        # popular quests
-        popular = Quest.objects.filter(visible=True).order_by('-ui_data__attempts_count')[0:5]
-        if popular.exists():
-            quests.append(('Popular', get_package_helper(popular, request)))
 
     print(f" phase2 at {round(time.time(),2)} ")
     rewards_schedule = []
@@ -293,6 +282,7 @@ def index(request):
                 'reward_denominator': reward_denominator,
                 'reward_multiplier': 1/reward_denominator
             })
+
 
     print(f" phase3 at {round(time.time(),2)} ")
     attempt_count = QuestAttempt.objects.count()
