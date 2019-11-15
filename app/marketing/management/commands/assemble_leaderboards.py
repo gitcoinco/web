@@ -373,7 +373,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         
         # get grants
-        grants = Contribution.objects.filter(subscription__network='mainnet')[0:5]
+        grants = Contribution.objects.filter(subscription__network='mainnet')
         # iterate
         for gc in grants:
             index_terms = grant_index_terms(gc)
