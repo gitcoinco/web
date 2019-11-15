@@ -960,6 +960,9 @@ Hey Gitcoiners,
 <p>
     Moving on to meatspace hackathons, the team and I are back from another successful ETH Waterloo. It was great to see everyone and spend some time hacking - I built Cerebro, a machine learning matching system for Gitcoin (that we plan to integrate soon!). If you missed my talk, I posted a <a href="https://twitter.com/owocki/status/1193275598472404998">tweet storm</a> of my slides and presentation for you to check out.
 </p>
+<p>
+    Also, a very important announcement: if you haven't heard, MakerDAO is launching their Multi-Collateral Dai token next week on November 18th. At that time, we'll be renaming the current Single-Collateral Dai token to Sai, so don't be alarmed if you see your bounties and grants change over to the new name. We'll also be supporting the Multi-Collateral Dai token soon, with a planned launch date of November 25th. For more info on everything thats happening with Dai, along with instructions and tools to help you transition to the new token, check out MakerDAO's upgrade guide <a href="https://blog.makerdao.com/looking-ahead-how-to-upgrade-to-multi-collateral-dai/">here</a>.
+</p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
