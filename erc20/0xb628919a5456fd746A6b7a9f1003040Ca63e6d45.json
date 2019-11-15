@@ -1,0 +1,22 @@
+{
+  "symbol": "PP",
+  "address": "0xb628919a5456fd746A6b7a9f1003040Ca63e6d45",
+  "overview":{
+        "en": "ProducePay (PP) is a financial company located in Los Angeles, CA, which has been devoted to the integration of agricultural supply chain for a long time. Over the years, the company has made outstanding achievements in the integration of market and origin, and has solved the financial and sales problems for a large number of small farmers. At the same time, it has also made great contributions to the liquidity of the futures market and international trade of agricultural products. ProducePay big data service platform collects 7 billion pieces of data every day, and through virtualization technology to precisely control the local agricultural ecosystem, realizes agricultural automation to improve plant health and yield. ProducePay Block Chain helps to track the origin of agricultural products on the big data service platform, providing consumers with safe, reliable and authentic traceability information of agricultural products. ProducePay plans to test network for agricultural data model block chains in early 2020. It mainly solves the problems of unified quality information standards, commodity flow channels, electronic vouchers and anti-counterfeiting identification.",
+        "zh": "ProducePay(PP)是位于Los Angeles, CA，长期致力于农业供应链整合的金融公司，多年来该公司在市场和产地整合的工作已经取得了突出的成绩，并为大量小型农场主解决了资金和销售难题。同时也为农产品在期货市场流动性和国际贸易方面作出了巨大贡献。ProducePay大数据服务平台每天收集70亿条数据，并通过虚拟化技术对当地的农业生态系统进行精准控制，实现了对农业自动化以改善植物的健康并提高产量。ProducePay区块链助力于大数据服务平台，对农产品进行跟踪溯源，为消费者提供安全、可靠、真实的农产品溯源信息。ProducePay计划于2020年初，针对农业数据模型的区块链测试网上线。主要解决了统一制质量信息标准，商品流动渠道，电子凭证以及防伪识别等难题。"
+  },
+  "email": "support@ProducePay.io",
+  "website": "https://producepay.io/",
+  "whitepaper": "https://producepay.io/WhitePaper_zh.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-30",
+  "initial_price":{
+        "USD":"0.02 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/ProducePay",
+    "telegram": "https://t.me/joinchat/H-cHH1YuY2Nv5irzPywv0Q",
+    "facebook": "https://www.facebook.com/ProducePay",
+	"reddit": "https://www.reddit.com/user/ProducePay"
+  }
+}
