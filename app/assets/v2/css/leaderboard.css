@@ -69,7 +69,7 @@ tbody, a {
 }
 
 .item-count-bounties {
-  display: none;
+  display: block;
 }
 
 .hidemobile {
@@ -77,10 +77,6 @@ tbody, a {
 }
 
 @media (min-width: 700px) {
-  .item-count-bounties {
-    display: block
-  }
-
   .podium {
     justify-content: space-between;
   }
