@@ -286,7 +286,7 @@ def email_settings(request, key):
         email_types[em[0]] = str(em[1])
     email_type = request.GET.get('type')
     if email_type in email_types:
-        email = request.user.profile.email
+        email = es.email
         if es:
             key = get_or_save_email_subscriber(email, 'settings')
             es.email = email
