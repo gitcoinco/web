@@ -1000,7 +1000,7 @@ Back to shipping,
 
     sponsor = {
         'name': 'Arweave',
-        'title': 'Get paid to build dApps on the permaweb :hammer_and_wrench::globe_with_meridians:',
+        'title': 'Get paid to build dApps on the permaweb 🛠️🌐',
         'image_url': '',
         'link': 'http://bit.ly/Arweave1',
         'cta': 'Start hacking today!',
