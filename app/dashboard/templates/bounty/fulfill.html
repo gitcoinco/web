@@ -99,11 +99,15 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    
+
   </body>
   <script>
     $('[data-toggle="popover"]').popover()
     $('[data-toggle="tooltip"]').bootstrapTooltip();
+
+    {% if bounty.event %}
+      document.eventTag = '{{ bounty.event.slug }}';
+    {% endif %}
   </script>
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/rating.js" %}"></script>
