@@ -119,7 +119,7 @@ window.onload = function() {
                     txid: result
                   });
 
-                  if (document.eventTag){
+                  if (document.eventTag) {
                     localStorage['pendingProject'] = true;
                   }
 
