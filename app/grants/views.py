@@ -300,8 +300,17 @@ def grant_new(request):
             }
             grant = Grant.objects.create(**grant_kwargs)
             new_grant_admin(grant)
+
+            team_members = (team_members[0].split(','))
             team_members.append(profile.id)
-            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            team_members = list(set(team_members))
+
+            for i in range(0, len(team_members)):
+                team_members[i] = int(team_members[i])
+
+            grant.team_members.add(*team_members)
+            grant.save()
+
             return JsonResponse({
                 'success': True,
             })
@@ -377,8 +386,17 @@ def grant_new_v0(request):
                 'logo': logo,
             }
             grant = Grant.objects.create(**grant_kwargs)
+
+            team_members = (team_members[0].split(','))
             team_members.append(profile.id)
-            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            team_members = list(set(team_members))
+
+            for i in range(0, len(team_members)):
+                team_members[i] = int(team_members[i])
+
+            grant.team_members.add(*team_members)
+            grant.save()
+
             return JsonResponse({
                 'success': True,
             })
