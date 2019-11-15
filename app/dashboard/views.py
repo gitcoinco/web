@@ -2626,7 +2626,6 @@ def profile(request, handle, tab=None):
     owned_kudos = None
     sent_kudos = None
     context = {}
-    import ipdb; ipdb.set_trace()
     # get this user
     try:
         if not handle and not request.user.is_authenticated:
