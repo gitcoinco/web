@@ -3665,6 +3665,19 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
 
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    SearchResult.objects.update_or_create(
+        source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
+        source_id=instance.pk,
+        defaults={
+            "created_on":instance.created_on,
+            "title":instance.handle,
+            "description":instance.desc,
+            "url":instance.url,
+            "visible_to":None,
+        }
+        )
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
