@@ -1,10 +1,14 @@
-from django.shortcuts import render
-from django.http import HttpResponse
 import json
-from .models import SearchResult
+
 from django.db.models import Q
-from retail.helpers import get_ip
+from django.http import HttpResponse
+from django.shortcuts import render
+
 from dashboard.models import SearchHistory
+from retail.helpers import get_ip
+
+from .models import SearchResult
+
 
 def search(request):
     keyword = request.GET.get('term', '')
@@ -14,7 +18,13 @@ def search(request):
     else:
         results = results.filter(visible_to__isnull=True)
     results = [
-        {'title': ele.title, 'description': ele.description, 'url': ele.url} for ele in results
+        {
+            'title': ele.title,
+            'description': ele.description,
+            'url': ele.url,
+            'img_url': ele.img_url if ele.img_url else "/static/v2/images/helmet.svg",
+            'source_type': str(ele.source_type)
+        } for ele in results
     ]
 
     if request.user.is_authenticated:

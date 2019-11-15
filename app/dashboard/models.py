@@ -1689,9 +1689,10 @@ def psave_bounty(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
+    ct = ContentType.objects.get(app_label='dashboard', model='bounty')
     if instance.current_bounty:
         SearchResult.objects.update_or_create(
-            source_type=ContentType.objects.get(app_label='dashboard', model='bounty'),
+            source_type=ct,
             source_id=instance.pk,
             defaults={
                 "created_on":instance.web3_created,
@@ -1699,11 +1700,12 @@ def psave_bounty(sender, instance, **kwargs):
                 "description":instance.issue_description,
                 "url":instance.url,
                 "visible_to":None,
+                'img_url': instance.get_avatar_url(True),
             }
             )
         # delete any old bounties
-        if self.prev_bounty:
-            for sr in SearchResult.objects.filter(source=self.prev_bounty):
+        if instance.prev_bounty:
+            for sr in SearchResult.objects.filter(source_type=ct, source_id=instance.prev_bounty.pk):
                 sr.delete()
 
 
@@ -3695,6 +3697,7 @@ def psave_profile(sender, instance, **kwargs):
             "description":instance.desc,
             "url":instance.url,
             "visible_to":None,
+            'img_url': instance.avatar_url,
         }
         )
 
@@ -4071,6 +4074,7 @@ def psave_hackathonevent(sender, instance, **kwargs):
             "description":instance.stats['range'],
             "url":instance.url,
             "visible_to":None,
+            'img_url': instance.logo.url if instance.logo else None,
         }
         )
 

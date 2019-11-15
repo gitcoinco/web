@@ -16,22 +16,23 @@
 
 '''
 
-from django.core.management.base import BaseCommand
-from django.utils import timezone
-
-from dashboard.models import Bounty, Profile, HackathonEvent
-from grants.models import Grant
-from quests.models import Quest
-from kudos.models import Token
-from search.models import SearchResult
-from app.sitemaps import StaticViewSitemap
-from django.urls import reverse
-from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from search.models import SearchResult, ProgrammingLanguage, Page
+from django.core.management.base import BaseCommand
+from django.urls import reverse
+from django.utils import timezone
+
 import requests
+from app.sitemaps import StaticViewSitemap
+from bs4 import BeautifulSoup
+from dashboard.models import Bounty, HackathonEvent, Profile
+from grants.models import Grant
+from kudos.models import Token
+from quests.models import Quest
 from retail.utils import strip_html
+from search.models import Page, ProgrammingLanguage, SearchResult
+
+
 class Command(BaseCommand):
 
     help = 'creates earnings records for deploy of https://github.com/gitcoinco/web/pull/5093'
@@ -52,9 +53,14 @@ class Command(BaseCommand):
                     description = soup.findAll("meta", {"name": 'description'})[0].text
                 except:
                     description = ''
+                try:
+                    img_url = soup.findAll("meta", {"name": 'twitter:image'})[0].get('content')
+                    print(img_url)
+                except:
+                    img_url = ''
                 valid_title ='Grow Open Source' not in title and 'GitHub' not in title
                 title = title if valid_title else item.capitalize() + " Page"
-                print(title, item, url)
+                print(title, item, url, img_url)
                 obj, created = Page.objects.update_or_create(
                     key=item,
                     defaults={
@@ -70,6 +76,7 @@ class Command(BaseCommand):
                         "description":description,
                         "url":url,
                         "visible_to":None,
+                        'img_url': img_url,
                     }
                     )
             except Exception as e:
@@ -110,4 +117,3 @@ class Command(BaseCommand):
             for obj in qs:
                 print(obj.pk)
                 obj.save()
-

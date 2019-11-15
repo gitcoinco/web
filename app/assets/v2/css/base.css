@@ -1641,6 +1641,10 @@ div.busyOverlay {
   width: 200px !important;
   left: -200px !important;
 }
+.select2-container--search .element-search-result img{
+  max-width: 50px;
+  max-height: 50px;
+}
 .navbar-nav .select2-container--search .select2-selection.select2-selection--single{
   border: none !important;
   float: right;

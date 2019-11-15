@@ -404,6 +404,7 @@ def psave_token(sender, instance, **kwargs):
             "description":instance.description,
             "url":instance.url,
             "visible_to":None,
+            'img_url': instance.img_url,
         }
         )
 

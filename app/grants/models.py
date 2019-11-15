@@ -796,6 +796,7 @@ def psave_grant(sender, instance, **kwargs):
             "description":instance.description,
             "url":instance.url,
             "visible_to":None,
+            'img_url': instance.logo.url if instance.logo else None,
         }
         )
 

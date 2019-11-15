@@ -263,6 +263,7 @@ def psave_quest(sender, instance, **kwargs):
             "description":instance.description,
             "url":instance.url,
             "visible_to":None,
+            'img_url': instance.enemy_img_url,
         }
         )
 

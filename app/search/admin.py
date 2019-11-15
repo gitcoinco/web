@@ -1,6 +1,6 @@
 from django.contrib import admin
-from search.models import SearchResult, ProgrammingLanguage, Page
 
+from search.models import Page, ProgrammingLanguage, SearchResult
 
 
 class SearchResultAdmin(admin.ModelAdmin):
