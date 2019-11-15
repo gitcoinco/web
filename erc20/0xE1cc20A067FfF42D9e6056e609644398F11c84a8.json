@@ -1,0 +1,17 @@
+﻿{
+    "symbol": "BFM",
+    "address": "0xE1cc20A067FfF42D9e6056e609644398F11c84a8",
+    "overview":{
+		  "en":"BFM (B4 flash memory) is a new cryptocurrency based on Conditioned Proof of Capacity (cpoc). Its main characteristics are to use the B4 flash memory chip as a consensus participant, reduce the loss of temperature on the miner chip, improve the speed of chip rewriting and reading, provide the highest reliable storage, etc., so as to reduce the consumption of encrypted currency on power resources, reduce the threshold of participation, make its production mode more decentralized, and more secure and credible, so that everyone can participate with the mining of cryptocurrencies, credit and value are generated through mathematical algorithms and distributed mining.",
+          "zh":"BFM（B4 Flash Memory）是基于Conditioned Proof Of Capacity（CPOC）的新型加密货币。其主要的特点是使用B4闪存芯片作为共识的参与者，减少温度对矿机芯片的损耗，提高芯片的重写、读取的速度，提供最高的可靠性存储等，从而降低加密货币对电力资源的消耗，降低参与门槛，让其生产方式更趋向去中心化方式，并更加安全可信，让人人都能参与到加密货币的开采，通过数学算法以及分布式开采产生信用和价值。"
+    },
+    "email": "upbfm_com@163.com",
+    "website": "http://www.upbfm.com/",
+    "whitepaper": "http://www.upbfm.com/wp",
+    "state": "NORMAL",
+    "published_on": "2019-12-6",
+    "initial_price":{
+		"USD":"0.0714 USD"
+    },
+    "links": {}
+  }	
