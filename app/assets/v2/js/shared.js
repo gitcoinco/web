@@ -782,7 +782,7 @@ var trigger_primary_form_web3_hooks = function() {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1 && !document.suppress_faucet_solicitation;
     var is_metamask = typeof web3 !== 'undefined' && web3.currentProvider.isMetaMask === true;
 
-    if (!is_metamask){
+    if (!is_metamask) {
       w3 = new Web3(window.web3.currentProvider);
     }
 
@@ -835,13 +835,13 @@ var trigger_primary_form_web3_hooks = function() {
 
 var trigger_faucet_form_web3_hooks = function() {
   var params = {};
+  const is_metamask = typeof web3 !== 'undefined' && web3.currentProvider.isMetaMask === true;
 
   if ($('#faucet_form').length) {
     var balance = document.balance;
 
     $('#ethAddress').val(web3.eth.accounts[0]);
     var faucet_amount = parseInt($('#currentFaucet').val() * (Math.pow(10, 18)));
-    var is_metamask = web3.currentProvider.isMetaMask === true;
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
