@@ -89,6 +89,17 @@
                         </select>
                       </div>
 
+                      <div class=" mt-2">
+                        <p class="key-title font-body mb-0 font-weight-semibold mr-2">Product :</p>
+                        <select id="product" class="form-control key font-body">
+                          {% for ele in products %}
+                            <option value="{{ele}}"
+                              {% if product == ele %}selected=selected{% endif %} >{{ele|title}}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+
                     <div class=" mt-2">
                       {% if technologies|length > 0 %}
                         <p class="key-title font-body mb-0 font-weight-semibold mr-2">Key : &nbsp; &nbsp; &nbsp; &nbsp;</p>
