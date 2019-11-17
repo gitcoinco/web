@@ -36,7 +36,7 @@
       {% include 'shared/minihero.html' with h1=title position_h1_below_logo=1 %}
     </div>
 
-    <div class="content-block content-block--white">
+    <div id=gmv class="content-block content-block--white">
       <div class="container">
         <h2 class="content-block__title">
           ${{ universe_total_usd|floatformat:0|intcomma }} of {% blocktrans %}
@@ -54,7 +54,7 @@
           </div>
 
           <div class="chart_container">
-            <h3 class="chart_container__title">{% trans "and by Type" %}</h3>
+            <h3 class="chart_container__title" style="margin-right:2rem;">{% trans "and by Type" %}</h3>
             <div class="chart_container__content chart_container--flex">
               <div class="bounty-status-list">
                 <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp;{% trans "Bounties" %}</p>
