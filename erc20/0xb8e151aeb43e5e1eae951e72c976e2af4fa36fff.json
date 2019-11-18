@@ -1,0 +1,18 @@
+{
+  "symbol": "BDES",
+  "address": "0xB8e151AEb43e5E1eAE951e72c976e2Af4fa36fff",
+  "overview":{
+        "zh": "BDES大数据公链是由BDES理事会治理并采用区块链为核心技术的大数据交易生态分布式网络。通过采用区块链分布式存储、Hash加密算法、Merkle树和时间戳等技术的组合；实现大数据交易的同时明确了数据资产产权归属，确保数据信息安全和隐私，并保护了数据拥有方的所属权益。BDES致力于打造成全球大数据资产化与交易的基础设施， 为数据交易、 数据投融资等数据资产化相关业务提供底层技术支持， 帮助企业盘活现有数据资产并实现数据资产上市交易。BDES技术团队由成都、广州、深圳、中国香港、新加坡、俄罗斯等地区块链、大数据及人工智能领域专家组成， 采用优化的DPoS共识机制， 实现秒级出块， 支持数据资产化与竞价交易、 大数据技术分析、 大数据工程、 数据众筹等各类商业应用。BDES是BDES大数据公链基金会发行的全球大数据通用积分， BDES可在BDES大数据公链生态体系下的多个场景中使用。"
+  },
+  "email": "314438552@qq.com",
+  "website": "http://www.vccn.com/bdeshome/index.html",
+  "whitepaper": "https://mp.weixin.qq.com/s/voOOzQHEX2kQ_20m6RSf_A",
+  "state": "NORMAL",
+  "published_on": "2019-10-01",
+  "initial_price":{
+        "USD":"0.003 USD"
+  },
+  "links": {
+    "wechat": "HKBDE"
+  }
+}
