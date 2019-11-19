@@ -98,7 +98,7 @@ function openContributorPopOver(contributor, element) {
       .then(response => response.json())
       .then(response => {
         popoverData.push({ [contributor]: response });
-        controller = null
+        controller = null;
         element.popover({
           placement: 'auto',
           trigger: 'hover',
