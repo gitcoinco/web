@@ -81,15 +81,24 @@ const renderPopOverData = data => {
     </div>
   `;
 };
+let controller = null;
 
 function openContributorPopOver(contributor, element) {
   const keywords = document.result.keywords || '';
   const contributorURL = `/api/v0.1/profile/${contributor}?keywords=${keywords}`;
 
   if (popoverData.filter(index => index[contributor]).length === 0) {
-    fetch(contributorURL, { method: 'GET' })
+    if (controller) {
+      controller.abort();
+    }
+    controller = new AbortController();
+    const signal = controller.signal;
+
+    userRequest = fetch(contributorURL, { method: 'GET', signal })
       .then(response => response.json())
       .then(response => {
+        popoverData.push({ [contributor]: response });
+        controller = null
         element.popover({
           placement: 'auto',
           trigger: 'hover',
@@ -103,10 +112,9 @@ function openContributorPopOver(contributor, element) {
           html: true
         });
         $(element).popover('show');
-        popoverData.push({ [contributor]: response });
       })
       .catch(err => {
-        return console.error({ message: err }, 'error');
+        return console.warn({ message: err });
       });
   } else {
     element.popover({

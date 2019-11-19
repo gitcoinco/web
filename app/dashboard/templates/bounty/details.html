@@ -145,14 +145,14 @@
                 <div class="col-12">
                   <div id="right_actions">
                     <div class="dropdown show float-right pt-2">
-                      <a class="font-caption font-weight-semibold dropdown-toggle" href="#" role="button" 
+                      <a class="font-caption font-weight-semibold dropdown-toggle" href="#" role="button"
                         id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Bounty Options
-                      </a>                    
+                      </a>
                       <div id="bounty-options-link" class="dropdown-menu font-caption" aria-labelledby="bounty-options">
                       </div>
                     </div>
-          
+
                     <div id="bounty_actions" class="d-inline-block"></div>
                     <div id="github_actions" class="d-inline-block"></div>
                     <a class="modal-link button button--secondary font-caption" href="" data-toggle="modal" data-target=".share-modal">
@@ -488,11 +488,15 @@
     $('[data-toggle="popover"]').popover()
     $('body').on('mouseover', '[data-username]', function(e) {
       openContributorPopOver($(this).data('username'), $(this));
-      $('[data-username]').not(this).popover('hide');
     });
+
     $('body').on('mouseout', '[data-username]', function(e) {
       $(this).popover('dispose');
     });
+
+    $('body').on('show.bs.popover', '[data-username]', function () {
+      $('body [data-username]').not(this).popover('hide');
+    })
 
   </script>
   <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
