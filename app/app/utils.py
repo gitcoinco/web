@@ -466,12 +466,8 @@ class CustomGithubOAuth2(GithubOAuth2):
     ]
     def get_scope(self):
         scope = super(CustomGithubOAuth2, self).get_scope()
-        print(self.data)
         if self.data.get('extrascope'):
             scope += ['public_repo', 'read:org']
-            print(scope)
             from dashboard.management.commands.sync_orgs_repos import Command
-            print('running')
             Command().handle()
-        print(scope)
         return scope

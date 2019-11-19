@@ -907,15 +907,12 @@ def get_orgs_perms(profile):
 
     response_data = []
     for org in orgs:
-        print(org)
         org_perms = {'name': org.name, 'users': []}
         groups = org.groups.all().filter(user__isnull=False)
         for g in groups: # "admin", "write", "pull", "none"
-            print(g)
             group_data = g.name.split('-')
             if group_data[1] != "role": #skip repo level groups
                 continue
-            print(g.user_set.prefetch_related('profile').all())
             org_perms['users'] = [{
                 'handle': u.profile.handle,
                 'role': group_data[2],

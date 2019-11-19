@@ -717,7 +717,6 @@ def org_settings(request):
     social_auth = user.social_auth.first()
     if social_auth and social_auth.extra_data:
         current_scopes = social_auth.extra_data.get('scope').split(',')
-    print(current_scopes)
     orgs = get_orgs_perms(profile)
     context = {
         'is_logged_in': is_logged_in,
