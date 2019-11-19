@@ -3403,7 +3403,7 @@ class Profile(SuperModel):
                 Defaults to: None.
 
         Returns:
-            dict: list of the profiles that were worked with (key) and the number of times they occured
+            dict: list of the profiles that were worked with (key) and the number of times they occurred
 
         """
         if bounties is None:

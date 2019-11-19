@@ -181,7 +181,7 @@ def editquest(request, pk=None):
                 if settings.DEBUG:
                     raise e
                 logger.exception(e)
-                messages.error(request, 'An unexpected error has occured')
+                messages.error(request, 'An unexpected error has occurred')
 
     #load edit page
     if pk and not package.get('title'):
