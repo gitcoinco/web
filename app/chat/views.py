@@ -28,11 +28,13 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 
 
 def embed(request):
-    """Handle the inbox view."""
+    """Handle the chat embed view."""
 
-    # check to see if currently a user in the chat app,
-    # if so don't include their invite url just send them to the app login
+    is_staff = request.user.is_staff if request.user.is_authenticated else False
 
+    if not is_staff:
+        context = dict(active='error', code=404, title="Error {}".format(404))
+        return TemplateResponse(request, 'error.html', context, status=404)
 
     context = {
         'is_outside': True,

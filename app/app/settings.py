@@ -527,10 +527,8 @@ GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
 # Chat
-CHAT_URL = ""  # location of where mattermost is hosted
-CHAT_DRIVER_USER = env('CHAT_DRIVER_USER', default='') # create an admin to drive actions for users
-CHAT_DRIVER_PASSWORD = env('CHAT_DRIVER_PASSWORD', default='')  # password for the admin
-CHAT_DRIVER_TOKEN = env('CHAT_DRIVER_TOKEN', default='')  # admin driver token
+CHAT_URL = env('CHAT_DRIVER_USER', default='')  # location of where mattermost is hosted
+
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
