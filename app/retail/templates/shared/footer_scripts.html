@@ -62,6 +62,11 @@
 {% endif %}
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
 
+{% if not ignore_inject_web3 %}
+  {% include 'shared/shared_scripts.html' %}
+{% endif %}
+
+
 <script>
   var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");
   var ipfsConfig = {

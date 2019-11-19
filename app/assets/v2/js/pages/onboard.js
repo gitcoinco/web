@@ -229,7 +229,7 @@ keywords.forEach(function(keyword) {
 $('#skills #suggested-tags').html(suggested_tags);
 
 if (document.contxt.github_handle) {
-  var url = `/api/v0.1/profile/${document.contxt.github_handle}/keywords`;
+  const url = `/api/v0.1/profile/${document.contxt.github_handle}/keywords`;
 
   $.get(url, function(response) {
     onboard.getFilters(false, response.keywords);
@@ -248,7 +248,7 @@ $('.search-area input[type=text]').keypress(function(e) {
 });
 
 var redirectURL = function() {
-  var url = '';
+  let url = '';
 
   if (flow === 'contributor') {
     save_job_status();
@@ -256,7 +256,7 @@ var redirectURL = function() {
   } else if (flow === 'funder') {
     url = '/funding/new';
   } else if (flow === 'profile') {
-    url = '/profile';
+    url = '/profile/';
   }
 
   document.location.href = url;

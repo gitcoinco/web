@@ -230,7 +230,7 @@ def sync_profile(handle, user=None, hide_profile=True):
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         access_token = profile.user.social_auth.filter(provider='github').latest('pk').access_token
         orgs = get_user(handle, '', scope='orgs', auth=(profile.handle, access_token))
-        profile.organizations = [ele['login'] for ele in orgs]
+        profile.organizations = [ele['login'] for ele in orgs if ele and type(ele) is dict] if orgs else []
         print("Profile:", profile, "- created" if created else "- updated")
         keywords = []
         for repo in profile.repos_data_lite:
@@ -242,9 +242,10 @@ def sync_profile(handle, user=None, hide_profile=True):
 
         profile.keywords = keywords
         profile.save()
-
+    except UserSocialAuth.DoesNotExist:
+        pass
     except Exception as e:
-        logger.error(e)
+        logger.exception(e)
         return None
 
     if user and user.email:

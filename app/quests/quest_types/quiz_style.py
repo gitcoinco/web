@@ -21,6 +21,26 @@ from quests.helpers import (
 from quests.models import Quest, QuestAttempt, QuestPointAward
 from ratelimit.decorators import ratelimit
 
+html_escape_table = {
+    "&": "&amp;",
+    '"': "&quot;",
+    "'": "&apos;",
+    ">": "&gt;",
+    "<": "&lt;",
+    }
+
+
+def escape(text):
+    for key, val in html_escape_table.items():
+        text = text.replace(key, val)
+    return text
+
+
+def unescape(text):
+    for key, val in html_escape_table.items():
+        text = text.replace(val, key)
+    return text
+
 
 def details(request, quest):
 
@@ -45,7 +65,7 @@ def details(request, quest):
                 qa = get_active_attempt_if_any(request.user, quest, state=(qn-1))
                 this_question = quest.questions[qn-1]
                 correct_answers = [ele['answer'] for ele in this_question['responses'] if ele['correct']]
-                their_answers = payload.get('answers')
+                their_answers = [unescape(ele) for ele in payload.get('answers')]
                 this_time_per_answer = time_per_answer
                 answer_level_seconds_to_respond = payload.get('seconds_to_respond', None)
                 if answer_level_seconds_to_respond:

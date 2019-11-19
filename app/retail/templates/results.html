@@ -36,7 +36,7 @@
       {% include 'shared/minihero.html' with h1=title position_h1_below_logo=1 %}
     </div>
 
-    <div class="content-block content-block--white">
+    <div id=gmv class="content-block content-block--white">
       <div class="container">
         <h2 class="content-block__title">
           ${{ universe_total_usd|floatformat:0|intcomma }} of {% blocktrans %}
@@ -54,7 +54,7 @@
           </div>
 
           <div class="chart_container">
-            <h3 class="chart_container__title">{% trans "and by Type" %}</h3>
+            <h3 class="chart_container__title" style="margin-right:2rem;">{% trans "and by Type" %}</h3>
             <div class="chart_container__content chart_container--flex">
               <div class="bounty-status-list">
                 <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp;{% trans "Bounties" %}</p>
@@ -100,7 +100,7 @@
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
-            <h3 class="single-stat__title">{% trans "13,212" %}</h3>
+            <h3 class="single-stat__title">{% trans "18,308" %}</h3>
             <p class="single-stat__subtitle">{% trans "Monthly Active Users" %}</p>
             <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
           </div>
@@ -155,28 +155,20 @@
       </div>
     </div>
 
-    <div class="content-block content-block--white" id="repo_transaction">
-      <div class="container" >
-        <h2 class="content-block__title">{% trans "Bounty Status Breakdown" %} {% if keyword %}({{keyword}}){%endif%}</h2>
 
-        <div class="bounty-status-breakdown">
-          <div id="repo_chart"></div>
-          <div class="bounty-status-list">
-            {% blocktrans %}
-              <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp; {{ pct_open }}% open bounties </p>
-            {% endblocktrans %}
-            {% blocktrans %}
-              <p><span class="box box_2"></span> &nbsp;&nbsp;&nbsp; {{ pct_started }}% bounties with started work</p>
-            {% endblocktrans %}
-            {% blocktrans %}
-              <p><span class="box box_3"></span> &nbsp;&nbsp;&nbsp; {{ pct_done }}% completed bounties </p>
-            {% endblocktrans %}
-          </div>
-        </div>
+    <div class="row mt-5 pb-5 text-center">
+      <div class="col">
+        <h2>Platform Activities</h2>
+        <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+      </div>
+    </div>
+    <div id="activities">
+      {% include 'shared/activity_container.html' %}
+    </div>
 
-        <script>
-          document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ pct_open }}],  [ 'Bounties w. started work', {{ pct_started }}],  [ 'Completed bounties', {{ pct_done }} ] ];
-        </script>
+    <div class="row mt-5 pb-5 text-center">
+      <div class="col">
+        <a class="button button--primary" role="button" href="/activity">{% trans "See more activity" %}</a>
       </div>
     </div>
 
@@ -189,7 +181,7 @@
           <div id="repo_repos">
             {% for org in top_orgs %}
               <a class="repo-icon" href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" />
+                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" title="{{org}}" />
               </a>
             {% endfor %}
           </div>
@@ -206,7 +198,7 @@
           <div id="repo_repos_top">
             {% for org in top_funders %}
               <a class="repo-icon" href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" />
+                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" title="{{org}}" />
               </a>
             {% endfor %}
           </div>
@@ -220,13 +212,13 @@
 
         <div class="col-md-12 align-items-center">
             <a class="mega-founder" href="https://ethereum.org" title="Ethereum Foundation">
-              <img data-src="{% static 'v2/images/metafunders/ethereum-foundation.png' %}" alts="Ethereum Foundation">
+              <img data-src="{% static 'v2/images/metafunders/ethereum-foundation.png' %}" alts="Ethereum Foundation"  title="Ethereum Foundation">
             </a>
             <a class="mega-founder" href="https://ecf.network" title="Ethereum Community Fund">
-              <img data-src="{% static 'v2/images/metafunders/ecf_logo.svg' %}" alts="Ethereum Community Fund">
+              <img data-src="{% static 'v2/images/metafunders/ecf_logo.svg' %}" alts="Ethereum Community Fund" title="Ethereum Community Fund">
             </a>
             <a class="mega-founder" href="http://consensys.net/" title="Consensys">
-              <img data-src="{% static 'v2/images/metafunders/consensys_logo.png' %}" alts="Consensys">
+              <img data-src="{% static 'v2/images/metafunders/consensys_logo.png' %}" alts="Consensys" title="Consensys">
             </a>
         </div>
       </div>
@@ -240,7 +232,7 @@
           <div>
             {% for org in top_coders %}
               <a href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" style="border-radius: 50px; width: 100px;" />
+                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" title="{{org}}" style="border-radius: 50px; width: 100px;" />
               </a>
             {% endfor %}
           </div>
@@ -316,7 +308,32 @@
               <div>
                 {% for kudos in kudos_tokens %} 
                   <a href="{{kudos.url}}" title="{{kudos.name}}">
-                    <img data-src="{{kudos.static_image}}" alts="{{kudos.name}}"  style="max-width: 100px; max-height: 100px; margin: 5px;">
+                    <img data-src="{{kudos.static_image}}" alts="{{kudos.name}}" title="{{kudos.name}}"  style="max-width: 100px; max-height: 100px; margin: 5px;">
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if not keyword and top_quests %}
+      <div class="content-block content-block--grey">
+        <div class="container" id="bounty_universe">
+          <h2 class="content-block__title">{% trans "Top Quests" %}</h2>
+
+          <div class="row">
+            <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center p-3 ">
+              <p style="text-align: center; font-size: 0.9rem;">Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!
+              Want to give it a shot? <a href="/quests">Explore Quests Today!</a>
+            </p>
+            </div>
+            <div class="col-md-12 p-3">
+              <div>
+                {% for quest in top_quests %} 
+                  <a href="{{quest.url}}" title="{{quest.title}}">
+                    <img data-src="{{quest.img}}" alts="{{quest.title}}: {{quest.plays}} plays" title="{{quest.title}}: {{quest.plays}} plays"  style="max-width: 100px; max-height: 100px; margin: 5px;">
                   </a>
                 {% endfor %}
               </div>
@@ -383,10 +400,34 @@
       </div>
     </div>
 
+    <div class="content-block content-block--white" id="repo_transaction">
+      <div class="container" >
+        <h2 class="content-block__title">{% trans "Coder Engagement Breakdown" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+
+        <div class="bounty-status-breakdown">
+          <div id="repo_chart"></div>
+          <div class="bounty-status-list">
+            {% blocktrans %}
+              <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp; {{ pct_inactive }}% inactive </p>
+            {% endblocktrans %}
+            {% blocktrans %}
+              <p><span class="box box_2"></span> &nbsp;&nbsp;&nbsp; {{ pct_active_30d }}% active last 30d</p>
+            {% endblocktrans %}
+            {% blocktrans %}
+              <p><span class="box box_3"></span> &nbsp;&nbsp;&nbsp; {{ pct_active_90d }}% more active last 90d </p>
+            {% endblocktrans %}
+          </div>
+        </div>
+
+        <script>
+          document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Active Last 30 Days', {{ count_active_30d }}],  [ 'Active Last 90 Days', {{ count_active_90d }}],  [ 'Inactive', {{ count_inactive }} ] ];
+        </script>
+      </div>
+    </div>
 
     <div class="content-block content-block--white">
       <div class="container" id="">
-        <h2 class="content-block__title">{% trans "Community Growth" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+        <h2 class="content-block__title">{% trans "Coder Community Growth" %} {% if keyword %}({{keyword}}){%endif%}</h2>
         <div class="row py-5">
           <script>
             document.slack_ticks = {{slack_ticks|safe}};
@@ -402,6 +443,53 @@
           <div class="col ">
             <p class="mt-5 mb-5"> {% trans "Meet software developers, futurists, and funders who are building web3" %} </p>
             <a class="button button--primary" role="button" href="{% url "slack" %}">{% trans "Join Our Slack" %}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block content-block--white" id="repo_transaction">
+      <div class="container" >
+        <h2 class="content-block__title">{% trans "The Path to Break-Even" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+            <p style="text-align: center; font-size: 0.9rem;">We believe that companies, even those in the blockchain-ecosystem, should fully prove out their founder-mission-product-market fit & have revenue.  We believe that software developers at Gitcoin Core need to put food on the table, pay their mortages, and buy extra hard drives -- and that we can do it while living our values; especially without become a rent-seeking-monopolistic intermediary.  We're a little crazy like that! 😜 As such, we are founding members of the <a href="https://bit.ly/web3businessmodels">ETHMagicians Business Models Ring</a> and are practicing what we preach; building a network that makes money to cover it's burn.  Follow our path to a breakeven monthly runrate below: </p>
+          </div>
+
+        <div class="bounty-status-breakdown">
+          <div id="breakeven_chart"></div>
+          <div class="bounty-status-list">
+            {% blocktrans %}
+              <p><span class="box box_2"></span> &nbsp;&nbsp;&nbsp; {{ pct_breakeven }}% burn covered by revenue</p>
+            {% endblocktrans %}
+            {% blocktrans %}
+              <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp; {{ pct_not_breakeven }}% burn not covered by revenue</p>
+            {% endblocktrans %}
+          </div>
+        </div>
+
+        <script>
+          document.breakeven_stats = [  [ 'Repo', 'Bounties' ], [ 'Burn not covered by revenue', {{ pct_not_breakeven }}],  [ 'burn covered by revenue', {{ pct_breakeven }}] ];
+        </script>
+      </div>
+    </div>
+    <div class="content-block content-block--white">
+      <div class="container" id="3d_humans_container">
+      <h2 class="content-block__title">{% trans "By & For 3-Dimensional Humans" %}</h2>
+      <p style="margin-bottom: 10px;">
+        Each user of Gitcoin is a 3-dimensional human, with a different background, skillset, life experience, communication patterns, and biases.  Our <a href="/mission">Mission</a> is to provide new & better economic opportunities to 3-dimensional humans, inclusive of all cultures and geographies, across the world.  BUIDLing is global!
+      </p>
+        <div class="row mt-2 pb-2 text-center">
+          <div class="col" style="">
+            <div id="mesh_network_jobs_holder">
+              <img data-src="{% static 'v2/images/animated_avatars.gif' %}" id="3d_humans" style="border-radius: 100px; max-width: 100%;">
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-2 pb-5 text-center">
+          <div class="col">
+            <p class="mt-2 mb-5"> {% trans "We've invested in some fun & engaging tools to allow you to represent yourself fully online, like an avatar builder, a fully customizable profile, and a social network share it with! Want to get started customizing your profile?" %} </p>
+            <a class="button button--primary" role="button" href="/profile">{% trans "View your Profile" %}</a>
           </div>
         </div>
       </div>
@@ -430,14 +518,12 @@
       </div>
     </div>
 
-    <div class="row mt-5 pb-5 text-center">
-      <div class="col">
-        <h2>Platform Activities</h2>
-        <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-      </div>
+    <div style="font-size: 12px; text-align: center;" class="p-2">
+      This page is automatically updated every 3 hours. Last updated {{updated|naturaltime}} - <a href="https://github.com/gitcoinco/web/blob/master/app/retail/utils.py#L414">[View Code]</a>.
     </div>
-    <div id="activities">
-      {% include 'shared/activity_container.html' with target="/activity" %}
+    <br>
+    <div style="font-size: 12px; text-align: center;" class="p-2">
+      Disclaimer: The numbers on this page are good-faith representations of the Gitcoin network, but are provided without warranty.  While we strive to provide these numbers as accurately as possible, we cannot guarantee their 100% accuracy. Do not make any financial, legal, or other decisions based upon these numbers.
     </div>
 
     {% include 'shared/footer.html' %}
@@ -448,12 +534,17 @@
     <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
     <script>
       $(document).ready(function() {
-        $("img").unveil(200);
+        setInterval(function(){
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          if (scrollTop > 500 && !document.offset_loaded){
+            $("img").unveil(200);
+            document.offset_loaded = true; 
+          }
+        }, 3000);
       });
     </script>
 
     {% include 'shared/activity_scripts.html' %}
-
   </body>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>

@@ -102,6 +102,7 @@ def preprocess(request):
         'raven_js_dsn': settings.SENTRY_JS_DSN,
         'release': settings.RELEASE,
         'env': settings.ENV,
+        'INFURA_V3_PROJECT_ID': settings.INFURA_V3_PROJECT_ID,
         'email_key': email_key,
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',

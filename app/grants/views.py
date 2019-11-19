@@ -28,7 +28,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
@@ -833,3 +833,22 @@ def new_matching_partner(request):
         )
 
     return get_json_response("Wrong request.", 400)
+
+
+def invoice(request, contribution_pk):
+    p_contribution = Contribution.objects.prefetch_related('subscription', 'subscription__grant')
+    contribution = get_object_or_404(p_contribution, pk=contribution_pk)
+
+    # only allow invoice viewing if admin or if grant contributor
+    has_view_privs = request.user.is_staff or request.user.profile == contribution.subscription.contributor_profile
+
+    if not has_view_privs:
+        raise Http404
+
+    params = {
+        'contribution': contribution,
+        'subscription': contribution.subscription,
+        'amount_per_period': contribution.subscription.get_converted_monthly_amount()
+    }
+
+    return TemplateResponse(request, 'grants/invoice.html', params)

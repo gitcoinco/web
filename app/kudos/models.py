@@ -100,6 +100,7 @@ class Token(SuperModel):
 
         verbose_name_plural = 'Kudos'
         index_together = [['name', 'description', 'tags'], ]
+        unique_together = ('token_id', 'contract',)
 
     # Kudos Struct (also in contract)
     price_finney = models.IntegerField()
@@ -321,10 +322,11 @@ class Token(SuperModel):
         file_path = root('assets') + '/' + self.image
 
         # download it if file is remote
-        if settings.AWS_STORAGE_BUCKET_NAME in self.image:
+        if settings.AWS_STORAGE_BUCKET_NAME and settings.AWS_STORAGE_BUCKET_NAME in self.image:
             file_path = f'cache/{self.pk}.png'
             if not path.exists(file_path):
-                filedata = urllib.request.urlopen(self.image)
+                safe_url = self.image.replace(' ', '%20')
+                filedata = urllib.request.urlopen(safe_url)
                 datatowrite = filedata.read()
                 with open(file_path, 'wb') as f:
                     f.write(datatowrite)
@@ -560,6 +562,16 @@ class BulkTransferCoupon(SuperModel):
     @property
     def url(self):
         return f"/kudos/redeem/{self.secret}"
+
+
+@receiver(pre_save, sender=BulkTransferCoupon, dispatch_uid="psave_BulkTransferCoupon")
+def psave_BulkTransferCoupon(sender, instance, **kwargs):
+    is_owned_by_gitcoin = instance.token.owner_address.lower() == "0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F".lower()
+    is_kudos_token_deployed_to_gitcoin = not bool(instance.sender_pk)
+
+    if not is_owned_by_gitcoin and is_kudos_token_deployed_to_gitcoin:
+        raise Exception("This bulk transfer kudos has been created to airdrop a kudos.. But the kudos is not owned by Gitcoin... If this kudos goes live, people will redeem it and it will deplete the ETH in the kudos airdropper; which is bad!  Please correct the kudos to either be one that is owned by Gitcoin, or one that has a seperate source of ETH (by sending sender_pk).  Thank you and have a nice day -- Kevin Owocki, protector of Gitcoin's ETH")
+
 
 class BulkTransferRedemption(SuperModel):
 

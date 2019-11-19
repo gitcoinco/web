@@ -39,7 +39,7 @@
     </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
+    {% include 'shared/footer.html' with prefix="data-" %}
     
   </body>
   {% csrf_token %}

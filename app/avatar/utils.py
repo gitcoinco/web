@@ -670,7 +670,7 @@ def svg_to_png_inkscape(svg_content, width=333, height=384, index=100, extra_fla
         p = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
         if p.returncode:
-            print('Inkscape error: ' + (err or '?'))
+            print('Inkscape error: ' + (str(err) or '?'))
 
     with open(output_file, 'rb') as fin:
         return BytesIO(fin.read())

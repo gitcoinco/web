@@ -28,6 +28,8 @@
   <div class="container-fluid header">
     {% if nav == 'home' %}
       {% include 'home/nav.html' %}
+    {% elif nav == 'kudos' %}
+      {% include 'shared/kudos_nav.html' %}
     {% else %}
       {% include 'shared/nav.html' %}
     {% endif %}
