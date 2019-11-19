@@ -104,6 +104,7 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 
 @protected_resource()
+@login_required()
 def oauth_connect(request, *args, **kwargs):
     active_user_profile = Profile.objects.filter(user_id=request.user.id).select_related()[0]
 

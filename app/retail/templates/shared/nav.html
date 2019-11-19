@@ -33,12 +33,9 @@
     </button>
     {% if user.is_authenticated %}
       {% include 'shared/notifications.html' %}
-      <div id="gc-chat" class="nav-item order-md-last">
-        <a href="/chat/" class="chat_icon nav-link" role="button">
-          <i class="fas fa-comments fa-fw"></i>
-          <span id="notification-dot" class="notification__dot" :class="{'notification__dot_active': unreadNotifications.length > 0}"></span>
-        </a>
-      </div>
+      {% if user.is_staff %}
+        {% include 'shared/nav_chat.html' %}
+      {% endif %}
     {% endif %}
   </div>
 
