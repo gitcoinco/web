@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from grants.models import CLRMatch, Contribution, Grant, MatchPledge, Subscription
+from grants.models import CLRMatch, Contribution, Grant, MatchPledge, PhantomFunding, Subscription
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -47,12 +47,12 @@ class GrantAdmin(GeneralAdmin):
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
-         'link', 'clr_matching', 'hidden', 'request_ownership_change'
+         'link', 'clr_matching', 'clr_prediction_curve', 'hidden'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
         'team_member_list',
-        'subscriptions_links', 'contributions_links', 'link', 
+        'subscriptions_links', 'contributions_links', 'link',
     ]
     raw_id_fields = ['admin_profile']
 
@@ -180,6 +180,7 @@ class ContributionAdmin(GeneralAdmin):
     raw_id_fields = ['subscription']
 
 
+admin.site.register(PhantomFunding, GeneralAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
 admin.site.register(CLRMatch, GeneralAdmin)

@@ -11,10 +11,6 @@
   color: #4a4a4a;
 }
 
-.quickstart .dont-show .checkbox_container .filter-label {
-  display: inline;
-}
-
 .quickstart ol,
 .quickstart ul {
   padding: 0;
@@ -55,33 +51,7 @@
   color: #3d3d46;
   list-style-type: none;
   line-height: 2.5rem;
-}
-
-.steps-list .action-footer {
-  justify-content: space-between;
-}
-
-.action-footer .video-link {
-  width: 40%;
-}
-
-.action-footer .btn {
-  border-radius: 3px;
-  background-color: #0c0763;
-  border-color: #0c0763;
-}
-
-.tips-list {
-  border-left: #d7d7d7 2px solid;
-  padding-right: 0 !important;
-}
-
-.tips-list ul li {
-  line-height: 2rem !important;
-}
-
-.issuetypes-container {
-  background-color: #fafafa;
+  font-weight: 600;
 }
 
 .issuetypes-container .subheading {
@@ -92,33 +62,54 @@
 }
 
 .issuetypes-container h5 {
-  font-size: 1.1rem;
-  margin-top: 1rem;
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
   flex: 1;
   letter-spacing: 0;
 }
 
 .issuetypes-container p {
-  font-size: 0.9rem;
   line-height: 0.9rem;
 }
 
-.notsuggested-container ol {
-  padding: 1rem 9rem;
+.bounty-tips {
+  background: #0D0764;
 }
 
-.notsuggested-container ol li {
-  list-style: none;
-  display: flex;
-  padding: 1rem 0;
+.bounty-tips h4 {
+  color: #fff;
 }
 
-.notsuggested-container ol li span {
-  padding: 0rem 1rem;
+.red-text {
+  color: #D0021B;
 }
 
-.notsuggested-container .orange-text {
-  color: #ff7200;
+.first-bounty {
+  background: #D6FBEB;
+  border-radius: 4px;
+  color: #00A55E;
+  padding: 5px 10px;
+}
+
+.bounty-tips .card {
+  height: 7.5rem;
+}
+
+.bounty-tips .card .title {
+  margin-top: 1rem;
+}
+
+.bounty-activity {
+  border-top: 1px solid #D8D8D8;
+  border-bottom: 1px solid #D8D8D8;
+}
+
+.bounty-activity .box {
+  border-bottom: none;
+}
+
+#dontshow {
+  width: 10rem;
 }
 
 @media screen and (max-width: 500px) {
@@ -130,6 +121,23 @@
     padding: 1rem 0;
   }
 
+}
+
+@media (max-width: 767.98px) {
+  .bounty-tips .card {
+    height: auto;
+  }
+
+  .steps-list ol li {
+    line-height: 2rem;
+  }
+}
+
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .bounty-tips .card {
+    height: 9rem;
+  }
 }
 
 .flex-column img {

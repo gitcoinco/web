@@ -37,8 +37,8 @@ from dashboard.models import (
     UserAction,
 )
 from dashboard.notifications import (
-    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
-    maybe_market_to_user_discord, maybe_market_to_user_slack,
+    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord,
+    maybe_market_to_user_slack, notify_of_lowball_bounty,
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import ConversionRateNotFoundError, convert_amount
@@ -452,6 +452,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'web3_created': timezone.make_aware(
                     timezone.datetime.fromtimestamp(bounty_payload.get('created')),
                     timezone=UTC),
+                'last_remarketed': timezone.make_aware(
+                    timezone.datetime.fromtimestamp(bounty_payload.get('created')),
+                    timezone=UTC),
+                'remarketed_count': 0,
                 'github_url': url,
                 'token_name': token_name,
                 'token_address': token_address,
@@ -540,14 +544,18 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     except Exception as e:
         logger.error(e)
 
-    event_tag = metadata.get('eventTag', '')
-    if event_tag:
-        try:
-            evt = HackathonEvent.objects.filter(name__iexact=event_tag).latest('id')
-            new_bounty.event = evt
-            new_bounty.save()
-        except Exception as e:
-            logger.error(e)
+    if latest_old_bounty and latest_old_bounty.event:
+        new_bounty.event = latest_old_bounty.event;
+        new_bounty.save()
+    else:
+        event_tag = metadata.get('eventTag', '')
+        if event_tag:
+            try:
+                evt = HackathonEvent.objects.filter(name__iexact=event_tag).latest('id')
+                new_bounty.event = evt
+                new_bounty.save()
+            except Exception as e:
+                logger.error(e)
 
     bounty_invitees = metadata.get('invite', '')
     if bounty_invitees and not latest_old_bounty:
@@ -562,6 +570,8 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
             msg += " #" + keyword
         for user_id in bounty_invitees:
             profile = Profile.objects.get(id=int(user_id))
+            if not profile.user:
+                continue
             bounty_invite = BountyInvites.objects.create(
                 status='pending'
             )
@@ -591,12 +601,18 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         for activity in latest_old_bounty.activities.all().nocache():
             new_bounty.activities.add(activity)
 
-
     bounty_reserved_for_user = metadata.get('reservedFor', '')
-    if bounty_reserved_for_user:
+    release_to_public_after = metadata.get('releaseAfter', '')
+    if bounty_reserved_for_user and release_to_public_after:
+        new_bounty.reserved_for_user_from = timezone.now()
+        if release_to_public_after == "3-days":
+            new_bounty.reserved_for_user_expiration = new_bounty.reserved_for_user_from + timezone.timedelta(days=3)
+        elif release_to_public_after == "1-week":
+            new_bounty.reserved_for_user_expiration = new_bounty.reserved_for_user_from + timezone.timedelta(weeks=1)
+
         new_bounty.reserved_for_user_handle = bounty_reserved_for_user
         new_bounty.save()
-        if new_bounty.bounty_reserved_for_user:
+        if new_bounty.bounty_reserved_for_user and new_bounty.status == 'reserved':
             # notify a user that a bounty has been reserved for them
             new_reserved_issue('founders@gitcoin.co', new_bounty.bounty_reserved_for_user, new_bounty)
 
@@ -731,7 +747,7 @@ def get_fulfillment_data_for_activity(fulfillment):
     return data
 
 
-def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None):
+def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None, override_created=None):
     """Records activity based on bounty changes
 
     Args:
@@ -771,6 +787,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
 
     if user_profile:
         return Activity.objects.create(
+            created_on=timezone.now() if not override_created else override_created,
             profile=user_profile,
             activity_type=event_name,
             bounty=new_bounty,
@@ -813,6 +830,19 @@ def record_user_action(event_name, old_bounty, new_bounty):
                 'old_bounty': old_bounty.pk if old_bounty else None,
                 'fulfillment': fulfillment.to_json if fulfillment else None,
             })
+
+
+def is_lowball_bounty(bounty_value_usdt):
+    """Determine if a bounty value is less than a threshold
+
+    Args:
+      bounty_value_usdt (Decimal): The value of the bounty
+
+    Returns:
+      bool: True if bounty value is less than the threshold
+
+    """
+    return bounty_value_usdt < settings.LOWBALL_BOUNTY_THRESHOLD if bounty_value_usdt else False
 
 
 def process_bounty_changes(old_bounty, new_bounty):
@@ -867,10 +897,17 @@ def process_bounty_changes(old_bounty, new_bounty):
     if new_bounty.fulfillments.exists():
         profile_pairs = build_profile_pairs(new_bounty)
 
+    # Send an Email if this is a LowBall bounty
+    try:
+        if(not old_bounty or old_bounty.value_in_usdt != new_bounty.value_in_usdt):
+                if is_lowball_bounty(new_bounty.value_in_usdt) and new_bounty.network == 'mainnet':
+                    notify_of_lowball_bounty(new_bounty)
+    except Exception as e:
+        logger.error(f'{e} during check for Lowball Bounty')
+
     # marketing
     if event_name != 'unknown_event':
         print("============ posting ==============")
-        did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name)
         did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
         did_post_to_user_slack = maybe_market_to_user_slack(new_bounty, event_name)
         did_post_to_user_discord = maybe_market_to_user_discord(new_bounty, event_name)
@@ -886,7 +923,7 @@ def process_bounty_changes(old_bounty, new_bounty):
             'did_post_to_slack': did_post_to_slack,
             'did_post_to_user_slack': did_post_to_user_slack,
             'did_post_to_user_discord': did_post_to_user_discord,
-            'did_post_to_twitter': did_post_to_twitter,
+            'did_post_to_twitter': False,
         }
 
         print("changes processed: ")

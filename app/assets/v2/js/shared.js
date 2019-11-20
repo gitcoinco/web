@@ -159,10 +159,14 @@ var sanitizeDict = function(d, keyToIgnore) {
 };
 
 var sanitizeAPIResults = function(results, keyToIgnore) {
-  for (var i = 0; i < results.length; i++) {
-    results[i] = sanitizeDict(results[i], keyToIgnore);
+  if (results.length >= 1) {
+    for (let i = 0; i < results.length; i++) {
+      results[i] = sanitizeDict(results[i], keyToIgnore);
+    }
+    return results;
   }
-  return results;
+
+  return sanitizeDict(results, keyToIgnore);
 };
 
 function ucwords(str) {
@@ -176,6 +180,7 @@ var sanitize = function(str) {
     return str;
   }
   result = DOMPurify.sanitize(str);
+
   return result;
 };
 
@@ -388,7 +393,7 @@ var pull_interest_list = function(bounty_pk, callback) {
 };
 
 var profileHtml = function(handle, name) {
-  return '<span><a href="https://gitcoin.co/profile/' +
+  return '<span><a href="/profile/' +
     handle + '" target="_blank">' + (name ? name : handle) + '</span></a>';
 };
 
@@ -633,7 +638,7 @@ var retrieveIssueDetails = function() {
   $.get(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result['keywords']) {
-      var keywords = result['keywords'];
+      let keywords = result['keywords'];
 
       showChoices('#keyword-suggestions', '#keywords', keywords);
       $('#keywords').select2({
@@ -699,9 +704,9 @@ var currentNetwork = function(network) {
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
           $('#current-network').text(gettext('Metamask Locked'));
           $('#navbar-network-banner').html(info);
-        } else {
+        } else if (window.ethereum._metamask) {
           info = gettext('Metamask not connected. ') +
-            '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
+              '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
           $('#current-network').text(gettext('Metamask Not Connected'));
           $('#navbar-network-banner').html(info);
         }
@@ -740,9 +745,9 @@ var currentNetwork = function(network) {
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
           $('#current-network').text(gettext('Metamask Locked'));
           $('#navbar-network-banner').html(info);
-        } else {
+        } else if (window.ethereum._metamask) {
           info = gettext('Metamask not connected. ') +
-            '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
+              '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
           $('#current-network').text(gettext('Metamask Not Connected'));
           $('#navbar-network-banner').html(info);
         }
@@ -774,7 +779,7 @@ var currentNetwork = function(network) {
  */
 var trigger_primary_form_web3_hooks = function() {
   if ($('#primary_form').length) {
-    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
+    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1 && !document.suppress_faucet_solicitation;
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
@@ -923,30 +928,44 @@ var listen_for_web3_changes = async function() {
     if (typeof web3 == 'undefined') {
       currentNetwork();
       trigger_form_hooks();
-    } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+    } else if (typeof web3.eth == 'undefined') {
       currentNetwork('locked');
       trigger_form_hooks();
     } else {
-      is_metamask_unlocked = true;
-      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-        if (errors) {
-          return;
-        }
-        if (typeof result != 'undefined' && result !== null) {
-          document.balance = result.toNumber();
-        }
-      });
+      var cb;
 
-      web3.version.getNetwork(function(error, netId) {
-        if (error) {
-          currentNetwork();
-        } else {
-          var network = getNetwork(netId);
+      try {
+        // invoke infura synchronous call, if it fails metamask is locked
+        cb = web3.eth.coinbase;
+      } catch (error) {
+        // catch error so sentry doesn't alert on metamask call failure
+        console.log('web3.eth.coinbase could not be loaded');
+      }
+      if (typeof cb == 'undefined' || !cb) {
+        currentNetwork('locked');
+        trigger_form_hooks();
+      } else {
+        is_metamask_unlocked = true;
+        web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+          if (errors) {
+            return;
+          }
+          if (typeof result != 'undefined' && result !== null) {
+            document.balance = result.toNumber();
+          }
+        });
 
-          currentNetwork(network);
-          trigger_form_hooks();
-        }
-      });
+        web3.version.getNetwork(function(error, netId) {
+          if (error) {
+            currentNetwork();
+          } else {
+            var network = getNetwork(netId);
+
+            currentNetwork(network);
+            trigger_form_hooks();
+          }
+        });
+      }
     }
   }
 
@@ -1000,48 +1019,6 @@ window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 1000);
 });
 
-var callMethodIfTokenIsAuthed = function(success, failure) {
-  var denomination = $('#token option:selected').text();
-  var tokenAddress = $('#token option:selected').val();
-
-  if (!denomination) {
-    failure(denomination, tokenAddress);
-  } else if (denomination == 'ETH') {
-    success(denomination, tokenAddress);
-  } else {
-    var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-    var from = web3.eth.coinbase;
-    var to = bounty_address();
-
-    token_contract.allowance.call(from, to, function(error, result) {
-      if (error || result.toNumber() == 0) {
-        failure(denomination, tokenAddress);
-      } else {
-        success(denomination, tokenAddress);
-      }
-    });
-  }
-};
-
-var promptForAuthFailure = function(denomination, tokenAddress) {
-  _alert(
-    gettext(`To enable this token, go to the
-    <a style="padding-left:5px;" href="/settings/tokens">
-    Token Settings page and enable it.
-    </a> This is only needed once per token.`),
-    'warning'
-  );
-};
-
-var promptForAuth = function(event) {
-
-  var success = function(denomination, tokenAddress) {
-    $('.alert').remove();
-  };
-
-  callMethodIfTokenIsAuthed(success, promptForAuthFailure);
-};
-
 var setUsdAmount = function(event) {
   var amount = $('input[name=amount]').val();
   var denomination = $('#token option:selected').text();
@@ -1064,10 +1041,10 @@ var setUsdAmount = function(event) {
   });
 };
 
-var usdToAmount = function(event) {
-  var usdAmount = $('input[name=usd_amount').val();
-  var denomination = $('#token option:selected').text();
-  var estimate = getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
+var usdToAmount = function(usdAmount) {
+  const denomination = $('#token option:selected').text();
+
+  getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
     if (amountEstimate['value']) {
       $('#amount').val(amountEstimate['value']);
       $('#usd_amount_text').html(amountEstimate['rate_text']);
@@ -1360,14 +1337,11 @@ function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   span.innerHTML = amount + ' ' + tokenName +
     (isCrowdfunded ? '<i class="fas fa-users ml-1"></i>' : '');
 
+  p.className = 'inner-tooltip';
   p.appendChild(span);
   ele.appendChild(p);
-
   if (tooltipInfo) {
-    ele.title =
-      '<div class="tooltip-info tooltip-sm">' +
-      tooltipInfo +
-      '</div>';
+    ele.title = tooltipInfo;
   }
 
   return ele;

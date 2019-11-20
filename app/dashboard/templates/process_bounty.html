@@ -62,15 +62,23 @@
             </div>
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
               <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
-                <div class="w-100 text-center">
+                <div class="text-center mb-3">
                   <h3>{% trans "Basic Payout" %}</h3>
-                  <p><a href="{{action_urls.advanced_payout}}">Switch to Advanced Payout</a></p>
-                  <img src="{% static "v2/images/prime.png" %}">
+                  <p>
+                    <a class="d-block" href="{{ bounty.url }}">
+                      <i class="fas fa-chevron-left mr-1" style="font-size: 10px; position: relative;top: -1px;"></i>
+                      Back to Bounty
+                    </a>
+                    <a href="{{action_urls.advanced_payout}}">Switch to Advanced Payout</a>
+                  </p>
                 </div>
-                {% include 'shared/network_status.html' %}
-                <div class="w-100 mb-2">
-                  <label for=issueURL>{% trans "Issue URL:" %}</label>
-                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input gc-border-blue" type="text" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
+                <div>
+                  <label for="issueTitle">{% trans "Issue Title" %}</label>
+                  <p name="issueTitle" id="issueTitle" class="font-subheader">{{ bounty.title }}</p>
+                </div>
+                <div>
+                  <label for="issueURL">{% trans "Issue URL" %}</label>
+                  <p name="issueURL" id="issueURL" class="font-subheader">{{ bounty.github_url }}</p>
                 </div>
                 <div class="w-100 my-2">
                   <label for='bountyFulfillment'>{% trans "Bounty Submission:" %}</label>
@@ -93,7 +101,7 @@
                 </div>
                 <div class="my-4">
                   <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="font-bigger-1 mb-0">Suggested Kudos</h3>
+                    <h3 class="font-subheader mb-0">Suggested Kudos</h3>
                     <a href="{% url 'kudos_about' %}" target="_blank">What is kudos?</a>
                   </div>
 
@@ -101,12 +109,12 @@
                     <img src="{% static 'v2/images/loading_v2.gif' %}" class="d-block m-auto" style="max-width: 122px;max-height: 122px;">
                   </div>
                 </div>
-                {% include 'shared/add_kudos.html' %}
+                {% include 'shared/add_kudos.html' with name='kudos-search' keywords=bounty.keywords %}
                 <div id="gas-section">
                   {% include 'shared/bounty_actions_hidden_vars.html' %}
                   {% include 'shared/wallet_estimate.html' %}
                 </div>
-                <div class="w-100 mt-2 terms_container">
+                <div class="mt-4 terms_container">
                   <input name='terms' id='terms' type="checkbox" value=1 required />
                   <label for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
                 </div>
@@ -136,7 +144,7 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>
 
   <script>

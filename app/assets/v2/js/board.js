@@ -1,6 +1,9 @@
 let contributorBounties = {};
 let bounties = {};
 let authProfile = document.contxt.profile_id;
+let skills = document.skills;
+let network = document.contxt.env === 'prod' ? 'mainnet' : 'rinkeby';
+
 
 Vue.mixin({
   methods: {
@@ -12,6 +15,9 @@ Vue.mixin({
       $.when(getbounties).then(function(response) {
         vm.$set(vm.bounties, type, response);
         vm.isLoading[type] = false;
+      }).catch(function() {
+        vm.isLoading[type] = false;
+        vm.error[type] = 'Error fetching bounties. Please contact founders@gitcoin.co';
       });
     },
     fetchApplicants: function(id, key, type) {
@@ -26,6 +32,8 @@ Vue.mixin({
       $.when(getApplicants).then(function(response) {
         vm.$set(vm.bounties[type][key], 'contributors', response.profiles);
         vm.isLoading[`${type}Contrib`] = false;
+      }).catch(function() {
+        vm.isLoading[`${type}Contrib`] = false;
       });
     },
     fetchContributorBounties: function(type) {
@@ -36,8 +44,29 @@ Vue.mixin({
       $.when(getbounties).then(function(response) {
         vm.$set(vm.contributorBounties, type, response);
         vm.isLoading[type] = false;
-
+      }).catch(function() {
+        vm.isLoading[type] = false;
+        vm.error[type] = 'Error fetching bounties. Please contact founders@gitcoin.co';
       });
+    },
+    fetchMatchingBounties: function() {
+      let vm = this;
+      const apiUrlbounties = `/api/v0.1/bounties/slim/?network=${network}&idx_status=open&applicants=ALL&keywords=${vm.skills}&order_by=-web3_created&offset=0&limit=10`;
+
+      if (vm.matchingBounties.length) {
+        return;
+      }
+
+      const getbounties = fetchData (apiUrlbounties, 'GET');
+
+      $.when(getbounties).then(function(response) {
+        vm.matchingBounties = response;
+        vm.isLoading.matchingBounties = false;
+      }).catch(function() {
+        vm.isLoading.matchingBounties = false;
+      });
+
+
     },
     isExpanded(key, type) {
       return this.expandedGroup[type].indexOf(key) !== -1;
@@ -91,11 +120,34 @@ Vue.mixin({
         vm.disabledBtn = '';
       }
     },
+    removeWorker(key, bountyPk, profileId, obj, section) {
+      let vm = this;
+      let url = `/actions/bounty/${bountyPk}/interest/${profileId}/uninterested/`;
+
+      vm.disabledBtn = key;
+      if (window.confirm('Do you want to stop contributor work on this bounty?')) {
+        let postStartpWork = fetchData (url, 'POST');
+
+        $.when(postStartpWork).then(response => {
+          vm[obj][section].splice(key, 1);
+          vm.disabledBtn = '';
+          _alert({ message: gettext('Contributor removed from bounty.') }, 'success');
+        }, error => {
+          vm.disabledBtn = '';
+          let msg = error.responseJSON.error || 'got an error. please try again, or contact support@gitcoin.co';
+
+          _alert({ message: gettext(msg) }, 'error');
+        });
+      } else {
+        vm.disabledBtn = '';
+      }
+    },
     checkData(persona) {
       let vm = this;
 
       if (!Object.keys(vm.bounties).length && persona === 'funder') {
         vm.fetchBounties('open');
+        vm.fetchBounties('started');
         vm.fetchBounties('submitted');
         vm.fetchBounties('expired');
       }
@@ -116,6 +168,9 @@ Vue.mixin({
         vm.checkData('funder');
         $('#funder-tab').tab('show');
       }
+    },
+    redirect(url) {
+      document.location.href = url;
     }
   }
 });
@@ -125,24 +180,42 @@ if (document.getElementById('gc-board')) {
     delimiters: [ '[[', ']]' ],
     el: '#gc-board',
     data: {
+      network: network,
       bounties: bounties,
       openBounties: [],
       submittedBounties: [],
       expiredBounties: [],
       contributors: [],
       contributorBounties: contributorBounties,
-      expandedGroup: {'submitted': [], 'open': []},
+      expandedGroup: {'submitted': [], 'open': [], 'started': [], 'bountiesMatch': []},
       disabledBtn: false,
       authProfile: authProfile,
+      skills: skills,
+      matchingBounties: [],
       isLoading: {
         'open': true,
         'openContrib': true,
+        'started': true,
+        'startedContrib': true,
         'submitted': true,
         'submittedContrib': true,
         'expired': true,
         'work_in_progress': true,
         'interested': true,
-        'work_submitted': true
+        'work_submitted': true,
+        'matchingBounties': true
+      },
+      error: {
+        'open': '',
+        'openContrib': '',
+        'started': '',
+        'startedContrib': '',
+        'submitted': '',
+        'submittedContrib': '',
+        'expired': '',
+        'work_in_progress': '',
+        'interested': '',
+        'work_submitted': ''
       }
     },
     mounted() {
@@ -165,4 +238,8 @@ Vue.filter('truncate', (account, num) => {
 Vue.filter('moment', (date) => {
   moment.locale('en');
   return moment.utc(date).fromNow();
+});
+
+Vue.filter('humanizeEth', (number) => {
+  return parseInt(number, 10) / Math.pow(10, 18);
 });

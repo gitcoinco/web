@@ -5,7 +5,7 @@
   .js-select2{
     width: 100%;
   }
-  li{
+  .token-list {
     font-size: 12px;
   }
 </style>
@@ -15,7 +15,7 @@
     <p>
       {% blocktrans %} Here is a list of tokens available on Gitcoin. In order to enable the use of these tokens on your personal account, {% endblocktrans %}
     </p>
-    <ol>
+    <ol class="token-list">
       <li>
         {% blocktrans %}Select the token from the list below.{% endblocktrans %}
       </li>
@@ -26,7 +26,7 @@
   </div>
   <div>
     {% blocktrans %}Existing approvals:{% endblocktrans %}
-    <ol>
+    <ol class="token-list">
         <li>{% blocktrans %}ETH (since it is not an ERC20 token){% endblocktrans %}</li>
       {% for ta in profile.token_approvals.all %}
         <li>
@@ -73,7 +73,7 @@
 <script>
 document.gas_price = {{gas_price}};
 </script>
-<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+<script src="{% url 'javascript-catalog' %}"></script>
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 <script src="{% static "v2/js/abi.js" %}"></script>
 <script src="/dynamic/js/tokens_dynamic.js"></script>

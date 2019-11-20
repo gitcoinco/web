@@ -38,11 +38,13 @@ env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
 env.read_env(str(root.path('app/.env')))  # reading .env file
 
 DEBUG = env.bool('DEBUG', default=True)
+QUESTS_LIVE = True
 ENV = env('ENV', default='local')
 DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test'])
 IS_DEBUG_ENV = ENV in DEBUG_ENVS
 HOSTNAME = env('HOSTNAME', default=socket.gethostname())
 BASE_URL = env('BASE_URL', default='http://localhost:8000/')
+OVERRIDE_NETWORK = env('OVERRIDE_NETWORK', default=None)
 SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
 ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
 BASE_DIR = root()
@@ -91,6 +93,7 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
+    'quests',
     'enssubdomain',
     'faucet',
     'tdi',
@@ -113,6 +116,7 @@ INSTALLED_APPS = [
     'revenue',
     'event_ethdenver2019',
     'inbox',
+    'feeswapper',
 ]
 
 MIDDLEWARE = [
@@ -120,7 +124,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'app.middleware.drop_accept_langauge',
-    'app.middleware.bleach_requests',
+    # 'app.middleware.bleach_requests',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -142,7 +146,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -506,6 +510,7 @@ MAILCHIMP_API_KEY = env.str('MAILCHIMP_API_KEY', default='')
 MAILCHIMP_LIST_ID = env.str('MAILCHIMP_LIST_ID', default='')
 MAILCHIMP_LIST_ID_HUNTERS = env.str('MAILCHIMP_LIST_ID_HUNTERS', default='')
 MAILCHIMP_LIST_ID_FUNDERS = env.str('MAILCHIMP_LIST_ID_FUNDERS', default='')
+MAILCHIMP_LIST_ID_HACKERS = env.str('MAILCHIMP_LIST_ID_HACKERS', default='')
 
 # Github
 GITHUB_API_BASE_URL = env('GITHUB_API_BASE_URL', default='https://api.github.com')
@@ -527,7 +532,7 @@ SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
-SOCIAL_AUTH_GITHUB_SCOPE = ['read:public_repo', 'read:user', 'user:email', ]
+SOCIAL_AUTH_GITHUB_SCOPE = ['read:user', 'user:email', 'read:org']
 SOCIAL_AUTH_SANITIZE_REDIRECTS = True
 
 SOCIAL_AUTH_PIPELINE = (
@@ -696,3 +701,17 @@ if ENABLE_SILK:
             'name': 'Index View',
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
+
+# Sending an email when a bounty is funded below a threshold
+LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)
+
+# Gitcoin Bounty Funding Fee settings
+FEE_ADDRESS = env('FEE_ADDRESS', default='')
+FEE_ADDRESS_PRIVATE_KEY = env('FEE_ADDRESS_PRIVATE_KEY', default='')
+SLIPPAGE = env.float('SLIPPAGE', default=0.05)
+UNISWAP_LIQUIDITY_FEE = env.float('UNISWAP_LIQUDITY_FEE', default=0.003)
+UNISWAP_TRADE_DEADLINE = env.int('UNISWAP_TRADE_DEADLINE', default=300)
+
+RE_MARKET_LIMIT = env.int('RE_MARKET_LIMIT', default=2)
+MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=60)
+

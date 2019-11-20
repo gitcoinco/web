@@ -60,6 +60,34 @@ var paint_search_tabs = function() {
   target.html(html);
 };
 
+function scrollSlider(element, cardSize) {
+  const arrowLeft = $('#arrowLeft');
+  const arrowRight = $('#arrowRight');
+
+  arrowLeft.on('click', function() {
+    element[0].scrollBy({left: -cardSize, behavior: 'smooth'});
+  });
+  arrowRight.on('click', function() {
+    element[0].scrollBy({left: cardSize, behavior: 'smooth'});
+  });
+
+  element.on('scroll mouseenter', function() {
+    if (this.clientWidth === (this.scrollWidth - this.scrollLeft)) {
+      arrowRight.hide();
+    } else {
+      arrowRight.show();
+    }
+
+    if (this.scrollLeft < 10) {
+      arrowLeft.hide();
+    } else {
+      arrowLeft.show();
+    }
+  });
+}
+
+scrollSlider($('#featured-card-container'), 288);
+
 function debounce(func, wait, immediate) {
   var timeout;
 
@@ -80,7 +108,7 @@ function debounce(func, wait, immediate) {
   };
 }
 
-const scrub = value => value.replace(/[\W]+/g, '');
+const scrub = value => value.replace(/[!@#$%^&*(),.?":{}|<>]+/g, '');
 
 /**
  * Fetches all filters options from the URI
@@ -334,6 +362,9 @@ var get_search_URI = function(offset, order) {
           _value = document.contxt.github_handle;
         } else if (_value === 'fulfilledByMe') {
           _key = 'fulfiller_github_username';
+          _value = document.contxt.github_handle;
+        } else if (_value === 'reservedForMe') {
+          _key = 'reserved_for_user_handle';
           _value = document.contxt.github_handle;
         }
 

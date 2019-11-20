@@ -6,6 +6,15 @@ function kudosSearch(elem) {
       return;
     }
     var auto_terms = [ 'rare', 'common', 'ninja', 'soft skills', 'programming' ];
+    var name = $(this).attr('name');
+    var filter_by_address = $(this).attr('filter_by_address');
+
+    if (name == 'enemy') {
+      auto_terms = [ 'samurai', 'evil', 'undead', 'bot', 'cellarius', 'devcon', 'meme', 'doge', 'bowtie', 'moloch' ];
+    }
+    if (name == 'reward') {
+      auto_terms = [ 'common', 'diamond', 'fun', 'bot', 'eth', 'hummingbird', 'holy hand grenade' ];
+    }
     var autocomplete_html = '';
 
     for (var i = 0; i < auto_terms.length; i++) {
@@ -23,7 +32,8 @@ function kudosSearch(elem) {
 
           let query = {
             term: params.term[0] === '@' ? params.term.slice(1) : params.term,
-            network: document.web3network
+            network: document.web3network,
+            filter_by_address: typeof filter_by_address != 'undefined' && filter_by_address ? filter_by_address : ''
           };
 
           return query;
@@ -152,7 +162,7 @@ $('document').ready(function() {
   $('body').on('click', '.kudos_autocomplete', function(e) {
     var search_term = $(this).text();
 
-    select2Search($('.kudos-search'), search_term);
+    select2Search($(this).parents('.kudos-module').find('.kudos-search'), search_term);
     e.preventDefault();
   });
 

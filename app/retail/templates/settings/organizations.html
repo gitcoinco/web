@@ -1,0 +1,30 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static avatar_tags %}
+{% block settings_content %}
+  <h2 class="font-bigger-2 text-center">Organization Permissions</h2>
+  <p class="text-center font-subheader text-black-50">The users below are able to fund, edit settings, approve contributors, and payout contributors on the bounties of the organization</p>
+  {% if orgs %}
+  {% for org in orgs %}
+    <div class="card my-5">
+      <div class="card-header bg-white d-flex align-items-center justify-content-between">
+        <div>
+          <img src="{% avatar_url org.name %}" class="rounded-circle mr-2" alt="{{org.name}}" width="32" height="32">
+          <b>{{org.name}}</b> <a href="{% url 'profile' org.name %}" class="font-smaller-2">view profile</a>
+        </div>
+        <a href="https://github.com/orgs/{{org.name}}/people" target="_blank"><i class="fab fa-github align-text-top font-bigger-1"></i> Manage on GitHub </a>
+      </div>
+      <div class="card-body">
+        {% for user in org.users %}
+          <div class="py-2 px-5 d-flex align-items-center">
+            <img src="{% avatar_url user.handle  %}" class="rounded-circle mr-3" alt="{{user.handle}}" width="52" height="52">
+            <div class="d-flex flex-column">
+              <span>{{user.name}}</span>
+              <a href="{% url 'profile' user.handle %}" class="font-smaller-1">{{user.handle}}</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
+{% endblock %}

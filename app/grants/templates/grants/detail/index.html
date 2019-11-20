@@ -63,12 +63,11 @@
     {% include 'shared/current_profile.html' %}
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
 
-  <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/pages/tabs.js" %}"></script>
   <script src="{% static "v2/js/grants/index.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>
@@ -94,16 +93,5 @@
         'address'
       )
     );
-
-    {% if change_ownership == 'Y' %}
-      _alert({ message: gettext('You are now the owner of this grant.') }, 'success');
-    {% elif change_ownership == 'N' %}
-      _alert({ message: gettext('Ownership Request has been rejected.') }, 'error');
-    {% endif %}
-
-    if(localStorage['request_change'] === 'R') {
-      _alert({ message: gettext('Email has been sent to the requested user. Ownership Transfer will happen upon confirmation from the requested user.') }, 'success');
-      delete localStorage['request_change'];
-    }
   </script>
 </html>

@@ -137,6 +137,17 @@ def psave_es(sender, instance, **kwargs):
     instance.build_email_preferences()
 
 
+class ManualStat(SuperModel):
+    """Define the manual stat model; which records stats that are not available on the platform
+    """
+
+    key = models.CharField(max_length=50, db_index=True)
+    date = models.DateTimeField(db_index=True)
+    val = models.FloatField()
+
+    def __str__(self):
+        return f"{self.key}: {self.date}: {self.val}"
+
 class Stat(SuperModel):
 
     key = models.CharField(max_length=50, db_index=True)
@@ -342,9 +353,31 @@ class AccountDeletionRequest(SuperModel):
 
 class EmailSupressionList(SuperModel):
 
-    email = models.EmailField(max_length=255)
+    email = models.TextField(max_length=255)
     metadata = JSONField(default=dict, blank=True)
     comments = models.TextField(max_length=5000, blank=True)
 
     def __str__(self):
         return f"{self.email}"
+
+class MarketingCallback(SuperModel):
+    """Define the Marketing Callback model; which is used to peform
+
+    various functions when a user with a specific secret key visits the site.
+    """
+
+    key = models.CharField(max_length=255, db_index=True)
+    val = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.key} - {self.val}"
+
+class Job(SuperModel):
+
+    title = models.CharField(max_length=255)
+    description = models.TextField(max_length=5000, blank=True)
+    link = models.CharField(max_length=255)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.title}"

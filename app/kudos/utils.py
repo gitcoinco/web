@@ -25,7 +25,7 @@ from functools import wraps
 
 from django.conf import settings
 
-import ipfsapi
+import ipfshttpclient
 from dashboard.utils import get_web3
 from eth_utils import to_checksum_address
 from git.utils import get_emails_master
@@ -160,8 +160,8 @@ class KudosContract:
 
         self._w3 = get_web3(self.network, sockets=sockets)
 
-        host = f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}'
-        self._ipfs = ipfsapi.connect(host=host, port=settings.IPFS_API_PORT)
+        ipfsConnectionString = f'/dns/{settings.IPFS_HOST}/tcp/{settings.IPFS_API_PORT}/{settings.IPFS_API_SCHEME}'
+        self._ipfs = ipfshttpclient.connect(ipfsConnectionString)
         self._contract = self._get_contract()
 
         self.address = self._get_contract_address()
@@ -279,8 +279,13 @@ class KudosContract:
         """
         kudos = self.getKudosById(kudos_id, to_dict=True)
         kudos['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
-        kudos['contract_address'] = self._contract.address
-        kudos['network'] = self.network
+        contract, created = Contract.objects.get_or_create(
+            address=self._contract.address,
+            network=self.network,
+            defaults=dict(is_latest=True)
+        )
+        kudos['contract'] = contract
+
         try:
             kudos_token = Token.objects.get(token_id=kudos_id)
             if kudos_token.suppress_sync:
@@ -341,6 +346,9 @@ class KudosContract:
                 logger.warning(f'No KudosTransfer object found for Kudos ID {kudos_id}')
                 # raise KudosTransferNotFound(kudos_id, 'No KudosTransfer object found')
                 # raise
+        except KudosTransfer.MultipleObjectsReturned:
+            pass
+
         else:
             # Store the foreign key reference if the kudos_transfer object exists
             kudos_transfer.kudos_token = kudos_token
@@ -405,7 +413,7 @@ class KudosContract:
 
     @log_args
     @may_require_key
-    def mint(self, *args, account=None, private_key=None, skip_sync=False, gas_price_gwei=None):
+    def mint(self, *args, account=None, private_key=None, skip_sync=False, gas_price_gwei=None, dont_wait_for_kudos_id_return_tx_hash_instead=False):
         """Contract transaction method.
 
         Mint a new Gen0 Kudos on the blockchain.  Not to be confused with clone.
@@ -451,6 +459,9 @@ class KudosContract:
             logger.debug('No private key provided, using local signing...')
             tx_hash = self._contract.functions.mint(*args).transact({"from": account})
 
+        if dont_wait_for_kudos_id_return_tx_hash_instead:
+            return self._w3.toHex(tx_hash)
+
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
         logger.debug(f'Tx hash: {tx_hash.hex()}')
 
@@ -462,6 +473,17 @@ class KudosContract:
             self.sync_db(kudos_id=kudos_id, txid=tx_hash.hex())
 
         return kudos_id
+
+    def sync_latest(self, the_buffer=0):
+        """Contract transaction method.
+
+        Sync the latest kudos from the chain
+        """
+        kudos_id = self._contract.functions.getLatestId().call() - the_buffer
+        self.sync_db_without_txid(kudos_id=kudos_id)
+
+        return kudos_id
+
 
     @may_require_key
     def clone(self, *args, account=None, private_key=None, skip_sync=False):
