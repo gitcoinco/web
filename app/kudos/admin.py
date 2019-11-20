@@ -37,11 +37,17 @@ class TokenRequestAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
     raw_id_fields = ['profile']
+    readonly_fields = ['preview']
 
     def response_change(self, request, obj):
+        
         if "_mint_kudos" in request.POST:
             tx_id = obj.mint()
             self.message_user(request, f"Mint submitted to chain: tx {tx_id}.  Once this tx clears pls 'sync kudos'.")
+        if "_change_owner" in request.POST:
+            obj.to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'
+            obj.save()
+            self.message_user(request, f"Changed owner to gitcoin")
         if "_sync_kudos" in request.POST:
             from kudos.management.commands.mint_all_kudos import sync_latest
             sync_latest(0)
@@ -50,6 +56,10 @@ class TokenRequestAdmin(admin.ModelAdmin):
             sync_latest(3)
             self.message_user(request, f"Synced latest 3 kudos from open sea.  If there is a new kudos on chain it will appear in the marketplace")
         return super().response_change(request, obj)
+
+    def preview(self, instance):
+        html = f"<img style='max-width: 400px;' src='{instance.artwork_url}'>"
+        return mark_safe(html)
 
 
 class TransferEnabledForAdmin(admin.ModelAdmin):

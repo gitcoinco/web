@@ -24,6 +24,7 @@ from git.utils import _AUTH, HEADERS, get_user
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
 from pyshorteners import Shortener
+from social_core.backends.github import GithubOAuth2
 from social_django.models import UserSocialAuth
 
 logger = logging.getLogger(__name__)
@@ -230,7 +231,7 @@ def sync_profile(handle, user=None, hide_profile=True):
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         access_token = profile.user.social_auth.filter(provider='github').latest('pk').access_token
         orgs = get_user(handle, '', scope='orgs', auth=(profile.handle, access_token))
-        profile.organizations = [ele['login'] for ele in orgs]
+        profile.organizations = [ele['login'] for ele in orgs if ele and type(ele) is dict] if orgs else []
         print("Profile:", profile, "- created" if created else "- updated")
         keywords = []
         for repo in profile.repos_data_lite:
@@ -242,9 +243,10 @@ def sync_profile(handle, user=None, hide_profile=True):
 
         profile.keywords = keywords
         profile.save()
-
+    except UserSocialAuth.DoesNotExist:
+        pass
     except Exception as e:
-        logger.error(e)
+        logger.exception(e)
         return None
 
     if user and user.email:
@@ -457,3 +459,15 @@ def get_profile(request):
         profile = sync_profile(request.user.username, request.user, hide_profile=False)
 
     return profile
+
+class CustomGithubOAuth2(GithubOAuth2):
+    EXTRA_DATA = [
+        ('scope', 'scope'),
+    ]
+    def get_scope(self):
+        scope = super(CustomGithubOAuth2, self).get_scope()
+        if self.data.get('extrascope'):
+            scope += ['public_repo', 'read:org']
+            from dashboard.management.commands.sync_orgs_repos import Command
+            Command().handle()
+        return scope

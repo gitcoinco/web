@@ -167,7 +167,7 @@ const init = () => {
             formData.append('contract_version', $('#contract_version').val());
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('network', $('#network').val());
-            formData.append('team_members', $('#input-team_members').val());
+            formData.append('team_members[]', $('#input-team_members').val());
             saveGrant(formData, false);
 
             document.issueURL = linkURL;

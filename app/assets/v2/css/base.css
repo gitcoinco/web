@@ -502,7 +502,8 @@ input[type=text].loading {
 
 .submit_bounty #primary_form,
 .fulfill_bounty #primary_form,
-.increase_bounty #primary_form {
+.increase_bounty #primary_form,
+.payout_bounty #primary_form {
   max-width: none;
 }
 
@@ -549,12 +550,6 @@ input[type=text].loading {
 
 .submit_bounty select[name=denomination] {
   text-align: left;
-}
-
-.admin-only {
-  background-color: #5495E1 !important;
-  color:white !important;
-  border: 1px solid white !important;
 }
 
 /* The alert message box */

@@ -256,12 +256,23 @@ class Bounty(SuperModel):
         ('submitted', 'submitted'),
         ('unknown', 'unknown'),
     )
+
+    BOUNTY_STATES = (
+        ('open', 'Open Bounty'),
+        ('work_started', 'Work Started'),
+        ('work_submitted', 'Work Submitted'),
+        ('done', 'Done'),
+        ('cancelled', 'Cancelled'),
+        ('expired', 'Expired'),
+    )
+
     FUNDED_STATUSES = ['reserved', 'open', 'started', 'submitted', 'done']
     OPEN_STATUSES = ['reserved', 'open', 'started', 'submitted']
     CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
     WORK_IN_PROGRESS_STATUSES = ['reserved', 'open', 'started', 'submitted']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
+    bounty_state = models.CharField(max_length=50, choices=BOUNTY_STATES, default='open', db_index=True)
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=1000)
     web3_created = models.DateTimeField(db_index=True)
@@ -381,6 +392,46 @@ class Bounty(SuperModel):
         if self.github_url:
             self.github_url = clean_bounty_url(self.github_url)
         super().save(*args, **kwargs)
+
+    EVENT_HANDLERS = {
+        'traditional': {
+            'open_bounty': {
+                'accept_worker': 'work_started',
+                'cancel_bounty': 'cancelled'},
+            'work_started': {
+                'submit_work': 'work_submitted',
+                'stop_work': 'open_bounty',
+                'cancel_bounty': 'cancelled'},
+            'work_submitted': {
+                'payout_bounty': 'done',
+                'cancel_bounty': 'cancelled'},
+        },
+        'cooperative': {
+            'open_bounty': {
+                'accept_worker': 'work_started',
+                'cancel_bounty': 'cancelled'},
+            'work_started': {
+                'submit_work': 'work_submitted',
+                'stop_work': 'open_bounty',
+                'cancel_bounty': 'cancelled'},
+            'work_submitted': {
+                'close_bounty': 'done',
+                'cancel_bounty': 'cancelled'},
+        },
+        'contest': {
+            'open_bounty': {
+                'payout_bounty': 'done',
+                'cancel_bounty': 'cancelled'}
+        }
+    }
+
+
+    def handle_event(self, event):
+        """Handle a new BountyEvent, and potentially change state"""
+        next_state = self.EVENT_HANDLERS[self.project_type][self.bounty_state].get(event.event_type)
+        if next_state:
+            self.bounty_state = next_state
+            self.save()
 
     @property
     def latest_activity(self):
@@ -721,7 +772,7 @@ class Bounty(SuperModel):
         is_traditional_bounty_type = self.project_type == 'traditional'
         try:
             has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
-            if has_tips and is_traditional_bounty_type:
+            if has_tips and is_traditional_bounty_type and not self.is_open :
                 return 'done'
             if not self.is_open:
                 if self.accepted:
@@ -1224,6 +1275,29 @@ class Bounty(SuperModel):
                     return f'{hours} hours'
         else:
             return ''
+
+
+class BountyEvent(SuperModel):
+    """An Event taken by a user, which may change the state of a Bounty"""
+
+    EVENT_TYPES = (
+        ('accept_worker', 'Accept Worker'),
+        ('cancel_bounty', 'Cancel Bounty'),
+        ('submit_work', 'Submit Work'),
+        ('stop_work', 'Stop Work'),
+        ('express_interest', 'Express Interest'),
+        ('payout_bounty', 'Payout Bounty'),
+        ('expire_bounty', 'Expire Bounty'),
+        ('extend_expiration', 'Extend Expiration'),
+        ('close_bounty', 'Close Bounty'),
+    )
+
+    bounty = models.ForeignKey('dashboard.Bounty', on_delete=models.CASCADE,
+        related_name='events')
+    created_by = models.ForeignKey('dashboard.Profile',
+        on_delete=models.SET_NULL, related_name='events', blank=True, null=True)
+    event_type = models.CharField(max_length=50, choices=EVENT_TYPES)
+    metadata = JSONField(default=dict, blank=True)
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
@@ -2185,6 +2259,14 @@ class Organization(SuperModel):
         return self.name
 
 
+class BlockedURLFilter(SuperModel):
+    expression = models.CharField(max_length=255, help_text='the expression to search for in order to block that github url (or website)')
+    comment = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.expression
+
+
 class HackathonRegistration(SuperModel):
     """Defines the Hackthon profiles registrations"""
     name = models.CharField(max_length=255, help_text='Hackathon slug')
@@ -2834,7 +2916,7 @@ class Profile(SuperModel):
 
         #calculate base rating
         num_earnings = self.earnings.count() + self.sent_earnings.count()
-        if num_earnings == 0:
+        if num_earnings < 2:
             return "Unproven"
 
         if num_earnings > high_threshold:
@@ -3403,7 +3485,7 @@ class Profile(SuperModel):
                 Defaults to: None.
 
         Returns:
-            dict: list of the profiles that were worked with (key) and the number of times they occured
+            dict: list of the profiles that were worked with (key) and the number of times they occurred
 
         """
         if bounties is None:
@@ -3587,7 +3669,7 @@ class Profile(SuperModel):
         # portfolio
         portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
         portfolio_keywords = {}
-        for fulfillment in portfolio_bounties:
+        for fulfillment in portfolio_bounties.nocache():
             for keyword in fulfillment.bounty.keywords_list:
                 keyword = keyword.lower()
                 if keyword not in portfolio_keywords.keys():
@@ -3988,6 +4070,7 @@ class HackathonEvent(SuperModel):
     text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
+    show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -4032,6 +4115,58 @@ class HackathonSponsor(SuperModel):
         choices=SPONSOR_TYPES,
         default='G',
     )
+
+
+class HackathonProject(SuperModel):
+    PROJECT_STATUS = [
+        ('invalid', 'invalid'),
+        ('pending', 'pending'),
+        ('accepted', 'accepted'),
+        ('completed', 'completed'),
+    ]
+    name = models.CharField(max_length=255)
+    hackathon = models.ForeignKey(
+        'HackathonEvent',
+        related_name='project_event',
+        on_delete=models.CASCADE,
+        help_text='Hackathon event'
+    )
+    logo = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('Project Logo')
+    )
+    profiles = models.ManyToManyField(
+        'dashboard.Profile',
+        related_name='project_profiles',
+    )
+    work_url = models.URLField(help_text='Repo or PR url')
+    summary = models.TextField(default='', blank=True)
+    bounty = models.ForeignKey(
+        'dashboard.Bounty',
+        related_name='project_bounty',
+        on_delete=models.CASCADE,
+        help_text='bounty prize url'
+    )
+    badge = models.URLField(
+        blank=True,
+        null=True,
+        db_index=True,
+        help_text='badge img url'
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=PROJECT_STATUS,
+        blank=True
+    )
+
+    class Meta:
+        ordering = ['-name']
+
+    def __str__(self):
+        return f"{self.name} - {self.bounty} on {self.created_on}"
+
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(

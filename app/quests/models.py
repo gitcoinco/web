@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models.signals import pre_save
@@ -8,13 +10,22 @@ from django.utils.text import slugify
 # Create your models here.
 from economy.models import SuperModel
 
+num_backgrounds = 23
+
 
 class Quest(SuperModel):
     DIFFICULTIES = [
         ('Beginner', 'Beginner'),
         ('Intermediate', 'Intermediate'),
-        ('Advanced', 'Advanced'),
+        ('Hard', 'Hard'),
+        ('Expert', 'Expert'),
     ]
+
+    BACKGROUNDS = [
+        ('red', 'red'),
+        ('green', 'green'),
+        ('blue', 'blue'),
+    ] + [(f'back{i}', f'back{i}') for i in range(0, num_backgrounds + 1)]
 
     STYLES = [
         ('Quiz', 'quiz'),
@@ -33,7 +44,7 @@ class Quest(SuperModel):
     difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES, db_index=True)
     style = models.CharField(max_length=100, default='quiz', choices=STYLES)
     value = models.FloatField(default=1)
-    override_background = models.CharField(default='', max_length=100, blank=True)
+    background = models.CharField(default='', max_length=100, blank=True, choices=BACKGROUNDS)
     creator = models.ForeignKey(
         'dashboard.Profile',
         on_delete=models.CASCADE,
@@ -42,15 +53,43 @@ class Quest(SuperModel):
         blank=True,
     )
     ui_data = JSONField(default=dict, blank=True)
+    edit_comments = models.TextField(default='', blank=True)
+    
     def __str__(self):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.title} (visible: {self.visible})'
-
 
     @property
     def url(self):
         from django.conf import settings
         return settings.BASE_URL + f"quests/{self.pk}/{slugify(self.title)}"
+
+    @property
+    def edit_url(self):
+        from django.conf import settings
+        return settings.BASE_URL + f"quests/edit/{self.pk}"
+
+    @property
+    def feedback_url(self):
+        from django.conf import settings
+        return settings.BASE_URL + f"quests/{self.pk}/feedback"
+
+    @property
+    def feedbacks(self):
+        stats = {1 : 0, -1 : 0, 0 : 0}
+        for fb in self.feedback.all():
+            stats[fb.vote] += 1
+        ratio_upvotes = 0
+        if self.feedback.count():
+            ratio_upvotes = stats[1]/self.feedback.count()
+        return_me = {
+            'ratio': ratio_upvotes,
+            'stats': stats,
+            'feedback': []
+        }
+        for fb in self.feedback.all():
+            return_me['feedback'].append(fb.comment)
+        return return_me
 
     @property
     def est_read_time_mins(self):
@@ -108,23 +147,15 @@ class Quest(SuperModel):
         return '/static/'+self.game_metadata.get('enemy', {}).get('title', '')
 
     @property
-    def background(self):
-        if self.override_background:
-            return self.override_background
-        backgrounds = [
-            'back0',
-            'back1',
-            'back2',
-            'back3',
-            'back4',
-            'back5',
-            'back6',
-            'back7',
-            'back8',
-            'back9',
-        ]
-        which_back = self.pk % len(backgrounds)
-        return backgrounds[which_back]
+    def assign_background(self):
+        if self.background:
+            return self.background
+        backgrounds = list(range(0, num_backgrounds + 1))
+        which_back_idx = random.choice(backgrounds)
+        if self.pk:
+            which_back_idx = self.pk % len(backgrounds)
+        which_back = backgrounds[which_back_idx]
+        return f"back{which_back}"
 
     @property
     def music(self):
@@ -146,12 +177,11 @@ class Quest(SuperModel):
     def tags(self):
         tags = [
             self.difficulty,
-            "hard" if self.success_pct < 20 else ( "medium" if self.success_pct < 70 else "easy"),
             self.style,
         ]
         if (timezone.now() - self.created_on).days < 5:
             tags.append('new')
-        if self.attempts.count() > 40:
+        if self.attempts.count() > 400:
             tags.append('popular')
 
         return tags
@@ -211,9 +241,12 @@ class Quest(SuperModel):
 
 @receiver(pre_save, sender=Quest, dispatch_uid="psave_quest")
 def psave_quest(sender, instance, **kwargs):
+    if not instance.background:
+        instance.background = instance.assign_background
     instance.ui_data['attempts_count'] = instance.attempts.count()
     instance.ui_data['tags'] = instance.tags
     instance.ui_data['success_pct'] = instance.success_pct
+    instance.ui_data['feedbacks'] = instance.feedbacks
     instance.ui_data['creator'] = {
         'url': instance.creator.url,
         'handle': instance.creator.handle,
@@ -234,6 +267,22 @@ class QuestAttempt(SuperModel):
     def __str__(self):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.profile.handle} => {self.quest.title} state: {self.state} success: {self.success}'
+
+
+class QuestFeedback(SuperModel):
+
+    quest = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='feedback', on_delete=models.SET_NULL)
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        on_delete=models.CASCADE,
+        related_name='quest_feedback',
+    )
+    vote = models.IntegerField(default=1)
+    comment = models.TextField(default='', blank=True)
+
+    def __str__(self):
+        """Return the string representation of this obj."""
+        return f'{self.pk}, {self.profile.handle} => {self.quest.title} ({self.comment})'
 
 
 class QuestPointAward(SuperModel):

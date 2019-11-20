@@ -22,10 +22,16 @@
 <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 
-{% if not hidden and is_staff %}
+{% if not hidden and is_owner_or_staff %}
 <div class="alpha-warning font-caption mb-0" style=" text-align: right;">
+  {% if is_staff %}
   <span class="font-weight-bold">Staff only</span> |
   <a style="color:white; margin-right: 20px;" href="{{quest.admin_url}}">{% trans "Quest Admin" %}</a>
+  {% endif %}
+  {% if is_staff or is_owner %}
+  <span class="font-weight-bold"></span> {% if not is_staff %} Owner Only {% endif %} | 
+  <a style="color:white; margin-right: 20px;" href="{{quest.edit_url}}">{% trans "Edit Quest" %}</a>
+  {% endif %}
 </div>
 {% endif %}
   <div id="breadcrumbs" class="mt-2 mb-2">
@@ -82,11 +88,18 @@
         <span>
            |
           Beaten {{success_count}} time{{success_count|pluralize}}
+          {% if prize_url %}
+          | <a href="{{prize_url}}">Redeem Prize</a>
+          {% endif %}
         </span>
         {% endif %}
         <br>
         {% if github_handle %}
-        <a class="skip_intro" href="#">Skip Intro |</a>
+          <span id="vote_container">
+            <a class="give_feedback" href="#" data-direction='1'>Upvote ⬆️</a> | <a class="give_feedback" href="#" data-direction='-1'>Downvote ⬇️</a>
+            <BR>
+          </span>
+          <a class="skip_intro" href="#">Skip Intro ⏩</a>
         {% endif %}
         <a class="music_toggle" href="#">Sound On 🎵</a>
       </span>
@@ -106,6 +119,8 @@
     document.music = '{{quest.music}}';
     document.seconds_per_question = parseInt('{{seconds_per_question}}');
     document.quest = {{quest_json|safe}};
+    document.quest_url = '{{quest.url}}';
+    document.quest_feedback_url = '{{quest.feedback_url}}';
     document.attempts = {
       'success_count': parseInt('{{success_count}}'),
       'attempt_count': parseInt('{{attempt_count}}'),

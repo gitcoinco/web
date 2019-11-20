@@ -33,12 +33,12 @@ from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
 from dashboard.models import (
-    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon, HackathonEvent,
-    UserAction,
+    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon,
+    HackathonEvent, UserAction,
 )
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord,
-    maybe_market_to_user_slack,
+    maybe_market_to_user_slack, notify_of_lowball_bounty,
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import ConversionRateNotFoundError, convert_amount
@@ -243,6 +243,12 @@ class BountyStage(Enum):
 
 class UnsupportedSchemaException(Exception):
     """Define unsupported schema exception handling."""
+
+    pass
+
+
+class UnsupportedRepoException(Exception):
+    """Define unsupported repo exception handling."""
 
     pass
 
@@ -832,6 +838,19 @@ def record_user_action(event_name, old_bounty, new_bounty):
             })
 
 
+def is_lowball_bounty(bounty_value_usdt):
+    """Determine if a bounty value is less than a threshold
+
+    Args:
+      bounty_value_usdt (Decimal): The value of the bounty
+
+    Returns:
+      bool: True if bounty value is less than the threshold
+
+    """
+    return bounty_value_usdt < settings.LOWBALL_BOUNTY_THRESHOLD if bounty_value_usdt else False
+
+
 def process_bounty_changes(old_bounty, new_bounty):
     """Process Bounty changes.
 
@@ -842,6 +861,12 @@ def process_bounty_changes(old_bounty, new_bounty):
     """
     from dashboard.utils import build_profile_pairs
     profile_pairs = None
+
+    # check for maintainer blocks
+    is_blocked = any([(ele.lower() in new_bounty.github_url.lower()) for ele in BlockedURLFilter.objects.values_list('expression', flat=True)])
+    if is_blocked:
+        raise UnsupportedRepoException("This repo is not bountyable at the request of the maintainer.")
+
     # process bounty sync requests
     did_bsr = False
     for bsr in BountySyncRequest.objects.filter(processed=False, github_url=new_bounty.github_url).nocache():
@@ -883,6 +908,14 @@ def process_bounty_changes(old_bounty, new_bounty):
     # Build profile pairs list
     if new_bounty.fulfillments.exists():
         profile_pairs = build_profile_pairs(new_bounty)
+
+    # Send an Email if this is a LowBall bounty
+    try:
+        if(not old_bounty or old_bounty.value_in_usdt != new_bounty.value_in_usdt):
+                if is_lowball_bounty(new_bounty.value_in_usdt) and new_bounty.network == 'mainnet':
+                    notify_of_lowball_bounty(new_bounty)
+    except Exception as e:
+        logger.error(f'{e} during check for Lowball Bounty')
 
     # marketing
     if event_name != 'unknown_event':

@@ -47,6 +47,12 @@
           {% endif %}
           <h3 id="kudosName" class="kudos-details__title">{{ kudos.ui_name }} {% if kudos.generation %}<small class="lead">Gen {{ kudos.generation }}</small>{% endif %}</h3>
           <div>Owner Address: <a target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="kudos-details__address" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></div>
+          {% if kudos.quests_reward.count %}
+            Reward for beating
+            {% for quest in kudos.quests_reward.all %}
+              <a href="{{quest.url}}">{{quest.title}} Quest</a> 
+            {% endfor %}
+          {% endif %}
           <div class="my-4 font-bigger-1 font-weight-300">
             <p>{{ kudos.description }}</p>
           </div>
@@ -82,6 +88,11 @@
             <div class="col-12">
               {% if send_enabled %}
                 <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
+              {% if kudos.quests_reward %}
+                {% for quest in kudos.quests_reward.all %}
+                  <a class="btn btn-gc-blue" href="{{quest.url}}">Play Quest + Win</a> 
+                {% endfor %}
+              {% endif %}
               {% else %}
                 <button type="button" class="btn btn-gc-blue" disabled>{% trans "Not Available" %}</button>
                 <small class="d-block mt-2">

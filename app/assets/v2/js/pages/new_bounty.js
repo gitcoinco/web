@@ -311,10 +311,26 @@ $(function() {
   setTimeout(setUsdAmount, 1000);
 
   // fetch issue URL related info
-  $('input[name=amount]').keyup(setUsdAmount);
-  $('input[name=usd_amount]').keyup(usdToAmount);
   $('input[name=hours]').keyup(setUsdAmount);
   $('input[name=hours]').blur(setUsdAmount);
+  $('input[name=amount]').keyup(setUsdAmount);
+
+  $('input[name=usd_amount]').on('focusin', function() {
+    $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
+  });
+
+  $('input[name=usd_amount]').on('focusout', function() {
+    $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
+  });
+
+  $('input[name=usd_amount]').keyup(() => {
+    const prev_usd_amount = $('input[name=usd_amount]').attr('prev_usd_amount');
+    const usd_amount = $('input[name=usd_amount').val();
+
+    if (prev_usd_amount != usd_amount) {
+      usdToAmount(usd_amount);
+    }
+  });
 
   $('input[name=amount]').on('change', function() {
     const amount = $('input[name=amount]').val();
@@ -446,6 +462,15 @@ $('#sync-issue').on('click', function(event) {
 });
 
 $('#issueURL').focusout(function() {
+  for (let i = 0; i <= document.blocked_urls.length; i++) {
+    let this_url_filter = document.blocked_urls[i];
+
+    if ($('input[name=issueURL]').val().toLowerCase().indexOf(this_url_filter.toLowerCase()) != -1) {
+      _alert('This repo is not bountyable at the request of the maintainer.');
+      $('input[name=issueURL]').val('');
+      return false;
+    }
+  }
   if (isPrivateRepo) {
     setPrivateForm();
     var validated = $('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val());
@@ -516,7 +541,7 @@ $('#neverExpires').on('click', () => {
 
 $('#submitBounty').validate({
   errorPlacement: function(error, element) {
-    if (element.attr('name') == 'bounty_category') {
+    if (element.attr('name') == 'bounty_categories') {
       error.appendTo($(element).parents('.btn-group-toggle').next('.cat-error'));
     } else {
       error.insertAfter(element);
@@ -602,7 +627,7 @@ $('#submitBounty').validate({
       releaseAfter: releaseAfter !== 'Release To Public After' ? releaseAfter : '',
       tokenName,
       invite: inviteContributors,
-      bounty_categories: data.bounty_category
+      bounty_categories: data.bounty_categories
     };
 
     var privacy_preferences = {

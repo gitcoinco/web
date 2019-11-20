@@ -21,6 +21,34 @@ $(document).ready(function() {
     });
   });
 
+  $(document).on('submit', '#search_form', function(e) {
+    e.preventDefault();
+    var q = $(this).find('input').val();
+
+    $('.loading').removeClass('hidden');
+    $('.difficulty_tab').addClass('hidden');
+    $('.quest-card').addClass('hidden');
+    var callback = function() {
+      $('#search_form input').val(q).focus();
+    };
+
+    load_quests(q, callback);
+  });
+
+  var load_quests = function(term, callback) {
+    var url = '/quests/?show_quests=1&q=' + (term ? term : '');
+
+    $.get(url, function(response) {
+      $('#available_quests').html($(response).find('#available_quests').html());
+      $('#available_quests img').unveil(200);
+      if (callback) {
+        callback();
+      }
+    });
+  };
+
+  load_quests(null, null);
+
   var random_attn_effect = function(ele) {
     if (ele.data('effect')) {
       return;
@@ -40,7 +68,7 @@ $(document).ready(function() {
     }, 1000);
   };
 
-  $('#tabs a').click(function(e) {
+  $(document).on('click', '#tabs a', function(e) {
     e.preventDefault();
     var target = $(this).data('href');
 
@@ -68,10 +96,7 @@ $(document).ready(function() {
     });
   });
 
-  $('.quest-card.available').click(function(e) {
-    e.preventDefault();
-    document.location.href = $(this).find('a').attr('href');
-  });
+
   $('.quest-card.available').mouseover(function(e) {
     random_attn_effect($(this).find('.btn'));
   });

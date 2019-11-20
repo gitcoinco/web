@@ -2,6 +2,14 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 $(document).ready(function() {
+  $.fn.isInViewport = function() {
+    var elementTop = $(this).offset().top;
+    var elementBottom = elementTop + $(this).outerHeight();
+    var viewportTop = $(window).scrollTop();
+    var viewportBottom = viewportTop + $(window).height();
+
+    return elementBottom > viewportTop && elementTop < viewportBottom;
+  };
 
   if (typeof ($('body').tooltip) != 'undefined') {
     $('body').tooltip({
@@ -149,7 +157,7 @@ $(document).ready(function() {
     });
   }
 
-  var top_nav_salt = 5;
+  var top_nav_salt = 6;
   var remove_top_row = function() {
     $('#top_nav_notification').parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
