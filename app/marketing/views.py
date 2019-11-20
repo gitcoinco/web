@@ -749,6 +749,7 @@ def leaderboard(request, key=''):
     cadences = ['all', 'weekly', 'monthly', 'quarterly', 'yearly']
 
 
+    product = request.GET.get('product', 'all')
     keyword_search = request.GET.get('keyword', '')
     keyword_search = '' if keyword_search == 'all' else keyword_search
     limit = request.GET.get('limit', 50)
@@ -778,7 +779,7 @@ def leaderboard(request, key=''):
 
     title = titles[key]
     which_leaderboard = f"{cadence}_{key}"
-    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard)
+    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard, product=product)
     if keyword_search:
         ranks = ranks.filter(tech_keywords__icontains=keyword_search)
 
@@ -810,6 +811,8 @@ def leaderboard(request, key=''):
         'nav': 'home',
         'titles': titles,
         'cadence': cadence,
+        'product': product,
+        'products': ['kudos', 'grants', 'bounties', 'tips', 'all'],
         'selected': title,
         'is_linked_to_profile': is_linked_to_profile,
         'title': page_title,
