@@ -142,7 +142,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.github.GithubOAuth2',  # for Github authentication
+    # 'social_core.backends.github.GithubOAuth2',  # for Github authentication
+    'app.utils.CustomGithubOAuth2',
     'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -538,8 +539,14 @@ SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
-SOCIAL_AUTH_GITHUB_SCOPE = ['read:user', 'user:email', 'read:org']
+SOCIAL_AUTH_GITHUB_SCOPE = ['read:user', 'user:email']
 SOCIAL_AUTH_SANITIZE_REDIRECTS = True
+
+#custom scopes
+SOCIAL_AUTH_GH_CUSTOM_KEY = GITHUB_CLIENT_ID
+SOCIAL_AUTH_GH_CUSTOM_SECRET = GITHUB_CLIENT_SECRET
+SOCIAL_AUTH_GH_CUSTOM_SCOPE = ['read:org', 'public_repo']
+
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',
