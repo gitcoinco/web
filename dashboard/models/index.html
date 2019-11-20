@@ -4787,6 +4787,43 @@ a many-to-many relation.</p>
 instances.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h2 id="dashboard.models.BlockedURLFilter">BlockedURLFilter</h2>
+
+<pre><code class="python">BlockedURLFilter(self, *args, **kwargs)
+</code></pre>
+
+<p>BlockedURLFilter(id, created_on, modified_on, expression, comment)
+<h3 id="dashboard.models.BlockedURLFilter.comment">comment</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.BlockedURLFilter.expression">expression</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.BlockedURLFilter.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">BlockedURLFilter._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.BlockedURLFilter.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">BlockedURLFilter._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.BlockedURLFilter.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">BlockedURLFilter._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.BlockedURLFilter.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">BlockedURLFilter._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.BlockedURLFilter.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h2 id="dashboard.models.HackathonRegistration">HackathonRegistration</h2>
 
 <pre><code class="python">HackathonRegistration(self, *args, **kwargs)
