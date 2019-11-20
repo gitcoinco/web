@@ -92,13 +92,15 @@ def editquest(request, pk=None):
         # multi dimensional array hack
         counter = 0
         answer_idx = 0
+
         answers = package.getlist('answer[]',[])
         answer_correct = package.getlist('answer_correct[]',[])
         seconds_to_respond = package.getlist('seconds_to_respond[]',[])
+        points = abs(int(package.get('points')))
 
         # continue building questions object
         for i in range(0, len(seconds_to_respond)):
-            questions[i]['seconds_to_respond'] = int(seconds_to_respond[i])
+            questions[i]['seconds_to_respond'] = abs(int(seconds_to_respond[i]))
 
         for answer in answers:
             if answer == '_DELIMITER_':
@@ -164,7 +166,7 @@ def editquest(request, pk=None):
                     visible=visible,
                     difficulty=package.get('difficulty'),
                     style=package.get('style'),
-                    value=package.get('points'),
+                    value=points,
                     creator=quest.creator if pk else request.user.profile,
                     edit_comments=edit_comments,
                     )
@@ -295,14 +297,19 @@ def index(request):
     point_history = request.user.profile.questpointawards.all() if request.user.is_authenticated else QuestPointAward.objects.none()
     point_value = sum(point_history.values_list('value', flat=True))
     print(f" phase4 at {round(time.time(),2)} ")
+
+    quests_attempts_per_day = (abs(round(QuestAttempt.objects.count() /
+                                         (QuestAttempt.objects.first().created_on - timezone.now()).days, 1))
+                               if QuestAttempt.objects.count() else 0)
+    success_ratio = int(success_count / attempt_count * 100) if attempt_count else 0
     # community_created
     params = {
         'profile': request.user.profile if request.user.is_authenticated else None,
         'quests': quests,
-        'avg_play_count': round(QuestAttempt.objects.count()/Quest.objects.count(), 1),
+        'avg_play_count': round(QuestAttempt.objects.count()/(Quest.objects.count() or 1), 1),
         'quests_attempts_total': QuestAttempt.objects.count(),
         'quests_total': Quest.objects.filter(visible=True).count(),
-        'quests_attempts_per_day': abs(round(QuestAttempt.objects.count()/(QuestAttempt.objects.first().created_on-timezone.now()).days,1)),
+        'quests_attempts_per_day': quests_attempts_per_day,
         'total_visible_quest_count': Quest.objects.filter(visible=True).count(),
         'gitcoin_created': Quest.objects.filter(visible=True).filter(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
         'community_created': Quest.objects.filter(visible=True).exclude(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
@@ -310,7 +317,7 @@ def index(request):
         'email_count': EmailSubscriber.objects.count(),
         'attempt_count': attempt_count,
         'success_count': success_count,
-        'success_ratio': int(success_count/attempt_count * 100),
+        'success_ratio': success_ratio,
         'user_count': QuestAttempt.objects.distinct('profile').count(),
         'leaderboard': leaderboard,
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,

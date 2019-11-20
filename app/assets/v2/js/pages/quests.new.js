@@ -1,9 +1,10 @@
 
 $(document).ready(function() {
-  const QUESTIONS_LIMIT = 6;
-  const ANSWERS_LIMIT = 10;
+  const QUESTIONS_LIMIT = 10;
+  const ANSWERS_LIMIT = 5;
   const question_template = $('.form-group.question:last').clone();
   const answer_template = question_template.children('span:last').clone();
+
 
   $(document).on('form#newkudos', 'submit', function(e) {
     // e.preventDefault();
@@ -16,13 +17,14 @@ $(document).ready(function() {
     e.preventDefault();
 
     if ($(this).parents('.question').children('span').length >= ANSWERS_LIMIT) {
-      alert(gettext('The number of answers for each question are limited to ') + ANSWERS_LIMIT);
+      _alert(gettext('The number of answers for each question are limited to ') + ANSWERS_LIMIT);
       return;
     }
 
     var last_answer = $(this).parents('.form-group.question').children('span:last');
 
     last_answer.after(answer_template.clone());
+
   });
   $(document).on('click', '.new_quest_background', function(e) {
     e.preventDefault();
@@ -38,7 +40,7 @@ $(document).ready(function() {
     e.preventDefault();
 
     if ($('.form-group.question').length > QUESTIONS_LIMIT) {
-      alert(gettext('The number of questions are limited to ') + QUESTIONS_LIMIT);
+      _alert(gettext('The number of questions are limited to ') + QUESTIONS_LIMIT);
       return;
     }
 
