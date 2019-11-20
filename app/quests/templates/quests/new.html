@@ -52,7 +52,7 @@
           Gitcoin Quests was designed to educate, inspired, and entertain web2 and web3 developers alike.  It was designed to guide users to their 'a-ha' moments about cryptocurrency, decentralization, and the potential of a free and open source financial system.
         </p>
         <p>
-          We look forward to guiding your community through an engaging decentralization learning experience, and working with you to do so! 
+          We look forward to guiding your community through an engaging decentralization learning experience, and working with you to do so!
         </p>
         <p>
           &lt;3 <a href="/about#team">Team Gitcoin</a>
@@ -111,13 +111,13 @@
             <input type="text" name="reading_material_name" class="form__input" placeholder='Ethereum Whitepaper' value="{{package.reading_material_name}}" required>
           </div>
             <label class="form__label" for="enemy">{% trans "Reading Material Time Commitment (minutes)" %}</label>
-            <input type="number" name="est_read_time_mins" class="form__input" placeholder='10' value="{{package.est_read_time_mins}}" required>
+            <input type="number" name="est_read_time_mins" class="form__input" placeholder='10' min="0" value="{{package.est_read_time_mins}}" required>
           <div class="form-group">
-            <label class="form__label" for="enemy">{% trans "Enemy Kudos" %}</label> 
+            <label class="form__label" for="enemy">{% trans "Enemy Kudos" %}</label>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The enemy to be battled during the quest"></i>
             {% if package.enemy %}
               <BR>
-              <span class=default_kudos>Kudos ID {{package.enemy}}</span> 
+              <span class=default_kudos>Kudos ID {{package.enemy}}</span>
               <input name=enemy type="hidden" value={{package.enemy}}>
               <a class="remove" href=#>Remove</a>
               <div class=hidden>
@@ -132,7 +132,7 @@
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The reward kudos to be minted if the hero wins the quest"></i>
             {% if package.reward %}
               <BR>
-              <span class=default_kudos>Kudos ID {{package.reward}}</span> 
+              <span class=default_kudos>Kudos ID {{package.reward}}</span>
               <input name=reward type="hidden" value={{package.reward}}>
               <a class="remove" href=#>Remove</a>
               <div class=hidden>
@@ -145,12 +145,12 @@
           <div class="form-group">
             <label class="form__label" for="points">{% trans "Reward Points Value" %}</label>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The number of Gitcoin Quest Points rewarded to winner. Should scale with difficulty (Subject to final approval by Gitcoin team)"></i>
-            <input type="number" name="points" class="form__input" placeholder='1' value="{{package.points}}" required>
+            <input type="number" name="points" class="form__input" placeholder='1' value="{{package.points}}" min="0" required>
           </div>
           <div class="form-group">
             <label class="form__label" for="minutes">{% trans "Cooldown Minutes" %}</label>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="If someone fails the quest, how many minutes until they can try again?"></i>
-            <input type="number" name="minutes" class="form__input" placeholder='3' value="{{package.minutes}}" required>
+            <input type="number" name="minutes" class="form__input" placeholder='3' value="{{package.minutes}}" min="0" required>
           </div>
           {% for question in questions %}
             <div class="form-group question pl-3">
@@ -166,7 +166,7 @@
               <br>
               <label class="form__label" for="seconds_to_respond[]">{% trans "Seconds to Respond" %}</label>
               <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="How many seconds will the user have to respond to this question? Recommending starting point: 30"></i>
-              <input type="number" name="seconds_to_respond[]" class="form__input" placeholder='Seconds To Respond' value="{{question.seconds_to_respond}}" required>
+              <input type="number" name="seconds_to_respond[]" class="form__input" placeholder='Seconds To Respond' value="{{question.seconds_to_respond}}" min="0" required>
               <label class="form__label" for="question[]">{% trans "Question Text" %}</label>
               <input type="text" name="question[]" class="form__input" placeholder='Does Ethereum foo the bar?' value="{{question.question}}" required>
               {% for response in question.responses %}

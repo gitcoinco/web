@@ -83,8 +83,14 @@
               <img src="/dynamic/avatar/{{handle}}" />
             </div>
             <div class="mt-1 d-inline-block">
-              <span class="grant-profile font-weight-semibold">{{ handle }}</span>
+              <span class="grant-profile font-weight-semibold">{{ handle }}</span><br>
+              {% if handle == request.user.profile.handle  %}
+              <a href="{%  url "grants:contribution_invoice" contribution.id  %}">Get invoice</a>
+              {% endif %}
             </div>
+
+
+
           </a>
 
         {% empty %}

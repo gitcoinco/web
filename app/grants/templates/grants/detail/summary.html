@@ -5,7 +5,7 @@
       <div class="update-milestone">
         <div class="container">
           <div class="row">
-            <div class="col-12 order-md-2 col-md-6">
+            <div class="col-12 order-md-2 mt-md-5 mt-xl-0 col-xl-6">
               <p class="sub-title">
                 {% trans "MILESTONES" %}
                 {% if is_admin and not grant_is_inactive %}<a href="{% url 'grants:milestones' grant.id grant.slug %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
@@ -35,7 +35,7 @@
               {% endif %}
             </div>
   
-            <div class="col-12 order-md-1 col-md-6 p-md-0 pr-lg-5">
+            <div class="col-12 order-md-1 col-xl-6 pr-xl-5">
               <p class="sub-title">{% trans "UPDATES" %}</p>
               <div class="p-0">
                 {% if is_admin and not grant_is_inactive %}

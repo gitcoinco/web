@@ -99,6 +99,7 @@
           {% endif %}
         <h1>{{hackathon.name}} Projects</h1>
         {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+        <div><a href="{% url 'hackathon' hackathon.slug %}" class="btn btn-gc-green mt-3">Hackathon Prizes</a></div>
       </div>
     </div>
 
@@ -106,34 +107,45 @@
       {% if hackathon.end_date|timeuntil >= "1 min" and not projects%}
         <p class="p-3 mt-3 alert-warning">This hackathon event is running until {{hackathon.end_date}}, please check again later.</p>
       {% endif %}
-      <div class="row py-3">
-        <div class="col-12 col-md-4">
-          <form action="{% url 'hackathon_projects' hackathon.slug %}" method="get">
-            <div class="input-group">
-              <input type="text" class="form-control form-control" name="q" id="project-search" placeholder="{% trans "Search Projects" %}">
-              <div class="input-group-append">
-                <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-dark clear-search {% if not query %}hidden{% endif %}"><i class="fas fa-times"></i></a>
-                <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
-              </div>
+
+      <form action="{% url 'hackathon_projects' hackathon.slug %}" method="get" id="filter-form" class="row py-3">
+        <div class="col-12 col-md-3">
+          <div class="input-group">
+            <input type="text" class="form-control" name="q" id="project-search" placeholder="{% trans 'Search Projects' %}" value="{{query|join:' '}}">
+            <div class="input-group-append">
+              <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-dark clear-search {% if not query %}hidden{% endif %}"><i class="fas fa-times"></i></a>
+              <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
             </div>
-            {% if query %}
-              Results for: {% for q in query %}{{ q }} {% endfor %}
-            {% endif %}
-          </form>
+          </div>
+          {% if query %}
+            <small>Results for: {% for q in query %}{{ q }} {% endfor %}</small>
+          {% endif %}
         </div>
-        <div class="col-12 col-md-4 text-md-center">
+        <div class="col-12 col-md-3">
+          <div class="form-group row">
+            <label for="inputPassword" class="col-sm-6 col-form-label">Filter by sponsor:</label>
+            <div class="col-sm-6">
+              <select name="sponsor" id="sponsor" class="form-control">
+                <option value="">All</option>
+                {% for sponsor_item in sponsors_list %}
+                  <option value="{{sponsor_item.org_name}}" {% if sponsor_item.org_name == sponsor %}selected {%endif%}>{{sponsor_item.org_name}}</option>
+                {% endfor%}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-3 text-md-center">
           <a href="{% url 'hackathon_projects' hackathon.slug %}" class="{% ifequal filters '' %}underline{% endifequal %}">See all</a> |
           <a href="{% url 'hackathon_projects' hackathon.slug %}?filters=winners" class="{% ifequal filters 'winners' %}underline{% endifequal %}">See winners</a>
         </div>
-        <div class="col-12 col-md-4 text-md-right">
+        <div class="col-12 col-md-3 text-md-right">
           Order by:
           <a href="{% url 'hackathon_projects' hackathon.slug %}?order_by=-created_on" class="{% ifequal order_by '-created_on' %}underline{% endifequal %}">Newest</a> |
           <a href="{% url 'hackathon_projects' hackathon.slug %}?order_by=created_on" class="{% ifequal order_by 'created_on' %}underline{% endifequal %}">Oldest</a>
         </div>
-      </div>
+      </form>
       <div class="row py-5">
         <div class="col-12">
-
           <div class="project-grid">
             {% for project in projects %}
               <div class="card card-project">
@@ -152,7 +164,7 @@
                   {% if project.logo %}
                     <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
                   {% else %}
-                    <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{% firstof project.bounty.admin_override_org_logo or project.bounty.avatar_url %}" alt="Hackathon logo" />
+                    <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
                   {% endif %}
                 </div>
                 <div class="card-body">
@@ -179,7 +191,7 @@
                   </div>
                   <div class="font-smaller-2">
                     <b class="text-muted">Sponsor</b>
-                    <img class="" width="20" src="{% firstof project.bounty.admin_override_org_logo or project.bounty.avatar_url %}" alt="Hackathon logo" />
+                    <img class="" width="20" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
                     <a href="{% url 'profile' project.bounty.org_name %}">{{project.bounty.org_name}}</a>
                   </div>
                 </div>
@@ -195,7 +207,7 @@
             <nav aria-label="Page navigation example">
               <ul class="pagination justify-content-center mt-5">
                 {% if projects.has_previous %}
-                  <li class="page-item"><a class="page-link page-link-gc" href="?page={{ projects.previous_page_number }}&order_by={{order_by}}&filters={{filters}}">Previous</a></li>
+                  <li class="page-item"><a class="page-link page-link-gc" href="?page={{ projects.previous_page_number }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">Previous</a></li>
                 {% else %}
                   <li class="page-item disabled"><span class="page-link page-link-gc">Previous</span></li>
                 {% endif %}
@@ -205,11 +217,11 @@
                       <span class="page-link page-link-gc">{{ i }}<span class="sr-only">(current)</span></span>
                     </li>
                   {% else %}
-                    <li class="page-item"><a class="page-link page-link-gc" href="?page={{ i }}&order_by={{order_by}}&filters={{filters}}">{{ i }}</a></li>
+                    <li class="page-item"><a class="page-link page-link-gc" href="?page={{ i }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">{{ i }}</a></li>
                   {% endif %}
                 {% endfor %}
                 {% if projects.has_next %}
-                  <li class="page-item"><a class="page-link page-link-gc" href="?page={{ projects.next_page_number }}&order_by={{order_by}}&filters={{filters}}">Next</a></li>
+                  <li class="page-item"><a class="page-link page-link-gc" href="?page={{ projects.next_page_number }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">Next</a></li>
                 {% else %}
                   <li class="page-item disabled"><span class="page-link page-link-gc">Next</span></li>
                 {% endif %}
@@ -227,6 +239,11 @@
     {% include 'shared/current_profile.html' %}
     <script src="{% static "v2/js/user-search.js" %}"></script>
     <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
+    <script>
+      $('#sponsor').change(function(){
+        $("#filter-form").submit();
+      })
+    </script>
 
 
   </body>

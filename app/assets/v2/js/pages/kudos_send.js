@@ -604,6 +604,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             var total_send = ((gas_money + kudosGasEstimateInWei + kudosPriceInWei.toNumber()) * new web3.BigNumber(num_redemptions)).toString();
 
             web3.eth.sendTransaction({
+              from: account,
               to: destinationAccount,
               // Add gas_money + gas cost for kudos contract transaction + cost of kudos token (Gitcoin keeps this amount?)
               value: total_send,
@@ -644,7 +645,9 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 // web3.currentProvider.publicConfigStore.on('update', function(e) {
 var error;
 
-window.ethereum.publicConfigStore.on('update', checkNetwork);
+if (window.ethereum.publicConfigStore) {
+  window.ethereum.publicConfigStore.on('update', checkNetwork);
+}
 function checkNetwork(e) {
   if (error) {
     return;

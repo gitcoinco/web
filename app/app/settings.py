@@ -31,6 +31,7 @@ from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
 import warnings
+
 warnings.filterwarnings("ignore", category=UserWarning, module='psycopg2')
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
@@ -64,6 +65,8 @@ ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
+    'taskapp.celery.CeleryConfig',
+    'django_celery_beat',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -117,6 +120,7 @@ INSTALLED_APPS = [
     'event_ethdenver2019',
     'inbox',
     'feeswapper',
+    'oauth2_provider'
 ]
 
 MIDDLEWARE = [
@@ -129,6 +133,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
@@ -140,13 +145,15 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.github.GithubOAuth2',  # for Github authentication
+    # 'social_core.backends.github.GithubOAuth2',  # for Github authentication
+    'app.utils.CustomGithubOAuth2',
+    'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates'],
+    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -180,8 +187,8 @@ AUTH_PASSWORD_VALIDATORS = [{
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', ),
-    'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle', ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle',),
     'DEFAULT_THROTTLE_RATES': {
         'anon': '1000/day',
     },
@@ -201,7 +208,7 @@ USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
 TIME_ZONE = env.str('TIME_ZONE', default='UTC')
 
-LOCALE_PATHS = ('locale', )
+LOCALE_PATHS = ('locale',)
 
 LANGUAGES = [
     ('en', gettext_noop('English')),
@@ -253,7 +260,6 @@ if SENTRY_DSN:
     }
     if RELEASE:
         RAVEN_CONFIG['release'] = RELEASE
-
 
 LOGGING = {
     'version': 1,
@@ -313,13 +319,13 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
         'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
     }
     LOGGING['handlers']['watchtower'] = {
-            'level': AWS_LOG_LEVEL,
-            'class': 'watchtower.django.DjangoCloudWatchLogHandler',
-            'boto3_session': boto3_session,
-            'log_group': AWS_LOG_GROUP,
-            'stream_name': AWS_LOG_STREAM,
-            'filters': ['host_filter'],
-            'formatter': 'cloudwatch',
+        'level': AWS_LOG_LEVEL,
+        'class': 'watchtower.django.DjangoCloudWatchLogHandler',
+        'boto3_session': boto3_session,
+        'log_group': AWS_LOG_GROUP,
+        'stream_name': AWS_LOG_STREAM,
+        'filters': ['host_filter'],
+        'formatter': 'cloudwatch',
     }
     LOGGING['loggers']['django.db.backends']['level'] = AWS_LOG_LEVEL
 
@@ -345,7 +351,7 @@ GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
+STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/',))
 STATIC_ROOT = root('static')
 STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
 MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
@@ -370,7 +376,7 @@ else:
 COMPRESS_ROOT = STATIC_ROOT
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 
-THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor', )
+THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor',)
 
 THUMBNAIL_ALIASES = {
     '': {
@@ -388,6 +394,7 @@ THUMBNAIL_ALIASES = {
 
 CACHEOPS_DEGRADE_ON_FAILURE = env.bool('CACHEOPS_DEGRADE_ON_FAILURE', default=True)
 CACHEOPS_REDIS = env.str('CACHEOPS_REDIS', default='redis://redis:6379/0')
+
 CACHEOPS_DEFAULTS = {
     'timeout': 60 * 60
 }
@@ -450,6 +457,16 @@ CACHEOPS = {
         'timeout': 60 * 5,
     },
 }
+
+
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-broker_url
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default=CACHEOPS_REDIS)
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-accept_content
+CELERY_ACCEPT_CONTENT = ['json']
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-task_serializer
+CELERY_TASK_SERIALIZER = 'json'
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_serializer
+CELERY_RESULT_SERIALIZER = 'json'
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
@@ -523,6 +540,9 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
+# Chat
+CHAT_URL = env('CHAT_DRIVER_USER', default='')  # location of where mattermost is hosted
+
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
@@ -532,8 +552,14 @@ SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
-SOCIAL_AUTH_GITHUB_SCOPE = ['read:user', 'user:email', 'read:org']
+SOCIAL_AUTH_GITHUB_SCOPE = ['read:user', 'user:email']
 SOCIAL_AUTH_SANITIZE_REDIRECTS = True
+
+#custom scopes
+SOCIAL_AUTH_GH_CUSTOM_KEY = GITHUB_CLIENT_ID
+SOCIAL_AUTH_GH_CUSTOM_SECRET = GITHUB_CLIENT_SECRET
+SOCIAL_AUTH_GH_CUSTOM_SCOPE = ['read:org', 'public_repo']
+
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',
@@ -642,8 +668,8 @@ if not AWS_S3_OBJECT_PARAMETERS:
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': f'max-age={AWS_S3_CACHE_MAX_AGE}', }
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', 'github.com', )
-CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN, )
+CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', 'github.com',)
+CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN,)
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
@@ -675,7 +701,7 @@ IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
 IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
-STABLE_COINS = ['DAI', 'USDT', 'TUSD']
+STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD']
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)

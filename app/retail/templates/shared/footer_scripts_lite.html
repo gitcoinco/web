@@ -50,6 +50,9 @@
 
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
 <script defer src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
+{% if not ignore_inject_web3 %}
+  {% include 'shared/shared_scripts.html' %}
+{% endif %}
 
 <script>
   var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");

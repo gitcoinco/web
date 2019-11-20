@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Profile
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
-from marketing.mails import new_quest_request
+from marketing.mails import new_quest_request, send_user_feedback
 from marketing.models import EmailSubscriber
 from quests.helpers import (
     get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity,
@@ -92,13 +92,15 @@ def editquest(request, pk=None):
         # multi dimensional array hack
         counter = 0
         answer_idx = 0
+
         answers = package.getlist('answer[]',[])
         answer_correct = package.getlist('answer_correct[]',[])
         seconds_to_respond = package.getlist('seconds_to_respond[]',[])
+        points = abs(int(package.get('points')))
 
         # continue building questions object
         for i in range(0, len(seconds_to_respond)):
-            questions[i]['seconds_to_respond'] = int(seconds_to_respond[i])
+            questions[i]['seconds_to_respond'] = abs(int(seconds_to_respond[i]))
 
         for answer in answers:
             if answer == '_DELIMITER_':
@@ -148,7 +150,7 @@ def editquest(request, pk=None):
                 if pk:
                     funct = Quest.objects.filter(pk=pk).update
                     edit_comments = quest.edit_comments
-                    visible = True
+                    visible = quest.visible
                 if package.get('comment'):
                     edit_comments += f"\n {timezone.now().strftime('%Y-%m-%dT%H:%M')}: {package['comment']} "
 
@@ -164,7 +166,7 @@ def editquest(request, pk=None):
                     visible=visible,
                     difficulty=package.get('difficulty'),
                     style=package.get('style'),
-                    value=package.get('points'),
+                    value=points,
                     creator=quest.creator if pk else request.user.profile,
                     edit_comments=edit_comments,
                     )
@@ -181,7 +183,7 @@ def editquest(request, pk=None):
                 if settings.DEBUG:
                     raise e
                 logger.exception(e)
-                messages.error(request, 'An unexpected error has occured')
+                messages.error(request, 'An unexpected error has occurred')
 
     #load edit page
     if pk and not package.get('title'):
@@ -222,51 +224,55 @@ def index(request):
     hours_new = 48 if not settings.DEBUG else 300
     quests = []
     selected_tab = 'Search' if query else 'Beginner'
+    show_quests = request.GET.get('show_quests', False)
+    show_loading = not show_quests
 
-    # search tab
-    if query:
-        quest_qs = Quest.objects.filter(visible=True).filter(Q(title__icontains=query) | Q(description__icontains=query) | Q(questions__icontains=query) | Q(game_schema__icontains=query) | Q(game_metadata__icontains=query)).order_by('-ui_data__success_pct')
-        quest_package = get_package_helper(quest_qs, request)
-        package = ('Search', quest_package)
-        quests.append(package)
-    print(f" phase1.1 at {round(time.time(),2)} ")
-
-    # beaten/unbeaten
-    if request.user.is_authenticated:
-        attempts = request.user.profile.quest_attempts
-        if attempts.exists():
-            beaten = Quest.objects.filter(pk__in=attempts.filter(success=True).values_list('quest', flat=True))
-            unbeaten = Quest.objects.filter(pk__in=attempts.filter(success=False).exclude(quest__in=beaten).values_list('quest', flat=True))
-            if unbeaten.exists():
-                quests.append(('Attempted', get_package_helper(unbeaten, request)))
-                if selected_tab != 'Search':
-                    selected_tab = 'Attempted'
-            if beaten.exists():
-                quests.append(('Beaten', get_package_helper(beaten, request)))
-            created_quests = request.user.profile.quests_created.filter(visible=True)
-            if created_quests:
-                quests.append(('Created', get_package_helper(created_quests, request)))
-
-    print(f" phase1.2 at {round(time.time(),2)} ")
-    # difficulty tab
-    for diff in Quest.DIFFICULTIES:
-        quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True).order_by('-ui_data__success_pct')
-        quest_package = get_package_helper(quest_qs, request)
-        package = (diff[0], quest_package)
-        if quest_qs.exists():
+    if show_quests:
+        # search tab
+        if query:
+            quest_qs = Quest.objects.filter(visible=True).filter(Q(title__icontains=query) | Q(description__icontains=query) | Q(questions__icontains=query) | Q(game_schema__icontains=query) | Q(game_metadata__icontains=query)).order_by('-ui_data__success_pct')
+            quest_package = get_package_helper(quest_qs, request)
+            package = ('Search', quest_package)
             quests.append(package)
+        print(f" phase1.1 at {round(time.time(),2)} ")
 
-    print(f" phase1.3 at {round(time.time(),2)} ")
-    # new quests!
-    new_quests = Quest.objects.filter(visible=True, created_on__gt=(timezone.now() - timezone.timedelta(hours=hours_new))).order_by('-ui_data__success_pct')
-    if new_quests.exists():
-        quests.append(('New', get_package_helper(new_quests, request)))
+        # beaten/unbeaten
+        if request.user.is_authenticated:
+            attempts = request.user.profile.quest_attempts
+            if attempts.exists():
+                beaten = Quest.objects.filter(pk__in=attempts.filter(success=True).values_list('quest', flat=True))
+                unbeaten = Quest.objects.filter(pk__in=attempts.filter(success=False).exclude(quest__in=beaten).values_list('quest', flat=True))
+                if unbeaten.exists():
+                    quests.append(('Attempted', get_package_helper(unbeaten, request)))
+                    if selected_tab != 'Search':
+                        selected_tab = 'Attempted'
+                if beaten.exists():
+                    quests.append(('Beaten', get_package_helper(beaten, request)))
+                created_quests = request.user.profile.quests_created.filter(visible=True)
+                if created_quests:
+                    quests.append(('Created', get_package_helper(created_quests, request)))
 
-    print(f" phase1.4 at {round(time.time(),2)} ")
-    # popular quests
-    popular = Quest.objects.filter(visible=True).order_by('-ui_data__attempts_count')[0:5]
-    if popular.exists():
-        quests.append(('Popular', get_package_helper(popular, request)))
+        print(f" phase1.2 at {round(time.time(),2)} ")
+        # difficulty tab
+        for diff in Quest.DIFFICULTIES:
+            quest_qs = Quest.objects.filter(difficulty=diff[0], visible=True).order_by('-ui_data__success_pct')
+            quest_package = get_package_helper(quest_qs, request)
+            package = (diff[0], quest_package)
+            if quest_qs.exists():
+                quests.append(package)
+
+        print(f" phase1.3 at {round(time.time(),2)} ")
+        # new quests!
+        new_quests = Quest.objects.filter(visible=True, created_on__gt=(timezone.now() - timezone.timedelta(hours=hours_new))).order_by('-ui_data__success_pct')
+        if new_quests.exists():
+            quests.append(('New', get_package_helper(new_quests, request)))
+
+        print(f" phase1.4 at {round(time.time(),2)} ")
+        # popular quests
+        popular = Quest.objects.filter(visible=True).order_by('-ui_data__attempts_count')[0:5]
+        if popular.exists():
+            quests.append(('Popular', get_package_helper(popular, request)))
+
 
     print(f" phase2 at {round(time.time(),2)} ")
     rewards_schedule = []
@@ -279,6 +285,7 @@ def index(request):
                 'reward_multiplier': 1/reward_denominator
             })
 
+
     print(f" phase3 at {round(time.time(),2)} ")
     attempt_count = QuestAttempt.objects.count()
     success_count = QuestAttempt.objects.filter(success=True).count()
@@ -290,14 +297,19 @@ def index(request):
     point_history = request.user.profile.questpointawards.all() if request.user.is_authenticated else QuestPointAward.objects.none()
     point_value = sum(point_history.values_list('value', flat=True))
     print(f" phase4 at {round(time.time(),2)} ")
+
+    quests_attempts_per_day = (abs(round(QuestAttempt.objects.count() /
+                                         (QuestAttempt.objects.first().created_on - timezone.now()).days, 1))
+                               if QuestAttempt.objects.count() else 0)
+    success_ratio = int(success_count / attempt_count * 100) if attempt_count else 0
     # community_created
     params = {
         'profile': request.user.profile if request.user.is_authenticated else None,
         'quests': quests,
-        'avg_play_count': round(QuestAttempt.objects.count()/Quest.objects.count(), 1),
+        'avg_play_count': round(QuestAttempt.objects.count()/(Quest.objects.count() or 1), 1),
         'quests_attempts_total': QuestAttempt.objects.count(),
         'quests_total': Quest.objects.filter(visible=True).count(),
-        'quests_attempts_per_day': abs(round(QuestAttempt.objects.count()/(QuestAttempt.objects.first().created_on-timezone.now()).days,1)),
+        'quests_attempts_per_day': quests_attempts_per_day,
         'total_visible_quest_count': Quest.objects.filter(visible=True).count(),
         'gitcoin_created': Quest.objects.filter(visible=True).filter(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
         'community_created': Quest.objects.filter(visible=True).exclude(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
@@ -305,7 +317,7 @@ def index(request):
         'email_count': EmailSubscriber.objects.count(),
         'attempt_count': attempt_count,
         'success_count': success_count,
-        'success_ratio': int(success_count/attempt_count * 100),
+        'success_ratio': success_ratio,
         'user_count': QuestAttempt.objects.distinct('profile').count(),
         'leaderboard': leaderboard,
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
@@ -315,7 +327,8 @@ def index(request):
         'selected_tab': selected_tab,
         'title': f' {query.capitalize()} Quests',
         'point_history': point_history,
-        'point_value': point_value, 
+        'point_value': point_value,
+        'show_loading': show_loading,
         'current_round_number': current_round_number,
         'avatar_url': static('v2/images/quests/orb_small.png'),
         'card_desc': 'Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!',
@@ -326,13 +339,18 @@ def index(request):
 
 
 @csrf_exempt
-@ratelimit(key='ip', rate='10/s', method=ratelimit.UNSAFE, block=True)
-def details(request, obj_id, name):
-    """Render the Quests 'detail' page."""
+@ratelimit(key='ip', rate='1/m', method=ratelimit.UNSAFE, block=True)
+def feedback(request, obj_id):
+    return details(request, obj_id, '', allow_feedback=True)
 
+
+@csrf_exempt
+@ratelimit(key='ip', rate='10/s', method=ratelimit.UNSAFE, block=True)
+def details(request, obj_id, name, allow_feedback=False):
+    """Render the Quests 'detail' page."""
+    # lookup quest
     if not re.match(r'\d+', obj_id):
         raise ValueError(f'Invalid obj_id found.  ID is not a number:  {obj_id}')
-
     try:
         quest = Quest.objects.get(pk=obj_id)
         if not quest.is_unlocked_for(request.user):
@@ -341,6 +359,22 @@ def details(request, obj_id, name):
     except:
         raise Http404
 
+    # handle user feedback
+    if allow_feedback and request.user.is_authenticated and request.POST.get('feedback'):
+        comment = request.POST.get('feedback')
+        vote = int(request.POST.get('polarity'))
+        if vote not in [-1, 1]:
+            vote = 0
+        from quests.models import QuestFeedback
+        QuestFeedback.objects.create(
+            profile=request.user.profile,
+            quest=quest,
+            comment=comment,
+            vote=vote,
+            )
+        if comment:
+            send_user_feedback(quest, comment, request.user)
+        return JsonResponse({'status': 'ok'})
     if quest.style.lower() == 'quiz':
         return quiz_style(request, quest)
     elif quest.style == 'Example for Demo':

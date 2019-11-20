@@ -93,6 +93,28 @@ services:
         reservations:
           memory: 128M
 
+  worker: &worker
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/code/app
+    env_file:
+      - app/app/.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gitcoinco/web:latest
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+    command: ["bash","./bin/celery/worker/run.sh"]
+
+  scheduler:
+    <<: *worker
+    command: ["bash","./bin/celery/scheduler/run.sh"]
+
 volumes:
   pgdata:
   ipfsdata:

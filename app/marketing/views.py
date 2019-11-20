@@ -280,6 +280,31 @@ def email_settings(request, key):
     email = ''
     level = ''
     msg = ''
+    email_types = {}
+    from retail.emails import ALL_EMAILS
+    for em in ALL_EMAILS:
+        email_types[em[0]] = str(em[1])
+    email_type = request.GET.get('type')
+    if email_type in email_types:
+        email = es.email
+        if es:
+            key = get_or_save_email_subscriber(email, 'settings')
+            es.email = email
+            unsubscribed_email_type = {}
+            unsubscribed_email_type[email_type] = True
+            es.build_email_preferences(unsubscribed_email_type)
+            es = record_form_submission(request, es, 'email')
+            ip = get_ip(request)
+            if not es.metadata.get('ip', False):
+        	    es.metadata['ip'] = [ip]
+            else:
+                es.metadata['ip'].append(ip)
+            es.save()
+        context = {
+            'title': _('Email unsubscription successful'),
+            'type': email_types[email_type]
+        }
+        return TemplateResponse(request, 'email_unsubscribed.html', context)
     if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
@@ -673,11 +698,15 @@ def org_settings(request):
     """
     msg = ''
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
+    current_scopes = []
 
     if not user or not profile or not is_logged_in:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
+    social_auth = user.social_auth.first()
+    if social_auth and social_auth.extra_data:
+        current_scopes = social_auth.extra_data.get('scope').split(',')
     orgs = get_orgs_perms(profile)
     context = {
         'is_logged_in': is_logged_in,
@@ -689,6 +718,7 @@ def org_settings(request):
         'orgs': orgs,
         'profile': profile,
         'msg': msg,
+        'current_scopes': current_scopes,
     }
     return TemplateResponse(request, 'settings/organizations.html', context)
 

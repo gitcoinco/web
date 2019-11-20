@@ -541,7 +541,7 @@ $('#neverExpires').on('click', () => {
 
 $('#submitBounty').validate({
   errorPlacement: function(error, element) {
-    if (element.attr('name') == 'bounty_category') {
+    if (element.attr('name') == 'bounty_categories') {
       error.appendTo($(element).parents('.btn-group-toggle').next('.cat-error'));
     } else {
       error.insertAfter(element);
@@ -627,7 +627,7 @@ $('#submitBounty').validate({
       releaseAfter: releaseAfter !== 'Release To Public After' ? releaseAfter : '',
       tokenName,
       invite: inviteContributors,
-      bounty_categories: data.bounty_category
+      bounty_categories: data.bounty_categories
     };
 
     var privacy_preferences = {

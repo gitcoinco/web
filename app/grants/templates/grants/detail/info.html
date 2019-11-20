@@ -212,11 +212,6 @@
           <i class="fas fa-edit mr-2"></i> {% trans "Edit Info" %}
         </button>
       </div>
-      <div class="mt-4">
-        <a href="{% url 'grants:fund' grant.id grant.slug %}">
-          <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3">{% trans "Fund your own Grant" %}</button>
-        </a>
-      </div>
       <div class="row mx-0">
         <div class="col-12 col-lg-6 px-0 pr-lg-1 mb-2">
           <button id="save-details" class="button btn-gc-blue button--full hidden shadow-none font-weight-bold py-3">
@@ -230,6 +225,11 @@
         </div>
       </div>
 
+      <div class="mt-4">
+        <a href="{% url 'grants:fund' grant.id grant.slug %}">
+          <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3">{% trans "Fund your own Grant" %}</button>
+        </a>
+      </div>
       {% csrf_token %}
       <div id="js-cancel_grant" class="mt-3">
         <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">

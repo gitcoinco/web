@@ -40,9 +40,14 @@ class TokenRequestAdmin(admin.ModelAdmin):
     readonly_fields = ['preview']
 
     def response_change(self, request, obj):
+        
         if "_mint_kudos" in request.POST:
             tx_id = obj.mint()
             self.message_user(request, f"Mint submitted to chain: tx {tx_id}.  Once this tx clears pls 'sync kudos'.")
+        if "_change_owner" in request.POST:
+            obj.to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'
+            obj.save()
+            self.message_user(request, f"Changed owner to gitcoin")
         if "_sync_kudos" in request.POST:
             from kudos.management.commands.mint_all_kudos import sync_latest
             sync_latest(0)

@@ -8,20 +8,20 @@ function drawChart() {
   var data = google.visualization.arrayToDataTable(document.bounty_history);
 
   var view = new google.visualization.DataView(data);
-  var width = 800;
+  var width = parseInt(window.innerWidth * .92);
 
   if (width > document.body.clientWidth) {
     width = document.body.clientWidth - 50;
   }
   var options = {
     legend: { position: 'none' },
-    bar: { groupWidth: '50%' },
+    bar: { groupWidth: '45%' },
     colors: [ '#011f4b', '#03396c', '#005b96', '#6497b1', '#b3cde0', '#d3ddf0', '#DDDDDD' ],
     isStacked: true,
     backgroundColor: 'transparent',
     height: 400,
     width: width,
-    vAxis: { title: 'USD', ticks: [ 0, 10000, 50000, 100000, 150000, 200000, 250000, 300000, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
+    vAxis: { title: 'USD', ticks: [ 0, 10000, 50000, 100000, 150000, 200000, 250000, 300000, 350000, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
   };
 
   var chart = new google.visualization.ColumnChart(document.getElementById('bounty_universe_chart'));
