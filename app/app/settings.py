@@ -117,6 +117,7 @@ INSTALLED_APPS = [
     'event_ethdenver2019',
     'inbox',
     'feeswapper',
+    'oauth2_provider'
 ]
 
 MIDDLEWARE = [
@@ -129,6 +130,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
@@ -141,12 +143,13 @@ ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',  # for Github authentication
+    'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates'],
+    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -522,6 +525,9 @@ GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='')  # TODO
 GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
+
+# Chat
+CHAT_URL = env('CHAT_DRIVER_USER', default='')  # location of where mattermost is hosted
 
 # Social Auth
 LOGIN_URL = 'gh_login'

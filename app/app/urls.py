@@ -27,6 +27,7 @@ from django.views.i18n import JavaScriptCatalog
 import avatar.views
 import bounty_requests.views
 import credits.views
+import chat.views
 import dashboard.embed
 import dashboard.gas_views
 import dashboard.helpers
@@ -58,8 +59,9 @@ from kudos.router import router as kdrouter
 from .sitemaps import sitemaps
 
 urlpatterns = [
+    # oauth2 provider
+    url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-
     # create bounty
     url(r'^create?', dashboard.views.new_bounty, name='create_bounty'),  # TODO: Remove
 
@@ -99,7 +101,7 @@ urlpatterns = [
     # mailing list
     url('mailing_list/funders/', dashboard.views.funders_mailing_list),
     url('mailing_list/hunters/', dashboard.views.hunters_mailing_list),
-
+    url(r'^api/user/me', dashboard.views.oauth_connect, name='oauth_connect'),
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/profile/(.*)?/activity.json', dashboard.views.profile_activity, name='profile_activity'),
@@ -141,6 +143,9 @@ urlpatterns = [
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
+
+    # chat
+    url(r'^chat/', chat.views.embed, name='chat'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
