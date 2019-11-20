@@ -3208,7 +3208,8 @@ def change_bounty(request, bounty_id):
         'project_type',
         'reserved_for_user_handle',
         'is_featured',
-        'admin_override_suspend_auto_approval'
+        'admin_override_suspend_auto_approval',
+        'keywords'
     ]
 
     if request.body:
@@ -3240,11 +3241,16 @@ def change_bounty(request, bounty_id):
                     value = timezone.make_aware(
                         timezone.datetime.fromtimestamp(int(value)),
                         timezone=UTC)
+
                 if key == 'bounty_categories':
                     value = value.split(',')
                 old_value = getattr(bounty, key)
+
                 if value != old_value:
-                    setattr(bounty, key, value)
+                    if key == 'keywords':
+                        bounty.metadata['issueKeywords'] = value
+                    else:
+                        setattr(bounty, key, value)
                     bounty_changed = True
                     if key == 'reserved_for_user_handle' and value:
                         new_reservation = True
