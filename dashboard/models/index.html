@@ -2670,8 +2670,17 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h3 id="dashboard.models.Bounty.bounty_type">bounty_type</h3>
+<h3 id="dashboard.models.Bounty.bounty_state">bounty_state</h3>
 
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.BOUNTY_STATES">BOUNTY_STATES</h3>
+
+<p>Built-in immutable sequence.</p>
+<p>If no argument is given, the constructor returns an empty tuple.
+If iterable is specified the tuple is initialized from iterable's items.</p>
+<p>If the argument is a tuple, the return value is the same object.
+<h3 id="dashboard.models.Bounty.bounty_type">bounty_type</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.BOUNTY_TYPES">BOUNTY_TYPES</h3>
@@ -2740,10 +2749,31 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
     parent = ForeignKey(Parent, related_name='children')
 </code></pre>
 <p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
-<h3 id="dashboard.models.Bounty.event_id">event_id</h3>
+<h3 id="dashboard.models.Bounty.EVENT_HANDLERS">EVENT_HANDLERS</h3>
 
+<p>dict() -&gt; new empty dictionary
+dict(mapping) -&gt; new dictionary initialized from a mapping object's
+    (key, value) pairs
+dict(iterable) -&gt; new dictionary initialized as if via:
+    d = {}
+    for k, v in iterable:
+        d[k] = v
+dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+    in the keyword argument list.  For example:  dict(one=1, two=2)
+<h3 id="dashboard.models.Bounty.event_id">event_id</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.events">events</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Bounty.experience_level">experience_level</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -2814,6 +2844,11 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.get_bounty_state_display">_method</h3>
+
+<pre><code class="python">Bounty._method(self, *, field=&lt;django.db.models.fields.CharField: bounty_state&gt;)
+</code></pre>
+
 <h3 id="dashboard.models.Bounty.get_bounty_type_display">_method</h3>
 
 <pre><code class="python">Bounty._method(self, *, field=&lt;django.db.models.fields.CharField: bounty_type&gt;)
@@ -3189,6 +3224,11 @@ The argument must be an iterable if specified.
 </code></pre>
 
 <p>Define custom handling for saving bounties.
+<h3 id="dashboard.models.Bounty.handle_event">handle_event</h3></p>
+<pre><code class="python">Bounty.handle_event(self, event)
+</code></pre>
+
+<p>Handle a new BountyEvent, and potentially change state
 <h3 id="dashboard.models.Bounty.get_absolute_url">get_absolute_url</h3></p>
 <pre><code class="python">Bounty.get_absolute_url(self)
 </code></pre>
@@ -3333,6 +3373,79 @@ The argument must be an iterable if specified.
 <p>Determine whether or not a notification is eligible for transmission outside of production.</p>
 <p>Returns:
     bool: Whether or not the Bounty is eligible for outbound notifications.</p>
+<h2 id="dashboard.models.BountyEvent">BountyEvent</h2>
+
+<pre><code class="python">BountyEvent(self, *args, **kwargs)
+</code></pre>
+
+<p>An Event taken by a user, which may change the state of a Bounty
+<h3 id="dashboard.models.BountyEvent.bounty">bounty</h3></p>
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.BountyEvent.bounty_id">bounty_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.BountyEvent.created_by">created_by</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.BountyEvent.created_by_id">created_by_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.BountyEvent.event_type">event_type</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.BountyEvent.EVENT_TYPES">EVENT_TYPES</h3>
+
+<p>Built-in immutable sequence.</p>
+<p>If no argument is given, the constructor returns an empty tuple.
+If iterable is specified the tuple is initialized from iterable's items.</p>
+<p>If the argument is a tuple, the return value is the same object.
+<h3 id="dashboard.models.BountyEvent.get_event_type_display">_method</h3></p>
+<pre><code class="python">BountyEvent._method(self, *, field=&lt;django.db.models.fields.CharField: event_type&gt;)
+</code></pre>
+
+<h3 id="dashboard.models.BountyEvent.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">BountyEvent._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.BountyEvent.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">BountyEvent._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.BountyEvent.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">BountyEvent._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.BountyEvent.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">BountyEvent._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.BountyEvent.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.BountyEvent.metadata">metadata</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h2 id="dashboard.models.BountyFulfillmentQuerySet">BountyFulfillmentQuerySet</h2>
 
 <pre><code class="python">BountyFulfillmentQuerySet(self, model=None, query=None, using=None, hints=None)
@@ -4936,6 +5049,17 @@ many-to-one relation.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.ens_registration">ens_registration</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.events">events</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
 many-to-one relation.</p>
