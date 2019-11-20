@@ -969,20 +969,25 @@ var listen_for_web3_changes = async function() {
     }
   }
 
-  if (window.ethereum && !document.has_checked_for_ethereum_enable && window.ethereum._metamask) {
-    document.has_checked_for_ethereum_enable = true;
-    is_metamask_approved = await window.ethereum._metamask.isApproved();
-    is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
-    if (is_metamask_approved && is_metamask_unlocked) {
-      var start_time = ((new Date()).getTime() / 1000);
+  if (window.ethereum && !document.has_checked_for_ethereum_enable) {
+    if (window.ethereum._metamask) {
+      document.has_checked_for_ethereum_enable = true;
+      is_metamask_approved = await window.ethereum._metamask.isApproved();
+      is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
+      if (is_metamask_approved && is_metamask_unlocked) {
+        var start_time = ((new Date()).getTime() / 1000);
 
-      await ethereum.enable();
-      var now_time = ((new Date()).getTime() / 1000);
-      var did_request_and_user_respond = (now_time - start_time) > 1.0;
+        await ethereum.enable();
+        var now_time = ((new Date()).getTime() / 1000);
+        var did_request_and_user_respond = (now_time - start_time) > 1.0;
 
-      if (did_request_and_user_respond) {
-        document.location.reload();
+        if (did_request_and_user_respond) {
+          document.location.reload();
+        }
       }
+    } else {
+      is_metamask_approved = true;
+      is_metamask_unlocked = true;
     }
   }
 };

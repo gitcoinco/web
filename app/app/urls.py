@@ -187,6 +187,7 @@ urlpatterns = [
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
     path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
     path('hackathon/projects/<str:hackathon>/', dashboard.views.hackathon_projects, name='hackathon_projects'),
+    path('hackathon/projects/<str:hackathon>', dashboard.views.hackathon_projects, name='hackathon_projects2'),
     path('modal/new_project/<int:bounty_id>/', dashboard.views.hackathon_get_project, name='hackathon_get_project'),
     path(
         'modal/new_project/<int:bounty_id>/<int:project_id>/',
@@ -325,8 +326,8 @@ urlpatterns = [
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     re_path(r'^funding/avatar/?', avatar.views.handle_avatar, name='avatar'),
-    re_path(r'^dynamic/avatar/(.*)', avatar.views.handle_avatar, name='org_avatar2'),
     re_path(r'^dynamic/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
+    re_path(r'^dynamic/avatar/(.*)', avatar.views.handle_avatar, name='org_avatar2'),
     re_path(r'^dynamic/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
     re_path(r'^dynamic/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
     path('dynamic/js/tokens_dynamic.js', retail.views.tokens, name='tokens'),
