@@ -253,7 +253,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_categories',
                     'bounty_owner_address', 'idx_status', 'network', 'bounty_owner_github_username',
-                    'standard_bounties_id', 'permission_type', 'project_type']:
+                    'standard_bounties_id', 'permission_type', 'project_type', 'pk']:
             if key in param_keys:
                 # special hack just for looking up bounties posted by a certain person
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'
