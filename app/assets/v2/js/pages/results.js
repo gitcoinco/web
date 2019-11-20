@@ -8,20 +8,20 @@ function drawChart() {
   var data = google.visualization.arrayToDataTable(document.bounty_history);
 
   var view = new google.visualization.DataView(data);
-  var width = 800;
+  var width = parseInt(window.innerWidth * .92);
 
   if (width > document.body.clientWidth) {
     width = document.body.clientWidth - 50;
   }
   var options = {
     legend: { position: 'none' },
-    bar: { groupWidth: '50%' },
+    bar: { groupWidth: '45%' },
     colors: [ '#011f4b', '#03396c', '#005b96', '#6497b1', '#b3cde0', '#d3ddf0', '#DDDDDD' ],
     isStacked: true,
     backgroundColor: 'transparent',
     height: 400,
     width: width,
-    vAxis: { title: 'USD', ticks: [ 0, 10000, 50000, 100000, 150000, 200000, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
+    vAxis: { title: 'USD', ticks: [ 0, 10000, 50000, 100000, 150000, 200000, 250000, 300000, 350000, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
   };
 
   var chart = new google.visualization.ColumnChart(document.getElementById('bounty_universe_chart'));
@@ -30,20 +30,30 @@ function drawChart() {
 }
 
 function repoChart() {
-  var data = google.visualization.arrayToDataTable(document.platform_stats);
+  var pie_charts = [
+    [ 'repo_chart', document.platform_stats ],
+    [ 'breakeven_chart', document.breakeven_stats ]
+  ];
 
-  var options = {
-    pieHole: 0.8,
-    pieSliceText: 'none',
-    legend: 'none',
-    height: 300,
-    width: 300,
-    colors: [ '#011f4b', '#03396c', '#005b96' ]
-  };
+  for (var i = 0; i < pie_charts.length; i += 1) {
+    var stats = pie_charts[i][1];
+    var id = pie_charts[i][0];
+    var data = google.visualization.arrayToDataTable(stats);
 
-  var chart = new google.visualization.PieChart(document.getElementById('repo_chart'));
+    var options = {
+      pieHole: 0.8,
+      pieSliceText: 'none',
+      legend: 'none',
+      height: 300,
+      width: 300,
+      colors: [ '#011f4b', '#03396c', '#005b96' ]
+    };
 
-  chart.draw(data, options);
+    var chart = new google.visualization.PieChart(document.getElementById(id));
+
+    chart.draw(data, options);
+  }
+
 }
 
 function communityChart() {

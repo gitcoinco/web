@@ -11,7 +11,7 @@
     <div class="form-group">
       <label class="form__label" for="keywords">{% trans "Programming languages" %}</label>
       <a href="#" id="pull_gh">{% trans "(pull from github)" %}</a>
-      <input type="text" name="keywords" class="form__input" placeholder='comma, seperated, list'  value="{{ keywords }}">
+      <input type="text" name="keywords" class="form__input" placeholder='comma, separated, list'  value="{{ keywords }}">
       <small id="kwHelp" class="form__input-help">{% trans "so we know what funded work to route your way" %}</small>
     </div>
     {% csrf_token %}

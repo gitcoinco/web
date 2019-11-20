@@ -68,9 +68,12 @@
               </div>
               <div class="text-center mt-3">
                 {% if hackathon.end_date|timesince <= "1 min" %}
-                  <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue">Join</a>
+                <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue">Join</a>
                 {% endif %}
                 <a href="{% url 'hackathon' hackathon.slug %}" class="btn btn-gc-blue">Prizes</a>
+                {% if hackathon.show_results %}
+                  <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue">Projects</a>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -81,5 +84,5 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    
+
   </body>

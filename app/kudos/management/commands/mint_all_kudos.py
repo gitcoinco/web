@@ -22,6 +22,7 @@ import warnings
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.db import IntegrityError
 
 import oyaml as yaml
 from kudos.utils import KudosContract, get_rarity_score, humanize_name
@@ -36,8 +37,11 @@ formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
 
 
 def sync_latest(the_buffer=0, network='mainnet'):
-    kudos_contract = KudosContract(network=network)
-    kudos_contract.sync_latest(the_buffer)
+    try:
+        kudos_contract = KudosContract(network=network)
+        kudos_contract.sync_latest(the_buffer)
+    except IntegrityError as e:
+        print(e)
 
 
 def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=False, skip_sync=True, dont_wait_for_kudos_id_return_tx_hash_instead=False):

@@ -47,6 +47,8 @@ MARKETING_EMAILS = [
     ('roundup', _('Roundup Emails'), _('Weekly')),
     ('new_bounty_notifications', _('New Bounty Notification Emails'), _('(up to) Daily')),
     ('important_product_updates', _('Product Update Emails'), _('Quarterly')),
+	('general', _('General Email Updates'), _('as it comes')),
+	('quarterly', _('Quarterly Email Updates'), _('Quarterly')),
 ]
 
 TRANSACTIONAL_EMAILS = [
@@ -92,6 +94,7 @@ def render_nth_day_email_campaign(to_email, nth, firstname):
     params = {
         "firstname": firstname,
         "subscriber": get_or_save_email_subscriber(to_email, "internal"),
+		"email_type": "welcome_mail"
     }
     response_html = premailer_transform(render_to_string(f"emails/campaigns/email_campaign_day_{nth}.html", params))
     response_txt = render_to_string(f"emails/campaigns/email_campaign_day_{nth}.txt", params)
@@ -240,6 +243,7 @@ def render_tip_email(to_email, tip, is_new):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'is_sender': to_email not in tip.emails,
         'is_receiver': to_email in tip.emails,
+		'email_type': 'tip'
     }
 
     response_html = premailer_transform(render_to_string("emails/new_tip.html", params))
@@ -294,6 +298,7 @@ def render_match_email(bounty, github_username):
     params = {
         'bounty': bounty,
         'github_username': github_username,
+		'email_type': 'bounty_match'
     }
     response_html = premailer_transform(render_to_string("emails/new_match.html", params))
     response_txt = render_to_string("emails/new_match.txt", params)
@@ -308,6 +313,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     params = {**quarterly_stats, **platform_wide_stats}
     params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
+    params['email_type'] = 'quarterly'
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
 
@@ -410,6 +416,7 @@ PS - we've got some new gitcoin schwag on order. send me your mailing address an
 
     params = {
         'txt': txt,
+		'email_type': 'bounty_feedback'
     }
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
     response_txt = txt
@@ -428,6 +435,7 @@ def render_admin_contact_funder(bounty, text, from_user):
 """
     params = {
         'txt': txt,
+		'email_type': 'admin_contact_funder'
     }
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
     response_txt = txt
@@ -477,8 +485,9 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'old_bounties': old_bounties,
         'bounties': bounties,
         'subscriber': sub,
-        'keywords': ",".join(sub.keywords),
+        'keywords': ",".join(sub.keywords) if sub and sub.keywords else '',
         'email_style': email_style,
+		'email_type': 'new_bounty_notifications'
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -501,6 +510,7 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
         'subscriber': subscriber,
         'profile': profile.handle,
         'notifications': notifications,
+		'email_type': 'roundup'
     }
 
     subject = "Your unread notifications"
@@ -588,7 +598,8 @@ def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
           'from': from_date,
           'to': to_date
         },
-        'debug': activity_types
+        'debug': activity_types,
+		'email_type': 'roundup'
     }
 
     response_html = premailer_transform(render_to_string("emails/recap/weekly_founder_recap.html", params))
@@ -601,6 +612,7 @@ def render_gdpr_reconsent(to_email):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
         'subscriber': sub,
+		'email_type': 'roundup'
     }
 
     response_html = premailer_transform(render_to_string("emails/gdpr_reconsent.html", params))
@@ -625,7 +637,8 @@ def render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invi
         'from_profile': from_profile,
         'to_email': to_email,
         'invite_url': invite_url,
-        'kudos_invite': kudos_invite
+        'kudos_invite': kudos_invite,
+		'email_type': 'bounty'
     }
     response_html = premailer_transform(render_to_string("emails/share_bounty_email.html", params))
     response_txt = render_to_string("emails/share_bounty_email.txt", params)
@@ -635,6 +648,7 @@ def render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invi
 def render_new_work_submission(to_email, bounty):
     params = {
         'bounty': bounty,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -648,6 +662,7 @@ def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
     params = {
         'bounty': bounty,
         'unrated_count': unrated_count,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -660,6 +675,7 @@ def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
 def render_new_bounty_rejection(to_email, bounty):
     params = {
         'bounty': bounty,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -672,6 +688,7 @@ def render_new_bounty_rejection(to_email, bounty):
 def render_bounty_changed(to_email, bounty):
     params = {
         'bounty': bounty,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -698,6 +715,7 @@ def render_bounty_expire_warning(to_email, bounty):
         'unit': unit,
         'is_claimee': (to_email.lower() in fulfiller_emails),
         'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -712,6 +730,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
         'bounty': bounty,
         'interest': interest,
         'time_delta_days': time_delta_days,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -725,6 +744,7 @@ def render_bounty_unintersted(to_email, bounty, interest):
     params = {
         'bounty': bounty,
         'interest': interest,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -753,6 +773,7 @@ def render_faucet_request(fr):
     params = {
         'fr': fr,
         'amount': settings.FAUCET_AMOUNT,
+		'email_type': 'faucet',
         'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
     }
 
@@ -766,6 +787,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
     params = {
         'bounty': bounty,
         'interest': interest,
+		'email_type': 'bounty',
         'time_delta_days': time_delta_days,
         'subscriber': get_or_save_email_subscriber(interest.profile.email, 'internal'),
     }
@@ -782,6 +804,7 @@ def render_gdpr_update(to_email):
         'terms_of_use_link': 'https://gitcoin.co/legal/terms',
         'privacy_policy_link': 'https://gitcoin.co/legal/privacy',
         'cookie_policy_link': 'https://gitcoin.co/legal/cookie',
+		'email_type': 'general'
     }
 
     subject = "Gitcoin: Updated Terms & Policies"
@@ -795,7 +818,8 @@ def render_reserved_issue(to_email, user, bounty):
     params = {
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'user': user,
-        'bounty': bounty
+        'bounty': bounty,
+		'email_type': 'bounty'
     }
     subject = "Reserved Issue"
     response_html = premailer_transform(render_to_string("emails/reserved_issue.html", params))
@@ -821,6 +845,7 @@ def render_start_work_approved(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -837,6 +862,7 @@ def render_start_work_rejected(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -853,6 +879,7 @@ def render_start_work_new_applicant(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -869,6 +896,7 @@ def render_start_work_applicant_about_to_expire(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -885,6 +913,7 @@ def render_start_work_applicant_expired(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -898,8 +927,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "❗ A New Quest"
-    new_kudos_pks = [5065, 1921, 73]
+    subject = "Waterloo Sunrise"
+    new_kudos_pks = [5163, 5077, 5126]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -920,13 +949,13 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    We’re proud to announce that this week marks the launch of our newest product, Gitcoin Quests. Quests is an enjoyable, gamified way to learn about the Web3 ecosystem, compete with your friends, earn rewards, and level up your knowledge. We’ve been working hard for the past couple months and are excited to see how you like it. <a href="https://gitcoin.co/blog/gitcoin-quests-is-now-live/">To begin your adventure, click here.</a>
+    I'm back on the road again, hitting the tarmac once more to join the hacking goodness and celebration at ETH Waterloo. If you'll be attending, be sure to say hello: I'm looking forward to seeing all of your incredible faces.  You can check out the schedule <a href="https://ethwaterloo.com/#schedule"> with more information about my talk here.</a> Tweet at me: I'm <a href="https://twitter.com/owocki">@owocki.</a>
 </p>
 <p>
-    ⏰ It’s almost that time. Web3 World is around the corner, and we’re stoked to offer another tremendous invitation for learning, earning, and of course, hacking. Watch out for a tweet later today with an official announcement post. Not following us on Twitter yet? <a href="https://twitter.com/gitcoin">Let’s fix that.</a>
+    The development team is hard at work again with the successful push to release another version of Gitcoin. If you'd like to take a look at our release notes (with fun goodies such as new Kudos, fresh quests, and boundless bug fixes) be sure to take a look at our Github repo. The latest release notes live <a href="https://github.com/gitcoinco/web/releases/tag/20191106master"> here</a>.
 </p>
 <p>
-    Speaking of hackathons—the Road to Devcon wrap up has completed. All winners of the Hackathon prizes are announced, and on Monday, we’ll have a blog post detailing all the incredible projects you all put together. Again, congratulations to all of the participants; we’re so glad to have you as a part of the Gitcoin universe. 
+    Web3 World is progressing along! If you're joining us for this fall/winter hack, be sure to get your submissions in by 11:59 PM EST on November 11th. We're excited to see your work and projects you've put together.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
@@ -935,7 +964,7 @@ Hey Gitcoiners,
         The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        Colorado Gitcoiners: are you attending ETHDenver 2020? Well, we are. Get your applications in starting on November 10th. The form lives <a href="https://www.ethdenver.com/">here.</a>
+        As we mentioned earlier this week, YouTube recordings of our livestreams are finally being released. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
         </li>
     </ul>
 </p>
@@ -944,46 +973,46 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'imwatsi',
+        'who': 'nionis',
         'who_link': True,
-        'what': 'Simple Scraping Script so SQL Storage Syncs. Alliteration!',
-        'link': 'https://gitcoin.co/issue/mainnebula/SPACE_TASKS/1/3511',
+        'what': 'Create HOPR Widget According To Design Mockup',
+        'link': 'https://gitcoin.co/issue/hoprnet/hopr-website/16/3607',
         'link_copy': 'View more',
     }, {
-        'who': 'SharksT',
+        'who': 'frippo40',
         'who_link': True,
-        'what': 'Test CI Pipeline, do do do do do do.',
-        'link': 'https://gitcoin.co/issue/nblockchain/grin-wallet/1/3560',
+        'what': 'Ultimate Package Tracker',
+        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/23/3420',
         'link_copy': 'View more',
     }, {
         'who': 'janus',
         'who_link': True,
-        'what': 'Documentation, done.',
-        'link': 'https://gitcoin.co/issue/MrElliwood/audio-router/3/3235',
+        'what': 'Ethereum Anemometer',
+        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/24/3421',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Arweave',
-        'title': 'Get paid to build dApps on the permaweb 🛠🌐',
+        'name': 'Sarchy',
+        'title': '5 minute thinking game with Ether for winner',
         'image_url': '',
-        'link': 'http://bit.ly/arweave-gitcoin-weekly',
-        'cta': 'Start hacking today!',
+        'link': 'http://bit.ly/sarchy-gitcoin-weekly',
+        'cta': 'Play the \'Trusting Trust\' game',
         'body': [
-           'The permaweb is a decentralized, immutable new web, built on top of a globally distributed, permanent hard drive - the Arweave network.',
-           'We want the permaweb to be accessible to everyone, but we want you to be a part of making that a reality. That\'s why we\'re looking for talented developers to build decentralized apps on the permaweb.'
+           'Due to data manipulation by big tech companies, Trust is becoming a key issue in the internet.',
+           '"Trusting Trust" is a game about Trust. It uses the "Prisoners Dilemma" concept. This concept has even been used in the movie "The Dark Knight" by the Joker in the climax scene.'
         ]
     }
     
     bounties_spec = [{
-        'url': 'https://github.com/ironcoinext/IronCoin/issues/7',
-        'primer': 'Validate their hosts!',
+        'url': 'https://github.com/diadata-org/diadata/issues/181',
+        'primer': 'Scraper For Bitflyer Futures',
     }, {
-        'url': 'https://github.com/unlock-protocol/unlock/issues/5114',
-        'primer': 'A bounty? For a Ghost? In October? This is too good.',
+        'url': 'https://github.com/fsprojects/fantomas/issues/555',
+        'primer': 'SpaceBeforeArguments Inconsistency: Should Apply To Functions That Receive `Unit` Arg Too',
     }, {
-        'url': 'https://github.com/eth1x-finality-gadget-working-group/pm/issues/1',
-        'primer': 'Notetakers: rally.',
+        'url': 'https://github.com/gitcoinco/skunkworks/issues/134',
+        'primer': 'Web3 Sustain Event Page',
 }, ]
 
 
@@ -1045,6 +1074,7 @@ Back to shipping,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
         'sponsor': sponsor,
+		'email_type': 'roundup',
         'email_style': email_style,
     }
 

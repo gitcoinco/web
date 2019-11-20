@@ -178,7 +178,7 @@ def image(request, kudos_id, name):
     return response
 
 
-def details_by_address_and_token_id(request, address, token_id, name):
+def details_by_address_and_token_id(request, address, token_id, name=None):
     kudos = get_token(token_id=token_id, network=settings.KUDOS_NETWORK, address=address)
     return redirect(f'/kudos/{kudos.id}/{kudos.name}')
 
@@ -707,8 +707,9 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
                 # send email
                 maybe_market_kudos_to_email(kudos_transfer)
         except Exception as e:
-            logger.exception(e)
             error = "Could not redeem your kudos.  Please try again soon."
+            if "replacement transaction underpriced" in str(e):
+                error = "There is already an airdrop transfer in progress. Please try again in a minute or two.. (note: in the future we will add 'queue'-ing so you dont have to resubmit, as soon as this ticket (https://github.com/gitcoinco/web/issues/4976) is deployed)"
             return None, error, None
 
     return True, None, kudos_transfer
@@ -765,6 +766,7 @@ def newkudos(request):
     context = {
         'active': 'newkudos',
         'msg': None,
+        'nav': 'kudos',
     }
 
     if not request.user.is_authenticated:
@@ -800,7 +802,7 @@ def newkudos(request):
                 artist=request.POST['artist'],
                 platform=request.POST['platform'],
                 numClonesAllowed=request.POST['numClonesAllowed'],
-                tags=",".split(request.POST['tags']),
+                tags=request.POST['tags'].split(","),
                 to_address=request.POST['to_address'],
                 artwork_url=artwork_url,
                 network='mainnet',

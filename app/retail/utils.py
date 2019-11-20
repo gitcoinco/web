@@ -246,33 +246,14 @@ def get_completion_rate(keyword):
 
 
 def get_funder_receiver_stats(keyword):
-    from dashboard.models import Bounty, BountyFulfillment, Tip
-    base_bounties = Bounty.objects.current().filter(network='mainnet')
-    if keyword:
-        base_bounties = base_bounties.filter(raw_data__icontains=keyword)
+    from dashboard.models import Earning
+    earnings = Earning.objects.filter(network='mainnet')
 
-    eligible_bounties = base_bounties
-    eligible_bounty_fulfillments = BountyFulfillment.objects.filter(bounty__in=base_bounties)
-    eligible_tips = Tip.objects.filter(network='mainnet')
-
-    bounty_funders = list(eligible_bounties.values_list('bounty_owner_address', flat=True))
-    tip_funders = list(eligible_tips.values_list('from_address', flat=True))
-    tip_recipients = list(eligible_tips.values_list('receive_address', flat=True))
-    bounty_recipients = list(eligible_bounty_fulfillments.values_list('fulfiller_address', flat=True))
-
-    tip_values = [tip.value_in_usdt for tip in eligible_tips]
-    bounty_values = [bounty.value_in_usdt for bounty in eligible_bounties]
-    all_values = bounty_values + tip_values
-
-    bounty_value = sum([float(ele) for ele in bounty_values if ele])
-    tip_value = sum([float(ele) for ele in tip_values if ele])
-    all_value = [float(ele) for ele in all_values if ele]
-
-    num_funders = len(set(bounty_funders + tip_funders))
-    num_recipients = len(set(bounty_recipients + tip_recipients))
-    num_transactions = eligible_tips.count() + eligible_bounties.count()
-
-    total_value = bounty_value + tip_value
+    num_funders = len(set(earnings.values_list("from_profile__handle", flat=True)))
+    num_recipients = len(set(earnings.values_list("to_profile__handle", flat=True)))
+    num_transactions = earnings.count()
+    all_value = earnings.exclude(value_usd__isnull=True).values_list('value_usd', flat=True)
+    total_value = sum(all_value)
     avg_value = round(total_value / num_transactions)
     median_value = statistics.median(all_value)
 
@@ -442,18 +423,32 @@ def build_stat_results(keyword=None):
 
     context['alumni_count'] = base_alumni.count()
     pp.profile_time('alumni')
-    context['count_open'] = base_bounties.filter(network='mainnet', idx_status__in=['open']).count()
-    context['count_started'] = base_bounties.filter(
-        network='mainnet', idx_status__in=['started', 'submitted']
-    ).count()
-    context['count_done'] = base_bounties.filter(network='mainnet', idx_status__in=['done']).count()
 
-    total_count = context['count_started'] + context['count_open'] + context['count_done']
-    context['pct_done'] = round(100 * context['count_done'] / total_count)
-    context['pct_started'] = round(100 * context['count_started'] / total_count)
-    context['pct_open'] = round(100 * context['count_open'] / total_count)
-
+    from marketing.models import EmailSubscriber, EmailEvent
+    # todo: add preferences__suppression_preferences__roundup ?
+    total_count = EmailSubscriber.objects.count()
+    count_active_30d = EmailEvent.objects.filter(event='open', created_on__gt=(timezone.now() - timezone.timedelta(days=30))).distinct('email').count()
+    count_active_90d = EmailEvent.objects.filter(event='open', created_on__gt=(timezone.now() - timezone.timedelta(days=90))).distinct('email').count()
+    count_active_90d -= count_active_30d
+    count_inactive = total_count - count_active_30d - count_active_90d
+    context['pct_inactive'] = round(100 * count_inactive / total_count)
+    context['pct_active_90d'] = round(100 * count_active_90d / total_count)
+    context['pct_active_30d'] = round(100 * count_active_30d / total_count)
+    context['count_inactive'] = count_inactive
+    context['count_active_90d'] = count_active_90d
+    context['count_active_30d'] = count_active_30d
     pp.profile_time('count_*')
+
+    from quests.models import Quest
+    num_quests = 15
+    top_quests = Quest.objects.filter(visible=True).order_by('-ui_data__attempts_count')[0:num_quests]
+    context['top_quests'] = [{
+        'title': quest.title,
+        'url': quest.url,
+        'plays': quest.ui_data.get('attempts_count', 0),
+        'img': quest.enemy_img_url,
+
+    } for quest in top_quests]
 
     # Leaderboard
     num_to_show = 30
@@ -553,6 +548,13 @@ def build_stat_results(keyword=None):
     context['title'] = f"${round(context['universe_total_usd'] / 1000000, 1)}m in " + f"{keyword.capitalize() if keyword else ''} Results"
     context['programming_languages'] = ['All'] + programming_languages
 
+    from marketing.models import ManualStat
+    try:
+        context['pct_breakeven'] = ManualStat.objects.filter(key='pct_breakeven').values_list('val', flat=True)[0]
+    except Exception as e:
+        print(e)
+        context['pct_breakeven'] = 0
+    context['pct_not_breakeven'] = 100 - context['pct_breakeven']
 
     # last month data
     today = timezone.now()

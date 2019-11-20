@@ -165,7 +165,7 @@ class Command(BaseCommand):
                                 response = self.sg.client.mail.send.post(request_body=mail.get())
                 else:
                         # Email Gitcoin staff if token balance exists in wallet where previous attempt convert to ETH failed
-                        mail = Mail(Email(settings.CONTACT_EMAIL),'Token in Fee Wallet with previous failed fee conversion', Email(settings.CONTACT_EMAIL),Content('text/plain', tokenSymbol+' conversion to ETH failed previously so no conversion was attempted.'))                        
+                        mail = Mail(Email('kevin@gitcoin.co'),'Token in Fee Wallet with previous failed fee conversion', Email(settings.CONTACT_EMAIL),Content('text/plain', tokenSymbol+' conversion to ETH failed previously so no conversion was attempted.'))                        
                         response = self.sg.client.mail.send.post(request_body=mail.get())
                         
 
@@ -192,14 +192,14 @@ class Command(BaseCommand):
                         self.factoryAddress = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 
                 # Set up factory contract
-                with open("app/feeswapper/management/commands/factoryABI.json","r") as factoryABIfile:
+                with open("feeswapper/management/commands/factoryABI.json","r") as factoryABIfile:
                         self.factoryABI = json.load(factoryABIfile)
                 self.factoryContract = self.web3.eth.contract(address = self.factoryAddress, abi = self.factoryABI)
 
                 # Get token and contract ABIs
-                with open("app/feeswapper/management/commands/tokenABI.json","r") as tokenABIfile:
+                with open("feeswapper/management/commands/tokenABI.json","r") as tokenABIfile:
                         self.tokenABI = json.load(tokenABIfile)
-                with open("app/feeswapper/management/commands/exchangeABI.json","r") as exchangeABIfile:
+                with open("feeswapper/management/commands/exchangeABI.json","r") as exchangeABIfile:
                         self.exchangeABI = json.load(exchangeABIfile)
                 
                 
