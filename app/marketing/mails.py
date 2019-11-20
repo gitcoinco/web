@@ -663,7 +663,12 @@ def no_applicant_reminder(to_email, bounty):
 
 def share_bounty(emails, msg, profile, invite_url=None, kudos_invite=False):
     from dashboard.tasks import bounty_emails
-    bounty_emails.delay(emails, msg, profile.handle, invite_url, kudos_invite)
+    # attempt to delay bounty_emails task to a worker
+    # long on failure to queue
+    try:
+        bounty_emails.delay(emails, msg, profile.handle, invite_url, kudos_invite)
+    except Exception as e:
+        logger.error(str(e))
 
 
 def new_reserved_issue(from_email, user, bounty):
