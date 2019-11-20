@@ -3,23 +3,19 @@
 function trigger_form_hooks() {
 }
 
-$(document).ready(function() {
-  const oldBounty = document.result;
-  const keys = Object.keys(oldBounty);
-  const form = $('#submitBounty');
-
-  if (oldBounty.is_featured === true) {
-    $('#featuredBounty').prop('checked', true);
+const populateFromAPI = bounty => {
+  bounty.is_featured ?
+    $('#featuredBounty').prop('checked', true) :
     $('#featuredBounty').prop('disabled', true);
-  }
 
-  $.each(oldBounty, function(key, value) {
-    let ctrl = $('[name=' + key + ']', form);
+  $.each(bounty, function(key, value) {
+    let ctrl = $('[name=' + key + ']', $('#submitBounty'));
 
     switch (ctrl.prop('type')) {
       case 'radio':
         $(`.${value}`).button('toggle');
         break;
+
       case 'checkbox':
         ctrl.each(function() {
           if (value.length) {
@@ -31,12 +27,40 @@ $(document).ready(function() {
           }
         });
         break;
+
+      case 'select-one':
+        $('#' + key).val(value).trigger('change');
+        break;
+
       default:
         if (value > 0) {
           ctrl.val(value);
         }
     }
   });
+
+  if (bounty.keywords) {
+
+    let keywords = bounty['keywords'].split(',');
+
+    $('#keywords').select2({
+      placeholder: 'Select tags',
+      data: keywords,
+      tags: true,
+      allowClear: true,
+      tokenSeparators: [ ',', ' ' ]
+    }).trigger('change');
+
+    $('#keywords').val(keywords).trigger('change');
+    $('#keyword-suggestion-container').hide();
+  }
+};
+
+$(document).ready(function() {
+  const bounty = document.result;
+  const form = $('#submitBounty');
+
+  populateFromAPI(bounty);
 
   $('.js-select2').each(function() {
     $(this).select2({
@@ -67,17 +91,13 @@ $(document).ready(function() {
     }
   }).triggerHandler('change');
 
-  const reservedForHandle = oldBounty['reserved_for_user_handle'];
+  const reservedForHandle = bounty.reserved_for_user_handle;
 
   userSearch(
-    '#reservedFor',
-    // show address
-    false,
-    // theme
-    '',
-    // initial data
-    reservedForHandle ? [reservedForHandle] : [],
-    // allowClear
+    '#reservedFor', // show address
+    false, // theme
+    '', // initial data
+    reservedForHandle ? [reservedForHandle] : [], // allowClear
     true
   );
 
@@ -192,7 +212,7 @@ $(document).ready(function() {
         );
       };
 
-      if (formData['is_featured'] && !oldBounty.is_featured) {
+      if (formData['is_featured'] && !bounty.is_featured) {
         payFeaturedBounty();
       } else {
         saveBountyChanges();
@@ -213,6 +233,10 @@ $(document).ready(function() {
   $('.select2-tag__choice').on('click', function() {
     $('#invite-contributors.js-select2').data('select2').dataAdapter.select(processedData[0].children[$(this).data('id')]);
   });
+
+  $('#keywords').select2({
+    tags: true
+  }).trigger('change');
 
   const getSuggestions = () => {
 

@@ -119,7 +119,9 @@ window.onload = function() {
                     txid: result
                   });
 
-                  localStorage['pendingProject'] = true;
+                  if (document.eventTag) {
+                    localStorage['pendingProject'] = true;
+                  }
 
                   var finishedComment = function() {
                     dataLayer.push({ event: 'claimissue' });
@@ -162,6 +164,7 @@ window.onload = function() {
                   bountyId,
                   document.ipfsDataHash,
                   {
+                    from: web3.eth.accounts[0],
                     gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
                   },
                   web3Callback

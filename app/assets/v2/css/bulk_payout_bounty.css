@@ -172,3 +172,9 @@ tr div {
 .badge-primary i {
   font-size: 10px;
 }
+
+@media (min-width: 1120px) and (max-width: 1450px) {
+  .payout_bounty #primary_form {
+    flex: 0 0 70%;
+  }
+}
