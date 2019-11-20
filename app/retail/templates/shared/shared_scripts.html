@@ -20,5 +20,13 @@
 
 <script src="{% static "v2/js/lib/web3.0.20.7.min.js" %}"></script>
 <script>
-    var web3 = window.web3 ? new Web3(window.web3.currentProvider) : new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/{{INFURA_V3_PROJECT_ID}}"));
+    window.addEventListener('load', function() {
+        if (web3 && web3.currentProvider) { // if web3 and currentProviderDefined, instantiate web3 with current Provider
+            if (web3.currentProvider.isMetamask === undefined){ // is provider exists and no metamas exists then instantiate web3
+              web3 = new Web3(window.web3.currentProvider);
+            } // Is metamask nothing to to
+        } else {
+            web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/{{INFURA_V3_PROJECT_ID}}"));
+        }
+    });
 </script>

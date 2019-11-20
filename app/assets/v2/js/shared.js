@@ -782,8 +782,12 @@ var trigger_primary_form_web3_hooks = function() {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1 && !document.suppress_faucet_solicitation;
     var is_metamask = typeof web3 !== 'undefined' && web3.currentProvider.isMetaMask === true;
 
-    if (!is_metamask) {
-      w3 = new Web3(window.web3.currentProvider);
+    if (web3 && !is_metamask && !web3.eth) {
+      if (web3.currentProvider) {
+        web3 = new Web3(window.web3.currentProvider);
+      } else {
+        web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/{{INFURA_V3_PROJECT_ID}}'));
+      }
     }
 
     if (typeof web3 == 'undefined') {

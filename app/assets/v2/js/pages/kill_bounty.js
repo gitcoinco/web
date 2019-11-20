@@ -129,7 +129,7 @@ window.onload = function() {
           indicateMetamaskPopup();
           bounty.killBounty(
             bountyId,
-            { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) },
+            { from: web3.eth.accounts[0], gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) },
             final_callback
           );
 
