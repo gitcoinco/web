@@ -1,10 +1,10 @@
 from django.conf import settings
 
+from app.redis_service import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
-from app.redis_service import RedisService
 from dashboard.models import Profile
-from marketing.mails import send_mail, func_name
+from marketing.mails import func_name, send_mail
 from retail.emails import render_share_bounty
 
 logger = get_task_logger(__name__)

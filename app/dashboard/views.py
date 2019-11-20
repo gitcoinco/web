@@ -82,10 +82,10 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
-    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest,
-    LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor,
-    Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
+    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption,
+    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
+    HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
+    SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -3137,7 +3137,7 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
-
+    params['blocked_urls'] = json.dumps(list(BlockedURLFilter.objects.all().values_list('expression', flat=True)))
     params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
 
     coupon_code = request.GET.get('coupon', False)

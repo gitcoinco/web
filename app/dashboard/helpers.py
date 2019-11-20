@@ -33,8 +33,8 @@ from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
 from dashboard.models import (
-    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon, HackathonEvent,
-    UserAction,
+    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon,
+    HackathonEvent, UserAction,
 )
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord,
@@ -243,6 +243,12 @@ class BountyStage(Enum):
 
 class UnsupportedSchemaException(Exception):
     """Define unsupported schema exception handling."""
+
+    pass
+
+
+class UnsupportedRepoException(Exception):
+    """Define unsupported repo exception handling."""
 
     pass
 
@@ -855,6 +861,12 @@ def process_bounty_changes(old_bounty, new_bounty):
     """
     from dashboard.utils import build_profile_pairs
     profile_pairs = None
+
+    # check for maintainer blocks
+    is_blocked = any([(ele.lower() in new_bounty.github_url.lower()) for ele in BlockedURLFilter.objects.values_list('expression', flat=True)])
+    if is_blocked:
+        raise UnsupportedRepoException("This repo is not bountyable at the request of the maintainer.")
+
     # process bounty sync requests
     did_bsr = False
     for bsr in BountySyncRequest.objects.filter(processed=False, github_url=new_bounty.github_url).nocache():

@@ -26,8 +26,8 @@ from django.views.i18n import JavaScriptCatalog
 
 import avatar.views
 import bounty_requests.views
-import credits.views
 import chat.views
+import credits.views
 import dashboard.embed
 import dashboard.gas_views
 import dashboard.helpers

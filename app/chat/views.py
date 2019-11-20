@@ -20,11 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 from django.conf import settings
-from django.templatetags.static import static
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
-import requests
 from django.views.decorators.clickjacking import xframe_options_exempt
+
+import requests
 
 
 def embed(request):
