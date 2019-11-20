@@ -510,11 +510,15 @@
     $('[data-toggle="popover"]').popover()
     $('body').on('mouseover', '[data-username]', function(e) {
       openContributorPopOver($(this).data('username'), $(this));
-      $('[data-username]').not(this).popover('hide');
     });
+
     $('body').on('mouseout', '[data-username]', function(e) {
       $(this).popover('dispose');
     });
+
+    $('body').on('show.bs.popover', '[data-username]', function () {
+      $('body [data-username]').not(this).popover('hide');
+    })
 
   </script>
   <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
