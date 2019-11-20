@@ -927,8 +927,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "The Quadratic Freelancer"
-    new_kudos_pks = [588, 151, 116]
+    subject = "Hackathons, Hackathons, & Hackathons..."
+    new_kudos_pks = [5062, 5125, 5070]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -949,25 +949,28 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    🌱 Gitcoin Grants CLR Round 3 was a massive, massive success. With wide ranging support from across the entire Ethereum ecosystem, we were blown away with the support you provided: 1,982 unique contributions to 68 projects worth $170,000. <a href="https://gitcoin.co/blog/gitcoins-q3-match/"></a>In total, between individual contributions the round ended up worth $270k.</a>
+    Another Gitcoin hackathon in the books. Web3 World wrapped up Monday, and it was the most successful one yet. Every single bounty put up by sponsor’s had at least one project submission, so no prize money went to waste! Judging is in progress, but if you’d like to see what was built you can browse all submissions on our brand new <a href="https://gitcoin.co/hackathon/projects/web3-world">projects</a> page.
 </p>
 <p>
-    In a review of Gitcoin Grants Round 3, Ethereum cofounder Vitalik Buterin said "If Gitcoin Grants does continue operating regularly, and attracts and expands its pool of donations, we could be very close to seeing the first 'quadratic freelancer' - someone directly 'working for the public', funded by donations boosted by quadratic matching subsidies." <a href="https://vitalik.ca/general/2019/10/24/gitcoin.html">Click here to read the article.</a>
+    Next week Yale is hosting an Open Climate Collabathon with an in person event followed by a virtual hackathon. You can learn more about the mission <a href="https://www.collabathon.openclimate.earth/">here</a> and sign up for the online portion on Gitcoin <a href="https://gitcoin.co/hackathon/onboard/open-climate-collabathon/">here</a>.
 </p>
 <p>
-    🚨New Kudos Feature Alert!🚨 We've released a brand new feature for Kudos – the ability to mint your own <i>without</i> asking us to help. Like your favorite cappuccino machine, it lets you make your own delicious <strike>coffee</strike> Kudos all by yourself. If you have Kudos you want to put on the marketplace, all you've have to do is fill out a form, add your artwork, and watch as it makes its way to the Gitcoin Kudos marketplace! How neat is that. <a href="https://gitcoin.co/kudos/new">Check out the self serve feature here.</a>
+    Finally, our last virtual hackathon of 2019 is called Global Communities and will run from December 2nd - 16th. The goal of this event is to acknowledge the hard work the Gitcoin and Blockchain communities have put in this year, and we’ll celebrate with in person satellite events hosted by the <a href="https://www.buidlnetwork.net/">BUIDL Network</a> and a special community judged prize. Learn more and register on our <a href="https://hackathons.gitcoin.co/global-communities">landing page</a>.
 </p>
 <p>
-    Web3 World is well under way, and we have another great set of challenges for you to work on this go around. If you fancy, check out the <a href="https://gitcoin.co/blog/web3-world-around-the-aave/">Aave highlight post</a>, and then stroll down to the hackathon <a href="https://hackathons.gitcoin.co/web3-world/">homepage to complete registration and start hacking.</a> We'd love to see you participate.
+    Moving on to meatspace hackathons, the team and I are back from another successful ETH Waterloo. It was great to see everyone and spend some time hacking - I built Cerebro, a machine learning matching system for Gitcoin (that we plan to integrate soon!). If you missed my talk, I posted a <a href="https://twitter.com/owocki/status/1193275598472404998">tweet storm</a> of my slides and presentation for you to check out.
+</p>
+<p>
+    Also, a very important announcement: if you haven't heard, MakerDAO is launching their Multi-Collateral Dai token next week on November 18th. At that time, we'll be renaming the current Single-Collateral Dai token to Sai, so don't be alarmed if you see your bounties and grants change over to the new name. We'll also be supporting the Multi-Collateral Dai token soon, with a planned launch date of November 25th. For more info on everything thats happening with Dai, along with instructions and tools to help you transition to the new token, check out MakerDAO's upgrade guide <a href="https://blog.makerdao.com/looking-ahead-how-to-upgrade-to-multi-collateral-dai/">here</a>.
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week! Kevin Owocki will be presenting Gitcoin Quests. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
+        The Gitcoin Livestream is on for this week featuring hackers from Web3 World presenting their projects! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        A follow up from last week's newsletter: the retro post for The Road to Devcon is now up for your viewing pleasure. Feast your eyes on this one, folks. The post lives <a href="https://gitcoin.co/blog/gitcoins-q3-match/"> here. </a>
+        As we mentioned last week, we're updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
         </li>
     </ul>
 </p>
@@ -976,46 +979,45 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'acolytec3',
+        'who': 'jorropo',
         'who_link': True,
-        'what': 'Scan that QR code, acolytec3.',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/8960/3557',
+        'what': 'Built Pipelines for Spacemesh Virtual Machine',
+        'link': 'https://gitcoin.co/issue/spacemeshos/svm/7/3656',
         'link_copy': 'View more',
     }, {
-        'who': 'mwbrulhardt',
+        'who': 'imerkle',
         'who_link': True,
-        'what': 'String Initialization.',
-        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/33/3548',
+        'what': 'Auto-generated the svm_wasmer.h file for the svm-runtime-c-api',
+        'link': 'https://gitcoin.co/issue/spacemeshos/svm/12/3655',
         'link_copy': 'View more',
     }, {
-        'who': 'rshtirmer',
+        'who': 'janus',
         'who_link': True,
-        'what': 'TensorFlow, you\'ve updated. Bask in the glory of freshness.',
-        'link': 'https://gitcoin.co/issue/notadamking/tensortrade/42/3555',
+        'what': 'Wrote Tests For Approve() And Transfer_from() In Erc20 Module',
+        'link': 'https://gitcoin.co/issue/docknetwork/substrate-warmup/32/3674',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Sarchy',
-        'title': '5 minute thinking game with Ether for winner',
+        'name': 'Arweave',
+        'title': 'Get paid to build dApps on the permaweb 🛠️🌐',
         'image_url': '',
-        'link': 'http://bit.ly/sarchy-gitcoin-weekly',
-        'cta': 'Play the \'Trusting Trust\' game',
+        'link': 'http://bit.ly/Arweave1',
+        'cta': 'Start hacking today!',
         'body': [
-           'Due to data manipulation by big tech companies, Trust is becoming a key issue in the internet.',
-           '"Trusting Trust" is a game about Trust. It uses the "Prisoners Dilemma" concept. This concept has even been used in the movie "The Dark Knight" by the Joker in the climax scene.'
+           'The permaweb is a decentralized, immutable new web, built on top of a globally distributed, permanent hard drive - the Arweave network. We want the permaweb to be accessible to everyone, but we want you to be a part of making that a reality. That’s why we’re looking for talented developers to build decentralized apps on the permaweb.'
         ]
     }
     
     bounties_spec = [{
-        'url': 'https://github.com/ethereum/ethereum-org-website/issues/358',
-        'primer': 'Dutch translators: do this!',
+        'url': 'https://github.com/Loopring/trusted_setup/issues/11',
+        'primer': 'Loopring 3.0 Trusted Setup MPC Ceremony',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/8837',
-        'primer': 'Save Password prompt when signing transaction',
+        'url': 'https://github.com/ArweaveTeam/Bounties/issues/17',
+        'primer': 'IPFS+Arweave UI Competition',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/5418',
-        'primer': 'Unable to click submit :( fix me!',
+        'url': 'https://github.com/gitcoinco/web/issues/5465',
+        'primer': 'DESIGN - BOT Creatives - Winter 2019; 6th Edition',
 }, ]
 
 

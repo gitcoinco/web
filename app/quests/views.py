@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Profile
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
-from marketing.mails import new_quest_request
+from marketing.mails import new_quest_request, send_user_feedback
 from marketing.models import EmailSubscriber
 from quests.helpers import (
     get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity,
@@ -144,9 +144,11 @@ def editquest(request, pk=None):
             try:
                 funct = Quest.objects.create
                 edit_comments = ""
+                visible = False
                 if pk:
                     funct = Quest.objects.filter(pk=pk).update
                     edit_comments = quest.edit_comments
+                    visible = quest.visible
                 if package.get('comment'):
                     edit_comments += f"\n {timezone.now().strftime('%Y-%m-%dT%H:%M')}: {package['comment']} "
 
@@ -159,7 +161,7 @@ def editquest(request, pk=None):
                     kudos_reward=reward,
                     cooldown_minutes=package.get('minutes'),
                     background=package.get('background'),
-                    visible=False,
+                    visible=visible,
                     difficulty=package.get('difficulty'),
                     style=package.get('style'),
                     value=package.get('points'),
@@ -179,7 +181,7 @@ def editquest(request, pk=None):
                 if settings.DEBUG:
                     raise e
                 logger.exception(e)
-                messages.error(request, 'An unexpected error has occured')
+                messages.error(request, 'An unexpected error has occurred')
 
     #load edit page
     if pk and not package.get('title'):
@@ -269,17 +271,6 @@ def index(request):
         if popular.exists():
             quests.append(('Popular', get_package_helper(popular, request)))
 
-        print(f" phase1.3 at {round(time.time(),2)} ")
-        # new quests!
-        new_quests = Quest.objects.filter(visible=True, created_on__gt=(timezone.now() - timezone.timedelta(hours=hours_new))).order_by('-ui_data__success_pct')
-        if new_quests.exists():
-            quests.append(('New', get_package_helper(new_quests, request)))
-
-        print(f" phase1.4 at {round(time.time(),2)} ")
-        # popular quests
-        popular = Quest.objects.filter(visible=True).order_by('-ui_data__attempts_count')[0:5]
-        if popular.exists():
-            quests.append(('Popular', get_package_helper(popular, request)))
 
     print(f" phase2 at {round(time.time(),2)} ")
     rewards_schedule = []
@@ -291,6 +282,7 @@ def index(request):
                 'reward_denominator': reward_denominator,
                 'reward_multiplier': 1/reward_denominator
             })
+
 
     print(f" phase3 at {round(time.time(),2)} ")
     attempt_count = QuestAttempt.objects.count()
@@ -340,13 +332,18 @@ def index(request):
 
 
 @csrf_exempt
-@ratelimit(key='ip', rate='10/s', method=ratelimit.UNSAFE, block=True)
-def details(request, obj_id, name):
-    """Render the Quests 'detail' page."""
+@ratelimit(key='ip', rate='1/m', method=ratelimit.UNSAFE, block=True)
+def feedback(request, obj_id):
+    return details(request, obj_id, '', allow_feedback=True)
 
+
+@csrf_exempt
+@ratelimit(key='ip', rate='10/s', method=ratelimit.UNSAFE, block=True)
+def details(request, obj_id, name, allow_feedback=False):
+    """Render the Quests 'detail' page."""
+    # lookup quest
     if not re.match(r'\d+', obj_id):
         raise ValueError(f'Invalid obj_id found.  ID is not a number:  {obj_id}')
-
     try:
         quest = Quest.objects.get(pk=obj_id)
         if not quest.is_unlocked_for(request.user):
@@ -355,6 +352,22 @@ def details(request, obj_id, name):
     except:
         raise Http404
 
+    # handle user feedback
+    if allow_feedback and request.user.is_authenticated and request.POST.get('feedback'):
+        comment = request.POST.get('feedback')
+        vote = int(request.POST.get('polarity'))
+        if vote not in [-1, 1]:
+            vote = 0
+        from quests.models import QuestFeedback
+        QuestFeedback.objects.create(
+            profile=request.user.profile,
+            quest=quest,
+            comment=comment,
+            vote=vote,
+            )
+        if comment:
+            send_user_feedback(quest, comment, request.user)
+        return JsonResponse({'status': 'ok'})
     if quest.style.lower() == 'quiz':
         return quiz_style(request, quest)
     elif quest.style == 'Example for Demo':

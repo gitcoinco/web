@@ -2,14 +2,14 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 # Register your models here.
-from .models import Quest, QuestAttempt, QuestPointAward
+from .models import Quest, QuestAttempt, QuestFeedback, QuestPointAward
 
 
 class QuestAdmin(admin.ModelAdmin):
     raw_id_fields = ['kudos_reward', 'unlocked_by', 'creator']
     ordering = ['-id']
     list_display = ['created_on', '__str__']
-    readonly_fields = ['background_preview']
+    readonly_fields = ['feedback','background_preview']
 
     def response_change(self, request, obj):
         if "_approve_quest" in request.POST:
@@ -41,6 +41,20 @@ class QuestAdmin(admin.ModelAdmin):
                 self.message_user(request, f"Quest Approved + Points awarded + Made Live.")
         return super().response_change(request, obj)
 
+    def feedback(self, instance):
+        fb = instance.feedbacks
+        html = f"""
+<pre>
+ratio: {fb['ratio']}
+
+stats: {fb['stats']}
+
+feedback: {fb['feedback']}
+
+</pre>
+        """
+        return mark_safe(html)
+
     def background_preview(self, instance):
         html = ''
         for ext in ['png', 'jpg']:
@@ -54,11 +68,19 @@ class QuestAttemptAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
 
+
+class QuestFeedbackAdmin(admin.ModelAdmin):
+    raw_id_fields = ['quest', 'profile']
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+
+
 class QuestPointAwardAdmin(admin.ModelAdmin):
     raw_id_fields = ['questattempt', 'profile']
     ordering = ['-id']
     list_display = ['created_on', '__str__']
 
+admin.site.register(QuestFeedback, QuestFeedbackAdmin)
 admin.site.register(QuestPointAward, QuestPointAwardAdmin)
 admin.site.register(Quest, QuestAdmin)
 admin.site.register(QuestAttempt, QuestAttemptAdmin)

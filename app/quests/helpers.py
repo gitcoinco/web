@@ -95,12 +95,14 @@ def get_base_quest_view_params(user, quest):
     """
     profile = user.profile if user.is_authenticated else None
     attempts = quest.attempts.filter(profile=profile) if profile else QuestAttempt.objects.none()
-
+    is_owner = quest.creator.pk == user.profile.pk if user.is_authenticated else False
     params = {
         'quest': quest,
         'hide_col': True,
         'attempt_count': attempts.count() + 1,
         'success_count': attempts.filter(success=True).count(),
+        'is_owner': is_owner,
+        'is_owner_or_staff': is_owner or user.is_staff,
         'body_class': 'quest_battle',
         'title': "Play the *" + quest.title + (f"* Gitcoin Quest and win a *{quest.kudos_reward.humanized_name}* Kudos" if quest.kudos_reward else ""),
         'avatar_url': quest.avatar_url_png,

@@ -85,14 +85,20 @@
   align-items: center;
 }
 
-.chart_container--big {
-  width: 75%;
+#gmv .container{
+  width: 100%;
+  max-width: 100%;
 }
-
 .chart_container__content {
   flex: 1;
 }
 
+#gmv .chart_container__content{
+  margin-top: -100px;
+}
+.chart_container--big {
+  width: 92%;
+}
 .chart_container--flex {
   display: flex;
   align-items: center;
@@ -168,7 +174,7 @@ p.single-stat__fineprint {
 
 .bounty-status-list {
   text-align: left;
-  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .bounty-status-list p {
@@ -242,6 +248,9 @@ p.single-stat__fineprint {
 }
 
 @media screen and (max-width: 768px) {
+  #gmv .chart_container__content{
+    margin-top: 0px;
+  }
 
   .content-block {
     padding: 3rem 0.5rem;

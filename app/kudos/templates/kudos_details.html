@@ -47,7 +47,7 @@
           {% endif %}
           <h3 id="kudosName" class="kudos-details__title">{{ kudos.ui_name }} {% if kudos.generation %}<small class="lead">Gen {{ kudos.generation }}</small>{% endif %}</h3>
           <div>Owner Address: <a target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="kudos-details__address" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></div>
-          {% if kudos.quests_reward %}
+          {% if kudos.quests_reward.count %}
             Reward for beating
             {% for quest in kudos.quests_reward.all %}
               <a href="{{quest.url}}">{{quest.title}} Quest</a> 

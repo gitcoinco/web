@@ -156,6 +156,7 @@ body {
 }
 
 #description {
+  border-top: 1px solid #D4D4D4;
   margin-bottom: 2em;
 }
 
@@ -285,10 +286,7 @@ body {
 }
 
 .bounty-actions {
-  margin-top: 2.5em;
   display: inherit;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #D4D4D4;
 }
 
 .bounty-actions .tag.usd {
@@ -345,26 +343,6 @@ a.btn {
 
 .funder-avatar,
 .activity-avatar {
-  text-align: center;
-}
-
-.started-status-column .button--primary,
-#right_actions .button--primary,
-#btn-white {
-  padding: 6px 15px;
-  box-shadow: none;
-  font-size: 12px;
-}
-
-#right_actions .button--primary {
-  margin-right: 5px;
-  position: relative;
-  top: 1px;
-  display: inline-block;
-  margin-bottom: 10px;
-}
-
-#moderator-admin-actions:not(:empty).sticky {
   text-align: center;
 }
 
@@ -432,16 +410,6 @@ a.btn {
   margin-left: 5px;
 }
 
-#btn-white .github-comment {
-  color: #FFFFFF;
-  position: absolute;
-  font-size: 0.625rem;
-  text-align: center;
-  width: 1.25rem;
-  top: 0.4375rem;
-  right: 0.5rem;
-}
-
 .activity {
   margin-bottom: 10px;
 }
@@ -490,7 +458,7 @@ a.btn {
 }
 
 #funder_notif_info .bounty-notification {
-  border: orange 1px solid;
+  border: orange 2px solid;
   border-radius: 3px;
   padding: 0.5rem;
 }
@@ -501,7 +469,7 @@ a.btn {
 }
 
 #funder_notif_info img {
-  width: 1.5rem;
+  width: 1.25rem;
   position: relative;
   top: -2px;
 }
@@ -565,13 +533,7 @@ a.btn {
 #moderator-admin-actions:not(:empty) {
   background: #F2F6F9;
   padding: 16px 0 10px;
-  text-align: left;
   left: 0;
-}
-
-#moderator-admin-actions:not(:empty) a {
-  border: none !important;
-  margin: 0 3px 5px;
 }
 
 @media (max-width: 767px) {
@@ -795,6 +757,10 @@ a.btn {
   right: 2rem;
   float: right;
   top: 7rem;
+}
+
+#bounty-options {
+  padding: 0 25px;
 }
 
 @media (max-width: 575.98px) {

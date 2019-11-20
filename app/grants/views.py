@@ -28,7 +28,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
@@ -300,8 +300,17 @@ def grant_new(request):
             }
             grant = Grant.objects.create(**grant_kwargs)
             new_grant_admin(grant)
+
+            team_members = (team_members[0].split(','))
             team_members.append(profile.id)
-            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            team_members = list(set(team_members))
+
+            for i in range(0, len(team_members)):
+                team_members[i] = int(team_members[i])
+
+            grant.team_members.add(*team_members)
+            grant.save()
+
             return JsonResponse({
                 'success': True,
             })
@@ -377,8 +386,17 @@ def grant_new_v0(request):
                 'logo': logo,
             }
             grant = Grant.objects.create(**grant_kwargs)
+
+            team_members = (team_members[0].split(','))
             team_members.append(profile.id)
-            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            team_members = list(set(team_members))
+
+            for i in range(0, len(team_members)):
+                team_members[i] = int(team_members[i])
+
+            grant.team_members.add(*team_members)
+            grant.save()
+
             return JsonResponse({
                 'success': True,
             })
@@ -699,7 +717,7 @@ def profile(request):
     if not request.user.is_authenticated:
         raise Http404
     handle = request.user.profile.handle
-    return redirect(f'/profile/{handle}/grant_contribs')
+    return redirect(f'/profile/{handle}/grants')
 
 def quickstart(request):
     """Display quickstart guide."""
@@ -833,3 +851,22 @@ def new_matching_partner(request):
         )
 
     return get_json_response("Wrong request.", 400)
+
+
+def invoice(request, contribution_pk):
+    p_contribution = Contribution.objects.prefetch_related('subscription', 'subscription__grant')
+    contribution = get_object_or_404(p_contribution, pk=contribution_pk)
+
+    # only allow invoice viewing if admin or if grant contributor
+    has_view_privs = request.user.is_staff or request.user.profile == contribution.subscription.contributor_profile
+
+    if not has_view_privs:
+        raise Http404
+
+    params = {
+        'contribution': contribution,
+        'subscription': contribution.subscription,
+        'amount_per_period': contribution.subscription.get_converted_monthly_amount()
+    }
+
+    return TemplateResponse(request, 'grants/invoice.html', params)
