@@ -2344,7 +2344,7 @@ def invalid_file_response(uploaded_file, supported):
                 'status': 415,
                 'message': 'Invalid File Type'
             }
-
+        '''
         try:
             forbidden = False
             while forbidden is False:
@@ -2365,6 +2365,7 @@ def invalid_file_response(uploaded_file, supported):
 
         except Exception as e:
             print(e)
+        '''
 
     return response
 
