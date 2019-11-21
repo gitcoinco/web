@@ -462,18 +462,17 @@ $('#sync-issue').on('click', function(event) {
 });
 
 $('#issueURL').focusout(function() {
-  if (document.blocked_urls.length) {
 
-    for (let i = 0; i <= document.blocked_urls.length; i++) {
-      let this_url_filter = document.blocked_urls[i];
+  for (let i = 0; i < document.blocked_urls.length; i++) {
+    let this_url_filter = document.blocked_urls[i];
 
-      if ($('input[name=issueURL]').val().toLowerCase().indexOf(this_url_filter.toLowerCase()) != -1) {
-        _alert('This repo is not bountyable at the request of the maintainer.');
-        $('input[name=issueURL]').val('');
-        return false;
-      }
+    if ($('input[name=issueURL]').val().toLowerCase().indexOf(this_url_filter.toLowerCase()) != -1) {
+      _alert('This repo is not bountyable at the request of the maintainer.');
+      $('input[name=issueURL]').val('');
+      return false;
     }
   }
+
   if (isPrivateRepo) {
     setPrivateForm();
     var validated = $('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val());
