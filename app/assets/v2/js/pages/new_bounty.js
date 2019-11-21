@@ -462,6 +462,7 @@ $('#sync-issue').on('click', function(event) {
 });
 
 $('#issueURL').focusout(function() {
+
   for (let i = 0; i < document.blocked_urls.length; i++) {
     let this_url_filter = document.blocked_urls[i];
 
@@ -471,6 +472,7 @@ $('#issueURL').focusout(function() {
       return false;
     }
   }
+
   if (isPrivateRepo) {
     setPrivateForm();
     var validated = $('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val());
