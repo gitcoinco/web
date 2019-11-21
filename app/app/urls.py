@@ -143,7 +143,6 @@ urlpatterns = [
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
-
     # chat
     url(r'^chat/', chat.views.embed, name='chat'),
     # Health check endpoint

@@ -460,10 +460,10 @@ def get_profile(request):
 
     return profile
 
+
 class CustomGithubOAuth2(GithubOAuth2):
-    EXTRA_DATA = [
-        ('scope', 'scope'),
-    ]
+    EXTRA_DATA = [('scope', 'scope'), ]
+
     def get_scope(self):
         scope = super(CustomGithubOAuth2, self).get_scope()
         if self.data.get('extrascope'):
