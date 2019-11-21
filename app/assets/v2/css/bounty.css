@@ -200,11 +200,6 @@ body {
   text-transform: capitalize;
 }
 
-.started-status-column div {
-  display: inline-block;
-  margin: 5px;
-}
-
 .funder-avatar,
 .activity div {
   margin: auto;
@@ -780,6 +775,11 @@ a.btn {
   #bounty_actions {
     margin-top: 10px;
     margin-bottom: 1rem;
+  }
+
+  .stop-work {
+    float: none;
+    margin-top: 1rem !important;
   }
 }
 
