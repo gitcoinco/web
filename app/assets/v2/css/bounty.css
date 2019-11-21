@@ -769,16 +769,17 @@ a.btn {
     margin-bottom: 10px;
   }
 
-  /* .bounty-info div {
-    width: 100%;
-  } */
-
   .loading .issue-url {
     font-size: 1rem;
   }
 
   .rocket {
     width: 3.5rem;
+  }
+
+  #bounty_actions {
+    margin-top: 10px;
+    margin-bottom: 1rem;
   }
 }
 
@@ -794,6 +795,13 @@ a.btn {
   #funder_notif_info {
     text-align: center;
   }
+
+  #moderator-admin-actions span {
+    display: inline-block;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+
 }
 
 @media (max-width: 991.98px) {
