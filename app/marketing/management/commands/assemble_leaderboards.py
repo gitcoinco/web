@@ -377,6 +377,10 @@ class Command(BaseCommand):
         products = ['kudos', 'grants', 'bounties', 'tips', 'all']
         for product in products:
 
+            ranks = default_ranks()
+            counts = default_ranks()
+            index_terms = []
+
             if product in ['all', 'grants']:
                 # get grants
                 grants = Contribution.objects.filter(subscription__network='mainnet')
