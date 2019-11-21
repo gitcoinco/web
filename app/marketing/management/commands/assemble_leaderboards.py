@@ -415,7 +415,7 @@ class Command(BaseCommand):
 
             # set old LR as inactive
             with transaction.atomic():
-                lrs = LeaderboardRank.objects.active()
+                lrs = LeaderboardRank.objects.active().filter(product=product)
                 lrs.update(active=False)
 
                 # save new LR in DB
