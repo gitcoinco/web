@@ -53,24 +53,24 @@
     {% endif %}
 
     {% if tab == "activity" %}
-    <div id="section-nav-transactions" class="">
-      {% if not subscriptions and not cancelled_subscriptions and not contributions %}
-        <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
-      {% else %}
-        {% include 'grants/activity.html' %}
-        <span id="grant-network" class="hidden">{{ grant.network }}</span>
-      {% endif %}
-    </div>
+      <div id="section-nav-transactions">
+        {% if not subscriptions and not cancelled_subscriptions and not contributions %}
+          <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
+        {% else %}
+          {% include 'grants/activity.html' %}
+          <span id="grant-network" class="hidden">{{ grant.network }}</span>
+        {% endif %}
+      </div>
     {% endif %}
 
     {% if tab == "updates" %}
-    <div id="section-nav-summary" class="">
-      {% include 'grants/detail/summary.html' %}
-    </div>
+      <div id="section-nav-summary">
+        {% include 'grants/detail/summary.html' %}
+      </div>
     {% endif %}
 
     {% if tab == "contributors" %}
-    <div id="section-nav-contributors" class="">
+    <div id="section-nav-contributors">
       <div class="grant__stakeholders-list d-flex flex-wrap">
         {% for contribution in contributors %}
           {% if contribution.subscription %}
@@ -88,9 +88,6 @@
               <a href="{%  url "grants:contribution_invoice" contribution.id  %}">Get invoice</a>
               {% endif %}
             </div>
-
-
-
           </a>
 
         {% empty %}
@@ -114,7 +111,7 @@
             readOnly: true,
           });
 
-        {% if is_admin and not grant_is_inactive %}
+        {% if is_team_member and not grant_is_inactive %}
           grant_description = new Quill('#editor', {
             theme: 'snow',
           });
