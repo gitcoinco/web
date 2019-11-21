@@ -374,6 +374,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
+        global ranks
+        global counts
+        
         products = ['kudos', 'grants', 'bounties', 'tips', 'all']
         for product in products:
 
