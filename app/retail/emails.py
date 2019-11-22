@@ -996,18 +996,18 @@ Back to shipping,
         'link_copy': 'View more',
     }, ]
 
-   sponsor = {
-    'name': 'Solana',
-    'title': 'Build on Solana: Join the Private Beta',
-    'image_url': '',
-    'link': 'http://bit.ly/solana-beta',
-    'cta': 'Join the Private Beta',
-    'body': [
-        'Solana is a Lightning-fast distributed ledger technology for mission-critical decentralized apps.',
-        'We are currently taking applications for an incredibly limited beta program for early adopters of Solana to launch their projects alongside our mainnet later in 2019.'
-    ]
-}
-    
+    sponsor = {
+        'name': 'Solana',
+        'title': 'Build on Solana: Join the Private Beta',
+        'image_url': '',
+        'link': 'http://bit.ly/solana-beta',
+        'cta': 'Join the Private Beta',
+        'body': [
+            'Solana is a Lightning-fast distributed ledger technology for mission-critical decentralized apps.',
+            'We are currently taking applications for an incredibly limited beta program for early adopters of Solana to launch their projects alongside our mainnet later in 2019.'
+        ]
+    }
+
     bounties_spec = [{
         'url': 'https://github.com/money-on-chain/main-RBTC-contract/issues/1',
         'primer': 'Money On Chain Bug Bounty',
