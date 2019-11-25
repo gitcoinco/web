@@ -66,7 +66,7 @@ def bounty_request(request):
         gh_org_api_resp = requests.get(url=gh_org_api_url).json()
 
         gh_org_email = ''
-        if gh_org_api_resp is not None and gh_org_api_resp['email'] is not None:
+        if gh_org_api_resp is not None and gh_org_api_resp.get('email') is not None:
             gh_org_email = gh_org_api_resp['email']
 
         model.requested_by = profile
