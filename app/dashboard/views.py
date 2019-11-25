@@ -267,6 +267,41 @@ def get_interest_modal(request):
     return TemplateResponse(request, 'addinterest.html', context)
 
 
+def check_if_discord_hackathon_channel_exists(channel_name):
+    """Check if a given discord channel exists
+
+    Args:
+        guild_id (str): The discord guild id.
+        channel_name (str): The discord hackathon channel name.
+
+    Returns:
+        requests.Response: Returns a boolean response based on whether the channel exists or not.
+
+    """
+    headers = dict({'Authorization': f'token {settings.DISCORD_BOT_AUTH_TOKEN}'}, **JSON_HEADER)
+    response = requests.get(f'https://discordapp.com/api/guilds/{settings.DISCORD_GUILD_ID}/channels', headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    return False
+
+
+def create_discord_hackathon_channel(channel_name, user_description, gitcoin_discord_username):
+    """Create a discord channel for hackathons
+
+    Args:
+        channel_name (str): The discord hackathon channel name.
+        user_description (str): The gitcoin's user approach to the hackathon.
+        gitcoin_discord_username (str): The gitcoin's user discord name.
+
+    Returns:
+        requests.Response: Returns a boolean response based on whether the channel has been created for the user or not.
+
+    """
+    if not check_if_discord_hackathon_channel_exists(channel_name)
+        return True
+    return False
+
+
 @csrf_exempt
 @require_POST
 def new_interest(request, bounty_id):
