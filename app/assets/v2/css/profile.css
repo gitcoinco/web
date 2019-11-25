@@ -420,7 +420,7 @@
   padding: 5px;
 }
 #kudos_header img{
-  box-shadow: none;  
+  box-shadow: none;
   background: none;
 }
 
@@ -470,4 +470,22 @@ nav.navbar.navbar-dark{
   font-size: 12px;
   color: black;
   text-decoration: underline;
+}
+
+.tribe-members {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 3rem 1rem;
+}
+
+.badge-tribe-leader {
+  position: absolute;
+  top: 38px;
+  left: 60%;
+  background: linear-gradient(180deg,rgb(222,165,91), rgb(243,203,82));
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  border: 2px solid white;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }

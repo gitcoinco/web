@@ -1,0 +1,60 @@
+{% load i18n static avatar_tags humanize %}
+{% if not hidden %}
+  {% if profile.is_org %}
+
+  Tribe members {{profile.tribe_members.count}}
+  <p>
+    Members of the {{profile.name}} Tribe
+  </p>
+    <div class="tribe-members pt-4">
+      {% for follower in profile.tribe_members %}
+        {% if not follower.status == 'rejected' %}
+
+
+            <div class="card">
+              <div class="bg-lightblue text-center">
+                <img height="80" width="80" class="rounded-circle mt-n4 mx-auto d-block" src="{% avatar_url follower.profile %}" />
+                {% if follower.leader %}
+                <span class="badge-tribe-leader"><i class="fas fa-star white"></i></span>
+                {% endif %}
+
+                <span class="d-block text-truncate">{{follower.profile.name}}</span>
+                <a class="font-body" href="/profile/{{follower.profile}}">
+                  {{follower.profile}}
+                </a>
+              </div>
+              <div class="p-2">
+                <div class="tag-list mt-1">
+                  {% for keyword in follower.profile.keywords %}
+                    <small class="tag-list__item">{{keyword}}</small>
+                  {% endfor %}
+                </div>
+                <button class="btn btn-gc-blue btn-sm btn-block">Promote to Tribe Leader</button>
+                <div class="d-flex justify-content-between mt-2">
+                  <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 mr-2" data-openchat="{{follower.profile}}"> <i class="fas fa-comment-dots"></i></button>
+                  <button class="btn btn-outline-gc-blue btn-sm">Invite to Bounty</button>
+                </div>
+              </div>
+            </div>
+
+        {% endif %}
+
+      {% endfor %}
+    </div>
+  {% else %}
+    {% for tribe in profile.tribe_members %}
+      <img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" src="{% firstof tribe.org.active_avatar.avatar_url tribe.org.avatar_url %}" />
+
+
+      {{tribe.org.name}}
+      -
+      {{tribe.org}}
+      {{tribe.status}}
+
+    {% endfor %}
+
+  {% endif %}
+
+
+
+{% endif %}

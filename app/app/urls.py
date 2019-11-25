@@ -104,6 +104,7 @@ urlpatterns = [
     url(r'^api/user/me', dashboard.views.oauth_connect, name='oauth_connect'),
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
+    # url(r'^api/v0.1/profile/(.*)?/tribe.json', dashboard.views.profile_tribe, name='profile_tribe'),
     url(r'^api/v0.1/profile/(.*)?/activity.json', dashboard.views.profile_activity, name='profile_activity'),
     url(r'^api/v0.1/profile/(.*)?/earnings.csv', dashboard.views.profile_earnings, name='profile_earnings'),
     url(r'^api/v0.1/profile/(.*)?/grants.csv', dashboard.views.profile_grants, name='profile_grants'),

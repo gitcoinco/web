@@ -2433,6 +2433,12 @@ class Profile(SuperModel):
         return Profile.objects.filter(organizations__icontains=self.handle)
 
     @property
+    def tribe_members(self):
+        if not self.is_org:
+            return TribeMember.objects.filter(profile=self).exclude(status='rejected')
+        return TribeMember.objects.filter(org=self).exclude(status='rejected')
+
+    @property
     def ref_code(self):
         return hex(self.pk).replace("0x",'')
 
@@ -4312,3 +4318,20 @@ class ProfileStatHistory(SuperModel):
 
     def __str__(self):
         return f"{self.key} <> {self.profile.handle}"
+
+
+class TribeMember(SuperModel):
+    MEMBER_STATUS = [
+        ('accepted', 'accepted'),
+        ('pending', 'pending'),
+        ('rejected', 'rejected'),
+    ]
+    profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
+    org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE)
+    leader = models.BooleanField(help_text=_('tribe leader'))
+    status = models.CharField(
+        max_length=20,
+        choices=MEMBER_STATUS,
+        blank=True
+    )
+
