@@ -102,14 +102,22 @@
             <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
           </div>
           <div class="row nonefound mx-auto" style="display:none;">
-            <img src="{% static "v2/images/shrug_bot.png" %}" alt="Shrug bot">
-            <h3>{% trans "No results found." %}</h3>
-            <p>{% trans "Request an organisation to fund an issue" %}</p>
-            <div class="mt-3">
-              <a class="button button--primary white-txt" role="button" href="/requests">
-                {% trans "Request bounty" %}
-              </a>
-            </div>
+            {% if hackathon %}
+              <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
+              <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+              <p>
+                <a href="{% url "quests_index" %}">Explore Web3 via Gitcoin Quests to prepare</a>
+              </p>
+            {% else %}
+              <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+              <h3>{% trans "No results found." %}</h3>
+              <p>{% trans "Request an organisation to fund an issue" %}</p>
+              <div class="mt-3">
+                <a class="button button--primary white-txt" role="button" href="/requests">
+                  {% trans "Request bounty" %}
+                </a>
+              </div>
+            {% endif %}
           </div>
           {% include 'dashboard/featured_bounties.html' %}
 

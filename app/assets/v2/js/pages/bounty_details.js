@@ -484,10 +484,10 @@ const isAvailableIfReserved = function(bounty) {
 
 const isBountyOwner = result => {
   if (typeof web3 == 'undefined' || !web3.eth ||
-      typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase || !result) {
+      typeof cb_address == 'undefined' || !cb_address || !result) {
     return false;
   }
-  return caseInsensitiveCompare(web3.eth.coinbase, result['bounty_owner_address']);
+  return caseInsensitiveCompare(cb_address, result['bounty_owner_address']);
 };
 
 const isBountyOwnerPerLogin = result => {
@@ -542,6 +542,7 @@ waitforWeb3(function() {
     if (document.web3Changed) {
       return;
     }
+    reloadCbAddress();
 
     if (typeof document.lastWeb3Network == 'undefined') {
       document.lastWeb3Network = document.web3network;
@@ -549,11 +550,19 @@ waitforWeb3(function() {
     }
 
     if (typeof document.lastCoinbase == 'undefined') {
-      document.lastCoinbase = web3 ? web3.eth.coinbase : null;
+
+      try {
+        // invoke infura synchronous call, if it fails metamask is locked
+        document.lastCoinbase = web3.eth.coinbase;
+      } catch (error) {
+        document.lastCoinbase = null;
+        // catch error so sentry doesn't alert on metamask call failure
+        console.log('web3.eth.coinbase could not be loaded');
+      }
       return;
     }
 
-    if (web3 && (document.lastCoinbase != web3.eth.coinbase) ||
+    if (web3 && (document.lastCoinbase != cb_address) ||
       (document.lastWeb3Network != document.web3network)) {
       _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
       document.location.reload();

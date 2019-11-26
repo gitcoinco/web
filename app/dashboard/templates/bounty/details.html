@@ -144,7 +144,7 @@
             <div class="col-12 bounty-actions mt-4 pt-2 pb-1">
                 <div class="col-12">
                   <div id="right_actions">
-                    <div class="dropdown show float-right pt-2">
+                    <div class="dropdown show float-right pt-md-2">
                       <a class="font-caption font-weight-semibold dropdown-toggle" href="#" role="button"
                         id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Bounty Options
@@ -279,7 +279,7 @@
             </div>
           </div>
           <div class="col-12 col-md-2">
-            <div class="activity-name">
+            <div class="activity-name text-center text-sm-left">
               <a href="/profile/[[:name]]" target="_blank" data-username="[[:name]]" data-html="true" data-toggle="popover" data-container="body">
                 [[:name]]
               </a>
@@ -315,7 +315,7 @@
               [[/if]]
             </div>
           [[else activity_type == 'start_work' || activity_type == 'worker_approved' || activity_type == 'bounty_abandonment_warning' || activity_type == 'worker_applied']]
-            <div class="col-12 col-md-7 started-status-column d-flex">
+            <div class="col-12 col-md-7 text-center text-sm-left d-sm-flex my-2 my-sm-0">
               <div class="activity-status">
                 [[:text]]
                 [[if signed_nda]]
@@ -323,14 +323,14 @@
                 [[/if]]
               </div>
               [[if can_approve_worker ]]
-                <div class="stop-work">
+                <div class="stop-work mt-2">
                   <span title="<div class='tooltip-info tooltip-sm'>Reject worker</div>">
                     <a class="button button--primary" href="[[:reject_worker_url]]">
                       <span class="font-smaller-4">{% trans "Reject worker" %}</span>
                     </a>
                   </span>
                 </div>
-                <div class="stop-work">
+                <div class="stop-work mt-2">
                   <span title="<div class='tooltip-info tooltip-sm'>Approve worker</div>">
                     <a class="button button--primary" href="[[:approve_worker_url]]">
                       <span class="font-smaller-4">{% trans "Approve worker" %}</span>
@@ -338,7 +338,7 @@
                   </span>
                 </div>
               [[else uninterest_possible]]
-                <div class="stop-work">
+                <div class="stop-work mt-2">
                   <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
                     <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
                       <span class="font-smaller-4">{% trans "Stop work" %}</span>
@@ -346,7 +346,7 @@
                   </span>
                 </div>
                 [[if slash_possible]]
-                  <div class="stop-work">
+                  <div class="stop-work mt-2">
                     <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty and ding rep</div>">
                       <a id="remove-slash-[[:name]]" class="button button--primary admin-only" role="button" href="remove-handle">
                         <span class="font-smaller-4">{% trans "Stop work + Ding Rep" %}</span>
@@ -357,7 +357,7 @@
               [[/if]]
             </div>
           [[else activity_type == 'worker_approved' ]]
-            <div class="col-12 col-md-7 started-status-column">
+            <div class="col-12 col-md-7 text-center text-sm-left">
               <div class="activity-status">
                 Worker
                 <a href="/profile/[[:worker_handle]]" target="_blank">
@@ -367,7 +367,7 @@
               </div>
             </div>
           [[else activity_type == 'worker_rejected']]
-            <div class="col-12 col-md-7 started-status-column">
+            <div class="col-12 col-md-7 text-center text-sm-left">
               <div class="activity-status">
                 Worker
                 <a href="/profile/[[:worker_handle]]" target="_blank">
@@ -377,7 +377,7 @@
               </div>
             </div>
           [[else activity_type == 'work_submitted']]
-            <div class="col-12 col-md-7 started-status-column">
+            <div class="col-12 col-md-7 text-center text-sm-left">
               <div class="activity-status">
                 [[:text]]
                 [[if fulfiller_github_url]]
@@ -425,17 +425,17 @@
             <div class="col-12 col-md-7">
               <div class="activity-status activity-tag-first align-items-center d-flex justify-content-between">
                 <span>New Kudos sent to <a href="/profile/[[:to_username]]">[[:to_username]]</a></span>
-                <img width="60px" height="60px" class="activity-kudos started-status-column" src="/static/[[:kudos]]" alt="Kudos">
+                <img width="60px" height="60px" class="activity-kudos text-center text-sm-left" src="/static/[[:kudos]]" alt="Kudos">
               </div>
             </div>
           [[else]]
-            <div class="col-12 col-md-7 d-flex started-status-column">
+            <div class="col-12 col-md-7 d-flex text-center text-sm-left">
               <div class="activity-status">
                 [[:text]]
               </div>
             </div>
           [[/if]]
-          <div class="col-12 col-md-2">
+          <div class="col-12 col-md-2 text-center text-sm-left">
             <div class="activity-time">[[:age]]</div>
           </div>
           [[if issue_message && activity_type == 'worker_applied' || issue_message && permission_type == 'permissionless' && activity_type == 'start_work' ]]

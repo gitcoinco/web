@@ -10,7 +10,7 @@ from django.utils.text import slugify
 # Create your models here.
 from economy.models import SuperModel
 
-num_backgrounds = 23
+num_backgrounds = 33
 
 
 class Quest(SuperModel):
