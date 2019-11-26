@@ -21,7 +21,18 @@ local_storage_keys.push('org');
 results_limit = 10;
 
 if (document.hackathon) {
-  results_limit = 10;
+  let hackathon_orgs = [];
+
+  $('[name=org]').each(function() {
+    hackathon_orgs.push($(this).val());
+  });
+
+  const org = getURLParams('org');
+
+  hackathon_orgs.includes(org) ?
+    $(`#${org}`).prop('checked', true) :
+    $(`#${hackathon_orgs[0]}`).prop('checked', true);
+
 }
 
 var localStorage;
@@ -109,11 +120,17 @@ var getActiveFilters = function() {
 /**
  * Build URI based on selected filter
  */
-var buildURI = function() {
+var buildURI = function(custom_filters) {
   let uri = '';
-  let _filters = filters.slice();
+  let _filters = [];
 
-  _filters.push('keywords', 'order_by', 'org');
+  if (custom_filters) {
+    _filters = custom_filters;
+  } else {
+    _filters = filters.slice();
+    _filters.push('keywords', 'order_by', 'org');
+  }
+
   _filters.forEach((filter) => {
     if (localStorage[filter] &&
       localStorage[filter] != 'any') {
@@ -453,7 +470,6 @@ var reset_offset = function() {
 let organizations = [];
 
 var refreshBounties = function(event, offset, append) {
-
   // Allow search for freeform text
   var searchInput = $('#keywords')[0];
   var orgInput = $('#org')[0];
@@ -480,7 +496,12 @@ var refreshBounties = function(event, offset, append) {
     window.history.pushState('', '', window.location.pathname + '?' + buildURI());
   } else {
     toggleAny(event);
+
+    const org = $("input[name='org']:checked").val();
+
+    localStorage['org'] = org === 'any' ? '' : org;
     localStorage['order_by'] = $('#sort_option').val();
+    window.history.pushState('', '', window.location.pathname + '?' + buildURI(['org']));
   }
 
   if (!append) {
@@ -622,7 +643,7 @@ var resetFilters = function(resetKeyword) {
     });
   }
 
-  if (resetKeyword && localStorage['org']) {
+  if (resetKeyword && localStorage['org'] && !document.hackathon) {
     localStorage['org'].split(',').forEach(function(v, k) {
       removeFilter('org', v);
     });
@@ -787,11 +808,10 @@ $(document).ready(function() {
     }
   });
 
-  // sidebar filters
-  $(`.sidebar_search input[type=radio],
-      .sidebar_search input[type=checkbox],
-      .sidebar_search .js-select2,
-      #org`).change(function(e) {
+  $(`
+    .sidebar_search input[type=radio], .sidebar_search input[type=checkbox],
+    .sidebar_search .js-select2, #org
+  `).change(function(e) {
     reset_offset();
     refreshBounties(null, 0, false);
     e.preventDefault();
