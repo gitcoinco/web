@@ -2384,6 +2384,8 @@ class Profile(SuperModel):
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
+    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
+
 
     objects = ProfileQuerySet.as_manager()
 
@@ -4328,7 +4330,7 @@ class TribeMember(SuperModel):
     ]
     profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
     org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE)
-    leader = models.BooleanField(help_text=_('tribe leader'))
+    leader = models.BooleanField(null=True, help_text=_('tribe leader'))
     status = models.CharField(
         max_length=20,
         choices=MEMBER_STATUS,

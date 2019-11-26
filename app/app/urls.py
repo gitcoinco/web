@@ -372,6 +372,8 @@ urlpatterns = [
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
     path('how/<str:work_type>', retail.views.how_it_works, name='how_it_works'),
     re_path(r'^tribes', retail.views.tribes, name='tribes'),
+    path('join/<str:handle>/', dashboard.views.join_tribe, name='join_tribe'),
+    path('savetribe/<str:handle>/', dashboard.views.save_tribe, name='save_tribe'),
 
     # basic redirect retail views
     re_path(r'^press/?', retail.views.presskit, name='press'),

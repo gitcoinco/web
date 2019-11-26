@@ -391,7 +391,7 @@ class HackathonProjectAdmin(admin.ModelAdmin):
 
 
 class TribeMemberAdmin(admin.ModelAdmin):
-    raw_id_fields = ['profile', 'org']
+    raw_id_fields = ['profile', 'org',]
 
 
 

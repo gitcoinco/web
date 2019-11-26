@@ -46,6 +46,12 @@
     <small class="review-comment">{{ profile.data.bio }}</small>
   </div>
 {% endif %}
+{% if is_on_tribe %}
+  <button class="btn btn-gc-blue btn-sm" data-jointribe="{{profile.handle}}">Leave Tribe</button>
+{% else %}
+  <button class="btn btn-gc-blue btn-sm" data-jointribe="{{profile.handle}}">Join Tribe</button>
+{% endif %}
+
 
 {% if profile.preferred_payout_address %}
   <div class="my-2">

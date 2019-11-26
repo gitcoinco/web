@@ -85,7 +85,7 @@ from .models import (
     Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
-    SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
+    SearchHistory, Sponsor, Subscription, TribeMember, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -2692,6 +2692,7 @@ def profile(request, handle, tab=None):
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+    context['is_on_tribe'] = request.user.is_authenticated and any([handle.lower() == tribe.org.handle.lower() for tribe in request.user.profile.tribe_members ])
     context['ratings'] = range(0,5)
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
@@ -4046,3 +4047,66 @@ def choose_persona(request):
             'persona': persona,
         },
         status=200)
+
+
+@csrf_exempt
+@require_POST
+def join_tribe(request, handle):
+    print(handle, request.user.profile)
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        print(profile)
+        try:
+            TribeMember.objects.get(profile=profile, org__handle__iexact=handle).delete()
+            return JsonResponse(
+            {
+                'success': True,
+                'is_member': False,
+            },
+            status=200)
+        except TribeMember.DoesNotExist:
+            kwargs = {
+                'org': Profile.objects.filter(handle=handle).first(),
+                'profile': profile
+            }
+            tribemember = TribeMember.objects.create(**kwargs)
+            tribemember.save()
+
+    return JsonResponse(
+        {
+            'success': True,
+            'is_member': True,
+        },
+        status=200)
+
+
+@csrf_exempt
+@require_POST
+def save_tribe(request,handle):
+    # quill.root.innerHTML
+    tribe_description = request.POST.get('tribe_description')
+
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+        is_my_org = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+        if is_my_org:
+            org = Profile.objects.filter(handle=handle).first()
+            org.tribe_description = tribe_description
+            org.save()
+
+            return JsonResponse(
+                {
+                    'success': True,
+                    'is_my_org': True,
+                },
+                status=200)
+
+        else:
+            return JsonResponse(
+                {
+                    'success': False,
+                    'is_my_org': False,
+                },
+                status=401)
+

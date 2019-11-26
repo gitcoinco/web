@@ -478,14 +478,71 @@ nav.navbar.navbar-dark{
   grid-gap: 3rem 1rem;
 }
 
-.badge-tribe-leader {
+.badge-tribe {
   position: absolute;
   top: 38px;
   left: 60%;
-  background: linear-gradient(180deg,rgb(222,165,91), rgb(243,203,82));
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   border: 2px solid white;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  background: #fff;
+  font-size: 14px;
+}
+
+.badge-tribe_leader {
+  background: linear-gradient(180deg,rgb(222,165,91), rgb(243,203,82));
+}
+
+.ql-picker-label svg {
+  vertical-align: inherit;
+}
+
+.description-tribes.ql-container {
+  /* max-height: 400px; */
+  height: auto;
+}
+
+.description-tribes,
+.description-tribes.ql-container {
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.description-tribes p {
+  margin: 0;
+  padding: 0;
+}
+
+.description-tribes img {
+  max-width: 100%;
+}
+
+.description-tribes h1 {
+  font-size: 2em;
+}
+
+.description-tribes h2 {
+  font-size: 1.5em;
+}
+
+.inactive .ql-editor {
+  padding:0;
+  line-height:inherit;
+}
+
+/* .inactive .ql-editor p {
+  padding:inherit;
+  margin-bottom:10px;
+} */
+
+.inactive .ql-toolbar {
+  display:none;
+}
+
+.inactive .ql-container.ql-snow {
+  border:none;
+  /* font-family:inherit; */
+  /* font-size:inherit; */
 }
