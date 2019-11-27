@@ -142,7 +142,7 @@
               ]
             },
             theme: 'snow',
-            placeholder: 'Compose an epic...',
+            placeholder: 'Compose an epic description for your Tribe...',
           });
           console.log(quill)
           $('#save-description-btn').removeClass('d-none');
@@ -165,8 +165,8 @@
 
         if (!existingScript) {
           const script = document.createElement('script');
-          script.src = url; // URL for the third-party library being loaded.
-          script.id = id; // e.g., googleMaps or stripe
+          script.src = url;
+          script.id = id;
           document.body.appendChild(script);
 
           script.onload = () => {
@@ -191,18 +191,10 @@
 
         $.when(sendSave).then(function(response) {
           // $(this).attr('disabled', false);
-          console.log(response)
           destroyQuill();
-
-          // if (response.is_member) {
-            // $(this).text('Leave Tribe');
-          // } else {
-            // $(this).text('Join Tribe');
-          // }
-
+          _alert('Description saved');
         }).fail(function(test){
-          console.log(test)
-          // $(elem).attr('disabled', true);
+          _alert('Error saving description', 'error');
         })
       })
 

@@ -3,40 +3,50 @@
   {% if profile.is_org %}
     <div class="d-flex justify-content-between my-4">
       <h5 class="font-weight-bold">About {{profile.name}}</h5>
-      <div class="">
-        <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
-        <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savetribe="{{profile.handle}}">save</button>
-      </div>
+      {% if is_my_org %}
+        <div class="">
+          <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
+          <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savetribe="{{profile.handle}}">save</button>
+        </div>
+      {% endif %}
     </div>
 
     <div class="editor-container">
-      <div id="description-tribes" class="description-tribes">{{profile.tribe_description | safe}}</div>
+      <div id="description-tribes" class="description-tribes">
+        {{profile.tribe_description | safe}}
+      </div>
+
     </div>
     <div class="my-5">
       <h5 class="font-weight-bold">
         Core Team <span class="badge badge-pill badge--bluelight">{{profile.team.count}}</span>
       </h5>
       <div class="tribe-members pt-4 mt-4">
-        {% for org in profile.team %}
+        {% for member in profile.team %}
           <div class="card">
             <div class="bg-lightblue text-center">
-              <img height="80" width="80" class="rounded-circle mt-n4 mx-auto d-block" src="{% avatar_url org %}" />
+              <img height="80" width="80" class="rounded-circle mt-n4 mx-auto mb-2 d-block" src="{% avatar_url member.handle %}" />
 
               <span class="badge-tribe">
                 <img height="20" width="20" class="rounded-circle m-auto d-block" src="{% avatar_url profile.handle %}" />
               </span>
 
-
-              <span class="d-block text-truncate">{{org.name}}</span>
-              <a class="font-body" href="/profile/{{org}}">
-                {{org}}
+              <span class="d-block text-truncate">{{member.name}}</span>
+              <a class="font-body" href="{% url 'profile' member %}">
+                {{member}}
               </a>
             </div>
             <div class="p-2 card-body d-flex flex-column justify-content-end">
-              <div class="tag-list mt-1">
-                {% for keyword in org.keywords %}
+
+              <div class="tag-list mt-1 text-center mb-3">
+                {% for keyword in member.keywords %}
                   <small class="tag-list__item">{{keyword}}</small>
                 {% endfor %}
+              </div>
+
+              <div class="d-flex justify-content-between mt-2">
+                <button class="btn btn-outline-gc-blue btn-sm flex-grow-1" data-openchat="{{member}}"> <i class="fas fa-comment-dots"></i></button>
+                <a href="{% url 'bounty_requests' %}" class="btn btn-outline-gc-blue btn-sm ml-2">Suggest a Bounty</a>
               </div>
             </div>
           </div>
@@ -48,40 +58,37 @@
       <h5 class="font-weight-bold">
         Tribe members <span class="badge badge-pill badge--bluelight">{{profile.tribe_members.count}}</span>
       </h5>
-      <p>
-        Members of the {{profile.name}} Tribe
+      <p class="text-muted">
+        Members of the {{profile.name}} Tribe. <a class="underline" href="{% url 'tribes' %}">What is a Tribe?</a>
       </p>
       <div class="tribe-members pt-4 mt-4">
         {% for follower in profile.tribe_members %}
           {% if not follower.status == 'rejected' %}
 
-
               <div class="card">
                 <div class="bg-lightblue text-center">
-                  <img height="80" width="80" class="rounded-circle mt-n4 mx-auto d-block" src="{% avatar_url follower.profile %}" />
-                  {% if follower.leader %}
-                  <span class="badge-tribe badge-tribe_leader"><i class="fas fa-star white"></i></span>
-                  {% endif %}
+                  <img height="80" width="80" class="rounded-circle mt-n4 mx-auto mb-2 d-block" src="{% avatar_url follower.profile.handle %}" />
+                  <span class="badge-tribe badge-tribe_leader {% if not follower.leader %}d-none{% endif %}"><i class="fas fa-star white"></i></span>
 
                   <span class="d-block text-truncate">{{follower.profile.name}}</span>
-                  <a class="font-body" href="/profile/{{follower.profile}}">
+                  <a class="font-body" href="{% url 'profile' follower.profile %}">
                     {{follower.profile}}
                   </a>
                 </div>
                 <div class="p-2 card-body d-flex flex-column justify-content-end">
-                  <div class="tag-list mt-1">
+                  <div class="tag-list mt-1 text-center mb-3">
                     {% for keyword in follower.profile.keywords %}
                       <small class="tag-list__item">{{keyword}}</small>
                     {% endfor %}
                   </div>
                   {% if is_my_org and not follower.leader %}
-                    <button class="btn btn-gc-blue btn-sm btn-block">Promote to Tribe Leader</button>
+                    <button class="btn btn-gc-blue btn-sm btn-block" data-tribeleader="{{follower.pk}}">Promote to Tribe Leader</button>
                   {% elif follower.leader %}
-                    Tribe Leader
+                    <span class="text-center text-uppercase font-weight-bold p-1 text-highlight-yellow">Tribe Leader</span>
                   {% endif %}
                   <div class="d-flex justify-content-between mt-2">
                     <button class="btn btn-outline-gc-blue btn-sm flex-grow-1" data-openchat="{{follower.profile}}"> <i class="fas fa-comment-dots"></i></button>
-                    <button class="btn btn-outline-gc-blue btn-sm ml-2">Invite to Bounty</button>
+                    <a href="{% url 'users_directory' %}?invite={{follower.profile}}" class="btn btn-outline-gc-blue btn-sm ml-2">Invite to Bounty</a>
                   </div>
                 </div>
               </div>
@@ -91,19 +98,26 @@
         {% endfor %}
       </div>
     </div>
-    <!-- <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"> -->
-    <!-- <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script> -->
   {% else %}
-    {% for tribe in profile.tribe_members %}
-      <img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" src="{% firstof tribe.org.active_avatar.avatar_url tribe.org.avatar_url %}" />
+    <div class="tribe-members pt-4 mt-4">
+      {% for tribe in profile.tribe_members %}
+        <div class="card">
+          <div class="bg-lightblue text-center">
+            <img height="80" width="80" class="rounded-circle mt-n4 mx-auto mb-2 d-block" src="{% avatar_url tribe.org.handle %}" />
+            <span class="d-block text-truncate">{{tribe.org.name}}</span>
+            <a class="font-body" href="{% url 'profile' tribe.org %}">
+              {{tribe.org}}
+            </a>
+          </div>
+          <div class="p-2 card-body d-flex flex-column justify-content-end">
+            <div class="d-flex justify-content-between mt-2">
+                <a href="{% url 'bounty_requests' %}" class="btn btn-outline-gc-blue btn-sm btn-block">Suggest a Bounty</a>
+            </div>
+          </div>
+        </div>
 
-
-      {{tribe.org.name}}
-      -
-      {{tribe.org}}
-      {{tribe.status}}
-
-    {% endfor %}
+      {% endfor %}
+    </div>
 
   {% endif %}
 

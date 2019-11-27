@@ -6,7 +6,7 @@
         {% if profile.tribe_members %}
           <li class="nav-item">
             <a class="nav-link nav-line  {% if tab == 'tribe' %}active{%endif%}" href="{{profile.url}}/tribe">
-              Tribe
+              Tribe{%if not profile.is_org %}s <span>{{profile.tribe_members.count}}</span>{% endif %}
             </a>
           </li>
         {% endif %}

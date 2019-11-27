@@ -2629,7 +2629,7 @@ def profile(request, handle, tab=None):
 
     # setup
     status = 200
-    default_tab = 'activity'
+    default_tab = 'tribe'
     tab = tab if tab else default_tab
     handle = handle.replace("@", "")
 
@@ -4078,6 +4078,43 @@ def join_tribe(request, handle):
             'is_member': True,
         },
         status=200)
+
+
+@csrf_exempt
+@require_POST
+def tribe_leader(request):
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        member = request.POST.get('member')
+        try:
+            tribemember = TribeMember.objects.get(pk=member)
+            is_my_org = request.user.is_authenticated and any([tribemember.org.handle.lower() == org.lower() for org in request.user.profile.organizations ])
+
+            if is_my_org:
+                tribemember.leader = True
+                tribemember.save()
+                return JsonResponse(
+                {
+                    'success': True,
+                    'is_leader': True,
+                },
+                status=200)
+            else:
+                return JsonResponse(
+                {
+                    'success': False,
+                    'is_my_org': False,
+                },
+                status=401)
+
+        except Exception as e:
+
+            return JsonResponse(
+                {
+                    'success': False,
+                    'is_leader': False,
+                },
+                status=401)
 
 
 @csrf_exempt
