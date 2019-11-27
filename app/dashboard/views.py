@@ -3729,7 +3729,8 @@ def get_hackathons(request):
 
     params = {
         'active': 'hackathons',
-        'title': 'hackathons',
+        'title': 'Hackathons',
+        'card_desc': "Gitcoin is one of the largers administrators of Virtual Hackathons in the decentralizion space.",
         'hackathons': events,
     }
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
