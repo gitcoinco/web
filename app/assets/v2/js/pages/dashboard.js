@@ -470,6 +470,7 @@ var reset_offset = function() {
 let organizations = [];
 
 var refreshBounties = function(event, offset, append) {
+
   // Allow search for freeform text
   var searchInput = $('#keywords')[0];
   var orgInput = $('#org')[0];
