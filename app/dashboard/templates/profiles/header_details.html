@@ -46,9 +46,9 @@
     <small class="review-comment">{{ profile.data.bio }}</small>
   </div>
 {% endif %}
-{% if is_on_tribe and profile.is_org %}
+{% if user.is_authenticated and is_on_tribe and profile.is_org %}
   <button class="btn btn-gc-blue btn-sm" data-jointribe="{{profile.handle}}">Leave Tribe</button>
-{% elif profile.is_org %}
+{% elif user.is_authenticated and profile.is_org %}
   <button class="btn btn-gc-blue btn-sm" data-jointribe="{{profile.handle}}">Join Tribe</button>
 {% endif %}
 
