@@ -4052,11 +4052,9 @@ def choose_persona(request):
 @csrf_exempt
 @require_POST
 def join_tribe(request, handle):
-    print(handle, request.user.profile)
     if request.user.is_authenticated:
         profile = request.user.profile if hasattr(request.user, 'profile') else None
-        print(profile)
-        try:
+        if profile and handle and TribeMember.objects.get(profile=profile, org__handle__iexact=handle).exist():
             TribeMember.objects.get(profile=profile, org__handle__iexact=handle).delete()
             return JsonResponse(
             {
@@ -4064,7 +4062,7 @@ def join_tribe(request, handle):
                 'is_member': False,
             },
             status=200)
-        except TribeMember.DoesNotExist:
+        else:
             kwargs = {
                 'org': Profile.objects.filter(handle=handle).first(),
                 'profile': profile
