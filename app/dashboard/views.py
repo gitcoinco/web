@@ -4054,7 +4054,7 @@ def choose_persona(request):
 def join_tribe(request, handle):
     if request.user.is_authenticated:
         profile = request.user.profile if hasattr(request.user, 'profile') else None
-        if profile and handle and TribeMember.objects.get(profile=profile, org__handle__iexact=handle).exist():
+        try:
             TribeMember.objects.get(profile=profile, org__handle__iexact=handle).delete()
             return JsonResponse(
             {
@@ -4062,7 +4062,7 @@ def join_tribe(request, handle):
                 'is_member': False,
             },
             status=200)
-        else:
+        except TribeMember.DoesNotExist:
             kwargs = {
                 'org': Profile.objects.filter(handle=handle).first(),
                 'profile': profile
@@ -4070,12 +4070,18 @@ def join_tribe(request, handle):
             tribemember = TribeMember.objects.create(**kwargs)
             tribemember.save()
 
-    return JsonResponse(
-        {
-            'success': True,
-            'is_member': True,
-        },
-        status=200)
+            return JsonResponse(
+                {
+                    'success': True,
+                    'is_member': True,
+                },
+                status=200)
+    else:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+             status=401)
+
+
 
 
 @csrf_exempt

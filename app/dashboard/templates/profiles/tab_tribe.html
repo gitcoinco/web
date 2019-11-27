@@ -23,7 +23,7 @@
       </h5>
       <div class="tribe-members pt-4 mt-4">
         {% for member in profile.team %}
-          <div class="card">
+          <div class="card border-0 card-shadow">
             <div class="bg-lightblue text-center">
               <img height="80" width="80" class="rounded-circle mt-n4 mx-auto mb-2 d-block" src="{% avatar_url member.handle %}" />
 
@@ -65,7 +65,7 @@
         {% for follower in profile.tribe_members %}
           {% if not follower.status == 'rejected' %}
 
-              <div class="card">
+              <div class="card border-0 card-shadow">
                 <div class="bg-lightblue text-center">
                   <img height="80" width="80" class="rounded-circle mt-n4 mx-auto mb-2 d-block" src="{% avatar_url follower.profile.handle %}" />
                   <span class="badge-tribe badge-tribe_leader {% if not follower.leader %}d-none{% endif %}"><i class="fas fa-star white"></i></span>
@@ -101,7 +101,7 @@
   {% else %}
     <div class="tribe-members pt-4 mt-4">
       {% for tribe in profile.tribe_members %}
-        <div class="card">
+        <div class="card border-0 card-shadow">
           <div class="bg-lightblue text-center">
             <img height="80" width="80" class="rounded-circle mt-n4 mx-auto mb-2 d-block" src="{% avatar_url tribe.org.handle %}" />
             <span class="d-block text-truncate">{{tribe.org.name}}</span>
