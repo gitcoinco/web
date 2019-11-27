@@ -3418,7 +3418,7 @@ def hackathon(request, hackathon=''):
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
     except HackathonEvent.DoesNotExist:
-        hackathon_event = HackathonEvent.objects.last()
+        return redirect(reverse('get_hackathons'))
 
     title = hackathon_event.name
     network = get_default_network()
