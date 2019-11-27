@@ -500,7 +500,6 @@ nav.navbar.navbar-dark{
 }
 
 .description-tribes.ql-container {
-  /* max-height: 400px; */
   height: auto;
 }
 
@@ -532,17 +531,10 @@ nav.navbar.navbar-dark{
   line-height:inherit;
 }
 
-/* .inactive .ql-editor p {
-  padding:inherit;
-  margin-bottom:10px;
-} */
-
 .inactive .ql-toolbar {
   display:none;
 }
 
 .inactive .ql-container.ql-snow {
   border:none;
-  /* font-family:inherit; */
-  /* font-size:inherit; */
 }
