@@ -3437,6 +3437,7 @@ def hackathon(request, hackathon=''):
 
     params = {
         'active': 'dashboard',
+        'type': 'hackathon',
         'title': title,
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
