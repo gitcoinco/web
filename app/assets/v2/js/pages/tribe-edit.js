@@ -55,9 +55,9 @@ const loadDynamicScript = (callback, url, id) => {
 };
 
 $('[data-savetribe]').on('click', function() {
-  let tribe = $(this).data('savetribe');
-  let url = `/savetribe/${tribe}/`;
-  var sendSave = fetchData (
+  const tribe = $(this).data('savetribe');
+  const url = `/tribe/${tribe}/save/`;
+  const sendSave = fetchData (
     url,
     'POST',
     {'tribe_description': quill.root.innerHTML},

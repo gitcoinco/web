@@ -539,3 +539,15 @@ nav.navbar.navbar-dark{
 .inactive .ql-container.ql-snow {
   border:none;
 }
+
+.ql-align-center {
+  text-align: center;
+}
+
+.ql-align-right {
+  text-align: right;
+}
+
+.ql-align-justify {
+  text-align: justify;
+}

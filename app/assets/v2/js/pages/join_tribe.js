@@ -4,17 +4,13 @@ const joinTribe = () => {
     $(elem).on('click', function() {
       $(elem).attr('disabled', true);
 
-      let tribe = $(elem).data('jointribe');
-      let url = `/join/${tribe}/`;
+      const tribe = $(elem).data('jointribe');
+      const url = `/tribe/${tribe}/join/`;
       const sendJoin = fetchData (url, 'POST', {}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
 
       $.when(sendJoin).then(function(response) {
         $(elem).attr('disabled', false);
-        if (response.is_member) {
-          $(elem).text('Leave Tribe');
-        } else {
-          $(elem).text('Join Tribe');
-        }
+        response.is_member ? $(elem).text('Leave Tribe') : $(elem).text('Join Tribe');
 
       }).fail(function(error) {
         $(elem).attr('disabled', false);
@@ -33,8 +29,8 @@ const tribeLeader = () => {
     $(elem).on('click', function() {
       $(elem).attr('disabled', true);
 
-      let memberId = $(elem).data('tribeleader');
-      let url = 'tribe/tribeleader/';
+      const memberId = $(elem).data('tribeleader');
+      const url = 'tribe/leader/';
       const template = '<span class="text-center text-uppercase font-weight-bold p-1 text-highlight-yellow">Tribe Leader</span>';
 
       const sendLeader = fetchData (url, 'POST', {'member': memberId}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});

@@ -4120,8 +4120,15 @@ def tribe_leader(request):
 @csrf_exempt
 @require_POST
 def save_tribe(request,handle):
-    # quill.root.innerHTML
-    tribe_description = request.POST.get('tribe_description')
+    tribe_description = clean(
+        request.POST.get('tribe_description'),
+        tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'p', 'u', 'br', 'i', 'li', 'ol', 'strong', 'ul', 'img', 'h1', 'h2'],
+        attributes={'a': ['href', 'title'], 'abbr': ['title'], 'acronym': ['title'], 'img': ['src'], '*': ['class']},
+        styles=[],
+        protocols=['http', 'https', 'mailto'],
+        strip=True,
+        strip_comments=True
+    )
 
     if request.user.is_authenticated:
         profile = request.user.profile if hasattr(request.user, 'profile') else None
