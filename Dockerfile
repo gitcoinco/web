@@ -15,8 +15,9 @@ RUN add-apt-repository ppa:inkscape.dev/stable
 RUN apt-get update
 
 # Install general dependencies.
-RUN apt-get install -y $PACKAGES && \
-    apt-get install -y $BUILD_DEPS
+RUN apt-get install -y $PACKAGES
+RUN apt-get update
+RUN apt-get install -y $BUILD_DEPS
 
 RUN apt-get install -y wget
 
