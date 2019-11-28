@@ -39820,7 +39820,7 @@ LevelUP.prototype.createValueStream = function(options) {
  * Gets a value given a `key`
  * @method get
  * @param {Buffer|String} key - the key to search for
- * @param {Function} cb A callback `Function` which is given the arguments `err` - for errors that may have occured and `value` - the found value in a `Buffer` or if no value was found `null`
+ * @param {Function} cb A callback `Function` which is given the arguments `err` - for errors that may have occurred and `value` - the found value in a `Buffer` or if no value was found `null`
  */
     Trie.prototype.get = function(key, cb) {
       var self = this;
@@ -39843,7 +39843,7 @@ LevelUP.prototype.createValueStream = function(options) {
  * @method put
  * @param {Buffer|String} key
  * @param {Buffer|String} Value
- * @param {Function} cb A callback `Function` which is given the argument `err` - for errors that may have occured
+ * @param {Function} cb A callback `Function` which is given the argument `err` - for errors that may have occurred
  */
     Trie.prototype.put = function(key, value, cb) {
       var self = this;
@@ -39903,7 +39903,7 @@ LevelUP.prototype.createValueStream = function(options) {
  * Retrieves a raw value in the underlying db
  * @method getRaw
  * @param {Buffer} key
- * @param {Function} callback A callback `Function`, which is given the arguments `err` - for errors that may have occured and `value` - the found value in a `Buffer` or if no value was found `null`.
+ * @param {Function} callback A callback `Function`, which is given the arguments `err` - for errors that may have occurred and `value` - the found value in a `Buffer` or if no value was found `null`.
  */
     Trie.prototype.getRaw = function(key, cb) {
       key = ethUtil.toBuffer(key);
@@ -39958,7 +39958,7 @@ LevelUP.prototype.createValueStream = function(options) {
  * @method putRaw
  * @param {Buffer|String} key The key as a `Buffer` or `String`
  * @param {Buffer} value The value to be stored
- * @param {Function} callback A callback `Function`, which is given the argument `err` - for errors that may have occured
+ * @param {Function} callback A callback `Function`, which is given the argument `err` - for errors that may have occurred
  */
     Trie.prototype.putRaw = Trie.prototype._putRaw;
 
@@ -39966,7 +39966,7 @@ LevelUP.prototype.createValueStream = function(options) {
  * Removes a raw value in the underlying db
  * @method delRaw
  * @param {Buffer|String} key
- * @param {Function} callback A callback `Function`, which is given the argument `err` - for errors that may have occured
+ * @param {Function} callback A callback `Function`, which is given the argument `err` - for errors that may have occurred
  */
     Trie.prototype.delRaw = function(key, cb) {
       function del(db, cb2) {

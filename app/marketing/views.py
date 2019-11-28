@@ -286,7 +286,7 @@ def email_settings(request, key):
         email_types[em[0]] = str(em[1])
     email_type = request.GET.get('type')
     if email_type in email_types:
-        email = request.user.profile.email
+        email = es.email
         if es:
             key = get_or_save_email_subscriber(email, 'settings')
             es.email = email
@@ -698,11 +698,15 @@ def org_settings(request):
     """
     msg = ''
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
+    current_scopes = []
 
     if not user or not profile or not is_logged_in:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
+    social_auth = user.social_auth.first()
+    if social_auth and social_auth.extra_data:
+        current_scopes = social_auth.extra_data.get('scope').split(',')
     orgs = get_orgs_perms(profile)
     context = {
         'is_logged_in': is_logged_in,
@@ -714,6 +718,7 @@ def org_settings(request):
         'orgs': orgs,
         'profile': profile,
         'msg': msg,
+        'current_scopes': current_scopes,
     }
     return TemplateResponse(request, 'settings/organizations.html', context)
 
@@ -744,6 +749,7 @@ def leaderboard(request, key=''):
     cadences = ['all', 'weekly', 'monthly', 'quarterly', 'yearly']
 
 
+    product = request.GET.get('product', 'all')
     keyword_search = request.GET.get('keyword', '')
     keyword_search = '' if keyword_search == 'all' else keyword_search
     limit = request.GET.get('limit', 50)
@@ -773,7 +779,7 @@ def leaderboard(request, key=''):
 
     title = titles[key]
     which_leaderboard = f"{cadence}_{key}"
-    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard)
+    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard, product=product)
     if keyword_search:
         ranks = ranks.filter(tech_keywords__icontains=keyword_search)
 
@@ -805,6 +811,8 @@ def leaderboard(request, key=''):
         'nav': 'home',
         'titles': titles,
         'cadence': cadence,
+        'product': product,
+        'products': ['kudos', 'grants', 'bounties', 'tips', 'all'],
         'selected': title,
         'is_linked_to_profile': is_linked_to_profile,
         'title': page_title,

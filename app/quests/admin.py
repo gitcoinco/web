@@ -57,7 +57,7 @@ feedback: {fb['feedback']}
 
     def background_preview(self, instance):
         html = ''
-        for ext in ['png', 'jpg']:
+        for ext in ['jpeg']:
             url = f'/static/v2/images/quests/backs/{instance.background}.{ext}'
             html += f"<img style='max-width: 400px;' src='{url}'>"
         return mark_safe(html)

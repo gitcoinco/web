@@ -34,7 +34,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
-from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Avg, Count, Prefetch, Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
@@ -74,6 +74,7 @@ from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
 from marketing.models import Keyword
+from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -81,10 +82,10 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
-    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption, CoinRedemptionRequest, Coupon,
-    Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest,
-    LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest, SearchHistory, Sponsor,
-    Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
+    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption,
+    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
+    HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
+    SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -101,6 +102,21 @@ confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
+
+
+@protected_resource()
+@login_required()
+def oauth_connect(request, *args, **kwargs):
+    active_user_profile = Profile.objects.filter(user_id=request.user.id).select_related()[0]
+
+    user_profile = {
+        "login": active_user_profile.handle,
+        "email": active_user_profile.user.email,
+        "name": active_user_profile.user.get_full_name(),
+        "handle": active_user_profile.handle,
+        "id": active_user_profile.user.id,
+    }
+    return JsonResponse(user_profile, status=200, safe=False)
 
 
 def org_perms(request):
@@ -216,6 +232,12 @@ def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
 def gh_login(request):
     """Attempt to redirect the user to Github for authentication."""
     return redirect('social:begin', backend='github')
+
+
+@csrf_exempt
+def gh_org_login(request):
+    """Attempt to redirect the user to Github for authentication."""
+    return redirect('social:begin', backend='gh-custom')
 
 
 def get_interest_modal(request):
@@ -1874,6 +1896,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
+                    params['prize_projects'] = HackathonProject.objects.filter(hackathon=bounty.event, bounty__standard_bounties_id=bounty.standard_bounties_id).exclude(status='invalid').prefetch_related('profiles')
+                    print(params['prize_projects'])
 
                 helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)
@@ -2320,7 +2344,7 @@ def invalid_file_response(uploaded_file, supported):
                 'status': 415,
                 'message': 'Invalid File Type'
             }
-
+        '''
         try:
             forbidden = False
             while forbidden is False:
@@ -2341,6 +2365,7 @@ def invalid_file_response(uploaded_file, supported):
 
         except Exception as e:
             print(e)
+        '''
 
     return response
 
@@ -2497,7 +2522,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'quests':
         context['quest_wins'] = profile.quest_attempts.filter(success=True)
-    elif tab == 'grant_contribs':
+    elif tab == 'grants':
         from grants.models import Contribution
         contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
         history = []
@@ -2608,7 +2633,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grant_contribs', 'quests']
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2624,7 +2649,6 @@ def profile(request, handle, tab=None):
     owned_kudos = None
     sent_kudos = None
     context = {}
-
     # get this user
     try:
         if not handle and not request.user.is_authenticated:
@@ -3114,7 +3138,7 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
-
+    params['blocked_urls'] = json.dumps(list(BlockedURLFilter.objects.all().values_list('expression', flat=True)))
     params['FEE_PERCENTAGE'] = request.user.profile.fee_percentage if request.user.is_authenticated else 10
 
     coupon_code = request.GET.get('coupon', False)
@@ -3207,7 +3231,8 @@ def change_bounty(request, bounty_id):
         'project_type',
         'reserved_for_user_handle',
         'is_featured',
-        'admin_override_suspend_auto_approval'
+        'admin_override_suspend_auto_approval',
+        'keywords'
     ]
 
     if request.body:
@@ -3239,11 +3264,16 @@ def change_bounty(request, bounty_id):
                     value = timezone.make_aware(
                         timezone.datetime.fromtimestamp(int(value)),
                         timezone=UTC)
+
                 if key == 'bounty_categories':
                     value = value.split(',')
                 old_value = getattr(bounty, key)
+
                 if value != old_value:
-                    setattr(bounty, key, value)
+                    if key == 'keywords':
+                        bounty.metadata['issueKeywords'] = value
+                    else:
+                        setattr(bounty, key, value)
                     bounty_changed = True
                     if key == 'reserved_for_user_handle' and value:
                         new_reservation = True
@@ -3388,7 +3418,7 @@ def hackathon(request, hackathon=''):
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
     except HackathonEvent.DoesNotExist:
-        hackathon_event = HackathonEvent.objects.last()
+        return redirect(reverse('get_hackathons'))
 
     title = hackathon_event.name
     network = get_default_network()
@@ -3407,6 +3437,7 @@ def hackathon(request, hackathon=''):
 
     params = {
         'active': 'dashboard',
+        'type': 'hackathon',
         'title': title,
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
@@ -3476,6 +3507,7 @@ def hackathon_projects(request, hackathon=''):
     q = clean(request.GET.get('q', ''), strip=True)
     order_by = clean(request.GET.get('order_by', '-created_on'), strip=True)
     filters = clean(request.GET.get('filters', ''), strip=True)
+    sponsor = clean(request.GET.get('sponsor', ''), strip=True)
     page = request.GET.get('page', 1)
 
     try:
@@ -3483,7 +3515,17 @@ def hackathon_projects(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
-    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles').order_by(order_by)
+    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles').order_by(order_by).select_related('bounty')
+
+    sponsors_list = []
+    for project in projects:
+        sponsor_item = {
+            'avatar_url': project.bounty.avatar_url,
+            'org_name': project.bounty.org_name
+        }
+        sponsors_list.append(sponsor_item)
+
+    sponsors_list = list({v['org_name']:v for v in sponsors_list}.values())
 
     if q:
         projects = projects.filter(
@@ -3491,6 +3533,14 @@ def hackathon_projects(request, hackathon=''):
             Q(summary__icontains=q) |
             Q(profiles__handle__icontains=q)
         )
+
+    if sponsor:
+        projects_sponsor=[]
+        for project in projects:
+            if sponsor == project.bounty.org_name:
+                projects_sponsor.append(project)
+        projects = projects_sponsor
+
     if filters == 'winners':
         projects = projects.filter(
             Q(badge__isnull=False)
@@ -3509,6 +3559,8 @@ def hackathon_projects(request, hackathon=''):
         'active': 'hackathon_onboard',
         'title': 'Hackathon Projects',
         'hackathon': hackathon_event,
+        'sponsors_list': sponsors_list,
+        'sponsor': sponsor,
         'projects': projects_paginated,
         'order_by': order_by,
         'filters': filters,
@@ -3678,7 +3730,8 @@ def get_hackathons(request):
 
     params = {
         'active': 'hackathons',
-        'title': 'hackathons',
+        'title': 'Hackathons',
+        'card_desc': "Gitcoin is one of the largers administrators of Virtual Hackathons in the decentralizion space.",
         'hackathons': events,
     }
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)

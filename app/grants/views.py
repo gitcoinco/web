@@ -190,7 +190,18 @@ def grant_details(request, grant_id, grant_slug):
     except Grant.DoesNotExist:
         raise Http404
 
-    if request.method == 'POST' and (profile == grant.admin_profile or request.user.is_staff):
+    is_admin = (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False
+    if is_admin:
+        add_cancel_params = True
+
+    is_team_member = False
+    if profile:
+        for team_member in grant.team_members.all():
+            if team_member.id == profile.id:
+                is_team_member = True
+                break
+
+    if request.method == 'POST' and (is_team_member or request.user.is_staff):
         if request.FILES.get('input_image'):
             logo = request.FILES.get('input_image', None)
             grant.logo = logo
@@ -226,9 +237,6 @@ def grant_details(request, grant_id, grant_slug):
             grant.save()
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-    is_admin = (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False
-    if is_admin:
-        add_cancel_params = True
 
     params = {
         'active': 'grant_details',
@@ -251,6 +259,7 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
+        'is_team_member': is_team_member
     }
 
     if add_cancel_params:
@@ -300,8 +309,17 @@ def grant_new(request):
             }
             grant = Grant.objects.create(**grant_kwargs)
             new_grant_admin(grant)
+
+            team_members = (team_members[0].split(','))
             team_members.append(profile.id)
-            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            team_members = list(set(team_members))
+
+            for i in range(0, len(team_members)):
+                team_members[i] = int(team_members[i])
+
+            grant.team_members.add(*team_members)
+            grant.save()
+
             return JsonResponse({
                 'success': True,
             })
@@ -377,8 +395,17 @@ def grant_new_v0(request):
                 'logo': logo,
             }
             grant = Grant.objects.create(**grant_kwargs)
+
+            team_members = (team_members[0].split(','))
             team_members.append(profile.id)
-            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            team_members = list(set(team_members))
+
+            for i in range(0, len(team_members)):
+                team_members[i] = int(team_members[i])
+
+            grant.team_members.add(*team_members)
+            grant.save()
+
             return JsonResponse({
                 'success': True,
             })
@@ -429,8 +456,15 @@ def grant_new_v0(request):
 def milestones(request, grant_id, grant_slug):
     profile = get_profile(request)
     grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
+    is_team_member = False
 
-    if profile != grant.admin_profile:
+    if profile:
+        for team_member in grant.team_members.all():
+            if team_member.id == profile.id:
+                is_team_member = True
+                break
+
+    if not is_team_member:
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == "POST":
@@ -699,7 +733,7 @@ def profile(request):
     if not request.user.is_authenticated:
         raise Http404
     handle = request.user.profile.handle
-    return redirect(f'/profile/{handle}/grant_contribs')
+    return redirect(f'/profile/{handle}/grants')
 
 def quickstart(request):
     """Display quickstart guide."""

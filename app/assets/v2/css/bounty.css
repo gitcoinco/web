@@ -120,7 +120,7 @@ body {
 
 .box {
   padding: 14px;
-  border: 1px solid #DBDBDB;
+  border-bottom: 1px solid #DBDBDB;
   border-radius: 3px;
   margin: 0;
 }
@@ -200,11 +200,6 @@ body {
   text-transform: capitalize;
 }
 
-.started-status-column div {
-  display: inline-block;
-  margin: 5px;
-}
-
 .funder-avatar,
 .activity div {
   margin: auto;
@@ -228,11 +223,6 @@ body {
 #timer .bounty-info-text {
   position: relative;
   top: 2px;
-}
-
-#bounty_details .activity-tags {
-  float: left;
-  text-align: center;
 }
 
 #bounty_details .activity-tag-first {
@@ -299,12 +289,11 @@ body {
 }
 
 .contributor-box {
-  border: 1px solid #DBDBDB;
-  border-right: none;
+  border-right: 1px solid #DBDBDB;
 }
 
 .contributor-box:last-child {
-  border-right: 1px solid #DBDBDB;
+  border-right: none;
 }
 
 .contributors-info {
@@ -410,22 +399,9 @@ a.btn {
   margin-left: 5px;
 }
 
-#btn-white .github-comment {
-  color: #FFFFFF;
-  position: absolute;
-  font-size: 0.625rem;
-  text-align: center;
-  width: 1.25rem;
-  top: 0.4375rem;
-  right: 0.5rem;
-}
-
 .activity {
   margin-bottom: 10px;
-}
-
-.fulfilled .activity-status {
-  margin-bottom: 10px;
+  font-size: 13px;
 }
 
 .fulfilled .bounty-text,
@@ -535,6 +511,12 @@ a.btn {
   margin: 5px;
 }
 
+.stop-work-container {
+  position: absolute;
+  right: 0;
+  top: -8px;
+}
+
 .stop-work {
   float: right;
   padding-left: 5px;
@@ -581,7 +563,12 @@ a.btn {
   }
 
   .contributor-box {
-    border: 1px solid #DBDBDB;
+    border-right: 0;
+    border-bottom: 1px solid #DBDBDB;
+  }
+
+  .contributor-box:last-child {
+    border-bottom: none;
   }
 
   .actions {
@@ -779,16 +766,17 @@ a.btn {
     margin-bottom: 10px;
   }
 
-  /* .bounty-info div {
-    width: 100%;
-  } */
-
   .loading .issue-url {
     font-size: 1rem;
   }
 
   .rocket {
     width: 3.5rem;
+  }
+
+  #bounty_actions {
+    margin-top: 10px;
+    margin-bottom: 1rem;
   }
 }
 
@@ -803,6 +791,22 @@ a.btn {
 
   #funder_notif_info {
     text-align: center;
+  }
+
+  #moderator-admin-actions span {
+    display: inline-block;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+
+  .stop-work-container {
+    position: relative;
+    margin-bottom: 1rem !important;
+  }
+
+  .stop-work {
+    float: none;
+    margin-top: 1rem !important;
   }
 }
 

@@ -55,7 +55,7 @@
         {% endif %}
         {% if total_grant_actions %}
           <li class="nav-item">
-            <a class="nav-link nav-line  {% if tab == 'grant_contribs' %}active{%endif%}" href="{{profile.url}}/grant_contribs">
+            <a class="nav-link nav-line  {% if tab == 'grants' %}active{%endif%}" href="{{profile.url}}/grants">
               Grants
               {% if total_grant_actions %}<span>{{total_grant_actions}}</span>{%endif%}                  
             </a>
@@ -132,7 +132,7 @@
             {% include 'profiles/tab_earnings.html' %}
           {% elif tab == 'spent' %}
             {% include 'profiles/tab_spent.html' %}
-          {% elif tab == 'grant_contribs' %}
+          {% elif tab == 'grants' %}
             {% include 'profiles/tab_grant_contribs.html' %}
           {% elif tab == 'quests' %}
             {% include 'profiles/tab_quests.html' %}

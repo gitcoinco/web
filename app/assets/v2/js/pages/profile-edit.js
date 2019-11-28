@@ -30,7 +30,7 @@ $(document).ready(function() {
         );
       } else {
         _alert(
-          { message: gettext('An error occured. Please try again.') },
+          { message: gettext('An error occurred. Please try again.') },
           'error'
         );
       }

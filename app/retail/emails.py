@@ -927,8 +927,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Waterloo Sunrise"
-    new_kudos_pks = [5163, 5077, 5126]
+    subject = "SAI, DAI, Oh my!"
+    new_kudos_pks = [4017, 7056, 7130]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -949,22 +949,26 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    I'm back on the road again, hitting the tarmac once more to join the hacking goodness and celebration at ETH Waterloo. If you'll be attending, be sure to say hello: I'm looking forward to seeing all of your incredible faces.  You can check out the schedule <a href="https://ethwaterloo.com/#schedule"> with more information about my talk here.</a> Tweet at me: I'm <a href="https://twitter.com/owocki">@owocki.</a>
+    As you’ve probably heard, MakerDAO’s Multi-Collateral DAI officially <a href="https://blog.makerdao.com/multi-collateral-dai-is-live/">launched</a> on November 18th. You’ll notice any bounties on the Gitcoin platform that were previously holding DAI are now holding SAI (Single-Collateral DAI). We plan to add support for the new DAI (Multi-Collateral DAI) on November 25th, so keep a lookout for that change and make sure you know the difference between the two.
 </p>
 <p>
-    The development team is hard at work again with the successful push to release another version of Gitcoin. If you'd like to take a look at our release notes (with fun goodies such as new Kudos, fresh quests, and boundless bug fixes) be sure to take a look at our Github repo. The latest release notes live <a href="https://github.com/gitcoinco/web/releases/tag/20191106master"> here</a>.
+    MakerDAO has plenty of great resources on their <a href="https://blog.makerdao.com/">blog</a>, but as you know we like to gamify everything to keep things fun. In that spirit, our community has made three awesome Quests to test your knowledge on the transition. See if you can beat <a href="https://gitcoin.co/quests/62/migrate-or-dai">Migrate or DAI</a>, <a href="https://gitcoin.co/quests/59/upgrade-or-dai">Upgrade or DAI</a>, and <a href="https://gitcoin.co/quests/66/much-cooler-dai">Much Cooler DAI</a>. By the end you’ll be better informed of how this transition affects you, and you can earn 3 new kudos in the process
 </p>
 <p>
-    Web3 World is progressing along! If you're joining us for this fall/winter hack, be sure to get your submissions in by 11:59 PM EST on November 11th. We're excited to see your work and projects you've put together.
+    From a product perspective, it’s been a busy week. We’ve integrated Opera/Brave support for opening and submitting bounties, and we will be supporting even more Web3 wallet providers in the near future. We’re also testing out a long-awaited in-app chat feature that will be rolled out for all to use very soon.
 </p>
+<p>
+    Finally, hackathons: With Web3 World judging wrapping up, there will be lots of content for you to dig into. Right now you can read Aave’s retro <a href="https://medium.com/aave/gitcoin-x-aave-hackathon-recap-f61d24af2cb">blog post</a> to learn about the winning DeFi projects our community built, and the Ethereum Foundation also gave us nice shout out in their <a href="https://blog.ethereum.org/2019/11/12/Ethereum.org-Development-Update-1/">Development Update</a> post. Remember, our final hackathon of the year <a href="https://hackathons.gitcoin.co/global-communities">Global Communities</a> launches December 2nd, so sign up today to receive updates!
+</p>
+
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
+        The Gitcoin Livestream is on for this week featuring Adam Wozney speaking about the BUIDL Network and Zach Herring to discuss ConsenSys Labs' micro grants for hackathon winners! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        As we mentioned earlier this week, YouTube recordings of our livestreams are finally being released. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
+        As you may know, we're updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
         </li>
     </ul>
 </p>
@@ -973,46 +977,46 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'nionis',
+        'who': 'uivlis',
         'who_link': True,
-        'what': 'Create HOPR Widget According To Design Mockup',
-        'link': 'https://gitcoin.co/issue/hoprnet/hopr-website/16/3607',
+        'what': 'Fixed error logs for js-sdk',
+        'link': 'https://gitcoin.co/issue/mesg-foundation/js-sdk/15/3689',
         'link_copy': 'View more',
     }, {
-        'who': 'frippo40',
+        'who': 'pldespaigne',
         'who_link': True,
-        'what': 'Ultimate Package Tracker',
-        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/23/3420',
+        'what': 'Resolved an IPFS ENS security concern for MetaMask',
+        'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/5724/3606',
         'link_copy': 'View more',
     }, {
-        'who': 'janus',
+        'who': 'acolytec3',
         'who_link': True,
-        'what': 'Ethereum Anemometer',
-        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/24/3421',
+        'what': 'Added support for Multi-Collateral DAI for Status',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/9491/3718',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Sarchy',
-        'title': '5 minute thinking game with Ether for winner',
+        'name': 'Solana',
+        'title': 'Build on Solana: Join the Private Beta',
         'image_url': '',
-        'link': 'http://bit.ly/sarchy-gitcoin-weekly',
-        'cta': 'Play the \'Trusting Trust\' game',
+        'link': 'http://bit.ly/solana-beta',
+        'cta': 'Join the Private Beta',
         'body': [
-           'Due to data manipulation by big tech companies, Trust is becoming a key issue in the internet.',
-           '"Trusting Trust" is a game about Trust. It uses the "Prisoners Dilemma" concept. This concept has even been used in the movie "The Dark Knight" by the Joker in the climax scene.'
+            'Solana is a Lightning-fast distributed ledger technology for mission-critical decentralized apps.',
+            'We are currently taking applications for an incredibly limited beta program for early adopters of Solana to launch their projects alongside our mainnet later in 2019.'
         ]
     }
-    
+
     bounties_spec = [{
-        'url': 'https://github.com/diadata-org/diadata/issues/181',
-        'primer': 'Scraper For Bitflyer Futures',
+        'url': 'https://github.com/money-on-chain/main-RBTC-contract/issues/1',
+        'primer': 'Money On Chain Bug Bounty',
     }, {
-        'url': 'https://github.com/fsprojects/fantomas/issues/555',
-        'primer': 'SpaceBeforeArguments Inconsistency: Should Apply To Functions That Receive `Unit` Arg Too',
+        'url': 'https://github.com/web3j/web3j/issues/1103',
+        'primer': 'Support AbiV2 for Web3J',
     }, {
-        'url': 'https://github.com/gitcoinco/skunkworks/issues/134',
-        'primer': 'Web3 Sustain Event Page',
+        'url': 'https://github.com/crytic/slither/issues/318',
+        'primer': 'Split constant-function detector for Slither',
 }, ]
 
 
