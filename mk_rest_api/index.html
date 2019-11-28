@@ -2275,10 +2275,9 @@
 </tbody>
 </table>
 <h3 id="bounties"><code>bounties</code></h3>
-<p>The bounties endpoint provides a listing of bounties and their current status. There are two endpoints that access bounties:</p>
+<p>The bounties endpoint provides a listing of bounties and their current status. There is one endpoint that access bounties:</p>
 <ul>
 <li><code>https://gitcoin.co/api/v0.1/bounties/</code> - Returns a list of bounties</li>
-<li><code>https://gitcoin.co/api/v0.1/bounties/&lt;bountyId&gt;/</code> - Returns a single bounty by ID.</li>
 </ul>
 <h4 id="fields">Fields</h4>
 <table>
@@ -2488,7 +2487,7 @@
 </table>
 <h4 id="url-parameters">URL Parameters</h4>
 <p><strong>Filters</strong></p>
-<p>You can filter the data returned from the API by providing these keys as URL parameters <code>experience_level</code>, <code>project_length</code>, <code>bounty_type</code>, <code>bounty_owner_address</code>, <code>is_open</code>, and <code>github_url</code>. <code>github_url</code> can take a comma-separated list of GitHub urls</p>
+<p>You can filter the data returned from the API by providing these keys as URL parameters <code>experience_level</code>, <code>project_length</code>, <code>bounty_type</code>, <code>bounty_owner_address</code>, <code>is_open</code>, <code>github_url</code> and <code>pk</code>. <code>github_url</code> can take a comma-separated list of GitHub urls. <code>pk</code> takes an ID and returns a single bounty.</p>
 <p><strong>Order By</strong></p>
 <p>By passing an <code>order_by</code> parameter you can order the data by the provided key. Ex: <code>?order_by=expires_date</code>. To sort in the opposite direction you can add a <code>-</code> in from the the key <code>?order_by=-expires_date</code>.</p>
 <h4 id="example-request">Example Request</h4>
