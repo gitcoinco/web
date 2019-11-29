@@ -963,7 +963,7 @@ Hey Gitcoiners,
     Let us know if it helps. We want to make a body of knowledge for the Web 3 curious, leading towards ways to build it yourself. Come play :)
 </p>
 <p>
-    <img src="https://gitcoin-static.s3-us-west-2.amazonaws.com/gitcointurkey.png">
+    <img style="max-width: 90%" src="https://gitcoin-static.s3-us-west-2.amazonaws.com/gitcointurkey.png">
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
