@@ -1,0 +1,15 @@
+{
+    "symbol": "NBH",
+    "address": "0xEfB7Ad52f42A34584217cFDB4c9377A715eD55C9",
+    "overview": {
+        "en": "INF is a blockchain-based storage application that allows users to encrypt and store a variety of alphanumeric data on a decentralized network. The user data is securely stored on a peer-to-peer network (IPFS) which also ensures that it is only accessible to the designated recipient upon a predetermined inactivity trigger. Examples of user data that can be stored in our secured environment are: passwords, wallet files, private keys, JSON files, UTC files, keystore files, mnemonic phrases, recovery seeds and even short text messages.",
+        "zh": "NBH是基于区块链构建的分布式智能合约的游戏生态平台。它将颠覆传统的游戏行业规则，以去中心化的结构直接将整个游戏生态链上的组成分子连接起来，实现资产对接、流通、和存储。"
+    },
+    "email": "blockchain5858@gmail.com",
+    "website": "http://www.nbgame.org/",
+    "whitepaper": "http://www.nbgame.org/WhitePaper.pdf",
+    "state": "NORMAL",
+    "links": {
+        "blog": "https://weibo.com/7344859779/info",        
+    }
+}
