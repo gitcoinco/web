@@ -498,7 +498,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'fee_amount': bounty_payload.get('fee_amount', 0)
             })
         else:
-            print('latest old bounty found {}'.format(latest_old_bounty))
+            # print('latest old bounty found {}'.format(latest_old_bounty))
             latest_old_bounty_dict = latest_old_bounty.to_standard_dict(
                 fields=[
                     'web3_created', 'github_url', 'token_name', 'token_address', 'privacy_preferences', 'expires_date',

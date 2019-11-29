@@ -102,9 +102,15 @@
   background: white !important;
 }
 
+input:disabled,
+textarea:disabled {
+  background: white;
+  color: #000;
+}
+
 input.editable,
 textarea.editable {
-  margin-top: 6px;
+  margin-top: 6px !important;
   border: 1px solid #e2eaf2;
   background: white;
   padding: 7px 14px !important;

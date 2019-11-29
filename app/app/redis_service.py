@@ -4,6 +4,7 @@ from redis import Redis
 
 
 class RedisService:
+
     def __new__(cls):
         if not hasattr(cls, 'instance'):
             cls.instance = super().__new__(cls)

@@ -75,6 +75,20 @@ var loading_button = function(button) {
   button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">');
 };
 
+var cb_address;
+var reloadCbAddress = function() {
+
+  try {
+    // invoke infura synchronous call, if it fails metamask is locked
+    cb_address = web3.eth.coinbase;
+  } catch (error) {
+    // catch error so sentry doesn't alert on metamask call failure
+    console.log('web3.eth.coinbase could not be loaded');
+  }
+};
+
+reloadCbAddress();
+
 var update_metamask_conf_time_and_cost_estimate = function() {
   var confTime = 'unknown';
   var ethAmount = 'unknown';
@@ -680,7 +694,6 @@ const randomElement = array => {
 var currentNetwork = function(network) {
 
   $('.navbar-network').removeClass('hidden');
-  let tooltip_info;
 
   document.web3network = network;
   if (document.location.href.startsWith('https://gitcoin.co')) { // Live
@@ -796,7 +809,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#primary_form, .primary_form-meta').addClass('hidden');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
-    } else if (!web3.eth.coinbase) {
+    } else if (!cb_address) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
@@ -905,59 +918,51 @@ function getNetwork(id) {
 
 // figure out what version of web3 this is, whether we're logged in, etc..
 var listen_for_web3_changes = async function() {
+  reloadCbAddress();
   if (document.location.pathname.indexOf('grants') === -1) {
+
     if (!document.listen_for_web3_iterations) {
       document.listen_for_web3_iterations = 1;
     } else {
       document.listen_for_web3_iterations += 1;
     }
+
     if (!window.isWeb3Fired) {
       if (typeof web3 == 'undefined') {
         currentNetwork();
         trigger_form_hooks();
-      } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined') {
+      } else if (typeof cb_address == 'undefined' || !cb_address) {
         currentNetwork('locked');
         trigger_form_hooks();
+      } else if (typeof cb_address == 'undefined' || !cb_address) {
+        currentNetwork('not-provider');
+        is_metamask_unlocked = true;
+        trigger_form_hooks();
       } else {
-        var cb;
-
-        try {
-        // invoke infura synchronous call, if it fails metamask is locked
-          cb = web3.eth.coinbase;
-        } catch (error) {
-        // catch error so sentry doesn't alert on metamask call failure
-          console.log('web3.eth.coinbase could not be loaded');
-        }
-        if (typeof cb == 'undefined' || !cb) {
-          currentNetwork('not-provider');
-          is_metamask_unlocked = true;
-          trigger_form_hooks();
-        } else {
-          is_metamask_unlocked = true;
-          web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-            if (errors) {
-              return;
+        is_metamask_unlocked = true;
+        web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+          if (errors) {
+            return;
+          }
+          if (typeof result != 'undefined' && result !== null) {
+            document.balance = result.toNumber();
+            if (document.balance == 0) {
+              $('#zero_balance_error').css('display', 'block');
+              $('#admin_faucet_form').remove();
             }
-            if (typeof result != 'undefined' && result !== null) {
-              document.balance = result.toNumber();
-              if (document.balance == 0) {
-                $('#zero_balance_error').css('display', 'block');
-                $('#admin_faucet_form').remove();
-              }
-            }
-          });
+          }
+        });
 
-          web3.version.getNetwork(function(error, netId) {
-            if (error) {
-              currentNetwork();
-            } else {
-              var network = getNetwork(netId);
+        web3.version.getNetwork(function(error, netId) {
+          if (error) {
+            currentNetwork();
+          } else {
+            var network = getNetwork(netId);
 
-              currentNetwork(network);
-              trigger_form_hooks();
-            }
-          });
-        }
+            currentNetwork(network);
+            trigger_form_hooks();
+          }
+        });
       }
     }
 
@@ -1157,7 +1162,8 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     }
 
     if (renderForExplorer) {
-      if (typeof web3 != 'undefined' && typeof web3.eth != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
+
+      if (typeof web3 != 'undefined' && typeof web3.eth != 'undefined' && cb_address == result['bounty_owner_address']) {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
       } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
