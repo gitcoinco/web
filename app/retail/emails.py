@@ -962,7 +962,9 @@ Hey Gitcoiners,
     Not building, but want to learn about new topics in Web 3? Check out <a href="https://gitcoin.co/quests">Gitcoin Quests.</a>
     Let us know if it helps. We want to make a body of knowledge for the Web 3 curious, leading towards ways to build it yourself. Come play :)
 </p>
-
+<p>
+    <img src="https://gitcoin-static.s3-us-west-2.amazonaws.com/gitcointurkey.png">
+</p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
