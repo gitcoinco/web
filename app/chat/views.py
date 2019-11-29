@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-
 from django.conf import settings
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -33,9 +32,9 @@ def embed(request):
 
     is_staff = request.user.is_staff if request.user.is_authenticated else False
 
-    if not is_staff:
-        context = dict(active='error', code=404, title="Error {}".format(404))
-        return TemplateResponse(request, 'error.html', context, status=404)
+    # if not is_staff:
+    #     context = dict(active='error', code=404, title="Error {}".format(404))
+    #     return TemplateResponse(request, 'error.html', context, status=404)
 
     context = {
         'is_outside': True,
@@ -43,8 +42,6 @@ def embed(request):
         'title': 'Chat',
         'card_title': _('Community Chat'),
         'card_desc': _('Come chat with the community'),
-        'avatar_url': static('v2/images/helmet.png'),
-        'is_chat_user': False,
         'chat_url': settings.CHAT_URL
     }
 
