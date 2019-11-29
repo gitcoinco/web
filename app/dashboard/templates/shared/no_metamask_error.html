@@ -24,15 +24,17 @@
       <p class="mb-4">Please install MetaMask and refresh this page to continue.</p>
       {% endblocktrans %}
       <a class="btn btn-metamask btn-lg-padding" target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">{% trans 'Install Metamask' %}</a>
-      {% blocktrans %}
-      <p class="mt-4">Alternatively, use your phone to connect to the Ethereum network.</p>
-      {% endblocktrans %}
-      <button class="btn btn-fortmatic btn-lg-padding" onclick="approve_fortmatic()">{% trans 'Connect Fortmatic ' %}</button>
-      <div class="mt-5 metamask-links font-weight-semibold">
+
+      <div class="mt-2 metamask-links font-weight-semibold">
         <a target="_blank" href="https://metamask.zendesk.com/hc/en-us/sections/360002148511-MetaMask-FAQs?utm_source=gitcoin.co&utm_medium=referral">{% trans 'MetaMask FAQ' %}</a> &bull;
         <a target="_blank" href="https://www.youtube.com/watch?v=ZIGUC9JAAw8">{% trans 'How MetaMask work?' %}</a> &bull;
         <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues/4">{% trans 'Need Help?' %}</a>
       </div>
+
+      <p class="mt-4">Alternatively, use your phone to connect to the Ethereum network.</p>
+      <button class="btn btn-fortmatic btn-lg-padding" onclick="approve_fortmatic()">
+        {% trans 'Connect Fortmatic ' %}
+      </button>
     </div>
     <div class="col-12 col-lg-6 col-xl-5 text-center">
       <img src="{% static "v2/images/metamask/install-metamask.svg" %}" alt="Metamask Logo" class="mw-100">

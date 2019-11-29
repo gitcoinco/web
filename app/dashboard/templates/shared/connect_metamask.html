@@ -21,10 +21,14 @@
       <h3>{% trans "To continue," %} <br>
         {% trans "you'll need to connect to your wallet." %}</h3>
       <p class="my-4">{% trans "Please connect to your wallet and refresh this page to continue." %}</p>
-      <div class="btn-container">
-        <button class="btn btn-metamask btn-lg-padding" onclick="approve_metamask()">{% trans 'Connect Metamask' %}</button>
-        <button class="btn btn-fortmatic btn-lg-padding" onclick="approve_fortmatic()">{% trans 'Connect Fortmatic ' %}</button>
-      </div>
+
+      <button class="btn btn-metamask font-weight-semibold btn-lg-padding" onclick="approve_metamask()">
+        {% trans 'Connect Metamask' %}
+      </button>
+      <button class="btn btn-fortmatic font-weight-semibold btn-lg-padding" onclick="approve_fortmatic()">
+        {% trans 'Connect Fortmatic ' %}
+      </button>
+
       <p class="mt-4 font-smaller-2">{% trans "Can't get web3 to work?" %}   <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Get help here." %}</a></p>
     </div>
     <div class="col-lg-6 col-xl-5 col-sm-12 text-center">

@@ -96,7 +96,6 @@ button:focus {
 
 .btn {
   border-radius: 5px;
-  width: 220px;
 }
 
 .btn-gc-blue,
@@ -252,19 +251,9 @@ button:focus {
   background-color: #F24283;
 }
 
-.btn-container {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
 .btn-fortmatic {
   background: #617aff;
   color: white;
-  margin-top: 10px;
 }
 
 .btn-fortmatic:hover {
