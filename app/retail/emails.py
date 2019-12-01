@@ -927,8 +927,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Hackathons, Hackathons, & Hackathons..."
-    new_kudos_pks = [5062, 5125, 5070]
+    subject = "SAI, DAI, Oh my!"
+    new_kudos_pks = [4017, 7056, 7130]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -949,28 +949,26 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    Another Gitcoin hackathon in the books. Web3 World wrapped up Monday, and it was the most successful one yet. Every single bounty put up by sponsor’s had at least one project submission, so no prize money went to waste! Judging is in progress, but if you’d like to see what was built you can browse all submissions on our brand new <a href="https://gitcoin.co/hackathon/projects/web3-world">projects</a> page.
+    As you’ve probably heard, MakerDAO’s Multi-Collateral DAI officially <a href="https://blog.makerdao.com/multi-collateral-dai-is-live/">launched</a> on November 18th. You’ll notice any bounties on the Gitcoin platform that were previously holding DAI are now holding SAI (Single-Collateral DAI). We plan to add support for the new DAI (Multi-Collateral DAI) on November 25th, so keep a lookout for that change and make sure you know the difference between the two.
 </p>
 <p>
-    Next week Yale is hosting an Open Climate Collabathon with an in person event followed by a virtual hackathon. You can learn more about the mission <a href="https://www.collabathon.openclimate.earth/">here</a> and sign up for the online portion on Gitcoin <a href="https://gitcoin.co/hackathon/onboard/open-climate-collabathon/">here</a>.
+    MakerDAO has plenty of great resources on their <a href="https://blog.makerdao.com/">blog</a>, but as you know we like to gamify everything to keep things fun. In that spirit, our community has made three awesome Quests to test your knowledge on the transition. See if you can beat <a href="https://gitcoin.co/quests/62/migrate-or-dai">Migrate or DAI</a>, <a href="https://gitcoin.co/quests/59/upgrade-or-dai">Upgrade or DAI</a>, and <a href="https://gitcoin.co/quests/66/much-cooler-dai">Much Cooler DAI</a>. By the end you’ll be better informed of how this transition affects you, and you can earn 3 new kudos in the process
 </p>
 <p>
-    Finally, our last virtual hackathon of 2019 is called Global Communities and will run from December 2nd - 16th. The goal of this event is to acknowledge the hard work the Gitcoin and Blockchain communities have put in this year, and we’ll celebrate with in person satellite events hosted by the <a href="https://www.buidlnetwork.net/">BUIDL Network</a> and a special community judged prize. Learn more and register on our <a href="https://hackathons.gitcoin.co/global-communities">landing page</a>.
+    From a product perspective, it’s been a busy week. We’ve integrated Opera/Brave support for opening and submitting bounties, and we will be supporting even more Web3 wallet providers in the near future. We’re also testing out a long-awaited in-app chat feature that will be rolled out for all to use very soon.
 </p>
 <p>
-    Moving on to meatspace hackathons, the team and I are back from another successful ETH Waterloo. It was great to see everyone and spend some time hacking - I built Cerebro, a machine learning matching system for Gitcoin (that we plan to integrate soon!). If you missed my talk, I posted a <a href="https://twitter.com/owocki/status/1193275598472404998">tweet storm</a> of my slides and presentation for you to check out.
+    Finally, hackathons: With Web3 World judging wrapping up, there will be lots of content for you to dig into. Right now you can read Aave’s retro <a href="https://medium.com/aave/gitcoin-x-aave-hackathon-recap-f61d24af2cb">blog post</a> to learn about the winning DeFi projects our community built, and the Ethereum Foundation also gave us nice shout out in their <a href="https://blog.ethereum.org/2019/11/12/Ethereum.org-Development-Update-1/">Development Update</a> post. Remember, our final hackathon of the year <a href="https://hackathons.gitcoin.co/global-communities">Global Communities</a> launches December 2nd, so sign up today to receive updates!
 </p>
-<p>
-    Also, a very important announcement: if you haven't heard, MakerDAO is launching their Multi-Collateral Dai token next week on November 18th. At that time, we'll be renaming the current Single-Collateral Dai token to Sai, so don't be alarmed if you see your bounties and grants change over to the new name. We'll also be supporting the Multi-Collateral Dai token soon, with a planned launch date of November 25th. For more info on everything thats happening with Dai, along with instructions and tools to help you transition to the new token, check out MakerDAO's upgrade guide <a href="https://blog.makerdao.com/looking-ahead-how-to-upgrade-to-multi-collateral-dai/">here</a>.
-</p>
+
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week featuring hackers from Web3 World presenting their projects! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
+        The Gitcoin Livestream is on for this week featuring Adam Wozney speaking about the BUIDL Network and Zach Herring to discuss ConsenSys Labs' micro grants for hackathon winners! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        As we mentioned last week, we're updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
+        As you may know, we're updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
         </li>
     </ul>
 </p>
@@ -979,45 +977,46 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'jorropo',
+        'who': 'uivlis',
         'who_link': True,
-        'what': 'Built Pipelines for Spacemesh Virtual Machine',
-        'link': 'https://gitcoin.co/issue/spacemeshos/svm/7/3656',
+        'what': 'Fixed error logs for js-sdk',
+        'link': 'https://gitcoin.co/issue/mesg-foundation/js-sdk/15/3689',
         'link_copy': 'View more',
     }, {
-        'who': 'imerkle',
+        'who': 'pldespaigne',
         'who_link': True,
-        'what': 'Auto-generated the svm_wasmer.h file for the svm-runtime-c-api',
-        'link': 'https://gitcoin.co/issue/spacemeshos/svm/12/3655',
+        'what': 'Resolved an IPFS ENS security concern for MetaMask',
+        'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/5724/3606',
         'link_copy': 'View more',
     }, {
-        'who': 'janus',
+        'who': 'acolytec3',
         'who_link': True,
-        'what': 'Wrote Tests For Approve() And Transfer_from() In Erc20 Module',
-        'link': 'https://gitcoin.co/issue/docknetwork/substrate-warmup/32/3674',
+        'what': 'Added support for Multi-Collateral DAI for Status',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/9491/3718',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Arweave',
-        'title': 'Get paid to build dApps on the permaweb 🛠️🌐',
+        'name': 'Solana',
+        'title': 'Build on Solana: Join the Private Beta',
         'image_url': '',
-        'link': 'http://bit.ly/Arweave1',
-        'cta': 'Start hacking today!',
+        'link': 'http://bit.ly/solana-beta',
+        'cta': 'Join the Private Beta',
         'body': [
-           'The permaweb is a decentralized, immutable new web, built on top of a globally distributed, permanent hard drive - the Arweave network. We want the permaweb to be accessible to everyone, but we want you to be a part of making that a reality. That’s why we’re looking for talented developers to build decentralized apps on the permaweb.'
+            'Solana is a Lightning-fast distributed ledger technology for mission-critical decentralized apps.',
+            'We are currently taking applications for an incredibly limited beta program for early adopters of Solana to launch their projects alongside our mainnet later in 2019.'
         ]
     }
-    
+
     bounties_spec = [{
-        'url': 'https://github.com/Loopring/trusted_setup/issues/11',
-        'primer': 'Loopring 3.0 Trusted Setup MPC Ceremony',
+        'url': 'https://github.com/money-on-chain/main-RBTC-contract/issues/1',
+        'primer': 'Money On Chain Bug Bounty',
     }, {
-        'url': 'https://github.com/ArweaveTeam/Bounties/issues/17',
-        'primer': 'IPFS+Arweave UI Competition',
+        'url': 'https://github.com/web3j/web3j/issues/1103',
+        'primer': 'Support AbiV2 for Web3J',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/5465',
-        'primer': 'DESIGN - BOT Creatives - Winter 2019; 6th Edition',
+        'url': 'https://github.com/crytic/slither/issues/318',
+        'primer': 'Split constant-function detector for Slither',
 }, ]
 
 
@@ -1050,7 +1049,7 @@ Back to shipping,
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
-            .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
+            .filter(leaderboard=key, product='all').order_by('rank')[0:num_leadboard_items]
     if not len(leaderboard['quarterly_payers']['items']):
         leaderboard = []
 

@@ -305,8 +305,22 @@ def sum_kudos(kt):
             sum_kudos_helper(kt, YEARLY, index_term, val_usd)
 
 
-def sum_kudos_helper(keyword, time, index_term, val_usd):
+def sum_kudos_helper(t, time, index_term, val_usd):
     add_element(f'{time}_{KUDOS}', index_term, val_usd)
+    add_element(f'{time}_{ALL}', index_term, val_usd)
+    add_element(f'{time}_{FULFILLED}', index_term, val_usd)
+    if t.username == index_term:
+        add_element(f'{time}_{EARNERS}', index_term, val_usd)
+    if t.from_username == index_term:
+        add_element(f'{time}_{PAYERS}', index_term, val_usd)
+    if t.org_name == index_term:
+        add_element(f'{time}_{ORGS}', index_term, val_usd)
+    if index_term in tip_to_country(t):
+        add_element(f'{time}_{COUNTRIES}', index_term, val_usd)
+    if index_term in tip_to_city(t):
+        add_element(f'{time}_{CITIES}', index_term, val_usd)
+    if index_term in tip_to_continent(t):
+        add_element(f'{time}_{CONTINENTS}', index_term, val_usd)
 
 
 def sum_tips(t, index_terms):
@@ -374,8 +388,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
+        global ranks
+        global counts
+        
         products = ['kudos', 'grants', 'bounties', 'tips', 'all']
         for product in products:
+
+            ranks = default_ranks()
+            counts = default_ranks()
+            index_terms = []
 
             if product in ['all', 'grants']:
                 # get grants
@@ -415,7 +436,7 @@ class Command(BaseCommand):
 
             # set old LR as inactive
             with transaction.atomic():
-                lrs = LeaderboardRank.objects.active()
+                lrs = LeaderboardRank.objects.active().filter(product=product)
                 lrs.update(active=False)
 
                 # save new LR in DB

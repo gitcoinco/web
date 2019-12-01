@@ -195,6 +195,7 @@ def details(request, kudos_id, name):
     context = {
         'send_enabled': kudos.send_enabled_for(request.user),
         'is_outside': True,
+        'reward_for': kudos.quests_reward.filter(visible=True),
         'active': 'details',
         'title': 'Details',
         'card_title': _('Each Kudos is a unique work of art.'),
