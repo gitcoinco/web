@@ -2447,8 +2447,8 @@ def profile_backup(request):
 
 @require_POST
 @login_required
-def profile_set_location(request, handle):
-    """ Save profile location.
+def profile_tax_settings(request, handle):
+    """ Save profile tax info (country location and address).
 
     Args:
         handle (str): The profile handle.
@@ -2460,7 +2460,11 @@ def profile_set_location(request, handle):
                 {'error': 'Bad request'},
                 status=401)
         location_component = request.POST.get('locationComponent')
-        profile.location = location_component
+        address_component = request.POST.get('addressComponent')
+        if json.loads(location_component):
+            profile.location = location_component
+        if address_component:
+            profile.address = address_component
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404

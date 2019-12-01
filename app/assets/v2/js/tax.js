@@ -1,15 +1,19 @@
 var locationComponent = {};
-const save_location = function() {
+var addressComponent = '';
+const save_tax_settings = function() {
   if (!document.contxt.github_handle) {
     _alert('No profile', 'error');
   }
   const formData = new FormData();
-  const location = $('#userLocation').val();
 
   formData.append('locationComponent', JSON.stringify(locationComponent));
+  formData.append('addressComponent', addressComponent);
+  let userLocation = $('#userLocation').val();
+  let userAddress = $('#userAddress').val();
+
 
   const profile = {
-    url: '/api/v0.1/profile/' + document.contxt.github_handle + '/setlocation',
+    url: '/api/v0.1/profile/' + document.contxt.github_handle + '/setTaxSettings',
     method: 'POST',
     headers: {'X-CSRFToken': csrftoken},
     data: formData,
@@ -32,16 +36,22 @@ const save_location = function() {
 let autocomplete;
 
 function initPlacecomplete() {
-  let input = document.getElementById('userLocation');
+  let inputLocation = userLocation;
+  let inputAddress = userAddress;
 
-  const options = {
+  const optionsLocation = {
     types: ['(regions)']
   };
 
-  autocomplete = new google.maps.places.Autocomplete(input, options);
+  const optionsAddress = {
+    types: ['address']
+  };
 
-  autocomplete.addListener('place_changed', function() {
-    let location = autocomplete.getPlace();
+  autocompleteLocation = new google.maps.places.Autocomplete(inputLocation, optionsLocation);
+  autocompleteAddress = new google.maps.places.Autocomplete(inputAddress, optionsAddress);
+
+  autocompleteLocation.addListener('place_changed', function() {
+    let location = autocompleteLocation.getPlace();
 
     for (var i = 0; i < location.address_components.length; i++) {
       var addressObj = location.address_components[i];
@@ -56,5 +66,13 @@ function initPlacecomplete() {
         }
       }
     }
+  });
+
+  autocompleteAddress.addListener('place_changed', function() {
+    let address = autocompleteAddress.getPlace();
+    let addressName = address.address_components[0];
+    let addressNumber = address.address_components[1];
+
+    addressComponent = addressName.long_name + ', ' + addressNumber.long_name;
   });
 }

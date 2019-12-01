@@ -126,9 +126,9 @@ urlpatterns = [
         name='profile_job_opportunity'
     ),
     url(
-        r'^api/v0.1/profile/(.*)?/setlocation',
-        dashboard.views.profile_set_location,
-        name='profile_set_location'
+        r'^api/v0.1/profile/(.*)?/setTaxSettings',
+        dashboard.views.profile_tax_settings,
+        name='profile_set_tax_settings'
     ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),

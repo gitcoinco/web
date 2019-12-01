@@ -770,10 +770,10 @@ def tax_settings(request):
         return login_redirect
         
     # location  dict is not empty
-    if profile.location:
+    if json.loads(profile.location):
         location_components = json.loads(profile.location)
         location = location_components['country']
-        if location_components['locality']:
+        if 'locality' in location_components:
             location = location_components['locality'] + ', ' + location
     # location dict is empty
     else:
@@ -782,6 +782,12 @@ def tax_settings(request):
         location = location_components['country_name']
         if location_components['city']:
             location = location_components['city'] + ', ' + location
+    
+    #address is not empty
+    if profile.address:
+        address = profile.address   
+    else:
+        address = ''
 
     if request.POST:
 
@@ -834,6 +840,7 @@ def tax_settings(request):
         'es': es,
         'profile': profile,
         'location': location,
+        'address': address,
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/tax.html', context)
