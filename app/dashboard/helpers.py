@@ -509,7 +509,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'snooze_warnings_for_days', 'admin_override_and_hide', 'admin_override_suspend_auto_approval',
                     'admin_mark_as_remarket_ready', 'funding_organisation', 'bounty_reserved_for_user', 'is_featured',
                     'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda', 'coupon_code',
-                    'admin_override_org_name', 'admin_override_org_logo'
+                    'admin_override_org_name', 'admin_override_org_logo', 'bounty_state'
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
@@ -630,7 +630,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         new_bounty.canceled_on = canceled_on
         new_bounty.save()
 
-    # migrate fulfillments, and only take the ones from 
+    # migrate fulfillments, and only take the ones from
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bounty_details.get('fulfillments', {})
     if fulfillments:
@@ -645,7 +645,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     new_bounty.is_featured = True if latest_old_bounty and latest_old_bounty.is_featured is True else False
     if new_bounty.is_featured == True:
         new_bounty.save()
-    
+
     if latest_old_bounty:
         latest_old_bounty.current_bounty = False
         latest_old_bounty.save()
