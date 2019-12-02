@@ -40,6 +40,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/code/app
+      - PYTHONPATH=/usr/bin/python3
     env_file:
       - app/app/.env
     build:

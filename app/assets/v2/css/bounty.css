@@ -120,7 +120,7 @@ body {
 
 .box {
   padding: 14px;
-  border: 1px solid #DBDBDB;
+  border-bottom: 1px solid #DBDBDB;
   border-radius: 3px;
   margin: 0;
 }
@@ -225,11 +225,6 @@ body {
   top: 2px;
 }
 
-#bounty_details .activity-tags {
-  float: left;
-  text-align: center;
-}
-
 #bounty_details .activity-tag-first {
   margin-right: 0.2em;
 }
@@ -294,12 +289,11 @@ body {
 }
 
 .contributor-box {
-  border: 1px solid #DBDBDB;
-  border-right: none;
+  border-right: 1px solid #DBDBDB;
 }
 
 .contributor-box:last-child {
-  border-right: 1px solid #DBDBDB;
+  border-right: none;
 }
 
 .contributors-info {
@@ -407,10 +401,7 @@ a.btn {
 
 .activity {
   margin-bottom: 10px;
-}
-
-.fulfilled .activity-status {
-  margin-bottom: 10px;
+  font-size: 13px;
 }
 
 .fulfilled .bounty-text,
@@ -520,6 +511,12 @@ a.btn {
   margin: 5px;
 }
 
+.stop-work-container {
+  position: absolute;
+  right: 0;
+  top: -8px;
+}
+
 .stop-work {
   float: right;
   padding-left: 5px;
@@ -566,7 +563,12 @@ a.btn {
   }
 
   .contributor-box {
-    border: 1px solid #DBDBDB;
+    border-right: 0;
+    border-bottom: 1px solid #DBDBDB;
+  }
+
+  .contributor-box:last-child {
+    border-bottom: none;
   }
 
   .actions {
@@ -776,11 +778,6 @@ a.btn {
     margin-top: 10px;
     margin-bottom: 1rem;
   }
-
-  .stop-work {
-    float: none;
-    margin-top: 1rem !important;
-  }
 }
 
 @media (max-width: 768px) {
@@ -802,6 +799,15 @@ a.btn {
     margin-top: 5px;
   }
 
+  .stop-work-container {
+    position: relative;
+    margin-bottom: 1rem !important;
+  }
+
+  .stop-work {
+    float: none;
+    margin-top: 1rem !important;
+  }
 }
 
 @media (max-width: 991.98px) {

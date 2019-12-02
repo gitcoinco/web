@@ -3418,7 +3418,7 @@ def hackathon(request, hackathon=''):
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
     except HackathonEvent.DoesNotExist:
-        hackathon_event = HackathonEvent.objects.last()
+        return redirect(reverse('get_hackathons'))
 
     title = hackathon_event.name
     network = get_default_network()
@@ -3437,6 +3437,7 @@ def hackathon(request, hackathon=''):
 
     params = {
         'active': 'dashboard',
+        'type': 'hackathon',
         'title': title,
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
@@ -3485,6 +3486,7 @@ def hackathon(request, hackathon=''):
 def hackathon_onboard(request, hackathon=''):
     referer = request.META.get('HTTP_REFERER', '')
 
+    is_registered = False
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
         profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
@@ -3729,7 +3731,8 @@ def get_hackathons(request):
 
     params = {
         'active': 'hackathons',
-        'title': 'hackathons',
+        'title': 'Hackathons',
+        'card_desc': "Gitcoin is one of the largers administrators of Virtual Hackathons in the decentralizion space.",
         'hackathons': events,
     }
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
