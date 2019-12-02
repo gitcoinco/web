@@ -44,34 +44,39 @@
             </div>
           {% endif %}
         <h1>{{hackathon.name}} Guide</h1>
-        {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
-        <BR>
-        <BR>
-        {% if not github_handle %}
+        <p>{{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}</p>
 
-        <div class="text-center">
-          <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
-            onclick="dataLayer.push({'event': 'login'});">
-            <i class="fab fa-github"></i>
-            <span>{% trans "Register with GitHub for Hackathon" %}</span>
-          </a>
-          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon email announcements</p>
-        </div>
-        {% else %}
-          {% if is_registered %}
-            <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
+        {% if hackathon.end_date|timesince < "1 min" %}
+          {% if not github_handle %}
+            <div class="text-center">
+              <a class="btn btn-lg btn-gc-blue font-subheader" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
+                onclick="dataLayer.push({'event': 'login'});">
+                <i class="fab fa-github"></i>
+                <span>{% trans "Register with GitHub for Hackathon" %}</span>
+              </a>
+              <p class="mt-2 font-caption">By registering you agree to receive hackathon email announcements</p>
+            </div>
           {% else %}
-            <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
-            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon email announcements</p>
+            {% if is_registered %}
+              <a class="btn btn-lg btn-gc-blue font-subheader" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
+            {% else %}
+              <a class="btn btn-lg btn-gc-blue font-subheader" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
+              <p class="mt-2 font-caption">By registering you agree to receive hackathon email announcements</p>
+            {% endif %}
           {% endif %}
         {% endif %}
+
       </div>
     </div>
 
-    <div class="container-fluid p-5">
-      {% if hackathon.end_date|timesince >= "1 min" %}
-        <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
-      {% endif %}
+    {% if hackathon.end_date|timesince >= "1 min" %}
+      <p class="p-3 alert-warning text-center font-weight-semibold font-smaller-1">
+        This hackathon event had ended at {{hackathon.end_date}}, please check the
+        <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.
+      </p>
+    {% endif %}
+
+    <div class="container-fluid pb-5 px-5">
       <div class="row py-5">
         <div class="col-12">
           <h2 class="text-center">How does the Hackathon work?</h2>
@@ -180,26 +185,27 @@
           </div>
         </div>
       </div>
-      {% if not github_handle %}
 
-        <div class="text-center">
-          <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
-            onclick="dataLayer.push({'event': 'login'});">
-            <i class="fab fa-github"></i>
-            <span>{% trans "Register with GitHub for Hackathon" %}</span>
-          </a>
-          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-        </div>
-
-      {% else %}
-        <div class="text-center">
-          {% if is_registered %}
-            <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
-          {% else %}
-            <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
+      {% if hackathon.end_date|timesince < "1 min" %}
+        {% if not github_handle %}
+          <div class="text-center">
+            <a class="btn btn-lg btn-gc-blue font-subheader" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
+              onclick="dataLayer.push({'event': 'login'});">
+              <i class="fab fa-github"></i>
+              <span>{% trans "Register with GitHub for Hackathon" %}</span>
+            </a>
             <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-          {% endif %}
-        </div>
+          </div>
+        {% else %}
+          <div class="text-center">
+            {% if is_registered %}
+              <a class="btn btn-lg btn-gc-blue font-subheader" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
+            {% else %}
+              <a class="btn btn-lg btn-gc-blue font-subheader" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
+              <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+            {% endif %}
+          </div>
+        {% endif %}
       {% endif %}
     </div>
     {% csrf_token %}
