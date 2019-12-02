@@ -205,6 +205,7 @@ urlpatterns = [
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
     path('hackathon-list', dashboard.views.get_hackathons, name='get_hackathons2'),
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
+    path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
 
     # action URLs
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),

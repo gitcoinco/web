@@ -3422,6 +3422,8 @@ def hackathon(request, hackathon=''):
 
     title = hackathon_event.name
     network = get_default_network()
+    if timezone.now() < hackathon_event.start_date and not request.user.is_staff:
+        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
     # TODO: Refactor post orgs
     orgs = []
@@ -3501,6 +3503,46 @@ def hackathon_onboard(request, hackathon=''):
         'is_registered': is_registered,
     }
     return TemplateResponse(request, 'dashboard/hackathon/onboard.html', params)
+
+
+@csrf_exempt
+@require_POST
+def save_hackathon(request, hackathon):
+    description = clean(
+        request.POST.get('description'),
+        tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'p', 's' 'u', 'br', 'i', 'li', 'ol', 'strong', 'ul', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'iframe', 'pre'],
+        attributes={
+            'a': ['href', 'title'],
+            'abbr': ['title'],
+            'acronym': ['title'],
+            'img': ['src'],
+            'iframe': ['src', 'frameborder', 'allowfullscreen'],
+            '*': ['class']},
+        styles=[],
+        protocols=['http', 'https', 'mailto'],
+        strip=True,
+        strip_comments=True
+    )
+
+    if request.user.is_authenticated and request.user.is_staff:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        hackathon_event.description = description
+        hackathon_event.save()
+        return JsonResponse(
+            {
+                'success': True,
+                'is_my_org': True,
+            },
+            status=200)
+    else:
+        return JsonResponse(
+            {
+                'success': False,
+                'is_my_org': False,
+            },
+            status=401)
 
 
 def hackathon_projects(request, hackathon=''):
@@ -3719,6 +3761,7 @@ def hackathon_registration(request):
         redirect = f'/hackathon/{hackathon}'
 
     return JsonResponse({'redirect': redirect})
+
 
 def get_hackathons(request):
     """Handle rendering all Hackathons."""

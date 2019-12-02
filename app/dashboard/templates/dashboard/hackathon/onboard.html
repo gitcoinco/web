@@ -22,7 +22,28 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
+    <link rel="stylesheet" href="//cdn.quilljs.com/1.3.6/quill.snow.css" />
     <style>
+      .inactive .ql-editor {
+  padding:0;
+  line-height:inherit;
+}
+
+.inactive .ql-toolbar {
+  display:none;
+}
+
+.inactive .ql-container.ql-snow {
+  border:none;
+}
+
+.container {
+  counter-reset: section;
+}
+.counter::before {
+  counter-increment: section;
+  content: counter(section) '. ';
+}
       .onboard-banner {
         background: {% firstof hackathon.background_color or 'white' %};
         color: {% firstof hackathon.text_color or 'black' %};
@@ -58,7 +79,11 @@
           <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
         </div>
         {% else %}
-          {% if is_registered %}
+
+          {% if is_registered and hackathon.start_date|timesince <= "1 min" %}
+            <p>Explore Web3 via Gitcoin Quests to prepare</p>
+            <a class="btn btn-lg btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+          {% elif is_registered %}
             <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
           {% else %}
             <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
@@ -68,139 +93,165 @@
       </div>
     </div>
 
-    <div class="container-fluid p-5">
+    <div class="container-fluid bg-lightblue">
       {% if hackathon.end_date|timesince >= "1 min" %}
         <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
       {% endif %}
-      <div class="row py-5">
-        <div class="col-12">
-          <h2 class="text-center">How does the Hackathon work?</h2>
-        </div>
+      <div class="container mt-md-n5 bg-white position-relative">
+          <div class="row">
+            <div class="col-12">
+              <h3>
+                Gitcoin Virtual Hackathon
+              </h3>
+              <h1 class="uppercase">
+                {{ hackathon.name }}
+              </h1>
+              <p>
+                {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+              </p>
+              {% if not github_handle %}
+                <div class="text-center">
+                  <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
+                    onclick="dataLayer.push({'event': 'login'});">
+                    <i class="fab fa-github"></i>
+                    <span>{% trans "Register with GitHub for Hackathon" %}</span>
+                  </a>
+                  <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                </div>
+              {% else %}
+                {% if is_registered and hackathon.start_date|timesince <= "1 min" %}
+                  <p>Explore Web3 via Gitcoin Quests to prepare</p>
+                  <a class="btn btn-lg btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+                {% elif is_registered %}
+                  <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
+                {% else %}
+                  <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
+                  <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+
       </div>
 
-      <div class="how-it-works__step-inverse">
-        <div class="how-it-works__step text-center">
-          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
-            <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
-          </div>
-          <div class="col-12 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
-            <div>
-              <div class="how-it-works__step-number text-center">1</div>
-              <div class="how-it-works__vert-line"></div>
+      <div class="container bg-white mt-4">
+        <div class="row">
+          <div class="col-12">
+            {% if is_staff %}
+              <div class="">
+                <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
+                <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savehackathon="{{hackathon.slug}}">save</button>
+              </div>
+            {% endif %}
+            <div class="editor-container ">
+              <div id="description-hackathon" class="description-hackathon">{{hackathon.description | safe}}</div>
             </div>
-            <div class="how-it-works__step-title">{% trans "Check out the Prizes" %}</div>
-            <div class="how-it-works__step-text">
-              {{hackathon.slug}}
-              {% url 'hackathon' hackathon.slug as hackathon_url %}
+          </div>
+        </div>
+
+        <div class="row py-5">
+          <div class="col-12">
+            <h2 class="">How does the Hackathon work?</h2>
+          </div>
+        </div>
+
+        <div class="row my-4">
+          <div class="col-12 col-md-6">
+              <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
+          </div>
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+              <b class="counter">{% trans "Check out the Prizes" %}</b>
               {% blocktrans %}
-                <p class="center-block">
+                <p class="">
                   Visit the <a target="_blank" href="{{ hackathon_url }}#bounties">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
                 </p>
               {% endblocktrans %}
-            </div>
           </div>
         </div>
-
-        <div class="col-12 col-lg-8 how-it-works__step p-0 text-center">
-          <div class="col-12 col-lg-6 how-it-works__screenshot">
-            <img src="{% static "v2/images/how-it-works/hackathon/pic2.jpg" %}" class="mw-100" alt="express interest" />
+        <div class="row my-4">
+          <div class="col-12 col-md-6">
+              <img src="{% static "v2/images/how-it-works/hackathon/pic2.jpg" %}" class="mw-100" alt="express interest" />
           </div>
-          <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
-            <div>
-              <div class="how-it-works__step-number text-center">2</div>
-              <div class="how-it-works__vert-line"></div>
-            </div>
-            <div class="how-it-works__step-title">{% trans "Join Discord" %}</div>
-            <div class="how-it-works__step-text">
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+              <b class="counter">{% trans "Join Discord" %}</b>
               {% blocktrans %}
-                <p class="center-block">
+                <p class="">
                   Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time on the <a target="_blank" href="https://discord.gg/TxRKTn8">Gitcoin Events Discord</a>.
                 </p>
               {% endblocktrans %}
-            </div>
           </div>
         </div>
-
-        <div class="how-it-works__step text-center">
-          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
-            <img src="{% static "v2/images/how-it-works/hackathon/pic3.jpg" %}" class="mw-100" alt="bounty explorer" />
+        <div class="row my-4">
+          <div class="col-12 col-md-6">
+              <img src="{% static "v2/images/how-it-works/hackathon/pic3.jpg" %}" class="mw-100" alt="bounty explorer" />
           </div>
-          <div class="col-12 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
-            <div>
-              <div class="how-it-works__step-number text-center">3</div>
-              <div class="how-it-works__vert-line"></div>
-            </div>
-            <div class="how-it-works__step-title">{% trans "Start Work via Gitcoin" %}</div>
-            <div class="how-it-works__step-text">
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+              <b class="counter">{% trans "Start Work via Gitcoin" %}</b>
               {% blocktrans %}
-                <p class="center-block">
+                <p class="">
                   When your team is formed please have one of your teammates navigate to each prize page you plan to compete for and click the “Start Work” button.
                 </p>
               {% endblocktrans %}
-            </div>
           </div>
         </div>
-
-        <div class="col-12 col-lg-8 how-it-works__step p-0 text-center">
-          <div class="col-12 col-lg-6 how-it-works__screenshot">
-            <img src="{% static "v2/images/how-it-works/hackathon/pic4.jpg" %}" class="mw-100" alt="express interest" />
+        <div class="row my-4">
+          <div class="col-12 col-md-6">
+              <img src="{% static "v2/images/how-it-works/hackathon/pic4.jpg" %}" class="mw-100" alt="express interest" />
           </div>
-          <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
-            <div>
-              <div class="how-it-works__step-number text-center">4</div>
-              <div class="how-it-works__vert-line"></div>
-            </div>
-            <div class="how-it-works__step-title">{% trans "BUIDL!" %}</div>
-            <div class="how-it-works__step-text">
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+              <b class="counter">{% trans "BUIDL!" %}</b>
               {% blocktrans %}
-                <p class="center-block">
+                <p class="">
                   Build your cool ideas and make your vision come true with your team!
                 </p>
               {% endblocktrans %}
-            </div>
+          </div>
+        </div>
+        <div class="row my-4">
+          <div class="col-12 col-md-6">
+            <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
+          </div>
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+              <b class="counter">{% trans "Submit Work via Gitcoin" %}</b>
+              {% blocktrans %}
+                <p class="">
+                  When your project is completed, submit your work by clicking the “Submit Work” button on the prize page/
+                </p>
+              {% endblocktrans %}
           </div>
         </div>
 
-        <div class="how-it-works__step text-center">
-          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
-            <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
-          </div>
-          <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
-            <div>
-              <div class="how-it-works__step-number text-center">5</div>
-            </div>
-            <div class="how-it-works__step-title">{% trans "Submit Work via Gitcoin" %}</div>
-            <div class="how-it-works__step-text">
-              {% blocktrans %}
-                <p class="center-block">
-                  When your project is completed, submit your work by clicking the “Submit Work” button on the prize page,
-                </p>
-              {% endblocktrans %}
-            </div>
+        <div class="row">
+          <div class="col-12">
+            JOIN THE HACKATHON
+            {% if not github_handle %}
+              <div class="text-center">
+                <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
+                  onclick="dataLayer.push({'event': 'login'});">
+                  <i class="fab fa-github"></i>
+                  <span>{% trans "Register with GitHub for Hackathon" %}</span>
+                </a>
+                <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+              </div>
+            {% else %}
+              <div class="text-center">
+                {% if is_registered and hackathon.start_date|timesince <= "1 min" %}
+                  <p>Explore Web3 via Gitcoin Quests to prepare</p>
+                  <a class="btn btn-lg btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+                {% elif is_registered %}
+                  <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
+                {% else %}
+
+                  <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
+                  <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                {% endif %}
+              </div>
+            {% endif %}
           </div>
         </div>
       </div>
-      {% if not github_handle %}
 
-        <div class="text-center">
-          <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
-            onclick="dataLayer.push({'event': 'login'});">
-            <i class="fab fa-github"></i>
-            <span>{% trans "Register with GitHub for Hackathon" %}</span>
-          </a>
-          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-        </div>
 
-      {% else %}
-        <div class="text-center">
-          {% if is_registered %}
-            <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
-          {% else %}
-            <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
-            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-          {% endif %}
-        </div>
-      {% endif %}
     </div>
     {% csrf_token %}
     {% include 'shared/analytics.html' %}
@@ -238,5 +289,6 @@
         register(name, referer)
       });
     </script>
+    <script src="{% static 'v2/js/pages/hackathon-onboard.js' %}"></script>
 
   </body>
