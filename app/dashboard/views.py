@@ -155,6 +155,17 @@ def record_user_action(user, event_name, instance):
         # TODO: sync_profile?
         logger.error(f"error in record_action: {e} - {event_name} - {instance}")
 
+# this dictionary maps Activity event names to BountyEvent types
+bounty_activity_event_adapter = {
+    'worker_applied': 'express_interest',
+    'worker_approved': 'accept_worker',
+    'start_work': 'accept_worker',
+    'extend_expiration': 'extend_expiration',
+    'killed_bounty': 'cancel_bounty',
+    'work_submitted': 'submit_work',
+    'stop_work': 'stop_work',
+    'work_done': 'payout_bounty'
+}
 
 def record_bounty_activity(bounty, user, event_name, interest=None):
     """Creates Activity object.
@@ -190,10 +201,13 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
     if event_name == 'worker_applied':
         kwargs['metadata']['approve_worker_url'] = bounty.approve_worker_url(user.profile)
         kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
-    if event_name in ['worker_approved', 'worker_rejected'] and interest:
+    elif event_name in ['worker_approved', 'worker_rejected'] and interest:
         kwargs['metadata']['worker_handle'] = interest.profile.handle
 
     try:
+        if event_name in bounty_activity_event_adapter:
+            event = BountyEvent.objects.create(event_type=bounty_activity_event_adapter[event_name])
+            bounty.handle_event(event)
         return Activity.objects.create(**kwargs)
     except Exception as e:
         logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
