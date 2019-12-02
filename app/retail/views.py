@@ -748,7 +748,7 @@ def about(request):
         (
             "Alessandro Voto",
             "DevRel",
-            "avotofuture",
+            "alexvotofuture",
             None,
             "Devvies",
             "Tacos",
