@@ -270,11 +270,11 @@ var show_persona_modal = function(e) {
             <h2 class="font-title mt-4">${gettext('Are you a Funder or a Contributor?')}</h2>
           </div>
           <div class="col-12 pt-2 text-center">
-            <p>${gettext('Let us know so we could optimize the <br>best experience for you!')}</p>
+            <p class="mb-0">${gettext('Let us know so we could optimize the <br>best experience for you!')}</p>
           </div>
-          <div class="col-12 my-4 d-flex justify-content-around">
-            <button type="button" class="btn btn-gc-blue col-5" data-persona="persona_is_funder">I'm a Funder</button>
-            <button type="button" class="btn btn-gc-blue col-5" data-persona="persona_is_hunter">I'm a Contributor</button>
+          <div class="col-12 my-4 text-center">
+            <button type="button" class="btn btn-gc-blue px-5 mb-2 mx-2" data-persona="persona_is_funder">I'm a Funder</button>
+            <button type="button" class="btn btn-gc-blue px-5 mx-2" data-persona="persona_is_hunter">I'm a Contributor</button>
           </div>
         </div>
       </div>
