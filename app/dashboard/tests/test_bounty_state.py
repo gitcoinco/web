@@ -60,7 +60,7 @@ class BountyStateTest(TestCase):
             event_type='express_interest'
         )
         self.bounty.handle_event(event)
-        assert self.bounty.bounty_state == 'open_bounty'
+        assert self.bounty.bounty_state == 'open'
         event_accept = BountyEvent.objects.create(
             bounty=self.bounty,
             event_type='accept_worker'
