@@ -428,9 +428,6 @@ class Bounty(SuperModel):
 
     def handle_event(self, event):
         """Handle a new BountyEvent, and potentially change state"""
-        print(self.project_type)
-        print(self.bounty_state)
-        print(event.event_type)
         next_state = self.EVENT_HANDLERS[self.project_type][self.bounty_state].get(event.event_type)
         if next_state:
             self.bounty_state = next_state
