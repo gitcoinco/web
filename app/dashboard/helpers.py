@@ -33,7 +33,7 @@ from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
 from dashboard.models import (
-    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon,
+    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon,
     HackathonEvent, UserAction,
 )
 from dashboard.notifications import (
@@ -791,7 +791,25 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
     except Exception as e:
         logger.error(f'{e} during record_bounty_activity for {new_bounty}')
 
+    bounty_activity_event_adapter = {
+        'worker_applied': 'express_interest',
+        'worker_approved': 'accept_worker',
+        'start_work': 'accept_worker',
+        'extend_expiration': 'extend_expiration',
+        'killed_bounty': 'cancel_bounty',
+        'work_submitted': 'submit_work',
+        'stop_work': 'stop_work',
+        'work_done': 'payout_bounty'
+    }
+
     if user_profile:
+        if event_name in bounty_activity_event_adapter:
+            event = BountyEvent.objects.create(bounty=new_bounty,
+                event_type=bounty_activity_event_adapter[event_name],
+                created_by=user_profile)
+            print('event created')
+            new_bounty.handle_event(event)
+            print('event handled')
         return Activity.objects.create(
             created_on=timezone.now() if not override_created else override_created,
             profile=user_profile,

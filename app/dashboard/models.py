@@ -395,7 +395,7 @@ class Bounty(SuperModel):
 
     EVENT_HANDLERS = {
         'traditional': {
-            'open_bounty': {
+            'open': {
                 'accept_worker': 'work_started',
                 'cancel_bounty': 'cancelled'},
             'work_started': {
@@ -407,7 +407,7 @@ class Bounty(SuperModel):
                 'cancel_bounty': 'cancelled'},
         },
         'cooperative': {
-            'open_bounty': {
+            'open': {
                 'accept_worker': 'work_started',
                 'cancel_bounty': 'cancelled'},
             'work_started': {
@@ -419,7 +419,7 @@ class Bounty(SuperModel):
                 'cancel_bounty': 'cancelled'},
         },
         'contest': {
-            'open_bounty': {
+            'open': {
                 'payout_bounty': 'done',
                 'cancel_bounty': 'cancelled'}
         }
@@ -428,6 +428,9 @@ class Bounty(SuperModel):
 
     def handle_event(self, event):
         """Handle a new BountyEvent, and potentially change state"""
+        print(self.project_type)
+        print(self.bounty_state)
+        print(event.event_type)
         next_state = self.EVENT_HANDLERS[self.project_type][self.bounty_state].get(event.event_type)
         if next_state:
             self.bounty_state = next_state

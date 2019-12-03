@@ -80,9 +80,9 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
-from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
+from .helpers import bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
-    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption,
+    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
     SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
@@ -155,17 +155,6 @@ def record_user_action(user, event_name, instance):
         # TODO: sync_profile?
         logger.error(f"error in record_action: {e} - {event_name} - {instance}")
 
-# this dictionary maps Activity event names to BountyEvent types
-bounty_activity_event_adapter = {
-    'worker_applied': 'express_interest',
-    'worker_approved': 'accept_worker',
-    'start_work': 'accept_worker',
-    'extend_expiration': 'extend_expiration',
-    'killed_bounty': 'cancel_bounty',
-    'work_submitted': 'submit_work',
-    'stop_work': 'stop_work',
-    'work_done': 'payout_bounty'
-}
 
 def record_bounty_activity(bounty, user, event_name, interest=None):
     """Creates Activity object.
@@ -206,7 +195,9 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
 
     try:
         if event_name in bounty_activity_event_adapter:
-            event = BountyEvent.objects.create(event_type=bounty_activity_event_adapter[event_name])
+            event = BountyEvent.objects.create(bounty=bounty,
+                event_type=bounty_activity_event_adapter[event_name],
+                created_by=kwargs['profile'])
             bounty.handle_event(event)
         return Activity.objects.create(**kwargs)
     except Exception as e:
