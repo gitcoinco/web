@@ -51,7 +51,7 @@ class BountyStateTest(TestCase):
             idx_status='open',
             bounty_owner_email='asdfasdf@bar.com',
             current_bounty=True,
-            bounty_state='open_bounty'
+            bounty_state='open'
         )
 
     def test_handle_event(self):
