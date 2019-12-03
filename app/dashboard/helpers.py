@@ -753,6 +753,18 @@ def get_fulfillment_data_for_activity(fulfillment):
     return data
 
 
+bounty_activity_event_adapter = {
+    'worker_applied': 'express_interest',
+    'worker_approved': 'accept_worker',
+    'start_work': 'accept_worker',
+    'extend_expiration': 'extend_expiration',
+    'killed_bounty': 'cancel_bounty',
+    'work_submitted': 'submit_work',
+    'stop_work': 'stop_work',
+    'work_done': 'payout_bounty'
+}
+
+
 def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None, override_created=None):
     """Records activity based on bounty changes
 
@@ -790,17 +802,6 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
 
     except Exception as e:
         logger.error(f'{e} during record_bounty_activity for {new_bounty}')
-
-    bounty_activity_event_adapter = {
-        'worker_applied': 'express_interest',
-        'worker_approved': 'accept_worker',
-        'start_work': 'accept_worker',
-        'extend_expiration': 'extend_expiration',
-        'killed_bounty': 'cancel_bounty',
-        'work_submitted': 'submit_work',
-        'stop_work': 'stop_work',
-        'work_done': 'payout_bounty'
-    }
 
     if user_profile:
         if event_name in bounty_activity_event_adapter:
