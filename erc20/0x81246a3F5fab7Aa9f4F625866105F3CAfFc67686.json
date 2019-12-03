@@ -1,9 +1,9 @@
 { 
  "symbol": "DIMT", 
- "address": "0x81246a3f5fab7aa9f4f625866105f3caffc67686", 
+ "address": "0x81246a3F5fab7Aa9f4F625866105F3CAfFc67686", 
  "overview":{ 
  "en": "DIM is an open source project of decentralized instant messaging protocol, as well as the name of the open communication platform built on top of this protocol. DIM has a wide usage from building a social network product, exchanging data between blockchains or enterprises, to bridging programs in Internet of Things. This is achieved by combining many innovations, such as asymmetric cryptography, extensible and high-performance service nodes, and the address naming service. DIM is the new generation of communication standard to drive the future internet.", 
- "zh": "DIMÊÇÒ»¸ö¿ªÔ´µÄÈ¥ÖĞĞÄ»¯¼´Ê±Í¨Ñ¶Ğ­Òé£¬Ò²ÊÇÒ»¸öÓÉÖÚ¶à·şÎñÌá¹©ÉÌ¹²Í¬¹¹½¨µÄ¿ª·ÅµÄÍ¨Ñ¶Æ½Ì¨¡£ÆäĞ­Òé¿ò¼ÜÔÚ¹úÄÚÒà³Æ×÷¡°µãÑ¶¡±¡£ DIMµÄÓ¦ÓÃÇ°¾°Ê®·Ö¹ãÀ«£¬²»½ö¿ÉÒÔ×÷ÎªÉç½»²úÆ·µÄ´î½¨»ù´¡£¬Ò²¿ÉÒÔ×ö³É¿çÁ´¡¢¿çÆóÒµµÄÊı¾İ½»»»¹¤¾ß£¬»¹¿ÉÒÔÓ¦ÓÃµ½ÎïÁªÍøÍ¨Ñ¶¡£DIM½áºÏÁËÖÚ¶à´´ĞÂ£¬°üÀ¨ÓÉ·Ç¶Ô³ÆÃÜÂëÉú³ÉµÄÍ¨Ñ¶µØÖ·¡¢¿ÉÀ©Õ¹µÄÍ¨Ñ¶½Úµã¡¢ÒÔ¼°ÍêÈ«È¥ÖĞĞÄ»¯µÄµØÖ·Ãû³ÆÄ¿Â¼£¬¿ÉÍû³ÉÎªÇı¶¯ÍòÎï»¥ÁªµÄĞÂÒ»´úµ×²ãÍ¨Ñ¶¼¼Êõ¼°ÍøÂç¡£" 
+ "zh": "DIMæ˜¯ä¸€ä¸ªå¼€æºçš„å»ä¸­å¿ƒåŒ–å³æ—¶é€šè®¯åè®®ï¼Œä¹Ÿæ˜¯ä¸€ä¸ªç”±ä¼—å¤šæœåŠ¡æä¾›å•†å…±åŒæ„å»ºçš„å¼€æ”¾çš„é€šè®¯å¹³å°ã€‚å…¶åè®®æ¡†æ¶åœ¨å›½å†…äº¦ç§°ä½œâ€œç‚¹è®¯â€ã€‚ DIMçš„åº”ç”¨å‰æ™¯ååˆ†å¹¿é˜”ï¼Œä¸ä»…å¯ä»¥ä½œä¸ºç¤¾äº¤äº§å“çš„æ­å»ºåŸºç¡€ï¼Œä¹Ÿå¯ä»¥åšæˆè·¨é“¾ã€è·¨ä¼ä¸šçš„æ•°æ®äº¤æ¢å·¥å…·ï¼Œè¿˜å¯ä»¥åº”ç”¨åˆ°ç‰©è”ç½‘é€šè®¯ã€‚DIMç»“åˆäº†ä¼—å¤šåˆ›æ–°ï¼ŒåŒ…æ‹¬ç”±éå¯¹ç§°å¯†ç ç”Ÿæˆçš„é€šè®¯åœ°å€ã€å¯æ‰©å±•çš„é€šè®¯èŠ‚ç‚¹ã€ä»¥åŠå®Œå…¨å»ä¸­å¿ƒåŒ–çš„åœ°å€åç§°ç›®å½•ï¼Œå¯æœ›æˆä¸ºé©±åŠ¨ä¸‡ç‰©äº’è”çš„æ–°ä¸€ä»£åº•å±‚é€šè®¯æŠ€æœ¯åŠç½‘ç»œã€‚" 
  }, 
  "email": "contact@dim.chat", 
  "website": "https://dim.chat/", 
