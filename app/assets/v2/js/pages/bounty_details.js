@@ -1477,7 +1477,7 @@ const process_activities = function(result, bounty_activities) {
     worker_applied: gettext('Contributor Applied'),
     increased_bounty: gettext('Increased Funding'),
     killed_bounty: gettext('Canceled Bounty'),
-    new_crowdfund: gettext('New Crowdfund Contribution'),
+    new_crowdfund: gettext('Added new Crowdfund Contribution'),
     new_tip: gettext('Tip Sent'),
     receive_tip: gettext('Tip Received'),
     bounty_abandonment_escalation_to_mods: gettext('Escalated for Abandonment of Bounty'),
@@ -1540,6 +1540,7 @@ const process_activities = function(result, bounty_activities) {
     let to_username = null;
     let kudos = null;
     let tip = null;
+    let crowdfund = null;
 
     if (type === 'new_kudos') {
       to_username = meta.to_username.slice(1);
@@ -1550,6 +1551,12 @@ const process_activities = function(result, bounty_activities) {
         token: meta.token_name,
         from: meta.from_name,
         to: meta.to_username
+      };
+    } else if (type == 'new_crowdfund') {
+      crowdfund = {
+        amount: meta.amount,
+        token: meta.token_name,
+        from: meta.from_name
       };
     }
 
@@ -1587,7 +1594,8 @@ const process_activities = function(result, bounty_activities) {
       to_username: to_username,
       kudos: kudos,
       permission_type: result['permission_type'],
-      tip: tip
+      tip: tip,
+      crowdfund: crowdfund
     });
   });
 
