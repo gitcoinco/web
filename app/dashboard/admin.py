@@ -26,7 +26,8 @@ from .models import (
     Activity, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest,
     CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject,
     HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView,
-    RefundFeeRequest, SearchHistory, Sponsor, Tip, TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
+    RefundFeeRequest, SearchHistory, Sponsor, Tip, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
+    UserVerificationModel,
 )
 
 
@@ -394,6 +395,11 @@ class HackathonProjectAdmin(admin.ModelAdmin):
         return obj.bounty.org_name
 
 
+class TribeMemberAdmin(admin.ModelAdmin):
+    raw_id_fields = ['profile', 'org',]
+    list_display = ['pk', 'profile', 'org', 'leader', 'status']
+
+
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
@@ -425,3 +431,4 @@ admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(RefundFeeRequest, RefundFeeRequestAdmin)
 admin.site.register(Coupon, CouponAdmin)
+admin.site.register(TribeMember, TribeMemberAdmin)
