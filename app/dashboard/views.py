@@ -87,7 +87,7 @@ from .models import (
     Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
-    SearchHistory, Sponsor, Subscription, TribeMember, Tool, ToolVote, UserAction, UserVerificationModel,
+    SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -4169,4 +4169,3 @@ def save_tribe(request,handle):
                     'is_my_org': False,
                 },
                 status=401)
-
