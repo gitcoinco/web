@@ -2695,6 +2695,9 @@ def profile(request, handle, tab=None):
 
     # setup context for visit
 
+    if not len(profile.tribe_members) and tab == 'tribe':
+        tab = 'activity'
+
     context['is_my_profile'] = is_my_profile
     context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
     context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
