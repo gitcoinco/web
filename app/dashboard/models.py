@@ -4336,4 +4336,3 @@ class TribeMember(SuperModel):
         choices=MEMBER_STATUS,
         blank=True
     )
-
