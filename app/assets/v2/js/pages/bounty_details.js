@@ -1465,26 +1465,27 @@ var pull_bounty_from_api = function() {
 
 
 const process_activities = function(result, bounty_activities) {
+
   const activity_names = {
-    new_bounty: gettext('New Bounty'),
+    new_bounty: gettext('Bounty Created'),
     start_work: gettext('Work Started'),
     stop_work: gettext('Work Stopped'),
     work_submitted: gettext('Work Submitted'),
     work_done: gettext('Work Done'),
-    worker_approved: gettext('Worker Approved'),
-    worker_rejected: gettext('Worker Rejected'),
-    worker_applied: gettext('Worker Applied'),
+    worker_approved: gettext('Approved'),
+    worker_rejected: gettext('Rejected Contributor'),
+    worker_applied: gettext('Contributor Applied'),
     increased_bounty: gettext('Increased Funding'),
     killed_bounty: gettext('Canceled Bounty'),
-    new_crowdfund: gettext('New Crowdfund Contribution'),
-    new_tip: gettext('New Tip'),
+    new_crowdfund: gettext('Added new Crowdfund Contribution'),
+    new_tip: gettext('Tip Sent'),
     receive_tip: gettext('Tip Received'),
     bounty_abandonment_escalation_to_mods: gettext('Escalated for Abandonment of Bounty'),
     bounty_abandonment_warning: gettext('Warned for Abandonment of Bounty'),
     bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
     bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
     bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
-    bounty_changed: gettext('Bounty Details Changed'),
+    bounty_changed: gettext('Bounty Details Updated'),
     extend_expiration: gettext('Extended Bounty Expiration')
   };
 
@@ -1493,6 +1494,7 @@ const process_activities = function(result, bounty_activities) {
   const _result = [];
 
   bounty_activities = bounty_activities || [];
+
   bounty_activities.forEach(function(_activity) {
     const type = _activity.activity_type;
 
@@ -1537,10 +1539,25 @@ const process_activities = function(result, bounty_activities) {
 
     let to_username = null;
     let kudos = null;
+    let tip = null;
+    let crowdfund = null;
 
     if (type === 'new_kudos') {
       to_username = meta.to_username.slice(1);
       kudos = _activity.kudos.kudos_token_cloned_from.image;
+    } else if (type == 'new_tip') {
+      tip = {
+        amount: meta.amount,
+        token: meta.token_name,
+        from: meta.from_name,
+        to: meta.to_username
+      };
+    } else if (type == 'new_crowdfund') {
+      crowdfund = {
+        amount: meta.amount,
+        token: meta.token_name,
+        from: meta.from_name
+      };
     }
 
     _result.push({
@@ -1576,7 +1593,9 @@ const process_activities = function(result, bounty_activities) {
       token_name: result['token_name'],
       to_username: to_username,
       kudos: kudos,
-      permission_type: result['permission_type']
+      permission_type: result['permission_type'],
+      tip: tip,
+      crowdfund: crowdfund
     });
   });
 

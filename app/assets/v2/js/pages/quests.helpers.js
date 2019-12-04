@@ -205,7 +205,7 @@ $(document).ready(function() {
 
   $('.give_feedback').on('click', async function(e) {
     e.preventDefault();
-    var feedback = prompt('Any comments for the quest author? (optional)', 'Is question #3 wrong? I tried everyhing!');
+    var feedback = prompt('Any comments for the quest author? (optional)', 'Feedback: ');
     var polarity = $(this).data('direction');
     
     var params = {

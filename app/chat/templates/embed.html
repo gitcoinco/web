@@ -24,8 +24,10 @@
     {% include 'shared/cards.html' %}
   </head>
   <body class="{{ active }} bg-lightblue g-font-muli">
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    {% include 'shared/nav.html' %}
+    <div class="container-fluid header dash px-md-0">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'home/nav.html' %}
+    </div>
     <style type="text/css">
       .chatWrapper {
         position: relative;

@@ -145,6 +145,7 @@ urlpatterns = [
 
     # chat
     url(r'^chat/', chat.views.embed, name='chat'),
+    url(r'^chat', chat.views.embed, name='chat2'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
@@ -370,6 +371,9 @@ urlpatterns = [
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
     path('how/<str:work_type>', retail.views.how_it_works, name='how_it_works'),
     re_path(r'^tribes', retail.views.tribes, name='tribes'),
+    path('tribe/<str:handle>/join/', dashboard.views.join_tribe, name='join_tribe'),
+    path('tribe/<str:handle>/save/', dashboard.views.save_tribe, name='save_tribe'),
+    path('tribe/leader/', dashboard.views.tribe_leader, name='tribe_leader'),
 
     # basic redirect retail views
     re_path(r'^press/?', retail.views.presskit, name='press'),

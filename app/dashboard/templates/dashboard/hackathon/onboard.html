@@ -33,7 +33,7 @@
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
+      {% include 'shared/nav_hackathons.html' %}
       <div class="onboard-banner text-center p-4">
           {% firstof hackathon.logo_svg or hackathon.logo as logo %}
           {% if logo %}
@@ -55,14 +55,14 @@
             <i class="fab fa-github"></i>
             <span>{% trans "Register with GitHub for Hackathon" %}</span>
           </a>
-          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon email announcements</p>
         </div>
         {% else %}
           {% if is_registered %}
             <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
           {% else %}
             <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
-            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon email announcements</p>
           {% endif %}
         {% endif %}
       </div>
