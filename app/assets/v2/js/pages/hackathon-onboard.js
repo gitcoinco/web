@@ -10,7 +10,7 @@ $('#edit-btn').on('click', function() {
         toolbar: [
           [{ header: [ 1, 2, 3, 4, 5, 6, false ] }],
           [ 'bold', 'italic', 'underline', 'strike' ],
-          [{ 'size': ['small', false, 'large', 'huge'] }],
+          [{ 'size': [ 'small', false, 'large', 'huge' ] }],
           [{ 'color': [] }, { 'background': [] }],
           [{ 'font': [] }],
           [{ 'align': [] }],
@@ -19,7 +19,7 @@ $('#edit-btn').on('click', function() {
           [{ 'direction': 'rtl' }],
           [ 'blockquote', 'code-block', 'link', 'image', 'video' ],
           ['clean']
-        ],
+        ]
       },
       theme: 'snow',
       placeholder: 'Compose an epic description for your Tribe...'
