@@ -12,7 +12,7 @@
 
 {{ transaction.value_true }} {{ transaction.token_name }} {% trans "per" %} {{ transaction.frequency }}
 
-{% trans "You can see the transaction on etherscan" %} {{ transaction.link }} {% trans "here." %}
+{% trans "You can see the transaction on Etherscan" %} {{ transaction.link }} {% trans "here." %}
 
 {% trans "View Grant" %} at {% url 'grants:details' grant.id grant.slug %}
 
