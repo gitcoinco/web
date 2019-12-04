@@ -47,30 +47,35 @@
         }
       </style>
 
-      <div id="{{ hackathon.identifier }}" class="row pt-5 pb-4 text-center banner hackathon-banner">
-        <div class="col g-font-muli">
-          <span class="hackathon-name d-block mt-5 font-weight-semibold">{{ hackathon.name }}</span>
+      <div id="{{ hackathon.identifier }}" class="row pt-2 pb-4 text-center banner hackathon-banner">
+        <div class="col-12 g-font-muli">
           {% if hackathon.logo_svg %}
-            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
+            <img class="d-block mx-auto mb-0 hackathon-logo" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
           {% elif hackathon.logo %}
-            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
+            <img class="d-block mx-auto mb-0 hackathon-logo" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
           {% endif %}
-          <span class="d-block font-title-lg">
+          <div class="mb-3">
+            <p class="font-weight-bold mb-0 hackathon-header">GITCOIN VIRTUAL HACKATHON</p>
+            <span class="hackathon-name pb-1 font-weight-bold">{{ hackathon.name }}</span>
+          </div>
+          <p class="font-bigger-1 mb-1">
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
             {% if hackathon.end_date|timeuntil >= "1 min" %}
               <p class="font-smaller-1 text-uppercase"> Ends in
                 {{hackathon.end_date|timeuntil}}
               </p>
             {% endif %}
-          </span>
+            </p>
         </div>
+
         {% include 'shared/hackathon_sponsors.html' %}
+
         <div class="col text-right">
           {% if hackathon.show_results %}
-            <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-outline-green rounded-pill font-bigger-1 font-weight-bold px-3 py-2 mr-3">Projects</a>
+            <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-outline-green font-subheader font-weight-semibold px-4 py-2 mr-3">Projects</a>
           {% endif %}
           {% if hackathon.end_date|timesince <= "1 min" %}
-            <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-outline-green rounded-pill font-bigger-1 font-weight-bold px-3 py-2 mr-3"><i class="far fa-lightbulb"></i> Hackathon Guide</a>
+            <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-outline-green font-subheader font-weight-semibold px-4 py-2 mr-3"><i class="far fa-lightbulb mr-1"></i> Hackathon Guide</a>
           {% endif %}
         </div>
       </div>
@@ -83,7 +88,7 @@
           <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
             {% include 'dashboard/sidebar_search_hackathon.html' %}
           </div>
-          <div class="col-12 col-lg-9 col-xl-10 body hackathon-explorer">
+          <div class="col-12 col-lg-9 col-xl-10 body px-4 px-lg-0 hackathon-explorer">
             <div class="container-fluid p-2" id="bounties">
               <div id="dashboard-title" class="hidden">
                 {% include 'shared/search_bar.html' %}
@@ -93,10 +98,10 @@
             {% include 'dashboard/sidebar_search.html' %}
           </div>
 
-          <div class="col-12 col-lg-9 col-xl-10 body">
+          <div class="col-12 col-lg-9 col-xl-10 body px-4 px-lg-0">
             <div class="container-fluid py-2" id="bounties">
               <div id="dashboard-title" class="hidden">
-                <div class="my-3 mx-4">
+                <div class="my-3 mx-3">
                   <h1 class="font-bigger-1">Issue Explorer - Freelance Code Bounties</h1>
                 </div>
                 {% include 'shared/search_bar.html' %}

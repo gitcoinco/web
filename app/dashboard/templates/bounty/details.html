@@ -25,7 +25,7 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-      <div class="col-12 text-center pb-3" id="moderator-admin-actions"></div>
+      <div class="col-12 text-center" id="moderator-admin-actions"></div>
 
       <div class="col-12 col-lg-2 left-rails text-center" style="background: #F2F6F9;">
         <div class="explorer font-body">
@@ -56,22 +56,22 @@
             </div>
             <div class="col-12 col-lg-10 col-xl-11 pl-xl-4">
               <div class="col-12">
-                <div class="d-inline-block font-subheader hackathon-alt" id="event_name"></div>
-                <h4 id="title" class="font-title p-0 text-left"></h4>
+                <div class="font-subheader hackathon-alt text-center text-lg-left" id="event_name"></div>
+                <h4 id="title" class="font-title p-0 text-center text-lg-left"></h4>
                 <div class="col-12 text-center text-lg-left">
-                  <div class="tags font-caption align-items-center">
+                  <div class="tags font-caption">
                     <div class="tag token">
                       <p class="inner-tooltip">
                         <span id="value_in_token"></span>
                       </p>
                     </div>
-                    <div id="value_in_usdt_wrapper" title="" class="tag usd ml-3">
+                    <div id="value_in_usdt_wrapper" class="tag usd ml-3">
                       <p class="inner-tooltip">
                         <span id="value_in_usdt"></span>
                         <span>USD</span>
                       </p>
                     </div>
-                    <div class="d-inline-block font-subheader" id="bounty_categories"></div>
+                    <div class="d-inline-block font-subheader ml-3" id="bounty_categories"></div>
                   </div>
 
                 </div>
@@ -144,7 +144,7 @@
             <div class="col-12 bounty-actions mt-4 pt-2 pb-1">
                 <div class="col-12">
                   <div id="right_actions">
-                    <div class="dropdown show float-right pt-md-2">
+                    <div class="dropdown show float-right">
                       <a class="font-caption font-weight-semibold dropdown-toggle" href="#" role="button"
                         id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Bounty Options
@@ -427,6 +427,7 @@
                     <span>[[:value_in_token_old]] [[:token_name]]</span>
                   </p>
                 </div>
+                to
                 <div class="tag token">
                   <p>
                     <span>[[:value_in_token_new]] [[:token_name]]</span>

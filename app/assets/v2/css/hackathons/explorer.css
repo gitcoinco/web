@@ -11,14 +11,18 @@
 }
 
 .banner .hackathon-logo {
-  max-width: 40rem;
+  height: 18rem;
+}
+
+.banner .hackathon-header {
+  letter-spacing: 2px;
 }
 
 .banner .hackathon-name {
-  font-size: 4rem;
-  letter-spacing: 12px;
-  line-height: 72px;
+  font-size: 2rem;
+  letter-spacing: 8px;
   text-transform: uppercase;
+  border-bottom: 3px solid white;
 }
 
 .banner img:hover {

@@ -927,8 +927,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "SAI, DAI, Oh my!"
-    new_kudos_pks = [4017, 7056, 7130]
+    subject = "Growing Your Global Community"
+    new_kudos_pks = [2571, 7135, 2224]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -949,26 +949,30 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    As you’ve probably heard, MakerDAO’s Multi-Collateral DAI officially <a href="https://blog.makerdao.com/multi-collateral-dai-is-live/">launched</a> on November 18th. You’ll notice any bounties on the Gitcoin platform that were previously holding DAI are now holding SAI (Single-Collateral DAI). We plan to add support for the new DAI (Multi-Collateral DAI) on November 25th, so keep a lookout for that change and make sure you know the difference between the two.
+    At Gitcoin, we're interested in making it possible for everyone to grow a global community. We welcome each of you, wherever you are, to  <a href="https://hackathons.gitcoin.co/global-communities">join us for the Global Communities hack.</a>
+    Want to hack? There will be prizes. Want to learn? We'll have unique Quests on topics of interest in Web 3.
+    Want to meet other smart, great people? That's the easy part, and the fun part. <a href="https://hackathons.gitcoin.co/global-communities">Register and come together :)</a>
 </p>
 <p>
-    MakerDAO has plenty of great resources on their <a href="https://blog.makerdao.com/">blog</a>, but as you know we like to gamify everything to keep things fun. In that spirit, our community has made three awesome Quests to test your knowledge on the transition. See if you can beat <a href="https://gitcoin.co/quests/62/migrate-or-dai">Migrate or DAI</a>, <a href="https://gitcoin.co/quests/59/upgrade-or-dai">Upgrade or DAI</a>, and <a href="https://gitcoin.co/quests/66/much-cooler-dai">Much Cooler DAI</a>. By the end you’ll be better informed of how this transition affects you, and you can earn 3 new kudos in the process
+    Have something you want to build during the event, related to Ethereum? Write it up in a Github ticket (on <a href="https://github.com/gitcoinco/skunkworks/issues">our repo</a>, or
+    the related repo on Github). Then make <a href="https://gitcoin.co/requests">a Gitcoin Request.</a> Takes 5 minutes - you can help move Ethereum
+    forward and share with the community along the way!
 </p>
 <p>
-    From a product perspective, it’s been a busy week. We’ve integrated Opera/Brave support for opening and submitting bounties, and we will be supporting even more Web3 wallet providers in the near future. We’re also testing out a long-awaited in-app chat feature that will be rolled out for all to use very soon.
+    Not building, but want to learn about new topics in Web 3? Check out <a href="https://gitcoin.co/quests">Gitcoin Quests.</a>
+    Let us know if it helps. We want to make a body of knowledge for the Web 3 curious, leading towards ways to build it yourself. Come play :)
 </p>
 <p>
-    Finally, hackathons: With Web3 World judging wrapping up, there will be lots of content for you to dig into. Right now you can read Aave’s retro <a href="https://medium.com/aave/gitcoin-x-aave-hackathon-recap-f61d24af2cb">blog post</a> to learn about the winning DeFi projects our community built, and the Ethereum Foundation also gave us nice shout out in their <a href="https://blog.ethereum.org/2019/11/12/Ethereum.org-Development-Update-1/">Development Update</a> post. Remember, our final hackathon of the year <a href="https://hackathons.gitcoin.co/global-communities">Global Communities</a> launches December 2nd, so sign up today to receive updates!
+    <img style="max-width: 90%" src="https://gitcoin-static.s3-us-west-2.amazonaws.com/gitcointurkey.png">
 </p>
-
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week featuring Adam Wozney speaking about the BUIDL Network and Zach Herring to discuss ConsenSys Labs' micro grants for hackathon winners! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
+        No Gitcoin Livestream this week, but we'll be back next week for Global Communities. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        As you may know, we're updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
+        We're still updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
         </li>
     </ul>
 </p>
@@ -977,46 +981,46 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'uivlis',
+        'who': 'brentallsop',
         'who_link': True,
-        'what': 'Fixed error logs for js-sdk',
-        'link': 'https://gitcoin.co/issue/mesg-foundation/js-sdk/15/3689',
+        'what': 'Notes For Meeting 27',
+        'link': 'https://gitcoin.co/issue/ethereum/eth2.0-pm/97/3723',
         'link_copy': 'View more',
     }, {
-        'who': 'pldespaigne',
+        'who': 'mul53',
         'who_link': True,
-        'what': 'Resolved an IPFS ENS security concern for MetaMask',
-        'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/5724/3606',
+        'what': 'Key was being generated in wrong manner... now, its fixed!',
+        'link': 'https://gitcoin.co/issue/cybercongress/cyb/249/3733',
         'link_copy': 'View more',
     }, {
-        'who': 'acolytec3',
+        'who': 'johguse',
         'who_link': True,
-        'what': 'Added support for Multi-Collateral DAI for Status',
+        'what': 'Mined new addresses for CREATE2. Great work!',
         'link': 'https://gitcoin.co/issue/status-im/status-react/9491/3718',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Solana',
-        'title': 'Build on Solana: Join the Private Beta',
+        'name': 'MythX',
+        'title': 'Keep Ethereum Secure',
         'image_url': '',
-        'link': 'http://bit.ly/solana-beta',
-        'cta': 'Join the Private Beta',
+        'link': 'http://bit.ly/mythx-gitcoin-weekly',
+        'cta': 'Register Now',
         'body': [
-            'Solana is a Lightning-fast distributed ledger technology for mission-critical decentralized apps.',
-            'We are currently taking applications for an incredibly limited beta program for early adopters of Solana to launch their projects alongside our mainnet later in 2019.'
+            'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
+            'Scan for security vulnerabilities right away from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
         ]
     }
 
     bounties_spec = [{
-        'url': 'https://github.com/money-on-chain/main-RBTC-contract/issues/1',
-        'primer': 'Money On Chain Bug Bounty',
+        'url': 'https://github.com/notadamking/tensortrade/issues/119',
+        'primer': 'Feature Request: GANExchange Implementation Of SimulatedExchange',
     }, {
-        'url': 'https://github.com/web3j/web3j/issues/1103',
-        'primer': 'Support AbiV2 for Web3J',
+        'url': 'https://github.com/invisible-college/democracy/issues/31',
+        'primer': 'Design A Logo For Typed Transform Pipelines',
     }, {
-        'url': 'https://github.com/crytic/slither/issues/318',
-        'primer': 'Split constant-function detector for Slither',
+        'url': 'https://github.com/crytic/evm_cfg_builder/issues/23',
+        'primer': 'Create Gidhra Plugin for the EVM',
 }, ]
 
 
@@ -1049,7 +1053,7 @@ Back to shipping,
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
-            .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
+            .filter(leaderboard=key, product='all').order_by('rank')[0:num_leadboard_items]
     if not len(leaderboard['quarterly_payers']['items']):
         leaderboard = []
 

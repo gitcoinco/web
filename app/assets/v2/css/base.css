@@ -1563,8 +1563,8 @@ div.busyOverlay {
 }
 
 .privaterepo-instructions {
-  background: #F8F8F8;
-  padding: 1rem;
+  color: grey;
+  padding-top: 1rem;
 }
 
 @media (min-width: 768px) {

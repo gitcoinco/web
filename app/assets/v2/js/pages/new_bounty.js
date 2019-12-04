@@ -317,15 +317,21 @@ $(function() {
 
   $('input[name=usd_amount]').on('focusin', function() {
     $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
+    $('input[name=amount]').trigger('change');
+
   });
 
   $('input[name=usd_amount]').on('focusout', function() {
     $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
+    $('input[name=amount]').trigger('change');
+
   });
 
   $('input[name=usd_amount]').keyup(() => {
     const prev_usd_amount = $('input[name=usd_amount]').attr('prev_usd_amount');
     const usd_amount = $('input[name=usd_amount').val();
+
+    $('input[name=amount]').trigger('change');
 
     if (prev_usd_amount != usd_amount) {
       usdToAmount(usd_amount);
