@@ -159,7 +159,7 @@ $(document).ready(function() {
     function do_as_crowd() {
       // get form data
       var email = '';
-      var github_url = $('#issueURL').val();
+      var github_url = $('#issueURL').text();
       var from_name = document.contxt['github_handle'];
       var username = '';
       var amountInEth = amount / decimalDivisor;

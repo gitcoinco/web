@@ -80,7 +80,7 @@
       </div>
     </div>
     {% endif%}
-    
+
       {% include 'profiles/tabs.html' %}
 
     </div>
@@ -100,7 +100,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
-    
+
 
     <!-- jQuery -->
     <script src="{% static "v2/js/abi.js" %}"></script>
@@ -112,9 +112,11 @@
     </script>
     <script src="{% static "v2/js/pages/tabs.js" %}"></script>
     <script src="{% static "v2/js/pages/profile.js" %}"></script>
+    <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
     <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
     <script src="{% static "v2/js/rating.js" %}"></script>
     <script src="{% static "v2/js/status.js" %}"></script>
+    <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
     <script>
       {% if profile.preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;

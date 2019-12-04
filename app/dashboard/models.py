@@ -395,7 +395,7 @@ class Bounty(SuperModel):
 
     EVENT_HANDLERS = {
         'traditional': {
-            'open_bounty': {
+            'open': {
                 'accept_worker': 'work_started',
                 'cancel_bounty': 'cancelled'},
             'work_started': {
@@ -407,7 +407,7 @@ class Bounty(SuperModel):
                 'cancel_bounty': 'cancelled'},
         },
         'cooperative': {
-            'open_bounty': {
+            'open': {
                 'accept_worker': 'work_started',
                 'cancel_bounty': 'cancelled'},
             'work_started': {
@@ -419,7 +419,7 @@ class Bounty(SuperModel):
                 'cancel_bounty': 'cancelled'},
         },
         'contest': {
-            'open_bounty': {
+            'open': {
                 'payout_bounty': 'done',
                 'cancel_bounty': 'cancelled'}
         }
@@ -2384,6 +2384,8 @@ class Profile(SuperModel):
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
+    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
+
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2431,6 +2433,12 @@ class Profile(SuperModel):
         if not self.is_org:
             return Profile.objects.none()
         return Profile.objects.filter(organizations__icontains=self.handle)
+
+    @property
+    def tribe_members(self):
+        if not self.is_org:
+            return TribeMember.objects.filter(profile=self).exclude(status='rejected')
+        return TribeMember.objects.filter(org=self).exclude(status='rejected')
 
     @property
     def ref_code(self):
@@ -4312,3 +4320,20 @@ class ProfileStatHistory(SuperModel):
 
     def __str__(self):
         return f"{self.key} <> {self.profile.handle}"
+
+
+class TribeMember(SuperModel):
+    MEMBER_STATUS = [
+        ('accepted', 'accepted'),
+        ('pending', 'pending'),
+        ('rejected', 'rejected'),
+    ]
+    profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
+    org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE)
+    leader = models.BooleanField(default=False, help_text=_('tribe leader'))
+    status = models.CharField(
+        max_length=20,
+        choices=MEMBER_STATUS,
+        blank=True
+    )
+

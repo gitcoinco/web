@@ -33,8 +33,8 @@ from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
 from dashboard.models import (
-    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon,
-    HackathonEvent, UserAction,
+    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites,
+    BountySyncRequest, Coupon, HackathonEvent, UserAction,
 )
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord,
@@ -498,7 +498,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'fee_amount': bounty_payload.get('fee_amount', 0)
             })
         else:
-            print('latest old bounty found {}'.format(latest_old_bounty))
+            # print('latest old bounty found {}'.format(latest_old_bounty))
             latest_old_bounty_dict = latest_old_bounty.to_standard_dict(
                 fields=[
                     'web3_created', 'github_url', 'token_name', 'token_address', 'privacy_preferences', 'expires_date',
@@ -509,7 +509,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'snooze_warnings_for_days', 'admin_override_and_hide', 'admin_override_suspend_auto_approval',
                     'admin_mark_as_remarket_ready', 'funding_organisation', 'bounty_reserved_for_user', 'is_featured',
                     'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda', 'coupon_code',
-                    'admin_override_org_name', 'admin_override_org_logo'
+                    'admin_override_org_name', 'admin_override_org_logo', 'bounty_state'
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
@@ -630,7 +630,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         new_bounty.canceled_on = canceled_on
         new_bounty.save()
 
-    # migrate fulfillments, and only take the ones from 
+    # migrate fulfillments, and only take the ones from
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bounty_details.get('fulfillments', {})
     if fulfillments:
@@ -645,7 +645,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     new_bounty.is_featured = True if latest_old_bounty and latest_old_bounty.is_featured is True else False
     if new_bounty.is_featured == True:
         new_bounty.save()
-    
+
     if latest_old_bounty:
         latest_old_bounty.current_bounty = False
         latest_old_bounty.save()
@@ -753,6 +753,18 @@ def get_fulfillment_data_for_activity(fulfillment):
     return data
 
 
+bounty_activity_event_adapter = {
+    'worker_applied': 'express_interest',
+    'worker_approved': 'accept_worker',
+    'start_work': 'accept_worker',
+    'extend_expiration': 'extend_expiration',
+    'killed_bounty': 'cancel_bounty',
+    'work_submitted': 'submit_work',
+    'stop_work': 'stop_work',
+    'work_done': 'payout_bounty'
+}
+
+
 def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None, override_created=None):
     """Records activity based on bounty changes
 
@@ -792,6 +804,11 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
         logger.error(f'{e} during record_bounty_activity for {new_bounty}')
 
     if user_profile:
+        if event_name in bounty_activity_event_adapter:
+            event = BountyEvent.objects.create(bounty=new_bounty,
+                event_type=bounty_activity_event_adapter[event_name],
+                created_by=user_profile)
+            new_bounty.handle_event(event)
         return Activity.objects.create(
             created_on=timezone.now() if not override_created else override_created,
             profile=user_profile,
