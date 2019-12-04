@@ -4079,6 +4079,7 @@ class HackathonEvent(SuperModel):
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
     show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
+    quest_link = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -4087,6 +4088,20 @@ class HackathonEvent(SuperModel):
             str: The string representation of a HackathonEvent.
         """
         return f'{self.name} - {self.start_date}'
+
+    @property
+    def url(self):
+        return self.get_absolute_url()
+
+    def get_absolute_url(self):
+        """Get the absolute URL for the HackathonEvent.
+
+        Returns:
+            str: The absolute URL for the HackathonEvent.
+
+        """
+        return settings.BASE_URL + f'hackathon/{self.slug}'
+
 
     @property
     def get_current_bounties(self):
