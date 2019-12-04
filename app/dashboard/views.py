@@ -80,9 +80,9 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
-from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
+from .helpers import bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
 from .models import (
-    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption,
+    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
     SearchHistory, Sponsor, Subscription, TribeMember, Tool, ToolVote, UserAction, UserVerificationModel,
@@ -190,10 +190,15 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
     if event_name == 'worker_applied':
         kwargs['metadata']['approve_worker_url'] = bounty.approve_worker_url(user.profile)
         kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
-    if event_name in ['worker_approved', 'worker_rejected'] and interest:
+    elif event_name in ['worker_approved', 'worker_rejected'] and interest:
         kwargs['metadata']['worker_handle'] = interest.profile.handle
 
     try:
+        if event_name in bounty_activity_event_adapter:
+            event = BountyEvent.objects.create(bounty=bounty,
+                event_type=bounty_activity_event_adapter[event_name],
+                created_by=kwargs['profile'])
+            bounty.handle_event(event)
         return Activity.objects.create(**kwargs)
     except Exception as e:
         logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
@@ -2344,7 +2349,7 @@ def invalid_file_response(uploaded_file, supported):
                 'status': 415,
                 'message': 'Invalid File Type'
             }
-
+        '''
         try:
             forbidden = False
             while forbidden is False:
@@ -2365,6 +2370,7 @@ def invalid_file_response(uploaded_file, supported):
 
         except Exception as e:
             print(e)
+        '''
 
     return response
 
@@ -3420,7 +3426,7 @@ def hackathon(request, hackathon=''):
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
     except HackathonEvent.DoesNotExist:
-        hackathon_event = HackathonEvent.objects.last()
+        return redirect(reverse('get_hackathons'))
 
     title = hackathon_event.name
     network = get_default_network()
@@ -3439,6 +3445,7 @@ def hackathon(request, hackathon=''):
 
     params = {
         'active': 'dashboard',
+        'type': 'hackathon',
         'title': title,
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
@@ -3487,6 +3494,7 @@ def hackathon(request, hackathon=''):
 def hackathon_onboard(request, hackathon=''):
     referer = request.META.get('HTTP_REFERER', '')
 
+    is_registered = False
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
         profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
@@ -3731,7 +3739,8 @@ def get_hackathons(request):
 
     params = {
         'active': 'hackathons',
-        'title': 'hackathons',
+        'title': 'Hackathons',
+        'card_desc': "Gitcoin is one of the largers administrators of Virtual Hackathons in the decentralizion space.",
         'hackathons': events,
     }
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)

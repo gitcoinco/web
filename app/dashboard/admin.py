@@ -23,12 +23,17 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Activity, BlockedURLFilter, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest,
+    Activity, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest,
     CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject,
     HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView,
     RefundFeeRequest, SearchHistory, Sponsor, Tip, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
     UserVerificationModel,
 )
+
+
+class BountyEventAdmin(admin.ModelAdmin):
+    list_display = ['created_on', '__str__', 'event_type']
+    raw_id_fields = ['bounty', 'created_by']
 
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
@@ -203,7 +208,7 @@ class BountyAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
-    list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
+    list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what', 'bounty_state']
     readonly_fields = [
         'what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link',
         '_action_urls', 'coupon_link'
@@ -395,6 +400,7 @@ class TribeMemberAdmin(admin.ModelAdmin):
     list_display = ['pk', 'profile', 'org', 'leader', 'status']
 
 
+admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Earning, EarningAdmin)

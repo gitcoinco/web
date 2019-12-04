@@ -927,8 +927,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Hackathons, Hackathons, & Hackathons..."
-    new_kudos_pks = [5062, 5125, 5070]
+    subject = "Growing Your Global Community"
+    new_kudos_pks = [2571, 7135, 2224]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -949,28 +949,30 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    Another Gitcoin hackathon in the books. Web3 World wrapped up Monday, and it was the most successful one yet. Every single bounty put up by sponsor’s had at least one project submission, so no prize money went to waste! Judging is in progress, but if you’d like to see what was built you can browse all submissions on our brand new <a href="https://gitcoin.co/hackathon/projects/web3-world">projects</a> page.
+    At Gitcoin, we're interested in making it possible for everyone to grow a global community. We welcome each of you, wherever you are, to  <a href="https://hackathons.gitcoin.co/global-communities">join us for the Global Communities hack.</a>
+    Want to hack? There will be prizes. Want to learn? We'll have unique Quests on topics of interest in Web 3.
+    Want to meet other smart, great people? That's the easy part, and the fun part. <a href="https://hackathons.gitcoin.co/global-communities">Register and come together :)</a>
 </p>
 <p>
-    Next week Yale is hosting an Open Climate Collabathon with an in person event followed by a virtual hackathon. You can learn more about the mission <a href="https://www.collabathon.openclimate.earth/">here</a> and sign up for the online portion on Gitcoin <a href="https://gitcoin.co/hackathon/onboard/open-climate-collabathon/">here</a>.
+    Have something you want to build during the event, related to Ethereum? Write it up in a Github ticket (on <a href="https://github.com/gitcoinco/skunkworks/issues">our repo</a>, or
+    the related repo on Github). Then make <a href="https://gitcoin.co/requests">a Gitcoin Request.</a> Takes 5 minutes - you can help move Ethereum
+    forward and share with the community along the way!
 </p>
 <p>
-    Finally, our last virtual hackathon of 2019 is called Global Communities and will run from December 2nd - 16th. The goal of this event is to acknowledge the hard work the Gitcoin and Blockchain communities have put in this year, and we’ll celebrate with in person satellite events hosted by the <a href="https://www.buidlnetwork.net/">BUIDL Network</a> and a special community judged prize. Learn more and register on our <a href="https://hackathons.gitcoin.co/global-communities">landing page</a>.
+    Not building, but want to learn about new topics in Web 3? Check out <a href="https://gitcoin.co/quests">Gitcoin Quests.</a>
+    Let us know if it helps. We want to make a body of knowledge for the Web 3 curious, leading towards ways to build it yourself. Come play :)
 </p>
 <p>
-    Moving on to meatspace hackathons, the team and I are back from another successful ETH Waterloo. It was great to see everyone and spend some time hacking - I built Cerebro, a machine learning matching system for Gitcoin (that we plan to integrate soon!). If you missed my talk, I posted a <a href="https://twitter.com/owocki/status/1193275598472404998">tweet storm</a> of my slides and presentation for you to check out.
-</p>
-<p>
-    Also, a very important announcement: if you haven't heard, MakerDAO is launching their Multi-Collateral Dai token next week on November 18th. At that time, we'll be renaming the current Single-Collateral Dai token to Sai, so don't be alarmed if you see your bounties and grants change over to the new name. We'll also be supporting the Multi-Collateral Dai token soon, with a planned launch date of November 25th. For more info on everything thats happening with Dai, along with instructions and tools to help you transition to the new token, check out MakerDAO's upgrade guide <a href="https://blog.makerdao.com/looking-ahead-how-to-upgrade-to-multi-collateral-dai/">here</a>.
+    <img style="max-width: 90%" src="https://gitcoin-static.s3-us-west-2.amazonaws.com/gitcointurkey.png">
 </p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week featuring hackers from Web3 World presenting their projects! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
+        No Gitcoin Livestream this week, but we'll be back next week for Global Communities. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
         </li>
         <li>
-        As we mentioned last week, we're updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
+        We're still updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
         </li>
     </ul>
 </p>
@@ -979,45 +981,46 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'jorropo',
+        'who': 'brentallsop',
         'who_link': True,
-        'what': 'Built Pipelines for Spacemesh Virtual Machine',
-        'link': 'https://gitcoin.co/issue/spacemeshos/svm/7/3656',
+        'what': 'Notes For Meeting 27',
+        'link': 'https://gitcoin.co/issue/ethereum/eth2.0-pm/97/3723',
         'link_copy': 'View more',
     }, {
-        'who': 'imerkle',
+        'who': 'mul53',
         'who_link': True,
-        'what': 'Auto-generated the svm_wasmer.h file for the svm-runtime-c-api',
-        'link': 'https://gitcoin.co/issue/spacemeshos/svm/12/3655',
+        'what': 'Key was being generated in wrong manner... now, its fixed!',
+        'link': 'https://gitcoin.co/issue/cybercongress/cyb/249/3733',
         'link_copy': 'View more',
     }, {
-        'who': 'janus',
+        'who': 'johguse',
         'who_link': True,
-        'what': 'Wrote Tests For Approve() And Transfer_from() In Erc20 Module',
-        'link': 'https://gitcoin.co/issue/docknetwork/substrate-warmup/32/3674',
+        'what': 'Mined new addresses for CREATE2. Great work!',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/9491/3718',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Arweave',
-        'title': 'Get paid to build dApps on the permaweb 🛠️🌐',
+        'name': 'MythX',
+        'title': 'Keep Ethereum Secure',
         'image_url': '',
-        'link': 'http://bit.ly/Arweave1',
-        'cta': 'Start hacking today!',
+        'link': 'http://bit.ly/mythx-gitcoin-weekly',
+        'cta': 'Register Now',
         'body': [
-           'The permaweb is a decentralized, immutable new web, built on top of a globally distributed, permanent hard drive - the Arweave network. We want the permaweb to be accessible to everyone, but we want you to be a part of making that a reality. That’s why we’re looking for talented developers to build decentralized apps on the permaweb.'
+            'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
+            'Scan for security vulnerabilities right away from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
         ]
     }
-    
+
     bounties_spec = [{
-        'url': 'https://github.com/Loopring/trusted_setup/issues/11',
-        'primer': 'Loopring 3.0 Trusted Setup MPC Ceremony',
+        'url': 'https://github.com/notadamking/tensortrade/issues/119',
+        'primer': 'Feature Request: GANExchange Implementation Of SimulatedExchange',
     }, {
-        'url': 'https://github.com/ArweaveTeam/Bounties/issues/17',
-        'primer': 'IPFS+Arweave UI Competition',
+        'url': 'https://github.com/invisible-college/democracy/issues/31',
+        'primer': 'Design A Logo For Typed Transform Pipelines',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/5465',
-        'primer': 'DESIGN - BOT Creatives - Winter 2019; 6th Edition',
+        'url': 'https://github.com/crytic/evm_cfg_builder/issues/23',
+        'primer': 'Create Gidhra Plugin for the EVM',
 }, ]
 
 
@@ -1050,7 +1053,7 @@ Back to shipping,
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
-            .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
+            .filter(leaderboard=key, product='all').order_by('rank')[0:num_leadboard_items]
     if not len(leaderboard['quarterly_payers']['items']):
         leaderboard = []
 

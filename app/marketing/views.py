@@ -753,7 +753,7 @@ def leaderboard(request, key=''):
     keyword_search = request.GET.get('keyword', '')
     keyword_search = '' if keyword_search == 'all' else keyword_search
     limit = request.GET.get('limit', 50)
-    cadence = request.GET.get('cadence', 'quarterly')
+    cadence = request.GET.get('cadence', 'weekly')
 
     # backwards compatibility fix for old inbound links
     for ele in cadences:
@@ -805,7 +805,8 @@ def leaderboard(request, key=''):
     is_linked_to_profile = any(sub in key for sub in profile_keys)
 
     cadence_ui = cadence if cadence != 'all' else 'All-Time'
-    page_title = f'{cadence_ui.title()} {keyword_search.title()} Leaderboard: {title.title()}'
+    product_ui = product.capitalize() if product != 'all' else ''
+    page_title = f'{cadence_ui.title()} {keyword_search.title()} {product_ui} Leaderboard: {title.title()}'
     context = {
         'items': items[0:limit],
         'nav': 'home',

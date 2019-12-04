@@ -317,15 +317,21 @@ $(function() {
 
   $('input[name=usd_amount]').on('focusin', function() {
     $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
+    $('input[name=amount]').trigger('change');
+
   });
 
   $('input[name=usd_amount]').on('focusout', function() {
     $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
+    $('input[name=amount]').trigger('change');
+
   });
 
   $('input[name=usd_amount]').keyup(() => {
     const prev_usd_amount = $('input[name=usd_amount]').attr('prev_usd_amount');
     const usd_amount = $('input[name=usd_amount').val();
+
+    $('input[name=amount]').trigger('change');
 
     if (prev_usd_amount != usd_amount) {
       usdToAmount(usd_amount);
@@ -462,7 +468,8 @@ $('#sync-issue').on('click', function(event) {
 });
 
 $('#issueURL').focusout(function() {
-  for (let i = 0; i <= document.blocked_urls.length; i++) {
+
+  for (let i = 0; i < document.blocked_urls.length; i++) {
     let this_url_filter = document.blocked_urls[i];
 
     if ($('input[name=issueURL]').val().toLowerCase().indexOf(this_url_filter.toLowerCase()) != -1) {
@@ -471,6 +478,7 @@ $('#issueURL').focusout(function() {
       return false;
     }
   }
+
   if (isPrivateRepo) {
     setPrivateForm();
     var validated = $('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val());

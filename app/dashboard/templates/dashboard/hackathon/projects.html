@@ -87,7 +87,7 @@
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
+      {% include 'shared/nav_hackathons.html' %}
       <div class="onboard-banner text-center p-4">
           {% firstof hackathon.logo_svg or hackathon.logo as logo %}
           {% if logo %}

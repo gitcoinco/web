@@ -395,7 +395,7 @@ class Bounty(SuperModel):
 
     EVENT_HANDLERS = {
         'traditional': {
-            'open_bounty': {
+            'open': {
                 'accept_worker': 'work_started',
                 'cancel_bounty': 'cancelled'},
             'work_started': {
@@ -407,7 +407,7 @@ class Bounty(SuperModel):
                 'cancel_bounty': 'cancelled'},
         },
         'cooperative': {
-            'open_bounty': {
+            'open': {
                 'accept_worker': 'work_started',
                 'cancel_bounty': 'cancelled'},
             'work_started': {
@@ -419,7 +419,7 @@ class Bounty(SuperModel):
                 'cancel_bounty': 'cancelled'},
         },
         'contest': {
-            'open_bounty': {
+            'open': {
                 'payout_bounty': 'done',
                 'cancel_bounty': 'cancelled'}
         }
@@ -3386,7 +3386,7 @@ class Profile(SuperModel):
 
     def get_leaderboard_index(self, key='quarterly_earners'):
         try:
-            rank = self.leaderboard_ranks.active().filter(leaderboard=key).latest('id')
+            rank = self.leaderboard_ranks.active().filter(leaderboard=key, product='all').latest('id')
             return rank.rank
         except LeaderboardRank.DoesNotExist:
             score = 0

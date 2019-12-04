@@ -1,1 +1,1 @@
-python manage.py sync_kudos_listener localhost filter >> /var/log/sync_kudos_listener.log 2>&1
+python3 manage.py sync_kudos_listener localhost filter >> /var/log/sync_kudos_listener.log 2>&1
