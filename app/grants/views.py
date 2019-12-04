@@ -314,8 +314,7 @@ def grant_new(request):
             team_members.append(profile.id)
             team_members = list(set(team_members))
 
-            for i in range(0, len(team_members)):
-                team_members[i] = int(team_members[i])
+            team_members = [int(i) for i in team_members if i != '']
 
             grant.team_members.add(*team_members)
             grant.save()
