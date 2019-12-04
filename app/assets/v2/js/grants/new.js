@@ -142,8 +142,9 @@ const init = () => {
             arguments: args
           }).send({
             from: accounts[0],
-            gas: 3000000,
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+            gas: web3.utils.toHex(gas_amount(document.location.href)),
+            gasLimit: web3.utils.toHex(gas_amount(document.location.href))
           }).on('error', function(error) {
             console.log('1', error);
           }).on('transactionHash', function(transactionHash) {

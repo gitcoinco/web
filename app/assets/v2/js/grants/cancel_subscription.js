@@ -63,7 +63,12 @@ $(document).ready(() => {
 
                 deployedSubscription.methods.cancelSubscription(
                   ...parts
-                ).send({from: accounts[0], gasPrice: realGasPrice})
+                ).send({
+                  from: accounts[0],
+                  gasPrice: realGasPrice,
+                  gas: web3.utils.toHex(gas_amount(document.location.href)),
+                  gasLimit: web3.utils.toHex(gas_amount(document.location.href))
+                })
                   .on('transactionHash', function(transactionHash) {
                     $('#sub_cancel_tx_id').val(transactionHash);
                   }).on('confirmation', function(confirmationNumber, receipt) {
