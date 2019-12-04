@@ -435,6 +435,17 @@
                 </div>
               </div>
             </div>
+          [[else activity_type == 'new_crowdfund']]
+            <div class="col-12 col-md-7 text-center text-md-left">
+              <div class="activity-tags activity-tag-first align-items-center">
+                [[:text]]
+                ( <div class="tag token">
+                  <p>
+                    <span>[[:crowdfund.amount]] [[:crowdfund.token]]</span>
+                  </p>
+                </div> )
+              </div>
+            </div>
           [[else activity_type == 'new_kudos']]
             <div class="col-12 col-md-7 text-center text-md-left">
               <div class="activity-status activity-tag-first align-items-center d-flex justify-content-between">

@@ -80,7 +80,9 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
-from .helpers import bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
+from .helpers import (
+    bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
+)
 from .models import (
     Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
@@ -1438,6 +1440,7 @@ def fulfill_bounty(request):
     return TemplateResponse(request, 'bounty/fulfill.html', params)
 
 
+@login_required
 def increase_bounty(request):
     """Increase a bounty as the funder.
 
