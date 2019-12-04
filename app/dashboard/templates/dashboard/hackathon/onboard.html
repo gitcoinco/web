@@ -21,29 +21,33 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
     <link rel="stylesheet" href="//cdn.quilljs.com/1.3.6/quill.snow.css" />
     <style>
       .inactive .ql-editor {
-  padding:0;
-  line-height:inherit;
-}
+        padding:0;
+        line-height:inherit;
+      }
 
-.inactive .ql-toolbar {
-  display:none;
-}
+      .inactive .ql-toolbar {
+        display:none;
+      }
 
-.inactive .ql-container.ql-snow {
-  border:none;
-}
+      .inactive .ql-container.ql-snow {
+        border:none;
+      }
 
-.container {
-  counter-reset: section;
-}
-.counter::before {
-  counter-increment: section;
-  content: counter(section) '. ';
-}
+      .container {
+        counter-reset: section;
+      }
+      .counter::before {
+        counter-increment: section;
+        content: counter(section) '. ';
+      }
+      .sponsors img {
+        max-width: 150px;
+        height: auto;
+        width: 100%;
+      }
       .onboard-banner {
         background: {% firstof hackathon.background_color or 'white' %};
         color: {% firstof hackathon.text_color or 'black' %};
@@ -55,60 +59,34 @@
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav_hackathons.html' %}
-      <div class="onboard-banner text-center p-4">
-          {% firstof hackathon.logo_svg or hackathon.logo as logo %}
-          {% if logo %}
-            <img class="" width="364" src="{{MEDIA_URL}}{{logo}}"/>
-          {% else %}
-            <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center text-white">
-              {{ hackathon.name }}
-            </div>
-          {% endif %}
-        <h1>{{hackathon.name}} Guide</h1>
-        {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
-        <BR>
-        <BR>
-        {% if not github_handle %}
-
-        <div class="text-center">
-          <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
-            onclick="dataLayer.push({'event': 'login'});">
-            <i class="fab fa-github"></i>
-            <span>{% trans "Register with GitHub for Hackathon" %}</span>
-          </a>
-          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon email announcements</p>
-        </div>
+      <div class="onboard-banner text-center p-4 pb-5">
+        {% firstof hackathon.logo_svg or hackathon.logo as logo %}
+        {% if logo %}
+          <img class="my-5" height="250" src="{{MEDIA_URL}}{{logo}}"/>
         {% else %}
-
-          {% if is_registered and hackathon.start_date|timesince <= "1 min" %}
-            <p>Explore Web3 via Gitcoin Quests to prepare</p>
-            <a class="btn btn-lg btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
-          {% elif is_registered %}
-            <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
-          {% else %}
-            <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
-            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon email announcements</p>
-          {% endif %}
+          <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center my-5">
+            {{ hackathon.name }}
+          </div>
         {% endif %}
       </div>
     </div>
 
-    <div class="container-fluid bg-lightblue">
-      {% if hackathon.end_date|timesince >= "1 min" %}
-        <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
-      {% endif %}
+    <div class="container-fluid bg-lightblue pb-5">
       <div class="container mt-md-n5 bg-white position-relative">
-          <div class="row">
-            <div class="col-12">
+        <div class="row p-5">
+          <div class="col-12">
               <h3>
                 Gitcoin Virtual Hackathon
               </h3>
-              <h1 class="uppercase">
+              <h1 class="text-uppercase">
                 {{ hackathon.name }}
               </h1>
               <p>
                 {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
               </p>
+              {% if hackathon.end_date|timesince >= "1 min" %}
+                <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
+              {% endif %}
               {% if not github_handle %}
                 <div class="text-center">
                   <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
@@ -125,7 +103,7 @@
                 {% elif is_registered %}
                   <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
                 {% else %}
-                  <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Register for Hackathon</a>
+                  <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
                   <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
                 {% endif %}
               {% endif %}
@@ -135,7 +113,7 @@
       </div>
 
       <div class="container bg-white mt-4">
-        <div class="row">
+        <div class="row p-5">
           <div class="col-12">
             {% if is_staff %}
               <div class="">
@@ -149,13 +127,13 @@
           </div>
         </div>
 
-        <div class="row py-5">
+        <div class="row px-5">
           <div class="col-12">
-            <h2 class="">How does the Hackathon work?</h2>
+            <h4 class="text-uppercase font-weight-bolder text-left">How does the Hackathon work?</h4>
           </div>
         </div>
 
-        <div class="row my-4">
+        <div class="row px-5 my-4">
           <div class="col-12 col-md-6">
               <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
           </div>
@@ -168,7 +146,7 @@
               {% endblocktrans %}
           </div>
         </div>
-        <div class="row my-4">
+        <div class="row px-5 my-4">
           <div class="col-12 col-md-6">
               <img src="{% static "v2/images/how-it-works/hackathon/pic2.jpg" %}" class="mw-100" alt="express interest" />
           </div>
@@ -181,7 +159,7 @@
               {% endblocktrans %}
           </div>
         </div>
-        <div class="row my-4">
+        <div class="row px-5 my-4">
           <div class="col-12 col-md-6">
               <img src="{% static "v2/images/how-it-works/hackathon/pic3.jpg" %}" class="mw-100" alt="bounty explorer" />
           </div>
@@ -194,7 +172,7 @@
               {% endblocktrans %}
           </div>
         </div>
-        <div class="row my-4">
+        <div class="row px-5 my-4">
           <div class="col-12 col-md-6">
               <img src="{% static "v2/images/how-it-works/hackathon/pic4.jpg" %}" class="mw-100" alt="express interest" />
           </div>
@@ -207,7 +185,7 @@
               {% endblocktrans %}
           </div>
         </div>
-        <div class="row my-4">
+        <div class="row my-4 px-5">
           <div class="col-12 col-md-6">
             <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
           </div>
@@ -221,9 +199,11 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="row px-5 pb-5">
           <div class="col-12">
-            JOIN THE HACKATHON
+            <p class="font-weight-bolder text-uppercase h4 text-left mb-4">
+              JOIN THE HACKATHON
+            </p>
             {% if not github_handle %}
               <div class="text-center">
                 <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
@@ -234,22 +214,48 @@
                 <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
               </div>
             {% else %}
-              <div class="text-center">
-                {% if is_registered and hackathon.start_date|timesince <= "1 min" %}
-                  <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                  <a class="btn btn-lg btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
-                {% elif is_registered %}
-                  <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
-                {% else %}
-
-                  <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
-                  <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-                {% endif %}
-              </div>
+              {% if is_registered and hackathon.start_date|timesince <= "1 min" %}
+                <p>Explore Web3 via Gitcoin Quests to prepare</p>
+                <a class="btn btn-lg btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+              {% elif is_registered %}
+                <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
+              {% else %}
+                <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
+                <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+              {% endif %}
             {% endif %}
           </div>
         </div>
       </div>
+
+      {% if sponsors %}
+        <div class="container bg-white my-4 py-2">
+            <div class="row px-5">
+              <div class="col-12 sponsors mt-5 mb-3">
+                <p class="font-weight-bolder h4 text-left mb-4">SUPPORTED BY</p>
+                {% if sponsors.sponsors_gold %}
+                  <div class="d-flex flex-wrap mb-4">
+                    {% for sponsor in sponsors.sponsors_gold %}
+                      <div class="sponsors-gold my-auto mx-2">
+                        <img src="{{sponsor.logo}}" height="50" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                {% if sponsors.sponsors_silver %}
+                  <div class="d-flex flex-wrap mb-4">
+                    {% for sponsor in sponsors.sponsors_silver %}
+                      <div class="sponsors-silver my-auto mx-2">
+                        <img src="{{sponsor.logo}}" height="50" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
 
 
     </div>

@@ -3487,12 +3487,37 @@ def hackathon(request, hackathon=''):
 
 def hackathon_onboard(request, hackathon=''):
     referer = request.META.get('HTTP_REFERER', '')
-
+    sponsors = {}
     is_registered = False
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        hackathon_sponsors = HackathonSponsor.objects.filter(hackathon=hackathon_event)
         profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
         is_registered = HackathonRegistration.objects.filter(registrant=profile, hackathon=hackathon_event) if profile else None
+
+        if hackathon_sponsors:
+            sponsors_gold = []
+            sponsors_silver = []
+            for hackathon_sponsor in hackathon_sponsors:
+                sponsor = Sponsor.objects.get(name=hackathon_sponsor.sponsor)
+                sponsor_obj = {
+                    'name': sponsor.name,
+                }
+                if sponsor.logo_svg:
+                    sponsor_obj['logo'] = sponsor.logo_svg.url
+                elif sponsor.logo:
+                    sponsor_obj['logo'] = sponsor.logo.url
+
+                if hackathon_sponsor.sponsor_type == 'G':
+                    sponsors_gold.append(sponsor_obj)
+                else:
+                    sponsors_silver.append(sponsor_obj)
+
+            sponsors = {
+                'sponsors_gold': sponsors_gold,
+                'sponsors_silver': sponsors_silver
+            }
+
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
@@ -3502,6 +3527,7 @@ def hackathon_onboard(request, hackathon=''):
         'hackathon': hackathon_event,
         'referer': referer,
         'is_registered': is_registered,
+        'sponsors': sponsors
     }
     return TemplateResponse(request, 'dashboard/hackathon/onboard.html', params)
 
