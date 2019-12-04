@@ -808,9 +808,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
             event = BountyEvent.objects.create(bounty=new_bounty,
                 event_type=bounty_activity_event_adapter[event_name],
                 created_by=user_profile)
-            print('event created')
             new_bounty.handle_event(event)
-            print('event handled')
         return Activity.objects.create(
             created_on=timezone.now() if not override_created else override_created,
             profile=user_profile,
