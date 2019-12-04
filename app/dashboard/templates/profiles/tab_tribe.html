@@ -45,7 +45,9 @@
               </div>
               {% if user.is_authenticated %}
                 <div class="d-flex justify-content-between mt-2">
-                  <button class="btn btn-outline-gc-blue btn-sm flex-grow-1" data-openchat="{{member}}"> <i class="fas fa-comment-dots"></i></button>
+                  {% if is_staff %}
+                    <button class="btn btn-outline-gc-blue btn-sm flex-grow-1" data-openchat="{{member}}"> <i class="fas fa-comment-dots"></i></button>
+                  {% endif %}
                   <a href="{% url 'bounty_requests' %}" class="btn btn-outline-gc-blue btn-sm ml-2">Suggest a Bounty</a>
                 </div>
               {% endif %}
@@ -89,7 +91,9 @@
                   {% endif %}
                   {% if user.is_authenticated %}
                     <div class="d-flex justify-content-between mt-2">
-                      <button class="btn btn-outline-gc-blue btn-sm flex-grow-1" data-openchat="{{follower.profile}}"> <i class="fas fa-comment-dots"></i></button>
+                      {% if is_staff %}
+                        <button class="btn btn-outline-gc-blue btn-sm flex-grow-1" data-openchat="{{follower.profile}}"> <i class="fas fa-comment-dots"></i></button>
+                      {% endif %}
                       <a href="{% url 'users_directory' %}?invite={{follower.profile}}" class="btn btn-outline-gc-blue btn-sm ml-2">Invite to Bounty</a>
                     </div>
                   {% endif %}
