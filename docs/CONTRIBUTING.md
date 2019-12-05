@@ -376,5 +376,5 @@ Run: `make collect-static` if using Docker or `cd app; python3 manage.py collect
 
 Additionally, you can check out the [Django Managing Static Files Documentation](https://docs.djangoproject.com/en/2.0/howto/static-files/)
 
-<img src='https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png' width=185px height=185px alt="Gitcoin logo">
+<img src='https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png' width="185" height="185" alt="Gitcoin logo">
 Welcome to the gitcoin community. Lets Grow Open Source Software.
