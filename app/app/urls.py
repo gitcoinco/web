@@ -62,8 +62,8 @@ urlpatterns = [
     # oauth2 provider
     url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    # create bounty
-    url(r'^create?', dashboard.views.new_bounty, name='create_bounty'),  # TODO: Remove
+
+    url('^api/v1/bounty/create', dashboard.views.create_bounty, name='create_bounty'),
 
     # inbox
     re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
@@ -340,6 +340,7 @@ urlpatterns = [
 
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
+    url(r'^sync/etc/?', dashboard.views.sync_etc, name='sync_etc'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
     re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
 
