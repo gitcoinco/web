@@ -199,6 +199,10 @@ $(document).ready(function() {
         let approvalSTR = realApproval.toLocaleString('fullwide', { useGrouping: false });
 
         web3.eth.getAccounts(function(err, accounts) {
+          if (data.recurring_or_not == 'recurring' && grant_admin_addres === accounts[0]){
+            _alert({ message: gettext('Grant owners cannot self-fund grants. Please change your account.') }, 'error');
+            return;
+          }
 
           $('#contributor_address').val(accounts[0]);
 

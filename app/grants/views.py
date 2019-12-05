@@ -506,7 +506,6 @@ def grant_fund(request, grant_id, grant_slug):
             'text': _('This Grant is not longer active.')
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
-
     active_subscription = Subscription.objects.select_related('grant').filter(
         grant=grant_id, active=True, error=False, contributor_profile=request.user.profile
     )
@@ -530,6 +529,18 @@ def grant_fund(request, grant_id, grant_slug):
 
     if request.method == 'POST':
         if 'contributor_address' in request.POST:
+            freq = request.POST.get('recurring_or_not', '')
+            contributor_address = request.POST.get('contributor_address', '0x')
+            if freq == 'recurring' and contributor_address == grant.admin_address:
+                messages.info(
+                    request,
+                    _(
+                    'Grant owners cannot self-fund grants via recurring subscription at this time. Please contact founders@gitcoin.co if you believe this message is in error!')
+                )
+                logger.error(
+                    f"Grant {grant.pk} cannot self-fund.")
+                return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+
             subscription = Subscription()
 
             subscription.active = False
@@ -589,7 +600,6 @@ def grant_fund(request, grant_id, grant_slug):
             })
 
     splitter_contract_address = settings.SPLITTER_CONTRACT_ADDRESS
-
     # handle phantom funding
     active_tab = 'normal'
     fund_reward = None
