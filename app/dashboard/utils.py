@@ -801,7 +801,31 @@ def get_tx_status(txid, network, created_on):
 
 
 def is_blocked(handle):
-    return BlockedUser.objects.filter(handle__iexact=handle, active=True).exists()
+    # check admin block list
+    is_on_blocked_list = BlockedUser.objects.filter(handle__iexact=handle, active=True).exists()
+    if is_on_blocked_list:
+        return True
+
+    # check banned country list
+    from compliance.models import Country, Entity
+    last_login = self.actions.filter(action='Login').order_by('pk').last()
+    if last_login:
+        last_login_country = last_login.location_data.get('country_name')
+        if last_login_country:
+            is_on_banned_countries = Country.objects.filter(name=last_login_country)
+            if is_on_banned_countries:
+                return True
+
+    # check banned entity list
+    if self.user:
+        first_name = self.user.first_name
+        last_name = self.user.last_name
+        full_name = '{first_name} {last_name}'
+        is_on_banned_user_list = Entitty.objects.filter(fullName__icontains=full_name)
+        if is_on_banned_user_list:
+            return True
+
+    return False
 
 
 def get_nonce(network, address):
