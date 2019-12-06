@@ -394,7 +394,8 @@ def do_leaderboard_feed():
                 'title': f"was ranked #{lr.rank} on the Gitcoin Weekly {_type.title()} Leaderboard",
                 'link': f'/leaderboard/{_type}'
                 }
-            Activity.objects.create(profile=lr.profile, activity_type='leaderboard_rank', metadata=metadata)
+            if lr.profile:
+                Activity.objects.create(profile=lr.profile, activity_type='leaderboard_rank', metadata=metadata)
 
 
 def do_leaderboard():
