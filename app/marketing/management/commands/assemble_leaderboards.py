@@ -488,5 +488,5 @@ class Command(BaseCommand):
     help = 'creates leaderboard objects'
 
     def handle(self, *args, **options):
-        #do_leaderboard()
+        do_leaderboard()
         do_leaderboard_feed()
