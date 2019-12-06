@@ -962,7 +962,7 @@ Happy December Friends,
 <h3>What else is new?</h3>
     <ul>
         <li>
-        &#1F680Grants and more grants!&#1F680 CLR Round 4 is coming up later in December. Remember to <a href="https://gitcoin.co/grants/">start a grant</a> if you’d like to be eligible! 
+        🚀Grants and more grants!🚀 CLR Round 4 is coming up later in December. Remember to <a href="https://gitcoin.co/grants/">start a grant</a> if you’d like to be eligible! 
         </li>
         <li>
         Additionally, ConsenSys Grants Wave III is closing Jan 14th. Apply <a href="https://consensys.net/grants/">here</a> directly and or consider submitting to their <a href="https://gitcoin.co/issue/ConsenSys/Consensys-Grants/2/3780">hackathon bounty</a>. Categories: || Infrastructure || UX and Dev Tooling || Security || Education || Social Impact.
@@ -998,7 +998,7 @@ Back to BuidLing,
 
     sponsor = {
     'name': 'CodeFund',
-    'title': 'Does your project need &#1F984 developers?',
+    'title': 'Does your project need 🦄 developers?',
     'image_url': '',
     'link': 'http://bit.ly/codefund-gitcoin-weekly',
     'cta': 'Learn More',
