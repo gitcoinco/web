@@ -514,7 +514,7 @@ a.btn {
 .stop-work-container {
   position: absolute;
   right: 0;
-  top: -8px;
+  top: -1px;
 }
 
 .stop-work {
@@ -532,14 +532,6 @@ a.btn {
 
   #title {
     padding-top: 1em;
-  }
-
-  .bounty-actions {
-    display: block;
-  }
-
-  .bounty-actions .col-12 {
-    text-align: center;
   }
 
   .loading_img img {
@@ -688,7 +680,7 @@ a.btn {
 .hackathon-alt {
   font-size: 11px;
   color: #0d0764;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 1.7px;
 }
 
@@ -793,12 +785,6 @@ a.btn {
     text-align: center;
   }
 
-  #moderator-admin-actions span {
-    display: inline-block;
-    margin-bottom: 5px;
-    margin-top: 5px;
-  }
-
   .stop-work-container {
     position: relative;
     margin-bottom: 1rem !important;
@@ -813,6 +799,26 @@ a.btn {
 @media (max-width: 991.98px) {
   .explorer {
     display: none;
+  }
+
+  #moderator-admin-actions span {
+    display: inline-block;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+
+  .bounty-actions {
+    display: block;
+  }
+
+  .bounty-actions .col-12 {
+    text-align: center;
+  }
+
+  #right_actions .dropdown {
+    float: none !important;
+    text-align: center;
+    margin-bottom: 1rem;
   }
 }
 

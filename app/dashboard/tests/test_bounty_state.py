@@ -51,7 +51,7 @@ class BountyStateTest(TestCase):
             idx_status='open',
             bounty_owner_email='asdfasdf@bar.com',
             current_bounty=True,
-            bounty_state='open_bounty'
+            bounty_state='open'
         )
 
     def test_handle_event(self):
@@ -60,7 +60,7 @@ class BountyStateTest(TestCase):
             event_type='express_interest'
         )
         self.bounty.handle_event(event)
-        assert self.bounty.bounty_state == 'open_bounty'
+        assert self.bounty.bounty_state == 'open'
         event_accept = BountyEvent.objects.create(
             bounty=self.bounty,
             event_type='accept_worker'

@@ -88,7 +88,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           {%elif beaten%}
           ✅
           {%elif unlocked%}
-          🔐
+          🔓
           {%else%}
           🔒
           {%endif%}
@@ -116,7 +116,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
       <a style="position: relative; bottom: 20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Play Quest</a>
       {%else%}
-      🔒Locked Until <a href="{{quest.unlocked_by.url}}">{{quest.unlocked_by.title}}</a> is beaten.
+      🔒Locked; To unlock 
+        {% if quest.unlocked_by_hackathon %}
+          register for <a href="{{quest.unlocked_by_hackathon.url}}">{{quest.unlocked_by_hackathon.name}}</a>.
+        {%else%}
+          beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
+        {%endif%}
       {%endif%}
       {% if difficulty_level == 'Created' %}
         <BR>
