@@ -13,7 +13,7 @@
 ![Gitcoinbot help](https://github.com/molecula451/web/blob/master/docs/imgs/gitcoinbothelp.gif?raw=true)
 
 ### Gitcoinbot Bounty <amount> 
-![Gitcoinbot bounty](https://i.postimg.cc/B6gTgf1N/ezgif-1-e020cff4228c.gif)
+![Gitcoinbot bounty](https://github.com/molecula451/web/blob/master/docs/imgs/gitcoinbotbounty.gif)
 
 ## Installation Instructions
 
