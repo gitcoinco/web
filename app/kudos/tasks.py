@@ -46,6 +46,7 @@ def redeem_bulk_kudos(self, kt_id, signed_rawTransaction, retry=False):
             obj = KudosTransfer.objects.get(pk=kt_id)
             w3 = get_web3(obj.network)
             obj.txid = w3.eth.sendRawTransaction(HexBytes(signed_rawTransaction)).hex()
+            obj.receive_txid = obj.txid
             obj.save()
             pass
         except Exception as e:
