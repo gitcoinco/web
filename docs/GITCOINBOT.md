@@ -10,10 +10,10 @@
 [Gitcoinbot](https://github.com/Gitcoinbot) is a bot that allows you to interact with gitcoin via the github comments, like follows:
 
 ### Help Command
-![Gitcoinbot help](https://github.com/molecula451/web/blob/master/docs/imgs/gitcoinbothelp.gif?raw=true)
+![Gitcoinbot help](https://github.com/gitcoinco/web/blob/master/docs/imgs/gitcoinbothelp.gif)
 
 ### Gitcoinbot Bounty <amount> 
-![Gitcoinbot bounty](https://github.com/molecula451/web/blob/master/docs/imgs/gitcoinbotbounty.gif)
+![Gitcoinbot bounty](https://github.com/gitcoinco/web/blob/master/docs/imgs/gitcoinbotbounty.gif)
 
 ## Installation Instructions
 
