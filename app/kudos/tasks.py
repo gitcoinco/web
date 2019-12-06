@@ -2,8 +2,8 @@ from app.redis_service import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.utils import get_web3
-from kudos.models import TokenRequest, KudosTransfer
 from hexbytes import HexBytes
+from kudos.models import KudosTransfer, TokenRequest
 
 logger = get_task_logger(__name__)
 
