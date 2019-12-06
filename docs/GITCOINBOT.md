@@ -12,7 +12,7 @@
 ### Help Command
 ![Gitcoinbot help](https://im.ezgif.com/tmp/ezgif-1-39c822c365a8.gif)
 
-### Gitcoinbot bounty <amount> 
+### Gitcoinbot Bounty <amount> 
 ![Gitcoinbot bounty](https://im.ezgif.com/tmp/ezgif-1-3f85e5ba166a.gif)
 
 ## Installation Instructions
