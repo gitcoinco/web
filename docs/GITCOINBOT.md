@@ -13,7 +13,7 @@
 ![Gitcoinbot help](https://im.ezgif.com/tmp/ezgif-1-39c822c365a8.gif)
 
 ### Gitcoinbot bounty <amount> 
-![Gitcoinbot bounty](https://media.giphy.com/media/xT1R9X9z8aIrNwC5Da/giphy.gif)
+![Gitcoinbot bounty](https://im.ezgif.com/tmp/ezgif-1-3f85e5ba166a.gif)
 
 ## Installation Instructions
 
