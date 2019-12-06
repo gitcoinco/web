@@ -21,6 +21,7 @@ import copy
 import datetime as dt
 import json
 import math
+import time
 from itertools import combinations
 
 from django.utils import timezone
@@ -33,8 +34,7 @@ CLR_START_DATE = dt.datetime(2019, 9, 15, 0, 0)
 
 
 '''
-    Helper function that generates all combinations of pair of grant
-    contributions and the corresponding sqrt of the product pair
+    Helper function that translates existing grant data structure to a list of lists.
 
     Args:
         {
@@ -47,125 +47,113 @@ CLR_START_DATE = dt.datetime(2019, 9, 15, 0, 0)
         }
 
     Returns:
-        {
-            'id': (str),
-            'profile_pairs': [tuples],
-            'contribution_pairs': [tuples],
-            'sqrt_of_product_pairs':  array
-        }
+        [[grant_id (str), user_id (str), contribution_amount (float)]]
 '''
-def generate_grant_pair(grant):
-    grant_id = grant.get('id')
-    grant_contributions = grant.get('contributions')
-    unique_contributions = {}
-
-    for contribution in grant_contributions:
-        for profile, amount in contribution.items():
-            if unique_contributions.get(profile):
-                unique_contributions[profile] += amount
-            else:
-                unique_contributions[profile] = amount
-
-    # NOTE: comment out single pair contribution
-    # if len(unique_contributions) == 1:
-    #     profile = next(iter(unique_contributions))
-    #     unique_contributions['_' + profile] = 1
-
-    profile_pairs = list(combinations(unique_contributions.keys(), 2))
-    contribution_pairs = list(combinations(unique_contributions.values(), 2))
-
-    sqrt_of_product_pairs = []
-    for contribution_1, contribution_2 in contribution_pairs:
-        sqrt_of_product = math.sqrt(contribution_1 * contribution_2)
-        sqrt_of_product_pairs.append(sqrt_of_product)
-
-    grant = {
-        'id': grant_id,
-        'profile_pairs': profile_pairs,
-        'contribution_pairs': contribution_pairs,
-        'sqrt_of_product_pairs': sqrt_of_product_pairs
-    }
-
-    return grant
+def translate_data(grants_data):
+    grants_list = []
+    for g in grants_data:
+        grant_id = g.get('id')
+        for c in g.get('contributions'):
+            val = [grant_id] + [list(c.keys())[0], list(c.values())[0]]
+            grants_list.append(val)
+    return grants_list
 
 
 '''
-    Given a threshold and grant conributions, it calculates the
-    total clr and how that would be split amongst the grants
+    Helper function that aggregates contributions by contributor, and then uses the aggregated contributors by contributor and calculates total contributions by unique pairs.
 
     Args:
-        threshold: (int),
-        grant: {
-            'id': (string),
-            'contibutions' : [
-                {
-                    contributor_profile (str) : contribution_amount (int)
-                }
-            ]
-        }
+        from translate_data:
+        [[grant_id (str), user_id (str), contribution_amount (float)]]
 
     Returns:
-        {
-            'total_clr': (int),
-            '_clrs': [
-                {
-                    'id': (str),
-                    'clr_amount': (int)
-                }
-            ]
-        }
+        {grant_id (str): {user_id (str): aggregated_amount (float)}}
+
+        and
+
+        {user_id (str): {user_id (str): pair_total (float)}}
 '''
-def calculate_clr(threshold, grant_contributions):
-    grants = []
-    group_by_pair = {}
+def aggregate_contributions(grant_contributions):
+    contrib_dict = {}
+    for proj, user, amount in grant_contributions:
+        if proj not in contrib_dict:
+            contrib_dict[proj] = {}
+        contrib_dict[proj][user] = contrib_dict[proj].get(user, 0) + amount
 
-    total_clr = 0
+    tot_overlap = {}
+    for proj, contribz in contrib_dict.items():
+        for k1, v1 in contribz.items():
+            if k1 not in tot_overlap:
+                tot_overlap[k1] = {}
+            for k2, v2 in contribz.items():
+                if k2 not in tot_overlap[k1]:
+                    tot_overlap[k1][k2] = 0
+                tot_overlap[k1][k2] += (v1 * v2) ** 0.5
+    return contrib_dict, tot_overlap
 
-    for grant_contribution in grant_contributions:
-        grant = generate_grant_pair(grant_contribution)
 
-        grants.append(grant)
+'''
+    Helper function that runs the pairwise clr formula while "binary" searching for the correct threshold.
 
-        for index, profile_pair in enumerate(grant['profile_pairs']):
-            pair = str('&'.join(profile_pair))
-            pair_reversed = str('&'.join(profile_pair[::-1]))
+    Args:
 
-            if group_by_pair.get(pair):
-                group_by_pair[pair] += grant['sqrt_of_product_pairs'][index]
-            elif group_by_pair.get(pair_reversed):
-                group_by_pair[pair_reversed] += grant['sqrt_of_product_pairs'][index]
-            else:
-                group_by_pair[pair] = grant['sqrt_of_product_pairs'][index]
+        set variables:
+        lower_bound: set at 0.0
+        total_pot: set at 100000.0
+        
+        from the helper function aggregate_contributions:
+        aggregated_contributions: {grant_id (str): {user_id (str): aggregated_amount (float)}}
+        pair_totals: {user_id (str): {user_id (str): pair_total (float)}}
 
-    _clrs = []
+    Returns:
+        bigtot: should equal total pot
+        totals:
+'''
+def calculate_clr(aggregated_contributions, pair_totals, lower_bound=0.0, total_pot=100000.0):   
+    lower = lower_bound
+    upper = total_pot
+    iterations = 0
+    while iterations < 100:
+        threshold = (lower + upper) / 2
+        iterations += 1
+        if iterations == 100:
+            print("--- %s seconds ---" % (time.time() - start_time))
+            print(f'iterations reached, bigtot at {bigtot}')
+            break
+        bigtot = 0
+        totals = []
+        # single donation doesn't get a match
+        for proj, contribz in aggregated_contributions.items():
+            tot = 0
+            for k1, v1 in contribz.items():
+                for k2, v2 in contribz.items():
+                    if k2 > k1:  # remove pairs
+                        # # pairwise matching formula
+                        # tot += (v1 * v2) ** 0.5 * min(1, threshold / pair_totals[k1][k2])
+                        # vitalik's division formula
+                        tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / threshold + 1)
+            bigtot += tot
+            # totals.append((proj, tot))
+            totals.append({'id': proj, 'clr_amount': tot})
+        # print(f'threshold {threshold} yields bigtot {bigtot} vs totalpot {total_pot} at iteration {iterations}')
+        if bigtot == total_pot:
+            print("--- %s seconds ---" % (time.time() - start_time))
+            print(f'bigtot {bigtot} = total_pot {total_pot} with threshold {threshold}')
+            print(totals)
+            break
+        elif bigtot < total_pot:
+            lower = threshold
+        elif bigtot > total_pot:
+            upper = threshold
+    return bigtot, totals 
 
-    for grant in grants:
-        grant_clr = 0
-        lr_contributions = []
-        for index, profile_pair in enumerate(grant['profile_pairs']):
-            pair = str('&'.join(profile_pair))
-            pair_reversed = str('&'.join(profile_pair[::-1]))
-            _pair = None
-            if group_by_pair.get(pair):
-                _pair = pair
-            elif group_by_pair.get(pair_reversed):
-                _pair = pair_reversed
 
-            lr_contribution = 0
-            sqrt_of_product_pair = grant["sqrt_of_product_pairs"][index]
-
-            lr_contribution = sqrt_of_product_pair * min(1, threshold / group_by_pair.get(_pair))
-
-            lr_contributions.append(lr_contribution)
-            grant_clr += lr_contribution
-            total_clr += lr_contribution
-
-        _clrs.append({
-            'id': grant["id"],
-            'clr_amount': grant_clr
-        })
-
-    return total_clr, _clrs
+# # testing the code
+# start_time = time.time()
+# grants_list = translate_data(grants_data)
+# aggregated_contributions, pair_totals = aggregate_contributions(grants_list)
+# bigtot, totals = calculate_clr(aggregated_contributions, pair_totals)
+# print(bigtot, totals)
 
 
 '''
