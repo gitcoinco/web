@@ -387,7 +387,7 @@ def do_leaderboard_feed():
     max_rank = 25
     for _type in [PAYERS, EARNERS, ORGS]:
         key = f'{WEEKLY}_{_type}'
-        lrs = LeaderboardRank.objects.active().filter(leaderboard=key, rank__lte=max_rank)
+        lrs = LeaderboardRank.objects.active().filter(leaderboard=key, rank__lte=max_rank, product='all')
         print(key, lrs.count())
         for lr in lrs:
             metadata = {
