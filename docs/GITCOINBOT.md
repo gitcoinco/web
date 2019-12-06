@@ -10,7 +10,7 @@
 [Gitcoinbot](https://github.com/Gitcoinbot) is a bot that allows you to interact with gitcoin via the github comments, like follows:
 
 ### Help Command
-![Gitcoinbot help](https://im.ezgif.com/tmp/ezgif-1-39c822c365a8.gif)
+![Gitcoinbot help](https://i.postimg.cc/dQ5Px72m/ezgif-1-39c822c365a8.gif)
 
 ### Gitcoinbot Bounty <amount> 
 ![Gitcoinbot bounty](https://i.postimg.cc/yY7qx1vr/3xqyh-S5-Imgur.gif)
