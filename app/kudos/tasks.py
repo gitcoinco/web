@@ -1,7 +1,9 @@
 from app.redis_service import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
-from kudos.models import TokenRequest
+from dashboard.utils import get_web3
+from kudos.models import TokenRequest, KudosTransfer
+from hexbytes import HexBytes
 
 logger = get_task_logger(__name__)
 
@@ -28,4 +30,23 @@ def mint_token_request(self, token_req_id, retry=False):
             sync_latest(2)
             sync_latest(3)
         else:
+            self.retry(30)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def redeem_bulk_kudos(self, kt_id, signed_rawTransaction, retry=False):
+    """
+    :param self:
+    :param kt_id:
+    :param signed_rawTransaction:
+    :return:
+    """
+    with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=LOCK_TIMEOUT):
+        try:
+            obj = KudosTransfer.objects.get(pk=kt_id)
+            w3 = get_web3(obj.network)
+            obj.txid = w3.eth.sendRawTransaction(HexBytes(signed_rawTransaction)).hex()
+            obj.save()
+            pass
+        except Exception as e:
             self.retry(30)
