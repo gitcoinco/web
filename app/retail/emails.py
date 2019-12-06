@@ -927,8 +927,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Growing Your Global Community"
-    new_kudos_pks = [2571, 7135, 2224]
+    subject = "Grants for the Holidays"
+    new_kudos_pks = [5304, 4033, 1923]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -946,81 +946,77 @@ def render_new_bounty_roundup(to_email):
     '''
     intro = f'''
 <p>
-Hey Gitcoiners,
+Happy December Friends,
 </p>
 <p>
-    At Gitcoin, we're interested in making it possible for everyone to grow a global community. We welcome each of you, wherever you are, to  <a href="https://hackathons.gitcoin.co/global-communities">join us for the Global Communities hack.</a>
-    Want to hack? There will be prizes. Want to learn? We'll have unique Quests on topics of interest in Web 3.
-    Want to meet other smart, great people? That's the easy part, and the fun part. <a href="https://hackathons.gitcoin.co/global-communities">Register and come together :)</a>
+    As we creep into the final month of 2019, it’s humbling to look back and see the incredible growth our ecosystem has seen this year. The Gitcoin and Ethereum developer communities are thriving and the 2020 horizon is looking bright. With your help, we plan to kick off new developer growth initiatives in the coming year to work towards the collaborative goal of <a href="https://onemilliondevs.com/">one million Ethereum Developers</a>.
 </p>
 <p>
-    Have something you want to build during the event, related to Ethereum? Write it up in a Github ticket (on <a href="https://github.com/gitcoinco/skunkworks/issues">our repo</a>, or
-    the related repo on Github). Then make <a href="https://gitcoin.co/requests">a Gitcoin Request.</a> Takes 5 minutes - you can help move Ethereum
-    forward and share with the community along the way!
+    In that regard, the Ethereum Foundation and Gitcoin would love to hear about your experience joining and contributing to the Ethereum space. If you have 2 minutes, please fill out this 6 question <a href="https://gitcoin.typeform.com/to/MkoL19">Ethereum Developer Survey</a> so we can make Ethereum more receptive to onboarding new developers.
 </p>
 <p>
-    Not building, but want to learn about new topics in Web 3? Check out <a href="https://gitcoin.co/quests">Gitcoin Quests.</a>
-    Let us know if it helps. We want to make a body of knowledge for the Web 3 curious, leading towards ways to build it yourself. Come play :)
+    The Global Communities hackathon is in full swing with <a href="https://gitcoin.co/hackathon/global-communities">29 prizes</a>. In our efforts to increase participation and make these virtual events more accessible, we’ve put together a bundle of <a href="https://gitcoin.co/quests/?focus_hackathon=global-communities">Hackathon Quests</a> for those who want to learn, as well as a <a href="https://gitcoin.co/issue/gitcoinco/skunkworks/136/3759">Community Choice prize</a> for those who want to judge (remember, you must <a href="https://gitcoin.co/hackathon/onboard/global-communities/">register</a> to do either!).
 </p>
-<p>
-    <img style="max-width: 90%" src="https://gitcoin-static.s3-us-west-2.amazonaws.com/gitcointurkey.png">
-</p>
+
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        No Gitcoin Livestream this week, but we'll be back next week for Global Communities. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
+        🚀Grants and more grants!🚀 CLR Round 4 is coming up later in December. Remember to <a href="https://gitcoin.co/grants/">start a grant</a> if you’d like to be eligible! 
         </li>
         <li>
-        We're still updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
+        Additionally, ConsenSys Grants Wave III is closing Jan 14th. Apply <a href="https://consensys.net/grants/">here</a> directly and or consider submitting to their <a href="https://gitcoin.co/issue/ConsenSys/Consensys-Grants/2/3780">hackathon bounty</a>. Categories: || Infrastructure || UX and Dev Tooling || Security || Education || Social Impact.
+        </li>
+        <li>
+        We're hosting Johanna from ConsenSys Grants and Pablo from Hashing Systems on today's livestream to discuss hackathon bounties and grants. Join us <a href="https://gitcoin.co/livestream">at 2PM ET this Friday</a>!
         </li>
     </ul>
 </p>
 <p>
-Back to shipping,
+Back to BuidLing,
 </p>
 '''
     highlights = [{
-        'who': 'brentallsop',
+        'who': 'uivlis',
         'who_link': True,
-        'what': 'Notes For Meeting 27',
-        'link': 'https://gitcoin.co/issue/ethereum/eth2.0-pm/97/3723',
+        'what': 'Split Constant-Function Detector',
+        'link': 'https://gitcoin.co/issue/crytic/slither/318/3732',
         'link_copy': 'View more',
     }, {
-        'who': 'mul53',
+        'who': 'kadenzipfel',
         'who_link': True,
-        'what': 'Key was being generated in wrong manner... now, its fixed!',
-        'link': 'https://gitcoin.co/issue/cybercongress/cyb/249/3733',
+        'what': 'Smart contract best practices for Gitcoin',
+        'link': 'https://gitcoin.co/issue/ConsenSys/smart-contract-best-practices/239/3740',
         'link_copy': 'View more',
     }, {
-        'who': 'johguse',
+        'who': 'nazariyv',
         'who_link': True,
-        'what': 'Mined new addresses for CREATE2. Great work!',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/9491/3718',
+        'what': 'Built Scraper For Coinflex Futures API',
+        'link': 'https://gitcoin.co/issue/diadata-org/diadata/183/3668',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'MythX',
-        'title': 'Keep Ethereum Secure',
-        'image_url': '',
-        'link': 'http://bit.ly/mythx-gitcoin-weekly',
-        'cta': 'Register Now',
-        'body': [
-            'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
-            'Scan for security vulnerabilities right away from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
-        ]
-    }
+    'name': 'CodeFund',
+    'title': 'Does your project need 🦄 developers?',
+    'image_url': '',
+    'link': 'http://bit.ly/codefund-gitcoin-weekly',
+    'cta': 'Learn More',
+    'body': [
+       'CodeFund is a privacy-focused ethical advertising network (by Gitcoin) that funds open source projects.',
+       'We specialize in helping companies connect with talented developers and potential customers on developer-centric sites that typically do not allow ads.'
+    ]
+}
 
     bounties_spec = [{
-        'url': 'https://github.com/notadamking/tensortrade/issues/119',
-        'primer': 'Feature Request: GANExchange Implementation Of SimulatedExchange',
+        'url': 'https://github.com/KamesCG/ideas/issues/1',
+        'primer': 'Easy Onboarding: MetaMask Snap + Smart Wallet? + DefI Protocols',
     }, {
-        'url': 'https://github.com/invisible-college/democracy/issues/31',
-        'primer': 'Design A Logo For Typed Transform Pipelines',
+        'url': 'https://github.com/status-im/status-react/issues/9576',
+        'primer': 'Status: Disable Search Bar On Empty Chat State And Fix Pull-To-Refresh Gesture',
     }, {
-        'url': 'https://github.com/crytic/evm_cfg_builder/issues/23',
-        'primer': 'Create Gidhra Plugin for the EVM',
+        'url': 'https://github.com/hashingsystems/hash.js/issues/9',
+        'primer': 'Hashing Systems $200 hackathon prize: Create A Tutorial For Developers To Use Composer Functionality With ReactJS',
 }, ]
 
 
