@@ -350,6 +350,38 @@ class Grant(SuperModel):
         return grant_contract
 
 
+class GrantCategory(SuperModel):
+    GRANT_CATEGORIES = [
+        ('not_set', 'not_set'),
+        ('security', 'security'),
+        ('scalability', 'scalability'),
+        ('ux', 'ux'),
+        ('defi', 'defi'),
+        ('education', 'education'),
+        ('wallets', 'wallets'),
+        ('community', 'community'),
+        ('eth2.0', 'eth2.0'),
+        ('eth1.x', 'eth1.x'),
+    ]
+
+    category = models.CharField(
+        max_length=50,
+        choices=GRANT_CATEGORIES,
+        default='not_set',
+        blank=False,
+        null=False,
+        help_text=_('Grant Category'),
+    )
+
+    grant = models.ForeignKey(
+        'Grant',
+        related_name='categories',
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        help_text=_('The associated Grant.'),
+    )
+
 class Milestone(SuperModel):
     """Define the structure of a Grant Milestone"""
 

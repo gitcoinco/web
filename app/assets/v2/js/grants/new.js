@@ -56,6 +56,10 @@ const processReceipt = receipt => {
   saveGrant(formData, true);
 };
 
+const setupGrantCategoriesInput = () => {
+  grantCategoriesSelection('.categories');
+};
+
 const init = () => {
   if (localStorage['grants_quickstart_disable'] !== 'true') {
     window.location = document.location.origin + '/grants/quickstart';
@@ -189,6 +193,7 @@ const init = () => {
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('network', $('#network').val());
             formData.append('team_members[]', $('#input-team_members').val());
+            formData.append('categories[]', $('#input-categories').val());
             saveGrant(formData, false);
 
             document.issueURL = linkURL;
@@ -283,5 +288,8 @@ const init = () => {
     $('.select2-selection__rendered').hover(function() {
       $(this).removeAttr('title');
     });
+
+
+    setupGrantCategoriesInput();
   });
 };

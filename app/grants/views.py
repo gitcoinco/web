@@ -42,7 +42,9 @@ from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
-from grants.models import Contribution, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update
+from grants.models import (
+    Contribution, Grant, GrantCategory, MatchPledge, Milestone, PhantomFunding, Subscription, Update
+)
 from grants.utils import get_leaderboard
 from kudos.models import BulkTransferCoupon
 from marketing.mails import (
@@ -80,6 +82,7 @@ def grants(request):
     keyword = request.GET.get('keyword', '')
     grant_type = request.GET.get('type', 'tech')
     state = request.GET.get('state', 'active')
+    category = request.GET.get('category', '')
     _grants = None
 
     show_past_clr = False
@@ -104,6 +107,15 @@ def grants(request):
         sort_by_index = clr_prediction_curve_schema_map.get(sort_by_clr_pledge_matching_amount, 0)
         field_name = f'clr_prediction_curve__{sort_by_index}__2'
         _grants = _grants.order_by(f"-{field_name}")
+
+    if category:
+        grants_with_category = GrantCategory.objects.filter(
+            category=category,
+            grant__hidden=False,
+            grant__network=network,
+            grant__grant_type=grant_type
+        )
+        _grants = [ grant_with_category.grant for grant_with_category in grants_with_category ]
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -132,26 +144,14 @@ def grants(request):
         network=network, hidden=False, grant_type='media'
     ).count()
 
-    nav_options = [
-        {'label': 'All', 'keyword': ''},
-        {'label': 'Security', 'keyword': 'security'},
-        {'label': 'Scalability', 'keyword': 'scalability'},
-        {'label': 'UI/UX', 'keyword': 'UI'},
-        {'label': 'DeFI', 'keyword': 'defi'},
-        {'label': 'Education', 'keyword': 'education'},
-        {'label': 'Wallets', 'keyword': 'wallet'},
-        {'label': 'Community', 'keyword': 'community'},
-        {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
-        {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
-    ]
+    categories = [category[0] for category in basic_grant_categories()]
     if grant_type == 'media':
-        nav_options = [
-            {'label': 'All', 'keyword': ''},
-            {'label': 'Education', 'keyword': 'education'},
-            {'label': 'Twitter', 'keyword': 'twitter'},
-            {'label': 'Reddit', 'keyword': 'reddit'},
-            {'label': 'Blogs', 'keyword': 'blog'},
-            {'label': 'Notes', 'keyword': 'notes'},
+        categories = [
+            'education',
+            'twitter',
+            'reddit',
+            'blog',
+            'notes',
         ]
 
     grant_types = [
@@ -167,7 +167,7 @@ def grants(request):
         'keyword': keyword,
         'type': grant_type,
         'clr_matching_banners_style': clr_matching_banners_style,
-        'nav_options': nav_options,
+        'categories': categories,
         'grant_types': grant_types,
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
@@ -184,7 +184,8 @@ def grants(request):
         'sort_by_index': sort_by_index,
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
-        'is_staff': request.user.is_staff
+        'is_staff': request.user.is_staff,
+        'selected_category': category
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -202,6 +203,17 @@ def grants(request):
 
     return TemplateResponse(request, 'grants/index.html', params)
 
+def add_form_categories_to_grant(form_category_ids, grant):
+    form_category_ids = [int(i) for i in form_category_ids if i != '']
+    print('form category ids int')
+    print(form_category_ids)
+
+    model_categories = basic_grant_categories()
+    model_categories = [ category[0] for category in model_categories ]
+    selected_categories = [model_categories[i] for i in form_category_ids]
+
+    for category in selected_categories:
+        GrantCategory.objects.create(category=category,grant=grant)
 
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
@@ -268,10 +280,19 @@ def grant_details(request, grant_id, grant_slug):
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(grant.admin_profile.id))
             grant.team_members.set(team_members)
+
+            form_category_ids = request.POST.getlist('edit-categories[]')
+
+            '''Overwrite the existing categories'''
+            grant.categories.all().delete()
+
+            add_form_categories_to_grant(form_category_ids, grant)
+
             if 'edit-description' in request.POST:
                 grant.description = request.POST.get('edit-description')
                 grant.description_rich = request.POST.get('edit-description_rich')
             grant.save()
+
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
@@ -360,6 +381,11 @@ def grant_new(request):
 
             grant.team_members.add(*team_members)
             grant.save()
+
+            form_category_ids = request.POST.getlist('categories[]')
+            form_category_ids = (form_category_ids[0].split(','))
+            form_category_ids = list(set(form_category_ids))
+            add_form_categories_to_grant(form_category_ids, grant)
 
             return JsonResponse({
                 'success': True,
@@ -624,7 +650,7 @@ def grant_fund(request, grant_id, grant_slug):
             return JsonResponse({
                 'success': True,
             })
-        
+
         if 'hide_wallet_address' in request.POST:
             profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
             profile.save()
@@ -924,3 +950,19 @@ def invoice(request, contribution_pk):
     }
 
     return TemplateResponse(request, 'grants/invoice.html', params)
+
+def basic_grant_categories():
+    categories = GrantCategory.GRANT_CATEGORIES
+    return [ (category[0],idx-1) for idx, category in enumerate(categories) if 'not_set' not in category[0] ]
+
+@csrf_exempt
+def grant_categories(request):
+    categories = basic_grant_categories()
+
+    search_term = request.GET.get('term', None)
+    if search_term is not None:
+        categories = [ category for category in categories if search_term in category[0] ]
+
+    return JsonResponse({
+        'categories': categories
+    })

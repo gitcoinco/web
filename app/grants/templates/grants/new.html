@@ -90,6 +90,14 @@
                 </div>
 
                 <div class="form__group-horizontal pb-3">
+                  <label class="font-body">{% trans "Grant Categories" %}</label>
+                  <div class="form__select2 g-multiselect">
+                    <select id="input-categories" class="form__input form__input-lg categories" name="categories[]" multiple="multiple">
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
                   <div class="row">
                     <div class="col-12 col-md-6">
                       <label class="font-body">{% trans "Monthly amount sought in DAI" %}</label>
@@ -139,6 +147,7 @@
                   <input type="hidden" id="contract_version" name="contract_version" value="1">
                   <input type="hidden" id="token_address" name="token_address" value="">
                   <input type="hidden" id="token_symbol" name="token_symbol" value="">
+                  <input type="hidden" id="category" name="category" value="">
                   <input type="hidden" id="network" name="network">
                   <input type="hidden" id="trusted_relayer" name="trusted_relayer" value="{{ trusted_relayer }}">
                 </div>

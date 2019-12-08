@@ -3,12 +3,53 @@ const editableFields = [
   '#form--input__reference-url',
   '#contract_owner_address',
   '#grant-members',
-  '#amount_goal'
+  '#amount_goal',
+  '#grant-categories'
 ];
+
+function getCategoryIndex(categoryName, categories) {
+  const resultSet = categories.filter(category => {
+    const name = category[0];
+
+    return name === categoryName;
+  });
+
+  if (resultSet.length === 1) {
+    const matchingCategory = resultSet[0];
+
+    const index = matchingCategory[1];
+
+    return index.toString();
+  }
+
+  return '-1';
+}
+
+function updateValuesOfExistingCategories() {
+  $.get('/grants/categories', data => {
+    if (!data || !data.categories) {
+      return;
+    }
+
+    $('#grant-categories option:selected').each(function() {
+      const categoryName = $(this).text();
+
+      const categoryIndex = getCategoryIndex(categoryName.toLowerCase(), data.categories);
+
+      $(this).val(categoryIndex);
+    });
+  });
+}
+
+function initGrantCategoriesInput() {
+  grantCategoriesSelection('#grant-categories');
+  updateValuesOfExistingCategories();
+}
 
 $(document).ready(function() {
   showMore();
   addGrantLogo();
+  initGrantCategoriesInput();
 
   setInterval (() => {
     notifyOwnerAddressMismatch(
@@ -67,12 +108,14 @@ $(document).ready(function() {
     let edit_reference_url = $('#form--input__reference-url').val();
     let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
+    let edit_categories = $('#grant-categories').val();
 
     let data = {
       'edit-title': edit_title,
       'edit-reference_url': edit_reference_url,
       'edit-amount_goal': edit_amount_goal,
-      'edit-grant_members[]': edit_grant_members
+      'edit-grant_members[]': edit_grant_members,
+      'edit-categories[]': edit_categories
     };
 
     if (grant_description !== undefined) {
