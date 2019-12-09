@@ -3,7 +3,7 @@ Issue lost
 
 Hey there,
 
-We are sorry, but the funder has removed You from the issue.
+We are sorry, but the funder has removed you from the issue.
 
 Funded Issue Details
 
@@ -12,5 +12,5 @@ Funded Issue Details
 You are receiving this email because your email address is on the notification list for this funded issue.
 
 
-Keep Pushing Open Source Forward,
+Keep pushing open source forward,
 -- Gitcoin Core

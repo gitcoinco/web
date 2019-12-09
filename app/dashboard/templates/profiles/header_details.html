@@ -39,6 +39,9 @@
       <i class="fab fa-discord"></i>
     </a>
   {% endif %}
+  {% if is_staff %}
+    <button class="chat btn btn-outline-gc-black" data-openchat="{{profile.handle}}"><i class="fas fa-comment-dots"></i></button>
+  {% endif %}
 </p>
 
 {% if profile.data.bio %}
@@ -46,6 +49,12 @@
     <small class="review-comment">{{ profile.data.bio }}</small>
   </div>
 {% endif %}
+{% if user.is_authenticated and is_on_tribe and profile.is_org %}
+  <button class="btn btn-gc-blue btn-sm" data-jointribe="{{profile.handle}}">Leave Tribe</button>
+{% elif user.is_authenticated and profile.is_org %}
+  <button class="btn btn-gc-blue btn-sm" data-jointribe="{{profile.handle}}">Join Tribe</button>
+{% endif %}
+
 
 {% if profile.preferred_payout_address %}
   <div class="my-2">

@@ -80,12 +80,14 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
-from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
+from .helpers import (
+    bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
+)
 from .models import (
-    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption,
+    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
-    SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
+    SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -190,10 +192,15 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
     if event_name == 'worker_applied':
         kwargs['metadata']['approve_worker_url'] = bounty.approve_worker_url(user.profile)
         kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
-    if event_name in ['worker_approved', 'worker_rejected'] and interest:
+    elif event_name in ['worker_approved', 'worker_rejected'] and interest:
         kwargs['metadata']['worker_handle'] = interest.profile.handle
 
     try:
+        if event_name in bounty_activity_event_adapter:
+            event = BountyEvent.objects.create(bounty=bounty,
+                event_type=bounty_activity_event_adapter[event_name],
+                created_by=kwargs['profile'])
+            bounty.handle_event(event)
         return Activity.objects.create(**kwargs)
     except Exception as e:
         logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
@@ -1433,6 +1440,7 @@ def fulfill_bounty(request):
     return TemplateResponse(request, 'bounty/fulfill.html', params)
 
 
+@login_required
 def increase_bounty(request):
     """Increase a bounty as the funder.
 
@@ -2518,6 +2526,8 @@ def get_profile_tab(request, profile, tab, prev_context):
                 return JsonResponse(msg, status=msg.get('status', 200))
     elif tab == 'orgs':
         pass
+    elif tab == 'tribe':
+        pass
     elif tab == 'people':
         pass
     elif tab == 'quests':
@@ -2633,7 +2643,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests']
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2685,12 +2695,16 @@ def profile(request, handle, tab=None):
 
     # setup context for visit
 
+    if not len(profile.tribe_members) and tab == 'tribe':
+        tab = 'activity'
+
     context['is_my_profile'] = is_my_profile
     context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
     context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+    context['is_on_tribe'] = request.user.is_authenticated and any([handle.lower() == tribe.org.handle.lower() for tribe in request.user.profile.tribe_members ])
     context['ratings'] = range(0,5)
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
@@ -4117,3 +4131,113 @@ def choose_persona(request):
             'persona': persona,
         },
         status=200)
+
+
+@csrf_exempt
+@require_POST
+def join_tribe(request, handle):
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        try:
+            TribeMember.objects.get(profile=profile, org__handle__iexact=handle).delete()
+            return JsonResponse(
+            {
+                'success': True,
+                'is_member': False,
+            },
+            status=200)
+        except TribeMember.DoesNotExist:
+            kwargs = {
+                'org': Profile.objects.filter(handle=handle).first(),
+                'profile': profile
+            }
+            tribemember = TribeMember.objects.create(**kwargs)
+            tribemember.save()
+
+            return JsonResponse(
+                {
+                    'success': True,
+                    'is_member': True,
+                },
+                status=200)
+    else:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+             status=401)
+
+
+
+
+@csrf_exempt
+@require_POST
+def tribe_leader(request):
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        member = request.POST.get('member')
+        try:
+            tribemember = TribeMember.objects.get(pk=member)
+            is_my_org = request.user.is_authenticated and any([tribemember.org.handle.lower() == org.lower() for org in request.user.profile.organizations ])
+
+            if is_my_org:
+                tribemember.leader = True
+                tribemember.save()
+                return JsonResponse(
+                {
+                    'success': True,
+                    'is_leader': True,
+                },
+                status=200)
+            else:
+                return JsonResponse(
+                {
+                    'success': False,
+                    'is_my_org': False,
+                },
+                status=401)
+
+        except Exception as e:
+
+            return JsonResponse(
+                {
+                    'success': False,
+                    'is_leader': False,
+                },
+                status=401)
+
+
+@csrf_exempt
+@require_POST
+def save_tribe(request,handle):
+    tribe_description = clean(
+        request.POST.get('tribe_description'),
+        tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'p', 'u', 'br', 'i', 'li', 'ol', 'strong', 'ul', 'img', 'h1', 'h2'],
+        attributes={'a': ['href', 'title'], 'abbr': ['title'], 'acronym': ['title'], 'img': ['src'], '*': ['class']},
+        styles=[],
+        protocols=['http', 'https', 'mailto'],
+        strip=True,
+        strip_comments=True
+    )
+
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+        is_my_org = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+        if is_my_org:
+            org = Profile.objects.filter(handle=handle).first()
+            org.tribe_description = tribe_description
+            org.save()
+
+            return JsonResponse(
+                {
+                    'success': True,
+                    'is_my_org': True,
+                },
+                status=200)
+
+        else:
+            return JsonResponse(
+                {
+                    'success': False,
+                    'is_my_org': False,
+                },
+                status=401)

@@ -47,6 +47,13 @@
         }
       </style>
 
+    {% if is_staff %}
+    <div class="alpha-warning font-caption mb-0">
+      <span class="font-weight-bold">Staff only</span>
+      <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
+    </div>
+    {% endif %}
+
       <div id="{{ hackathon.identifier }}" class="row pt-2 pb-4 text-center banner hackathon-banner">
         <div class="col-12 g-font-muli">
           {% if hackathon.logo_svg %}
@@ -76,6 +83,9 @@
           {% endif %}
           {% if hackathon.end_date|timesince <= "1 min" %}
             <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-outline-green font-subheader font-weight-semibold px-4 py-2 mr-3"><i class="far fa-lightbulb mr-1"></i> Hackathon Guide</a>
+          {% endif %}
+          {% if hackathon.quest_link %}
+            <a href="{{hackathon.quest_link}}" class="btn btn-outline-green font-subheader font-weight-semibold px-4 py-2 mr-3"><i class="far fa-lightbulb mr-1"></i> Hackathon Quests</a>
           {% endif %}
         </div>
       </div>
