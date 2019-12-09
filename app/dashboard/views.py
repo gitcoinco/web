@@ -3558,8 +3558,8 @@ def save_hackathon(request, hackathon):
             'acronym': ['title'],
             'img': ['src'],
             'iframe': ['src', 'frameborder', 'allowfullscreen'],
-            '*': ['class']},
-        styles=[],
+            '*': ['class', 'style']},
+        styles=['background-color', 'color'],
         protocols=['http', 'https', 'mailto'],
         strip=True,
         strip_comments=True

@@ -47,25 +47,24 @@
         }
       </style>
 
-    {% if is_staff %}
-    <div class="alpha-warning font-caption mb-0">
-      <span class="font-weight-bold">Staff only</span>
-      <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
-    </div>
-    {% endif %}
-
-      <div id="{{ hackathon.identifier }}" class="row pt-2 pb-4 text-center banner hackathon-banner">
-        <div class="col-12 g-font-muli">
-          {% if hackathon.logo_svg %}
+      {% if is_staff %}
+        <div class="alpha-warning font-caption mb-0">
+          <span class="font-weight-bold">Staff only</span>
+          <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
+        </div>
+      {% endif %}
+      <div id="{{ hackathon.identifier }}" class="row pt-2 pb-4 banner hackathon-banner">
+        <div class="col">
+          <!-- {% if hackathon.logo_svg %}
             <img class="d-block mx-auto mb-0 hackathon-logo" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
           {% elif hackathon.logo %}
             <img class="d-block mx-auto mb-0 hackathon-logo" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
-          {% endif %}
-          <div class="mb-3">
-            <p class="font-weight-bold mb-0 hackathon-header">GITCOIN VIRTUAL HACKATHON</p>
-            <span class="hackathon-name pb-1 font-weight-bold">{{ hackathon.name }}</span>
+          {% endif %} -->
+          <div class="">
+
+            <span class="hackathon-name font-weight-bold">{{ hackathon.name }}</span>
           </div>
-          <p class="font-bigger-1 mb-1">
+          <p class="mb-1">
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
             {% if hackathon.end_date|timeuntil >= "1 min" %}
               <p class="font-smaller-1 text-uppercase"> Ends in
@@ -75,7 +74,7 @@
             </p>
         </div>
 
-        {% include 'shared/hackathon_sponsors.html' %}
+        <!-- {% include 'shared/hackathon_sponsors.html' %} -->
 
         <div class="col text-right">
           {% if hackathon.show_results %}
@@ -127,6 +126,8 @@
               <p>
                 <a href="{% url "quests_index" %}">Explore Web3 via Gitcoin Quests to prepare</a>
               </p>
+              {% include 'shared/hackathon_sponsors.html' %}
+
             {% else %}
               <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
               <h3>{% trans "No results found." %}</h3>

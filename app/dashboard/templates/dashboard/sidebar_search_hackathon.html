@@ -33,6 +33,17 @@
   </p>
   <form>
     <div class="col">
+      {% if hackathon.logo_svg %}
+        <img class="d-block mx-auto mb-1 mw-100" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
+      {% elif hackathon.logo %}
+        <img class="d-block mx-auto mb-1 mw-100" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
+      {% endif %}
+      <div class="mb-3">
+        <p class="font-weight-bold mb-0 font-smaller-6">GITCOIN VIRTUAL HACKATHON</p>
+        <span class="pb-1 font-weight-bold">{{ hackathon.name }}</span>
+      </div>
+    </div>
+    <div class="col">
       <div class="col-12 subheading">
         {% trans "Sponsors" %}
       </div>
