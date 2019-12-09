@@ -7,6 +7,7 @@ let realPeriodSeconds = 0;
 let selected_token;
 let splitterAddress;
 let gitcoinDonationAddress;
+let selfFundAlert = true;
 
 document.suppress_faucet_solicitation = 1;
 
@@ -200,7 +201,8 @@ $(document).ready(function() {
 
         web3.eth.getAccounts(function(err, accounts) {
           if (data.recurring_or_not == 'recurring' && grant_admin_address === accounts[0]){
-            _alert({ message: gettext('Grant owners cannot use recurring option while self funding. Please change your account.') }, 'error');
+            _alert({ message: gettext('Grant owners cannot use recurring option while self funding.') }, 'error');
+
             return;
           }
 
@@ -263,6 +265,17 @@ $(document).ready(function() {
         value: ele.addr,
         text: ele.name
       }));
+
+      web3.eth.getAccounts(function(err, accounts) {
+        if (grant_admin_address === accounts[0] && selfFundAlert) {
+          $('#recurring_or_not').val('once'); // Select the option with a value of '1'
+          $('#recurring_or_not').trigger('change'); // Notify any JS components that the value changed
+          _alert({ message: gettext('Grant owners cannot use recurring option while self funding.') }, 'error');
+          selfFundAlert = false;
+        } else if (grant_admin_address !== accounts[0] && !selfFundAlert) {
+          selfFundAlert = true;
+        }
+      });
 
       $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
     });
