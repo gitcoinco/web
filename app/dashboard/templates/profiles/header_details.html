@@ -9,6 +9,9 @@
     <p>Please note - use your judgement on whether this is the right contributor for your task.</p>
     '><img src="{% static 'v2/images/badge-verify.svg' %}" alt=""></button>
   {% endif %}
+  <a class="btn btn-sm" style="border: 2px solid #3E00FF;" href="{% url 'tip' %}?username={{ profile.handle }}">
+    <i style="color: #3E00FF;" class="fab fa-ethereum"></i>
+  </a>
 </h1>
 <p class="mb-0">{{ profile.handle }}
   {% if profile.custom_tagline %}
