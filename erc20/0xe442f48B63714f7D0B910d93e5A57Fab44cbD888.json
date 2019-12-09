@@ -1,0 +1,17 @@
+{
+    "symbol": "ZYC",
+    "address": "0xe442f48B63714f7D0B910d93e5A57Fab44cbD888",
+    "overview":{
+          "en": "The freemen's union was to create a new world in which all men had property and all freemen united. Based on the block chain technology, we record the property rights of free association -- ZYC, and distribute the property rights according to the value of contribution, so that the property rights of free association belong to every ordinary person participating in the contribution.",
+          "zh": "自由人联合要创建一个人人有产、自由人联合的新世界。我们基于区块链技术记录自由人联合的产权——ZYC，并按贡献值进行产权分配，让自由人联合的产权属于参与贡献的每个普通人。"
+    },
+    "email": "c@zyc.world",
+    "website": "http://zyc.world/",
+    "whitepaper": "http://zyc.world/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-04-23",
+    "links": {
+        "blog": "https://weibo.com/zycworld",
+        "telegram": "https://t.me/zycworld"
+      }
+}
