@@ -107,9 +107,9 @@ def aggregate_contributions(grant_contributions):
 
     Returns:
         bigtot: should equal total pot
-        totals:
+        totals: clr totals
 '''
-def calculate_clr(aggregated_contributions, pair_totals, lower_bound=0.0, total_pot=100000.0):   
+def iter_threshold(aggregated_contributions, pair_totals, lower_bound=0.0, total_pot=100000.0):   
     lower = lower_bound
     upper = total_pot
     iterations = 0
@@ -148,12 +148,28 @@ def calculate_clr(aggregated_contributions, pair_totals, lower_bound=0.0, total_
     return bigtot, totals 
 
 
-# # testing the code
-# start_time = time.time()
-# grants_list = translate_data(grants_data)
-# aggregated_contributions, pair_totals = aggregate_contributions(grants_list)
-# bigtot, totals = calculate_clr(aggregated_contributions, pair_totals)
-# print(bigtot, totals)
+'''
+    Clubbed function that intakes grant data, calculates necessary intermediate calculations, and spits out clr calculations.
+
+    Args:
+        {
+            'id': (string) ,
+            'contibutions' : [
+                {
+                    contributor_profile (str) : contribution_amount (int)
+                }
+            ]
+        }
+
+    Returns:
+        bigtot: should equal total pot
+        totals: clr totals
+'''
+def calculate_clr(grants_data):
+    grants_list = translate_data(grants_data)
+    aggregated_contributions, pair_totals = aggregate_contributions(grants_list)
+    bigtot, totals = iter_threshold(aggregated_contributions, pair_totals)
+    return bigtot, totals
 
 
 '''
@@ -181,7 +197,7 @@ def grants_clr_calculate (total_pot, grant_contributions, min_threshold, max_thr
 
     iterations += 1
     threshold = (max_threshold + min_threshold) / 2
-    total_clr, grants_clrs = calculate_clr(threshold, grant_contributions)
+    total_clr, grants_clrs = calculate_clr(grant_contributions)
 
     if iterations == 200 or total_pot == threshold or previous_threshold == threshold:
         # No more accuracy to be had
