@@ -375,7 +375,7 @@ def send_tip_2(request):
 
     user = {}
     if username:
-        profiles = Profile.objects.filter(handle__icontains=username)
+        profiles = Profile.objects.filter(handle__iexact=username)
 
         if profiles.exists():
             profile = profiles.first()
