@@ -221,6 +221,7 @@ $(document).ready(function() {
             _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
           }).on('transactionHash', function(transactionHash) {
             $('#sub_new_approve_tx_id').val(transactionHash);
+          }).on('confirmation', function(confirmationNumber, receipt) {
             if (data.num_periods == 1) {
               // call splitter after approval
               splitPayment(accounts[0], data.admin_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
@@ -230,7 +231,6 @@ $(document).ready(function() {
               }
               subscribeToGrant(transactionHash);
             }
-          }).on('confirmation', function(confirmationNumber, receipt) {
             waitforData(() => {
               document.suppress_loading_leave_code = true;
               window.location = redirectURL;
