@@ -2,7 +2,6 @@ from django.conf import settings
 
 from app.redis_service import RedisService
 from celery import app, group
-# from chat.tasks import create_channel
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from marketing.mails import func_name, send_mail
@@ -19,6 +18,7 @@ LOCK_TIMEOUT = 60 * 2
 @app.shared_task(bind=True, max_retries=3)
 def bounty_on_create(self, team_id, new_bounty, retry: bool = True) -> None:
     # what has to happen that we want to chain data from one another together
+    # from chat.tasks import create_channel
 
     tasks = list()
 
