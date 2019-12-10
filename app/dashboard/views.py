@@ -3434,7 +3434,7 @@ def hackathon(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         return redirect(reverse('get_hackathons'))
 
-    title = hackathon_event.name
+    title = hackathon_event.name.title()
     network = get_default_network()
     if timezone.now() < hackathon_event.start_date and not request.user.is_staff:
         return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
@@ -3537,7 +3537,7 @@ def hackathon_onboard(request, hackathon=''):
 
     params = {
         'active': 'hackathon_onboard',
-        'title': 'Hackathon Onboard',
+        'title': f'{hackathon_event.name.title()} Onboard',
         'hackathon': hackathon_event,
         'referer': referer,
         'is_registered': is_registered,
@@ -3640,7 +3640,7 @@ def hackathon_projects(request, hackathon=''):
 
     params = {
         'active': 'hackathon_onboard',
-        'title': 'Hackathon Projects',
+        'title': f'{hackathon_event.name.title()} Projects',
         'hackathon': hackathon_event,
         'sponsors_list': sponsors_list,
         'sponsor': sponsor,

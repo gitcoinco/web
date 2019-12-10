@@ -24,7 +24,6 @@
     <link rel="stylesheet" href="{% static 'v2/css/lib/quill-snow.css' %}">
 
     <style>
-
       .container {
         counter-reset: section;
       }
@@ -51,7 +50,7 @@
       <div class="onboard-banner text-center p-4 pb-5">
         {% firstof hackathon.logo_svg or hackathon.logo as logo %}
         {% if logo %}
-          <img class="my-5" height="250" src="{{MEDIA_URL}}{{logo}}"/>
+          <img class="my-5 mw-100" height="250" src="{{MEDIA_URL}}{{logo}}"/>
         {% else %}
           <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center my-5">
             {{ hackathon.name }}
@@ -61,13 +60,11 @@
     </div>
 
     <div class="container-fluid bg-lightblue pb-5">
-      <div class="container mt-md-n5 bg-white position-relative">
+      <div class="container mt-md-n5 bg-white position-relative rounded">
         <div class="row p-5">
           <div class="col-12">
-              <h3>
-                Gitcoin Virtual Hackathon
-              </h3>
-              <h1 class="text-uppercase">
+              <span>Gitcoin Virtual Hackathon</span>
+              <h1 class="text-uppercase gc-letter-spacing">
                 {{ hackathon.name }}
               </h1>
               <p>
@@ -86,14 +83,14 @@
                   <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
                 </div>
               {% else %}
-                {% if is_registered and hackathon.start_date|timesince <= "1 min" %}
+                {% if is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
                   <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                  <a class="btn btn-lg btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+                  <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
                 {% elif is_registered %}
-                  <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
+                  <a class="btn btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
                 {% else %}
-                  <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
                   <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                  <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
                 {% endif %}
               {% endif %}
             </div>
@@ -101,7 +98,7 @@
 
       </div>
 
-      <div class="container bg-white mt-4">
+      <div class="container bg-white mt-4 rounded">
         <div class="row p-5">
           <div class="col-12">
             {% if is_staff %}
@@ -122,11 +119,11 @@
           </div>
         </div>
 
-        <div class="row px-5 my-4">
-          <div class="col-12 col-md-6">
+        <div class="row px-5 my-5">
+          <div class="col-12 col-md-5">
               <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
           </div>
-          <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
               <b class="counter">{% trans "Check out the Prizes" %}</b>
               {% blocktrans %}
                 <p class="">
@@ -135,11 +132,11 @@
               {% endblocktrans %}
           </div>
         </div>
-        <div class="row px-5 my-4">
-          <div class="col-12 col-md-6">
+        <div class="row px-5 my-5">
+          <div class="col-12 col-md-5">
               <img src="{% static "v2/images/how-it-works/hackathon/pic2.jpg" %}" class="mw-100" alt="express interest" />
           </div>
-          <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
               <b class="counter">{% trans "Join Discord" %}</b>
               {% blocktrans %}
                 <p class="">
@@ -148,11 +145,11 @@
               {% endblocktrans %}
           </div>
         </div>
-        <div class="row px-5 my-4">
-          <div class="col-12 col-md-6">
+        <div class="row px-5 my-5">
+          <div class="col-12 col-md-5">
               <img src="{% static "v2/images/how-it-works/hackathon/pic3.jpg" %}" class="mw-100" alt="bounty explorer" />
           </div>
-          <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
               <b class="counter">{% trans "Start Work via Gitcoin" %}</b>
               {% blocktrans %}
                 <p class="">
@@ -161,11 +158,11 @@
               {% endblocktrans %}
           </div>
         </div>
-        <div class="row px-5 my-4">
-          <div class="col-12 col-md-6">
+        <div class="row px-5 my-5">
+          <div class="col-12 col-md-5">
               <img src="{% static "v2/images/how-it-works/hackathon/pic4.jpg" %}" class="mw-100" alt="express interest" />
           </div>
-          <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
               <b class="counter">{% trans "BUIDL!" %}</b>
               {% blocktrans %}
                 <p class="">
@@ -175,10 +172,10 @@
           </div>
         </div>
         <div class="row my-4 px-5">
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-5">
             <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
           </div>
-          <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
               <b class="counter">{% trans "Submit Work via Gitcoin" %}</b>
               {% blocktrans %}
                 <p class="">
@@ -203,14 +200,14 @@
                 <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
               </div>
             {% else %}
-              {% if is_registered and hackathon.start_date|timesince <= "1 min" %}
+              {% if is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
                 <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                <a class="btn btn-lg btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+                <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
               {% elif is_registered %}
-                <a class="btn btn-lg btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
+                <a class="btn btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
               {% else %}
-                <a class="btn btn-lg btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
                 <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
               {% endif %}
             {% endif %}
           </div>
@@ -218,7 +215,7 @@
       </div>
 
       {% if sponsors %}
-        <div class="container bg-white my-4 py-2">
+        <div class="container bg-white my-4 py-2 rounded">
             <div class="row px-5">
               <div class="col-12 sponsors mt-5 mb-3">
                 <p class="font-weight-bolder h4 text-left mb-4">SUPPORTED BY</p>
