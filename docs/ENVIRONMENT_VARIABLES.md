@@ -96,6 +96,14 @@ For further information, please check out the [Gitcoin Bot Documentation](https:
 | --- | --- | --- | --- |
 | SLACK_TOKEN | The API token to be used for interacting with Slack. | `str` | TODO |
 
+## Mattermost
+
+| Variable | Description | Type | Default |
+| --- | --- | --- | --- |
+| MATTERMOST_API_TOKEN | The token of the bot in Gitooin Chat | `str` | None |
+| MATTERMOST_ENDPOINT | The Mattermost endpoint where the api is hosted | `str` | None |
+| MATTERMOST_TEAM | The Team GUID | `str` | None |
+
 ## Silk
 
 The below environment variables are useful for overwriting [Django Silk](https://github.com/jazzband/django-silk) settings.
