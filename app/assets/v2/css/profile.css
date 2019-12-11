@@ -305,6 +305,10 @@
   }
 }
 
+.profile-header__links .chat{
+  padding: 0px 0px 6px 0px;
+}
+
 .profile-header__stats--contributor .card-header::after {
   background: #00eb93;
 }

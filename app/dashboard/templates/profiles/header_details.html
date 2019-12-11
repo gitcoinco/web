@@ -42,6 +42,9 @@
       <i class="fab fa-discord"></i>
     </a>
   {% endif %}
+  {% if is_staff %}
+    <button class="chat btn btn-outline-gc-black" data-openchat="{{profile.handle}}"><i class="fas fa-comment-dots"></i></button>
+  {% endif %}
 </p>
 
 {% if profile.data.bio %}
