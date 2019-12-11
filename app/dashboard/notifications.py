@@ -39,6 +39,7 @@ from marketing.utils import should_suppress_notification_email
 from pyshorteners import Shortener
 from retail.emails import render_new_kudos_email
 from slackclient import SlackClient
+from matterbot.actions import BotManager
 
 logger = logging.getLogger(__name__)
 
@@ -222,6 +223,22 @@ def maybe_market_to_slack(bounty, event_name):
         return False
     return True
 
+def maybe_market_to_mattermost(bounty, interest):
+    channel_name = bounty.event.name + '-' + interest.profile.username #TODO add sponsor to name of channel 
+    message = build_message_for_mattermost(bounty, interest)    
+    matt_bot = BotManager(settings.MATTERMOST_API_TOKEN, settings.MATTERMOST_ENDPOINT)
+    user = matt_bot.get_user(interest.profile.username)
+    matt_bot.create_channel(channel_name, message, user['id'], settings.MATTERMOST_TEAM)
+    
+def build_message_for_mattermost(bounty, interest):
+    user = interest.profile.username
+    issue_message = interest.issue_message
+    msg =  f"@{user} " \
+           f"*Work Plan:* " \
+           f"{issue_message} ." \
+           f"\nUse this channel to communicate with teammates and sponsors. " \
+           f"\n{bounty.get_absolute_url()}"
+    return msg
 
 def build_message_for_integration(bounty, event_name):
     """Build message to be posted to integrated service (e.g. slack, discord).
