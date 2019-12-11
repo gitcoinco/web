@@ -821,7 +821,7 @@ def is_blocked(handle):
         first_name = self.user.first_name
         last_name = self.user.last_name
         full_name = '{first_name} {last_name}'
-        is_on_banned_user_list = Entitty.objects.filter(fullName__icontains=full_name)
+        is_on_banned_user_list = Entity.objects.filter(fullName__icontains=full_name)
         if is_on_banned_user_list:
             return True
 
