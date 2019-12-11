@@ -2,6 +2,9 @@
 
 <h1 class="profile-header__handle">
   {{ profile.name }}
+  {% if is_staff and not profile.is_org %}
+    <button class="btn btn-outline-gc-blue btn-sm flex-grow-1" data-openchat="{{profile}}"> <i class="fas fa-comment-dots"></i></button>
+  {% endif %}
   {% if verification %}
     <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
     <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
@@ -39,6 +42,9 @@
       <i class="fab fa-discord"></i>
     </a>
   {% endif %}
+  {% if is_staff %}
+    <button class="chat btn btn-outline-gc-black" data-openchat="{{profile.handle}}"><i class="fas fa-comment-dots"></i></button>
+  {% endif %}
 </p>
 
 {% if profile.data.bio %}
@@ -46,6 +52,12 @@
     <small class="review-comment">{{ profile.data.bio }}</small>
   </div>
 {% endif %}
+{% if user.is_authenticated and is_on_tribe and profile.is_org %}
+  <button class="btn btn-gc-blue btn-sm" data-jointribe="{{profile.handle}}">Leave Tribe</button>
+{% elif user.is_authenticated and profile.is_org %}
+  <button class="btn btn-gc-blue btn-sm" data-jointribe="{{profile.handle}}">Join Tribe</button>
+{% endif %}
+
 
 {% if profile.preferred_payout_address %}
   <div class="my-2">

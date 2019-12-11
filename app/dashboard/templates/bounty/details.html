@@ -136,9 +136,11 @@
             </div>
           </div>
 
-          <div class="row">
-            <div class="notif-info mt-4 font-caption" id="funder_notif_info"></div>
-          </div>
+          {% if is_bounties_network %}
+            <div class="row">
+              <div class="notif-info mt-4 font-caption" id="funder_notif_info"></div>
+            </div>
+          {% endif %}
 
           <div class="row">
             <div class="col-12 bounty-actions mt-4 pt-2 pb-1">
@@ -239,10 +241,12 @@
                 </div>
                 <div class="col-12 col-md-11">
                   <div id="bounty_owner_github_username" class="font-subheader"></div>
-                  <div>
-                    <span class="bounty-subheading">{% trans "Funder" %} :</span>
-                    <span class="bounty-text" id="bounty_owner_address"></span>
-                  </div>
+                  {% if is_bounties_network %}
+                    <div>
+                      <span class="bounty-subheading">{% trans "Funder" %} :</span>
+                      <span class="bounty-text" id="bounty_owner_address"></span>
+                    </div>
+                  {% endif %}
                   <div>
                     <span class="bounty-subheading" id="bounty_owner_email_label">{% trans "Email" %} :</span>
                     <span class="bounty-text" id="bounty_owner_email"></span>
@@ -435,6 +439,17 @@
                 </div>
               </div>
             </div>
+          [[else activity_type == 'new_crowdfund']]
+            <div class="col-12 col-md-7 text-center text-md-left">
+              <div class="activity-tags activity-tag-first align-items-center">
+                [[:text]]
+                ( <div class="tag token">
+                  <p>
+                    <span>[[:crowdfund.amount]] [[:crowdfund.token]]</span>
+                  </p>
+                </div> )
+              </div>
+            </div>
           [[else activity_type == 'new_kudos']]
             <div class="col-12 col-md-7 text-center text-md-left">
               <div class="activity-status activity-tag-first align-items-center d-flex justify-content-between">
@@ -506,6 +521,7 @@
   <script>
     document.issueURL = '{{ issueURL }}';
     document.issueNetwork = '{{ network }}';
+    document.is_bounties_network = '{{ is_bounties_network }}';
     document.issue_stdbounties_id = '{{ stdbounties_id }}';
     {% if event_tag %}
       document.eventTag = '{{ event_tag }}';

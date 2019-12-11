@@ -94,6 +94,8 @@
       {% elif row.activity_type == 'status_update' %}
         {% trans "updated status" %}
         <b>{{ row.metadata.title }}</b>
+      {% elif row.activity_type == 'leaderboard_rank' %}
+        <a href="{{ row.metadata.link }}">{{ row.metadata.title }}</a>
       {% elif row.activity_type == 'new_bounty' %}
         <span>{% trans "funded a new issue: " %}</span>{{ row.urled_title | safe }}
       {% elif row.activity_type == 'start_work' %}
@@ -159,6 +161,8 @@
       <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
         <img src="{% static row.kudos_data.image %}" alt="" class="w-100" style="max-width:100px;">
       </a>
+    {% elif row.activity_type == 'leaderboard_rank' %}
+      <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100" style="max-width:100px;">
     {% elif row.metadata.quest_reward %}
       <img src="{{row.metadata.quest_reward}}" alt="" class="w-100" style="max-width:100px;">
     {% else %}

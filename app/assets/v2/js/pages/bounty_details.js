@@ -483,8 +483,17 @@ const isAvailableIfReserved = function(bounty) {
 };
 
 const isBountyOwner = result => {
-  if (typeof web3 == 'undefined' || !web3.eth ||
-      typeof cb_address == 'undefined' || !cb_address || !result) {
+  if (document.is_bounties_network) {
+    return isFundedByCurrentAddress(result) && isBountyOwnerPerLogin(result);
+  }
+  return isBountyOwnerPerLogin(result);
+};
+
+const isFundedByCurrentAddress = result => {
+  if (
+    typeof web3 == 'undefined' || !web3.eth ||
+    typeof cb_address == 'undefined' || !cb_address || !result
+  ) {
     return false;
   }
   return caseInsensitiveCompare(cb_address, result['bounty_owner_address']);
@@ -886,7 +895,7 @@ var show_extend_deadline_modal = function() {
 };
 
 const showGithubSync = function(result) {
-  if (isBountyOwner(result) || currentProfile.isStaff) {
+  if (isBountyOwnerPerLogin(result) || currentProfile.isStaff) {
     $('#bounty-options-link').append(
       `<a id="sync-github-issue" class="dropdown-item p-2">
         <i class="fas fa-sync mr-2"></i>
@@ -950,11 +959,17 @@ var build_detail_page = function(result) {
   $('.title').html(gettext('Funded Issue Details: ') + result['title']);
 
   // funded by
-  if (isBountyOwnerPerLogin(result) && !isBountyOwner(result)) {
-    $('#funder_notif_info').html(gettext('Funder Address: ') +
-      '<span id="bounty_funded_by">' + result['bounty_owner_address'] + '</span>');
+  if (
+    isBountyOwnerPerLogin(result) &&
+    !isFundedByCurrentAddress(result)
+  ) {
+    $('#funder_notif_info').html(
+      gettext('Funder Address: ') +
+      '<span id="bounty_funded_by">' +
+      result['bounty_owner_address'] + '</span>'
+    );
     $('#funder_notif_info').append('\
-        <span class="bounty-notification ml-2">\
+      <span class="bounty-notification ml-2">\
         <i class="far fa-bell mr-2"></i>\
         Ready to Pay? Set Your Metamask to this address!\
         <img src="' + static_url + 'v2/images/metamask.svg" class="ml-2">\
@@ -1477,7 +1492,7 @@ const process_activities = function(result, bounty_activities) {
     worker_applied: gettext('Contributor Applied'),
     increased_bounty: gettext('Increased Funding'),
     killed_bounty: gettext('Canceled Bounty'),
-    new_crowdfund: gettext('New Crowdfund Contribution'),
+    new_crowdfund: gettext('Added new Crowdfund Contribution'),
     new_tip: gettext('Tip Sent'),
     receive_tip: gettext('Tip Received'),
     bounty_abandonment_escalation_to_mods: gettext('Escalated for Abandonment of Bounty'),
@@ -1540,6 +1555,7 @@ const process_activities = function(result, bounty_activities) {
     let to_username = null;
     let kudos = null;
     let tip = null;
+    let crowdfund = null;
 
     if (type === 'new_kudos') {
       to_username = meta.to_username.slice(1);
@@ -1550,6 +1566,12 @@ const process_activities = function(result, bounty_activities) {
         token: meta.token_name,
         from: meta.from_name,
         to: meta.to_username
+      };
+    } else if (type == 'new_crowdfund') {
+      crowdfund = {
+        amount: meta.amount,
+        token: meta.token_name,
+        from: meta.from_name
       };
     }
 
@@ -1587,7 +1609,8 @@ const process_activities = function(result, bounty_activities) {
       to_username: to_username,
       kudos: kudos,
       permission_type: result['permission_type'],
-      tip: tip
+      tip: tip,
+      crowdfund: crowdfund
     });
   });
 
