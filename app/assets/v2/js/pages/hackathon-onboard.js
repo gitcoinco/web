@@ -28,14 +28,6 @@ $('#edit-btn').on('click', function() {
     return quill;
   };
 
-  // if (!document.getElementById('quill-js')) {
-  //   const style = document.createElement('link');
-
-  //   style.href = '//cdn.quilljs.com/1.3.7/quill.snow.css';
-  //   style.type = 'text/css';
-  //   style.rel = 'stylesheet';
-  //   document.getElementsByTagName('head')[0].appendChild(style);
-  // }
   loadDynamicScript(activateQuill, 'https://cdn.quilljs.com/1.3.6/quill.js', 'quill-js');
 
 });
