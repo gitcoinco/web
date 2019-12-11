@@ -32,19 +32,23 @@ from PIL import Image, ImageOps
 from .models import BaseAvatar, CustomAvatar, SocialAvatar
 
 logger = logging.getLogger(__name__)
-avatar_3d_base_path = 'assets/v2/images/avatar3d/avatar_bufficorn.svg'
+avatar_3d_base_path = 'assets/v2/images/avatar3d/avatar.svg'
 
 preview_viewbox = {
-    'shirt': '60 160 200 200',
-    'hat': '10 10 220 220',
-    'glasses': '20 60 220 220',
-    'facial': '40 150 180 180',
+    'background': '0 0 350 350',
+    'clothing': '60 80 260 300',
+    'ears': '100 70 50 50',
+    'head': '80 10 170 170',
+    'mouth': '130 90 70 70',
+    'nose': '140 80 50 50',
+    'eyes': '120 40 80 80',
+    'hair': '110 0 110 110',
 }
 
 skin_tones = [
-    'D7723B', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '392D16'
+    'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '392D16'
 ]
-hair_tones = ['F495A8', '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C']
+hair_tones = ['000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C']
 tone_maps = ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair']
 
 
@@ -56,11 +60,11 @@ def get_avatar_tone_map(tone='skin', skinTone=''):
         'FFCAA6': 0,
         'D68876': 0,
         'FFDBC2': 0,
-        'D7723B': 0,  #base
+        'F4B990': 0,  #base
     }
-    base_3d_tone = 'D7723B'
+    base_3d_tone = 'F4B990'
     if tone == 'blonde_hair':
-        tones = {'F495A8': 0, 'C6526D': 0, 'F4C495': 0, }
+        tones = {'CEA578': 0, 'BA7056': 0, 'F4C495': 0, }
         base_3d_tone = 'CEA578'
     if tone == 'brown_hair':
         tones = {'775246': 0, '563532': 0, 'A3766A': 0, }
@@ -163,7 +167,7 @@ def avatar3dids_helper():
     with open(avatar_3d_base_path) as file:
         tree = ET.parse(file)
         ids = [item.attrib.get('id') for item in tree.getroot()]
-        ids = [ele for ele in ids if ele and ele != 'base']
+        ids = [ele for ele in ids if ele]
         category_list = {ele.split("_")[0]: [] for ele in ids}
         for ele in ids:
             category = ele.split("_")[0]
