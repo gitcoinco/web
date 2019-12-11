@@ -483,8 +483,17 @@ const isAvailableIfReserved = function(bounty) {
 };
 
 const isBountyOwner = result => {
-  if (typeof web3 == 'undefined' || !web3.eth ||
-      typeof cb_address == 'undefined' || !cb_address || !result) {
+  if (document.is_bounties_network) {
+    return isFundedByCurrentAddress(result) && isBountyOwnerPerLogin(result);
+  }
+  return isBountyOwnerPerLogin(result);
+};
+
+const isFundedByCurrentAddress = result => {
+  if (
+    typeof web3 == 'undefined' || !web3.eth ||
+    typeof cb_address == 'undefined' || !cb_address || !result
+  ) {
     return false;
   }
   return caseInsensitiveCompare(cb_address, result['bounty_owner_address']);
@@ -886,7 +895,7 @@ var show_extend_deadline_modal = function() {
 };
 
 const showGithubSync = function(result) {
-  if (isBountyOwner(result) || currentProfile.isStaff) {
+  if (isBountyOwnerPerLogin(result) || currentProfile.isStaff) {
     $('#bounty-options-link').append(
       `<a id="sync-github-issue" class="dropdown-item p-2">
         <i class="fas fa-sync mr-2"></i>
@@ -950,11 +959,17 @@ var build_detail_page = function(result) {
   $('.title').html(gettext('Funded Issue Details: ') + result['title']);
 
   // funded by
-  if (isBountyOwnerPerLogin(result) && !isBountyOwner(result)) {
-    $('#funder_notif_info').html(gettext('Funder Address: ') +
-      '<span id="bounty_funded_by">' + result['bounty_owner_address'] + '</span>');
+  if (
+    isBountyOwnerPerLogin(result) &&
+    !isFundedByCurrentAddress(result)
+  ) {
+    $('#funder_notif_info').html(
+      gettext('Funder Address: ') +
+      '<span id="bounty_funded_by">' +
+      result['bounty_owner_address'] + '</span>'
+    );
     $('#funder_notif_info').append('\
-        <span class="bounty-notification ml-2">\
+      <span class="bounty-notification ml-2">\
         <i class="far fa-bell mr-2"></i>\
         Ready to Pay? Set Your Metamask to this address!\
         <img src="' + static_url + 'v2/images/metamask.svg" class="ml-2">\
