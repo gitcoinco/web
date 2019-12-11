@@ -2782,7 +2782,15 @@ passed in first, followed optionally by a <code>bountydetails</code> argument.</
 <p>Returns True when the argument x is true, False otherwise.
 The builtins True and False are the only two instances of the class bool.
 The class bool is a subclass of the class int, and cannot be subclassed.
-<h2 id="dashboard.views.new_bounty">new_bounty</h2></p>
+<h2 id="dashboard.views.sync_etc">sync_etc</h2></p>
+<pre><code class="python">sync_etc(request)
+</code></pre>
+
+<p>Sync up ETC chain to find transction status.</p>
+<p>Returns:
+    JsonResponse: The JSON response following the web3 sync.</p>
+<h2 id="dashboard.views.new_bounty">new_bounty</h2>
+
 <pre><code class="python">new_bounty(request)
 </code></pre>
 
@@ -2821,7 +2829,21 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 <pre><code class="python">change_user_profile_banner(request)
 </code></pre>
 
-<p>Handle Profile Banner Uploads</p>
+<p>Handle Profile Banner Uploads
+<h2 id="dashboard.views.create_bounty">create_bounty</h2></p>
+<pre><code class="python">create_bounty(request)
+</code></pre>
+
+<p>TODO
+- evaluate validity of duplicate / redundant data in models
+- wire in email (invite + successful creation)
+- create activty entry</p>
+<h3 id="dashboard.views.create_bounty.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.</p>
                 
                   
                 
