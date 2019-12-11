@@ -286,7 +286,7 @@ class Bounty(SuperModel):
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
     github_comments = models.IntegerField(default=0)
-    bounty_owner_address = models.CharField(max_length=50)
+    bounty_owner_address = models.CharField(max_length=50, blank=True, null=True)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True, db_index=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
@@ -4079,6 +4079,7 @@ class HackathonEvent(SuperModel):
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
     show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
+    description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
