@@ -541,7 +541,7 @@ GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
 # Chat
-CHAT_URL = env('CHAT_URL', default='http://localhost:8065')
+CHAT_URL = env('CHAT_DRIVER_USER', default='')  # location of where mattermost is hosted
 
 #Mattermost Bot
 MATTERMOST_API_TOKEN = env('MATTERMOST_API_TOKEN', default='')
