@@ -3434,8 +3434,10 @@ def hackathon(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         return redirect(reverse('get_hackathons'))
 
-    title = hackathon_event.name
+    title = hackathon_event.name.title()
     network = get_default_network()
+    if timezone.now() < hackathon_event.start_date and not request.user.is_staff:
+        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
     # TODO: Refactor post orgs
     orgs = []
@@ -3499,23 +3501,89 @@ def hackathon(request, hackathon=''):
 
 def hackathon_onboard(request, hackathon=''):
     referer = request.META.get('HTTP_REFERER', '')
-
+    sponsors = {}
     is_registered = False
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        hackathon_sponsors = HackathonSponsor.objects.filter(hackathon=hackathon_event)
         profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
         is_registered = HackathonRegistration.objects.filter(registrant=profile, hackathon=hackathon_event) if profile else None
+
+        if hackathon_sponsors:
+            sponsors_gold = []
+            sponsors_silver = []
+            for hackathon_sponsor in hackathon_sponsors:
+                sponsor = Sponsor.objects.get(name=hackathon_sponsor.sponsor)
+                sponsor_obj = {
+                    'name': sponsor.name,
+                }
+                if sponsor.logo_svg:
+                    sponsor_obj['logo'] = sponsor.logo_svg.url
+                elif sponsor.logo:
+                    sponsor_obj['logo'] = sponsor.logo.url
+
+                if hackathon_sponsor.sponsor_type == 'G':
+                    sponsors_gold.append(sponsor_obj)
+                else:
+                    sponsors_silver.append(sponsor_obj)
+
+            sponsors = {
+                'sponsors_gold': sponsors_gold,
+                'sponsors_silver': sponsors_silver
+            }
+
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
     params = {
         'active': 'hackathon_onboard',
-        'title': 'Hackathon Onboard',
+        'title': f'{hackathon_event.name.title()} Onboard',
         'hackathon': hackathon_event,
         'referer': referer,
         'is_registered': is_registered,
+        'sponsors': sponsors
     }
     return TemplateResponse(request, 'dashboard/hackathon/onboard.html', params)
+
+
+@csrf_exempt
+@require_POST
+def save_hackathon(request, hackathon):
+    description = clean(
+        request.POST.get('description'),
+        tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'p', 's' 'u', 'br', 'i', 'li', 'ol', 'strong', 'ul', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'iframe', 'pre'],
+        attributes={
+            'a': ['href', 'title'],
+            'abbr': ['title'],
+            'acronym': ['title'],
+            'img': ['src'],
+            'iframe': ['src', 'frameborder', 'allowfullscreen'],
+            '*': ['class', 'style']},
+        styles=['background-color', 'color'],
+        protocols=['http', 'https', 'mailto'],
+        strip=True,
+        strip_comments=True
+    )
+
+    if request.user.is_authenticated and request.user.is_staff:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        hackathon_event.description = description
+        hackathon_event.save()
+        return JsonResponse(
+            {
+                'success': True,
+                'is_my_org': True,
+            },
+            status=200)
+    else:
+        return JsonResponse(
+            {
+                'success': False,
+                'is_my_org': False,
+            },
+            status=401)
 
 
 def hackathon_projects(request, hackathon=''):
@@ -3572,7 +3640,7 @@ def hackathon_projects(request, hackathon=''):
 
     params = {
         'active': 'hackathon_onboard',
-        'title': 'Hackathon Projects',
+        'title': f'{hackathon_event.name.title()} Projects',
         'hackathon': hackathon_event,
         'sponsors_list': sponsors_list,
         'sponsor': sponsor,
@@ -3734,6 +3802,7 @@ def hackathon_registration(request):
         redirect = f'/hackathon/{hackathon}'
 
     return JsonResponse({'redirect': redirect})
+
 
 def get_hackathons(request):
     """Handle rendering all Hackathons."""

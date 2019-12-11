@@ -4079,6 +4079,7 @@ class HackathonEvent(SuperModel):
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
     show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
+    description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
