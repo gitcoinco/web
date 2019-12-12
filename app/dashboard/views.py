@@ -1118,31 +1118,6 @@ def accept_bounty(request):
     return TemplateResponse(request, 'process_bounty.html', params)
 
 
-def contribute(request):
-    """Contribute to the bounty.
-
-    Args:
-        pk (int): The primary key of the bounty to be accepted.
-
-    Raises:
-        Http404: The exception is raised if no associated Bounty is found.
-
-    Returns:
-        TemplateResponse: The accept bounty view.
-
-    """
-    bounty = handle_bounty_views(request)
-
-    params = get_context(
-        ref_object=bounty,
-        user=request.user if request.user.is_authenticated else None,
-        confirm_time_minutes_target=confirm_time_minutes_target,
-        active='contribute_bounty',
-        title=_('Contribute'),
-    )
-    return TemplateResponse(request, 'contribute_bounty.html', params)
-
-
 def invoice(request):
     """invoice view.
 
@@ -1182,35 +1157,6 @@ def invoice(request):
             params['total'] += Decimal(tip.value_in_usdt)
 
     return TemplateResponse(request, 'bounty/invoice.html', params)
-
-
-def social_contribution(request):
-    """Social Contributuion to the bounty.
-
-    Args:
-        pk (int): The primary key of the bounty to be accepted.
-
-    Raises:
-        Http404: The exception is raised if no associated Bounty is found.
-
-    Returns:
-        TemplateResponse: The accept bounty view.
-
-    """
-    bounty = handle_bounty_views(request)
-    promo_text = str(_("Check out this bounty that pays out ")) + f"{bounty.get_value_true} {bounty.token_name} {bounty.url}"
-    for keyword in bounty.keywords_list:
-        promo_text += f" #{keyword}"
-
-    params = get_context(
-        ref_object=bounty,
-        user=request.user if request.user.is_authenticated else None,
-        confirm_time_minutes_target=confirm_time_minutes_target,
-        active='social_contribute',
-        title=_('Social Contribute'),
-    )
-    params['promo_text'] = promo_text
-    return TemplateResponse(request, 'social_contribution.html', params)
 
 
 def social_contribution_modal(request):

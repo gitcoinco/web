@@ -232,8 +232,6 @@ urlpatterns = [
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
     path('issue/refund_request', dashboard.views.refund_request, name='refund_request'),
     path('issue/cancel_reason', dashboard.views.cancel_reason, name='cancel_reason'),
-    path('issue/contribute', dashboard.views.contribute, name='contribute'),
-    path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
     path('modal/social_contribution', dashboard.views.social_contribution_modal, name='social_contribution_modal'),
     path(
         '<str:bounty_network>/<int:stdbounties_id>/modal/funder_payout_reminder/',
