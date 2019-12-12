@@ -33,7 +33,7 @@
       <div class="col-sm-12 col-lg-12">
         <div id="form_container">
           <div class="row justify-content-center">
-            <div id="primary_form" class="col-lg-8 col-sm-12 my-5">
+            <div id="primary_form" class="col-xl-8 col-sm-12 my-5">
               <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
                 <h1 class="text-center title">{% trans "Change Bounty Details" %}</h1>
 
@@ -57,9 +57,11 @@
                   {% include 'shared/reserved.html' %}
                 </div>
 
-                <div class="m-4 pt-4">
-                  {% include 'shared/featured.html' %}
-                </div>
+                {% if is_bounties_network %}
+                  <div class="m-4 pt-4">
+                    {% include 'shared/featured.html' %}
+                  </div>
+                {% endif %}
 
                 <div class="row justify-content-center p-3">
                   <button class="button button--primary btn-lg font-weight-semibold js-submit mb-3 btn-lg-padding" type="submit">{% trans 'Update Issue Details' %}</button>

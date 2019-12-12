@@ -3223,9 +3223,12 @@ def get_suggested_contributors(request):
                 },
                 status=200)
 
+
 @csrf_exempt
+@login_required
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def change_bounty(request, bounty_id):
+    # ETC-TODO: ADD UPDATE AMOUNT for ETC
     user = request.user if request.user.is_authenticated else None
 
     if not user:
@@ -3338,7 +3341,9 @@ def change_bounty(request, bounty_id):
     params = {
         'title': _('Change Bounty Details'),
         'pk': bounty.pk,
-        'result': json.dumps(result)
+        'result': json.dumps(result),
+        'is_bounties_network': bounty.web3_type == 'bounties_network',
+        'token_name': bounty.token_name
     }
     return TemplateResponse(request, 'bounty/change.html', params)
 
@@ -4261,7 +4266,7 @@ def save_tribe(request,handle):
 def create_bounty(request):
 
     '''
-        TODO
+        ETC-TODO
         - evaluate validity of duplicate / redundant data in models
         - wire in email (invite + successful creation)
         - create activty entry
