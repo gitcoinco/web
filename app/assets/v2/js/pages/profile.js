@@ -129,7 +129,7 @@ $(document).ready(function() {
       .y(function(d) {
         return y(d.close);
       });
-        
+
     // Adds the svg canvas
     var svg = d3.select('#earn_dataviz')
       .append('svg')
@@ -173,6 +173,51 @@ $(document).ready(function() {
     });
 
   }
+
+  const syncComplete = res => {
+    console.log('Sync Complete');
+  }
+
+  const openBox = callback => {
+    window.ethereum.enable().then(addresses => {
+      window.Box.openBox(addresses[0], window.ethereum, {}).then(box => {
+        box.onSyncDone(syncComplete);
+        window.box = box;
+        console.log("openBox succeeded", box);
+        callback(box);
+      })
+    })
+  }
+
+  const openSpace = (box, callback) => {
+    const name = "GitCoin";
+    window.currentSpace = name;
+    const opts = {
+      onSyncDone: () => {
+        console.log('sync done in space', name)
+      }
+    }
+    box.openSpace(name, opts).then(() => {
+      callback(box, box.spaces[name]);
+    })
+  }
+
+  $("#sync-to-3box").on('click', function(event) {
+    console.log("clicked 3box button");
+
+    // User is prompted to approve the messages inside their wallet (openBox() and openSpace()
+    // methods via 3Box.js). This logs them in to 3Box.
+
+    // open box and space
+    openBox(box => {
+      openSpace(box, (box, space) => {
+        console.log("backup data into space", space);
+      });
+    });
+
+    // Backing up my Gitcoin data to 3Box, inside of a "Gitcoin" space
+
+  })
 
 
   $(document).on('click', '.load-more', function() {

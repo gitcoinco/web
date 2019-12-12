@@ -270,6 +270,19 @@
   background-color: transparent;
 }
 
+.profile-header__sync {
+  margin-top: -140px;
+  position: relative;
+}
+
+.profile-header__sync.inactive {
+  display:none;
+}
+
+.profile-header__sync img {
+  width: 32px;
+}
+
 .card-header::after {
   content: '';
   position: relative;

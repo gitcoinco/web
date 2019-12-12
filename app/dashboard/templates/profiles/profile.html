@@ -60,6 +60,7 @@
           <div class="col-12 col-lg-6 profile-header__main-infos">
             {% if not hidden %}
               {% include 'profiles/header_avatar.html' %}
+              {% include 'profiles/header_sync_profile.html' %}
               {% include 'profiles/header_details.html' %}
 
             {% if not hidden %}
@@ -117,6 +118,7 @@
     <script src="{% static "v2/js/rating.js" %}"></script>
     <script src="{% static "v2/js/status.js" %}"></script>
     <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
+    <script src="https://unpkg.com/3box/dist/3box.min.js"></script>
     <script>
       {% if profile.preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;
