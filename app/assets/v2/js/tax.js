@@ -70,9 +70,6 @@ function initPlacecomplete() {
 
   autocompleteAddress.addListener('place_changed', function() {
     let address = autocompleteAddress.getPlace();
-    let addressName = address.address_components[0];
-    let addressNumber = address.address_components[1];
-
-    addressComponent = addressName.long_name + ', ' + addressNumber.long_name;
+    addressComponent = address.formatted_address;
   });
 }

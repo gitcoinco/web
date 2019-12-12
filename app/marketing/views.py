@@ -770,18 +770,41 @@ def tax_settings(request):
         return login_redirect
         
     # location  dict is not empty
-    if json.loads(profile.location):
+    location = ''
+    if profile.location:
         location_components = json.loads(profile.location)
-        location = location_components['country']
         if 'locality' in location_components:
-            location = location_components['locality'] + ', ' + location
+            location += location_components['locality']
+        if 'country' in location_components:
+            country = location_components['country']
+            if location:
+                location += ', ' + country
+            else:
+                location += country
+        if 'code' in location_components:
+            code = location_components['code']
+            if location:
+                location += ', ' + code
+            else:
+                location += code
     # location dict is empty
     else:
         # set it to the last location registered for the user
         location_components = profile.locations[-1]
-        location = location_components['country_name']
-        if location_components['city']:
-            location = location_components['city'] + ', ' + location
+        if 'city' in location_components:
+            location += location_components['city']
+        if 'country_name' in location_components:
+            country_name = location_components['country_name']
+            if location:
+                location += ', ' + country_name
+            else:
+                location += country_name
+        if 'country_code' in location_components:
+            country_code = location_components['country_code']
+            if location:
+                location += ', ' + country_code
+            else:
+                location += country_code
     
     #address is not empty
     if profile.address:

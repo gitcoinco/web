@@ -2471,7 +2471,7 @@ def profile_tax_settings(request, handle):
 
     response = {
         'status': 200,
-        'message': 'Location status saved'
+        'message': 'Tax settings saved'
     }
     return JsonResponse(response)
 
