@@ -260,7 +260,6 @@
       // Send registration
       const is_registered = {{ is_registered|yesno:"true,false" }};
       const hackathon_slug = '{{ hackathon.slug|safe }}';
-      const redirect = '{% if referer and "/issue/" in referer %}{{referer|safe}}{% else %}{% url "hackathon" hackathon.slug %}{% endif %}';
       const csrftoken = $('[name=csrfmiddlewaretoken]').val();
       const register = (name, referer) => {
         if (is_registered) {

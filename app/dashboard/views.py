@@ -3860,7 +3860,7 @@ def hackathon_registration(request):
         logger.error(f"error in record_action: {e}")
         pass
 
-    if referer and is_safe_url(referer, request.get_host()):
+    if referer and '/issue/' in referer and is_safe_url(referer, request.get_host()):
         messages.success(request, _(f'You have successfully registered to {hackathon_event.name}. Happy hacking!'))
         redirect = referer
     else:
