@@ -16,13 +16,16 @@
 
 '''
 import csv
+import json
 import os
+import pdfrw
 import warnings
 
 from django.core.management.base import BaseCommand
 from dashboard.models import Bounty, Profile, Tip
-import pdfrw
-import json
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 
 # Constants
 DATETIME = 'datetime'
@@ -81,10 +84,10 @@ ANNOT_RECT_KEY = '/Rect'
 SUBTYPE_KEY = '/Subtype'
 WIDGET_SUBTYPE_KEY = '/Widget'
 
-warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 def send_email():
     print("send_email")
+
 
 def create_csv_record(profiles_obj, wt_obj, worker_type, us_workers, b_ff=None):
     record = {DATETIME: wt_obj.created_on}
@@ -200,7 +203,9 @@ def get_profile_location(profile):
         location = location_temp
     return location, us_worker
     
+    
 class Command(BaseCommand):
+
     help = 'the tax report for last year'
 
     def handle(self, *args, **options):
