@@ -231,7 +231,7 @@ class Command(BaseCommand):
                     or t.value_in_usdt <= 0 \
                     or t.network != WEB3_NETWORK \
                     or p.username.lower() != t.from_username.lower() \
-                    or p.username == t.username \
+                    or p.username.lower() == t.username.lower() \
                     or t.created_on.date().year != TAX_YEAR:
                     continue
                 else:
@@ -245,7 +245,7 @@ class Command(BaseCommand):
                 else:
                     record, us_workers = create_csv_record(profiles, g, GRANT, us_workers)
                     csv_record.append(record)'''
-            if len(csv_record) > 600:
+            if len(csv_record) > 0:
                 # check for create 1099
                 username_path = os.path.join(os.getcwd(), TAX_REPORT_PATH, p.username)
                 if not os.path.isdir(username_path):
@@ -257,7 +257,7 @@ class Command(BaseCommand):
                     recipient_profiles = profiles.filter(handle__iexact=us_w)
                     if recipient_profiles.exists():
                         recipient_profile = recipient_profiles.first()
-                        if(usd_value>1):
+                        if(usd_value>600):
                             recipient_path = os.path.join(misc_path, recipient_profile.username)
                             if not os.path.isdir(recipient_path):
                                 os.makedirs(recipient_path)
@@ -291,6 +291,6 @@ class Command(BaseCommand):
                             writer.writerow(row)
                 except IOError:
                     print("I/O error")
-                if os.path.exists(csv_file_path):
-                    send_email
+                if os.path.isfile(csv_file_path):
+                    send_email()
                 
