@@ -4,7 +4,7 @@
 
 {% trans "Grant" %} {{ grant.title }} {% trans "has been cancelled" %}
 
-{% trans "You can see the transaction on etherscan" %} at
+{% trans "You can see the transaction on Etherscan" %} at
 {% if grant.network == 'mainnet' %}
   http://etherscan.io/tx/{{ grant.cancel_tx_id }}
 {% else %}

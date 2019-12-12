@@ -23,6 +23,7 @@ import logging
 import random
 import re
 import urllib.parse
+import uuid
 
 from django.conf import settings
 from django.contrib import messages
@@ -38,20 +39,22 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Activity, Profile
+import boto3
+from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_nonce, get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
 from kudos.utils import kudos_abi
+from marketing.mails import new_kudos_request
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
 
 from .forms import KudosSearchForm
 from .helpers import get_token
-from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, TransferEnabledFor
+from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, TokenRequest, TransferEnabledFor
 
 logger = logging.getLogger(__name__)
 
@@ -124,6 +127,17 @@ def marketplace(request):
     if q:
         title = f'{q.title()} Kudos'
         token_list = token_list.keyword(q)
+        # log this search, it might be useful for matching purposes down the line
+        try:
+            SearchHistory.objects.update_or_create(
+                search_type='kudos',
+                user=request.user,
+                data=request.GET,
+                ip_address=get_ip(request)
+            )
+        except Exception as e:
+            logger.debug(e)
+            pass
 
     listings = token_list.order_by(order_by).cache()
     context = {
@@ -164,7 +178,7 @@ def image(request, kudos_id, name):
     return response
 
 
-def details_by_address_and_token_id(request, address, token_id, name):
+def details_by_address_and_token_id(request, address, token_id, name=None):
     kudos = get_token(token_id=token_id, network=settings.KUDOS_NETWORK, address=address)
     return redirect(f'/kudos/{kudos.id}/{kudos.name}')
 
@@ -181,6 +195,7 @@ def details(request, kudos_id, name):
     context = {
         'send_enabled': kudos.send_enabled_for(request.user),
         'is_outside': True,
+        'reward_for': kudos.quests_reward.filter(visible=True),
         'active': 'details',
         'title': 'Details',
         'card_title': _('Each Kudos is a unique work of art.'),
@@ -616,6 +631,89 @@ def receive(request, key, txid, network):
     return TemplateResponse(request, 'transaction/receive.html', params)
 
 
+def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
+    try:
+        address = Web3.toChecksumAddress(address)
+    except:
+        error = "You must enter a valid Ethereum address (so we know where to send your Kudos). Please try again."
+        return None, error, None
+
+    # handle form submission
+    kudos_transfer = None
+    if save_addr:
+        profile.preferred_payout_address = address
+        profile.save()
+
+    private_key = settings.KUDOS_PRIVATE_KEY if not coupon.sender_pk else coupon.sender_pk
+    kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
+    gas_price_confirmation_time = 1 if not coupon.sender_address else 60
+    kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
+    kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
+    w3 = get_web3(coupon.token.contract.network)
+    contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
+    nonce = w3.eth.getTransactionCount(kudos_owner_address)
+    tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
+        'nonce': nonce,
+        'gas': 500000,
+        'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(gas_price_confirmation_time) * 10**9),
+        'value': int(coupon.token.price_finney / 1000.0 * 10**18),
+    })
+
+    if not profile.trust_profile and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+        error = f'Your github profile is too new.  Cannot receive kudos.'
+        return None, error, None
+    else:
+
+        signed = w3.eth.account.signTransaction(tx, private_key)
+        try:
+            txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+
+            with transaction.atomic():
+                kudos_transfer = KudosTransfer.objects.create(
+                    emails=[profile.email],
+                    # For kudos, `token` is a kudos.models.Token instance.
+                    kudos_token_cloned_from=coupon.token,
+                    amount=coupon.token.price_in_eth,
+                    comments_public=coupon.comments_to_put_in_kudos_transfer,
+                    ip=ip_address,
+                    github_url='',
+                    from_name=coupon.sender_profile.handle,
+                    from_email='',
+                    from_username=coupon.sender_profile.handle,
+                    username=profile.handle,
+                    network=coupon.token.contract.network,
+                    from_address=kudos_owner_address,
+                    is_for_bounty_fulfiller=False,
+                    metadata={'coupon_redemption': True, 'nonce': nonce},
+                    recipient_profile=profile,
+                    sender_profile=coupon.sender_profile,
+                    txid=txid,
+                    receive_txid=txid,
+                    tx_status='pending',
+                    receive_tx_status='pending',
+                )
+
+                # save to DB
+                BulkTransferRedemption.objects.create(
+                    coupon=coupon,
+                    redeemed_by=profile,
+                    ip_address=ip_address,
+                    kudostransfer=kudos_transfer,
+                    )
+
+                coupon.num_uses_remaining -= 1
+                coupon.current_uses += 1
+                coupon.save()
+
+                # send email
+                maybe_market_kudos_to_email(kudos_transfer)
+        except Exception as e:
+            error = "Could not redeem your kudos.  Please try again soon."
+            if "replacement transaction underpriced" in str(e):
+                error = "There is already an airdrop transfer in progress. Please try again in a minute or two.. (note: in the future we will add 'queue'-ing so you dont have to resubmit, as soon as this ticket (https://github.com/gitcoinco/web/issues/4976) is deployed)"
+            return None, error, None
+
+    return True, None, kudos_transfer
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def receive_bulk(request, secret):
@@ -623,12 +721,21 @@ def receive_bulk(request, secret):
     coupons = BulkTransferCoupon.objects.filter(secret=secret)
     if not coupons.exists():
         raise Http404
-
+    
     coupon = coupons.first()
     _class = request.GET.get('class', '')
     if coupon.num_uses_remaining <= 0:
-        messages.info(request, f'Sorry but the coupon for a free kudos has has expired.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
+        messages.info(request, f'Sorry but the coupon for a free kudos has been used already.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
         return redirect(coupon.token.url)
+
+    error = False
+    if request.POST:
+        if request.user.is_anonymous:
+            error = "You must login."
+        if not error:
+            success, error, _ = redeem_bulk_coupon(coupon, request.user.profile, request.POST.get('forwarding_address'), get_ip(request), request.POST.get('save_addr'))
+        if error:
+            messages.error(request, error)
 
     kudos_transfer = None
     if request.user.is_authenticated:
@@ -636,95 +743,9 @@ def receive_bulk(request, secret):
         if redemptions.exists():
             kudos_transfer = redemptions.first().kudostransfer
 
-    error = False
-    if request.POST:
-        try:
-            address = Web3.toChecksumAddress(request.POST.get('forwarding_address'))
-        except:
-            error = "You must enter a valid Ethereum address (so we know where to send your Kudos). Please try again."
-        if request.user.is_anonymous:
-            error = "You must login."
-
-        if not error:
-            user = request.user
-            profile = user.profile
-            save_addr = request.POST.get('save_addr')
-            ip_address = get_ip(request)
-
-            # handle form submission
-            if save_addr:
-                profile.preferred_payout_address = address
-                profile.save()
-
-            private_key = settings.KUDOS_PRIVATE_KEY if not coupon.sender_pk else coupon.sender_pk
-            kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
-            gas_price_confirmation_time = 2 if not coupon.sender_address else 60
-            kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
-            kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
-            w3 = get_web3(coupon.token.contract.network)
-            contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
-            nonce = w3.eth.getTransactionCount(kudos_owner_address)
-            tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
-                'nonce': nonce,
-                'gas': 500000,
-                'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(gas_price_confirmation_time) * 10**9),
-                'value': int(coupon.token.price_finney / 1000.0 * 10**18),
-            })
-
-            if not profile.trust_profile and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
-                messages.error(request, f'Your github profile is too new.  Cannot receive kudos.')
-            else:
-
-                signed = w3.eth.account.signTransaction(tx, private_key)
-                try:
-                    txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
-
-                    with transaction.atomic():
-                        kudos_transfer = KudosTransfer.objects.create(
-                            emails=[request.user.email],
-                            # For kudos, `token` is a kudos.models.Token instance.
-                            kudos_token_cloned_from=coupon.token,
-                            amount=coupon.token.price_in_eth,
-                            comments_public=coupon.comments_to_put_in_kudos_transfer,
-                            ip=ip_address,
-                            github_url='',
-                            from_name=coupon.sender_profile.handle,
-                            from_email='',
-                            from_username=coupon.sender_profile.handle,
-                            username=profile.handle,
-                            network=coupon.token.contract.network,
-                            from_address=kudos_owner_address,
-                            is_for_bounty_fulfiller=False,
-                            metadata={'coupon_redemption': True, 'nonce': nonce},
-                            recipient_profile=profile,
-                            sender_profile=coupon.sender_profile,
-                            txid=txid,
-                            receive_txid=txid,
-                            tx_status='pending',
-                            receive_tx_status='pending',
-                        )
-
-                        # save to DB
-                        BulkTransferRedemption.objects.create(
-                            coupon=coupon,
-                            redeemed_by=profile,
-                            ip_address=ip_address,
-                            kudostransfer=kudos_transfer,
-                            )
-
-                        coupon.num_uses_remaining -= 1
-                        coupon.current_uses += 1
-                        coupon.save()
-
-                        # send email
-                        maybe_market_kudos_to_email(kudos_transfer)
-                except Exception as e:
-                    logger.exception(e)
-                    error = "Could not redeem your kudos.  Please try again soon."
-
-
     title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
+    tweet_text = f"I just got a {coupon.token.humanized_name} Kudos on @gitcoin.  " if not request.GET.get('tweet', None) else request.GET.get('tweet')
     params = {
         'title': title,
         'card_title': title,
@@ -736,6 +757,64 @@ def receive_bulk(request, secret):
         'class': _class,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
-        'tweet_text': urllib.parse.quote_plus(f"I just got a {coupon.token.humanized_name} Kudos on @gitcoin.  ")
+        'tweet_text': urllib.parse.quote_plus(tweet_text),
+        'tweet_url': coupon.token.url if not request.GET.get('tweet_url') else request.GET.get('tweet_url'),
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)
+
+
+def newkudos(request):
+    context = {
+        'active': 'newkudos',
+        'msg': None,
+        'nav': 'kudos',
+    }
+
+    if not request.user.is_authenticated:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+        required_fields = ['name', 'description', 'priceFinney', 'artist', 'platform', 'numClonesAllowed', 'tags', 'to_address']
+        validation_passed = True
+        for key in required_fields:
+            if not request.POST.get(key):
+                context['msg'] = str(_('You must provide the following fields: ')) + key
+                validation_passed = False
+        if validation_passed:
+            #upload to s3
+            img = request.FILES.get('photo')
+            session = boto3.Session(
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            )
+
+            s3 = session.resource('s3')
+            key = f'media/uploads/{uuid.uuid4()}_{img.name}'
+            response = s3.Bucket(settings.MEDIA_BUCKET).put_object(Key=key, Body=img, ACL='public-read', ContentType='image/svg+xml')
+            artwork_url = f'https://{settings.MEDIA_BUCKET}.s3-us-west-2.amazonaws.com/{key}'
+
+            # save / send email
+            obj = TokenRequest.objects.create(
+                profile=request.user.profile,
+                name=request.POST['name'],
+                description=request.POST['description'],
+                priceFinney=request.POST['priceFinney'],
+                artist=request.POST['artist'],
+                platform=request.POST['platform'],
+                numClonesAllowed=request.POST['numClonesAllowed'],
+                tags=request.POST['tags'].split(","),
+                to_address=request.POST['to_address'],
+                artwork_url=artwork_url,
+                network='mainnet',
+                approved=False,
+                metadata={
+                    'ip': get_ip(request),
+                    'email': request.POST.get('email'),
+                    }
+                )
+            new_kudos_request(obj) 
+
+            context['msg'] = str(_('Your Kudos has been submitted and will be listed within 2 business days if it is accepted.'))
+
+    return TemplateResponse(request, 'newkudos.html', context)

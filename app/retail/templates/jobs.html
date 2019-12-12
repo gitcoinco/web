@@ -30,7 +30,7 @@
   <body class="{{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="container-fluid header">
+    <div class="header">
       {% include 'home/nav.html' %}
       {% include 'shared/minihero.html' with h1='Jobs' position_h1_below_logo=1 %}
     </div>
@@ -140,7 +140,7 @@
               <h5>{{ job.title }}</h5>
             <div class="row px-5 mt-0">
               <div class="col-lg-auto">
-                <span>{{ job.description|join:" " }}</span>
+                <span>{{ job.description }}</span>
               </div>
             </div>
             <div class="row mt-5 pt-1 pb-5 justify-content-center">
@@ -158,6 +158,6 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/messages.html' %}
+    
   </body>
 </html>

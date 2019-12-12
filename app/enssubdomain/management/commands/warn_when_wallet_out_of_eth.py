@@ -30,7 +30,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         monitored_accounts = [settings.ENS_OWNER_ACCOUNT, settings.KUDOS_OWNER_ACCOUNT, settings.GRANTS_OWNER_ACCOUNT]
         for account in monitored_accounts:
-            balance_eth_threshold = 0.07
+            balance_eth_threshold = 0.1
+            if account == settings.KUDOS_OWNER_ACCOUNT:
+                balance_eth_threshold = 0.4
 
             balance_wei = w3.eth.getBalance(account)
             balance_eth = balance_wei / 10**18

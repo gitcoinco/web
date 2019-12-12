@@ -4,9 +4,6 @@ Disallow: profile/{{ profile.handle }}*
 Disallow: dynamic/avatar/*
 Disallow: login/github/*
 
-User-agent: Twitterbot
-Disallow:
-
 User-agent: Yandex
 Disallow: /
 

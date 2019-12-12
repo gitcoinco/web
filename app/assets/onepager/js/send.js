@@ -115,6 +115,11 @@ $(document).ready(function() {
       $('#trans_link').attr('href', url);
       $('#trans_link2').attr('href', url);
       unloading_button($(this));
+      dataLayer.push({
+        'event': 'sendtip',
+        'category': 'sendtip',
+        'action': 'sendtip'
+      });
     };
     var failure_callback = function() {
       unloading_button($('#send'));
@@ -162,6 +167,12 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
   }
   // setup
   var fromAccount = web3.eth.accounts[0];
+
+  if (typeof fromAccount == 'undefined') {
+    _alert({ message: gettext('You must unlock & enable Gitcoin via your web3 wallet to continue.') }, 'warning');
+    failure_callback();
+    return;
+  }
 
   if (username.indexOf('@') == -1) {
     username = '@' + username;
@@ -292,6 +303,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
         indicateMetamaskPopup();
         if (isSendingETH) {
           web3.eth.sendTransaction({
+            from: fromAccount,
             to: destinationAccount,
             value: amountInDenom,
             gasPrice: web3.toHex(get_gas_price())

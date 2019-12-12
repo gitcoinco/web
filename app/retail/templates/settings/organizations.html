@@ -1,0 +1,60 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static avatar_tags %}
+{% block settings_content %}
+
+
+  {% if 'public_repo' in current_scopes and 'read:org' in current_scopes %}
+    <h2 class="font-bigger-2 text-center">Organization Permissions</h2>
+    <p class="text-center font-subheader text-black-50">The users below are able to fund, edit settings, approve contributors, and payout contributors on the bounties of the organization</p>
+    {% if orgs %}
+      {% for org in orgs %}
+        <div class="card my-5">
+          <div class="card-header bg-white d-flex align-items-center justify-content-between">
+            <div>
+              <img src="{% avatar_url org.name %}" class="rounded-circle mr-2" alt="{{org.name}}" width="32" height="32">
+              <b>{{org.name}}</b> <a href="{% url 'profile' org.name %}" class="font-smaller-2">view profile</a>
+            </div>
+            <a href="https://github.com/orgs/{{org.name}}/people" target="_blank"><i class="fab fa-github align-text-top font-bigger-1"></i> Manage on GitHub </a>
+          </div>
+          <div class="card-body">
+            {% for user in org.users %}
+              <div class="py-2 px-5 d-flex align-items-center">
+                <img src="{% avatar_url user.handle  %}" class="rounded-circle mr-3" alt="{{user.handle}}" width="52" height="52">
+                <div class="d-flex flex-column">
+                  <span>{{user.name}}</span>
+                  <a href="{% url 'profile' user.handle %}" class="font-smaller-1">{{user.handle}}</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center my-4 font-bigger-1 text-black-60">No organization permissions found</p>
+    {% endif %}
+
+  {% else %}
+    <div class="row">
+      <div class="col-md-5 m-auto text-center">
+        <h2 class="mb-5">Create an Organization</h2>
+        <img src="{% static "v2/images/org-robots.png" %}" alt="Org bots" class="mw-100">
+        <p class="font-bigger-1 mt-5 font-weight-semibold">
+          Funders in an organization can:
+        </p>
+        <ul class="list-unstyled text-left text-black-70 ml-4">
+          <li>✅ Fund issues on behalf of other team members</li>
+          <li>✅ Modify bounty settings on behalf of other team members</li>
+          <li>✅ Approve contributors for bounties on behalf of other team members</li>
+          <li>✅ Payout bounties created on behalf of other team members</li>
+        </ul>
+
+        <a class="btn btn-lg btn-gc-blue mt-4" href="{% url 'social:begin' 'github' %}?next={{ request.path }}&extrascope=orgs"
+          >
+          <i class="fab fa-github"></i>
+          <span>{% trans "Sync with GitHub" %}</span>
+        </a>
+      </div>
+    </div>
+  {% endif %}
+
+{% endblock %}

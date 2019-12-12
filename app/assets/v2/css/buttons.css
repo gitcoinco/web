@@ -173,6 +173,24 @@ button:focus {
   background-color: var(--gc-purple);
 }
 
+.btn-outline-black {
+  border: 1px solid #000;
+  background: white;
+  color: #000;
+}
+
+.btn-outline-green {
+  border: 1px solid var(--gc-green);
+  background: white;
+  color: var(--gc-green);
+}
+
+.btn-outline-green:hover {
+  border: 1px solid var(--gc-green);
+  background: var(--gc-green);
+  color: #fff;
+}
+
 .btn-gc-purple:hover {
   background-color: var(--gc-purple-hover);
   color: white;
@@ -248,7 +266,7 @@ button:focus {
 }
 
 .btn-radio {
-  border: 2px solid #D3D3D3;
+  border: 1px solid #D3D3D3;
 }
 
 .btn-radio.active {
@@ -263,4 +281,14 @@ button:focus {
   background-color: #F3F3F3;
   color: #666666;
   font-weight: 600;
+}
+
+.btn-gc-grey {
+  color: #171717;
+  background-color: #cbcbcb;
+}
+
+.btn-gc-grey:not(:disabled):not(.disabled).active {
+  color: white;
+  background-color: #5300ff;
 }

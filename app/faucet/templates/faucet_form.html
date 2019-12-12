@@ -47,12 +47,9 @@
                   {% endblocktrans %}
                 </p>
                 <div class="faucet-form-img">
-                  <div class="faucet-form-svg">
+                  <div class="faucet-form-svg mb-3">
                     {% include 'svgs/gas.svg' %}
                   </div>
-                </div>
-                <div class="hidden-mobile">
-                  {% include 'shared/faucet_network_status.html' %}
                 </div>
                 <input type="hidden" id="currentFaucet" name="currentFaucet" value="{{ faucet_amount }}">
                 <p class="hidden-mobile">
@@ -61,7 +58,7 @@
                 <div class="faucet-input-group">
                   <label for="githubProfile" class="form__label float-left">{% trans "Github Profile" %}
                     {% if not user.is_authenticated %}
-                    (<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>):
+                    (<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">{% trans "Login" %}</a>):
                     {% endif %}
                   </label>
                   <input name='githubProfile' id="githubProfile" class="form__input" type="text" placeholder="@you" value="{% if github_handle %}{{ github_handle }}{% endif %}" disabled=disabled />
@@ -114,13 +111,13 @@
       </div>
     </div>
     {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/ga.html' %}
+    {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
+    
 
   {% csrf_token %}
-  <script type="text/javascript">
+  <script>
   // using jQuery
   var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
   </script>

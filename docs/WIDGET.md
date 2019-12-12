@@ -18,7 +18,7 @@ The JS image is responsive.  Here are some screenshots of it:
 
 ### Example
 
-[Click here to see an example JSFiddle widget](https://jsfiddle.net/j73nqdg2/)
+[Click here to see an example JSFiddle widget](https://jsfiddle.net/6psv90qL/)
 
 Step 1: Include the JavaScript SDK on your page once, ideally right after the opening body tag.
 
@@ -97,7 +97,7 @@ Repos that have this widget can expect to see 35% more interest in their repo's 
 ### Code
 
 Place the following code into your repo readme:
-```
+```html
 <a href="https://gitcoin.co/explorer?q=YOUR_REPO_NAME">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/YOUR_ORG_NAME/YOUR_REPO_NAME">
 </a>

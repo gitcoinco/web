@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static matches %}
+{% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark g-font-muli">
   <a class="navbar-brand pt-0 pb-0" href="/">
     <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
@@ -42,7 +42,7 @@
           </a>
           <a class="dropdown-item" href="{% url "kudos_main" %}">
             {% trans "Kudos" %} <br>
-            <span>{% trans "Sincere compliments" %}</span>
+            <span>{% trans "Show appreciation for each other." %}</span>
           </a>
           <a class="dropdown-item" href="{% url "grants:grants" %}">
             {% trans "Grants" %} <br>
@@ -50,11 +50,15 @@
           </a>
           <a class="dropdown-item" href="https://codefund.app/">
             {% trans "Codefund" %} <br>
-            <span>{% trans "Revenue to power open source" %}</span>
+            <span>{% trans "Ethical Ads Revenue to power open source" %}</span>
           </a>
-          <a class="dropdown-item" href="{% url "labs" %}">
-            {% trans "Labs" %} <br>
-            <span>{% trans "Experiments to grow Ethereum" %}</span>
+          <a class="dropdown-item" href="{% url "quests_index" %}">
+            {% trans "Quests" %} <br>
+            <span>{% trans "A fun new way to learn about the web3 ecosystem & earn rewards!" %}</span>
+          </a>
+          <a class="dropdown-item" href="https://hackathons.gitcoin.co">
+            {% trans "Hackathons" %} <br>
+            <span>{% trans "Work with the best sponsors in web3 via 2 week Virtual Hackathons." %}</span>
           </a>
         </div>
       </div>
@@ -72,6 +76,12 @@
           </a>
           <a class="dropdown-item" href="{% url "results" %}">
             {% trans "Results" %}
+          </a>
+          <a class="dropdown-item" href="{% url "leaderboard" "" %}">
+            {% trans "Leaderboard" %}
+          </a>
+          <a class="dropdown-item" href="{% url "activity" %}">
+            {% trans "Activity Feed" %}
           </a>
         </div>
       </div>
@@ -92,7 +102,7 @@
             {% trans "Blog" %}
           </a>
           <a class="dropdown-item" href="{% url "not_a_token" %}">
-            {% trans "No Token" %}
+            {% trans "No Utility Token ICO" %}
           </a>
           <a class="dropdown-item" href="{% url "jobs" %}">
             {% trans "Jobs" %}
@@ -102,11 +112,11 @@
 
       <!-- <a class="nav-link interior" href="{% url "pricing" %}">{% trans "Pricing" %}</a> -->
     </nav>
-    <nav class="navbar-nav mr-3">      
+    <nav class="navbar-nav mr-3">
       {% if user.is_authenticated %}
         {% include 'shared/nav_auth.html' with source='authed' %}
       {% else %}
-        <a href="{% url 'social:begin' 'github' %}?next=/" class="nav-link interior">
+        <a href="{% url 'social:begin' 'github' %}?next=/" onclick="dataLayer.push({'event': 'login'});" class="nav-link interior">
           <i class="fab fa-github mr-1" role="aria-hidden"></i>
           {% trans "LOG IN" %}
         </a>
@@ -115,3 +125,4 @@
   </div>
 
 </nav>
+{% cookielaw_banner %}

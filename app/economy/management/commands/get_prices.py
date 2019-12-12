@@ -26,6 +26,8 @@ import ccxt
 import cryptocompare as cc
 from dashboard.models import Bounty, Tip
 from economy.models import ConversionRate
+from grants.models import Contribution
+from kudos.models import KudosTransfer
 from websocket import create_connection
 
 
@@ -165,6 +167,14 @@ def cryptocompare():
     for tip in Tip.objects.all():
         print(f'CryptoCompare Tip {tip.pk}')
         refresh_conv_rate(tip.created_on, tip.tokenName)
+
+    for obj in KudosTransfer.objects.all():
+        print(f'CryptoCompare KT {obj.pk}')
+        refresh_conv_rate(obj.created_on, obj.tokenName)
+
+    for obj in Contribution.objects.all():
+        print(f'CryptoCompare GrantContrib {obj.pk}')
+        refresh_conv_rate(obj.created_on, obj.subscription.token_symbol)
 
 
 class Command(BaseCommand):

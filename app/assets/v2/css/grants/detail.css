@@ -3,13 +3,21 @@
     max-width: 85vw
   }
 
-  #editor.ql-bubble .ql-editor {
+  #editor.ql-bubble .ql-editor[contenteditable='false'] {
     padding: 0;
   }
 
   #editor .ql-editor p {
     font-size: 1rem;
   }
+}
+
+.ql-editor {
+  font-family: 'Muli';
+}
+
+.ql-editor[contenteditable="false"] {
+  padding: 12px 15px !important;
 }
 
 .grant_details {
@@ -94,9 +102,15 @@
   background: white !important;
 }
 
+input:disabled,
+textarea:disabled {
+  background: white;
+  color: #000;
+}
+
 input.editable,
 textarea.editable {
-  margin-top: 6px;
+  margin-top: 6px !important;
   border: 1px solid #e2eaf2;
   background: white;
   padding: 7px 14px !important;
@@ -183,7 +197,8 @@ textarea.editable {
 
 .grant__stakeholders-list img,
 .grant-item__members img,
-.grant-item__owner-image img {
+.grant-item__owner-image img,
+.grant-item__owner img {
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -209,6 +224,16 @@ textarea.editable {
   padding-bottom: 0 !important;
 }
 
+.disable-tooltip {
+  pointer-events: none;
+}
+
+.disable-btn {
+  border: none;
+  background-color: whitesmoke;
+  color: #999;
+}
+
 @keyframes rotation {
   from {
     transform: rotate(0deg);
@@ -228,14 +253,25 @@ textarea.editable {
 }
 
 @media (max-width: 991.98px) {
+  .summary,
+  .summary textarea,
+  .summary input {
+    text-align: center;
+  }
+
   .summary-info i {
-    float: left;
     position: relative;
     top: 2px;
   }
 
   .logo {
     width: 100%;
+  }
+}
+
+@media (min-width:767.98px) and (max-width: 991.98px) {
+  .summary-info i {
+    float: left;
   }
 }
 

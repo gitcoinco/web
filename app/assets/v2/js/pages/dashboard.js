@@ -10,17 +10,29 @@ var filters = [
   'idx_status',
   'project_type',
   'permission_type',
-  'misc'
+  'misc',
+  'applicants'
 ];
 var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
 local_storage_keys.push('keywords');
 local_storage_keys.push('org');
 
-results_limit = 5;
+results_limit = 10;
 
 if (document.hackathon) {
-  results_limit = 5;
+  let hackathon_orgs = [];
+
+  $('[name=org]').each(function() {
+    hackathon_orgs.push($(this).val());
+  });
+
+  const org = getURLParams('org');
+
+  hackathon_orgs.includes(org) ?
+    $(`#${org}`).prop('checked', true) :
+    $(`#${hackathon_orgs[0]}`).prop('checked', true);
+
 }
 
 var localStorage;
@@ -33,31 +45,33 @@ try {
   localStorage = {};
 }
 
-var paint_search_tabs = function() {
-  if (!localStorage['searches'])
-    return;
+function scrollSlider(element, cardSize) {
+  const arrowLeft = $('#arrowLeft');
+  const arrowRight = $('#arrowRight');
 
-  var container = $('#dashboard-title');
-  var target = $('#search_nav');
+  arrowLeft.on('click', function() {
+    element[0].scrollBy({left: -cardSize, behavior: 'smooth'});
+  });
+  arrowRight.on('click', function() {
+    element[0].scrollBy({left: cardSize, behavior: 'smooth'});
+  });
 
-  searches = localStorage['searches'].split(',');
-
-  if (searches.length <= 1)
-    return target.html('');
-
-  var html = "<ul class='nav'><i class='fas fa-history'></i>";
-
-  for (var i = 0; i < searches.length; i++) {
-    var search_no = searches[i];
-    var title = get_search_tab_name(search_no);
-
-    if (title) {
-      html += "<li class='nav-item' data-num='" + search_no + "'><span>" + title + '</span><a><i class="fas fa-times"></i></a></li>';
+  element.on('scroll mouseenter', function() {
+    if (this.clientWidth === (this.scrollWidth - this.scrollLeft)) {
+      arrowRight.hide();
+    } else {
+      arrowRight.show();
     }
-  }
-  html += '</ul>';
-  target.html(html);
-};
+
+    if (this.scrollLeft < 10) {
+      arrowLeft.hide();
+    } else {
+      arrowLeft.show();
+    }
+  });
+}
+
+scrollSlider($('#featured-card-container'), 288);
 
 function debounce(func, wait, immediate) {
   var timeout;
@@ -79,7 +93,7 @@ function debounce(func, wait, immediate) {
   };
 }
 
-const scrub = value => value.replace(/[\W]+/g, '');
+const scrub = value => value.replace(/[!@#$%^&*(),.?":{}|<>]+/g, '');
 
 /**
  * Fetches all filters options from the URI
@@ -106,11 +120,17 @@ var getActiveFilters = function() {
 /**
  * Build URI based on selected filter
  */
-var buildURI = function() {
+var buildURI = function(custom_filters) {
   let uri = '';
-  let _filters = filters.slice();
+  let _filters = [];
 
-  _filters.push('keywords', 'order_by', 'org');
+  if (custom_filters) {
+    _filters = custom_filters;
+  } else {
+    _filters = filters.slice();
+    _filters.push('keywords', 'order_by', 'org');
+  }
+
   _filters.forEach((filter) => {
     if (localStorage[filter] &&
       localStorage[filter] != 'any') {
@@ -129,10 +149,13 @@ var save_sidebar_latest = function() {
 
   filters.forEach((filter) => {
     localStorage[filter] = '';
-
-    $('input[name="' + filter + '"]:checked').each(function() {
-      localStorage[filter] += $(this).val() + ',';
-    });
+    if (filter === 'applicants') {
+      localStorage[filter] = $('#applicants_box').val();
+    } else {
+      $('input[name="' + filter + '"]:checked').each(function() {
+        localStorage[filter] += $(this).val() + ',';
+      });
+    }
 
     localStorage[filter] = localStorage[filter].replace(/^,|,\s*$/g, '');
   });
@@ -142,6 +165,7 @@ var save_sidebar_latest = function() {
 const set_sidebar_defaults = () => {
   const q = getParam('q');
   const org = getParam('org');
+  const applicants = getParam('applicants');
 
   if (q) {
     const keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
@@ -169,6 +193,11 @@ const set_sidebar_defaults = () => {
     }
   }
 
+  if (applicants) {
+    if (localStorage['applicants']) {
+      localStorage['applicants'] = applicants;
+    }
+  }
   getActiveFilters();
 
   if (localStorage['order_by']) {
@@ -178,6 +207,10 @@ const set_sidebar_defaults = () => {
 
   filters.forEach((filter) => {
     if (localStorage[filter]) {
+      if (filter === 'applicants') {
+        $('#applicants_box').val(localStorage[filter]).trigger('change.select2');
+      }
+
       localStorage[filter].split(',').forEach(function(val) {
         $('input[name="' + filter + '"][value="' + val + '"]').prop('checked', true);
       });
@@ -287,14 +320,13 @@ var removeFilter = function(key, value) {
   }
 
   reset_offset();
-  refreshBounties(null, 0, false, false);
+  refreshBounties(null, 0, false);
 };
 
 var get_search_URI = function(offset, order) {
   var uri = '/api/v0.1/bounties/slim/?';
   var keywords = '';
   var org = '';
-
 
   filters.forEach((filter) => {
     var active_filters = [];
@@ -322,6 +354,9 @@ var get_search_URI = function(offset, order) {
         } else if (_value === 'fulfilledByMe') {
           _key = 'fulfiller_github_username';
           _value = document.contxt.github_handle;
+        } else if (_value === 'reservedForMe') {
+          _key = 'reserved_for_user_handle';
+          _value = document.contxt.github_handle;
         }
 
         if (_value !== 'any') {
@@ -336,6 +371,9 @@ var get_search_URI = function(offset, order) {
         filter = 'bounty_owner_address';
         val = 'myself';
       }
+    }
+    if (filter === 'applicants') {
+      val = $('#applicants_box').val();
     }
 
     if (val && val !== 'any' &&
@@ -417,7 +455,7 @@ var trigger_scroll = debounce(function() {
     $('.loading_img').css('display', 'block');
 
     document.offset = parseInt(document.offset) + parseInt(results_limit);
-    refreshBounties(null, document.offset, true, false);
+    refreshBounties(null, document.offset, true);
   }
 }, 200);
 
@@ -431,7 +469,7 @@ var reset_offset = function() {
 
 let organizations = [];
 
-var refreshBounties = function(event, offset, append, do_save_search) {
+var refreshBounties = function(event, offset, append) {
 
   // Allow search for freeform text
   var searchInput = $('#keywords')[0];
@@ -456,17 +494,15 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     save_sidebar_latest();
     toggleAny(event);
     getFilters();
-    if (do_save_search) {
-      if (!is_search_already_saved()) {
-        save_search();
-      }
-
-      paint_search_tabs();
-      window.history.pushState('', '', window.location.pathname + '?' + buildURI());
-    }
+    window.history.pushState('', '', window.location.pathname + '?' + buildURI());
   } else {
     toggleAny(event);
+
+    const org = $("input[name='org']:checked").val();
+
+    localStorage['org'] = org === 'any' ? '' : org;
     localStorage['order_by'] = $('#sort_option').val();
+    window.history.pushState('', '', window.location.pathname + '?' + buildURI(['org']));
   }
 
   if (!append) {
@@ -544,39 +580,37 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     $('.loading').css('display', 'none');
   });
 
-  if (!document.hackathon) {
-    explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
-      results = sanitizeAPIResults(results);
+  explorer.bounties_request = $.get(featuredBountiesURI, function(results, x) {
+    results = sanitizeAPIResults(results);
 
-      if (results.length === 0 && !append) {
-        $('.featured-bounties').hide();
-        if (localStorage['referrer'] === 'onboard') {
-          $('.no-results').removeClass('hidden');
-          $('#dashboard-content').addClass('hidden');
-        } else {
-          $('.nonefound').css('display', 'none');
-        }
+    if (results.length === 0 && !append) {
+      $('.featured-bounties').hide();
+      if (localStorage['referrer'] === 'onboard') {
+        $('.no-results').removeClass('hidden');
+        $('#dashboard-content').addClass('hidden');
+      } else {
+        $('.nonefound').css('display', 'none');
       }
+    }
 
-      var html = renderFeaturedBountiesFromResults(results, true);
+    var html = renderFeaturedBountiesFromResults(results, true);
 
-      if (html) {
-        $('.featured-bounties').show();
-        $('#featured-card-container').html(html);
-      }
-    }).fail(function() {
-      if (explorer.bounties_request.readyState !== 0)
-        _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
-    }).always(function() {
-      $('.loading').css('display', 'none');
-    });
-  }
+    if (html) {
+      $('.featured-bounties').show();
+      $('#featured-card-container').html(html);
+    }
+  }).fail(function() {
+    if (explorer.bounties_request.readyState !== 0)
+      _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  }).always(function() {
+    $('.loading').css('display', 'none');
+  });
 };
 
 window.addEventListener('load', function() {
   set_sidebar_defaults();
   reset_offset();
-  refreshBounties(null, 0, false, false);
+  refreshBounties(null, 0, false);
 });
 
 /**
@@ -594,6 +628,12 @@ var resetFilters = function(resetKeyword) {
         $('input[name="' + filter + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
 
+    if (resetKeyword && filter === 'applicants' && !document.hackathon) {
+      $('#applicants_box').val('ALL').trigger('change.select2');
+    } else if (resetKeyword && filter === 'applicants' && document.hackathon) {
+      localStorage.setItem(filter, '');
+    }
+
     // Defaults to mainnet on clear filters to make it less confusing
     $('input[name="network"][value="mainnet"]').prop('checked', true);
   });
@@ -604,7 +644,7 @@ var resetFilters = function(resetKeyword) {
     });
   }
 
-  if (resetKeyword && localStorage['org']) {
+  if (resetKeyword && localStorage['org'] && !document.hackathon) {
     localStorage['org'].split(',').forEach(function(v, k) {
       removeFilter('org', v);
     });
@@ -650,6 +690,12 @@ var resetFilters = function(resetKeyword) {
 
 $(document).ready(function() {
 
+  $('.js-select2').each(function() {
+    $(this).select2({
+      minimumResultsForSearch: Infinity
+    });
+  });
+
   $('#expand').on('click', () => {
     $('#expand').hide();
     $('#minimize').show();
@@ -672,7 +718,7 @@ $(document).ready(function() {
   $('#sort_option').selectmenu({
     select: function(event, ui) {
       reset_offset();
-      refreshBounties(null, 0, false, true);
+      refreshBounties(null, 0, false);
       event.preventDefault();
     }
   });
@@ -745,157 +791,30 @@ $(document).ready(function() {
     e.preventDefault();
     resetFilters(true);
     reset_offset();
-    refreshBounties(null, 0, false, true);
+    refreshBounties(null, 0, false);
   });
 
   // search bar
   $('#sidebar_container').delegate('#new_search', 'click', function(e) {
     reset_offset();
-    refreshBounties(null, 0, false, true);
+    refreshBounties(null, 0, false);
     e.preventDefault();
   });
-
-  // search bar -- remove bounty
-  $('#bounties').delegate('#search_nav li a', 'click', function(e) {
-    var n = $(this).parents('li').data('num');
-
-    remove_search(n);
-    paint_search_tabs();
-  });
-
-  // search bar
-  $('#bounties').delegate('#search_nav li span', 'click', function(e) {
-    var n = $(this).parents('li').data('num');
-
-    load_search(n);
-    refreshBounties(null, 0, false, false);
-  });
-
 
   $('.search-area input[type=text]').keypress(function(e) {
     if (e.which == 13) {
       reset_offset();
-      refreshBounties(null, 0, false, true);
+      refreshBounties(null, 0, false);
       e.preventDefault();
     }
   });
 
-  // sidebar filters
-  $('.sidebar_search , .sidebar_search label').change('input[type=radio]', function(e) {
+  $(`
+    .sidebar_search input[type=radio], .sidebar_search input[type=checkbox],
+    .sidebar_search .js-select2, #org
+  `).change(function(e) {
     reset_offset();
-    refreshBounties(null, 0, false, true);
-    e.preventDefault();
-  });
-
-  // sidebar filters
-  $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
-    reset_offset();
-    refreshBounties(null, 0, false, true);
-    e.preventDefault();
-  });
-
-  $('#org').change(function(e) {
-    reset_offset();
-    refreshBounties(null, 0, false, true);
+    refreshBounties(null, 0, false);
     e.preventDefault();
   });
 });
-
-
-var get_this_search_name = function() {
-  var names = [];
-  var eles = $('.filter-tag');
-
-  for (let i = 0; i < eles.length; i++) {
-    var ele = eles[i];
-
-    names.push(ele.text.toLowerCase());
-  }
-  names = names.join(',');
-  return names;
-};
-
-var is_search_already_saved = function() {
-  var this_search = get_this_search_name();
-
-  for (let i = 0; i < 100; i++) {
-    var new_key = '_name_' + i;
-    var result = localStorage[new_key];
-
-    if (typeof result != 'undefined') {
-      if (this_search == result) {
-        return true;
-      }
-    }
-  }
-  return false;
-};
-
-// search sidebar saving
-
-// saves search info in local storage
-var save_search = function() {
-  if (typeof localStorage['searches'] == 'undefined') {
-    localStorage['searches'] = '0';
-  }
-  searches = localStorage['searches'].split(',');
-  max = parseInt(Math.max.apply(Math, searches));
-  next = max + 1;
-  searches = searches + ',' + next;
-  localStorage['searches'] = searches;
-  // save each key
-  for (let i = 0; i < local_storage_keys.length; i++) {
-    var key = local_storage_keys[i];
-    let new_key = '_' + key + '_' + next;
-
-    localStorage[new_key] = localStorage[key];
-  }
-
-  // save the name
-  let new_key = '_name_' + next;
-
-  localStorage[new_key] = get_this_search_name();
-
-};
-
-var get_search_tab_name = function(n) {
-  var new_key = '_name_' + n;
-
-  return localStorage[new_key];
-
-};
-
-// gets available searches
-var get_available_searches = function() {
-  if (typeof localStorage['searches'] == 'undefined') {
-    localStorage['searches'] = '';
-  }
-  return localStorage['searches'].split(',');
-};
-
-// loads search info from local storage
-var load_search = function(n) {
-
-  for (var i = 0; i < local_storage_keys.length; i++) {
-    var key = local_storage_keys[i];
-    var new_key = '_' + key + '_' + n;
-
-    localStorage[key] = localStorage[new_key];
-  }
-};
-
-// removes this search
-var remove_search = function(n) {
-  var is_last_element = ('0,' + n) == localStorage['searches'];
-
-  if (is_last_element) {
-    localStorage['searches'] = '0';
-    return;
-  }
-  search_str = ',' + n + ',';
-  replace_str = ',';
-  localStorage['searches'] = localStorage['searches'].replace(search_str, replace_str);
-  var key = '_name_' + n;
-
-  localStorage.removeItem(key);
-};

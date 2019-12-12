@@ -25,62 +25,91 @@
     </div>
     {% if user_logged_in %}
       <div class="col-12">
-        <form id="action_plan" class="font-body">
-          {% if bounty.repo_type == 'private' %}
-            <div id="nda-upload">
-              <hr class="mt-4">
-              <div>
-                <h5 class="font-subheader">{% trans "Non-Disclosure Agreement" %}</h5>
-                {% blocktrans %}
-                  <p>Download the repo’s <a href="" class="nda-download-link" download>Non-Disclosure Agreement</a> and upload the signed document.</p>
-                {% endblocktrans %}
-                <label class="form__label" for=issueNDA>{% trans "Each contributor has to sign your NDA before they can start work. Supported format: pdf, doc, docx." %}</label>
-                <input required name='issueNDA' id="issueNDA" class="form__input" type="file" accept="application/pdf,application/msword, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation"/>
+        {% if is_registered or not bounty.event %}
+          <form id="action_plan" class="font-body">
+            {% if bounty.repo_type == 'private' %}
+              <div id="nda-upload">
+                <hr class="mt-4">
+                <div>
+                  <h5 class="font-subheader">{% trans "Non-Disclosure Agreement" %}</h5>
+                  {% blocktrans %}
+                    <p>Download the repo’s <a href="" class="nda-download-link" download>Non-Disclosure Agreement</a> and upload the signed document.</p>
+                  {% endblocktrans %}
+                  <label class="form__label" for=issueNDA>{% trans "Each contributor has to sign your NDA before they can start work. Supported format: pdf, doc, docx." %}</label>
+                  <input required name='issueNDA' id="issueNDA" class="form__input" type="file" accept="application/pdf,application/msword, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation"/>
+                </div>
+                <hr class="mt-4">
               </div>
-              <hr class="mt-4">
-            </div>
-          {% endif %}
-          <div>
-            <label for="issue_message">
-              <span>
-                {% trans "Provide an action plan and any initial questions you have for this ticket." %} <br>
-                <span class="font-smaller-4">
-                  ({% trans "Your response will be reflected in a comment on the Github issue." %})
-                </span>
-              </span>
-            </label>
-            <textarea id="issue_message" class="form__input"></textarea>
-          </div>
-          <div>
-            <div class="checkbox_container d-flex">
-              <input type="checkbox" id="checkbox2" class="form__input" value="1" required/>
-              <span class="checkbox"></span>
-              <div class="filter-label">
-                <label for="checkbox2">
-                  {% if bounty and bounty.permission_type == 'approval' %}
-                    {% trans "I understand that this is an application and I should wait for approval from the funder before starting work." %}
-                  {% elif bounty and bounty.project_type == 'contest' %}
-                    {% trans "I understand that this bounty is a *contest* and that other bounty hunters may be working in parallel with me." %}
-                  {% elif bounty and bounty.project_type == 'cooperative' %}
-                    {% trans "I understand that this bounty is a multi-worker *cooperative* bounty.  Other bounty hunters may be working in parallel with me, but the funder has indicated they will pay the bounty to multiple of us." %}
-                  {% else %}
-                    {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
+            {% endif %}
+            <div>
+              {% if bounty.event %}
+                <p class="alert-danger p-2">
+                  This bounty is part of <b>{{bounty.event.name}}</b>, please read the <a href="{% url 'hackathon_onboard' bounty.event.slug %}" target="_blank">rules to participate</a> before you continue.
+                </p>
+              {% endif %}
+              <label for="issue_message">
+                <p>
+                  {% trans "Provide an action plan and any initial questions you have for this ticket." %}
+                  {% if bounty.event %}
+                    {% trans "Include gitcoin team members usernames and project repo url, if you have one." %}
                   {% endif %}
-                </label>
+                  <br>
+                  <span class="font-smaller-4">
+                    ({% trans "Your response will be reflected in a comment on the Github issue." %})
+                  </span>
+                </p>
+              </label>
+              <textarea id="issue_message" class="form__input"></textarea>
+            </div>
+            <div>
+            {% if bounty.event %}
+              <div class="d-flex">
+                <div class="filter-label ml-0 mb-3">
+                  <label for="checkbox2 mb-0">
+                    {% trans "Discord Username" %}
+                  </label>
+                  <input type="text" id="discord_username" name="discord_username" class="form__input font-body" placeholder="vivek#9746" value="{{gitcoin_discord_username}}" required/>
+                  <span class="font-caption"><a target="_blank" href="https://discord.gg/TxRKTn8">Join Discord</a> to get updates from our sponsors prizes and find help</span>
+                </div>
+              </div>
+              {% endif %}
+              <div class="checkbox_container d-flex">
+                <input type="checkbox" id="checkbox2" class="form__input" value="1" required/>
+                <span class="checkbox"></span>
+                <div class="filter-label">
+                  <label for="checkbox2">
+                    {% if bounty and bounty.permission_type == 'approval' %}
+                      {% trans "I understand that this is an application and I should wait for approval from the funder before starting work." %}
+                    {% elif bounty and bounty.project_type == 'contest' %}
+                      {% trans "I understand that this bounty is a *contest* and that other bounty hunters may be working in parallel with me." %}
+                    {% elif bounty and bounty.project_type == 'cooperative' %}
+                      {% trans "I understand that this bounty is a multi-worker *cooperative* bounty.  Other bounty hunters may be working in parallel with me, but the funder has indicated they will pay the bounty to multiple of us." %}
+                    {% else %}
+                      {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
+                    {% endif %}
+                  </label>
+                </div>
+              </div>
+            <div>
+              <div class="checkbox_container d-flex">
+                <input type="checkbox" id="checkbox1" class="form__input" value="1" required/>
+                <span class="checkbox"></span>
+                <div class="filter-label">
+                  <label for="checkbox1">
+                    {% trans "I agree to keep the funder informed of my progress every few days." %}
+                  </label>
+                </div>
               </div>
             </div>
-            <div class="checkbox_container d-flex">
-              <input type="checkbox" id="checkbox1" class="form__input" value="1" required/>
-              <span class="checkbox"></span>
-              <div class="filter-label">
-                <label for="checkbox1">
-                  {% trans "I agree to keep the funder informed of my progress every few days." %}
-                </label>
-              </div>
-            </div>
+            <button id="submit" class="row button button--primary btn-interested" type="submit">{% trans "Submit" %}</button>
+          </form>
+        {% else %}
+          <div class="text-center mb-5 mt-4">
+            <p class="mb-4">This bounty is part of <b>{{bounty.event.name}}</b>.<br>
+            Please register for the hackathon and read the rules of participation before you continue.</p>
+            <a href="{% url 'hackathon_onboard' bounty.event.slug %}" class="btn btn-gc-blue">Register for Hackathon</a>
           </div>
-          <button id="submit" class="row button button--primary btn-interested" type="submit">{% trans "Submit" %}</button>
-        </form>
+        {% endif %}
       </div>
     {% else %}
       <div class="col-12 text-center">

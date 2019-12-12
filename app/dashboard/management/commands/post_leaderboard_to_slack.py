@@ -75,7 +75,7 @@ class Command(BaseCommand):
         msg = "_Gitcoin Leaderboard for the Past Week_\n"
         for key, title in titles.items():
             msg += f"\n*{title}*\n"
-            leadeboardranks = LeaderboardRank.objects.active().filter(leaderboard=key).order_by('-amount')[0:num_items]
+            leadeboardranks = LeaderboardRank.objects.active().filter(leaderboard=key, product='all').order_by('-amount')[0:num_items]
             counter = 1
             for lr in leadeboardranks:
                 emoji = num_to_emoji.get(counter, '')

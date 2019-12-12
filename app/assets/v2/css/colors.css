@@ -8,6 +8,7 @@
   --gc-green-hover: #25E899;
   --gc-pink: #f9006c;
   --gc-pink-hover: #f167a3;
+  --gc-yellow: #F5A623;
 
   --gc-white: #ffffff;
   --gc-light-violet: #bbafd0;
@@ -50,4 +51,8 @@
 
 .text-highlight-pink {
   color: var(--gc-pink);
+}
+
+.text-highlight-yellow {
+  color: var(--gc-yellow);
 }

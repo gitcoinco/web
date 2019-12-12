@@ -30,23 +30,16 @@
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <div class="container-fluid header">
-      {% include 'shared/nav.html' %}
+      {% include 'home/nav.html' %}
       {% include 'shared/minihero.html' with h1='Activity Feed' position_h1_below_logo=1 %}
     </div>
 
-    <div style="background-color: white;">
-      <div class="container" id="activity_stream">
-        {% include 'shared/pagination.html' %}
-          {% for row in activities %}
-            {% include 'shared/activity.html' %}
-          {% endfor %}
-        {% include 'shared/pagination.html' %}
-      </div>
-    </div>
+    {% include 'shared/activity_container.html' %}
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/messages.html' %}
+    
+    {% include 'shared/activity_scripts.html' %}
   </body>
 </html>

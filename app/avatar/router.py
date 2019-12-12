@@ -31,5 +31,5 @@ class RecommendedByStaffAvatarsViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 router = routers.DefaultRouter()
-router.register(r'user-avatars', UserAvatarsViewSet, base_name="user_avatars")
-router.register(r'recommended-by-staff', RecommendedByStaffAvatarsViewSet, base_name="recommended_by_staff_avatars")
+router.register(r'user-avatars', UserAvatarsViewSet, basename="user_avatars")
+router.register(r'recommended-by-staff', RecommendedByStaffAvatarsViewSet, basename="recommended_by_staff_avatars")

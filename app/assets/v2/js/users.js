@@ -105,7 +105,7 @@ Vue.mixin({
       let postInvite = fetchData(
         apiUrlInvite,
         'POST',
-        { 'url': bounty.github_url, 'usersId': [user], 'bountyId': bounty.id},
+        { 'usersId': [user], 'bountyId': bounty.id},
         {'X-CSRFToken': csrftoken}
       );
 
@@ -117,6 +117,52 @@ Vue.mixin({
         } else {
           vm.$refs['user-modal'].closeModal();
           _alert('The invitation has been sent', 'info');
+        }
+      });
+    },
+    sendInviteAll: function(bountyUrl) {
+      let vm = this;
+      const apiUrlInvite = '/api/v0.1/bulk_invite/';
+      const postInvite = fetchData(
+        apiUrlInvite,
+        'POST',
+        { 'params': vm.params, 'bountyId': bountyUrl},
+        {'X-CSRFToken': csrftoken}
+      );
+
+      $.when(postInvite).then((response) => {
+        console.log(response);
+        if (response.status !== 200) {
+          _alert(response.msg, 'error');
+
+        } else {
+          vm.$refs['user-modal'].closeModal();
+          _alert('The invitation has been sent', 'info');
+        }
+      });
+
+    },
+    getIssueDetails: function(url) {
+      let vm = this;
+      const apiUrldetails = `/actions/api/v0.1/bounties/?github_url=${encodeURIComponent(url)}`;
+
+      vm.errorIssueDetails = undefined;
+
+      if (url.indexOf('github.com/') < 0) {
+        vm.issueDetails = null;
+        vm.errorIssueDetails = 'Please paste a github issue url';
+        return;
+      }
+      vm.issueDetails = undefined;
+      const getIssue = fetchData(apiUrldetails, 'GET');
+
+      $.when(getIssue).then((response) => {
+        if (response[0]) {
+          vm.issueDetails = response[0];
+          vm.errorIssueDetails = undefined;
+        } else {
+          vm.issueDetails = null;
+          vm.errorIssueDetails = 'This issue wasn\'t bountied yet.';
         }
       });
 
@@ -135,11 +181,29 @@ Vue.mixin({
         let getUsers = fetchData (api, 'GET');
 
         $.when(getUsers).then(function(response) {
-          if (response && response.data) {
+          if (response && response.data.length) {
             vm.openBounties(response.data[0]);
             $('#userModal').bootstrapModal('show');
+          } else {
+            _alert('The user was not found. Please try using the search box.', 'error');
           }
         });
+      }
+    },
+    extractURLFilters: function() {
+      let vm = this;
+      let params = getURLParams();
+
+      vm.users = [];
+
+      if (params) {
+        for (var prop in params) {
+          if (prop === 'skills') {
+            vm.$set(vm.params, prop, params[prop].split(','));
+          } else {
+            vm.$set(vm.params, prop, params[prop]);
+          }
+        }
       }
     }
   }
@@ -170,7 +234,10 @@ if (document.getElementById('gc-users-directory')) {
       skills: document.keywords,
       selectedSkills: [],
       noResults: false,
-      isLoading: true
+      isLoading: true,
+      gitcoinIssueUrl: '',
+      issueDetails: undefined,
+      errorIssueDetails: undefined
     },
     mounted() {
       this.fetchUsers();
@@ -183,6 +250,7 @@ if (document.getElementById('gc-users-directory')) {
     created() {
       this.fetchBounties();
       this.inviteOnMount();
+      this.extractURLFilters();
     },
     beforeMount() {
       window.addEventListener('scroll', () => {

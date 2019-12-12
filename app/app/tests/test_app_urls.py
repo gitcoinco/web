@@ -89,15 +89,6 @@ class AppUrlsTestCase(TestCase):
         self.assertEqual(resolve('/faucet').view_name, 'faucet')
         self.assertEqual(resolve('/faucet/').view_name, 'faucet')
 
-    def test_dashboard_reverse(self):
-        """Test the dashboard url and check the reverse."""
-        self.assertEqual(reverse('dashboard'), '/dashboard')
-
-    def test_dashboard_resolve(self):
-        """Test the dashboard url and check the resolution."""
-        self.assertEqual(resolve('/dashboard').view_name, 'dashboard')
-        self.assertEqual(resolve('/dashboard/').view_name, 'dashboard')
-
     def test_explorer_reverse(self):
         """Test the explorer url and check the reverse."""
         self.assertEqual(reverse('explorer'), '/explorer')

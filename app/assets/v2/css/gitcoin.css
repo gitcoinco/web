@@ -182,7 +182,7 @@ h4,
 }
 
 .gc-letter-spacing {
-  letter-spacing: 0.15em;
+  letter-spacing: 0.5rem;
 }
 
 div.button-pink {
@@ -374,12 +374,11 @@ div.button-pink {
 }
 
 .footer__main {
-  background-image: url('/static/v2/images/footer.png');
   background-color: #0d023b;
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
-  min-height: 520px;
+  min-height: 20rem;
 }
 
 .footer__text,
@@ -393,11 +392,22 @@ div.button-pink {
 
 .footer {
   background-color: #0d023b;
+  padding-top: 4rem;
 }
 
 .footer .nav-link {
   font-size: 0.8rem !important;
   margin-right: 0.5rem;
+}
+
+#tabs .nav-link span {
+  position: relative;
+  font-size: 8px;
+  font-weight: bold;
+  background-color: #ddd;
+  border-radius: 10px;
+  padding: 2px 5px;
+  top: -10px
 }
 
 .nav-link:visited {
@@ -561,12 +571,12 @@ div.button-pink {
 }
 
 .dropdown-menu .dropdown-item {
-  padding: 12px 25px;
+  padding: 12px 25px !important;
 }
 
 .dropdown-menu .dropdown-item:hover {
-  background-color: #0D0764;
-  color: #FFFFFF;
+  background-color: #3E00FF;
+  color: #FFFFFF !important;
 }
 
 #why-gitcoin .dropdown-item {
@@ -725,13 +735,6 @@ div.button-pink {
 #select2-username-container .rounded-circle {
   height: 1.8rem;
   width: auto;
-}
-
-#payout_table td div.input_amount,
-#payout_table td a.remove,
-#payout_table td div.amount {
-  position: relative;
-  top: 10px;
 }
 
 @media (min-width: 768px) {

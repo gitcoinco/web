@@ -32,7 +32,7 @@
               Funder
             {% endif %}
           </h2>
-          <p class="p-2 text-center font-smaller-1 text-black-60">{% trans 'Your feedback is very valuable for us! Only Gitcoin admins are able to see your feedback.' %}</p>
+          <p class="p-2 text-center font-smaller-1 text-black-60">{% trans 'Your feedback is very valuable for us!' %}</p>
           <div class="text-center">
             {% if bounty.funding_organisation %}
               <img class="card-rating__avatar rounded-circle" alt="{{ bounty.funding_organisation }}" width="63" height="63" src="{% url 'org_avatar' bounty.funding_organisation %}">
@@ -61,7 +61,10 @@
             {% endif %}
             <input type="hidden" name="review[receiver]" value="{{ receiver }}">
             {% include 'shared/rating.html' with counterparty='contributor' id='review[rating]' class="text-center" %}
-            <div>
+            <div class=advanced_rating_toggle style="text-align:center;">
+              <a href="#" onclick="$('.advanced_rating_toggle').remove();$('.advanced_rating').css('display','block');">advanced &gt;</a>
+            </div>
+            <div class='advanced_rating' style="display:none;">
               {% include 'shared/rating.html' with counterparty='contributor' id='review[satisfaction_rating]' label="Satisfaction" class="rating--small text-left" %}
               {% include 'shared/rating.html' with counterparty='contributor' id='review[communication_rating]' label="Comunication/Responsiveness" class="rating--small text-left" %}
               {% include 'shared/rating.html' with counterparty='contributor' id='review[speed_rating]' label="Speed" class="rating--small text-left" %}
@@ -71,6 +74,11 @@
               <div class="w-100 mt-2 p-2">
                 <label class="form__label text-weight_semibold" for="review">{% trans "Anything else you’d like to share?" %}</label>
                 <textarea name='review[comment]' id='review' class="form-control gc-border-blue" placeholder="{% trans 'Let us know here...' %}"></textarea>
+              </div>
+
+              <div class="w-100 mt-2 p-2">
+                <label class="form__label text-weight_semibold" for="public">{% trans "Is it okay to show this review publicly?" %}</label>
+                <input name='review[public]' id="public" type="checkbox" class="gc-border-blue" value="1" checked="checked" ></textarea>
               </div>
 
             </div>

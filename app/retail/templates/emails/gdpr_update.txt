@@ -2,7 +2,7 @@ Hello {{ subscriber }},
 
 As a Web 3.0 company, we think carefully about user data and privacy and how the internet is evolving. We hope Web 3.0 will bring more control of data to users. With this ethos, we are always careful about how we use your information.
 
-Our Privacy Policy and Terms of Use are now compliant with requirements of General Data Protection Regulation (GDPR). These changes are in effect as of May 25, 2018. So your continued use of the Gitcoin will be subject to our updated Terms of Use and Privacy Policy.
+Our Privacy Policy and Terms of Use are now compliant with requirements of General Data Protection Regulation (GDPR). These changes are in effect as of May 25, 2018, so your continued use of the Gitcoin will be subject to our updated Terms of Use and Privacy Policy.
 
 As always, the entire Gitcoin team works every day to make Gitcoin a safe and trustworthy place to grow open source. We invite you to learn more about our outlined updates to our Policies and Terms of Use:
 

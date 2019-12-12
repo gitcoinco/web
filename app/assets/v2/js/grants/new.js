@@ -142,14 +142,15 @@ const init = () => {
             arguments: args
           }).send({
             from: accounts[0],
-            gas: 3000000,
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+            gas: web3.utils.toHex(gas_amount(document.location.href)),
+            gasLimit: web3.utils.toHex(gas_amount(document.location.href))
           }).on('error', function(error) {
             console.log('1', error);
           }).on('transactionHash', function(transactionHash) {
             console.log('2', transactionHash);
             $('#transaction_hash').val(transactionHash);
-            const linkURL = etherscan_tx_url(transactionHash);
+            const linkURL = get_etherscan_url(transactionHash);
             let file = $('#img-project')[0].files[0];
             let formData = new FormData();
 
@@ -167,7 +168,7 @@ const init = () => {
             formData.append('contract_version', $('#contract_version').val());
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('network', $('#network').val());
-            formData.append('team_members', $('#input-team_members').val());
+            formData.append('team_members[]', $('#input-team_members').val());
             saveGrant(formData, false);
 
             document.issueURL = linkURL;

@@ -20,7 +20,7 @@ _Note: All pages within gitcoin are expected to reuse these classes as applicabl
 ### Mutiselect (using select2)
 
 _usage_
-```
+```html
 <div class="form__select2 g-multiselect">
     <select class="js-select2" multiple>
     </select>
@@ -35,17 +35,16 @@ The Multiselect styling used in Gitcoin can be found in
 _usage_
 
 
-```
+```html
 <script src="{% static 'v2/js/clipboard.js' %}"></script>
 ```
 
-```
+```html
 <textarea id="matchid">This text will be copied</textarea>
 <button data-copyclipboard="#matchid">Copy Text</button>
 ```
 _usage with class_
-```
-
+```html
 <input type="text" class="matchclass" value="This text will be copied">
 <button data-copyclipboard=".matchclass">Copy Text</button>
 ```
@@ -54,7 +53,7 @@ _Note: You can use it with `textarea` or `input` elements._
 ### Slider
 
 _usage_
-```
+```html
 <label class="g-switch">
     <input id="package-period" type="checkbox">
     <span class="slider"></span>
@@ -73,7 +72,7 @@ Container has a fade in animation when it becomes into viewport.
 
 _values_
 
-`data-fade-direction`: `left` | `mid` | `right` _(defaut: `mid`)_
+`data-fade-direction`: `left` | `mid` | `right` _(default: `mid`)_
 `data-fade-duration`: `Number` _(default: `1500`)_
 
 _usage_

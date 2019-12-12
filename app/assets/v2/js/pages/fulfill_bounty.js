@@ -19,6 +19,8 @@ window.onload = function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
     var account = web3.eth.accounts[0];
 
+    $('#payoutAddress').val(account);
+
     if (typeof localStorage['githubUsername'] != 'undefined') {
       if (!$('input[name=githubUsername]').val()) {
         $('input[name=githubUsername]').val(localStorage['githubUsername']);
@@ -117,6 +119,10 @@ window.onload = function() {
                     txid: result
                   });
 
+                  if (document.eventTag) {
+                    localStorage['pendingProject'] = true;
+                  }
+
                   var finishedComment = function() {
                     dataLayer.push({ event: 'claimissue' });
                     _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
@@ -158,6 +164,7 @@ window.onload = function() {
                   bountyId,
                   document.ipfsDataHash,
                   {
+                    from: web3.eth.accounts[0],
                     gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
                   },
                   web3Callback
