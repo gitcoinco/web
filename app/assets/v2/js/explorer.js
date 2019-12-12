@@ -1,6 +1,6 @@
 let bounties = [];
 let bountiesPage = 1;
-let BountiesLimit = 2;
+let BountiesLimit = 10;
 let BountiesOffset = 0;
 let bountiesNumPages = '';
 let bountiesHasNext = false;

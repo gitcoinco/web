@@ -276,15 +276,15 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
-    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    <!-- <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script> -->
     <script>
-      let bootstrapTooltip = $.fn.tooltip.noConflict()
-      $.fn.runTooltip = bootstrapTooltip;
-      const bootstrapModal = $.fn.modal.noConflict()
-      $.fn.bootstrapModal = bootstrapModal
+      // let bootstrapTooltip = $.fn.tooltip.noConflict()
+      // $.fn.runTooltip = bootstrapTooltip;
+      // let bootstrapModal = $.fn.modal.noConflict()
+      // $.fn.bootstrapModal = bootstrapModal
 
-      $('[data-toggle="tooltip"]').runTooltip();
+      $('[data-toggle="tooltip"]').bootstrapTooltip();
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.keywords = {{keywords | safe}};
     </script>
