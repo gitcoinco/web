@@ -37,12 +37,12 @@
 			  <h1>{% trans "Chat with the community" %}</h1>
 			  <h2 class="mt-4 sub-headline">
 				{% blocktrans %}
-				  Meet fellow developers, designers, futurists and more. Collaborate and buidl awesome projects together.
+				  Meet fellow developers, designers, futurists and more. Collaborate and BUIDL awesome projects together.
 				{% endblocktrans %}
 			  </h2>
 			  <div class="buttons mt-5">
-				<a class="btn btn-sm btn-gc-blue mr-2 shadow-none font-weight-bold py-3 px-5" href="#">{% trans "Open Web Chat" %}</a>
-				<a class="btn btn-sm text-white ml-2 shadow-none font-weight-bold py-3 px-5" href="#">{% trans "Download Apps" %}</a>
+				<a class="btn btn-sm btn-gc-blue mr-2 shadow-none font-weight-bold py-3 px-5" href="/chat/web">{% trans "Open Web Chat" %}</a>
+				<a class="btn btn-sm text-white ml-2 shadow-none font-weight-bold py-3 px-5" href="#joinus">{% trans "Download Apps" %}</a>
 			  </div>
 			  <div class="online mt-4">
 				  <span><i class="fa fa-circle fa-xs"></i> 15,273 people online</span>
@@ -57,38 +57,38 @@
 	<div class="col-12 col-md-8 offset-md-2 text-center my-5 p-5 font-weight-semibold issue">
 		{% blocktrans %}
 		  <h2 class="font-title-xl font-weight-bold mt-4">
-			Why Gitcoin Chat
+			Meet the Community
 		  </h2>
 		  <p class="font-title-lg font-weight-normal w-100 mt-4">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+			Gitcoin Chat is where the developers, designers, funders of the Gitcoin community hang out + BUIDL the future.
 		  </p>
 		{% endblocktrans %}
 		<div class="row text-center mt-5 py-5">
 			<div class="col-12 col-md-12 col-lg-4">
 				<h2>
-					<img class="text-center px-3 w-75" src="{% static "v2/images/chat/placeholder_feature_image.png" %}" />
+					<img class="text-center px-3 w-75 feature" src="{% static "v2/images/chat/feature_1.png" %}" />
 				</h2>
-				<h2>Feature 1</h2>
+				<h2>Connected with Gitcoin</h2>
 				<p class="text-center w-100">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+					Automatically import your Gitcion profile to the chat system.
 				</p>
 			</div>
 			<div class="col-12 col-md-12 col-lg-4">
 				<h2>
-					<img class="text-center px-3 w-75" src="{% static "v2/images/chat/placeholder_feature_image.png" %}" />
+					<img class="text-center px-3 w-75 feature" src="{% static "v2/images/chat/feature_3.png" %}" />
 				</h2>
-				<h2>Feature 2</h2>
+				<h2>Public Channels</h2>
 				<p class="text-center w-100">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+					Meet new people, engage in interesting discussions, and expand your horizons with our community in public channels.
 				</p>
 			</div>
 			<div class="col-12 col-md-12 col-lg-4">
 				<h2>
-					<img class="text-center px-3 w-75" src="{% static "v2/images/chat/placeholder_feature_image.png" %}" />
+					<img class="text-center px-3 w-75 feature" src="{% static "v2/images/chat/feature_2.png" %}" />
 				</h2>
-				<h2>Feature 3</h2>
+				<h2>DM with Funders</h2>
 				<p class="text-center w-100">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+					Got a bounty or a grant you're working on? The private messgae feature is a great way to keep in touch about your work!
 				</p>
 			</div>
 		</div>
@@ -96,18 +96,19 @@
 	<div class="col-12 open-app py-5">
 		<div class="text-center pt-4 text-white">
 			{% blocktrans %}
-			<h2 class="font-title-xl font-weight-bold mt-4">
+			<h2 class="font-title-xl font-weight-bold mt-4" id=joinus>
 				Join us
+
 			</h2>
 			<p class="font-title-lg font-weight-normal w-100 mt-3">
-				Available on all platform. Chat anytime, anywhere!
+				Available on all platforms. Chat anytime, anywhere!
 			</p>
 			{% endblocktrans %}
 			<div class="row mt-5 py-5">
 				<div class="col-12 col-md-12 col-lg-4">
 					<img class="text-center px-3 w-75 h-75" src="{% static "v2/images/chat/web.png" %}" alt="Web App" />
 					<div class="my-3">
-						<a class="btn btn-gc-blue btn-sm ml-2 shadow-none font-weight-bold py-3 px-4" href="#">{% trans "Open Web Chat" %}</a>
+						<a class="btn btn-gc-blue btn-sm ml-2 shadow-none font-weight-bold py-3 px-4" href="/chat/web">{% trans "Open Web Chat" %}</a>
 					</div>
 				</div>
 				<div class="col-12 col-md-12 col-lg-4">
