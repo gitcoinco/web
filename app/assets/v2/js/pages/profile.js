@@ -175,7 +175,7 @@ $(document).ready(function() {
   }
 
   const syncComplete = res => {
-    console.log('Sync Complete');
+    console.log('sync complete');
   }
 
   const openBox = callback => {
@@ -183,7 +183,7 @@ $(document).ready(function() {
       window.Box.openBox(addresses[0], window.ethereum, {}).then(box => {
         box.onSyncDone(syncComplete);
         window.box = box;
-        console.log("openBox succeeded", box);
+        console.log("openBox succeeded");
         callback(box);
       })
     })
@@ -195,14 +195,15 @@ $(document).ready(function() {
     const opts = {
       onSyncDone: () => {
         console.log('sync done in space', name)
+        callback(box, box.spaces[name]);
       }
     }
     box.openSpace(name, opts).then(() => {
-      callback(box, box.spaces[name]);
+
     })
   }
 
-  const backupProfile = space => {
+  const backupProfile = async space => {
     const profile_json = window.profile_json;
     // get public key-value
     const public_keys = Object.keys(profile_json).filter(k => k[0] !== '_');
@@ -218,10 +219,34 @@ $(document).ready(function() {
     space.private.setMultiple(private_keys, private_values).then(() => {
       console.log("sync to private space done")
     })
+
+    // remove the unused key/value pairs from the space
+    removeUnusedFields(space, public_keys, private_keys);
+  }
+
+  const removeUnusedFields = async (space, public_keys, private_keys) => {
+    const public_data = await space.public.all();
+    const private_data = await space.private.all();
+
+    const unused_public_keys = Object.keys(public_data).filter(x => !public_keys.includes(x));
+    const unused_private_keys = Object.keys(private_data).filter(x => !private_keys.includes(x));
+    await removeFields(space.public, unused_public_keys);
+    await removeFields(space.private, unused_private_keys);
+
+    const count = unused_public_keys.length + unused_private_keys.length;
+    console.log(`remove ${count} unused fields from space`, unused_public_keys, unused_private_keys);
+  }
+
+  const removeFields = async (subspace, keys) => {
+    if (keys && keys.length > 0) {
+      for (let x of keys) {
+        await subspace.remove(x);
+      }
+    }
   }
 
   $("#sync-to-3box").on('click', function(event) {
-    console.log("clicked 3box button");
+    console.log("start sync data to 3box");
 
     // User is prompted to approve the messages inside their wallet (openBox() and openSpace()
     // methods via 3Box.js). This logs them in to 3Box.

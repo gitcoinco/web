@@ -3,10 +3,11 @@
 
   {% if is_editable %}
     <button id="sync-to-3box" class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true"
-      data-placement="bottom" data-trigger="hover click" data-content='
+      data-placement="bottom" data-trigger="hover" data-content='
         <p class="h6 my-2 text-left">Backup Profile Data to 3Box <img width="24" src="{% static "v2/images/3box.svg" %}"></p>
-        <p>You can backup your GitCoin profie data to decentralized 3Box cloud. 3Box storage is simple, secure, and private by design. Experience the internet like never before with your new all-in-one sign-in, profile, and cloud storage.</p>
-        <p>Visit <a href="https://3box.io/">https://3box.io/</a> to learn more about its advantage.</p>
+        <p>You can backup your GitCoin profie data to the decentralized 3Box cloud. 3Box storage is simple, secure, and private by design.</p>
+        <p><b>Click this button</b> to start the data backup to 3Box. <b>Double click this button</b> to enable/disable automatic backup of profile data. </p>
+        <p>Visit 3box.io to learn more about 3Box project.</p>
         '><img src="{% static 'v2/images/3box.svg' %}" alt=""></button>
   {% endif %}
 
