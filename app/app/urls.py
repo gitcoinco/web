@@ -298,7 +298,7 @@ urlpatterns = [
     url(r'^tip/send/2/?', dashboard.tip_views.send_tip_2, name='send_tip_2'),
     url(r'^tip/send/?', dashboard.tip_views.send_tip, name='send_tip'),
     url(r'^send/?', dashboard.tip_views.send_tip, name='tip'),
-    url(r'^tip/?', dashboard.tip_views.send_tip, name='tip'),
+    url(r'^tip/?', dashboard.tip_views.send_tip_2, name='tip'),
 
     # Legal
     re_path(r'^terms/?', dashboard.views.terms, name='_terms'),
