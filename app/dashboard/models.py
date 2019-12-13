@@ -3807,6 +3807,85 @@ class ProfileSerializer(serializers.BaseSerializer):
         }
 
 
+class ProfileExportSerializer(serializers.BaseSerializer):
+    """Handle serializing the exported Profile object."""
+
+    class Meta:
+        """Define the profile serializer metadata."""
+
+        model = Profile
+        fields = ('handle')
+
+    def to_representation(self, instance):
+        """Provide the serialized representation of the Profile.
+
+           Notice: Add understore (_) before a key to indicate it's a private key/value pair, otherwise the key/value pair will be saved publicly after exported.
+
+        Args:
+            instance (Profile): The Profile object to be serialized.
+
+        Returns:
+            dict: The serialized Profile.
+
+        """
+
+        d = instance.as_dict
+
+        return {
+            # basic info
+            'id': instance.id,
+            'username': instance.handle,
+            'github_url': instance.github_url,
+            'avatar_url': instance.avatar_url,
+            'linkedin_url': instance.linkedin_url,
+            'profile_wallpaper': instance.profile_wallpaper,
+            'keywords': instance.keywords,
+            'url': instance.get_relative_url(),
+            'position': instance.get_contributor_leaderboard_index(),
+            'organizations': instance.get_who_works_with(network=None),
+            '_email': instance.email,
+            '_gitcoin_discord_username': instance.gitcoin_discord_username,
+            '_pref_lang_code': instance.pref_lang_code,
+            '_preferred_payout_address': instance.preferred_payout_address,
+
+            # persona
+            'persona': instance.selected_persona or instance.dominant_persona,
+            # 'persona_is_funder': instance.persona_is_funder,
+            # 'persona_is_hunter': instance.persona_is_hunter,
+            # 'dominant_persona': instance.dominant_persona,
+            # 'selected_persona': instance.selected_persona,
+
+            # activities
+            'bounties': d['bounties'],
+            'portfolio': d['portfolio'],
+            # activities: d['activities],
+            # 'repos': instance.repos,
+            # 'tribe_description': instance.tribe_description,
+            # 'profile_organizations': instance.profile_organizations,
+
+            # job info
+            # '_job_search_status': instance.job_search_status,
+            # '_job_type': instance.job_type,
+            # '_job_salary': instance.job_salary,
+            # '_job_location': instance.job_location,
+            # '_resume': instance.resume,
+
+            # stats
+            'last_visit': instance.last_visit,
+            'total_earned': instance.get_eth_sum(network=None),
+            'earnings_count': d['earnings_count'],
+            'avg_rating': d['avg_rating']['overall'],
+            'longest_streak': instance.longest_streak,
+            'activity_level': instance.activity_level,
+            'avg_hourly_rate': instance.avg_hourly_rate,
+            'success_rate': instance.success_rate,
+            'reliability': instance.reliability,
+            'rank_funder': instance.rank_funder,
+            'rank_org': instance.rank_org,
+            'rank_coder': instance.rank_coder
+        }
+
+
 @receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
 def normalize_tip_usernames(sender, instance, **kwargs):
     """Handle pre-save signals from Tips to normalize Github usernames."""

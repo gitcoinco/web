@@ -202,21 +202,38 @@ $(document).ready(function() {
     })
   }
 
+  const backupProfile = space => {
+    const profile_json = window.profile_json;
+    // get public key-value
+    const public_keys = Object.keys(profile_json).filter(k => k[0] !== '_');
+    const public_values = public_keys.map(k => profile_json[k]);
+    // get private key-value
+    let private_keys = Object.keys(profile_json).filter(k => k[0] === '_');
+    const private_values = private_keys.map(k => profile_json[k]);
+    private_keys = private_keys.map(k => k.substring(1));
+
+    space.public.setMultiple(public_keys, public_values).then(() => {
+      console.log("sync to public space done")
+    })
+    space.private.setMultiple(private_keys, private_values).then(() => {
+      console.log("sync to private space done")
+    })
+  }
+
   $("#sync-to-3box").on('click', function(event) {
     console.log("clicked 3box button");
 
     // User is prompted to approve the messages inside their wallet (openBox() and openSpace()
     // methods via 3Box.js). This logs them in to 3Box.
 
-    // open box and space
+    // 1. Open box and space
+    // 2. Backing up my Gitcoin data to 3Box, inside of a "Gitcoin" space
     openBox(box => {
       openSpace(box, (box, space) => {
         console.log("backup data into space", space);
+        backupProfile(space);
       });
     });
-
-    // Backing up my Gitcoin data to 3Box, inside of a "Gitcoin" space
-
   })
 
 
