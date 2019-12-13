@@ -143,8 +143,9 @@ urlpatterns = [
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
     # chat
-    url(r'^chat/', chat.views.embed, name='chat'),
-    url(r'^chat', chat.views.embed, name='chat2'),
+    url(r'^chat/web', chat.views.embed, name='web_chat'),
+    url(r'^chat/web/', chat.views.embed, name='web_chat2'),
+    re_path(r'^chat/?', retail.views.chat, name='chat'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
@@ -352,7 +353,6 @@ urlpatterns = [
     re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
     re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
-    re_path(r'^chat/?', retail.views.chat, name='chat_page'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^jobs/?', retail.views.jobs, name='jobs'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
