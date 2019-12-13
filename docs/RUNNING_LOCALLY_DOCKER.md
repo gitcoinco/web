@@ -33,9 +33,9 @@ docker-compose up --build
 ```
 ### Screens during building
 
-![](imgs/screenshot1.png "Installation screenshot")
+![Installation Screenshot 1](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshot1.png "Installation screenshot")
 
-![](imgs/screenshot2.png "Installation screenshot")
+![Installation Screenshot 2](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshot2.png "Installation screenshot")
 
 
 ### Viewing Logs
@@ -54,13 +54,13 @@ docker-compose logs
 
 Navigate to `http://localhost:8000/`.
 
-![](imgs/screenshoot_server1.png "Running screenshot")
+![Running Screenshot 1](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server1.png "Running screenshot")
 
-![](imgs/screenshoot_server2.png "Running screenshot")
+![Running Screenshot 2](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server2.png "Running screenshot")
 
-![](imgs/screenshoot_server4.png "Running screenshot")
+![Running Screenshot 3](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server4.png "Running screenshot")
 
-![](imgs/screenshoot_server5.png "Running screenshot")
+![Running Screenshot 4](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server5.png "Running screenshot")
 
 For background build, Gitcoin server runs as a service and its always there. You can stop it using `kill process`, docker-compose to stop it  or other means.
 
