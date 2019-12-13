@@ -2385,6 +2385,7 @@ class Profile(SuperModel):
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
     tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
+    automatic_backup = models.BooleanField(default=False, help_text=_('automatic backup profile to cloud storage such as 3Box if the flag is true'))
 
 
     objects = ProfileQuerySet.as_manager()

@@ -213,15 +213,24 @@ $(document).ready(function() {
     const private_values = private_keys.map(k => profile_json[k]);
     private_keys = private_keys.map(k => k.substring(1));
 
-    space.public.setMultiple(public_keys, public_values).then(() => {
-      console.log("sync to public space done")
-    })
-    space.private.setMultiple(private_keys, private_values).then(() => {
-      console.log("sync to private space done")
-    })
+    // save data to space
+    const r_public = await space.public.setMultiple(public_keys, public_values);
+    const r_private = await space.private.setMultiple(private_keys, private_values);
 
     // remove the unused key/value pairs from the space
-    removeUnusedFields(space, public_keys, private_keys);
+    await removeUnusedFields(space, public_keys, private_keys);
+
+    if (r_public && r_private) {
+      _alert(
+        { message: gettext('Your profile data has been synchronized to 3Box.') },
+        'success'
+      );
+    } else {
+      _alert(
+        { message: gettext('Failed to backup profile data to 3Box. Please try again.') },
+        'error'
+      );
+    }
   }
 
   const removeUnusedFields = async (space, public_keys, private_keys) => {
@@ -234,7 +243,7 @@ $(document).ready(function() {
     await removeFields(space.private, unused_private_keys);
 
     const count = unused_public_keys.length + unused_private_keys.length;
-    console.log(`remove ${count} unused fields from space`, unused_public_keys, unused_private_keys);
+    console.log(`remove ${count} outdated fields from space`, unused_public_keys, unused_private_keys);
   }
 
   const removeFields = async (subspace, keys) => {
@@ -245,22 +254,77 @@ $(document).ready(function() {
     }
   }
 
-  $("#sync-to-3box").on('click', function(event) {
+  const toggleAutomaticUpdateFlag = async () => {
+    const data = new FormData();
+    data.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
+    try {
+      const response = await fetch('/api/v0.1/profile/backup', {
+        method: 'post',
+        body: data
+      })
+      if (response.status === 200) {
+        const result = await response.json();
+        const automatic_backup = result.automatic_backup ? "ENABLED" : "DISABLED";
+        _alert(
+          { message: gettext(`Profile automatic backup has been ${automatic_backup}`) },
+          'success'
+        );
+      } else {
+        _alert(
+          { message: gettext('An error occurred. Please try again.') },
+          'error'
+        );
+      }
+
+    } catch(err) {
+      console.log('Error ', err)
+    }
+  }
+
+  const startProfileDataBackup = () => {
     console.log("start sync data to 3box");
 
-    // User is prompted to approve the messages inside their wallet (openBox() and openSpace()
-    // methods via 3Box.js). This logs them in to 3Box.
+    // User is prompted to approve the messages inside their wallet (openBox() and
+    // openSpace() methods via 3Box.js). This logs them in to 3Box.
 
-    // 1. Open box and space
-    // 2. Backing up my Gitcoin data to 3Box, inside of a "Gitcoin" space
-    openBox(box => {
-      openSpace(box, (box, space) => {
-        console.log("backup data into space", space);
-        backupProfile(space);
+    if (window.Box) {
+      // 1. Open box and space
+      // 2. Backing up my Gitcoin data to 3Box, inside of a "Gitcoin" space
+      openBox(box => {
+        openSpace(box, (box, space) => {
+          console.log("backup data into space");
+          backupProfile(space);
+        });
       });
-    });
+    } else {
+      setTimeout(() => {
+        startProfileDataBackup();
+      }, 1000)
+    }
+  }
+
+  setTimeout(() => {
+    console.log("check backup flag", window.profile_automatic_backup);
+    // backup automatically if the flag is true
+    if (window.profile_automatic_backup) {
+      startProfileDataBackup();
+    }
+  }, 3000)
+
+  // add click listener
+  $("#sync-to-3box").on('click', (event) => {
+    startProfileDataBackup();
   })
 
+  // add long press listener
+  let timer;
+  $("#sync-to-3box").on("mousedown", () => {
+    timer = setTimeout(() => {
+      toggleAutomaticUpdateFlag();
+    }, 500);
+  }).on("mouseup mouseleave", () => {
+    clearTimeout(timer);
+  });
 
   $(document).on('click', '.load-more', function() {
     var address = $('#preferred-address').prop('title');

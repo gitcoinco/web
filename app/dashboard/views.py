@@ -2330,6 +2330,35 @@ def profile_job_opportunity(request, handle):
     }
     return JsonResponse(response)
 
+@require_POST
+@login_required
+def profile_backup(request):
+    """ Toggle profile automatic backup flag.
+
+    Args:
+        handle (str): The profile handle.
+    """
+
+    handle = request.user.profile.handle
+
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
+        raise Http404
+
+    profile.automatic_backup = not profile.automatic_backup
+    profile.save()
+
+    response = {
+        'status': 200,
+        'message': 'Profile automatic backup flag toggled',
+        'automatic_backup': profile.automatic_backup
+    }
+
+    return JsonResponse(response, status=response.get('status', 200))
 
 def invalid_file_response(uploaded_file, supported):
     response = None

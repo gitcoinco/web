@@ -128,6 +128,9 @@
       {% if is_editable %}
         window.profile_json = JSON.parse(document.getElementById("profile_json").getAttribute("data") || "[{}]");
       {% endif %}
+      {% if profile.automatic_backup %}
+        window.profile_automatic_backup = true;
+      {% endif %}
     </script>
   </body>
 </html>
