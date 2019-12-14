@@ -231,6 +231,8 @@ $(document).ready(function() {
         'error'
       );
     }
+
+    switchIcons(false);
   }
 
   const removeUnusedFields = async (space, public_keys, private_keys) => {
@@ -290,6 +292,7 @@ $(document).ready(function() {
     if (window.Box) {
       // 1. Open box and space
       // 2. Backing up my Gitcoin data to 3Box, inside of a "Gitcoin" space
+      switchIcons(true);
       openBox(box => {
         openSpace(box, (box, space) => {
           console.log("backup data into space");
@@ -303,6 +306,16 @@ $(document).ready(function() {
     }
   }
 
+  const switchIcons = (loading) => {
+    if (loading) {
+      $(".profile-header__sync img.loading").show();
+      $(".profile-header__sync img.action").hide();
+    } else {
+      $(".profile-header__sync img.loading").hide();
+      $(".profile-header__sync img.action").show();
+    }
+  }
+
   setTimeout(() => {
     console.log("check backup flag", window.profile_automatic_backup);
     // backup automatically if the flag is true
@@ -313,13 +326,18 @@ $(document).ready(function() {
 
   // add click listener
   $("#sync-to-3box").on('click', (event) => {
-    startProfileDataBackup();
+    if (!long_pressed) {
+      startProfileDataBackup();
+    }
+    long_pressed = false;
   })
 
   // add long press listener
-  let timer;
+  let timer = null;
+  let long_pressed = false;
   $("#sync-to-3box").on("mousedown", () => {
     timer = setTimeout(() => {
+      long_pressed = true;
       toggleAutomaticUpdateFlag();
     }, 500);
   }).on("mouseup mouseleave", () => {

@@ -276,11 +276,15 @@
 }
 
 .profile-header__sync.inactive {
-  display:none;
+  display: none;
 }
 
 .profile-header__sync img {
   width: 32px;
+}
+
+.profile-header__sync img.loading {
+  display: none;
 }
 
 .card-header::after {

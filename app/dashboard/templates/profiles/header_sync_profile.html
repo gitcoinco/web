@@ -6,9 +6,12 @@
       data-placement="bottom" data-trigger="hover" data-content='
         <p class="h6 my-2 text-left">Backup Profile Data to 3Box <img width="24" src="{% static "v2/images/3box.svg" %}"></p>
         <p>You can backup your GitCoin profie data to the decentralized 3Box cloud. 3Box storage is simple, secure, and private by design.</p>
-        <p><b>Click this button</b> to start the backing up profile data to 3Box. <b>Long press this button</b> to enable/disable automatic backup of profile data. </p>
+        <p><b>Click this button</b> to start backing up profile data to 3Box. <b>Long press this button</b> to enable/disable automatic backup of profile data. </p>
         <p>Visit 3box.io to learn more about 3Box project.</p>
-        '><img src="{% static 'v2/images/3box.svg' %}" alt=""></button>
+        '>
+        <img class="action" src="{% static 'v2/images/3box.svg' %}" alt="">
+        <img class="loading" src="{% static 'v2/images/loading.gif' %}" alt="">
+      </button>
   {% endif %}
 
 </div>
