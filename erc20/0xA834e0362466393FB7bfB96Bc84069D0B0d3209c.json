@@ -1,0 +1,19 @@
+{
+    "symbol": "AGC",
+    "address": "0xa834e0362466393fb7bfb96bc84069d0b0d3209c",
+    "overview": {
+        "en": "An asset used to access the GemVault Assets provided by GemVault.",
+        "zh": "AGC uses the decentralized characteristics of the blockchain to create a decentralized gold mining resource trading service platform."
+    },
+    "email": "asiagoldcoin@gmail.com",
+    "website": "http://www.agcoin.ltd",
+    "whitepaper": "http://agcoin.ltd/index.php?s=/Home/index/onlinelook",
+    "state": "NORMAL",
+    "published_on": "2019-12",
+    "initial_price": {
+        "USD": "0.01 USD",
+    },
+    "links": {
+        "twitter": "https://twitter.com/AGC74678001"
+    }
+}
