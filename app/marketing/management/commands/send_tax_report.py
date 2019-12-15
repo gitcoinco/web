@@ -17,46 +17,59 @@
 '''
 import csv
 import json
+import logging
 import os
-import pdfrw
+import shutil
 import warnings
+import zipfile
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
-from dashboard.models import Bounty, Profile, Tip
+
+import pdfrw
+import sendgrid
+from dashboard.models import Bounty, Earning, Profile, Tip
+from grants.models import Grant
+from marketing.mails import tax_report
+from python_http_client.exceptions import HTTPError, UnauthorizedError
+from sendgrid.helpers.mail import Content, Email, Mail, Personalization
+from sendgrid.helpers.stats import Category
+
+logger = logging.getLogger(__name__)
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-
-# Constants
-DATETIME = 'datetime'
-COUNTER_PARTY_NAME = 'counter_party_name'
-COUNTER_PARTY_GITHUB_USERNAME = 'counter_party_github_username'
-COUNTER_PARTY_LOCATION = 'counter_party_location'
-TOKEN_AMOUNT = 'token_amount'
-TOKEN_NAME = 'token_name'
-USD_VALUE = 'usd_value'
-WORKER_TYPE = 'worker_type'
-COUNTRY_CODE = 'country_code'
-COUNTRY_NAME = 'country_name'
-COUNTRY = 'country'
-LOCALITY = 'locality'
+# Constant
 CITY = 'city'
 CODE = 'code'
+COUNTER_PARTY_GITHUB_USERNAME = 'counter_party_github_username'
+COUNTER_PARTY_LOCATION = 'counter_party_location'
+COUNTER_PARTY_NAME = 'counter_party_name'
+COUNTRY = 'country'
+COUNTRY_CODE = 'country_code'
+COUNTRY_NAME = 'country_name'
+DATETIME = 'datetime'
+LOCALITY = 'locality'
+TOKEN_AMOUNT = 'token_amount'
+TOKEN_NAME = 'token_name'
 US = 'US'
+USD_VALUE = 'usd_value'
+WORKER_TYPE = 'worker_type'
 
-NO_NAME = 'Name not found'
-NO_USERNAME = 'Username not found'
+# No info found
 NO_LOCATION = 'Location not found'
+NO_NAME = 'Name not found'
 NO_PROFILE = 'Profile not found'
+NO_USERNAME = 'Username not found'
 
-WEB3_NETWORK = 'rinkeby'
+# Gitcoin info
 BOUNTY = 'bounty'
-TIP = 'tip'
 GRANT = 'grant'
+TAX_YEAR = 2019
+TIP = 'tip'
+WEB3_NETWORK = 'rinkeby'
 
-TAX_REPORT_PATH = 'tax_report'
-TAX_YEAR = 2018
-
+# Path
 MISC_1099_TEMPLATE_PATH = 'misc_1099_templates'
 MISC_1099_COPY_1_TEMPLATE_PATH = os.path.join(MISC_1099_TEMPLATE_PATH, 'copy_1_template.pdf')
 MISC_1099_COPY_2_TEMPLATE_PATH = os.path.join(MISC_1099_TEMPLATE_PATH, 'copy_2_template.pdf')
@@ -68,53 +81,57 @@ MISC_1099_TEMPLATES = [
                     (MISC_1099_COPY_B_TEMPLATE_PATH, 'misc_1099_copy_b.pdf'),
                     (MISC_1099_COPY_C_TEMPLATE_PATH, 'misc_1099_copy_c.pdf')  
                     ]
-
 MISC_1099_OUTPUT_PATH = 'misc_1099'
+TAX_REPORT_PATH = 'tax_report'
 
-PAYER = 'payer'
-NAME = 'name'
+# 1099 Fields
 ADDRESS = 'address'
-RECIPIENT = 'recipient'
 LOCATION = 'location'
+NAME = 'name'
+PAYER = 'payer'
+RECIPIENT = 'recipient'
 
-ANNOT_KEY = '/Annots'
+# PDF Form
 ANNOT_FIELD_KEY = '/T'
-ANNOT_VAL_KEY = '/V'
+ANNOT_KEY = '/Annots'
 ANNOT_RECT_KEY = '/Rect'
+ANNOT_VAL_KEY = '/V'
 SUBTYPE_KEY = '/Subtype'
 WIDGET_SUBTYPE_KEY = '/Widget'
 
 
-def send_email():
-    print("send_email")
-
-
-def create_csv_record(profiles_obj, wt_obj, worker_type, us_workers, b_ff=None):
+def create_csv_record(profiles_obj, wt_obj, worker_type, us_workers, b_ff=None, value_usd=0):
     record = {DATETIME: wt_obj.created_on}
     counter_party_name = ''
-    counter_party_github_username = ''
+    counter_party_gh_username = ''
     counter_party_location = ''
 
     if worker_type == BOUNTY:
-        counter_party_github_username = b_ff.fulfiller_github_username if b_ff.fulfiller_github_username else NO_USERNAME
+        counter_party_gh_username = b_ff.fulfiller_github_username if b_ff.fulfiller_github_username else NO_USERNAME
     elif worker_type == TIP:
-        counter_party_github_username = wt_obj.username if wt_obj.username else NO_USERNAME
+        counter_party_gh_username = wt_obj.username if wt_obj.username else NO_USERNAME
     elif worker_type == GRANT:
-        print('grant')
+        counter_party = wt_obj.admin_profile
+        if counter_party:
+            counter_party_gh_username = counter_party.username if counter_party.username else NO_USERNAME
+        else:
+            counter_party = NO_PROFILE
 
-    if counter_party_github_username is not NO_USERNAME:
-        profiles = profiles_obj.filter(handle__iexact=counter_party_github_username)
+    if counter_party_gh_username is not NO_USERNAME:
+        profiles = profiles_obj.filter(handle__iexact=counter_party_gh_username)
         if profiles.exists():
             profile = profiles.first()
             counter_party_name = profile.name if profile.name else NO_NAME
             counter_party_location, us_worker = get_profile_location(profile)
             if us_worker:
-                if counter_party_github_username not in us_workers.keys():
-                    us_workers[counter_party_github_username] = 0
+                if counter_party_gh_username not in us_workers.keys():
+                    us_workers[counter_party_gh_username] = 0
                 if worker_type == BOUNTY:
-                    us_workers[counter_party_github_username] += wt_obj._val_usd_db
+                    us_workers[counter_party_gh_username] += wt_obj._val_usd_db
                 elif worker_type == TIP:
-                    us_workers[counter_party_github_username] += wt_obj.value_in_usdt
+                    us_workers[counter_party_gh_username] += wt_obj.value_in_usdt
+                elif worker_type == GRANT:
+                    us_workers[counter_party_gh_username] += value_usd
         else:
             counter_party_name = NO_PROFILE
 
@@ -127,10 +144,12 @@ def create_csv_record(profiles_obj, wt_obj, worker_type, us_workers, b_ff=None):
         record[TOKEN_AMOUNT] = wt_obj.amount
         record[TOKEN_NAME] = wt_obj.tokenName
     elif worker_type == GRANT:
-        print('grant')
+        record[USD_VALUE] = value_usd
+        record[TOKEN_AMOUNT] = 'No info'
+        record[TOKEN_NAME] = 'No info'
 
     record[COUNTER_PARTY_NAME] = counter_party_name
-    record[COUNTER_PARTY_GITHUB_USERNAME] = counter_party_github_username
+    record[COUNTER_PARTY_GITHUB_USERNAME] = counter_party_gh_username
     record[COUNTER_PARTY_LOCATION] = counter_party_location
     record[WORKER_TYPE] = worker_type
 
@@ -202,13 +221,28 @@ def get_profile_location(profile):
     if location_temp:
         location = location_temp
     return location, us_worker
-    
-    
+
+
+def zip_dir(username, username_path):
+    zip_file_path = os.path.join(username_path, username) + '.zip'
+    zipf = zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED)
+    for root, dirs, files in os.walk(username_path):
+        for filename in files:
+            if filename.endswith('.zip'):
+                continue
+            abs_path = os.path.join(root, filename)
+            zipf.write(abs_path, abs_path.split('code/tax_report')[1])
+    zipf.close()
+    return zip_file_path
+
+
 class Command(BaseCommand):
 
     help = 'the tax report for last year'
 
     def handle(self, *args, **options):
+        to_emails = []
+        zip_paths = []
         profiles = Profile.objects.all()
         tax_path = os.path.join(os.getcwd(), TAX_REPORT_PATH)
         if not tax_path:
@@ -216,7 +250,7 @@ class Command(BaseCommand):
         for p in profiles:
             csv_record = []
             us_workers = {}
-            # Bounty
+            # Bounties
             for b in p.get_sent_bounties:
                 if not b._val_usd_db \
                     or b._val_usd_db <= 0 \
@@ -228,9 +262,9 @@ class Command(BaseCommand):
                     continue
                 else:
                     for fulfiller in b.fulfillments.filter(accepted=True):
-                        record, us_workers = create_csv_record(profiles, b, BOUNTY, us_workers, fulfiller)
+                        record, us_workers = create_csv_record(profiles, b, BOUNTY, us_workers, b_ff=fulfiller)
                         csv_record.append(record)
-            # Tip
+            # Tips
             for t in p.get_sent_tips:
                 if not t.value_in_usdt \
                     or t.value_in_usdt <= 0 \
@@ -242,14 +276,20 @@ class Command(BaseCommand):
                 else:
                     record, us_workers = create_csv_record(profiles, t, TIP, us_workers)
                     csv_record.append(record)
-            # Grant
-            '''for g in p.get_my_grants:
-                if g.network != WEB3_NETWORK \
-                    or g.created_on.date().year != TAX_YEAR:
-                    continue
-                else:
-                    record, us_workers = create_csv_record(profiles, g, GRANT, us_workers)
-                    csv_record.append(record)'''
+            # Grants
+            # source type id 95 for grant
+            grants = Earning.objects.filter(
+                                                from_profile=p, 
+                                                source_type_id=95, 
+                                                network=WEB3_NETWORK,
+                                                created_on__year=TAX_YEAR,
+                                                value_usd__gt=0
+                                            ).exclude(to_profile=p)
+            for g in grants:
+                g_obj = Grant.objects.get(pk=g.source_id)
+                record, us_workers = create_csv_record(profiles, g_obj, GRANT, us_workers, value_usd=g.value_usd)
+                csv_record.append(record)
+
             if len(csv_record) > 0:
                 # check for create 1099
                 username_path = os.path.join(os.getcwd(), TAX_REPORT_PATH, p.username)
@@ -297,5 +337,11 @@ class Command(BaseCommand):
                 except IOError:
                     print("I/O error")
                 if os.path.isfile(csv_file_path):
-                    send_email()
-                
+                    # zip username dir
+                    zip_file_path = zip_dir(p.username, username_path)
+                    zip_paths.append(zip_file_path)
+                    to_emails.append(p.email)
+        # send emails to all funders
+        #to_emails_temp = ['email_test']
+        #zip_paths = [zip_paths[1]]
+        tax_report(to_emails, zip_paths, TAX_YEAR) 
