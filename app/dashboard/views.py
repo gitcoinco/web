@@ -2641,7 +2641,7 @@ def profile(request, handle, tab=None):
 
     # setup
     status = 200
-    default_tab = 'tribe'
+    default_tab = 'activity'
     tab = tab if tab else default_tab
     handle = handle.replace("@", "")
 

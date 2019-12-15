@@ -832,6 +832,9 @@ def about(request):
     }
     return TemplateResponse(request, 'about.html', context)
 
+def chat(request):
+	"""Render chat landing page response."""
+	return TemplateResponse(request, 'chat.html')
 
 def mission(request):
     """Render the Mission response."""
