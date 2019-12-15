@@ -73,7 +73,7 @@ from marketing.mails import funder_payout_reminder as funder_payout_reminder_mai
 from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
-from marketing.models import Keyword
+from marketing.models import Keyword, EmailSubscriber
 from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -110,13 +110,16 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 @login_required()
 def oauth_connect(request, *args, **kwargs):
     active_user_profile = Profile.objects.filter(user_id=request.user.id).select_related()[0]
-
+    from marketing.utils import should_suppress_notification_email
     user_profile = {
         "login": active_user_profile.handle,
         "email": active_user_profile.user.email,
         "name": active_user_profile.user.get_full_name(),
         "handle": active_user_profile.handle,
         "id": active_user_profile.user.id,
+        "notifyProps" : {
+            "email": False if should_suppress_notification_email(active_user_profile.user.email, 'chat') else True
+        }
     }
     return JsonResponse(user_profile, status=200, safe=False)
 
