@@ -32,13 +32,27 @@ class Command(BaseCommand):
 
     help = 'calculate CLR estimates for all grants'
 
+    def add_arguments(self, parser):
+
+        parser.add_argument('clr_type', type=str, default='all', choices=['tech', 'media', 'all'])
+        parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
+
     def handle(self, *args, **options):
-        clr_prediction_curves = predict_clr(random_data=False, save_to_db=True, from_date=timezone.now())
+        clr_type = options['clr_type']
+        network = options['network']
+
+        clr_prediction_curves = predict_clr(
+            random_data=False,
+            save_to_db=True,
+            from_date=timezone.now(),
+            clr_type=clr_type,
+            network=network
+        )
 
         # Uncomment these for debugging and sanity checking
         # for grant in clr_prediction_curves:
             #print("CLR predictions for grant {}".format(grant['grant']))
-            #print("All grants: {}".format(grant['grants_clr']))
+            #print("All grants: {}".clr_typeformat(grant['grants_clr']))
             #print("prediction curve: {}\n\n".format(grant['clr_prediction_curve']))
 
         # sanity check: sum all the estimated clr distributions - should be close to CLR_DISTRIBUTION_AMOUNT

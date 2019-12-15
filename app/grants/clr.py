@@ -243,14 +243,22 @@ def calculate_clr_for_donation(donation_grant, donation_amount, total_pot, base_
     print('error: could not find grant in final grants_clr data')
     return (None, None)
 
-def predict_clr(random_data=False, save_to_db=False, from_date=None):
+def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=None, network='mainnet'):
     # setup
     clr_calc_start_time = timezone.now()
 
     # get all the eligible contributions and calculate total
     contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=CLR_START_DATE, created_on__lte=from_date)
     debug_output = []
-    grants = Grant.objects.all()
+
+    grants = Grant.objects.none()
+
+    if clr_type == 'tech':
+        grants = Grant.objects.filter(network=network, hidden=False, grant_type='tech')
+    elif clr_type == 'media':
+        grants = Grant.objects.filter(network=network, hidden=False, grant_type='tech')
+    else:
+        grants = Grant.objects.filter(network=network, hidden=False)
 
     # set up data to load contributions for each grant
     if not random_data:
