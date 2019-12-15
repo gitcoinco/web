@@ -3811,12 +3811,6 @@ class ProfileSerializer(serializers.BaseSerializer):
 class ProfileExportSerializer(serializers.BaseSerializer):
     """Handle serializing the exported Profile object."""
 
-    class Meta:
-        """Define the profile serializer metadata."""
-
-        model = Profile
-        fields = ('handle')
-
     def to_representation(self, instance):
         """Provide the serialized representation of the Profile.
 
