@@ -116,7 +116,6 @@ def grants(request):
 
     for partner in current_partners:
         current_partners_fund += partner.amount
-        print(partner.amount)
 
     grant_amount = 0
     grant_stats = Stat.objects.filter(
@@ -149,8 +148,6 @@ def grants(request):
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
         {'label': 'Media', 'keyword': 'media', 'count': media_grants_count}
     ]
-
-    print(past_partners)
 
     params = {
         'active': 'grants_landing',
