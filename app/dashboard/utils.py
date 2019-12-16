@@ -808,22 +808,25 @@ def is_blocked(handle):
 
     # check banned country list
     from compliance.models import Country, Entity
-    last_login = self.actions.filter(action='Login').order_by('pk').last()
-    if last_login:
-        last_login_country = last_login.location_data.get('country_name')
-        if last_login_country:
-            is_on_banned_countries = Country.objects.filter(name=last_login_country)
-            if is_on_banned_countries:
-                return True
+    profiles = Profile.objects.filter(handle__iexact=handle)
+    if profiles.exists():
+        profile = profiles.first()
+        last_login = profile.actions.filter(action='Login').order_by('pk').last()
+        if last_login:
+            last_login_country = last_login.location_data.get('country_name')
+            if last_login_country:
+                is_on_banned_countries = Country.objects.filter(name=last_login_country)
+                if is_on_banned_countries:
+                    return True
 
-    # check banned entity list
-    if self.user:
-        first_name = self.user.first_name
-        last_name = self.user.last_name
-        full_name = '{first_name} {last_name}'
-        is_on_banned_user_list = Entity.objects.filter(fullName__icontains=full_name)
-        if is_on_banned_user_list:
-            return True
+        # check banned entity list
+        if profile.user:
+            first_name = profile.user.first_name
+            last_name = profile.user.last_name
+            full_name = '{first_name} {last_name}'
+            is_on_banned_user_list = Entity.objects.filter(fullName__icontains=full_name)
+            if is_on_banned_user_list:
+                return True
 
     return False
 
