@@ -173,6 +173,7 @@ class SearchHistoryAdmin(admin.ModelAdmin):
 
 
 class TipAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'created_on','sender_profile', 'recipient_profile', 'amount', 'tokenName', 'txid', 'receive_txid']
     raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
     readonly_fields = ['resend', 'claim']

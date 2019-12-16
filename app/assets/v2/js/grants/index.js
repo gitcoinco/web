@@ -70,3 +70,12 @@ const populateFilters = () => {
   if (keyword)
     $('#keyword').val(keyword);
 };
+
+
+$('.grants_nav a').on('click', function(event) {
+  event.preventDefault();
+  const queryParam = $(this).data('type');
+  const queryParamValue = $(this).data('value');
+
+  updateParams(queryParam, queryParamValue);
+});
