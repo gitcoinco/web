@@ -543,6 +543,12 @@ GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 # Chat
 CHAT_URL = env('CHAT_DRIVER_USER', default='')  # location of where mattermost is hosted
 
+# Etherscan API
+ETHERSCAN_API_KEY = env('ETHERSCAN_API_KEY', default='')
+
+# Kudos revenue account
+KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xdb282cee382244e05dd226c8809d2405b76fbdc9')
+
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
