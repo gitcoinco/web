@@ -471,6 +471,27 @@ def has_tx_mined(txid, network):
         return False
 
 
+def get_etc_txn_status(txnid, network='mainnet'):
+    if not txnid:
+        return False
+
+    blockscout_url = f'https://blockscout.com/etc/mainnet/api?module=transaction&action=gettxinfo&txhash={txnid}'
+    blockscout_response = requests.get(blockscout_url).json()
+
+    if blockscout_response['status'] and blockscout_response['result']:
+        response = {
+            'blockNumber': int(blockscout_response['result']['blockNumber']),
+            'confirmations': int(blockscout_response['result']['confirmations'])
+        }
+        if response['confirmations'] > 0:
+            response['has_mined'] = True
+        else:
+            response['has_mined'] = False
+        return response
+
+    return False
+
+
 def get_bounty_id(issue_url, network):
     issue_url = normalize_url(issue_url)
     bounty_id = get_bounty_id_from_db(issue_url, network)

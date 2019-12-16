@@ -118,7 +118,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {%else%}
       🔒Locked; To unlock 
         {% if quest.unlocked_by_hackathon %}
-          register for <a href="{{quest.unlocked_by_hackathon.url}}">{{quest.unlocked_by_hackathon.name}}</a>.
+          register for <a href="{{quest.unlocked_by_hackathon.onboard_url}}">{{quest.unlocked_by_hackathon.name}}</a>.
         {%else%}
           beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
         {%endif%}
