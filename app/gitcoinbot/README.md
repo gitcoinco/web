@@ -31,7 +31,7 @@ After Installation you can go ahead <a href="https://github.com/apps/gitcoinbot"
 
 ![Gitcoinbot configure](https://github.com/gitcoinco/web/raw/master/docs/imgs/gitcoinbotconfigure.gif)
 
-From there you may select which repositorie you want the GitcoinBot to be working
+From there you may select which repository you want the GitcoinBot to be working
 
 <hr>Here are the commands it understands:
 
