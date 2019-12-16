@@ -75,10 +75,10 @@ cypress: ## Open cypress testing UI
 	@npx cypress open
 
 pytest: ## Run pytest (Backend)
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum
+	@docker-compose exec -e PYTHONPATH=/code/app/ -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum
 
 pytest-pdb: ## Run pytest with pdb support (Backend)
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
+	@docker-compose exec -e PYTHONPATH=/code/app/ -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
 
 stylelint: ## Run stylelint against the project directory. Requires node, npm, and project dependencies.
 	@npm run stylelint
