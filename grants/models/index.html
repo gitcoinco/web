@@ -2318,6 +2318,11 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="grants.models.Grant.get_grant_type_display">_method</h3>
+
+<pre><code class="python">Grant._method(self, *, field=&lt;django.db.models.fields.CharField: grant_type&gt;)
+</code></pre>
+
 <h3 id="grants.models.Grant.get_next_by_created_on">_method</h3>
 
 <pre><code class="python">Grant._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
@@ -2338,8 +2343,16 @@ object the first time, the query is executed.</p>
 <pre><code class="python">Grant._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
 </code></pre>
 
-<h3 id="grants.models.Grant.hidden">hidden</h3>
+<h3 id="grants.models.Grant.grant_type">grant_type</h3>
 
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Grant.GRANT_TYPES">GRANT_TYPES</h3>
+
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="grants.models.Grant.hidden">hidden</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="grants.models.Grant.id">id</h3>
@@ -3157,6 +3170,11 @@ object the first time, the query is executed.</p>
 <pre><code class="python">MatchPledge._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
 </code></pre>
 
+<h3 id="grants.models.MatchPledge.get_pledge_type_display">_method</h3>
+
+<pre><code class="python">MatchPledge._method(self, *, field=&lt;django.db.models.fields.CharField: pledge_type&gt;)
+</code></pre>
+
 <h3 id="grants.models.MatchPledge.get_previous_by_created_on">_method</h3>
 
 <pre><code class="python">MatchPledge._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
@@ -3176,8 +3194,16 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h3 id="grants.models.MatchPledge.profile">profile</h3>
+<h3 id="grants.models.MatchPledge.pledge_type">pledge_type</h3>
 
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.MatchPledge.PLEDGE_TYPES">PLEDGE_TYPES</h3>
+
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="grants.models.MatchPledge.profile">profile</h3></p>
 <p>Accessor to the related object on the forward side of a many-to-one or
 one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 <p>In the example::</p>
