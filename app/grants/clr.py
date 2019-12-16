@@ -29,12 +29,14 @@ from django.utils import timezone
 from grants.models import Contribution, Grant, PhantomFunding
 from perftools.models import JSONStore
 
-CLR_DISTRIBUTION_AMOUNT = 100000
+CLR_DISTRIBUTION_AMOUNT = 100000.0
+LOWER_THRESHOLD = 0.0
 CLR_START_DATE = dt.datetime(2019, 9, 15, 0, 0)
 
 
 '''
-    Helper function that translates existing grant data structure to a list of lists.
+    Helper function that translates existing grant data structure
+    to a list of lists.
 
     Args:
         {
@@ -60,7 +62,9 @@ def translate_data(grants_data):
 
 
 '''
-    Helper function that aggregates contributions by contributor, and then uses the aggregated contributors by contributor and calculates total contributions by unique pairs.
+    Helper function that aggregates contributions by contributor, and then
+    uses the aggregated contributors by contributor and calculates total
+    contributions by unique pairs.
 
     Args:
         from translate_data:
@@ -93,123 +97,85 @@ def aggregate_contributions(grant_contributions):
 
 
 '''
-    Helper function that runs the pairwise clr formula while "binary" searching for the correct threshold.
+    Helper function that runs the pairwise clr formula while "binary"
+    searching for the correct threshold.
 
     Args:
 
-        set variables:
-        lower_bound: set at 0.0
-        total_pot: set at 100000.0
-        
-        from the helper function aggregate_contributions:
-        aggregated_contributions: {grant_id (str): {user_id (str): aggregated_amount (float)}}
-        pair_totals: {user_id (str): {user_id (str): pair_total (float)}}
+        aggregated_contributions : {
+            grant_id (str): {
+                user_id (str): aggregated_amount (float)
+            }
+        }
+        pair_totals : { user_id (str): { user_id (str): pair_total (float) } }
+        total_pot   :      (float)
+        lower_bound :    (float)
 
     Returns:
-        bigtot: should equal total pot
-        totals: clr totals
+        bigtot: (float)
+        totals: [
+            {
+                id: (str),
+                clr_amount: (float)
+            }
+        ]
 '''
-def iter_threshold(aggregated_contributions, pair_totals, lower_bound=0.0, total_pot=100000.0):   
+def iter_threshold(aggregated_contributions, pair_totals, total_pot, lower_bound):
     lower = lower_bound
     upper = total_pot
     iterations = 0
+
     while iterations < 100:
         threshold = (lower + upper) / 2
         iterations += 1
         if iterations == 100:
-            print("--- %s seconds ---" % (time.time() - start_time))
-            print(f'iterations reached, bigtot at {bigtot}')
-            break
+            break # break at 100th iteration
         bigtot = 0
         totals = []
-        # single donation doesn't get a match
+
         for proj, contribz in aggregated_contributions.items():
             tot = 0
             for k1, v1 in contribz.items():
                 for k2, v2 in contribz.items():
-                    if k2 > k1:  # remove pairs
-                        # # pairwise matching formula
-                        # tot += (v1 * v2) ** 0.5 * min(1, threshold / pair_totals[k1][k2])
-                        # vitalik's division formula
+                    if k2 > k1:  # ensure (k1,k2) and (k2,k1) are counted only once
                         tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / threshold + 1)
             bigtot += tot
-            # totals.append((proj, tot))
             totals.append({'id': proj, 'clr_amount': tot})
-        # print(f'threshold {threshold} yields bigtot {bigtot} vs totalpot {total_pot} at iteration {iterations}')
         if bigtot == total_pot:
-            print("--- %s seconds ---" % (time.time() - start_time))
-            print(f'bigtot {bigtot} = total_pot {total_pot} with threshold {threshold}')
-            print(totals)
             break
         elif bigtot < total_pot:
             lower = threshold
         elif bigtot > total_pot:
             upper = threshold
-    return bigtot, totals 
+    return bigtot, totals
 
 
 '''
-    Clubbed function that intakes grant data, calculates necessary intermediate calculations, and spits out clr calculations.
+    Clubbed function that intakes grant data, calculates necessary
+    intermediate calculations, and spits out clr calculations.
 
     Args:
-        {
+        grant_contributions:    {
             'id': (string) ,
-            'contibutions' : [
+            'contributions' : [
                 {
                     contributor_profile (str) : contribution_amount (int)
                 }
             ]
         }
+        total_pot       (float)
+        lower_bound     (float)
 
     Returns:
         bigtot: should equal total pot
         totals: clr totals
 '''
-def calculate_clr(grants_data):
-    grants_list = translate_data(grants_data)
+def grants_clr_calculate (grant_contributions, total_pot, lower_bound):
+    grants_list = translate_data(grant_contributions)
     aggregated_contributions, pair_totals = aggregate_contributions(grants_list)
-    bigtot, totals = iter_threshold(aggregated_contributions, pair_totals)
+    bigtot, totals = iter_threshold(aggregated_contributions, pair_totals, total_pot, lower_bound)
     return bigtot, totals
 
-
-'''
-    Given the total pot and grants and it's contirbutions,
-    it uses binary search to find out the threshold so
-    that the entire pot can be distributed based on it's contributions
-
-    Args:
-        total_pot:          (int),
-        grant_contributions: object,
-        min_threshold:      (int)
-        max_threshold:      (int)
-        iterations:         (int)
-        previous_threshold: (int)
-
-    Returns:
-        grants_clr         (object)
-        total_clr          (int)
-        threshold          (int)
-        iterations         (int)
-'''
-def grants_clr_calculate (total_pot, grant_contributions, min_threshold, max_threshold, iterations = 0, previous_threshold=None):
-    if len(grant_contributions) == 0:
-        return 0, 0, 0, 0
-
-    iterations += 1
-    threshold = (max_threshold + min_threshold) / 2
-    total_clr, grants_clrs = calculate_clr(grant_contributions)
-
-    if iterations == 200 or total_pot == threshold or previous_threshold == threshold:
-        # No more accuracy to be had
-        return grants_clrs, total_clr, threshold, iterations
-    if total_clr > total_pot:
-        max_threshold = threshold
-    elif total_clr < total_pot:
-        min_threshold = threshold
-    else:
-        return grants_clrs, total_clr, threshold, iterations
-
-    return grants_clr_calculate(total_pot, grant_contributions, min_threshold, max_threshold, iterations, threshold)
 
 def generate_random_contribution_data():
     import random
@@ -223,8 +189,14 @@ def generate_random_contribution_data():
     number_of_profiles = 17
 
     for grant_id in range(grants_to_use):
-        contrib_data.append({'id': grant_id,
-                             'contributions': [{str(profile_id): random.randint(low_donation, high_donation)} for profile_id in range(random.randint(1, number_of_profiles))]})
+        contrib_data.append({
+            'id': grant_id,
+            'contributions': [
+                {
+                    str(profile_id): random.randint(low_donation, high_donation)
+                } for profile_id in range(random.randint(1, number_of_profiles))
+            ]
+        })
     return contrib_data
 
 
@@ -237,14 +209,14 @@ def calculate_clr_for_donation(donation_grant, donation_amount, total_pot, base_
                 # add this donation with a new profile (id 99999999999) to get impact
                 grant_contribution['contributions'].append({'999999999999': donation_amount})
 
-    grants_clr, _, _, _ = grants_clr_calculate(CLR_DISTRIBUTION_AMOUNT, grant_contributions, 0, CLR_DISTRIBUTION_AMOUNT)
+    _, grants_clr = grants_clr_calculate(grant_contributions, total_pot, LOWER_THRESHOLD)
 
     # find grant we added the contribution to and get the new clr amount
     for grant_clr in grants_clr:
         if grant_clr['id'] == donation_grant.id:
             return (grant_clr['clr_amount'], grants_clr)
 
-    print('error: could not find grant in final grants_clr data')
+    print(f'info: no contributions for grant {donation_grant}')
     return (None, None)
 
 def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=None, network='mainnet'):
@@ -294,8 +266,7 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=No
         # use random contribution data for testing
         contrib_data = generate_random_contribution_data()
 
-    #print('\n\ncontributions data:')
-    #print(contrib_data)
+    #print(f'\n contributions data: {contrib_data} \n')
 
     # calculate clr given additional donations
     for grant in grants:
@@ -311,16 +282,16 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=No
         if save_to_db:
             grant.clr_prediction_curve = list(zip(potential_donations, potential_clr))
             base = grant.clr_prediction_curve[0][1]
-            grant.clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in grant.clr_prediction_curve ]
-            JSONStore.objects.create(
-                created_on=from_date,
-                view='clr_contribution',
-                key=f'{grant.id}',
-                data=grant.clr_prediction_curve,
+            if base:
+                grant.clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in grant.clr_prediction_curve ]
+                JSONStore.objects.create(
+                    created_on=from_date,
+                    view='clr_contribution',
+                    key=f'{grant.id}',
+                    data=grant.clr_prediction_curve,
                 )
-            print(len(contrib_data), grant.clr_prediction_curve)
-            if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
-                grant.save()
+                if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
+                    grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
     return debug_output
