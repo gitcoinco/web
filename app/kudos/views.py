@@ -665,7 +665,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
     else:
 
         signed = w3.eth.account.signTransaction(tx, private_key)
-        retry_later = True
+        retry_later = False
         try:
             txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
         except Exception as e:

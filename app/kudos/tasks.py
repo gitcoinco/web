@@ -1,3 +1,5 @@
+import time
+
 from app.redis_service import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
@@ -22,9 +24,12 @@ def mint_token_request(self, token_req_id, retry=False):
     """
     with redis.lock("tasks:token_req_id:%s" % token_req_id, timeout=LOCK_TIMEOUT):
         from kudos.management.commands.mint_all_kudos import sync_latest
+        from dashboard.utils import has_tx_mined
         obj = TokenRequest.objects.get(pk=token_req_id)
         tx_id = obj.mint()
         if tx_id:
+            while not has_tx_mined(tx_id, obj.network):
+                time.sleep(1)
             sync_latest(0)
             sync_latest(1)
             sync_latest(2)
