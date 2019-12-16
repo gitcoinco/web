@@ -36,108 +36,343 @@
     </div>
     <div class="" id="gc-explorer" v-cloak>
 
-      <!-- <div class="container-fluid">
-        <nav class="search-section p-5">
-          <div class="d-flex flex-grow-1" id="usersFilters">
-            <form class="form-inline my-2 flex-fill justify-content-center">
-              <div class="input-group w-50">
-                <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
-                <div class="input-group-append">
-                  <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchBounties()"> <i class="fas fa-search"></i></button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </nav>
-      </div> -->
+
       <div class="sidebar-container flex-column flex-lg-row">
         <transition name="fade">
           <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
-            <div class="g-multiselect pb-4 border-bottom form-group">
-              <label for="skills" class="font-weight-bold">Skills</label>
-              <div class="form__select2">
-                <!-- <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control"> -->
-                  <!-- <option disabled value="0">Select one</option> -->
-                <!-- </select2> -->
-              </div>
-            </div>
-            <div class="pb-4 border-bottom form-group">
-              <label for="bounty-completed" class="font-weight-bold">Bounties Completed</label>
-              <div class="form__select2">
-                <select2 v-model="params.bounties_completed" data-minimum-results-for-search="Infinity" class="form-control">
-                  <option value="" selected="true">All</option>
-                  <option value="0,5">0-5</option>
-                  <option value="5,10">5-10</option>
-                  <option value="10,15">10-15</option>
-                  <option value="15,20">15-20</option>
-                </select2>
-              </div>
-            </div>
-            <!-- <div class="pb-4 border-bottom form-group">
-              <label for="leaderboard_rank" class="font-weight-bold">Leaderboard Rank</label>
-              <div class="form__select2">
-                <select2 v-model="params.leaderboard_rank" data-minimum-results-for-search="Infinity" class="form-control">
-                  <option value="" selected="true">All</option>
-                  <option value="0,5">0-5</option>
-                  <option value="5,10">5-10</option>
-                  <option value="10,15">10-15</option>
-                  <option value="15,20">15-20</option>
-                </select2>
-              </div>
-            </div> -->
-            <!-- <div class="pb-2 border-bottom form-group">
-              <div class="w-100 p-2">
-                <fieldset class="">
-                  <label for="" class="font-weight-bold">Star Rating</label>
-                  <div class="rating font-smaller-4">
-                    <input type="radio" id="rating-5" name="rating" value="5" v-model="params.rating" />
-                    <label class ="rating-star full" for="rating-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
-                    <input type="radio" id="rating-4" name="rating" value="4" v-model="params.rating" />
-                    <label class ="rating-star full" for="rating-4" data-toggle="tooltip" title="It was good - 4 stars"></label>
-                    <input type="radio" id="rating-3" name="rating" value="3" v-model="params.rating" />
-                    <label class ="rating-star full" for="rating-3" data-toggle="tooltip" title="It was okay - 3 stars"></label>
-                    <input type="radio" id="rating-2" name="rating" value="2" v-model="params.rating" />
-                    <label class ="rating-star full" for="rating-2" data-toggle="tooltip" title="It was bad - 2 stars"></label>
-                    <input type="radio" id="rating-1" name="rating" value="1" v-model="params.rating" />
-                    <label class ="rating-star full" for="rating-1" data-toggle="tooltip" title="It was terrible - 1 star"></label>
-                  </div>
-                </fieldset>
-              </div>
-            </div> -->
-            <div class="pb-2 border-bottom form-group">
-              <!-- <div v-for="item in experience_level" :key="item.id">
-                <input type="checkbox" name="experience_level" :value="item.name" v-model="params.experience_level" />
+            <div class="">
+              <input type="text" v-model="params.keywords" class="form-control">
+              <!-- [[params]] -->
+              <div v-for="(param,prop, index) in params" v-show="param.length > 1">[[param]] [[prop]] [[index]]</div>
 
-                <label >[[item.name]]</label>
-              </div> -->
-              [[params.experience_level]] //
-              <input type="checkbox" value="beginner" v-model="experienceSelected" @click="foos">
-              <label for="beginner">beginner</label>
-              <input type="checkbox" value="intermediate" v-model="experienceSelected" @click="foos">
-              <label for="intermediate">intermediate</label>
-              <input type="checkbox" value="advanced" v-model="experienceSelected" @click="foos">
-              <label for="advanced">advanced</label>
+
             </div>
-            <div class="g-multiselect pb-4 border-bottom form-group">
-              <label for="organisations" class="font-weight-bold">Organisation</label>
-              <div class="font-smaller">
-                <input v-model.lazy="params.org" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
+            <div class="border-bottom py-3 font-smaller-1">
+              <div class="mb-3 text-black-70 font-weight-semibold">
+                {% trans "Status" %}
+                <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-boundary="window"  data-content='{% include "shared/status_tooltip.html" %}'></i>
+              </div>
+              <div class="form-check mb-2">
+                <input type="radio" id="open" value="open"  v-model="params.idx_status" class="form-check-input">
+                <label for="open" class="form-check-label">Open</label>
+              </div>
+              <div class="form-check mb-2">
+                <input type="radio" id="started" value="started"  v-model="params.idx_status" class="form-check-input">
+                <label for="started" class="form-check-label">Work Started</label>
+              </div>
+              <div class="form-check mb-2">
+                <input type="radio" id="submitted" value="submitted"  v-model="params.idx_status" class="form-check-input">
+                <label for="submitted" class="form-check-label">Work Submitted</label>
+              </div>
+              <div class="form-check mb-2">
+                <input type="radio" id="done" value="done"  v-model="params.idx_status" class="form-check-input">
+                <label for="done" class="form-check-label">Work Done</label>
+              </div>
+              <div class="form-check mb-2">
+                <input type="radio" id="reserved" value="reserved"  v-model="params.idx_status" class="form-check-input">
+                <label for="reserved" class="form-check-label">Reserved</label>
+              </div>
+              <div class="form-check mb-2">
+                <input type="radio" id="expired" value="expired"  v-model="params.idx_status" class="form-check-input">
+                <label for="expired" class="form-check-label">Expired</label>
+              </div>
+              <div class="form-check mb-2">
+                <input type="radio" id="cancelled" value="cancelled"  v-model="params.idx_status" class="form-check-input">
+                <label for="cancelled" class="form-check-label">Cancelled</label>
+              </div>
+              <div class="form-check mb-2">
+                <input type="radio" id="any" value="" v-model="params.idx_status" class="form-check-input">
+                <label for="any" class="form-check-label">Any</label>
               </div>
             </div>
-            [[params]]
+
+            <div class="border-bottom py-3 font-smaller-1">
+              <div class="g-multiselect ">
+                <label for="organisations" class="mb-3 text-black-70 font-weight-semibold">Organization name <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-boundary="window" data-content='{% include "shared/organization_tooltip.html" %}'></i></label>
+                <div class="font-smaller">
+                  <input v-model.lazy="params.org" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
+                </div>
+              </div>
+            </div>
+
+            <div class="border-bottom py-3 font-smaller-1">
+              <div class="mb-3 text-black-70 font-weight-semibold">Experience Level</div>
+              <div class="checkbox_container">
+                <input id="beginner" type="checkbox" value="beginner" v-model="params.experience_level">
+                <span class="checkbox"></span>
+                <div class="filter-label">
+                  <label for="beginner">Beginner</label>
+                </div>
+              </div>
+              <div class="checkbox_container">
+                <input id="intermediate" type="checkbox" value="intermediate" v-model="params.experience_level">
+                <span class="checkbox"></span>
+                <div class="filter-label">
+                  <label for="intermediate">Intermediate</label>
+                </div>
+              </div>
+              <div class="checkbox_container">
+                <input id="advanced" type="checkbox" value="advanced" v-model="params.experience_level">
+                <span class="checkbox"></span>
+                <div class="filter-label">
+                  <label for="advanced">Advanced</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="border-bottom py-3 font-smaller-1">
+              <div class="mb-3 text-black-70 font-weight-semibold">Project Type <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-boundary="window" data-content='{% include "shared/project_type_tooltip.html" %}'></i></div>
+              <div class="checkbox_container">
+                <input id="traditional" type="checkbox" value="traditional" v-model="params.project_type">
+                <span class="checkbox"></span>
+                <div class="filter-label">
+                  <label for="traditional">traditional</label>
+                </div>
+              </div>
+              <div class="checkbox_container">
+                <input id="contest" type="checkbox" value="contest" v-model="params.project_type">
+                <span class="checkbox"></span>
+                <div class="filter-label">
+                  <label for="contest">contest</label>
+                </div>
+              </div>
+              <div class="checkbox_container">
+                <input id="cooperative" type="checkbox" value="cooperative" v-model="params.project_type">
+                <span class="checkbox"></span>
+                <div class="filter-label">
+                  <label for="cooperative">cooperative</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="border-bottom py-3 font-smaller-1">
+              <label for="applicants" class="mb-3 text-black-70 font-weight-semibold">Applicants</label>
+              <div class="form__select2">
+                <select2 v-model="params.applicants" data-minimum-results-for-search="Infinity" class="form-control">
+                  <option value="" selected="true">All</option>
+                  <option value="0">0</option>
+                  <option value="5-10">1-5</option>
+                </select2>
+              </div>
+            </div>
+            <div @click="showExtraParams = !showExtraParams" class="text-justify btn-block d-flex justify-content-between align-items-center py-3">Advanced Filters <i class="fa fa-fw" :class="showExtraParams ? 'fa-chevron-up': 'fa-chevron-down'"></i></div>
+
+            <div v-show="showExtraParams">
+
+              <div class="border-bottom py-3 font-smaller-1">
+                <div class="mb-3 text-black-70 font-weight-semibold">My Bounties</div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="createdByMe" value="createdByMe" v-model="params.bounty_filter" class="form-check-input">
+                  <label for="createdByMe" class="form-check-label">Created By Me</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="startedByMe" value="startedByMe" v-model="params.bounty_filter" class="form-check-input">
+                  <label for="startedByMe" class="form-check-label">Started By Me</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="fulfilledByMe" value="fulfilledByMe" v-model="params.bounty_filter" class="form-check-input">
+                  <label for="fulfilledByMe" class="form-check-label">Fulfilled By Me</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="reservedForMe" value="reservedForMe" v-model="params.bounty_filter" class="form-check-input">
+                  <label for="reservedForMe" class="form-check-label">Reserved For Me</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="all_bounty" value="" v-model="params.bounty_filter" class="form-check-input">
+                  <label for="all_bounty" class="form-check-label">All</label>
+                </div>
+              </div>
+
+              <div class="border-bottom py-3 font-smaller-1">
+                <div class="mb-3 text-black-70 font-weight-semibold">Project Category</div>
+                <div class="checkbox_container">
+                  <input id="frontend" type="checkbox" value="frontend" v-model="params.bounty_categories">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="frontend">Front End</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="backend" type="checkbox" value="backend" v-model="params.bounty_categories">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="backend">Back End</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="design" type="checkbox" value="design" v-model="params.bounty_categories">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="design">Design</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="documentation" type="checkbox" value="documentation" v-model="params.bounty_categories">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="documentation">Documentation</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="other" type="checkbox" value="other" v-model="params.bounty_categories">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="other">Other</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-bottom py-3 font-smaller-1">
+                <div class="mb-3 text-black-70 font-weight-semibold">Moderation</div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="escalated" value="escalated" v-model="params.moderation_filter" class="form-check-input">
+                  <label for="escalated" class="form-check-label">Escalated</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="warned" value="warned" v-model="params.moderation_filter" class="form-check-input">
+                  <label for="warned" class="form-check-label">Warned</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="hidden" value="hidden" v-model="params.moderation_filter" class="form-check-input">
+                  <label for="hidden" class="form-check-label">Hidden</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="not_started" value="not_started" v-model="params.moderation_filter" class="form-check-input">
+                  <label for="not_started" class="form-check-label">Not Picked Up 3+ Days</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="closed_on_github" value="closed_on_github" v-model="params.moderation_filter" class="form-check-input">
+                  <label for="closed_on_github" class="form-check-label">Closed On Github</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="needs_review" value="needs_review" v-model="params.moderation_filter" class="form-check-input">
+                  <label for="needs_review" class="form-check-label">Needs Review</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="no_moderation" value="" v-model="params.moderation_filter" class="form-check-input">
+                  <label for="no_moderation" class="form-check-label">No Moderation</label>
+                </div>
+              </div>
+              <div class="border-bottom py-3 font-smaller-1">
+                <div class="mb-3 text-black-70 font-weight-semibold">Permissions <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-boundary="window" data-content='{% include "shared/permissions_type_tooltip.html" %}'></i></div>
+                <div class="checkbox_container">
+                  <input id="permissionless" type="checkbox" value="permissionless" v-model="params.permission_type">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="permissionless">Permissionless</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="approval" type="checkbox" value="approval" v-model="params.permission_type">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="approval">Approval Required</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-bottom py-3 font-smaller-1">
+                <div class="mb-3 text-black-70 font-weight-semibold">Time Commitment</div>
+                <div class="checkbox_container">
+                  <input id="hours" type="checkbox" value="hours" v-model="params.project_length">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="hours">Hours</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="days" type="checkbox" value="days" v-model="params.project_length">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="days">Days</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="weeks" type="checkbox" value="weeks" v-model="params.project_length">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="weeks">Weeks</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="months" type="checkbox" value="months" v-model="params.project_length">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="months">Months</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-bottom py-3 font-smaller-1">
+                <div class="mb-3 text-black-70 font-weight-semibold">Type</div>
+                <div class="checkbox_container">
+                  <input id="bug" type="checkbox" value="bug" v-model="params.bounty_type">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="bug">Bug</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="feature" type="checkbox" value="feature" v-model="params.bounty_type">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="feature">Feature</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="security" type="checkbox" value="security" v-model="params.bounty_type">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="security">Security</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-bottom py-3 font-smaller-1">
+                <div class="mb-3 text-black-70 font-weight-semibold">Network</div>
+                <div class="checkbox_container">
+                  <input id="rinkeby" type="checkbox" value="rinkeby" v-model="params.network">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="rinkeby">Rinkeby</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="mainnet" type="checkbox" value="mainnet" v-model="params.network">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="mainnet">Mainnet</label>
+                  </div>
+                </div>
+              </div>
+            </div>
             <button class="btn blue" @click="clearParams();">Reset Filters</button>
           </nav>
         </transition>
         <div class="container pt-4" @scroll.passive="onScroll($event)">
           <button class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
-          <div class="py-5 mt-4">
+          <div class="pb-5 ">
+            <h1 class="font-bigger-1">Issue Explorer - Freelance Code Bounties</h1>
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-1">
+              <div class="font-smaller-1">
+                [[bounties.length]]<span v-show="bountiesHasNext">+</span> bounties
+              </div>
+              <div class="form__select2">
+                <select2 v-model="params.order_by" data-minimum-results-for-search="Infinity" class="form-control">
+                  <option value="-web3_created" selected="true">Created: Recent</option>
+                  <option value="web3_created">Created: Oldest</option>
+                  <option value="-_val_usd_db">Value: Highest</option>
+                  <option value="_val_usd_db">Value: Lowest</option>
+                </select2>
+              </div>
+            </div>
             <div v-if="noResults" class="text-center">
               <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
               <p class="mt-4 font-weight-bold mb-0">No users found</p>
               <button class="btn blue" @click="clearParams(); searchBounties()">Reset Filters</button>
             </div>
             <div class="">
-              <a v-for="bounty in bounties" :class="[bounty.standard_bounties_id.toString(), bounty.network]" :key="bounty.pk" :href="bounty.url" class="d-flex align-items-center">
+              <a v-for="bounty in bounties" :class="[bounty.standard_bounties_id.toString(), bounty.network]" :key="bounty.pk" :href="bounty.url" class="d-flex align-items-center flex-wrap bounty_row" data-container="body" :data-content='popoverConfig(bounty)'>
                 <div class="avatar-container col-1 justify-content-center hide_min_viewport">
                   <img :src="bounty.avatar_url" class="avatar w-100" :class="bounty.github_org_name">
                 </div>
@@ -179,7 +414,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="tags-container col-12 col-md-4 col-lg-3 font-caption">
+                <div class="tags-container col-12 col-md-4 col-lg-3 font-caption d-flex justify-content-end">
                   <div v-if="bounty.network !== 'mainnet'" class="tag network_warning">
                     <p>
                       <span>[[ bounty.network ]]</span>
@@ -218,51 +453,7 @@
           </div>
         </div>
       </div>
-      <!-- <modal ref="user-modal" >
-        <div slot="header" v-if="userSelected.handle">
-          <div class="d-flex flex-column align-items-center">
-            <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
-            <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`"/>
-            <span>[[ userSelected.name ]]</span>
-            <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
-              [[ userSelected.handle ]]
-            </a>
-          </div>
-        </div>
-        <div slot="body" v-if="userSelected.handle">
-          <div v-if="funderBounties.length">
-            <div class="my-2 text-center">
-              <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
-            </div>
-            <div class="bounties-box">
-              <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
-                <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30">
-                <p class="line-clamp font-smaller-2 my-0 mx-2">
-                  [[ bounty.title ]]
-                </p>
-                <div class="ml-auto flex-shrink-0">
-                  <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
-                  <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-else class="text-center font-subheader mt-4">
-            <p class="font-weight-semibold">You've got NO open bounties</p>
-            <p class="font-body">
-              <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank">Create a bounty</a>
-              to invite [[ userSelected.handle ]]
-            </p>
-          </div>
-        </div>
-        <div slot="footer" class="d-flex align-items-center flex-fill">
-          <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
-          <div class="ml-auto">
-            <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-            <button  v-if="funderBounties.length" class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
-          </div>
-        </div>
-      </modal> -->
+
     </div>
 
     <script type="text/x-template" id="select2-template">
@@ -276,15 +467,21 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
-    <!-- <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script> -->
     <script>
-      // let bootstrapTooltip = $.fn.tooltip.noConflict()
-      // $.fn.runTooltip = bootstrapTooltip;
-      // let bootstrapModal = $.fn.modal.noConflict()
-      // $.fn.bootstrapModal = bootstrapModal
-
       $('[data-toggle="tooltip"]').bootstrapTooltip();
+      $('[data-toggle="popover"]').popover()
+
+      $('body').popover({
+        selector: '.bounty_row',
+        html: true,
+        trigger: 'hover',
+        placement: 'auto',
+        template: `<div class="popover popover-bounty" role="tooltip">
+                    <div class="arrow"></div>
+                    <div class="popover-body p-0"></div>
+                    <h3 class="popover-header"></h3>
+                  </div>`
+      });
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.keywords = {{keywords | safe}};
     </script>

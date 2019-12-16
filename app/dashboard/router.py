@@ -200,8 +200,9 @@ class BountySerializerSlim(BountySerializer):
         fields = (
             'pk', 'url', 'title', 'experience_level', 'status', 'fulfillment_accepted_on', 'event',
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
-            'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt', 'pk',
-            'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address'
+            'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
+            'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address',
+            'bounty_categories'
         )
 
 
