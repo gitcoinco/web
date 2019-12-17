@@ -35,10 +35,14 @@ logger = logging.getLogger(__name__)
 avatar_3d_base_path = 'assets/v2/images/avatar3d/avatar_bufficorn.svg'
 
 preview_viewbox = {
-    'shirt': '60 160 200 200',
-    'hat': '10 10 220 220',
-    'glasses': '20 60 220 220',
-    'facial': '40 150 180 180',
+    #section: x_pos y_pox x_size y_size
+    'background': '0 0 200 200',
+    'facial': '80 180 220 220',
+    'glasses': '80 80 220 220',
+    'hat': '20 30 300 300',
+    'shirt': '130 200 200 200',
+    'accessory': '50 180 150 200',
+    'horn': '120 80 150 150',
 }
 
 skin_tones = [
