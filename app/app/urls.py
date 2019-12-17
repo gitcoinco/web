@@ -62,7 +62,6 @@ urlpatterns = [
     # oauth2 provider
     url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-
     url('^api/v1/bounty/create', dashboard.views.create_bounty, name='create_bounty'),
 
     # inbox
