@@ -26,33 +26,52 @@
   </head>
   <body class="g-font-muli homepage">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash px-md-0">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'home/nav.html' %}
-    </div>
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'home/nav.html' %}
 
-    <div class="banner header text-white">
+    <div class="container-fluid banner header text-white">
       <div class="row">
-        <div class="col-12 col-md-8 col-xl-5 pl-lg-5 mx-auto py-5">
-          <h2 class="font-title-xl text-center font-weight-bold">
+        <div class="col-12 col-md-8 col-xl-5 pl-lg-5 mx-auto pt-5">
+          <h2 class="font-title-xl text-center font-weight-bold banner__h2">
             Crowdfunding and Freelance Developers for Open Source Software Projects
           </h2>
 
-          <div class="buttons text-center my-5">
-            <a id="fund-issue" href="{% url "quickstart" %}"
-              class="btn button--primary mx-2 shadow-none py-2 px-4 text-white font-weight-semibold"
-            >
+          <div class="buttons text-center mt-5">
+            <a id="fund-issue" href="{% url "quickstart" %}" class="btn button--primary mx-2 shadow-none py-2 px-4 text-white font-weight-semibold">
               Post a Bounty
             </a>
-            <a class="btn btn-outline-white mx-2 shadow-none py-2 px-4 font-weight-semibold" 
-              href="{% url "products" %}"
-            >
+            <a class="btn btn-outline-white mx-2 shadow-none py-2 px-4 font-weight-semibold" href="{% url "products" %}">
               See our Products
             </a>
           </div>
         </div>
-        <div>
-          <!-- IMAGE COMES HERE -->
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-8 text-center">
+          <img src="{% static "v2/images/home/bg-index.jpg" %}" class="mw-100" alt="">
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-5 mb-lg-n5">
+          <div class="box-cta box-cta__left mb-lg-n5">
+            <h2 class="text-highlight-green box-cta__title">FOR BUILDERS /
+            PROJECT MANAGERS</h2>
+            <p>Leverage our global, on-demand workforce. Find expert freelance developers to design, test, code, and build your project teams today.</p>
+            <p>Save time via direct Github integration.</p>
+            <p>Crowdfund for your open source startup or project to increase your budget and bring in more developers.</p>
+            <a href="{% url 'new_funding_short' %}" class="btn btn-outline-white mr-2">Fund an Issue / Project</a>
+            <a href="{% url 'grants:grants' %}" class="btn btn-outline-white">Grants</a>
+          </div>
+        </div>
+        <div class="col-12 col-lg-5 mb-lg-n5">
+          <div class="box-cta box-cta__right mb-lg-n5">
+            <h2 class="text-highlight-green box-cta__title">FOR CODERS /
+                SOFTWARE DEVELOPERS</h2>
+            <p>Get paid in crypto for freelance jobs, building features, and solving bug bounties!</p>
+            <p>Work with top open source projects and get paid out fast.</p>
+            <a href="{% url 'explorer' %}" class="btn btn-outline-white mr-2">Explore Bounties</a>
+            <a href="{% url 'get_hackathons' %}" class="btn btn-outline-white">Join Virtual Hackathons</a>
+          </div>
         </div>
       </div>
     </div>
@@ -71,18 +90,18 @@
             This is why we built Gitcoin.
           </p>
         </div>
-    
+
         <div class="col-12 col-md-6">
           {% include 'shared/tree.html' %}
         </div>
       </div>
     </div>
-   
-    <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
-
-    <div class="container-fluid pb-5 my-5 landing__newsletter">
+    <div class="container-fluid py-5 mt-5 landing__newsletter bg-light">
       {% include 'shared/newsletter.html' %}
     </div>
+    <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
+
+
 
     <div id="optimize_oss" class="mt-5 pt-4 optimize_oss">
       <div class="container pt-0 pb-5">

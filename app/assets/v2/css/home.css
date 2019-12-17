@@ -22,7 +22,7 @@
   background-color: transparent;
 }
 
-.banner h2 {
+.banner__h2 {
   line-height: 3rem;
 }
 
@@ -422,4 +422,25 @@ figure:hover::before {
   .video-preview__title {
     font-size: 24px;
   }
+}
+
+.box-cta {
+  background: #0D0764;
+  margin: 2em;
+  padding: 3em;
+}
+
+.box-cta__left {
+  box-shadow: 33px 33px 0 -20px #3E00FF;
+
+}
+
+.box-cta__right {
+  box-shadow: -33px 33px 0 -20px #3E00FF;
+}
+
+.box-cta__title {
+  font-size: 24px;
+  border-bottom: 4px solid var(--gc-green);
+  font-weight: 700;
 }
