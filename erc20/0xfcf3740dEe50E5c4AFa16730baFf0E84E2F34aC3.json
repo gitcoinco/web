@@ -1,0 +1,25 @@
+{
+    "symbol": "TGO",
+    "address": "0xfcf3740dEe50E5c4AFa16730baFf0E84E2F34aC3",
+    "overview": {
+        "en": "TetherGo is based on the Ethereum blockchain, the most secure and well tested blockchain and public ledger in existence. We are focused on arranging integrations with existing businesses in the crypto currency space.",
+        "zh": "TetherGo 基於以太坊區塊鏈，以太坊區塊鍊是目前存在的最安全且經過充分測試的區塊鍊和公共分類賬。我們專注於在加密貨幣領域安排與現有業務的集成。 像交易所，錢包，商人之類的業務。"
+    },
+    "email": "Hello@Tethergo.org",
+    "website": "https://tethergo.org/",
+    "whitepaper": "https://tethergo.org/wp/TetherGo-Whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-12-07",
+    "initial_price": {
+        "ETH": "0.00068 ETH",
+        "USD": "0.1 USD",
+        "BTC": "0.000013 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@TetherGo",
+        "twitter": "https://twitter.com/Tether_Go",
+        "telegram": "https://t.me/TetherGo",
+        "github": "https://github.com/TetherGoProject",
+        "facebook": "https://facebook.com/TetherGo"
+    }
+}
