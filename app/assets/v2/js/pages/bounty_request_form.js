@@ -38,10 +38,22 @@ $(document).ready(function() {
     submitHandler: function(form) {
       const inputElements = $(form).find(':input');
       const formData = {};
+      let githubOrgName = '';
 
       inputElements.removeAttr('disabled');
       $.each($(form).serializeArray(), function() {
-        formData[this.name] = this.value;
+        if (this.name === 'github_url') {
+          formData['github_url'] = this.value;
+
+          const url = new URL(this.value);
+          const urlParts = url.pathname.split('/');
+
+          githubOrgName = urlParts[1] || '';
+          formData['github_org_name'] = githubOrgName;
+        } else if (this.name !== 'github_org_name') {
+          // Ignore 'github_org_name' value from the form as this is already handled 2 lines above
+          formData[this.name] = this.value;
+        }
       });
 
       inputElements.attr('disabled', 'disabled');

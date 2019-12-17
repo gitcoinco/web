@@ -28,7 +28,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
@@ -37,17 +37,20 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_profile
 from cacheops import cached_view
-from dashboard.models import Activity, Profile
+from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
-from grants.models import Contribution, Grant, MatchPledge, Milestone, Subscription, Update
+from grants.models import Contribution, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update
+from grants.utils import get_leaderboard
+from kudos.models import BulkTransferCoupon
 from marketing.mails import (
-    grant_cancellation, new_grant, new_supporter, subscription_terminated, support_cancellation,
+    grant_cancellation, new_grant, new_grant_admin, new_supporter, subscription_terminated, support_cancellation,
     thank_you_for_supporting,
 )
 from marketing.models import Keyword, Stat
+from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
@@ -55,6 +58,11 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
 matching_live = '($50K matching live now!) '
+total_clr_pot = 100000
+clr_round = 3
+clr_active = False
+show_past_clr = True
+
 if True:
     clr_matching_banners_style = 'results'
     matching_live = ''
@@ -68,20 +76,46 @@ def grants(request):
     """Handle grants explorer."""
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
-    sort = request.GET.get('sort_option', '-created_on')
+    sort = request.GET.get('sort_option', 'weighted_shuffle')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
+    grant_type = request.GET.get('type', 'tech')
     state = request.GET.get('state', 'active')
     _grants = None
 
+    sort_by_index = None
+    sort_by_clr_pledge_matching_amount = None
+    if 'match_pledge_amount_' in sort:
+        sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
+        sort_by = 'pk'
+
     if state == 'active':
-        _grants = Grant.objects.filter(network=network, hidden=False).active().keyword(keyword).order_by(sort)
+        _grants = Grant.objects.filter(
+            network=network, hidden=False, grant_type=grant_type
+        ).active().keyword(keyword).order_by(sort)
     else:
-        _grants = Grant.objects.filter(network=network, hidden=False).keyword(keyword).order_by(sort)
+        _grants = Grant.objects.filter(
+            network=network, hidden=False, grant_type=grant_type
+        ).keyword(keyword).order_by(sort)
+
+    clr_prediction_curve_schema_map = {10**x:x+1 for x in range(0, 5)}
+    if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
+        sort_by_index = clr_prediction_curve_schema_map.get(sort_by_clr_pledge_matching_amount, 0)
+        field_name = f'clr_prediction_curve__{sort_by_index}__2'
+        _grants = _grants.order_by(f"-{field_name}")
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
-    partners = MatchPledge.objects.filter(active=True)
+    partners = MatchPledge.objects.filter(active=True, pledge_type=grant_type) if grant_type else MatchPledge.objects.filter(active=True)
+
+    now = datetime.datetime.now()
+
+    current_partners = partners.filter(end_date__gte=now).order_by('-amount')
+    past_partners = partners.filter(end_date__lt=now).order_by('-amount')
+    current_partners_fund = 0
+
+    for partner in current_partners:
+        current_partners_fund += partner.amount
 
     grant_amount = 0
     grant_stats = Stat.objects.filter(
@@ -90,6 +124,12 @@ def grants(request):
     if grant_stats.exists():
         grant_amount = grant_stats.first().val / 1000
 
+    tech_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='tech'
+    ).count()
+    media_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='media'
+    ).count()
 
     nav_options = [
         {'label': 'All', 'keyword': ''},
@@ -104,26 +144,52 @@ def grants(request):
         {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
     ]
 
-    now = datetime.datetime.now()
+    grant_types = [
+        {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
+        {'label': 'Media', 'keyword': 'media', 'count': media_grants_count}
+    ]
+
     params = {
         'active': 'grants_landing',
         'title': matching_live + str(_('Gitcoin Grants Explorer')),
         'sort': sort,
         'network': network,
         'keyword': keyword,
+        'type': grant_type,
         'clr_matching_banners_style': clr_matching_banners_style,
         'nav_options': nav_options,
-        'current_partners': partners.filter(end_date__gte=now).order_by('-amount'),
-        'past_partners': partners.filter(end_date__lt=now).order_by('-amount'),
+        'grant_types': grant_types,
+        'current_partners_fund': current_partners_fund,
+        'current_partners': current_partners,
+        'past_partners': past_partners,
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),
         'card_player_thumb_override': static('v2/card/grants.png'),
         'grants': grants,
-        'grants_count': _grants.count(),
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
+        'total_clr_pot': total_clr_pot,
+        'clr_active': clr_active,
+        'sort_by_index': sort_by_index,
+        'clr_round': clr_round,
+        'show_past_clr': show_past_clr,
+        'is_staff': request.user.is_staff
     }
+
+    # log this search, it might be useful for matching purposes down the line
+    if keyword:
+        try:
+            SearchHistory.objects.update_or_create(
+                search_type='grants',
+                user=request.user,
+                data=request.GET,
+                ip_address=get_ip(request)
+            )
+        except Exception as e:
+            logger.debug(e)
+            pass
+
     return TemplateResponse(request, 'grants/index.html', params)
 
 
@@ -140,14 +206,29 @@ def grant_details(request, grant_id, grant_slug):
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False).order_by('-created_on')
-        contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all()).order_by('-created_on')
+        _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
+        phantom_funds = grant.phantom_funding.filter(round_number=3)
+        contributions = list(_contributions.order_by('-created_on')) + [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
+        contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
+        activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
         add_cancel_params = user_subscription
     except Grant.DoesNotExist:
         raise Http404
 
-    if request.method == 'POST' and (profile == grant.admin_profile or request.user.is_staff):
+    is_admin = (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False
+    if is_admin:
+        add_cancel_params = True
+
+    is_team_member = False
+    if profile:
+        for team_member in grant.team_members.all():
+            if team_member.id == profile.id:
+                is_team_member = True
+                break
+
+    if request.method == 'POST' and (is_team_member or request.user.is_staff):
         if request.FILES.get('input_image'):
             logo = request.FILES.get('input_image', None)
             grant.logo = logo
@@ -183,9 +264,6 @@ def grant_details(request, grant_id, grant_slug):
             grant.save()
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-    is_admin = (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False
-    if is_admin:
-        add_cancel_params = True
 
     params = {
         'active': 'grant_details',
@@ -205,6 +283,10 @@ def grant_details(request, grant_id, grant_slug):
         'updates': updates,
         'milestones': milestones,
         'keywords': get_keywords(),
+        'activity_count': activity_count,
+        'contributors': contributors,
+        'clr_active': clr_active,
+        'is_team_member': is_team_member
     }
 
     if add_cancel_params:
@@ -226,9 +308,6 @@ def grant_details(request, grant_id, grant_slug):
 @login_required
 def grant_new(request):
     """Handle new grant."""
-    if not request.user.has_perm('grants.add_grant'):
-        return redirect('https://gitcoin.typeform.com/to/C2IocD')
-
     profile = get_profile(request)
 
     if request.method == 'POST':
@@ -253,10 +332,20 @@ def grant_new(request):
                 'metadata': receipt,
                 'admin_profile': profile,
                 'logo': logo,
+                'hidden': True,
             }
             grant = Grant.objects.create(**grant_kwargs)
+            new_grant_admin(grant)
+
+            team_members = (team_members[0].split(','))
             team_members.append(profile.id)
-            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            team_members = list(set(team_members))
+
+            team_members = [int(i) for i in team_members if i != '']
+
+            grant.team_members.add(*team_members)
+            grant.save()
+
             return JsonResponse({
                 'success': True,
             })
@@ -273,6 +362,10 @@ def grant_new(request):
             grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
             grant.contract_address = request.POST.get('contract_address', '')
             print(tx_hash, grant.contract_address)
+            messages.info(
+                request,
+                _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
+            )
             grant.save()
             record_grant_activity_helper('new_grant', grant, profile)
             new_grant(grant, profile)
@@ -303,8 +396,6 @@ def grant_new(request):
 @login_required
 def grant_new_v0(request):
     """Create a v0 version of a grant contract."""
-    if not request.user.has_perm('grants.add_grant'):
-        return redirect('https://gitcoin.typeform.com/to/C2IocD')
     profile = get_profile(request)
 
     if request.method == 'POST':
@@ -330,8 +421,17 @@ def grant_new_v0(request):
                 'logo': logo,
             }
             grant = Grant.objects.create(**grant_kwargs)
+
+            team_members = (team_members[0].split(','))
             team_members.append(profile.id)
-            grant.team_members.add(*list(filter(lambda member_id: member_id > 0, map(int, team_members))))
+            team_members = list(set(team_members))
+
+            for i in range(0, len(team_members)):
+                team_members[i] = int(team_members[i])
+
+            grant.team_members.add(*team_members)
+            grant.save()
+
             return JsonResponse({
                 'success': True,
             })
@@ -382,8 +482,15 @@ def grant_new_v0(request):
 def milestones(request, grant_id, grant_slug):
     profile = get_profile(request)
     grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
+    is_team_member = False
 
-    if profile != grant.admin_profile:
+    if profile:
+        for team_member in grant.team_members.all():
+            if team_member.id == profile.id:
+                is_team_member = True
+                break
+
+    if not is_team_member:
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == "POST":
@@ -442,15 +549,6 @@ def grant_fund(request, grant_id, grant_slug):
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
-    if grant.admin_profile == profile:
-        params = {
-            'active': 'grant_error',
-            'title': _('Invalid Grant Subscription'),
-            'grant': grant,
-            'text': _('You cannot fund your own Grant.')
-        }
-        return TemplateResponse(request, 'grants/shared/error.html', params)
-
     active_subscription = Subscription.objects.select_related('grant').filter(
         grant=grant_id, active=True, error=False, contributor_profile=request.user.profile
     )
@@ -502,6 +600,7 @@ def grant_fund(request, grant_id, grant_slug):
             else:
                 record_subscription_activity_helper('new_grant_subscription', subscription, profile)
 
+            # TODO - how do we attach the tweet modal WITH BULK TRANSFER COUPON next pageload??
             messages.info(
                 request,
                 _('Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Open Source !')
@@ -533,13 +632,42 @@ def grant_fund(request, grant_id, grant_slug):
 
     splitter_contract_address = settings.SPLITTER_CONTRACT_ADDRESS
 
+    # handle phantom funding
+    active_tab = 'normal'
+    fund_reward = None
+    round_number = 3
+    can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
+    can_phantom_fund = False # round is ded
+    phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
+    is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
+    show_tweet_modal = False
+    if can_phantom_fund:
+        active_tab = 'phantom'
+    if can_phantom_fund and request.POST.get('toggle_phantom_fund'):
+        if is_phantom_funding_this_grant:
+            msg = "You are no longer signaling for this grant."
+            phantom_funds.filter(grant=grant).delete()
+        else:
+            msg = "You are now signaling for this grant."
+            show_tweet_modal = True
+            name_search = 'grants_round_3_contributor_' if not settings.DEBUG else 'pogs_eth'
+            fund_reward = BulkTransferCoupon.objects.filter(token__name__contains=name_search).order_by('?').first()
+            PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
+        messages.info(
+            request,
+            msg
+        )
+        is_phantom_funding_this_grant = not is_phantom_funding_this_grant
+
     params = {
         'active': 'fund_grant',
         'title': _('Fund Grant'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'subscription': {},
+        'show_tweet_modal': show_tweet_modal,
         'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
         'grant': grant,
+        'clr_prediction_curve': [c[1] for c in grant.clr_prediction_curve] if grant.clr_prediction_curve and len(grant.clr_prediction_curve[0]) > 1 else [0, 0, 0, 0, 0, 0],
         'keywords': get_keywords(),
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
         'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
@@ -549,7 +677,15 @@ def grant_fund(request, grant_id, grant_slug):
         'conf_time_spread': conf_time_spread(),
         'gas_advisories': gas_advisories(),
         'splitter_contract_address': settings.SPLITTER_CONTRACT_ADDRESS,
-        'gitcoin_donation_address': settings.GITCOIN_DONATION_ADDRESS
+        'gitcoin_donation_address': settings.GITCOIN_DONATION_ADDRESS,
+        'can_phantom_fund': can_phantom_fund,
+        'is_phantom_funding_this_grant': is_phantom_funding_this_grant,
+        'active_tab': active_tab,
+        'fund_reward': fund_reward,
+        'phantom_funds': phantom_funds,
+        'clr_round': clr_round,
+        'total_clr_pot': total_clr_pot,
+        'clr_active': clr_active,
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
@@ -620,58 +756,10 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 @login_required
 def profile(request):
     """Show grants profile of logged in user."""
-    limit = request.GET.get('limit', 25)
-    page = request.GET.get('page', 1)
-    sort = request.GET.get('sort', '-created_on')
-
-    profile = get_profile(request)
-    _grants_pks = Grant.objects.filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).values_list(
-        'pk', flat=True
-    )
-    _grants = Grant.objects.prefetch_related('team_members') \
-        .filter(pk__in=_grants_pks).order_by(sort)
-    sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile).order_by(sort)
-
-    sub_contributions = []
-    contributions = []
-
-    for contribution in Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk'):
-        instance = {
-            "cont": contribution,
-            "sub": contribution.subscription,
-            "grant":  contribution.subscription.grant,
-            "profile": contribution.subscription.contributor_profile
-        }
-        sub_contributions.append(instance)
-
-    for _grant in _grants:
-        subs = Subscription.objects.filter(grant=_grant)
-        for _sub in subs:
-            conts = Contribution.objects.filter(subscription=_sub)
-            for _cont in conts:
-                instance = {
-                    "cont": _cont,
-                    "sub": _sub,
-                    "grant":  _grant,
-                    "profile": _sub.contributor_profile
-                }
-                contributions.append(instance)
-
-    paginator = Paginator(_grants, limit)
-    grants = paginator.get_page(page)
-
-    params = {
-        'active': 'profile',
-        'title': _('My Grants'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
-        'grants': grants,
-        'history': contributions,
-        'sub_grants': sub_grants,
-        'sub_history': sub_contributions
-    }
-
-    return TemplateResponse(request, 'grants/profile/index.html', params)
-
+    if not request.user.is_authenticated:
+        raise Http404
+    handle = request.user.profile.handle
+    return redirect(f'/profile/{handle}/grants')
 
 def quickstart(request):
     """Display quickstart guide."""
@@ -681,40 +769,14 @@ def quickstart(request):
 
 def leaderboard(request):
     """Display leaderboard."""
+
+    # setup dict
     params = {
         'active': 'grants_leaderboard',
         'title': _('Grants Leaderboard'),
         'card_desc': _('View the top contributors to Gitcoin Grants'),
+        'items': get_leaderboard(),
         }
-
-    # setup dict
-    # TODO: in the future, store all of this in perftools.models.JSONStore
-    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)
-    default_dict = {
-        'rank': None,
-        'no': 0,
-        'sum': 0,
-        'handle': None,
-    }
-    users_to_results = { ele : default_dict.copy() for ele in handles }
-
-    # get all contribution attributes
-    for contribution in Contribution.objects.all().select_related('subscription'):
-        key = contribution.subscription.contributor_profile.handle
-        users_to_results[key]['handle'] = key
-        amount = contribution.subscription.get_converted_amount()
-        if amount:
-            users_to_results[key]['no'] += 1
-            users_to_results[key]['sum'] += round(amount)
-    # prepare response for view
-    params['items'] = []
-    counter = 1
-    for item in sorted(users_to_results.items(), key=lambda kv: kv[1]['sum'], reverse=True):
-        item = item[1]
-        if item['no']:
-            item['rank'] = counter
-            params['items'].append(item)
-            counter += 1
     return TemplateResponse(request, 'grants/leaderboard.html', params)
 
 
@@ -734,7 +796,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
     metadata = {
         'id': subscription.id,
         'value_in_token': str(subscription.amount_per_period),
-        'value_in_usdt_now': str(subscription.amount_per_period_usdt),
+        'value_in_usdt_now': str(round(subscription.amount_per_period_usdt,2)),
         'token_name': subscription.token_symbol,
         'title': subscription.grant.title,
         'grant_logo': grant_logo,
@@ -831,3 +893,22 @@ def new_matching_partner(request):
         )
 
     return get_json_response("Wrong request.", 400)
+
+
+def invoice(request, contribution_pk):
+    p_contribution = Contribution.objects.prefetch_related('subscription', 'subscription__grant')
+    contribution = get_object_or_404(p_contribution, pk=contribution_pk)
+
+    # only allow invoice viewing if admin or if grant contributor
+    has_view_privs = request.user.is_staff or request.user.profile == contribution.subscription.contributor_profile
+
+    if not has_view_privs:
+        raise Http404
+
+    params = {
+        'contribution': contribution,
+        'subscription': contribution.subscription,
+        'amount_per_period': contribution.subscription.get_converted_monthly_amount()
+    }
+
+    return TemplateResponse(request, 'grants/invoice.html', params)

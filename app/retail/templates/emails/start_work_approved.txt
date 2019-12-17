@@ -1,6 +1,6 @@
 {% load i18n  %}
 
-{% trans "Good news! The funder has accepted your request to work on this bounty.  You can go ahead and start working on the issue and as a courtesy provide an update to the maintainer every few days. " %}
+{% trans "Good news! The funder has accepted your request to work on this bounty.  You can go ahead and start working on the issue. As a courtesy to the maintainer, please provide an update on the Github issue every few days. " %}
 
 
 {% include 'emails/bounty.txt' with bounty=bounty %}

@@ -20,9 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import base64
 import json
 import logging
+import re
 from json.decoder import JSONDecodeError
 
 from django.conf import settings
+from django.urls import URLPattern, URLResolver
 from django.utils import timezone
 
 import ipfshttpclient
@@ -192,7 +194,7 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
 
     Args:
         host (str): The IPFS host to connect to.
-            Defaults to environment variable: IPFS_HOST.  The host name should be of the form 'ipfs.infura.io' and not 
+            Defaults to environment variable: IPFS_HOST.  The host name should be of the form 'ipfs.infura.io' and not
             include 'https://'.
         port (int): The IPFS port to connect to.
             Defaults to environment variable: env IPFS_API_PORT.
@@ -462,9 +464,32 @@ def has_tx_mined(txid, network):
         transaction = web3.eth.getTransaction(txid)
         if not transaction:
             return False
+        if not transaction.blockHash:
+            return False
         return transaction.blockHash != HexBytes('0x0000000000000000000000000000000000000000000000000000000000000000')
     except Exception:
         return False
+
+
+def get_etc_txn_status(txnid, network='mainnet'):
+    if not txnid:
+        return False
+
+    blockscout_url = f'https://blockscout.com/etc/mainnet/api?module=transaction&action=gettxinfo&txhash={txnid}'
+    blockscout_response = requests.get(blockscout_url).json()
+
+    if blockscout_response['status'] and blockscout_response['result']:
+        response = {
+            'blockNumber': int(blockscout_response['result']['blockNumber']),
+            'confirmations': int(blockscout_response['result']['confirmations'])
+        }
+        if response['confirmations'] > 0:
+            response['has_mined'] = True
+        else:
+            response['has_mined'] = False
+        return response
+
+    return False
 
 
 def get_bounty_id(issue_url, network):
@@ -882,3 +907,63 @@ def apply_new_bounty_deadline(bounty, deadline, auto_save = True):
     result['msg'] = base_result_msg + " " + result['msg']
 
     return result
+
+
+def release_bounty_to_the_public(bounty, auto_save = True):
+    if bounty:
+        bounty.reserved_for_user_handle = None
+        bounty.reserved_for_user_from = None
+        bounty.reserved_for_user_expiration = None
+
+        if auto_save:
+            bounty.save()
+
+        return True
+    else:
+        return False
+
+
+def get_orgs_perms(profile):
+    orgs = profile.profile_organizations.all()
+
+    response_data = []
+    for org in orgs:
+        org_perms = {'name': org.name, 'users': []}
+        groups = org.groups.all().filter(user__isnull=False)
+        for g in groups: # "admin", "write", "pull", "none"
+            group_data = g.name.split('-')
+            if group_data[1] != "role": #skip repo level groups
+                continue
+            org_perms['users'] = [{
+                'handle': u.profile.handle,
+                'role': group_data[2],
+                'name': '{} {}'.format(u.first_name, u.last_name)
+            } for u in g.user_set.prefetch_related('profile').all()]
+        response_data.append(org_perms)
+    return response_data
+
+
+def get_url_first_indexes():
+
+    urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
+
+    def list_urls(lis, acc=None):
+        if acc is None:
+            acc = []
+        if not lis:
+            return
+        l = lis[0]
+        if isinstance(l, URLPattern):
+            yield acc + [str(l.pattern)]
+        elif isinstance(l, URLResolver):
+            yield from list_urls(l.url_patterns, acc + [str(l.pattern)])
+
+        yield from list_urls(lis[1:], acc)
+
+    urls = []
+    for p in list_urls(urlconf.urlpatterns):
+        url = p[0].split('/')[0]
+        url = re.sub(r'\W+', '', url)
+        urls.append(url)
+
+    return set(urls)

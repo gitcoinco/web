@@ -17,41 +17,30 @@
 {% endcomment %}
 {% load i18n %}
 
-<style>
-  #payout_table tr td {
-    border-top: none;
-  }
+<table class="table table-hover" id ="payout_table">
+  <thead>
+    <tr>
+      <th>{% trans 'Github Username'%}</th>
+      <th>{% trans 'Rating' %}</th>
+      <th>{% trans 'Input'%}</th>
+      <th>{% trans 'Amount'%}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+{% if open_fulfillments %}
+  <div class="mb-2">
+    <span class="mr-2 font-weight-semibold text-secondary">{% trans 'Submitted Work:' %}</span>
 
-  #payout_table tr td .input_amount {
-    border-radius: 2px;
-    border: 1px solid;
-
-  }
-
-  #payout_table tr td .input_amount,
-  #payout_table tr td .amount {
-    padding-top: 9px;
-    padding-bottom: 9px;
-    top: 5px;
-  }
-</style>
-
-<div>
-  <div>
-    <div class="tbl_user_data">
-      <table class="table table-hover" id ="payout_table">
-        <thead>
-          <tr>
-            <th>{% trans 'Github Username'%}</th>
-            <th>{% trans 'Input'%}<a href="#" class="toggleType" data-type="pct">(%)</a></th>
-            <th>{% trans 'Amount'%}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </div>
-    <input type="submit" class="button button--primary button__small add_another" value="Add (+)" />
+    {% for fulfillment in open_fulfillments %}
+      <span class="badge badge-primary user-fulfiller" data-username="{{ fulfillment.fulfiller_github_username }}">
+        <i class="fas fa-plus"></i>
+        <img src="{{ fulfillment.profile.avatar_url }}" alt="" width="20" class="rounded-circle">
+        {{ fulfillment.fulfiller_github_username }}
+      </span>
+    {% endfor %}
   </div>
-</div>
+{% endif %}
+<input type="submit" class="btn btn-gc-blue button__small add_another float-right font-weight-bold" value="+ Add User" />

@@ -25,7 +25,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.timezone import localtime
@@ -77,7 +77,13 @@ class Grant(SuperModel):
 
         ordering = ['-created_on']
 
+    GRANT_TYPES = [
+        ('tech', 'tech'),
+        ('media', 'media')
+    ]
+
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
+    grant_type = models.CharField(max_length=15, choices=GRANT_TYPES, default='tech', help_text=_('Grant CLR category'))
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
@@ -189,21 +195,37 @@ class Grant(SuperModel):
         max_digits=20,
         help_text=_('The TOTAL CLR matching amount across all rounds'),
     )
+    clr_prediction_curve = ArrayField(
+        ArrayField(
+            models.FloatField(),
+            size=2,
+        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
+    weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
+    contribution_count = models.PositiveIntegerField(blank=True, default=0)
+    contributor_count = models.PositiveIntegerField(blank=True, default=0)
+    defer_clr_to = models.ForeignKey(
+        'grants.Grant',
+        related_name='defered_clr_from',
+        on_delete=models.CASCADE,
+        help_text=_('The Grant that this grant defers it CLR contributions to (if any).'),
+        null=True,
+    )
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
 
     def __str__(self):
         """Return the string representation of a Grant."""
-        return f"id: {self.pk}, active: {self.active}, title: {self.title}"
+        return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
+
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
         if not self.amount_goal:
             return 0
-        return ((self.amount_received / self.amount_goal) * 100)
+        return ((float(self.amount_received_with_phantom_funds) / float(self.amount_goal)) * 100)
 
 
     def updateActiveSubscriptions(self):
@@ -212,6 +234,47 @@ class Grant(SuperModel):
         for handle in Subscription.objects.filter(grant=self, active=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
             handles.append(handle)
         self.activeSubscriptions = handles
+
+    @property
+    def org_name(self):
+        from git.utils import org_name
+        try:
+            return org_name(self.reference_url)
+        except Exception:
+            return None
+
+    @property
+    def get_contribution_count(self):
+        num = 0
+        for sub in self.subscriptions.all():
+            for contrib in sub.subscription_contribution.filter(success=True):
+                num += 1
+        for pf in self.phantom_funding.all():
+            num+=1
+        return num
+
+    @property
+    def get_contributor_count(self):
+        contributors = []
+        for sub in self.subscriptions.all():
+            for contrib in sub.subscription_contribution.filter(success=True):
+                contributors.append(contrib.subscription.contributor_profile.handle)
+        for pf in self.phantom_funding.all():
+            contributors.append(pf.profile.handle)
+        return len(set(contributors))
+
+
+    @property
+    def org_profile(self):
+        from dashboard.models import Profile
+        profiles = Profile.objects.filter(handle__iexact=self.org_name)
+        if profiles.count():
+            return profiles.first()
+        return None
+
+    @property
+    def amount_received_with_phantom_funds(self):
+        return float(self.amount_received) + float(sum([ele.value for ele in self.phantom_funding.all()]))
 
     @property
     def abi(self):
@@ -223,13 +286,14 @@ class Grant(SuperModel):
             from grants.abi import abi_v1
             return abi_v1
 
-
     @property
     def url(self):
         """Return grants url."""
         from django.urls import reverse
         return reverse('grants:details', kwargs={'grant_id': self.pk, 'grant_slug': self.slug})
 
+    def get_absolute_url(self):
+        return self.url
 
     @property
     def contract(self):
@@ -667,7 +731,7 @@ next_valid_timestamp: {next_valid_timestamp}
                 return None
 
     def get_converted_monthly_amount(self):
-        converted_amount = self.get_converted_amount()
+        converted_amount = self.get_converted_amount() or 0
 
         total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
 
@@ -710,7 +774,8 @@ next_valid_timestamp: {next_valid_timestamp}
 
 @receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
 def psave_grant(sender, instance, **kwargs):
-
+    instance.contribution_count = instance.get_contribution_count
+    instance.contributor_count = instance.get_contributor_count
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
     #print(instance.id)
@@ -718,6 +783,7 @@ def psave_grant(sender, instance, **kwargs):
         value_usdt = subscription.get_converted_amount()
         for contrib in subscription.subscription_contribution.filter(success=True):
             if value_usdt:
+                #print(f"adding contribution of {round(subscription.amount_per_period,2)} {subscription.token_symbol}, pk: {contrib.pk}, worth ${round(value_usdt,2)} to make total ${round(instance.amount_received,2)}. (txid: {contrib.tx_id} tx_cleared:{contrib.tx_cleared} )")
                 instance.amount_received += Decimal(value_usdt)
 
         if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
@@ -837,6 +903,11 @@ class Contribution(SuperModel):
         null=True,
         help_text=_('The associated Subscription.'),
     )
+    normalized_data = JSONField(
+        default=dict,
+        blank=True,
+        help_text=_('the normalized grant data; for easy consumption on read'),
+    )
 
     def __str__(self):
         """Return the string representation of this object."""
@@ -851,6 +922,47 @@ class Contribution(SuperModel):
         if tx_status != 'pending':
             self.success = tx_status == 'success'
             self.tx_cleared = True
+
+@receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
+def psave_contrib(sender, instance, **kwargs):
+
+    from django.contrib.contenttypes.models import ContentType
+    from dashboard.models import Earning
+    Earning.objects.update_or_create(
+        source_type=ContentType.objects.get(app_label='grants', model='contribution'),
+        source_id=instance.pk,
+        defaults={
+            "created_on":instance.created_on,
+            "from_profile":instance.subscription.contributor_profile,
+            "org_profile":instance.subscription.grant.org_profile,
+            "to_profile":instance.subscription.grant.admin_profile,
+            "value_usd":instance.subscription.get_converted_amount(),
+            "url":instance.subscription.grant.url,
+            "network":instance.subscription.grant.network,
+        }
+        )
+
+@receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
+def presave_contrib(sender, instance, **kwargs):
+
+    ele = instance
+    sub = ele.subscription
+    grant = sub.grant
+    instance.normalized_data = {
+        'id': grant.id,
+        'logo': grant.logo.url if grant.logo else None,
+        'url': grant.url,
+        'title': grant.title,
+        'created_on': ele.created_on.strftime('%Y-%m-%d'),
+        'frequency': int(sub.frequency),
+        'frequency_unit': sub.frequency_unit,
+        'num_tx_approved': int(sub.num_tx_approved),
+        'token_symbol': sub.token_symbol,
+        'amount_per_period_usdt': float(sub.amount_per_period_usdt),
+        'amount_per_period': float(sub.amount_per_period),
+        'tx_id': ele.tx_id,
+        }
+
 
 def next_month():
     """Get the next month time."""
@@ -879,6 +991,11 @@ class CLRMatch(SuperModel):
 class MatchPledge(SuperModel):
     """Define the structure of a MatchingPledge."""
 
+    PLEDGE_TYPES = [
+        ('tech', 'tech'),
+        ('media', 'media')
+    ]
+
     active = models.BooleanField(default=False, help_text=_('Whether or not the MatchingPledge is active.'))
     profile = models.ForeignKey(
         'dashboard.Profile',
@@ -893,6 +1010,7 @@ class MatchPledge(SuperModel):
         max_digits=50,
         help_text=_('The matching pledge amount in DAI.'),
     )
+    pledge_type = models.CharField(max_length=15, choices=PLEDGE_TYPES, default='tech', help_text=_('CLR pledge type'))
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
     end_date = models.DateTimeField(null=False, default=next_month)
     data = models.TextField(blank=True)
@@ -900,3 +1018,47 @@ class MatchPledge(SuperModel):
     def __str__(self):
         """Return the string representation of this object."""
         return f"{self.profile} <> {self.amount} DAI"
+
+class PhantomFunding(SuperModel):
+    """Define the structure of a PhantomFunding object.
+
+    For Grants, we have a fund we’re contributing on their behalf.  just having a quick button they can push saves all the hassle of (1) asking them their wallet, (2) sending them the DAI (3) contributing it.
+
+    """
+
+    round_number = models.PositiveIntegerField(blank=True, null=True)
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='phantom_funding',
+        on_delete=models.CASCADE,
+        help_text=_('The associated grant being Phantom Funding.'),
+    )
+
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='grant_phantom_funding',
+        on_delete=models.CASCADE,
+        help_text=_('The associated profile doing the Phantom Funding.'),
+    )
+
+    def __str__(self):
+        """Return the string representation of this object."""
+        return f"{self.round_number}; {self.profile} <> {self.grant}"
+
+    def competing_phantum_funds(self):
+        return PhantomFunding.objects.filter(profile=self.profile, round_number=self.round_number)
+
+    @property
+    def value(self):
+        return 5/(self.competing_phantum_funds().count())
+
+    def to_mock_contribution(self):
+        context = self.to_standard_dict()
+        context['subscription'] = {
+            'contributor_profile': self.profile,
+            'amount_per_period': self.value,
+            'token_symbol': 'DAI',
+        }
+        context['tx_cleared'] = True
+        context['success'] = True
+        return context

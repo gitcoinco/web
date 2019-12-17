@@ -16,7 +16,7 @@
 {% endcomment %}
 {% load i18n static %}
 {% load kudos_extras matches %}
-<div class="kd-card {% if listing.num_clones_available == 0 %}ghost{% endif %}">
+<div class="kd-card {% if not listing.is_available %}ghost{% endif %}">
   <a href="{% url 'kudos_details' listing.id listing.name %}" class="{% if 'cellarius' in listing.tags %}cellarius-partner{% endif %}">
     <img id="kudosImage" data-src="{{listing.preview_img_url}}" alt="{{ listing.name }}" class="img-thumbnail kd-shadow border-transparent" width="250" style="min-height: 200px;">
   </a>

@@ -233,7 +233,7 @@ body {
 .hackathon-alt {
   font-size: 11px;
   color: #0d0764;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 1.7px;
 }
 
@@ -243,6 +243,10 @@ body {
 
 .status-open {
   color: #00A652;
+}
+
+.status-reserved {
+  color: #d58512;
 }
 
 .status-started {

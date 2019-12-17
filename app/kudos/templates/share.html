@@ -1,7 +1,7 @@
 {% load kudos_extras %}
 {% load i18n static %}
 <style>
-  .modal {
+  #share-modal.modal {
     display: none;
     position: fixed;
     z-index: 1025;
@@ -15,7 +15,7 @@
     overflow-y: auto;
   }
 
-  .modal-content {
+  #share-modal .modal-content {
     background-color: #fefefe;
     margin: 15% auto;
     padding: 20px;
@@ -29,7 +29,7 @@
     cursor: pointer;
   }
 
-  .modal #kudos-image {
+  #share-modal .kudos-image {
     max-width: 12rem;
   }
 
@@ -60,7 +60,7 @@
 
   @media (max-width: 991.98px) {
 
-    .modal-content {
+    #share-modal .modal-content {
       width: 80%;
     }
 
@@ -68,14 +68,14 @@
       text-align: center;
     }
 
-    #share-modal #kudos-image {
+    #share-modal .kudos-image {
       margin: auto;
     }
   }
 
   @media (max-width: 767.98px) {
 
-    .modal-content {
+    #share-modal .modal-content {
       width: 100%;
     }
 
@@ -102,8 +102,8 @@
       <div class="col-12 text-center">
         <h1 class="font-title-lg mb-4">{% trans "Share" %} Kudos!</h1>
       </div>
-      <div id="kudos-image" class="col-12 offset-lg-4 col-lg-4">
-        <img src="{% static kudos.image %}" alt="{{ kudos.name }}" class="w-100">
+      <div id="kudos-image" class="kudos-image col-12 offset-lg-4 col-lg-4">
+        <img src="{{kudos.static_image}}" alt="{{ kudos.name }}" class="w-100">
       </div>
       <div class="col-12 col-lg-4 my-auto">
         <p>
@@ -118,7 +118,7 @@
     <div class="col-12 my-4 text-center">
       <input class="form__input"type="text" value="{{ request.META.HTTP_HOST }}{% url 'kudos_details' kudos.id kudos.name %}" id="shareLink" readonly>
       <button class="btn btn-gc-blue button__small font-body" id="copyLink">
-        <i data-toggle="tooltip" title="" data-html="true" 
+        <i data-toggle="tooltip" title="" data-html="true"
           data-original-title="<span class='title-tooltip text-center'>{% trans 'Click To Copy' %}</span>"
           data-template='<div class="tooltip-kudos tooltip-share" role="tooltip"><div class="tooltip-inner"></div></div>' class="text-color_blue">
           {% trans "Copy Link" %}

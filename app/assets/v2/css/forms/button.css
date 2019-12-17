@@ -1,13 +1,11 @@
 .button {
   border: none;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 3px;
   color: #fff;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 400;
-  padding: 10px 20px;
-  -webkit-appearance: none;
+  padding: 5px 20px;
+  border: 1px solid transparent;
 }
 
 .button:hover {
@@ -17,22 +15,27 @@
 
 .button--primary.button.disabled,
 .button--primary.button.disabled:hover {
-  background-color: #DFDFDF;
+  background-color: #D8D8D8;
+  color: #666666;
   box-shadow: none;
-  color: #9F9F9F;
 }
 
 .button--primary {
-  background-color: #0D0764;
-  font-weight: 500;
+  background-color: #3E00FF;
 }
 
 .button--primary:hover {
-  background-color: #280076;
+  background-color: var(--gc-blue-hover);
 }
 
-.button--primary:active {
-  background-color: #1B0050;
+.button--secondary {
+  color: var(--gc-blue);
+  border: 1px solid var(--gc-blue);
+}
+
+.button--secondary:hover {
+  color: var(--gc-blue-hover);
+  border-color: var(--gc-blue-hover);
 }
 
 .button--primary-o {

@@ -18,13 +18,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
+import urllib.request
 from io import BytesIO
+from os import path
 
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.files import File
 from django.db import models
 from django.db.models import Q
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.templatetags.static import static
 from django.utils import timezone
@@ -35,6 +38,7 @@ import pyvips
 from dashboard.models import SendCryptoAsset
 from economy.models import SuperModel
 from eth_utils import to_checksum_address
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from pyvips.error import Error as VipsError
 
 logger = logging.getLogger(__name__)
@@ -96,11 +100,14 @@ class Token(SuperModel):
 
         verbose_name_plural = 'Kudos'
         index_together = [['name', 'description', 'tags'], ]
+        unique_together = ('token_id', 'contract',)
 
     # Kudos Struct (also in contract)
     price_finney = models.IntegerField()
     num_clones_allowed = models.IntegerField(null=True, blank=True)
     num_clones_in_wild = models.IntegerField(null=True, blank=True)
+    num_clones_available_counting_indirect_send = models.IntegerField(blank=True, default=0)
+
     cloned_from_id = models.IntegerField()
     popularity = models.IntegerField(default=0)
     popularity_week = models.IntegerField(default=0)
@@ -139,6 +146,12 @@ class Token(SuperModel):
             self.owner_address = to_checksum_address(self.owner_address)
 
         super().save(*args, **kwargs)
+
+    @property
+    def static_image(self):
+        if 'v2' in self.image:
+            return static(self.image)
+        return self.image
 
     @property
     def ui_name(self):
@@ -264,7 +277,7 @@ class Token(SuperModel):
         return related_kudos_transfers.values_list('recipient_profile__handle', flat=True)
 
     @property
-    def num_clones_available_counting_indirect_send(self):
+    def _num_clones_available_counting_indirect_send(self):
         return self.num_clones_allowed - self.num_clones_in_wild_counting_indirect_send
 
     @property
@@ -307,10 +320,22 @@ class Token(SuperModel):
         """
         root = environ.Path(__file__) - 2  # Set the base directory to two levels.
         file_path = root('assets') + '/' + self.image
+
+        # download it if file is remote
+        if settings.AWS_STORAGE_BUCKET_NAME and settings.AWS_STORAGE_BUCKET_NAME in self.image:
+            file_path = f'cache/{self.pk}.png'
+            if not path.exists(file_path):
+                safe_url = self.image.replace(' ', '%20')
+                filedata = urllib.request.urlopen(safe_url)
+                datatowrite = filedata.read()
+                with open(file_path, 'wb') as f:
+                    f.write(datatowrite)
+
+        # serve file
         with open(file_path, 'rb') as f:
             obj = File(f)
             from avatar.utils import svg_to_png
-            return svg_to_png(obj.read(), scale=3, width=333, height=384, index=self.pk)
+            return svg_to_png(obj.read(), scale=3, width=333, height=384, index=self.pk, prefer='inkscape')
         return None
 
 
@@ -328,6 +353,8 @@ class Token(SuperModel):
     def url(self):
         return f'{settings.BASE_URL}kudos/{self.pk}/{slugify(self.name)}'
 
+    def get_absolute_url(self):
+        return self.url
 
     def get_relative_url(self):
         """Get the relative URL for the Bounty.
@@ -341,6 +368,9 @@ class Token(SuperModel):
         """
         return f'/kudos/{self.pk}/{slugify(self.name)}'
 
+    @property
+    def is_available(self):
+        return self.num_clones_allowed > 0 and self.num_clones_available_counting_indirect_send > 0
 
     def send_enabled_for(self, user):
         """
@@ -351,13 +381,17 @@ class Token(SuperModel):
         Returns:
             bool: Wehther a send should be enabled for this user
         """
-        are_kudos_available = self.num_clones_allowed != 0 and self.num_clones_available_counting_indirect_send != 0
-        if not are_kudos_available:
+        if not self.is_available:
             return False
         is_enabled_for_user_in_general = self.send_enabled_for_non_gitcoin_admins
         is_enabled_for_this_user = hasattr(user, 'profile') and TransferEnabledFor.objects.filter(profile=user.profile, token=self).exists()
         is_enabled_because_staff = user.is_authenticated and user.is_staff
         return is_enabled_for_this_user or is_enabled_for_user_in_general or is_enabled_because_staff
+
+
+@receiver(pre_save, sender=Token, dispatch_uid="psave_token")
+def psave_token(sender, instance, **kwargs):
+    instance.num_clones_available_counting_indirect_send = instance._num_clones_available_counting_indirect_send
 
 
 class KudosTransfer(SendCryptoAsset):
@@ -446,6 +480,22 @@ def psave_kt(sender, instance, **kwargs):
         token.popularity_quarter = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=90))).count()
         token.save()
 
+    from django.contrib.contenttypes.models import ContentType
+    from dashboard.models import Earning
+    Earning.objects.update_or_create(
+        source_type=ContentType.objects.get(app_label='kudos', model='kudostransfer'),
+        source_id=instance.pk,
+        defaults={
+            "created_on":instance.created_on,
+            "from_profile":instance.sender_profile,
+            "org_profile":instance.org_profile,
+            "to_profile":instance.recipient_profile,
+            "value_usd":instance.value_in_usdt_then,
+            "url":instance.kudos_token_cloned_from.url,
+            "network":instance.network,
+        }
+        )
+
 
 class Contract(SuperModel):
 
@@ -502,6 +552,8 @@ class BulkTransferCoupon(SuperModel):
 
     sender_address = models.CharField(max_length=255, blank=True)
     sender_pk = models.CharField(max_length=255, blank=True)
+    tag = models.CharField(max_length=255, blank=True)
+    metadata = JSONField(default=dict, blank=True)
 
     def __str__(self):
         """Return the string representation of a model."""
@@ -510,6 +562,16 @@ class BulkTransferCoupon(SuperModel):
     @property
     def url(self):
         return f"/kudos/redeem/{self.secret}"
+
+
+@receiver(pre_save, sender=BulkTransferCoupon, dispatch_uid="psave_BulkTransferCoupon")
+def psave_BulkTransferCoupon(sender, instance, **kwargs):
+    is_owned_by_gitcoin = instance.token.owner_address.lower() == "0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F".lower()
+    is_kudos_token_deployed_to_gitcoin = not bool(instance.sender_pk)
+
+    if not is_owned_by_gitcoin and is_kudos_token_deployed_to_gitcoin:
+        raise Exception("This bulk transfer kudos has been created to airdrop a kudos.. But the kudos is not owned by Gitcoin... If this kudos goes live, people will redeem it and it will deplete the ETH in the kudos airdropper; which is bad!  Please correct the kudos to either be one that is owned by Gitcoin, or one that has a seperate source of ETH (by sending sender_pk).  Thank you and have a nice day -- Kevin Owocki, protector of Gitcoin's ETH")
+
 
 class BulkTransferRedemption(SuperModel):
 
@@ -529,6 +591,57 @@ class BulkTransferRedemption(SuperModel):
     def __str__(self):
         """Return the string representation of a model."""
         return f"coupon: {self.coupon} redeemed_by: {self.redeemed_by}"
+
+
+class TokenRequest(SuperModel):
+    """Define the TokenRequest model."""
+
+    name = models.CharField(max_length=255, db_index=True)
+    description = models.TextField(max_length=500, default='')
+    priceFinney = models.IntegerField(default=18)
+    network = models.CharField(max_length=25, db_index=True)
+    artist = models.CharField(max_length=255)
+    platform = models.CharField(max_length=255)
+    to_address = models.CharField(max_length=255)
+    artwork_url = models.CharField(max_length=255)
+    numClonesAllowed = models.IntegerField(default=18)
+    metadata = JSONField(null=True, default=dict, blank=True)
+    tags = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    approved = models.BooleanField(default=True)
+    processed = models.BooleanField(default=False)
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='token_requests', on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        """Define the string representation of a conversion rate."""
+        return f"{self.name} on {self.network} on {self.created_on}; approved: {self.approved} "
+
+
+    def mint(self):
+        """Approve / mint this token."""
+        from kudos.management.commands.mint_all_kudos import mint_kudos # avoid circular import
+        from kudos.utils import KudosContract # avoid circular import
+        account = settings.KUDOS_OWNER_ACCOUNT
+        private_key = settings.KUDOS_PRIVATE_KEY
+        kudos = {
+            'name': self.name,
+            'description': self.description,
+            'priceFinney': self.priceFinney,
+            'artist': self.artist,
+            'platform': self.name,
+            'platform': self.platform,
+            'numClonesAllowed': self.numClonesAllowed,
+            'tags': self.tags,
+            'artwork_url': self.artwork_url,
+        }
+        kudos_contract = KudosContract(network=self.network)
+        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1)
+        tx_id = mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True, dont_wait_for_kudos_id_return_tx_hash_instead=True)
+        self.processed = True
+        self.approved = True
+        self.save()
+        return tx_id
 
 class TransferEnabledFor(SuperModel):
     """Model that represents the ability to send a Kudos, i

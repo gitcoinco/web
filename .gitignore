@@ -23,6 +23,7 @@ gcoin/
 webpack-stats.json
 .sass-cache
 *.sql
+celerybeat.pid
 
 # Sensitive environment files
 .env

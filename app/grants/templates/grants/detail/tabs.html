@@ -24,18 +24,17 @@
 
     <button type="button" id="nav-transactions" href="{{grant.url}}?tab=activity" class="section-tab {% if tab == "activity" %} active {% endif %}">
       {% trans "ACTIVITY" %}
-      {% if not subscriptions and not cancelled_subscriptions and not contributions %}
-        <span class="nav-badge">0</span>
-      {% endif %}
+      <span class="nav-badge">({{ activity_count }})</span>
     </button>
 
     <button type="button" id="nav-summary" href="{{grant.url}}?tab=updates" class="section-tab {% if tab == "updates" %} active {% endif %}">
       {% trans "UPDATES" %}
+      <span class="nav-badge">(0)</span>
     </button>
 
     <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">
       {% trans "CONTRIBUTORS" %}
-      <span class="nav-badge">{{ contributions|length }}</span>
+      <span class="nav-badge">({{ contributors|length }})</span>
     </button>
 
   </div>
@@ -54,32 +53,40 @@
     {% endif %}
 
     {% if tab == "activity" %}
-    <div id="section-nav-transactions" class="">
-      {% if not subscriptions and not cancelled_subscriptions and not contributions %}
-        <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
-      {% else %}
-        {% include 'grants/activity.html' %}
-        <span id="grant-network" class="hidden">{{ grant.network }}</span>
-      {% endif %}
-    </div>
+      <div id="section-nav-transactions">
+        {% if not subscriptions and not cancelled_subscriptions and not contributions %}
+          <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
+        {% else %}
+          {% include 'grants/activity.html' %}
+          <span id="grant-network" class="hidden">{{ grant.network }}</span>
+        {% endif %}
+      </div>
     {% endif %}
 
     {% if tab == "updates" %}
-    <div id="section-nav-summary" class="">
-      {% include 'grants/detail/summary.html' %}
-    </div>
+      <div id="section-nav-summary">
+        {% include 'grants/detail/summary.html' %}
+      </div>
     {% endif %}
 
     {% if tab == "contributors" %}
-    <div id="section-nav-contributors" class="">
+    <div id="section-nav-contributors">
       <div class="grant__stakeholders-list d-flex flex-wrap">
-        {% for contribution in contributions %}
-          <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' contribution.subscription.contributor_profile.handle %}">
+        {% for contribution in contributors %}
+          {% if contribution.subscription %}
+            {% trans  contribution.subscription.contributor_profile.handle  as handle %}
+          {% else %}
+            {% trans  contribution.profile.handle  as handle %}
+          {% endif %}
+          <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' handle %}">
             <div class="mr-2 d-inline-block">
-              <img src="{{ contribution.subscription.contributor_profile.avatar_url }}" />
+              <img src="/dynamic/avatar/{{handle}}" />
             </div>
             <div class="mt-1 d-inline-block">
-              <span class="grant-profile font-weight-semibold">{{ contribution.subscription.contributor_profile.handle }}</span>
+              <span class="grant-profile font-weight-semibold">{{ handle }}</span><br>
+              {% if handle == request.user.profile.handle  %}
+              <a href="{%  url "grants:contribution_invoice" contribution.id  %}">Get invoice</a>
+              {% endif %}
             </div>
           </a>
 
@@ -104,7 +111,7 @@
             readOnly: true,
           });
 
-        {% if is_admin and not grant_is_inactive %}
+        {% if is_team_member and not grant_is_inactive %}
           grant_description = new Quill('#editor', {
             theme: 'snow',
           });

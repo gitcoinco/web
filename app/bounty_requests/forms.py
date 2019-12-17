@@ -30,12 +30,14 @@ class BountyRequestForm(forms.ModelForm):
 
     class Meta:
         model = BountyRequest
-        fields = ['github_url', 'eth_address', 'amount', 'comment']
+        fields = ['github_url', 'eth_address', 'amount', 'comment', 'github_org_name']
         labels = {
             'eth_address': _('Your ETH Address (Optional)'),
             'amount': _('Proposed Funding Amount (USD)'),
-            'comment': _('Comment')
+            'comment': _('Comment'),
+            'github_org_name': ''
         }
+        widgets = {'github_org_name': forms.HiddenInput()}
 
     def __init__(self, *args, **kwargs):
         super(BountyRequestForm, self).__init__(*args, **kwargs)

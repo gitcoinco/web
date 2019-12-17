@@ -115,7 +115,7 @@ Technically, the system is architected:
 If you
 
 * have some work on your Github Issues board that you don't have time (or skills) to do.
-* are dependant upon an upstream repo for something, and you'd like to incentivize them to work onit.
+* are dependant upon an upstream repo for something, and you'd like to incentivize them to work on it.
 
 try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
 
@@ -157,7 +157,7 @@ This widget will help you advertise that you support Gitcoin bounties, so that y
 
 Gitcoinbot will allow you to add issues straight from github.
 
-[Check out the gitcoinbot readme to learn how](../app/gitcoinbot/README.md)
+[Check out the gitcoinbot readme to learn how](https://docs.gitcoin.co/mk_gitcoinbot/)
 
 ## Adding your token to Gitcoin
 
@@ -191,7 +191,7 @@ We may introduce Arbitration [via Delphi](http://delphi.network/) at some point 
 #### Showing Support to Individuals
 
 - via [Tips](https://gitcoin.co/tips) 
-  - A free, fast way to show immediate gratitude towards an individual via github username or email adress
+  - A free, fast way to show immediate gratitude towards an individual via github username or email address
   
 - via [Kudos](https://gitcoin.co/kudos)
   - Showcases special skills and appreciation towards other Gitcoin members.

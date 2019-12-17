@@ -1,5 +1,5 @@
 😕 New Fulfillment Rejection 😕
 
-There is a new fulfillment *rejection* on this issue. Please refer to the rejection comments on the github pull request to learn why.
+There is a new fulfillment *rejection* on this issue. Please refer to the rejection comments on the Github pull request to learn why.
 
 {% include 'emails/bounty.txt' with bounty=bounty %}

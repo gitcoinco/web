@@ -59,7 +59,7 @@ $(document).ready(function() {
     e.preventDefault();
     loading_button($(this));
 
-    var issueURL = $('input[name=issueURL]').val();
+    var issueURL = $('#issueURL').html();
     var amount = $('input[name=amount]').val();
     var tokenAddress = $('select[name=denomination]').val();
 
@@ -159,7 +159,7 @@ $(document).ready(function() {
     function do_as_crowd() {
       // get form data
       var email = '';
-      var github_url = $('#issueURL').val();
+      var github_url = $('#issueURL').text();
       var from_name = document.contxt['github_handle'];
       var username = '';
       var amountInEth = amount / decimalDivisor;

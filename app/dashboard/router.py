@@ -29,8 +29,8 @@ from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
 from .models import (
-    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, HackathonEvent, Interest, ProfileSerializer,
-    SearchHistory,
+    Activity, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, HackathonEvent, Interest, Profile,
+    ProfileSerializer, SearchHistory,
 )
 
 logger = logging.getLogger(__name__)
@@ -157,7 +157,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
             'additional_funding_summary', 'funding_organisation', 'paid', 'event',
             'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured',
-            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on', 'can_remarket'
+            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on', 'can_remarket', 'is_reserved'
         )
 
     def create(self, validated_data):
@@ -253,7 +253,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_categories',
                     'bounty_owner_address', 'idx_status', 'network', 'bounty_owner_github_username',
-                    'standard_bounties_id', 'permission_type', 'project_type']:
+                    'standard_bounties_id', 'permission_type', 'project_type', 'pk']:
             if key in param_keys:
                 # special hack just for looking up bounties posted by a certain person
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'
@@ -268,6 +268,15 @@ class BountyViewSet(viewsets.ModelViewSet):
                         args[f'{key}__icontains'] = value.strip()
                         _queryset = _queryset | queryset.filter(**args)
                     queryset = _queryset
+
+        if 'reserved_for_user_handle' in param_keys:
+            handle = self.request.query_params.get('reserved_for_user_handle', '')
+            if handle:
+                try:
+                    profile = Profile.objects.filter(handle__iexact=handle).first()
+                    queryset = queryset.filter(bounty_reserved_for_user=profile)
+                except:
+                    logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
 
         # filter by PK
         if 'pk__gt' in param_keys:
@@ -419,6 +428,7 @@ class BountyViewSet(viewsets.ModelViewSet):
                 data['nonce'] = int(time.time()  * 1000000)
                 try:
                     SearchHistory.objects.update_or_create(
+                        search_type='bounty',
                         user=self.request.user,
                         data=data,
                         ip_address=get_ip(self.request)
