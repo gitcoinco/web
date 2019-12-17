@@ -25,7 +25,7 @@ To get it running on your repo, you can install it [here](https://github.com/app
 
 ## Post Installation.
 
-Congrats on installing @gitcoinbot.  This bot facilitates gitcoin bounties via github commands.
+Congratulations on installing @gitcoinbot.  This bot facilitates gitcoin bounties via github commands.
 
 You can go ahead <a href="https://github.com/apps/gitcoinbot">here</a>.
 
