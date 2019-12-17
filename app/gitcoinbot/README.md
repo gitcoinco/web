@@ -31,7 +31,7 @@ You can go <a href="https://github.com/apps/gitcoinbot">here</a>.
 
 ![Gitcoinbot configure](https://github.com/gitcoinco/web/raw/master/docs/imgs/gitcoinbotconfigure.gif)
 
-From there you may select which repository you want the Gitcoinbot to be working
+From there. Click configure, then you may select which repository you want the Gitcoinbot to be working
 
 <hr>Here are the commands it understands:
 
