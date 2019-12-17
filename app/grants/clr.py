@@ -29,7 +29,6 @@ from django.utils import timezone
 from grants.models import Contribution, Grant, PhantomFunding
 from perftools.models import JSONStore
 
-CLR_DISTRIBUTION_AMOUNT = 100000.0
 LOWER_THRESHOLD = 0.0
 CLR_START_DATE = dt.datetime(2019, 9, 15, 0, 0)
 
@@ -51,12 +50,12 @@ CLR_START_DATE = dt.datetime(2019, 9, 15, 0, 0)
     Returns:
         [[grant_id (str), user_id (str), contribution_amount (float)]]
 '''
-def translate_data(grants_data):
+def translate_data(grants):
     grants_list = []
-    for g in grants_data:
-        grant_id = g.get('id')
-        for c in g.get('contributions'):
-            val = [grant_id] + [list(c.keys())[0], list(c.values())[0]]
+    for grant in grants:
+        grant_id = grant.get('id')
+        for contribution in grant.get('contributions'):
+            val = [grant_id] + [list(contribution.keys())[0], list(contribution.values())[0]]
             grants_list.append(val)
     return grants_list
 
@@ -72,9 +71,6 @@ def translate_data(grants_data):
 
     Returns:
         {grant_id (str): {user_id (str): aggregated_amount (float)}}
-
-        and
-
         {user_id (str): {user_id (str): pair_total (float)}}
 '''
 def aggregate_contributions(grant_contributions):
@@ -216,10 +212,10 @@ def calculate_clr_for_donation(donation_grant, donation_amount, total_pot, base_
         if grant_clr['id'] == donation_grant.id:
             return (grant_clr['clr_amount'], grants_clr)
 
-    print(f'info: no contributions for grant {donation_grant}')
+    print(f'info: no contributions found for grant {donation_grant}')
     return (None, None)
 
-def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=None, network='mainnet'):
+def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=None, network='mainnet', clr_amount=0):
     # setup
     clr_calc_start_time = timezone.now()
 
@@ -276,7 +272,7 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=No
 
         for donation_amount in potential_donations:
             # calculate clr with each additional donation and save to grants model
-            predicted_clr, grants_clr = calculate_clr_for_donation(grant, donation_amount, CLR_DISTRIBUTION_AMOUNT, contrib_data)
+            predicted_clr, grants_clr = calculate_clr_for_donation(grant, donation_amount, clr_amount, contrib_data)
             potential_clr.append(predicted_clr)
 
         if save_to_db:
