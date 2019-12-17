@@ -25,10 +25,12 @@
         {% trans "Join Our Newsletter!" %}
       {% endif %}
     </h4>
-    I want to
+    <span class="mr-2">
+      I want to
+    </span>
     <nav class="nav justify-content-center d-inline-flex btn-group btn-group-sm my-3" id="myTab" role="tablist">
-      <a class="nav-link active btn btn-gc-grey" id="funderForm-tab" data-toggle="tab" href="#funderForm" role="tab" aria-controls="funderForm" aria-selected="true">fund bounties</a>
-      <a class="nav-link btn btn-gc-grey" id="hunterForm-tab" data-toggle="tab" href="#hunterForm" role="tab" aria-controls="hunterForm" aria-selected="false">work on bounties</a>
+      <a class="nav-link active btn btn-gc-grey py-2 px-3" id="funderForm-tab" data-toggle="tab" href="#funderForm" role="tab" aria-controls="funderForm" aria-selected="true">fund bounties</a>
+      <a class="nav-link btn btn-gc-grey py-2 px-3" id="hunterForm-tab" data-toggle="tab" href="#hunterForm" role="tab" aria-controls="hunterForm" aria-selected="false">work on bounties</a>
     </nav>
     <div class="tab-content" id="myTabContent">
       <!-- funders newsletter -->
@@ -39,7 +41,7 @@
         {% endif %}
         <div class="col-12 pt-3">
           <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
-          <button id="newsletter-subscribe-funder" type="submit" class="button button--primary subscribe ml-lg-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
+          <button id="newsletter-subscribe-funder" type="submit" class="button button--primary subscribe py-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
         </div>
         {% if not hide_newsletter_consent %}
           <span style="display: block; margin-top: 3px; font-size: 10px;">
