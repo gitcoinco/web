@@ -21,10 +21,6 @@
         <label class="custom-control-label" for="backup_profile">{% trans "Backup my profile data" %}</label>
       </div>
       <div class="custom-control custom-switch">
-        <input type="checkbox" class="custom-control-input" name="backup_jobs" id="backup_jobs" {% if profile.backup_jobs %} checked="checked" {% endif %}>
-        <label class="custom-control-label" for="backup_jobs">{% trans "Backup job data" %}</label>
-      </div>
-      <div class="custom-control custom-switch">
         <input type="checkbox" class="custom-control-input" name="backup_bounties" id="backup_bounties" {% if profile.backup_bounties %} checked="checked" {% endif %}>
         <label class="custom-control-label" for="backup_bounties">{% trans "Backup my bounties history" %}</label>
       </div>
@@ -33,8 +29,12 @@
         <label class="custom-control-label" for="backup_tips">{% trans "Backup tips history" %}</label>
       </div>
       <div class="custom-control custom-switch">
-        <input type="checkbox" class="custom-control-input" name="backup_interests" id="backup_interests" {% if profile.backup_interests %} checked="checked" {% endif %}>
-        <label class="custom-control-label" for="backup_interests">{% trans "Backup interests history" %}</label>
+        <input type="checkbox" class="custom-control-input" name="backup_acknowledgment" id="backup_acknowledgment" {% if profile.backup_acknowledgment %} checked="checked" {% endif %}>
+        <label class="custom-control-label" for="backup_acknowledgment">{% trans "Backup Kudos history" %}</label>
+      </div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" name="backup_preferences" id="backup_preferences" {% if profile.backup_preferences %} checked="checked" {% endif %}>
+        <label class="custom-control-label" for="backup_preferences">{% trans "Backup preferences" %}</label>
       </div>
       <div class="custom-control custom-switch">
         <input type="checkbox" class="custom-control-input" name="backup_stats" id="backup_stats" {% if profile.backup_stats %} checked="checked" {% endif %}>

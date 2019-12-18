@@ -972,23 +972,3 @@ def get_url_first_indexes():
 
 def get_backup_schema():
     return schema
-
-
-def get_space_data(space, user, partial_schema):
-    profile = user.profile
-    if space == 'profile':
-        avatar = profile.avatar_url if profile.has_custom_avatar() else ''
-        return {
-            'name': profile.user.get_full_name(),
-            'handle': profile.handle,
-            'tagline': profile.custom_tagline,
-            'keywords': profile.keywords,
-            'avatar': avatar,
-            'wallpaper': profile.profile_wallpaper,
-            'funder': profile.persona_is_funder,
-            'hunter': profile.persona_is_hunter,
-            'gitcoin.last_login': profile.user.last_login.isoformat(),
-            'gitcoin.date_joined': profile.user.date_joined.isoformat(),
-        }
-
-    return {}

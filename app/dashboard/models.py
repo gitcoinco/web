@@ -2393,7 +2393,7 @@ class Profile(SuperModel):
     backup_acknowledgment = models.BooleanField(default=False)
     backup_tips = models.BooleanField(default=False)
     backup_jobs = models.BooleanField(default=False)
-    backup_interests = models.BooleanField(default=False)
+    backup_preferences = models.BooleanField(default=False)
     backup_stats = models.BooleanField(default=False)
     backup_activity = models.BooleanField(default=False)
 

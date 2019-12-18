@@ -640,20 +640,20 @@ def backup_settings(request):
         profile.backup_profile = bool(request.POST.get('backup_profile', False))
         profile.backup_bounties = bool(request.POST.get('backup_bounties', False))
         profile.backup_tips = bool(request.POST.get('backup_tips', False))
-        profile.backup_jobs = bool(request.POST.get('backup_jobs', False))
-        profile.backup_interests = bool(request.POST.get('backup_interests', False))
+        profile.backup_acknowledgment = bool(request.POST.get('backup_acknowledgment', False))
+        profile.backup_preferences = bool(request.POST.get('backup_preferences', False))
         profile.backup_stats = bool(request.POST.get('backup_stats', False))
         profile.backup_activity = bool(request.POST.get('backup_activity', False))
         profile.save()
-    else:
-        assert request.content_type == 'application/json', request.content_type
+
     if request.method == 'GET' and request.content_type == 'application/json':
         return JsonResponse({
+            'last_backup': profile.last_backup,
             'backup_profile': profile.backup_profile,
             'backup_bounties': profile.backup_bounties,
             'backup_tips': profile.backup_tips,
             'backup_jobs': profile.backup_jobs,
-            'backup_interests': profile.backup_interests,
+            'backup_preferences': profile.backup_preferences,
             'backup_stats': profile.backup_stats,
             'backup_activity': profile.backup_activity,
         })

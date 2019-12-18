@@ -86,12 +86,13 @@ schema = {
         'tips',
         'acknowledgment',
         'preferences',
-        'activities'
+        'activity',
+        'stats'
     ],
     'definitions': {
         'profile': {
             'collection': False,
-            'fields':{
+            'fields': {
                 'name': string(privacy=public, desc='Fullname on the platform'),
                 'handle': string(privacy=public, desc='Identifier on the gitcoin platform'),
                 'tagline': string(privacy=public),
@@ -139,6 +140,61 @@ schema = {
                 'issue_url': url(privacy=private),
                 'submissions_comment': string(privacy=private)
             }
-        }
+        },
+        'interests': {
+            'collection': True,
+            'key': '<provider>.<id>',
+            'fields': {
+            }
+        },
+        'tips': {
+            'collection': True,
+            'key': '<provider>.<id>',
+            'fields': {
+                'id': number(privacy=public),
+                'expires': date(privacy=public),
+                'created': date(privacy=public),
+                'comments_private': string(privacy=private),
+                'status': string(privacy=public),
+                'comments_public': string(privacy=public),
+                'recipient': string(privacy=private),
+                'sender': string(privacy=private),
+                'amount': number(privacy=private),
+                'token': string(privacy=public),
+                'token_address': string(privacy=public),
+                'rewarded_for': url(privacy=public),
+                'value_in_usdt': number(privacy=private),
+            }
+        },
+        'acknowledgment': {
+            'collection': True,
+            'key': '<provider>.<id>',
+            'fields': {
+            }
+        },
+        'preferences': {
+            'collection': False,
+            'fields': {
+                'hide_profile': boolean(privacy=public),
+                'preferred_payout_address': string(privacy=private),
+                'preferred_acknowledgment_wallet': string(privacy=private),
+                'preferred_lang': string(privacy=public)
+            }
+        },
+        'activity': {
+            'collection': True,
+            'key': '<provider>.<id>',
+            'fields': {
+                'id': number(privacy=public),
+                'type': string(privacy=public),
+                'resource': choice(options=['tip', 'profile', 'kudos'], privacy=public),
+                'url': url(privacy=public)
+            }
+        },
+        'stats': {
+            'collection': False,
+            'fields': {
+            }
+        },
     }
 }

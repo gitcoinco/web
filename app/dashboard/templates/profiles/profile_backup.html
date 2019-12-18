@@ -63,11 +63,11 @@
           </div>
 
           {% include 'shared/backup_section.html' with  name='Profile' fields=schema.definitions.profile.fields  prefix='profile' check=profile.backup_profile desc='Should backup your gitcoin profile data?' %}
-          {% include 'shared/backup_section.html' with  name='Job' fields=schema.definitions.jobs.fields  prefix='jobs' check=profile.backup_jobs desc='Should backup your gitcoin job data?' %}
           {% include 'shared/backup_section.html' with  name='Bounties' fields=schema.definitions.bounties.fields  prefix='bounties' check=profile.backup_bounties desc='Should backup your bounties history?' %}
           {% include 'shared/backup_section.html' with  name='Tips' fields=schema.definitions.tips.fields  prefix='tips' check=profile.backup_tips desc='Should backup your gitcoin tips data?' %}
           {% include 'shared/backup_section.html' with  name='Kudos' fields=schema.definitions.acknowledgment.fields  prefix='acknowledgment' check=profile.backup_acknowledgment desc='Should backup your gitcoin kudos history?' %}
-          {% include 'shared/backup_section.html' with  name='Preference' fields=schema.definitions.stats.fields  prefix='stats' check=profile.backup_stats desc='Should backup your gitcoin stats data?' %}
+          {% include 'shared/backup_section.html' with  name='Preferences' fields=schema.definitions.preferences.fields  prefix='preferences' check=profile.backup_preferences desc='Should backup your preferences data?' %}
+          {% include 'shared/backup_section.html' with  name='Statistics' fields=schema.definitions.stats.fields  prefix='stats' check=profile.backup_stats desc='Should backup your gitcoin stats data?' %}
           {% include 'shared/backup_section.html' with  name='Activities' fields=schema.definitions.activity.fields  prefix='activity' check=profile.backup_activity desc='Should backup your gitcoin activity data?' %}
           <div class="pb-5 text-center">
             <button class="btn btn-gc-blue btn-lg disabled js-submit mb-3 px-5 btn-lg-padding" type="submit">Backup data</button>
@@ -80,9 +80,9 @@
 
 
   {% include 'shared/bottom_notification.html' %}
-  {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts_lite.html' %}
   {% include 'shared/footer.html' %}
+  {% include 'shared/analytics.html' %}
 
 </body>
 
