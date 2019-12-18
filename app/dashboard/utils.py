@@ -30,6 +30,7 @@ from django.utils import timezone
 import ipfshttpclient
 import requests
 from app.utils import sync_profile
+from compliance.models import Country, Entity
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
 from eth_utils import to_checksum_address
@@ -807,7 +808,6 @@ def is_blocked(handle):
         return True
 
     # check banned country list
-    from compliance.models import Country, Entity
     profiles = Profile.objects.filter(handle__iexact=handle)
     if profiles.exists():
         profile = profiles.first()
