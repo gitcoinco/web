@@ -1,7 +1,6 @@
-from rest_framework import serializers
-
-from dashboard.models import Bounty, Activity, Tip
+from dashboard.models import Activity, Bounty, Tip
 from kudos.models import KudosTransfer, Token
+from rest_framework import serializers
 
 
 def get_space_data(space, user, partial_schema):

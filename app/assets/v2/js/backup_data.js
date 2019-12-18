@@ -1,7 +1,6 @@
 const domain = window.location.protocol + '//' + window.location.host;
 
 async function save_collection_data(schema, elements, space) {
-  console.log('Collection data');
   let public_keys = ['schema'];
   let public_values = [schema];
   let private_keys = [];
@@ -35,21 +34,14 @@ async function save_collection_data(schema, elements, space) {
   });
 
   if (public_values.length > 0) {
-    console.log('Public');
-    console.log(public_keys);
-    console.log(public_values);
     await space.public.setMultiple(public_keys, public_values);
   }
   if (private_values.length > 0) {
-    console.log('Private');
-    console.log(private_keys);
-    console.log(private_values);
     await space.private.setMultiple(private_keys, private_values);
   }
 }
 
 async function save_single_data(schema, data, space) {
-  console.log('Single data');
   let public_keys = ['schema'];
   let public_values = [schema];
   let private_keys = [];
@@ -66,13 +58,6 @@ async function save_single_data(schema, data, space) {
       private_values.push(data[field]);
     }
   });
-
-  console.log('Public');
-  console.log(public_keys);
-  console.log(public_values);
-  console.log('Private');
-  console.log(private_keys);
-  console.log(private_values);
 
   await space.public.setMultiple(public_keys, public_values);
   await space.private.setMultiple(private_keys, private_values);
@@ -99,7 +84,6 @@ function backup(space_name, box) {
           try {
             space = await box.openSpace(space_name);
           } catch (e) {
-            console.log(e);
             return reject(e);
           }
         }
@@ -107,7 +91,7 @@ function backup(space_name, box) {
 
         try {
           if (schema.collection === true) {
-            save_collection_data(schema, space_data, space);
+            await save_collection_data(schema, space_data, space);
           } else {
             await save_single_data(schema, space_data, space);
           }
@@ -115,7 +99,6 @@ function backup(space_name, box) {
         } catch (e) {
           reject(e);
         }
-        console.log('baking data: ' + space_name);
       }
     });
   });
@@ -127,7 +110,6 @@ function start_backup() {
     const address = accounts[0];
 
     Box.openBox(address, window.ethereum, {}).then(function(box) {
-      console.log(box);
       $.ajax({
         type: 'GET',
         url: '/settings/backup',
@@ -156,7 +138,6 @@ function start_backup() {
             } catch (e) {
               hide_loading();
               _alert('Backup bounties failed', 'error');
-              console.log(e);
             }
           }
           if (data.backup_tips) {
@@ -232,7 +213,7 @@ function start_backup() {
           hide_loading();
         }
       });
-    }).catch(function () {
+    }).catch(function() {
       hide_loading();
       _alert('Backup profile failed', 'error');
     });
