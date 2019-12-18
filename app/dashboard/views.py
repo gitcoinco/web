@@ -629,33 +629,29 @@ def extend_expiration(request, bounty_id):
 @csrf_exempt
 @require_POST
 def cancel_reason(request):
-    """Extend expiration of the Bounty.
+    """Add Cancellation Reason for Bounty during Cancellation
 
-    Can only be called by funder or staff of the bounty.
-
-    :request method: POST
+    request method: POST
 
     Params:
         pk (int): ID of the Bounty.
         canceled_bounty_reason (string): STRING with cancel  reason
-
-    Returns:
-        dict: The success key with a boolean value and accompanying error.
-
     """
-    print(request.POST.get('canceled_bounty_reason'))
     user = request.user if request.user.is_authenticated else None
 
     if not user:
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
-            status=401)
+            status=401
+        )
 
     try:
         bounty = Bounty.objects.get(pk=request.POST.get('pk'))
     except Bounty.DoesNotExist:
-        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
-                            status=401)
+        return JsonResponse(
+            {'errors': ['Bounty not found']},
+            status=404
+        )
 
     is_funder = bounty.is_funder(user.username.lower()) if user else False
     if is_funder:
@@ -665,12 +661,15 @@ def cancel_reason(request):
 
         return JsonResponse({
             'success': True,
-            'msg': _("Cancel reason added."),
+            'msg': _("cancel reason added."),
         })
 
-    return JsonResponse({
-        'error': _("You must be funder to add a reason"),
-    }, status=200)
+    return JsonResponse(
+        {
+            'error': _('bounty cancellation is bounty funder operatio'),
+        },
+        status=410
+    )
 
 
 @require_POST
@@ -1449,9 +1448,12 @@ def cancel_bounty(request):
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='kill_bounty',
-        title=_('Cancel Bounty'),
+        title=_('Cancel Bounty')
     )
-    return TemplateResponse(request, 'bounty/kill.html', params)
+
+    params['is_bounties_network'] = bounty.is_bounties_network
+
+    return TemplateResponse(request, 'bounty/cancel.html', params)
 
 
 def refund_request(request):
@@ -1850,9 +1852,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
                 params['canonical_url'] = bounty.canonical_url
-
-                if bounty.web3_type == 'bounties_network':
-                    params['is_bounties_network'] = True
+                params['is_bounties_network'] = bounty.is_bounties_network
 
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
@@ -3342,9 +3342,10 @@ def change_bounty(request, bounty_id):
         'title': _('Change Bounty Details'),
         'pk': bounty.pk,
         'result': json.dumps(result),
-        'is_bounties_network': bounty.web3_type == 'bounties_network',
+        'is_bounties_network': bounty.is_bounties_network,
         'token_name': bounty.token_name
     }
+
     return TemplateResponse(request, 'bounty/change.html', params)
 
 
@@ -4263,20 +4264,21 @@ def save_tribe(request,handle):
 @csrf_exempt
 @require_POST
 @staff_member_required
-def create_bounty(request):
+def create_bounty_v1(request):
 
     '''
         ETC-TODO
         - evaluate validity of duplicate / redundant data in models
         - wire in email (invite + successful creation)
-        - create activty entry
     '''
     response = {
         'status': 400,
         'message': 'error: Bad Request. Unable to create bounty'
     }
 
-    if not request.user.is_authenticated:
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
         response['message'] = 'error: user needs to be authenticated to create bounty'
         return JsonResponse(response)
 
@@ -4335,7 +4337,7 @@ def create_bounty(request):
     bounty.web3_type = request.POST.get("web3_type", '')
     bounty.value_true = request.POST.get("amount", 0)
 
-    ''' TODO
+    ''' ETC-TODO
     bounty.unsigned_nda = request.POST.get("unsigned_nda")
     '''
 
@@ -4406,9 +4408,91 @@ def create_bounty(request):
 
     bounty.save()
 
+    event_name = 'new_bounty'
+    record_bounty_activity(bounty, user, event_name)
+    maybe_market_to_email(bounty, event_name)
+
+    # maybe_market_to_slack(bounty, event_name)
+    # maybe_market_to_user_slack(bounty, event_name)
+    # maybe_market_to_user_discord(bounty, event_name)
+
     response = {
         'status': 204,
         'message': 'bounty successfully created',
+        'bounty_url': bounty.url
+    }
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+@staff_member_required
+def cancel_bounty_v1(request):
+    '''
+        ETC-TODO
+        - wire in email (invite + successful cancellation)
+        - create activty entry
+    '''
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to cancel bounty'
+    }
+
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to create bounty'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: cancel bounty is a POST operation'
+        return JsonResponse(response)
+
+    try:
+       bounty = Bounty.objects.get(pk=request.POST.get('pk'))
+    except Bounty.DoesNotExist:
+        response['message'] = 'error: bounty not found'
+        return JsonResponse(response)
+
+    if bounty.bounty_state in ['cancelled', 'done']:
+        response['message'] = 'error: bounty in ' + bounty.bounty_state + ' state cannot be cancelled'
+        return JsonResponse(response)
+
+    is_funder = bounty.is_funder(user.username.lower()) if user else False
+
+    if not is_funder:
+        response['message'] = 'error: bounty cancellation is bounty funder operation'
+        return JsonResponse(response)
+
+    canceled_bounty_reason = request.POST.get('canceled_bounty_reason')
+    if not canceled_bounty_reason:
+        response['message'] = 'error: missing canceled_bounty_reason'
+        return JsonResponse(response)
+
+    event_name = 'killed_bounty'
+    record_bounty_activity(bounty, user, event_name)
+    # maybe_market_to_email(bounty, event_name)
+    # maybe_market_to_slack(bounty, event_name)
+    # maybe_market_to_user_slack(bounty, event_name)
+    # maybe_market_to_user_discord(bounty, event_name)
+
+    bounty.bounty_state = 'cancelled'
+    bounty.idx_status = 'cancelled'
+    bounty.is_open = False
+    bounty.canceled_on = timezone.now()
+    bounty.canceled_bounty_reason = canceled_bounty_reason
+    bounty.save()
+
+    response = {
+        'status': 204,
+        'message': 'bounty successfully cancelled',
         'bounty_url': bounty.url
     }
 

@@ -519,10 +519,13 @@
   {% include 'shared/current_profile.html' %}
 
   <script>
+    const is_bounties_network = {{ is_bounties_network|lower }};
     document.issueURL = '{{ issueURL }}';
+
+    // ETC-TODO: remove network + std bounties for ETC
     document.issueNetwork = '{{ network }}';
-    document.is_bounties_network = '{{ is_bounties_network }}';
     document.issue_stdbounties_id = '{{ stdbounties_id }}';
+
     {% if event_tag %}
       document.eventTag = '{{ event_tag }}';
     {% endif %}

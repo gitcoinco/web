@@ -434,6 +434,12 @@ class Bounty(SuperModel):
             self.save()
 
     @property
+    def is_bounties_network(self):
+        if self.web3_type == 'bounties_network':
+            return True
+        return False
+
+    @property
     def latest_activity(self):
         activity = Activity.objects.filter(bounty=self.pk).order_by('-pk')
         if activity.exists():

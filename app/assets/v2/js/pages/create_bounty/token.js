@@ -79,16 +79,9 @@ createBounty = data => {
   };
 
   const url  = '/api/v1/bounty/create';
-  console.log(data);
-  console.log(JSON.stringify(data));
-  
-  console.log(params);
-  console.log(JSON.stringify(params))
-  
 
   $.post(url, params, function(response) {    
-    if (200 <= response.status <= 204) {
-      // redirect to bounty page
+    if (200 <= response.status && response.status <= 204) {
       console.log('success', response);
       window.location.href = response.bounty_url;
     } else if (response.status == 304) {
