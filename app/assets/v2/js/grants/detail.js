@@ -1,7 +1,7 @@
 const editableFields = [
   '#form--input__title',
   '#form--input__reference-url',
-  '#grant_contract_owner_address',
+  '#contract_owner_address',
   '#grant-members',
   '#amount_goal'
 ];
@@ -13,9 +13,9 @@ $(document).ready(function() {
   setInterval (() => {
     notifyOwnerAddressMismatch(
       $('#grant-admin').text(),
-      $('#grant_contract_owner_address').text(),
+      $('#contract_owner_address').text(),
       '#cancel_grant',
-      'Looks like your grant has been created with ' + $('#grant_contract_owner_address').text() + '. Switch to take action on your grant.'
+      'Looks like your grant has been created with ' + $('#contract_owner_address').text() + '. Switch to take action on your grant.'
     );
 
     if ($('#cancel_grant').attr('disabled')) {
