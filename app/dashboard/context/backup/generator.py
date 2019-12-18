@@ -19,7 +19,7 @@ def get_space_data(space, user, partial_schema):
     if space == 'stats':
         return get_stats(profile)
     if space == 'acknowledgment':
-        return AcknowledgmentSerializer(KudosTransfer.objects.all(), many=True).data
+        return AcknowledgmentSerializer(profile.get_my_kudos, many=True).data
 
     return {}
 
