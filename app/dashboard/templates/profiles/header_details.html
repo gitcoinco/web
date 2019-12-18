@@ -15,6 +15,11 @@
   <a class="btn btn-sm" style="border: 2px solid #3E00FF;" href="{% url 'tip' %}?username={{ profile.handle }}">
     <i style="color: #3E00FF;" class="fab fa-ethereum"></i>
   </a>
+  {% if is_my_profile %}
+  <a class="btn btn-sm" style="border: 2px solid #3E00FF;" href="{% url 'profile_backup' %}">
+    <i style="color: #3E00FF;" class="fas fa-sync"></i>
+  </a>
+  {% endif %}
 </h1>
 <p class="mb-0">{{ profile.handle }}
   {% if profile.custom_tagline %}
