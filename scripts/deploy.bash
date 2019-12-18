@@ -84,7 +84,7 @@ if ! [ "$JOBS_NODE" ]; then
     sudo kill -1 $pid
     sleep 0.5
     done
-    echo "- gunicorn"
+    echo "- celery"
     sudo systemctl celery restart
 fi
 
