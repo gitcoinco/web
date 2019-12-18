@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static matches %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -75,7 +75,7 @@
               {% endif %}
               {% if not github_handle %}
                 <div class="text-center">
-                  <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
+                  <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
                     onclick="dataLayer.push({'event': 'login'});">
                     <i class="fab fa-github"></i>
                     <span>{% trans "Register with GitHub for Hackathon" %}</span>
@@ -83,14 +83,17 @@
                   <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
                 </div>
               {% else %}
-                {% if is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
-                  <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                  <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
-                {% elif is_registered %}
-                  <a class="btn btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
-                {% else %}
+                {% if not is_registered %}
                   <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
                   <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
+                {% elif is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
+                  <p>Explore Web3 and be prepared via sponsors Quests</p>
+                  <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
+                {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
+                  <a class="btn btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
+                {% else %}
+                  <p>Explore Web3 via Gitcoin Quests to prepare</p>
+                  <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
                 {% endif %}
               {% endif %}
             </div>
@@ -192,7 +195,7 @@
             </p>
             {% if not github_handle %}
               <div class="text-center">
-                <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?referer={{referer}}"
+                <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
                   onclick="dataLayer.push({'event': 'login'});">
                   <i class="fab fa-github"></i>
                   <span>{% trans "Register with GitHub for Hackathon" %}</span>
@@ -200,14 +203,17 @@
                 <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
               </div>
             {% else %}
-              {% if is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
-                <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
-              {% elif is_registered %}
-                <a class="btn btn-gc-blue" href="{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}">Start Hacking</a>
-              {% else %}
+              {% if not is_registered %}
                 <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
                 <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
+              {% elif is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
+                <p>Explore Web3 and be prepared via sponsors Quests</p>
+                <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
+              {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
+                <a class="btn btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
+              {% else %}
+                <p>Explore Web3 via Gitcoin Quests to prepare</p>
+                <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
               {% endif %}
             {% endif %}
           </div>
@@ -254,7 +260,6 @@
       // Send registration
       const is_registered = {{ is_registered|yesno:"true,false" }};
       const hackathon_slug = '{{ hackathon.slug|safe }}';
-      const redirect = '{% if referer %}{{referer|safe}}{% else %}{% url 'hackathon' hackathon.slug %}{% endif %}';
       const csrftoken = $('[name=csrfmiddlewaretoken]').val();
       const register = (name, referer) => {
         if (is_registered) {
