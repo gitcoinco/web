@@ -310,6 +310,7 @@ urlpatterns = [
     re_path(r'^legal/?', dashboard.views.terms, name='legal'),
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
 
+    url(r'^profile/backup$', dashboard.views.profile_backup, name='profile_backup'),
     # Alpha functionality
     re_path(r'^profile/(.*)/(.*)?', dashboard.views.profile, name='profile_by_tab'),
     re_path(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
@@ -553,6 +554,7 @@ urlpatterns = [
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
     re_path(r'^settings/job/?', marketing.views.job_settings, name='job_settings'),
     re_path(r'^settings/organizations/?', marketing.views.org_settings, name='org_settings'),
+    re_path(r'^settings/backup/?', marketing.views.backup_settings, name='backup_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
     re_path(r'^settings$', marketing.views.org_settings, name='settings2'),
 

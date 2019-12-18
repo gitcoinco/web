@@ -85,6 +85,9 @@ def get_settings_navs(request):
     }, {
         'body': _('Job Status'),
         'href': reverse('job_settings'),
+    }, {
+        'body': _('Backup'),
+        'href': reverse('backup_settings'),
     }]
 
     if request.user.is_staff:
@@ -617,6 +620,44 @@ def account_settings(request):
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/account.html', context)
+
+
+def backup_settings(request):
+    """Display and save user's Backup settings.
+
+    Returns:
+        TemplateResponse: The user's backup settings template response.
+
+    """
+    msg = ''
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not profile or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+        profile.backup_profile = bool(request.POST.get('backup_profile', False))
+        profile.backup_bounties = bool(request.POST.get('backup_bounties', False))
+        profile.backup_tips = bool(request.POST.get('backup_tips', False))
+        profile.backup_jobs = bool(request.POST.get('backup_jobs', False))
+        profile.backup_interests = bool(request.POST.get('backup_interests', False))
+        profile.backup_stats = bool(request.POST.get('backup_stats', False))
+        profile.backup_activity = bool(request.POST.get('backup_activity', False))
+
+        profile.save()
+
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'home',
+        'active': '/settings/backup',
+        'title': _('Backup Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': msg,
+    }
+    return TemplateResponse(request, 'settings/backup.html', context)
 
 
 def job_settings(request):

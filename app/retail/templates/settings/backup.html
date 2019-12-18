@@ -1,0 +1,57 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static %}
+{% block settings_content %}
+<style type="text/css">
+  body {
+    font-family: "Muli", sans-serif;
+  }
+
+  h5 {
+    letter-spacing: 0;
+    text-transform: capitalize;
+  }
+</style>
+<form id="settings" method="POST" action="{% url 'backup_settings' %}" class="col-md-8 m-auto">
+  <div class="form-group mb-5">
+    <h5>{% trans "Backup to 3box" %}</h5>
+    <p>{% trans "Let us know what data should be exported so we can optimize your experience" %}</p>
+    <div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" name="backup_profile" id="backup_profile" {% if profile.backup_profile %} checked="checked" {% endif %}>
+        <label class="custom-control-label" for="backup_profile">{% trans "Backup my profile data" %}</label>
+      </div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" name="backup_jobs" id="backup_jobs" {% if profile.backup_jobs %} checked="checked" {% endif %}>
+        <label class="custom-control-label" for="backup_jobs">{% trans "Backup job data" %}</label>
+      </div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" name="backup_bounties" id="backup_bounties" {% if profile.backup_bounties %} checked="checked" {% endif %}>
+        <label class="custom-control-label" for="backup_bounties">{% trans "Backup my bounties history" %}</label>
+      </div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" name="backup_tips" id="backup_tips" {% if profile.backup_tips %} checked="checked" {% endif %}>
+        <label class="custom-control-label" for="backup_tips">{% trans "Backup tips history" %}</label>
+      </div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" name="backup_interests" id="backup_interests" {% if profile.backup_interests %} checked="checked" {% endif %}>
+        <label class="custom-control-label" for="backup_interests">{% trans "Backup interests history" %}</label>
+      </div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" name="backup_stats" id="backup_stats" {% if profile.backup_stats %} checked="checked" {% endif %}>
+        <label class="custom-control-label" for="backup_stats">{% trans "Backup personal statistics" %}</label>
+      </div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" name="backup_activity" id="backup_activity" {% if profile.backup_activity %} checked="checked" {% endif %}>
+        <label class="custom-control-label" for="backup_activity">{% trans "Backup activity" %}</label>
+      </div>
+    </div>
+  </div>
+  {% csrf_token %}
+  <input class='button button--primary' type='submit' name='submit' value="{% trans "Save" %}">
+</form>
+{% endblock %}
+{% block scripts %}
+<script>
+</script>
+{{ block.super }}
+{% endblock %}

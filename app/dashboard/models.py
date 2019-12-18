@@ -2386,6 +2386,14 @@ class Profile(SuperModel):
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
     tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
 
+    # backup settings
+    backup_profile = models.BooleanField(default=False)
+    backup_bounties = models.BooleanField(default=False)
+    backup_tips = models.BooleanField(default=False)
+    backup_jobs = models.BooleanField(default=False)
+    backup_interests = models.BooleanField(default=False)
+    backup_stats = models.BooleanField(default=False)
+    backup_activity = models.BooleanField(default=False)
 
     objects = ProfileQuerySet.as_manager()
 
