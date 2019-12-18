@@ -84,7 +84,8 @@ if ! [ "$JOBS_NODE" ]; then
     sudo kill -1 $pid
     sleep 0.5
     done
-
+    echo "- gunicorn"
+    sudo systemctl celery restart
 fi
 
 # invalidate cloudfront
