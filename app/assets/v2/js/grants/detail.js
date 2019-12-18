@@ -1,7 +1,7 @@
 const editableFields = [
   '#form--input__title',
   '#form--input__reference-url',
-  '#gran_contract_owner_address',
+  '#grant_contract_owner_address',
   '#grant-members',
   '#amount_goal'
 ];
