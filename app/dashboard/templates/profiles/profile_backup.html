@@ -1,0 +1,97 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include 'shared/head.html' %}
+  {% include 'shared/cards.html' %}
+  <meta name="title" content="Backup Profile and Contribution history | Gitcoin">
+  <meta name="description" content="Select what you data will be saved to your 3box profile.">
+  <link rel="stylesheet" href={% static "v2/css/lib/daterangepicker.css" %}>
+  <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+  <link rel="stylesheet" href={% static "v2/css/bounty.css" %}>
+</head>
+
+<body class="interior g-font-muli submit_bounty" style="background-color: #FFFFFF;">
+  {% include 'shared/tag_manager_2.html' %}
+  <div class="container-fluid header dash">
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'shared/nav.html' %}
+  </div>
+  <div class="container-fluid submit_bounty_content">
+    <div class="row no-gutters metamask-banner">
+      <div class="col-12">
+        {% include 'shared/no_metamask_error.html' %}
+        {% include 'shared/zero_balance_error.html' %}
+        {% include 'shared/unlock_metamask.html' %}
+        {% include 'shared/connect_metamask.html' %}
+      </div>
+    </div>
+    <div style="display: none">
+      {% include 'shared/waiting_state.html' %}
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-sm-12 my-5" id="primary_form">
+        <form id="backup_data" class="pt-5">
+          {% csrf_token %}
+          <div id="about-section" class="pt-2 bg-white rounded p-5">
+            <h1 class="text-center title">{% trans "Backup your history" %}</h1>
+            <p class="text-center font-bigger-1 text-black-60">You decide what will be shared with the world, you have the control of your data! </p>
+
+            <div class="text-right mt-2">
+              <p class="font-caption" id="last-synced">{% trans "Last Synced " %}<span></span></p>
+              <button id="sync-issue" class="button button--primary">
+                <i class="fas fa-sync mr-1"></i> {% trans "Sync with 3box" %}
+              </button>
+            </div>
+          </div>
+
+          {% include 'shared/backup_section.html' with  name='Profile' fields=schema.definitions.profile.fields  prefix='profile' check=profile.backup_profile desc='Should backup your gitcoin profile data?' %}
+          {% include 'shared/backup_section.html' with  name='Job' fields=schema.definitions.jobs.fields  prefix='jobs' check=profile.backup_jobs desc='Should backup your gitcoin job data?' %}
+          {% include 'shared/backup_section.html' with  name='Bounties' fields=schema.definitions.bounties.fields  prefix='bounties' check=profile.backup_bounties desc='Should backup your bounties history?' %}
+          {% include 'shared/backup_section.html' with  name='Tips' fields=schema.definitions.tips.fields  prefix='tips' check=profile.backup_tips desc='Should backup your gitcoin tips data?' %}
+          {% include 'shared/backup_section.html' with  name='Kudos' fields=schema.definitions.acknowledgment.fields  prefix='acknowledgment' check=profile.backup_acknowledgment desc='Should backup your gitcoin kudos history?' %}
+          {% include 'shared/backup_section.html' with  name='Preference' fields=schema.definitions.stats.fields  prefix='stats' check=profile.backup_stats desc='Should backup your gitcoin stats data?' %}
+          {% include 'shared/backup_section.html' with  name='Activities' fields=schema.definitions.activity.fields  prefix='activity' check=profile.backup_activity desc='Should backup your gitcoin activity data?' %}
+          <div class="pb-5 text-center">
+            <button class="btn btn-gc-blue btn-lg disabled js-submit mb-3 px-5 btn-lg-padding" type="submit">Backup data</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+
+  {% include 'shared/bottom_notification.html' %}
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts_lite.html' %}
+  {% include 'shared/footer.html' %}
+
+</body>
+
+{% include 'shared/current_profile.html' %}
+
+<script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+<script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+<script src="{% static "v2/js/lib/3box.min.js" %}"></script>
+<script src="{% static "v2/js/backup_data.js" %}"></script>
+</html>

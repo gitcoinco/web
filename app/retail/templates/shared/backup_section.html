@@ -1,0 +1,39 @@
+{% load i18n static %}
+<div class="bg-white my-3 px-5 rounded">
+  <span class="font-body">
+    <div class="form__checkbox" style="justify-content: space-between">
+      <fieldset>
+      <input name='backup_{{prefix}}' id='backup_{{prefix}}' type="checkbox" {% if check %}checked{% endif %} />
+      <label class="form__label" for=backup_{{prefix}} style="display: flex">
+        <div>
+          <span class="font-caption text-black-60 d-block text-uppercase letter-spacing">{{ name }}</span>
+          <span>{{ desc }}</span>
+        </div>
+      </label>
+      </fieldset>
+      <a class="collapse-header collapsed" data-toggle="collapse" href="#{{prefix}}-section" role="button" aria-expanded="false" aria-controls="hiring-section">
+        <i class="fa"></i>
+      </a>
+    </div>
+  </span>
+
+  <div id="{{prefix}}-section" class="collapse py-4">
+    <div class="hiring_container">
+        <div>
+            <div style="display: flex; justify-content: space-between;">
+              <div><span class="font-caption letter-spacing text-black-60 text-uppercase">{% trans "Data" %}</span></div>
+              <div><span class="font-caption letter-spacing text-black-60 text-uppercase">{% trans "Privacy" %}</span></div>
+            </div>
+          {% for key, vals in fields.items %}
+            <div style="display: flex; justify-content: space-between;">
+              <div>
+                <span style="text-transform: capitalize;">{% if vals.title %}{{ vals.title }}{% else %}{{ key }} {% endif %}</span>
+                {% if vals.desc %}<span style="display: block; font-size: 12px;">{{ vals.desc }}</span>{% endif %}
+              </div>
+              <div><span class="text-black-60" style="text-transform: capitalize;">{{ vals.visibility }}</span></div>
+            </div>
+          {% endfor %}
+        </div>
+    </div>
+  </div>
+</div>

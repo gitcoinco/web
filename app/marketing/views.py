@@ -29,7 +29,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.db.models import Max
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -636,7 +636,7 @@ def backup_settings(request):
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
-    if request.POST:
+    if request.method == 'POST':
         profile.backup_profile = bool(request.POST.get('backup_profile', False))
         profile.backup_bounties = bool(request.POST.get('backup_bounties', False))
         profile.backup_tips = bool(request.POST.get('backup_tips', False))
@@ -644,8 +644,19 @@ def backup_settings(request):
         profile.backup_interests = bool(request.POST.get('backup_interests', False))
         profile.backup_stats = bool(request.POST.get('backup_stats', False))
         profile.backup_activity = bool(request.POST.get('backup_activity', False))
-
         profile.save()
+    else:
+        assert request.content_type == 'application/json', request.content_type
+    if request.method == 'GET' and request.content_type == 'application/json':
+        return JsonResponse({
+            'backup_profile': profile.backup_profile,
+            'backup_bounties': profile.backup_bounties,
+            'backup_tips': profile.backup_tips,
+            'backup_jobs': profile.backup_jobs,
+            'backup_interests': profile.backup_interests,
+            'backup_stats': profile.backup_stats,
+            'backup_activity': profile.backup_activity,
+        })
 
     context = {
         'is_logged_in': is_logged_in,

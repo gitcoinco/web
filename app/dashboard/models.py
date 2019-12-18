@@ -2387,8 +2387,10 @@ class Profile(SuperModel):
     tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
 
     # backup settings
+    last_backup = models.DateTimeField(null=True, blank=True)
     backup_profile = models.BooleanField(default=False)
     backup_bounties = models.BooleanField(default=False)
+    backup_acknowledgment = models.BooleanField(default=False)
     backup_tips = models.BooleanField(default=False)
     backup_jobs = models.BooleanField(default=False)
     backup_interests = models.BooleanField(default=False)

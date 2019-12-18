@@ -311,6 +311,7 @@ urlpatterns = [
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
 
     url(r'^profile/backup$', dashboard.views.profile_backup, name='profile_backup'),
+    url(r'^backup/data/(.*)$', dashboard.views.get_backup_data, name='get_backup_data'),
     # Alpha functionality
     re_path(r'^profile/(.*)/(.*)?', dashboard.views.profile, name='profile_by_tab'),
     re_path(r'^profile/(.*)?', dashboard.views.profile, name='profile'),

@@ -60,7 +60,7 @@ from cacheops import invalidate_obj
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
-)
+    get_backup_schema, get_space_data)
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -2336,6 +2336,35 @@ def profile_job_opportunity(request, handle):
     return JsonResponse(response)
 
 
+@login_required
+def profile_backup(request):
+    user = request.user
+    schema = get_backup_schema()
+    context = {
+        'user': user,
+        'profile': user.profile,
+        'schema': schema,
+    }
+
+    return TemplateResponse(request, 'profiles/profile_backup.html', context)
+
+
+@login_required
+def get_backup_data(request, space):
+    user = request.user
+    schema = get_backup_schema()
+    context = {}
+    if space in schema['availableSpaces']:
+        partial_schema = schema['definitions'][space]
+        context = {
+            'schema': partial_schema,
+            'data': get_space_data(space, user, partial_schema)
+        }
+
+    return JsonResponse(context)
+
+
+
 def invalid_file_response(uploaded_file, supported):
     response = None
     forbidden_content = ['<script>']
@@ -2664,7 +2693,7 @@ def profile(request, handle, tab=None):
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
     owned_kudos = None
     sent_kudos = None
-    context = {}
+    context = {'is_my_profile': is_my_profile}
     # get this user
     try:
         if not handle and not request.user.is_authenticated:
