@@ -3,7 +3,7 @@ const editableFields = [
   '#form--input__reference-url',
   '#contract_owner_address',
   '#grant-members',
-  '#amount_goal'
+  '#amount_goal',
 ];
 
 $(document).ready(function() {
