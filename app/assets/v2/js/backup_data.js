@@ -134,73 +134,136 @@ function start_backup() {
         contentType: 'application/json; charset=utf-8',
         success: async function(data) {
           if (data.backup_profile) {
+            let space_name = 'profile';
+
             try {
-              await backup('profile', box);
-              _alert('Backup profile complete');
+              status(space_name, 'start');
+              await backup(space_name, box);
+              status(space_name, 'done');
             } catch (e) {
+              hide_loading();
               _alert('Backup profile failed', 'error');
-              console.log(e);
+              return;
             }
           }
           if (data.backup_bounties) {
+            let space_name = 'bounties';
+
             try {
-              await backup('bounties', box);
-              _alert('Backup bounties complete');
+              status(space_name, 'start');
+              await backup(space_name, box);
+              status(space_name, 'done');
             } catch (e) {
+              hide_loading();
               _alert('Backup bounties failed', 'error');
               console.log(e);
             }
           }
           if (data.backup_tips) {
+            let space_name = 'tips';
+
             try {
-              await backup('tips', box);
-              _alert('Backup tips complete');
+              status(space_name, 'start');
+              await backup(space_name, box);
+              status(space_name, 'done');
             } catch (e) {
+              hide_loading();
               _alert('Backup tips history failed', 'error');
-              console.log(e);
+              return;
             }
           }
           if (data.backup_stats) {
+            let space_name = 'stats';
+
             try {
-              await backup('stats', box);
-              _alert('Backup stats complete');
+              status(space_name, 'start');
+              await backup(space_name, box);
+              status(space_name, 'done');
             } catch (e) {
+              hide_loading();
               _alert('Backup stats failed', 'error');
-              console.log(e);
+              return;
             }
           }
           if (data.backup_activity) {
-            console.log('activity')
+            let space_name = 'activity';
+
             try {
-              await backup('activity', box);
-              _alert('Backup activity complete');
+              status(space_name, 'start');
+              await backup(space_name, box);
+              status(space_name, 'done');
             } catch (e) {
+              hide_loading();
               _alert('Backup activity history failed', 'error');
-              console.log(e);
+              return;
             }
           }
           if (data.backup_acknowledgment) {
+            let space_name = 'acknowledgment';
+
             try {
-              await backup('acknowledgment', box);
-              _alert('Backup acknowledgments complete');
+              status(space_name, 'start');
+              await backup(space_name, box);
+              status(space_name, 'done');
             } catch (e) {
+              hide_loading();
               _alert('Backup kudos failed', 'error');
-              console.log(e);
+              return;
             }
           }
           if (data.backup_preferences) {
+            let space_name = 'preferences';
+
             try {
-              await backup('preferences', box);
-              _alert('Backup preferences complete');
+              status(space_name, 'start');
+              await backup(space_name, box);
+              status(space_name, 'done');
             } catch (e) {
+              hide_loading();
               _alert('Backup preferences failed', 'error');
-              console.log(e);
+              return;
             }
           }
+
+          let now = new Date().toISOString();
+
+          $('#last-synced').text('Last synced: ' + now.slice(0, 10) + ' ' + now.slice(11, 16));
+          _alert('Backup to 3box complete!');
+          hide_loading();
         }
       });
+    }).catch(function () {
+      hide_loading();
+      _alert('Backup profile failed', 'error');
     });
   });
+}
+
+function show_loading() {
+  $('.bg-container').show();
+  $('#loading').show();
+  $('#backup_options').hide();
+}
+
+function hide_loading() {
+  $('.bg-container').hide();
+  $('#loading').hide();
+  $('#backup_status p').hide();
+  $('#backup_options').show();
+}
+
+function status(space, status) {
+  let icon = $('#status_' + space + '_icon');
+  let element = $('#status_' + space);
+
+  if (status === 'start') {
+    element.show();
+    icon.removeClass();
+    icon.addClass('fas fa-upload');
+  } else if (status === 'done') {
+    icon.removeClass();
+    icon.addClass('fas fa-check');
+  }
 }
 
 $('#backup_data').submit(function(e) {
@@ -213,7 +276,26 @@ $('#backup_data').submit(function(e) {
     contentType: 'application/x-www-form-urlencoded',
     success: function(data) {
       _alert('Backup configurations saved successfully!');
+      show_loading();
       start_backup();
+
+    }
+  });
+});
+
+$('#sync-issue').on('click', function(e) {
+  e.preventDefault();
+  $.ajax({
+    type: 'POST',
+    url: '/settings/backup',
+    data: $('#backup_data').serialize(),
+    processData: false,
+    contentType: 'application/x-www-form-urlencoded',
+    success: function(data) {
+      _alert('Backup configurations saved successfully!');
+      show_loading();
+      start_backup();
+
     }
   });
 });

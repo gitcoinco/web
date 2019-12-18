@@ -2362,6 +2362,9 @@ def get_backup_data(request, space):
             'data': get_space_data(space, user, partial_schema)
         }
 
+    user.profile.last_backup = datetime.now()
+    user.profile.save()
+
     return JsonResponse(context)
 
 

@@ -653,6 +653,7 @@ def backup_settings(request):
             'backup_bounties': profile.backup_bounties,
             'backup_tips': profile.backup_tips,
             'backup_jobs': profile.backup_jobs,
+            'backup_acknowledgment': profile.backup_acknowledgment,
             'backup_preferences': profile.backup_preferences,
             'backup_stats': profile.backup_stats,
             'backup_activity': profile.backup_activity,

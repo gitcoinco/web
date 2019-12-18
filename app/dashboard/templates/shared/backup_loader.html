@@ -1,0 +1,58 @@
+{% load i18n static %}
+<div class="bg-container" style="display:none;">
+  <img src="{% static "v2/images/icons/circle.png" %}" class="circle" id="c1">
+  <img src="{% static "v2/images/icons/circle.png" %}" class="circle" id="c2">
+  <img src="{% static "v2/images/icons/circle.png" %}" class="circle" id="c3">
+  <img src="{% static "v2/images/icons/circle.png" %}" class="circle" id="c4">
+
+  <img src="{% static "v2/images/icons/cross.png" %}" class="cross" id="cs1">
+  <img src="{% static "v2/images/icons/cross.png" %}" class="cross" id="cs2">
+  <img src="{% static "v2/images/icons/cross.png" %}" class="cross" id="cs3">
+  <img src="{% static "v2/images/icons/cross.png" %}" class="cross" id="cs4">
+
+  <div class="transaction-header pt-5">
+    <h2 class="my-2">Uploading your data</h2>
+  </div>
+  <div class="transaction-status">
+    <div class="ethereum-issue">
+
+      <div class="row loading justify-content-center align-items-center loading">
+        <img src="{% static "v2/images/loading_v2.gif" %}">
+      </div>
+
+      <a id="transaction_url" href="#" target="_blank" rel="noopener">{% trans "Your data is being posted to 3box." %}</a>
+      <br>
+      {% trans "Please DO NOT CLOSE YOUR BROWSER. " %}
+      <br>
+      {% trans "Sync to 3box... " %}
+      <div id="backup_status" style="padding-top: 15px;">
+        <p id="status_profile" style="display: none">
+          <span><i id="status_profile_icon" class=""></i></span> Backup Profile
+        </p>
+        <p id="status_bounties" style="display: none">
+          <span><i id="status_bounties_icon" class=""></i></span> Backup Bounties
+        </p>
+        <p id="status_tips" style="display: none">
+          <span><i id="status_tips_icon" class=""></i></span> Backup Tips
+        </p>
+        <p id="status_acknowledgment" style="display: none">
+          <span><i id="status_acknowledgment_icon" class=""></i></span> Backup Kudos
+        </p>
+        <p id="status_preferences" style="display: none">
+          <span><i id="status_preferences_icon" class=""></i></span> Backup Preferences
+        </p>
+        <p id="status_stats" style="display: none">
+          <span><i id="status_stats_icon" class=""></i></span> Backup Personal Statistics
+        </p>
+        <p id="status_activity" style="display: none">
+          <span><i id="status_activity_icon" class=""></i></span> Backup Activities
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="rocket">
+    <img src="{% static "v2/images/rocket.svg" %}" class="svg" alt="Gitcoin Rocket">
+  </div>
+  <img src="{% static "v2/images/icons/clouds.png" %}" id="cloud">
+</div>
+

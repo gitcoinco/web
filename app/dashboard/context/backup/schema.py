@@ -170,7 +170,24 @@ schema = {
             'collection': True,
             'key': '<provider>.<id>',
             'fields': {
-            }
+                'id': number(privacy=public),
+                'cloned_from': string(privacy=public),
+                'name': string(privacy=public),
+                'description': string(privacy=public),
+                'image': url(privacy=public),
+                'rarity': string(privacy=public),
+                'tags': array(elements=[string_type], privacy=public, desc='Tags related to kudos type'),
+                'platform': string(privacy=public),
+                'external_url': url(privacy=public),
+                'background_color': string(privacy=public),
+                'txid': number(privacy=public),
+                'token_id':  number(privacy=public),
+                'contract': string(privacy=public),
+                'hidden': boolean(privacy=public),
+                'created': date(privacy=public),
+                'sender': string(privacy=public),
+                'recipient': string(privacy=public),
+            },
         },
         'preferences': {
             'collection': False,
@@ -194,6 +211,27 @@ schema = {
         'stats': {
             'collection': False,
             'fields': {
+                'max_tip_amount_usdt_per_tx': number(privacy=private),
+                'max_tip_amount_usdt_per_week': number(privacy=private),
+                'longest_streak': number(privacy=public),
+                'avg_hourly_rate': string(privacy=public),
+                'success_rate': number(privacy=public),
+                'reliability': string(privacy=public),
+                'eth_collected': number(privacy=private),
+                'eth_funded': number(privacy=private),
+                'contributor_leaderboard': number(privacy=public),
+                'funder_leaderboard': number(privacy=public),
+                'bounties_completed': number(privacy=public),
+                'funded_bounties': number(privacy=public),
+                'no_times_been_removed': number(privacy=public),
+                'kudos_sent': number(privacy=public),
+                'kudos_received': number(privacy=public),
+                'tips_sent': number(privacy=public),
+                'tips_received': number(privacy=public),
+                'earnings_total': number(privacy=public),
+                'spent_total': number(privacy=private),
+                'hackathons_participated_in': number(privacy=public),
+                'hackathons_funded': number(privacy=public)
             }
         },
     }

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from dashboard.models import Bounty, Activity, Tip
+from kudos.models import KudosTransfer, Token
 
 
 def get_space_data(space, user, partial_schema):
@@ -14,7 +15,11 @@ def get_space_data(space, user, partial_schema):
     if space == 'preferences':
         return get_preference(profile)
     if space == 'tips':
-        return TipSerializer(Tip.objects.all(), many=True).data
+        return TipSerializer(profile.tips, many=True).data
+    if space == 'stats':
+        return get_stats(profile)
+    if space == 'acknowledgment':
+        return AcknowledgmentSerializer(KudosTransfer.objects.all(), many=True).data
 
     return {}
 
@@ -161,3 +166,66 @@ class TipSerializer(serializers.ModelSerializer):
             return bounty.get_absolute_url()
 
         return ''
+
+
+def get_stats(profile):
+    stats_dict = profile.to_dict()
+
+    return {
+        'max_tip_amount_usdt_per_tx': profile.max_tip_amount_usdt_per_tx,
+        'max_tip_amount_usdt_per_week': profile.max_tip_amount_usdt_per_week,
+        'longest_streak': profile.longest_streak,
+        'avg_hourly_rate': profile.avg_hourly_rate,
+        'success_rate': profile.success_rate,
+        'reliability': profile.reliability,
+        'eth_collected': stats_dict['sum_eth_collected'],
+        'eth_funded': stats_dict['sum_eth_funded'],
+        'contributor_leaderboard': stats_dict['scoreboard_position_contributor'],
+        'funder_leaderboard': stats_dict['scoreboard_position_funder'],
+        'bounties_completed': stats_dict['count_bounties_completed'],
+        'funded_bounties': stats_dict['funded_bounties_count'],
+        'no_times_been_removed': stats_dict['funded_bounties_count'],
+        'kudos_sent': stats_dict['total_kudos_sent_count'],
+        'kudos_received': stats_dict['total_kudos_received_count'],
+        'tips_sent': stats_dict['total_tips_sent'],
+        'tips_received': stats_dict['total_tips_received'],
+        'earnings_total': stats_dict['earnings_total'],
+        'spent_total': stats_dict['spent_total'],
+        'hackathons_participated_in': stats_dict['hackathons_participated_in'],
+        'hackathons_funded': stats_dict['hackathons_funded']
+    }
+
+
+class AcknowledgmentSerializer(serializers.ModelSerializer):
+    cloned_from = serializers.CharField(source='kudos_token.url')
+    name= serializers.CharField(source='kudos_token.name')
+    description = serializers.CharField(source='kudos_token.description')
+    image = serializers.CharField(source='kudos_token.image')
+    rarity = serializers.CharField(source='kudos_token.rarity')
+    tags = serializers.CharField(source='kudos_token.tags')
+    platform = serializers.CharField(source='kudos_token.platform')
+    external_url = serializers.CharField(source='kudos_token.external_url')
+    background_color = serializers.CharField(source='kudos_token.background_color')
+    txid = serializers.CharField(source='kudos_token.txid')
+    token_id = serializers.CharField(source='kudos_token.token_id')
+    contract = serializers.CharField(source='kudos_token.contract')
+    hidden = serializers.BooleanField(source='kudos_token.hidden')
+    created = serializers.SerializerMethodField()
+    sender = serializers.SerializerMethodField()
+    recipient = serializers.SerializerMethodField()
+
+    class Meta:
+        model = KudosTransfer
+        fields = ('id', 'cloned_from', 'name', 'description', 'image', 'rarity', 'tags', 'platform',
+                  'external_url', 'background_color', 'txid', 'token_id', 'contract', 'hidden', 'created',
+                  'sender', 'recipient',
+                  )
+
+    def get_created(self, instance):
+        return instance.created_on.isoformat()
+
+    def get_sender(self, instance):
+        return  instance.sender_profile.handle
+
+    def get_recipient(self, instance):
+        return instance.recipient_profile.handle

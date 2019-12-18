@@ -26,6 +26,26 @@
   <link rel="stylesheet" href={% static "v2/css/lib/daterangepicker.css" %}>
   <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
   <link rel="stylesheet" href={% static "v2/css/bounty.css" %}>
+  <style>
+    .loading {
+      margin-bottom: 20px;
+    }
+    .loading:before {
+      content: '';
+      width: 12rem;
+      height: 12rem;
+      background: #fff;
+      border-radius: 50%;
+      top: 113px;
+    }
+    .loading img {
+      position: absolute;
+      max-width: 100%;
+      width: 13rem;
+      z-index: 2;
+      padding-right: 1rem;
+    }
+  </style>
 </head>
 
 <body class="interior g-font-muli submit_bounty" style="background-color: #FFFFFF;">
@@ -43,10 +63,10 @@
         {% include 'shared/connect_metamask.html' %}
       </div>
     </div>
-    <div style="display: none">
-      {% include 'shared/waiting_state.html' %}
+    <div id="loading" style="display: none">
+      {% include 'shared/backup_loader.html' %}
     </div>
-    <div class="row justify-content-center">
+    <div id="backup_options" class="row justify-content-center">
       <div class="col-lg-8 col-sm-12 my-5" id="primary_form">
         <form id="backup_data" class="pt-5">
           {% csrf_token %}
@@ -55,7 +75,7 @@
             <p class="text-center font-bigger-1 text-black-60">You decide what will be shared with the world, you have the control of your data! </p>
 
             <div class="text-right mt-2">
-              <p class="font-caption" id="last-synced">{% trans "Last Synced " %}<span></span></p>
+              <p class="font-caption" id="last-synced">{% trans "Last Synced" %} {% if profile.last_backup  %}{{ profile.last_backup|date:'Y-m-d H:i' }}{% endif %}<span></span></p>
               <button id="sync-issue" class="button button--primary">
                 <i class="fas fa-sync mr-1"></i> {% trans "Sync with 3box" %}
               </button>
@@ -89,8 +109,7 @@
 {% include 'shared/current_profile.html' %}
 
 <script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+
 <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 <script src="{% static "v2/js/lib/3box.min.js" %}"></script>
 <script src="{% static "v2/js/backup_data.js" %}"></script>
