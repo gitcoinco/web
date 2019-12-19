@@ -89,7 +89,7 @@ from .helpers import (
 from .models import (
     Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileExportSerializer, ProfileView, RefundFeeRequest,
+    HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
     SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import (
@@ -100,6 +100,9 @@ from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count,
     get_web3, has_tx_mined, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public,
     web3_process_bounty,
+)
+from .export import (
+    ProfileExportSerializer, GrantExportSerializer, BountyExportSerializer, ActivityExportSerializer
 )
 
 logger = logging.getLogger(__name__)
@@ -2385,7 +2388,13 @@ def profile_backup(request):
     if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
         raise Http404
 
-    data = json.dumps(ProfileExportSerializer(profile).data, cls=DjangoJSONEncoder)
+    # fetch the exported data for backup
+    data = {
+        "profile": ProfileExportSerializer(profile).data,
+        # "grants": GrantExportSerializer(profile.get_my_grants(), many=True).data,
+        "bounties": BountyExportSerializer(profile.bounties, many=True).data,
+        "activity": ActivityExportSerializer(profile.activities, many=True).data,
+    }
 
     response = {
         'status': 200,

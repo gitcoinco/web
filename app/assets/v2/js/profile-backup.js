@@ -42,7 +42,10 @@
 
   const backupProfile = async space => {
     const profile_json = await fetchProfieData();
-    console.log("profile_json", profile_json);
+    console.log("profile_json", profile_json.profile);
+    profile.grants = profile_json.grants;
+    profile.bounties = profile_json.bounties;
+    profile.activities = profile_json.activities;
 
     if (profile_json) {
       // get public key-value
