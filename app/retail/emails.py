@@ -927,8 +927,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Fund Your Code & Code Your Fund"
-    new_kudos_pks = [7259, 7260, 7096]
+    subject = "Gitcoin Grants Round 4 & Sustain Web3"
+    new_kudos_pks = [866, 813, 909]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -946,26 +946,29 @@ def render_new_bounty_roundup(to_email):
     '''
     intro = f'''
 <p>
-Hey Gitcoiners,
+Happy holidays Gitcoiners,
 </p>
 <p>
-   Happy Friday! There are only 4 days left to go in the <a href="https://gitcoin.co/hackathon/global-communities">Global Communities</a> virtual hackathon, but still plenty of prizes up for grabs and opportunities to start work. We’ll be giving out our first “<a href="https://gitcoin.co/issue/gitcoinco/skunkworks/136/3759">Community Choice</a>” prize this time around (1500 DAI total!), so make sure you <a href="https://hackathons.gitcoin.co/global-communities">register</a> if you want to vote. If you’ve already registered, take another look through the <a href="https://gitcoin.co/hackathon/global-communities">prize explorer</a> to make sure you didn’t miss anything.
+   Just in time for the new year, we couldn’t be more excited to announce <a href="https://gitcoin.co/blog/gitcoin-grants-2020/">Gitcoin Grants Round 4</a>! With a record $200k CLR matching pool, <a href="https://gitcoin.co/grants/">make your voice heard</a> and help us allocate radical funding to your favorite Ethereum projects.
 </p>
 <p>
-   We’ve released two blog posts this hack highlighting <a href="https://gitcoin.co/blog/hashing-cashing-global-communities/">Hashing Systems</a> and <a href="https://gitcoin.co/blog/in-the-lab-with-consensys-global-communities/">ConsenSys Labs</a>. Dive in to learn more about the organizations and the bounties they are hosting. Both have ample opportunities to take home a nice chunk of change.
+   Grants Round 4 will run from January 6th through January 21st, 2020. Any contributions made during this two week period will be used to direct the match. We’ll have two separate CLR pools: a $75k Community Pool for media, community, and marketing projects, along with a $125k Infrastructure Pool for Ethereum projects spanning ETH 2.0, decentralized finance (DeFi), crypto wallets, and UX.
 </p>
 <p>
-   Finally, there are four new Gitcoin Quests this week for you to dig your teeth into: <a href="https://gitcoin.co/quests/76/uniswap-a-liquidity-provider-perspective">UNISWAP, A liquidity provider perspective</a>, <a href="https://gitcoin.co/quests/75/a-stellar-intro">A Stellar Intro</a>, <a href="https://gitcoin.co/quests/77/crypto-payment-app">Crypto Payment App</a>, and <a href="https://gitcoin.co/quests/78/hashing-systems-via-hashgraph">Hashing Systems via Hashgraph</a>. Earn some kudos while learning at the same time!
+   To learn more about Quadratic Funding, check out <a href="https://vitalik.ca/general/2019/10/24/gitcoin.html">Vitalik’s review</a> of Round 3. You can also find more information and browse the projects on the <a href="https://gitcoin.co/grants/">Grants</a> page. Even one dollar can go a long way!
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        <a href="https://codefund.io/">CodeFund</a> (Gitcoin’s ethical advertising network) is going through a new re-design on the administration views, advertiser dashboard, and publisher dashboard, as well as implementing a new strategy for ads rendered (which you can think as Codefund's base USP). They're looking to lock in subscriptions for 2020, so reach out if you’re interested in advertising to open source or blockchain developers! CodeFund is also starting a podcast network, so stay tuned for more info on that. 
+         Attending EthDenver 2020? Join us the day prior at <a href="https://web3.sustainoss.org/">Sustain Web3</a>, an event Gitcoin is hosting with OSCoin and Radical on February 13th in Boulder, CO. It will be a celebration of Open-Source Sustainability with a full day of workshops, panels, and talks from leaders in Web3 OSS. 
         </li>
         <li>
-        If you’re not familiar with CodeFund, join us on today’s livestream to hear the founder <a href="https://twitter.com/coderberry?lang=en">Eric Berry</a> discuss why he started CodeFund, how it got to where it is today, and what his mission is to support OSS going forward. <a href="https://http://gitcoin.co/livestream">Join at 2pm ET</a>.
+        Sustain Web3 is free to attend and open to anyone. We’ll be sourcing “pay-what-you-can” donations from attendees, sponsors, and general community sustainers through a <a href="https://gitcoin.co/grants/195/sustain-web3-sustainers">Gitcoin CLR Grant</a>. Learn more and sign up to attend or apply to speak <a href="https://web3.sustainoss.org/">here</a>.
+        </li>
+        <li>
+        Finally, we’re also hosting a virtual hackathon in anticipation of the event with select winners announced on stage. Learn more and sign up <a href="https://hackathons.gitcoin.co/sustain-web3/">here</a>.
         </li>
     </ul>
 </p>
@@ -974,22 +977,22 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'iamonuwa',
+        'who': 'tbenr',
         'who_link': True,
-        'what': 'Removed Civic from the MyBit application',
-        'link': 'https://gitcoin.co/issue/MyBitFoundation/MyBit-Go.app/515/3801',
+        'what': 'Improved Snackbar Animation Behavior for Status',
+        'link': 'https://gitcoin.co/issue/status-im/status-react/9288/3735',
         'link_copy': 'View more',
     }, {
-        'who': 'seichris',
+        'who': 'zeitgeistf',
         'who_link': True,
-        'what': 'Re-Designed Mockup For Zero-Knowledge Assets',
-        'link': 'https://gitcoin.co/issue/invisible-college/democracy/36/3786',
+        'what': 'Built a new Hummingbot exchange connector for Liquid.com',
+        'link': 'https://gitcoin.co/issue/CoinAlpha/hummingbot/909/3556',
         'link_copy': 'View more',
     }, {
-        'who': 'mul1sh',
+        'who': 'vird',
         'who_link': True,
-        'what': 'Removed Cursor Drifts During Navigation on IOS',
-        'link': 'https://gitcoin.co/issue/cybersemics/em/4/3715',
+        'what': 'Optimized CUDA code using pinned memory for accessing data',
+        'link': 'https://gitcoin.co/issue/cybercongress/cyberrank-benchmark/2/3807',
         'link_copy': 'View more',
     }, ]
 
@@ -1006,14 +1009,14 @@ Back to shipping,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/iamdefinitelyahuman/brownie/issues/262',
-        'primer': 'Brownie - Rebuild / Expand CLI Test Cases',
+        'url': 'https://github.com/NethermindEth/nethermind/issues/32',
+        'primer': 'Implement LES Protocol',
     }, {
-        'url': 'https://github.com/3box/3box/issues/839',
-        'primer': 'Integrate 3Box And Gitcoin: Backup Gitcoin Profiles To 3Box - 1000 DAI Hackathon Bounty',
+        'url': 'https://github.com/MetaMask/metamask-extension/issues/6649',
+        'primer': 'Support Multiple Hardware Wallets for Metamask',
     }, {
-        'url': 'https://github.com/ConsenSys/Global-Community-Relay/issues/3',
-        'primer': 'UX Best-In-Show - 7 ETH Hackathon Bounty (Any project is valid!)',
+        'url': 'https://github.com/ProofSuite/OrFeedSmartContracts/issues/26',
+        'primer': 'Smart Contract That Creates A Uniswap Market For Pegged Token Upon Creation',
 }, ]
 
 
