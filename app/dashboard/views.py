@@ -2393,7 +2393,7 @@ def profile_backup(request):
         "profile": ProfileExportSerializer(profile).data,
         # "grants": GrantExportSerializer(profile.get_my_grants(), many=True).data,
         "bounties": BountyExportSerializer(profile.bounties, many=True).data,
-        "activity": ActivityExportSerializer(profile.activities, many=True).data,
+        "activities": ActivityExportSerializer(profile.activities, many=True).data,
     }
 
     response = {
