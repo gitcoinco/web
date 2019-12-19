@@ -3,32 +3,6 @@
   background: linear-gradient(161deg, rgba(55,27,181,1) 37%, rgba(255,51,117,1) 100%);
 }
 
-.banner img {
-  margin: 1em;
-  align-items: center;
-  display: flex;
-  transition: all .2s ease-in-out;
-}
-
-.banner .hackathon-logo {
-  height: 18rem;
-}
-
-.banner .hackathon-header {
-  letter-spacing: 2px;
-}
-
-.banner .hackathon-name {
-  font-size: 2rem;
-  letter-spacing: 8px;
-  text-transform: uppercase;
-  border-bottom: 3px solid white;
-}
-
-.banner img:hover {
-  transform: scale(1.1);
-}
-
 .banner .sponsors-gold img {
   height: 6rem;
   margin: 1em;
@@ -42,7 +16,6 @@
 .banner .sponsors-gold {
   margin-bottom: 1rem;
 }
-
 
 /* ETH Hack 2019 */
 #ethhack_2019 .hackathon-name {

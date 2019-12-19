@@ -496,8 +496,26 @@ nav.navbar.navbar-dark{
 
 .tribe-members {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   grid-gap: 3rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .tribe-members {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .tribe-members {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .tribe-members {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
 
 .badge-tribe {

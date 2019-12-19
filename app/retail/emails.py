@@ -927,8 +927,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Growing Your Global Community"
-    new_kudos_pks = [2571, 7135, 2224]
+    subject = "Fund Your Code & Code Your Fund"
+    new_kudos_pks = [7259, 7260, 7096]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -949,30 +949,23 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    At Gitcoin, we're interested in making it possible for everyone to grow a global community. We welcome each of you, wherever you are, to  <a href="https://hackathons.gitcoin.co/global-communities">join us for the Global Communities hack.</a>
-    Want to hack? There will be prizes. Want to learn? We'll have unique Quests on topics of interest in Web 3.
-    Want to meet other smart, great people? That's the easy part, and the fun part. <a href="https://hackathons.gitcoin.co/global-communities">Register and come together :)</a>
+   Happy Friday! There are only 4 days left to go in the <a href="https://gitcoin.co/hackathon/global-communities">Global Communities</a> virtual hackathon, but still plenty of prizes up for grabs and opportunities to start work. We’ll be giving out our first “<a href="https://gitcoin.co/issue/gitcoinco/skunkworks/136/3759">Community Choice</a>” prize this time around (1500 DAI total!), so make sure you <a href="https://hackathons.gitcoin.co/global-communities">register</a> if you want to vote. If you’ve already registered, take another look through the <a href="https://gitcoin.co/hackathon/global-communities">prize explorer</a> to make sure you didn’t miss anything.
 </p>
 <p>
-    Have something you want to build during the event, related to Ethereum? Write it up in a Github ticket (on <a href="https://github.com/gitcoinco/skunkworks/issues">our repo</a>, or
-    the related repo on Github). Then make <a href="https://gitcoin.co/requests">a Gitcoin Request.</a> Takes 5 minutes - you can help move Ethereum
-    forward and share with the community along the way!
+   We’ve released two blog posts this hack highlighting <a href="https://gitcoin.co/blog/hashing-cashing-global-communities/">Hashing Systems</a> and <a href="https://gitcoin.co/blog/in-the-lab-with-consensys-global-communities/">ConsenSys Labs</a>. Dive in to learn more about the organizations and the bounties they are hosting. Both have ample opportunities to take home a nice chunk of change.
 </p>
 <p>
-    Not building, but want to learn about new topics in Web 3? Check out <a href="https://gitcoin.co/quests">Gitcoin Quests.</a>
-    Let us know if it helps. We want to make a body of knowledge for the Web 3 curious, leading towards ways to build it yourself. Come play :)
+   Finally, there are four new Gitcoin Quests this week for you to dig your teeth into: <a href="https://gitcoin.co/quests/76/uniswap-a-liquidity-provider-perspective">UNISWAP, A liquidity provider perspective</a>, <a href="https://gitcoin.co/quests/75/a-stellar-intro">A Stellar Intro</a>, <a href="https://gitcoin.co/quests/77/crypto-payment-app">Crypto Payment App</a>, and <a href="https://gitcoin.co/quests/78/hashing-systems-via-hashgraph">Hashing Systems via Hashgraph</a>. Earn some kudos while learning at the same time!
 </p>
-<p>
-    <img style="max-width: 90%" src="https://gitcoin-static.s3-us-west-2.amazonaws.com/gitcointurkey.png">
-</p>
+
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        No Gitcoin Livestream this week, but we'll be back next week for Global Communities. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
+        <a href="https://codefund.io/">CodeFund</a> (Gitcoin’s ethical advertising network) is going through a new re-design on the administration views, advertiser dashboard, and publisher dashboard, as well as implementing a new strategy for ads rendered (which you can think as Codefund's base USP). They're looking to lock in subscriptions for 2020, so reach out if you’re interested in advertising to open source or blockchain developers! CodeFund is also starting a podcast network, so stay tuned for more info on that. 
         </li>
         <li>
-        We're still updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
+        If you’re not familiar with CodeFund, join us on today’s livestream to hear the founder <a href="https://twitter.com/coderberry?lang=en">Eric Berry</a> discuss why he started CodeFund, how it got to where it is today, and what his mission is to support OSS going forward. <a href="https://http://gitcoin.co/livestream">Join at 2pm ET</a>.
         </li>
     </ul>
 </p>
@@ -981,46 +974,46 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'brentallsop',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Notes For Meeting 27',
-        'link': 'https://gitcoin.co/issue/ethereum/eth2.0-pm/97/3723',
+        'what': 'Removed Civic from the MyBit application',
+        'link': 'https://gitcoin.co/issue/MyBitFoundation/MyBit-Go.app/515/3801',
         'link_copy': 'View more',
     }, {
-        'who': 'mul53',
+        'who': 'seichris',
         'who_link': True,
-        'what': 'Key was being generated in wrong manner... now, its fixed!',
-        'link': 'https://gitcoin.co/issue/cybercongress/cyb/249/3733',
+        'what': 'Re-Designed Mockup For Zero-Knowledge Assets',
+        'link': 'https://gitcoin.co/issue/invisible-college/democracy/36/3786',
         'link_copy': 'View more',
     }, {
-        'who': 'johguse',
+        'who': 'mul1sh',
         'who_link': True,
-        'what': 'Mined new addresses for CREATE2. Great work!',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/9491/3718',
+        'what': 'Removed Cursor Drifts During Navigation on IOS',
+        'link': 'https://gitcoin.co/issue/cybersemics/em/4/3715',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'MythX',
-        'title': 'Keep Ethereum Secure',
-        'image_url': '',
-        'link': 'http://bit.ly/mythx-gitcoin-weekly',
-        'cta': 'Register Now',
-        'body': [
-            'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
-            'Scan for security vulnerabilities right away from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
-        ]
-    }
+    'name': 'CodeFund',
+    'title': 'Does your project need 🦄 developers?',
+    'image_url': '',
+    'link': 'http://bit.ly/codefund-gitcoin-weekly',
+    'cta': 'Learn More',
+    'body': [
+       'CodeFund is a privacy-focused ethical advertising network (by Gitcoin) that funds open source projects.',
+       'We specialize in helping companies connect with talented developers and potential customers on developer-centric sites that typically do not allow ads.'
+    ]
+}
 
     bounties_spec = [{
-        'url': 'https://github.com/notadamking/tensortrade/issues/119',
-        'primer': 'Feature Request: GANExchange Implementation Of SimulatedExchange',
+        'url': 'https://github.com/iamdefinitelyahuman/brownie/issues/262',
+        'primer': 'Brownie - Rebuild / Expand CLI Test Cases',
     }, {
-        'url': 'https://github.com/invisible-college/democracy/issues/31',
-        'primer': 'Design A Logo For Typed Transform Pipelines',
+        'url': 'https://github.com/3box/3box/issues/839',
+        'primer': 'Integrate 3Box And Gitcoin: Backup Gitcoin Profiles To 3Box - 1000 DAI Hackathon Bounty',
     }, {
-        'url': 'https://github.com/crytic/evm_cfg_builder/issues/23',
-        'primer': 'Create Gidhra Plugin for the EVM',
+        'url': 'https://github.com/ConsenSys/Global-Community-Relay/issues/3',
+        'primer': 'UX Best-In-Show - 7 ETH Hackathon Bounty (Any project is valid!)',
 }, ]
 
 

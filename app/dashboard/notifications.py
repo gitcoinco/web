@@ -51,6 +51,7 @@ def notify_of_lowball_bounty(bounty):
 
     """
     to_email = 'founders@gitcoin.co'
+    cc_emails = 'scott.moore@consensys.net'
     from_email = settings.CONTACT_EMAIL
     cur_language = translation.get_language()
     try:
@@ -63,7 +64,7 @@ def notify_of_lowball_bounty(bounty):
             f"Owner Email: {bounty.bounty_owner_email}\n\n" \
             f"Owner Address: {bounty.bounty_owner_address}\n\n" \
             f"Owner Profile: {bounty.bounty_owner_profile}"
-        send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"), categories=['admin'], )
+        send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"), categories=['admin'], cc_emails=cc_emails)
     finally:
         translation.activate(cur_language)
 

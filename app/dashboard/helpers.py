@@ -438,7 +438,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
         coupon_code = bounty_payload.get('coupon_code', None)
         if coupon_code:
-            coupon = Coupon.objects.get(code=coupon_code)
+            coupon = Coupon.objects.filter(code=coupon_code).first()
             if coupon:
                 bounty_kwargs.update({
                     'coupon_code': coupon
@@ -551,7 +551,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         logger.error(e)
 
     if latest_old_bounty and latest_old_bounty.event:
-        new_bounty.event = latest_old_bounty.event;
+        new_bounty.event = latest_old_bounty.event
         new_bounty.save()
     else:
         event_tag = metadata.get('eventTag', '')
@@ -670,7 +670,6 @@ def process_bounty_details(bounty_details):
     """
     from dashboard.utils import get_bounty_semaphore_ns
     # See dashboard/utils.py:get_bounty from details on this data
-    print(bounty_details)
     bounty_id = bounty_details.get('id', {})
     bounty_data = bounty_details.get('data') or {}
     bounty_payload = bounty_data.get('payload', {})
