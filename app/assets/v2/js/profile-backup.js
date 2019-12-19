@@ -43,10 +43,11 @@
   const backupProfile = async space => {
     const data = await fetchProfieData();
     let profile = data.profile;
+
     profile.grants = data.grants;
     profile.bounties = data.bounties;
     profile.activities = data.activities;
-    console.log("profile", profile);
+    console.log('profile', profile);
 
     if (profile) {
       // get public key-value
@@ -103,6 +104,7 @@
 
   const toggleAutomaticUpdateFlag = async() => {
     const data = new FormData();
+
     data.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
     try {
       const response = await fetch('/api/v0.1/profile/settings', {
@@ -130,8 +132,9 @@
     }
   };
 
-  const fetchProfieData = async () => {
+  const fetchProfieData = async() => {
     const data = new FormData();
+
     data.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
     try {
       const response = await fetch('/api/v0.1/profile/backup', {
@@ -141,19 +144,21 @@
 
       if (response.status === 200) {
         const result = await response.json();
+
         return result.data;
       }
     } catch (err) {
       console.log('Error ', err);
     }
     return null;
-  }
+  };
 
-  const startProfileDataBackup = async () => {
+  const startProfileDataBackup = async() => {
     console.log('start sync data to 3box');
 
     const data = await fetchProfieData();
-    console.log("data", data);
+
+    console.log('data', data);
     window.data = data;
 
     // User is prompted to approve the messages inside their wallet (openBox() and
