@@ -151,6 +151,10 @@
   const startProfileDataBackup = async () => {
     console.log('start sync data to 3box');
 
+    const data = await fetchProfieData();
+    console.log("data", data);
+    window.data = data;
+
     // User is prompted to approve the messages inside their wallet (openBox() and
     // openSpace() methods via 3Box.js). This logs them in to 3Box.
 
