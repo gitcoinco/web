@@ -65,7 +65,7 @@ class ProfileExportSerializer(serializers.BaseSerializer):
         }
 
 
-class GrantExportSerializer(serializers.BaseSerializer):
+class GrantExportSerializer(serializers.ModelSerializer):
     """Handle serializing the exported Grant object."""
     org = serializers.SerializerMethodField()
     created_at = serializers.SerializerMethodField()
@@ -163,13 +163,11 @@ class ActivityExportSerializer(serializers.ModelSerializer):
         if t in ('joined', 'updated_avatar'):
             action = 'profile'
         elif t in ('bounty_abandonment_warning', 'bounty_removed_by_funder',
-                                      'bounty_removed_slashed_by_staff',
-                                      'bounty_removed_by_staff','new_bounty', 'start_work',
-                                      'stop_work', 'work_done', 'worker_approved',
-                                      'worker_rejected', 'worker_applied', 'increased_bounty',
-                                      'killed_bounty', 'bounty_abandonment_escalation_to_mods',
-                                      'new_crowdfund', 'work_submitted'
-                                      ):
+                  'bounty_removed_slashed_by_staff', 'bounty_removed_by_staff','new_bounty',
+                  'start_work', 'stop_work', 'work_done', 'worker_approved', 'worker_rejected',
+                  'worker_applied', 'increased_bounty', 'killed_bounty',
+                  'bounty_abandonment_escalation_to_mods', 'new_crowdfund', 'work_submitted'
+                  ):
             action = 'bounty'
         elif t in ('new_kudos',):
             action = 'kudos'
