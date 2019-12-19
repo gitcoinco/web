@@ -119,7 +119,7 @@ class BountyExportSerializer(serializers.ModelSerializer):
                   'funding_organisation', 'gitcoin_provider', 'github_provider',
                   'canceled_bounty_reason', 'submissions_comment', 'fulfillment_accepted_on',
                   'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on',
-                  'created_at', 'state', 'expires_at',
+                  'created_at', 'expires_at', 'status'
                 )
 
     def get_created_at(self, instance):
