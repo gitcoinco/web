@@ -36,8 +36,8 @@ class ProfileExportSerializer(serializers.BaseSerializer):
             '_pref_lang_code': instance.pref_lang_code,
             '_preferred_payout_address': instance.preferred_payout_address,
             'persona': instance.selected_persona or instance.dominant_persona,
-            '_persona_is_funder': instance.persona_is_funder,
-            '_persona_is_hunter': instance.persona_is_hunter,
+            'persona_is_funder': instance.persona_is_funder,
+            'persona_is_hunter': instance.persona_is_hunter,
             # 'dominant_persona': instance.dominant_persona,
             # 'selected_persona': instance.selected_persona,
 

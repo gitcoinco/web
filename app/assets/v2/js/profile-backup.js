@@ -42,20 +42,19 @@
 
   const backupProfile = async space => {
     const data = await fetchProfieData();
-    console.log("profile_json", data.profile);
-    let profile_json = data;
-    profile_json.grants = data.grants;
-    profile_json.bounties = data.bounties;
-    profile_json.activities = data.activities;
+    let profile = data.profile;
+    profile.grants = data.grants;
+    profile.bounties = data.bounties;
+    profile.activities = data.activities;
+    console.log("profile", profile);
 
-
-    if (profile_json) {
+    if (profile) {
       // get public key-value
-      const public_keys = Object.keys(profile_json).filter(k => k[0] !== '_');
-      const public_values = public_keys.map(k => profile_json[k]);
+      const public_keys = Object.keys(profile).filter(k => k[0] !== '_');
+      const public_values = public_keys.map(k => profile[k]);
       // get private key-value
-      let private_keys = Object.keys(profile_json).filter(k => k[0] === '_');
-      const private_values = private_keys.map(k => profile_json[k]);
+      let private_keys = Object.keys(profile).filter(k => k[0] === '_');
+      const private_values = private_keys.map(k => profile[k]);
 
       private_keys = private_keys.map(k => k.substring(1));
 
