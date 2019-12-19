@@ -2392,6 +2392,8 @@ def profile_backup(request):
     data = {
         "profile": ProfileExportSerializer(profile).data,
         "grants": GrantExportSerializer(profile.get_my_grants, many=True).data,
+        "portfolio": BountyExportSerializer(profile.as_dict['portfolio'], many=True).data,
+        "active_work": BountyExportSerializer(profile.active_bounties, many=True).data,
         "bounties": BountyExportSerializer(profile.bounties, many=True).data,
         "activities": ActivityExportSerializer(profile.activities, many=True).data,
     }

@@ -43,40 +43,47 @@
 
   const backupProfile = async space => {
     const data = await fetchProfieData();
-    let profile = data.profile;
+    if (data) {
+      let profile = data.profile;
+      const contribution_history = ["grants", "portfolio", "active_work", "bounties", "activities"];
+      contribution_history.forEach(k => {
+        profile[k] = data[k];
+      })
+      console.log('profile', profile);
 
-    profile.grants = data.grants;
-    profile.bounties = data.bounties;
-    profile.activities = data.activities;
-    console.log('profile', profile);
+      if (profile) {
+        // get public key-value
+        const public_keys = Object.keys(profile).filter(k => k[0] !== '_');
+        const public_values = public_keys.map(k => profile[k]);
+        // get private key-value
+        let private_keys = Object.keys(profile).filter(k => k[0] === '_');
+        const private_values = private_keys.map(k => profile[k]);
 
-    if (profile) {
-      // get public key-value
-      const public_keys = Object.keys(profile).filter(k => k[0] !== '_');
-      const public_values = public_keys.map(k => profile[k]);
-      // get private key-value
-      let private_keys = Object.keys(profile).filter(k => k[0] === '_');
-      const private_values = private_keys.map(k => profile[k]);
+        private_keys = private_keys.map(k => k.substring(1));
 
-      private_keys = private_keys.map(k => k.substring(1));
+        // save data to space
+        const r_public = await space.public.setMultiple(public_keys, public_values);
+        const r_private = await space.private.setMultiple(private_keys, private_values);
 
-      // save data to space
-      const r_public = await space.public.setMultiple(public_keys, public_values);
-      const r_private = await space.private.setMultiple(private_keys, private_values);
+        // remove the unused key/value pairs from the space
+        await removeUnusedFields(space, public_keys, private_keys);
 
-      // remove the unused key/value pairs from the space
-      await removeUnusedFields(space, public_keys, private_keys);
+        if (r_public && r_private) {
+          const three_box_link = `https://3box.io/${window.curentEthAddr}/data`;
 
-      if (r_public && r_private) {
-        const three_box_link = `https://3box.io/${window.curentEthAddr}/data`;
-        _alert(
-          {
-            message: gettext(`<span>Your profile data has been synchronized to 3Box -- </span> <a href="${three_box_link}" target="_blank">Check out the details on 3Box Hub</a>.`)},
-          'success'
-        );
+          _alert(
+            {
+              message: gettext(`<span>Your profile data has been synchronized to 3Box -- </span> <a href="${three_box_link}" target="_blank">Check out the details on 3Box Hub</a>.`)},
+            'success'
+          );
+        } else {
+          syncFailure();
+        }
       } else {
         syncFailure();
       }
+    } else {
+      syncFailure();
     }
 
     switchIcons(false);
@@ -162,25 +169,29 @@
     const data = await fetchProfieData();
 
     console.log('data', data);
-    window.data = data;
 
     // User is prompted to approve the messages inside their wallet (openBox() and
     // openSpace() methods via 3Box.js). This logs them in to 3Box.
 
-    if (window.Box) {
-      // 1. Open box and space
-      // 2. Backing up my Gitcoin data to 3Box, inside of a "Gitcoin" space
-      switchIcons(true);
-      openBox(box => {
-        openSpace(box, (box, space) => {
-          console.log('backup data into space');
-          backupProfile(space);
+    try {
+      if (window.Box) {
+        // 1. Open box and space
+        // 2. Backing up my Gitcoin data to 3Box, inside of a "Gitcoin" space
+        switchIcons(true);
+        openBox(box => {
+          openSpace(box, (box, space) => {
+            console.log('backup data into space');
+            backupProfile(space);
+          });
         });
-      });
-    } else {
-      setTimeout(() => {
-        startProfileDataBackup();
-      }, 1000);
+      } else {
+        setTimeout(() => {
+          startProfileDataBackup();
+        }, 1000);
+      }
+    } catch (err) {
+      console.log('Error when backing up profile data', err);
+      syncFailure();
     }
   };
 

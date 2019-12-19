@@ -28,6 +28,7 @@ class ProfileExportSerializer(serializers.BaseSerializer):
             'avatar_url': instance.avatar_url,
             'profile_wallpaper': instance.profile_wallpaper,
             'keywords': instance.keywords,
+            'portfolio_keywords': d['portfolio_keywords'],
             'url': instance.get_relative_url(),
             'position': instance.get_contributor_leaderboard_index(),
             'organizations': instance.get_who_works_with(network=None),
@@ -38,8 +39,6 @@ class ProfileExportSerializer(serializers.BaseSerializer):
             'persona': instance.selected_persona or instance.dominant_persona,
             'persona_is_funder': instance.persona_is_funder,
             'persona_is_hunter': instance.persona_is_hunter,
-            # 'dominant_persona': instance.dominant_persona,
-            # 'selected_persona': instance.selected_persona,
 
             # job info
             # 'linkedin_url': instance.linkedin_url,
