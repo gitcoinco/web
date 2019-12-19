@@ -24,12 +24,13 @@ class ProfileExportSerializer(serializers.BaseSerializer):
             # basic info
             'id': instance.id,
             'username': instance.handle,
+            'full_name': instance.user.get_full_name(),
+            'gitcoin_url': instance.absolute_url,
             'github_url': instance.github_url,
             'avatar_url': instance.avatar_url,
-            'profile_wallpaper': instance.profile_wallpaper,
+            'wallpaper': instance.profile_wallpaper,
             'keywords': instance.keywords,
             'portfolio_keywords': d['portfolio_keywords'],
-            'url': instance.get_relative_url(),
             'position': instance.get_contributor_leaderboard_index(),
             'organizations': instance.get_who_works_with(network=None),
             '_email': instance.email,
@@ -50,9 +51,6 @@ class ProfileExportSerializer(serializers.BaseSerializer):
 
             # stats
             'last_visit': instance.last_visit,
-            'total_earned': instance.get_eth_sum(network=None),
-            'earnings_count': d['earnings_count'],
-            'avg_rating': d['avg_rating']['overall'],
             'longest_streak': instance.longest_streak,
             'activity_level': instance.activity_level,
             'avg_hourly_rate': instance.avg_hourly_rate,
@@ -60,7 +58,28 @@ class ProfileExportSerializer(serializers.BaseSerializer):
             'reliability': instance.reliability,
             'rank_funder': instance.rank_funder,
             'rank_org': instance.rank_org,
-            'rank_coder': instance.rank_coder
+            'rank_coder': instance.rank_coder,
+            # contribution v.s. funding
+            'completed_bounties_count': d['count_bounties_completed'],
+            'funded_bounties_count': d['funded_bounties_count'],
+            'earnings_total': d['earnings_total'],
+            'earnings_count': d['earnings_count'],
+            'spent_total': d['spent_total'],
+            'spent_count': d['spent_count'],
+            'sum_eth_collected': d['sum_eth_collected'],
+            'sum_eth_funded': d['sum_eth_funded'],
+            'hackathons_participated_in': d['hackathons_participated_in'],
+            'hackathons_funded': d['hackathons_funded'],
+            'total_tips_sent': d['total_tips_sent'],
+            'total_tips_received': d['total_tips_received'],
+            # rating
+            'overall_average_rating': d['avg_rating']['overall'],
+            'code_quality_average_rating': d['avg_rating']['code_quality_rating'],
+            'communication_rating': d['avg_rating']['communication_rating'],
+            'recommendation_rating': d['avg_rating']['recommendation_rating'],
+            'satisfaction_rating': d['avg_rating']['satisfaction_rating'],
+            'speed_rating': d['avg_rating']['speed_rating'],
+            'total_rating_count': d['avg_rating']['total_rating'],
         }
 
 
