@@ -16,6 +16,7 @@
       window.Box.openBox(addresses[0], window.ethereum, {}).then(box => {
         box.onSyncDone(syncComplete);
         window.box = box;
+        window.curentEthAddr = addresses[0];
         console.log('openBox succeeded');
         callback(box);
       }).catch(err => {
@@ -67,8 +68,10 @@
       await removeUnusedFields(space, public_keys, private_keys);
 
       if (r_public && r_private) {
+        const three_box_link = `https://3box.io/${window.curentEthAddr}/data`;
         _alert(
-          { message: gettext('Your profile data has been synchronized to 3Box.') },
+          {
+            message: gettext(`<span>Your profile data has been synchronized to 3Box -- </span> <a href="${three_box_link}" target="_blank">Check out the details on 3Box Hub</a>.`)},
           'success'
         );
       } else {
@@ -128,7 +131,7 @@
       }
 
     } catch (err) {
-      console.log('Error ', err);
+      console.log('Error when toggling automatic backup flag', err);
     }
   };
 
@@ -148,7 +151,7 @@
         return result.data;
       }
     } catch (err) {
-      console.log('Error ', err);
+      console.log('Error when fetching profile data', err);
     }
     return null;
   };
