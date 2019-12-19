@@ -102,9 +102,6 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
 
-    <!-- Embed Profile Data -->
-    <div id="profile_json" data="{{ profile_json }}"></div>
-
     <!-- jQuery -->
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="/dynamic/js/tokens_dynamic.js"></script>
@@ -117,16 +114,13 @@
     <script src="{% static "v2/js/pages/profile.js" %}"></script>
     <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
     <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
-    <script src="{% static "v2/js/pages/profile-backup.js" %}"></script>
+    <script src="{% static "v2/js/profile-backup.js" %}"></script>
     <script src="{% static "v2/js/rating.js" %}"></script>
     <script src="{% static "v2/js/status.js" %}"></script>
     <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
     <script>
       {% if profile.preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;
-      {% endif %}
-      {% if is_editable %}
-        window.profile_json = JSON.parse(document.getElementById("profile_json").getAttribute("data") || "[{}]");
       {% endif %}
       {% if profile.automatic_backup %}
         window.profile_automatic_backup = true;

@@ -111,6 +111,7 @@ urlpatterns = [
     url(r'^api/v0.1/profile/(.*)?/viewers.csv', dashboard.views.profile_viewers, name='profile_viewers'),
     url(r'^api/v0.1/profile/(.*)?/spent.csv', dashboard.views.profile_spent, name='profile_spent'),
     url(r'^api/v0.1/profile/banner', dashboard.views.change_user_profile_banner, name='change_user_profile_banner'),
+    url(r'^api/v0.1/profile/settings', dashboard.views.profile_settings, name='profile_settings'),
     url(r'^api/v0.1/profile/backup', dashboard.views.profile_backup, name='profile_backup'),
     url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
     url(

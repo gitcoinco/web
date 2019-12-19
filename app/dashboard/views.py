@@ -2338,7 +2338,7 @@ def profile_job_opportunity(request, handle):
 
 @require_POST
 @login_required
-def profile_backup(request):
+def profile_settings(request):
     """ Toggle profile automatic backup flag.
 
     Args:
@@ -2362,6 +2362,34 @@ def profile_backup(request):
         'status': 200,
         'message': 'Profile automatic backup flag toggled',
         'automatic_backup': profile.automatic_backup
+    }
+
+    return JsonResponse(response, status=response.get('status', 200))
+
+@require_POST
+@login_required
+def profile_backup(request):
+    """ Read the profile backup data.
+
+    Args:
+        handle (str): The profile handle.
+    """
+
+    handle = request.user.profile.handle
+
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
+        raise Http404
+
+    data = json.dumps(ProfileExportSerializer(profile).data, cls=DjangoJSONEncoder)
+
+    response = {
+        'status': 200,
+        'data': data
     }
 
     return JsonResponse(response, status=response.get('status', 200))
@@ -2745,9 +2773,6 @@ def profile(request, handle, tab=None):
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
-
-    # export json data
-    context['profile_json'] = json.dumps(ProfileExportSerializer(profile).data, cls=DjangoJSONEncoder)
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:

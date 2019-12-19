@@ -41,30 +41,34 @@
   };
 
   const backupProfile = async space => {
-    const profile_json = window.profile_json;
-    // get public key-value
-    const public_keys = Object.keys(profile_json).filter(k => k[0] !== '_');
-    const public_values = public_keys.map(k => profile_json[k]);
-    // get private key-value
-    let private_keys = Object.keys(profile_json).filter(k => k[0] === '_');
-    const private_values = private_keys.map(k => profile_json[k]);
+    const profile_json = await fetchProfieData();
+    console.log("profile_json", profile_json);
 
-    private_keys = private_keys.map(k => k.substring(1));
+    if (profile_json) {
+      // get public key-value
+      const public_keys = Object.keys(profile_json).filter(k => k[0] !== '_');
+      const public_values = public_keys.map(k => profile_json[k]);
+      // get private key-value
+      let private_keys = Object.keys(profile_json).filter(k => k[0] === '_');
+      const private_values = private_keys.map(k => profile_json[k]);
 
-    // save data to space
-    const r_public = await space.public.setMultiple(public_keys, public_values);
-    const r_private = await space.private.setMultiple(private_keys, private_values);
+      private_keys = private_keys.map(k => k.substring(1));
 
-    // remove the unused key/value pairs from the space
-    await removeUnusedFields(space, public_keys, private_keys);
+      // save data to space
+      const r_public = await space.public.setMultiple(public_keys, public_values);
+      const r_private = await space.private.setMultiple(private_keys, private_values);
 
-    if (r_public && r_private) {
-      _alert(
-        { message: gettext('Your profile data has been synchronized to 3Box.') },
-        'success'
-      );
-    } else {
-      syncFailure();
+      // remove the unused key/value pairs from the space
+      await removeUnusedFields(space, public_keys, private_keys);
+
+      if (r_public && r_private) {
+        _alert(
+          { message: gettext('Your profile data has been synchronized to 3Box.') },
+          'success'
+        );
+      } else {
+        syncFailure();
+      }
     }
 
     switchIcons(false);
@@ -95,10 +99,9 @@
 
   const toggleAutomaticUpdateFlag = async() => {
     const data = new FormData();
-
     data.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
     try {
-      const response = await fetch('/api/v0.1/profile/backup', {
+      const response = await fetch('/api/v0.1/profile/settings', {
         method: 'post',
         body: data
       });
@@ -123,7 +126,26 @@
     }
   };
 
-  const startProfileDataBackup = () => {
+  const fetchProfieData = async () => {
+    const data = new FormData();
+    data.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
+    try {
+      const response = await fetch('/api/v0.1/profile/backup', {
+        method: 'post',
+        body: data
+      });
+
+      if (response.status === 200) {
+        const result = await response.json();
+        return result.data;
+      }
+    } catch (err) {
+      console.log('Error ', err);
+    }
+    return null;
+  }
+
+  const startProfileDataBackup = async () => {
     console.log('start sync data to 3box');
 
     // User is prompted to approve the messages inside their wallet (openBox() and
