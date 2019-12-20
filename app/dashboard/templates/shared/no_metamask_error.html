@@ -31,10 +31,14 @@
         <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues/4">{% trans 'Need Help?' %}</a>
       </div>
 
-      <p class="mt-4">Alternatively, use your phone to connect to the Ethereum network.</p>
-      <button class="btn btn-fortmatic btn-lg-padding" onclick="approve_fortmatic()">
-        {% trans 'Connect Fortmatic ' %}
-      </button>
+      {% if user.is_authenticated %}
+        {% if user.is_staff %}
+          <p class="mt-4">Alternatively, use your phone to connect to the Ethereum network.</p>
+          <button class="btn btn-fortmatic btn-lg-padding" onclick="approve_fortmatic()">
+            {% trans 'Connect Fortmatic ' %}
+          </button>
+        {% endif %}
+      {% endif %}
     </div>
     <div class="col-12 col-lg-6 col-xl-5 text-center">
       <img src="{% static "v2/images/metamask/install-metamask.svg" %}" alt="Metamask Logo" class="mw-100">
