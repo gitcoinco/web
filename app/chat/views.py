@@ -20,21 +20,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.conf import settings
 from django.template.response import TemplateResponse
-from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.clickjacking import xframe_options_exempt
+from chat.utils import get_driver
 
-import requests
+
+def chat(request):
+    """Render chat landing page response."""
+
+    chat_driver = get_driver()
+
+    chat_stats = chat_driver.teams.get_team_stats(settings.GITCOIN_CHAT_TEAM_ID)
+
+    context = {
+        'chat_stats': chat_stats
+    }
+
+    return TemplateResponse(request, 'chat.html', context)
 
 
 def embed(request):
     """Handle the chat embed view."""
-
-    is_staff = request.user.is_staff if request.user.is_authenticated else False
-
-    # if not is_staff:
-    #     context = dict(active='error', code=404, title="Error {}".format(404))
-    #     return TemplateResponse(request, 'error.html', context, status=404)
 
     context = {
         'is_outside': True,

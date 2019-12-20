@@ -367,7 +367,7 @@ class Bounty(SuperModel):
     ) # TODO: Remove POST ORGS
     attached_job_description = models.URLField(blank=True, null=True, db_index=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
-
+    chat_channel_id = models.CharField(max_length=255),
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
 

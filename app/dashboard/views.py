@@ -351,6 +351,83 @@ def new_interest(request, bounty_id):
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
+        if bounty.event is not None:
+            from app.chat.tasks import add_to_channel, create_channel, create_user
+            from django.utils.text import slugify
+            try:
+                if bounty.chat_channel_id is None:
+
+                    result = create_channel.apply_async({
+                        'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                        'channel_name': bounty.title,
+                        'channel_display_name': f'bounty-{slugify(bounty.title)[:50]}'
+                    })
+
+                    bounty.chat_channel_id = result.get()
+                    bounty.save()
+                funder_profile = Profile.objects.filter(handle=bounty.bounty_owner_github_username)[0]
+
+                if funder_profile is not None:
+                    if funder_profile.chat_id is None:
+                        chat_funder_user = create_user.__call__(
+                            options={
+                                "email": funder_profile.user.email,
+                                "username": funder_profile.handle,
+                                "first_name": funder_profile.user.first_name,
+                                "last_name": funder_profile.user.last_name,
+                                "nickname": "string",
+                                "auth_data": funder_profile.user.id,
+                                "auth_service": "gitcoin",
+                                "locale": "en",
+                                "props": {},
+                                "notify_props": {
+                                    "email": False if should_suppress_notification_email(funder_profile.user.email, 'chat') else True
+                                }
+                            },
+                            params={
+                              "iid": settings.GITCOIN_HACK_CHAT_TEAM_ID if settings.GITCOIN_HACK_CHAT_TEAM_ID else ""
+                            }
+                        )
+
+                        funder_profile.chat_id = chat_funder_user.id
+                        funder_profile.save()
+
+                    if profile.chat_id is None:
+                        chat_funder_user = create_user.__call__(
+                            options={
+                                "email": profile.user.email,
+                                "username": profile.handle,
+                                "first_name": profile.user.first_name,
+                                "last_name": profile.user.last_name,
+                                "nickname": "string",
+                                "auth_data": profile.user.id,
+                                "auth_service": "gitcoin",
+                                "locale": "en",
+                                "props": {},
+                                "notify_props": {
+                                    "email": False if should_suppress_notification_email(profile.user.email, 'chat') else True
+                                }
+                            },
+                            params={
+                              "iid": settings.GITCOIN_HACK_CHAT_TEAM_ID if settings.GITCOIN_HACK_CHAT_TEAM_ID else ""
+                            }
+                        )
+
+                        profile.chat_id = chat_funder_user.id
+                        profile.save()
+
+                    profiles_to_connect = [
+                        funder_profile,
+                        profile
+                    ]
+
+                    add_to_channel.delay({
+                        'bounty': bounty,
+                        'profiles': profiles_to_connect
+                    })
+
+            except Exception as e:
+                print(str(e))
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \

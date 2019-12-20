@@ -1,16 +1,9 @@
-from django.conf import settings
 
 from app.redis_service import RedisService
 from celery import app, group
 from dashboard.models import Profile
 from celery.utils.log import get_task_logger
-from mattermostdriver import Driver
-
-mm_driver = Driver({
-    'url': settings.CHAT_URL,
-    'port': 443,
-    'token': settings.CHAT_DRIVER_TOKEN
-})
+from chat.utils import get_driver
 
 logger = get_task_logger(__name__)
 
@@ -29,15 +22,40 @@ def create_channel(self, opts, retry: bool = True) -> None:
     """
 
     with redis.lock("tasks:create_channel:%s" % opts['channel_name'], timeout=LOCK_TIMEOUT):
-        mm_driver.login()
 
+        chat_driver = get_driver()
         try:
-            mm_driver.channels.create_channel(options={
+            new_channel = chat_driver.channels.create_channel(options={
                 'team_id': opts['team_id'],
                 'name': opts['channel_name'],
                 'display_name': opts['channel_display_name'],
                 'type': 'O'
             })
+        except ConnectionError as exc:
+            logger.info(str(exc))
+            logger.info("Retrying connection")
+            self.retry(30)
+        except Exception as e:
+            logger.error(str(e))
+
+
+@app.shared_task(bind=True, max_retries=3)
+def add_to_channel(self, opts, retry: bool = True) -> None:
+    """
+    :param opts:
+    :param retry:
+    :return:
+    """
+
+    with redis.lock("tasks:add_to_channel:%s" % opts['bounty'].title, timeout=LOCK_TIMEOUT):
+
+        chat_driver = get_driver()
+        try:
+            for x in opts['profile']:
+                if x.chat_id is None:
+                    chat_driver.channels.add_user(opts.bounty.chat_channel_id, options={
+                        'user_id': x.chat_id
+                    })
         except ConnectionError as exc:
             logger.info(str(exc))
             logger.info("Retrying connection")
@@ -57,7 +75,6 @@ def sync_gitcoin_users_to_chat(self, invite_token=None, retry: bool = False) -> 
     with redis.lock("tasks:sync_gitcoin_users_to_chat", timeout=60 * 10):
 
         try:
-            mm_driver.login()
 
             users = Profile.objects.filter(user__is_active=True).prefetch_related('user')
 
@@ -103,10 +120,10 @@ def sync_gitcoin_users_to_chat(self, invite_token=None, retry: bool = False) -> 
 @app.shared_task(bind=True, max_retries=1)
 def create_user(self, options, params, retry: bool = True):
     with redis.lock("tasks:create_user:%s" % options['username'], timeout=LOCK_TIMEOUT):
-        mm_driver.login()
+        chat_driver = get_driver()
 
         try:
-            create_user_response = mm_driver.users.create_user(options=options, params=params)
+            create_user_response = chat_driver.users.create_user(options=options, params=params)
 
             return create_user_response
         except ConnectionError as exc:
@@ -132,17 +149,17 @@ def update_user(self, user, update_opts, retry: bool = True) -> None:
         return
 
     with redis.lock("tasks:update_user:%s" % user.profile.handle, timeout=LOCK_TIMEOUT):
-        mm_driver.login()
+        chat_driver = get_driver()
 
         try:
             if user.profile.chat_id is None:
-                chat_user = mm_driver.users.get_user_by_username(user.profile.handle)
+                chat_user = chat_driver.users.get_user_by_username(user.profile.handle)
                 if chat_user is None:
                     raise ValueError(f'chat_user id is None for {user.profile.handle}')
                 user.profile.chat_id = chat_user.id
                 user.profile.save()
 
-            mm_driver.users.update_user(user.chat_id, options=update_opts)
+            chat_driver.users.update_user(user.chat_id, options=update_opts)
         except ConnectionError as exc:
             logger.info(str(exc))
             logger.info("Retrying connection")
