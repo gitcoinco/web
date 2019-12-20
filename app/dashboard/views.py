@@ -102,7 +102,8 @@ from .utils import (
     web3_process_bounty,
 )
 from .export import (
-    ProfileExportSerializer, GrantExportSerializer, BountyExportSerializer, ActivityExportSerializer
+    ProfileExportSerializer, GrantExportSerializer, BountyExportSerializer,
+    ActivityExportSerializer, filtered_list_data
 )
 
 logger = logging.getLogger(__name__)
@@ -2389,14 +2390,19 @@ def profile_backup(request):
         raise Http404
 
     # fetch the exported data for backup
-    data = {
-        "profile": ProfileExportSerializer(profile).data,
-        "grants": GrantExportSerializer(profile.get_my_grants, many=True).data,
-        "portfolio": BountyExportSerializer(profile.as_dict['portfolio'], many=True).data,
-        "active_work": BountyExportSerializer(profile.active_bounties, many=True).data,
-        "bounties": BountyExportSerializer(profile.bounties, many=True).data,
-        "activities": ActivityExportSerializer(profile.activities, many=True).data,
-    }
+    data = ProfileExportSerializer(profile).data
+    data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
+    data["portfolio"] = BountyExportSerializer(profile.as_dict['portfolio'], many=True).data
+    data["active_work"] = BountyExportSerializer(profile.active_bounties, many=True).data
+    data["bounties"] = BountyExportSerializer(profile.bounties, many=True).data
+    data["activities"] = ActivityExportSerializer(profile.activities, many=True).data
+    # tips
+    data["tips"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=False)
+    data["tips.private_fields"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=True)
+    # feedback
+    feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
+    data["feedbacks"] = filtered_list_data("feedback", feedbacks, private_items=False, private_fields=None)
+    data["feedbacks.private_items"] = filtered_list_data("feedback", feedbacks, private_items=True, private_fields=None)
 
     response = {
         'status': 200,

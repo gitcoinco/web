@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import (Activity, Bounty)
+from .models import (Activity, Bounty, Tip, FeedbackEntry)
 from grants.models import (Grant)
 
 class ProfileExportSerializer(serializers.BaseSerializer):
@@ -193,3 +193,111 @@ class ActivityExportSerializer(serializers.ModelSerializer):
             action = 'tip'
 
         return action
+
+class TipExportSerializer(serializers.ModelSerializer):
+    bounty_url = serializers.SerializerMethodField()
+    created_at = serializers.SerializerMethodField()
+    expires_at = serializers.SerializerMethodField()
+    sender = serializers.SerializerMethodField()
+    recipient = serializers.SerializerMethodField()
+    status = serializers.CharField(source='tx_status')
+    token = serializers.CharField(source='tokenName')
+    token_address = serializers.CharField(source='tokenAddress')
+    transaction_address = serializers.CharField(source='receive_address')
+    public_comments = serializers.CharField(source='comments_public')
+    private_comments = serializers.CharField(source='comments_priv')
+
+    class Meta:
+        model = Tip
+        fields = ('id', 'status', 'sender', 'recipient',  'amount', 'token', 'token_address',
+                  'transaction_address', 'bounty_url', 'value_in_usdt', 'public_comments',
+                  'private_comments', 'created_at', 'expires_at')
+
+    def get_bounty_url(self, instance):
+        bounty = instance.bounty
+        if bounty:
+            return bounty.get_absolute_url()
+
+        return ''
+
+    def get_created_at(self, instance):
+        return instance.created_on.isoformat()
+
+    def get_expires_at(self, instance):
+        return instance.expires_date.isoformat()
+
+    def get_sender(self, instance):
+        return instance.sender_profile.handle
+
+    def get_recipient(self, instance):
+        return instance.recipient_profile.handle
+
+class FeedbackExportSerializer(serializers.ModelSerializer):
+    bounty_url = serializers.SerializerMethodField()
+    created_at = serializers.SerializerMethodField()
+    sender = serializers.SerializerMethodField()
+    recipient = serializers.SerializerMethodField()
+    feedback_type = serializers.CharField(source='feedbackType')
+    comment = serializers.SerializerMethodField()
+
+    class Meta:
+        model = FeedbackEntry
+        fields = ('id', 'sender', 'recipient', 'bounty_url', 'rating', 'satisfaction_rating',
+                  'communication_rating', 'speed_rating', 'code_quality_rating',
+                  'recommendation_rating', 'feedback_type', 'comment')
+
+    def get_bounty_url(self, instance):
+        bounty = instance.bounty
+        if bounty:
+            return bounty.get_absolute_url()
+
+        return ''
+
+    def get_created_at(self, instance):
+        return instance.created_on.isoformat()
+
+    def get_sender(self, instance):
+        return instance.sender_profile.handle
+
+    def get_recipient(self, instance):
+        return instance.recipient_profile.handle
+
+    def get_comment(self, instance):
+        return instance.anonymized_comment
+
+privacy_fields = {
+  "tip": ["private_comments"],
+  "feedback": []
+}
+
+exporters = {
+  "tip": TipExportSerializer,
+  "feedback": FeedbackExportSerializer
+}
+
+def filter_items(model, data, private):
+  private_keys = privacy_fields[model]
+  print ("filter_items 1", private_keys)
+  if private:
+    private_keys.append("id")
+    print ("filter_items 2", private_keys)
+    return [{k:item[k] for k in private_keys} for item in data]
+  else:
+    public_keys = list(set(data[0].keys()) - set(private_keys))
+    return [{k:item[k] for k in public_keys} for item in data]
+
+def filtered_list_data(model, items, private_items, private_fields):
+  if private_items is not None:
+    items = items.filter(private=private_items)
+  exporter = exporters[model]
+  data = exporter(items, many=True).data
+
+  if private_items:
+    return data
+  else:
+    if private_fields is None:
+      return data
+    elif private_fields:
+      return filter_items(model, data, private=True)
+    else:
+      return filter_items(model, data, private=False)

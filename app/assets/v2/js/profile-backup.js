@@ -45,12 +45,7 @@
     const data = await fetchProfieData();
 
     if (data) {
-      let profile = data.profile;
-      const contribution_history = [ 'grants', 'portfolio', 'active_work', 'bounties', 'activities' ];
-
-      contribution_history.forEach(k => {
-        profile[k] = data[k];
-      });
+      let profile = data;
       console.log('profile', profile);
 
       if (profile) {
