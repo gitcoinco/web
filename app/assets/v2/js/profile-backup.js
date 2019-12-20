@@ -46,6 +46,7 @@
 
     if (data) {
       let profile = data;
+
       console.log('profile', profile);
 
       if (profile) {

@@ -32,6 +32,7 @@ class ProfileExportSerializer(serializers.BaseSerializer):
             'keywords': instance.keywords,
             'portfolio_keywords': d['portfolio_keywords'],
             'position': instance.get_contributor_leaderboard_index(),
+            '_locations': instance.locations,
             'organizations': instance.get_who_works_with(network=None),
             '_email': instance.email,
             '_gitcoin_discord_username': instance.gitcoin_discord_username,
@@ -277,10 +278,8 @@ exporters = {
 
 def filter_items(model, data, private):
   private_keys = privacy_fields[model]
-  print ("filter_items 1", private_keys)
   if private:
     private_keys.append("id")
-    print ("filter_items 2", private_keys)
     return [{k:item[k] for k in private_keys} for item in data]
   else:
     public_keys = list(set(data[0].keys()) - set(private_keys))
