@@ -957,7 +957,9 @@ Happy holidays Gitcoiners,
 <p>
    To learn more about Quadratic Funding, check out <a href="https://vitalik.ca/general/2019/10/24/gitcoin.html">Vitalik’s review</a> of Round 3. You can also find more information and browse the projects on the <a href="https://gitcoin.co/grants/">Grants</a> page. Even one dollar can go a long way!
 </p>
-
+<p>
+    <img style="max-width: 90%" src="https://gitcoin-static.s3-us-west-2.amazonaws.com/S3.png">
+</p>
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
