@@ -145,7 +145,7 @@ urlpatterns = [
     # chat
     url(r'^chat/web', chat.views.embed, name='web_chat'),
     url(r'^chat/web/', chat.views.embed, name='web_chat2'),
-    re_path(r'^chat/?', retail.views.chat, name='chat'),
+    re_path(r'^chat/?', chat.views.chat, name='chat'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
