@@ -602,6 +602,7 @@ def receive(request, key, txid, network):
             if request.user.is_authenticated:
                 kudos_transfer.recipient_profile = request.user.profile
             kudos_transfer.save()
+            record_user_action(kudos_transfer.username, 'new_kudos', kudos_transfer)
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
             record_kudos_activity(
@@ -708,6 +709,10 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
             coupon.num_uses_remaining -= 1
             coupon.current_uses += 1
             coupon.save()
+
+            # user actions
+            record_user_action(kudos_transfer.username, 'new_kudos', kudos_transfer)
+            record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
 
             # send email
             maybe_market_kudos_to_email(kudos_transfer)
