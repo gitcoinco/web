@@ -26,79 +26,88 @@
   </head>
   <body class="g-font-muli homepage">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash px-md-0">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'home/nav.html' %}
-    </div>
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'home/nav.html' %}
 
-    <div class="banner header overflow-hidden">
+    <div class="container-fluid banner header text-white">
       <div class="row">
-        <div class="col-12 col-md-8 col-xl-6 pl-lg-5">
-          <div class="mx-4 mx-lg-5 px-lg-5 pb-lg-5">
-            <h1>{% trans "Crowdfunding and freelance developers for your software projects" %}</h1>
-            <p>
-              {% blocktrans %}
-                <b>Builders/Project Managers: </b><br>
-                Leverage our global, on-demand workforce. Find expert freelance developers to design,
-                test, code, and build your project teams today. Save time via direct Github integration.
-                Crowdfund for your open source startup or project to increase your budget and bring in
-                more developers.
-              {% endblocktrans %}
-              <span class="d-flex mt-3 content-links">
-                <a href="{% url "funder_bounties" %}" class="mr-3">Fund an Issue/Project</a>
-                <a href="{% url "grants:grants" %}">Grants</a>
-              </span>
-            </p>
-            <p>
-              {% blocktrans %}
-              <b>Coders/Software Developers: </b><br>
-              Get paid in crypto for freelance jobs, building features, and solving bug bounties! Work with top open source projects and get paid out fast.
-              {% endblocktrans %}<br>
-              <span class="d-flex mt-3 content-links">
-                <a href="{% url 'contributor_bounties' '/' %}">{% trans "Bug Bounties" %}</a>
-              </span>
-            </p>
-            <div class="buttons">
-              <a id="fund-issue" class="btn btn-gc-green mr-2 shadow-none font-weight-bold py-3" href="{% url "quickstart" %}">{% trans "Fund an Issue" %}</a>
-              <a class="btn btn-outline-white ml-2 shadow-none font-weight-bold py-3" href="{% url "products" %}">{% trans "See Our Products" %}</a>
-            </div>
+        <div class="col-12 col-md-8 col-xl-5 pl-lg-5 mx-auto pt-5">
+          <h2 class="font-title-xl text-center font-weight-bold banner__h2">
+            Crowdfunding and Freelance Developers for Open Source Software Projects
+          </h2>
+
+          <div class="buttons text-center mt-5">
+            <a id="fund-issue" href="{% url "quickstart" %}" class="btn button--primary mx-2 shadow-none py-2 px-4 text-white font-weight-semibold">
+              Post a Bounty
+            </a>
+            <a class="btn btn-outline-white mx-2 shadow-none py-2 px-4 font-weight-semibold" href="{% url "products" %}">
+              See our Products
+            </a>
           </div>
         </div>
-        <div class="bots-img col-4 col-xl-6 pt-2 mt-5">
-          <img class="w-100 position-absolute" style="bottom:0" src="{% static "v2/images/home/bots.svg" %}" />
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-8 text-center">
+          <img src="{% static "v2/images/home/bg-index.png" %}" class="mw-100" alt="">
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-5 mb-lg-n5">
+          <div class="box-cta box-cta__left mb-lg-n5">
+            <h2 class="text-highlight-green box-cta__title">FOR BUILDERS /
+            PROJECT MANAGERS</h2>
+            <p>Leverage our global, on-demand workforce. Find expert freelance developers to design, test, code, and build your project teams today.</p>
+            <p>Save time via direct Github integration.</p>
+            <p>Crowdfund for your open source startup or project to increase your budget and bring in more developers.</p>
+            <a href="{% url 'new_funding_short' %}" class="btn btn-outline-white mr-2">Fund an Issue / Project</a>
+            <a href="{% url 'grants:grants' %}" class="btn btn-outline-white">Grants</a>
+          </div>
+        </div>
+        <div class="col-12 col-lg-5 mb-lg-n5">
+          <div class="box-cta box-cta__right mb-lg-n5">
+            <h2 class="text-highlight-green box-cta__title">FOR CODERS /
+                SOFTWARE DEVELOPERS</h2>
+            <p>Get paid in crypto for freelance jobs, building features, and solving bug bounties!</p>
+            <p>Work with top open source projects and get paid out fast.</p>
+            <a href="{% url 'explorer' %}" class="btn btn-outline-white mr-2">Explore Bounties</a>
+            <a href="{% url 'get_hackathons' %}" class="btn btn-outline-white">Join Virtual Hackathons</a>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="col-12 col-md-8 offset-md-2 text-center my-5 p-5 font-weight-semibold issue">
-      {% blocktrans %}
-        <h2 class="font-title-xl mt-4">
-          The weight of
-          <span>maintaining open source</span> falls<br>  on the
-          shoulders of <span class="mt-4">0.01% of developers</span>.
-        </h2>
-        <p class="font-title-lg g-fadein my-5" data-fade-duration=1000>
-          This is <strong>not sustainable.</strong> <br>
-          This is <strong>not right.</strong>
-        </p>
-      {% endblocktrans %}
-      {% include 'shared/tree.html' %}
-      <p class="font-title-xl g-fadein mt-4 mb-2" data-fade-duration=1000>
-        {% trans "This is" %} <strong>{% trans "why we built Gitcoin." %}</strong>
-      </p>
+    <div class="container">
+      <div class="row py-5 my-5">
+        <div class="col-12 col-md-6 issue g-fadein" data-fade-duration=1000 data-fade-direction="left">
+          <p class="font-title pt-5 mt-4 font-weight-semibold">
+            The weight of <span>maintaining open source</span> <br>falls on the
+            shoulders of <span class="mt-4">0.01% of developers</span>.
+          </p>
+          <p class="my-4 font-title font-weight-semibold">
+            This is not sustainable. This is not right.
+          </p>
+          <p class="font-weight-bold font-title-xl pt-2">
+            This is why we built Gitcoin.
+          </p>
+        </div>
+
+        <div class="col-12 col-md-6">
+          {% include 'shared/tree.html' %}
+        </div>
+      </div>
     </div>
-
-    <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
-
-    <div class="container-fluid pb-5 my-5 landing__newsletter">
+    <div class="container-fluid py-5 mt-5 landing__newsletter bg-light">
       {% include 'shared/newsletter.html' %}
     </div>
+    <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
+
+
 
     <div id="optimize_oss" class="mt-5 pt-4 optimize_oss">
       <div class="container pt-0 pb-5">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
-            <h2>
+            <h2 class="font-bigger-4 mb-3">
               {% trans "Tools to optimize the oss life cycle for users, contributors, and maintainers" %}
             </h2>
             <p class="mb-4">{% blocktrans %}Gitcoin grows open source through a suite of products, capturing and retaining
@@ -157,7 +166,7 @@
               {% if groups.group == 'grow_oss' %}
                 {% for product in groups.products %}
                   <div class="col-12 product">
-                    <h2>
+                    <h2 class="font-bigger-4 mb-3">
                       <img src="{{ product.img }}"> {{ product.name }}
                     </h2>
                     <p>{{ product.description }}</p>
@@ -176,7 +185,7 @@
               {% if groups.group == 'maintain_oss' %}
                 {% for product in groups.products %}
                   <div class="col-12 product">
-                    <h2>
+                    <h2 class="font-bigger-4 mb-3">
                       <img src="{{ product.img }}"> {{ product.name }}
                     </h2>
                     <p>{{ product.description }}</p>
@@ -195,7 +204,7 @@
               {% if groups.group == 'build_oss' %}
                 {% for product in groups.products %}
                   <div class="col-12 product">
-                    <h2>
+                    <h2 class="font-bigger-4 mb-3">
                       <img src="{{ product.img }}"> {{ product.name }}
                     </h2>
                     <p>{{ product.description }}</p>
@@ -210,7 +219,7 @@
           </div>
 
           <div class="col-12 text-center mt-5">
-            <a class="btn btn-gc-green text-center font-weight-semibold" href="{% url "products" %}">
+            <a class="btn btn-gc-green text-center font-weight-semibold py-2" href="{% url "products" %}">
               {% trans "Learn about our products" %}
             </a>
           </div>
@@ -221,7 +230,7 @@
       <div class="container py-5" >
         <div class="row mt-5">
           <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
-            <h2>{% trans "Realign open source incentives" %}</h2>
+            <h2 class="font-bigger-4 mb-3">{% trans "Realign open source incentives" %}</h2>
             <p>
               {% blocktrans %}Open source contributors provide value that is often not
               rewarded or captured. Open source maintainers burn out and stop working
@@ -255,7 +264,7 @@
     <div id="press" class="press">
       <div class="container py-5">
         <div class="row">
-          <h2 class="col-12 mb-4">{% trans "What are people saying?" %}</h2>
+          <h2 class="col-12 mb-4 font-title-lg">{% trans "What are people saying?" %}</h2>
           {% for article in press %}
             <a href="{{ article.link }}" target="_blank" rel="noopener noreferrer">
               <div class="explain-img-wrapper">
@@ -270,7 +279,7 @@
       <div class="container py-5">
         <div class="row">
           <div class="col-12 text-center mb-2">
-            <h2>{% trans "Get to know us better" %}</h2>
+            <h2 class="font-bigger-4 mb-3">{% trans "Get to know us better" %}</h2>
           </div>
           {% for item in know_us %}
             <div class="col-12 col-md-4 text-center">
@@ -281,7 +290,7 @@
             </div>
           {% endfor %}
           <div class="col-12 text-center">
-            <a class="btn button__home button__blue text-center" href="mailto:founders@gitcoin.co">
+            <a class="btn button__home py-2 button__blue text-center" href="mailto:founders@gitcoin.co">
               {% trans "Get in touch" %}
             </a>
           </div>
@@ -292,7 +301,7 @@
       <div class="container py-5">
         <div class="row">
           <div class="col-12 text-center mb-4">
-            <h2>{% trans "Gitcoin on Medium" %}</h2>
+            <h2 class="font-bigger-4 mb-3">{% trans "Gitcoin on Medium" %}</h2>
           </div>
           {% for article in articles %}
             <div class="col-12 col-md-4">

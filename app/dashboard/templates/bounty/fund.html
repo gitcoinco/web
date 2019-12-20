@@ -69,15 +69,10 @@
                   <h5 class="font-smaller-3 font-weight-bold mb-2">Important Notes on Private Repo Bounties</h5>
                   <ul class="pl-3">
                     <li>Please make sure you are the <b>repo admin</b> to fund the issue</li>
-                    <li>Gitcoin will NOT have any access to your private repo</li>
+                    <li>Gitcoin will <b>NOT</b> have any access to your private repo</li>
                     <li>You have to approve and give repository access to each contributor before they can start work</li>
                     <li>You can upload an NDA that each contributor has to sign before they can start work</li>
                   </ul>
-                </div>
-                <div class="align-items-center d-flex">
-                  <img src="{% static 'v2/images/prime.png' %}" alt="" style="
-                  width: 100%;
-                  max-width: 64px;">
                 </div>
               </div>
             </div>
@@ -223,7 +218,7 @@
             </div>
           </div>
 
-          <div class="bg-white my-3 px-5 rounded">
+          <div class="bg-white my-3 px-5 rounded eth-chain">
             <a class="collapse-header collapsed" data-toggle="collapse" href="#featured-section" role="button" aria-expanded="false" aria-controls="featured-section">
               <span class="font-body">
                 <span class="d-block text-uppercase letter-spacing">Feature your bounty</span>
@@ -239,7 +234,7 @@
           <div class="bg-white my-3 px-5 rounded">
             <input type="hidden" id="coupon_code" name="coupon_code" value="{{ coupon_code }}">
             {% if FEE_PERCENTAGE != 0 %}
-              <div id="fee-section" class="py-4">
+              <div id="fee-section" class="py-4 eth-chain">
                 <h5 class="font-body letter-spacing text-black-60 text-uppercase">
                   {% trans "No Surprises" %}
                 </h5>
@@ -277,7 +272,7 @@
                   Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
               </div>
             </div>
-            <div id="gas-section" class="py-4">
+            <div id="gas-section" class="py-4 eth-chain">
               <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
               <div>
                 {% include 'shared/bounty_actions_hidden_vars.html' %}
@@ -288,10 +283,10 @@
 
           <div class="bg-white my-3 px-5 rounded">
             <div id="total-section" class="row mt-5 py-3">
-              <div class="col-sm-2 my-auto">
+              <div class="col-md-3 col-lg-2 my-auto">
                 <h5 class="text-uppercase h3 font-weight-bold mb-0">{% trans "Total"%}</h5>
               </div>
-              <div class="col-sm-10 my-auto">
+              <div class="col-md-9 col-lg-10 my-auto">
                 <p class="mb-1 text-uppercase text-black-50 font-body">{% trans "Payment Due" %}</p>
                 <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block"></span>
 
@@ -304,15 +299,17 @@
                     <span id="summary-feature-amount" class="font-weight-bold"></span>
                     <span class="font-weight-bold">ETH</span>
                   </span>
-                  {% if FEE_PERCENTAGE != 0 %}
-                    +
-                    <span id="summary-fee-amount" class="font-weight-bold">0</span>
-                    <span id="summary-fee-token" class="font-weight-bold">ETH</span> Gitcoin Platform Fee
-                  {% else %}
-                    + <span class="font-weight-bold">No Fees</span>
-                  {% endif %}
+                  <span class="eth-chain">
+                    {% if FEE_PERCENTAGE != 0 %}
+                      +
+                      <span id="summary-fee-amount" class="font-weight-bold">0</span>
+                      <span id="summary-fee-token" class="font-weight-bold">ETH</span> Gitcoin Platform Fee
+                    {% else %}
+                      + <span class="font-weight-bold">No Fees</span>
+                    {% endif %}
+                  </span>
                 </p>
-                <p class="font-caption text-black-50 mb-0">
+                <p class="font-caption text-black-50 mb-0 eth-chain">
                   You will have to approve
                   <span class="font-weight-bold">
                     <span id="confirmation">{% if FEE_PERCENTAGE == 0 %} 1 {% else %} 2 {% endif %}</span>
@@ -324,7 +321,7 @@
           </div>
 
           <div class="pb-5 text-center">
-            <button class="btn btn-gc-blue btn-lg disabled js-submit mb-3 w-25 btn-lg-padding" type="submit">Fund Issue</button>
+            <button class="btn btn-gc-blue btn-lg disabled js-submit mb-3 px-5 btn-lg-padding" type="submit">Fund Issue</button>
             <p class="font-caption blue">
               Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.
               <a class="text-reset underline" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Learn more here.</a>
@@ -395,5 +392,7 @@
 <script src="{% static "v2/js/user-search.js" %}"></script>
 <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
 <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
+<script src="{% static "v2/js/pages/create_bounty/ETH.js" %}"></script>
+<script src="{% static "v2/js/pages/create_bounty/token.js" %}"></script>
 <script src="{% static "v2/js/pages/new_bounty.js" %}"></script>
 </html>

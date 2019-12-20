@@ -927,8 +927,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "SAI, DAI, Oh my!"
-    new_kudos_pks = [4017, 7056, 7130]
+    subject = "Fund Your Code & Code Your Fund"
+    new_kudos_pks = [7259, 7260, 7096]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -949,26 +949,23 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    As you’ve probably heard, MakerDAO’s Multi-Collateral DAI officially <a href="https://blog.makerdao.com/multi-collateral-dai-is-live/">launched</a> on November 18th. You’ll notice any bounties on the Gitcoin platform that were previously holding DAI are now holding SAI (Single-Collateral DAI). We plan to add support for the new DAI (Multi-Collateral DAI) on November 25th, so keep a lookout for that change and make sure you know the difference between the two.
+   Happy Friday! There are only 4 days left to go in the <a href="https://gitcoin.co/hackathon/global-communities">Global Communities</a> virtual hackathon, but still plenty of prizes up for grabs and opportunities to start work. We’ll be giving out our first “<a href="https://gitcoin.co/issue/gitcoinco/skunkworks/136/3759">Community Choice</a>” prize this time around (1500 DAI total!), so make sure you <a href="https://hackathons.gitcoin.co/global-communities">register</a> if you want to vote. If you’ve already registered, take another look through the <a href="https://gitcoin.co/hackathon/global-communities">prize explorer</a> to make sure you didn’t miss anything.
 </p>
 <p>
-    MakerDAO has plenty of great resources on their <a href="https://blog.makerdao.com/">blog</a>, but as you know we like to gamify everything to keep things fun. In that spirit, our community has made three awesome Quests to test your knowledge on the transition. See if you can beat <a href="https://gitcoin.co/quests/62/migrate-or-dai">Migrate or DAI</a>, <a href="https://gitcoin.co/quests/59/upgrade-or-dai">Upgrade or DAI</a>, and <a href="https://gitcoin.co/quests/66/much-cooler-dai">Much Cooler DAI</a>. By the end you’ll be better informed of how this transition affects you, and you can earn 3 new kudos in the process
+   We’ve released two blog posts this hack highlighting <a href="https://gitcoin.co/blog/hashing-cashing-global-communities/">Hashing Systems</a> and <a href="https://gitcoin.co/blog/in-the-lab-with-consensys-global-communities/">ConsenSys Labs</a>. Dive in to learn more about the organizations and the bounties they are hosting. Both have ample opportunities to take home a nice chunk of change.
 </p>
 <p>
-    From a product perspective, it’s been a busy week. We’ve integrated Opera/Brave support for opening and submitting bounties, and we will be supporting even more Web3 wallet providers in the near future. We’re also testing out a long-awaited in-app chat feature that will be rolled out for all to use very soon.
-</p>
-<p>
-    Finally, hackathons: With Web3 World judging wrapping up, there will be lots of content for you to dig into. Right now you can read Aave’s retro <a href="https://medium.com/aave/gitcoin-x-aave-hackathon-recap-f61d24af2cb">blog post</a> to learn about the winning DeFi projects our community built, and the Ethereum Foundation also gave us nice shout out in their <a href="https://blog.ethereum.org/2019/11/12/Ethereum.org-Development-Update-1/">Development Update</a> post. Remember, our final hackathon of the year <a href="https://hackathons.gitcoin.co/global-communities">Global Communities</a> launches December 2nd, so sign up today to receive updates!
+   Finally, there are four new Gitcoin Quests this week for you to dig your teeth into: <a href="https://gitcoin.co/quests/76/uniswap-a-liquidity-provider-perspective">UNISWAP, A liquidity provider perspective</a>, <a href="https://gitcoin.co/quests/75/a-stellar-intro">A Stellar Intro</a>, <a href="https://gitcoin.co/quests/77/crypto-payment-app">Crypto Payment App</a>, and <a href="https://gitcoin.co/quests/78/hashing-systems-via-hashgraph">Hashing Systems via Hashgraph</a>. Earn some kudos while learning at the same time!
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week featuring Adam Wozney speaking about the BUIDL Network and Zach Herring to discuss ConsenSys Labs' micro grants for hackathon winners! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
+        <a href="https://codefund.io/">CodeFund</a> (Gitcoin’s ethical advertising network) is going through a new re-design on the administration views, advertiser dashboard, and publisher dashboard, as well as implementing a new strategy for ads rendered (which you can think as Codefund's base USP). They're looking to lock in subscriptions for 2020, so reach out if you’re interested in advertising to open source or blockchain developers! CodeFund is also starting a podcast network, so stay tuned for more info on that. 
         </li>
         <li>
-        As you may know, we're updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
+        If you’re not familiar with CodeFund, join us on today’s livestream to hear the founder <a href="https://twitter.com/coderberry?lang=en">Eric Berry</a> discuss why he started CodeFund, how it got to where it is today, and what his mission is to support OSS going forward. <a href="https://http://gitcoin.co/livestream">Join at 2pm ET</a>.
         </li>
     </ul>
 </p>
@@ -977,46 +974,46 @@ Back to shipping,
 </p>
 '''
     highlights = [{
-        'who': 'uivlis',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Fixed error logs for js-sdk',
-        'link': 'https://gitcoin.co/issue/mesg-foundation/js-sdk/15/3689',
+        'what': 'Removed Civic from the MyBit application',
+        'link': 'https://gitcoin.co/issue/MyBitFoundation/MyBit-Go.app/515/3801',
         'link_copy': 'View more',
     }, {
-        'who': 'pldespaigne',
+        'who': 'seichris',
         'who_link': True,
-        'what': 'Resolved an IPFS ENS security concern for MetaMask',
-        'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/5724/3606',
+        'what': 'Re-Designed Mockup For Zero-Knowledge Assets',
+        'link': 'https://gitcoin.co/issue/invisible-college/democracy/36/3786',
         'link_copy': 'View more',
     }, {
-        'who': 'acolytec3',
+        'who': 'mul1sh',
         'who_link': True,
-        'what': 'Added support for Multi-Collateral DAI for Status',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/9491/3718',
+        'what': 'Removed Cursor Drifts During Navigation on IOS',
+        'link': 'https://gitcoin.co/issue/cybersemics/em/4/3715',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Solana',
-        'title': 'Build on Solana: Join the Private Beta',
-        'image_url': '',
-        'link': 'http://bit.ly/solana-beta',
-        'cta': 'Join the Private Beta',
-        'body': [
-            'Solana is a Lightning-fast distributed ledger technology for mission-critical decentralized apps.',
-            'We are currently taking applications for an incredibly limited beta program for early adopters of Solana to launch their projects alongside our mainnet later in 2019.'
-        ]
-    }
+    'name': 'CodeFund',
+    'title': 'Does your project need 🦄 developers?',
+    'image_url': '',
+    'link': 'http://bit.ly/codefund-gitcoin-weekly',
+    'cta': 'Learn More',
+    'body': [
+       'CodeFund is a privacy-focused ethical advertising network (by Gitcoin) that funds open source projects.',
+       'We specialize in helping companies connect with talented developers and potential customers on developer-centric sites that typically do not allow ads.'
+    ]
+}
 
     bounties_spec = [{
-        'url': 'https://github.com/money-on-chain/main-RBTC-contract/issues/1',
-        'primer': 'Money On Chain Bug Bounty',
+        'url': 'https://github.com/iamdefinitelyahuman/brownie/issues/262',
+        'primer': 'Brownie - Rebuild / Expand CLI Test Cases',
     }, {
-        'url': 'https://github.com/web3j/web3j/issues/1103',
-        'primer': 'Support AbiV2 for Web3J',
+        'url': 'https://github.com/3box/3box/issues/839',
+        'primer': 'Integrate 3Box And Gitcoin: Backup Gitcoin Profiles To 3Box - 1000 DAI Hackathon Bounty',
     }, {
-        'url': 'https://github.com/crytic/slither/issues/318',
-        'primer': 'Split constant-function detector for Slither',
+        'url': 'https://github.com/ConsenSys/Global-Community-Relay/issues/3',
+        'primer': 'UX Best-In-Show - 7 ETH Hackathon Bounty (Any project is valid!)',
 }, ]
 
 
@@ -1049,7 +1046,7 @@ Back to shipping,
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
-            .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
+            .filter(leaderboard=key, product='all').order_by('rank')[0:num_leadboard_items]
     if not len(leaderboard['quarterly_payers']['items']):
         leaderboard = []
 

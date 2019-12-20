@@ -38,6 +38,11 @@ $(document).ready(function() {
   var load_quests = function(term, callback) {
     var url = '/quests/?show_quests=1&q=' + (term ? term : '');
 
+    focused_hackathon = getParam('focus_hackathon');
+    if (focused_hackathon) {
+      url += '&focus_hackathon=' + focused_hackathon;
+    }
+
     $.get(url, function(response) {
       $('#available_quests').html($(response).find('#available_quests').html());
       $('#available_quests img').unveil(200);

@@ -47,30 +47,35 @@
         }
       </style>
 
-      <div id="{{ hackathon.identifier }}" class="row pt-5 pb-4 text-center banner hackathon-banner">
-        <div class="col g-font-muli">
-          <span class="hackathon-name d-block mt-5 font-weight-semibold">{{ hackathon.name }}</span>
-          {% if hackathon.logo_svg %}
-            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
-          {% elif hackathon.logo %}
-            <img class="d-block mx-auto my-4 hackathon-logo" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
-          {% endif %}
-          <span class="d-block font-title-lg">
+      {% if is_staff %}
+        <div class="alpha-warning font-caption mb-0">
+          <span class="font-weight-bold">Staff only</span>
+          <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
+        </div>
+      {% endif %}
+      <div id="{{ hackathon.identifier }}" class="d-flex justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
+
+        <div class="">
+          <div class="">
+            <p class="font-weight-bold mb-0 font-smaller-6">GITCOIN VIRTUAL HACKATHON</p>
+            <span class="gc-letter-spacing text-uppercase font-weight-bold">{{ hackathon.name }}</span>
+          </div>
+          <p class="mb-1 font-smaller-1">
             {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
             {% if hackathon.end_date|timeuntil >= "1 min" %}
-              <p class="font-smaller-1 text-uppercase"> Ends in
-                {{hackathon.end_date|timeuntil}}
-              </p>
+              <small class=" text-uppercase">(Ends in {{hackathon.end_date|timeuntil}})</small>
             {% endif %}
-          </span>
+          </p>
         </div>
-        {% include 'shared/hackathon_sponsors.html' %}
-        <div class="col text-right">
-          {% if hackathon.show_results %}
-            <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-outline-green rounded-pill font-bigger-1 font-weight-bold px-3 py-2 mr-3">Projects</a>
-          {% endif %}
+        <div class="text-right">
           {% if hackathon.end_date|timesince <= "1 min" %}
-            <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-outline-green rounded-pill font-bigger-1 font-weight-bold px-3 py-2 mr-3"><i class="far fa-lightbulb"></i> Hackathon Guide</a>
+            <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue mr-3"><i class="far fa-lightbulb mr-1"></i> Hackathon Guide</a>
+          {% endif %}
+          {% if hackathon.show_results %}
+            <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue mr-3">Projects</a>
+          {% endif %}
+          {% if hackathon.quest_link %}
+            <a href="{{hackathon.quest_link}}" class="btn btn-gc-blue mr-3">Quests</a>
           {% endif %}
         </div>
       </div>
@@ -83,7 +88,7 @@
           <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
             {% include 'dashboard/sidebar_search_hackathon.html' %}
           </div>
-          <div class="col-12 col-lg-9 col-xl-10 body hackathon-explorer">
+          <div class="col-12 col-lg-9 col-xl-10 body px-4 px-lg-0 hackathon-explorer">
             <div class="container-fluid p-2" id="bounties">
               <div id="dashboard-title" class="hidden">
                 {% include 'shared/search_bar.html' %}
@@ -93,10 +98,10 @@
             {% include 'dashboard/sidebar_search.html' %}
           </div>
 
-          <div class="col-12 col-lg-9 col-xl-10 body">
+          <div class="col-12 col-lg-9 col-xl-10 body px-4 px-lg-0">
             <div class="container-fluid py-2" id="bounties">
               <div id="dashboard-title" class="hidden">
-                <div class="my-3 mx-4">
+                <div class="my-3 mx-3">
                   <h1 class="font-bigger-1">Issue Explorer - Freelance Code Bounties</h1>
                 </div>
                 {% include 'shared/search_bar.html' %}
@@ -112,6 +117,8 @@
               <p>
                 <a href="{% url "quests_index" %}">Explore Web3 via Gitcoin Quests to prepare</a>
               </p>
+              {% include 'shared/hackathon_sponsors.html' %}
+
             {% else %}
               <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
               <h3>{% trans "No results found." %}</h3>

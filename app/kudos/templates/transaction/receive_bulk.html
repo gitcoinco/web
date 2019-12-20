@@ -26,7 +26,13 @@
   <header class="text-center">
   <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
     <h1>{% trans "Congrats!" %} 🎉</h1>
-    <p>You've received a "{{ coupon.token.humanized_name }}" Kudos via transaction <a href="https://etherscan.io/tx/{{kudos_transfer.receive_txid}}"><span id="trans_id">{{kudos_transfer.receive_txid}}</span></a>.</p>
+    <p>You've received a "{{ coupon.token.humanized_name }}" Kudos 
+      {% if kudos_transfer.receive_txid != 'pending_celery' %}
+        via transaction <a href="https://etherscan.io/tx/{{kudos_transfer.receive_txid}}"><span id="trans_id">{{kudos_transfer.receive_txid}}</span></a>
+      {% else %}
+      {% endif %}
+
+    .</p>
     <p>{% trans "You can see your kudos in any web3 wallet that supports ERC-721-compliant NFTs, or in your" %} <a href="{% url 'profile' %}">Gitcoin {% trans "profile" %}</a>.</p>
       {% include 'shared/twitter.html' %}
       <p>

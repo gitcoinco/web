@@ -286,7 +286,7 @@ class Bounty(SuperModel):
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
     github_comments = models.IntegerField(default=0)
-    bounty_owner_address = models.CharField(max_length=50)
+    bounty_owner_address = models.CharField(max_length=50, blank=True, null=True)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True, db_index=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
@@ -395,7 +395,7 @@ class Bounty(SuperModel):
 
     EVENT_HANDLERS = {
         'traditional': {
-            'open_bounty': {
+            'open': {
                 'accept_worker': 'work_started',
                 'cancel_bounty': 'cancelled'},
             'work_started': {
@@ -407,7 +407,7 @@ class Bounty(SuperModel):
                 'cancel_bounty': 'cancelled'},
         },
         'cooperative': {
-            'open_bounty': {
+            'open': {
                 'accept_worker': 'work_started',
                 'cancel_bounty': 'cancelled'},
             'work_started': {
@@ -419,7 +419,7 @@ class Bounty(SuperModel):
                 'cancel_bounty': 'cancelled'},
         },
         'contest': {
-            'open_bounty': {
+            'open': {
                 'payout_bounty': 'done',
                 'cancel_bounty': 'cancelled'}
         }
@@ -2384,6 +2384,8 @@ class Profile(SuperModel):
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
+    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
+
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2431,6 +2433,12 @@ class Profile(SuperModel):
         if not self.is_org:
             return Profile.objects.none()
         return Profile.objects.filter(organizations__icontains=self.handle)
+
+    @property
+    def tribe_members(self):
+        if not self.is_org:
+            return TribeMember.objects.filter(profile=self).exclude(status='rejected')
+        return TribeMember.objects.filter(org=self).exclude(status='rejected')
 
     @property
     def ref_code(self):
@@ -4071,6 +4079,8 @@ class HackathonEvent(SuperModel):
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
     show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
+    description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
+    quest_link = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -4079,6 +4089,32 @@ class HackathonEvent(SuperModel):
             str: The string representation of a HackathonEvent.
         """
         return f'{self.name} - {self.start_date}'
+
+    @property
+    def url(self):
+        return self.get_absolute_url()
+
+    def get_absolute_url(self):
+        """Get the absolute URL for the HackathonEvent.
+
+        Returns:
+            str: The absolute URL for the HackathonEvent.
+
+        """
+        return settings.BASE_URL + f'hackathon/{self.slug}'
+
+    @property
+    def onboard_url(self):
+        return self.get_onboard_url()
+
+    def get_onboard_url(self):
+        """Get the absolute URL for the HackathonEvent.
+
+        Returns:
+            str: The absolute URL for the HackathonEvent.
+
+        """
+        return settings.BASE_URL + f'hackathon/onboard/{self.slug}/'
 
     @property
     def get_current_bounties(self):
@@ -4312,3 +4348,19 @@ class ProfileStatHistory(SuperModel):
 
     def __str__(self):
         return f"{self.key} <> {self.profile.handle}"
+
+
+class TribeMember(SuperModel):
+    MEMBER_STATUS = [
+        ('accepted', 'accepted'),
+        ('pending', 'pending'),
+        ('rejected', 'rejected'),
+    ]
+    profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
+    org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE)
+    leader = models.BooleanField(default=False, help_text=_('tribe leader'))
+    status = models.CharField(
+        max_length=20,
+        choices=MEMBER_STATUS,
+        blank=True
+    )
