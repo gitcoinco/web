@@ -2398,11 +2398,11 @@ def profile_backup(request):
     data["activities"] = ActivityExportSerializer(profile.activities, many=True).data
     # tips
     data["tips"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=False)
-    data["tips.private_fields"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=True)
+    data["_tips.private_fields"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=True)
     # feedback
     feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
     data["feedbacks"] = filtered_list_data("feedback", feedbacks, private_items=False, private_fields=None)
-    data["feedbacks.private_items"] = filtered_list_data("feedback", feedbacks, private_items=True, private_fields=None)
+    data["_feedbacks.private_items"] = filtered_list_data("feedback", feedbacks, private_items=True, private_fields=None)
 
     response = {
         'status': 200,
