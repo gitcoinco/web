@@ -24,11 +24,12 @@ import warnings
 import zipfile
 
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
 
 import pdfrw
 import sendgrid
-from dashboard.models import Bounty, Earning, Profile, Tip
+from dashboard.models import Bounty, BountyFulfillment, Earning, Profile, Tip
 from grants.models import Grant
 from marketing.mails import tax_report
 from python_http_client.exceptions import HTTPError, UnauthorizedError
@@ -57,6 +58,7 @@ USD_VALUE = 'usd_value'
 WORKER_TYPE = 'worker_type'
 
 # No info found
+NO_AMOUNT = 'Amount not found'
 NO_LOCATION = 'Location not found'
 NO_NAME = 'Name not found'
 NO_PROFILE = 'Profile not found'
@@ -100,7 +102,7 @@ SUBTYPE_KEY = '/Subtype'
 WIDGET_SUBTYPE_KEY = '/Widget'
 
 
-def create_csv_record(profiles_obj, wt_obj, worker_type, us_workers, b_ff=None, value_usd=0):
+def create_csv_record(profiles_obj, wt_obj, worker_type, us_workers, value_usd, b_ff=None):
     record = {DATETIME: wt_obj.created_on}
     counter_party_name = ''
     counter_party_gh_username = ''
@@ -136,17 +138,17 @@ def create_csv_record(profiles_obj, wt_obj, worker_type, us_workers, b_ff=None, 
             counter_party_name = NO_PROFILE
 
     if worker_type == BOUNTY:
-        record[USD_VALUE] = wt_obj._val_usd_db
+        record[USD_VALUE] = value_usd
         record[TOKEN_AMOUNT] = wt_obj.value_in_token
         record[TOKEN_NAME] = wt_obj.token_name
     elif worker_type == TIP:
-        record[USD_VALUE] = wt_obj.value_in_usdt
+        record[USD_VALUE] = value_usd
         record[TOKEN_AMOUNT] = wt_obj.amount
         record[TOKEN_NAME] = wt_obj.tokenName
     elif worker_type == GRANT:
         record[USD_VALUE] = value_usd
-        record[TOKEN_AMOUNT] = 'No info'
-        record[TOKEN_NAME] = 'No info'
+        record[TOKEN_AMOUNT] = NO_AMOUNT
+        record[TOKEN_NAME] = wt_obj.token_symbol
 
     record[COUNTER_PARTY_NAME] = counter_party_name
     record[COUNTER_PARTY_GITHUB_USERNAME] = counter_party_gh_username
@@ -197,7 +199,7 @@ def get_profile_location(profile):
                 location_temp += ', ' + code
             else:
                 location_temp += code
-            # check if the user is from US
+            # check if the worker is US based
             if code == US:
                 us_worker = True
     elif profile.locations:
@@ -250,44 +252,38 @@ class Command(BaseCommand):
         for p in profiles:
             csv_record = []
             us_workers = {}
-            # Bounties
-            for b in p.get_sent_bounties:
-                if not b._val_usd_db \
-                    or b._val_usd_db <= 0 \
-                    or b.status != 'done' \
-                    or b.is_open is True \
-                    or b.network != WEB3_NETWORK \
-                    or p.username.lower() != b.bounty_owner_github_username.lower() \
-                    or b.fulfillment_accepted_on.date().year != TAX_YEAR:
-                    continue
-                else:
-                    for fulfiller in b.fulfillments.filter(accepted=True):
-                        record, us_workers = create_csv_record(profiles, b, BOUNTY, us_workers, b_ff=fulfiller)
-                        csv_record.append(record)
-            # Tips
-            for t in p.get_sent_tips:
-                if not t.value_in_usdt \
-                    or t.value_in_usdt <= 0 \
-                    or t.network != WEB3_NETWORK \
-                    or p.username.lower() != t.from_username.lower() \
-                    or p.username.lower() == t.username.lower() \
-                    or t.created_on.date().year != TAX_YEAR:
-                    continue
-                else:
-                    record, us_workers = create_csv_record(profiles, t, TIP, us_workers)
-                    csv_record.append(record)
-            # Grants
-            # source type id 95 for grant
-            grants = Earning.objects.filter(
-                                                from_profile=p, 
-                                                source_type_id=95, 
-                                                network=WEB3_NETWORK,
-                                                created_on__year=TAX_YEAR,
-                                                value_usd__gt=0
+            # Total Earning
+            earnings = Earning.objects.filter(
+                                            from_profile=p, 
+                                            network=WEB3_NETWORK, 
+                                            created_on__year=TAX_YEAR, 
+                                            value_usd__gt=0
                                             ).exclude(to_profile=p)
+            # Bounties
+            # source type id 46 for bounties
+            b_source_type = ContentType.objects.get(app_label='dashboard', model='bountyfulfillment')
+            bounties_fulfillments = earnings.filter(source_type_id=b_source_type.id)
+            for bf in bounties_fulfillments:
+                bf_obj = BountyFulfillment.objects.get(pk=bf.source_id)
+                b_obj = Bounty.objects.get(pk=bf_obj.bounty_id)
+                record, us_workers = create_csv_record(profiles, b_obj, BOUNTY, us_workers, bf.value_usd, b_ff=bf_obj)
+                csv_record.append(record)
+            # Tips
+            # source type id 55 for tips
+            t_source_type = ContentType.objects.get(app_label='dashboard', model='tip')
+            tips = earnings.filter(source_type_id=t_source_type)
+            for t in tips:
+                t_obj = Tip.objects.get(pk=t.source_id)
+                
+                record, us_workers = create_csv_record(profiles, t_obj, TIP, us_workers, t.value_usd)
+                csv_record.append(record)
+            # Grants
+            # source type id 95 for grants
+            g_source_type = ContentType.objects.get(app_label='grants', model='contribution')
+            grants = earnings.filter(source_type_id=g_source_type)
             for g in grants:
                 g_obj = Grant.objects.get(pk=g.source_id)
-                record, us_workers = create_csv_record(profiles, g_obj, GRANT, us_workers, value_usd=g.value_usd)
+                record, us_workers = create_csv_record(profiles, g_obj, GRANT, us_workers, g.value_usd)
                 csv_record.append(record)
 
             if len(csv_record) > 0:
@@ -302,7 +298,8 @@ class Command(BaseCommand):
                     recipient_profiles = profiles.filter(handle__iexact=us_w)
                     if recipient_profiles.exists():
                         recipient_profile = recipient_profiles.first()
-                        if(usd_value>600):
+                        # create 1099 only if total funded in usd is greater than 600$
+                        if usd_value > 600:
                             recipient_path = os.path.join(misc_path, recipient_profile.username)
                             if not os.path.isdir(recipient_path):
                                 os.makedirs(recipient_path)
@@ -342,6 +339,4 @@ class Command(BaseCommand):
                     zip_paths.append(zip_file_path)
                     to_emails.append(p.email)
         # send emails to all funders
-        #to_emails_temp = ['email_test']
-        #zip_paths = [zip_paths[1]]
         tax_report(to_emails, zip_paths, TAX_YEAR) 

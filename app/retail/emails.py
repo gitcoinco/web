@@ -331,7 +331,7 @@ def render_tax_report(to_email, tax_year):
     from dashboard.models import Profile
     profile = Profile.objects.filter(email=to_email).first()
     params = {}
-    params['profile'] = profile.username
+    params['user'] = profile
     params['tax_year'] = tax_year
     params['email_type'] = 'tax_report'
     response_html = premailer_transform(render_to_string("emails/tax_report.html", params))
