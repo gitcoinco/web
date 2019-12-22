@@ -2,6 +2,7 @@ const editableFields = [
   '#form--input__title',
   '#form--input__reference-url',
   '#contract_owner_address',
+  '#grant_contract_owner_address',
   '#grant-members',
   '#amount_goal'
 ];
@@ -16,7 +17,7 @@ $(document).ready(function() {
       $('#contract_owner_address').text(),
       '#cancel_grant',
       'Looks like your grant has been created with ' + 
-      $('#contract_owner_address').text() + '. Switch to take action on your grant.'
+      $('#grant_contract_owner_address').text() + '. Switch to take action on your grant.'
     );
 
     if ($('#cancel_grant').attr('disabled')) {
