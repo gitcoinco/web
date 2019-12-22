@@ -88,7 +88,7 @@ def sync_gitcoin_users_to_chat(self, invite_token=None, retry: bool = False) -> 
                     "username": profile.handle,
                     "first_name": profile.user.first_name,
                     "last_name": profile.user.last_name,
-                    "nickname": "string",
+                    "nickname": profile.handle,
                     "auth_data": profile.user.id,
                     "auth_service": "gitcoin",
                     "locale": "en",
