@@ -1,3 +1,4 @@
+import json
 from django.conf import settings
 from rest_framework import serializers
 from .models import (Activity, Bounty, Tip, FeedbackEntry)
@@ -274,6 +275,7 @@ class CustomAvatarExportSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
     png = serializers.SerializerMethodField()
     svg = serializers.SerializerMethodField()
+    config = serializers.SerializerMethodField()
     created_at = serializers.SerializerMethodField()
 
     class Meta:
@@ -292,6 +294,9 @@ class CustomAvatarExportSerializer(serializers.ModelSerializer):
 
     def get_created_at(self, instance):
         return instance.created_on.isoformat()
+
+    def get_config(self, instance):
+        return json.dumps(instance.config)
 
 
 privacy_fields = {

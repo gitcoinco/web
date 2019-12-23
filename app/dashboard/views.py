@@ -2398,7 +2398,7 @@ def profile_backup(request):
         'tips', '_tips.private_fields', 'feedbacks', '_feedbacks.private_items',
         'custom_avatars'] + list(profile_data.keys())
 
-    if model == 'custom_avatar':
+    if model == 'custom avatar':
         # custom avatar
         custom_avatars = get_custom_avatars(profile)
         data['custom_avatars'] = CustomAvatarExportSerializer(custom_avatars, many=True).data

@@ -1,17 +1,25 @@
 (function($) {
-  const syncComplete = res => {
+  function syncComplete (res) {
     console.log('sync complete');
   };
 
-  const syncFailure = () => {
+  function onFailure() {
     _alert(
-      { message: gettext('Failed to backup profile data to 3Box. Please try again.') },
+      { message: gettext('Failed to backup data to 3Box. Please try again.') },
       'error'
     );
-    switchIcons(false);
-  };
+    inProgress(false);
+  }
 
-  const openBox = callback => {
+  let onLoading = null;
+
+  function inProgress(loading) {
+    if (onLoading) {
+      onLoading(loading);
+    }
+  }
+
+  function openBox(callback) {
     window.ethereum.enable().then(addresses => {
       window.Box.openBox(addresses[0], window.ethereum, {}).then(box => {
         box.onSyncDone(syncComplete);
@@ -20,12 +28,12 @@
         console.log('openBox succeeded');
         callback(box);
       }).catch(err => {
-        syncFailure();
+        onFailure();
       });
     });
   };
 
-  const openSpace = (box, callback) => {
+  function openSpace(box, callback) {
     const name = 'GitCoin';
 
     window.currentSpace = name;
@@ -37,25 +45,25 @@
     };
 
     box.openSpace(name, opts).catch(err => {
-      syncFailure();
+      onFailure();
     });
   };
 
-  const backupProfile = async space => {
-    const res = await fetchProfieData();
+  async function saveDataToSpace (space, model){
+    const res = await fetchProfieData(model);
 
     if (res.data) {
-      let profile = res.data;
+      let data = res.data;
 
-      console.log('profile', profile);
+      console.log('data', data);
 
-      if (profile) {
+      if (data) {
         // get public key-value
-        const public_keys = Object.keys(profile).filter(k => k[0] !== '_');
-        const public_values = public_keys.map(k => profile[k]);
+        const public_keys = Object.keys(data).filter(k => k[0] !== '_');
+        const public_values = public_keys.map(k => data[k]);
         // get private key-value
-        let private_keys = Object.keys(profile).filter(k => k[0] === '_');
-        const private_values = private_keys.map(k => profile[k]);
+        let private_keys = Object.keys(data).filter(k => k[0] === '_');
+        const private_values = private_keys.map(k => data[k]);
 
         private_keys = private_keys.map(k => k.substring(1));
 
@@ -71,23 +79,23 @@
 
           _alert(
             {
-              message: gettext(`<span>Your profile data has been synchronized to 3Box -- </span> <a href="${three_box_link}" target="_blank">Check out the details on 3Box Hub</a>.`)},
+              message: gettext(`<span>Your ${model} data has been synchronized to 3Box -- </span> <a href="${three_box_link}" target="_blank">Check out the details on 3Box Hub</a>.`)},
             'success'
           );
         } else {
-          syncFailure();
+          onFailure();
         }
       } else {
-        syncFailure();
+        onFailure();
       }
     } else {
-      syncFailure();
+      onFailure();
     }
 
-    switchIcons(false);
+    inProgress(false);
   };
 
-  const removeUnusedFields = async(space, keys) => {
+  async function removeUnusedFields (space, keys) {
     const public_keys = keys.filter(k => k[0] !== '_');
     let private_keys = keys.filter(k => k[0] === '_');
 
@@ -107,7 +115,7 @@
     console.log(`remove ${count} outdated fields from space`, unused_public_keys, unused_private_keys);
   };
 
-  const removeFields = async(subspace, keys) => {
+  async function removeFields(subspace, keys) {
     if (keys && keys.length > 0) {
       for (let x of keys) {
         await subspace.remove(x);
@@ -115,40 +123,11 @@
     }
   };
 
-  const toggleAutomaticUpdateFlag = async() => {
+  async function fetchProfieData(model) {
     const data = new FormData();
 
     data.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
-    try {
-      const response = await fetch('/api/v0.1/profile/settings', {
-        method: 'post',
-        body: data
-      });
-
-      if (response.status === 200) {
-        const result = await response.json();
-        const automatic_backup = result.automatic_backup ? 'ENABLED' : 'DISABLED';
-
-        _alert(
-          { message: gettext(`Profile automatic backup has been ${automatic_backup}`) },
-          'success'
-        );
-      } else {
-        _alert(
-          { message: gettext('An error occurred. Please try again.') },
-          'error'
-        );
-      }
-
-    } catch (err) {
-      console.log('Error when toggling automatic backup flag', err);
-    }
-  };
-
-  const fetchProfieData = async() => {
-    const data = new FormData();
-
-    data.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
+    data.append('model', model);
     try {
       const response = await fetch('/api/v0.1/profile/backup', {
         method: 'post',
@@ -166,10 +145,13 @@
     return null;
   };
 
-  const startProfileDataBackup = async() => {
+  async function syncTo3Box (option) {
     console.log('start sync data to 3box');
 
-    const res = await fetchProfieData();
+    onLoading = option ? option.onLoading : null;
+    const model = option ? option.model : null;
+
+    const res = await fetchProfieData(model);
 
     console.log('data', res.data);
 
@@ -180,63 +162,29 @@
       if (window.Box) {
         // 1. Open box and space
         // 2. Backing up my Gitcoin data to 3Box, inside of a "Gitcoin" space
-        switchIcons(true);
+        inProgress(true);
         openBox(box => {
           openSpace(box, (box, space) => {
             console.log('backup data into space');
-            backupProfile(space);
+            saveDataToSpace(space, model);
           });
         });
       } else {
         setTimeout(() => {
-          startProfileDataBackup();
+          syncTo3Box(onLoading);
         }, 1000);
       }
     } catch (err) {
       console.log('Error when backing up profile data', err);
-      syncFailure();
+      onFailure();
     }
   };
 
-  const switchIcons = (loading) => {
-    if (loading) {
-      $('.profile-header__sync img.loading').show();
-      $('.profile-header__sync img.action').hide();
-    } else {
-      $('.profile-header__sync img.loading').hide();
-      $('.profile-header__sync img.action').show();
-    }
-  };
-
-  // add click listener
-  $('#sync-to-3box').on('click', (event) => {
-    if (!long_pressed) {
-      startProfileDataBackup();
-    }
-    long_pressed = false;
-  });
-
-  // add long press listener
-  let timer = null;
-  let long_pressed = false;
-
-  $('#sync-to-3box').on('mousedown', () => {
-    timer = setTimeout(() => {
-      long_pressed = true;
-      toggleAutomaticUpdateFlag();
-    }, 500);
-  }).on('mouseup mouseleave', () => {
-    clearTimeout(timer);
-  });
-
-  $(document).ready(function() {
-    setTimeout(() => {
-      console.log('check profile backup flag', window.profile_automatic_backup);
-      // backup automatically if the flag is true
-      if (window.profile_automatic_backup) {
-        startProfileDataBackup();
-      }
-    }, 3000);
-  });
+  if (typeof window !== 'undefined') {
+    window.syncTo3Box = syncTo3Box;
+  }
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = syncTo3Box;
+  }
 
 }(jQuery));
