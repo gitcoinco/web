@@ -1,0 +1,20 @@
+{
+    "symbol": "FIC",
+    "address": "0x2f01D47c239B7EaCCd746604fDba49A84367d2DA",
+    "overview":{
+        "en": "FinCredit Protocol is trying to solve the trust issues between lenders and borrowers, and to bring down the delinquency and default rate when financing and consumption activities are taken place, so there will be more people to have access to capital or enjoy early consumption before payment.",
+        "zh": "FinCredit Protocol简称FIC, 是一个分布式应用协议，运用区块链技术搭建的安全、高效的去中心化征信网络，为借贷双方提供信用存证、信用查询服务，解决传统借贷行业数据真实性和信用体系缺失问题。"
+    },
+    "email": "contact@fincreditpro.com",
+    "website": "https://FICPro.io/",
+    "whitepaper": "https://ficpro.io/#/pdf",
+    "state": "NORMAL",
+    "published_on": "2019-12-19",
+    "initial_price":{
+        "USD":"0.008 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/FICProtocol",
+        "telegram": "https://t.me/FinCreditPro"
+    }
+}
