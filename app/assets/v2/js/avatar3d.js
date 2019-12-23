@@ -138,16 +138,16 @@ $(document).ready(function() {
       } else {
         unloading_button($('#save-3d-avatar'));
       }
-    }
+    };
 
     if (window.syncTo3Box) {
       syncTo3Box({
         onLoading,
         model: 'custom avatar'
-      })
+      });
     }
   }
-  $('#upload-3d-avatar').click(function () {
+  $('#upload-3d-avatar').click(function() {
     upload3DAvatars();
   });
 

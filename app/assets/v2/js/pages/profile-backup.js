@@ -1,5 +1,5 @@
 
-(function ($) {
+(function($) {
   const switchIcons = (loading) => {
     if (loading) {
       $('.profile-header__sync img.loading').show();
@@ -10,7 +10,7 @@
     }
   };
 
-  const toggleAutomaticUpdateFlag = async () => {
+  const toggleAutomaticUpdateFlag = async() => {
     const data = new FormData();
 
     data.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
@@ -45,9 +45,9 @@
       syncTo3Box({
         onLoading: switchIcons,
         model: 'profile'
-      })
+      });
     }
-  }
+  };
 
   // add click listener
   $('#sync-to-3box').on('click', (event) => {
@@ -70,7 +70,7 @@
     clearTimeout(timer);
   });
 
-  $(document).ready(function () {
+  $(document).ready(function() {
     setTimeout(() => {
       console.log('check profile backup flag', window.profile_automatic_backup);
       // backup automatically if the flag is true

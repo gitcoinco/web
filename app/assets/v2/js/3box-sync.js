@@ -1,7 +1,7 @@
 (function($) {
-  function syncComplete (res) {
+  function syncComplete(res) {
     console.log('sync complete');
-  };
+  }
 
   function onFailure() {
     _alert(
@@ -31,7 +31,7 @@
         onFailure();
       });
     });
-  };
+  }
 
   function openSpace(box, callback) {
     const name = 'GitCoin';
@@ -47,9 +47,9 @@
     box.openSpace(name, opts).catch(err => {
       onFailure();
     });
-  };
+  }
 
-  async function saveDataToSpace (space, model){
+  async function saveDataToSpace(space, model) {
     const res = await fetchProfieData(model);
 
     if (res.data) {
@@ -93,9 +93,9 @@
     }
 
     inProgress(false);
-  };
+  }
 
-  async function removeUnusedFields (space, keys) {
+  async function removeUnusedFields(space, keys) {
     const public_keys = keys.filter(k => k[0] !== '_');
     let private_keys = keys.filter(k => k[0] === '_');
 
@@ -113,7 +113,7 @@
     const count = unused_public_keys.length + unused_private_keys.length;
 
     console.log(`remove ${count} outdated fields from space`, unused_public_keys, unused_private_keys);
-  };
+  }
 
   async function removeFields(subspace, keys) {
     if (keys && keys.length > 0) {
@@ -121,7 +121,7 @@
         await subspace.remove(x);
       }
     }
-  };
+  }
 
   async function fetchProfieData(model) {
     const data = new FormData();
@@ -143,9 +143,9 @@
       console.log('Error when fetching profile data', err);
     }
     return null;
-  };
+  }
 
-  async function syncTo3Box (option) {
+  async function syncTo3Box(option) {
     console.log('start sync data to 3box');
 
     onLoading = option ? option.onLoading : null;
@@ -178,7 +178,7 @@
       console.log('Error when backing up profile data', err);
       onFailure();
     }
-  };
+  }
 
   if (typeof window !== 'undefined') {
     window.syncTo3Box = syncTo3Box;

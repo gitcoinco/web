@@ -425,7 +425,7 @@ function saveAvatar(onSuccess) {
     contentType: 'application/json; charset=utf-8',
     success: function(response) {
       if (onSuccess) {
-        onSuccess
+        onSuccess;
       } else {
         _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
         changeStep(1);
@@ -456,13 +456,13 @@ function uploadAvatars() {
     } else {
       unloading_button($('#save-avatar'));
     }
-  }
+  };
 
   if (window.syncTo3Box) {
     syncTo3Box({
       onLoading,
       model: 'custom avatar'
-    })
+    });
   }
 }
 
