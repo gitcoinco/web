@@ -434,12 +434,14 @@ def new_grant_admin(grant):
 
 def send_user_feedback(quest, feedback, user):
     to_email = quest.creator.email
-    from_email = user.email
+    from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
-        subject = f"New Gitcoin Quest Feedback: {quest.title}"
-        body_str = f"quest: {quest.title}\nurl: {quest.url}\nedit: {quest.edit_url}\n\n> {feedback}\n\nfrom: {user.email} ( {user.profile.url} )"
+        subject = f"Your Gitcoin Quest \"{quest.title}\" has feedback from another user!"
+        body_str = f"Your quest: {quest.title} has feedback from user {user.profile.handle}:\n\n
+                     \"{feedback}\n\n\"
+                     to edit your quest, click <a href=\"{quest.edit_url}\">here</a>"
         body = f"{body_str}"
         if not should_suppress_notification_email(to_email, 'quest'):
             send_mail(
