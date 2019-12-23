@@ -42,10 +42,10 @@
   };
 
   const backupProfile = async space => {
-    const data = await fetchProfieData();
+    const res = await fetchProfieData();
 
-    if (data) {
-      let profile = data;
+    if (res.data) {
+      let profile = res.data;
 
       console.log('profile', profile);
 
@@ -64,7 +64,7 @@
         const r_private = await space.private.setMultiple(private_keys, private_values);
 
         // remove the unused key/value pairs from the space
-        await removeUnusedFields(space, public_keys, private_keys);
+        await removeUnusedFields(space, res.keys);
 
         if (r_public && r_private) {
           const three_box_link = `https://3box.io/${window.curentEthAddr}/data`;
@@ -87,7 +87,12 @@
     switchIcons(false);
   };
 
-  const removeUnusedFields = async(space, public_keys, private_keys) => {
+  const removeUnusedFields = async(space, keys) => {
+    const public_keys = keys.filter(k => k[0] !== '_');
+    let private_keys = keys.filter(k => k[0] === '_');
+
+    private_keys = private_keys.map(k => k.substring(1));
+
     const public_data = await space.public.all();
     const private_data = await space.private.all();
 
@@ -153,7 +158,7 @@
       if (response.status === 200) {
         const result = await response.json();
 
-        return result.data;
+        return result;
       }
     } catch (err) {
       console.log('Error when fetching profile data', err);
@@ -164,9 +169,9 @@
   const startProfileDataBackup = async() => {
     console.log('start sync data to 3box');
 
-    const data = await fetchProfieData();
+    const res = await fetchProfieData();
 
-    console.log('data', data);
+    console.log('data', res.data);
 
     // User is prompted to approve the messages inside their wallet (openBox() and
     // openSpace() methods via 3Box.js). This logs them in to 3Box.

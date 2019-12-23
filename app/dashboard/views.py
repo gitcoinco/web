@@ -2389,27 +2389,38 @@ def profile_backup(request):
     if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
         raise Http404
 
-    # fetch the exported data for backup
-    data = ProfileExportSerializer(profile).data
-    data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
-    data["portfolio"] = BountyExportSerializer(profile.as_dict['portfolio'], many=True).data
-    data["active_work"] = BountyExportSerializer(profile.active_bounties, many=True).data
-    data["bounties"] = BountyExportSerializer(profile.bounties, many=True).data
-    data["activities"] = ActivityExportSerializer(profile.activities, many=True).data
-    # tips
-    data["tips"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=False)
-    data["_tips.private_fields"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=True)
-    # feedback
-    feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
-    data["feedbacks"] = filtered_list_data("feedback", feedbacks, private_items=False, private_fields=None)
-    data["_feedbacks.private_items"] = filtered_list_data("feedback", feedbacks, private_items=True, private_fields=None)
-    # custom avatar
-    custom_avatars = get_custom_avatars(profile)
-    data["custom_avatars"] = CustomAvatarExportSerializer(custom_avatars, many=True).data
+    # prepare the exported data for backup
+
+    model = request.POST.get('model', None)
+    profile_data = ProfileExportSerializer(profile).data
+    data = {}
+    keys = ['grants', 'portfolio', 'active_work', 'bounties', 'activities',
+        'tips', '_tips.private_fields', 'feedbacks', '_feedbacks.private_items',
+        'custom_avatars'] + list(profile_data.keys())
+
+    if model == 'custom_avatar':
+        # custom avatar
+        custom_avatars = get_custom_avatars(profile)
+        data['custom_avatars'] = CustomAvatarExportSerializer(custom_avatars, many=True).data
+    else:
+        data = profile_data
+        data['grants'] = GrantExportSerializer(profile.get_my_grants, many=True).data
+        data['portfolio'] = BountyExportSerializer(profile.as_dict['portfolio'], many=True).data
+        data['active_work'] = BountyExportSerializer(profile.active_bounties, many=True).data
+        data['bounties'] = BountyExportSerializer(profile.bounties, many=True).data
+        data['activities'] = ActivityExportSerializer(profile.activities, many=True).data
+        # tips
+        data['tips'] = filtered_list_data('tip', profile.tips, private_items=None, private_fields=False)
+        data['_tips.private_fields'] = filtered_list_data('tip', profile.tips, private_items=None, private_fields=True)
+        # feedback
+        feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
+        data['feedbacks'] = filtered_list_data('feedback', feedbacks, private_items=False, private_fields=None)
+        data['_feedbacks.private_items'] = filtered_list_data('feedback', feedbacks, private_items=True, private_fields=None)
 
     response = {
         'status': 200,
-        'data': data
+        'data': data,
+        'keys': keys
     }
 
     return JsonResponse(response, status=response.get('status', 200))
