@@ -32,6 +32,7 @@ import requests
 from app.utils import sync_profile
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
+from avatar.models import CustomAvatar
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
@@ -967,3 +968,6 @@ def get_url_first_indexes():
         urls.append(url)
 
     return set(urls)
+
+def get_custom_avatars(profile):
+    return CustomAvatar.objects.filter(profile=profile).order_by('-id')

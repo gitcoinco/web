@@ -99,7 +99,7 @@ from .notifications import (
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count,
     get_web3, has_tx_mined, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public,
-    web3_process_bounty,
+    web3_process_bounty, get_custom_avatars
 )
 from .export import (
     ProfileExportSerializer, GrantExportSerializer, BountyExportSerializer,
@@ -2404,7 +2404,7 @@ def profile_backup(request):
     data["feedbacks"] = filtered_list_data("feedback", feedbacks, private_items=False, private_fields=None)
     data["_feedbacks.private_items"] = filtered_list_data("feedback", feedbacks, private_items=True, private_fields=None)
     # custom avatar
-    custom_avatars = profile.avatar_baseavatar_related.all()
+    custom_avatars = get_custom_avatars(profile)
     data["custom_avatars"] = CustomAvatarExportSerializer(custom_avatars, many=True).data
 
     response = {
