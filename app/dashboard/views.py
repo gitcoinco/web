@@ -103,7 +103,7 @@ from .utils import (
 )
 from .export import (
     ProfileExportSerializer, GrantExportSerializer, BountyExportSerializer,
-    ActivityExportSerializer, filtered_list_data
+    ActivityExportSerializer, CustomAvatarExportSerializer, filtered_list_data
 )
 
 logger = logging.getLogger(__name__)
@@ -2403,6 +2403,9 @@ def profile_backup(request):
     feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
     data["feedbacks"] = filtered_list_data("feedback", feedbacks, private_items=False, private_fields=None)
     data["_feedbacks.private_items"] = filtered_list_data("feedback", feedbacks, private_items=True, private_fields=None)
+    # custom avatar
+    custom_avatars = profile.avatar_baseavatar_related.all()
+    data["custom_avatars"] = CustomAvatarExportSerializer(custom_avatars, many=True).data
 
     response = {
         'status': 200,
