@@ -315,7 +315,6 @@ def get_github_event_emails(oauth_token, username):
 
     userinfo = get_user(username)
     user_name = userinfo.get('name', '')
-    print(user_name)
 
     if response.status_code == 200:
         events = response.json()
