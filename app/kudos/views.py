@@ -288,6 +288,22 @@ def send_2(request):
     if _id and not str(_id).isdigit():
         raise Http404
 
+    username = request.GET.get('username', None)
+    user = {}
+
+    if username:
+        profiles = Profile.objects.filter(handle__iexact=username)
+
+        if profiles.exists():
+            profile = profiles.first()
+            user['id'] = profile.id
+            user['text'] = profile.handle
+
+            if profile.avatar_baseavatar_related.exists():
+                user['avatar_id'] = profile.avatar_baseavatar_related.first().pk
+                user['avatar_url'] = profile.avatar_baseavatar_related.first().avatar_url
+                user['preferred_payout_address'] = profile.preferred_payout_address
+
     kudos = Token.objects.filter(pk=_id).first()
     if kudos and not kudos.send_enabled_for(request.user):
         messages.error(request, f'This kudos is not available to be sent.')
@@ -304,7 +320,12 @@ def send_2(request):
         'card_desc': _('Send a Kudos to any github user at the click of a button.'),
         'numbers': range(1,100),
         'kudos': kudos,
+        'username': username,
     }
+
+    if user:
+        params['user_json'] = user
+
     return TemplateResponse(request, 'transaction/send.html', params)
 
 
@@ -729,7 +750,7 @@ def receive_bulk(request, secret):
     coupons = BulkTransferCoupon.objects.filter(secret=secret)
     if not coupons.exists():
         raise Http404
-    
+
     coupon = coupons.first()
     _class = request.GET.get('class', '')
     if coupon.num_uses_remaining <= 0:
@@ -821,7 +842,7 @@ def newkudos(request):
                     'email': request.POST.get('email'),
                     }
                 )
-            new_kudos_request(obj) 
+            new_kudos_request(obj)
 
             context['msg'] = str(_('Your Kudos has been submitted and will be listed within 2 business days if it is accepted.'))
 

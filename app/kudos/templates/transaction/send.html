@@ -95,7 +95,11 @@
     <input type="hidden" name="send_type" value="github">
 
     <div class="form-group username">
-      <select id="username" class="username-search custom-select" {% if not kudos.name  %}disabled{% endif %}></select>
+      <select id="username" class="username-search custom-select" {% if not kudos.name  %}disabled{% endif %}>
+        {% if user_json %}
+        <option value="{{ user_json.id }}" avatar_id="{{ user_json.avatar_id }}" avatar_url="{{ user_json.avatar_url }}"  preferred_payout_address="{{ user_json.preferred_payout_address }}">{{ user_json.text }}</option>
+        {% endif %}
+      </select>
       <input type="text" placeholder="0x408c49a91e46311ddc35737f8c1aaea6191f36e0" id="to_eth_address" value="" class="form-control eth_address hidden" >
       <input type="text" placeholder="(link will be displayed after you click Send)" id="airdrop_link" value="" class="form-control airdrop_link hidden" disabled="disabled">
 
@@ -165,4 +169,12 @@
     <a id="" class="btn btn-gc-purple" href="{% url 'kudos_marketplace' %}">⬅ {% trans "Start Over" %}</a>
   </div>
 </section>
+
+{% if not user_json and username %}
+<script>
+  setTimeout(function() {
+    _alert("Sorry, we can't find the user");
+  }, 1000);
+</script>
+{% endif %}
 {% endblock %}
