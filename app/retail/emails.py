@@ -389,7 +389,7 @@ thanks for being a member of the community.
 
 alisa / frank (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         elif bounty.status == 'cancelled':
@@ -410,7 +410,7 @@ thanks again for being a member of the community.
 
 alisa / frank (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         else:
@@ -447,7 +447,7 @@ def render_admin_contact_funder(bounty, text, from_user):
     return response_html, response_txt
 
 
-def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+def render_funder_stale(github_username, days=60, time_as_str='a couple months'):
     """Render the stale funder email template.
 
     Args:
@@ -463,14 +463,15 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
     response_txt = f"""
 hi {github_username},
 
-alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}.
+in the spirit of making Gitcoin better + checking in:
 
-- has anything been slipping on your issue board which might be bounty worthy?
+- have any issues which might be bounty worthy or projects you're hoping to build?
 - do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
+- are you interested in joining one of <a href="https://gitcoin.co/hackathon-list/">our upcoming hackathons?</a> it's possible
+we could do so at a discount, as you're a current funder on the platform
 
-our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days.
-
-appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
+appreciate you being a part of the community + let us know if you'd like some Gitcoin schwag, we can send a link your way to order some :)
 
 ~ alisa / frank (gitcoin product team)
 
