@@ -1,6 +1,6 @@
 site_name: "Gitcoin Developer Documentation"
 repo_name: 'gitcoinco/web'
-repo_url: 'https://github.com/gitcoinco/web'
+edit_uri: ''
 
 # This tells pydocmd which pages to generate from which Python modules,
 # functions and classes. At the first level is the page name, below that

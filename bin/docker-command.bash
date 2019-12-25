@@ -55,7 +55,18 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
     fi
 
     if [ "$DISABLE_INITIAL_LOADDATA" != "on" ]; then
-        python3 manage.py loaddata initial
+
+        python manage.py loaddata app/fixtures/users.json
+        python manage.py loaddata app/fixtures/economy.json
+        python manage.py loaddata app/fixtures/profiles.json
+        python manage.py loaddata app/fixtures/kudos.json
+        python manage.py loaddata app/fixtures/grants.json
+        python manage.py loaddata app/fixtures/dashboard.json
+        python manage.py loaddata app/fixtures/avatar.json
+        python manage.py loaddata app/fixtures/marketing.json
+        python manage.py loaddata app/fixtures/profiles.json
+        python manage.py loaddata app/fixtures/grants.json
+
     fi
     date >> /provisioned
     echo "Provisioning completed!"

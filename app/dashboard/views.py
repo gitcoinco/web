@@ -3731,7 +3731,7 @@ def hackathon_get_project(request, bounty_id, project_id=None):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
     try:
-        bounty = Bounty.objects.current().get(id=bounty_id)
+        bounty = Bounty.objects.get(id=bounty_id)
         projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache()
     except HackathonProject.DoesNotExist:
         pass
@@ -3770,7 +3770,7 @@ def hackathon_save_project(request):
             'msg': '',
         })
 
-    bounty_obj = Bounty.objects.current().get(pk=bounty_id)
+    bounty_obj = Bounty.objects.get(pk=bounty_id)
 
     kwargs = {
         'name': clean(request.POST.get('name'),  strip=True),
@@ -3867,7 +3867,7 @@ def hackathon_registration(request):
         logger.error(f"error in record_action: {e}")
         pass
 
-    if referer and is_safe_url(referer, request.get_host()):
+    if referer and '/issue/' in referer and is_safe_url(referer, request.get_host()):
         messages.success(request, _(f'You have successfully registered to {hackathon_event.name}. Happy hacking!'))
         redirect = referer
     else:
