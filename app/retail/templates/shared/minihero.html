@@ -20,15 +20,15 @@
   {% if position_h1_below_logo %}
     <div class="col">
       {% if not suppress_logo %}
-        <img class="about-pink-logo" src="{% static "v2/images/logo_gitcoins.png" %}" height="49" />
+        <img class="about-pink-logo mb-2" src="{% static "v2/images/logo_gitcoins.png" %}" height="49" />
       {% endif %}
+      <div class="w-100"></div>
+      <h1 class="minihero__title">{{h1}}</h1>
     </div>
-    <div class="w-100"></div>
-    <div class="col header-line font-weight-300 pb-5 pt-3">{{h1}}</div>
   {% else %}
-    <div class="col header-line font-weight-300">{{h1}}</div>
-    <div class="w-100"></div>
-    <div class="col pb-5 pt-3">
+    <div class="col">
+      <h1 class="minihero__title mb-2">{{h1}}</h1>
+      <div class="w-100"></div>
       {% if not suppress_logo %}
         <img class="about-pink-logo" src="{% static "v2/images/pink-wordmark.png" %}" height="49" />
       {% endif %}

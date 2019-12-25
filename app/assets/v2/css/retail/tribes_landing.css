@@ -1,0 +1,99 @@
+.bg-blue {
+  background-color: #170640;
+  color: white;
+}
+
+.gc-green-text {
+  color: #0FCE7C;
+}
+
+.tribes-landing .title {
+  border-bottom: 5px solid;
+}
+
+.companies img {
+  height: 3.5rem;
+  transition: transform .25s;
+}
+
+.companies img:last-child {
+  margin-bottom: 0!important;
+}
+
+.companies img:hover {
+  transform: scale(1.25);
+}
+
+.features {
+  max-width: 20rem;;
+}
+
+img {
+  max-width: 100%;
+}
+
+.work-section {
+  background: #170640;
+  color: #fff;
+}
+
+.white-line {
+  border-bottom: 5px solid white;
+  max-width: 10rem;
+}
+
+.strip {
+  position: relative;
+  top: 1px;
+}
+
+.plan-header img {
+  height: 120px;
+}
+
+.testimonial-section {
+  background: #000;
+  color: #fff;
+}
+
+.testimonial-section .square-1 {
+  top: 2rem;
+  right: 0;
+}
+
+.testimonial-section .square-2 {
+  height: 25rem;
+}
+
+.testimonial-section .stats {
+  font-size: 3rem;
+}
+
+.testimonial-section .testimonial-box {
+  border: 5px solid #0FCE7C;
+  border-radius: 5px;
+}
+
+.testimonial-section .testimonial-box  .img-container {
+  border: 6px solid #0FCE7C;
+  height: 4rem;
+  width: 4rem;
+}
+
+.testimonial-section .testimonial-box .img-container.org-container {
+  left: -1rem;
+}
+
+.testimonial-section .quote-container {
+  min-height: 9.8rem;
+}
+
+.testimonial-section .quote-text {
+  font-size: 1.3rem;
+}
+
+.testimonial-section .testimonial-photo-container {
+  top: -2rem;
+  left: 0;
+  right: 0;
+}

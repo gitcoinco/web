@@ -1,0 +1,172 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/grants/new.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+    <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
+    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  </head>
+  <body class="interior {{ active }} grant g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+      <div class="row no-gutters metamask-banner">
+        <div class="col-12">
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
+        </div>
+      </div>
+    </div>
+
+    {% include 'grants/shared/alpha.html' %}
+    {% include 'grants/shared/waiting_state.html' %}
+
+    <div class="grant-container">
+      <div class="container new-grant" id="new-grant">
+        <div class="row justify-content-md-center pb-5">
+          <div id="robot_error" class="hidden mt-5">
+            <img src="{% static "v2/images/prime.png" %}">
+          </div>
+          <div class="col-12 col-md-10 col-lg-8 mt-5" id="grants_form">
+            <div class="form__intro my-4 text-center">
+              <img src="{% static "v2/images/grants/new.svg" %}">
+              <h1 class="text-center font-title-xl">{% trans "Create a Grant" %}</h1>
+              <p class="mb-1">
+                {% trans "We're excited to learn about your project." %}
+                <br>
+                {% trans "Gitcoin Grants can help you accelerate your journey to funding." %}
+                <br>
+                {% trans "Complete the form below to get started." %}
+              </p>
+            </div>
+            <div class="primary-form py-5">
+              <form method="POST" id="create-grant" enctype="multipart/form-data" class="px-5">
+                {% csrf_token %}
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input_title">{% trans "Title of Project" %}</label>
+                  <input class="form__input form__input-lg " maxlength="150" type="text" id="input_title" name="input_title" required />
+                </div>
+
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-description">{% trans "Description of Project" %}</label>
+                  <textarea rows=8 class="form__input form__input-lg " maxlength=5000 type="text" id="input-description" name="description" required></textarea>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-url">{% trans "Project URL" %}</label>
+                  <input type="url" class="form__input form__input-lg " id="input-url" name="reference_url" required/>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-team_members">{% trans "Team members" %}</label>
+                  <div class="form__select2 g-multiselect">
+                    <select id="input-team_members" class="form__input form__input-lg  team_members" name="team_members[]" multiple="multiple">
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <label class="font-body">{% trans "Monthly amount sought in DAI" %}</label>
+                      <input type="number" id="amount_goal" name="amount_goal" class="form__input form__input-lg" min="0.001" required />
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="font-body">{% trans "Required Token For Subscription" %}</label>
+                      <div class="form__select2">
+                        <select class='js-select2' name='denomination' id='js-token'></select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-admin_address">{% trans "Recipient Wallet Address" %}</label>
+                  <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required/>
+                </div>
+
+
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body">{% trans "Project Logo" %}</label>
+                  <div class="form__drop" id="js-drop">
+                    <input id="img-project" type="file" name="input_image" accept="image/*">
+                    <span>{% trans "Drag & Drop or Browse" %}</span>
+                    <img id="preview"/>
+                  </div>
+                </div>
+
+                <div id="gas-section" class="pb-2">
+                  <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
+                  <div>
+                    {% include 'shared/wallet_estimate.html' %}
+                  </div>
+                </div>
+
+                <div class="form__footer text-center">
+                  <button class="button button--primary button--full" id="new_button">{% trans "Create Grant" %}</button>
+                </div>
+
+                <div>
+                  <input type="hidden" id="transaction_hash" name="transaction_hash" />
+                  <input type="hidden" id="contract_address" name="contract_address" />
+                  <input type="hidden" id="contract_owner_address" name="contract_owner_address">
+                  <!--- test test -->
+                  <input type="hidden" id="contract_version" name="contract_version" value="0">
+                    <input type="hidden" id="token_address" name="token_address" value="">
+                  <input type="hidden" id="token_symbol" name="token_symbol" value="">
+                  <input type="hidden" id="network" name="network">
+                  <input type="hidden" id="trusted_relayer" name="trusted_relayer" value="{{ trusted_relayer }}">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/current_profile.html' %}
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'grants/shared/shared_scripts.html' %}
+  </body>
+
+  <!-- jQuery -->
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract0.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract1.js" %}"></script>
+  <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/grants/shared.js" %}"></script>
+  <script src="{% static "v2/js/grants/new.js" %}"></script>
+</html>

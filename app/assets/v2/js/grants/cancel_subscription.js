@@ -40,7 +40,7 @@ $(document).ready(() => {
           deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gasPrice: realGasPrice})
             .on('transactionHash', function(transactionHash) {
               $('#sub_end_approve_tx_id').val(transactionHash);
-              const linkURL = etherscan_tx_url(transactionHash);
+              const linkURL = get_etherscan_url(transactionHash);
 
               document.issueURL = linkURL;
               $('#transaction_url').attr('href', linkURL);
@@ -63,7 +63,12 @@ $(document).ready(() => {
 
                 deployedSubscription.methods.cancelSubscription(
                   ...parts
-                ).send({from: accounts[0], gasPrice: realGasPrice})
+                ).send({
+                  from: accounts[0],
+                  gasPrice: realGasPrice,
+                  gas: web3.utils.toHex(gas_amount(document.location.href)),
+                  gasLimit: web3.utils.toHex(gas_amount(document.location.href))
+                })
                   .on('transactionHash', function(transactionHash) {
                     $('#sub_cancel_tx_id').val(transactionHash);
                   }).on('confirmation', function(confirmationNumber, receipt) {

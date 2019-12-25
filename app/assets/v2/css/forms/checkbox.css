@@ -16,7 +16,7 @@
   background: #fff;
   border: 1px solid #dbdbdb;
   border-radius: 2px;
-  content: url('/static/v2/images/check.svg');
+  content: '';
   display: inline-flex;
   justify-content: center;
   height: 18px;
@@ -30,11 +30,18 @@
   color: #D50000;
 }
 
+.form__checkbox input:disabled ~ .form__label::before {
+  background-color: #d0d0d0 !important;
+  border-color: #d0d0d0 !important;
+  cursor: not-allowed;
+}
+
 .form__checkbox label.error {
   display: none !important;
 }
 
 .form__checkbox input:checked ~ .form__label::before {
-  background-color: #0D0764;
-  border-color: #0D0764;
+  background-color: #3E00FF;
+  border-color: #3E00FF;
+  content: url('/static/v2/images/check.svg');
 }

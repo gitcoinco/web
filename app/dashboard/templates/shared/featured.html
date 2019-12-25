@@ -18,18 +18,17 @@
 
 <div id="featured-bounty-add" class="pt-2 row">
   <div class="col-md-7">
-    <h5 class="font-subheader mb-3"><span class="new">{% trans "New!" %}</span> {% trans "Feature Your Bounty" %}</h5>
-    <p class="featured-text">{% blocktrans %}Get more visibility by featuring your bounty. Your bounty will be placed on a special ‘Featured Bounties’ section <b>at the top of the Issue Explorer</b> for 14 days.{% endblocktrans %}</p>
+    <p class="featured-text">{% blocktrans %}Your bounty will be placed on a special ‘Featured Bounties’ section <b>at the top of the Issue Explorer</b> for 14 days.{% endblocktrans %}</p>
     <div class="form__flex-group">
-      <div class="form__amount-wrapper">
+      <div class="">
         <div class="featured_container">
+          <small class="mb-3 d-block">Note: You will have to approve this transaction separately via MetaMask on submit.</small>
           <div class="form__checkbox">
             <input name='featuredBounty' id='featuredBounty' type="checkbox" value=1 />
             <label class="form__label" for='featuredBounty'>{% trans "Yes, I want to feature my bounty." %}
               <span class="featured-price"><b class="featured-price-eth">ETH</b> (<span class="featured-price-usd">12</span> USD)</span>
             </label>
           </div>
-          <small>Note: You will have to approve this transaction separately via MetaMask on submit.</small>
         </div>
       </div>
     </div>
@@ -38,4 +37,3 @@
     <img src="{% static 'v2/images/featured-example.jpg' %}" width="314" alt="featured bounty example" class="featured-example w-auto">
   </div>
 </div>
-<hr class="mt-5">

@@ -28,7 +28,7 @@ class TokenSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Token
         fields = ('id', 'created_on', 'modified_on', 'name', 'description', 'image', 'rarity',
-                  'price', 'num_clones_allowed', 'num_clones_in_wild', 'owner_address', 'tags')
+                  'price_finney', 'num_clones_allowed', 'num_clones_in_wild', 'owner_address', 'tags')
 
 
 class WalletSerializer(serializers.HyperlinkedModelSerializer):
@@ -65,7 +65,7 @@ class TokenViewSet(viewsets.ModelViewSet):
     queryset = Token.objects.all().order_by('-id')
     serializer_class = TokenSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
-    # filter_fields = ('name', 'description', 'image', 'rarity', 'price', 'num_clones_allowed',
+    # filter_fields = ('name', 'description', 'image', 'rarity', 'price_finney', 'num_clones_allowed',
     #                  'num_clones_in_wild', 'owner_address', 'tags')
 
     def get_queryset(self):
@@ -85,8 +85,8 @@ class TokenViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(rarity__iexact=self.request.query_params.get('rarity'))
 
         # Filter by price
-        if 'price' in param_keys:
-            queryset = queryset.filter(price__iexact=self.request.query_params.get('price'))
+        if 'price_finney' in param_keys:
+            queryset = queryset.filter(price_finney__iexact=self.request.query_params.get('price_finney'))
 
         # Filter by num_clones_allowed
         if 'num_clones_allowed' in param_keys:

@@ -1,4 +1,39 @@
-.profile_details .container{
+/* stylelint-disable no-descending-specificity */
+
+@media (min-width: 1200px) {
+  .leaderboard .earning {
+    float: right;
+    top: 2px;
+    right: 2rem;
+    position: relative;
+  }
+}
+
+.tab-projects__item img {
+  width: 50px;
+  height: 50px;
+}
+
+.tag-list .tag-list__item {
+  background: #E8F0FA;
+  padding: 4px;
+  border-radius: 2px;
+  font-size: 12px;
+  color: #6487AE;
+  display: inline-block;
+  margin-bottom: 2px;
+  margin-top: 2px;
+}
+
+.review-comment {
+  background: #E4E6E7;
+  border-radius: 5px;
+  padding: 5px 7px;
+  font-size: 12px;
+  color: #666666;
+}
+
+.mh-150{
   min-height: 150px;
 }
 
@@ -19,6 +54,15 @@
   width: 7.25rem;
   height: 7.25rem;
   border-radius: 50%;
+}
+
+.profile-header {
+  position: relative;
+  min-height: 450px;
+}
+
+.profile-header.basic {
+  min-height: 250px;
 }
 
 .profile-header__handle {
@@ -74,19 +118,17 @@
 .float_avatar_image img {
   height: 186px;
   width: 186px;
-  border: 3px solid #FFFFFF;
-  box-shadow: 0 -2px 4px 0 rgba(0,0,0,0.50);
 }
 
 .avatar_edit {
   text-align: center;
-  background: linear-gradient(to top,rgba(255,255,255,0.6),rgba(255,255,255,0.0));
+  background: #000;
+  opacity: 0.7;
   border-radius: 0% 0% 50% 50% / 0% 0% 100% 100%;
-  color: black;
-  height: 90px;
-  width: 180px;
+  height: 71px;
+  width: 173px;
   position: absolute;
-  top: 93px;
+  top: 113px;
   margin: auto;
   right: 0;
   left: 0;
@@ -95,33 +137,31 @@
 
 .avatar_edit_text {
   position: absolute;
-  top: 50%;
-  color: black;
+  top: 40%;
+  color: #ffffff;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 14px;
   margin: auto;
   width: 100%;
   height: 40px;
 }
 
-.is_my_profile a:hover .profile-header__avatar{
-  border: 3px solid #0fce7c;
+.odd{
+  background-color: #f9f9f9;
 }
 
-.is_my_profile{
+.profile_details .nav-link {
+  padding: 0.5rem;
+}
+
+.is_editable{
   cursor: pointer;
 }
 
-a:hover .avatar_edit {
-  background-color: rgba(255, 255, 255, 0.7);
-  height: 180px;
-  width: 180px;
-  top: 3px;
-  border-radius: 50%;
-}
-
-a:hover .avatar_edit .avatar_edit_text {
-  top: 40%;
+.picky img {
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
 }
 
 .profile-organizations .organization {
@@ -132,7 +172,7 @@ a:hover .avatar_edit .avatar_edit_text {
   min-height: 200px;
 }
 
-.profile-organizations .organization img{
+.profile-organizations .organization img {
   max-height: 4rem;
   max-width: 4rem;
   margin-right: 0.5rem;
@@ -140,10 +180,20 @@ a:hover .avatar_edit .avatar_edit_text {
   border-radius: 50%;
 }
 
+@media (max-width: 1200px) {
+  .profile-header{
+    min-height: 350px;
+  }
+}
+
 @media (max-width: 767.98px) {
 
   .profile-header__main-infos {
     text-align: center;
+  }
+
+  .profile-header{
+    min-height: 200px;
   }
 
   .profile-header__avatar {
@@ -160,6 +210,11 @@ a:hover .avatar_edit .avatar_edit_text {
     float: none;
     margin-right: 0;
   }
+
+  .row.bottom_notification{
+    display: none;
+  }
+
 }
 
 
@@ -185,6 +240,7 @@ a:hover .avatar_edit .avatar_edit_text {
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
+
   .profile-header__stats .card-header {
     padding: 0 0.5rem;
     font-size: 1.2rem;
@@ -249,6 +305,10 @@ a:hover .avatar_edit .avatar_edit_text {
   }
 }
 
+.profile-header__links .chat{
+  padding: 0px 0px 6px 0px;
+}
+
 .profile-header__stats--contributor .card-header::after {
   background: #00eb93;
 }
@@ -274,11 +334,12 @@ a:hover .avatar_edit .avatar_edit_text {
 }
 
 .profile-bounties .avatar {
-  max-width: 3.125rem;
-  max-height: 3.125rem;
+  width: 3.125rem;
+  height: 3.125rem;
   margin-right: auto;
   margin-left: auto;
   border-radius: 100%;
+  min-height: 3.125rem;
 }
 
 .profile-bounties .bounty_row {
@@ -355,6 +416,19 @@ a:hover .avatar_edit .avatar_edit_text {
   transform: scale(1.1);
 }
 
+#kudos_header {
+  position: absolute;
+  top: -95px;
+  right: 0px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  padding: 5px;
+}
+#kudos_header img{
+  box-shadow: none;
+  background: none;
+}
+
 .no-profile-button {
   background-color: #3E00FF;
   color: #FFFFFF;
@@ -363,4 +437,139 @@ a:hover .avatar_edit .avatar_edit_text {
 
 .no-profile-textcolor {
   color: #666666;
+}
+
+.profile-banner {
+  display: flex;
+  top: 0;
+  color: #ffffff;
+  z-index: 1;
+  width: 100vw;
+  cursor: pointer;
+}
+
+.profile-banner-cta {
+  background-color: transparent;
+  padding: 6px 10px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.picky {
+  cursor: pointer;
+}
+
+.picky:active, .picky:focus {
+  border: 2px solid #007bff;
+}
+
+.selected {
+  border: 5px solid #007bff;
+}
+
+nav.navbar.navbar-dark{
+  background-image: url(/static/v2/images/header-bg.png);
+}
+
+#rank_link{
+  font-size: 12px;
+  color: black;
+  text-decoration: underline;
+}
+
+.tribe-members {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 3rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .tribe-members {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .tribe-members {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .tribe-members {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.badge-tribe {
+  position: absolute;
+  top: 33px;
+  left: 60%;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  border: 2px solid white;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  background: #fff;
+  font-size: 14px;
+}
+
+.badge-tribe_leader {
+  background: linear-gradient(180deg,rgb(222,165,91), rgb(243,203,82));
+}
+
+.ql-picker-label svg {
+  vertical-align: inherit;
+}
+
+.description-tribes.ql-container {
+  height: auto;
+}
+
+.description-tribes,
+.description-tribes.ql-container {
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.description-tribes p {
+  margin: 0;
+  padding: 0;
+}
+
+.description-tribes img {
+  max-width: 100%;
+}
+
+.description-tribes h1 {
+  font-size: 2em;
+}
+
+.description-tribes h2 {
+  font-size: 1.5em;
+}
+
+.inactive .ql-editor {
+  padding:0;
+  line-height:inherit;
+}
+
+.inactive .ql-toolbar {
+  display:none;
+}
+
+.inactive .ql-container.ql-snow {
+  border:none;
+}
+
+.ql-align-center {
+  text-align: center;
+}
+
+.ql-align-right {
+  text-align: right;
+}
+
+.ql-align-justify {
+  text-align: justify;
 }

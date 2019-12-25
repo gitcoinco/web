@@ -23,13 +23,40 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    BulkTransferCoupon, BulkTransferRedemption, Contract, KudosTransfer, Token, TransferEnabledFor, Wallet,
+    BulkTransferCoupon, BulkTransferRedemption, Contract, KudosTransfer, Token, TokenRequest, TransferEnabledFor,
+    Wallet,
 )
 
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+
+class TokenRequestAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['profile']
+    readonly_fields = ['preview']
+
+    def response_change(self, request, obj):
+        if "_mint_kudos" in request.POST:
+            from kudos.tasks import mint_token_request
+            try:
+                mint_token_request.delay(obj.id)
+                self.message_user(request, f"Mint/sync submitted to chain")
+            except Exception as e:
+                self.message_user(request, str(e))
+
+        if "_change_owner" in request.POST:
+            obj.to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'
+            obj.save()
+            self.message_user(request, f"Changed owner to gitcoin")
+        return super().response_change(request, obj)
+
+    def preview(self, instance):
+        html = f"<img style='max-width: 400px;' src='{instance.artwork_url}'>"
+        return mark_safe(html)
 
 
 class TransferEnabledForAdmin(admin.ModelAdmin):
@@ -45,7 +72,7 @@ class BulkTransferCouponAdmin(admin.ModelAdmin):
     readonly_fields = ['claim']
 
     def claim(self, instance):
-        url = f"/kudos/redeem/{instance.secret}"
+        url = instance.url
         return format_html(f"<a href={url}>{url}</a>")
 
 
@@ -94,6 +121,7 @@ admin.site.register(TransferEnabledFor, TransferEnabledForAdmin)
 admin.site.register(Token, TokenAdmin)
 admin.site.register(KudosTransfer, TransferAdmin)
 admin.site.register(Wallet, GeneralAdmin)
+admin.site.register(TokenRequest, TokenRequestAdmin)
 admin.site.register(BulkTransferCoupon, BulkTransferCouponAdmin)
 admin.site.register(BulkTransferRedemption, BulkTransferRedemptionAdmin)
 admin.site.register(Contract, GeneralAdmin)

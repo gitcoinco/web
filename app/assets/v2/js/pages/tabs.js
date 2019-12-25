@@ -17,6 +17,9 @@ function setupTabs(name) {
     }
     $(sections).find('.tab-section').removeClass('active');
     evt.target.className += ' active';
+    if (section == null) {
+      return;
+    }
     section.className += ' active';
     last = evt.target;
   }

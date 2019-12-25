@@ -66,7 +66,7 @@ new truncateHash();
         new getaddress(elem[i], currentWallet);
       }
     } catch (ignore) {
-      console.log('%c error: web3 not defined', 'color: red');
+      console.log('%c error: web3 not defined. ensure metamask is installed & unlocked', 'color: red');
     }
   };
 }());
@@ -78,5 +78,5 @@ try {
     new metamaskAddress();
   });
 } catch (ignore) {
-  console.log('%c error: web3 not defined', 'color: red');
+  console.log('%c error: web3 not defined. ensure metamask is installed & unlocked', 'color: red');
 }

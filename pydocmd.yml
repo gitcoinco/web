@@ -1,6 +1,6 @@
 site_name: "Gitcoin Developer Documentation"
 repo_name: 'gitcoinco/web'
-repo_url: 'https://github.com/gitcoinco/web'
+edit_uri: ''
 
 # This tells pydocmd which pages to generate from which Python modules,
 # functions and classes. At the first level is the page name, below that
@@ -225,10 +225,12 @@ pages:
     - Third Party Integration Setup: mk_third_party_integrations.md << docs/THIRD_PARTY_SETUP.md
     - Advanced: mk_advanced.md << docs/ADVANCED.md
     - Widget Setup: mk_widget.md << docs/WIDGET.md
+    - GitcoinBot: mk_gitcoinbot.md << app/gitcoinbot/README.md
     - Environment Variables: mk_envvars.md << docs/ENVIRONMENT_VARIABLES.md
     - Rest API: mk_rest_api.md << docs/API.md
     - Changelog: mk_changelog.md << CHANGELOG.md
-    - Contributors Guide: mk_contributors.md << docs/CONTRIBUTING.md
+    - Contributor's Guide: mk_contributors.md << docs/CONTRIBUTING.md
+    - Security Bounty Program: mk_securitybounty.md << docs/SECURITYBOUNTY.md
     - StyleGuide: mk_styleguide.md << docs/STYLEGUIDE.md
   - Code:
     - App:

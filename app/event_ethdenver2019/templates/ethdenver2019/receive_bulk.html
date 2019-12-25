@@ -50,7 +50,7 @@
 
   </div>
     <h1 class="h2 mt-5">
-      <img style="max-height: 50px; max-width: 50px;" src="/dynamic/avatar/{{coupon.sender_profile.handle}}">
+      <img style="max-height: 50px; max-width: 50px;" src="/dynamic/avatar/{{coupon.sender_profile.handle}}" alt="Avatar">
       <a style='color:black; text-decoration: underline;' href="{{coupon.sender_profile.url}}">@{{coupon.sender_profile.handle}}</a>
 
       {% trans "sent a" %}</h1>
@@ -62,13 +62,13 @@
         <img src="{% static coupon.token.image %}" style="width: 100%;" alt="{{ coupon.token.name }}" >
       </div>
 
-      
+
       <br>
       <span id="kudosComment" class="d-block">
         <h3><a style='color:black; text-decoration: underline;' href="{{coupon.token.url}}"><span id="kudosName" data-kudosname="{{ coupon.token.name }}" >{{ coupon.token.humanized_name }} </span>{% trans "Kudos" %}</a></h3>
         {% if coupon.comments_to_put_in_kudos_transfer %}
-        with an attached message, just for you: 
-        <p style="  
+        with an attached message, just for you:
+        <p style="
     width: 80%;
     height: 100px;
     background-color: #D0DEEB;
@@ -143,11 +143,11 @@
     }
   }
 </style>
-<script src="{% static 'v2/js/tweenlite.js' %}"></script>
+<script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
 <link rel="stylesheet" href="{% static 'v2/css/jquery-ui.css' %}" />
 <link rel="stylesheet" href="{% static 'v2/css/kudos/styles.css' %}" />
 {% include 'shared/footer_scripts.html' with slim=1 %}
-<script src="{% static 'v2/js/popper.min.js' %}"></script>
+<script src="{% static 'v2/js/lib/popper.min.js' %}"></script>
 <script src="{% static 'v2/js/pages/kudos_details.js' %}"></script>
 <script>
   document.network = '{{coupon.token.contract.network}}';
@@ -157,8 +157,8 @@
     {% endif %}
     start_kudos_levitate();
     document.suppress_kudos_levitate_hover = true;
-    
-    var disableSubmit = function(){ 
+
+    var disableSubmit = function(){
       $(".text-center #receive").attr('disabled', 'disabled').css('background-color', "#aaaaaa");
     }
 

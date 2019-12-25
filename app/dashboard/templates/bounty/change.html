@@ -32,20 +32,39 @@
     <div class="row">
       <div class="col-sm-12 col-lg-12">
         <div id="form_container">
-          <div class="row d-flex justify-content-center my-5">
-            <div id="primary_form" class="col-lg-7 col-sm-12">
-              <h1 class="text-center title">{% trans "Change Bounty Details" %}</h1>
+          <div class="row justify-content-center">
+            <div id="primary_form" class="col-lg-8 col-sm-12 my-5">
               <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
+                <h1 class="text-center title">{% trans "Change Bounty Details" %}</h1>
+
                 <div id="details-section" class="pt-2">
                   {% include 'shared/issue_details.html' %}
                 </div>
-                <hr class="mt-5">
-                <div class="pt-4">
+
+                <div class="mt-4">
+                  {% include 'shared/bounty_details.html' %}
+                </div>
+
+                <div class="mt-4">
+                  {% include 'shared/bounty_categories.html' %}
+                </div>
+
+                <div class="mt-4">
+                  {% include 'shared/bounty_keywords.html' %}
+                </div>
+
+                <div class="mt-4">
+                  {% include 'shared/reserved.html' %}
+                </div>
+
+                <div class="m-4 pt-4">
                   {% include 'shared/featured.html' %}
                 </div>
-                <div class="form__footer pb-5">
-                  <button class="button button--primary btn-block js-submit" type="submit">{% trans 'Update Issue Details' %}</button>
+
+                <div class="row justify-content-center p-3">
+                  <button class="button button--primary btn-lg font-weight-semibold js-submit mb-3 btn-lg-padding" type="submit">{% trans 'Update Issue Details' %}</button>
                 </div>
+
               </form>
             </div>
           </div>
@@ -55,16 +74,19 @@
   </div>
   {% include 'shared/bottom_notification.html' %}
   {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/footer_scripts_lite.html' %}
   {% include 'shared/footer.html' %}
-  {% include 'shared/messages.html' %}
+
   {% include 'shared/current_profile.html' %}
 </body>
-<script type="text/javascript">
+<script>
   document.pk = {{ pk }};
   document.result = {{ result|safe }};
 </script>
+<script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/amounts.js" %}"></script>
 <script src="{% static "v2/js/user-search.js" %}"></script>
+<script src="{% static "v2/js/lib/purify.min.js" %}"></script>
 <script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
 </html>

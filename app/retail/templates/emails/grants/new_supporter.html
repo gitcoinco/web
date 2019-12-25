@@ -63,7 +63,11 @@
   </a>
   <p>{% trans "has begun contributing" %}</p>
   <p style="padding-top:0;margin-top:.5rem">
-    <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}</strong> {% trans "every" %} <strong>{{ subscription.frequency }} {{ subscription.frequency_unit }}</strong>
+    <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} </strong>
+      {% if subscription.num_tx_approved > 1 %}
+        {% trans "every" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
+      {% endif %}
+    <strong> {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}</strong>
   </p>
 
   <p>{% trans "You can see the transaction history for " %}{{ grant.title }}

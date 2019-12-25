@@ -1,9 +1,8 @@
 User-agent: *{% for profile in hidden_profiles %}
 Disallow: profile/{{ profile.handle }}*
 {% endfor %}
-
-User-agent: Twitterbot
-Disallow:
+Disallow: dynamic/avatar/*
+Disallow: login/github/*
 
 User-agent: Yandex
 Disallow: /

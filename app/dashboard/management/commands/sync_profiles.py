@@ -56,6 +56,7 @@ class Command(BaseCommand):
         # setup
         handles = set([b.org_name for b in Bounty.objects.current()])
         for handle in handles:
+            handle = handle.lower()
             print(handle)
             if is_blocked(handle)or is_deleted_account(handle):
                 print('not syncing, handle is blocked')

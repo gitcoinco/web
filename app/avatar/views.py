@@ -46,8 +46,8 @@ def avatar(request):
     payload = {
         'background_color': f"#{request.GET.get('background', '781623')}",
         'icon_size': (
-            int(request.GET.get('icon_width', BaseAvatar.ICON_SIZE[0])),
-            int(request.GET.get('icon_height', BaseAvatar.ICON_SIZE[1]))
+            int(request.GET.get('icon_width',
+                                BaseAvatar.ICON_SIZE[0])), int(request.GET.get('icon_height', BaseAvatar.ICON_SIZE[1]))
         ),
         'avatar_size': request.GET.get('avatar_size', None),
         'skin_tone': skin_tone,

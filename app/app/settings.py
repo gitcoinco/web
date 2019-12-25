@@ -31,6 +31,7 @@ from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
 import warnings
+
 warnings.filterwarnings("ignore", category=UserWarning, module='psycopg2')
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
@@ -38,11 +39,13 @@ env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
 env.read_env(str(root.path('app/.env')))  # reading .env file
 
 DEBUG = env.bool('DEBUG', default=True)
+QUESTS_LIVE = True
 ENV = env('ENV', default='local')
 DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test'])
 IS_DEBUG_ENV = ENV in DEBUG_ENVS
 HOSTNAME = env('HOSTNAME', default=socket.gethostname())
 BASE_URL = env('BASE_URL', default='http://localhost:8000/')
+OVERRIDE_NETWORK = env('OVERRIDE_NETWORK', default=None)
 SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
 ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
 BASE_DIR = root()
@@ -62,6 +65,8 @@ ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
+    'taskapp.celery.CeleryConfig',
+    'django_celery_beat',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -91,6 +96,7 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
+    'quests',
     'enssubdomain',
     'faucet',
     'tdi',
@@ -110,24 +116,11 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'bounty_requests',
     'perftools',
-    # wagtail
-    'taggit',
-    'modelcluster',
-    'wagtail.contrib.forms',
-    'wagtail.contrib.redirects',
-    'wagtail.embeds',
-    'wagtail.sites',
-    'wagtail.users',
-    'wagtail.snippets',
-    'wagtail.documents',
-    'wagtail.images',
-    'wagtail.search',
-    'wagtail.admin',
-    'wagtail.core',
-    'cms',
     'revenue',
     'event_ethdenver2019',
     'inbox',
+    'feeswapper',
+    'oauth2_provider'
 ]
 
 MIDDLEWARE = [
@@ -135,30 +128,32 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'app.middleware.drop_accept_langauge',
+    # 'app.middleware.bleach_requests',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
-    'wagtail.core.middleware.SiteMiddleware',
-    'wagtail.contrib.redirects.middleware.RedirectMiddleware'
 ]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.github.GithubOAuth2',  # for Github authentication
+    # 'social_core.backends.github.GithubOAuth2',  # for Github authentication
+    'app.utils.CustomGithubOAuth2',
+    'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates'],
+    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -192,8 +187,8 @@ AUTH_PASSWORD_VALIDATORS = [{
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', ),
-    'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle', ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle',),
     'DEFAULT_THROTTLE_RATES': {
         'anon': '1000/day',
     },
@@ -213,7 +208,7 @@ USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
 TIME_ZONE = env.str('TIME_ZONE', default='UTC')
 
-LOCALE_PATHS = ('locale', )
+LOCALE_PATHS = ('locale',)
 
 LANGUAGES = [
     ('en', gettext_noop('English')),
@@ -265,7 +260,6 @@ if SENTRY_DSN:
     }
     if RELEASE:
         RAVEN_CONFIG['release'] = RELEASE
-
 
 LOGGING = {
     'version': 1,
@@ -325,16 +319,14 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
         'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
     }
     LOGGING['handlers']['watchtower'] = {
-            'level': AWS_LOG_LEVEL,
-            'class': 'watchtower.django.DjangoCloudWatchLogHandler',
-            'boto3_session': boto3_session,
-            'log_group': AWS_LOG_GROUP,
-            'stream_name': AWS_LOG_STREAM,
-            'filters': ['host_filter'],
-            'formatter': 'cloudwatch',
+        'level': AWS_LOG_LEVEL,
+        'class': 'watchtower.django.DjangoCloudWatchLogHandler',
+        'boto3_session': boto3_session,
+        'log_group': AWS_LOG_GROUP,
+        'stream_name': AWS_LOG_STREAM,
+        'filters': ['host_filter'],
+        'formatter': 'cloudwatch',
     }
-    LOGGING['root']['handlers'].append('watchtower')
-    LOGGING['loggers']['django.db.backends']['handlers'].append('watchtower')
     LOGGING['loggers']['django.db.backends']['level'] = AWS_LOG_LEVEL
 
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
@@ -359,7 +351,7 @@ GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
+STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/',))
 STATIC_ROOT = root('static')
 STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
 MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
@@ -384,7 +376,7 @@ else:
 COMPRESS_ROOT = STATIC_ROOT
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 
-THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor', )
+THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor',)
 
 THUMBNAIL_ALIASES = {
     '': {
@@ -402,6 +394,7 @@ THUMBNAIL_ALIASES = {
 
 CACHEOPS_DEGRADE_ON_FAILURE = env.bool('CACHEOPS_DEGRADE_ON_FAILURE', default=True)
 CACHEOPS_REDIS = env.str('CACHEOPS_REDIS', default='redis://redis:6379/0')
+
 CACHEOPS_DEFAULTS = {
     'timeout': 60 * 60
 }
@@ -465,6 +458,16 @@ CACHEOPS = {
     },
 }
 
+
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-broker_url
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default=CACHEOPS_REDIS)
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-accept_content
+CELERY_ACCEPT_CONTENT = ['json']
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-task_serializer
+CELERY_TASK_SERIALIZER = 'json'
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_serializer
+CELERY_RESULT_SERIALIZER = 'json'
+
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
 COLLECTFAST_CACHE = env('COLLECTFAST_CACHE', default='collectfast')
@@ -522,6 +525,9 @@ IMAP_PASSWORD = env('IMAP_PASSWORD', default='<password>')
 MAILCHIMP_USER = env.str('MAILCHIMP_USER', default='')
 MAILCHIMP_API_KEY = env.str('MAILCHIMP_API_KEY', default='')
 MAILCHIMP_LIST_ID = env.str('MAILCHIMP_LIST_ID', default='')
+MAILCHIMP_LIST_ID_HUNTERS = env.str('MAILCHIMP_LIST_ID_HUNTERS', default='')
+MAILCHIMP_LIST_ID_FUNDERS = env.str('MAILCHIMP_LIST_ID_FUNDERS', default='')
+MAILCHIMP_LIST_ID_HACKERS = env.str('MAILCHIMP_LIST_ID_HACKERS', default='')
 
 # Github
 GITHUB_API_BASE_URL = env('GITHUB_API_BASE_URL', default='https://api.github.com')
@@ -534,6 +540,9 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
+# Chat
+CHAT_URL = env('CHAT_DRIVER_USER', default='')  # location of where mattermost is hosted
+
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
@@ -543,7 +552,14 @@ SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
-SOCIAL_AUTH_GITHUB_SCOPE = ['read:public_repo', 'read:user', 'user:email', ]
+SOCIAL_AUTH_GITHUB_SCOPE = ['read:user', 'user:email']
+SOCIAL_AUTH_SANITIZE_REDIRECTS = True
+
+#custom scopes
+SOCIAL_AUTH_GH_CUSTOM_KEY = GITHUB_CLIENT_ID
+SOCIAL_AUTH_GH_CUSTOM_SECRET = GITHUB_CLIENT_SECRET
+SOCIAL_AUTH_GH_CUSTOM_SCOPE = ['read:org', 'public_repo']
+
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',
@@ -594,6 +610,15 @@ KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
 # Grants
 GRANTS_OWNER_ACCOUNT = env('GRANTS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
 GRANTS_PRIVATE_KEY = env('GRANTS_PRIVATE_KEY', default='')
+GRANTS_SPLITTER_ROPSTEN = env('GRANTS_SPLITTER_ROPSTEN', default='0xe2fd6dfe7f371e884e782d46f043552421b3a9d9')
+GRANTS_SPLITTER_MAINNET = env('GRANTS_SPLITTER_MAINNET', default='0xdf869FAD6dB91f437B59F1EdEFab319493D4C4cE')
+GRANTS_NETWORK = env('GRANTS_NETWORK', default='mainnet')
+GITCOIN_DONATION_ADDRESS = env('GITCOIN_DONATION_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+SPLITTER_CONTRACT_ADDRESS = ''
+if GRANTS_NETWORK == 'mainnet':
+    SPLITTER_CONTRACT_ADDRESS = GRANTS_SPLITTER_MAINNET
+else:
+    SPLITTER_CONTRACT_ADDRESS = GRANTS_SPLITTER_ROPSTEN
 
 METATX_GAS_PRICE_THRESHOLD = float(env('METATX_GAS_PRICE_THRESHOLD', default='10000.0'))
 
@@ -643,8 +668,8 @@ if not AWS_S3_OBJECT_PARAMETERS:
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': f'max-age={AWS_S3_CACHE_MAX_AGE}', }
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', )
-CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN, )
+CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', 'github.com',)
+CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN,)
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
@@ -676,7 +701,7 @@ IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
 IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
-STABLE_COINS = ['DAI', 'USDT', 'TUSD']
+STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD']
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
@@ -703,5 +728,16 @@ if ENABLE_SILK:
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
 
-TAGGIT_CASE_INSENSITIVE = env.bool('TAGGIT_CASE_INSENSITIVE', default=True)
-WAGTAIL_SITE_NAME = 'Gitcoin'
+# Sending an email when a bounty is funded below a threshold
+LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)
+
+# Gitcoin Bounty Funding Fee settings
+FEE_ADDRESS = env('FEE_ADDRESS', default='')
+FEE_ADDRESS_PRIVATE_KEY = env('FEE_ADDRESS_PRIVATE_KEY', default='')
+SLIPPAGE = env.float('SLIPPAGE', default=0.05)
+UNISWAP_LIQUIDITY_FEE = env.float('UNISWAP_LIQUDITY_FEE', default=0.003)
+UNISWAP_TRADE_DEADLINE = env.int('UNISWAP_TRADE_DEADLINE', default=300)
+
+RE_MARKET_LIMIT = env.int('RE_MARKET_LIMIT', default=2)
+MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=60)
+

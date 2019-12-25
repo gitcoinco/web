@@ -37,4 +37,4 @@ class Command(BaseCommand):
             ).all()
             print('day {} got {} tips'.format(day, tips.count()))
             for t in tips:
-                tip_email(t, t.emails, False)
+                tip_email(t, [t.primary_email], False)

@@ -199,11 +199,13 @@ function purchaseOption(option, value, target) {
     var cost_wei = web3.toWei(cost_eth);
 
     to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // TODO: make dynamic
+    indicateMetamaskPopup();
     web3.eth.sendTransaction({
       'from': web3.eth.coinbase,
       'to': to_address,
       'value': cost_wei
     }, function(error, result) {
+      indicateMetamaskPopup(true);
       if (error) {
         _alert('There was an error.', 'error');
         return;

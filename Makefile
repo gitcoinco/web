@@ -15,7 +15,7 @@ autotranslate: ## Automatically translate all untranslated entries for all LOCAL
 	@echo "Starting makemessages..."
 	@docker-compose exec web python3 app/manage.py makemessages -a -d django -i node_modules -i static -i ipfs
 	@echo "Starting JS makemessages..."
-	@docker-compose exec web python3 app/manage.py makemessages -a -d djangojs -i node_modules -i static -i assets/v2/js/ipfs-api.js
+	@docker-compose exec web python3 app/manage.py makemessages -a -d djangojs -i node_modules -i static -i assets/v2/js/lib/ipfs-api.js
 	@echo "Starting autotranslation of messages..."
 	@docker-compose exec web python3 app/manage.py translate_messages -u
 	# TODO: Add check for messed up python var strings.
@@ -71,11 +71,14 @@ load_initial_data: ## Load initial development fixtures.
 logs: ## Print and actively tail the docker compose logs.
 	@docker-compose logs -f
 
+cypress: ## Open cypress testing UI
+	@npx cypress open
+
 pytest: ## Run pytest (Backend)
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum
+	@docker-compose exec -e PYTHONPATH=/code/app/ -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum
 
 pytest-pdb: ## Run pytest with pdb support (Backend)
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
+	@docker-compose exec -e PYTHONPATH=/code/app/ -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
 
 stylelint: ## Run stylelint against the project directory. Requires node, npm, and project dependencies.
 	@npm run stylelint

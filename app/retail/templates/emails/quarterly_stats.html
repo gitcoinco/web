@@ -202,7 +202,7 @@
     	{% if user_fulfilled_bounties %}
 	<h2>{% trans "You've Been BUIDLing" %}</h2>
 	<h4>{% trans "An overview of your BUIDL-stats from the last 3 months." %}</h4>
-        <div class="centered-contents stat-box row">
+        <div class="text-center stat-box row">
             <div class="stat-img total-transaction col-sm-12">
 		    <p class="content">
 		        {% blocktrans with total_earned_usd=user_total_earned_usd|intcomma %} {{ total_earned_usd }} USD {% endblocktrans %}
@@ -216,7 +216,7 @@
 		    </p>
             </div>
         </div>
-        <div class="centered-contents stat-box row">
+        <div class="text-center stat-box row">
             <div class="stat-img full-bordered-circle percent-content col-sm-12">
 		    <p class="content">
 		    	{% blocktrans with bounty_completion_percentage=user_bounty_completion_percentage %}
@@ -233,7 +233,7 @@
 		    </p>
             </div>
         </div>
-        <div class="centered-contents stat-box row">
+        <div class="text-center stat-box row">
             <div class="stat-img">
                   {% for language in user_languages %}
                       {% if forloop.counter < 10 and language %}
@@ -268,7 +268,7 @@
 	<h4>{% trans "An overview of your OSS project's stats from the last 3 months." %}</h4>
 
         {% if user_funded_fulfilled_percentage > 60 %}
-        <div class="centered-contents stat-box row">
+        <div class="text-center stat-box row">
             <div class="stat-img full-bordered-circle percent-content col-sm-12">
 		    <p class="content">{{ user_funded_fulfilled_percentage }} {% trans "%" %}</p>
             </div>
@@ -279,7 +279,7 @@
             </div>
         </div>
         {% endif %}
-        <div class="centered-contents stat-box row">
+        <div class="text-center stat-box row">
 	   <div class="stat-img total-transaction">
 		   <p class="content">
 		   	{% blocktrans count funded_bounty_developers=user_funded_bounty_developers|length %}
@@ -306,7 +306,7 @@
 	    </div>
         </div>
         {% if user_total_funded_hours %}
-        <div class="centered-contents stat-box row">
+        <div class="text-center stat-box row">
             <div class="stat-img">
 		    <p class="content bounty-img">
 		    	{% blocktrans count total_funded_hours=user_total_funded_hours %}
@@ -353,7 +353,7 @@
 
     <h2>Platform-wide Stats</h2>
     <h4>Activity happening across the Gitcoin network</h4>
-    <div class="centered-contents stat-box">
+    <div class="text-center stat-box">
         <div class="stat-img full-bordered-circle percent-content bounty-completion-circle">
             <p class="content">{{ bounties_completion_percent }} %</p>
         </div>
@@ -361,7 +361,7 @@
             <p>Over the past 3 months, {{ bounties_completion_percent }}% of the {{ total_funded_bounties }} started bounties on the Gitcoin network were completed.</p>
         </div>
     </div>
-    <div class="centered-contents stat-box">
+    <div class="text-center stat-box">
         <div class="stat-img">
             <p class="content bounty-img">{{ num_completed_bounties | intcomma }} bounties</p>
             <p class="content bounty-fund-img">{{ completed_bounties_fund | intcomma }} USD</p>
@@ -370,7 +370,7 @@
             <p>A total of {{ num_completed_bounties | intcomma }} bounties were funded for an average of ${{ avg_fund_per_bounty }} per bounty, for a total of ${{ completed_bounties_fund | intcomma }} USD.</p>
         </div>
     </div>
-    <div class="centered-contents stat-box">
+    <div class="text-center stat-box">
         <div class="stat-img">
             {% for hunter in hunters %}
             <img style="border-radius: 50%; width: 35%;" src="{% url 'org_avatar' hunter %}" />
@@ -381,7 +381,7 @@
             {% for hunter in hunters %}{% if forloop.counter == no_of_hunters %} &amp; {% elif forloop.first %}{% else %}, {% endif %}<a href="https://gitcoin.co/profile/{{ hunter }}">@{{ hunter }}</a>{% endfor %}</p>
         </div>
     </div>
-    <div class="centered-contents stat-box">
+    <div class="text-center stat-box">
         <div class="stat-img total-transaction">
             <p class="content">{{ total_transaction_in_usd |intcomma }} USD</p>
         </div>
@@ -390,7 +390,7 @@
         </div>
     </div>
     {% if largest_bounty_value %}
-        <div class="centered-contents stat-box">
+        <div class="text-center stat-box">
             <div class="stat-img">
                 <img style="width: 100%; border-radius: 50%;" src="{% url 'org_avatar' largest_bounty.bounty_owner_github_username %}" />
             </div>

@@ -50,6 +50,8 @@ class MarketingEmailUtilsTest(TestCase):
 
     def setUp(self):
         """Perform setup for the testcase."""
+        test_es = EmailSubscriber.objects.all().delete()
+
         EmailSubscriber.objects.create(
             email='emailSubscriber1@gitcoin.co',
             source='mysource',

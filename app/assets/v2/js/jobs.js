@@ -53,7 +53,11 @@ const save_job_status = function() {
   };
 
   $.ajax(profile).done(function(response) {
-    _alert(response.message, 'info');
+    if (response.status == 200) {
+      _alert(response.message, 'info');
+    } else {
+      _alert(response.message, 'error');
+    }
   }).fail(function(error) {
     _alert(error, 'error');
   });

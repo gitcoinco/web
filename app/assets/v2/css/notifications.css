@@ -3,6 +3,9 @@
   --badge-bg: #D6FBEB;
   --badge-text: #00A55E;
   --link-color: #3E00FF;
+  --badge-blue-bg: #E7F0FA;
+  --badge-blue-text: #6587AE;
+
 }
 
 
@@ -49,6 +52,11 @@
 .badge--greenlight {
   background-color: var(--badge-bg);
   color: var(--badge-text);
+}
+
+.badge--bluelight {
+  background-color: var(--badge-blue-bg);
+  color: var(--badge-blue-text);
 }
 
 .notifications__box {

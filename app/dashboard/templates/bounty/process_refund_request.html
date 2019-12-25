@@ -1,0 +1,164 @@
+{% extends "admin/base_site.html" %}
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<style>
+
+  body {
+    font-family: 'Muli';
+  }
+
+  #content {
+    margin: auto;
+  }
+
+  h6 {
+    font-weight: bolder;
+    font-size: 0.95rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-weight: 600;
+  }
+
+  .section {
+    margin-bottom: 2rem;
+  }
+
+  textarea {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 1rem;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .inline {
+    display: inline;
+  }
+
+  form p {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+
+  .mb {
+    margin-bottom: .75rem;
+  }
+
+  .mb-0 {
+    margin-bottom: 0;
+  }
+</style>
+
+<div id="admin_refund_form" class="section">
+  <h1 class="text-center">{% trans "Process Refund Fee Request" %} {{obj.pk}}</h1>
+
+  <div class="section text-center">
+    <p id="no_metamask_error" style="display: none;">{% trans "MetaMask Extension Not Detected" %}</p>
+    <p id="unlock_metamask_error" style="display: none;">{% trans "Please Unlock MetaMask To Continue" %}</p>
+    <p id="zero_balance_error" style="display: none;">{% trans "MetaMask Active Account Is Empty" %}</p>
+  </div>
+
+  <div class="section">
+    <div class="mb">
+      <h6 class="inline">{% trans "Github Profile" %}:</h6>
+      <a href="https://github.com/{{ obj.profile.username }}"
+        target="_blank" rel="noopener noreferrer">@{{ obj.profile.username }}
+      </a>
+    </div>
+    <div class="mb">
+      <h6 class="inline">{% trans "Bounty" %}:</h6>
+      <a href="https://github.com/{{ obj.bounty.get_absolute_url }}"
+        target="_blank" rel="noopener noreferrer">{{ obj.bounty.get_absolute_url }}
+      </a>
+    </div>
+    <div class="mb">
+      <h6 class="inline">{% trans "Fee" %}:</h6>
+      <p id="amount" class="inline" >{{ obj.fee_amount }}</p>
+    </div>
+    <div class="mb">
+      <h6 class="inline">{% trans "Token" %}:</h6>
+      <p id="token" class="inline" >{{ obj.token }}</p>
+    </div>
+    <div class="mb">
+      <h6 class="inline">{% trans "Address" %}:</h6>
+      <p id="destination-addr" class="inline" >{{ obj.address }}</p>
+    </div>
+    <div class="mb">
+      <h6 class="mb-0">{% trans "Reason for Refund Request" %}:</h6>
+      <p>{% if obj.comment %} {{ obj.comment }} {% else %} - {% endif %}</p>
+    </div>
+  </div>
+
+  <div class="row text-center loading loading_img" id="loadingImg"  style="display:none;">
+    <img src='{% static "v2/images/loading_v2.gif" %}' style="width: 6rem;" alt="loading...">
+  </div>
+  <div id="errResponse" class="text-center" style="display:none;">
+    <h6>{% trans "Unable to refund bounty fee. Refresh and try again." %}</h6>
+  </div>
+  <div id="sucessResponse" class="text-center" style="display:none;">
+    <h6>{% trans "Refund successful. You may close this window." %}</h6>
+    <p><a href="/_administrationdashboard/refundfeerequest/">Back to Admin</a></p>
+  </div>
+  <form method=POST id="approve_refund_form" class="text-center">
+    {% csrf_token %}
+    <input type="submit" name="approveRefund" id="approveRefund" value="Approve Refund Request">
+    <p>{% blocktrans %}By approving this refund request, you will transfer {{ obj.fee }} {{ obj.token }} to
+    {{ obj.github_username }} with a wallet address of {{ obj.address }} for bounty {{obj.bounty}} {% endblocktrans %}</p>
+  </form>
+  {{pk}}
+</div>
+
+<hr>
+<div>
+  <h6>Reject Refund Request:</h6>
+  <form method=POST id="reject_refund_form" class="text-center">
+    {% csrf_token %}
+    <textarea id="reject_comments" name="reject_comments" required placeholder="Leave a message on why the request is being rejected"></textarea>
+    <input type="submit" name="rejectRefund" id="rejectRefund" value="Reject Refund Request">
+  </form>
+</div>
+
+{% endblock %}
+{% block extrahead %}{{ block.super }}
+<script>
+  document.gas_price = {{recommend_gas_price}};
+  function gettext(str){return str};
+</script>
+{% include 'shared/footer_scripts.html' %}
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="/dynamic/js/tokens_dynamic.js"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/metamask-approval.js" %}"></script>
+<script src="{% static "v2/js/pages/process_refund_request.js" %}"></script>
+{% endblock %}

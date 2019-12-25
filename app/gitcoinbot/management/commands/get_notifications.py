@@ -44,9 +44,14 @@ class Command(BaseCommand):
                         url = url.replace('/repos', '')
                         url = url.replace('//api.github', '//github')
                         latest_comment_url = notification.subject.latest_comment_url
+                        if latest_comment_url is None:
+                            print("no latest comment url")
+                            continue
                         _org_name = org_name(url)
                         _repo_name = repo_name(url)
                         _issue_number = issue_number(url)
+                        if not latest_comment_url:
+                            continue
                         _comment_id = latest_comment_url.split('/')[-1]
                         comment = get_issue_comments(_org_name, _repo_name, _issue_number, _comment_id)
                         does_mention_gitcoinbot = settings.GITHUB_API_USER in comment.get('body', '')
@@ -70,5 +75,8 @@ class Command(BaseCommand):
                         logging.exception(e)
                         print(e)
         except RateLimitExceededException as e:
+            logging.debug(e)
+            print(e)
+        except AttributeError as e:
             logging.debug(e)
             print(e)

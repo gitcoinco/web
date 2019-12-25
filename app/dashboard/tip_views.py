@@ -60,8 +60,9 @@ def send_tip(request):
     return TemplateResponse(request, 'onepager/send1.html', params)
 
 
-def record_tip_activity(tip, github_handle, event_name):
+def record_tip_activity(tip, github_handle, event_name, override_created=None):
     kwargs = {
+        'created_on': timezone.now() if not override_created else override_created,
         'activity_type': event_name,
         'tip': tip,
         'metadata': {
@@ -89,7 +90,7 @@ def record_tip_activity(tip, github_handle, event_name):
     try:
         Activity.objects.create(**kwargs)
     except Exception as e:
-        logger.error('error in record_tip_activity: %s - %s - %s - %s', e, event_name, tip, github_handle)
+        logger.debug('error in record_tip_activity: %s - %s - %s - %s', e, event_name, tip, github_handle)
 
 
 @csrf_exempt
@@ -214,7 +215,8 @@ def send_tip_4(request):
     # notifications
     maybe_market_tip_to_github(tip)
     maybe_market_tip_to_slack(tip, 'New tip')
-    maybe_market_tip_to_email(tip, tip.emails)
+    if tip.primary_email:
+        maybe_market_tip_to_email(tip, [tip.primary_email])
     record_user_action(tip.from_username, 'send_tip', tip)
     record_tip_activity(tip, tip.from_username, 'new_tip' if tip.username else 'new_crowdfund')
 
@@ -365,9 +367,25 @@ def send_tip_2(request):
         TemplateResponse: Render the submission form.
 
     """
+
+    username = request.GET.get('username', None)
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
+
+    user = {}
+    if username:
+        profiles = Profile.objects.filter(handle__iexact=username)
+
+        if profiles.exists():
+            profile = profiles.first()
+            user['id'] = profile.id
+            user['text'] = profile.handle
+
+            if profile.avatar_baseavatar_related.exists():
+                user['avatar_id'] = profile.avatar_baseavatar_related.first().pk
+                user['avatar_url'] = profile.avatar_baseavatar_related.first().avatar_url
+                user['preferred_payout_address'] = profile.preferred_payout_address
 
     params = {
         'issueURL': request.GET.get('source'),
@@ -378,4 +396,8 @@ def send_tip_2(request):
         'title': 'Send Tip | Gitcoin',
         'card_desc': 'Send a tip to any github user at the click of a button.',
     }
+
+    if user:
+        params['user_json'] = user
+
     return TemplateResponse(request, 'onepager/send2.html', params)

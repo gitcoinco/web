@@ -1,0 +1,7 @@
+
+hi {{to_email}},
+
+{{msg}}
+
+@{{from_profile.handle}}
+{{from_profile.email}}

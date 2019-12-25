@@ -20,11 +20,11 @@
     {% include 'shared/bounty_waiting_state.html' with can_close=False %}
     <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none; text-align: center">
       {% include 'shared/rain.html' with class="color" %}
-      <div class="quote-container">
+      <div class="quote-container font-weight-semibold my-5 mx-auto">
         <img src="{% static "v2/images/quotes.png" %}" style="float: left; max-width: 22px;" />
-        <div class="quote_text"></div>
-        <div class="quote_author"></div>
-        <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
+        <div class="quote_text mt-5"></div>
+        <div class="quote_author mt-2 mx-auto"></div>
+        <input id="quoteRefresh" class="mt-4 btn btn-gc-blue shadow-none py-2" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
       </div>
     </div>
   </div>

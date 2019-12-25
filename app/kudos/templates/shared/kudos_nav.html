@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static matches %}
+{% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark gitcoin-background">
   <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'kudos_main' %}">
     <img class="mw-100 logo-static" src="{% static "v2/images/kudos/logo.svg" %}" alt="kudos" height="50">
@@ -33,6 +33,9 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     {% if user.is_authenticated %}
+      {% if user.is_staff %}
+        {% include 'shared/chat_nav.html' %}
+      {% endif %}
       {% include 'shared/notifications.html' %}
     {% endif %}
   </div>
@@ -42,7 +45,7 @@
       <a class="nav-link{% if active == 'about' %} selected{% endif %} interior" href="{% url 'kudos_main' %}">{% trans "What is Kudos?" %}</a>
       <a class="nav-link{% if active == 'marketplace' %} selected{% endif %} interior" href="{% url 'kudos_marketplace' %}">{% trans "Marketplace" %}</a>
       <a class="nav-link{% if active == 'send' %} selected{% endif %} interior" href="{% url 'kudos_send' %}">{% trans "Send kudos" %}</a>
-
+      <a class="nav-link{% if active == 'new' %} selected{% endif %} interior" href="{% url 'newkudos' %}">{% trans "Create kudos" %}</a>
 
       {% if not user.is_authenticated %}
         <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="nav-link interior" onclick="dataLayer.push({'event': 'login'});">
@@ -58,3 +61,4 @@
 {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
 {% endif %}
+{% cookielaw_banner %}

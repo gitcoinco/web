@@ -1,9 +1,11 @@
 import email
 import imaplib
 import logging
+import os
 import re
 import time
 from hashlib import sha1
+from secrets import token_hex
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -17,12 +19,12 @@ import geoip2.database
 import requests
 from avatar.models import SocialAvatar
 from avatar.utils import get_svg_templates, get_user_github_avatar_image
-from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
 from git.utils import _AUTH, HEADERS, get_user
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
 from pyshorteners import Shortener
+from social_core.backends.github import GithubOAuth2
 from social_django.models import UserSocialAuth
 
 logger = logging.getLogger(__name__)
@@ -161,6 +163,7 @@ def setup_lang(request, user):
         DoesNotExist: The exception is raised if no profile is found for the specified handle.
 
     """
+    from dashboard.models import Profile
     profile = None
     if user.is_authenticated and hasattr(user, 'profile'):
         profile = user.profile
@@ -174,17 +177,42 @@ def setup_lang(request, user):
         request.session.modified = True
 
 
+def get_upload_filename(instance, filename):
+    salt = token_hex(16)
+    file_path = os.path.basename(filename)
+    return f"docs/{getattr(instance, '_path', '')}/{salt}/{file_path}"
+
+
 def sync_profile(handle, user=None, hide_profile=True):
-    handle = handle.strip().replace('@', '')
-    data = get_user(handle)
+    from dashboard.models import Profile
+    handle = handle.strip().replace('@', '').lower()
+    # data = get_user(handle, scoped=True)
+    if user and hasattr(user, 'profile'):
+        try:
+            access_token = user.social_auth.filter(provider='github').latest('pk').access_token
+            data = get_user(handle, '', scoped=True, auth=(handle, access_token))
+
+            user = User.objects.get(username__iexact=handle)
+            if 'login' in data:
+                profile = user.profile
+                user.username = data['login']
+                user.save()
+                profile.handle = data['login']
+                profile.email = user.email
+                profile.save()
+        except UserSocialAuth.DoesNotExist:
+            pass
+    else:
+        data = get_user(handle)
+
     email = ''
     is_error = 'name' not in data.keys()
     if is_error:
         print("- error main")
-        logger.warning('Failed to fetch github username', exc_info=True, extra={'handle': handle})
+        logger.warning(f'Failed to fetch github username {handle}', exc_info=True, extra={'handle': handle})
         return None
 
-    defaults = {'last_sync_date': timezone.now(), 'data': data, 'hide_profile': hide_profile, }
+    defaults = {'last_sync_date': timezone.now(), 'data': data}
 
     if user and isinstance(user, User):
         defaults['user'] = user
@@ -197,10 +225,14 @@ def sync_profile(handle, user=None, hide_profile=True):
 
     # store the org info in postgres
     try:
+        profile_exists = Profile.objects.filter(handle=handle).count()
+        if not profile_exists:
+            defaults['hide_profile'] = hide_profile
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
+        access_token = profile.user.social_auth.filter(provider='github').latest('pk').access_token
+        orgs = get_user(handle, '', scope='orgs', auth=(profile.handle, access_token))
+        profile.organizations = [ele['login'] for ele in orgs if ele and type(ele) is dict] if orgs else []
         print("Profile:", profile, "- created" if created else "- updated")
-        orgs = get_user(handle, '/orgs')
-        profile.organizations = [ele['login'] for ele in orgs]
         keywords = []
         for repo in profile.repos_data_lite:
             language = repo.get('language') if repo.get('language') else ''
@@ -211,9 +243,10 @@ def sync_profile(handle, user=None, hide_profile=True):
 
         profile.keywords = keywords
         profile.save()
-
+    except UserSocialAuth.DoesNotExist:
+        pass
     except Exception as e:
-        logger.error(e)
+        logger.exception(e)
         return None
 
     if user and user.email:
@@ -222,6 +255,8 @@ def sync_profile(handle, user=None, hide_profile=True):
         email = profile.email
 
     if email and profile:
+        profile.email = email
+        profile.save()
         get_or_save_email_subscriber(email, 'sync_profile', profile=profile)
 
     if profile and not profile.github_access_token:
@@ -239,9 +274,6 @@ def sync_profile(handle, user=None, hide_profile=True):
                 profile.save()
             except Exception as e:
                 logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
-
-    if profile and created:
-        profile.build_random_avatar()
 
     return profile
 
@@ -427,3 +459,15 @@ def get_profile(request):
         profile = sync_profile(request.user.username, request.user, hide_profile=False)
 
     return profile
+
+
+class CustomGithubOAuth2(GithubOAuth2):
+    EXTRA_DATA = [('scope', 'scope'), ]
+
+    def get_scope(self):
+        scope = super(CustomGithubOAuth2, self).get_scope()
+        if self.data.get('extrascope'):
+            scope += ['public_repo', 'read:org']
+            from dashboard.management.commands.sync_orgs_repos import Command
+            Command().handle()
+        return scope

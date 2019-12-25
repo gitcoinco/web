@@ -65,6 +65,12 @@ def process_subscription(subscription, live):
         elif not has_approve_tx_mined:
             logger.info(f"   -- ( NOT ready via approve tx, will be ready when {subscription.new_approve_tx_id} mines) ")
         else:
+            if subscription.contributor_signature == "onetime":
+                subscription.error = True
+                subscription.subminer_comments = "One time subscription"
+                subscription.save()
+                logger.info('skipping one time subscription: %s' % subscription.id)
+                return
             web3_hash_arguments = subscription.get_subscription_hash_arguments()
             if web3_hash_arguments['periodSeconds'] < METATX_FREE_INTERVAL_SECONDS and web3_hash_arguments['gasPrice'] <= METATX_GAS_PRICE_THRESHOLD:
                 subscription.error = True

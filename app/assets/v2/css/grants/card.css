@@ -1,4 +1,3 @@
-
 .grant-item {
   border-radius: 5px;
   display: flex;
@@ -112,4 +111,23 @@
 
 .grant-item__footer #CLR_banner img {
   margin-top: 6px;
+}
+
+#CLR_banner .logo {
+  float: right;
+}
+
+.grant-item__info a {
+  border-color: white;
+  background-color: #6144FF;
+  color: white;
+}
+
+.grant-item__info a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.h-90 {
+  height: 90% !important;
 }

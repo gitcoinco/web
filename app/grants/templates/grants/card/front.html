@@ -38,22 +38,39 @@
           </div>
         </a>
       </div>
-      <div class="progress progress--small">
-        <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
-      </div>
-      <div class="grant-item__funding mt-2">
-        <div class="grant-item__funding-item">
-          <div class="grant-item__funding-number font-body">{{ grant.amount_received|floatformat:2|intcomma }} DAI</div>
-          <div class="grant-item__funding-label font-caption">{% trans 'Funded' %}</div>
+
+      <div class="row progress-container mb-2">
+        <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
+          {% if clr_active %}
+            {% include 'grants/card/clr_match.html' %}
+          {% else %}
+            <p class="sub-title font-weight-semibold font-caption mb-1 py-1">MONTHLY RECURRING</p>
+            <p class="font-title mb-0 font-weight-bold">
+              {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
+            </p>
+            <p class="font-caption {% if grant.clr_matching %} mb-2 {% endif %}">
+              of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal
+            </p>
+          {% endif %}
         </div>
-        <div class="grant-item__funding-item">
-          <div class="grant-item__funding-number font-body">{{ grant.amount_goal|floatformat:2|intcomma }} DAI</div>
-          <div class="grant-item__funding-label font-caption">{% trans ' Monthly Goal' %}</div>
+
+        <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6">
+          <p class="sub-title mb-1 font-weight-semibold font-caption mb-1 py-1">TOTAL FUNDED</p>
+          <p class="font-title mb-0 font-weight-bold">
+            {{ grant.amount_received_with_phantom_funds|floatformat:0|intcomma }} DAI
+          </p>
+
+          {% include 'grants/card/clr_estimate_prev.html' %}
+
         </div>
       </div>
-      {% include 'grants/detail/matching.html' %}
-      <div class="grant-item__state mt-3 row">
-        <div class="col-6">
+
+      {% if clr_active %}
+        {% include 'grants/card/clr_estimate.html' %}
+      {% endif %}
+
+      <div class="grant-item__state mt-2 row">
+        <div class="col-3">
           {% if grant.active %}
             <div class="grant-item__state-active">
               <div class="inner"></div>
@@ -67,9 +84,10 @@
           {% endif %}
         </div>
         {% if grant.active and grant.activeSubscriptions %}
-          <div class="col-6 text-right my-auto font-caption font-weight-semibold">
-            {{ grant.activeSubscriptions|length}}
-            subscription{% if grant.activeSubscriptions|length > 1 %}s{% endif %}
+          <div class="col-9 text-right mt-1 font-caption font-weight-semibold">
+            {{ grant.contribution_count}}
+            contribution{% if grant.contribution_count > 1 %}s{% endif %} by {{ grant.contributor_count}}
+            contributor{% if grant.contributor_count > 1 %}s{% endif %}
           </div>
         {% endif %}
       </div>

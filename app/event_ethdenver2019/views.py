@@ -120,8 +120,11 @@ def receive_bulk_ethdenver(request, secret):
                 return redirect(coupon.token.url)
             ip_address = get_ip(request)
 
+            private_key = settings.KUDOS_PRIVATE_KEY if not coupon.sender_pk else coupon.sender_pk
+            kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
+
             kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
-            kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
+            kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
             w3 = get_web3(coupon.token.contract.network)
             nonce = w3.eth.getTransactionCount(kudos_owner_address)
             contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
@@ -133,7 +136,7 @@ def receive_bulk_ethdenver(request, secret):
             })
 
             try:
-                signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
+                signed = w3.eth.account.signTransaction(tx, private_key)
                 txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
                 with transaction.atomic():
@@ -149,7 +152,7 @@ def receive_bulk_ethdenver(request, secret):
                         from_email='',
                         from_username=coupon.sender_profile.handle,
                         network=coupon.token.contract.network,
-                        from_address=settings.KUDOS_OWNER_ACCOUNT,
+                        from_address=kudos_owner_address,
                         receive_address=address,
                         is_for_bounty_fulfiller=False,
                         metadata={'coupon_redemption': True},
