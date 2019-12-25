@@ -61,12 +61,9 @@ from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
 )
-<<<<<<< HEAD
 
 from economy.utils import convert_token_to_usdt
-=======
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
->>>>>>> e048574e2ad80414b0585e0fa3cc9f50bd77db7f
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
