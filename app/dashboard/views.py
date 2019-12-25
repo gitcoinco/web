@@ -1358,6 +1358,7 @@ def bulk_payout_bounty(request):
 
 
 @require_GET
+@login_required
 def fulfill_bounty(request):
     """Fulfill a bounty.
 
@@ -1383,8 +1384,9 @@ def fulfill_bounty(request):
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='fulfill_bounty',
-        title=_('Submit Work'),
+        title=_('Submit Work')
     )
+    params['is_bounties_network'] = bounty.is_bounties_network
     return TemplateResponse(request, 'bounty/fulfill.html', params)
 
 
@@ -2737,7 +2739,6 @@ def get_quickstart_video(request):
 def extend_issue_deadline(request):
     """Show quickstart video."""
     bounty = Bounty.objects.get(pk=request.GET.get("pk"))
-    print(bounty)
     context = {
         'active': 'extend_issue_deadline',
         'title': _('Extend Expiration'),
@@ -3771,7 +3772,7 @@ def hackathon_registration(request):
             status=401)
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
-        registration_data = HackathonRegistration.objects.create(
+        HackathonRegistration.objects.create(
             name=hackathon,
             hackathon= hackathon_event,
             referer=referer,
@@ -4330,10 +4331,10 @@ def create_bounty_v1(request):
     bounty.value_in_token = request.POST.get("value_in_token", 0)
     bounty.token_address = request.POST.get("token_address")
     bounty.bounty_owner_email = request.POST.get("bounty_owner_email")
-    bounty.bounty_owner_name = request.POST.get("bounty_owner_name", '') # TODO: REMOVE ?
-    bounty.contract_address = bounty.token_address          # TODO: REMOVE ?
-    bounty.balance = bounty.value_in_token                  # TODO: REMOVE ?
-    bounty.raw_data = request.POST.get("raw_data", {})      # TODO: REMOVE ?
+    bounty.bounty_owner_name = request.POST.get("bounty_owner_name", '') # ETC-TODO: REMOVE ?
+    bounty.contract_address = bounty.token_address          # ETC-TODO: REMOVE ?
+    bounty.balance = bounty.value_in_token                  # ETC-TODO: REMOVE ?
+    bounty.raw_data = request.POST.get("raw_data", {})      # ETC-TODO: REMOVE ?
     bounty.web3_type = request.POST.get("web3_type", '')
     bounty.value_true = request.POST.get("amount", 0)
 
@@ -4432,7 +4433,6 @@ def cancel_bounty_v1(request):
     '''
         ETC-TODO
         - wire in email (invite + successful cancellation)
-        - create activty entry
     '''
     response = {
         'status': 400,
@@ -4442,7 +4442,7 @@ def cancel_bounty_v1(request):
     user = request.user if request.user.is_authenticated else None
 
     if not user:
-        response['message'] = 'error: user needs to be authenticated to create bounty'
+        response['message'] = 'error: user needs to be authenticated to cancel bounty'
         return JsonResponse(response)
 
     profile = request.user.profile if hasattr(request.user, 'profile') else None
@@ -4481,7 +4481,6 @@ def cancel_bounty_v1(request):
     # maybe_market_to_email(bounty, event_name)
     # maybe_market_to_slack(bounty, event_name)
     # maybe_market_to_user_slack(bounty, event_name)
-    # maybe_market_to_user_discord(bounty, event_name)
 
     bounty.bounty_state = 'cancelled'
     bounty.idx_status = 'cancelled'
@@ -4493,6 +4492,116 @@ def cancel_bounty_v1(request):
     response = {
         'status': 204,
         'message': 'bounty successfully cancelled',
+        'bounty_url': bounty.url
+    }
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+@staff_member_required
+def fulfill_bounty_v1(request):
+    '''
+        ETC-TODO
+        - wire in email (invite + successful fulfillment)
+        - create activty entry
+        - evalute BountyFulfillment unused fields
+    '''
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to fulfill bounty'
+    }
+
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to fulfill bounty'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: fulfill bounty is a POST operation'
+        return JsonResponse(response)
+
+    try:
+       bounty = Bounty.objects.get(github_url=request.POST.get('issueURL'))
+    except Bounty.DoesNotExist:
+        response['message'] = 'error: bounty not found'
+        return JsonResponse(response)
+
+    if bounty.bounty_state in ['cancelled', 'done']:
+        response['message'] = 'error: bounty in ' + bounty.bounty_state + ' state cannot be fulfilled'
+        return JsonResponse(response)
+
+    if BountyFulfillment.objects.filter(bounty=bounty):
+        response['message'] = 'error: user can submit once per bounty'
+        return JsonResponse(response)
+
+    event_name = 'work_submitted'
+    record_bounty_activity(bounty, user, event_name)
+    maybe_market_to_email(bounty, event_name)
+    # maybe_market_to_slack(bounty, event_name)
+    # maybe_market_to_user_slack(bounty, event_name)
+
+    if bounty.bounty_state != 'work_submitted':
+        bounty.bounty_state = 'work_submitted'
+        bounty.idx_status = 'submitted'
+
+    bounty.num_fulfillments += 1
+    bounty.save()
+
+    fulfillment = BountyFulfillment()
+
+    fulfillment.bounty = bounty
+    fulfillment.profile = profile
+
+    now = timezone.now()
+    fulfillment.created_on = now
+    fulfillment.modified_on = now
+    fulfillment.funder_last_notified_on = now
+    fulfillment.fulfiller_github_username = profile.handle
+
+    # fulfillment.fulfiller_name    ETC-TODO: REMOVE ?
+    # fulfillment.fulfillment_id    ETC-TODO: REMOVE ?
+
+    fulfiller_address = request.POST.get('fulfiller_address')
+    if not fulfiller_address:
+        response['message'] = 'error: missing fulfiller_address'
+        return JsonResponse(response)
+    fulfillment.fulfiller_address = fulfiller_address
+
+    fulfiller_email = request.POST.get('email')
+    if not fulfiller_email:
+        response['message'] = 'error: missing email'
+        return JsonResponse(response)
+    fulfillment.fulfiller_email = fulfiller_email
+
+    hours_worked = request.POST.get('hoursWorked')
+    if not hours_worked or not hours_worked.isdigit():
+        response['message'] = 'error: missing hoursWorked'
+        return JsonResponse(response)
+    fulfillment.fulfiller_hours_worked = hours_worked
+
+    fulfiller_github_url = request.POST.get('githubPRLink')
+    if not fulfiller_github_url:
+        response['message'] = 'error: missing githubPRLink'
+        return JsonResponse(response)
+    fulfillment.fulfiller_github_url = fulfiller_github_url
+
+    fulfiller_metadata = request.POST.get('metadata', {})
+    fulfillment.fulfiller_metadata = json.loads(fulfiller_metadata)
+
+    fulfillment.save()
+
+    response = {
+        'status': 204,
+        'message': 'bounty successfully fulfilled',
         'bounty_url': bounty.url
     }
 

@@ -839,7 +839,6 @@ def maybe_market_kudos_to_github(kt):
 
 
 
-
 def maybe_market_to_email(b, event_name):
     from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance, bounty_changed
     to_emails = []

@@ -349,14 +349,14 @@
               </div>
               [[if can_approve_worker ]]
                 <div class="stop-work-container">
-                  <div class="stop-work mt-2">
+                  <div class="stop-work">
                     <span title="<div class='tooltip-info tooltip-sm'>Reject worker</div>">
                       <a class="button button--primary" href="[[:reject_worker_url]]">
                         <span class="font-smaller-4">{% trans "Reject worker" %}</span>
                       </a>
                     </span>
                   </div>
-                  <div class="stop-work mt-2">
+                  <div class="stop-work">
                     <span title="<div class='tooltip-info tooltip-sm'>Approve worker</div>">
                       <a class="button button--primary" href="[[:approve_worker_url]]">
                         <span class="font-smaller-4">{% trans "Approve worker" %}</span>
@@ -366,7 +366,7 @@
                 </div>
               [[else uninterest_possible]]
                 <div class="stop-work-container">
-                  <div class="stop-work mt-2">
+                  <div class="stop-work">
                     <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
                       <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
                         <span class="font-smaller-4">{% trans "Stop work" %}</span>
@@ -374,7 +374,7 @@
                     </span>
                   </div>
                   [[if slash_possible]]
-                    <div class="stop-work mt-2">
+                    <div class="stop-work">
                       <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty and ding rep</div>">
                         <a id="remove-slash-[[:name]]" class="button button--primary admin-only" role="button" href="remove-handle">
                           <span class="font-smaller-4">{% trans "Stop work + Ding Rep" %}</span>
@@ -504,10 +504,10 @@
     </div>
 
     <noscript>
-        <h2>{{ noscript.title }}</h2>
-        <h3>{{ noscript.org_name }}</h3>
-        <h3>{{ noscript.keywords }}</h3>
-        <p>{{ noscript.issue_description_text }}</p>
+      <h2>{{ noscript.title }}</h2>
+      <h3>{{ noscript.org_name }}</h3>
+      <h3>{{ noscript.keywords }}</h3>
+      <p>{{ noscript.issue_description_text }}</p>
     </noscript>
 
     {% include 'shared/bottom_notification.html' %}

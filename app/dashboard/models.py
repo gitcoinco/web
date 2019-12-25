@@ -2856,7 +2856,6 @@ class Profile(SuperModel):
             int: a number of repeat relationships
 
         """
-        bounties = self.bounties
         relationships = []
         relationships += list(self.sent_earnings.values_list('to_profile__handle', flat=True))
         relationships += list(self.earnings.values_list('from_profile__handle', flat=True))

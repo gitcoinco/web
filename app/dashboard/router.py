@@ -48,18 +48,6 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
                   'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url')
 
 
-class ActivitySerializer(serializers.ModelSerializer):
-    """Handle serializing the Activity object."""
-
-    profile = ProfileSerializer()
-
-    class Meta:
-        """Define the activity serializer metadata."""
-
-        model = Activity
-        fields = ('activity_type', 'created', 'profile', 'metadata', 'bounty', 'tip')
-
-
 class BountyDocumentsSerializer(serializers.ModelSerializer):
     """Handle serializing the Activity object."""
 
@@ -166,13 +154,13 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         bounty = Bounty.objects.create(**validated_data)
         for fulfillment_data in fulfillments_data:
             bounty_fulfillment = BountyFulfillment.objects.create(bounty=bounty, **fulfillment_data)
-            bounty_invitee = BountyInvites.objects.filter(
+            bounty_invite = BountyInvites.objects.filter(
                 bounty=bounty,
                 invitee=bounty_fulfillment.profile.user
             ).first()
             if bounty_invite:
-                bounty_invitee.status = 'completed'
-                bounty_invitee.save()
+                bounty_invite.status = 'completed'
+                bounty_invite.save()
         return bounty
 
     def update(self, validated_data):
@@ -181,13 +169,13 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         bounty = Bounty.objects.update(**validated_data)
         for fulfillment_data in fulfillments_data:
             bounty_fulfillment = BountyFulfillment.objects.create(bounty=bounty, **fulfillment_data)
-            bounty_invitee = BountyInvites.objects.filter(
+            bounty_invite = BountyInvites.objects.filter(
                 bounty=bounty,
                 invitee=bounty_fulfillment.profile.user
             ).first()
             if bounty_invite:
-                bounty_invitee.status = 'completed'
-                bounty_invitee.save()
+                bounty_invite.status = 'completed'
+                bounty_invite.save()
         return bounty
 
 
