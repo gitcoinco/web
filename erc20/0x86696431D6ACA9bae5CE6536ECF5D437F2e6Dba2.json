@@ -1,0 +1,28 @@
+{
+    "symbol": "SCC",
+    "address": "0x86696431D6ACA9bae5CE6536ECF5D437F2e6Dba2",
+    "overview": {
+        "en": "SoftChain is your next smart wallet build in with DApp Store and high efficient transaction system base on QuarkChain Technology",
+        "zh": "SoftChain是为下一代高性能交易系统打造的内嵌DApp商店的智能钱包，基于QuarkChain技术。"
+    },
+    "email": "team@softchain.io",
+    "website": "https://softchain.io",
+    "whitepaper": "https://your-awesome-project.com/file.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-31",
+    "initial_price": {
+        "ETH": "0.00003 ETH",
+        "USD": "0.00857 USD",
+        "BTC": "0.00000126 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@SoftChain",
+        "twitter": "https://twitter.com/soft_chain",
+        "telegram": "http://t.me/softchain",
+        "github": "https://github.com/SoftChain",
+        "facebook": "https://www.facebook.com/softchain/",
+        "reddit": "n/A",
+        "slack": "https://softchain.slack.com/",
+        "medium": "https://medium.com/@SoftChain"
+    }
+}

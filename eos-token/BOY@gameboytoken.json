@@ -1,0 +1,16 @@
+{
+    "symbol": "BOY",
+    "account_name": "gameboytoken",
+    "overview": {
+        "en": "Simple and easy rock scissors paper game on blockchain technology.",
+        "zh": "简单易行岩石剪刀纸游戏上区块链技术, 像百家乐一样玩。在活动期间获取 BOY令牌",
+        "ko": "EOSGameboy 는 블록체인으로 공정하게 구현한 레트로 스타일의 짱깸뽀 게임입니다."
+    },
+    "website": "https://eosgameboy.io/?ref=eosparkrefer",
+    "links": {
+        "telegram": "https://t.me/eosgameboy_dapp",
+        "twitter": "https://twitter.com/eosgameboy",
+        "reddit": "https://www.reddit.com/r/eosgameboy/",
+        "wechat": "EOSGameboy"
+    }
+}

@@ -1,0 +1,15 @@
+{
+  "symbol": "IOC",
+  "address": "0x02C6a29BA667ec3a1F9fcf3d901FD6bb9C918248",
+  "overview":{
+        "zh": "IOC（步链）致力于打造一个为运动健身行业的发展提供数字服务生态。基于区块链智能合约，以Token激励方式进行运动跑步挖矿的模式，激励全民注重身体健康；"
+  },
+  "email": "admin@shanbugf.com",
+  "website": "http://www.iocio.io/",
+  "whitepaper": "http://www.iocio.io/IOC%E9%97%AA%E6%AD%A5%E9%93%BE_cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-06-20",
+  "links": {
+        "website": "http://www.iocio.io"
+  }
+}

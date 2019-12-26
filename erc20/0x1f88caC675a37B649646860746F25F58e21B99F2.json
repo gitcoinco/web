@@ -1,0 +1,19 @@
+{
+    "symbol": "NETM",
+    "address": "0x1f88caC675a37B649646860746F25F58e21B99F2",
+    "overview": {
+        "en": "NETM is committed to build a distributed and converged data system, which will share and consolidate data resources under a framework protocol for storage distribution, and realize transactions through the network, that provide applications from various distributed scenarios, and open more foundations Module, share!",
+        "zh": "NETM致力于建立一个分布式和融合的数据系统，该系统将在存储分发的框架协议下共享和合并数据资源，并通过网络实现事务，提供来自各种分布式场景的应用程序，并打开更多的基础模块共享！"
+    },
+    "email": "netmofficial@gmail.com",
+    "website": "https://www.netmchain.com",
+    "whitepaper": "https://www.netmchain.com/NETM%20white%20paper.pdf",
+    "published_on": "2018-08-01",
+    "initial_price": {
+        "ETH": "0.000005 ETH"
+    },
+    "links": {
+        "Twitter": "https://twitter.com/MofficialNet",
+        "Telegram": "https://t.me/NetmChain"
+    }
+}

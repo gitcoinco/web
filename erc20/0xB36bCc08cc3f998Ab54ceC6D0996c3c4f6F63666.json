@@ -1,0 +1,27 @@
+{
+    "symbol": "XSAP",
+    "address": "0xB36bCc08cc3f998Ab54ceC6D0996c3c4f6F63666",
+    "overview": {
+        "en": "xSapphire is s a Software Development Company, Our Softwares and Modules are being used by many Industries and Corporates having different business models. xSapphire keep updating the latest technology for development of business models.",
+        "zh": "xSapphire是一家软件开发公司，我们的软件和模块正被许多拥有不同商业模式的行业和企业所采用。 xSapphire不断更新最新技术，以开发商业模式。"
+    },
+    "email": "support@xsapphire.com",
+    "website": "https://www.xsapphire.com",
+    "whitepaper": "https://www.xsapphire.com/eth/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-26",
+    "initial_price": {
+        "ETH": "0.0019 ETH",
+        "USD": "0.25 USD",
+        "BTC": "0.000065 BTC"
+    },
+    "links": {
+        "blog": "https://xsapphire.com/blog.php",
+        "twitter": "https://www.twitter.com/xsapofficial",
+        "telegram": "https://t.me/xsapofficial",
+        "reddit": "https://www.reddit.com/user/xsapofficial",
+        "github": "https://github.com/xsapphiretoken",
+        "facebook": "https://www.facebook.com/xsapofficial",
+        "linkedin": "https://www.linkedin.com/company/xsapphire"
+    }
+}

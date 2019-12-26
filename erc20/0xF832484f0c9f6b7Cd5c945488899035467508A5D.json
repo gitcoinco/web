@@ -1,0 +1,25 @@
+{
+  "symbol": "Cuz",
+  "address": "0xF832484f0c9f6b7Cd5c945488899035467508A5D",
+  "overview":{
+        "en": "The travel token by Cool Cousin"
+  },
+  "email": "gil@coolcousin.com",
+  "website": "https://www.coolcousin.com/",
+  "whitepaper": "https://www.coolcousin.com/ico/coolcousin-whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-01-01",
+  "initial_price":{
+        "ETH":"0.000265252 ETH",
+        "USD":"0.1591512 USD",
+        "BTC":"0.00002122 BTC"
+  },
+  "links": {
+    "blog": "https://blog.coolcousin.com/",
+    "twitter": "https://twitter.com/coolcousinco",
+    "telegram": "https://t.me/CoolCousin",
+    "github": "https://github.com/cool-cousin",
+    "facebook": "https://www.facebook.com/CoolCousin/",
+    "reddit": "https://www.reddit.com/r/CoolCousin/"
+  }
+}

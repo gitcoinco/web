@@ -1,0 +1,15 @@
+{
+  "symbol": "FRS",
+  "address": "0xdE31b8D5232cE59D5C799dE4A8d35265f8bEf959",
+  "overview": {
+    "de": "FRS-BlockChain global blockchain 5G IoT experts lead humans into a reliable digital life.",
+    "zh": "FRS-BlockChain全球区块链5G物联网专家引领人类全面进入可信赖的数字化生活。"
+  },
+  "email": "service@frstoken.org",
+  "website": "http://frstoken.org/",
+  "whitepaper": "http://frstoken.org/pdf/FRSToken.pdf",
+  "published_on": "2019-09-25",
+  "initial_price": {
+        "USD": "0.701 USD"
+    }
+}

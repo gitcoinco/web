@@ -1,0 +1,17 @@
+{
+    "symbol": "YBY",
+    "address": "0x636ea377BaCbb41bF5A64400a2e5621407A898c4",
+    "overview": { 
+        "en": "Ten Billion Coin is a new blockchain designed to empower Chinese industries looking to leverage the power of distributed ledger technology to implement a fair platform where all transactions are recorded and open. This will allow existing companies to take advantage of this technology to provide transparent financial reports, supply chain management, authentic product verification, customers usage and satisfaction report, etc",
+        "zh": "TenBillionCoin是一种新的区块链，旨在使中国企业能够利用分布式账本技术的力量来实现一个公平的平台，在这个平台上记录和开放所有交易。这将使现有公司能够利用这项技术提供透明的财务报告，供应链管理，真实的产品验证，客户使用和满意度报告等。"
+    },
+    "email": "support@tenbillion.network",
+    "website": "https://tenbillion.network/",
+    "whitepaper": "https://tenbillion.network/wp-content/uploads/2019/07/TenBillion-Coin-White-Paper-20190717.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-06-18",
+    "links": {
+        "telegram": "http://www.t.me/TenBillionCoin",
+        "github": "https://github.com/TenBillionCoin"
+    }
+}

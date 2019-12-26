@@ -1,0 +1,27 @@
+{
+  "symbol": "SMKC1",
+  "address": "0xf17a9ad24372faaa27f0bb684e13413a3de84c4b",
+  "overview":{
+        "en": "Facing the (Global) pollution problem of the effects of deadly cigarette smoke. Developing from the EMAS era. BTC BOMB SMOKE is here to carry a mission for the value of traditional decentralization through smart contracts that cannot be mined. Each transaction will burn 1% of the transaction value.",
+        "zh": "面对致命香烟烟雾影响的（全球）污染问题。从GOLD时代发展。 BTC BOMB SMOKE通过无法开采的智能合约来传承传统分权的价值。每笔交易将燃烧1％的交易价值."
+  },
+  "email": "support@smokecoin.tech",
+  "website": "https://smokecoin.tech/",
+  "whitepaper": "https://smokecoin.tech/file.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-07",
+  "initial_price":{
+        "ETH":"0.00500000 ETH",
+        "USD":"1.25 USD",
+        "BTC":"0.000123 BTC"
+  },
+  "links": {
+    "blog": "https://smokecoin.tech//blog",
+    "twitter": "https://twitter.com/smokecoin_v2",
+    "telegram": "https://t.me/joinchat/Smoke_Coin",
+    "github": "https://github.com/SmokeCoinDev",
+    "facebook": "https://www.facebook.com/SmokeCoin",
+    "reddit": "https://www.reddit.com/r/SmokeCoinV_2/",
+    "medium": "https://medium.com/SmokeCoin"
+  }
+}

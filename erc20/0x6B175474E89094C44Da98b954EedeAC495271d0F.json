@@ -1,0 +1,25 @@
+{
+    "symbol": "DAI",
+    "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+    "overview": {
+        "en": "Dai is a stable coin implemented as an ERC20 token on the Ethereum blockchain. Designed to maintain 1:1 parity with the US Dollar its value is backed by collateral (currently Ether) which is locked up in a smart contract.",
+        "zh": "Dai 是由 MakerDAO 开发并管理的去中心化稳定币，由链上资产超额抵押发行，和美元保持 1:1 锚定。1 Dai = 1 美元。每个 Dai 的背后始终有价值超过 1 美元的资产担保。在 imToken 中，你可以通过以下方式获取 Dai：1. 在「浏览」页，「质押借 Dai」中，抵押 ETH 获取 Dai 或在「OS 直兑」中兑换 Dai；2. 在「市场」页，通过闪兑，将 ETH 兑换为 Dai。"
+    },
+    "email": "bd@makerdao.com",
+    "website": "https://makerdao.com/",
+    "whitepaper": "https://makerdao.com/whitepaper/",
+    "state": "NORMAL",
+    "published_on": "2017-12-18",
+    "initial_price": {
+        "USD": "1 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/@makerdao",
+        "telegram": "https://t.me/makerdaoOfficial",
+        "github": "https://github.com/makerdao",
+        "reddit": "https://www.reddit.com/r/MakerDAO/",
+        "slack": "https://chat.makerdao.com/",
+        "medium": "https://medium.com/makerdao",
+        "wechat": "https://mp.weixin.qq.com/s/LfX9anuh-ErVwcvLkBTsQg"
+    }
+}

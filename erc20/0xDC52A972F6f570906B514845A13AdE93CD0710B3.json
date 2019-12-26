@@ -1,0 +1,21 @@
+{
+    "symbol": "SOCO",
+    "address": "0xDC52A972F6f570906B514845A13AdE93CD0710B3",
+    "overview": {
+        "en": "Tokenize Your Social Assets",
+        "zh": "货币化你的社交资产"
+    },
+    "email": "soco@soco.social",
+    "website": "https://soco.social/",
+    "whitepaper": "https://soco-snp.github.io/whitepaper/social_coin_white_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-08",
+    "links": {
+        "twitter": "https://twitter.com/SoCoSNP",
+        "telegram": "https://t.me/socosnp",
+        "github": "https://github.com/soco-snp",
+        "facebook": "https://www.facebook.com/SoCoSNP",
+        "reddit": "https://www.reddit.com/r/SoCoSNP",
+        "medium": "https://medium.com/@socosnp"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "symbol": "ARES",
+    "address": "0x59d63c88ada5a485a4ea1ccec1145619c59e5f39",
+    "overview": {
+        "en": "ARES, the revolutionary algorithmic crypto arbitrage bot for crypto investors."
+    },
+    "email": "contact@arescoin.io",
+    "website": "http://arescoin.io/",
+    "whitepaper": "http://arescoin.io/ARES_WP_EN_v3.0.pdf",
+    "published_on": "2018-01-01",
+    "initial_price": {
+        "USD": "0.01 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/Ares_Coin",
+        "telegram": "https://t.me/Arescoinofficial",
+        "facebook": "https://www.facebook.com/StarlightCapitalGroup/",
+        "reddit": "https://www.reddit.com/r/AresCoin/",
+        "medium": "https://medium.com/@arescoinofficial"
+    }
+}

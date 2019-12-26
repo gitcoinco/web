@@ -1,0 +1,12 @@
+{
+  "symbol": "NB",
+  "address": "0xB0D596C88FD8E45E58cA79E0a425832d1858e651",
+  "overview":{
+        "zh": "NB是基于以太坊ERC20的去中心化与新零售相结合数字资产，致力于成为全球新零售行业的先锋，建立的覆盖全球的、去中心化的去中心化的零售系统。"
+  },
+  "email": "001@ntoken.cc",
+  "website": "http://www.ntoken.cc/",
+  "whitepaper": "http://www.ntoken.cc/wp-content/uploads/2019/10/NBToken.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-10-22"
+}

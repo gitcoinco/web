@@ -1,0 +1,22 @@
+{
+    "symbol": "GC2019",
+    "address": "0xea69223de647CbB2e7dfB6b0C9615A0b9d0d497A",
+    "overview": {
+        "en": "GC,Chinese Name: Jinbi, token: GC2019, total 10 billion. One is based on ERC-20, only used as BoChat social platform points, It’s can be converted into products or rights. Become a BoChat user or invite your friends to receive a gold coin points award.",
+        "zh": "GC,中文名称：金币，令牌：GC2019，总量100亿枚。一款基于ERC-20标准积分，仅作为BoChat社交平台积分使用，可以兑换产品或权益。成为BoChat用户或邀请您好友获得金币积分奖励。"
+    },
+    "email": "bd@bochat.io",
+    "website": "www.bochat.net",
+    "whitepaper": "http://www.bochat.net/static/index/pdf/jinbi.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-02-09",
+    "initial_price": {
+        "ETH": "0.00002137 ETH"
+    },
+    "links": {
+        "blog": "https://weibo.com/u/3016798935",
+        "twitter": "https://twitter.com/Boss07168193",
+        "github": "https://github.com/bx2019",
+        "facebook": "https://www.facebook.com/BoChat2019"
+    }
+}

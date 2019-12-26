@@ -1,0 +1,18 @@
+{
+    "symbol": "TUT",
+    "address": "0xfe3a06a947a036eff9f9e8ec25b385ff4e853c38",
+    "overview": {
+        "en": "Trust Union (TU) is the worlds first personal financial relationship and credit asset management service platform based on blockchain technology. It aims to establish an efficient and secure data and value chain for the global financial relationship among individuals (C2C), provide data management and value growth service for personal credit assets.",
+        "zh": "Trust Union（TU）是全球首個基於區塊鏈技術建立的個人金融關系與信用資產管理服務平臺，旨在為全球個人與個人（C2C）的泛金融關系建立高效和安全的數據鏈條與價值鏈條，並為個人信用資產提供數據管理與價值成長服務。"
+    },
+    "links": {
+        "facebook": "https://www.facebook.com/trustunionhk/",
+        "twitter": "https://twitter.com/TrustUnion1",
+        "instagram": "https://www.instagram.com/trustuniontu/",
+        "telegram": "https://t.me/TUTrustUnion"
+    },
+    "email": "customerservice@tut.credit",
+    "website": "https://www.tut.credit/",
+    "whitepaper": "https://www.tut.credit/Home/pdf/white-en-v1.3.2.pdf",
+    "published_on": "2018-10-14"
+}

@@ -1,0 +1,28 @@
+{
+    "symbol": "BEFC",
+    "address": "0x5c38fc75474d1bef3d66f81bfb89c4bf6e65f0a4",
+    "overview": {
+        "en": "Butler expansion fund is used by Butler to expand overseas market, thus issuing BEFC to get more people participated to share the achievements of overseas market expansion by Butler",
+        "zh": "币管家拓展基金旨在用于币管家进行海外拓展市场，特发行币管家拓展基金币，让更多的人能够参与进来，并分享币管家海外拓展市场的成果"
+    },
+    "email": "business@bgj.io",
+    "website": "https://www.bgj.io/",
+    "whitepaper": "https://www.bgj.io/",
+    "state": "NORMAL",
+    "published_on": "2018-10-18",
+    "initial_price": {
+        "ETH": "0.00069444 ETH",
+        "USD": "0.15 USD",
+        "BTC": "0.00002291 BTC"
+    },
+    "links": {
+        "blog": "https://www.bgj.io/",
+        "twitter": "https://twitter.com/bgj_io",
+        "telegram": "https://t.me/joinchatHHbi4xDqMT",
+        "github": "https://github.com/bgjio",
+        "facebook": "https://www.bgj.io/",
+        "reddit": "https://www.reddit.com/user/bgj_io",
+        "slack": "https://www.bgj.io/",
+        "medium": "https://www.bgj.io/"
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "symbol": "ADP",
+    "address": "0x957C7090C1e2bBAAE73780d657df8132D6f3dA9D",
+    "overview": {
+        "en": "AD Power is a cryptocurrency used for digital advertising in the future",
+        "zh": "AD Power是一种用于未来数字广告的加密货币"
+    },
+    "email": "admin@adpower.network",
+    "website": "https://adpower.network",
+    "whitepaper": "https://adpower.network/whitepaper",
+    "state": "NORMAL",
+    "published_on": "2018-09-09",
+    "initial_price": {
+        "ETH": "0.00000005 ETH",
+        "USD": "0.00001 USD",
+        "BTC": "0.00000001 BTC"
+    },
+    "links": {
+        "blog": "https://adpower.network",
+        "twitter": "https://twitter.com/adpowerofficial",
+        "telegram": "https://t.me/adpowerofficial",
+        "github": "https://github.com/adpower1",
+        "reddit": "https://www.reedit.com/u/adpower",
+        "medium": "https://medium.com/@adpowerofficial"
+    }
+}

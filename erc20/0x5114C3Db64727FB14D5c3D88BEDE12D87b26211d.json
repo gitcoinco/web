@@ -1,0 +1,27 @@
+{
+    "symbol": "GRWT",
+    "address": "0x5114C3Db64727FB14D5c3D88BEDE12D87b26211d",
+    "overview": {
+        "en": "Grow Token Project aims to solve expensive agriculture problem by building a blockchain integrated marketplace that will bring the farmers and the buyers together.",
+        "zh": "Grow Token Project旨在通过建立区块链综合市场来解决昂贵的农业问题，该市场将农民和买家聚集在一起。"
+    },
+    "email": "support@growtoken.io",
+    "website": "https://growtoken.io/",
+    "whitepaper": "https://growtoken.io/GRWT.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-12-01",
+    "initial_price": {
+        "ETH": "0.0.00000010 ETH",
+        "USD": "0.00001 USD",
+        "BTC": "0.0.00000001 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@growtoken.project",
+        "twitter": "https://twitter.com/GRWT_Project",
+        "telegram": "https://t.me/GrowToken_Group",
+        "github": "https://github.com/GRWT122018",
+        "facebook": "https://www.facebook.com/GrowTokenProject/",
+        "reddit": "https://www.reddit.com/user/GrowTokenProject",
+        "medium": "https://medium.com/@growtoken.project"
+    }
+}

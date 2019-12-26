@@ -1,0 +1,22 @@
+{
+    "symbol": "INX",
+    "address": "0x018d7D179350f1Bb9853D04982820E37ccE13a92",
+    "overview": {
+        "en": "INMAX is A dependable digital asset exchange and financial system."
+    },
+    "email": "support@inmax.live",
+    "website": "https://www.inmax.live/",
+    "whitepaper": "https://www.inmax.live/public/whitepaper-2.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-13",
+    "initial_price": {
+        "ETH": "0.0083 ETH"
+    },
+    "links": {
+        "medium": "https://medium.com/@inmax_exchange",
+        "twitter": "https://twitter.com/inmax_exchange",
+        "telegram": "https://t.me/inmax_exchange",
+        "github": "https://github.com/InMax-Exchange",
+        "facebook": "https://www.facebook.com/inmax.official"
+    }
+}

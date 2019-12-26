@@ -1,0 +1,21 @@
+{
+    "symbol": "HKK",
+    "address": "0xcc1188e0fff6cff5143fdeb272cc49c45fac75a3",
+    "overview": {
+        "en": "HKK is the platform token issued by HKK Decentralized Ethereum Asset Exchange. The entire issued HKK base equates to the overall ownership of HKK crypto trading platform. Growing together with HKK, becoming HKK Global Partner.",
+        "zh": "HKK（HKK Token）是HKK.trade去中心化交易所发行的平台币，是交易平台自身所有权益的代表。与HKK共同成长，成为HKK全球合伙人。"
+    },
+    "email": "support@hkk.io",
+    "website": "https://hkk.io/",
+    "whitepaper": "https://hkk.io/guest/whitepaper-en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-16",
+    "initial_price": {
+        "ETH": "0.000357 ETH",
+        "USD": "0.2 USD",
+        "BTC": "0.000025 BTC"
+    },
+    "links": {
+        "telegram": "https://t.me/HKKofficial"
+    }
+}

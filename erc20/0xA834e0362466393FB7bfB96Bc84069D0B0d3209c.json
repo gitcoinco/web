@@ -1,0 +1,20 @@
+{
+    "symbol": "AGC",
+    "address": "0xA834e0362466393FB7bfB96Bc84069D0B0d3209c",
+    "overview": {
+        "en": "AGC uses the decentralized characteristics of the blockchain to create a decentralized gold mining resource trading service platform.",
+        "zh": "AGC利用区块链的去中心化特征，打造一个去中心的金矿资源交易服务平台"
+    },
+    "email": "asiagoldcoin@gmail.com",
+    "website": "http://www.agcoin.ltd",
+    "whitepaper": "http://agcoin.ltd/index.php?s=/Home/index/onlinelook",
+    "state": "NORMAL",
+    "published_on": "2019-12-05",
+    "initial_price": {
+        "USD": "0.01 USD",
+    },
+    "links": {
+		"twitter": "https://twitter.com/AGC74678001",
+        "facebook": "https://www.facebook.com/goldcoin.asia",
+    }
+}

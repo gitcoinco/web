@@ -1,0 +1,12 @@
+{
+    "symbol": "ERO",
+    "account_name": "eoslandadmin",
+    "overview": {
+        "en": "ERO is a token based on EOS token standards and represents the voting power of EOSLAND. ERO is also required for the construction of certain special buildings. EOSLAND is part of NeoWorld, a blockchain based virtual world, and it consists of 21 islands in total. Each island takes up 1 million ERO on launching"
+    },
+    "website": "https://neoworld.io/eosland",
+    "links": {
+        "twitter": "https://twitter.com/EOSLAND2",
+        "telegram": "https://t.me/eosland"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "symbol": "MR",
+    "address": "0xa62442bBC2b91ba7F639aAafDb77d2690f525104",
+    "overview": {
+        "en": "MR is the MSER's equity token and the most advanced use authority credential. MR is based on the Ethereum blockchain smart contract, and will never issue additional.",
+        "zh": "MR是MONSTER交易所的天使凭证和最高级使用权限凭证。MR基于以太坊区块链智能合约发行，总量10亿枚，永不增发。"
+    },
+    "email": "mser@mcap.cc",
+    "website": "https://www.monster.one",
+    "whitepaper": "https://github.com/chenzhaoqi/MSER/blob/master/%E3%80%90BETA2.0%E3%80%91MSER%E7%99%BD%E7%9A%AE%E4%B9%A62018.5.10.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-04-29",
+    "initial_price": {
+        "ETH": "0.00011111 ETH",
+        "USD": "0.075 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/Monster29639407?s=05",
+        "facebook": "https://www.facebook.com/pg/Monster%E6%80%AA%E5%85%BD%E5%B8%82%E5%9C%BA-183627012452659/about/?ref=page_internal"
+    }
+}

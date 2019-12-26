@@ -1,0 +1,24 @@
+{
+    "symbol": "BxC",
+    "address": "0xdeCF7Be29F8832E9C2Ddf0388c9778B8Ba76af43",
+    "overview": {
+        "en": "BonusCloud aims to develop a decentralized, trustworthy global infrastructure platform combining Blockchain and cloud computing technology, which is foundation for an open-ended shared ecosystem we endeavor to build. By Connecting and utilizing each kind of resources with computing capability and converting them into digital assets value, DApp empowers entrepreneurs of Blockchain applications.",
+        "zh": "BonusCloud致力于打造一个去中心化的、可信任的、结合区块链与云计算技术的、全球化的基础设施平台，并构建一个基于此的开放式共享生态。旨在连接和利用各种具备计算能力的资源，转换为数字资产价值，在数字经济时代，让DApp赋能区块链应用创业者。"
+    },
+    "email": "hi@bonuscloud.io",
+    "website": "https://bonuscloud.io/",
+    "whitepaper": "https://bonuscloud.io/wp.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-12",
+    "initial_price": {
+        "ETH": "0.00001 ETH"
+    },
+    "links": {
+        "blog": "https://medium.com/@bonuscloud",
+        "twitter": "https://twitter.com/bonus_cloud",
+        "telegram": "https://t.me/Bonuscloud",
+        "github": "https://github.com/BonusCloud",
+        "facebook": "https://www.facebook.com/BonusCloud.io",
+        "medium": "https://medium.com/@bonuscloud"
+    }
+}

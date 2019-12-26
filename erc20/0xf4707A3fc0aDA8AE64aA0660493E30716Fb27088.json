@@ -1,0 +1,15 @@
+{
+    "symbol": "FEC",
+    "address": "0xf4707A3fc0aDA8AE64aA0660493E30716Fb27088",
+    "overview": {
+        "en": "The project team's FEC project (Domain Chain) based on blockchain technology will become a celebrity IP main platform. The FEC business is positioned to integrate value-added service resources into the supply chain, based on the supply chain's productization (using the main body name Mailbox, domain name, IP address, etc.) to assist users in the transformation of their economic value. On this basis, FEC will be applied to global consumption, finance, tourism, community and other fields of payment, relying on the technical characteristics of the blockchain to provide fast and convenient settlement payment and related services for merchants and consumers around the world.",
+        "zh": "针对行业问题，本项目团队基于区块链技术建设的FEC项目（Domain Chain）将打造成一个名人IP主体平台，FEC业务的定位是将增值服务资源整合供应链环节，基于供应链的落地产品化（使用主体命名的邮箱、域名、IP地址等），协助用户的经济价值转化。在此基础上，FEC将应用于全球消费、金融、旅游、社群等领域的支付，依托区块链的技术特点为全球的商家、消费者提供快速便捷的结算支付及相关服务。"
+    },
+    "email": "fec_chain@163.com",
+    "website": "http://www.fec-chain.com/",
+    "whitepaper": "http://www.fec-chain.com/fecch.pdf",
+    "published_on": "2018-09-14",
+    "links": {
+        "github": "https://github.com/fec-chain"
+    }
+}

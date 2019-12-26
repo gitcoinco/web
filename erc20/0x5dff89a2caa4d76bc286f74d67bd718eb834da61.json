@@ -1,0 +1,22 @@
+{
+    "symbol": "CFC",
+    "address": "0x5dff89a2caa4d76bc286f74d67bd718eb834da61",
+    "overview": {
+        "en": "CryptFillCoin is a cryptocurrency founded on the idea that users should be rewarded for the platform they choose. CryptFillCoin’s main goal in all of this is to open the commerce market to cryptocurrency."
+    },
+    "email": "info@cryptfillcoin.com",
+    "website": "https://cryptfillcoin.com/",
+    "whitepaper": "https://cryptfillcoin.com/whitepaper/whitepaper - english.pdf",
+    "published_on": "2018-05-10",
+    "initial_price": {
+        "ETH": "0.00219715 ETH",
+        "USD": "0.30 USD",
+        "BTC": "0.00006511 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/FillCoin",
+        "telegram": "https://t.me/joinchat/Fw4s4xEzRJbkKIBMr_hIvQ",
+        "github": "https://github.com/your-awesome-project",
+        "facebook": "https://www.facebook.com/Cryptfillcoin-1952500588204739/"
+    }
+}

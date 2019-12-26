@@ -1,0 +1,25 @@
+{
+    "symbol": "FUS",
+    "address": "0xa14839c9837657EFcDE754EbEAF5cbECDd801B2A",
+    "overview": {
+        "en": "The FusChain team has been working on the frontier block chain technology and application market. At present, the application of block chain is slow. We believe that the reasons are in many aspects, the underlying technology is not mature, many small and medium-sized enterprises and developers are difficult to penetrate into the technology of block chain, so they do not give full play to their advantages of flexible innovation.",
+        "zh": "FusChain团队一直致力于研究前沿区块链技术与应用市场情况。目前区块链应用落地缓慢， 我们认为原因在很多方面，底层技术不成熟，很多中小企业和开发者都难以深入到区块链技术中，因而没有充分发挥其灵活创新的优势。"
+    },
+    "email": "contact@fuschain.me",
+    "website": "http://fuschain.me/",
+    "whitepaper": "http://fus.gamechao.cn/wp/fus.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-27",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.7 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "links": {
+        "blog": "https://weibo.com/FusOfficial",
+        "twitter": "https://twitter.com/FusOfficial",
+        "telegram": "https://t.me/FusOfficial",
+        "github": "https://github.com/Fuscoin",
+        "facebook": "https://www.facebook.com/FusOfficial"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "symbol": "CET",
+    "account_name": "eosiochaince",
+    "overview": {
+        "en": "The Chaince Foundation, which is incorporated on the Cayman Islands and operates independently, will issue Chaince Tokens (CET) based on the EOS for a total amount of 2 billion. The 50% one-way EOS transaction fees on the Chaince transaction platform (i.e. the EOS transaction fees deducted from the platform when users sell other blockchain assets and buy EOS) will be perpetually injected into the Chaince Foundation public address weekly. Each CET token represents one 2 billionth of the EOS tokens held by the Foundation.",
+        "zh": "注册于开曼群岛并独立运营的 Chaince 基金会将于 2018 年 6 月发行基于 EOS 主网代币协议的 Chaince Token（CET），总量为 20 亿。Chaince 交易平台会将所有 EOS 交易对中的 EOS 代币单向手续费（即用户卖出其他代币买入 EOS 代币时所支付的手续费）的 50% 永久持续每周注入 Chaince 基金会的公开地址当中，每个 CET 代币均代表基金会所持 EOS 代币的 20 亿分之一。"
+    },
+    "email": "business@chaince.com",
+    "website": "https://chaince.com",
+    "links": {
+        "medium": "https://medium.com/@Chaince",
+        "twitter": "https://twitter.com/Chaince_Group",
+        "telegram": "https://t.me/chainceChinesegroup"
+    }
+}

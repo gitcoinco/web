@@ -1,0 +1,22 @@
+{
+    "symbol": "STSC",
+    "address": "0xE15C61c60fDf5f4552c5CD8A041628895925F8bD",
+    "overview": {
+        "en": "Starbull travel is committed to becoming a leading brand of Chinese blockchain tourism",
+        "zh": "星牛旅行致力于成为中国区块链旅游领导品牌"
+    },
+    "email": "bd@starbull.com.cn",
+    "website": "https://starbull.top",
+    "whitepaper": "https://starbull.top/file/StarbullTravelShareWhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-15",
+    "initial_price": {
+        "ETH": "0.00006 ETH"
+    },
+    "links": {
+        "blog": "https://www.weibo.com/p/1006066574353201",
+        "twitter": "https://twitter.com/bw7JnTkolNaVxcu",
+        "github": "https://github.com/STARBULLxnlx",
+        "reddit": "https://www.reddit.com/user/STARBULLxnlx"
+    }
+}

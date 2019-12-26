@@ -1,0 +1,17 @@
+{
+    "symbol": "ORe",
+    "address": "0x184001D794a8c91dEF72b8A488B67Cc907D4e5be",
+    "overview": {
+        "en": "Decentralized electronic tool used as medium of exchange, unit of account, and store of value"
+    },
+    "email": "info@khazon.online",
+    "website": "https://web.khazon.online/",
+    "state": "NORMAL",
+    "published_on": "2017-11-22",
+    "initial_price": {
+        "USD": "1000.0 USD"
+    },
+    "links": {
+        "Forum": "https://khazon.net"
+    }
+}

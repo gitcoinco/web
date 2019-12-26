@@ -1,0 +1,22 @@
+{
+    "website": "https://propy.com/",
+    "published_on": "2017-09-20",
+    "links": {
+        "telegram": "https://t.me/propy",
+        "reddit": "https://www.reddit.com/user/PropyInc/",
+        "facebook": "https://www.facebook.com/propyinc",
+        "slack": "https://propy.slack.com/",
+        "twitter": "https://twitter.com/propyinc"
+    },
+    "overview": {
+        "en": "Property Transactions Secured Through Blockchain.",
+        "zh": "通过区块链保障物业交易。"
+    },
+    "symbol": "PRO",
+    "initial_price": {
+        "USD": "1 USD"
+    },
+    "whitepaper": "https://tokensale.propy.com/Propy-White-Paper-17-Jul-2017.pdf",
+    "address": "0x226bb599a12C826476e3A771454697EA52E9E220",
+    "email": "ico@propy.com"
+}

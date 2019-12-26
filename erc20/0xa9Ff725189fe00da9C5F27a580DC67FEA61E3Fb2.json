@@ -1,0 +1,19 @@
+{
+    "symbol": "ARM_OLD",
+    "address": "0xa9Ff725189fe00da9C5F27a580DC67FEA61E3Fb2",
+    "overview": {
+        "en": "ERC20 Token of Armors.io。注：此为 ARM 官方发行的旧 ARM 代币。新 ARM 合约地址：0xE4aFA119DE1a312c934230D2298db85C61C4B49D"
+    },
+    "email": "contact@armors.io",
+    "website": "https://armors.io/",
+    "whitepaper": "https://armors.io/armors.whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-02-01",
+    "links": {
+        "blog": "https://blog.armors.io",
+        "twitter": "https://twitter.com/LabsArmors",
+        "telegram": "https://t.me/ArmorsLabs",
+        "github": "https://github.com/armors",
+        "facebook": "https://www.facebook.com/ArmorsLabs"
+    }
+}

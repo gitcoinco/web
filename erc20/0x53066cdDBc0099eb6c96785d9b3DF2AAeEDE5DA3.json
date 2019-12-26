@@ -1,0 +1,26 @@
+{
+    "symbol": "PNT",
+    "address": "0x53066cdDBc0099eb6c96785d9b3DF2AAeEDE5DA3",
+    "overview": {
+        "en": "[Penta is a next generation platform for both public and private blockchain projects, designed to be a premier platform for transferring value and operating high-performance decentralized applications. Penta will remove roadblocks and reshape the blockchain landscape with an emphasis on impacting the real economy. With its unique consensus algorithm (DSC) and a truly distributed network architecture, Penta is building the world’s most inclusive, equitable, and decentralized blockchain community.\n At the core of the Penta Network is a robust public blockchain infrastructure that supports a high-performance application platform. Through its unique and innovative technology and its commitment to building an inclusive and decentralized community, Penta will be able to fulfill its goal of being a “Universal Blockchain Connector,” connecting blockchain technology to the real world.",
+        "zh": "Penta，下一代的底层公链，是熔合高速链路和高性能DAPP运行平台的区块链网络，致力于成为区块链世界的连接器！\n 以主体、信任、价值、流通、场景五个维度为核心架构，依托十大核心技术，Penta架起安全、兼容、高速的底层链路，以三>大连接（链与链的连接、链与中心化的链接、链上与链下价值的连接）重塑区块链生态格局，让不同链、不同行业、不同终端的信息、人、物、价值得以互联和流通，实现互相信任与充分自由。在高速链路之上，Penta发展出一个均衡扩展性、安全性>和效率性的高性能DAPP运行平台，助力解决商业场景难题，加速区块链商用落地。"
+    },
+    "email": "support@penta.global",
+    "website": "https://www.penta.global",
+    "whitepaper": "https://static.penta.global/2018/05/24/15271303017687s5wyi.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-04-24",
+    "initial_price": {
+        "ETH": "0.00001000 ETH",
+        "USD": "0.00508 USD",
+        "BTC": "0.00000073 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/Penta_GF",
+        "telegram": "https://t.me/pentaglobal",
+        "github": "https://github.com/pentaglobal",
+        "facebook": "https://www.facebook.com/go.penta.52",
+        "slack": "https://penta-global.slack.com",
+        "medium": "https://medium.com/penta-network"
+    }
+}

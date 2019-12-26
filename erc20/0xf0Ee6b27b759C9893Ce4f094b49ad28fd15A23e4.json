@@ -1,0 +1,24 @@
+{
+    "website": "https://enigma.co/",
+    "published_on": "2017-09-11",
+    "links": {
+        "reddit": "https://www.reddit.com/r/enigmacatalyst",
+        "github": "https://github.com/enigmampc",
+        "slack": "https://slack.enigma.co/",
+        "telegram": "https://t.me/enigmacatalyst",
+        "twitter": "https://twitter.com/enigmampc",
+        "facebook": "https://www.facebook.com/enigmacatalyst/"
+    },
+    "overview": {
+        "en": "Enigma is a privacy protocol that enables truly decentralized applications and unlocks the value of blockchains.",
+        "zh": "Enigma - 区块链可扩展的隐私协议，旨在解决目前区块链的两大问题：扩展性和隐私性。"
+    },
+    "symbol": "ENG",
+    "initial_price": {
+        "ETH": "0.0020052 ETH",
+        "USD": "0.60 USD"
+    },
+    "whitepaper": "https://enigma.co/enigma_full.pdf",
+    "address": "0xf0Ee6b27b759C9893Ce4f094b49ad28fd15A23e4",
+    "email": "info@enigma.co"
+}

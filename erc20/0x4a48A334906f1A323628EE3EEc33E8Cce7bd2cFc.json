@@ -1,0 +1,16 @@
+{
+  "symbol": "MP",
+  "address": "0x4a48A334906f1A323628EE3EEc33E8Cce7bd2cFc",
+  "overview":{
+        "en": "MularPay is crypto merchant service which allows businesses to accept cryptocurrencies through it's payment gateway for goods and services while the merchant receive payouts in their respective local currency."
+  },
+  "email": "info@mularpay.com",
+  "website": "https://www.mularpay.com/",
+  "state": "NORMAL",
+  "published_on": "2019-03-23",
+  "links": {
+    "twitter": "https://twitter.com/mularpay",
+    "facebook": "https://www.facebook.com/MularPay",
+    "instagram": "https://www.instagram.com/mularpay"
+  }
+}

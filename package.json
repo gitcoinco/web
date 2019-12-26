@@ -4,11 +4,15 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@types/node": "^10.12.12",
     "chalk": "^2.4.1",
-    "pngjs": "^3.3.3"
+    "pngjs": "^3.3.3",
+    "ts-lint": "^4.5.1",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
   },
   "scripts": {
-    "test": "node ./test/index.js"
+    "test": "ts-node ./test/index.ts"
   },
   "repository": {
     "type": "git",

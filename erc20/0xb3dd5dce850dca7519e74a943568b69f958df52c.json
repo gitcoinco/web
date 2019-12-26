@@ -1,0 +1,21 @@
+{
+    "symbol": "UENC",
+    "address": "0xb3dd5dce850dca7519e74a943568b69f958df52c",
+    "overview": {
+        "zh": "UENC是一个以跨链为技术方向的可扩展基础公链，在底层技术和架构上进行优化和创新，支持不同区块链网络之间的价值传递。UENC通过对网络价值传递过程中的用户关注度的不同，对该过程进行分类，构建新的共识，以及通过重构基于DHT的混合式点对点网络，建立高效的节点组合结构，从而快速提升公链交易速度。"
+    },
+    "website": "http://enchain.cc",
+    "whitepaper": "http://enchain.cc",
+    "state": "NORMAL",
+    "published_on": "2018-03",
+    "initial_price": {
+        "ETH": "0.00026315 ETH",
+        "USD": "0.08088 USD",
+        "BTC": "0.00000764789 BTC"
+    },
+    "links": {
+        "biyong": "https://0.plus/UniversalEnergyChain",
+        "twitter": "https://twitter.com/UENCCLUB?s=17",
+        "github": "https://github.com/phomespace/EBPC-uenc"
+    }
+}

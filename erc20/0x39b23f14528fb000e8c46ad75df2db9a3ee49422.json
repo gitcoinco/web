@@ -1,0 +1,13 @@
+{
+    "symbol": "TIX",
+    "address": "0x39b23f14528fb000e8c46ad75df2db9a3ee49422",
+    "overview": {
+        "en": "Due to the aging of the source code of the Lottery Tickets (TIX), it has been unable to adapt to the latest blockchain technology development requirements. After several months of technical development, the China Lottery Association upgraded the Lottery China Lottery Union Tickets based on the blockchain 3.0 technology. Application embedding. I believe that the lottery development and maintenance team will not disappoint the true hopes of the color coin community, and help Lottery Tickets restore its former glory. Lottery Tickets uses Ethereum 2.0's Casper (Consensus Algorithm) rule. Compared with Bitcoin, Lottery Tickets has faster transfer speeds and more energy-efficient algorithms that truly save energy and protect the environment. Total 100 billion",
+        "zh": "由于Lottery Tickets（TIX）的源代码老化，已经无法适应最新的区块链技术发展要求，中国彩币协会经过数月的技术开发，基于区块链 3.0 技术对 Lottery 中国彩币协会 Tickets 进行升级和应用嵌入。相信彩币开发维护团队不会 辜负彩币社区人员的真切希望，助力 Lottery Tickets 恢复昔日的荣光。Lottery Tickets 采用以太坊 2.0 的 Casper（共识算法）规则。与比特币相比，Lottery Tickets 具有更快的传输速度，更节能的算法，真正实现节能、环保的目的。总量1000亿"
+    },
+    "email": "lotterytickets@foxmail.com",
+    "website": "http://lotterytickets.pro/",
+    "whitepaper": "http://lotterytickets.pro/pdf/tix20.pdf",
+    "state": "NORMAL",
+    "published_on": "2013-09-20"
+}

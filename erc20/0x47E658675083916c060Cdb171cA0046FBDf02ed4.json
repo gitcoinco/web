@@ -1,0 +1,24 @@
+{
+    "symbol": "WISE",
+    "address": "0x47E658675083916c060Cdb171cA0046FBDf02ed4",
+    "overview": {
+      "en": "WISE is a powerful IoT blockchain integration based on radio. It has a strong application in smart cities, digital vehicles and supply chain logistics. WISE is the first to introduce distributed general ledger modules to help all kinds of IoT devices realize better. Trusted identity authentication and data privacy protection. At present, WISE has cooperated with many Internet of Things and blockchain head technology enterprise communities such as Unicom Internet of Things, Wanli Blockchain, Molian Technology, Matrix Yuan, Shange Community, etc., and became the first to join Unicom Internet of Things + Zone The module enterprise of the blockchain joint innovation center, WISE blockchain module will also become the first batch of commercial practice of the blockchain in the center.",
+      "zh": "WISE是基于无线电的强大物联网区块链集成，在智能城市，数字化汽车，供应链物流方面有着强大的落地运用，WISE率先推出分布式总帐模组，帮助各类物联网设备更好地实现可信身份认证与数据隐私保护。目前，WISE已经与联通物联网、万力区块链、摩联科技、矩阵元,山哥社区等多家物联网和区块链头部科技企业社区合作，成为首批加入联通物联网+区块链联合创新中心的模组企业，WISE区块链模组也将成为该中心首批区块链商用落地实践。"
+    },
+    "email": "17162714046@163.com",
+    "website": "https://wise.vg/",
+    "whitepaper": "https://wise.vg/docs/White_Paper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-07-03",
+    "initial_price":{
+          "USD":"0.1 USD"
+    },
+    "links": {
+      "twitter": "https://twitter.com/WISE49133700",
+      "github": "https://github.com/wise-vg",
+      "facebook": "https://www.facebook.com/vg.wise.3"
+    }
+  }
+
+
+  

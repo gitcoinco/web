@@ -1,0 +1,15 @@
+{
+    "website": "https://www.centrality.ai/",
+    "links": {
+        "twitter": "https://twitter.com/centralityai",
+        "facebook": "https://www.facebook.com/centralityai"
+    },
+    "overview": {
+        "en": "Developing a peer to peer marketplace.",
+        "zh": "CENNZ 致力于开发点对点市场。"
+    },
+    "symbol": "CENNZ",
+    "whitepaper": "https://www.centrality.ai/wp-content/uploads/2018/01/Centrality-Whitepaper-2018.01.09.pdf",
+    "address": "0x1122B6a0E00DCe0563082b6e2953f3A943855c1F",
+    "email": "social@centrality.ai"
+}

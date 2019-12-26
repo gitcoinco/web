@@ -1,0 +1,25 @@
+{
+    "symbol": "HiWallet",
+    "address": "0x2C6a9A29a5594456DD99f74ff4689D84c57F204C",
+    "overview": {
+        "en": "One wallet for your cash & cryptocurrency.",
+        "zh": "一个钱包，用于现金和加密货币"
+    },
+    "email": "admin@hiwalletdigital.org",
+    "website": "https://hiwalletdigital.org/",
+    "whitepaper": "https://hiwalletdigital.org/hiwalletwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-01",
+    "initial_price": {
+        "ETH": "0.0000130 ETH",
+        "USD": "0.0038 USD",
+        "BTC": "0.0000005 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@hiwallet",
+        "twitter": "https://twitter.com/hiwallettoken",
+        "telegram": "https://t.me/joinchat/hiwalletOfficial",
+        "github": "https://github.com/hiwallet/",
+        "medium": "https://medium.com/@hiwallet"
+    }
+}

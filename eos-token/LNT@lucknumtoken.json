@@ -1,0 +1,8 @@
+{
+    "symbol": "LNT",
+    "account_name": "lucknumtoken",
+    "overview": {
+        "en": "Lucky Number is a fair digital game base on blockchain. Players can guess the range of numbers (larger or smaller than a specific number) to get a reward. When roll the same number as the lucky number, player can get an extra bonus."
+    },
+    "website": "https://eosluckgame.com"
+}

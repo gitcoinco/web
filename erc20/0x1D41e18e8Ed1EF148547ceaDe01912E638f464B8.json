@@ -1,0 +1,26 @@
+{
+    "symbol": "CPR",
+    "address": "0x1D41e18e8Ed1EF148547ceaDe01912E638f464B8",
+    "overview": {
+        "en": "Casper is a digital currency community with a mission to create communities",
+        "zh": "Casper是一個數字貨幣社區，其使命是創建社區"
+    },
+    "email": "krambolino@gmail.com",
+    "website": "https://rakian.id",
+    "whitepaper": "https://rakian.id/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-20",
+    "initial_price": {
+        "ETH": "0.0000012 ETH",
+        "USD": "0.00038 USD",
+        "BTC": "0.00000005 BTC"
+    },
+    "links": {
+        "blog": "https://www.rakian.id",
+        "twitter": "https://twitter.com/inokrambol",
+        "telegram": "https://t.me/caspertoken",
+        "github": "https://github.com/inokrambol",
+        "reddit": "https://www.reedit.com/u/inokrambol",
+        "medium": "https://medium.com/@inokrambol"
+    }
+}

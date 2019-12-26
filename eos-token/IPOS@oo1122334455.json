@@ -1,0 +1,14 @@
+{
+    "symbol": "IPOS",
+    "account_name": "oo1122334455",
+    "overview": {
+        "en": "IPOS (InterPlanetary Operation System) a decentralized operation system base on blockchain and ipfs .",
+        "zh": "IPOS (InterPlanetary Operation System) 是一款基于区块链的去中心化操作系统。 底层使用 IPFS 作为文件系统 和 贝尔实验室plan9 实现去中心化可信计算"
+    },
+    "website": "https://iposlab.com",
+    "whitepaper": "https://github.com/IPOSIO/ipos/blob/master/README.md",
+    "links": {
+        "github": "https://github.com/iposio/ipos",
+        "telegram": "https://t.me/iposio"
+    }
+}

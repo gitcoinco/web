@@ -1,0 +1,21 @@
+{
+    "symbol": "CODE",
+    "address": "0x0De059Aa5dd17427B58145782143c4e3D2dDa6aB",
+    "overview": {
+        "en": "CODE is issued by Open Decentralized Autonomous Organization(OpenDAO).The OpenDAO aims to build an intelligent and autonomous open source community by block chain technology.To realize the true value of program codes, we created a mechanism to confirming the right of codes and  represent the code value.  It will take into consideration the interests of the open-source developers and realize the goal of code one time benefit for lifetime."
+    },
+    "email": "service@codecoin.com",
+    "website": "http://www.codecoin.com/",
+    "whitepaper": "http://www.codecoin.com/CODE.pdf",
+    "published_on": "2018-12-09",
+    "initial_price": {
+        "ETH": "0.02315 ETH",
+        "USD": "2 USD",
+        "BTC": "0.000608 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/code48198011",
+        "telegram": "https://t.me/joinchat/LsCGLhakGDTr-cs4iLZFfg",
+        "github": "https://github.com/codecoingit/CODE"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "symbol": "IQ",
+    "account_name": "everipediaiq",
+    "overview": {
+        "en": "The Everipedia team plans to build a modern, convenient and decentralized new encyclopedia website, and this goal will be realized with the development of blockchain technology. The new developing Everipedia will based on the EOS network, which have features such as community autonomy, shielding prevent, and contribution incentives compares to the current Everipedia.The business network encyclopedia Everipedia is owned by Everipedia.",
+        "zh": "Everipedia 团队计划建设现代化的、便捷的、去中心化的新版网络百科网站，而这一目标随着区块链技术的发展将会得以实现。正在开发中的新版 Everipedia 将会基于 EOS 网络，其相比现在的 Everipedia 百科网站将具有社区自治，防止屏蔽，贡献激励等独特功能。商业网络百科全书 Everipedia 成立于 2014 年，目前尚未采用区块链技术，由 Everipedia.Inc 所有，名字来源于英文单词 “Everything” 和 “Encyclopedia” 。截至 2017 年 12 月，Everipedia 是最大的英文百科全书，有超过六百万个条目，包含了 Wikipedia 所有英文条目。Everipedia 对关注度的要求较为宽松，因此其条目的数量会多于 Wikipedia 。"
+    },
+    "website": "https://everipedia.org/",
+    "total_supply": "100,000,000,000",
+    "links": {
+        "twitter": "https://twitter.com/everipedia",
+        "telegram": "https://t.me/everipedia",
+        "reddit": "https://www.reddit.com/r/Everipedia/"
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "symbol": "MOFA",
+    "address": "0xf72cae1cd153904d247a074b660c0a64e5027591",
+    "overview": {
+        "en": "Through client tools, the integration of asset management transactions, financial services, voting rights management, project venture capital, application distribution and information platform functions",
+        "zh": "通过客户工具，整合资产管理交易、金融服务、表决权管理、项目风险资本、应用程序分发和信息平台功能。"
+    },
+    "email": "blockmofa@yeah.net",
+    "website": "https://www.blockmofa.com",
+    "whitepaper": "http://www.blockmofa.com/MOFA.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-30",
+    "initial_price": {
+        "ETH": "0.00038 ETH",
+        "USD": "0.1 USD"
+    },
+    "links": {
+        "Twitter": "https://mobile.twitter.com/mofablock?p=i"
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "symbol": "NETA",
+    "address": "0xc785D0F0b131Ee3A9507c3B97Db49Ba0E78a4F66",
+    "overview": {
+        "en": "The Trust Machine For Online Gaming.",
+        "zh": "在線遊戲的信任機器"
+    },
+    "email": "admin@netareum.org",
+    "website": "https://cyberchainnetwork.com/",
+    "whitepaper": "https://netareum.org/whitepaper/Netareum_whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-01",
+    "initial_price": {
+        "ETH": "0.00000130 ETH",
+        "USD": "0.00038 USD",
+        "BTC": "0.00000005 BTC"
+    },
+    "links": {
+        "blog": "https://netareum.org/#about",
+        "twitter": "https://twitter.com/netareum",
+        "telegram": "https://t.me/joinchat/netareumofficial",
+        "github": "https://github.com/netareum/",
+        "medium": "https://medium.com/@netareum"
+    }
+}

@@ -1,0 +1,21 @@
+{
+  "symbol": "BICA",
+  "address": "0x7A2b4708e18F3d11393B6de37Cf1fe1eC7b4Fd62",
+  "overview":{
+        "en": "BICA is the most reliable stablecoin with a real-world asset value in the crypto market. BICA is one stablecoin in the crypto market for crypto holders to invest, transfer, and trade. With BICA, you can own digital assets easily with real-world asset value and enjoy the benefits provided by asset owners through the Bitcapital foundation.",
+        "zh": "BICA（Bitcapital Coin）是在加密货币市场最可靠的稳定币，承诺 1:1 定锚美元，并且具备真实的资产价值。 BICA 持有者可使用于投资、转让和交易的一种稳定币。通过 BICA，持币者可以轻松拥有实际资产价值的数字资产，并享受资产所有者通过 Bitcapital 基金会提供的收益。"
+  },
+  "email": "bica@bitcapitalcoin.org",
+  "website": "https://www.bitcapitalcoin.org/",
+  "whitepaper": "https://www.bitcapitalcoin.org/whitepaper",
+  "state": "NORMAL",
+  "published_on": "2019-06-12",
+  "initial_price":{
+        "USD":"1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/BICACoin",
+    "telegram": "https://t.me/bitcapitalcoin612",
+    "facebook": "https://www.facebook.com/BICACoin/"
+  }
+}

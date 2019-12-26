@@ -1,0 +1,25 @@
+{
+    "symbol": "ZNT",
+    "address": "0xE95990825AAB1a7f0Af4cc648f76a3Bcc99F25B2",
+    "overview": {
+        "en": "Zenswap Network Token (ZNT) is an ERC20 utility token that will be used to avail discount subscription for swap transactions fee and premium access to value-added services."
+    },
+    "email": "admin@zenswapnetwork.info",
+    "website": "https://www.zenswapnetwork.info/",
+    "whitepaper": "https://drive.google.com/file/d/1sNaiMxa87ra4-QQv5uFBo0etDnSDj6Y6/view",
+    "state": "NORMAL",
+    "published_on": "2018-06-15",
+    "initial_price": {
+        "ETH": "0.0000001 ETH",
+        "USD": "0.000026 USD",
+        "BTC": "0.000000004 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/ZenswapNetwork",
+        "telegram": "https://t.me/ZenswapNetwork",
+        "github": "https://github.com/zenswapnetwork/ZenswapNetwork",
+        "facebook": "https://www.facebook.com/ZenswapNetwork",
+        "reddit": "https://www.reddit.com/r/ZenswapNetwork/",
+        "medium": "https://medium.com/your-awesome-project"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "symbol": "HTC",
+    "address": "0xEa2c56E5718843b9d946673920B58E594A7Fb3f6",
+    "overview": {
+        "en": "Based on block chain encryption technology and consensus mechanism, links consumers, investors and project parties to provide global digital world enthusiasts with eco-social. At the same time, the introduction of third-party content and service providers through the IM open platform to build the global ecology of the block chain industry.",
+        "zh": "基于区块链加密技术及共识机制，链接消费者、投资者和项目方，为全球数字世界爱好者提供全生态社交。同时，通过IM开放平台引入第三方内容和服务供应商，搭建区块链行业全球生态."
+    },
+    "email": "htc@hotchat.one",
+    "website": "http://www.hotchat.one/",
+    "whitepaper": "http://www.hotchat.one/Uploads/file/20180826/2018082617492694.pdf",
+    "published_on": "2018-08-20",
+    "initial_price": {
+        "ETH": "0.000002 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/HotChatOfficial",
+        "telegram": "https://t.me/HotChatofficial",
+        "github": "https://github.com/hotchatone",
+        "facebook": "https://www.facebook.com/HotChat-290833184804837/"
+    }
+}

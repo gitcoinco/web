@@ -1,0 +1,17 @@
+{
+    "website": "http://www.bnn2u.com/",
+    "links": {
+        "slack": "https://bnnblockchainnewmedia.slack.com",
+        "telegram": "https://t.me/BNNBlockchainNewMediaNetwork",
+        "twitter": "https://twitter.com/BNNnewmedia",
+        "facebook": "https://www.facebook.com/BNN-Blockchain-NewMedia-Network-615158052176070"
+    },
+    "overview": {
+        "en": " Decentralized Newmedia Platform Our founding aims to create the world’s first decentralized newmedia platform that combines hypermedia and blockchain technologies, allowing the entire population to freely disseminate and publish media content for sharing and promotion without central mechanisms. Through the integrated use of the blockchain and the media, everyone can become a decentralized self-media outlet within the blockchain, and with the advantage of decentralization, the participants receive more benefits than if they had gone through a central database.",
+        "zh": "去中心化新媒体平台我们的创办旨在打造全球首个结合超媒体与区块链技术的去中心化新媒体平台，让全民自由传播、发布媒体内容，达到无中央机制的分享与宣传用途。透过区块链与传播媒体结合的影响力，人人都能够成为去中心化的自媒体，并且借助去中心化的优势，让参与者的收益达到最大化。"
+    },
+    "symbol": "BNN2U",
+    "whitepaper": "http://13.230.77.16:8080/wp-content/uploads/2018/06/BNN_Whitepaper_v2.0_Simplified-Chinese.pdf",
+    "address": "0x6454340896b9ae47921809de9035f4dadea3ac8b",
+    "email": "support@bnn2u.com"
+}

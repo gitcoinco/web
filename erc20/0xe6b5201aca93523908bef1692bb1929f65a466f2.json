@@ -1,0 +1,18 @@
+{
+    "symbol": "ISC",
+    "address": "0xe6b5201aca93523908bef1692bb1929f65a466f2",
+    "overview": {
+        "en": "ISC is the first global innovation and startup community public chain in the field of blockchain, which supports startup projects to create exclusive Token and indirect listing, various institutions to carry out startup incubation services, and supports investment institutions and investors to carry out startup investment. It is an aggregation of innovation and startup community and investment service platform. Compatible with Bitshares and ERC20, with DPOS mechanism and free template contract, TPS up to 3000 times, and it can support millions of users. Also, the transaction fees is lower than average. At the same time, ISC creates EDR technology as a pioneer, which supports free transmission of ISC and ERC20 formats.",
+        "zh": "创链是全球首个面向区块链领域的创新创业社区公链，支持创业项目创建专属Token和间接上币，支持各类机构开展创业孵化服务，支持投资机构和投资人开展创业投资，是一个创新创业社区和投资服务平台的聚合体。兼容Bitshares和ERC20，采用DPOS机制和自由模板合约，TPS可达3000次，支持百万级别的用户，交易费用极低。同时，创链首创EDR（跨链币）技术，支持ISC和ERC20两种格式自由转换。"
+    },
+    "email": "support@ischain.io",
+    "website": "www.ischain.io",
+    "whitepaper": "http://www.ischain.io/files/ISC_White_Paper_EN-US.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-04",
+    "links": {
+        "twitter": "https://twitter.com/ischainofficial",
+        "telegram": "https://t.me/ischain",
+        "facebook": "https://www.facebook.com/ischainofficial"
+    }
+}

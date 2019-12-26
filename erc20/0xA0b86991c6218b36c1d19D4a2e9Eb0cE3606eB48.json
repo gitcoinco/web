@@ -1,0 +1,18 @@
+{
+    "symbol": "USDC",
+    "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "overview": {
+        "en": "USD//Coin (USDC) is a fiat collateralized stablecoin built by Centre (see centre.io) and issued by Centre members such as Circle (see circle.com)."
+    },
+    "email": "chuck@centre.io",
+    "website": "https://www.centre.io/",
+    "whitepaper": "https://www.centre.io/pdfs/centre-whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-01",
+    "initial_price": {
+        "USD": "1 USD"
+    },
+    "links": {
+        "github": "https://github.com/centrehq/centre-tokens"
+    }
+}

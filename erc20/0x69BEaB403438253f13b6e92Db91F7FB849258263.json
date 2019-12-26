@@ -1,0 +1,22 @@
+{
+    "website": "https://neuromation.io/",
+    "published_on": "2018-02-20",
+    "links": {
+        "telegram": "https://t.me/Neuromation",
+        "reddit": "https://www.reddit.com/r/Neuromation",
+        "github": "https://github.com/neuromation",
+        "facebook": "https://www.facebook.com/neuromation/",
+        "twitter": "https://twitter.com/neuromation_io"
+    },
+    "overview": {
+        "en": "This project is unique, revolutionary, and cheaper/faster than every competitor.",
+        "zh": "Neuromation 平台将使用分布式计算及区块链工作证明改变人工智能模式开发。"
+    },
+    "symbol": "NTK",
+    "initial_price": {
+        "USD": "0.6 USD"
+    },
+    "whitepaper": "https://neuromation.io/files/Neuromation_white_paper.pdf",
+    "address": "0x69BEaB403438253f13b6e92Db91F7FB849258263",
+    "email": "support@neuromation.io"
+}

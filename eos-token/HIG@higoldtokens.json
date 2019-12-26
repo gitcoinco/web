@@ -1,0 +1,17 @@
+{
+    "symbol": "HIG",
+    "account_name": "higoldtokens",
+    "overview": {
+        "en": "HIG is the HiGold Community token. Proof of Stake was chosen as the mining mechanism for new token mint and Bancor algorithm was used to balance the mining costs and profit. We are dedicated to develop a cryptocurrency community focus on decentralized applications.",
+        "zh": "HIG是嗨金加密货币社区的社区代币, 它选择权益证明(Proof of Stake)作为铸币的挖矿机制, 并使用班科算法(Bancor)来平衡挖矿成本与收益. 嗨金社区致力于发展一个以分布式应用程序为核心的加密货币社区. ",
+        "ko": "HIG 는 HiGold 암호화 화폐 커뮤니티의 쓰이는 코인입니다. HIG 는 Proof of Stake 를 발굴 메커니즘으로 바탕하여, Bancor algorithm 을 사용하여 자본금과 수익의 균형을 잡아줍니다.이 커뮤니티는 DApp을 핵심으로하는 암호화 코인 커뮤니티로 발전중입니다."
+    },
+    "website": "https://hi.gold",
+    "links": {
+        "github": "https://github.com/higold",
+        "telegram": "https://t.me/higolder",
+        "twitter": "https://twitter.com/realhigold",
+        "reddit": "https://www.reddit.com/r/higold/",
+        "medium": "https://medium.com/@higold"
+    }
+}

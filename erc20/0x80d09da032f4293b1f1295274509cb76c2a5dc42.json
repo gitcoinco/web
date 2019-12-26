@@ -1,0 +1,24 @@
+{
+    "symbol": "VAAC",
+    "address": "0x80d09da032f4293b1f1295274509cb76c2a5dc42",
+    "overview": {
+        "en": "VAAC is an integral token that can be widely used in offline and online retail businesses.",
+        "zh": "VAAC是一种线下与线上零售业可广泛使用的积分代币。"
+    },
+    "email": "vac@bitspace.cc",
+    "website": "http://www.vac.news/#/",
+    "whitepaper": "http://www.vac.news/white_paper.html#/",
+    "state": "NORMAL",
+    "published_on": "2018-07-29",
+    "initial_price": {
+        "ETH": "0.00099835 ETH",
+        "USD": "0.4844 USD",
+        "BTC": "0.00006063 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/valueaddedchain",
+        "telegram": "https://t.me/joinchat/JLWfrg76zp9e9FXfjaahYQ",
+        "facebook": "https://www.facebook.com/VAchainOffical",
+        "slack": "https://vac-global.slack.com/"
+    }
+}

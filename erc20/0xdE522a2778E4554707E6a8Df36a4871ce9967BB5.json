@@ -1,0 +1,13 @@
+{
+    "symbol": "FML",
+    "address": "0xdE522a2778E4554707E6a8Df36a4871ce9967BB5",
+    "overview": {
+        "en": "FormulA (FML) is committed to build a credible asset value exchange network IoA(Internet of Asset), where the real asset can be registered and circulated trustfully and efficiently, in order to enable the Asset Digitalization.",
+        "zh": "FormulA（FML）致力于建立一个“资产区块链网络”（Asset Blockchain）。基于Asset Blockchain，无论任何人都可以在安全、高效的区块链网络中进行资产确权和交易。传统资产登记和交换中所存在的信息不透明、资产流动性不足、履约成本高等痛点将随着FormulA的应用而得到根本性的改善。FormulA核心团队由来自以色列、美国和中国的行业专家组成，具有丰富的行业资源和行业经验。自创立之初便受到了来自华尔街日报、道琼斯、纽约经济周刊等国际一线媒体的关注，并获得了各大金融机构的支持。"
+    },
+    "email": "info@formula-x.org",
+    "website": "http://fml-x.org",
+    "whitepaper": "http://fml-x.org/home-assets/download/FormulA_WhitepaperV5.2_EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-29"
+}

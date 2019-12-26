@@ -1,0 +1,25 @@
+{
+    "symbol": "ENC",
+    "address": "0x039F5050dE4908f9b5ddF40A4F3Aa3f329086387",
+    "overview": {
+        "en": "ENC (Ethernet Cash) is a platform to buy and sell shares. We’re reinventing the global equity blockchain – that is secure, smart and easy-to-use platform, and completely disrupting the way businesses raise capital and the way investors buy and sell shares."
+    },
+    "email": "admin@ethernet.cash",
+    "website": "https://ethernet.cash/",
+    "whitepaper": "https://ethernet.cash/docs/Ethernet-Cash-(ENC)-White-Paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-04-28",
+    "initial_price": {
+        "ETH": "0.00000055 ETH",
+        "USD": "0.00035 USD",
+        "BTC": "0.000000055 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@ethernetcash",
+        "twitter": "https://twitter.com/ethernetcash",
+        "telegram": "https://t.me/ethernetcash",
+        "github": "https://github.com/ethernetcash",
+        "facebook": "https://www.facebook.com/ethernetcash.official",
+        "medium": "https://medium.com/@ethernetcash"
+    }
+}

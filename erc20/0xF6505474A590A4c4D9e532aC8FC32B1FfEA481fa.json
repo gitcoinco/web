@@ -1,0 +1,20 @@
+{
+    "symbol": "LEU",
+    "address": "0xF6505474A590A4c4D9e532aC8FC32B1FfEA481fa",
+    "overview": {
+        "en": "LEU is a decentralized exchange platform currency that makes digital asset trading safer and easier",
+        "zh": "乐特儿是一个去中心化的交易所平台币，让数字资产交易更安全、更便捷"
+    },
+    "email": "support@letru.com",
+    "website": "http://www.letru.io",
+    "state": "NORMAL",
+    "published_on": "2018-07-11",
+    "initial_price": {
+        "ETH": "0.00006667 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/Letru2018",
+        "telegram": "https://t.me/joinchat/HoszEw23e6pBGoqbzRNHRg",
+        "facebook": "https://www.facebook.com/letru2018"
+    }
+}

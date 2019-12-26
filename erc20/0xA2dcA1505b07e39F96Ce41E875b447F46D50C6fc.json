@@ -1,0 +1,17 @@
+{
+  "symbol": "ETHS",
+  "address": "0xA2dcA1505b07e39F96Ce41E875b447F46D50C6fc",
+  "overview":{
+        "en": "Ethercash (ETHS) is a global payment chain based on payment, aiming at creating fair and secure free financial payment instruments to allow users to safely store funds. Ethercash issuance is 600 million, ensuring the network work of the technology",
+        "zh": "Ethercash（ETHS）以太现金为全球支付底层公有链，旨在创建公平，安全的自由金融支付工具让用户安全的存储资金。以太现金发行总量6亿，在技术底层确保网络是安全，灵活，可拓展的应用支付链，下沉至金融支付的底层。"
+  },
+  "email": "ceo@ethercash.cc",
+  "website": "http://www.ethercash.cc/",
+  "whitepaper": "http://www.ethercash.cc/ETHS%20Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-06-27",
+  "links": {
+    "比特家园": "http://www.btc126.com/view/28108.html",
+    "区块链网": "https://www.qklw.com/lives/20190624/6700.html"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "symbol": "LDC",
+  "address": "0x303D2C2B49fE7d0D5ED91927D3f4e25FeC3b0322",
+  "overview":{
+      "en": "LDC adopts DDPOS consensus protocol, combines the market advanced open source Graphene scheme and fragmentation technology. As an asset trading agreement based on block chain 4.0, LDC high-speed public chain will build a whole-domain ecosystem covering 'gold stable currency + decentralized gold exchange + merchant payment system' in the future.",
+      "zh": "LDC采用DDPOS共识协议，结合市场上先进的开源Graphene方案和分片技术。LDC高速公链作为基于区块链4.0的资产交易协议，未来将打造涵盖“黄金稳定币+去中心化黄金交易所+商户支付系统”的区块链全领域生态。"
+  },
+  "email": "747504180@qq.com",
+  "website": "http://ledianl.linshidizhi.com/",
+  "whitepaper": "http://ledianl.linshidizhi.com/baipi.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-31",
+  "initial_price":{
+      "ETH":"0.000327761389708 ETH"
+  },
+  "links": {
+    "facebook": "https://www.facebook.com/ldc.shawn"
+  }
+}

@@ -1,0 +1,18 @@
+{
+    "symbol": "TUCC",
+    "address": "0x7846ec1ea708131d46e9da39e93834498c4f4a3d",
+    "overview": {
+        "en": "Centralized exchanges lack security,transparency and efficiency.Decentralized transactions are different from centralized exchanges.By operating on the key functionality of the block chain,users can control their own money:they use the technology behind the encrypted currency itself To achieve safer and more transparent transactions. Turing Club Chain,a project launched by the Turing foundation,goes to the center.A chemical exchange is designed to solve centralized trading by establishing a point-to-point market directly on the block chain (mainly in ethernet) This will allow traders to continue to manage funds.",
+        "zh": "中心化交易所缺乏安全性、透明度和效率，去中心化交易与中心化交易所有所不同，通过在区块链上操作的关键功能，用户能够自己控制资金：它们利用加密货币本身背后的技术来实现更安全和更透明的交易。由图灵基金会孵化的项目Turing Club Chain打造出来的去中心化交易所就是旨在通过在区块链上（主要是以太坊）直接建立点对点的市场来解决中心化交易的问题，这将允许交易者继续管理资金。"
+    },
+    "email": "turingclub@yandex.com",
+    "website": "http://www.tucc.ink",
+    "whitepaper": "http://www.tucc.ink/tucc.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-10",
+    "initial_price": {
+        "ETH": "0.001 ETH",
+        "USD": "0.32399988 USD",
+        "BTC": "0.0000516994 BTC"
+    }
+}

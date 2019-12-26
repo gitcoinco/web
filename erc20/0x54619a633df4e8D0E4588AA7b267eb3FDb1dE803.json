@@ -1,0 +1,16 @@
+{
+  "symbol": "FILP",
+  "address": "0x54619a633df4e8D0E4588AA7b267eb3FDb1dE803",
+  "overview":{
+    "en": "IPFS (InterPlanetary File System) is a global, peer-to-peer distributed version of the file system, the goal is to supplement (or even replace) the hypertext transfer protocol HTTP that currently dominates the Internet, connecting all computing devices with the same file system together. The principle replaces the domain-based address with a content-based address, that is, the content that the user is looking for is not a certain address but is stored in a certain place, and does not need to verify the identity of the sender, but only needs to verify the hash of the content. It can make web pages faster, safer, more robust, and more durable. Filecoin is the incentive layer on IPFS, which builds a decentralized storage market on IPFS through the token incentive model. FILPool is a mining pool focused on Filecoin mining, while FILP is a Token token issued by the FILPool pool based on the ERC-20 standard, with a total issued value of 10 billion. Among them, 15% is used for team incentives, that is, 1.5 billion, which is gradually released in proportion to 6 years; 15% is used to give back to the sponsors, that is, 1.5 billion, which is gradually released in proportion to 6 years; 20% is used for community airdrops. That is, 2 billion pieces; 50% for mining, that is, 5 billion pieces, which is expected to be dug in 6 years.The FILPool pool aims to promote Filecoin mining effectiveness, node operation and maintenance optimization, IPFS ecological construction, distributed storage technology applications and Internet resource innovation through FILP token. ",
+    "zh": "IPFS(InterPlanetary File System)是一个面向全球的、点对点的分布式版本文件系统，目标是为了补充(甚至是取代)目前统治互联网的超文本传输协议HTTP，将所有具有相同文件系统的计算设备连接在一起。原理用基于内容的地址替代基于域名的地址，也就是用户寻找的不是某个地址而是储存在某个地方的内容，不需要验证发送者的身份，而只需要验证内容的哈希，通过这样可以让网页的速度更快、更安全、更健壮、更持久。Filecoin是在IPFS其上的激励层，通过token激励模式在IPFS上构建了一个去中心化存储市场。FILPool就是专注于Filecoin挖矿的矿池，而FILP是FILPool矿池基于ERC-20标准发行的Token代币，发行总量100亿枚。其中，15%用于团队激励，即15亿枚，分6年按比例逐步释放；15%用于回馈赞助人，即15亿枚，分6年按比例逐步释放；20%用于社区空投，即20亿枚；50%用于挖矿，即50亿枚，预计6年挖完；FILPool矿池旨在通过FILP通证促进Filecoin挖矿成效、节点运维优化、IPFS生态建设、分布式存储技术应用及互联网资源革新。"
+  },
+  "email": "token@filpool.io",
+  "website": "http://filpool.io",
+  "state": "NORMAL",
+  "published_on": "2019-08-16",
+  "links": {
+    "twitter": "https://twitter.com/FILPool",
+    "telegram": "https://t.me/FILPool"
+  }
+}

@@ -1,0 +1,16 @@
+{
+    "symbol": "AIGE",
+    "address": "0xe63C822AEbcb396154FA99448d64f516807e4aD8",
+    "overview": {
+        "en": "Building a distributed game platform based on blockchain",
+        "zh": "基于区块链打造分布式的游戏平台"
+    },
+    "website": "https://www.aigame.group",
+    "whitepaper": "https://www.aigame.group/aigamewhitepaper.pdf",
+    "published_on": "2018-11-06",
+    "links": {
+        "twitter": "https://twitter.com/JessonLee",
+        "github": "https://github.com/lily20181716",
+        "facebook": "https://www.facebook.com/li.jie.9828456"
+    }
+}

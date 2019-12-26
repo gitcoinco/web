@@ -1,0 +1,17 @@
+{
+  "symbol": "PAXG",
+  "address": "0x45804880De22913dAFE09f4980848ECE6EcbAf78",
+  "overview":{
+        "en": "PAX Gold (PAXG) is a digital asset where one token is backed by one fine troy ounce (t oz) of a 400 oz London Good Delivery gold bar, stored in Brink’s gold vaults. Anyone who owns PAXG owns the underlying physical gold, held in custody by Paxos Trust Company. Built as an ERC-20 token on the Ethereum blockchain, PAXG can easily be moved or traded anywhere in the world, 24/7. With low investment minimums, now anyone can own a fraction of an LBMA-accredited London Good Delivery gold bar.",
+        "zh": "PAX Gold (PAXG)是一种加密资产，每个代币代表着存放在Brink专业金库中的400盎司标准交割金条中的一金衡盎司。所有PAX Gold的持有者都享有在Paxos Trust Company托管下的对应黄金的直接拥有权。PAX Gold是以太坊上的ERC-20代币，任何人随时随地都可以进行购买使用。最小投资额门槛低，机构和散户投资者及交易商都可以部分拥有和交易经伦敦金银市场协会（LBMA）认可的标准交割金条。"
+  },
+  "website": "https://www.paxos.com/zh/paxgold/",
+  "whitepaper": "https://www.paxos.com/wp-content/uploads/2019/09/PAX-Gold-Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-05",
+  "links": {
+    "twitter": "https://twitter.com/paxosglobal",
+    "facebook": "https://www.facebook.com/PaxosGlobal/",
+    "medium": "https://medium.com/paxos"
+  }
+}

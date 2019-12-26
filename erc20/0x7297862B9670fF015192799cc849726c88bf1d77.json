@@ -1,0 +1,26 @@
+{
+    "symbol": "SKYM",
+    "address": "0x7297862B9670fF015192799cc849726c88bf1d77",
+    "overview": {
+        "en": "SkyMap Token"
+    },
+    "email": "info@soar.earth",
+    "website": "https://soar.earth",
+    "whitepaper": "https://www.soar.earth/whitepaper.html",
+    "state": "NORMAL",
+    "published_on": "2018-10-24",
+    "initial_price": {
+        "ETH": "0.00098 ETH",
+        "USD": "0.2 USD",
+        "BTC": "0.000032 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/soar-earth",
+        "twitter": "https://twitter.com/Soar_Earth",
+        "telegram": "https://t.me/SoarEarth",
+        "github": "https://github.com/SoarEarth",
+        "facebook": "https://www.facebook.com/SoarEarthOfficial/",
+        "reddit": "https://www.facebook.com/SoarEarthOfficial/",
+        "medium": "https://medium.com/soar-earth"
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "symbol": "ITEC",
+    "address": "0x99176b8b915016c80098a9d98caea9e52fc30134",
+    "overview": {
+        "en": "ITEC is called Intelligent Travel Ecosystem Chain. The Chinese name is Zhihui Lvxing ShengTai Lian.It is a smart travel ecosystem based on cutting-edge technologies such as blockchain, big data, and cloud computing.Through the integration of global travel destinations, governments, travel agencies, local business services, tourists and other resources, the use of blockchain technology decentralization, information traceability, smart contracts, can not be tampered with and fairness and other characteristics， let the data be chained and information is chained, and the travel destination local service ecosystem based on trust, evaluation, motivation, community autonomy, and system intelligence will be rebuilt.",
+        "zh": "ITEC全称Intelligent Travel Ecosystem Chain，中文名为智慧旅行生态链，是基于区块链、大数据和云计算等前沿技术相结合的智慧旅行生态系统，通过整合全球旅行景区、政府、旅行社、本地商业服务、游客等多方资源，利用区块链技术的去中心化、信息可追溯、智能合约、不可篡改及公平公正等特性，让数据上链、信息上链，重新构建基于信任、评价、激励、社区自治、系统智慧的旅行目的地本地服务生态体系。"
+    },
+    "email": "hello@itechain.io",
+    "website": "https://itechain.io",
+    "whitepaper": "https://itechain.io/pdf/ITEC-WhitePaper-EN.pdf",
+    "state": "NORMAL"
+}

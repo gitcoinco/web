@@ -1,0 +1,25 @@
+{
+    "symbol": "WANGTOKEN",
+    "address": "0xA6fBE7781932a28eeAE7c9cACF939b73d721081e",
+    "overview": {
+        "en": "the ultimate platform for crypto investors.",
+        "zh": "加密投资者的终极平台"
+    },
+    "email": "Support@wangtokenplatform.com",
+    "website": "https://wangtokenplatform.com/",
+    "whitepaper": "https://wangtokenplatform.com/wangtokenwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-11-30",
+    "initial_price": {
+        "ETH": "0.00001666 ETH",
+        "USD": "0.007 USD",
+        "BTC": "0.00000041 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@WangToken",
+        "twitter": "https://twitter.com/WangToken",
+        "telegram": "https://t.me/joinchat/wangtokenofficial",
+        "github": "https://github.com/wangtoken",
+        "medium": "https://medium.com/@WangToken"
+    }
+}

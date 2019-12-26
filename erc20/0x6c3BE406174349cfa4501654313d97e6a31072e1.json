@@ -1,0 +1,24 @@
+{
+  "symbol": "CNNS",
+  "address": "0x6c3BE406174349cfa4501654313d97e6a31072e1",
+  "overview":{
+        "zh": "CNNS意图构建一个基于区块链的信息和价值交换的全球生态圈。目前已在超过20家数字资产交易所开放交易。CNNS代币持有者可以享受CNNS生态圈提供的所有功能和服务,目前已实现策略广场，打赏支付、BSJ积分兑换等辅助场景应用。未来CNNS会开发更多应用场景，接入更多生态伙伴。CNNS致力于为每一个生态参与者发掘最大利益，从而促进区块链行业的整体的快速发展，合规发展。",
+        "en": "CNNS intends to build a global ecosphere based on block chain information and value exchange. At present, more than 20 digital asset exchanges have been opened for trading. CNNS token holders can enjoy all the functions and services provided by CNNS Ecosphere. At present, they have realized assistant scenario applications such as Strategy Square, Reward Payment, BSJ Point Exchange and so on. In the future, CNNS will develop more application scenarios and access more ecological partners. CNNS is committed to exploring the best interests of each ecological participant, so as to promote the rapid development of the block chain industry as a whole and the development of compliance"
+  },
+  "email": "operation@coinness.com",
+  "website": "https://cnns.io",
+  "whitepaper": "https://cnns.io/static/whitepaper/CNNS-White_Paper.pdf?v=201900423",
+  "state": "NORMAL",
+  "published_on": "2019-03-17",
+  "initial_price":{
+        "ETH":"0.00000101 ETH",
+        "USD":"0.00018247 USD",
+        "BTC":"0.00000002 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/CoinNessCom",
+    "telegram": "https://t.me/coinnessofficial",
+    "facebook": "https://www.facebook.com/CoinNessCom",
+    "reddit": "https://www.reddit.com/r/CoinNessOfficial"
+  }
+}

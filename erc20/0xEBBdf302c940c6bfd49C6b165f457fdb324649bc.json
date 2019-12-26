@@ -1,0 +1,17 @@
+{
+    "website": "https://www.hydrogenplatform.com/hydro",
+    "links": {
+        "telegram": "https://t.me/joinchat/H3uDdQ9JBFyV1UL35xX4VQ",
+        "reddit": "https://www.reddit.com/r/ProjectHydro/",
+        "github": "https://github.com/hydrogen-dev/smart-contract",
+        "twitter": "https://twitter.com/HydrogenAPI"
+    },
+    "overview": {
+        "en": "The global financial platform of the Web 3.0.",
+        "zh": "Web 3.0 时代的全球金融平台。"
+    },
+    "symbol": "HYDRO",
+    "whitepaper": "https://www.hydrogenplatform.com/Hydro_Raindrop_White_Paper.pdf",
+    "address": "0xEBBdf302c940c6bfd49C6b165f457fdb324649bc",
+    "email": "hydro@hydrogenplatform.com"
+}

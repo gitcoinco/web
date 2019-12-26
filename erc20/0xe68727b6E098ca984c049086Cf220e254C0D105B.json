@@ -1,0 +1,15 @@
+{
+    "website": "http://www.estnetwork.org",
+    "published_on": "2018-08-01",
+    "links": {
+        "github": "https://github.com/est-token"
+    },
+    "overview": {
+        "en": "The shared chain will realize all assets in the physical world and mapping and segmentation in the digital world. It will become a builder of value Internet and a forerunner of future win-win world。At the time of greatly speeding up speed and efficiency of asset circulation, it ensures reality and non-tampering property of underlying asset data.",
+        "zh": "共享链将实现物理世界的所有资产到数字世界的映射和切分，它将成为价值互联网的搭建者，未来共赢世界的先行者，在极大的加速资产流通速度以及效率的同时保证底层资产数据的真实性、不可篡改性。"
+    },
+    "symbol": "EST",
+    "whitepaper": "http://file.estnetwork.org/est.pdf",
+    "address": "0xe68727b6E098ca984c049086Cf220e254C0D105B",
+    "email": "hi@biliang.org"
+}

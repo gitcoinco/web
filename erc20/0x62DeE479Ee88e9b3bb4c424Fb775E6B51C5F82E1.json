@@ -1,0 +1,25 @@
+{
+    "symbol": "AWT",
+    "address": "0x62DeE479Ee88e9b3bb4c424Fb775E6B51C5F82E1",
+    "overview": {
+        "en": "AWT is a distributed book-keeping service system, which is composed of central components such as ledger, consensus, P2P, transaction, asset, contract, history and accounting.",
+        "zh": "AWT是一个一个集账本、共识、P2P、事务、资产、合约、历史和记账等中枢组成部分的分布式账本服务体系。"
+    },
+    "email": "contact@sky-catch.com",
+    "website": "http://sky-catch.com",
+    "whitepaper": "http://www.sky-catch.com/AWT_Book.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-27",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.7 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "links": {
+        "blog": "https://weibo.com/skycatch",
+        "twitter": "https://twitter.com/skycatch",
+        "telegram": "https://t.me/skycatch",
+        "github": "https://github.com/skycatch",
+        "facebook": "https://www.facebook.com/skycatch"
+    }
+}

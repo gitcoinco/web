@@ -1,0 +1,14 @@
+{
+  "symbol": "ATS",
+  "address": "0x8BcC2aaF7dc6210B0d98844D080bfce98238661F",
+  "overview":{
+        "en": "ATS's trading system uses advanced blockchain technology and is certified by an authoritative assessment center. The order processing speed is as high as 1.4 million single/second. It is believed that this speed has exceeded hundreds or even thousands of times of most systems in the industry. There is no delay or jamming in order processing. The system has rich and successful application experience in other similar digital exchanges, and can support the smooth and stable operation of exchanges with more than 20 million online users at the same time.",
+        "zh": "ATS的交易系统采用先进的区块链技术技术，并经权威测评中心认证，订单处理速度高达140万单/秒，可以确信这个速度已经超越业内大部分系统数百、甚至数千倍，能够保证订单处理不会出现任何延迟和卡顿。该系统在其他同类数字交易所已有丰富且成功的应用经验，可支持同时在线用户数量超2000万的交易所流畅稳定运行。"
+  },
+  "website": "http://atstoken.net/",
+  "whitepaper": "http://atstoken.net/web/viewer.html?name=compressed.tracemonkey-pldi-09.pdf",
+  "published_on": "2019-05-02",
+  "initial_price":{
+        "ETH": "0.0001 ETH"
+  }
+}

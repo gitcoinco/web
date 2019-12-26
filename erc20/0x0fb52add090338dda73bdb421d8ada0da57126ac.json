@@ -1,0 +1,15 @@
+{
+    "symbol": "BEAUTY",
+    "address": "0x0fb52add090338dda73bdb421d8ada0da57126ac",
+    "overview": {
+        "en": "BeautyBloc builds a credit system BVS (Beauty Value Score) with blockchain technology, Revolutionary token transfer mode，Incentive mechanism and Decentralized trading platform , To reduce the cost and improve the efficiency of medical beauty industry.",
+        "zh": "BeautyBloc利用区块链技术，革命性令牌转移模式，激励机制和分散交易平台建立信用体系BVS（美丽价值评分），以降低成本，提高医疗美容行业的效率。"
+    },
+    "website": "http://www.beautybloc.io",
+    "whitepaper": "http://www.beautybloc.io/resource/BeautyBloc+WP.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-02-01",
+    "links": {
+        "telegram": "https://t.me/beautyblocen"
+    }
+}

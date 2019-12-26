@@ -1,0 +1,25 @@
+{
+    "symbol": "BTU",
+    "address": "0xb683D83a532e2Cb7DFa5275eED3698436371cc9f",
+    "overview": {
+        "en": "Booking Token Unit (BTU) is the first peer to peer reservation protocol. It empowers any developer or company to become a booking platform",
+        "zh": "預訂令牌單元（BTU）是第一個分散預留協議"
+    },
+    "email": "info@btu-protocol.com",
+    "website": "https://www.btu-protocol.com/en/",
+    "whitepaper": "https://www.btu-protocol.com/pdf/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-01-01",
+    "initial_price": {
+        "ETH": "0.0064 ETH",
+        "USD": "1.4 USD"
+    },
+    "links": {
+        "blog": "https://medium.com/@BTUProtocolTeam",
+        "twitter": "https://twitter.com/BtuProtocol",
+        "telegram": "https://t.me/BTUCommunity",
+        "github": "https://github.com/btuprotocol",
+        "facebook": "https://www.facebook.com/btuprotocol",
+        "medium": "https://medium.com/@BTUProtocolTeam"
+    }
+}

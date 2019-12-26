@@ -1,0 +1,26 @@
+{
+    "symbol": "TEBT",
+    "address": "0xE36B0F3C426923E352F6005b6236082A78A3C2cb",
+    "overview": {
+        "en": "TEBT is one of the largest blockchain based operating systems that is fast and safe",
+        "zh": "TEBT是最快的安全的基于区块链的操作系统之一。"
+    },
+    "email": "support@tebt.world",
+    "website": "http://tebt.world",
+    "whitepaper": "http://tebt.world/whitepaper",
+    "state": "NORMAL",
+    "published_on": "2018-09-26",
+    "initial_price": {
+        "ETH": "0.00000005 ETH",
+        "USD": "0.00001 USD",
+        "BTC": "0.00000001 BTC"
+    },
+    "links": {
+        "blog": "http://www.tebt.world",
+        "twitter": "https://twitter.com/Tebtoken",
+        "telegram": "https://t.me/Tebtoken",
+        "github": "https://github.com/tebtoken",
+        "reddit": "https://www.reedit.com/u/tebtoken",
+        "medium": "https://medium.com/@tebtoken"
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "symbol": "EOSDAC",
+    "account_name": "eosdactokens",
+    "overview": {
+        "en": "EOSDAC is a leading producer of eos.io blocks dedicated to serving the global EOS community as a growing decentralized autonomous community. Through EOS software, it is possible to make communities a revolutionary way for cooperatives. The development assistance committee is run by its token holders and board members.",
+        "zh": "EOSDAC是致力于成为一个不断发展的分布式自治社区为全球EOS社区提供服务的领先EOS.IO内存块制作商。通过EOS软件，使社区成为合作社的一种革命性方式成为可能。发展援助委员会由其代币持有者和董事会成员控制运行。"
+    },
+    "website": "https://eosdac.io",
+    "published_on": "2018-04-18",
+    "links": {
+        "medium": "https://medium.com/eosdac",
+        "twitter": "https://twitter.com/eosdac",
+        "telegram": "https://medium.com/eosdac",
+        "github": "https://github.com/eosdac",
+        "reddit": "https://www.reddit.com/r/EOSDAC/"
+    }
+}

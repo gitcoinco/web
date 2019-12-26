@@ -1,0 +1,25 @@
+{
+    "symbol": "SUC",
+    "address": "0xb0AdEFeB19A983b3436b1a153ea2B3E1D411Dbf1",
+    "overview": {
+        "en": "SUC Ecological Platform is a de-centralized application ecological platform based on ETH bottom-level full-chain, which integrates mining, share sale and dividend dividend.",
+        "zh": "SUC 生态平台是基于 ETH 底层全链上开发的一款集挖矿、股权出售、股息分红的去中心化应用生态平台，希望由此开启史上最大的一次全民挖矿的全民持股分红的经济实验。"
+    },
+    "email": "support@succ.ai",
+    "website": "http://succ.ai/",
+    "whitepaper": "https://succai.github.io/wp/succcn.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-28",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.7 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "links": {
+        "blog": "https://weibo.com/SUCOfficial",
+        "twitter": "https://twitter.com/SUCOfficial",
+        "telegram": "https://t.me/SUCOfficial",
+        "github": "https://github.com/succai",
+        "facebook": "https://www.facebook.com/SUCOfficial"
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "symbol": "IFUM",
+    "address": "0x5278852029f4FDf91EB2d40614Ff49B4b4b7C765",
+    "overview": {
+        "en": "Brand publishing & marketing agent platform with 8 dapp services developed by ELSOLCOM."
+    },
+    "email": "support@infleum.io",
+    "website": "https://www.infleum.io/",
+    "whitepaper": "https://drive.google.com/file/d/1Vi7Eush0SDUQxpyw4fX6IukfIAySTdHb",
+    "state": "NORMAL",
+    "published_on": "2018-12-10",
+    "initial_price": {
+        "USD": "0.02 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/infleum",
+        "telegram": "https://t.me/infleum_official_EN",
+        "github": "https://github.com/infleum",
+        "facebook": "https://www.facebook.com/InfleumOfficial",
+        "reddit": "https://www.reddit.com/user/infleum/",
+        "medium": "https://medium.com/infleum"
+    }
+}

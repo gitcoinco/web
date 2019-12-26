@@ -1,0 +1,21 @@
+{
+    "symbol": "MCX",
+    "address": "0xd15ecdcf5ea68e3995b2d0527a0ae0a3258302f8",
+    "overview": {
+        "en": "Machi X is the first cryptocurrency exchange focused on realizing the value of intellectual properties, built by creators of intellectual properties, for creators of intellectual properties.",
+        "zh": "音樂、藝術、文學、發明、設計都是有價資產，但過去皆未能公開交易。Machi X 致力於創造一個實用的虛擬貨幣交易所，我們 1. 讓創作者能夠發行自己的版權幣 2. 讓重視版權的使用者，能透過投資版權幣來擁有部分的創作者版權價值"
+    },
+    "email": "contact@machix.com",
+    "website": "https://machix.com/",
+    "whitepaper": "https://machix.com/docs/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-05",
+    "links": {
+        "blog": "https://medium.com/machixofficial",
+        "twitter": "https://twitter.com/MachiXOfficial",
+        "telegram": "https://t.me/Machixofficial",
+        "github": "https://github.com/machi-x",
+        "facebook": "https://www.facebook.com/MachiX-2198978333692665",
+        "medium": "https://medium.com/machixofficial"
+    }
+}

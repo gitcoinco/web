@@ -1,0 +1,21 @@
+{
+    "symbol": "SHOW",
+    "address": "0xF41861F194e7Ba8dE95144a89E0C6ed16EE0B3A0",
+    "overview": {
+        "en": "ShowCoin is the first interactive live streaming service that is decentralized.",
+        "zh": "全球首家区块链直播平台"
+    },
+    "email": "showcoin@show.one",
+    "website": "https://www.xiubi.com/",
+    "whitepaper": "https://www.xiubi.com/pdf/ShowCoinwp-en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-01-08",
+    "links": {
+        "twitter": "https://twitter.com/Show_coin",
+        "telegram": "https://t.me/ShowCoinEnglish",
+        "github": "https://github.com/ShowCoin/",
+        "facebook": "https://www.facebook.com/ShowCoin-144390446177396/",
+        "reddit": "https://www.reddit.com/user/showcoin/",
+        "medium": "https://medium.com/@show.one.bitshow"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "symbol": "ETHU",
+    "address": "0x6b92D76C9D0D40E53019fFa51b6f0c9B6bc657c9",
+    "overview": {
+        "en": "Ethereum has already paid 1 million Ether as GAS transaction fee and we can't deny that one of the largest contributors to Ethereum is these active users using the chain. Ethereum Utility is compensating these users for their fees, giving ETHU in proportion to the fees. ETHU is an ERC20 token in Ethereum that must be swapped in a 1:1 ratio in the Ethereum Utility main chain.Fee compensation for these addresses is a transparent and reliable consensus agreed upon by all users, and the Ethereum Utility is promoting it.",
+        "zh": "ETHU的ERC20代币是ETHU主链的1:1对映，只有消耗过GAS费的地址才可以获得ETHU等比例代币。ETH以太坊历史手续费GAS总额100万Ether。对ETH贡献最大的就是这些支付手续费的地址，最活跃的用户。针对这些地址的手续费补偿是一个透明，可信的共识。"
+    },
+    "email": "ethereumutility@gmail.com",
+    "website": "http:/ethu.org/",
+    "whitepaper": "https://ethu.org/paper_zh.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-01-01",
+    "initial_price": {
+        "ETH": "0.000023809 ETH",
+        "USD": "0.01 USD",
+        "BTC": "0.0000005909 BTC"
+    },
+    "links": {
+        "twitter": "https://t.me/EthereumUtility"
+    }
+}

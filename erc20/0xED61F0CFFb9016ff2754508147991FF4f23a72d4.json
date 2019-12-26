@@ -1,0 +1,23 @@
+{
+    "symbol": "KUMC",
+    "address": "0xED61F0CFFb9016ff2754508147991FF4f23a72d4",
+    "overview": {
+        "en": "Kumart 全球电子竞技价值共享平台",
+        "zh": "KUMART GLOBAL E-SPORTS VALUE SHARING PLATFORM"
+    },
+    "email": "kumc@kuyoo.com",
+    "website": "https://kumart.io//",
+    "whitepaper": "https://kumart.io/kumc-en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-21",
+    "initial_price": {
+        "ETH": "0.000227272727 ETH",
+        "USD": "0.1 USD",
+        "BTC": "0.000013  BTC"
+    },
+    "links": {
+        "telegram": "https://t.me/joinchat/kumcoffical",
+        "github": "https://github.com/wlhdxloli",
+        "medium": "https://medium.com/kumart"
+    }
+}

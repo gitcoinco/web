@@ -1,0 +1,24 @@
+{
+    "symbol": "NOC",
+    "address": "0xd682bb54ae24df2a90b70e630becae8edc1473f9",
+    "overview": {
+        "en": "The NOTUS ecosystem is a completely cost-free business infrastructure built on blockchain with sustainable token value provided by collaboration of green energy assets.",
+        "zh": "NOTUS 生态系统是一个基于区块链技术、完全零成本费用的商业模式，并配有藉由与绿色能源资产的结合所提供的永续代币价值."
+    },
+    "email": "stevengu999@163.com",
+    "website": "https://notusecosystem.io",
+    "whitepaper": "https://drive.google.com/open?id=1EMESTJIcOvZANNb36zU0kokaGQshL-kp",
+    "state": "NORMAL",
+    "published_on": "2018-10-12",
+    "initial_price": {
+        "ETH": "0.00071429 ETH",
+        "USD": "0.143 USD",
+        "BTC": "0.00002257 BTC"
+    },
+    "links": {
+        "telegram": "https://t.me/NotusEcosystem",
+        "twitter": "https://twitter.com/NotusEcosystem",
+        "facebook": "https://www.facebook.com/notusecosystem.io",
+        "linkedin": "https://www.linkedin.com/in/ryuzo-takahashi-022183132"
+    }
+}

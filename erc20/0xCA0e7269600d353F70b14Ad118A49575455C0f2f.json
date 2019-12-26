@@ -1,0 +1,25 @@
+{
+    "symbol": "AMLT",
+    "address": "0xCA0e7269600d353F70b14Ad118A49575455C0f2f",
+    "overview":{
+          "en": "The fuel for the AMLT Network and the industry leading Coinfirm AML Platform, AMLT tokens are not only the reward for Network Members but preferred choice of payment and access for Coinfirm solutions and services used by over 100 entities across blockchain and financial industries."
+    },
+    "email": "amlt@coinfirm.com",
+    "website": "https://amlt.coinfirm.com",
+    "whitepaper": "https://coinfirm-prod.objects.frb.io/assets/white-paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-11-10",
+    "initial_price":{
+          "ETH":"0.0003387075 ETH"
+    },
+    "links": {
+      "blog": "https://blog.coinfirm.com",
+      "forum": "https://bitcointalk.org/index.php?topic=2375580.0",
+      "github": "https://github.com/amlt-by-coinfirm",
+      "facebook": "https://www.facebook.com/AMLToken",
+      "telegram": "https://t.me/AMLT_Coinfirm",
+      "twitter": "https://twitter.com/AMLT_Token",
+      "youtube": "https://www.youtube.com/watch?v=WqNMiR-bgZE",
+      "linkedin": "https://www.linkedin.com/company/amltoken"
+    }
+  }

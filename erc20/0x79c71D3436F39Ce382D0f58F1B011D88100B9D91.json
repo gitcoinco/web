@@ -1,0 +1,28 @@
+{
+  "symbol": "XNS",
+  "address": "0x79c71D3436F39Ce382D0f58F1B011D88100B9D91",
+  "overview": {
+    "en": "Xeonbit Token (XNS) is positioned to be the next Blockchain Solution For Global Payments",
+    "zh": "Xeonbit Token (XNS) 是一个没有任何中央局管制，完全去中心化，为安全支付系统的私人数字货币。"
+  },
+  "email": "contact@xeonbit.com",
+  "website": "https://xeonbit.com/",
+  "whitepaper": "https://bit.ly/2IjrWNR",
+  "state": "NORMAL",
+  "published_on": "2019-04-05",
+  "initial_price":{
+        "ETH":"0.0006 ETH",
+        "USD":"0.1 USD",
+        "BTC":"0.00002 BTC"
+  },
+  "links": {
+    "blog": "https://xeonbit.com/all-posts/",
+    "twitter": "https://twitter.com/xeonbit",
+    "telegram": "https://t.me/xeonbitgroup",
+    "reddit": "https://www.reddit.com/r/xeonbit/",
+    "github": "https://github.com/xeonbit-project",
+    "facebook": "https://www.facebook.com/xeonbit",
+    "discord": "https://discord.gg/HYcJPFG",
+    "medium": "https://medium.com/@xeonbit"
+  }
+}

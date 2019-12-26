@@ -1,0 +1,20 @@
+{
+    "symbol": "TSR",
+    "address": "0x58959E0C71080434f237bD42d07Cd84B74CeF438",
+    "overview": {
+        "en": "Tesra Supernet is designed to provide a scalable, secure and accessible distributed computing resource service platform that runs on blockchain. By building distribued GPU computing network based on blockchain, combined with the blockchain real-power mechanism and GPU distributed computing architecture, the idle and distributed GPU computing can be integrated to form virtual supercomputers, providing computational services for high-intensity AI training to build AI super brain.",
+        "zh": "Tesra超算网络旨在提供一个在区块链上运行所需的可扩展、安全和易访问的分布式计算资源服务平台。通过构建一个基于区块链的分布式GPU计算网络，结合区块链的确权机制和GPU分布式运算架构，将闲置且分散于世界各地的GPU算力整合起来形成虚拟超级计算机，为高强度的人工智能训练提供计算服务，构建人工智能超级大脑。"
+    },
+    "email": "lanyi@tesra.io",
+    "website": "https://tesra.io/",
+    "whitepaper": "https://www.tesra.io/Download/Tesrasupernetwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-01",
+    "initial_price": {
+        "ETH": "0.0000333333 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/SupernetTesra",
+        "telegram": "https://0.plus/joinchat/Grc-eBHPM25bqcKeR1KORQ"
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "symbol": "BOOK",
+    "account_name": "eosbookchain",
+    "overview": {
+        "en": "Bookstore based on block chain technology. Each book is unique and 100% owned by users."
+    },
+    "website": "https://bookchain.fun",
+    "links": {
+        "telegram": "https://t.me/bookchaincommunity"
+    }
+}

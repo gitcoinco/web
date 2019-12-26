@@ -1,0 +1,19 @@
+{
+    "symbol": "AUPC",
+    "address": "0x500df47e1df0ef06039218dcf0960253d89d6658",
+    "overview": {
+        "en": "Authpaper Delivery uses blockchain to provide a peer-to-peer platform to deliver confidential data with unforgeable delivery records. Authpaper Delivery is also a platform for users to issue unforgeable certifications.",
+        "zh": "Authpaper Delivery 利用區塊鏈建立一套P2P私密資料傳送平台, 資料只有寄件收件方能閱讀, 而傳送記錄公開又不能被偽造. 這平台也容許組織發出不能偽造的證書."
+    },
+    "email": "hello@authpaper.io",
+    "website": "https://authpaper.io",
+    "whitepaper": "https://authpaper.io/ico-authpaper-white-paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-15",
+    "initial_price": {
+        "USD": "0.1 USD"
+    },
+    "links": {
+        "telegram": "https://t.me/authpaper"
+    }
+}

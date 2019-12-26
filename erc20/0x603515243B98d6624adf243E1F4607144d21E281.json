@@ -1,0 +1,17 @@
+{
+    "symbol": "ZAT",
+    "address": "0x603515243B98d6624adf243E1F4607144d21E281",
+    "overview": {
+        "en": "ZatGo is a Blockchain-based big-trip project aiming to build a Blockchain big-trip ecosystem. By relying on the nature of the big-trip and Blockchain, we have created a token function that serves as platform for the circulation and consumption of ZAT, the cryptocurrency. The function also provides a cross-chain payment channel. Blockchain technology is made more accessible for clients through ZatGo’s APP and API. ZatGo aims to build a public big-trip chain. With all the travel data on the chain, we increase your travel efficiency and reduce costs, therefore changing the future travel mode. ZAT is the only currency supported in ZatGo.",
+        "zh": "ZatGo是基于区块链的大出行项目，旨在构建一个区块链的大出行生态体系。它依托原有在大出行领域的资源与优势，把大出行与区块链结合，创造性的开发出通证落地应用功能，真正实现通证在线上线下的流通和消费；并在通证应用基础上，打造跨链通证支付通道，通过ZatGo承云 App客户端与API接口共享，实现区块链技术的简单落地。ZatGo承云最终的目标，是构建一条大出行公有链，所有出行数据全部上链，提高出行效率，降低出行成本，实现区块链技术与大出行的无缝对接，改变未来的出行世界。ZAT是在ZatGo生态流通的唯一数字货币"
+    },
+    "email": "info@zatgo.net",
+    "website": "http://www.zatgo.net/",
+    "whitepaper": "http://www.zatgo.net/file/ZatGoWhitepaper.pdf",
+    "published_on": "2018-02-08",
+    "links": {
+        "telegram": "https://t.me/gogozenair",
+        "facebook": "https://www.facebook.com/ZatGo.net",
+        "twitter": "https://twitter.com/ZatGo_official"
+    }
+}

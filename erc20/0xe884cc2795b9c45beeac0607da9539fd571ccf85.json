@@ -1,0 +1,21 @@
+{
+    "symbol": "ULT",
+    "address": "0xe884cc2795b9c45beeac0607da9539fd571ccf85",
+    "overview": {
+        "en": "Ultiledger, the Next Generation Global Self-financing Blockchain Protocol, an open source protocol initiated by a number of IT technology geeks, gets a high-level consensus and co-governance from the communities. Ultiledger aims to build an economic and financial ecosystem based on token ULT to help any organization (contains government, business, industry clusters or individuals and communities) that needs to build trust at a low cost and rapid construction of a distributed financial book and account system of bank-grade security; zero-cost transaction settlement within the ecosystem; improved security, privacy, efficiency and capital availability of the system through the combination of the main chain and sub-chains. In the Ultiledger ecosystem, any tangible assets, data or intangible rights can be written on blockchain to become a string of code to achieve assets and data tokenization, and to use smart contracts and distributed storage for completing functions such as confirmation, notarization, trading, circulation, etc., and finally achieving “credit circulation, asset circulation, value circulation” in the algorithm world.",
+        "zh": "Ultiledger新一代全球自金融区块链协议，由多位IT技术极客共同发起，社区高度共识共治的新一代区块链开源协议，旨在构建一个基于ULT为基础Token的经济金融生态，来帮助任何需要建立信任机制的组织低成本、快速地搭建具有银行安全级别的分布式金融账本和账户体系，实现生态内的零成本交易结算，通过主链、子链结合的模式提高系统的安全性、隐私性、高效性、资金通融性；在Ultiledger生态中，用户可以将任何有形的资产、数据或者无形的权益编写到区块链上形成一串代码，实现资产和数据的Token化，并利用智能合约和分布式存储来进行确权、公证以及交易流转，最终在算法世界中实现信用流通、资产流通和价值流通。"
+    },
+    "email": "contact@ultiledger.io",
+    "website": "https://www.ultiledger.io/",
+    "whitepaper": "https://www.ultiledger.io/files/Ultiledger_whitepaper_cn_0725.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-08",
+    "initial_price": {
+        "ETH": "0.00003333 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/Ultiledgerio",
+        "telegram": "https://t.me/ultiledger",
+        "github": "https://github.com/ultiledger"
+    }
+}

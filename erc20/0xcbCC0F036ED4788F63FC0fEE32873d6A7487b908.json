@@ -1,0 +1,22 @@
+{
+    "website": "https://humaniq.co/",
+    "published_on": "2017-04-06",
+    "links": {
+        "reddit": "https://www.reddit.com/r/Humaniq/",
+        "github": "https://github.com/humaniq",
+        "facebook": "https://www.facebook.com/humaniq.co",
+        "slack": "https://humaniq-co.slack.com/",
+        "twitter": "https://twitter.com/Humaniq"
+    },
+    "overview": {
+        "en": "Humaniq aims to be a simple and secure 4th generation mobile bank.",
+        "zh": "Humaniq 是基于区块链技术作为平台的下一代无银行账户的金融服务。"
+    },
+    "symbol": "HMQ",
+    "initial_price": {
+        "USD": "0.04 USD"
+    },
+    "whitepaper": "https://humaniq.com/pdf/humaniq_wp_english.pdf",
+    "address": "0xcbCC0F036ED4788F63FC0fEE32873d6A7487b908",
+    "email": "info@humaniq.com"
+}

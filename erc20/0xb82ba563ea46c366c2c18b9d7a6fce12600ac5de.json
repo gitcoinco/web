@@ -1,0 +1,24 @@
+{
+    "symbol": "FNX",
+    "address": "0xb82ba563ea46c366c2c18b9d7a6fce12600ac5de",
+    "overview": {
+        "en": "Crypto asset exchange with reliability, high-end security, legal compliance and banking level liquidity."
+    },
+    "email": "token@finafex.com",
+    "website": "https://finafex.com/",
+    "whitepaper": "https://finafex.com/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-12-01",
+    "initial_price": {
+        "ETH": "0.00120000 ETH",
+        "USD": "0.1 USD",
+        "BTC": "0.00003100 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/finafex",
+        "telegram": "https://t.me/Finafex",
+        "github": "https://github.com/finafex",
+        "facebook": "https://web.facebook.com/Finafex-2134722780111754/",
+        "medium": "https://medium.com/@finafex"
+    }
+}

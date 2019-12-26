@@ -1,0 +1,23 @@
+{
+    "symbol": "BKC",
+    "address": "0x34bdf48A8F753de4822a6CFB1FEE275F9b4D662e",
+    "overview":{
+          "en": "The core of FACTS is to construct a set of \"fact content incentive mechanism\" based on blockchain technology, namely Proof of Facts (PoF), and thus form a real trusted content library based on Facts Graph.",
+          "zh": "FACTS是一个服务于互联网内容产业的垂直公链。它以事实内容为核心，基于区块链技术、深度学习算法及NLP引擎，通过基于事实的共识激励机制（PoF），号召大众人人参与，构建一个环环相扣的事实图谱，为“打击假新闻、谣言等网络虚假内容”提供全新的通证实践。"
+    },
+    
+    "whitepaper": "https://baike.host/whitepaper.html?ver=cn_v1",
+    "website": "https://baike.host/",
+    "state": "NORMAL",
+    "published_on": "2018-08-18",
+    "initial_price":{
+    },
+
+    "links": {
+      "facebook": "https://www.facebook.com/FACTS-253880605458535",
+      "twitter": "https://twitter.com/Facts_IO",
+      "telegram": "https://t.me/Chinese_Facts",
+      "github": "https://github.com/factsio/"
+    }
+
+  }

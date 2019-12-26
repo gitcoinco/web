@@ -1,0 +1,17 @@
+{
+  "symbol": "GCC_OLD",
+  "address": "0x500565E098d98A273224eC8Fb33d98dC8946F8B9",
+  "overview": {
+      "en": "GameCell is Ecological Blockchain Game Community Based on main-sidechain and consensus-virtual-machine Technology",
+      "zh": "GameCell是基于主侧链与共识虚拟机技术的全方位区块链游戏平台.注：此为 GCC 官方发行的旧 GCC 代币。新 GCC 合约地址：0x8BcB64bfDA77905398b67aF0Af084c744e777A20"
+  },
+  "email": "gamecell.foundation@gmail.com",
+  "website": "http://www.gamecell.io/",
+  "whitepaper": "http://gamecell.io/res/GameCellWhitePaper_EN.pdf",
+  "links": {
+      "twitter": "https://twitter.com/Gamecell4",
+      "telegram": "https://t.me/GameCell",
+      "facebook": "https://www.facebook.com/GameCellio",
+      "github": "https://github.com/GameCell"
+  }
+}

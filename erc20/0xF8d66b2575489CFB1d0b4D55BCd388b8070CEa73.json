@@ -1,0 +1,18 @@
+{
+    "symbol": "Joule",
+    "address": "0xF8d66b2575489CFB1d0b4D55BCd388b8070CEa73",
+    "overview": {
+        "en": "Joule is the standard token of BIGE.",
+        "zh": "全球区块链游戏交易所(BIGE)标准游戏积分"
+    },
+    "email": "contact@bige.game",
+    "website": "http://www.bige.game/",
+    "whitepaper": "http://bige.game/Blockchain_International_Game_Exchange.whitepaper.zh_tw.V1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-18",
+    "initial_price": {
+        "ETH": "0.00002 ETH",
+        "USD": "0.003 USD",
+        "BTC": "0.000001 BTC"
+    }
+}

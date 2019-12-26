@@ -1,0 +1,21 @@
+{
+  "symbol": "BIT",
+  "address": "0xf16843C8ab59AE17f9481Ec756a1DED049192AF4",
+  "overview":{
+    "en": "BitRewards team, that's been developing e-Commerce loyalty products under GIFTD brand for more than 5 years, had successfully conducted a Crowdfunding campaign for new loyalty products launch, using Blockchain-technology and its own cryptocurrency – BIT .",
+    "zh": "由 Cryptojacks (CJ) 升级兑换而来。Bitrewards 平台提供了多种功能，包括：奖励系统，付款处理器，支付网关，加密货币兑换和联盟网络平台。"
+  },
+  "email": "bit@bitrewards.network",
+  "website": "https://bitrewards.network/",
+  "whitepaper": "https://bitrewards.network/white-paper_cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-26",
+  "links": {
+    "twitter": "https://twitter.com/bitrewards",
+    "telegram": "https://t.me/bitrewards",
+    "github": "https://github.com/bitrewards",
+    "facebook": "https://www.facebook.com/bitrewards",
+    "reddit": "https://www.reddit.com/r/bitrewards",
+    "medium": "https://medium.com/bitrewards"
+  }
+}

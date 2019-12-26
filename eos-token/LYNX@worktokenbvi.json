@@ -1,0 +1,13 @@
+{
+    "symbol": "LYNX",
+    "account_name": "worktokenbvi",
+    "overview": {
+        "en": "Lynx is the native staking token for the EOS Lynx wallet. All apps that want to appear in the wallet must stake Lynx. Lynx also will offer users rewards available in participating apps."
+    },
+    "website": "https://eoslynx.com/",
+    "whitepaper": "https://s3.amazonaws.com/whitepapers-eos-lynx-workcoin/eoslynx_whitepaper.pdf",
+    "links": {
+        "telegram": "https://t.me/eoslynx",
+        "twitter": "https://twitter.com/eoslynx"
+    }
+}

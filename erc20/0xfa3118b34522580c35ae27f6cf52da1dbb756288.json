@@ -1,0 +1,25 @@
+{
+    "symbol": "LET",
+    "address": "0xfa3118b34522580c35ae27f6cf52da1dbb756288",
+    "overview": {
+        "en": "LinkEyeis a Hyperledger Fabric based consortium-blockchain solution to facilitate global credit alliance..",
+        "zh": "LinkEye 是一套基于区块链技术的自主研发的征信共享联盟链解决方案。"
+    },
+    "email": "linkeye@linkeye.com",
+    "website": "https://www.linkeye.com/#/",
+    "whitepaper": "https://www.linkeye.com/static/whitePaper/WhitePaperofLinkEye.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-09-04",
+    "initial_price": {
+        "ETH": "0.00015 ETH",
+        "USD": "0.382 USD",
+        "BTC": "0.00000588 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/LinkEyeProject",
+        "telegram": "https://t.me/LinkEyeProject",
+        "facebook": "https://www.facebook.com/LinkEyeOfficial/",
+        "reddit": "https://www.reddit.com/user/LinkEyeOfficial/",
+        "medium": "https://medium.com/@LinkEyeOfficial"
+    }
+}

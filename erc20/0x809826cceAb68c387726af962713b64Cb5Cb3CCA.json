@@ -1,0 +1,22 @@
+{
+    "website": "https://nucleus.vision/",
+    "published_on": "2018-01-28",
+    "links": {
+        "telegram": "https://t.me/NucleusVision",
+        "reddit": "https://www.reddit.com/r/NucleusVision/",
+        "github": "https://github.com/NucleusVision",
+        "twitter": "https://twitter.com/NucleusVision"
+    },
+    "overview": {
+        "en": "Founded at Harvard University, Nucleus Vision is an IoT-based, contactless identification system that empowers retailers to identify and better serve their customers.",
+        "zh": "Nucleus Vision 是一种端到端的技术解决方案，通过其专有的区块链和实时传感器技术，为零售商和众多“实体店”提供业务数据支撑。"
+    },
+    "symbol": "nCash",
+    "initial_price": {
+        "ETH": "0.00001143 ETH",
+        "USD": "0.010 USD",
+        "BTC": "0.00000094 BTC"
+    },
+    "whitepaper": "https://docsend.com/view/sfdfg6p",
+    "address": "0x809826cceAb68c387726af962713b64Cb5Cb3CCA"
+}

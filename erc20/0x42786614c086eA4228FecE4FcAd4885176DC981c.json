@@ -1,0 +1,23 @@
+{
+    "symbol": "OMC",
+    "address": "0x42786614c086eA4228FecE4FcAd4885176DC981c",
+    "overview": {
+        "en": "Oriental Medical token is used in value transfer between doctors and patients in healthcare industry.",
+        "zh": "国医链通证用于医疗健康行业中医生、病人之间的价值传递。"
+    },
+    "email": "dev@omchain.vip",
+    "website": "https://omchain.vip",
+    "whitepaper": "https://omchain.vip/attach/whitepaper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-10",
+    "initial_price": {
+        "ETH": "0.0002 ETH",
+        "USD": "0.04 USD",
+        "BTC": "0.000006 BTC"
+    },
+    "links": {
+        "blog": "https://omchain.vip/news/en/",
+        "twitter": "https://twitter.com/om_chain",
+        "telegram": "https://t.me/omchainen"
+    }
+}

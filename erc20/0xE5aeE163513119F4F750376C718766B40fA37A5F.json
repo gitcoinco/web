@@ -1,0 +1,18 @@
+{
+    "symbol": "Fzcoin",
+    "address": "0xE5aeE163513119F4F750376C718766B40fA37A5F",
+    "overview": {
+        "en": "Promote the development of encrypted digital money and allow more people to participate",
+        "zh": "促进加密数字货币的发展，让更多的人参与。"
+    },
+    "email": "contact@fzcoin.cc",
+    "website": "https://fzcoin.cc/",
+    "whitepaper": "https://img1.wsimg.com/blobby/go/95d9b6a5-b279-4350-8fa5-2d974087ed76/downloads/1cqpleedt_149386.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-23",
+    "links": {
+        "github": "https://github.com/fzcoinProtocol",
+        "facebook": "https://www.facebook.com/coin.fz.39",
+        "telegram": "https://t.me/Official_Fzcoin"
+    }
+}

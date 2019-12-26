@@ -1,0 +1,22 @@
+{
+  "symbol": "TOK",
+  "address": "0xa51406f33aC4518D039756B15e85572a51E145a9",
+  "overview":{
+        "en": "TOK, a decentralized peer-to-peer private communication and digital asset management infrastructure, is committed to become the gateway to future global decentralized applications and open finance, enabling users worldwide to enjoy the most comprehensive personal data asset privatization, most secure communications, most complete privacy protection, and the most open as well as inclusive financial services.",
+        "zh": "TOK是一个去中心化的点对点私密通讯和数字资产管理公共基础设施，其目标是成为未来全球去中心化应用和开放金融的入口，为全球用户提供最彻底的个人数据资产私有化、最安全的通讯、最完整的隐私保护和最开放平等的金融服务。"
+  },
+  "email": "tokinsight@gmail.com",
+  "website": "https://tok.life/",
+  "whitepaper": "https://tok.life/static/d/TOK_WP_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-21",
+  "initial_price":{
+        "USD":"0.04 USD",
+        "BTC":"0.0000044 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/TokMessenger",
+    "github": "https://github.com/InsightIM",
+    "reddit": "https://www.reddit.com/r/TokMessenger/"
+  }
+}

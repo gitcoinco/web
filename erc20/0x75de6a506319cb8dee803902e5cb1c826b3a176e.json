@@ -1,0 +1,12 @@
+{
+    "symbol": "HIVE",
+    "address": "0x75de6a506319cb8dee803902e5cb1c826b3a176e",
+    "overview": {
+        "en": "HIVECHAIN is a decentralized visual operation platform based on blockchain technology, providing services such as BaaS, AIAAS, and IaaS based on blockchain technology.",
+        "zh": "HIVECHAIN是一个去中心化的基于区块链技术的可视化操作平台，提供基于区块链技术的BaaS、AIaaS、 IaaS等服务。"
+    },
+    "website": "http://www.58hive.com/",
+    "whitepaper": "http://www.58hive.com/pdf/hivechain.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-07"
+}

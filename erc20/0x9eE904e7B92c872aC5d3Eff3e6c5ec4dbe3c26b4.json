@@ -1,0 +1,17 @@
+{
+  "symbol": "AMO1",
+  "address": "0x9eE904e7B92c872aC5d3Eff3e6c5ec4dbe3c26b4",
+  "overview":{
+        "en": "Amodule network has designed a set of network standards for full commercial blockchain application mode, which follow the functions of hot plug, modular expansion, providing alternative smart contracts, consensus mechanism, P2P network transmission, big data encrypted storage, multi account, etc. Encapsulate the blockchain contract layer required by various industries in various fields, and use the visual operating system to facilitate developers of various languages to call it quickly. Business projects that need to carry out chain reform will quickly establish decentralized application scenarios, build business models according to their own needs, and no longer need to redevelop from bottom to top to save human and financial resources, which will rapidly promote the implementation of blockchain business applications and blockchain reconstruction projects in traditional industries.",
+        "zh": "Amodule Network设计了一套全商业区块链应用模式的网络标准，遵循热插拔、模块化扩展、提 供可替代的智能合约、共识机制、P2P网络传输、大数据加密存储、多账号等功能。将各领域各行业 所需区块链化的合约层进行封装，搭配可视化操作系统方便各语种开发者迅速调用。需要进行链改的 业务项目将快速建立去中心化的应用场景，根据自身需求搭建业务模型，而不再需要从下到上重新开 发节省人力财力，这将急速的推动区块链商业应用落地以及传统行业区块链改造工程。"
+  },
+  "email": "amodulenetwork@gmail.com",
+  "website": "http://www.amodule.io",
+  "whitepaper": "http://www.amodule.io/Amodule%20Network%20(v1.0).pdf",
+  "state": "NORMAL",
+  "published_on": "2019-10-30",
+  "links": {
+    "biyong": "https://0.plus/AmoDulea",
+    "github": "https://github.com/amodulenetwork/AmoduleNetwork"
+  }
+}

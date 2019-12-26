@@ -1,0 +1,24 @@
+{
+    "symbol": "SILK",
+    "address": "0xc35b238546a6b02b2d2bd996ecdae322f9f8120b",
+    "overview": {
+        "en": "SilkChain is the first blockchain project dedicated to improving international trade and consumer spending ecosystem.",
+        "zh": "丝链是全球第一个致力于利用区块链技术改善国际贸易及跨境消费生态的项目。"
+    },
+    "email": "support@silkchain.io",
+    "website": "https://www.silkchain.io/",
+    "whitepaper": "https://www.silkchain.io/paper/SilkChainEnglish.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-03-01",
+    "initial_price": {
+        "USD": "0.04 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/SilkChain_IO",
+        "telegram": "https://t.me/silkchain",
+        "github": "https://github.com/SilkChain-ITDC",
+        "facebook": "https://www.facebook.com/SilkChain.IO",
+        "reddit": "https://www.reddit.com/user/SilkChain",
+        "medium": "https://medium.com/@SilkChain_IO"
+    }
+}

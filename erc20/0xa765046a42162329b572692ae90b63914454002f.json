@@ -1,0 +1,21 @@
+{
+    "symbol": "BGCG",
+    "address": "0xa765046a42162329b572692ae90b63914454002f",
+    "overview": {
+        "en": "The Blockchain Game Coalition Gold (BGCG) which has a constant upper limit of total amount of circulation and stable value,we can solve the revenue distribution problem between upstream and downstream of the industry and let game developers, game publishers and players to earn their own profits in a fair and more open value circulation mechanism.",
+        "zh": "BGCG是游戏生态链通用数字资产，简称游戏金豆,通过引入授权硬件鉴权及锚定用户价值贡献,解决产业上下游的利益分配问题，让游戏制作方、游戏发行方和玩家通过公开透明的价值流转机制获得各自应有的利益。"
+    },
+    "email": "bgcg@bgcg.io",
+    "website": "http://www.bgcg.io",
+    "whitepaper": "http://www.bgcg.io/download/bgc_whitepaper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-12",
+    "initial_price": {
+        "ETH": "0.00004 ETH"
+    },
+    "links": {
+        "Telegram": "https://t.me/BGCCIO",
+        "facebook": "https://www.facebook.com/bgcg.bgc.5",
+        "github": "https://github.com/bgc2140"
+    }
+}

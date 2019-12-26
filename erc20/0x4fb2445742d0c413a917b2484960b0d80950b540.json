@@ -1,0 +1,20 @@
+{
+    "symbol": "GIB",
+    "address": "0x4fb2445742d0c413a917b2484960b0d80950b540",
+    "overview": {
+        "en": "The BibleCoin project is designed to create a secure and transparent use of funds that is donated to religious communities, with an estimated 2.1 billion Christians around the world at the center.",
+        "zh": "BibleCoin项目是利用区块链网络，以全球大约21亿基督教徒为中心，实现宗教界捐献的资金安全和透明使用的项目。"
+    },
+    "email": "info@biblefintech.com",
+    "website": "https://www.biblefintech.com/",
+    "whitepaper": "https://www.biblefintech.com/whitepaper/",
+    "state": "NORMAL",
+    "published_on": "2018-07-04",
+    "initial_price": {
+        "ETH": "0.0004 ETH"
+    },
+    "links": {
+        "blog": "https://blog.naver.com/kotor23/221257626310",
+        "telegram": "https://t.me/joinchat/AAAAAFC9MIfaqci3Lm5nIw"
+    }
+}

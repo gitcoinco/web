@@ -1,0 +1,22 @@
+{
+    "symbol": "HEB",
+    "address": "0xF02726556B07aeAEf0f2cC655c68D8cEaD6E9647",
+    "overview": {
+        "en": "Digital asset quantitative investment strategy platform",
+        "zh": "HedgeBank是业内领先的数字资产量化投资策略平台"
+    },
+    "email": "service@hedgebank.io",
+    "website": "www.hedgebank.io",
+    "whitepaper": "http://www.hedgebank.io/HEB-WhitePaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-01",
+    "initial_price": {
+        "USD": "0.04 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/hedgebank",
+        "telegram": "https://t.me/hedgebank",
+        "github": "https://github.com/hedgebank",
+        "facebook": "https://www.facebook.com/hedgebank"
+    }
+}

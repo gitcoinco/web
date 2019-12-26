@@ -1,0 +1,19 @@
+{
+    "symbol": "NNB",
+    "address": "0xb66a2131a6b840dd020151f80723caed603efb51",
+    "overview": {
+        "en": "CoinBull aims to build a one-stop user experience and ecological system of‘Market+Data+Community+Information+Trading+Finance’. NNB is the token of CoinBull platform , and NNB will circulate in the ecology of CoinBull.",
+        "zh": "币牛牛致力于打造“行情+数据+社区+资讯+交易+金融”的一站式用户体验和生态体系，NNB是币牛牛平台的代币，NNB将在币牛牛生态中流通。"
+    },
+    "email": "account@finbtc.net",
+    "website": "https://www.coinbull.one/",
+    "whitepaper": "https://coinbull.one/res/whitepaper/zh-cn.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-09",
+    "initial_price": {
+        "ETH": "0.00001515 ETH"
+    },
+    "links": {
+        "telegram": "http://t.me/biniuniu"
+    }
+}

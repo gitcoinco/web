@@ -1,0 +1,24 @@
+{
+    "symbol": "BOX",
+    "address": "0xe1A178B681BD05964d3e3Ed33AE731577d9d96dD",
+    "overview": {
+        "en": "BOX offers a secure, convenient and streamlined crypto asset management system for institutional investment, audit risk control, crypto-exchange platforms and etc.",
+        "zh": "BOX 为企业提供一套安全，便捷，高效的数字资产管理系统，可应用于企业数字资产投资，审计风控，交易平台等领域。"
+    },
+    "email": "contact@box.la",
+    "website": "https://box.la/",
+    "whitepaper": "https://box.la/BOX_white_paper_zh.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-12-24",
+    "initial_price": {
+        "ETH": "0.0004 ETH",
+        "USD": "0.3077 USD",
+        "BTC": "0.0000185 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/boxla888",
+        "telegram": "https://t.me/safeboxla",
+        "github": "https://github.com/boxproject",
+        "medium": "https://medium.com/@boxla888"
+    }
+}

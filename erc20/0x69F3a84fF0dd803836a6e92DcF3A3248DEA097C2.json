@@ -1,0 +1,15 @@
+{
+    "symbol": "CTH",
+    "address": "0x69F3a84fF0dd803836a6e92DcF3A3248DEA097C2",
+    "overview": {
+        "zh": "CTHERUM是新加坡世界文化发展基金会全力打造的全球去中心化 文化产业价值链，前期主要应用于世界文宝(文学音乐、字画、香文化、 茶文化、烟酒文化等)的鉴定、确权、拍卖、溯源、流转、投资、众筹、 交易以及数字版权的确权、支付、流通以及应用等。"
+    },
+    "email": "cthereum@163.com",
+    "website": "http://www.cth.one",
+    "whitepaper": "http://www.cth.one/wap/public/bps.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-30",
+    "initial_price": {
+        "USD": "0.1467 USD"
+    }
+}

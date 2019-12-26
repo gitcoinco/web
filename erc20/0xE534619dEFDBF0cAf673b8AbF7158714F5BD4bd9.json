@@ -1,0 +1,16 @@
+{
+  "symbol": "TFT",
+  "address": "0xE534619dEFDBF0cAf673b8AbF7158714F5BD4bd9",
+  "overview": {
+    "en": "TFT(imToken Fans Token) is the membership badge for imToken Fans, a user-based community managed by ConsenLabs. It is non-divisible, not tradeable and issued only through imToken's official channels.",
+    "zh": "TFT 是 ConsenLabs 旗下用户社群品牌「imToken Fans」的会员勋章，目前仅由官方渠道发放，不可分割，不支持交易"
+  },
+  "email": "support@consenlabs.com",
+  "website": "https://imtoken.fans/",
+  "state": "LOCKED",
+  "published_on": "2018-03-20",
+  "links": {
+    "blog": "https://imtoken.fans/",
+    "telegram": "https://imtoken.fans/"
+  }
+}

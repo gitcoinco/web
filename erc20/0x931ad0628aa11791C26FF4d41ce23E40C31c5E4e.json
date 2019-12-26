@@ -1,0 +1,11 @@
+{
+  "symbol": "PGS",
+  "address": "0x931ad0628aa11791C26FF4d41ce23E40C31c5E4e",
+  "overview":{
+    "zh": "Pegasus协议是定位于服务社区的共识协议，通过去中心化的治理模型和“零熵基金”，缔造社区共识，打造低熵的良性生态。",
+    "en": "The Pegasus Agreement is a consensus to serve the community. Through decentralized governance and Decentralized Mutual Defi, community consensus is created to a benign ecology whith low entropy."
+  },
+  "website": "http://pgs.plus/",
+  "whitepaper": "http://pgs.plus/PGS.pdf",
+  "published_on": "2019-09-20"
+}

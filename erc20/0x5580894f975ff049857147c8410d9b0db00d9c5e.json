@@ -1,0 +1,20 @@
+{
+    "symbol": "ASCC",
+    "address": "0x5580894f975ff049857147c8410d9b0db00d9c5e",
+    "overview": {
+        "en": "ASCC is a digital video culture venture capital platform as the main body, through the block chain technology to reshape stars and fans, the establishment of star assets digital platform. Create a new star fans ecological system, through the consumer investment model to establish a film and television drama shooting venture capital platform, to solve the copyright issues in non-physical transactions. Eventually, we will create a transparent and secure film and television ecosystem.",
+        "zh": "ASCC是影视文化数字创投平台为主体，通过区块链技术重塑明星与粉丝，建立明星资产数字化平台。打造全新明星粉丝生态体系，通过消费投资模式建立影视剧的拍摄创投平台，解决非实体交易中的版权问题。最终将打造透明、安全的影视生态。"
+    },
+    "email": "xcjack@live.com",
+    "website": "http://ascc.io/",
+    "whitepaper": "http://ascc.io/file/ASCC%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+    "published_on": "2018-09-13",
+    "initial_price": {
+        "ETH": "0.0000185 ETH",
+        "USD": "0.0095 USD",
+        "BTC": "0.0000015 BTC"
+    },
+    "links": {
+        "telegram": "https://t.me/ascc1314"
+    }
+}

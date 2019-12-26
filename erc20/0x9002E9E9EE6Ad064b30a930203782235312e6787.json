@@ -1,0 +1,20 @@
+{
+    "symbol": "PFT",
+    "address": "0x9002E9E9EE6Ad064b30a930203782235312e6787",
+    "overview": {
+        "en": "Public Financial Trade Chain (abbr. PFT) leverages PFT token as its medium to build a global financial trading cloud platform with deep infusion of applications and commercial uses on financial industry and financial ecosystem chain based on smart contract and crypto token system.",
+        "zh": "Public Financial Trade Chain以PFT Token（简称PFT）为媒介，利用区块链技术，结合金融产业和金融生态链上的应用和商业场景，基于智能合约和Token系统，打造的一个全球金融交易云智能平台。"
+    },
+    "email": "support@coinyee.com",
+    "website": "www.pft.io",
+    "whitepaper": "http://www.pft.io/download/Public%20Financial%20Trade%20Chain_White%20paper%20V1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-01-21",
+    "initial_price": {
+        "BTC": "0.0001 BTC",
+        "USD": "0.35 USD"
+    },
+    "links": {
+        "weibo": "https://weibo.com/chainspay"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "symbol": "LAMB",
+    "address": "0x8971f9fd7196e5cEE2C1032B50F656855af7Dd26",
+    "overview": {
+        "en": "Lambda is a blockchain infrastructure storage project that provides infinitely scalable data storage capabilities to decentralized applications. Lambda is China's FileCoin,Lambda, with the mission of promoting the decentralization of the Internet, aims to build storage infrastructure for the new generation of value Internet.Lambda is a safe, reliable and infinitely extended decentralized storage network. On the Lambda Chain consensus network, data decentralization, data integrity and security verification as well as the operation of market-oriented storage transactions can be realized, so as to provide infinitely extensible data storage capacity for the new generation of value Internet,At the technical level, Lambda global for the first time and published the PoST time proves that the groundbreaking in Lambda Chain consensus type VRF (variable refrigerant flowrate) + BFT consensus algorithm is introduced into the network, to ensure the operation efficiency and reliability of the network, and implements the data integrity, multiple cooperating Chain data storage, data across the Chain pipe, and many other technological breakthroughs, support the dynamic data access, data privacy protection, for the value of the Internet \"the data value to the customers\" great idea, make unremitting efforts",
+        "zh": "Lambda是一个高速、安全且可扩展的区块链基础设施项目。Lambda是区块链的数据存储基础架构，具有自己的链，用于计费、交易、加密和访问控制。LAMB是Lambda项目的原生代币，可用于创建消耗节点的内存和存储资源。Lambda是区块链基础设施存储项目，Lambda向去中心化应用提供可无限扩展的数据存储能力。Lambda是中国的FileCoin，Lambda是一个安全、可靠、无限扩展的去中心化存储网络，在 Lambda Chain 共识网络上实现数据的去中心化存储、数据的完整性及安全性验证和市场化存储交易的运行，为新一代价值互联网提供可无限扩展的数据存储能力，在技术层面，Lambda 全球首次实现并公布了 PoST 时空证明，开创性的在Lambda Chain共识网络中引入 VRF+ BFT的共识算法，保证了网络的运转效率及可靠性，并实现了数据完整性证明、多链数据协同存储、跨链数据管等众多技术突破，支持数据动态访问，保护数据隐私，为价值互联网「将数据价值还给用户」的伟大构想，不懈努力。"
+    },
+    "email": "gary@lambda.im",
+    "website": "https://www.lambda.im/",
+    "whitepaper": "https://www.lambda.im/doc/Lambda-WhitePaper-en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-12-29",
+    "links": {
+        "blog": "https://medium.com/@Lambdaim",
+        "twitter": "https://twitter.com/Lambdaim",
+        "telegram": "https://t.me/HelloLambda",
+        "github": "https://github.com/LambdaIM",
+        "facebook": "https://www.facebook.com/Lambdaim",
+        "medium": "https://medium.com/@Lambdaim"
+    }
+}

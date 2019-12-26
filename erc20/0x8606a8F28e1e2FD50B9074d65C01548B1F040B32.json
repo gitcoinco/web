@@ -1,0 +1,21 @@
+{
+    "symbol": "CTRT",
+    "address": "0x8606a8F28e1e2FD50B9074d65C01548B1F040B32",
+    "overview": {
+        "en": "A decentralized Trust-Based social network platform, complete solutions for Cryptocurrency Investors Ecosystem",
+        "zh": "一个分散的基于信任的社交网络平台，为加密货币投资者生态系统提供完整的解决方案"
+    },
+    "email": "admin@cryptrust.io",
+    "website": "https://cryptrust.io/",
+    "whitepaper": "https://cryptrust.io/whitepaper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-01",
+    "initial_price": {
+        "ETH": "0.0000001 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/cryptrustdapp",
+        "telegram": "https://t.me/cryptrusten",
+        "medium": "https://medium.com/@cryptrustdapp"
+    }
+}

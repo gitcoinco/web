@@ -1,0 +1,24 @@
+{
+    "symbol": "MESSE",
+    "address": "0x5874548c51822da642661b235e101d6d636b6feb",
+    "overview": {
+        "en": "Messe token.",
+        "zh": "MesseToken致力于打造信息透明对称、协同高效的可信任分布式全球区块链去中心化会展平台。在过去五年的发展过程中，MesseToken经历了技术的升级换代、战略的适时调整、客户的不断扩容，在主流业态中积累了大量的区块链应用服务落地经验。MesseCoin不断的汲取经验并进行快速扩张让更多的机构及个人参与进MesseToken平台所构筑的去中心化会展生态环境，与MesseCoin一同成长。MesseCoin基于全球化区块链大背景，应用区块链技术构造一个既可以自我循环、也可以向外拓展的可信任分布式会展生态环境。在全球40个国家200多个地区实现区块链去中心化会展服务，致力于打造好行业生态环境内的区块链解决方案。"
+    },
+    "email": "bd@messe.ws",
+    "website": "https://www.messe.ws",
+    "whitepaper": "http://www.messe.ws/m/english.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-28",
+    "initial_price": {
+        "ETH": "0.00003215 ETH",
+        "USD": "0.006 USD",
+        "BTC": "0.000000980 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/messe16017836",
+        "telegram": "https://t.me/messews",
+        "github": "https://github.com/messews/blockchain-python",
+        "facebook": "https://www.facebook.com/messe.token"
+    }
+}

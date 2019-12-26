@@ -1,0 +1,18 @@
+{
+    "symbol": "DVP",
+    "address": "0x8e30ea2329d95802fd804f4291220b0e2f579812",
+    "overview": {
+        "en": "The full name of DVP is the Decentralized Vulnerability Platform and it is the first decentralized vulnerability platform in the world.",
+        "zh": "DVP全称是Decentralized Vulnerability Platform（去中心化漏洞平台），是全球首家以去中心化的漏洞平台。"
+    },
+    "email": "service@dvpnet.io",
+    "website": "https://dvpnet.io/",
+    "whitepaper": "https://dvpnet.io/doc",
+    "state": "NORMAL",
+    "published_on": "2018-07-30",
+    "links": {
+        "twitter": "https://twitter.com/dvpnetio",
+        "telegram": "https://t.me/dvpnet",
+        "github": "https://github.com/DVPNET"
+    }
+}

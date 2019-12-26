@@ -1,0 +1,21 @@
+{
+  "symbol": "BLOC",
+  "address": "0x6F919D67967a97EA36195A2346d9244E60FE0dDB",
+  "overview": {
+    "en": "BLOC (Blockcloud Coin) is the official symbol of BLOCKCLOUD. BLOCKCLOUD aims to reinvent the roads on which modern applications drive on. It is a blockchain-based advanced TCP/IP that improves and upgrades the existing Internet. Combining the advantages of blockchain and Future Internet technology, it reconstructs the technology layers below where current blockchain networks and Internet applications operate. Blockcloud serves as the “building block” to provide constant connectivity for dynamic networks. It will provide better mobility, credibility, incentives, security, fairness, and scalability to upper-layer applications. Welcome to Blockcloud.",
+    "zh": "BLOC是积木云官方代币符号。积木云是基于区块链技术的新一代TCP/IP，用以升级和改造现有互联网。结合区块链技术和下一代互联网技术的优势，积木云通过“搭积木”的形式构建底层网络协议体系，为动态网络提供持续的连接性支持，并为应用层提供更好的动态性、可信性、激励性、安全性、公平性和可扩展性支持。"
+  },
+  "email": "contact@block-cloud.io",
+  "website": "https://www.block-cloud.io/",
+  "whitepaper": "https://www.block-cloud.io/whitepaper.shtml",
+  "state": "NORMAL",
+  "published_on": "2019-04-08",
+  "links": {
+    "twitter": "https://twitter.com/BlockcloudTeam",
+    "telegram": "https://t.me/BlockcloudTeam",
+    "reddit": "https://twitter.com/BlockcloudTeam",
+    "github": "https://github.com/SIMBA-Foundation",
+    "facebook": "https://www.facebook.com/BlockcloudTeam",
+    "medium": "https://medium.com/@BlockcloudTeam"
+  }
+}

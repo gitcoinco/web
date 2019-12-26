@@ -1,0 +1,18 @@
+{
+    "symbol": "ABSC",
+    "address": "0x661Ec83b4D1b676C84b389fbD75BF1B509a126E0",
+    "overview": {
+        "en": "ABS chain is the underlying common technology platform for solving data validation and usage rights based on blockchain . Through the decentralized distribution of encrypted data information and encryption key, the targeted sharing and dissemination of data information is realized, and the artifcial intelligence technology is used to realize the data information matching transaction.",
+        "zh": "ABS链是基于区块链和同态加密技术解决数据确权和用权问题的底层通用技术平台，旨在通过同态加密数据信息以及加密密钥去中心化分发，实现数据信息的定向分享传播，并借用人工智能技术实现数据信息撮合交易。"
+    },
+    "email": "support@abschain.io",
+    "website": "www.abschain.io",
+    "whitepaper": "www.abschain.io/ABS.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-21",
+    "links": {
+        "twitter": "https://twitter.com/ABSchain",
+        "telegram": "https://t.me/ABS_Chain_Global",
+        "facebook": "https://www.facebook.com/ABSChainGlobal"
+    }
+}

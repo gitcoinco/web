@@ -1,0 +1,25 @@
+{
+    "symbol": "TRADEMY",
+    "address": "0x3ee3c43cd9Ba0AbC4EF763b9070b5D29f5AE1E15",
+    "overview": {
+        "en": "the ultimate platform for crypto investors.",
+        "zh": "加密投资者的终极平台"
+    },
+    "email": "admin@trademycoin.org",
+    "website": "https://trademycoin.org/",
+    "whitepaper": "https://trademycoin.org/trademywhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-01",
+    "initial_price": {
+        "ETH": "0.00001666 ETH",
+        "USD": "0.007 USD",
+        "BTC": "0.00000041 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@trademycoin",
+        "twitter": "https://twitter.com/tmyctoken",
+        "telegram": "https://t.me/joinchat/trademycoingroup",
+        "github": "https://github.com/trademycoin",
+        "medium": "https://medium.com/@trademycoin"
+    }
+}

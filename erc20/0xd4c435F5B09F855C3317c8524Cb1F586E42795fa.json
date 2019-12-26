@@ -1,0 +1,23 @@
+{
+    "website": "https://cindicator.com/",
+    "published_on": "2017-09-12",
+    "links": {
+        "telegram": "https://t.me/joinchat/Auw2EkPZyOrijWvpwVUoQA",
+        "reddit": "https://www.reddit.com/r/Cindicator/",
+        "github": "https://github.com/cindicator",
+        "facebook": "https://www.facebook.com/crowdindicator",
+        "twitter": "https://twitter.com/crowd_indicator"
+    },
+    "overview": {
+        "en": "Hybrid Intelligence for effective asset management.",
+        "zh": "Cindicator 致力于建立混合人工智能（人+机器）的底层基础设施架构。"
+    },
+    "symbol": "CND",
+    "initial_price": {
+        "ETH": "0.000034 ETH",
+        "USD": "0.01 USD"
+    },
+    "whitepaper": "https://cindicator.com/Cindicator_WhitePaper_en.pdf",
+    "address": "0xd4c435F5B09F855C3317c8524Cb1F586E42795fa",
+    "email": "support@cindicator.com"
+}

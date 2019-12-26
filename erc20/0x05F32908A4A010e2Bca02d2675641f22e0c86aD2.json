@@ -1,0 +1,25 @@
+{
+    "symbol": "GO",
+    "address": "0x05F32908A4A010e2Bca02d2675641f22e0c86aD2",
+    "overview": {
+        "en": "Go is an expandable, high-performance, low-cost, decentralized encrypted currency and block chain based on ETF intelligent contract. It supports intelligent contract and distributed application. Go's mission is to provide a scalable, low-cost, energy-efficient platform for digital currency and distributed application.",
+        "zh": "Go是基于以太坊的智能合约，是一款可扩展，高性能，低成本，分散式的加密货币和区块链，支持智能合约和分布式应用程序，Go的使命是为数字货币和分散式应用提供可扩展，低成本，高能效的平台。"
+    },
+    "email": "contact@gochain.io",
+    "website": "https://gochain.io/",
+    "whitepaper": "https://gochain.io/gochain-whitepaper-v2.1.2.pdf",
+    "state": "NORMAL",
+    "published_on": "2016-06-17",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.07 USD",
+        "BTC": "0.000004137 BTC"
+    },
+    "links": {
+        "blog": "https://weibo.com/gochain",
+        "twitter": "https://twitter.com/gochain",
+        "telegram": "https://t.me/gochain",
+        "github": "https://github.com/gochain",
+        "facebook": "https://www.facebook.com/gochain"
+    }
+}

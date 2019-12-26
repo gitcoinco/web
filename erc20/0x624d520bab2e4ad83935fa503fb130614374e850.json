@@ -1,0 +1,21 @@
+{
+    "symbol": "SSP",
+    "address": "0x624d520bab2e4ad83935fa503fb130614374e850",
+    "overview": {
+        "en": "Smartshare generating value through a decentralized sharing economy",
+        "zh": "Smartshare 打造全球区块链共享生态"
+    },
+    "email": "ssp@smartshare.vip",
+    "website": "https://smartshare.info/",
+    "whitepaper": "https://smartshare.info/static/whitePaper/WhitePaperofSmartshare.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-01-16",
+    "initial_price": {
+        "ETH": "0.00001 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/Smartshare_vip",
+        "telegram": "https://t.me/SmartshareOffical",
+        "facebook": "https://www.facebook.com/smartshare.vip/"
+    }
+}

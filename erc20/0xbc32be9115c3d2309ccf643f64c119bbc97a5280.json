@@ -1,0 +1,22 @@
+{
+    "symbol": "MYE",
+    "address": "0xbc32be9115c3d2309ccf643f64c119bbc97a5280",
+    "overview": {
+        "en": "MYERS is a Decentralized exchange based on individual transactions to keep their asset safe"
+    },
+    "email": "admin@myexchange.website",
+    "website": "https://myexchange.website/",
+    "state": "NORMAL",
+    "published_on": "2018-09-27",
+    "initial_price": {
+        "ETH": "0.000003 ETH",
+        "BTC": "0.00000001 BTC",
+        "USD": "0.0025 USD"
+    },
+    "links": {
+        "website": "https://myexchange.website/",
+        "twitter": "https://twitter.com/myersexc1",
+        "telegram": "https://t.me/myersexchange",
+        "github": "https://github.com/MyersEX/Myers-Exchange"
+    }
+}

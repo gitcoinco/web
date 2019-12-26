@@ -1,0 +1,21 @@
+{
+    "symbol": "TRET",
+    "address": "0xc6d603a9df53d1542552058c382bf115aace70c7",
+    "overview": {
+        "en": "Tourist Review is a blockchain-based evaluation platform for traveling and food lovers combined with a smart contract that connects those who experience the cryptocurrency, creating the environment in which the users can search for a place or a dish quickly, thanks to Tourist Review’s Ecosystem."
+    },
+    "email": "info@touristreview.io",
+    "website": "https://touristreview.io/",
+    "whitepaper": "https://touristreview.io/white-paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-28",
+    "initial_price": {
+        "ETH": "0.00000005 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/TRET_Global",
+        "telegram": "https://t.me/touristreviewofficial",
+        "github": "https://github.com/tretchainvn",
+        "facebook": "https://www.facebook.com/TouristReviewGlobal/"
+    }
+}

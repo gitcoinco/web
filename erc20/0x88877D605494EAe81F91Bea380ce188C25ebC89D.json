@@ -1,0 +1,17 @@
+{
+    "symbol": "BBIN",
+    "address": "0x88877D605494EAe81F91Bea380ce188C25ebC89D",
+    "overview":{
+          "en": "BBIN is an effective decentralized block chain underlying basic application platform. Its original intention is to establish a block chain ecosystem. BBIN provides a forward-looking and low-cost industry ecological block chain application solution.",
+          "zh": "BBIN是一个有效去中心化的区块链底层基础应用平台，其设计初衷是为了建立一个区块链生态系统，BBIN提供一个具有前瞻性的、低成本的行业生态区块链应用解决方案。"
+    },
+    "email": "bbinofficial@163.com",
+    "website": "http://www.bbin.ski/",
+    "whitepaper": "http://www.bbin.ski/BBIN_Book.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-10-28",
+    "links": {
+        "blog": "https://weibo.com/BBINOfficialGroup",
+        "telegram": "https://t.me/BBINOfficialGroup"
+      }
+}

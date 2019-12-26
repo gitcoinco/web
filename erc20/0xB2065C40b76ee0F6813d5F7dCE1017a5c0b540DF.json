@@ -1,0 +1,22 @@
+{
+  "symbol": "GLB",
+  "address": "0xB2065C40b76ee0F6813d5F7dCE1017a5c0b540DF",
+  "overview":{
+        "en": "GlenBit token is referred to as GLB and is the only platform token officially issued by GlenBit. GLB will support multiple businesses and multiple products on the GlenBit Platform. In the future, GLB will also be the “fuel” of the GlenBit Ecosphere. When using GlenBit products, GLB is required. Including deductible fees, membership fees, rewards and other diversified functions.",
+        "zh": "格林币简称GLB，是由GlenBit官方发行的唯一平台代币。GLB将支持格林平台多项业务及多款产品。未来，GLB也将会是格林生态圈的“燃料”，使用格林产品时，需要使用GLB。包括抵扣手续费、会员费、打赏等多元化功能。"
+  },
+  "email": "support@glenbit.com",
+  "website": "https://www.glenbit.com/",
+  "whitepaper": "https://www.glenbit.com/",
+  "state": "NORMAL",
+  "published_on": "2018-09-21",
+  "initial_price":{
+        "USD":"0.03 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/glenbitofficial",
+    "telegram": "https://t.me/glenbitofficial",
+    "facebook": "https://www.facebook.com/GlenBitOfficial",
+	"reddit": "https://www.reddit.com/user/GlenBitOfficial"
+  }
+}

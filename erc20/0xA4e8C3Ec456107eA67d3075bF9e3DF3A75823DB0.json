@@ -1,0 +1,22 @@
+{
+    "website": "https://loomx.io/",
+    "published_on": "2018-03-12",
+    "links": {
+        "telegram": "https://t.me/loomnetwork",
+        "reddit": "https://www.reddit.com/r/loomnetwork/",
+        "github": "https://github.com/loomnetwork",
+        "facebook": "https://www.facebook.com/loomxnetwork/",
+        "twitter": "https://twitter.com/loomnetwork"
+    },
+    "overview": {
+        "en": "The next-generation blockchain platform for large-scale online games and social apps.",
+        "zh": "Loom 为以太坊 DApp 提供扩展解决方案，聚焦于大型在线游戏和社交应用。"
+    },
+    "symbol": "LOOM",
+    "initial_price": {
+        "ETH": "0.00007617 ETH",
+        "USD": "0.0555 USD"
+    },
+    "address": "0xA4e8C3Ec456107eA67d3075bF9e3DF3A75823DB0",
+    "email": "team@loomx.io"
+}

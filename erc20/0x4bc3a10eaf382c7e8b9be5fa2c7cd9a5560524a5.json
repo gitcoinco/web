@@ -1,0 +1,17 @@
+{
+    "symbol": "IMC",
+    "address": "0x4bc3a10eaf382c7e8b9be5fa2c7cd9a5560524a5",
+    "overview": {
+        "en": "imChat is a comprehensive mobile communication tool that helps users easily connect with friends, provide peer-to-peer chat and group chat, and support sending text, emoticons, voices, pictures, files, links and other messages, as well as rich group management functions; imChat provides content creation and distribution based on the public number, and recommends information to the user in the form of a headline; imChat supports digital currency wallet to help users manage various digital currencies such as BTC, ETH, etc., and supports transfers and red packets;",
+        "zh": "imChat 是一款全方位的手机通讯工具，帮助用户轻松连接朋友，提供点对点聊天和群聊，支持发送文字、表情、语音、图片、文件、链接等消息，以及丰富的群管理功能；imChat 基于公号提供内容的创建和发布，以头条的方式向用户推荐资讯；imChat 支持数字货币零钱包，帮助用户管理各种数字货币如BTC、ETH等，并支持转账和红包；"
+    },
+    "email": "imchathk@gmail.com",
+    "website": "http://www.imchat.com",
+    "state": "NORMAL",
+    "published_on": "2018-10-24",
+    "links": {
+        "facebook": "https://www.facebook.com/imchatteam",
+        "twitter": "https://twitter.com/imchat1",
+        "github": "https://github.com/imchat"
+    }
+}

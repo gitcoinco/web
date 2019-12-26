@@ -1,0 +1,21 @@
+{
+    "symbol": "CDCC",
+    "address": "0x78021ABD9b06f0456cB9DB95a846C302c34f8b8D",
+    "overview": {
+        "en": "CDCC will be the first global asset trading platform with blockchain technology and application. We expect this asset exchange platform will be bigger than the fiat currency exchange and coin to coin exchange. The platform represents buyers and sellers. They are treated perfectly and transparently here and ensuring a perfect match for their business proposition. The platform will be built on Etherium and Java Technology.",
+        "zh": "CDCC将成为首个采用区块链技术和应用的全球资产交易平台。 我们预计这个资产交换平台将比法定货币兑换和硬币兑换更大。 该平台代表买家和卖家。 他们在这里得到完美和透明的对待，确保他们的商业主张完美匹配。 该平台将基于Etherium和Java技术构建。"
+    },
+    "email": "support@cdcctop.io",
+    "website": "https://cdcctop.io/",
+    "whitepaper": "https://cdcctop.io/CDCC-whitepaper.pdf",
+    "published_on": "2018-06-01",
+    "initial_price": {
+        "ETH": "0.000012 ETH",
+        "USD": "0.02 USD"
+    },
+    "links": {
+        "facebook": "https://www.facebook.com/cdcc.token.7",
+        "github": "https://github.com/cdcc-github",
+        "reddit": "https://www.reddit.com/user/cdcctrade/"
+    }
+}

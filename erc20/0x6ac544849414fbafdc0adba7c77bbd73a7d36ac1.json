@@ -1,0 +1,17 @@
+{
+    "symbol": "KBCC",
+    "address": "0x6ac544849414fbafdc0adba7c77bbd73a7d36ac1",
+    "overview": {
+        "en": "KBCC is a distributed education service platform based on KBC (Knowledge block chain) blockchain technology. With the decentralization of blockchain, KBCC builds functions of storage, tracing, analysis, integration and related teaching data to realize individual learning. The Big Data Authorization Sharing Application Platform provides education, training, teaching transactions, industry-university cooperation and other services for training institutions, government education departments, and users.",
+        "zh": "KBCC 是基于 KBC（Knowledge block chain）区块链技术的分布式教育服务平台，利用区块链去中心化的特点，KBCC 搭建了具有存储、追溯、分析、集成与关联教学数据功能，实现个体学习的大数据授权共享应用平台，为培训机构，政府教育部门，广大用户提供教育培训、教学交易、产学合作等服务。"
+    },
+    "website": "http://www.edukbcc.com/",
+    "whitepaper": "http://www.edukbcc.com/uploadfile/KBCCWhitePaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-29",
+    "initial_price": {
+        "ETH": "0.00021071 ETH",
+        "USD": "0.044 USD",
+        "BTC": "0.00000672 BTC"
+    }
+}

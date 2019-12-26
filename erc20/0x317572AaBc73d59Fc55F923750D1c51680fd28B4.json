@@ -1,0 +1,24 @@
+{
+    "symbol": "TTT",
+    "address": "0x317572AaBc73d59Fc55F923750D1c51680fd28B4",
+    "overview": {
+        "en": "Comprehensive payment ecosystem for the sharing economy"
+    },
+    "email": "devs@ttvcglobal.com",
+    "website": "https://www.ttvcglobal.com/",
+    "whitepaper": "https://www.ttvcglobal.com/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-07",
+    "initial_price": {
+        "USD": "0.25 USD"
+    },
+    "links": {
+        "blog": "https://www.ttvcglobal.com/blog",
+        "twitter": "https://twitter.com/ttvcglobal",
+        "telegram": "https://t.me/joinchat/ttvcglobal",
+        "github": "https://github.com/ttvcttt",
+        "facebook": "https://www.facebook.com/ttvcglobal",
+        "reddit": "https://www.reddit.com/user/ttvcglobal",
+        "slack": "https://ttvcglobal.slack.com"
+    }
+}

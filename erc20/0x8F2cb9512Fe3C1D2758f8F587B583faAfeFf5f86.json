@@ -1,0 +1,21 @@
+{
+    "symbol": "NRE",
+    "address": "0x8F2cb9512Fe3C1D2758f8F587B583faAfeFf5f86",
+    "overview": {
+        "en": "NRE",
+        "zh": "新零售数据链"
+    },
+    "email": "support@NRE.io",
+    "state": "NORMAL",
+    "published_on": "2018-07-03",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.1 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "links": {
+        "blog": "https://weibo.com/u/6633682464",
+        "toutiao": "https://www.toutiao.com/a1608672124895235/",
+        "telegram": "https://t.me/6633682464"
+    }
+}

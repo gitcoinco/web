@@ -1,0 +1,27 @@
+{
+    "symbol": "USE",
+    "address": "0xd9485499499d66b175cf5ed54c0a19f1a6bcb61a",
+    "overview": {
+        "en": "USE(Usechain) is the global first mirror identity blockchain ecosystem token.",
+        "zh": "USE 是 全球首个隐身镜像公有链Usechain, 生态系统中的基础通用代币。"
+    },
+    "email": "contact@usechain.net",
+    "website": "https://www.usechain.net/",
+    "whitepaper": "https://www.usechain.net/usechain_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-03-20",
+    "initial_price": {
+        "ETH": "0.00001333 ETH",
+        "USD": "0.005 USD",
+        "BTC": "0.00000055 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@usechain",
+        "twitter": "https://twitter.com/usechain",
+        "telegram": "https://t.me/usechaingroup",
+        "reddit": "https://www.reddit.com/r/UseChain/",
+        "github": "https://github.com/usechain",
+        "facebook": "https://www.facebook.com/UsechainFoundation",
+        "medium": "https://medium.com/@usechain"
+    }
+}

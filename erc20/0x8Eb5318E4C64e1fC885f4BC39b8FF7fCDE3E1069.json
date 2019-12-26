@@ -1,0 +1,23 @@
+{
+    "symbol": "AFDT",
+    "address": "0x8Eb5318E4C64e1fC885f4BC39b8FF7fCDE3E1069",
+    "overview": {
+        "en": "AFD's digital asset promotion platform uses ACCURATE FLOW OF DATA TOKEN, abbreviated as 'AFDT', with a total distribution quantity of 2.1 billion. Additional quantity will not be issued.",
+        "zh": "AFD的数字资产推广平台使用ACCURATE FLOW OF DATA TOKEN，缩写为“AFDT”，总分配数量为21亿。 额外的数量将不会发布。"
+    },
+    "email": "service@afdchain.info",
+    "website": "http://www.afdchain.org",
+    "whitepaper": "http://www.afdchain.org/static/afd_white_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-28",
+    "initial_price": {
+        "ETH": "0.00033333 ETH"
+    },
+    "links": {
+        "blog": "https://weibo.com/u/6611671240",
+        "twitter": "https://twitter.com/AfDchain",
+        "telegram": "https://t.me/AFDchain99",
+        "facebook": "https://www.facebook.com/gongbing.song.50",
+        "toutiao": "https://www.toutiao.com/i6589932829147136516/"
+    }
+}

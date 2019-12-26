@@ -1,0 +1,19 @@
+{
+    "symbol": "GACT",
+    "address": "0x50551265ba0aef89c43f9a965e58922867a6eb3a",
+    "overview": {
+        "en": "Gold Agricultural Chain is public blockchain infrastructure of agriculture",
+        "zh": "金农链是专为农业产业设计的区块链底层技术"
+    },
+    "email": "admin@gact.io",
+    "website": "https://gact.io",
+    "whitepaper": "https://gact.io/file/gold_agricultural_chain_whitepaper_en_v1.0.pdf",
+    "published_on": "2018-08-20",
+    "initial_price": {
+        "USD": "0.045 USD"
+    },
+    "links": {
+        "github": "https://github.com/gact001",
+        "telegram": "https://0.plus/#/ourgact"
+    }
+}

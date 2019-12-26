@@ -1,0 +1,16 @@
+{
+    
+    "symbol": "DF",
+    "address": "0xfb98593eBEE4A0b3d1C5272Ef0180DD75De7f653",
+    "overview": {
+        "en": "The DFD Fund disseminates the regulation of the commercial dark data ecosystem and provides the impetus for the sustainable development of data values.",
+        "zh": "DFD Fund 传播监管商业化暗数据生态，为发掘数据价值可持续发展提供动力。"
+    },
+    "email": "support@darkforce.io",
+    "website": "http://darkforce.io",
+    "whitepaper": "http://www.darkforce.io/pdf/DF_whitepaper_zh.pdf",
+    "published_on": "2019-07-28",
+    "initial_price": {
+        "USD": "0.132 USD"
+    }
+}

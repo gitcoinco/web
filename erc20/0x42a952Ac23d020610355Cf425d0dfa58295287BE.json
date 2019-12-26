@@ -1,0 +1,13 @@
+{
+	"symbol": "DBM",
+	"address": "0x42a952Ac23d020610355Cf425d0dfa58295287BE",
+	"overview": {
+		"en": "D-Bank Token",
+		"zh": "D-Bank Token"
+	},
+	"email": "dbank@d-bank.org",
+	"website": "http://www.d-bank.org",
+	"whitepaper": "http://www.d-bank.org/book/baipishu_en.pdf",
+	"state": "NORMAL",
+	"published_on": "2018-10-30"
+}

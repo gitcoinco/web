@@ -1,0 +1,21 @@
+{
+    "website": "https://datawallet.com/",
+    "links": {
+        "telegram": "https://t.me/datawallet",
+        "reddit": "https://www.reddit.com/r/Datawallet/",
+        "github": "https://github.com/Datawallet",
+        "twitter": "https://twitter.com/datawallethq"
+    },
+    "overview": {
+        "en": "Datawallet provides users with a self-sovereign wallet that puts them in charge of their data, and allows them to monetize as well as utilize an asset that is rightfully theirs.",
+        "zh": "去中心化钱包。"
+    },
+    "symbol": "DXT",
+    "initial_price": {
+        "ETH": "0.00025902 ETH",
+        "USD": "0.18 USD"
+    },
+    "whitepaper": "https://assets.datawallet.io/tokensale/datawallet_whitepaper.pdf",
+    "address": "0x8dB54ca569D3019A2ba126D03C37c44b5eF81EF6",
+    "email": "dxt@datawallet.com"
+}

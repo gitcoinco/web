@@ -1,0 +1,19 @@
+{
+    "symbol": "ALCT",
+    "address": "0x6141fd0F51314FFd4125Dc08F558f3C048DE4181",
+    "overview": {
+        "en": "The ALCT team has more than 5 blockchain industry experts who come to Uber, Google, KAYAK, LinkedIn and Deloitte and other world top universities or internationally well-known companies, including some of them have received international honor members, and ALCT has established offices in Beijing, San Francisco, New York and Singapore.",
+        "zh": "ALCT 是基于区块链的去中心化，它的技术架构跟传统通讯网络不同，传统的通讯网络都是基于中心服务器建立，进行数据交换，并建立实现数据流连接。而ALCT完全是基于分布式的通讯网络，完全切除中心服务器，以实现对传统通讯方式的全面革新。"
+    },
+    "email": "xiebocan@outlook.com",
+    "website": "https://www.alctchain.com",
+    "whitepaper": "http://doc.api.cli.im/documents/cli/166/975/4975166/155231261364474670f7f207619752d7e616c781992b91552312572.pdf",
+    "published_on": "2018-10-06",
+    "initial_price": {
+        "ETH": "0.000025 ETH",
+        "BTC": "0.000002 BTC"
+    },
+    "links": {
+        "telegram": "https://t.me/ALCTcom"
+    }
+}

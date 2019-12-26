@@ -1,0 +1,27 @@
+{
+    "symbol": "GIT",
+    "address": "0x1d0582fa759e4b9beab4f6f82cc539ac62c49250",
+    "overview": {
+        "en": "GoDigit",
+        "zh": "GoDigit"
+    },
+    "email": "admin@godigit.io",
+    "website": "https://www.godigit.io/",
+    "whitepaper": "https://www.godigit.io/wp-content/uploads/2018/09/GoDigit-Whitepaper-V.02.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-01",
+    "initial_price": {
+        "ETH": "0.00341023 ETH",
+        "USD": "0.61 USD",
+        "BTC": "0.00010868 BTC"
+    },
+    "links": {
+        "blog": "https://bitcointalk.org/index.php?topic=4963107.0",
+        "twitter": "https://twitter.com/GoDigitIO",
+        "telegram": "https://t.me/GoDigit_GIT",
+        "github": "https://github.com/godigitio",
+        "facebook": "https://www.facebook.com/GoDigitIO/",
+        "reddit": "https://www.reddit.com/r/GoDigit",
+        "medium": "https://medium.com/@GoDigitIO/"
+    }
+}

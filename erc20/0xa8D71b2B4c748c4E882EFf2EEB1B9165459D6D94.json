@@ -1,0 +1,23 @@
+{
+  "symbol": "SWT",
+  "address": "0xa8D71b2B4c748c4E882EFf2EEB1B9165459D6D94",
+  "overview":{
+        "en": "SWT（Shinhwa）is the token issued by the Shinhwa Foundation,for the global CryptoValley plan and Shinhwa encryption wallet ecology, promote the global international block chain industry development process.",
+        "zh": "SWT 神话基金会发行的通证，用于全球加密谷计划及神话加密通钱包生态，推动全球国际区块链产业发展进程。"
+  },
+  "email": "info@shinhwa.hk",
+  "website": "http://www.shinhwa.hk",
+  "whitepaper": "http://www.shinhwa.hk/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-06-01",
+  "initial_price":{
+        "ETH":"0.0038 ETH",
+        "USD":"0.01 USD",
+        "BTC":"0.00000119 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/HkShinhwa",
+    "telegram": "https://t.me/SWT-Group",
+    "facebook": "https://www.facebook.com/hk.shinhwa"
+  }
+}

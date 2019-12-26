@@ -1,0 +1,14 @@
+{
+    "symbol": "NDK",
+    "address": "0x79587ecdF31A1F99f8914905f22913baa62511ED",
+    "overview": {
+        "en": "NDK is a blockchain ecosystem with a mainchain + multiple functional sidechains, and provides a powerful SDK which simplifies the development process for entertainment DAPPs."
+    },
+    "website": "http://newdake.com/",
+    "whitepaper": "http://newdake.com/NEWDAKE_Whitepaper.pdf",
+    "published_on": "2018-10-10",
+    "links": {
+        "twitter": "https://twitter.com/newdake",
+        "facebook": "https://www.facebook.com/newdake"
+    }
+}

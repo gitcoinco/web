@@ -1,0 +1,25 @@
+{
+    "symbol": "TAC",
+    "address": "0xca694eb79eF355eA0999485d211E68F39aE98493",
+    "overview": {
+        "en": "Absorbed In Creating Global Biggest Traceability Public Chain",
+        "zh": "专注打造全球最大溯源公链"
+    },
+    "email": "admin@tacchain.io",
+    "website": "https://tacchain.io/",
+    "whitepaper": "http://dl.tacblock.com/Traceability_Chain_Whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-06",
+    "initial_price": {
+        "ETH": "0.0001 ETH",
+        "USD": "0.05490 USD",
+        "BTC": "0.000004137 BTC"
+    },
+    "links": {
+        "blog": "https://blog.tacchain.io/",
+        "twitter": "https://twitter.com/TraceabilityCh1",
+        "telegram": "https://t.me/tacchain",
+        "github": "https://github.com/TraceabilityChain/TAC",
+        "facebook": "https://www.facebook.com/Traceabilty-Chain-2035631440090632/"
+    }
+}

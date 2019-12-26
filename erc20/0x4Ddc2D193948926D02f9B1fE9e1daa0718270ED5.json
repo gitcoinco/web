@@ -1,0 +1,17 @@
+{
+  "symbol": "cETH",
+  "address": "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5",
+  "overview":{
+        "en": "cETH is like an instant ETH savings account. By Compound.",
+        "zh": "cETH 由 Compound 发行，类似于一个即时的 ETH 存储账户。 "
+  },
+  "website": "https://app.compound.finance/asset/cETH",
+  "whitepaper": "https://compound.finance/documents/Compound.Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-07",
+  "links": {
+    "blog": "https://medium.com/compound-finance",
+    "twitter": "https://twitter.com/compoundfinance",
+    "github": "https://github.com/compound-finance/compound-protocol"
+  }
+}

@@ -1,0 +1,19 @@
+{
+    "symbol": "FTN_Old",
+    "address": "0x82Cf44bE0768A3600c4BDeA58607783A3A7c51AE",
+    "overview": {
+        "en": "A block-chained content ecosystem based on Proof of Contribution.",
+        "zh": "Fountain 是一个基于贡献证明 ( Proof of Contribution ) 的区块链化内容生态系统。注：此为 FTN官方发行的旧 FTN 代币。新 FTN 合约地址：0x66d9c4D19b4C8e23a54C6dc4CeEd141f66b8111C"
+    },
+    "email": "contact@fountainhub.com",
+    "website": "https://fountainhub.com/",
+    "whitepaper": "https://github.com/FountainHub/Fountain-Whitepaper",
+    "state": "NORMAL",
+    "published_on": "2018-09-26",
+    "links": {
+        "medium": "https://medium.com/@FountainHub",
+        "twitter": "https://twitter.com/fountainhub",
+        "telegram": "https://t.me/FountainOfficial",
+        "github": "https://github.com/FountainHub/"
+    }
+}

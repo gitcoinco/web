@@ -1,0 +1,18 @@
+{
+    "symbol": "GDCT",
+    "address": "0xD215A7823840a7f7e7450E2edF643C9FA2FCd0A7",
+    "overview": {
+        "zh": "环球链是由环球交易所基金会牵头研发的一条底层公链，一解决去中心化交易为主要研发目标的新一代价值交换区块链标准，GDCT是环球链的ERC20代币，之后会做主网映射。"
+    },
+    "email": "support@gexday.com",
+    "website": "http://www.gdctoken.vip/",
+    "whitepaper": "http://www.gdctoken.vip/img/gdct.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-11-01",
+    "initial_price": {
+        "USD": "0.134 USD"
+    },
+    "links": {
+        "blog": "https://gexday.zendesk.com/hc/zh-cn/articles/360035467012-GDCT%E5%8D%B3%E5%B0%86%E4%B8%8A%E7%BA%BFimToken-2-0%E9%92%B1%E5%8C%85"
+    }
+}

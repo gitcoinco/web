@@ -1,0 +1,20 @@
+{
+    "symbol": "BDB3",
+    "address": "0xd8062c267dd196b5e500a99ead7f50592f323e51",
+    "overview": {
+        "en": "BIDA will create the type of multi-function exchange.An overall optimized diversified transaction model, and the very first friendly transaction environment for novice player.",
+        "zh": "幣達團隊打造多功能型交易所，全面優化的多樣化交易模式，首創友善新手玩家的交易環境 "
+    },
+    "email": "bidacoin@gmail.com",
+    "website": "https://www.bidaone.com",
+    "whitepaper": "https://ico.bidaex.io/static/pdf/white_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-17",
+    "initial_price": {
+        "ETH": "0.0005 ETH"
+    },
+    "links": {
+        "telegram": "https://t.me/joinchat/IVsvfg70GO1rMNez1HAAJw",
+        "facebook": "https://www.facebook.com/bidacoin/"
+    }
+}

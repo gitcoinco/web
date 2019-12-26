@@ -1,0 +1,17 @@
+{
+    "symbol": "CTH",
+    "address": "0x374860915d684b02874a25a8e9bb6c6ef6920827",
+    "overview": {
+        "en": "CTH is the token of the Crypto Trade Hub. The Crypto Trade Hub will establish an open, win-win and long-term operational mechanism through CTH to liberate the roles of the various players in the alliance and continuously strengthen the overall strength of the alliance.",
+        "zh": "CTH是数字资产交易联盟的通证，是联盟内数据、权利、收益流通统一的载体。数字资产交易联盟将通过CTH建立起一套公开、共赢、长效的运转机制，解放联盟内各角色的生产力，不断强化联盟的整体实力。"
+    },
+    "website": "http://wangc.la",
+    "whitepaper": "http://wangc.la/white/CTH%201.2.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-20",
+    "initial_price": {
+        "ETH": "0.00003871 ETH",
+        "USD": "0.03 USD",
+        "BTC": "0.0000025 BTC"
+    }
+}

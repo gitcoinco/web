@@ -1,0 +1,18 @@
+{
+    "symbol": "PIN",
+    "address": "0x005275450e77bfa6bcbd04d85175d5d0f2dfae43",
+    "overview": {
+        "en": "Poolin is creating a mining pool ecology which is community owned, community governed and community shared. POOLIN, as the proof of stake in Poolin community, will connect various functions of the community to achieve highly consistent with the community ecology.",
+        "zh": "社区共有、社区共治、社区共享的矿池生态。作为币印社区的权益证明，PIN将串联起社区的各项功能，从而实现与社区生态的深度吻合。"
+    },
+    "email": "token@blockin.com",
+    "website": "https://www.poolin.com/",
+    "published_on": "2018-07-24",
+    "links": {
+        "blog": "https://blog.poolin.com",
+        "twitter": "https://twitter.com/officialpoolin",
+        "telegram": "https://t.me/poolincommunity",
+        "github": "https://github.com/iblockin",
+        "facebook": "https://www.facebook.com/poolinpool"
+    }
+}

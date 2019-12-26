@@ -1,0 +1,22 @@
+{
+    "symbol": "AOZ",
+    "address": "0xe211da9ff1f5a4195c178cc87bb69f30f4256771",
+    "overview": {
+        "zh": "AOZ秉持共赢理念，打造出一个由社区自治的去中心化交易平台，与各方共建更加适配区块链行业特点的共享型经济生态体系。"
+    },
+    "email": "contact@myico.com",
+    "website": "www.aozcoin.com",
+    "whitepaper": "http://www.aozcoin.com/adex/AOZ%20white%20paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-28",
+    "initial_price": {
+        "ETH": "0.0000166666 ETH",
+        "USD": "0.02 USD",
+        "BTC": "0.000000004137 BTC"
+    },
+    "links": {
+        "twitter": "Aozcoin",
+        "telegram": "https://t.me/Aoz_group",
+        "facebook": "http://facebook.com/aozcoin"
+    }
+}

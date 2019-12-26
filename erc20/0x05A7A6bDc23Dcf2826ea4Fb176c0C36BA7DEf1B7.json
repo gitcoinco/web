@@ -1,0 +1,22 @@
+{
+    "symbol": "TCT",
+    "address": "0x05A7A6bDc23Dcf2826ea4Fb176c0C36BA7DEf1B7",
+    "overview": {
+        "en": "Tadpole Chain is the first multiple platform game contents sharing ecology based on the block chain technology in the world. ",
+        "zh": "蝌蚪链是全球首款基于区块链技术的多平台游戏内容分享生态。"
+    },
+    "email": "contactus@tadpolechain.com",
+    "website": "https://www.tadpolechain.com/",
+    "whitepaper": "http://img.suncity.ink/pdf/tct-en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-03-01",
+    "initial_price": {
+        "ETH": "0.000142857 ETH",
+        "USD": "0.1 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/TadpoleChain",
+        "github": "https://github.com/tadpole-chain",
+        "facebook": "https://www.facebook.com/token.tadpolechain.1"
+    }
+}

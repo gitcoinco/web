@@ -1,0 +1,19 @@
+{
+    "website": "https://www.huobipro.com/",
+    "published_on": "2018-01-24",
+    "links": {
+        "telegram": "https://t.me/huobiproofficial",
+        "twitter": "https://twitter.com/HUOBI_Pro",
+        "facebook": "https://www.facebook.com/huobi.pro"
+    },
+    "overview": {
+        "en": "Huobi Global is a world-leading cryptocurrency financial services group.",
+        "zh": "HT 是火币交易所的平台币。"
+    },
+    "symbol": "HT",
+    "initial_price": {
+        "USD": "1.52 USD"
+    },
+    "address": "0x6f259637dcD74C767781E37Bc6133cd6A68aa161",
+    "email": "support@huobi.pro"
+}

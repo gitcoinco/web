@@ -1,0 +1,8 @@
+{
+    "symbol": "INF",
+    "account_name": "infinicoinio",
+    "overview": {
+        "en": "Infiniverse is a decentralized augmented reality (AR) platform and persistent virtual world on top of the real world, powered by the EOS blockchain and InterPlanetary File System (IPFS). Users can bring digital content into the real world, allowing it to be seen and interacted with by any other nearby users. The platform also allows users to place persistent content in the world, which remains in the same physical location even after the user has left the area or quit the application. However, due to the scarcity of real world space, users must purchase or rent “land”, the digital layer of real world locations, in order to place persistent content there. Infiniverse has its own economy and virtual currency: Infinicoin, an EOS token. Infinicoin is used to register land and make transactions on the marketplace. The marketplace allows users to sell their creations, trade unique items, and buy and rent land, all without percentage-based commissions. The blockchain gives users full control and security over their virtual currency, land ownership and assets, while content is duplicated and distributed across the IPFS network. Infinicoin is a pure utility token. It is not designed for speculation or to maximise value. Rather, Infinicoin is designed to be a stable store of value for the Infiniverse economy. There will be many opportunities for users to earn INF with the platform including renting/selling land, placing premium content on their land, trading digital assets."
+    },
+    "website": "https://www.infiniverse.net"
+}

@@ -1,0 +1,22 @@
+
+{
+  "symbol": "FIT",
+  "address": "0xC98449EF8a017cfD29AED8b21B9B26492978a898",
+  "overview":{
+    "en": "The Fitness Chain project's mission is to help people improve mentally and physically. In the decentralized bioinformatics network, the dominant power to achieve health lies in the hands of oneself, not in the third party. The Fitness Chain project develops protocols based on bioinformatics to achieve better mental and physical status.",
+    "zh": "Fitness Chain 项目的任务,帮助人们在精神 上和生理上得到改善。去中心化的生物信息 网中,实现健康的主导权掌握在自己手里，而 不是在于第三者。Fitness Chain 项目基于生 物信息开发出能够达到更好的精神和体质状 态的协议。"
+  },
+  "email": "fitness@fit.doctor",
+  "website": "https://bank.fit.doctor/",
+  "whitepaper": "https://bank.fit.doctor/fit.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-02-24",
+  "links": {
+    "twitter": "https://twitter.com/fitdoctor",
+    "telegram": "https://t.me/fitdoctor",
+    "github": "https://github.com/fitdoctor",
+    "facebook": "https://www.facebook.com/fitdoctor",
+    "reddit": "https://www.reddit.com/r/fitdoctor",
+    "medium": "https://medium.com/fitdoctor"
+  }
+}

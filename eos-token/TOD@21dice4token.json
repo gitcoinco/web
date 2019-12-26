@@ -1,0 +1,13 @@
+{
+    "symbol": "TOD",
+    "account_name": "21dice4token",
+    "overview": {
+        "en": "The 21Dice platform is named after 21 super nodes that pay tribute to EOS. 21Dice is a decentralized game platform developed based on the EOS main network and has been put on the shelves of EOS number guessing games. The operation of the game and the issuance of tokens are controlled by intelligent contracts. The random Numbers used in the game are generated on the chain, and the front-end page is only the display page. The network is the first battle group PK mode, a total of 21 battle groups, we hope to establish a fair, transparent, decentralized game ecological platform, 100 percent of the platform revenue discount dividends, become the battle group knights or Kings can enjoy a fat profit.",
+        "zh": "21Dice 是一个以EOS 21个节点命名的平台。21Dice 是一个去中心化的游戏平台，基于EOS主网开发，并且已经上架了多款 EOS 猜数字游戏。游戏的操作和代币的发行是由智能合约控制的。游戏的随机数是在链上生成的，前端页面只是展示了该数据。我们是第一家群战PK模式，总共有21个群，我们希望建立一个公平、透明、去中心化的游戏生态平台，100%的平台收益会被返还给用户，成为战斗群的骑士或者国王可以获得巨大的收益。"
+    },
+    "website": "https://21dice.one",
+    "links": {
+        "twitter": "https://twitter.com/21Dice1",
+        "telegram": "https://t.me/dice_CN"
+    }
+}

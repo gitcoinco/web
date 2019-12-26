@@ -1,0 +1,18 @@
+{
+    "website": "https://www.polymath.network/",
+    "links": {
+        "telegram": "https://t.me/PolymathNetwork",
+        "reddit": "https://www.reddit.com/r/PolymathNetwork/",
+        "github": "https://github.com/PolymathNetwork",
+        "facebook": "https://www.facebook.com/polymathnetwork/",
+        "twitter": "https://twitter.com/PolymathNetwork"
+    },
+    "overview": {
+        "en": "Polymath aims to enable securities to migrate to the blockchain.",
+        "zh": "Polymath - 以证券上链为目标。"
+    },
+    "symbol": "POLY",
+    "whitepaper": "https://www.polymath.network/resources/whitepaper",
+    "address": "0x9992eC3cF6A55b00978cdDF2b27BC6882d88D1eC",
+    "email": "sukhveer@polymath.network"
+}

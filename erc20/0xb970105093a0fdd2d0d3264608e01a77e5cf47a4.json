@@ -1,0 +1,16 @@
+{
+    "symbol": "EC",
+    "address": "0xb970105093a0fdd2d0d3264608e01a77e5cf47a4",
+    "overview": {
+        "en": "EC is the abbreviation of Elephant Chain, which is the certificate issued by the elephant chain platform. The EC is issued on the basis of ERC20, with a total of 21 million pieces, and will never be issued. The elephant chain is a tourism chain reform project independently researched and developed based on blockchain technology. It insists on being honest and correct. It is determined to be innovative within the scope of policy, not ICO, not on overseas exchanges, and doing chain reforms. Elephant Chain = Elephant Points + Elephant Wallet + Elephant Travel Consumption Chain. Elephant points have been applied to the company's main business, so the elephant chain will exist for a long time. The company takes the ticket B2B service as the core, expands business travel, tourism, competitions, and builds a big travel ecological alliance and a tourism consumption public chain.",
+        "zh": "EC 是 Elephant Chain 的简称， 是大象链链平台发行的通证。EC基于ERC20发行，总量2100万枚，永不增发。大象链是基于区块链技术自主研发的旅游链改项目，坚持守正出奇，在政策允许范围内立志创新，不ICO，不上海外交易所，踏踏实实做链改。大象链=大象积分+大象钱包+大象旅游消费链。大象积分已应用于公司主营业务，因此大象链将长期存在。公司以机票B2B服务为核心，拓展商旅，旅游，赛事，打造大出行生态联盟以及旅游消费公有链。"
+    },
+    "email": "ec@jinri.cn",
+    "website": "http://ec.jinri.cn/",
+    "whitepaper": "http://ec.jinri.cn/other/ec_white_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-30",
+    "initial_price": {
+        "USD": "1.5 USD"
+    }
+}

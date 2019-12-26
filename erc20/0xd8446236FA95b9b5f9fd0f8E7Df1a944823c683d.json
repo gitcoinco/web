@@ -1,0 +1,20 @@
+{
+    "symbol": "NEEO",
+    "address": "0xd8446236FA95b9b5f9fd0f8E7Df1a944823c683d",
+    "overview": {
+        "en": "NEEO Messenger immediately translates text messages from more than hundred foreign languages into your native language."
+    },
+    "email": "support@neeoico.com",
+    "website": "http://neeoico.com/",
+    "whitepaper": "http://neeoico.com/doc/NEEO_Whitepaper_EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-01",
+    "initial_price": {
+        "ETH": "0.006 ETH",
+        "USD": "0.33 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/neeopal",
+        "facebook": "https://www.facebook.com/neeopal"
+    }
+}

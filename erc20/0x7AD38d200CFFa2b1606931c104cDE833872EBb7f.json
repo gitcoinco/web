@@ -1,0 +1,17 @@
+{
+    "symbol": "GOG",
+    "address": "0x7AD38d200CFFa2b1606931c104cDE833872EBb7f",
+    "overview": {
+        "zh": "自游链项目结合智能硬件和区块链技术，打破传统经营消费的二元对立模式，破解了区块链写入信息真实性的行业难题，将全球的旅游业经营者、消费者与投资人首次整合为一体，前所未有的动量必将为旅游业带来更多的繁荣，致力于打造一个世界旅游新生态。"
+    },
+    "email": "admin@goglobe.io",
+    "website": "http://www.goglobe.io",
+    "whitepaper": "http://www.goglobe.io/whitepaper/GoGlobeWhitePaper_CN.pdf",
+    "state": "NORMAL",
+    "links": {
+        "twitter": "https://twitter.com/goglobeofficial",
+        "telegram": "https://t.me/GoGlobeChain",
+        "github": "https://github.com/GoGlobeDev/",
+        "reddit": "https://www.reddit.com/user/GoGlobeChain"
+    }
+}

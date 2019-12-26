@@ -1,0 +1,21 @@
+{
+    "symbol": "MIDC",
+    "address": "0x37371b224cef4c193da0e45fa3fb61fca36ccf29",
+    "overview": {
+        "en": "TBased on block chain technology, a global Tibetan appreciation ecological chain is constructed for the global Tibetan trading market. Through standard service layer protocol and intelligent contract technology, it provides the basic data and processing platform for the DAPP of all levels of the industry ecology. A unique block chain that can not change the code path.",
+        "zh": "基于区块链技术,面向全球藏品交易市场构建一个全球化藏品鉴真生态链，并通过标准服务层协议和智能合约技术，为行业生态各层次的DAPP提供基础数据和处理平台, 真实确切做到藏品鉴真去中心化,藏品真实交易产生的数据会生成唯一区块链不可更改代码轨迹可寻。"
+    },
+    "email": "info@mpid.io",
+    "website": "http://mpid.io/home/select",
+    "whitepaper": "http://mpid.io/assets/pdf/%EF%BC%887.7%2021.48%EF%BC%89Masterpiece%20Identity%20Database%E8%97%8F%E5%93%81%E9%89%B4%E7%9C%9F%E7%94%9F%E6%80%81%E9%93%BE.pdf?1533727801",
+    "state": "NORMAL",
+    "published_on": "2018-07-01",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.7 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "links": {
+        "twitter": "https://t.me/zbzib"
+    }
+}

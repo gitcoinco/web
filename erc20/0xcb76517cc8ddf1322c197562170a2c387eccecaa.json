@@ -1,0 +1,20 @@
+{
+    "symbol": "CT",
+    "address": "0xcb76517cc8ddf1322c197562170a2c387eccecaa",
+    "overview": {
+        "en": "Coinyee Token, referred to as CT, is a global currency pass issued by Coinyee. It is a token issued by the Coinyee platform. It is based on the decentralized blockchain digital assets issued by Ethereum, based on the Ethereum ERC20 standard. The total amount is 100 million, and the promise will never be issued. It will be released to the platform users in a variety of ways, and the obtained CT will be circulated and used in a variety of scenarios, and each CT stored on the platform will enjoy the benefits of the platform.",
+        "zh": "Coinyee Token，简称CT，币易全球权益通证，是币易Coinyee平台发行的代币，基于以太坊Ethereum发行的去中心化的区块链数字资产，基于以太坊智能合约ERC20标准的代币。总量1亿个，且承诺永不增发。将通过多种方式释放给平台用户，获得的CT将可在多种场景下流通并使用，每1个存放在平台的CT均享有平台各项权益。"
+    },
+    "email": "support@coinyee.com",
+    "website": "www.coinyee.io",
+    "state": "NORMAL",
+    "published_on": "2018-05-23",
+    "initial_price": {
+        "USD": "0.22 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/coinyee",
+        "facebook": "https://www.facebook.com/coinyee",
+        "telegram": "https://t.me/coinyee_official"
+    }
+}

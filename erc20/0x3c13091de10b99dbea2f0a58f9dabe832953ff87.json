@@ -1,0 +1,17 @@
+{
+    "symbol": "SRRW",
+    "address": "0x3c13091de10b99dbea2f0a58f9dabe832953ff87",
+    "overview": {
+        "en": "The sparrow chain takes advantage of the centralization of the block chain to create a cartoon market block chain that realizes the autonomy of the animation industry and the participation of the whole people, breaking the barriers of the industry, and allowing every enthusiast to participate in the animation industry chain, such as animation creation, production and derivatives. The openness of block chains will make the animation market more transparent, more popular and simpler. The advantages of the block chain are transparent, traceable, non tamperable, and data security protection. It also allows the original authors of anime to establish a more reasonable and more perfect business model on a wider and safer communication platform to guarantee their copyright and additional benefits.",
+        "zh": "麻雀链利用区块链去中心化的特质，致力于打造一个实现动漫行业自治、全民参与的动漫市场区块链，打破行业壁垒，让每个爱好者都能参与到动漫创作、制作以及衍生品等整个动漫产业链当中。区块链的开放性会使得动漫市场更加透明化、平民化、简单化。区块链透明、可追踪、不可篡改、数据安全保护等优势，也能够让动漫的原创作者们可以在一个更加广阔、安全的交流平台上建立一个更合理、更完善的商业模式，保障其版权和附加收益。"
+    },
+    "website": "http://www.sronn.com",
+    "whitepaper": "http://17226449.s21d-17.faiusrd.com/0/ABUIABA9GAAgnpOR2wUolO2D_QU?f=%E9%BA%BB%E9%9B%80%E9%93%BESRRW+--+%E9%A1%B9%E7%9B%AE%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-15",
+    "initial_price": {
+        "ETH": "0.0002 ETH",
+        "USD": "0.08783 USD",
+        "BTC": "0.00001105 BTC"
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "symbol": "OEC",
+    "address": "0x6ad95E5CD97b080E8d30ce6C25016777E0fEfD7a",
+    "overview": {
+        "en": "OEC huanghuali ecological chain,Hainan huanghuali ecological traceability system based on blockchain technology,the project innovatively issued a token-based certificate and transaction voucher for one coin dual-energy token OEC,realizing the gold in the gold and the gold in the coin The perfect integration ensures that even in the cold winter of the currency market,it will never return to zero,with multiple value guarantees of trading,investment,stored value and value added.",
+        "zh": "OEC黄花梨生态链,基于区块链技术的海南黄花梨生态溯源系统,项目创新性地发行了集溯源通证与交易凭证一币双能的代币OEC,实现了木中黄金与币中黄金的完美融合,确保即使在币市寒冬中也永不归零,具有交易投资储值和增值多重价值保障."
+    },
+    "email": "oec@oechain.io",
+    "website": "http://oechain.io",
+    "whitepaper": "http://www.oechain.io/static/images/OEC-one.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-29",
+    "initial_price": {
+        "ETH": "0.00017 ETH",
+        "USD": "0.02 USD",
+        "BTC": "0.0000056 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/oecchain",
+        "telegram": "https://t.me/OECchain",
+        "github": "https://github.com/oechain",
+        "facebook": "https://www.facebook.com/oechain"
+    }
+}

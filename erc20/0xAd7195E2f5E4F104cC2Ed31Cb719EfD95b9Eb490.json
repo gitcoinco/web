@@ -1,0 +1,19 @@
+{
+    "symbol": "IOTE",
+    "address": "0xAd7195E2f5E4F104cC2Ed31Cb719EfD95b9Eb490",
+    "overview":{
+          "en": "A M2M Economy for Internet of Things",
+          "zh": "一种物联网下的设备与设备的经济形态"
+    },
+    "email": "support@iotedge.co",
+    "website": "https://iotedge.co/",
+    "whitepaper": "https://iotedge.co/whitepaper/",
+    "state": "NORMAL",
+    "published_on": "2019-04-18",
+    "initial_price":{
+          "USD":"0.03 USD"
+    },
+    "links": {
+      "telegram": "https://t.me/iotedgecn"
+    }
+  }

@@ -1,0 +1,22 @@
+{
+    "symbol": "DB",
+    "address": "0x10DC623fCb8A3C151875f03D442103cBF6469bE6",
+    "overview": {
+        "en": "The essence of DB is the value-added service equity from DeBi and can circulate and be used in many situation.",
+        "zh": "DB 本质为 DeBi 交易平台的用户增值服务权益,可以在多种场景下流通并使用"
+    },
+    "email": "support@debi.com",
+    "website": "https://www.debi.com/",
+    "whitepaper": "https://www.debi.com/Public/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-04-10",
+    "initial_price": {
+        "ETH": "0.0000125 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/DeBiCenter",
+        "telegram": "https://t.me/DeBicom",
+        "facebook": "https://facebook.com/DeBiCenter",
+        "github": "https://github.com/DeBiToken"
+    }
+}

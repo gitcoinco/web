@@ -1,0 +1,22 @@
+{
+    "website": "https://singularitynet.io/",
+    "published_on": "2017-12-21",
+    "links": {
+        "telegram": "https://t.me/singularitynet",
+        "twitter": "https://twitter.com/singularity_net",
+        "github": "https://github.com/singnet/",
+        "facebook": "https://www.facebook.com/singularityNET.io"
+    },
+    "overview": {
+        "en": "Decentralized Marketplace for AI.",
+        "zh": "SingularityNET 旨在构建一个基于区块链技术的 AI 平台。"
+    },
+    "symbol": "AGI",
+    "initial_price": {
+        "ETH": "0.001231 ETH",
+        "USD": "0.1 USD"
+    },
+    "whitepaper": "https://public.singularitynet.io/whitepaper.pdf",
+    "address": "0x8eB24319393716668D768dCEC29356ae9CfFe285",
+    "email": "info@singularitynet.io"
+}

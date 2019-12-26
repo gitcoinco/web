@@ -1,0 +1,14 @@
+{
+  "symbol": "SCDS",
+  "address": "0xb72c794effb775197287d767cA80C22ae9094cB5",
+  "overview": {
+    "en": "SCDS is a distributed private cloud storage ecological application encryption digital asset of shine cloud blockchain. Users share cloud storage space. It aims to build a new blockchain storage system based on the SSP agreement, which takes blockchain encryption technology as the core, solves the decentralized storage of private files such as individual users, enterprises and institutions.",
+    "zh": "SCDS是Shine Cloud区块链分布式私有云存储生态应用加密数字资产，由用户共享云存储空间，旨在构建以区块链加密技术为核心，解决个人用户、企业、机构等私密文件去中心化存储，首创“SSP”协议基础上搭建的全新区块链存储系统。"
+  },
+  "email": "global-headquarters@thescds.com",
+  "website": "http://www.thescds.com",
+  "whitepaper": "https://res.thescds.com/cn.pdf",
+  "links": {
+    "金色财经": "https://m.jinse.com/lives/125719.htm"
+  }
+}

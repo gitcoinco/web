@@ -1,0 +1,19 @@
+{
+    "symbol": "BNL",
+    "address": "0x7109ECA95Daa8F04ddEEF3a941fC9bd85BD1510F",
+    "overview": {
+        "en": "Business Chain is a digital asset created by Business Chain fund huibin, which is mainly used for trading currency in the global Business field.",
+        "zh": "BNL商务链是Business Chain基金会旗所创立的数字资产主要用于，全球商务领域泛交易流通货币。"
+    },
+    "email": "wahyr@126.com",
+    "website": "https://bnlio.io/",
+    "whitepaper": "http://www.bnlio.io/upload/Plupload/File_616/20190529023100308.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-05-06",
+    "initial_price": {
+        "ETH": "0.00001161 ETH",
+        "USD": "0.00283287 USD",
+        "BTC": "0.00000036 BTC"
+    },
+    "links": {}
+}

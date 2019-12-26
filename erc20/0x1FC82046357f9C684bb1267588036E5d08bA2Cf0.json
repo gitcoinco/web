@@ -1,0 +1,25 @@
+{
+    "symbol": "DEXP",
+    "address": "0x1FC82046357f9C684bb1267588036E5d08bA2Cf0",
+    "overview": {
+        "en": "DEXP IS AN ADVERTISING MEDIA and also A Decentralized market with P2P Ethereum network.",
+        "zh": "DEXP是广告媒体，也是P2P以太坊网络的分散市场"
+    },
+    "email": "admin@dexp.fund",
+    "website": "https://dexp.fund/",
+    "whitepaper": "https://drive.google.com/uc?id=19zsF92iJFZXgwa9oqQ6yagHKizvLLmGu&export=download",
+    "state": "NORMAL",
+    "published_on": "2018-12-16",
+    "initial_price": {
+        "ETH": "0.00000006 ETH",
+        "USD": "0.001 USD",
+        "BTC": "0.00000001 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@dexpfunds",
+        "twitter": "https://twitter.com/Dexpfund",
+        "telegram": "https://t.me/Dexpfund",
+        "github": "https://github.com/DEXPfunddev",
+        "medium": "https://medium.com/@dexpfunds"
+    }
+}

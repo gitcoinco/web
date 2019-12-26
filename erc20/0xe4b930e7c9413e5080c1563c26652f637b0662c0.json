@@ -1,0 +1,18 @@
+{
+    "symbol": "HKDT",
+    "address": "0xe4b930e7c9413e5080c1563c26652f637b0662c0",
+    "overview": {
+        "en": "HKDT is a block-chain clearing digital asset anchoring the value of the Hong Kong dollar (1HKDT 1HKD), as well as a digital asset in the retail market where goods and services can be considered for settlement. Sponsored and managed by HONG KONG BRAND HOLDINGS LIMITED, a stable and secure digital asset launched in Hong Kong for worldwide distribution. It aims to link exchanges or digital assets in the sector of block chains to the value of Hong Kong dollars and can be used in the Hong Kong retail market.",
+        "zh": "HKDT是一种锚定港币价值（1HKDT≈1HKD）的区块链结算数字资产，也是在香港零售市场对购买货品及服务可以进行对价结算的数字资产。由【香港名牌控股有限公司】主办及管理，属于在香港启用而面向全世界发行的稳定、安全之数字资产，旨在链通区块链领域各家交易所或数字资产对价港币价值的流通渠道，并且可以应用于香港地区零售市场。"
+    },
+    "email": "info@tradehkd.com",
+    "website": "http://www.tradehkd.com",
+    "whitepaper": "https://www.tradehkd.com/Whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-11",
+    "initial_price": {
+        "ETH": "0.0002418 ETH",
+        "USD": "0.1272 USD",
+        "BTC": "0.00001836 BTC"
+    }
+}

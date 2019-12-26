@@ -1,0 +1,23 @@
+{
+    "symbol": "MAVRO",
+    "address": "0x0d152b9ee87ebae179f64c067a966dd716c50742",
+    "overview": {
+        "en": "Based on the innovative blockchain model, Mcoin’s main network creates a decentralized asset transfer network system for solving asset conversion and trust issues between financial institutions and users. By redefining the financial system with blockchain, its DAPP application is redefining financial system for human beings. What Mcoin to build and initiate will be a brand new financial system of greater safety, fairness, justice and transparency. ",
+        "zh": "Mcoin 主网基于区块链创新模式，打造一个全球性的去中心化的资产传输网络体系，用于解决金融机构以及用户间的资产转换和信任问题，其 DAPP 应用通过区块链重新定义金融体系，Mcoin 建立和倡导的将是一个更加安全、更加公平、更加公正、更加透明的全新的金融系统。"
+    },
+    "email": "mcoin10101@gmail.com",
+    "website": "www.mavrodi.net",
+    "whitepaper": "https://www.mavrodi.net/mavrodi-plan",
+    "state": "NORMAL",
+    "published_on": "2018-08-18",
+    "initial_price": {
+        "ETH": "0.0025 ETH",
+        "USD": "0.725 USD",
+        "BTC": "0.001 BTC"
+    },
+    "links": {
+        "blog": "www.mavrodi.net",
+        "twitter": "https://twitter.com/Mr_10101M",
+        "facebook": "https://www.facebook.com/marvodi.se"
+    }
+}

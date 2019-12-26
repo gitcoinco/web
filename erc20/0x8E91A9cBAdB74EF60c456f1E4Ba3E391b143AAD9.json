@@ -1,0 +1,24 @@
+{
+    "symbol": "OPTC_OLD",
+    "address": "0x8E91A9cBAdB74EF60c456f1E4Ba3E391b143AAD9",
+    "overview": {
+        "en": "The Optical Network is a distributed light and shadow network platform driven by blockchain technology and TOKEN reward mechanism. It is a project that can solve wireless mesh network problems.",
+        "zh": "Optical Network 是一个使用区块链技术和 TOKEN 奖励机制驱动的分布式光影网络平台，是一个能够解决无线网状网络问题的项目。注：此为 OPTC 官方发行的旧 OPTC 代币。新 OPTC 合约地址：0x3CC83C2400E00a54fA1E588D62BC28bf15D5def5"
+    },
+    "email": "support@optc.cc",
+    "website": "https://optc.cc/",
+    "whitepaper": "https://optc.cc/assets/pdf/20180723134620white.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-23",
+    "initial_price": {
+        "ETH": "0.00005 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/OPTCfoundation",
+        "telegram": "https://t.me/optcteam",
+        "github": "https://github.com/OpticalNetwork",
+        "facebook": "https://www.facebook.com/OpticalNetwork",
+        "slack": "https://optcmedia.slack.com",
+        "medium": "https://medium.com/@optc"
+    }
+}

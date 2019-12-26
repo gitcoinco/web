@@ -1,0 +1,20 @@
+{
+    "symbol": "OMTM",
+    "address": "0xFCcA0c5ccd723baf6bf7f6678C8cFB49Ce0042C7",
+    "overview": {
+        "en": "OMTM, short for one metric that matters, is a global distributed application execution engine which helps to creat crowd-computing.It is designed to implement block chain intelligent contracts and decentralized applications to meet any requirements.",
+        "zh": "OMTM正在创建人群计算机，这是一个全球分散的应用程序执行引擎。它旨在执行区块链智能合约和分散的应用程序，以满足任何要求。"
+    },
+    "email": "service@omtmchain.com",
+    "website": "https://www.omtmchain.com",
+    "published_on": "2018-08-02",
+    "initial_price": {
+        "ETH": "0.0 ETH",
+        "USD": "0.0 USD",
+        "BTC": "0.0 BTC"
+    },
+    "links": {
+        "blog": "https://www.omtmchain.com",
+        "telegram": "https://t.me/canonchain"
+    }
+}

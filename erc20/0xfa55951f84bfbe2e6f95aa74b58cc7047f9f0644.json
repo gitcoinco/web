@@ -1,0 +1,15 @@
+{
+    "symbol": "UST",
+    "address": "0xfa55951f84bfbe2e6f95aa74b58cc7047f9f0644",
+    "overview": {
+        "en": "Usechain Token"
+    },
+    "email": "zhangliang@usechain.net",
+    "website": "https://usechain.net/",
+    "whitepaper": "https://usechain.net/usechain_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-08",
+    "initial_price": {
+        "BTC": "0.000000714 BTC"
+    }
+}

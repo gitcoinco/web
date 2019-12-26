@@ -1,0 +1,24 @@
+{
+    "symbol": "SCH",
+    "address": "0xf34839b310097fcb4cf3a302dda8cc9b57501083",
+    "overview": {
+        "en": "Sachio(Virtual Reality Electronic Sports) are tokens for VR video games and eSports that will be issued on the Ethereum platform. Using Sachiotokens, players will be able to participate in eSports competitions, receive remuneration, and receive tips. Furthermore, viewers will be able to not only watch matches but also place bets on certain matches, and this will create economic incentives for players",
+        "zh": "Sachio（虚拟现实电子竞技）是将在以太坊平台上发布的VR视频游戏和电子竞技的代币。 使用Sachiotokens，玩家将能够参加电子竞技比赛，获得报酬并获得提示。 此外，观众不仅可以观看比赛，还可以在某些比赛中下注，这将为球员创造经济激励"
+    },
+    "email": "support@sachio.net",
+    "website": "https://sachio.net",
+    "whitepaper": "https://sachio.net/drive/Sachiowp.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-18",
+    "initial_price": {
+        "ETH": "0.0000013 ETH",
+        "USD": "0.00038 USD",
+        "BTC": "0.00000005 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/Sachiochain",
+        "telegram": "https://t.me/SachioGroup",
+        "github": "https://github.com/sachiochain",
+        "facebook": "https://www.facebook.com/sachiochain"
+    }
+}

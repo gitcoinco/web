@@ -1,0 +1,24 @@
+{
+  "symbol":"ZVC",
+  "address":"0x4db0E5C4DF3562968F2d54448cD83cA65CFaa9A3",
+  "overview":{
+    "en":"ZVChain is a multi-layered blockchain solutions designed for high performance, throughput rates, scalable and efficient blockchain infrastructure for enterprise use. Built on top of the Chiron consensus algorithm.",
+    "zh":"ZVChain 是基于最新的Chiron共识算法，通过VRF+BLS的工作机制搭建的一条高安全性、高性能的专业化金融公链。ZVChain致力于为金融行业提供高安全、可监管、易扩展的数字金融基础设施和服务。"
+  },
+  "email":"info@zvchain.io",
+  "website":"https://www.zvchain.io",
+  "whitepaper":"https://www.zvchain.io/zvChainWhitepaper.pdf",
+  "state":"NORMAL",
+  "published_on":"2019-08-19",
+  "initial_price":{
+    "USD":"0.15 USD"
+  },
+  "links":{
+    "blog":"https://medium.com/zvchain",
+    "twitter":"https://twitter.com/zv_chain",
+    "telegram":"https://t.me/ZVChain_Official",
+    "github":"https://github.com/zvchain",
+    "facebook":"https://www.facebook.com/ZVCHAIN/",
+    "medium":"medium.com/zvchain"
+  }
+}

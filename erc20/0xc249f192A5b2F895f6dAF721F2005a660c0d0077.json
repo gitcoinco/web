@@ -1,0 +1,15 @@
+{
+    "symbol": "BVES",
+    "address": "0xc249f192A5b2F895f6dAF721F2005a660c0d0077",
+    "overview": {
+        "zh": "Behavior Value Ecosystem(BVES)是BVES全球首创新型金融模式，基于区块链共识总账协议推出一种新的以‘行为价值’要素利益挖矿为特征的“行为价值挖矿”模式，它的挖矿机制是不需要配备POW挖矿机制矿机等资源的成本投入，只要用户在应用上进行有效行为如注册、消费、使用、活跃度等都会由平台系统转换成行为价值标记，并记录在区块链上，通过行为价值标记的有效工作证明积累，将获得数据权益通证BVES，而BVES可以用于全生态的支付和升值，实现生态资源更高效、公平的配置。"
+    },
+    "email": "Contact@BVES.vip",
+    "website": "http://bves.vip/",
+    "whitepaper": "http://bves.vip/images/white.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-03-15",
+    "links": {
+        "website": "http://bves.vip"
+    }
+}

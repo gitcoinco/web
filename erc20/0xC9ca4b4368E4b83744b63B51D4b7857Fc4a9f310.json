@@ -1,0 +1,18 @@
+{
+    "symbol": "Y",
+    "address": "0xC9ca4b4368E4b83744b63B51D4b7857Fc4a9f310",
+    "overview": {
+        "en": "Y TOKEN, issued by Singapore's Coingogo Fund,aims to build a network that uses blockchain technology to contribute pricing and equity returns to content production using a decentralized consensus approach, and to construct a reasonable content revenue distribution mechanism so that content producers, content investors, content screeners and ecological builders can get reasonable incentives and rewards while building a value community based on users' creation. The use of data mining to achieve users' data realization, the sooner users participate in community construction, the greater the benefits.",
+        "zh": "Y TOKEN，新加坡Coingogo Fund发行,其目标是建立一个利用区块链技术，使用去中心化的共识方式为内容生产领域进行贡献定价和权益回报的网络，构建一套合理的内容收益分配机制使内容生产者、内容投资者、内容筛选者和生态建设者都能得到合理的激励与回报，同时构建一个基于用户创造的价值社区。采用数据挖矿的方式实现用户数据变现，用户越早参与社区建设收益越大。"
+    },
+    "email": "business@coingogofund.com",
+    "website": "http://www.coingogofund.com",
+    "whitepaper": "http://coingogofund.com/upload/file/white_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2016-09-28",
+    "initial_price": {
+        "ETH": "0.0000008 ETH",
+        "USD": "0.0001 USD",
+        "BTC": "0.00000003 BTC"
+    }
+}

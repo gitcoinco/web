@@ -1,0 +1,22 @@
+{
+    "symbol": "TOOL",
+    "address": "0x84CD9d75Af2786d20504FB50bDE9F2c2339390B3",
+    "overview": {
+        "en": "TOOL: The pioneer in the field of Mobile has created a badly needed ecosystem for news publishers, data insights and user.",
+        "zh": "TOOL：移动领域的先锋，为新闻发布者、数据洞察者、用户获取者等创造了急需的生态系统。"
+    },
+    "email": "postmaster@nuoee.com",
+    "website": "https://cryptool.net/",
+    "whitepaper": "https://cryptool.net/whitepapers",
+    "state": "NORMAL",
+    "published_on": "2019-03-15",
+    "initial_price": {
+        "ETH": "0.0001 ETH",
+        "USD": "0.0147 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/Cryptool2",
+        "telegram": "https://t.me/Cryptoolfans",
+        "github": "https://github.com/nuoee"
+    }
+}

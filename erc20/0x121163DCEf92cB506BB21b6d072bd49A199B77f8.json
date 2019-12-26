@@ -1,0 +1,19 @@
+{
+    "symbol": "TRE",
+    "address": "0x121163DCEf92cB506BB21b6d072bd49A199B77f8",
+    "overview": {
+        "en": "Tre Chain",
+        "zh": "资源链"
+    },
+    "email": "momo.tufei@gmail.coms",
+    "website": "http://trechain.io/",
+    "whitepaper": "http://trechain.io/uploads/docs/Trechain-Whitepaper-EN-v1.16.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-17",
+    "initial_price": {
+        "USD": "0.05 USD"
+    },
+    "links": {
+        "blog": "http://trechain.io/"
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "symbol": "LPK",
+    "address": "0x2cc71c048A804Da930e28E93F3211dC03c702995",
+    "overview": {
+        "en": "Microloans is the first tool on the L-Pesa platform that allows users to start or grow their business, pay for education or otherwise support their ambitions. L-PESA TOKEN (Kripton) - Reform the token of microfinance. By using tokens, users will earn credit, establish their credit scores, and be able to pay for them. To enable the token holder to benefit directly from the growth of the L-Pesa network by enabling users to earn weekly income in proportion to the tokens held/stored in the savings account.",
+        "zh": "Microloans是L-Pesa平台上的第一个工具，允许用户开始或发展他们的业务，支付教育费用或以其他方式支持他们的抱负。 L-PESA TOKEN（Kripton） - 改革小额信贷的标志。通过使用令牌，用户将获得信用，建立他们的信用评分，并能够支付他们。通过使用户能够按照储蓄账户中持有/存储的代币的比例获得每周收入，使代币持有者能够直接受益于L-Pesa网络的增长。"
+    },
+    "email": "ron@l-pesa.com",
+    "website": "https://ico.lpesa.io",
+    "whitepaper": "https://ico.lpesa.io/static/pdfs/L-Pesa ICO white paper 2018.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-10",
+    "initial_price": {
+        "ETH": "0.00005714 ETH",
+        "USD": "0.04 USD"
+    },
+    "links": {
+        "blog": "https://blog.l-pesa.com",
+        "twitter": "https://twitter.com/LpesaICO",
+        "telegram": "https://web.telegram.org/#/im?p=@LpesaICO",
+        "github": "https://github.com/lpkripton/ICO",
+        "facebook": "https://business.facebook.com/lpesatzs/",
+        "reddit": "https://reddit.com/user/lpesaico",
+        "slack": "https://l-pesa.slack.com",
+        "medium": "https://medium.com/@lpesaico"
+    }
+}

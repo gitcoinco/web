@@ -1,0 +1,18 @@
+{
+    "symbol": "WEBIC",
+    "address": "0xfA50cCDfaE82d2Fb8e10DC140678106E6755fEe0",
+    "overview": {
+        "en": "WEBIC coin, the world's first Shared + mobile phone industry ecological blockchain project, is dedicated to providing a real landing application scenario system for cryptocurrency.",
+        "zh": "WEBIC是世界上第一个共享+手机产业生态区块链项目，致力于为密码货币提供一个真正的着陆应用场景系统。"
+    },
+    "email": "support@webic.vip",
+    "website": "https://www.webic.net/",
+    "whitepaper": "http://sp.webic.net/uploads/banner/WEBIC微币白皮书1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-03",
+    "initial_price": {
+        "ETH": "0 ETH",
+        "USD": "0 USD",
+        "BTC": "0 BTC"
+    }
+}

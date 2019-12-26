@@ -1,0 +1,25 @@
+{
+    "symbol": "SST",
+    "address": "0x780c0C651C4f676A6cCAdc09E34150F97cE0066b",
+    "overview": {
+        "en": "SafeStart will be the largest investment platform in the world.",
+        "zh": "SafeStart将成为全球最大的投资平台"
+    },
+    "email": "support@safestart.systems",
+    "website": "https://www.safestart.systems/",
+    "whitepaper": "https://drive.google.com/uc?authuser=0&id=1wQpMlyh_1oYfEsMkeE48BfVELVFW2gkZ&export=download",
+    "state": "NORMAL",
+    "published_on": "2018-11-10",
+    "initial_price": {
+        "ETH": "0.00000004 ETH",
+        "USD": "0.001 USD",
+        "BTC": "0.00000001 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@SafeStartToken",
+        "twitter": "https://twitter.com/SafeStartT",
+        "telegram": "https://t.me/SafeStartToken",
+        "github": "https://github.com/safestartdev",
+        "medium": "https://medium.com/@SafeStartToken"
+    }
+}

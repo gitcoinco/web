@@ -1,0 +1,23 @@
+{
+    "symbol": "LUD",
+    "address": "0xe64b47931f28f89Cc7A0C6965Ecf89EaDB4975f5",
+    "overview": {
+        "en": "Ludos Protocol is a decentralized solution for game ecosystem based on multi-sidechain and cross-chain technology.",
+        "zh": "Ludos协议是一套基于多侧链和跨链技术的游戏生态解决方案。"
+    },
+    "email": "official@ludos.one",
+    "website": "http://ludos.one/",
+    "whitepaper": "http://ludos.one/PDF/Ludos%20Protocol%20WP_EN%20ver1.0.pdf",
+    "published_on": "2018-08-18",
+    "initial_price": {
+        "ETH": "0.00003 ETH",
+        "BTC": "0.0000014 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/LudosProtocol",
+        "telegram": "https://t.me/LudosProtocol",
+        "github": "https://github.com/Ludos-One",
+        "facebook": "https://www.facebook.com/project.ludos/",
+        "medium": "https://medium.com/@ludos.protocol/"
+    }
+}

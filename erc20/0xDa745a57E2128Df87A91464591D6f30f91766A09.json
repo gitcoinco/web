@@ -1,0 +1,19 @@
+{
+  "symbol": "BMS",
+  "address": "0xDa745a57E2128Df87A91464591D6f30f91766A09",
+  "overview":{
+        "en": "BMS is the fuel for BitMad decentralized exchange platform",
+	"zh": "BMS是BitMad去中心化链上交易平台的燃料"
+  },
+  "email": "service@bitmadex.com",
+  "website": "https://www.bitmadex.com",
+  "state": "NORMAL",
+  "published_on": "2019-03-22",
+  "initial_price":{
+        "USD":"0.1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/BITMAD2",
+    "facebook": "https://www.facebook.com/BitMad-264479321106016"
+  }
+}

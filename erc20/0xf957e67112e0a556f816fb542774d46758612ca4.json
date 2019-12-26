@@ -1,0 +1,24 @@
+{
+    "symbol": "BMT",
+    "address": "0xf957e67112e0a556f816fb542774d46758612ca4",
+    "overview": {
+        "en": "BMEX is committed to becoming the world's first full-scale digital asset and derivatives trading platform.",
+        "zh": "BMEX致力于成为全球第一家全品类数字资产及衍生品交易平台。"
+    },
+    "email": "operation@bmex.com",
+    "website": "http://www.bmex.com",
+    "whitepaper": "http://files.bmex.com/BMEX_1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-20",
+    "initial_price": {
+        "ETH": "0.00025 ETH",
+        "USD": "0.05 USD",
+        "BTC": "0.0000079 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/bmexofficial",
+        "telegram": "https://t.me/joinchat/bmexofficial",
+        "facebook": "https://www.facebook.com/bmexofficial",
+        "medium": "https://medium.com/bmex"
+    }
+}

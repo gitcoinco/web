@@ -1,0 +1,23 @@
+{
+    "symbol": "INB",
+    "address": "0x17aa18a4b64a55abed7fa543f2ba4e91f2dce482",
+    "overview": {
+        "en": "Insight Chain, a decentralized research ecosystem chain based on blockchain, will focus on data ecosystem on the blockchain domain firstly, works on building Wall Street-like financial order in the blockchain domain. It integrates companies, media, analyst and investor with blockchain technology, co-constructs a decentralized platform integrating information sharing, review & index, data trading and interaction based on research to promote the upgrade and healthy development of the blockchain industry.",
+        "zh": "Insight Chain是全球首个基于区块链的去中心化调研生态链，致力于解决调研过程中效率低、成本高、数据不真实、数据链条太长的问题，以【调研即挖矿】为切入点，实现调研数据上链、调研数据价值回归个人、调研大数据。已上线链上首款调研应用：Insight，以加密数字货币的去中心化调研评级为切入点，通过区块链技术将项目方、分析师、交易所、投资者进行整合，共建集评级指数、数据交易、信息共享、互动咨询于一体的去中心化社区调研平台。"
+    },
+    "email": "yuchao@insightchain.io",
+    "website": "http://www.insightchain.io",
+    "whitepaper": "http://cdn.appweiyuan.com/insightchain/whitepaper/insight_chain_whitepaper_v1.0_zh_CN.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-06",
+    "initial_price": {
+        "ETH": "0.00035 ETH",
+        "USD": "0.15 USD",
+        "BTC": "0.00002 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/InsightChain",
+        "telegram": "https://t.me/InsightChain_CN",
+        "facebook": "https://www.facebook.com/Insight-Chain-210150206429393"
+    }
+}

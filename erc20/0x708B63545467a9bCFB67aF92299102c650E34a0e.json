@@ -1,0 +1,20 @@
+{
+  "symbol": "VETH",
+  "address": "0x708B63545467a9bCFB67aF92299102c650E34a0e",
+  "overview": {
+    "en": "VETH is a global leading traceability block chain platform based on block chains and Internet of Things technology. It also established a wine traceability brewing estate based on block chain technology in the United States as the first application of the project.",
+    "zh": "VETH是加速世界向商业应用型的区块链网络转变，VETH正在构建一个以太坊侧链平台，我们定义并实现了VETH内核，它包含一个区块链系统需要的最基础的功能，也就是最小化区块链系统。"
+  },
+  "email": "veth@veth.vip",
+  "website": "https://veth.vip/",
+  "whitepaper": "https://veth.vip/en/WhitePaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-01",
+  "initial_price":{
+    "USD":"0.11 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/veth68761769",
+    "github": "https://github.com/vether"
+  }
+}

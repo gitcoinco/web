@@ -1,0 +1,21 @@
+{
+    "symbol": "NGOT",
+    "address": "0x1EbD8d3Ca115451b9B6BbaA7Ee2F7B0F96E49fD8",
+    "overview": {
+        "en": "NGOT is a blockchain-based community product that integrates digital assets such as information sharing, interpersonal interaction and business opportunities with NGOs. The mission is to build a global NGO ecological alliance.",
+        "zh": "NGOT是基于区块链技术研发的一款集信息共享，人脉互动，商机互通等数字资产与NGO相结合的社区型产品，致力于打造一个全球化的NGO生态联盟。"
+    },
+    "email": "hi@ngom.info",
+    "website": "https://ngot.io",
+    "whitepaper": "https://ngot.io/book/NGOMP_White_Paper_EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-02-14",
+    "links": {
+        "twitter": "https://twitter.com/NGOtoken",
+        "telegram": "https://t.me/NGOMofficialEnglish",
+        "github": "https://github.com/ngotoken/ngot",
+        "facebook": "https://www.facebook.com/NGOTtoken",
+        "reddit": "https://www.reddit.com/user/wanghuan429",
+        "medium": "https://medium.com/@ngom"
+    }
+}

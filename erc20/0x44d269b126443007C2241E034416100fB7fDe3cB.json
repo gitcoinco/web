@@ -1,0 +1,24 @@
+{
+    "symbol": "Ind3X",
+    "address": "0x44d269b126443007C2241E034416100fB7fDe3cB",
+    "overview": {
+        "en": "Ind3X Token is a utility token used in Ind3X Exchange Platform which can be traded and used to substitute for fees."
+    },
+    "email": "admin@ind3x.co.id",
+    "website": "https://ind3x.co.id",
+    "whitepaper": "https://ind3x.co.id/attachments/Ind3X-WHITEPAPER.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-29",
+    "initial_price": {
+        "ETH": "0.00000005 ETH",
+        "USD": "0.00001 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/Official_Ind3X",
+        "telegram": "https://t.me/ind3X_official_chat_group",
+        "github": "https://github.com/ind3XExchange",
+        "facebook": "https://www.facebook.com/indExchange",
+        "reddit": "https://www.reddit.com/user/Ind3XExchange",
+        "medium": "https://medium.com/@ind3xid"
+    }
+}

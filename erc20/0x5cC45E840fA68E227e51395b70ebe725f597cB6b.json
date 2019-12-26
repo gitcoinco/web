@@ -1,0 +1,23 @@
+{
+    "symbol": "TIME",
+    "address": "0x5cC45E840fA68E227e51395b70ebe725f597cB6b",
+    "overview": {
+        "en": "Time Chain is the world’s firstfundamental public chain that utilizes blockchain technology anddecentralization mechanism to reengineer the value of time. TIME, based on the total amount of time and total time value in the world, and the extensive consensus of “time is mining”, establishes three ecological roles of time provider, time demander and time platform, and provides support for and collaborates for the decentralized operation of the entire ecology through its community autonomy model and unique POT consensus mechanism",
+        "zh": "时间公链是全球第一款利用区块链技术、去中心化机制对时间进行价值重塑的全球底层公链。TIME是建立全球时间总量以及时间总价值的基础上。基于“时间即挖矿”的广泛人群共识，建立时间提供方、需求方、平台方三类生态角色，通过社区自治的模式以及独有POT共识机制为整个生态去中心化运转提供支持和协作。"
+    },
+    "email": "timecoin2018@gmail.com",
+    "website": "http://www.timecoin.com",
+    "whitepaper": "http://www.timecoin.com/TIMECHAIN%20WHITEPAPER%20V20181021.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-05",
+    "initial_price": {
+        "ETH": "0.000006 ETH",
+        "BTC": "0.00000018 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/TimeCoin2018",
+        "telegram": "https://t.me/joinchat/KIXcXBG749sFnMH1Sr3m_Q",
+        "reddit": "https://www.reddit.com/user/TimeCoin_Official",
+        "github": "https://github.com/TIMECOINOFFICIAL"
+    }
+}

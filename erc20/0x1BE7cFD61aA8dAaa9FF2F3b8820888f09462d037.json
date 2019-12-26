@@ -1,0 +1,24 @@
+{
+    "symbol": "GGC",
+    "address": "0x1BE7cFD61aA8dAaa9FF2F3b8820888f09462d037",
+    "overview": {
+        "en": "GramGold Coin is pegged to 1 gram of investment grade gold, it provides your investment with stability, flexibility, and a peace of mind.",
+        "zh": "GramGold Coin 之價值綁定 1 克黃金，為您的投資提供穩定性、多樣性、信心。"
+    },
+    "email": "service@gramgold.co",
+    "website": "https://www.gramgold.co/",
+    "whitepaper": "https://www.gramgold.co/assets/gramgold/files/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-28",
+    "initial_price": {
+        "ETH": "0.213500 ETH",
+        "USD": "44.1945 USD",
+        "BTC": "0.00675 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/GramGoldCoin",
+        "telegram": "https://t.me/GramGold_Coin",
+        "github": "https://gitlab.com/GramGoldCoin/ggctoken",
+        "medium": "https://medium.com/gramgold-coin"
+    }
+}

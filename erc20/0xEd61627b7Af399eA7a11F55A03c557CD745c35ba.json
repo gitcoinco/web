@@ -1,0 +1,20 @@
+{
+    "symbol": "BTCC",
+    "address": "0xEd61627b7Af399eA7a11F55A03c557CD745c35ba",
+    "overview": {
+        "en": "BTCC Token aims to reclaim value for platform users.",
+        "zh": "BTCC平台币（BTCC）是BTCC交易平台的权益证明。"
+    },
+    "email": "business@btcc.com",
+    "website": "https://www.btcc.com/",
+    "state": "NORMAL",
+    "published_on": "2018-08-21",
+    "initial_price": {
+        "USD": "0.15 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/yourbtcc",
+        "telegram": "https://t.me/btcccn",
+        "facebook": "https://www.facebook.com/yourbtcc"
+    }
+}

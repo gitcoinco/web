@@ -1,0 +1,19 @@
+{
+    "symbol": "LVTC",
+    "address": "0xe05538f120a112e912d31e69b1dc0543ce668caf",
+    "overview": {
+        "en": "LivesOne is dedicated to create the world-first crypto-currency application platform. The goal is to make crypto-currency easy to use and create real value for people all over the world.LVTC is the base currency used in the platform to link all APPs and present the value of the platform.",
+        "zh": "LivesOne 致力于打造全球首个加密货币应用平台，目标是让加密货币更加易用，并为全球用户创造价值。LVTC是在LivesOne平台上发行的基础货币，起到串联多种应用，体现平台价值的作用。"
+    },
+    "email": "token@lives.one",
+    "website": "https://lives.one",
+    "whitepaper": "https://lives.one/data/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-29",
+    "links": {
+        "github": "https://github.com/LivesOne",
+        "telegram": "https://t.me/LivesOne",
+        "twitter": "https://twitter.com/LivesToken",
+        "facebook": "https://www.facebook.com/LivesToken"
+    }
+}

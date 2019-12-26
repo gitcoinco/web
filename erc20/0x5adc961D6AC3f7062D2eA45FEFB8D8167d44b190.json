@@ -1,0 +1,27 @@
+{
+    "symbol": "DTH",
+    "address": "0x5adc961D6AC3f7062D2eA45FEFB8D8167d44b190",
+    "overview": {
+        "en": "DTH is a utility token that enables cryptocurrency sellers and shops to operate in the Dether ecosystem.",
+        "zh": "DTH是一个实用货币，可以让加密货币卖家和商店在Dether生态系统中运作。"
+    },
+    "email": "hello@dether.io",
+    "website": "https://dether.io/",
+    "whitepaper": "https://dether.io/dether-whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-02-12",
+    "initial_price": {
+        "ETH": "0.00025989 ETH",
+        "USD": "0.22792353 USD",
+        "BTC": "0.00002499062851 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@DETHER",
+        "twitter": "https://twitter.com/dether_io",
+        "telegram": "https://t.me/joinchat/GkdUjUQ4jx_Apxmz2km4ww",
+        "github": "https://github.com/dethertech",
+        "facebook": "https://www.facebook.com/dether.io/",
+        "reddit": "https://www.reddit.com/r/Dether/",
+        "medium": "https://medium.com/@DETHER"
+    }
+}

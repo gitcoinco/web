@@ -1,0 +1,25 @@
+{
+    "symbol": "TVNT",
+    "address": "0x5635ddEaBf9cdDA686995Fe90BEB5411831563FC",
+    "overview": {
+        "en": "TravelNote is a business associated with travelling and has been operating since year 2015. It offers a variety of services, which include purchasing airline tickets, making hotel reservations, creating itineraries for tour (or special packages) and providing information about speciﬁc destinations."
+    },
+    "email": "support@travelnote.io",
+    "website": "https://ico.travelnote.io/",
+    "whitepaper": "https://ico.travelnote.io/asset/travelnote-english.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-26",
+    "initial_price": {
+        "ETH": "0.00075 ETH",
+        "USD": "0.15 USD",
+        "BTC": "0.00002 BTC"
+    },
+    "links": {
+        "blog": "-",
+        "twitter": "https://twitter.com/TravelNote2",
+        "telegram": "https://t.me/TravelnoteICO",
+        "github": "https://github.com/TVNT/Smartcontract/issues",
+        "facebook": "https://bitcointalk.org/index.php?topic=5066644.0;topicseen",
+        "medium": "https://medium.com/@travelnotegroup/travelnote-ico-erc20-cryptocurrency-83247a785e0d"
+    }
+}

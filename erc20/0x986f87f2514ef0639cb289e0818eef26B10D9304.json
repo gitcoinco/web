@@ -1,0 +1,15 @@
+{
+    "symbol": "YHHT",
+    "address": "0x986f87f2514ef0639cb289e0818eef26B10D9304",
+    "overview": {
+        "en": "YHHT is used to identify the equity rights and interests of YiHui House Projects. It can also be used for accommodation consumption in YiHui Hotels.",
+        "zn": "YHHT用于标识一回民居项目股权权益；同时也可以用于在一回民宿的消费。"
+    },
+    "links": {
+        "github": "https://github.com/Yihuiminju"
+    },
+    "email": "Yihuiminju@163.com",
+    "website": "http://www.yihuimj.com/",
+    "state": "NORMAL",
+    "published_on": "2019-01-20"
+}

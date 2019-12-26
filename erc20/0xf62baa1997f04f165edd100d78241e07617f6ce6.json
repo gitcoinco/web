@@ -1,0 +1,25 @@
+{
+    "symbol": "UST",
+    "address": "0xf62baa1997f04f165edd100d78241e07617f6ce6",
+    "overview": {
+        "en": "Uservice token is aiming to bring innovative solution to automotive industry."
+    },
+    "email": "info@usrv.io",
+    "website": "https://usrv.io/",
+    "whitepaper": "https://usrv.io/en-US/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-21-10",
+    "initial_price": {
+        "ETH": "0.0005 ETH",
+        "USD": "0.5 USD",
+        "BTC": "0,00005 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/UserviceToken",
+        "telegram": "https://t.me/userviceru",
+        "github": "https://github.com/devuservice",
+        "facebook": "https://www.facebook.com/uremont",
+        "reddit": "https://www.reddit.com/user/uservicebt/",
+        "medium": "https://medium.com/@uservicebt.io"
+    }
+}

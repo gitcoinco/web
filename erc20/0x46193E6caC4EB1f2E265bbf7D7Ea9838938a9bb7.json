@@ -1,0 +1,20 @@
+{
+    "symbol": "KPC",
+    "address": "0x46193E6caC4EB1f2E265bbf7D7Ea9838938a9bb7",
+    "overview": {
+        "en": "Utilizing the unique decentralized trust mechanism of blockchain technology to establish a KPC-centric payment system, so that consumers can use KPC to conduct consumption circulation and buy and sell real products of the same value.",
+        "zh": "利用区块链技术独特的去中心化信任机制建立以KPC为中心支付的代币系统，从而让消费者可以利用KPC来进行消费流通以及买卖同等价值的真实的商品。"
+    },
+    "email": "info@kpaycoin.com",
+    "website": "http://kpaycoin.com",
+    "whitepaper": "http://kpaycoin.com/wp-content/uploads/2018/08/%E8%A2%8B%E9%BC%A0%E5%B8%81%E7%99%BD%E7%9A%AE%E4%B9%A6%E7%89%88%E6%9C%AC1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-01",
+    "initial_price": {
+        "USD": "0.2 USD"
+    },
+    "links": {
+        "telegram": "https://t.me/kpaycoin",
+        "facebook": "https://www.facebook.com/kpaycoin"
+    }
+}

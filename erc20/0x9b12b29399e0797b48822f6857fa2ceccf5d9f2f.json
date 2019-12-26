@@ -1,0 +1,20 @@
+{
+    "symbol": "TXC",
+    "address": "0x9b12b29399e0797b48822f6857fa2ceccf5d9f2f",
+    "overview": {
+        "en": "a decentralized toursim ecosystem",
+        "zh": "??????????"
+    },
+    "email": "Contactus@trip-xc.com",
+    "website": "https://www.trip-xc.com/",
+    "whitepaper": "https://www.trip-xc.com/Tripxchain_WP_eng.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-11-01",
+    "initial_price": {
+        "ETH": "0.0002 ETH",
+        "USD": "0.03 USD"
+    },
+    "links": {
+        "telegram": "https://t.me/tripxc"
+    }
+}

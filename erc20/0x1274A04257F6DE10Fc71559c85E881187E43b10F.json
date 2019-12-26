@@ -1,0 +1,21 @@
+{
+    "symbol": "CBNT",
+    "address": "0x1274A04257F6DE10Fc71559c85E881187E43b10F",
+    "overview": {
+        "en": "Create Breaking News Together.",
+        "zh": "一起上头条!"
+    },
+    "email": "market@cbnt.io",
+    "website": "https://www.cbnt.io/",
+    "whitepaper": "https://www.cbnt.io/whiteBook.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-10",
+    "links": {
+        "blog": "https://weibo.com/p/1006066567581581/home",
+        "twitter": "https://twitter.com/CbntOfficial",
+        "telegram": "https://t.me/cbntofficial",
+        "github": "https://github.com/CreateBreakingNewsTogether",
+        "facebook": "https://www.facebook.com/cbntofficial",
+        "medium": "https://medium.com/@cbntofficial"
+    }
+}

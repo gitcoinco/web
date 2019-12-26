@@ -1,0 +1,20 @@
+{
+  "symbol": "IQN",
+  "address": "0x0DB8D8b76BC361bAcbB72E2C491E06085A97Ab31",
+  "overview":{
+    "en": "IQN (IQeon Token) is a utility token for IQeon gaming platform. It gives an opportunity for players to get fair monetization of their in-game achievements."
+  },
+  "email": "support@iqeon.io",
+  "website": "https://iqeon.io/",
+  "whitepaper": "https://iqeon.io/docs/IQeon_Whitepaper_EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-12-17",
+  "initial_price":{ "ETH":"0,003 ETH", "USD":"2.0 USD", "BTC":"0.000137 BTC" },
+  "links": {
+    "blog": "https://iqeon.io/news",
+    "twitter": "https://twitter.com/iqeon",
+    "telegram": "https://t.me/IQeonICO",
+    "reddit": "https://www.reddit.com/r/iqeon/",
+    "github": "https://github.com/iqeon",
+    "facebook": "https://www.facebook.com/iqeon" }
+}

@@ -1,0 +1,18 @@
+{
+    "website": "https://www.tokenomy.com/",
+    "links": {
+        "telegram": "https://t.me/tokenomyinfo",
+        "reddit": "https://www.reddit.com/user/tokenomy/",
+        "github": "https://github.com/tokenomy",
+        "facebook": "https://www.facebook.com/TOKENOMY/",
+        "twitter": "https://twitter.com/TokenomyCom"
+    },
+    "overview": {
+        "en": "Tokenomy is a value creation and distribution network through blockchain tokens.",
+        "zh": "Tokenomy 是一个区块链代币创建和发售的平台。"
+    },
+    "symbol": "TEN",
+    "whitepaper": "https://www.tokenomy.com/whitepaper/TOKENOMY_WP_en.pdf",
+    "address": "0xDD16eC0F66E54d453e6756713E533355989040E4",
+    "email": "support@tokenomy.com"
+}

@@ -1,0 +1,19 @@
+{
+    "symbol": "MZK",
+    "address": "0x1F35a281036Be57E64e7E7A2A556b4f888A1b829",
+    "overview": {
+        "en": "Muzika, built on pre-existing music businesses with 2 million global users across 150 countries, led by Forbes-awarded and Informatics Olympiad team, is dedicated to create a new and decentralized blockchain music ecosystem that can autonomously achieve repeated cycles of production and distribution, and allow for the consumption of musical creations, as well as reform the profit distribution hierarchy.",
+        "zh": "建立在来自150多个国家的200多万全球用户的基础上，由入选 “ 2018亚洲福布斯30岁以下30位精英榜 ” 和荣获韩国电子信息奥林匹克奖项的团队领军，Muzika致力于打造全新的分布式区块链数字音乐生态平台，在革新传统音乐产业中利润分配体制的同时，完成与实现音乐制品在制作、分销与消费循环周期中的自动化升级。"
+    },
+    "email": "official@muzika.network",
+    "website": "https://muzika.network",
+    "whitepaper": "http://muzika.network/assets/manual-en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-17",
+    "links": {
+        "telegram-english": "https://t.me/muzika_english",
+        "telegram-chinese": "https://t.me/muzika_chinese",
+        "telegram-korean": "https://t.me/muzika_korean",
+        "github": "https://github.com/MuzikaFoundation"
+    }
+}

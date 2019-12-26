@@ -1,0 +1,16 @@
+{
+  "symbol": "FOX",
+  "address": "0xDfb66e24CA9A75EF277dd14f9901DE965c163A83",
+  "overview":{
+        "en": "Fox IM is a social platform based on blockchain network, which can realize the free switching between traditional network social and P2P peer-to-peer networks, and can achieve decentralized and absolute private chat. And developed a mobile application based on FOX network, integrating social, information, finance, entertainment and cloud wallet.",
+        "zh": "Fox IM是基于区块链网络的社交平台，可以实现传统网络社交和P2P对等网络之间的自由切换，可以实现去中心的，绝对的私密聊天。并开发出基于FOX网络，集社交，资讯，金融，娱乐，云钱包于一体的移动应用。"
+  },
+  "email": "foximfuture@gmail.com",
+  "website": "http://www.foxchain.top/",
+  "whitepaper": "http://www.foxchain.top/static/FOX-white-en-1.1.pdf",
+  "links": {
+    "twitter": "https://twitter.com/foxim19",
+    "github": "https://github.com/fox-im",
+    "facebook": "https://www.facebook.com/poppy.yi.752"
+  }
+}

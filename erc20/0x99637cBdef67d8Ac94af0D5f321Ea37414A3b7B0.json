@@ -1,0 +1,27 @@
+{
+    "symbol": "VC",
+    "address": "0x99637cBdef67d8Ac94af0D5f321Ea37414A3b7B0",
+    "overview": {
+        "en": "Voice Enabled World Wide Web(VoiceWeb) Blockchain Infrastructure Native Altcoin",
+        "zh": "物语网（VoiceWeb）区块链基础设施代币"
+    },
+    "email": "support@voicecoin.com",
+    "website": "https://www.voicecoin.com/",
+    "whitepaper": "https://www.voicecoin.com/Voicechain_Whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-11-28",
+    "initial_price": {
+        "ETH": "0.0012500000 ETH",
+        "USD": "0.2625000000 USD",
+        "BTC": " 0.0000416667 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/voicecoin",
+        "telegram": "https://t.me/voicecoin",
+        "github": "https://github.com/voicecoin",
+        "facebook": "https://www.facebook.com/voicewebcoin",
+        "reddit": "https://www.reddit.com/r/Voicechain/",
+        "slack": "https://voicecoin.slack.com",
+        "medium": "https://medium.com/voicecoin"
+    }
+}

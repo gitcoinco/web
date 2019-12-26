@@ -1,0 +1,26 @@
+{
+    "symbol": "VLX",
+    "address": "0xdcd77408e9b16252025637020228f3965938dda5",
+    "overview": {
+        "en": "Velox Token is an ERC-20 compliant token that has been created as a utility to operate the upcoming VeloxBolt decentralized & anonymous exchange and trading platform. VLX can be minted, transacted and traded to serve the purpose as a utility token for the VeloxBolt decentralized exchange platform. Holders of VLX are awarded discounted fees on all velox products, 13% minting APR until the platform release and buy-backs to replace minting each quarter from the VeloxBolt platform & vNovum wallet profit.",
+        "zh": "Velox代币是一种符合ERC-20标准的代币，它用来在即将发布的去中心化及匿名交易平台VeloxBolt中作为平台币种。VLX能够被铸造、转账和交易，为VeloxBolt去中心化交易平台的主旨服务。 作为奖励，VLX的持有者享有Velox所有产品的折扣，并且在平台发布、每季度使用VeloxBolt平台和vNovum钱包的利润回购来取代铸造之前，持有者享有大约年化13%的铸币利率。"
+    },
+    "email": "support@veloxproject.io",
+    "website": "https://veloxproject.io",
+    "whitepaper": "https://veloxproject.io/downloads/Velox-Whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-16",
+    "initial_price": {
+        "ETH": "0.00160000 ETH",
+        "USD": "0.1 USD",
+        "BTC": "0.00000500 BTC"
+    },
+    "links": {
+        "blog": "https://veloxproject.io",
+        "twitter": "https://twitter.com/velox_project",
+        "telegram": "https://t.me/veloxproject",
+        "github": "https://github.com/vlxcoin",
+        "facebook": "https://www.facebook.com/veloxcoin",
+        "reddit": "https://www.reddit.com/r/veloxproject"
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "symbol": "BX2019",
+    "address": "0x5e13427Aa62028CdB937228906837f1aba911956",
+    "overview": {
+        "en": "BX, Chinese name: BiXing, token BX2019, total 100 million. A passport based on ERC-20. It is extremely scarce to apply output only on the common chain of BX Chain Super Alliance Matrix. It is a block node .",
+        "zh": "BX,中文名称：币星，令牌BX2019，总量为1亿枚。一款基于ERC-20标准通证。仅在BX Chain超级联盟矩阵公链上应用产出，极其稀缺。它是由我们生活中可以互动的每个人，通过移动端、设备供应商、社区领袖、生态企业等提供的服务器所代表的区块节点，通过每个人的社交互动行为与共识算法概率获得"
+    },
+    "email": "bd@bochat.io",
+    "website": "www.bochat.net",
+    "whitepaper": "http://www.bochat.net/static/index/images/20190220171819.png",
+    "state": "NORMAL",
+    "published_on": "2019-02-09",
+    "initial_price": {
+        "ETH": "0.0135 ETH"
+    },
+    "links": {
+        "blog": "https://weibo.com/u/3016798935",
+        "twitter": "https://twitter.com/Boss07168193",
+        "github": "https://github.com/bx2019",
+        "facebook": "https://www.facebook.com/BoChat2019"
+    }
+}

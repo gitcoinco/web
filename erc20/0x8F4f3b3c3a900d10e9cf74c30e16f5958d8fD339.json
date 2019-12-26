@@ -1,0 +1,20 @@
+{
+    "symbol": "LCCN",
+    "address": "0x8F4f3b3c3a900d10e9cf74c30e16f5958d8fD339",
+    "overview": {
+        "en": "Token of Linux.CN opensource community, for community contribution motivation and ecosystem construction.",
+        "zh": "「Linux 中国」开源社区通证，用于社区贡献激励和生态建设。"
+    },
+    "email": "xingyu.wang@gmail.com",
+    "website": "https://linux.cn/",
+    "whitepaper": "https://linux.cn/article-9886-1.html",
+    "state": "NORMAL",
+    "published_on": "2018-06-10",
+    "links": {
+        "twitter": "https://twitter.com/linux_cn",
+        "telegram": "https://t.me/linuxdotcn",
+        "github": "https://github.com/LCTT",
+        "facebook": "https://www.facebook.com/linux.china/",
+        "zhihu": "https://www.zhihu.com/org/linuxzhong-guo/"
+    }
+}

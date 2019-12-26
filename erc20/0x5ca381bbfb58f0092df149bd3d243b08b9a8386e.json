@@ -1,0 +1,26 @@
+{
+    "symbol": "MXC",
+    "address": "0x5ca381bbfb58f0092df149bd3d243b08b9a8386e",
+    "overview": {
+        "en": "The MXC Foundation is the next generation IoT token. Using the sophisticated Machine eXchange Protocol (MXProtocol), MXC is uniquely connecting wireless IoT sensors with permissionless blockchains. Built via a lightning fast, fully functional LPWAN Data Exchange, MXC supports billions of Device Data Transmissions Daily with a key focus on user adaptation and integration. Creating an unparalleled IoT LPWAN network, they’re allowing for more frequent, efficient and long-range data transmissions. MXC is setting the Global IoT Standard for Individuals, Businesses and Smart Cities. Using the unique Smart Bidding platform MXC enables a brand new Shared Economy based on big data, ensuring MXC is a token that focuses on true Blockchain integration, transforming the IoT industry and improving people’s lives.  ",
+        "zh": "物联网设备连接量将会产生爆发性增长，目前的物联网协议无法完美解决网络资源竞争和数据共享的问题。MXC基金会致力于低功耗广域物联网（LPWAN）与区块链技术的研究应用。MXProtocol极域协议是MXC的核心，是基于LPWAN基础之上的完全去中心化的标准协议,解决如下问题：1. 通过ACC解决免费频段物联网冲突问题；2. 通过智能竞价技术解决LPWAN物联网下行资源分配问题；3. 通过跨链数据市场解决物联网数据跨链交易与服务问题。"
+    },
+    "email": "hello@mxc.org",
+    "website": "https://mxc.org/",
+    "whitepaper": "https://www.mxc.org/hubfs/WP/MXC_technical_whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-12-05",
+    "initial_price": {
+        "ETH": "0.00005 ETH",
+        "USD": "0.015 USD"
+    },
+    "links": {
+        "blog": "https://www.mxc.org/newsroom/blog",
+        "twitter": "https://twitter.com/MXCfoundation",
+        "telegram": "https://t.me/mxcfoundation",
+        "github": "https://gitlab.com/MXCFoundation",
+        "facebook": "https://www.facebook.com/MXCfoundation/",
+        "reddit": "https://www.reddit.com/r/MXCFoundation/",
+        "medium": "https://medium.com/mxcoin"
+    }
+}

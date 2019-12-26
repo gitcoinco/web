@@ -1,0 +1,22 @@
+{
+    "symbol": "PT",
+    "address": "0x8722063aafa466c3176567c7a912898e92446ec4",
+    "overview": {
+        "en": "Pilot is an order repeater cluster alliance, distributed sets up a number of Repeaters that share an order pool, and supports matchmaking technologies that bring the best speed and effectiveness to the partners.",
+        "zh": "Pilot是一个订单中继器集群联盟，在去中心化交易所技术里，区分点对点协议和撮合订单池技术，点对点交易协议 ，并不支持撮合成交技术，很多去中心化交易所没有撮合技术，也有一部分交易所简单的开发了这个技术，去中心 化订单撮合是一个复杂的工作，开发一个完善的中继器是一个昂贵的工作，现有的一些中继器订单抽成收费也是昂 贵的，pilot就完成了这个工作，polit会分布式去架设很多共享一个订单池的中继器群，每笔收费在5-10%左右，我 们的技术团队专注于中继器集群的开发，给合作商带来最好的速度和效果。"
+    },
+    "email": "guozixuan1@gmail.com",
+    "website": "https://uone.io/",
+    "whitepaper": "https://uone.io/about",
+    "state": "NORMAL",
+    "published_on": "2018-07-01",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.7 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/PilotAlliance",
+        "facebook": "https://www.facebook.com/Pilot-Project-301524033929142"
+    }
+}

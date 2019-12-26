@@ -1,0 +1,12 @@
+{
+  "symbol": "OPT",
+  "address": "0x485D1A1936E19DF192F1BdAC3495bE8AE6b1Bf3D",
+  "overview":{
+          "en": "Optimus Chain is a public blockchain designed for logistics industry based on EOS as the underlying technology. By using key features of blockchain technology such as distributed, encrypted and tampering-proof ledger, we aim to solve a number of key problems in the logistics industry including information silo, system vulnerability, privacy violation, payment fraud and low efficiency of industrial collaboration. OPT can also track and trace the entire logistics process to ensure responsibility to each person and seamless delivery on every handoff. It provides a simple, low-cost, high-efficiency, safe and reliable blockchain solution for the entire logistics industry.",
+          "zh": "Optimus Chain 是一个基于 EOS 底层技术专为物流行业应用设计的公链，旨在通过区块链 技术的分布式、加密、不可篡改特性，解决物流行业亟待解决的信息孤岛、系统安全、隐私侵害、支付不确定、行业整体协作效率低等问题，并实现物流过 程全程可追踪、全程可追溯，保证每个环节的责任到人、无缝交付，为整个物流行业提供简便、低成本、高效率、安全可靠的区块链解决方案。"
+   },
+  "email": "contact@optimuschain.io",
+  "website": "http://www.optimuschain.com",
+  "state": "NORMAL",
+  "published_on": "2019-04-18"
+}

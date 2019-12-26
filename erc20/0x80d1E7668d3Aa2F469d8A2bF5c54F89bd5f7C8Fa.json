@@ -1,0 +1,22 @@
+{
+    "symbol": "RNC",
+    "address": "0x80d1E7668d3Aa2F469d8A2bF5c54F89bd5f7C8Fa",
+    "overview": {
+        "en": "RNC  is a set of digital identity solutions based on the block chain technology..",
+        "zh": "RNC 是一套基于区块链技术的数字身份解决方案。"
+    },
+    "email": "rnc@rncchain.org",
+    "website": "http://www.rncchain.org/",
+    "whitepaper": "http://www.rncchain.org/js/WhitePaper-CN.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-10",
+    "initial_price": {
+        "ETH": "0.00007216 ETH",
+        "USD": "0.14858841 USD",
+        "BTC": "0.00000226 BTC"
+    },
+    "links": {
+        "telegram": "http://share.telebox88.com/rncclub",
+        "facebook": "https://www.facebook.com/?sk=welcome"
+    }
+}

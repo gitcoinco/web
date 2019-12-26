@@ -1,0 +1,19 @@
+{
+    "symbol": "COVA",
+    "address": "0xb37a769b37224449d92aac57de379e1267cd3b00",
+    "overview": {
+        "en": "COVA is a smart contract platform for data. With the new COVA internet protocol, the owner of a data package can compose a data usage policy called \"Smart Policy\" that specifies the data’s expected behavior. Data transferred through the COVA protocol can be protected even after access has been granted. By empowering data owners without sacrificing the freedom of data transfer, COVA give data property rights and enable it to be transacted as capital.",
+        "zh": "COVA 是一个为数据而生的智能合约，旨在解决传统互联网协议只能让用户传输数据，无法控制数据被何种方式使用的问题。在 COVA 协议下，用户能在数据上附加 “智能条款”（Smart Policy）规定其使用范围，用代码保证用户权益不受到损害。即便将数据交由第三方使用，用户仍对其保有 100% 控制权。在保证数据自由流动的情况下，智能条款将赋予数据拥有者真正的物权，从而推动数据通货化交易."
+    },
+    "email": "info@covalent.ai",
+    "website": "https://www.covalent.ai/",
+    "whitepaper": "https://docsend.com/view/dvvb75n",
+    "published_on": "2018-12-18",
+    "links": {
+        "twitter": "https://twitter.com/covatoken",
+        "telegram": "https://t.me/covalentofficial",
+        "github": "https://github.com/covalent-hq",
+        "reddit": "https://www.reddit.com/r/Covalent_Official/",
+        "medium": "https://medium.com/@covatoken"
+    }
+}

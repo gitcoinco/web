@@ -1,0 +1,26 @@
+{
+    "symbol": "UPI",
+    "address": "0x61B21C6EE787bC1dF5EF873E5F6809711C62Ab92",
+    "overview": {
+        "en": "UPI stands for Unit Payment International, a company that works on blockchain based. Make a container for the loan market and shopping portal on blockchain technology. The UPI project is operated from Switzerland, the United States and Russia",
+        "zh": "UPI代表Unit Payment International，一家以區塊鍊為基礎的公司。 利用區塊鏈技術為貸款市場和購物門戶創造一個容器。 UPI項目由瑞士，美國和俄羅斯運營"
+    },
+    "email": "admin@upicoin.us",
+    "website": "http://www.upicoin.us",
+    "whitepaper": "http://upicoin.us/UPI-whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-26",
+    "initial_price": {
+        "ETH": "0.0000012 ETH",
+        "USD": "0.00038 USD",
+        "BTC": "0.00000005 BTC"
+    },
+    "links": {
+        "blog": "http://www.upicoin.us",
+        "twitter": "https://twitter.com/Upi_Coin",
+        "telegram": "https://t.me/UPI_Group",
+        "github": "https://github.com/UPICoin",
+        "reddit": "https://www.reedit.com/u/UPI_Coin",
+        "medium": "https://medium.com/@UnitPaymentInternational"
+    }
+}

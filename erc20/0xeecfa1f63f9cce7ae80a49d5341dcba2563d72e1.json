@@ -1,0 +1,19 @@
+{
+    "symbol": "CROS",
+    "address": "0xeecfa1f63f9cce7ae80a49d5341dcba2563d72e1",
+    "overview": {
+        "en": "CROS is a such platform that can: Let anyone enter the blockchain world by just one touch;Provide the self-created blockchain ledger, customized collaborative process and self-designed value token;realize a highly effective collaboration and circulation of value.Enabling business intelligence for everyone, Empowering digital economy for the world.",
+        "zh": "创新的商业协同平台。让个体一键进入区块链世界，自创建区块链账本、自定义协作流程、自设计Token。变革生产关系，改变价值流通的模式，实现高效的工作协同和价值流通。链通商业智能，赋能数字经济。"
+    },
+    "email": "info@cros.wrok",
+    "website": "http://www.cros.work/",
+    "whitepaper": "http://www.cros.work/files/cros_whitepaper_zh.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-21",
+    "links": {
+        "twitter": "https://twitter.com/CROS_Platform",
+        "telegram": "https://t.me/cros_family",
+        "github": "https://github.com/crosnetwork",
+        "facebook": "https://www.facebook.com/CROSplatform/"
+    }
+}

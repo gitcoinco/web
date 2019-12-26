@@ -1,0 +1,19 @@
+{
+    "symbol": "DAILY",
+    "address": "0xbc63f11d42860d7e41a4ce856581f0ce15ac4008",
+    "overview": {
+        "zh": "每日币读是专注于区块链一级市场的综合服务商。"
+    },
+    "email": "kefu@coindaily.io",
+    "website": "https://www.coindaily.io",
+    "whitepaper": "https://invest.coindaily.io/static/download/Coindaily_WhitePaper_English.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-13",
+    "links": {
+        "twitter": "https://twitter.com/THECOINDAILY",
+        "facebook": "https://www.facebook.com/TheCoindaily",
+        "Youtube": "https://www.youtube.com/channel/UC63ZakDNCxay3ddPiLYkQ0Q",
+        "LinkIn": "https://www.linkedin.com/company/coindaily",
+        "medium": "https://medium.com/@TheCoindaily"
+    }
+}

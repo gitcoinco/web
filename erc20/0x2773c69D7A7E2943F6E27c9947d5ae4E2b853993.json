@@ -1,0 +1,26 @@
+{
+    "symbol": "ETD",
+    "address": "0x2773c69D7A7E2943F6E27c9947d5ae4E2b853993",
+    "overview": {
+        "en": "ETD is an encrypted digital currency based on the ERC20 underlying protocol jointly developed by Venezuela and China blockchain experts. Its goal is to build a secure smart asset chain and apply blockchain technology and digital currency to business and trade.",
+        "zh": "ETD是由委内瑞拉和中国区块链专家共同开发的一种基于ERC20底层协议的加密数字货币。它的目标是建立一个安全的智能资产链，并将区块链技术和数字货币应用于商业和贸易。"
+    },
+    "email": "support@etherdiamond.cc",
+    "website": "https://etherdiamond.cc/indexen.php",
+    "whitepaper": "https://etherdiamond.cc/EtherDiamond%20English.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-11-12",
+    "initial_price": {
+        "ETH": "0.0005 ETH",
+        "USD": "0.05 USD"
+    },
+    "links": {
+        "blog": "https://medium.com/@etherdiamondofficial",
+        "twitter": "https://twitter.com/EtherDiamond",
+        "telegram": "https://t.me/etherdiamondgroup",
+        "github": "https://github.com/kkkcc",
+        "facebook": "https://www.facebook.com/ETDofficial",
+        "reddit": "https://www.reddit.com/user/etherdiamondofficial",
+        "instagram": "https://www.instagram.com/etdofficial/"
+    }
+}

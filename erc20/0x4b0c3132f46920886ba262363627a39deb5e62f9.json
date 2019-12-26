@@ -1,0 +1,19 @@
+{
+    "symbol": "FIT",
+    "address": "0x4b0c3132f46920886ba262363627a39deb5e62f9",
+    "overview": {
+        "en": "Fitchain It is a global fitness consensus community, through running through the bracelet mining, mining intelligent gym, mining treadmill",
+        "zh": "Fitchain是全球健身共识社区，通过手环跑步挖矿，挖矿智能健身房，挖矿跑步机，来获得token ，未来token可以在健身行业流通"
+    },
+    "email": "service@fitchain.pro",
+    "website": "www.fitchian.pro",
+    "whitepaper": "http://www.fitchain.pro/fit-white-paper.pdf",
+    "state": "NORMAL",
+    "links": {
+        "twitter": "https://twitter.com/fitchain",
+        "telegram": "https://t.me/fitchain1",
+        "github": "https://github.com/FitchainService/fitchain",
+        "facebook": "https://www.facebook.com/fitchain/",
+        "medium": "https://medium.com/fitchain"
+    }
+}

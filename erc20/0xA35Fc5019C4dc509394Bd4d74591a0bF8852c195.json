@@ -1,0 +1,21 @@
+{
+  "symbol": "BTCETH7525",
+  "address": "0xA35Fc5019C4dc509394Bd4d74591a0bF8852c195",
+  "overview":{
+    "en": "The BTC Enthusiast is a Set Token allocated at 75% Bitcoin and 25% Ethereum and rebalances every month to its target 75% BTC 25% ETH allocation."
+  },
+  "email": "hello@setprotocol.com",
+  "website": "https://www.tokensets.com/",
+  "state": "NORMAL",
+  "published_on": "2019-04-22",
+  "initial_price":{
+    "USD":"100 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/SetProtocol",
+    "telegram": "https://t.me/joinchat/Fx8D6wyprLUlM1jMVnaRdg",
+    "github": "https://github.com/setprotocol/",
+    "slack": "https://setprotocol.slack.com/",
+    "medium": "https://medium.com/set-protocol"
+  }
+}

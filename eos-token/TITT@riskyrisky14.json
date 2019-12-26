@@ -1,0 +1,23 @@
+{
+    "symbol": "TITT",
+    "account_name": "riskyrisky14",
+    "overview": {
+        "en": "Fortunechain is a vertical industry public chain based on artificial intelligence and blockchain technology. It is dedicated to solving the anti-counterfeiting pain points and the need to monetize for collectible high-end jewelry and antiques. Treasure in treasure token (TITT) is the world's first intelligent image token with decentralization, value circulation, human-machine dialogue and community consensus. It is divided into two forms: the colorless root token and the dye token. Dye token can only be generated on chain by colorless root token through the jewelry and antiques information collected by artificial intelligence device. The fortunechain adheres to the core concept of circulation generating value, which separates the jewelry antiques from the authentic value. Thereby forming an organic whole of online and offline anti-counterfeiting connections and value mapping. As a token with cost and value, the fortunechain TITT itself allows users to enjoy multiple rights and interests of collectible jewelry and antiques.",
+        "zh": "财富链是基于人工智能+区块链技术的垂直行业公有链，致力于解决收藏级高端珠宝古玩的防伪痛点和变现刚需。财富链TITT（Treasure in treasure token）是全球首款智能图像式token，具备去中心化、价值流通、人机对话和社区共识等特点。本身分为无色根通证和染色通证两种形态，染色通证只能由无色根通证通过人工智能设备采集实物信息进行上链生成。财富链秉持流通产生价值的核心理念，让珠宝古玩实物和通证价值相分离。从而形成线上线下防伪连接和价值映射的有机整体。财富链TITT本身作为有成本和有价值的token，持有用户可以享受收藏级珠宝古玩的多重权益。"
+    },
+    "email": "fortunechain008@gmail.com",
+    "website": "http://www.fortunechain.one",
+    "whitepaper": "http://www.fortunechain.one/wp/wp_cn.pdf",
+    "published_on": "2019-02-25",
+    "initial_price": {
+        "EOS": "0.05 EOS",
+        "USD": "0.15 USD"
+    },
+    "links": {
+        "steemit": "https://steemit.com/@fortunechain008",
+        "twitter": "https://twitter.com/fortunechain2",
+        "telegram": "https://t.me/Fortunechain008",
+        "github": "https://github.com/fortunechain",
+        "reddit": "https://www.reddit.com/user/fortunechain008"
+    }
+}

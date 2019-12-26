@@ -1,0 +1,23 @@
+{
+    "symbol": "Token Symbol",
+    "account_name": "Account Name",
+    "overview": {
+        "en": "Token Description",
+        "zh": ""
+    },
+    "email": "Email Address",
+    "website": "https://your-awesome-project.com/",
+    "whitepaper": "https://your-awesome-project.com/file.pdf",
+    "published_on": "2018-01-01",
+    "initial_price": {
+        "EOS": "0.0016 EOS",
+        "USD": "0.7 USD"
+    },
+    "links": {
+        "steemit": "https://steemit.com/@your-awesome-project",
+        "twitter": "https://twitter.com/your-awesome-project",
+        "telegram": "https://t.me/joinchat/your-awesome-project",
+        "github": "https://github.com/your-awesome-project",
+        "reddit": "https://www.reddit.com/r/your-awesome-project/"
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "symbol": "OSA",
+    "address": "0xc6abf3c09341741ac6041b0b08195701bdfd460c",
+    "overview": {
+        "zh": "OSA DC全球新零售 AI + 区块链平台项目 ，OSA 的母公司做新零售供应链大数据解决方案多年，目前全球拥有超百人团队。获得各家评级机构超高评级，获得D10E, Shark Tank等全球创业大赛一等奖，福布斯进行了深度报道。OSA项目目前已经在6个国家有落地，全球社群已达10万人规模。"
+    },
+    "email": "support@osadc.io",
+    "website": "https://osadc.io/",
+    "whitepaper": "https://osadc.io/assets/files/white-paper/white-paper-osadc-cn.pdf?version=20181022133934",
+    "state": "NORMAL",
+    "published_on": "2018-03-20",
+    "initial_price": {
+        "ETH": "0.00033333 ETH"
+    },
+    "links": {
+        "blog": "https://osadc.io/cn/#highlights",
+        "twitter": "https://twitter.com/global_OSADC",
+        "telegram": "https://t.me/osadecentralized_CN",
+        "github": "https://github.com/osa-decentralized",
+        "facebook": "https://www.facebook.com/OSAdecentralized/",
+        "reddit": "https://www.reddit.com/user/OSA_DC/",
+        "medium": "https://medium.com/osadc"
+    }
+}

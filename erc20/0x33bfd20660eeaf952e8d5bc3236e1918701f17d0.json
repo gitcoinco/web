@@ -1,0 +1,19 @@
+{
+    "symbol": "RCCC",
+    "address": "0x33bfd20660eeaf952e8d5bc3236e1918701f17d0",
+    "overview": {
+        "en": "Art Data Platform with Power Of Blockchain"
+    },
+    "website": "https://www.rccc.pro/",
+    "whitepaper": "http://www.rccc.pro/RCCC_Whitepaper_EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-12-30",
+    "initial_price": {
+        "ETH": "0.0005 ETH",
+        "USD": "0.1428 USD"
+    },
+    "links": {
+        "telegram": "https://t.me/RCCCgroup",
+        "github": "https://github.com/victorymen/RCCC"
+    }
+}

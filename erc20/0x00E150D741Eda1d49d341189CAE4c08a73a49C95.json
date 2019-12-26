@@ -1,0 +1,20 @@
+{
+    "symbol": "INF",
+    "address": "0x00E150D741Eda1d49d341189CAE4c08a73a49C95",
+    "overview": {
+        "en": "INF is a blockchain-based storage application that allows users to encrypt and store a variety of alphanumeric data on a decentralized network. The user data is securely stored on a peer-to-peer network (IPFS) which also ensures that it is only accessible to the designated recipient upon a predetermined inactivity trigger. Examples of user data that can be stored in our secured environment are: passwords, wallet files, private keys, JSON files, UTC files, keystore files, mnemonic phrases, recovery seeds and even short text messages.",
+        "zh": "INF是一种基于区块链的存储应用程序，允许用户在去中心化的网络上加密和存储各种字母数字数据。用户数据被安全地存储在P2P网络（IPFS）上，该P2P网络还确保仅在预定的静态触发时它才能被指定的接收者访问。在我们的安全环境中可以存储的用户数据有：密码，钱包文件，私钥，JSON文件，UTC文件，密钥库文件，助记短语，恢复种子甚至短文本消息。"
+    },
+    "email": "support@infinitustoken.io",
+    "website": "https://infinitustoken.io",
+    "whitepaper": "https://infinitustoken.io/v3/wp-content/themes/infinitustoken/framework/dist/assets/Infinitus_SmartDes_Repository_Whitepaper_V9_2607.pdf",
+    "state": "NORMAL",
+    "links": {
+        "blog": "https://medium.com/@infinitustoken",
+        "twitter": "https://twitter.com/InfinitusToken",
+        "telegram": "https://t.me/infinitustoken",
+        "facebook": "https://www.facebook.com/Officialinfinitustoken",
+        "slack": "https://your-awesome-project.slack.com",
+        "medium": "https://medium.com/@infinitustoken"
+    }
+}

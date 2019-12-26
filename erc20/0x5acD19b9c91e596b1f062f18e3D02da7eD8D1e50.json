@@ -1,0 +1,17 @@
+{
+    "symbol": "BTCL",
+    "address": "0x5acD19b9c91e596b1f062f18e3D02da7eD8D1e50",
+    "overview": {
+        "en": "BTC Lite is a decentralized cryptocurrency that promises to make Bitcoin lighter, faster and cheaper."
+    },
+    "email": "contact@btclite.org",
+    "website": "http://btclite.org",
+    "whitepaper": "https://btclite.org/whitepaper",
+    "state": "NORMAL",
+    "links": {
+        "blog": "http://btclite.org/blog/",
+        "twitter": "https://twitter.com/BTCliteofficial",
+        "telegram": "http://t.me/BTCLITE",
+        "medium": "https://medium.com/@btclite"
+    }
+}

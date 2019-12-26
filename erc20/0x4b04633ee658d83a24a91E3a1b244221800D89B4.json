@@ -1,0 +1,22 @@
+{
+    "symbol": "RISK",
+    "address": "0x4b04633ee658d83a24a91E3a1b244221800D89B4",
+    "overview": {
+        "en": "Global Risk Exchange (or 'GRE') is a blockchain based, decentralized and open global risk exchange market, with the purpose of helping individuals, companies and organizations to access and trade and manage their risks.",
+        "zh": "全球风险交易所（简称GRE）是一个基于石墨烯、分布式、全开源的全球风险度量和交易市场，帮助全球的机构和个人通过去中心化的方式进行风险管理和交易。"
+    },
+    "email": "contact@gref.io",
+    "website": "https://www.gref.io",
+    "whitepaper": "https://shimo.im/docs/z3hxFLzpYVgxj1SB",
+    "state": "NORMAL",
+    "published_on": "2018-01-22",
+    "initial_price": {
+        "ETH": "0.000012 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/GRE_RISK",
+        "telegram": "https://t.me/GREF_EN",
+        "github": "https://github.com/gre-foundation",
+        "facebook": "https://www.facebook.com/GRE-Foundation-2080066572230352"
+    }
+}

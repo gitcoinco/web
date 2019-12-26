@@ -1,0 +1,16 @@
+{
+    "symbol": "EAP",
+    "account_name": "eosauctionpt",
+    "overview": {
+        "en": "An online auction platform built on the EOS blockchain, EAP aims to provide users with a decentralised, scalable and fair auction experience.",
+        "zh": "基於EOS的網絡積木拍賣,積木拍賣遇到競買人時,誰都可以參與的公正拍賣開始",
+        "ko": "EOS 기반의 온라인 블록체인 경매, 블록체인이 경매를 만났을때 누구나 참여 가능한 공정한 경매가 시작 됩니다."
+    },
+    "website": "https://www.eosauctionplatform.com/",
+    "whitepaper": "https://www.eosauctionplatform.com/src/asset/doc/EOS_Auction_Platform_WhitePaper_1.0__ENG.pdf",
+    "links": {
+        "telegram": "https://t.me/eosautionplatform",
+        "twitter": "https://twitter.com/official_eap",
+        "reddit": "https://www.reddit.com/user/eosauctionplatform"
+    }
+}

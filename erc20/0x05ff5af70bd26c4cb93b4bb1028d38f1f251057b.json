@@ -1,0 +1,17 @@
+{
+    "symbol": "DAEC_OLD",
+    "address": "0x05ff5af70bd26c4cb93b4bb1028d38f1f251057b",
+    "overview": {
+        "en": "DAEC ( Digital Advertising Exchange Chain ) Using blockchain and artificial intelligence technology to create a new generation of digital advertising trading platform, transforming the traditional centralized advertising trading model. Through the idea of ​​blockchain technology and community autonomy, DAEC solves the problems of low conversion rate, high platform cost and privacy protection of current ad exchange platforms. DAEC's vision is to allow the parties involved in advertising to conduct business operations under a truly transparent mechanism.",
+        "zh": "DAEC ( 字节链 )，利用区块链和人工智能技术，打造新一代的数字广告交 易平台，改造传统中心化广告交易模式。DAEC 通过区块链技术和社区自治的思想，来解决当前广告交易平台转化 率低，平台费用过高，隐私保护等问题。DAEC的愿景是让广告参与各方在真正公开透明的机制下进行业务运行。注：此为 DAEC 官方发行的旧 DAEC 代币。新 DAEC 合约地址：0x96e9F45A47Be8E3E5eb395394c7e28B73aa931ac"
+    },
+    "email": "daechain@gmail.com",
+    "website": "http://www.daec.top/",
+    "whitepaper": "http://www.daec.top/file/daec.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-18",
+    "links": {
+        "twitter": "https://twitter.com/DAEChain",
+        "github": "https://github.com/DigitalAdvertising"
+    }
+}

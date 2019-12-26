@@ -1,0 +1,25 @@
+{
+    "symbol": "BDC",
+    "address": "0xac4dF2D98F14495263b9dfBC47451c46d8aB0A30",
+    "overview": {
+        "en": "BDC,Promoting block chain technology to sublimate again,Perfect combination of block chain and payment.",
+        "zh": "BDC,促使区块链技术再次升华,区块链与支付的完美融合。"
+    },
+    "email": "support@belden-bdc.net",
+    "website": "http://belden-bdc.net/",
+    "whitepaper": "https://beldenbdc.github.io/wp/bdcen.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-28",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.7 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "links": {
+        "blog": "https://weibo.com/beldenbdcOfficial",
+        "twitter": "https://twitter.com/beldenbdcOfficial",
+        "telegram": "https://t.me/beldenbdcOfficial",
+        "github": "https://github.com/beldenbdc",
+        "facebook": "https://www.facebook.com/beldenbdcOfficial"
+    }
+}

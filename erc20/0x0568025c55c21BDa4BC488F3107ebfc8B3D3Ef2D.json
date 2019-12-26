@@ -1,0 +1,18 @@
+{
+    "symbol": "ELET",
+    "address": "0x0568025c55c21BDa4BC488F3107ebfc8B3D3Ef2D",
+    "overview": {
+        "en": "The Elementium Future is a blockchain distributed computing power and traffic ecosystem, which consists of two parts: the Elementium Browser, the Elementium OS, and supports both individual and enterprise users. ELET is based on the Elementium Future ecological pass, which will be applied to a variety of scenarios such as Elementium Browser, Elementium OS, Elementium Hashrate cloud, etc. Holding ELET can simultaneously obtain traffic dividends from the Internet domain. And the division of computing power in the blockchain industry.",
+        "zh": "源质未来项目是区块链分布式算力与流量生态系统，包括两个部分：源质浏览器、源质 OS，同时支持个人和企业用户。ELET是基于源质未来生态通证，其将应用于源质浏览器、源质OS、源质算力云等多种场景中，持有ELET可以同时获得来自互联网领域的流量红利和区块链行业的算力分成。"
+    },
+    "email": "jim@elet.io",
+    "website": "https://www.elet.io/",
+    "whitepaper": "https://gitlab.com/chromium-update/package/raw/master/io/White_Paper_for_Elementium_Future_Project(v.1.20).pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-25",
+    "links": {
+        "blog": "https://weibo.com/u/6598168101",
+        "twitter": "https://twitter.com/Elementium_ELET",
+        "telegram": "https://t.me/joinchat/KV0TRkqhBRVyvRabw322Xg"
+    }
+}

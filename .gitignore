@@ -1,4 +1,6 @@
 .DS_Store 
 */.DS_Store
+.idea/*
+*/.idea/*
 /node_modules/
 package-lock.json

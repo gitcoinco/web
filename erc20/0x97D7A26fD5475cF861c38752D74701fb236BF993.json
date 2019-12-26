@@ -1,0 +1,23 @@
+{
+    "symbol": "lens",
+    "address": "0x97D7A26fD5475cF861c38752D74701fb236BF993",
+    "overview": {
+        "en": "LensChain",
+        "zh": "镜链"
+    },
+    "email": "lenschain@163.com",
+    "website": "http://lenschain.net",
+    "whitepaper": "http://lenschain.net/Lens_Distributed_Factoring_Network_v1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-03-07",
+    "initial_price": {
+        "ETH": "0.0169 ETH",
+        "USD": "1 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/lenschain99",
+        "telegram": "http://t.me/LensFoundation",
+        "github": "https://github.com/hanyannan99",
+        "facebook": "https://www.facebook.com/Lenschain99-2392714554297187/"
+    }
+}

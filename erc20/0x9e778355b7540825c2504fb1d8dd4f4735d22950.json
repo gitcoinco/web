@@ -1,0 +1,19 @@
+{
+    "symbol": "PECoin",
+    "address": "0x9e778355b7540825c2504fb1d8dd4f4735d22950",
+    "overview": {
+        "en": "PEC(Photoelectricitychain) is initiated by Singapore photoelectric energy foundation.PEC block chain technology luminous energy generation service system.In order to solve some outstanding problems of the Photoelectricitychain in the actual use scenario.",
+        "zh": "PEC光电链（PhotoelectricityChain）是由新加坡光电能源基金会发起，光电链是一个基于区块链技术的光能发电服务系统，为解决光电区块链在实际使用场景下的一些突出问题。"
+    },
+    "email": "pechain@foxmail.com",
+    "website": "https://www.pechain.org/",
+    "whitepaper": "https://www.pechain.org/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-05",
+    "initial_price": {
+        "USD": "0.01 USD"
+    },
+    "links": {
+        "Github": "https://github.com/PhotoelectricityChain/Photoelectricity-Chain-PEC"
+    }
+}

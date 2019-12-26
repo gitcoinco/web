@@ -1,0 +1,20 @@
+{
+  "symbol": "LMY",
+  "address": "0x66fD97a78d8854fEc445cd1C80a07896B0b4851f",
+  "overview":{
+        "en": "Lunch Money is an ERC20 Utility Token native to the Restaurant Private I platform. Users earn Lunch Money when their feedback has been audited and approved for proof of visit."
+  },
+  "email": "info@lunchmoney.io",
+  "website": "https://lunchmoney.io/",
+  "whitepaper": "http://lunchmoney.io/wp-content/uploads/2018/07/Attachment_1530734816.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-03-15",
+  "links": {
+    "twitter": "https://twitter.com/LunchToken",
+    "telegram": "https://t.me/lunchmoneytoken",
+    "facebook": "https://www.facebook.com/LunchMoneyToken/",
+    "reddit": "https://www.reddit.com/r/lunchmoney_io/",
+    "medium": "https://medium.com/@LunchMoney",
+    "linkedin": "https://www.linkedin.com/company/lunch-money-token"
+  }
+}

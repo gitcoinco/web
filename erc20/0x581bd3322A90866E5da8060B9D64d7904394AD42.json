@@ -1,0 +1,21 @@
+{
+    "symbol": "MAYA",
+    "address": "0x581bd3322A90866E5da8060B9D64d7904394AD42",
+    "overview": {
+        "en": "MAYA Mall is based on the ERC20 standard token secondary development de-centralization platform of Ethereum block chain in Taifang. Users'value-generating behavior will be reflected in token form, and token is the integral of MAYA Mall. Businessmen do not charge any fees. Businessmen need to ensure competitive prices and authentic materials to submit applications. The total amount of tokens is limited, circulation is transparent, and never additional issuance. The tokens can be registered, promoted and consumed in MAYA Mall, so that users can experience the essence of the Internet's truly transparent, simple and efficient shopping.",
+        "zh": "MAYA商城是基于以太坊Ethereum区块链的ERC20标准代币二次开发去中心化的平台，用户产生价值行为都将以代币形式体现，而代币就是MAYA商城的积分。对于商家不收取任何费用，商家需保证商品有竞争力的价格和正品资料提交申请，代币总量有限、流通透明、永不增发，在MAYA商城注册、推广、消费就可获得代币，让用户体验到互联网真正透明、简单、高效的购物本质。"
+    },
+    "email": "service@mayatoken.io",
+    "website": "mayatoken.io",
+    "whitepaper": "mayatoken.io",
+    "state": "NORMAL",
+    "published_on": "2018-03-20",
+    "initial_price": {
+        "ETH": "0.000025 ETH",
+        "USD": "0.002 USD",
+        "BTC": "0.0000007 BTC"
+    },
+    "links": {
+        "blog": "mayatoken.io"
+    }
+}

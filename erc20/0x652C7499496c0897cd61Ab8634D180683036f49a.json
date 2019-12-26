@@ -1,0 +1,25 @@
+{
+    "symbol": "Acoin",
+    "address": "0x652C7499496c0897cd61Ab8634D180683036f49a",
+    "overview": {
+        "en": "The Aibocoin foundation is an operation team serving the global chess game market technology development. With rich experience in game algorithm technology, with a large number of industry technical experts and authoritative technical consultants, it provides the underlying technology engine and scientific algorithm for more than many game platforms worldwide.",
+        "zh": "Aibocoin基金会是一家服务于全球棋牌游戏市场技术开发的运营团队。 具有丰富经验游戏算法的技术，拥有大量的行业技术专家和权威技术顾问，为 全球超过诸多游戏平台提供底层技术引擎和科学算法。"
+    },
+    "email": "support@aibocoin.com",
+    "website": "http://www.aibocoin.com",
+    "whitepaper": "http://www.aibocoin.com/images/ACOIN-ZH-V1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-28",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.7 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "links": {
+        "blog": "https://weibo.com/aibocoinOfficial",
+        "twitter": "https://twitter.com/aibocoinOfficial",
+        "telegram": "https://t.me/aibocoinOfficial",
+        "github": "https://github.com/aibocoin",
+        "facebook": "https://www.facebook.com/aibocoinOfficial"
+    }
+}

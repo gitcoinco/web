@@ -1,0 +1,19 @@
+{
+    "symbol": "SVIN",
+    "address": "0x0748F33259a1fD83405D27Ff0A807A31D3496bEC",
+    "overview": {
+        "en": "SVIN is a blockchain-based IoT underlying public chain platform.",
+        "zh": "SVIN是基于区块链的物联网基础公共链平台。"
+    },
+    "email": "info@svin.io",
+    "website": "https://svin.io",
+    "published_on": "2019-04-10",
+    "initial_price": {
+        "ETH": "0.00008 ETH",
+        "USD": "0.01493 USD"
+    },
+    "links": {
+         "telegram": "https://t.me/svinpro",
+        "twitter": "https://twitter.com/svinchain"
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "symbol": "NFC",
+    "address": "0xb0866289e870d2efc282406cf4123df6e5bcb652",
+    "overview": {
+        "en": "The world's leading anti-counterfeiting algorithm combines the latest research achievements in Cryptography, Blockchain, Location Based Services, Big Data, Machine Learning, etc.",
+        "zh": "NoFake能飞客是一款基于密码学、区块链、大数据、机器学习的防伪算法等高度复杂技术支持的防伪溯源客户端应用，用户可以通过NoFake的扫描功能查询商品的溯源信息，辨别商品真伪，并在购买正品后可获得积分奖励"
+    },
+    "email": "info@nofake.today",
+    "website": "https://nofake.io/",
+    "whitepaper": "https://nofake.io/asset/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-03-01",
+    "initial_price": {
+        "ETH": "0.00007142857143 ETH"
+    },
+    "links": {
+        "blog": "https://medium.com/@nofake.io",
+        "twitter": "https://twitter.com/NoFakeToday",
+        "telegram": "https://t.me/NFC_en",
+        "github": "https://github.com/nofaketoday",
+        "reddit": "https://www.reddit.com/user/NoFakeToday/",
+        "medium": "https://medium.com/@nofake.io"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "symbol": "SOHA",
+    "address": "0xb0f3b4da2085f0bcdc4a37209ca2dd7cef431025",
+    "website": "http://www.51soha.live/",
+    "overview": {
+        "en": "SOHA integrals",
+        "zh": "SOHA致力于打造全球最大的区块链和数字货币直播生态社区，帮助更多初入门的用户能够看懂区块链、读懂区块链、了解区块链，获得及时、客观、中立的资讯，在投资过程中发现价值洼地，获得丰厚回报。同时打造区块链版块的“喜马拉雅”知识付费频道，通过打造行业精英直播版块，使行业精英获得知识变现、个人影响力提升的机会，并再次转化为生产力，让生态良性运转。SOHA将依托直播模块，打造一个去中心化，高度社群自治的一个区块链生态社区，社区所有成员，既是消费者，也是社区的建设者，所有的参与者都是直播生态收益的获得者，平台所有的权益都归社群所有：重大决策社区投票决定，收益分配公开透明；通过共建，打造强大的社群共识，成为推动区块链行业发展中不可或缺的主力军。"
+    },
+    "links": {
+        "twitter": "https://twitter.com/SohaLive1",
+        "telegram": "https://t.me/joinchat/I28IEA-_rGHNdS-7XQ7ipw",
+        "github": "https://github.com/51soha/SoHa-Contract.git"
+    }
+}

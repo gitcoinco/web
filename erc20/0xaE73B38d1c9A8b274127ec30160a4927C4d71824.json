@@ -1,0 +1,21 @@
+{
+    "website": "https://stktoken.com/",
+    "published_on": "2017-12-29",
+    "links": {
+        "telegram": "https://t.me/stktoken",
+        "reddit": "https://www.reddit.com/r/STKToken/",
+        "slack": "https://discordapp.com/invite/38EXN5D",
+        "twitter": "https://twitter.com/stktoken"
+    },
+    "overview": {
+        "en": "Cryptocurrency Payments straight from your smartphone.",
+        "zh": "致力于直接从智能手机发起加密数字货币支付。"
+    },
+    "symbol": "STK",
+    "initial_price": {
+        "USD": "0.08 USD"
+    },
+    "whitepaper": "https://stktoken.com/STK_whitepaper_en.pdf",
+    "address": "0xaE73B38d1c9A8b274127ec30160a4927C4d71824",
+    "email": "info@stktoken.com"
+}

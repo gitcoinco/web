@@ -1,0 +1,18 @@
+{
+    "symbol": "SECT",
+    "address": "0xAbabE8E4d8Ff9AEa1346D50E05DAeb755005C61F",
+    "overview": {
+        "en": "SECBIT Token",
+        "zh": "SECBIT Token"
+    },
+    "email": "hi@secbit.io",
+    "website": "https://secbit.io",
+    "state": "NORMAL",
+    "published_on": "2018-07-22",
+    "links": {
+        "blog": "https://medium.com/secbit-media",
+        "twitter": "https://twitter.com/SECBIT_IO",
+        "github": "https://github.com/sec-bit",
+        "medium": "https://medium.com/secbit-media"
+    }
+}

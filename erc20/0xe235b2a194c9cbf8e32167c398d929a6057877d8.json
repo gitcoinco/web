@@ -1,0 +1,21 @@
+{
+    "symbol": "AMT",
+    "address": "0xe235b2a194c9cbf8e32167c398d929a6057877d8",
+    "overview": {
+        "en": "NEW GAME COMMUNITY BASED ON TOKEN ECONOMY。Let gamers become community owners. Share the benefits of community development. Create a global leader in standardized blockchain games。",
+        "zh": "基于通证经济的新游戏社区。让玩家成为社区的主人，分享社区发展的红利，打造标准化区块链游戏的全球领导者。"
+    },
+    "email": "amt@ameitoken.com",
+    "website": "https://ameitoken.com",
+    "whitepaper": "https://ameitoken.com/AMT%20White%20paper_EN.pdf",
+    "published_on": "2018-08-08",
+    "initial_price": {
+        "ETH": "0.0000015 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/AMeiToken",
+        "telegram": "https://t.me/AMeiToken_en",
+        "github": "https://www.github.com/ameitoken",
+        "facebook": "https://facebook.com/ameitoken"
+    }
+}

@@ -1,0 +1,22 @@
+{
+  "symbol": "CSS",
+  "address": "0x28fB9FCf7cF7a67d05bD19fFBEc17578c0dE63d3",
+  "overview":{
+        "en": "ChainBow Co., Ltd. is a fast-growing Internet company registered in Japan. The company created an O2O platform which provides loyalty points, coupons, store timeline (business information publishing system), reservation service and payment service for small and medium physical stores and Internet consumers. The loyalty points system within the APP created by the platform adopt Blockchain technology as infrastructure layer so that it becomes possible to be docked to various public chains. The platform powered by Blockchain technology will provide services to tens or hundreds of millions of ordinary consumers in the world. CSS is the world’s first real entity O2O enterprise platform token based and issued on the STO innovation model BDR. The funds raised in the STO is mainly used to quickly occupy the market and increase profitability of the Cercle platform of ChainBow Co., Ltd.",
+        "zh": "株式会社ChainBow是日本一家飞速发展中的股份有限公司。该公司创建的O2O平台通过积分、促销活动、商家圈信息、服务预订等方式，把线下实体店的信息推送给互联网用户，从而将线上用户转化为线下客户。该平台提供的积分系统和APP，采用区块链技术，其底层可对接各䝅公链，向数千万，乃至数亿级䫲的普通消费者提供服务。CSS通证是全球首个基于STO创新模式——BDR发行的实体O2O企业平台通证。募资金额主要用于推动再来O2O平台迅速占领市场，加大盈利力度。",
+        "ja": "株式会社ChainBowは日本で急成長を遂げている企業です。当社が開発したO2Oプラットフォームは、ポイントシステム、販売促進キャンペーン、店舗のタイムライン、サービス予約などを通じてオフラインの店舗情報をネットユーザーにプッシュし、ネットユーザーをオフラインの顧客に転化することができるシステムです。当プラットフォームは、オフラインの店舗と消費者をつなぐ架け橋として、店舗顧客層の量的変化を質的変化へと飛躍させ、売上を大幅に拡大しています。当プラットフォームが提供するポイントシステムとAPPはブロックチェーン技術を採用し、その基盤は各種のパブリックチェーンにドッキングすることができ、数千万～億単位の一般消費者にサービスを提供することができます。CSSトークンは、世界初のSTOのイノベーションモデルであるBDRで発行されたO2O企業プラットフォームトークンです。調達された資金は主にセルクルO2Oプラットフォームの市場シェアを迅速に拡大し、収益性を高めるために使用されます。"
+  },
+  "email": "support@chainbow.io",
+  "website": "https://cercle.sg/",
+  "state": "NORMAL",
+  "whitepaper": "https://cercle.sg/files/cercle_sto_en.pdf",
+  "published_on": "2019-10-01",
+  "initial_price":{
+        "USD":"0.1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/cercle_fund",
+    "facebook": "https://www.facebook.com/CercleFoundation/",
+    "telegram": "https://t.me/cercle_foundation"
+  }
+}

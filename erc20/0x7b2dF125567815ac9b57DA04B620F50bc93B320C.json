@@ -1,0 +1,28 @@
+{
+    "symbol": "ACTP",
+    "address": "0x7b2dF125567815ac9b57DA04B620F50bc93B320C",
+    "overview": {
+        "en": "Archetypal Network is the first Ethereum based cloudmining smart contract miner to support real-time mining and high transaction throughput. Archetypal Network is the most advanced Ethereum cloudmining, supporting limit and plan orders, gas-free cancels, and the ability to fill many upgrades at once.",
+        "zh": "Archetypal Network是第一个基于以太坊的云端智能合约矿工，支持实时挖掘和高交易吞吐量。 Archetypal Network是最先进的以太坊云计算，支持限制和计划订单，无气体取消，以及一次性填充许多升级的能力。"
+    },
+    "email": "admin@archetypal.network",
+    "website": "https://archetypal.network/",
+    "whitepaper": "https://archetypal.network/ArchetypalNetworkWhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-24",
+    "initial_price": {
+        "ETH": "0.0000001 ETH",
+        "USD": "0.000041 USD",
+        "BTC": "0.00000001 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@archetypal.network",
+        "twitter": "https://twitter.com/ArchetypalNet",
+        "telegram": "https://t.me/ArchetypalNetwork_Group",
+        "github": "https://github.com/ACTP",
+        "facebook": "https://www.facebook.com/Archetypal-Network-1036854479821929/",
+        "reddit": "https://www.reddit.com/user/ArchetypalNetwork/",
+        "slack": "https://archetypalnetwork.slack.com/",
+        "medium": "https://medium.com/@archetypal.network"
+    }
+}

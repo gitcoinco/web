@@ -1,0 +1,20 @@
+{
+    "symbol": "GIRL",
+    "address": "0xde5cc1c7d7bd95acb79d96b3b17eb6edd941803a",
+    "overview": {
+        "en": "GirlX is the first female value discovery community designed for women around the world. Based on the decentralization, value traceability and other characteristics of block-chain, to achieve 'female value is linked.'",
+        "zh": "全球首个专为女性打造，去中心化的女性价值发现与创造社区，基于区块链的去中心化，价值可追溯等特性，把“女性价值上链”。"
+    },
+    "email": "girlx@girlup.me",
+    "website": "https://www.girlx.io/",
+    "whitepaper": "http://download.girlx.io/girlx-en-v1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-27",
+    "initial_price": {
+        "ETH": "0.00000625 ETH"
+    },
+    "links": {
+        "telegram": "https://t.me/GirlXEN",
+        "facebook": "https://www.facebook.com/girlup.girlx.5"
+    }
+}

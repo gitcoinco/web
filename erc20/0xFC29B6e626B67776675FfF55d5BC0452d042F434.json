@@ -1,0 +1,19 @@
+{
+    "symbol": "BHT",
+    "address": "0xFC29B6e626B67776675FfF55d5BC0452d042F434",
+    "overview": {
+        "en": "Financial Standard Decentralized Crypto Asset Custody and Trading Platform.",
+        "zh": "金融级去中心化加密资产托管和交易平台。"
+    },
+    "email": "service@bhex.com",
+    "website": "https://www.bhex.com/",
+    "whitepaper": "https://www.bhex.com/BHex_1.0_en.pdf",
+    "published_on": "2018-12-28",
+    "state": "NORMAL",
+    "links": {
+        "twitter": "https://twitter.com/BHexOfficial",
+        "telegram": "https://t.me/BHexen",
+        "github": "https://github.com/bhexopen",
+        "facebook": "https://www.facebook.com/BHEX-723260338026068/"
+    }
+}

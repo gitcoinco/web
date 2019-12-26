@@ -1,0 +1,25 @@
+{
+    "symbol": "OPX",
+    "address": "0x1276aa1F8a8Ca249420cBE30ec20d5127c1c2b3B",
+    "overview": {
+        "en": "OPX is a one-stop digital currency asset management underlying operating system and toolset. It builds efficient, transparent and secure distributed collaborative digital currency asset management Value Network through combination of blockchain distributed ledger technology, token economy and artificial intelligence and other high technology. \nAs an open source agreement for digital asset management, OPX provides users with efficient and secure digital asset investment services. Asset management is an industry of chain structure, which may be circular, intersecting, inclusive, etc. There are many roles in the chain structure of asset management. They are both partners and players. Combine the principles of game and cooperation, sharing and privacy, define and standardize asset management scenarios and place the roles in the right places to provide the most professional and credible services. Provide a low threshold and a credible business environment for asset management providers, providing investors with transparent digital asset classes and details.",
+        "zh": "OPX是一站式数字货币资管底层操作系统及工具集， 通过区块链分布式账本技术、跨链侧链，以及通证经济和人工智能等高新技术，建立高效，透明，安全的分布式协作数字货币资管价值网络。应用层DApp层支持法币兑换，币币兑换，全球数字货币行情，全网最优价撮合，智能条件交易，私人数据实时同步等一站式数字货币资管功能。\nOPX作为数字资产管理开源协议，为用户提供高效、安全的数字资产投资服务。资产管理是一种链式结构的行业，这种链纷繁复杂可能是环形的、交叉的、包含的等。在资产管理的链结构上存在许许多多角色，他们即使合作方也是博弈方。结合博弈与合作、共享与隐私的原则，进行资产管理场景的定义和标准化并把角色们安放在合适的地方，使之提供最为专业和可信的服务。为资管服务方提供低门槛和可信的商业环境，为投资者提供透明的数字资产类目和明细。"
+    },
+    "email": "info@opx.site",
+    "website": "http://opx.site/",
+    "whitepaper": "http://opx.site/img/CNWhitePaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-13",
+    "initial_price": {
+        "ETH": "0 ETH",
+        "USD": "0 USD",
+        "BTC": "0 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/opx_official",
+        "telegram": "https://t.me/opxofficialgroup",
+        "github": "https://github.com/OPXFoundation",
+        "facebook": "https://www.facebook.com/profile.php?id=100026647792906",
+        "instagram": "https://www.instagram.com/opx_blockchain/"
+    }
+}

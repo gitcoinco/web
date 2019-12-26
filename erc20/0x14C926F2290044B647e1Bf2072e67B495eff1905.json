@@ -1,0 +1,26 @@
+{
+    "symbol": "BETHER",
+    "address": "0x14C926F2290044B647e1Bf2072e67B495eff1905",
+    "overview": {
+        "en": "Bethereum is a decentralised, social-betting platform based on Ethereum technology and Smart Contracts. Bether is the digital ERC-223 token powering the Bethereum solution."
+    },
+    "email": "team@bethereum.com",
+    "website": "https://bethereum.com/",
+    "whitepaper": "https://www.bethereum.com/Bethereum-Whitepaper-EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-01",
+    "initial_price": {
+        "ETH": "0.000057 ETH",
+        "USD": "0.0131 USD",
+        "BTC": "0.000002 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/bethereum",
+        "twitter": "https://twitter.com/bethereumteam",
+        "telegram": "http://t.me/bethereum",
+        "github": "https://github.com/bethereumproject",
+        "facebook": "https://www.facebook.com/bethereumproject/",
+        "reddit": "https://www.reddit.com/r/bethereum",
+        "medium": "https://medium.com/bethereum"
+    }
+}

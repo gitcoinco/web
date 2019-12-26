@@ -1,0 +1,23 @@
+{
+    "symbol": "EPAY",
+    "address": "0xaa1ae5e57dc05981d83ec7fca0b3c7ee2565b7d6",
+    "overview": {
+        "en": "Introducing EtherPay, the first cross border payment processor leveraging on one of the most widely used cryptocurrency in the world, Ethereum",
+        "zh": "以太付是第一个跨境支付处理器利了用世界上最广泛使用的加密货币之一的以太坊"
+    },
+    "email": "contact@etherpay.pro",
+    "website": "https://etherpay.pro/",
+    "whitepaper": "http://etherpay.pro/epwhitepaper/EP-WP140818.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-18",
+    "initial_price": {
+        "USD": "1 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/Etherpay",
+        "telegram": "https://t.me/etherpay",
+        "github": "https://github.com/etherpaypro",
+        "reddit": "https://www.reddit.com/user/etherpay_",
+        "medium": "https://medium.com/@etherpayofficial"
+    }
+}

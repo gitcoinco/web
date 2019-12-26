@@ -1,0 +1,23 @@
+{
+  "symbol": "UPX",
+  "address": "0x5f778ec4B31a506c1Dfd8b06F131E9B451a61D39",
+  "overview":{
+    "en": "UDAP is a middleware layer with common building blocks including state channel, asset lifecycle management, tokenization and trading, decentralized identity management that make building blockchain applications simpler and faster.",
+    "zh": "UDAP致力于构建一个通用的、去中心化的区块链资产生命周期管理中间层网络，包括状态通道、代币发行、质押与交易、去中心化身份管理、链外数据的接入等核心组件，使开发者可以在不了解区块链底层技术及智能合约等细节的情况下，应用UDAP提供的面向资产的Restful API和WebSocket服务，快速完成从互联网业务模式向通证经济模式的转型。"
+  },
+  "email": "info@udap.io",
+  "website": "https://www.udap.io/",
+  "whitepaper": "https://www.udap.io/whitepapers/UDAP-Whitepaper-English-v08.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-08",
+  "initial_price":{
+    "USD":"0.002 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/udapfoundation",
+    "telegram": "https://t.me/udapcommunity",
+    "github": "https://github.com/udap",
+    "facebook": "https://fb.me/udapfoundation",
+    "medium": "https://medium.com/@UDAP"
+  }
+}

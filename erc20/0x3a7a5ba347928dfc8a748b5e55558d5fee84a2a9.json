@@ -1,0 +1,20 @@
+{
+    "symbol": "MP",
+    "address": "0x3a7a5ba347928dfc8a748b5e55558d5fee84a2a9",
+    "overview": {
+        "en": "Using block chain technology to solve the problem of data island in advertising industry, create a mobile advertising block chain with decentralized, transparent data and real-time value transmission, realizing the redistribution of benefits.",
+        "zh": "利用区块链技术，解决广告行业数据孤岛，共创一个去中心化，数据透明，价值实时传递的移动广告区块链，实现利益的重新分配。"
+    },
+    "email": "cuizhenfei@androidym.com",
+    "website": "http://www.mpchain.net",
+    "whitepaper": "http://www.mpchain.net/MPChain.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-11",
+    "initial_price": {
+        "ETH": "0.000005 ETH",
+        "USD": "0.000147 USD"
+    },
+    "links": {
+        "telegram": "https://0.plus/#/mpchain"
+    }
+}

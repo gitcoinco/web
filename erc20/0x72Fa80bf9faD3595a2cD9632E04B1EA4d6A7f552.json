@@ -1,0 +1,23 @@
+{
+    "symbol": "GR",
+    "address": "0x72Fa80bf9faD3595a2cD9632E04B1EA4d6A7f552",
+    "overview": {
+        "en": "Game Root is a Blockchain-Based Valuable Gaming Assets, Trading, and Content Distribution Platform.",
+        "zh": "基於區塊鏈的稀有遊戲道具、資產交易和內容分發平台"
+    },
+    "email": "contact@gameroot.io",
+    "website": "https://gameroot.io/",
+    "state": "NORMAL",
+    "published_on": "2018-07-16",
+    "initial_price": {
+        "USD": "0.06 USD"
+    },
+    "links": {
+        "blog": "https://medium.com/@gameroot",
+        "twitter": "https://twitter.com/GameRootEx",
+        "telegram": "https://t.me/GamerootExchange",
+        "github": "https://github.com/gameroot",
+        "facebook": "https://www.facebook.com/GameRoot",
+        "medium": "https://medium.com/@gameroot"
+    }
+}

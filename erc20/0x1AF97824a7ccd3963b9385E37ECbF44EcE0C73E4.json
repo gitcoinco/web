@@ -1,0 +1,22 @@
+{
+  "symbol": "ADDC",
+  "address": "0x1AF97824a7ccd3963b9385E37ECbF44EcE0C73E4",
+  "overview":{
+        "en": "Aladdin",
+        "zh": "阿拉丁-新一代信息存储系统"
+  },
+  "email": "aladdinadd1001@gmail.com",
+  "website": "https://add1001.com/",
+  "whitepaper": "https://github.com/af913337456/add/blob/master/chinese.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-24",
+  "initial_price":{
+        "ETH":"0.00024 ETH",
+        "USD":"0.03 USD",
+        "BTC":"0.000000008 BTC"
+  },
+  "links": {
+    "blog": "https://add1001.com/",
+    "github": "https://github.com/af913337456/add/blob/master/chinese.pdf"
+  }
+}

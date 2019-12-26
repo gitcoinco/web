@@ -1,0 +1,18 @@
+{
+  "symbol": "IOTF",
+  "address": "0xC3b4da2e8bCD06EFE9993aE964666BB8BE3068D1",
+  "overview":{
+        "en": "IOTF is a leading solution provider of the Internet of things + 5G integrating blockchain in the world. Its early team members were some French developers and set up representative office in Hong Kong to serve the markets in the Asia-Pacific region. IOTF will build a blockchain ecosystem with value circulation of the Internet of things as its core to help enter a new era of the Internet of everything.",
+        "zh": "IOTF是全球领先的物联网+5G融合区块链方案商，团队早期成员均来自法国的开发者并在香港设立代表处服务亚太地区市场。IOTF将建立一个基于物联网价值流通为核心的区块链生态系统，迈入万物互联的全新时代。"
+  },
+  "email": "hello@iotf.io",
+  "website": "https://iotf.io",
+  "whitepaper": "https://iotf.oss-cn-shenzhen.aliyuncs.com/WhitePaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-25",
+  "links": {
+    "twitter": "https://twitter.com/iotfchain",
+    "telegram": "https://t.me/iotfchain",
+    "facebook": "https://facebook.com/iotf.io"
+  }
+}

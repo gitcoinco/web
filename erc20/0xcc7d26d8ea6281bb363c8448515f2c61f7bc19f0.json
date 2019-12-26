@@ -1,0 +1,24 @@
+{
+    "symbol": "ABCH",
+    "address": "0xcc7d26d8ea6281bb363c8448515f2c61f7bc19f0",
+    "overview": {
+        "en": "ABBC Cash(ABCH)"
+    },
+    "email": "support@abbcfoundation.com",
+    "website": "https://www.abbcfoundation.com/",
+    "whitepaper": "https://www.abbcfoundation.com/assets/whitepaper_pdf/whitepaper_v_2.01_eng.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-11-05",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.7 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/abbcfoundation",
+        "telegram": "https://t.me/abbcfoundation",
+        "github": "https://github.com/ABBCCash/ABBCCashtoken",
+        "facebook": "https://www.facebook.com/abbcfoundation/",
+        "reddit": "https://www.reddit.com/r/ABBC/"
+    }
+}

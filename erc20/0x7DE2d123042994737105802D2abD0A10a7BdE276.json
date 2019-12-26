@@ -1,0 +1,26 @@
+{
+  "symbol": "MEXC",
+  "address": "0x7DE2d123042994737105802D2abD0A10a7BdE276",
+  "overview": {
+    "en": "MEXC is a unique creation of utility token for the Emergency Medical Services (EMS) industry. ",
+    "zh": "MEXC是紧急医疗服务（EMS）行业的独特工具令牌。"
+  },
+  "email": "info@mexc.life",
+  "website": "https://mexc.life/",
+  "whitepaper": "https://mexc.life/docs/MEXC_whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-02-08",
+  "initial_price": {
+    "ETH": "0.00014493 ETH",
+    "USD": "0.03 USD",
+    "BTC": "0.0.00000273 BTC"
+  },
+  "links": {
+    "blog": "https://mexc.life",
+    "twitter": "https://www.twitter.com/mexc_life/",
+    "telegram": "https://t.me/mexclife",
+    "github": "https://github.com/MEXClife/mexc",
+    "facebook": "https://www.facebook.com/mexc.life/",
+    "reddit": "https://www.reddit.com/r/mexc/"
+  }
+}

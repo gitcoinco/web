@@ -1,0 +1,24 @@
+{
+    "website": "https://www.minebit.com",
+    "published_on": "2018-10-07",
+    "links": {
+        "twitter": "https://twitter.com/MineBit_EN",
+        "telegram": "https://t.me/minebit_english",
+        "github": "https://github.com/MineBitOfficial/open-api",
+        "facebook": "https://www.facebook.com/MineBitCommunity/",
+        "reddit": "https://www.reddit.com/user/MineBit_Global/",
+        "steemit": "https://steemit.com/@minebit",
+        "medium": "https://medium.com/@minebitmarket"
+    },
+    "overview": {
+        "en": "MineBit (https://www.minebit.com) is a Korean Community-Based Revenue Sharing Exchange. Based on the consensus of “Community-Based Revenue Sharing Mechanism”, MBT holders are like community nodes, which will build a co-ownership, co-sharing and co-governance community organization to share platform benefits.",
+        "zh": "MineBit ( https://www.minebit.com )是韩国社区共享型数字资产交易所，致力于创建一个自治的、高效的、透明公平的数字资产交易平台，让投资者可以放心地进行任何规模的交易。与此同时，通过创新的治理机制将平台话语权交给社区，同时借助社区的力量挖掘、反哺最有潜力、最有价值的项目，形成一个正向激励的生态环境。"
+    },
+    "symbol": "MBT",
+    "initial_price": {
+        "ETH": "0.0001 ETH"
+    },
+    "whitepaper": "https://github.com/MineBitOfficial/whitepaper/blob/master/whitepapers",
+    "address": "0xb43f54dd212c66d8e52599a471d32bd74013efd4",
+    "email": "business@minebit.com"
+}

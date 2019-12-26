@@ -1,0 +1,21 @@
+{
+  "symbol": "BQQQ",
+  "address": "0x1B80eeeaDcC590f305945BCc258cFa770Bbe1890",
+  "overview":{
+    "en": "Bitsdaq aims to be the pioneer that’s leading the blockchain industry to the next generation with their well-rounded crypto service platform by combining its unique partnerships and cutting-edge technologies.",
+    "zh": "币斯达克数字货币交易所正式成立，并同时发行币斯达克代币（代币符号“BQQQ”）。币斯达克由金融科技（FinTech）和不同市场领域的世界级资深金融团队精心打造，并在全球（30天交易量）最大的加密交易所之一的BITTREX的技术支持下，共同打造世界级交易系统。币斯达克旨在利用先进的交易技术和丰富的行业经验，来实现交易员、投资者和区块链初创企业之间的加密资产流通，创建卓越用户体验。"
+  },
+  "email": "support@bitsdaq.com",
+  "website": "https://bitsdaq.com/",
+  "whitepaper": "https://bqqq.info/Bitsdaq_whitepaper_EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-06-09",
+  "initial_price":{
+      "ETH":"0.0000253 ETH",
+      "USD":"0.0065 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/BitsdaqExchange",
+    "telegram": "https://t.me/BitsdaqExchangeOfficial"
+  }
+}

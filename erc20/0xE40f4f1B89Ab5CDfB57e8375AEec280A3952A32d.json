@@ -1,0 +1,21 @@
+{
+    "symbol": "BBA",
+    "address": "0xE40f4f1B89Ab5CDfB57e8375AEec280A3952A32d",
+    "overview": {
+        "en": "BBA is a blockchain-based digital asset artificial intelligence quantitative trading ecosystem. It captures the data of major exchanges around the world for trading, and can use high-frequency quantization by using different conversion channels, transaction currencies, and transaction depth. Trading strategies benefit from it.",
+        "zh": "BBA是基于区块链的数字资产人工智能量化交易生态系统，抓取全球各大交易所的数据进行交易刷单，利用换算通道、交易币种、交易深度之间的不同，可以使用高频量化交易策略从中获利。"
+    },
+    "email": "zybtc31311406@gmail.com",
+    "website": "http://www.bbacoin.org/",
+    "whitepaper": "https://github.com/bbacoin/BBA/raw/master/BBA%20white%20paper%202.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-12-11",
+    "initial_price": {
+        "ETH": "0.0000222 ETH",
+        "USD": "0.002 USD",
+        "BTC": "0.000000588 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/BBA73744872"
+    }
+}

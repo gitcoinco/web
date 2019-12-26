@@ -1,0 +1,17 @@
+{
+    "symbol": "LT",
+    "address": "0x48F3726C787Bdc36Bb00c978E701879cEEd185A4",
+    "overview":{
+          "en": "Loctite Assets is a block chain project used to construct the cryptographic asset trading application ecology, which is supported by Loctite Assets platform, Loctite Assets public chain, Loctite Assets Token (LT) certificate. It USES the advantages of blockchain itself, such as trust mechanism, tamper-proof, information transparency, common supervision and traceability, to provide a new generation of value reversal platform for all kinds of financial institutions and individuals with cross-border and cross-asset security, efficiency and low cost.",
+          "zh": "Loctite Assets 是用于构建加密资产交易应用生态的区块链项目，与之配套的是 Loctite Assets 平台、Loctite Assets 公链、Loctite Assets Token（LT）权益通证。它运用区块链本身去信任机制，防篡改，信息透明，共监管和可追溯性等优势，为各类金融机构及个人提供跨境、跨资产的安全、高效、低成本的新一代价值扭转平台。"
+    },
+    "email": "LoctiteAssets@Outlook.com",
+    "website": "https://www.ltassets.info/",
+    "whitepaper": "https://www.ltassets.info/images/letai.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-10-09",
+    "links": {
+        "blog": "https://weibo.com/LoctiteAssets",
+        "telegram": "https://t.me/LoctiteAssetsGroup"
+      }
+}

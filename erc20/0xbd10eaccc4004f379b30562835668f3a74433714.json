@@ -1,0 +1,24 @@
+{
+    "symbol": "MSG",
+    "address": "0xbd10eaccc4004f379b30562835668f3a74433714",
+    "overview": {
+        "en": "Bit-Message is the blockchain enpowered Intelligent communication community and system. MSG is a fuel license for bit-message service",
+        "zh": "比特讯致力建立一个全球区块链智能社交生态，MSG是服务于比特讯内的燃料通证"
+    },
+    "email": "admin@msg.top",
+    "website": "http://bitmessage.pro/",
+    "whitepaper": "http://bitmessage.pro/bitmessage.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-06",
+    "initial_price": {
+        "ETH": "0.00000141 ETH",
+        "USD": "0.0 USD",
+        "BTC": "0.0 BTC"
+    },
+    "links": {
+        "blog": "http://bitmessage.pro/",
+        "twitter": "https://twitter.com/bit_message",
+        "telegram": "https://t.me/bitmessage",
+        "github": "https://github.com/BitMessage-MSG"
+    }
+}

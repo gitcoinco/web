@@ -1,0 +1,21 @@
+{
+    "symbol": "BFV",
+    "address": "0xd2502768fb84b1e543daafcef5ccee39011b6cb4",
+    "overview": {
+        "en": "Betriebs Fuehrungs Vorfeldrechner revolutionizes the lottery industry. Based on the Blockchain network, it offers a global decentralized lottery with instant payouts and the ability for anyone in the world to participate, anonymously.",
+        "zh": "BFV彻底改变了彩票业。基于区块链网络，它提供全球分散式彩票，即时支付和世界上任何人匿名参与的能力。"
+    },
+    "email": "admin@bfvcoin.com",
+    "website": "https://www.bfvcoin.com",
+    "published_on": "2018-11-12",
+    "initial_price": {
+        "ETH": "0.0 ETH",
+        "USD": "0.0 USD",
+        "BTC": "0.0 BTC"
+    },
+    "links": {
+        "blog": "https://www.bfvcoin.com",
+        "twitter": "https://twitter.com/bfvcoin",
+        "telegram": "https://t.me/bfvcoin"
+    }
+}

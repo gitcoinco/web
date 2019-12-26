@@ -1,0 +1,25 @@
+{
+    "symbol": "Cyber",
+    "address": "0x17e16D30a05324B44CF78Df847137Fa1220448f8",
+    "overview": {
+        "en": "CyberChain is a platform Decentralized security system in internet connection.",
+        "zh": "CyberChain是一个平台分散式互联网连接安全系统"
+    },
+    "email": "support@cyberchainnetwork.com",
+    "website": "https://cyberchainnetwork.com/",
+    "whitepaper": "https://cyberchainnetwork.com/CyberChain_White_Paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-01",
+    "initial_price": {
+        "ETH": "0.00001300 ETH",
+        "USD": "0.0038 USD",
+        "BTC": "0.00000050 BTC"
+    },
+    "links": {
+        "blog": "https://cyberchainnetwork.com/#about",
+        "twitter": "https://twitter.com/CyberChainNET",
+        "telegram": "https://t.me/joinchat/cyberchainOfficial",
+        "github": "https://github.com/CyberChain/",
+        "medium": "https://medium.com/@cyberchain"
+    }
+}

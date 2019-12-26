@@ -1,0 +1,22 @@
+{
+    "website": "https://medicalchain.com/",
+    "published_on": "2018-02-07",
+    "links": {
+        "telegram": "https://t.me/medicalchain",
+        "twitter": "https://twitter.com/medical_chain",
+        "facebook": "https://www.facebook.com/medicalchain"
+    },
+    "overview": {
+        "en": "Medicalchain uses blockchain technology to securely store health records and maintain a single version of the truth.",
+        "zh": "Medicalchain 使用区块链技术来安全地存储健康记录，并保持单一版本的真相。"
+    },
+    "symbol": "MTN",
+    "initial_price": {
+        "ETH": "0.0001949 ETH",
+        "USD": "0.2 USD",
+        "BTC": "0.00002194 BTC"
+    },
+    "whitepaper": "https://medicalchain.com/Medicalchain-Whitepaper-EN.pdf",
+    "address": "0x41dBECc1cdC5517C6f76f6a6E836aDbEe2754DE3",
+    "email": "contact@medicalchain.com"
+}

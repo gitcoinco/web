@@ -1,0 +1,22 @@
+{
+    "symbol": "ERC20",
+    "address": "0xc3761EB917CD790B30dAD99f6Cc5b4Ff93C4F9eA",
+    "overview": {
+        "en": "ERC20  is payment method for Belance platform, future project and application and more. Real token utility.Belance is a large unique blockchain platform which combines many opportunities and connects everyone in the blockchain world. The real toke utility. The ERC20 Token is a growing currency which will be adopted as a payment gateway. Belance is the first platform where there are unlimited opportunities to connect and discuss with others regarding the cryptocurrency and blockchain technologies. Belance is a one stop place for everything for everyone who is interested in or connected to the blockchain world. BETA test is open, join.",
+        "zh": "ERC20是Belance平台，未來項目和應用程序的支付方式等。真實令牌實用程序 Belance是一個獨特的大型區塊鏈平台，它結合了許多機會並連接了區塊鏈世界中的每個人。真正的toke實用程序。 ERC20令牌是一種不斷增長的貨幣，將被用作支付網關. Belance是第一個有無限機會與其他人就加密貨幣和區塊鏈技術進行聯繫和討論的平台。 Belance是一個一站式的地方，適合所有對區塊鏈世界感興趣或與之相關的人。 BETA測試是開放的，加入."
+    },
+    "email": "belance@belance.io",
+    "website": "https://index-erc20.io",
+    "whitepaper": "https://belance.io/aboutbelance.html",
+    "state": "NORMAL",
+    "published_on": "2017-10-21",
+    "initial_price": {
+        "ETH": "0.00035097 ETH",
+        "USD": "0.05 USD",
+        "BTC": "0.00001216 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/ERC20_",
+        "telegram": "https://t.me/erc20coin"
+    }
+}

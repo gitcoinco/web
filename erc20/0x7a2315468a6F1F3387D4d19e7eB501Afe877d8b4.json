@@ -1,0 +1,14 @@
+{
+    "symbol": "GAIA",
+    "address": "0x7a2315468a6F1F3387D4d19e7eB501Afe877d8b4",
+    "overview": {
+        "zh": "GAIA Chain是基于区块连技术，并且不断自我完善的成长性平台。Gaia以信誉体系为核心，通过需求交易的方式，绑定对维度认证体系，纳入分布式信息交换协议，数据协同，实时交易，在线合同，信息发布，资源交换，存证，知识产权保护，社交等业务领域等基础模块，最终实现信誉体系个体化，信誉资产化，信誉交易化。Gaia Chain是构架于信誉体系的新一代需求交易平台。"
+    },
+    "email": "gaiachain@163.com",
+    "website": "http://www.gaiachain.net/",
+    "state": "NORMAL",
+    "published_on": "2018-08-02",
+    "initial_price": {
+        "ETH": "0.00001666 ETH"
+    }
+}

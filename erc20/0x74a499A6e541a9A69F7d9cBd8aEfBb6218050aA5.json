@@ -1,0 +1,14 @@
+{
+  "symbol": "VERSUSPK",
+  "address": "0x74a499A6e541a9A69F7d9cBd8aEfBb6218050aA5",
+  "overview":{
+        "en": " VERSUSPK is a distributed game ecological platform based on block chain technology. Through the open, transparent and traceable characteristics of the block chain account book, the magic spell of overdraft player experience and game reputation for short-term interests of operators and developers is broken, and a stable and deflationary economic model is created to realize the virtuous circle of user value rising synchronously with the ecosystem.",
+        "zh": "VERSUSPK是基于区块链技术打造的分布式游戏生态平台。通过区块链账本的公开透明可追溯的特点，打破运 营方、开发者为了短期利益，透支玩家体验和游戏信誉的魔咒，塑造 一个稳定且通缩的经济模型，实现用户价值随着生态同步提升的良性循环。"
+  },
+  "email": "supper@versuspk.com",
+  "website": "http://www.versuspk.com/",
+  "whitepaper": "http://www.versuspk.com/VERSUSPK_WHITE_PAPER.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-07"
+  
+}

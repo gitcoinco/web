@@ -1,0 +1,25 @@
+{
+  "symbol": "GBT",
+  "address": "0x4A329E0630a7AE55AB4A71BBdd5F0C92C6b87049",
+  "overview": {
+    "en": "Global Blockchain Economy Exchange, GBEX, is founded by top global blockchain and fintech leaders with the goal of creating the perfect token economy that integrates incubation, trading, tokenization and decentralized applications.",
+    "zh": "Global Blockchain Economy Exchange, GBEX"
+  },
+  "email": "media@gbex.global",
+  "website": "http://www.gbex.global",
+  "whitepaper": "http://www.gbex.global/GBEX_Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-03-01",
+  "initial_price":{
+        "ETH":"0.0015 ETH"
+  },
+  "links": {
+    "blog": "https://medium.com/gbex.global",
+    "twitter": "https://twitter.com/gbex.global",
+    "telegram": "https://t.me/gbex.global",
+    "reddit": "https://www.reddit.com/r/gbex.global/",
+    "github": "https://github.com/consenlabs",
+    "facebook": "https://www.facebook.com/gbex.global",
+    "slack": "https://gbex.global.slack.com"
+  }
+}

@@ -1,0 +1,18 @@
+{
+    "symbol": "STNT",
+    "address": "0x2557fdea2da114a8ba82da4f8c48c12b7cf38980",
+    "overview": {
+        "en": "The StoneTicket (STNT) blockchain platform is positioned as a decentralized digital ticketing public chain. By leveraging the distributed ledger technology, StoneTicket aims to solve the bottlenecks of the industry during the tickets selling, agency, purchase phases in the entertainment industries, and ensures the effective and safe circulation of each ticket.",
+        "zh": "StoneTicket（STNT）区块链平台定位为“去中心化的数字票务交易公链”， 借力区块链天然具备的分布式账本技术，解决赛事、会展、电影等文娱行业票务发售、代理、购买、反馈等环节存在的“追踪难”“结算慢”“抢票难”“黄牛票”“假票”等痛点，确保每一张票的安全流转。"
+    },
+    "email": "info@stmatrix.com",
+    "website": "https://www.stmatrix.com/",
+    "whitepaper": "https://www.stmatrix.com/assets/images/STNT-WP-V0.98-web.c1c12ce892c28ab91db98f5f997258e5.pdf",
+    "links": {
+        "blog": "https://www.stmatrix.com/news",
+        "twitter": "https://twitter.com/stonematrix2",
+        "telegram": "https://t.me/StoneTicket",
+        "github": "https://github.com/stonematrix",
+        "facebook": "https://www.facebook.com/StoneMatrix/"
+    }
+}

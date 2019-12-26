@@ -1,0 +1,23 @@
+{
+	"symbol": "HAI",
+	"address": "0x136723300aef2aAB4b7cF52c3Eaac6F997e12a68",
+	"overview": {
+		"en": "HAI Chain(Hangkei A.I. Chain) is a computing resources network designed for the Future. With next-generation blockchain technology, HAI will maximize the positive and transformative impact of A.I. and decentralized computing power network.Bring blockchain scenarios to a whole new level.",
+		"zh": "HAI 恒智链提出的人工智能算力网络，其高性能、低成本、专为 AI 设计的软硬件架构以未来算力需求为满足目标。将完成人工智能在软硬件、资源网络、规则与架构的开发、扩容和重新分配。其重点 HAI AutoML 的自定义模型、 可迁移学习、 神经搜索网络， 为神经搜索网络提供充足的算力资源。 以 HAI ML Engine 可以部署多个机器学习框架来构建模型， 拓展容易、 构造成本低廉、 即用即取。再使用区块链技术， 排除冗余数据， 改变数据孤岛的现状。 POA + POW 混合的共识机制， 使用神经网络变革性的冲击与激励最大化， 检索全网算力资源， 完全自动调配超级节点与检索节点， 让数据和算力的共享成为现实。 "
+	},
+	"email": "developers@hangkei.ai",
+	"website": "http://hangkei.ai/HAI/",
+	"whitepaper": "http://www.hangkei.ai/HAI/zh_CN/HAI_whitepaper_zh_CN.pdf",
+	"state": "NORMAL",
+	"published_on": "2019-02-25",
+	"initial_price": {
+		"USD": "0.68 USD",
+		"BTC": "0.000182 BTC"
+	},
+	"links": {
+		"twitter": "https://twitter.com/HaIchain",
+		"telegram": "https://t.me/HAI_CN",
+		"youtube": "https://www.youtube.com/channel/UCBryGszlnwtqkZD4lULNtsQ",
+		"facebook": "https://www.facebook.com/about.HAI.Chain"
+	}
+}

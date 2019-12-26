@@ -1,0 +1,15 @@
+{
+    "symbol": "TAI",
+    "address": "0xbc13fa2e3db94e0b3099ca22cad4f23f0fa05c9e",
+    "overview": {
+        "en": "Turing Chain is the world's first put forward the concept of ABI,Using blockchain technology to solve artificial intelligence knowledge graph construction and verification,And open third-party interface to facilitate other developers to quickly build their own industry AI applications and hardware equipment public chain.",
+        "zh": "图灵链（Turing Chain）是全球首个提出ABI理念、用区块链技术解决人工智能知识图谱搭建和校验，并开放第三方接口方便其他开发者迅速搭建自己行业的AI应用及硬件设备的公链。"
+    },
+    "email": "contact@turingchain.ai",
+    "website": "https://www.turingchain.ai",
+    "links": {
+        "twitter": "https://twitter.com/TuringChain/",
+        "telegram": "https://t.me/turingchain_official/",
+        "facebook": "https://www.facebook.com/TuringChain/"
+    }
+}

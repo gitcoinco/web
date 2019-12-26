@@ -1,0 +1,24 @@
+{
+    "symbol": "1SG",
+    "address": "0x0F72714B35a366285Df85886A2eE174601292A17",
+    "overview": {
+        "en": "1SG is a stable coin issued by Mars Blockchain, aiming to overcome the problem of today's cryptocurrency. It provides open, transparent, efficient and convenient KYC/AML process with characteristic of stable value, high profitableness and high liquidity. ",
+        "zh": "火星区块链所发行 1SG 稳定币，克服现今虚拟货币的问题，以货币流通公开透明、高效便捷的 KYC / AML 审核流程、价值稳定并有收益、高度的流动性等优势进入市场。"
+    },
+    "email": "support@1.sg",
+    "website": "https://www.1.sg/",
+    "whitepaper": "https://sgdt.sg/wp-content/uploads/2018/12/1SG-white-papper-V14-EN-1.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-01",
+    "initial_price": {
+        "BTC": "0.000182 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@support_34903",
+        "twitter": "https://twitter.com/1SG_2018",
+        "telegram": "https://t.me/En_1SG",
+        "reddit": "https://www.reddit.com/r/1SG_/",
+        "github": "https://github.com/MarsBlockchain/1sg-contract",
+        "medium": "https://medium.com/@support_34903"
+    }
+}

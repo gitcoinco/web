@@ -1,0 +1,21 @@
+{
+    "symbol": "SECT",
+    "address": "0x65474676a2f18c0061de4aDd10A3fbB0fF98cB78",
+    "overview": {
+        "en": "Smart Equipment Chain is IOT solution based on blockchain technology,record equipments realtime status on blockchain,counting changing enhancing equipment value.",
+        "zh": "Smart Equipment Chain （智能设备链）是一套基于区块链技术自主研发的设备物联网解决方案,通过分布式帐本记录设备的实时状态，统计、转化和提高设备的有效工作价值."
+    },
+    "email": "ect@ticenr.com",
+    "website": "http://www.ect.one",
+    "whitepaper": "http://ect.one/static/Equipment_Chain-white_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-25",
+    "initial_price": {
+        "ETH": " 0.0000125 ETH",
+        "USD": "0.003 USD",
+        "BTC": "0.0000005 BTC"
+    },
+    "links": {
+        "telegram": "https://t.me/joinchat/GjAxKhHkxLQDTNox0RZdhQ"
+    }
+}

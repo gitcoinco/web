@@ -1,0 +1,21 @@
+{
+	"symbol": "FF",
+    "address": "0xC86D4914F3E162dc44A7dDd2326102E75FA1B0d1",
+    "overview": {
+        "en": "Faraday Future is a token issued by the Faraday Exchange,Faraday Exchange is a community autonomous digital asset trading platform dedicated to quality project issuance.",
+        "zh": "FaradayFuture是法拉第交易所发行的代币，简称FF.法拉第（FFex.pro）交易所是一个致力于优质项目发行的社区自治型数字资产交易平台。旗下拥有项目链改平台中国直通硅谷（Chinasv.com）、CityChainDapp（ocity.io）、区块链游戏平台乐手游（6shouyou.com）、区块链社区CITY中国和全球城市节点，是区块链行业唯一的场景落地生态收益+交易所平台币权益+社区自治共振价值三合一的数字资产交易平台。"
+    },
+    "email": "kefu@ffex.pro",
+    "website": "https://www.ffex.pro",
+    "whitepaper": "http://wp.chinasv.com/read",
+    "state": "NORMAL",
+    "published_on": "2019-09-08",
+    "initial_price": {
+        "ETH":"0.00056497  ETH",
+		"USD":"0.1  USD",
+		"BTC":"0.00000992  BTC"
+    },
+    "links": {}
+    }
+	
+	

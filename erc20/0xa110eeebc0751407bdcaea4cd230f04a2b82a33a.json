@@ -1,0 +1,19 @@
+{
+    "symbol": "GMAT",
+    "address": "0xa110eeebc0751407bdcaea4cd230f04a2b82a33a",
+    "overview": {
+        "en": " GoWithMi is building the world's first complete decentralized location-based services (DLBS) infrastructure, integrating super spatial oracle and consensus map to motivate participation and achieve benefit for everyone. Complementing the last key component of the blockchain to empower the real economy application, cross-chain supports all blockchain platforms and enables offline businesses to leap into the new era of programmable business.",
+        "zh": " GoWithMi（高维地球）是全球首个完整的去中心化位置服务基础设施，集超级空间预言机和共识地图于一体，激励人人参与、实现人人受益，补齐区块链应用于实体经济所缺失的最后关键一环，跨链支持所有区块链平台，一站式支持所有地图应用生态，驱动实体商业跃进可编程商业新时代。"
+    },
+    "website": "https://www.gowithmi.com/",
+    "whitepaper": "https://image.gowithmi.com/en/whitepaper.pdf",
+    "published_on": "2018-08-29",
+    "links": {
+        "Twitter": "https://twitter.com/GoWithMi_GL",
+        "Telegram": "https://t.me/gowithmi_en",
+        "Github": "https://github.com/GoWithMi",
+        "Facebook": "https://www.facebook.com/gowithmi.global /",
+        "Reddit": "https://www.reddit.com/user/GoWithMi/",
+        "Medium": "https://medium.com/@GoWithMi"
+    }
+}

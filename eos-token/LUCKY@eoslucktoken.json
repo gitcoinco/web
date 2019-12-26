@@ -1,0 +1,8 @@
+{
+    "symbol": "LUCKY",
+    "account_name": "eoslucktoken",
+    "overview": {
+        "en": "LUCKY is platform token of EOS.Win, which is a decentralized game platform based on EOS main net. Game running, token distribution and etc. are controlled by EOS smart contracts. The random numbers are all generated on the blockchain. EOS.Win aims to build a fair, transparent and decentralized game ecosystem.\nThe contract account of LUCKY token is: eoslucktoken. The total supply of LUCKY is 100,000,000 and it’s all released by playing games on EOS.Win . The develop team has no pre-digging. Users who hold LUCKY tokens can apply for EOS dividends of EOS.Win profit every 24 hours."
+    },
+    "website": "https://eos.win"
+}

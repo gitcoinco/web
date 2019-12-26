@@ -1,0 +1,19 @@
+{
+    "symbol": "LEK",
+    "address": "0xBD686DD09bEdc1eB81451C5972cC7B0e4Bce4e3f",
+    "overview": {
+        "en": "LEK is the platform token for Lane Express - a social and token applications platform.",
+        "zh": "LEK 是token社群社交平台 Lane.Express 快车道 的平台币"
+    },
+    "email": "contact@lane.express",
+    "website": "https://lane.express/",
+    "whitepaper": "http://dl.lane.express/doc/Lane_Briefing_EN_V1.8.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-23",
+    "initial_price": {
+        "USD": "0.15 USD"
+    },
+    "links": {
+        "blog": "https://lane.express/"
+    }
+}

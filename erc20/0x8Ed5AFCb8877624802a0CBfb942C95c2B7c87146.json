@@ -1,0 +1,18 @@
+{
+    "symbol": "ZXT",
+    "address": "0x8Ed5AFCb8877624802a0CBfb942C95c2B7c87146",
+    "overview": {
+        "en": "ZhixinChain is a professional resume credit platform based on block chain technology.It is an objective recorder for a person's workplace behavior, such as the position of the job, the start and end of the labor contract, the salary situation, the monthly attendance and so on. The employer can record the status of each employee's post by using the ZhixinChain, and once it is released, it will never be changed or deleted. Using ZhixinChain can enhance the employee's spontaneity, greatly save the training cost and management cost of the enterprise, and greatly improve the working efficiency.",
+        "zh": "职信链，基于区块链技术的职业信用数字资产平台。职信是一个人的职场行为客观记录仪，记录例如担任职位、劳动合同起止时间、薪水情况、每月考勤情况等。在职信链中，用人企业可记录每位员工的职信情况，且一旦发布，永不可更改或删除。使用职信链可以能增强员工的自我驱动力，极大节省了企业的培训成本和管理成本，使工作效率大大提高。"
+    },
+    "email": "contact@zhixinchain.com",
+    "website": "https://www.zhixinchain.io/",
+    "whitepaper": "https://www.zhixinchain.io/data/pdf/zhixinchain.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-01",
+    "links": {
+        "twitter": "https://twitter.com/zhixinchain",
+        "telegram": "https://t.me/zhixinchain",
+        "facebook": "https://www.facebook.com/zhixin.chain"
+    }
+}

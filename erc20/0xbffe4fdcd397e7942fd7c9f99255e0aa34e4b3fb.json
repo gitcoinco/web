@@ -1,0 +1,22 @@
+{
+    "symbol": "TRM",
+    "address": "0xbffe4fdcd397e7942fd7c9f99255e0aa34e4b3fb",
+    "overview": {
+        "en": "Tranium Token is a decentralized online payment solution on the ethereum blockchain, carefully created to eradicate the problems faced by both sellers and buyers in the industry. To make this possible, the Tranium System provides a Tranium Marketplace, an online store and a decentralized trust worthy marketplace on the blockchain for tomorrow’s global e-commerce."
+    },
+    "email": "support@tranium.org",
+    "website": "https://tranium.org/",
+    "whitepaper": "https://ico.tranium.org/Tranium%20White%20Paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-11-04",
+    "initial_price": {
+        "ETH": "0.00000006 ETH"
+    },
+    "links": {
+        "blog": "https://ico.tranium.org",
+        "twitter": "https://twitter.com/traniumtoken",
+        "telegram": "https://t.me/traniumofficial",
+        "github": "https://github.com/traniumtoken",
+        "facebook": "https://www.facebook.com/traniumtoken"
+    }
+}

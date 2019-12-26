@@ -1,0 +1,22 @@
+{
+    "symbol": "IDAC",
+    "address": "0x0Aad6509e9D09D2F0fdbbDb68DD9064f3f8c0417",
+    "overview": {
+        "en": "International Disability Chain IDAC Let the 650 million disabled people around the world live with more dignity!",
+        "zh": "国际助残链 IDAC 让全球6.5亿残疾人无障碍、有尊严地生活！"
+    },
+    "email": "idacprodev@idacpro.io",
+    "website": "http://www.idacpro.io/",
+    "whitepaper": "http://movie.idacpro.io/files/WhitePaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-22",
+    "initial_price": {
+        "ETH": "0.005 ETH",
+        "USD": "1 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/WHDWF",
+        "telegram": "https://t.me/IDACofficial",
+        "github": "https://github.com/idacpro"
+    }
+}

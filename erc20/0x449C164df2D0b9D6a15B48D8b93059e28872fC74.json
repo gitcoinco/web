@@ -1,0 +1,18 @@
+{
+    "website": "http://www.xbtc.network/",
+    "published_on": "2018-08-16",
+    "links": {
+        "twitter": "https://twitter.com/NetworkXbtc?lang=en"
+    },
+    "overview": {
+        "en": "XBTC (+BTC) is based on the name of Bitcoin and Ethereum blockchain technology, and is committed to let Bitcoin be used in the public life. To build a better world in the future, XBTC mission must reach.",
+        "zh": "XBTC（+BTC）以比特币之名，以太坊区块链技术为核心，致力于让比特币应用于大众生活之中；为建造未来更美好的世界，XBTC 使命必达。"
+    },
+    "symbol": "XBTC",
+    "initial_price": {
+        "ETH": "0.0005 ETH"
+    },
+    "whitepaper": "http://xbtc.network/xbtc-whitepaper.pdf",
+    "address": "0x449C164df2D0b9D6a15B48D8b93059e28872fC74",
+    "email": "service@xbtc.network"
+}

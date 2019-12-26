@@ -1,0 +1,28 @@
+{
+  "symbol": "DIPC",
+  "address": "0x3214cef10e5C194cA547735863FE755Fc4cbb78E",
+  "overview":{
+        "en": "DIPC is the world's first blockchain asset based on blockchain art digital community development, used to decentralize an incentive online integrated art digital community, using blockchain and distributed storage technologies to create decentralized art numbers Community payment system..",
+        "zh": "DIPC是全球首个基于区块链艺术品数字社区开发的区块链资产，用于去中心化激励型在线综合艺术数字社区，利用区块链与分布式存储技术，构建去中心化的艺术数字社区支付体系。"
+  },
+  "email": "support@dipchain.io",
+  "website": "http://dipchain.io/",
+  "whitepaper": "http://dipchain.io/newDome/pdf/DIPChain_Whitepaper_EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-27",
+  "initial_price":{
+        "ETH":"0.0001 ETH",
+        "USD":"0.026 USD",
+        "BTC":"0.000003194 BTC"
+  }, 
+  "links": {
+    "blog": "https://medium.com/dipchain/about-dipchain/home",
+    "twitter": "https://twitter.com/DIPChain",
+    "telegram": "https://t.me/DIPChain",
+    "github": "https://github.com/dipchainfund",
+    "facebook": "https://www.facebook.com/DIPChain",
+    "reddit": "https://www.reddit.com/user/DIPArtSpace",
+    "slack": "https://bitcointalk.org/index.php?topic=5135990.msg50766995#msg50766995",
+    "medium": "https://medium.com/dipchain"
+  }
+}

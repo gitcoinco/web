@@ -1,0 +1,16 @@
+{
+    "symbol": "XJC",
+    "address": "0x4D4F6ca4d5b1dF946Fd85Ed20101D9921C6b90EE",
+    "overview": {
+        "en": "XJC is issued by the Xunjie APP. What the Xunjie APP wants to do is to create a decentralized internet so that people in any area can easily communicate with each other.",
+        "zh": "寻街APP的目标，是创造一个去中心化的互联网，让任何一片区域内的人们都可以便捷地相互交流。"
+    },
+    "email": "93625579@qq.com",
+    "website": "https://xunjieapp.com/",
+    "whitepaper": "https://xunjieapp.com/2018/06/22/%e5%af%bb%e8%a1%97%e5%b8%81%ef%bc%88xjc%ef%bc%89%e7%99%bd%e7%9a%ae%e4%b9%a6/",
+    "published_on": "2018-05-16",
+    "initial_price": {
+        "ETH": "0.00025 ETH",
+        "BTC": "0.00002 BTC"
+    }
+}

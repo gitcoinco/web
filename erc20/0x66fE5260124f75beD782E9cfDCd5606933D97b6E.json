@@ -1,0 +1,20 @@
+{
+    "symbol": "PUB",
+    "address": "0x66fE5260124f75beD782E9cfDCd5606933D97b6E",
+    "overview": {
+        "en": "PUB will create the most secure and active public application development ecology and the most easy to use network of public service deployment, combined with block chain technology, to eliminate the trust crisis of donation without trust, full of love and humanized ecological communication platform.",
+        "zh": "PUB将会打造最安全活跃 的公益应用开发生态和最 易用的公益应用部署网络， 与区块链技术相结合，杜 绝捐助不受信任产生的信 任危机，完全充满爱和人 性化的生态传播平台。"
+    },
+    "email": "support@pucoin.vip",
+    "website": "http://www.pucoin.vip/",
+    "whitepaper": "http://www.pucoin.vip/pub.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-02-02",
+    "initial_price": {
+        "ETH": "0.00018 ETH",
+        "USD": "0.07 USD"
+    },
+    "links": {
+        "telegram": "https://t.me/lasthero3d"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "symbol": "HED",
+    "address": "0xd9f052fdf548cc38f2df70191ee28d075f8b1997",
+    "overview": {
+        "en": "Hedge Chain (HED) is a general distributed application development platform based on demand and extendable based on blockchain technology. It creates intelligent contracts based on blockchain protocol and applies it to the risk control of capital market .",
+        "zh": "Hedge Chain（HED）是以區塊鏈技術構建基於需求、可拓展的通用分布式運用開發平臺，在區塊鏈協議基礎上創建智能合約，應用於資本市場風控等領域。"
+    },
+    "website": "http://hedgechain.net",
+    "whitepaper": "http://hedgechain.net/images/HedgeChain.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-03-29",
+    "links": {
+        "telegram": "https://t.me/joinchat/JTSaq0xwgrJbsb1_yF_Tjw"
+    }
+}

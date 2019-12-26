@@ -1,0 +1,25 @@
+{
+    "symbol": "EOT",
+    "address": "0x143653338a0598090E3Cd9944590a268524B2d4c",
+    "overview": {
+        "en": "EON Protocol (EOT) is the protocol for DGames. It helps game developers to build blockchain games easily and quickly. EON Protocol uses a layer 2 solution to help DGames run smoothly as if on traditional web hosting. It also helps DGames to support different public chains, cryptocurrencies and digital assets.",
+        "zh": "在区块链3.0时代，EON Protocol (EOT)致力于用区块链游戏来普及数字货币。EON Protocol采用基于layer 2的on-chain/off-chain技术架构来解决扩容问题，并帮助dgame游戏开发者快速支持多种公链的数字货币，以及帮助游戏资产上链。"
+    },
+    "email": "info@eontoken.io",
+    "website": "http://eontoken.io",
+    "whitepaper": "http://eontoken.io/EON-Whitepaper.pdf",
+    "state": "LOCKED",
+    "published_on": "2018-06-23",
+    "initial_price": {
+        "ETH": "0.0000476 ETH"
+    },
+    "links": {
+        "blog": "https://steemit.com/@eontoken",
+        "twitter": "https://twitter.com/EonToken",
+        "telegram": "https://t.me/eontoken3",
+        "github": "https://github.com/eontoken/eontoken-site",
+        "facebook": "https://www.facebook.com/eontoken/",
+        "reddit": "https://www.reddit.com/r/eontoken/",
+        "medium": "https://medium.com/@eot.eonprotocol"
+    }
+}

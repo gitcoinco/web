@@ -1,51 +1,35 @@
-# Token Profile
+# Token Profile Guideline
 
-The purpose of the repo is to make users know more about tokens details.
+*Read this in other languages: [English](README.md), [简体中文](README.zh-CN.md).*
 
-It will be revealed in imToken 2.0 by going through **Wallet(tab)** -> **Token(for example, ETH)** -> **Token Profile Button(right-top corner)**.
+This repository (repo) provides the details about self-submitting **Token** information to imToken via GitHub.
+
+## What is Token Profile?
+
+Token Profile is the detailed information of the token issued by the project party. imToken 2.0 provides a dedicated display page for the Token Profile, to give users a more complete overview of tokens.
+The page is located at:
+**Wallet(tab)** -> **Token(for example, ETH)** -> **Token Profile Button(right-top corner)**.
+
+
+
+The page is displayed as follows:
 
 ![Wallet Tab](tutorial/sample.png)
 
-*Read this in other languages: [English](README.md),[简体中文](README.zh-CN.md).*
 
-## How it works
-1. People make PR to the repo, so that we review and give feedback.
-2. When PR is merged, The Token Profile web pages will be built and published.
+##  Overview
 
-imToken runs a project named **token-profile-node** which is able to deliver the token profile website automatically and continually.
+imToken supports the submission of ERC20 and EOS Token Profile, please select the corresponding tutorial to understand the specific procedures:
+- [ERC20 Token Profile Guideline](tutorial/erc20-tutorial.en.md)
+- [EOS Token Profile Guideline](tutorial/eos-tutorial.en.md)
 
-## How to contribute
-**Attention: we only accept the PRs of ERC20 tokens for now**
 
-1. Fork the repo to your account
-2. Clone the repo from your own account, rather than the origin one
-```
-git clone git@github.com:xxxxxxxx/token-profile.git
-```
-3. Create and switch to a new branch named by your token symbol
-4. Add a new json file to the `erc20` directory, which named by the token contract address with **checksum**, for example:
-```
-0xf90f1648926005A8bb3ed8ec883164De7F768743.json
-```
-5. Fulfill the content by following the schema of [$template.json](./erc20/$template.json)
-6. Add the token logo to `images` directory, which named as same as the json file. For UI concern, we ask you to submit a qualified token logo. The standard is described as below
-7. Besides, if you find that your token has been added, you can modify the related file and logo as well
-8. Commit the changes
-9. Push to your own repo
-10. Make a pull request with detailed description
-11. We will review your PR as soon as possible, and then merge it into the master branch when everything is fine
+## Suggestions
 
-## Requirements
-### The Effectiveness of Information
-You're totally responsible for your commit, so please make sure that the information and logo are real and valid.
+Since the submission of the Token Profile involves many aspects: GitHub usage, Logo design, project information introduction etc, we recommend that the **Token Profile submission to be done by your market operations staff, developers, and designers together.**
 
-### Logo design
-- Size: 120x120 pixels
-- Transparent background PNG
-- Brand identity
-
-![example](tutorial/logo.png)
+imToken will process the application within 5 business days.
 
 ## Copyright
 
-2018&copy;imToken PTE. LTD.
+2019&copy;imToken PTE. LTD.

@@ -1,0 +1,24 @@
+{
+    "symbol": "SE",
+    "address": "0x5581c0bc21a762e43d148b06d310f088b6cf97b3",
+    "overview": {
+        "en": "Logistics chain SE.",
+        "zh": "物流链SE."
+    },
+    "email": "hanyannan99@gmail.com",
+    "website": "http://swifts.top",
+    "whitepaper": "http://swifts.top/media/SE-Whitepaper-Chinese.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-24",
+    "initial_price": {
+        "ETH": "0.00169 ETH",
+        "USD": "0.5 USD"
+    },
+    "links": {
+        "blog": "https://weibo.com/swiftsexpress",
+        "twitter": "https://twitter.com/XueYong14",
+        "telegram": "https://t.me/swifts",
+        "github": "https://github.com/hanyannan",
+        "facebook": "http://www.facebook.com/hanyannan.9"
+    }
+}

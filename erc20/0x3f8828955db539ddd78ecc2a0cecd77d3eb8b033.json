@@ -1,0 +1,21 @@
+{
+    "symbol": "AMSC",
+    "address": "0x3f8828955db539ddd78ecc2a0cecd77d3eb8b033",
+    "overview": {
+        "en": "Amethyst Coin Innovation for Payment Solutions."
+    },
+    "email": "official@amethystcoin.com",
+    "website": "http://amethystcoin.com/",
+    "whitepaper": "http://amethystcoin.com/assets/whitepaper/Amethystwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-01",
+    "initial_price": {
+        "ETH": "0.00000005 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/amethystcoin",
+        "telegram": "https://t.me/amethystcoingroup",
+        "github": "https://github.com/amethyscoin1",
+        "medium": "https://medium.com/@amethystcoin"
+    }
+}

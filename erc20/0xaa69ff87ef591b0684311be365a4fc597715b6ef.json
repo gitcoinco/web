@@ -1,0 +1,18 @@
+{
+    "symbol": "XMMT",
+    "address": "0xaa69ff87ef591b0684311be365a4fc597715b6ef",
+    "overview": {
+        "en": "XMMT uses the concept of decentralization,based on the content of the blockchain,fully transparent and transparent to the readers,to jointly create a media platform with free speech and high quality development.In order to better promote the development of the platform,XMMT has set up a fair reward mechanism,so that each node that contributes to the ecology continues to benefit,and XMMT Token is used as a reward for these nodes.",
+        "zh": "XMMT使用去中心化理念,基于区块链上的内容完全公开透明的呈现在读者面前，共同打造一个言论自由，高质量发展的媒体平台。为了更好的推进平台发展，XMMT设置了公平的奖励机制，让每一个在生态内做贡献的节点不断收益，用 XMMT Token的方式作为对这些节点的奖励。我们这个代币不会增发，并且代币的拥有者已经超过了17000人。"
+    },
+    "email": "xselfmediamt@163.com",
+    "website": "http://www.xmmt.pro",
+    "whitepaper": "http://www.xmmt.pro/xmmtpage/XMMTwhitepaper1.4.5.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-27",
+    "initial_price": {
+        "ETH": "0.000002857143 ETH",
+        "USD": "0.000925714 USD",
+        "BTC": "0.0000001477125 BTC"
+    }
+}

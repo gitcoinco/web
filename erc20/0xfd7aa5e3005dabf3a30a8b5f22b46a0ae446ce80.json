@@ -1,0 +1,21 @@
+{
+    "symbol": "UINFO",
+    "address": "0xfd7aa5e3005dabf3a30a8b5f22b46a0ae446ce80",
+    "overview": {
+        "en": "UINFO capitalization is a high-quality information platform, based on block chain technology achieving personal quality approval and pricing information and decentralized trading, apply its information function to save encrypted personal information to the local, UINFO does not save the information, make information owners take control of your own information and gain profit. UINFO is the ecological pass for users to enjoy services, which naturally anchors the value of personal information assets. With the gradual improvement of UINFO ecology, UINFO will have a great potential of appreciation.",
+        "zh": "优信宝是一个优质信息资产化平台,基于区块链技术实现个人优质信息的确权,定价及去中心化交易,其信息保管箱功能将个人信息加密后保存到本地,优信宝并不获取保存这些信息,让信息所有权掌握自己的信息并从中获得收益.UINFO是优信宝生态中进行个人信息资产交易,用户享受服务的生态通证,天然锚定了个人信息资产价值,随着优信宝生态的逐步完善UINFO将具备非常大的升值潜力."
+    },
+    "email": "service@uinfo.org",
+    "website": "http://www.uinfo.org/",
+    "whitepaper": "http://www.uinfo.org/UINFO.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-15",
+    "initial_price": {
+        "ETH": "0.00050582 ETH"
+    },
+    "links": {
+        "blog": "https://weibo.com/uinfo",
+        "twitter": "https://twitter.com/UINFOGlobal",
+        "telegram": "https://t.me/joinchat/Ho5Ho0pjDODCsE5IGDnfmg"
+    }
+}

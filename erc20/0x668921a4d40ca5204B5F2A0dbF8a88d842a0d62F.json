@@ -1,0 +1,16 @@
+{
+    "symbol": "SMA",
+    "address": "0x668921a4d40ca5204B5F2A0dbF8a88d842a0d62F",
+    "overview": {
+        "en": "SEMAIN is a new advertising media platform. Combined with advertising screen and sensing equipment, using block chain technology, data link chain and TOKEN economic ecology, the relationship between upstream and downstream industries is redefined. It has created a new advertising media mode that is a win-win among advertisers, content creators, media companies and advertisers.",
+        "zh": "SEMAIN 是一个新广告媒体平台。结合广告屏、传感设备，运用区块链技术，数据上链，TOKEN经济生态，重新定义了产业上下游关系。打造了广告受众、内容创作者、传媒公司、广告投放商四方共赢的广告媒体新模式。"
+    },
+    "email": "support@semain.cn",
+    "website": "http://www.semain.cn/",
+    "state": "NORMAL",
+    "published_on": "2018-06-30",
+    "initial_price": {
+        "ETH": "0.0001 ETH",
+        "USD": "0.05 USD"
+    }
+}

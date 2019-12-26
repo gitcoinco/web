@@ -1,0 +1,25 @@
+{
+  "symbol": "SEER",
+  "address": "0x0f1Ed66c251BcB52ecF7E67ac64Bb72482048aDB",
+  "overview":{
+        "en": "SEER is a Public Blockchain Platform For Sports Industry,Based on Graphene Toolkit.SEER USES the market mechanism to let users express their judgment on future events and gather the wisdom and views of many people to effectively predict future events. SEER provides a neutral and credible decentralized reality prediction market service for users by introducing the function of multi-host decentralized prediction machine (Oracle). At the same time, SEER integrates the council and arbitration mechanism, making SEER efficient, neutral, credible and autonomous.",
+        "zh": "SEER是一条服务文化体育行业的高性能区块链底层公链，基于石墨烯技术开发，集成下一代现实预测市场、资产发行流转和赛事众筹等模块，任何人都能很方便地在其上搭建DAPP。SEER特性有：纯公链设计、自动调节的系统参数、避免分叉的中枢神经协议等。"
+  },
+  "email": "seerchain998@gmail.com",
+  "website": "https://seer.best",
+  "whitepaper": "https://www.seer.best/download/SEER_cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-01-09",
+  "initial_price":{
+        "ETH":"0.000005 ETH",
+        "USD":"0.0009 USD",
+        "BTC":"0.00000011 BTC"
+  },
+  "links": {
+    "blog": "https://seer.best/index.php?catid=3",
+    "twitter": "https://twitter.com/info_seer",
+    "telegram": "https://t.me/Seer_English_Group",
+    "github": "https://github.com/seer-project",
+    "facebook": "https://www.facebook.com/groups/SEERatBITFINEX/"
+  }
+}

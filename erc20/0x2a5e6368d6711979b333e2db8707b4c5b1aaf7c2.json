@@ -1,0 +1,21 @@
+{
+    "symbol": "ACC",
+    "address": "0x2a5e6368d6711979b333e2db8707b4c5b1aaf7c2",
+    "overview": {
+        "en": "Asian Capital Chain (ACC) is a decentralized blockchain digital asset, developed according to ERC20 token standard on the Ethereum blockchain. ACC was created as a utility token to service AC users with access to AC products and services. Currently ACC is servicing in the AC over-the-counter (OTC) trading services and global remittance services.",
+        "zh": "正亚链ACC是基于以太坊Ethereum发行的去中心化的区块链数字资产，它是基于以太坊区块链的ERC 20标准代币。正亚链ACC是正亚集团为了运用于正亚区块链生态系统而产生的实用代币。目前正亚链ACC将应用在正亚集团旗下的数字货币场外交易平台服务及国际汇款相关的服务功能。"
+    },
+    "email": "asiancapitalchain@gmail.com",
+    "website": "https://acai.io/",
+    "whitepaper": "https://acai.io/white_paper/ACMS.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-14",
+    "initial_price": {
+        "USD": "1.00 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/acc_asian",
+        "facebook": "https://www.facebook.com/AsianCapitalChainACC/",
+        "reddit": "https://www.reddit.com/user/AsianCapitalChainACC"
+    }
+}

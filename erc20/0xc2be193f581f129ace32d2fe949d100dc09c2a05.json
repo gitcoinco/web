@@ -1,0 +1,20 @@
+{
+    "symbol": "UTD",
+    "address": "0xc2be193f581f129ace32d2fe949d100dc09c2a05",
+    "overview": {
+        "en": "UTD focuses on the digitalization of global real assets and explores the innovative mode of digital economy, aiming to improve the circulation efficiency of real assets, absorb excess capacity, improve the utilization rate of resources, and realize the efficient co-creation of real assets through block chain, the connection between supply and demand of real industries, and the transformation and upgrading of real economy. For traditional enterprises to create the ubiquitous value of the public block chain network, create a distributed commercial level public chain application ecology. It includes distributed architecture with blockchain as the core, community-based governance mechanism, incentive model with consensus as the essence, and application ecology with sharing as the goal.",
+        "zh": "UTD聚焦全球实体资产数字化，探索数字经济创新模式，旨在提高实体资产流通效率、消化过剩产能、提高资源利用率，实现实体资产通过区块链高效共创、实体行业供需对接、服务实体经济转型升级。为传统企业打造泛在价值流通的公共区块链网络，共创分布式商用级公链应用生态。包括以区块链为核心的分布式架构，以社群为基础的治理机制，以共识为本质的激励模型，以共享为目标的应用生态。"
+    },
+    "email": "utdex.net@gmail.com",
+    "website": "http://www.utdex.net/",
+    "whitepaper": "http://www.utdex.net/UTDEX_WhitePaper.pdf",
+    "published_on": "2018-11-10",
+    "initial_price": {
+        "ETH": "0.0000125 ETH",
+        "BTC": "0.000000285 BTC"
+    },
+    "links": {
+        "telegram": "https://0.plus/#/joinchat/Kz-ZyhKmHdxQ8wfIwWj5Kw",
+        "facebook": "http://www.utdex.net/"
+    }
+}

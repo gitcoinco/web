@@ -1,0 +1,25 @@
+{
+	"symbol": "LOTO",
+	"address": "0xf947b0824c3995787efc899017a36bc9f281265e",
+	"overview": {
+		"en": "As the only digital token issued by Lotoblock, LOTO will be traded by users to created and participate in predictive events. Those who are correct about the results will be rewarded LOTO by the platform. and the pricing, trading, matching and settlement of the events are real-time processing. As a predictive market, Lotoblock collects data to elicit aggregating beliefs over an unknown future outcome, such as U.S. presidential election results, E.U. foreign economic policy, housing price, weather and sport competitions. Lotoblock provides users with different types of future unknown events, allowing participating users to make the most of their intelligence and knowledge to improve the accuracy of the prediction of the events. As a gaming ecosystem, Lotoblock will dramatically shorten the time of game development, and decrease the operation cost. As the sole currence of Lotoblock, LOTO is used as a medium for all transactions in the ecosystem. Lotoblock permits free trade of LOTO with BTC and other cryptocurrencies.",
+		"zh": "在预测市场方面，LOTO作为Lotoblock平台唯一的数字通证Token，用户通过买卖LOTO份额创建预测事件和市场、参与预测，预测正确的参与者将获得平台的LOTO奖励，并实现事件结果的实时定价、交易、撮合与清结算等。Lotoblock通过强大的AI预言机收集和汇聚关于未来事件的信心和判断并且具有很强社会价值的数据，比如美国总统选举结果、欧盟对外经济政策、房价波动、天气和赛事结果等。Lotoblock为用户提供不同类型的预测事件，让参与用户充分利用自己的智慧与知识来提高预测事件的准确度。Lotoblock利用市场的激励机制，使得大众都能贡献出自己的经验和智慧，汇集市场信息帮助人们做决策，让参与者比任何单独的个体、专家更具有智慧。 在游戏生态方面，LOTO被用来作为游戏生态中所有交易的媒介。鉴于Lotoblock能够缩短游戏的上市时间和降低开发和运营成本，Lotoblock游戏生态将会吸引大量的游戏开发者入住，它的经济的价值将会增加。Lotoblock代币交易允许感兴趣的各方用BTC(还有其他加密币种)来购买LOTO代币。例如，它可以用于帐户创建、账户交易、购买/租用游戏资产/账户、游戏交易、LOTO众筹、货币交易以及其他更多新的DGame应用。"
+	},
+	"email": "contact@lotoblock.com",
+	"website": "https://www.lotoblock.com/",
+	"whitepaper": "https://raw.githubusercontent.com/lotoblock/Documents/master/Lotoblock_White_Paper/EN/LotoblockWhitePaper.pdf",
+	"state": "NORMAL",
+	"published_on": "2018-09-03",
+	"initial_price": {
+		"ETH": "0.00001 ETH",
+		"BTC": "0.0000004031 BTC"
+	},
+	"links": {
+		"twitter": "https://twitter.com/lotoblock",
+		"telegram": "https://github.com/lotoblock",
+		"github": "https://github.com/lotoblock",
+		"facebook": "https://www.facebook.com/LotoBlock/",
+		"reddit": "https://reddit.com/r/lotoblock",
+		"medium": "https://medium.com/@lotoblock"
+	}
+}

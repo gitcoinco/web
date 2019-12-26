@@ -1,0 +1,17 @@
+{
+    "symbol": "CTT",
+    "address": "0xf0ddd41ac68b71ecbad395aa6240c41c5b55c749",
+    "overview": {
+        "en": "We will build centralized token exchange for the best experience"
+    },
+    "email": "admin@centraltoken.xyz",
+    "website": "https://centraltoken.xyz/",
+    "state": "NORMAL",
+    "published_on": "2018-09-21",
+    "initial_price": {
+        "ETH": "0.00000005 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/CentralTokenEX"
+    }
+}

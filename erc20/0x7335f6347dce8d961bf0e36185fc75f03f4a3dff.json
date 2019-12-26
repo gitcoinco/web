@@ -1,0 +1,20 @@
+{
+    "symbol": "POB",
+    "address": "0x7335f6347dce8d961bf0e36185fc75f03f4a3dff",
+    "overview": {
+        "en": "POB Network - We earn the world",
+        "zh": "POB Network - 数字财富新浪潮"
+    },
+    "email": "hello@pob.network",
+    "website": "https://www.pob.network",
+    "whitepaper": "https://github.com/PobNetwork/whitepaper/blob/master/PoB.Network-whitepaper-cn.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-07",
+    "links": {
+        "twitter": "https://twitter.com/PobNetwork",
+        "telegram": "https://t.me/PobNetwork",
+        "github": "https://github.com/PobNetwork",
+        "reddit": "https://www.reddit.com/u/PobNetwork/?st=JJSPIA5L&sh=38579a77",
+        "medium": "https://medium.com/@hello_45802?source=li nkShare-41a4b122fb46-1532051869"
+    }
+}

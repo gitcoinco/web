@@ -1,0 +1,25 @@
+{
+    "symbol": "MSX_OLD",
+    "address": "0x0248a296aD4a2C21b793efe777024760677331a3",
+    "overview": {
+        "en": "MeshX Chain, a blockchain project initiated by the world's leading  network technology company operating by blockchain ad-hoc network, MeshX, which founded mainly by the hardware and software engineers, marketing executives and digital-economy expert, worked in Huawei, ZTE, Ericsson and other communication networks for decade years.Currently, MeshX Open-Source Platform can be free to run various of DAPPs such as e-commerce, social, entertainment, music, games, consulting, etc. MeshX's Gateway series (Probe and Pylon) has been established in 12 provinces and cities in mainland China, and nearly 37 countries and regions around the world.",
+        "zh": "MeshX将建立一个扁平去中心化的自组网运营网络系统，让所有人和所有信息节点之间实现点对点的直接通信数据传输和交换，并实现用户数据价值的流通交换，达成MeshX Chain数字网络运营生态。注：此为 MSX 官方发行的旧 MSX 代币。新 MSX 合约地址：0x202566B169a4D0FDD9Cc821A7475BaDF4922fC3d"
+    },
+    "email": "zf@iMeshX.io",
+    "website": "https://www.iMeshX.io/",
+    "whitepaper": "https://github.com/iMeshX/MeshX/blob/master/MeshX-V1_4.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-11-18",
+    "initial_price": {
+        "ETH": "0.000075 ETH",
+        "USD": "0.015 USD",
+        "BTC": "0.00000237 BTC"
+    },
+    "links": {
+        "blog": "https://weibo.com/MeshXOfficial",
+        "twitter": "https://twitter.com/MeshXOfficial",
+        "telegram": "https://t.me/MeshXOfficial",
+        "github": "https://github.com/iMeshX",
+        "facebook": "https://www.facebook.com/MeshXOfficial"
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "symbol": "SUT",
+    "address": "0x0e50e6d6bB434938D8fE670a2d7A14Cd128eB50f",
+    "overview": {
+        "zh": "SUM TOKEN是一个革命性的支付平台，买家可以在平台上使用他们最爱的加密货币来进行交易（私人或商业）。作为一个可信赖的中介平台，我们不仅为卖家提供安全和便利的法定货币收款渠道，也为买家提供最佳的消费服务。我们使用区块链开创性地与当下市场上最为火热的支付功能结合在一起，并且融入了我们SUT代币独一无二的特点。SUM TOKEN旨在为买家提供线上交易应有的消费保护，成为一个中介平台，一名矛盾的调停者，通过提供退款服务来减少欺诈行为并保护商家免受加密货币市场波动的负面影响。我们希望进一步优化加密货币的优点，如快捷的交易，低成本及低跨境交易阻力，允许商家与来自全球各地日益壮大的加密货币持有者进行交易。总之，我们的目标是为市场打造一款综合的支付应用程序接口（API）并有能力加密支付行业里的领头者。 SUM TOKEN的用户，智能合同和分布式应用程序将需要持有和贡献 SUT，以便在SUM TOKEN 上面执行各种操作。在平台上使用 SUT 代币，将它用于支持 SUT 或者私人买卖交易的商家，平台将推出智能区块链数字货币POS机，投放全球商家进行消费使用，而SUT将作为支付系统超级钱包法定交易中介货币，SUT 与其他代币关键的差别在于它背后的商业模式——它背后的支付系统让你能够使用它，并且独立地消费，这是一个与代币有着协同效应的平台。",
+        "en": "SUM TOKEN is a revolutionary payment platform where buyers can trade (private or commercial) in their favorite encrypted currency. As a trustworthy intermediary platform, we not only provide safe and convenient legal monetary collection channels for sellers, but also provide the best consumer services for buyers.We use block chains to pioneer a combination of the hottest payment features on the market today and incorporate the unique features of our SUT tokens. SUM TOKEN aims to provide buyers with the proper consumer protection for online transactions, to become an intermediary platform, a contradiction mediator, by providing refund services to reduce fraud and protect businesses from the negative impact of encrypted money market volatility. We hope to further optimize the advantages of encrypted currencies, such as fast trading, low cost and low cross-border resistance, allowing businesses to trade with growing holders of encrypted currencies from around the world. In short, our goal is to create a comprehensive payment application program interface (API) for the market and the ability to encrypt payment industry leaders.Users of SUM TOKEN, smart contracts, and distributed applications will need to hold and contribute SUTs to perform various operations on SUM TOKEN. Using SUT tokens on the platform for businesses that support SUT or private transactions, the platform will launch smart block-chain digital money POS machines for consumer use by businesses around the world, and SUT will act as a legal intermediary currency for the payment system's super wallet. The key difference between SUT and other tokens lies behind it. Business model - the payment system behind it allows you to use it and consume independently, a platform with synergies with tokens."
+    },
+    "email": "support@sumtoken.co",
+    "website": "https://sumtoken.co",
+    "whitepaper": "https://sumtoken.co/SUM_TOKEN_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-08",
+    "initial_price": {
+        "USD": "0.1 USD"
+    },
+    "links": {
+        "github": "https://github.com/sumtoken/SUT"
+    }
+}

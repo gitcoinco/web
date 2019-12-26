@@ -1,0 +1,21 @@
+{
+    "website": "https://www.egochain.io",
+    "symbol": "EGOT",
+    "whitepaper": "https://www.egochain.io/white_paper.pdf",
+    "address": "0xd70b14AF8ce4E614883Bca591E8696264c7f1CD3",
+    "overview": {
+        "en": "By building the platform of platforms and the finance of finances, EGOChain is committed to realizing the value of content creators and content communicators, solving the pain points of blockchain quantification, and thus promoting the EGOChain’s ecological building and value creation. ",
+        "zh": "EGOChain异构链打造平台之上的平台、金融之中的金融，致力于推动内容创造者、内容传播者更好地实现价值，解决区块链量化行业痛点。从而推动EGOChain生态落地，价值绽放。"
+    },
+    "email": "service@egochain.io",
+    "published_on": "2018-06-29",
+    "initial_price": {
+        "USD": "0.0600 USD"
+    },
+    "links": {
+        "github": "https://github.com/egoChain",
+        "twitter": "https://twitter.com/chain_ego",
+        "telegram": "https://t.me/EGOChain",
+        "facebook": "https://www.facebook.com/egochain"
+    }
+}

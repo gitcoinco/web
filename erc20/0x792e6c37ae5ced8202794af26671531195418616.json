@@ -1,0 +1,18 @@
+{
+    "symbol": "ECT",
+    "address": "0x792e6c37ae5ced8202794af26671531195418616",
+    "overview": {
+        "en": "ECT is a decentralized infrastructure project created by professional community in cryptography science, finance and investment-banking.",
+        "zh": "ECT是由密码学、金融学、和投资银行学所构成的一整套专业社群所创建的一种分散式基础架构项目。"
+    },
+    "email": "tech@ectoken.io",
+    "website": "https://ectoken.io/",
+    "state": "NORMAL",
+    "published_on": "2018-11-18",
+    "initial_price": {
+        "ETH": "0.00000001 ETH"
+    },
+    "links": {
+        "telegram": "https://t.me/ethereumcapitaltoken"
+    }
+}

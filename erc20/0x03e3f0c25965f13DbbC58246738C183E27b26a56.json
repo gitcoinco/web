@@ -1,0 +1,24 @@
+{
+    "symbol": "DSCP",
+    "address": "0x03e3f0c25965f13DbbC58246738C183E27b26a56",
+    "overview": {
+        "en": "Disciplina Token"
+    },
+    "email": "hello@disciplina.io",
+    "website": "https://disciplina.io/",
+    "whitepaper": "https://disciplina.io/WhitePaper_eng.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-20",
+    "initial_price": {
+        "ETH": "0.0005 ETH"
+    },
+    "links": {
+        "blog": "https://blog.disciplina.io/",
+        "twitter": "https://twitter.com/tchmpls_events",
+        "telegram": "https://t.me/tchmpls",
+        "github": "https://github.com/DisciplinaOU/disciplina",
+        "facebook": "https://www.facebook.com/tchmpls.events/",
+        "reddit": "https://www.reddit.com/user/tchmpls_events",
+        "medium": "https://medium.com/@tchmpls_events"
+    }
+}

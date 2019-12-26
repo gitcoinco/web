@@ -1,0 +1,25 @@
+{
+    "symbol": "OMO",
+    "address": "0x88f70A4aADFE8898d7942944C2d5263f771Edc1F",
+    "overview": {
+        "en": "Winery OMO blockchain AI new retail platform.",
+        "zh": "酒庄OMO区块链AI新零售平台。"
+    },
+    "email": "OMORedWine@outlook.com",
+    "website": "https://omowine.com/",
+    "whitepaper": "https://omowine.com/whitepaper/omowine.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-12-01",
+    "initial_price": {
+        "ETH": "0.00245901 ETH",
+        "USD": "0.3 USD",
+        "BTC": "0.00008255 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/OMORedWine",
+        "github": "https://github.com/CryptoGamingOffice",
+        "facebook": "https://www.facebook.com/omo.redwine",
+        "reddit": "https://www.reddit.com/r/your-awesome-project/",
+        "medium": "https://medium.com/@OMORedWine"
+    }
+}

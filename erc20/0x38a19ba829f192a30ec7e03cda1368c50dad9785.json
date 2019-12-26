@@ -1,0 +1,22 @@
+{
+    "symbol": "THCP",
+    "address": "0x38a19ba829f192a30ec7e03cda1368c50dad9785",
+    "overview": {
+        "en": "Texas Hold'em Poker Chain",
+        "zh": "德扑生态链"
+    },
+    "email": "thpc@thpc.top",
+    "website": "https://thpc.top",
+    "whitepaper": "https://thpc.top/download/Whitepaper-en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-16",
+    "initial_price": {
+        "USD": "0.0036 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/thpc_official",
+        "telegram": "https://t.me/thpc_official",
+        "github": "https://github.com/TexasHoldemPokerChain/TexasHoldemPokerChain",
+        "facebook": "https://www.facebook.com/ThpcOfficial"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "website": "https://www.linkyex.com",
+    "whitepaper": "https://www.linkyex.com/#/book",
+    "published_on": "2018-08-06",
+    "links": {
+        "telegram": "https://t.me/lianhui1",
+        "blog": "https://www.facebook.com/Linkyex",
+        "facebook": "https://www.facebook.com/Linkyex"
+    },
+    "overview": {
+        "en": "The Linkyex Token or LT, is a Token based on ethereum’s 2.0 smart contract. Linkyex pioneered the“synchronizing release of dual mode minning”mechanism to complete the release of LT. LT issued a total of 3394500000 and promised never increase issues in stocks. Linkyex will distribute 100% of the revenue to LT holders on schedule.",
+        "zh": "链币(Linkyex Token 简称:LT)是基于以太坊2.0智能合约的代币。链汇Linkyex的权益证明，拥有“双模式挖矿同步释放”机制。LT发行总量为3394500000枚，且承诺永不增发。链汇Linkyex 会将全部收入及时分配给LT的持有者。"
+    },
+    "symbol": "LT",
+    "initial_price": {
+        "ETH": "0.000006 ETH",
+        "USD": "0.1448 USD"
+    },
+    "address": "0xf9af06d5253772981cF7e3A77220Dd2A2D6152a3",
+    "email": "office@linkyex.com"
+}

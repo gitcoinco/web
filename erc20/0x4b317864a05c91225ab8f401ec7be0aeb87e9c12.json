@@ -1,0 +1,24 @@
+{
+    "symbol": "BOC",
+    "address": "0x4b317864a05c91225ab8f401ec7be0aeb87e9c12",
+    "overview": {
+        "en": "Bingo Coin building with blocks , chain integration of decentralized gaming application platform, is the use of chain blocks of decentralization, to trust, the collective, database maintenance and reliable technical characteristics, in view of the gaming industr y chain of opaque pain points, centralized operation, trust industry, the traditional centralized information island, on the premise of information security and secrecy, realize the business and data sharing, to avoid the data is not Shared, mutual mistrust and made into a serious economic loss. Create a new world of decentralized global commercial gaming experience. Through the technology and concept of block chain, Bingo Coin creates a more efficient, transparent, reliable, consumption, investment and other diversified global decentralized gaming application platform",
+        "zh": "Bingo Coin 构建与区块链融合的去中心化事件预测应用生态平台，是利用区块链的去中心化、去信任、集体维护、数据库可靠的技术特点，针对预测产业链中的不透明、中心化运营、信 等行业痛点，将传统的中心化的信息孤岛打通Bingo Coin通过区块链的技术和理念，创建一个更加高效、透明、可信、消费、投资等多元化环球去中心化预测应用平台的生态圈。 BOC采用了Ethash的SAP云核心算法，采用安全加速的SCDN可以快速方便的充值和提现，各种丰富的ACM应用接口，可方便的布署在上千种应用场景. BingoCoin总量为20亿枚 通流量为2亿枚"
+    },
+    "email": "admin@bocfun.com",
+    "website": "https://www.bocfun.com",
+    "whitepaper": "https://www.bocfun.com/Whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-25",
+    "initial_price": {
+        "ETH": "0.000625 ETH",
+        "USD": "0.166 USD",
+        "BTC": "0.00003906 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/BingoCoinLive",
+        "telegram": "https://t.me/BingoCoin_BOC",
+        "facebook": "https://www.facebook.com/BingoCoin-164433834194693",
+        "blog": "https://weibo.com/6506134624/profile?rightmod=1&wvr=6&mod=personinfo"
+    }
+}

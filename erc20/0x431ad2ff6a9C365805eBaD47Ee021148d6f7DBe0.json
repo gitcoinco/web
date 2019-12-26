@@ -1,0 +1,20 @@
+{
+  "symbol": "DF",
+  "address": "0x431ad2ff6a9C365805eBaD47Ee021148d6f7DBe0",
+  "overview":{
+        "en": "DF is the platform utility token of the dForce network to be used for transaction services, community governance, system stabilizer, incentivization, validator deposit when we migrate to staking model, and etc.",
+        "zh": "DF是dForce Network的应用型平台代币，主要用于支付交易手续费、保险机制、社区治理和激励等方面，后期切换到自己的主网时会用作Staking维护网络安全。"
+  },
+  "email": "contacts@dforce.network",
+  "website": "https://dforce.network/",
+  "whitepaper": "https://github.com/dforcenetwork/docs/blob/master/white_paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-25",
+  "links": {
+    "twitter": "https://twitter.com/dForcenet",
+    "telegram": "https://t.me/dforcenet",
+    "github": "https://github.com/dforcenetwork",
+    "reddit": "https://www.reddit.com/r/dForceNetwork/",
+    "medium": "https://medium.com/dforcenet"
+  }
+}

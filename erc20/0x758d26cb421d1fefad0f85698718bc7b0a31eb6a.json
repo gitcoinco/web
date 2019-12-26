@@ -1,0 +1,19 @@
+{
+    "symbol": "ATT",
+    "address": "0x758d26cb421d1fefad0f85698718bc7b0a31eb6a",
+    "overview": {
+        "en": "Avatar Network is an EOS based professional identity network, which runs in a decentralized mode, driven by smart contract. In Avatar Network all the professionals and companies can meet, recruit and interact safely, trustfully and efficiently.",
+        "zh": "Avatar Network是一个基于EOS的去中心化职业身份网络。通过去中心化地存储职业人士的身份数据，Avatar使得所有职场人士和公司都可以安全，可靠和高效地数据存储流转，招聘和互动。"
+    },
+    "email": "hi@avatar-network.io",
+    "website": "https://avatar-network.io",
+    "whitepaper": "https://avatar-network.io/wp-content/uploads/2018/07/Avatar_Network_WhitePaper_EN.pdf",
+    "published_on": "2018-05-01",
+    "links": {
+        "blog": "https://www.avatar-network.io",
+        "telegram": "https://t.me/avatar",
+        "github": "https://github.com/AvatarNetwork",
+        "twitter": "https://twitter.com/avatar_network",
+        "facebook": "https://www.facebook.com/Avatar-Network-2147369198859632"
+    }
+}

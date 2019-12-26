@@ -1,0 +1,16 @@
+{
+    "symbol": "HTPR",
+    "address": "0xd2d2BF687D4c34dfeB98E160639d002388253dcE",
+    "overview": {
+        "en": "HOTPOOR is a group which you can be with many freedom philosophers and full stack developers, studying, learning, coding, sharing and changing the future world.",
+        "zh": "前沿技术探索者们的共同参与，同非学术主义哲学家和全栈工程师们一起，共同认知、参与、分享和改变这个世界。"
+    },
+    "email": "liwei_xia@hotpoor.org",
+    "state": "NORMAL",
+    "published_on": "2018-11-16",
+    "initial_price": {
+        "ETH": "0.001 ETH",
+        "USD": "0.25 USD",
+        "BTC": "0.000038 BTC"
+    }
+}

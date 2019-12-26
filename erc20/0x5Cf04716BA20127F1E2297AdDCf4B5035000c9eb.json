@@ -1,0 +1,27 @@
+{
+    "symbol": "NKN",
+    "address": "0x5Cf04716BA20127F1E2297AdDCf4B5035000c9eb",
+    "overview": {
+        "en": "NKN: Network Infra for Decentralized Internet. NKN is the new kind of P2P network connectivity protocol & ecosystem powered by a novel public blockchain.",
+        "zh": "NKN：新一代互联网的网络基础设施。NKN是区块链技术驱动的一种开放、去中心化的新型网络。"
+    },
+    "email": "contact@nkn.org",
+    "website": "https://nkn.org",
+    "whitepaper": "https://www.nkn.org/doc/NKN_Whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-04-19",
+    "initial_price": {
+        "ETH": "0.000185185 ETH",
+        "USD": "0.097 USD"
+    },
+    "links": {
+        "medium": "https://medium.com/nknetwork",
+        "twitter": "https://twitter.com/NKN_ORG",
+        "telegram": "https://t.me/nknorg",
+        "github": "https://github.com/nknorg",
+        "Youtube": "http://www.youtube.com/c/NKNORG",
+        "reddit": "https://www.reddit.com/r/nknblockchain/",
+        "Discord": "https://discord.gg/hrZvrVa",
+        "forum": "https://forum.nkn.org/"
+    }
+}

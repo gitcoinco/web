@@ -1,0 +1,26 @@
+{
+    "symbol": "BMX",
+    "address": "0x986ee2b944c42d017f52af21c4c69b84dbea35d8",
+    "overview": {
+        "en": "As a global integrated trading platform, BitMart provides diversified system functions such as spot trading, futures contract trading, over-the-counter trading, whole-network trading, and decentralized trading. Moreover, it satisfies the needs of numerous investors. BitMart’s trading system has a robust security mechanism and reliable underlying architecture, which provides investors with a dependable trading experience. Besides, the unique online trading model of the BitMart platform would efficiently match the market depth of major exchanges around the world while providing even higher liquidity. Relying on the whole network trading system, we believe the BitMart platform will become the largest liquidity provider of digital assets in the world.",
+        "zh": "币市(BitMart)是一个全球化综合交易平台，提供币币交易，期货合约，融资融币，场外交易，全网交易，去中心化交易等多样化的系统功能，满足各类投资者的交易需求。币市(BitMart)的交易系统具备完善的安全机制以及强大的底层架构，可为投资者带来极致的交易体验。此外，币市(BitMart)平台独创的全网交易模式将有效的对接全球各大交易所的市场深度，提供更高的流动性。未来，币市(BitMart) 平台将依托全网交易系统成为全球数字资产最大的流通性提供方。"
+    },
+    "email": "support@bitmart.com",
+    "website": "http://www.bitmart.com/",
+    "whitepaper": "https://api.bitmart.com/resources/white-paper/bitmart_whitepaper_en_US.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-12-26",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.7 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "links": {
+        "blog": "https://support.bitmart.com/hc/en-us/categories/115000436413-Annoucements",
+        "twitter": "https://twitter.com/BitMartExchange",
+        "telegram": "https://t.me/BitmartExchange",
+        "facebook": "https://www.facebook.com/bitmartexchange",
+        "reddit": "https://www.reddit.com/r/bitmartexchange",
+        "medium": "https://medium.com/@bitmart.exchange"
+    }
+}

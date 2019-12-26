@@ -1,0 +1,23 @@
+{
+  "symbol": "NUSD",
+  "address": "0x0C6144c16af288948C8fdB37fD8fEc94bfF3d1d9",
+  "overview":{
+        "en": "Neutral Dollar (NUSD) is the world’s first metastable token backed by a basket of stablecoins. The instrument is built by Neutral."
+  },
+  "email": "hello@neutralproject.com",
+  "website": "https://neutralproject.com/",
+  "whitepaper": "https://neutralproject.com/",
+  "state": "NORMAL",
+  "published_on": "2019-05-15",
+  "initial_price": {
+        "USD": "1.00 USD"
+  },
+  "links": {
+    "blog": "https://blog.neutralproject.com",
+    "twitter": "https://twitter.com/neutral_project",
+    "telegram": "https://t.me/neutralproject",
+    "github": "https://github.com/NeutralGroup",
+    "facebook": "https://www.facebook.com/Neutral-Project-391548818084169/",
+    "medium": "https://medium.com/@neutralproject"
+  }
+}

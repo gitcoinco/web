@@ -1,0 +1,25 @@
+{
+  "symbol": "AEF",
+  "address": "0xd6CD14d3BE0F72a9a7231C810417317093c3c588",
+  "overview":{
+        "en": "AISI Ecosystem FOF (Hereafter AEF) is the first global tokenized fund of fund open to all community investors.",
+        "zh": "爱思生态凭证(AEF)是面向所有社区投资者的全球第一支通证化的母基金。"
+  },
+  "email": "admin@aisi.fund",
+  "website": "http://www.aisi.fund/",
+  "whitepaper": "http://www.aisi.fund/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-08-02",
+  "initial_price":{
+        "ETH":"0.0021727 ETH",
+        "USD":"1 USD",
+        "BTC":"0.0001236 BTC"
+  },
+  "links": {
+    "blog": "http://www.aisi.fund/news.html",
+    "twitter": "https://twitter.com/aisifund",
+    "telegram": "https://t.me/aisifund",
+    "github": "https://github.com/aisigroup"
+  }
+}
+

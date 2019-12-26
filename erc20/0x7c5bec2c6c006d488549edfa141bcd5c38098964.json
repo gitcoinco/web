@@ -1,0 +1,18 @@
+{
+    "symbol": "FBC",
+    "address": "0x7c5bec2c6c006d488549edfa141bcd5c38098964",
+    "overview": {
+        "en": "Friends BBS Coin (FBC) is an Ethereum-based, ERC20-compliant token that serves as a medium for the exchange of value between BBS. Friends acknowledges that the labor of the community members is the value of Friends, and the value of Friends anchors the value of BBS. The only reference standard of value distribution.",
+        "zh": "老友币(Friends BBS Coin 简称 FBC)是一款基于 Ethereum，符合 ERC20 标准的代币，是老友汇社区完成价值交换的媒介，是老友汇社区成员身份的证明方式, 老友汇承认社区成员的劳动即价值，老友币的价值锚定老友汇的社区价值，是社区价值分配的唯一参考标准。"
+    },
+    "email": "kefu@f-bbs.net",
+    "website": "https://f-bbs.net/",
+    "published_on": "2017-11-18",
+    "initial_price": {
+        "ETH": "0.000005 ETH"
+    },
+    "links": {
+        "telegram": "https://0.plus/#/friendsbbs",
+        "twitter": "https://twitter.com/FriendsBBS1"
+    }
+}

@@ -1,0 +1,19 @@
+{
+  "symbol": "ADC",
+  "address": "0x64921aCb8Fc1B54D7F774788A405b7cF1864CBFf",
+  "overview":{
+        "en": "The Cryptocurrency For Payments - Trading - Crowdfunding. Global, Secure and Efficient"
+  },
+  "email": "support@oduwa.io",
+  "website": "https://adc.africa/",
+  "state": "NORMAL",
+  "published_on": "2019-03-26",
+  "initial_price":{
+        "USD":"1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Oduwacoin",
+    "telegram": "https://t.me/oduwacoinexchange",
+    "facebook": "https://www.facebook.com/Oduwacoin/"
+  }
+}

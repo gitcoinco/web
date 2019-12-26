@@ -1,0 +1,17 @@
+{
+    "symbol": "射线币",
+    "address": "0xa9c212a5e6b9ad926358b4a432a0bedf6fc807d5",
+    "overview": {
+        "en": "LXCDN is a person can participate in the hard disk mining project, as long as there is idle hard disk space, as long as there is a stable broadband environment, everyone can make profit by renting their own hard disk space and sharing the bandwidth of the file transmission.",
+        "zh": "LXCDN 是一个人人可参与的硬盘挖矿项目，只要有闲置的硬盘空间，只要有稳定的宽带环境，人人都可以通过出租自己的硬盘闲置空间以及共享文件传输的带宽来实现盈利。"
+    },
+    "email": "ceo@lxcdn.org",
+    "website": "https://www.lxcdn.org/",
+    "whitepaper": "http://download.lxcdn.org/LXCDN.pdf",
+    "github": "https://github.com/LXCDN/",
+    "state": "NORMAL",
+    "published_on": "2018-08-21",
+    "initial_price": {
+        "ETH": "0.00077 ETH"
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "symbol": "ATOM",
+  "address": "cosmos",
+  "overview":{
+        "en": "Cosmos is a decentralized network of independent parallel blockchains, each powered by BFT consensus algorithms like Tendermint consensus.",
+        "zh": "Cosmos 被称为「区块链的互联网」，是一种全新的区块链网络架构，支持不同区块链之间互操作和可扩展，从而实现不同区块链之间互联互通的目标。"
+  },
+  "email": "hello@tendermint.com",
+  "website": "https://cosmos.network/",
+  "whitepaper": "https://cosmos.network/resources/whitepaper",
+  "state": "NORMAL",
+  "published_on": "2017-04-06",
+  "initial_price":{
+        "USD":"0.1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/cosmos",
+    "medium": "https://blog.cosmos.network/"
+  }
+}

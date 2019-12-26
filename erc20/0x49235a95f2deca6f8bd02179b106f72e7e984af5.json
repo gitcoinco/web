@@ -1,0 +1,20 @@
+{
+    "symbol": "INKC",
+    "address": "0x49235a95f2deca6f8bd02179b106f72e7e984af5",
+    "overview": {
+        "en": "INKC is built with great design principles and comprehensive design strategy. Through it, we hope to store a series of behaviors and data such as digital project delegated investment, digital assets transfer, digital products exchange, credit value and so on to activate each participant's digital assets and digital credit, serve the world, and provide revolutionary digital service for global participants, in an intelligent and efficient way. Regardless of time, background, identity, you can add digital assets to the INKC, achieve the effective service provided by the INKC. Integrated Investment Management Platform of Digital Assets.",
+        "zh": "印克链服务于所有数字货币和数字项目参与者，可实现：数字项目+数字商品+数字钱包+数字信用值于一体的可融合多平台的分布式加密传输服务架构。基于印克链我们将打造交易、支付、娱乐等所有数字行为的大聚合、成为全新的一代的去中心化数字资产投资管理平台"
+    },
+    "email": "inkc@inkc.io",
+    "website": "https://inkc.io/",
+    "whitepaper": "https://www.inkc.io/doc/INKCwhitepapercn.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-02-01",
+    "initial_price": {
+        "USD": "0.01 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/INKC_Official",
+        "telegram": "https://t.me/INKC_Group"
+    }
+}

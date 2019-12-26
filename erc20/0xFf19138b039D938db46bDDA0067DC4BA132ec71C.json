@@ -1,0 +1,14 @@
+{
+    "website": "https://www.snetwork.io/",
+    "published_on": "2018-01-19",
+    "links": {
+        "telegram": "https://t.me/snetwork_official"
+    },
+    "overview": {
+        "en": "Snetwork（Distributed Shared Cloud Computing Network）",
+        "zh": "Snetwork（Distributed Shared Cloud Computing Network）是专注于区块链落地应用的生态系统，专注打造基于区块链的分佈式共享计算平台。我们通过连接供需双方，帮助节点共享者闲置计算资源变现，提高利用率；同时降低企业、个人等资源需求方宽带、存储和上网娱乐成本。"
+    },
+    "symbol": "SNET",
+    "address": "0xFf19138b039D938db46bDDA0067DC4BA132ec71C",
+    "email": "support@snetwork.io"
+}

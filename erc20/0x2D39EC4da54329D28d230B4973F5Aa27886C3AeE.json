@@ -1,0 +1,23 @@
+{
+    "symbol": "NFXC",
+    "address": "0x2D39EC4da54329D28d230B4973F5Aa27886C3AeE",
+    "overview": {
+        "en": "NFXCoin is a token created on the Ethereum platform to boost all services that will be provided on the NFX TRADER platform"
+    },
+    "email": "sac@nfxcoin.io",
+    "website": "https://www.nfxcoin.io",
+    "whitepaper": "https://nfxcoin.io/white_paper_nfxcoin.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-31",
+    "initial_price": {
+        "BTC": "0.00004040 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/NfxService",
+        "telegram": "https://t.me/joinchat/BxlIdRBlwvuftihcituTLA",
+        "github": "https://github.com/NFXService",
+        "facebook": "https://www.facebook.com/nfxservice/",
+        "reddit": "https://www.reddit.com/user/NFX_Service",
+        "bitcointak": "https://bitcointalk.org/index.php?topic=5074800.new#new"
+    }
+}

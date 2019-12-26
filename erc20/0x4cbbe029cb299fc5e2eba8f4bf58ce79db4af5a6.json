@@ -1,0 +1,21 @@
+{
+    "symbol": "MICC",
+    "address": "0x4cbbe029cb299fc5e2eba8f4bf58ce79db4af5a6",
+    "overview": {
+        "en": "Multi platform sharing button based on block chain technology.",
+        "zh": "基于区块链的多平台聚合分享按钮。"
+    },
+    "email": "support@micc.tech",
+    "website": "http://micc.tech",
+    "whitepaper": "http://micc.tech/micc.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-16",
+    "links": {
+        "weibo": "http://weibo.com/MiccTeam",
+        "telegram": "http://t.me/MiccTech",
+        "github": "http://github.com/MiccTeam",
+        "biyong": "http://0.plus/MiccTech",
+        "slack": "http://MiccTech.slack.com",
+        "beechat": "http://i.beechat.io/MiccTech"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "symbol": "BEES",
+    "account_name": "beesgamecont",
+    "overview": {
+        "en": "BeesGame aims to provide one-stop services for DApp developers and global players, building a global blockchain game ecosystem.",
+        "zh": "Bees致力于为 DApp 开发商和玩家提供一站式服务，建设更健康友好的区块链全球社区"
+    },
+    "emaill": "official@beesgame.io",
+    "website": "https://www.beesgame.io",
+    "whitepaper": "https://www.beesgame.io/static/BeesGameWhitePaper.pdf",
+
+    "links": {
+        "telegram": "http://t.me/BeesGame_official"
+    }
+}

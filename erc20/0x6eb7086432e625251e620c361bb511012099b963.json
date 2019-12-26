@@ -1,0 +1,23 @@
+{
+    "symbol": "JKC",
+    "address": "0x6eb7086432e625251e620c361bb511012099b963",
+    "overview": {
+        "en": "Crypto Geek.",
+        "zh": "密码极客是一群来自前阿里、蚂蚁金服和知名区块链公司的工程师与阿里创业帮一起发起的区块链技术创投社群，我们的成员大多具有数学、金融、IT混合背景。在区块链领域鱼龙混杂的当下，坚持提高区块链金融和技术价值，建设有质量的区块链发展社区。密码极客目前也是杭州最大的区块链技术创业社群，截止8月，社群阿里技术人员超过2000位，社群成员超过8万，孵化合作阿里系区块链技术项目超过30个。"
+    },
+    "email": "yangchenyu2050@sina.com",
+    "website": "http://www.mimajike.com",
+    "whitepaper": "https://mp.weixin.qq.com/s/mg5HNjjRxrEPn9YV2o69JA",
+    "state": "NORMAL",
+    "published_on": "2018-04-15",
+    "initial_price": {
+        "ETH": "0.0000731 ETH",
+        "USD": "0.149 USD",
+        "BTC": "0.00000229 BTC"
+    },
+    "links": {
+        "blog": "https://weibo.com/mimajike",
+        "twitter": "https://twitter.com/CryptoGeekCG",
+        "telegram": "https://t.me/mimajike"
+    }
+}

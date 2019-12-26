@@ -1,0 +1,22 @@
+{
+    "symbol": "AUG",
+    "address": "0xb4e9f4a0f5d91ea9ea612b5ada9b4c0904a96de0",
+    "overview": {
+        "en": "AUG is a form of equity on AUG Cloud and a special asset that is symbiotic with the AUG Cloud system and part of the AUG Cloud protocol.The main purposes of AUG in the network are: 1. As a miner incentive, drive miners to participate in the provision of storage nodes, mining, to achieve the normal operation of the blockchain, and to ensure safety. 2. The user dynamically builds a station, and when the transfer is made, a certain amount of AUG will be consumed. 3. During the use of AUG Cloud, users need to rely on AUG as a distribution medium to circulate on the blockchain and consume a certain amount of AUG as the circulation cost. 4. A certain amount of AUG will be consumed when using other services provided by AUG Cloud.",
+        "zh": "AUG是AUG Cloud上的一种权益凭证，也是一种与AUG Cloud 系统共生的特殊资产，同时也是AUG Cloud 协议的一部分。AUG在网络里的主要用途为：1. 作为矿工激励，驱动矿工参与提供储存节点、挖矿，以实现区块链的正常运转，并保证安全。2.用户动态建站，转账时，将消耗一定量的AUG。3.用户使用AUG Cloud 过程中，需要依靠AUG作为流通媒介才能在区块链上流通，并消耗一定量的AUG作为流通成本。4.使用AUG Cloud 提供的其他服务时，将消耗一定量的AUG。"
+    },
+    "email": "qunqunge@gmail.com",
+    "website": "http://www.weihuo.site/",
+    "whitepaper": "http://newworld.website/d/AUG_Chain_%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-30",
+    "initial_price": {
+        "ETH": "0.02120648 ETH",
+        "BTC": "0.00055740 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/BobbySir5",
+        "github": "https://github.com/BobbySir",
+        "facebook": "https://www.facebook.com/aug.bobby.1"
+    }
+}

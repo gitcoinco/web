@@ -1,0 +1,20 @@
+{
+    "symbol": "BHEC",
+    "address": "0xD7aca469370a67917f687ca61F225CAa0b3dc8cB",
+    "overview": {
+        "zh": "币虎全球生态基金在币虎生态布局完成之后，将致力于构建一个去中心化的资产流通网络，这个网络允许TOKEN持有者为整个BHEC生态系统注入流动性。基于这个理念，推出了BHEC生态网络，任何人都可以基于BHEC生态网络开发自己的应用和DApp，包括：多币种去中心化钱包、去中心化交易所、去中心化点对点交易系统等。"
+    },
+    "email": "Bihuex-service@outlook.com",
+    "website": "https://bihuex.com",
+    "whitepaper": "https://static.bihuex.com/wp/BHEX_WP_ZH.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-09",
+    "initial_price": {
+        "USD": "0.15 USD"
+    },
+    "links": {
+        "blog": "https://weibo.com/p/1006066603431411/home?from=page_100606&mod=TAB&is_hot=1#place",
+        "twitter": "https://twitter.com/SFChZIE1vBwicTt",
+        "telegram": "https://telegram.me/BihuGlobal"
+    }
+}

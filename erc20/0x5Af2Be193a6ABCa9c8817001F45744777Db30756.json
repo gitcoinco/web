@@ -1,0 +1,21 @@
+{
+    "website": "https://www.ethos.io/",
+    "published_on": "2017-06-28",
+    "links": {
+        "telegram": "https://t.me/ethos_io",
+        "reddit": "https://www.reddit.com/r/ethos_io/",
+        "twitter": "https://twitter.com/ethos_io"
+    },
+    "overview": {
+        "en": "Ethos is a people-powered blockchain platform.",
+        "zh": "Ethos 是以人治为特点的区块链平台，致力于建立人人可及的公平公正且安全的金融生态。"
+    },
+    "symbol": "ETHOS",
+    "initial_price": {
+        "ETH": "0.00009498 ETH",
+        "USD": "0.03 USD"
+    },
+    "whitepaper": "http://www.ethos.io/Ethos_Whitepaper.pdf",
+    "address": "0x5Af2Be193a6ABCa9c8817001F45744777Db30756",
+    "email": "press@ethos.io"
+}

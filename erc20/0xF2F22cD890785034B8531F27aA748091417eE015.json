@@ -1,0 +1,24 @@
+{
+    "symbol": "VFD",
+    "address": "0xF2F22cD890785034B8531F27aA748091417eE015",
+    "overview": {
+        "en": "VFD is a decentralized micro-asset transmission network that solves asseconversion and trust issues between financial institutions and users, while providing anti-counterfeiting traceability solutions and prepaid financing on the supply chain for users on the network. Supply chain financiaservices such as cargo financing, factoring financing, etc. ",
+        "zh": "微付盾是一个去中心化的小额资产传输网络，用于解决金融机构以及用户间的资产转换和信任问题，同时为该网络上的用户提供防伪溯源解决方案和供应链条上的预付融资，货押融资，保理融资等供应链金融服务。"
+    },
+    "email": "jason@vfdc.io",
+    "website": "www.vfdc.io",
+    "whitepaper": "https://vfdc.io/vfd_cn.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-06-27",
+    "initial_price": {
+        "USD": "$0.2 USD"
+    },
+    "links": {
+        "blog": "www.vfdc.io",
+        "twitter": "https://twitter.com/VFDOfficial",
+        "github": "https://github.com/VFDOfficial",
+        "telegram": "https://t.me/VFDOfficial_CN",
+        "BiYong": "https://0.plus/VFDOfficial_CN"
+        
+    }
+}

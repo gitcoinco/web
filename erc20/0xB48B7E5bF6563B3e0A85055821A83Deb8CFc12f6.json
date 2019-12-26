@@ -1,0 +1,16 @@
+{
+    "symbol": "NOVA",
+    "address": "0xB48B7E5bF6563B3e0A85055821A83Deb8CFc12f6",
+    "overview": {
+        "en": "Nova is a consensus driven content ecosystem based on block chain. We expect to establish a value consensus mechanism through block chain technology, and to provide Token incentives to content creators, screeners, investors and eco-builders.",
+        "zh": "Nova是一个基于区块链的共识激励型内容生态。我们期望通过区块链技术建立价值共识机制，对内容创作者、筛选者、投资者和生态建设者进行Token激励。"
+    },
+    "email": "admin@85nova.com",
+    "website": "http://www.85nova.com/",
+    "whitepaper": "http://www.85nova.com/static/nova.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-24",
+    "links": {
+        "telegram": "https://t.me/Nova_zh"
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "symbol": "GOLD",
+    "address": "0x150b0b96933B75Ce27af8b92441F8fB683bF9739",
+    "overview": {
+        "en": "Dragonereum is a cryptocollectible game with PvP battles, advanced breeding, in-game trading, rewards and achievements. You have complete control of the destiny of your dragons."
+    },
+    "email": "hello@dragonereum.io",
+    "website": "https://dragonereum.io",
+    "whitepaper": "https://dragonereum.io/dragonereum-whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-11-28",
+    "links": {
+        "twitter": "https://twitter.com/dragonereum",
+        "telegram": "https://t.me/dragonereum",
+        "github": "https://github.com/dragonereum",
+        "facebook": "https://www.facebook.com/dragonereum",
+        "reddit": "https://www.reddit.com/r/Dragonereum",
+        "medium": "https://medium.com/@dragonereum"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "symbol": "FIB",
+    "address": "0x24A45d81170005Be4f51c8a294883b394BD83412",
+    "overview": {
+        "en": "The large-scale investment projects are disassembled and confirmedby the block chain, and the distributed product trading and total system arebuilt to establish a global and distributed domestic and foreign stableinvestment product platform.",
+        "zh": "将大型投资项目利用区块链进行拆分和确权，打造分布式产品交易及共计系统，建立全球性的分布式海内外稳健投资型的产品平台。"
+    },
+    "email": "support@fib.ink",
+    "website": "http://fib.ink/",
+    "state": "NORMAL",
+    "published_on": "2018-06-30",
+    "initial_price": {
+        "ETH": "0.00003 ETH"
+    }
+}

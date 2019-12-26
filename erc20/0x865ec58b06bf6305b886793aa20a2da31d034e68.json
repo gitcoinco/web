@@ -1,0 +1,24 @@
+{
+    "symbol": "MOC",
+    "address": "0x865ec58b06bf6305b886793aa20a2da31d034e68",
+    "overview": {
+        "en": "Mossland is a real estate-centric location-based Augmented Reality (AR) mobile game. In the game, players are able to identify AR versions of real properties using smartphones. These AR assets can be further upgraded using AR accessories. Mossland utilizes a blockchain-based cryptocurrency to facilitate trades, sales and purchases inside Mossland. This in-game economy emulates the real-world property market providing a new and compelling way of interaction between users.",
+        "zh": "Mossland是韩国首款基于不动产位置（AR+区块链）移动游戏，把真实与虚拟世界连接起来。游戏允许用户之人扩增实境上的真是资产。玩家可以通过利用配件来升级扩增实境上的资产。Mossland利用加密货币（MOC）已促成游戏上的资产交易和买卖。游戏经济模拟了真实的房产市场，为用户提供一种新的，令人信服的互动方式。"
+    },
+    "email": "contact@moss.land",
+    "website": "https://moss.land/",
+    "whitepaper": "https://d2vy65gufabiok.cloudfront.net/whitepaper/Mossland+Whitepaper+-+ENG.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-21",
+    "initial_price": {
+        "USD": "0.12 USD"
+    },
+    "links": {
+        "blog": "https://steemit.com/@mossland",
+        "twitter": "https://twitter.com/themossland?lang=en",
+        "telegram": "https://t.me/mossland_news",
+        "github": "https://github.com/realityreflection/MossCoin",
+        "facebook": "https://www.facebook.com/TheMossland/",
+        "medium": "https://medium.com/mossland-blog"
+    }
+}

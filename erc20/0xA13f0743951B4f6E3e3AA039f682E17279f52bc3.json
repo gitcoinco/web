@@ -1,0 +1,22 @@
+{
+    "website": "http://www.sentinel-chain.org/",
+    "published_on": "2018-03-06",
+    "links": {
+        "telegram": "https://t.me/sentinelchain",
+        "reddit": "https://www.reddit.com/r/SentinelChain/",
+        "github": "https://github.com/InfoCorp-Technologies/sentinel-chain",
+        "facebook": "https://www.facebook.com/sentinelchain/",
+        "twitter": "https://twitter.com/sentinelchain"
+    },
+    "overview": {
+        "en": "B2B marketplace specifically designed to provide affordable and secure financial services to the unbanked.",
+        "zh": "Sentinel Chain 是一个全球 B2B 市场，用于接受使用牲畜作为抵押的金融服务。"
+    },
+    "symbol": "SENC",
+    "initial_price": {
+        "USD": "0.08 USD"
+    },
+    "whitepaper": "https://sentinel-chain.org/Sentinel.Chain.Whitepaper.v0_31.1.pdf",
+    "address": "0xA13f0743951B4f6E3e3AA039f682E17279f52bc3",
+    "email": "support@sentinel-chain.org"
+}

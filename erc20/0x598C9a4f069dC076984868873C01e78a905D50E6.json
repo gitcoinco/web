@@ -1,0 +1,27 @@
+{
+    "symbol": "XLG",
+    "address": "0x598C9a4f069dC076984868873C01e78a905D50E6",
+    "overview": {
+        "en": "Disrupting the trust and audit economies with the power of blockchain.",
+        "zh": "Ledgerium 设计主旨为建立一个去中心化的会计审计生态平台，利用智能合约理清债务与债权人关系"
+    },
+    "email": "info@ledgerium.net",
+    "website": "https://www.ledgerium.net/",
+    "whitepaper": "https://www.ledgerium.net/files/Ledgerium_Executive_Summary.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-11",
+    "initial_price": {
+        "ETH": "0.000034 ETH",
+        "USD": "0.03 USD",
+        "BTC": "0.00000200 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@ledgerium.m",
+        "twitter": "https://twitter.com/ledgerium",
+        "telegram": "https://t.me/LedgeriumOfficial",
+        "github": "https://github.com/ledgerium",
+        "facebook": "https://www.facebook.com/Ledgerium/",
+        "reddit": "https://www.reddit.com/r/ledgerium/",
+        "medium": "https://medium.com/@ledgerium.m"
+    }
+}

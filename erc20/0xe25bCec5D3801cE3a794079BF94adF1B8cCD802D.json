@@ -1,0 +1,23 @@
+{
+    "website": "https://www.matrixchain.io/",
+    "published_on": "2018-01-17",
+    "links": {
+        "telegram": "https://t.me/matrixainetwork",
+        "reddit": "https://www.reddit.com/r/MatrixAINetwork/",
+        "github": "https://github.com/MatrixAINetwork",
+        "facebook": "https://www.facebook.com/MATRIXAINetworks/",
+        "twitter": "https://twitter.com/MatrixAINetwork"
+    },
+    "overview": {
+        "en": "Aims to be an open source public intelligent blockchain platform.",
+        "zh": "MATRIX AI 网络是一个开源的公共智能区块链平台。"
+    },
+    "symbol": "MAN",
+    "initial_price": {
+        "ETH": "0.00035132 ETH",
+        "USD": "0.36 USD"
+    },
+    "whitepaper": "https://www.matrixchain.io/static/pdf/MATRIXTechnicalWhitePaper.pdf",
+    "address": "0xe25bCec5D3801cE3a794079BF94adF1B8cCD802D",
+    "email": "public@matrix.space"
+}

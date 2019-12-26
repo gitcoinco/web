@@ -1,0 +1,16 @@
+{
+    "symbol": "BND",
+    "address": "0xe61345dfd64cd455008922bcd8d8cd40edceedc1",
+    "overview": {
+        "en": "Blocknew is a blockchain content social commercial ecosystem, dedicated to building a blockchain-based one-stop service platform for information, social interaction, shopping and life consumption. Users can have in-depth understanding of the merchants' products and services through articles and interact with other users and merchants in the community at the same time. The transaction information of shopping and consumption is time-stamped, on the chain, realizing the right of the transaction and the information untampered. Traditional e-commerce is a super-centralized industry. Serious monopoly, data silos, information asymmetry, and opacity directly lead to problems such as lack of trust in the industry and continuous increase in costs of attracting customers. The business mode of Blocknew commercial platform based on blockchain has applied for China's national invention patents. The self-motivated and self-evolving system will bring unbelievably strong sales to merchants and through the cooperation with merchants, we will be able to trace the origin of products based on blockchain technology to ensure that the products are from unchangeable place of origin, owned by brand merchants or with official authorization. Blocknew have set up the globally unified investment management agencies overseas and will found the global R&D centers in the Silicon Valley, USA, conducting business directly or through strategic partners in many countries around the world to establish global business ecosystem based on the confirmation contract blocknew public chain.",
+        "zh": "Blocknew区块牛致力于打造区块链社群社交商业生态，通过基于全新的确权合约技术的公有区块链，以社群社交为核心，由用户提供文字图片、动漫游戏、商品服务、以及其他内容价值（如资产数字化的各种Token）的全流程正版智能化交易和协作平台。 未来，基于区块牛升级版公链，可以建造全流程正版智能化交易平台或者大规模协作平台，可应用于区块链电商、供应链管理、工程项目、设计研发等领域。"
+    },
+    "email": "admin@blocknew.net",
+    "website": "https://www.blocknew.org/",
+    "whitepaper": "https://www.blocknew.org/Blocknew.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-28",
+    "initial_price": {
+        "USD": "0.001442 USD"
+    }
+}

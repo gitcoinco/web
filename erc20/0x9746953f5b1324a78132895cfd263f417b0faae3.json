@@ -1,0 +1,24 @@
+{
+    "symbol": "VCT",
+    "address": "0x9746953f5b1324a78132895cfd263f417b0faae3",
+    "overview": {
+        "en": "ValueCyber is a blockchain system designed for the cooperation required by production and circulation in the digital economy era, and also a blockchain that tries to meet the technical and openness requirements for the next-generation blockchain. Its ultimate objective is to establish a blockchain platform that serves the current and future social and economic automation. ValueCyber expects to satisfy the demands on liquidity in the process of production. For this reason, ValueCyber not only supports the circulation symbols of ordinary encrypted digital currencies, but also expands the circulation and collaboration under its support to the field of liabilities.",
+        "zh": "ValueCyber是面向数字经济时代的生产和流通所需的协作而设计的区块链系统，也是一个尝试实现下一代区块链的技术和开放性需求的区块链，最终目标是实现一个为现代以及未来的社会经济自动化服务的区块链平台。ValueCyber期望解决的需求是生产过程中的流动性，为了实现这一点，ValueCyber不仅支持一般加密数字货币的流通符号功能，更将其支持的流通协作范围扩展到了债务领域。"
+    },
+    "email": "support@valuecycber.org",
+    "website": "http://www.valuecyber.org/",
+    "whitepaper": "http://www.valuecyber.org/doc/ValueCyber_WhitePaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-03-01",
+    "initial_price": {
+        "ETH": "0.00008 ETH",
+        "USD": "0.05 USD",
+        "BTC": "0.0000078 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/valuecyber",
+        "telegram": "https://t.me/valuecyber",
+        "github": "https://github.com/valuecyber",
+        "facebook": "https://www.facebook.com/valuecyber"
+    }
+}

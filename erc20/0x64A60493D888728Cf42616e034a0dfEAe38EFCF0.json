@@ -1,0 +1,24 @@
+{
+    "symbol": "OLT",
+    "address": "0x64A60493D888728Cf42616e034a0dfEAe38EFCF0",
+    "overview": {
+        "en": "OneLedger is a universal blockchain protocol acting as a gateway from enterprises to the full ecosystem of decentralized technologies, such as Bitcoin and Ethereum. OLT is currently an ERC-20 based utility token that provides access to the OneLedger’s blockchain. When the mainnet goes live, the token will be used to provide access to the protocol, support fees for the validators, and allow a marketplace for Business Modules on a fee-per-use basis.",
+        "zh": "OneLedger 致力于统一区块链协议和无缝对接不同的分布式数据以及业务，从而为企业提供最有价值的去中心化应用。OLT目前是基于ERC-20标准的令牌，在将来可以用以访问OneLedger区块链。 当OneLedger主网上线时，该令牌将用于：访问协议，支付节点和交易费用，以及按使用计费的商务模块市场。"
+    },
+    "email": "hello@oneledger.io",
+    "website": "https://www.oneledger.io/",
+    "whitepaper": "https://oneledger.io/wp-content/uploads/2018/07/oneledger-whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-28",
+    "initial_price": {
+        "ETH": "0.0001074 ETH",
+        "USD": "0.517 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/oneLedgerTech",
+        "telegram": "https://t.me/oneledger",
+        "github": "https://github.com/Oneledger/",
+        "reddit": "https://www.reddit.com/r/OneLedger/",
+        "medium": "https://medium.com/@OneLedger"
+    }
+}

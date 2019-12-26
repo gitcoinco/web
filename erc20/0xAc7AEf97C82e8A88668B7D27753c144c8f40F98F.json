@@ -1,0 +1,22 @@
+{
+  "symbol": "KC",
+  "address": "0xAc7AEf97C82e8A88668B7D27753c144c8f40F98F",
+  "overview":{
+        "en": "KangChain's basic medical health data network is based on blockchain, Internet of Things, big data and other cutting-edge technologies. It is the value public chain that realizes smart medical care. KangChain can connect medical institutions, doctors and individuals so that every participant in the chain can create And sharing value, KangChain will build an open, equal and safe health and health blockchain ecological platform.",
+        "zh": "KangChain基础医疗健康数据网络基于区块链、物联网、大数据等前沿技术，是实现智慧医疗的价值公有链，KangChain可以连接医疗机构、医生以及个体，让链上的每个参与者都能创造和分享价值，KangChain将构建一个开放、平等、安全的医疗健康区块链生态平台。"
+  },
+  "email": "admin@kangchain.one",
+  "website": "http://kangchain.one/",
+  "whitepaper": "http://kangchain.one/KangChainWhitePaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-03-25",
+  "initial_price":{
+        "ETH":"0.00266666 ETH",
+        "USD":"0.07 USD",
+        "BTC":"0.000018 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/KangChain",
+    "github": "https://github.com/kangchain/"
+  }
+}

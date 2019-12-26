@@ -1,0 +1,24 @@
+{
+    "symbol": "HLC",
+    "address": "0x58c69ed6cd6887c0225d1fccecc055127843c69b",
+    "overview": {
+        "en": "Qitmeer is the next generation-public chain based on Block DAG,Metrics among the security, openness, fairness and scalability.Qitmeer adopts a classic POW consensus and UTXO data model and designs a unique asset issuing mechanism which requires the reserve of base currency.HLC is ERC20 token of Qitmeer network.",
+        "zh": "Qitmeer是以BlockDAG技术为支撑的全球新一代公链，也是第一条专注普惠金融和伦理金融的公链。BLOCKDAG的合作记账模型实现了安全性、开放性、公平性、可扩展性四者的合理平衡，采用经典POW共识和UTXO数据模型，独创的以底层币为基础价值且需审核的通证发行机制，契合了平等金融的哲学。HLC是Qitmeer主网发行的一个ERC20token。"
+    },
+    "email": "support@hlc.com",
+    "website": "https://www.qitmeer.io",
+    "whitepaper": "https://github.com/HalalChain/whitepaper/releases",
+    "state": "NORMAL",
+    "published_on": "2017-12-30",
+    "initial_price": {
+        "ETH": "0.00066 ETH",
+        "USD": "0.35 USD",
+        "BTC": "0.000041 BTC"
+    },
+    "links": {
+        "twitter": "https://www.twitter.com/halalchain",
+        "telegram": "https://t.me/HalalChainGroup",
+        "github": "https://github.com/halalchain",
+        "facebook": "https://www.facebook.com/officialhalalchain"
+    }
+}

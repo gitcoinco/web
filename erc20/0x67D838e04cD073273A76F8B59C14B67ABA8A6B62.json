@@ -1,0 +1,21 @@
+{
+    "symbol": "TDR",
+    "address": "0x67D838e04cD073273A76F8B59C14B67ABA8A6B62",
+    "overview": {
+        "en": "TraderX Coin (TDR) is the native asset of a financial services platform of Few Nickels Agricultural Smart Services to connect Investors and Buyers to Farmers."
+    },
+    "email": "contact@traderxcoin.com",
+    "website": "https://www.traderxcoin.com/",
+    "whitepaper": "https://www.traderxcoin.com/wp-content/uploads/2019/02/FEWNICKELS_white_paper_Cripto_AgriTech_v1_eng.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-23",
+    "initial_price": {
+        "ETH": "0.00067 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/FewNickels",
+        "telegram": "https://t.me/TraderXCoin",
+        "github": "https://github.com/FewNickels",
+        "facebook": "https://www.facebook.com/FewNickels/"
+    }
+}

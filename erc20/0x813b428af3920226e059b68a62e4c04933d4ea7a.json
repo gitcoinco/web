@@ -1,0 +1,23 @@
+{
+    "symbol": "DATP",
+    "address": "0x813b428af3920226e059b68a62e4c04933d4ea7a",
+    "overview": {
+        "en": "The Decentralized Asset Trading Platform is a DAPP opensource toolkit built for transactions using third parties with decentralized P2P networks."
+    },
+    "email": "support@datp.market",
+    "website": "https://datp.market/",
+    "whitepaper": "https://datp.market/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-16",
+    "initial_price": {
+        "ETH": "0.000000067 ETH",
+        "USD": "0.000015 USD",
+        "BTC": "0.0000000022 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/DATP_OFFICIAL",
+        "telegram": "https://t.me/DATP_Official",
+        "github": "https://github.com/datpdev",
+        "facebook": "https://web.facebook.com/DATP.OFFICIAL"
+    }
+}

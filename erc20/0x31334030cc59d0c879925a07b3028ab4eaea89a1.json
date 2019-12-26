@@ -1,0 +1,20 @@
+{
+    "symbol": "MOVE",
+    "address": "0x31334030cc59d0c879925a07b3028ab4eaea89a1",
+    "overview": {
+        "en": "Moveniu chain can store all the medical examination reports, data, graphics, images, audio and video, diagnosis, medication, operation process, risk notification, nursing process and other records in the current medical institutions. It can be used for over-treatment, doctor-patient disputes, traceability of medical equipment, insurance claims, division and so on. Forensics provides public trust based on technological trust.",
+        "zh": "牧牛链能够将目前医疗机构内所有格式的医疗检查报告、数据、图形、影像、 音视频等检查、诊断、用药、手术过程、风险告知书、护理过程等记录实现上链存储，为可 能出现的过度医疗、医患纠纷、药械溯源、保险理赔、司法取证等提供基于技术信任的公众信任。"
+    },
+    "email": "info@moveniu.io",
+    "website": "http://www.moveniu.io",
+    "whitepaper": "http://www.moveniu.io/website/MOVE-whitepaper_ch.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-16",
+    "initial_price": {
+        "ETH": "0.005 ETH"
+    },
+    "links": {
+        "telegram": "https://t.me/move_en",
+        "github": "https://github.com/movechain/move"
+    }
+}

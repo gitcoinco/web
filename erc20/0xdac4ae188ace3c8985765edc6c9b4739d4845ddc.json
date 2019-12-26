@@ -1,0 +1,24 @@
+{
+    "symbol": "INVE",
+    "address": "0xdac4ae188ace3c8985765edc6c9b4739d4845ddc",
+    "overview": {
+        "en": "World’s First Practical Blockchain 4.0 Project",
+        "zh": "全球首个支撑大规模应用的实用化区块链4.0项目"
+    },
+    "email": "foundation@inve.one",
+    "website": "https://www.inve.one",
+    "whitepaper": "https://www.inve.one/InterValue_whitepaper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-31",
+    "initial_price": {
+        "ETH": "0.00005 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/intervaluepro",
+        "telegram": "https://t.me/InterValueProject",
+        "github": "https://github.com/intervalue",
+        "facebook": "https://www.facebook.com/InterValueofficial/",
+        "reddit": "https://www.reddit.com/user/intervalue/",
+        "medium": "https://medium.com/@intervalueproject"
+    }
+}

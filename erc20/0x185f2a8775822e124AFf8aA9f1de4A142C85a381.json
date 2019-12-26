@@ -1,0 +1,20 @@
+{
+  "symbol": "PC",
+  "address": "0x185f2a8775822e124AFf8aA9f1de4A142C85a381",
+  "overview":{
+        "en": "Pig coin,short for PC, focuses on community consensus. By establishing a small community and forming a large community, pigs can be widely circulated. Members can get PC by participating in community management and activities.",
+        "zh": "猪猪币,简称：PC,以社区共识为重心,通过建立一个个小的社群,组成大社区,使猪猪广泛流通,成员可以通过参与社区管理和活动获得PC."
+  },
+  "email": "pc@pigcoin.wang",
+  "website": "http://www.pigcoin.wang/",
+  "whitepaper": "http://www.pigcoin.wang/pc-wp.pdf", 
+  "published_on": "2018-12-27",
+  "initial_price":{
+        "ETH":"0.0000000007 ETH"       
+  },
+  "links": {   
+    "twitter": "https://mobile.twitter.com/pigcoin1",
+    "telegram": "https://0.plus/pigcoin",   
+    "facebook": "https://www.facebook.com/profile.php?id=100038392501610"   
+  }
+}

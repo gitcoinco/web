@@ -1,0 +1,15 @@
+{
+    "symbol": "MGC",
+    "address": "0x2b451671DF36eF7006524bF73A1a3808E2A07F52",
+    "overview": {
+        "en": "MGC is a payment system based on blockchain technology, which is applied to intelligent contracts such as point-to-point settlement and cross-border payment.",
+        "zh": "MGC是基于区块链技术构建的支付系统，应用于点对点结算、跨境支付等智能合约。"
+    },
+    "website": "http://www.mgc.group",
+    "whitepaper": "http://www.mgc.group/img/mgc.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-12-20",
+    "links": {
+        "telegram": "https://t.me/joinchat/JTSaq1DD4XtxFoO6nDe5Bg"
+    }
+}

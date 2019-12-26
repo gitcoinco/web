@@ -1,0 +1,23 @@
+{
+    "symbol": "RTH2",
+    "address": "0xa11E45783EB07a5E90e201f9AA473F123cCC8E51",
+    "overview": {
+        "en": "Rethen Foundation has created a new innovation, a modern crypto currency wallet that is used to protect your assets."
+    },
+    "email": "info@rethen-foundation.org",
+    "website": "https://www.rethen-foundation.org/",
+    "whitepaper": "https://www.rethen-foundation.org/paper/rethen-whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-25",
+    "initial_price": {
+        "ETH": "0.00000005 ETH",
+        "USD": "0.000001 USD",
+        "BTC": "0.00000001 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/rethentoken",
+        "telegram": "https://t.me/rethengroup",
+        "github": "https://github.com/rethentoken",
+        "facebook": "https://web.facebook.com/rethentoken"
+    }
+}

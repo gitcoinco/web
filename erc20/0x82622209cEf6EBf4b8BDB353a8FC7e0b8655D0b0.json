@@ -1,0 +1,17 @@
+{
+    "symbol": "NB",
+    "address": "0x82622209cEf6EBf4b8BDB353a8FC7e0b8655D0b0",
+    "overview": {
+        "en": "The total amount of nuclear bomb coins is 10 million, and the amount of transfer and destruction transactions per chain is 1%. It is a deflationary currency with its own destruction mechanism.",
+        "zh": "核弹币总量1000万，每笔链上转账销毁交易量1%，是一种自带销毁机制的通货紧缩货币。"
+    },
+    "email": "technology@nuclearbomb.io",
+    "website": "http://nuclearbomb.io",
+    "state": "NORMAL",
+    "published_on": "2019-06-14",
+    "links": {
+        "twitter": "https://twitter.com/nuclearbombcore",
+        "telegram": "https://t.me/nubombairdrop",
+        "facebook": "https://m.facebook.com/nubomb.core"
+    }
+}

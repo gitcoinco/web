@@ -1,0 +1,22 @@
+{
+  "symbol": "NSC",
+  "address": "0x184c280E3450BD59B0dF35ba7fcE3aae3f353b83",
+  "overview":{
+        "en": "NSC Chain is the world's first anonymous cross-chain data technology platform. Through the Beidou cross-chain technology and quantum file slicing technology, the current blockchain block has high storage cost, high transfer cost, inability to decentralize cross-chain transactions, assets cannot cross-chain, and data security risks are high.",
+        "zh": "NSC Chain是全球第一个匿名跨链数据技术平台。通过北斗跨链技术和量子文件切片技术，解决目前区块链区块存储成本高、转账成本高、无法去中心化跨链交易、资产无法跨链、数据安全隐患大等问题。"
+  },
+  "email": "nsc-support@nschain.me",
+  "website": "http://www.nschain.me",
+  "whitepaper": "http://www.nschain.me/NSC_white_paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-19",
+  "initial_price":{
+        "ETH":"0.00047070 ETH",
+        "USD":"0.1 USD",
+        "BTC":"0.00000875 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/StarChian",
+    "facebook": "https://www.facebook.com/norths.tarchain"
+  }
+}

@@ -1,0 +1,16 @@
+{
+    "symbol": "Coo",
+    "address": "0xd0112dc367d22540d832f37030b1db555edac6c4",
+    "overview": {
+        "en": "Coocoin is the Hong Kong CEO Exchange's trading and mining digital currency based on mathematics and cryptography, referred to as 'Coo', and is not controlled by either party alone, but multi-user participation in transactions is decentralized by blockchain technology, Coo issuance The total amount is 100848000 pieces. In October 2018, the ERC20 smart contract is deployed in a 1:1 ratio. Coocoin totals 100848000 Tokens, never added, and is mapped to Coocoin according to the official team's public chain development progress.",
+        "zh": "Coocoin 是香港 CEO 交易所基于数学和密码学推出的交易挖矿数字货币，简称'Coo'，且不由任何一方单独控制，而是多用户参与交易以区块链技术去中心化进行运作，Coo 发行总量恒定为 100848000 枚，于2018年10月按 1:1 比例部署 ERC20 智能合约，Coocoin 总量 100848000 枚 Token，永不增发 ，并根据官方团队公链开发进度，映射至 Coocoin"
+    },
+    "email": "cootoekn@ceo.bi",
+    "website": "https://ceo.bi/",
+    "whitepaper": "https://down.110vip.cn/win/CooCoin_white_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-12",
+    "links": {
+        "telegram": "https://t.me/wwwbiteceo"
+    }
+}

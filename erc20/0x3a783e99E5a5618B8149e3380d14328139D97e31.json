@@ -1,4 +1,7 @@
 {
-  "symbol": "CVH",
-  "address": "0x3a783e99E5a5618B8149e3380d14328139D97e31"
+    "symbol": "CVH_OLD",
+    "address": "0x3a783e99E5a5618B8149e3380d14328139D97e31",
+    "overview": {
+        "zh": "注：此为 CVH 官方发行的旧 CVH 代币。新 CVH 合约地址：0x52DB8ebF894036ec997Da693C5fa237A4fb69d10"
+    }
 }

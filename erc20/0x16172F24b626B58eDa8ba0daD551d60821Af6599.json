@@ -1,0 +1,20 @@
+{
+    "symbol": "ICC",
+    "address": "0x16172F24b626B58eDa8ba0daD551d60821Af6599",
+    "overview": {
+        "en": "ICOPlatform is a blockchain-based crowdfunding platform that allows participants to back promising projects, startups, and companies so they can raise funds with ease.its own cryptocurrency ICC (iCrowd Coin) completes an ecosystem that puts transparency and fairness first, helps in minimizing participants risk, and connects various stakeholders to create value."
+    },
+    "email": "contact@icoplatform.co",
+    "website": "http://www.icoplatform.io/",
+    "whitepaper": "http://www.icoplatform.io/wp-content/uploads/2018/06/WhitePaper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-19",
+    "initial_price": {
+        "ETH": "0.00004 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/icoplatform",
+        "telegram": "https://t.me/icrowdcoin",
+        "facebook": "https://www.facebook.com/ICOPlatform"
+    }
+}

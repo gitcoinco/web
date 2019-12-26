@@ -1,0 +1,21 @@
+{
+    "symbol": "MOL",
+    "address": "0x32b7a3018e4b832dea848786348164667ec030f3",
+    "overview": {
+        "en": "With the disruptive adoption of DAG and blockless structure, MOL is also the best in class of instant, zero-fee, and highly scalable public blockchain, with the extended Ethereum smart contract support, tokenization of Dapps will never be such easy, it can render service for a broader lieu of scenarios, instant transactions, micro payments, mobile app, decentralized games, insurance and other financial usage.",
+        "zh": "摩尔(MOL)采用颠覆性的有向无环图(DAG)和无区块化(Blockless)设计，最快50毫秒确认交易；其高度可扩展并发无局限(unlimited)的性能以及免交易手续费使得摩尔天然成为小额支付、闪电支付、高频支付、游戏、社群等分布式经济体货代流通的首选。增强型以太坊虚拟机和智能合约也让摩尔公有链成为基于小微闪付免交易费的金融应用的魔方，开发者可以开发各类金融应用包括发行代币."
+    },
+    "email": "Foundation@mol.one",
+    "website": "https://mol.one/",
+    "whitepaper": "https://www.mol.one/static/assets/Whitepaper-EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-01-08",
+    "initial_price": {
+        "ETH": "0.00000250 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/MOL_Blockchain",
+        "telegram": "https://t.me/MolOfficial",
+        "github": "https://github.com/MOLPROJECT"
+    }
+}

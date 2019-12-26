@@ -1,0 +1,10 @@
+{
+    "symbol": "SECS",
+    "address": "0xb198bcdd28db7d665619307b81b693304ccf606e",
+    "overview": {
+        "en": "selfctrler chain is a standard cryptocurrency asset management protocol. Through the selfctrler Smart Contract, individual investors 'automatically escrowed to a third-party custodians (exchange) who, by analyzing data service providers' information, running strategies, and sending trading orders, manipulate custodian accounts, with transaction records and performance retained in the blockchain. Strategy developers do not need the open source strategy source code, but the executable file that conforms to standard interface running on the server. ",
+        "zh": "selfctrler是一个基于区块链技术的数字资产管理系统，致力于解决数字资产管理不透明、低效、运行成本高、安全性低的问题，我们可以颠覆现有数字资产管理市场的混乱落后模式，重构一个可靠高效的数字资产管理市场。"
+    },
+    "website": "http://www.selfctrler.com/",
+    "published_on": "2018-11-05"
+}

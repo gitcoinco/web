@@ -1,0 +1,22 @@
+{
+    "symbol": "HCOIN",
+    "address": "0xaE7d39d92eB8c2fA8eA3716fcCe722Dc9826c56B",
+    "overview": {
+        "en": "HCoin.com is an overseas registered cryptocurrency trading platform dedicated to providing users with safe, fast and stable full services. The platform business covers comprehensive services such as cryptocurrency trading, big data analysis and digital asset management.",
+        "zh": "HCoin.com是一家注册于塞舌尔的全球化数字资产综合交易平台，提供专业的OTC交易、币币交易、大数据分析、数字资产专业管理等综合服务。"
+    },
+    "email": "service@hcoin.com",
+    "website": "http://www.hcoin.com",
+    "whitepaper": "http://xchspd.com/Whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-20",
+    "initial_price": {
+        "USD": "0.000429 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/HCoin6?lang=zh-cn",
+        "telegram": "https://t.me/HCoinoff",
+        "facebook": "https://www.facebook.com/HCoin-248740452641393/",
+        "reddit": "https://www.reddit.com/user/HcoinOfficial/"
+    }
+}

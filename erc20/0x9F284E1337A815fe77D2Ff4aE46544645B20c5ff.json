@@ -1,0 +1,23 @@
+{
+    "symbol": "KTON",
+    "address": "0x9F284E1337A815fe77D2Ff4aE46544645B20c5ff",
+    "overview": {
+        "en": "KTON is the voting token of Evolution Land",
+        "zh": "KTON是进化星球的投票和权益通证，进化星球是一个基于跨链的区块链游戏"
+    },
+    "email": "hello@evolution.land",
+    "website": "https://www.evolution.land",
+    "whitepaper": "https://www.evolution.land/whitepaper_cn.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-14",
+    "initial_price": {
+        "ETH": "0.00001 ETH"
+    },
+    "links": {
+        "blog": "https://medium.com/@evolutionland9",
+        "twitter": "https://twitter.com/evolutionland9",
+        "telegram": "https://t.me/evolutionland9",
+        "github": "https://github.com/evolutionlandorg",
+        "medium": "https://medium.com/@evolutionland9"
+    }
+}

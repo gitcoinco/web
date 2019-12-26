@@ -1,0 +1,25 @@
+{
+    "symbol": "SEXC",
+    "address": "0x2567c677473d110D75a8360C35309e63B1d52429",
+    "overview": {
+        "zh": "ShareX是基于区块链技术，面向未上市企业的股权登记管理与交易流通领域的创新性公司。ShareX与专业的股权转让平台潜力股强强联合，共同打造一个基于区块链技术的股权资产管理系统，帮助全球的股权持有者便捷、安全、可信、高效的管理和交易股权资产。"
+    },
+    "email": "service@sharex.vc",
+    "website": "https://www.sharex.vc/",
+    "whitepaper": "https://www.sharex.vc/whitepaper",
+    "state": "NORMAL",
+    "published_on": "2018-01-16",
+    "initial_price": {
+        "USD": "0.05840 USD",
+        "BTC": "0.00000476 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/sharex_vc",
+        "telegram": "https://t.me/sharexgroup",
+        "github": "https://github.com/SHAREXFoundation/fabric",
+        "facebook": "https://www.facebook.com/sharexfoundation/",
+        "reddit": "https://www.reddit.com/user/sharexfoundation",
+        "slack": "https://sharex-group.slack.com/",
+        "medium": "https://medium.com/@shareX"
+    }
+}

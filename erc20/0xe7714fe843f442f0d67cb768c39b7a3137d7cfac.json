@@ -1,0 +1,16 @@
+{
+    "symbol": "EOI",
+    "address": "0xe7714fe843f442f0d67cb768c39b7a3137d7cfac",
+    "overview": {
+        "zh": "EOS INFINITY的核心目标是致力于打造一种简单稳定、扩展性强的区块链代币系统，同时运用离线钱包和钱包找回等功能来保障EOS INFINITY数字资产的安全性。"
+    },
+    "email": "eoitothemoon@outlook.com",
+    "website": "http://www.eosinfinity.io/",
+    "whitepaper": "http://www.eosinfinity.io/EOSINFINITY_CN.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-29",
+    "links": {
+        "twitter": "https://twitter.com/eosinfinity",
+        "facebook": "https://www.facebook.com/eosinfinity.eoi"
+    }
+}

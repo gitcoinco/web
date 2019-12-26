@@ -1,0 +1,19 @@
+{
+    "symbol": "BCT",
+    "address": "0x6f55acadbaf84500777b9cf48f2c6Ef4eADb9AeF",
+    "overview": {
+        "en": "BCT, is the only official token with the authoritative designation by Becent’s digital assets service platform, and all users are able to receive corresponding BCT reward from their active platform activity participation (new user registration, friend invitation, trans-fee mining, dividend allocation, et al.)",
+        "zh": "BCT是币森数字资产服务平台唯一官方指定的代币，所有用户均能通过参与币森平台的各项活动（新用户注册、邀请好友、交易挖矿、股东分红等等）获得对应的BCT奖励。"
+    },
+    "email": "support@becent.com",
+    "website": "https://www.becent.com",
+    "whitepaper": "https://www.becent.com/html/white-paper-v1.0.6-en.pdf",
+    "state": "NORMAL",
+    "links": {
+        "twitter": "https://twitter.com/becentofficial",
+        "telegram": "https://t.me/becent_EN",
+        "facebook": "https://www.facebook.com/becentofficial/",
+        "reddit": "https://www.reddit.com/user/Becent",
+        "medium": "https://medium.com/@becentofficial"
+    }
+}

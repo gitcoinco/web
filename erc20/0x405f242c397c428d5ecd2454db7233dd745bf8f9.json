@@ -1,0 +1,19 @@
+{
+    "symbol": "ICRT",
+    "address": "0x405f242c397c428d5ecd2454db7233dd745bf8f9",
+    "overview": {
+        "en": "We will build a new platform that will be used to review ICO/ITO."
+    },
+    "email": "admin@findingico.review",
+    "website": "https://www.findingico.review/",
+    "whitepaper": "https://drive.google.com/file/d/1WjkXuvOmrz9x33Hq-HdFVNzY-uh20Y_Y/view",
+    "state": "NORMAL",
+    "published_on": "2018-09-13",
+    "initial_price": {
+        "ETH": "0.00000100 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/ReviewICO_",
+        "github": "https://github.com/ICRToken/ICRT"
+    }
+}

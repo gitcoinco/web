@@ -1,0 +1,15 @@
+{
+    "website": "http://www.drinkchain.io/",
+    "published_on": "2018-04-16",
+    "overview": {
+        "en": "DrinkChain is reshaping the world-wide wine industry. Through decentralization and rebuilding the relation of production, DrinkChain is unleashing every value contributor's producing power.",
+        "zh": "酒水链致力于通过区块链重构世界酒水产业，以去中心之力，重塑生产关系，让价值贡献者参与行业价值分享，使每个个体的生产力得以最大释放。"
+    },
+    "symbol": "Drink",
+    "initial_price": {
+        "ETH": "0.00103923 ETH"
+    },
+    "whitepaper": "http://www.drinkchain.io/pdf/book.pdf",
+    "address": "0x0089659F609933d16A5Cd6C2be1a5dCA1AbE24aD",
+    "email": "support@trinkchain.io"
+}

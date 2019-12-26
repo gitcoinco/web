@@ -1,0 +1,22 @@
+{
+    "symbol": "FED",
+    "address": "0xB03159c8450EE30f5804498EE7C8CA241556e412",
+    "overview": {
+        "en": "A decentralized digital content ecosystem based on AI.",
+        "zh": "去中心化的数字内容智能生态"
+    },
+    "email": "admin@feedtoken.org",
+    "website": "www.feedcoin.one/",
+    "whitepaper": "https://feedweb.oss-cn-beijing.aliyuncs.com/file/feed-4.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-09",
+    "initial_price": {
+        "ETH": "0.00002 ETH"
+    },
+    "links": {
+        "blog": "https://weibo.com/6581444518/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1",
+        "twitter": "https://twitter.com/FeedCoin2",
+        "github": "https://github.com/FeedCoin",
+        "facebook": "https://www.facebook.com/feedtoken/"
+    }
+}

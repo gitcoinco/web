@@ -1,0 +1,15 @@
+{
+    "symbol": "FOLI",
+    "address": "0x37bb1a64d81d6373a467a0683ba709c2998086cb",
+    "overview": {
+        "en": "Flower of life (FOLI) is a generic health public chain that is based on life data, using 1 main chain and 3 side chains (the permanent storage chain, the temporary storage chain and the computing chain) to solve problems about life data, such as stor- age, analysis, alarm and transaction. The core functions of FOLI include: storage of health data; analysis of illnesses; alarm based on big data and the inquiry, search and transaction of health data.",
+        "zh": "生命之花(Flower of Life)是基于生命数据的大健康公链，利用 一主链三侧链(永久存储链、临时存储链、计算链)的四链结构解决生 命数据的存储、分析、预警、交易问题。FOLI 核心功能有健康数据存储、 疾病分析、基于大数据的预警和健康数据的查询、搜索和交易。"
+    },
+    "website": "http://www.floweroflife.one",
+    "whitepaper": "http://www.floweroflife.one/upload/file/20181112/20181112103726_60311.pdf#生命之花白皮书.pdf",
+    "links": {
+        "twitter": "https://twitter.com/foli_flowerlife",
+        "telegram": "https://t.me/floweroflife_foli",
+        "facebook": "https://www.facebook.com/Floweroflife.one"
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "symbol": "TTC",
+    "address": "0x9389434852b94bbad4c8afed5b7bdbc5ff0c2275",
+    "overview": {
+        "en": "A Decentralized and Incentivized Social Networking Protocol",
+        "zh": "基于去中心化和代币激励的社交网络协议"
+    },
+    "email": "official@ttc.eco",
+    "website": "https://www.ttc.eco",
+    "whitepaper": "https://d1u6eqogwsdivn.cloudfront.net/whitepaper/TTC_Whitepaper_EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-25",
+    "initial_price": {
+        "ETH": "0.00025 ETH",
+        "USD": "0.15 USD",
+        "BTC": "0.0000005 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/ttceco",
+        "telegram": "https://t.me/ttc_en",
+        "github": "https://github.com/TTCECO",
+        "facebook": "https://www.facebook.com/ttceco",
+        "reddit": "https://www.reddit.com/r/TTC_Protocol",
+        "medium": "https://medium.com/ttc-official-blog"
+    }
+}

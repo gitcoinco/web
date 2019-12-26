@@ -1,0 +1,23 @@
+{
+    "symbol": "MCHAIN",
+    "address": "0xF8C8c211e976CF65eC8f01B7c70021a3b8bf5575",
+    "overview": {
+        "en": "M Chain, break the ACG wall together!",
+        "zh": "M Chain ，一起打破次元壁！"
+    },
+    "email": "service@mtop.one",
+    "website": "https://mtop.one/",
+    "whitepaper": "https://mtop.one/html/MChainV1.3.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-12-27",
+    "initial_price": {
+        "ETH": "0.00051609 ETH",
+        "USD": "0.44 USD",
+        "BTC": "0.00001701 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/MChain17",
+        "telegram": "https://t.me/joinchat/IywyyRGbqVonmayGc1MWIA",
+        "facebook": "https://www.facebook.com/MiCool-486066641893287/"
+    }
+}

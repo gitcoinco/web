@@ -1,0 +1,19 @@
+{
+  "symbol": "MINIT",
+  "address": "0xCB00D1Bf375ea143bAd5995451A0d7A23a1241aC",
+  "overview":{
+        "en": "MINI Chain aims to build a huge DApp ecosystem and develop a high-performance block chain ecological bottom platform with high versatility, expansibility and compatibility, which can realize a million-level TPS, universal language development intelligent contract and visualization operation block chain 3.0 pilot project.",
+        "zh": "MINI Chain旨在打造一个庞大的DApp生态，开发一个通用性、扩展性、兼容性极强的高性能区块链生态底层平台，可实现百万级TPS、通用语言开发智能合约、可视化操作的区块链3.0领航项目。"
+  },
+  "email": "support@minichain.io",
+  "website": "https://www.minichain.io",
+  "whitepaper": "https://www.minichain.io/white_paper.pdf",
+  "state": "LOCKED",
+  "published_on": "2019-03-16",
+  "initial_price":{
+        "USD":"0.006 USD"
+  },
+  "links": {
+    "github": "https://github.com/miniToken"
+  }
+}

@@ -1,0 +1,20 @@
+{
+    "symbol": "KETC",
+    "address": "0xd0059e9D822C471F394Ae5974d783e86b2Aa0853",
+    "overview": {
+        "en": "We believe that our tokens will be used to send love all around the world.",
+        "zh": "有温度的区块链技术"
+    },
+    "email": "info@kunte.co",
+    "website": "https://kunte.co/",
+    "whitepaper": "https://drive.google.com/file/d/1dSTCp0wXCPQWJ7dJ9CfRMF9UmcT37pr2/view",
+    "state": "NORMAL",
+    "published_on": "2018-11-19",
+    "initial_price": {
+        "ETH": "0.0001721 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/BlockchainKetc",
+        "facebook": "https://www.facebook.com/blockchain.ketc.9"
+    }
+}

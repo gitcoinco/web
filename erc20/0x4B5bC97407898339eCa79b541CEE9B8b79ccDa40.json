@@ -1,0 +1,15 @@
+{
+    "symbol": "IDA",
+    "address": "0x4B5bC97407898339eCa79b541CEE9B8b79ccDa40",
+    "overview": {
+        "en": "IDA Assets Digital Eco-Platform, aiming at promoting the digitalization of the real economy, combines blockchain technology, AI artificial intelligence technology, Internet of Things technology, financial big data, mobile robots, and establishes a new digital asset business model, through the identification of assets Ways to open up the channels for physical assets to enter digital assets, so that asset digitalization and data assetization become a reality, and realize the interconnection and interoperability of assets entering the IDA ecosystem platform. The IDA ecosystem platform will provide professionalized assets digitization. The solution is to create a corresponding multi-scenario ecosystem. All standard assets can be digitized in the IDA ecosystem and enjoy the benefits of ecology.",
+        "zh": "IDA资产数字化生态平台，以促进实体经济数字化为目标，结合区块链技术、AI人工智能技术、物联网技术、金融大数据、移动机器人，建立全新数字资产商业模式，通过确权资产上链的方式，拓开实体资产进入数字资产的通道，从而让资产数字化、数据资产化真正地成为现实，并且实现进入IDA生态平台的资产互联互通、万物互链，IDA生态平台将提供专业化的资产数字化解决方案，打造对应的多场景生态体系，所有符合标准的实体资产都可在IDA生态中资产数字化并享受生态所带来的红利。"
+    },
+    "email": "info@idachain.top",
+    "website": "http://www.ida.im/",
+    "whitepaper": "http://www.ida.im/static/files/whitepaper.pdf",
+    "published_on": "2018-09-19",
+    "initial_price": {
+        "ETH": "0.0001 ETH"
+    }
+}

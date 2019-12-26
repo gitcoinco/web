@@ -1,0 +1,13 @@
+{
+    "symbol": "MSKC",
+    "address": "0x7633f5f923c8a4a93dbd3c408127d4030f7b2e56",
+    "overview": {
+        "en": "MansukeCoin",
+        "zh": "曼杉币"
+    },
+    "email": "chain@mscn.mobi",
+    "website": "http://www.mscn.mobi/",
+    "whitepaper": "http://www.mscn.mobi/MSKC.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-01"
+}

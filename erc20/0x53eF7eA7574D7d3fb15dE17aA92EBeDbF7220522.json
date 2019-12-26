@@ -1,0 +1,22 @@
+{
+	"symbol": "OTRC",
+	"address": "0x53eF7eA7574D7d3fb15dE17aA92EBeDbF7220522",
+	"overview": {
+		"en": "OTR Coin is an IAP billing based token project. We provide users the ability to purchase cryptocurrency through carrier billing. This allows consumers to obtain holdings on the blockchain without spending on-hand capital."
+	},
+	"email": "info@otrfirms.com",
+	"website": "https://otrfirms.com",
+	"whitepaper": "https://otrfirms.com/otr-coin-whitepaper",
+	"state": "NORMAL",
+	"published_on": "2019-06-11",
+	"initial_price": {
+		"ETH": "0.0073 ETH",
+		"USD": "2.00 USD",
+		"BTC": "0.00017 BTC"
+	},
+	"links": {
+		"twitter": "https://twitter.com/otrfirms",
+		"telegram": "https://t.me/otrfirms",
+		"facebook": "https://www.facebook.com/otrfirms"
+	}
+}

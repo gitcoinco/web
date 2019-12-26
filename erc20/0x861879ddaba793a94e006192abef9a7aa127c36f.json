@@ -1,0 +1,19 @@
+{
+    "symbol": "NLF",
+    "address": "0x861879ddaba793a94e006192abef9a7aa127c36f",
+    "overview": {
+        "en": "NLF (New Life) is the application platform of the blockchain Token economy and e-commerce industry. Its blockchain application APP is the carrier of platform and consumer. With the help of blockchain technology, New Life adds anti-counterfeiting and traceability functions to the e-commerce platform, improves the supply chain, solves the monopoly trend caused by the profit tilt in the e-commerce industry, and rationally distributes the mechanism to encourage the healthy development of the platform community. At the same time, New Life interprets the Token economy with a new production relationship, where everyone is the producer, consumer and platform owner of the platform. Everyone can benefit from the new business community that New Life has built.",
+        "zh": "NLF(New Life)是区块链Token经济与电商行业结合的应用平台，其区块链落地应用APP是平台与消费者的载体。New Life借助区块链技术为电商平台增加防伪溯源功能和改善供应链、解决电商行业中利润倾斜导致的垄断化趋势，合理地收益分配机制激励平台社区的良性发展。同时，New Life用全新的生产关系诠释Token经济，每个人既是平台的生产者、消费者，同时也是平台的所有者。所有人都能够从New Life所构建的新型商业社会中受益。"
+    },
+    "email": "contact@nlf.io",
+    "website": "www.nlf.io",
+    "whitepaper": "http://www.nlf.io/file/new%20life_white%20paper%20V1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-03-26",
+    "initial_price": {
+        "USD": "0.15 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/NewLifeOfficia2/"
+    }
+}

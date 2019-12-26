@@ -1,0 +1,19 @@
+{
+    "symbol": "ANNA",
+    "address": "0x6e403df62b5e5d2991519fee1768291b1bfeeb8b",
+    "overview": {
+        "en": "This project aims to develop a blockchain-based profit-sharing platform which allows pron stars to share the profit of our live streaming platform and adult video viewing platform in real time"
+    },
+    "email": "hello@annacoin.io",
+    "website": "http://www.annacoin.io/",
+    "whitepaper": "http://www.annacoin.io/anna-coin-v2.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-01",
+    "initial_price": {
+        "USD": "0.1 USD"
+    },
+    "links": {
+        "telegram": "https://t.me/annacoins",
+        "github": "https://github.com/icoannacoin/ANNACoin_code/tree/master"
+    }
+}

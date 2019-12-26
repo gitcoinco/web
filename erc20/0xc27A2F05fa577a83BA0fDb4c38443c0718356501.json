@@ -1,0 +1,22 @@
+{
+    "website": "https://www.lamden.io/",
+    "published_on": "2017-12-01",
+    "links": {
+        "telegram": "https://t.me/lamdenchat",
+        "reddit": "https://www.reddit.com/r/lamden/",
+        "github": "https://github.com/Lamden/",
+        "facebook": "https://www.facebook.com/LamdenTau/",
+        "twitter": "https://twitter.com/LamdenTau/"
+    },
+    "overview": {
+        "en": "Lamden is a suite of developer tools that speed up the process of creating new and custom blockchains and apps.",
+        "zh": "Lamden 开发工具箱，加速区块链服务开发和定制的时间。"
+    },
+    "symbol": "TAU",
+    "initial_price": {
+        "ETH": "0.0001038 ETH"
+    },
+    "whitepaper": "https://daks2k3a4ib2z.cloudfront.net/599f63af83acb10001bd4583/59d69f806fbb6f000123dbce_lamden-white-paper.pdf",
+    "address": "0xc27A2F05fa577a83BA0fDb4c38443c0718356501",
+    "email": "team@lamden.io"
+}

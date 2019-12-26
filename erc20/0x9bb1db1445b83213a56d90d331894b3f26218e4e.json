@@ -1,0 +1,20 @@
+{
+    "symbol": "HIBT",
+    "address": "0x9bb1db1445b83213a56d90d331894b3f26218e4e",
+    "overview": {
+        "en": "HIBT is the only token issued by the HiBTC platform, not only as a digital asset, but also representing all rights and interests of the HiBTC platform.",
+        "zh": "HIBT是HiBTC平台发行的唯一代币，不仅作为一项数字资产，同时还代表了HiBTC平台的所有权益。"
+    },
+    "email": "admin@hibtc.com",
+    "website": "https://www.hibtc.com/",
+    "whitepaper": "https://www.hibtc.com/om/about/en-us/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-08-18",
+    "initial_price": {
+        "USD": "0.02 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/HiBTC_Exchange",
+        "facebook": "https://www.facebook.com/profile.php?id=100027855751559"
+    }
+}

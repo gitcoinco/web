@@ -1,0 +1,25 @@
+{
+    "symbol": "EX",
+    "address": "0xd1F1c5Ff90Fb6F3b0D57F5f6AD4AAF7400F4B39b",
+    "overview": {
+        "en": "a simple, secure and easy-to-use insurance solution for cryptocurrency enthusiasts.",
+        "zh": "为加密货币爱好者提供的简单，安全且易于使用的保险解决方案"
+    },
+    "email": "admin@extereum.org",
+    "website": "https://extereum.com/",
+    "whitepaper": "https://extereum.org/extereum_whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-09-01",
+    "initial_price": {
+        "ETH": "0.00000130 ETH",
+        "USD": "0.00038 USD",
+        "BTC": "0.00000005 BTC"
+    },
+    "links": {
+        "blog": "https://extereum.org/#about",
+        "twitter": "https://twitter.com/extereum",
+        "telegram": "https://t.me/joinchat/extereumofficial",
+        "github": "https://github.com/extereum/",
+        "medium": "https://medium.com/@extereumofficial"
+    }
+}
