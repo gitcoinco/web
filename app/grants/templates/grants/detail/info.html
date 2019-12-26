@@ -280,6 +280,7 @@
         </div>
       </div>
 
+
       <div class="font-body grant-item__owner my-4">
         <div class="mb-3">
           <p class="sub-title" data-toggle="tooltip" data-placement="bottom">Grant Owner</p>
@@ -299,6 +300,32 @@
     {% endif %}
 
     <span id="grant_contract_owner_address" class="hidden">{{ grant.contract_owner_address }}</span>
+
+    {% if grant.amount_received_with_phantom_funds %}
+      <div id=grant_stats_graph class="content-block content-block--white">
+        <div class="container">
+
+          <div class="value-container">
+            <div class="chart_container chart_container--big">
+              <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">CONTRIBUTION HISTORY</p>
+              <div class="chart_container__content">
+                <div id="grant_chart"></div>
+              </div>
+              <div class="grant-status-list">
+                <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp;{% trans "Subscription Billing" %}</p>
+                <p><span class="box box_2"></span> &nbsp;&nbsp;&nbsp;{% trans "New Subscriptions" %}</p>
+                <p><span class="box box_3"></span> &nbsp;&nbsp;&nbsp;{% trans "One-Time Contributions" %}</p>
+                <p><span class="box box_5"></span> &nbsp;&nbsp;&nbsp;{% trans "CLR Matching Funds" %}</p>
+              </div>
+            </div>
+          </div>
+          <script>
+            document.max_graph = {{max_graph}};
+            document.history = {{history|safe}}; 
+          </script>
+        </div>
+      </div>
+    {% endif %}
 
   </div>
 </div>

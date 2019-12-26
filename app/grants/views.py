@@ -286,7 +286,9 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
-        'is_team_member': is_team_member
+        'is_team_member': is_team_member,
+        'max_graph': grant.history_by_month_max,
+        'history': json.dumps(grant.history_by_month),
     }
 
     if add_cancel_params:
