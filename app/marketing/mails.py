@@ -439,9 +439,9 @@ def send_user_feedback(quest, feedback, user):
     try:
         setup_lang(to_email)
         subject = f"Your Gitcoin Quest \"{quest.title}\" has feedback from another user!"
-        body_str = f"Your quest: {quest.title} has feedback from user {user.profile.handle}:\n\n
-                     \"{feedback}\n\n\"
-                     to edit your quest, click <a href=\"{quest.edit_url}\">here</a>"
+        body_str = f("Your quest: {quest.title} has feedback from user {user.profile.handle}:\n\n"
+                     "{feedback}\n\n\"
+                     "to edit your quest, click <a href=\"{quest.edit_url}\">here</a>")
         body = f"{body_str}"
         if not should_suppress_notification_email(to_email, 'quest'):
             send_mail(
