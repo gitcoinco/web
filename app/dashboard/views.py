@@ -2424,7 +2424,7 @@ def bounty_upload_nda(request):
     return JsonResponse(error_response) if error_response else JsonResponse(response)
 
 
-def get_profile_tab(request, profile, tab, prev_context):
+def get_profile_tab(request, profile, handle, tab, prev_context):
 
     #config
     if not settings.DEBUG:
@@ -2549,6 +2549,18 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'tribe':
         pass
+    elif tab == 'theme':
+        profile = profile_helper(handle)
+        if request.POST:
+            if not request.user.is_authenticated or request.user.profile.pk != profile.pk:
+                messages.error(request, 'Not Authorized')
+            else:
+                if 'theme-case' in request.POST.keys():
+                    profile.custom_theme = request.POST.get('theme-case')
+                    profile.save()
+                    messages.info(request, 'Theme settings has been saved.!')
+                else:
+                    messages.error(request, 'Could not process your request')
     elif tab == 'people':
         pass
     elif tab == 'hackathons':
@@ -2666,7 +2678,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons']
+    all_tabs = ['active', 'ratings', 'portfolio', 'theme', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2677,7 +2689,7 @@ def profile(request, handle, tab=None):
     if not handle and request.user.is_authenticated:
         handle = request.user.username
     is_my_profile = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    user_only_tabs = ['viewers', 'earnings', 'spent']
+    user_only_tabs = ['viewers', 'earnings', 'spent', 'theme']
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
     owned_kudos = None
     sent_kudos = None
@@ -2726,6 +2738,7 @@ def profile(request, handle, tab=None):
     context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
+    context['theme_type'] = profile.custom_theme
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
     context['is_on_tribe'] = request.user.is_authenticated and any([handle.lower() == tribe.org.handle.lower() for tribe in request.user.profile.tribe_members ])
     context['ratings'] = range(0,5)
@@ -2733,7 +2746,7 @@ def profile(request, handle, tab=None):
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
 
-    tab = get_profile_tab(request, profile, tab, context)
+    tab = get_profile_tab(request, profile, handle, tab, context)
     if type(tab) == dict:
         context.update(tab)
     else:

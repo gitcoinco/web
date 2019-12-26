@@ -46,6 +46,13 @@
             </a>
           </li>
         {% endif %}
+        {% if is_my_profile %}
+          <li class="nav-item">
+            <a class="nav-link nav-line  {% if tab == 'theme' %}active{%endif%}" href="{{profile.url}}/theme">
+              Profile Theme
+            </a>
+          </li>
+        {% endif %}
         {% if profile.organizations|length %}
           <li class="nav-item">
             <a class="nav-link nav-line  {% if tab == 'orgs' %}active{% endif %}" href="{{profile.url}}/orgs">
@@ -134,6 +141,8 @@
             {% include 'profiles/tab_active.html' %}
           {% elif tab == 'portfolio' %}
             {% include 'profiles/tab_portfolio.html' %}
+          {% elif tab == 'theme' %}
+            {% include 'profiles/tab_theme.html' %}
           {% elif tab == 'orgs' %}
             {% include 'profiles/tab_orgs.html' %}
           {% elif tab == 'tribe' %}
