@@ -1028,10 +1028,11 @@ window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 1000);
 });
 
-var setUsdAmount = function(event) {
-  var amount = $('input[name=amount]').val();
-  var denomination = $('#token option:selected').text();
-  var estimate = getUSDEstimate(amount, denomination, function(estimate) {
+var setUsdAmount = function() {
+  const amount = $('input[name=amount]').val();
+  const denomination = $('#token option:selected').text();
+
+  getUSDEstimate(amount, denomination, function(estimate) {
     if (estimate['value']) {
       $('#usd-amount-wrapper').css('visibility', 'visible');
       $('#usd_amount_text').css('visibility', 'visible');

@@ -3308,6 +3308,31 @@ def change_bounty(request, bounty_id):
                     if key == 'reserved_for_user_handle' and value:
                         new_reservation = True
 
+        if not bounty.is_bounties_network:
+            current_amount = float(bounty.value_true)
+            new_amount = float(params.get('amount'))
+            if new_amount and current_amount != new_amount:
+                print("SHIT-2")
+                bounty.value_true = new_amount
+                value_in_token = params.get('value_in_token')
+                bounty.value_in_token = value_in_token
+                bounty.balance = value_in_token
+                try:
+                    bounty.token_value_in_usdt = convert_token_to_usdt(bounty.token_name)
+                    bounty.value_in_usdt = convert_amount(bounty.value_true, bounty.token_name, 'USDT')
+                    bounty.value_in_usdt_now = bounty.value_in_usdt
+                    bounty.value_in_eth = convert_amount(bounty.value_true, bounty.token_name, 'ETH')
+                    bounty_changed = True
+                except ConversionRateNotFoundError as e:
+                    logger.debug(e)
+
+            current_hours = int(bounty.estimated_hours)
+            new_hours = int(params.get('hours'))
+            if new_hours and current_hours != new_hours:
+                bounty.estimated_hours = new_hours
+                bounty.metadata['estimatedHours'] = new_hours
+                bounty_changed = True
+
         if not bounty_changed:
             return JsonResponse({
                 'success': True,
@@ -3344,7 +3369,10 @@ def change_bounty(request, bounty_id):
         'pk': bounty.pk,
         'result': json.dumps(result),
         'is_bounties_network': bounty.is_bounties_network,
-        'token_name': bounty.token_name
+        'token_name': bounty.token_name,
+        'token_address': bounty.token_address,
+        'amount': bounty.get_value_true,
+        'estimated_hours': bounty.estimated_hours
     }
 
     return TemplateResponse(request, 'bounty/change.html', params)
