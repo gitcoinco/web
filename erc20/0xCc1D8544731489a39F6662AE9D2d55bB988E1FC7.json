@@ -1,0 +1,23 @@
+{
+  "symbol": "LCH",
+  "address": "0xCc1D8544731489a39F6662AE9D2d55bB988E1FC7",
+  "overview":{
+        "en": "LCH (LockChain Token) is an ERC20 token based on Ethereum technology. LockChain is expected to have a total issued amount of 2.1 billion, while the total amount is constant and will never be additionally issued. At present, LCH is issued deflation, and the current issue price is 0.014 USDT. As the important value transmission carrier in LockChain ecological construction, the function of LCH is mainly reflected in value-added circulation, community incentives, equity proof, ecological co-construction and investment realization.",
+        "zh": "LCH（LockChain Token）是基于以太坊技术实现的ERC20代币，LockChain平台预计发行总量将达到21亿枚，同时总量恒定、永不增发。目前LCH实行通缩发行，现有发行价格为0.014USDT。LCH作为LockChain生态建设中的重要价值传输载体，主要作用体现在增值流通、社区激励、权益证明、生态共建和投资变现。"
+  },
+  "email": "admin@Lockchain.vip",
+  "website": "https://www.lockchain.vip",
+  "whitepaper": "https://www.lockchain.vip/upfile/2019/1c71d1b24764498aa5e94b9f317f5601.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-06-09",
+  "initial_price":{
+        "USD":"0.014 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/LockchainGlobal",
+    "telegram": "https://t.me/LockchainCN",
+    "github": "https://github.com/lockchainglobal",
+    "facebook": "https://www.facebook.com/LockChainCommunity",
+	"reddit": "https://www.reddit.com/user/LockchainGlobal"
+  }
+}

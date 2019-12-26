@@ -1,0 +1,19 @@
+{
+    "symbol": "BCP",
+    "address": "0x8A4b174237c7018a0329BB9e57782D9131d35ffF",
+    "overview": {
+        "en": "BCP (bitcoin petro) is a new computing network based on bitcoin network bifurcation. It adopts point-to-point transmission and POW consensus mechanism to build a 'decentralized electronic oil circulation system'. BCP aims to become a global general oil ecological value data transmission network.",
+        "zh": "BCP(BitcoinPetro)是基于比特币网络分叉的一个全新的算力网络，采用点对点传输与POW共识机制，以搭建“去中心化电子石油流通系统”为使命，BCP旨在成为全球通用的石油生态价值数据传输网络。"
+    },
+    "email": "bcp_pro@163.com",
+    "website": "http://www.ibcp.pro/",
+    "whitepaper": "http://ibcp.pro/ibcp",
+    "state": "NORMAL",
+    "published_on": "2019-10-31",
+    "initial_price": {
+        "ETH": "0.00106206 ETH",
+        "USD": "0.185 USD",
+        "BTC": "0.00002322 BTC"
+    },
+    "links": {}
+} 

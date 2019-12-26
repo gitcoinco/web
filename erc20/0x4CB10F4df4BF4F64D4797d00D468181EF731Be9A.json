@@ -1,0 +1,23 @@
+{
+    "symbol": "EON",
+    "address": "0x4CB10F4df4BF4F64D4797d00D468181EF731Be9A",
+    "overview": {
+        "en": "EON supports payment for various application scenarios in the Dimension ecosystem",
+        "zh": "EON支持Dimension生态系统中各应用场景的支付"
+    },
+    "email": "contact@dimensionchain.io",
+    "website": "www.dimensionchain.io",
+    "whitepaper": "http://dimensionchain.io/docs/whitepaper_zh.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-07-11",
+    "initial_price": {
+        "USD": "0.03 USD"
+    },
+    "links": {
+		"twitter": "https://twitter.com/dimensionchain",
+		"telegram": "https://t.me/dimensionofficial",
+		"facebook": "https://www.facebook.com/dimensionEON",
+		"reddit": "https://www.reddit.com/r/dimensionchain/",
+		"medium": "https://medium.com/dimensionchain"
+    }
+}

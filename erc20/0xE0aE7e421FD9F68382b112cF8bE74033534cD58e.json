@@ -1,0 +1,17 @@
+{
+  "symbol": "VIC",
+  "address": "0xE0aE7e421FD9F68382b112cF8bE74033534cD58e",
+  "overview":{
+        "en": "Tokenization of Value of Individual",
+        "zh": "个性价值通证化"
+  },
+  "email": "team-vic@outlook.com",
+  "website": "https://vichome.github.io/",
+  "whitepaper": "https://vichome.github.io/2019/20190828.whitepaper.zh-CN/",
+  "state": "NORMAL",
+  "published_on": "2019-08-28",
+  "links": {
+    "blog": "https://vichome.github.io",
+    "github": "https://github.com/vichome"
+  }
+}

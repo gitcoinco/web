@@ -1,0 +1,17 @@
+{
+    "symbol": "POWX",
+    "account_name": "powxtokenpow",
+    "overview": {
+        "en": "POWX is a loyalty/transitional token in POW Ecosystem, that enables exchange of value outside of the platform. It can be swapped into POW token and back without any restrictions. Proof of Weak Hands (POWh) is an EOS based exchange that shares benefits from activity on the platform (token buys, sells or transfers) to all POW token holders in transparent and verifiable manner."
+    },
+    "email": "info@powh.fund",
+    "website": "https://powh.fund",
+    "published_on": "2019-06-05",
+    "links": {
+        "medium": "https://medium.com/@powhfund",
+        "twitter": "https://twitter.com/powhfund",
+        "telegram": "https://t.me/powhfund",
+        "github": "https://github.com/powhfund",
+        "weibo": "https://weibo.com/powhfund"
+    }
+} 

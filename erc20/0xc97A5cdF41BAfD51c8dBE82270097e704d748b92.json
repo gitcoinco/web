@@ -1,0 +1,23 @@
+{
+  "symbol": "KLOWN",
+  "address": "0xc97A5cdF41BAfD51c8dBE82270097e704d748b92",
+  "overview":{
+        "en": "Ether Clown is a social experiment type of a token with an RNG (Random Number Generated) burning mechanism on every transaction from 1.5% to 3.5% when people transfer token(s) between two addresses.",
+        "zh": "當人們在兩個地址之間轉移令牌時，以太小丑是令牌的一種社會實驗類型，它在每筆交易中具有RNG（生成隨機數）燃燒機制，從1.5％到3.5％。"
+  },
+  "email": "business@etherclown.com",
+  "website": "https://etherclown.com/",
+  "whitepaper": "https://etherclown.com/clownpaper",
+  "state": "NORMAL",
+  "published_on": "2019-08-20",
+  "initial_price":{
+        "ETH":"0.00500000 ETH",
+        "USD":"0.95 USD",
+        "BTC":"0.00010000 BTC"
+  },
+  "links": {
+    "blog": "https://etherclown.com/category/blogs/",
+    "twitter": "https://twitter.com/clownether",
+    "telegram": "https://t.me/Etherclown"
+  }
+}

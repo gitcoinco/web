@@ -1,0 +1,21 @@
+{
+  "symbol": "XL",
+  "address": "0x336A24FC03c93101D4e31160c27EeaEdc34BE01d",
+  "overview":{
+        "en": "XLand is a global asset data public chain developed based on blockchain technology. The use of blockchain technology, combined with the Internet of Things, big data technology to build applications to open the chain of assets under the chain, providing technical support for the real economy. XLand adopts the mining mode of POST+POA consensus, builds super-verification nodes, maintains network consensus, adopts fragmentation technology, and realizes multi-chain concurrent transaction processing capability of more than one million per second, which can support high-frequency data exchange. Scenes. XLand introduces Xsuper superconducting system to achieve community ecological sustainability; develop competitive ecology with Hainan strategic partners, burn excess Token, maintain ecological balance, integrate with entities, real estate, property, commodities, finance, etc., physical assets to XLand Anchoring valuations and injecting value. In the XLand network, it is possible to reliably record and deliver capital flows, logistics, and information flows. All data such as transactions, payments, profit distribution, etc. are managed in an integrated manner, and cryptographic design is used to ensure the safety and fairness of all aspects.",
+        "zh": "XLand 是基于区块链技术开发的全球资产数据化公链。利用区块链技术，与物联网，大数据技术相结合搭建应用打通链上链下资产流通,为实体经济提供技术支持。Xland 采用POST+POA共识的挖矿模式，并搭建超级验证节点，维护网络共识，采用分片技术，多链并发实现每秒百万级以上的交易处理能力，实现能够支撑高频的数据交换场景。XLand 引入Xsuper 超导系统，实现社区生态可持续性；与海南战略伙伴开发竞技生态，燃烧过剩Token，维持生态平衡，与实体相结合，地产，物业，商品，金融等，实体资产以XLand 锚定估值，注入价值.在XLand 网络中，能够真实可靠地记录和传递资金流、物流、信息流。所有交易、支付、利润分配等一切数据进行统筹管理，并使用密码学的设计来确保各个环节的安全与公正。"
+  },
+  "email": "xinglankl@126.com",
+  "website": "http://www.xlands.io",
+  "whitepaper": "http://www.xlands.io/common/XLand.pdf",
+  "published_on": "2019-08-01",
+  "initial_price":{
+        "USD":"0.1 USD"
+  },
+  "links": {
+    "blog": "https://weibo.com/XLand_Internet",
+    "twitter": "https://twitter.com/XLand_Internet",
+    "telegram": "https://t.me/XLand_Internet",
+    "github": "https://github.com/XLand-Internet"
+  }
+}

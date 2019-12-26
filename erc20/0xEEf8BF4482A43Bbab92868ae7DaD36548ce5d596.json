@@ -2,9 +2,9 @@
   "symbol": "DDXP",
   "address": "0xEEf8BF4482A43Bbab92868ae7DaD36548ce5d596",
   "overview":{
-    "en": "DDXP is a pass-through upgrade for the existing public welfare development dilemma. It is based on the super-block technology of the blockchain based on Super Gold. It fully utilizes the unique advantages of deblocking, traceability and non-tamperability of the blockchain. Mechanism, and introduce a new generation of public welfare blockchain applications for emerging technologies such as the Internet of Things and big data.",
-    "zh": "DDXP是针对现有公益发展困境的一次通证化升级，是基于区块链底层技术Super Gold的基础上，充分运用区块链的去中心化、可追溯、不可篡改等独特优势，采用DPOS共识机制，并引入物联网、大数据等新兴技术的新一代公益性的区块链应用。"
+    "en": "DDXP is a pass-through upgrade for the existing public welfare development dilemma. It fully utilizes the unique advantages of deblocking, traceability, and non-tamperability of the blockchain, adopts the poc consensus mechanism, and introduces distributed storage, Internet of Things, and big data. A new generation of public welfare blockchain applications such as emerging technologies.",
+    "zh": "DDXP是针对现有公益发展困境的一次通证化升级，充分运用区块链的去中心化、可追溯、不可篡改等独特优势，采用poc共识机制，并引入分布式存储，物联网、大数据等新兴技术的新一代公益性的区块链应用。"
 },
   "website": "http://www.ddxp-token.com",
-  "whitepaper": "http://www.ddt-token.com/DDXP.pdf"
+  "whitepaper": "http://www.ddxp-token.com/DDXP.pdf"
 }

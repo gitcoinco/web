@@ -1,0 +1,24 @@
+{
+  "symbol": "OXO",
+  "address": "0x2612db102E64cC83f7Db7BE9e30f914438f46da9",
+  "overview":{
+        "en": "By utilizing the high fluidity,fast transaction,rapid circulation as well as safeness and reliability of tokens,the game industry has established a set of impeccable economic system.From BTC and ETH at the beginning to various mainstream currencies nowadays,as everyone knows, tokens have huge fluctuations in value.For the purpose of ensuring the players’ benefits,and realizing a stable payment and settlement system in the game ecosystem,OXO-EX issues OXO, a stable digital token, based on the mainstream public chain.Users can not only achieve voucher management via OXO,but also manage all their own assets easily,and engage in a variety of valuable financial activities. OX Omen, called OXO for short,is the currency of OXO-EX platform,and the globally first stable settlement token based on the game economic system.mainly used for the blockchain game ecosystem application circulation and the global node dividend.Giving consideration to the credit value and user experience of Bitcoins,in order to directly satisfy the global players’ more demands on transaction,value storage, earning, replacement, reinvestment and so on,At present，OXO can be used for service charge abatement,game consumption, global trade settlement and other payment applications,and can be used as a proof of stake for more blockchain products.",
+        "zh": "中文：游戏产业利用通证高流动性，快速交易，快速流转，安全可靠建立起了一套完善的经济体系。而通证从一开始的BTC、ETH到如今的各类主流货币，众所周知价值波动都非常大，OXO-EX为了玩家在利益上得到保证，以实现稳定的游戏生态支付结算体系，OXO-EX基于主流公链发行了一种稳定数字通证—OXO，用户不仅可通过OXO进行凭证管理还可轻松的管理自己的所有资产，并进行各种有价值的金融活动。OX Omen简称OXO，OXO-EX平台币，全球首个基于游戏经济体系的稳定结算通证，主要用于区块链游戏生态应用流通和全球节点分红。为兼顾比特币的信用价值与用户体验，直接满足全球玩家更多的交易、储值、收益、置换、再投资等需求，OXO目前可用于减免交易手续费、游戏消费、全球贸易结算等其他支付应用等更多区块链产品的权益证明"
+  },
+  "email": "oxoex@oxoexmail.cn",
+  "website": "https://www.oxoex.com/index",
+  "whitepaper": "https://web.oxoex.com/OXOmen_white_book_EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-04",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
+  "links": {
+    "blog": "http://weibo.com/oxoex",
+    "twitter": "https://twitter.com/OXOexchange",
+    "telegram": "https://t.me/OXOexchange",
+    "facebook": "https://www.facebook.com/EX.oxoex/"
+  }
+}

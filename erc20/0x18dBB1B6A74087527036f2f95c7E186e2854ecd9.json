@@ -1,0 +1,20 @@
+{
+  "symbol": "IPOS",
+  "address": "0x18dBB1B6A74087527036f2f95c7E186e2854ecd9",
+  "overview": {
+    "en": "IPOS（Inter Planetary Optimal Storage）is a distributed storage system based on blockchain technology .Distributed attribute and encryption algorithm are used to realize access control of user data. The authenticity and reliability of user data files can be guaranteed by using the non-tamperability of blockchain. The distributed technology in blockchain is used to increase the transparency of file transfer process and file operation of storage nodes. Using the distrust mechanism provided by the blockchain platform, the files are cut and stored in the peer-to-peer network, and the key summaries of the files are chained. While ensuring the distributed management of file information, the users' data content is not disclosed. IPOS aims to solve the problems of insecurity, verbosity, and inefficiency in traditional storage. Its vision is to provide more secure, efficient, low-cost, and more sustainable cloud storage services to users around the world. Every storage and sharing action generates value.",
+    "zh": " IPOS（INTER PLANETARY OPTIMAL STORAGE），分布式网络最优存储价值公链。IPOS是基于区块链技术的分布式存储系统，利用分布式属性和加密算法来实现用户数据的访问控制。利用区块链不可篡改的特性保障用户数据文件的真实、可靠。利用区块链中的分布式技术增加文件传输过程、存储节点操作文件等行为的透明度。利用区块链平台提供的去信任机制，将文件进行切割并分散存储在对等网络中，将文件关键摘要上链，在保证文件信息分布式管理的同时不泄露用户数据内容。IPOS旨在解决传统存储中的不安全性、冗长性、低效性等问题，其愿景是为全球的用户提供更加安全、高效、低成本和持续性更强的云存储服务，同时也让用户的每一次存储和分享行为产生价值。"
+  },
+  "email": "contact@ipos.top",
+  "website": "http://ipos.top/",
+  "whitepaper": "http://ipos.top/img/%E3%80%90CN%E3%80%91IPOS(Inter%20Planetary%20Optimal%20Storage)1218.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-12-18",
+  "initial_price": {
+    "USD": "0.135 USD"
+  },
+  "links": {
+    "twitter": " https://twitter.com/IPOS68418625",
+    "facebook": " https://www.facebook.com/ipos.ipos.334"
+  }
+}

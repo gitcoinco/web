@@ -1,0 +1,15 @@
+{
+    "symbol": "Green",
+    "address": "0xc1C05Ee8cfBC3Ef4fda5Dcc2B17Ce99Ec156d322",
+    "overview": {
+        "en": "Green is a decentralized forest carbon sequestration stabilization currency developed and managed by Singapore Carbon Asset Management Corporation. Each Green unit represents 0.1 tons of real forest carbon sequestration contracts. 1 Green = 0.1t forest carbon sink contract. Green's value will continue to increase with the rapid development of global carbon markets.",
+        "zh": "Green是由新加坡碳资产管理公司开发并管理的去中心化森林碳汇稳定币，每个Green单位代表0.1吨真实的森林碳汇合约。1Green=0.1t森林碳汇合约。Green的价值将随全球各碳市场的快速发展而不断增值。"
+    },
+    "website": "http://www.cgreenchain.com/",
+    "whitepaper": "http://www.cgreenchain.com/a/guanyuwomen/",
+    "published_on": "2019-07-21",
+    "initial_price": {
+        "ETH": "0.001 ETH",
+        "USD": "0.2 USD"
+    }
+}

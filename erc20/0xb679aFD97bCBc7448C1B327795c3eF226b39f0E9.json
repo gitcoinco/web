@@ -1,0 +1,19 @@
+{
+    "symbol": "WLM",
+    "address": "0xb679aFD97bCBc7448C1B327795c3eF226b39f0E9",
+    "overview": {
+        "en": "Win Last Mile (WLM) aims to provide better services to the elder and disable people, with a focus on Asian countries, starting from China and Taiwan.  Our team includes experts specialized in blockchain, social welfare, health-care, policy research and asset management. The team is led by Bishop Kao who is currently ministering three churches as well as their underlining foundations.  "
+    },
+    "email": "admin@winlastmile.org",
+    "website": "https://winlastmile.org/",
+    "whitepaper": "https://winlastmile.org/wp-content/uploads/2018/03/WLNTWhitePaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-03-30",
+    "initial_price": {
+        "USD": "0.0002 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/kao_kuang",
+        "telegram": "http://t.me/winlastmile"
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "symbol": "HAMB",
+    "address": "0xC6b6F2D963EAf8c5719aFbDA8626f87CfD450Be5",
+    "overview":{
+		  "en":"Established by huawei veteran team, HAMB is dedicated to the development of basic operating facilities and products of super private network, and creates a brand new value private network ecology.Based on the operation structure of AI+ intelligent super private network, the team provides enterprises, schools and individual users with a completely autonomous, controllable and telecoms-level virtual transmission network on top of the existing transmission network.In the future, HAMB will layout HAMB nodes on a global scale, promote the coordination and collaboration of industrial chain, value chain, innovation chain and other links, and create an intelligent super private network ecology.",
+          "zh":"超级专网（HAMB）由华为元老团队创建，致力于超级专网基础运营设施和产品的开发，打造全新的价值专网生态。奉行区块链重构利益分配理念，基于AI+智慧超级专网运营架构，团队在现有传输网络之上，为企业、学校及个体用户提供一个完全自主、可管可控的、电信级别的虚拟传输网。未来，HAMB将在全球范围内布局HAMB节点，推动产业链、价值链、创新链等各环节的协调协作，创建智慧型超级专网生态。"
+    },
+    "email": "hamb_pro@163.com",
+    "website": "http://www.hamb.pro",
+    "whitepaper": "http://www.hamb.pro/whitepaper.html",
+    "state": "NORMAL",
+    "published_on": "2019-09-20",
+    "initial_price":{
+		"USD":"0.015 USD"
+    },
+    "links": {}
+  }	

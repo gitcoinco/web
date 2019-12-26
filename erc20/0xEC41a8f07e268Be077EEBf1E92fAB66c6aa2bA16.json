@@ -1,0 +1,18 @@
+{
+    "symbol": "CMC100",
+    "address": "0xEC41a8f07e268Be077EEBf1E92fAB66c6aa2bA16",
+    "overview":{
+          "en": "The national medicine chain is a quality tracking service system for high-quality and truly healthy products. It is an innovative production and marketing channel for high-quality and truly healthy products. It is a dividend-based product for the profit distribution of blockchain health products. It is a strong application of virtual currency projects.",
+          "zh": "CMC100国医链是优质确真大健康产品的质量追踪服务体系，是优质确真大健康产品的创新生产和营销渠道，是区块链健康产品分销利润的分红币，是强应用的虚拟币项目。"
+    },
+    "email": "jerry@cmcoin.com",
+    "website": "http://www.cmcoin.io/",
+    "whitepaper": "http://www.cmcoin.io/%E5%9B%BD%E5%8C%BB%E9%93%BE%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-10-11",
+    "links": {
+        "twitter": "https://twitter.com/CmcoinOfficial",
+        "facebook": "https://www.facebook.com/CmcoinOfficial",
+        "telegram": "https://t.me/cmcoingroup"
+      }
+}

@@ -1,0 +1,19 @@
+{
+  "symbol": "BTCF",
+  "address": "0x225927F8fa71d16EE07968B8746364D1d9F839bD",
+  "overview":{
+    "en": "Bitcoin Fast describes itself as a decentralized Internet-of-value protocol for global payments. Applications include peer-to-peer transactions and exchange platforms."
+  },
+  "email": "contact@bitcfast.com",
+  "website": "https://bitcfast.com/",
+  "whitepaper": "https://bitcfast.com/wp-content/uploads/2019/07/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-1",
+  "initial_price":{ "ETH":"0.00003 ETH", "USD":"0.004 USD", "BTC":"0.00000060 BTC" },
+  "links": {
+    "blog": "https://bitcfast.com/#news",
+    "twitter": "https://twitter.com/BTCFcoin",
+    "telegram": "https://t.me/btcfastcoin",
+    "github": "https://github.com/BitcoinFast"
+   }
+}

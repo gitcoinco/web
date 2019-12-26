@@ -1,0 +1,19 @@
+{
+    "website": "https://www.zb.com/",
+    "published_on": "2018-01-27",
+    "links": {
+        "reddit": "https://www.reddit.com/r/ZBExchange",
+        "facebook": "https://www.facebook.com/ZBGlobalGroup",
+        "twitter": "https://twitter.com/Zb_group"
+    },
+    "overview": {
+        "en": "ZB Token(ZB) is an official value-added services and privileges scheme based on ZB exchange. The token is issued on Ethereum ERC20 protocol. ZB Token can be used in diversified scenarios in ZB ecosystem and supports ZB Global business and all products. Its total supply is 2,100,000,000 ZB.",
+        "zh": "ZB是由ZB Blockchain基金会基于区块链发行的平台积分，可以在ZB生态众多场景下使用并流通，让用户可以在ZB生态体系中享有更多的权益，打通ZB生态全产业服务。ZB的发行总量为21亿。"
+    },
+    "symbol": "ZB",
+    "initial_price": {
+        "USD": "0.153 USD"
+    },
+    "address": "0xBd0793332e9fB844A52a205A233EF27a5b34B927",
+    "email": "support@zb.cn"
+}

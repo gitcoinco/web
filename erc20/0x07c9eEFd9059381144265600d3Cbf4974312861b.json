@@ -1,0 +1,28 @@
+  {
+    "symbol": "HYC",
+    "address": "0x07c9eEFd9059381144265600d3Cbf4974312861b",
+    "overview":{
+          "en": "Hycon (Hyperconnected Coin), is built on top of a blockchain developed by the Infinity Project team. Using a DAG resolves conflicting transactions and reject double-spends through the SPECTRE. Issuing of ERC-20 HYC is for the interoperability of Ethereum & Hycon via Cross-Swap.",
+          "zh": "Hycon (超连接币)，是建立在Infinity项目团队开发的区块链网络上的。在SPECTRE协议中使用了有向无环图来解决双花问题和有冲突的交易。发行ERC-20 HYC是为了通过货币交换来达成Ethereum网络和Hycon网络互通。"
+    },
+    "email": "lch@glosfer.com",
+    "website": "https://hycon.io/",
+    "whitepaper": "https://hycon.io/wp-content/uploads/2019/05/HYCON-White-Paper_V1.3_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-01-04",
+    "initial_price":{
+          "ETH":"0.0000268 ETH",
+          "USD":"0.004109 USD",
+          "BTC":"0.00000054 BTC"
+    },
+    "links": {
+      "twitter": "https://twitter.com/teamhycon?lang=en",
+      "telegram": "https://t.me/hyconofficial",
+      "github": "https://github.com/Team-Hycon",
+      "facebook": "https://www.facebook.com/teamhycon/",
+      "reddit": "https://www.reddit.com/r/HYCON/",
+      "medium": "https://medium.com/@teamhycon",
+      "youtube": "https://www.youtube.com/channel/UCG70VYa9wVjYB_rZ3cRSPyQ/featured",
+      "kakao": "https://open.kakao.com/o/gos0fBI"
+    }
+  }

@@ -1,0 +1,22 @@
+{
+  "symbol": "POLA",
+  "address": "0xbBE5C81412Bad19877300d63CC8D8264A154091E",
+  "overview":{
+        "en": "Polarchain's goal is to make use of blockchain technology to make a more efficient, stable, scientific and reasonable edge computing platform. Follow the `principle of everyone is equal` in the blockchain, and realize the proof of contribution effective resources, that is, proof of of use work (pouw). Polarchain collects idle resources such as broadband, computing, storage and so on, so that everyone can become an edge computing node, and each edge node can process, execute nearby services and obtain revenue. We rely on numerous nodes to form a decentralized peer-to-peer edge computing platform, which eventually becomes the super edge cloud - polarchain.",
+        "zh": "PolarChain 的目标是利用区块链技术做一个更高效、更稳定、更为科学合理的边缘计算平台。遵从区块链“人人平等”的原旨，实现贡献有效资源证明，即 Proof Of Useful Work（POUW）。PolarChain 收集宽带、计算、存储等闲散资源，使每个人都成为边缘计算节点，每个边缘节点均可处理、执行就近业务并获得收益。我们依靠无数的节点组成一个去中心化对等边缘计算平台，最终成为超级边缘云——PolarChain。"
+  },
+  "email": "adam.huang@ipfsbit.com",
+  "website": "http://www.polar-chain.com/",
+  "whitepaper": "http://download.ipfsbit.com/Polar+Chain%E8%B6%85%E7%BA%A7%E8%BE%B9%E7%BC%98%E4%BA%91Beta2.1.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-10-16",
+  "initial_price":{
+        "ETH":"0.00000000 ETH",
+        "USD":"0.0 USD",
+        "BTC":"0.00000000 BTC"
+  },
+  "links": {
+    "blog": "http://www.polar-chain.com/",
+    "github": "https://github.com/ipbit"
+}
+}

@@ -1,0 +1,23 @@
+{
+    "symbol": "CHE",
+    "address": "0x72978B6b02A09372F86DC2549dcC9A8eBEd24434",
+    "overview":{
+          "en": "CHE is the official certificate of ERC20 digital assets issued by CHEX FOUNDATION, a global non-profit block chain foundation. CHE passport is mainly used to construct and motivate global CHE community, platform ecology, project incubation, public welfare project support. Thus, the community ecological system with CHEX FOUNDATION as the core is established. As an important part of CHE ecosystem, CHAOEX trading platform provides a carrier for the implementation of CHE application scenarios.",
+          "zh": "CHE是全球化非盈利性区块链基金会CHEX FOUNDATION所发行的ERC20数字资产官方通证。CHE通证主要应用于构建并激励全球化CHE社群，平台生态，项目孵化，公益活动项目支持。从而建立以CHEX FOUNDATION为核心的社区生态体系。CHAOEX 交易平台作为CHE生态体系的重要组成部分，为CHE的应用场景实现提供了载体。"
+    },
+    "email": "business-en@chaoex.com.hk",
+    "website": "https://www.chaoex.info/",
+    "whitepaper": "https://chex.oss-cn-beijing.aliyuncs.com/a-stasic/pdf/CHE白皮书-20190929-V1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-10-10",
+    "initial_price":{
+          "USD":"0.002 USD"
+    },
+    "links": {
+      "blog": "https://weibo.com/u/6474977299",
+      "twitter": "https://twitter.com/CHAOEX_Global",
+      "telegram": "https://t.me/HKchaoex",
+      "github": "https://github.com/chaoex",
+      "facebook": "https://www.facebook.com/CHAOEXGlobal"
+    }
+  }

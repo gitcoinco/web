@@ -1,0 +1,23 @@
+{
+    "symbol": "ECO2", 
+    "address": "0x83058F5Bc487151253d8deff14E58ED707582F8D", 
+    "overview": {
+        "en": "ECO2 is the blockchain application of carbon market.", 
+        "zh": "ECO2是区块链的碳市场应用"
+    }, 
+    "email": "info@eco2.cc", 
+    "website": "https://www.eco2.cc/", 
+    "whitepaper": "https://www.eco2.cc/whitepaper", 
+    "state": "NORMAL", 
+    "published_on": "2018-01-10", 
+    "initial_price": {
+        "ETH": "0.00 ETH", 
+        "USD": "0.00 USD", 
+        "BTC": "0.00 BTC"
+    }, 
+    "links": {
+        "twitter": "https://twitter.com/ECO2_Global", 
+        "telegram": "https://t.me/ECO2_channel", 
+        "facebook": "https://www.facebook.com/ECO2.CC"
+    }
+}
