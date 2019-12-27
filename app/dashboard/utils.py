@@ -471,6 +471,25 @@ def has_tx_mined(txid, network):
         return False
 
 
+def etc_txn_not_already_used(t):
+    b = Bounty.objects.filter(token_name='ETC',
+                              network='ETC',
+                              payout_tx_id=t['hash']).first()
+    return True if b else False
+
+
+def search_for_etc_bounty_payout(bounty, payeeAddress=None):
+    blockscout_url = f'https://blockscout.com/etc/mainnet/api?module=account&action=txlist&address={funderAddress}'
+    response = requests.get(blockscout_url).json()
+    didFindPayout = None
+    if blockscout_response['message'] and blockscout_response['result']:
+        for t in blockscout_response['result']:
+            if (t['to'] == payeeAddress and t['amount'] >= bounty.value
+                and etc_txn_not_already_used(t)):
+                return True
+    return False
+
+
 def get_etc_txn_status(txnid, network='mainnet'):
     if not txnid:
         return False
