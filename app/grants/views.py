@@ -517,7 +517,7 @@ def grant_fund(request, grant_id, grant_slug):
             'grant': grant,
             'text': _('You already have an active subscription for this grant.')
         }
-        # return TemplateResponse(request, 'grants/shared/error.html', params)
+        return TemplateResponse(request, 'grants/shared/error.html', params)
 
     if grant.contract_address == '0x0':
         messages.info(
