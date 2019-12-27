@@ -67,8 +67,6 @@ def get_activities(tech_stack=None, num_activities=15):
 
 def index(request):
 
-    user = request.user.profile if request.user.is_authenticated else None
-
     products = [
         {
             'group' : 'grow_oss',
@@ -748,7 +746,7 @@ def about(request):
         (
             "Alessandro Voto",
             "DevRel",
-            "avotofuture",
+            "alexvotofuture",
             None,
             "Devvies",
             "Tacos",
@@ -810,7 +808,7 @@ def about(request):
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
     ]
-    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount').cache()[0: 15]
+    leadeboardranks = LeaderboardRank.objects.filter(active=True, product='all', leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount').cache()[0: 15]
     for lr in leadeboardranks:
         package = (lr.avatar_url, lr.github_username, lr.github_username, '')
         community_members.append(package)

@@ -35,9 +35,23 @@
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
+      {% include 'shared/nav_hackathons.html' %}
       {% include 'shared/minihero.html' with h1='Hackathons' suppress_logo=0 position_h1_below_logo=True hide_rain=True %}
 
+      <div class="row justify-content-md-center">
+        <form action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=b1d45ffdfe"
+          method="post" id="mc-embedded-subscribe-form" class="col-12 col-md-6 text-center white pb-5 px-5" name="mc-embedded-subscribe-form" target="_blank">
+          <label for="newsletter-input" class="text-uppercase">{% trans "Signup to get hackathon updates" %}</label>
+          <div class="form-row pt-1">
+            <div class="col">
+              <input name="EMAIL" id="newsletter-input" class="form-control" placeholder="Enter your email" required>
+            </div>
+            <button id="newsletter-subscribe-funder" type="submit" class="button button--primary subscribe ml-lg-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="container-fluid">
     </div>
 
     <div class="container">
@@ -70,7 +84,9 @@
                 {% if hackathon.end_date|timesince <= "1 min" %}
                 <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue">Join</a>
                 {% endif %}
+                {% if hackathon.start_date|timesince >= "1 min" %}
                 <a href="{% url 'hackathon' hackathon.slug %}" class="btn btn-gc-blue">Prizes</a>
+                {% endif %}
                 {% if hackathon.show_results %}
                   <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue">Projects</a>
                 {% endif %}

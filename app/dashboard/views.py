@@ -61,10 +61,12 @@ from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
 )
-from economy.utils import convert_token_to_usdt
+from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
+from git.utils import (
+    get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
+)
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from mailchimp3 import MailChimp
@@ -80,20 +82,23 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
-from .helpers import get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory
+from .helpers import (
+    bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
+)
 from .models import (
-    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, CoinRedemption,
+    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
-    SearchHistory, Sponsor, Subscription, Tool, ToolVote, UserAction, UserVerificationModel,
+    SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from .utils import (
-    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_unrated_bounties_count, get_web3,
-    has_tx_mined, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public, web3_process_bounty,
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count,
+    get_web3, has_tx_mined, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public,
+    web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -190,10 +195,15 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
     if event_name == 'worker_applied':
         kwargs['metadata']['approve_worker_url'] = bounty.approve_worker_url(user.profile)
         kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
-    if event_name in ['worker_approved', 'worker_rejected'] and interest:
+    elif event_name in ['worker_approved', 'worker_rejected'] and interest:
         kwargs['metadata']['worker_handle'] = interest.profile.handle
 
     try:
+        if event_name in bounty_activity_event_adapter:
+            event = BountyEvent.objects.create(bounty=bounty,
+                event_type=bounty_activity_event_adapter[event_name],
+                created_by=kwargs['profile'])
+            bounty.handle_event(event)
         return Activity.objects.create(**kwargs)
     except Exception as e:
         logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
@@ -333,7 +343,7 @@ def new_interest(request, bounty_id):
     except Interest.DoesNotExist:
         issue_message = request.POST.get("issue_message")
         signed_nda = None
-        if request.POST.get("signed_nda", None):
+        if request.POST.get("signed_nda"):
             signed_nda = BountyDocuments.objects.filter(
                 pk=request.POST.get("signed_nda")
             ).first()
@@ -1433,6 +1443,7 @@ def fulfill_bounty(request):
     return TemplateResponse(request, 'bounty/fulfill.html', params)
 
 
+@login_required
 def increase_bounty(request):
     """Increase a bounty as the funder.
 
@@ -1894,6 +1905,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['avatar_url'] = bounty.get_avatar_url(True)
                 params['canonical_url'] = bounty.canonical_url
 
+                if bounty.web3_type == 'bounties_network':
+                    params['is_bounties_network'] = True
+
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
                     params['prize_projects'] = HackathonProject.objects.filter(hackathon=bounty.event, bounty__standard_bounties_id=bounty.standard_bounties_id).exclude(status='invalid').prefetch_related('profiles')
@@ -2344,7 +2358,7 @@ def invalid_file_response(uploaded_file, supported):
                 'status': 415,
                 'message': 'Invalid File Type'
             }
-
+        '''
         try:
             forbidden = False
             while forbidden is False:
@@ -2365,6 +2379,7 @@ def invalid_file_response(uploaded_file, supported):
 
         except Exception as e:
             print(e)
+        '''
 
     return response
 
@@ -2517,6 +2532,8 @@ def get_profile_tab(request, profile, tab, prev_context):
                 return JsonResponse(msg, status=msg.get('status', 200))
     elif tab == 'orgs':
         pass
+    elif tab == 'tribe':
+        pass
     elif tab == 'people':
         pass
     elif tab == 'quests':
@@ -2632,7 +2649,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests']
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2684,12 +2701,16 @@ def profile(request, handle, tab=None):
 
     # setup context for visit
 
+    if not len(profile.tribe_members) and tab == 'tribe':
+        tab = 'activity'
+
     context['is_my_profile'] = is_my_profile
     context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
     context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+    context['is_on_tribe'] = request.user.is_authenticated and any([handle.lower() == tribe.org.handle.lower() for tribe in request.user.profile.tribe_members ])
     context['ratings'] = range(0,5)
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
@@ -2850,6 +2871,66 @@ def sync_web3(request):
 
     return JsonResponse(result, status=result['status'])
 
+
+# @require_POST
+# @csrf_exempt
+# @ratelimit(key='ip', rate='5/s', method=ratelimit.UNSAFE, block=True)
+@staff_member_required
+def sync_etc(request):
+    """Sync up ETC chain to find transction status.
+
+    Returns:
+        JsonResponse: The JSON response following the web3 sync.
+
+    """
+
+    response = {
+        'status': '400',
+        'message': 'bad request'
+    }
+
+    # TODO: make into POST
+    txnid = request.GET.get('txnid', None)
+    bounty_id = request.GET.get('id', None)
+    network =  request.GET.get('network', 'mainnet')
+
+    # TODO: REMOVE
+    txnid = '0x30060f38c0e9e255061d1daf079d3707c640bfb540e207dbc6fc0e6e6d52ecd1'
+    bounty_id = 1
+
+    if not txnid:
+        response['message'] = 'error: transaction not provided'
+    elif not bounty_id:
+        response['message'] = 'error: issue url not provided'
+    elif network != 'mainnet':
+        response['message'] = 'error: etc syncs only on mainnet'
+    else:
+        # TODO: CHECK IF BOUNTY EXSISTS
+        # bounty = Bounty.object.get(pk=bounty_id)
+        # if not bounty:
+        #     response['message'] = f'error: bounty with key {bounty_id} does not exist'
+        # else:
+        #     print('bounty found') # wrap whole section below within else
+
+        transaction = get_etc_txn_status(txnid, network)
+        if not transaction:
+            logging.error('blockscout failed')
+            response = {
+                'status': 500,
+                'message': 'blockscout API call failed'
+            }
+        else:
+            response = {
+                'status': 200,
+                'message': 'success',
+                'id': bounty_id,
+                'bounty_url': '<bounty_url>',
+                'blockNumber': transaction['blockNumber'],
+                'confirmations': transaction['confirmations'],
+                'is_mined': transaction['has_mined']
+            }
+
+    return JsonResponse(response, status=response['status'])
 
 # LEGAL
 @xframe_options_exempt
@@ -3417,10 +3498,12 @@ def hackathon(request, hackathon=''):
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
     except HackathonEvent.DoesNotExist:
-        hackathon_event = HackathonEvent.objects.last()
+        return redirect(reverse('get_hackathons'))
 
-    title = hackathon_event.name
+    title = hackathon_event.name.title()
     network = get_default_network()
+    if timezone.now() < hackathon_event.start_date and not request.user.is_staff:
+        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
     # TODO: Refactor post orgs
     orgs = []
@@ -3436,6 +3519,7 @@ def hackathon(request, hackathon=''):
 
     params = {
         'active': 'dashboard',
+        'type': 'hackathon',
         'title': title,
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
@@ -3483,22 +3567,89 @@ def hackathon(request, hackathon=''):
 
 def hackathon_onboard(request, hackathon=''):
     referer = request.META.get('HTTP_REFERER', '')
-
+    sponsors = {}
+    is_registered = False
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        hackathon_sponsors = HackathonSponsor.objects.filter(hackathon=hackathon_event)
         profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
         is_registered = HackathonRegistration.objects.filter(registrant=profile, hackathon=hackathon_event) if profile else None
+
+        if hackathon_sponsors:
+            sponsors_gold = []
+            sponsors_silver = []
+            for hackathon_sponsor in hackathon_sponsors:
+                sponsor = Sponsor.objects.get(name=hackathon_sponsor.sponsor)
+                sponsor_obj = {
+                    'name': sponsor.name,
+                }
+                if sponsor.logo_svg:
+                    sponsor_obj['logo'] = sponsor.logo_svg.url
+                elif sponsor.logo:
+                    sponsor_obj['logo'] = sponsor.logo.url
+
+                if hackathon_sponsor.sponsor_type == 'G':
+                    sponsors_gold.append(sponsor_obj)
+                else:
+                    sponsors_silver.append(sponsor_obj)
+
+            sponsors = {
+                'sponsors_gold': sponsors_gold,
+                'sponsors_silver': sponsors_silver
+            }
+
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
     params = {
         'active': 'hackathon_onboard',
-        'title': 'Hackathon Onboard',
+        'title': f'{hackathon_event.name.title()} Onboard',
         'hackathon': hackathon_event,
         'referer': referer,
         'is_registered': is_registered,
+        'sponsors': sponsors
     }
     return TemplateResponse(request, 'dashboard/hackathon/onboard.html', params)
+
+
+@csrf_exempt
+@require_POST
+def save_hackathon(request, hackathon):
+    description = clean(
+        request.POST.get('description'),
+        tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'p', 's' 'u', 'br', 'i', 'li', 'ol', 'strong', 'ul', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'iframe', 'pre'],
+        attributes={
+            'a': ['href', 'title'],
+            'abbr': ['title'],
+            'acronym': ['title'],
+            'img': ['src'],
+            'iframe': ['src', 'frameborder', 'allowfullscreen'],
+            '*': ['class', 'style']},
+        styles=['background-color', 'color'],
+        protocols=['http', 'https', 'mailto'],
+        strip=True,
+        strip_comments=True
+    )
+
+    if request.user.is_authenticated and request.user.is_staff:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        hackathon_event.description = description
+        hackathon_event.save()
+        return JsonResponse(
+            {
+                'success': True,
+                'is_my_org': True,
+            },
+            status=200)
+    else:
+        return JsonResponse(
+            {
+                'success': False,
+                'is_my_org': False,
+            },
+            status=401)
 
 
 def hackathon_projects(request, hackathon=''):
@@ -3555,7 +3706,7 @@ def hackathon_projects(request, hackathon=''):
 
     params = {
         'active': 'hackathon_onboard',
-        'title': 'Hackathon Projects',
+        'title': f'{hackathon_event.name.title()} Projects',
         'hackathon': hackathon_event,
         'sponsors_list': sponsors_list,
         'sponsor': sponsor,
@@ -3573,7 +3724,7 @@ def hackathon_get_project(request, bounty_id, project_id=None):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
     try:
-        bounty = Bounty.objects.current().get(id=bounty_id)
+        bounty = Bounty.objects.get(id=bounty_id)
         projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache()
     except HackathonProject.DoesNotExist:
         pass
@@ -3612,7 +3763,7 @@ def hackathon_save_project(request):
             'msg': '',
         })
 
-    bounty_obj = Bounty.objects.current().get(pk=bounty_id)
+    bounty_obj = Bounty.objects.get(pk=bounty_id)
 
     kwargs = {
         'name': clean(request.POST.get('name'),  strip=True),
@@ -3709,7 +3860,7 @@ def hackathon_registration(request):
         logger.error(f"error in record_action: {e}")
         pass
 
-    if referer and is_safe_url(referer, request.get_host()):
+    if referer and '/issue/' in referer and is_safe_url(referer, request.get_host()):
         messages.success(request, _(f'You have successfully registered to {hackathon_event.name}. Happy hacking!'))
         redirect = referer
     else:
@@ -3717,6 +3868,7 @@ def hackathon_registration(request):
         redirect = f'/hackathon/{hackathon}'
 
     return JsonResponse({'redirect': redirect})
+
 
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
@@ -3728,7 +3880,8 @@ def get_hackathons(request):
 
     params = {
         'active': 'hackathons',
-        'title': 'hackathons',
+        'title': 'Hackathons',
+        'card_desc': "Gitcoin is one of the largers administrators of Virtual Hackathons in the decentralizion space.",
         'hackathons': events,
     }
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
@@ -4044,3 +4197,268 @@ def choose_persona(request):
             'persona': persona,
         },
         status=200)
+
+
+@csrf_exempt
+@require_POST
+def join_tribe(request, handle):
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        try:
+            TribeMember.objects.get(profile=profile, org__handle__iexact=handle).delete()
+            return JsonResponse(
+            {
+                'success': True,
+                'is_member': False,
+            },
+            status=200)
+        except TribeMember.DoesNotExist:
+            kwargs = {
+                'org': Profile.objects.filter(handle=handle).first(),
+                'profile': profile
+            }
+            tribemember = TribeMember.objects.create(**kwargs)
+            tribemember.save()
+
+            return JsonResponse(
+                {
+                    'success': True,
+                    'is_member': True,
+                },
+                status=200)
+    else:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+             status=401)
+
+
+
+
+@csrf_exempt
+@require_POST
+def tribe_leader(request):
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        member = request.POST.get('member')
+        try:
+            tribemember = TribeMember.objects.get(pk=member)
+            is_my_org = request.user.is_authenticated and any([tribemember.org.handle.lower() == org.lower() for org in request.user.profile.organizations ])
+
+            if is_my_org:
+                tribemember.leader = True
+                tribemember.save()
+                return JsonResponse(
+                {
+                    'success': True,
+                    'is_leader': True,
+                },
+                status=200)
+            else:
+                return JsonResponse(
+                {
+                    'success': False,
+                    'is_my_org': False,
+                },
+                status=401)
+
+        except Exception as e:
+
+            return JsonResponse(
+                {
+                    'success': False,
+                    'is_leader': False,
+                },
+                status=401)
+
+
+@csrf_exempt
+@require_POST
+def save_tribe(request,handle):
+    tribe_description = clean(
+        request.POST.get('tribe_description'),
+        tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'p', 'u', 'br', 'i', 'li', 'ol', 'strong', 'ul', 'img', 'h1', 'h2'],
+        attributes={'a': ['href', 'title'], 'abbr': ['title'], 'acronym': ['title'], 'img': ['src'], '*': ['class']},
+        styles=[],
+        protocols=['http', 'https', 'mailto'],
+        strip=True,
+        strip_comments=True
+    )
+
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+        is_my_org = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+        if is_my_org:
+            org = Profile.objects.filter(handle=handle).first()
+            org.tribe_description = tribe_description
+            org.save()
+
+            return JsonResponse(
+                {
+                    'success': True,
+                    'is_my_org': True,
+                },
+                status=200)
+
+        else:
+            return JsonResponse(
+                {
+                    'success': False,
+                    'is_my_org': False,
+                },
+                status=401)
+
+
+@csrf_exempt
+@require_POST
+@staff_member_required
+def create_bounty(request):
+
+    '''
+        TODO
+        - evaluate validity of duplicate / redundant data in models
+        - wire in email (invite + successful creation)
+        - create activty entry
+    '''
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to create bounty'
+    }
+
+    if not request.user.is_authenticated:
+        response['message'] = 'error: user needs to be authenticated to create bounty'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: create bounty is a POST operation'
+        return JsonResponse(response)
+
+    github_url = request.POST.get("github_url", None)
+    if Bounty.objects.filter(github_url=github_url).exists():
+        response = {
+            'status': 303,
+            'message': 'bounty already exists for this github issue'
+        }
+        return JsonResponse(response)
+
+    bounty = Bounty()
+
+    bounty.bounty_owner_profile = profile
+    bounty.bounty_state = 'open'
+    bounty.title = request.POST.get("title", '')
+    bounty.token_name = request.POST.get("token_name", '')
+    bounty.bounty_type = request.POST.get("bounty_type", '')
+    bounty.project_length = request.POST.get("project_length", '')
+    bounty.estimated_hours = request.POST.get("estimated_hours")
+    bounty.experience_level = request.POST.get("experience_level", '')
+    bounty.github_url = github_url
+    bounty.bounty_owner_github_username = request.POST.get("bounty_owner_github_username")
+    bounty.is_open = True
+    bounty.current_bounty = True
+    bounty.issue_description = request.POST.get("issue_description", '')
+    bounty.attached_job_description = request.POST.get("attached_job_description", '')
+    bounty.fee_amount = request.POST.get("fee_amount")
+    bounty.fee_tx_id = request.POST.get("fee_tx_id")
+    bounty.metadata = json.loads(request.POST.get("metadata"))
+    bounty.privacy_preferences = json.loads(request.POST.get("privacy_preferences", {}))
+    bounty.funding_organisation = request.POST.get("funding_organisation")
+    bounty.repo_type = request.POST.get("repo_type", 'public')
+    bounty.project_type = request.POST.get("project_type", 'traditional')
+    bounty.permission_type = request.POST.get("permission_type", 'permissionless')
+    bounty.bounty_categories = request.POST.get("bounty_categories", '').split(',')
+    bounty.network = request.POST.get("network", 'mainnet')
+    bounty.admin_override_suspend_auto_approval = not request.POST.get("auto_approve_workers", True)
+    bounty.value_in_token = request.POST.get("value_in_token", 0)
+    bounty.token_address = request.POST.get("token_address")
+    bounty.bounty_owner_email = request.POST.get("bounty_owner_email")
+    bounty.bounty_owner_name = request.POST.get("bounty_owner_name", '') # TODO: REMOVE ?
+    bounty.contract_address = bounty.token_address          # TODO: REMOVE ?
+    bounty.balance = bounty.value_in_token                  # TODO: REMOVE ?
+    bounty.raw_data = request.POST.get("raw_data", {})      # TODO: REMOVE ?
+    bounty.web3_type = request.POST.get("web3_type", '')
+    bounty.value_true = request.POST.get("amount", 0)
+
+    ''' TODO
+    bounty.unsigned_nda = request.POST.get("unsigned_nda")
+    '''
+
+    current_time = timezone.now()
+
+    bounty.web3_created = current_time
+    bounty.last_remarketed = current_time
+
+    try:
+        bounty.token_value_in_usdt = convert_token_to_usdt(bounty.token_name)
+        bounty.value_in_usdt = convert_amount(bounty.value_true, bounty.token_name, 'USDT')
+        bounty.value_in_usdt_now = bounty.value_in_usdt
+        bounty.value_in_eth = convert_amount(bounty.value_true, bounty.token_name, 'ETH')
+
+    except ConversionRateNotFoundError as e:
+        logger.debug(e)
+
+    # bounty expiry date
+    expires_date = int(request.POST.get("expires_date", 9999999999))
+    bounty.expires_date = timezone.make_aware(
+        timezone.datetime.fromtimestamp(expires_date),
+        timezone=UTC
+    )
+
+    # bounty github data
+    try:
+        kwargs = get_url_dict(bounty.github_url)
+        bounty.github_issue_details = get_gh_issue_details(**kwargs)
+    except Exception as e:
+        logger.error(e)
+
+    # bounty is featured bounty
+    bounty.is_featured = request.POST.get("is_featured", False)
+    if bounty.is_featured:
+        bounty.featuring_date = current_time
+
+    # bounty is reserved for a user
+    reserved_for_username = request.POST.get("bounty_reserved_for")
+    if reserved_for_username:
+        bounty.bounty_reserved_for_user = Profile.objects.get(handle=reserved_for_username)
+        if bounty.bounty_reserved_for_user:
+            bounty.reserved_for_user_from = current_time
+            release_to_public_after = request.POST.get("release_to_public")
+
+            if release_to_public_after == "3-days":
+                bounty.reserved_for_user_expiration = bounty.reserved_for_user_from + timezone.timedelta(days=3)
+            elif release_to_public_after == "1-week":
+                bounty.reserved_for_user_expiration = bounty.reserved_for_user_from + timezone.timedelta(weeks=1)
+
+    # bounty is mapped to a hackathon
+    event_tag = request.POST.get('eventTag')
+    if event_tag:
+        try:
+            event = HackathonEvent.objects.filter(name__iexact=event_tag).latest('id')
+            bounty.event = event
+        except Exception as e:
+            logger.error(e)
+
+    # coupon code
+    coupon_code = request.POST.get("coupon_code")
+    try:
+        if coupon_code:
+            coupon = Coupon.objects.get(code=coupon_code)
+            if coupon:
+                bounty.coupon_code = coupon
+    except Exception as e:
+        logger.error(e)
+
+    bounty.save()
+
+    response = {
+        'status': 204,
+        'message': 'bounty successfully created',
+        'bounty_url': bounty.url
+    }
+
+    return JsonResponse(response)

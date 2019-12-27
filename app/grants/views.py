@@ -79,6 +79,7 @@ def grants(request):
     sort = request.GET.get('sort_option', 'weighted_shuffle')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
+    grant_type = request.GET.get('type', 'tech')
     state = request.GET.get('state', 'active')
     _grants = None
 
@@ -89,9 +90,13 @@ def grants(request):
         sort_by = 'pk'
 
     if state == 'active':
-        _grants = Grant.objects.filter(network=network, hidden=False).active().keyword(keyword).order_by(sort)
+        _grants = Grant.objects.filter(
+            network=network, hidden=False, grant_type=grant_type
+        ).active().keyword(keyword).order_by(sort)
     else:
-        _grants = Grant.objects.filter(network=network, hidden=False).keyword(keyword).order_by(sort)
+        _grants = Grant.objects.filter(
+            network=network, hidden=False, grant_type=grant_type
+        ).keyword(keyword).order_by(sort)
 
     clr_prediction_curve_schema_map = {10**x:x+1 for x in range(0, 5)}
     if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
@@ -101,7 +106,16 @@ def grants(request):
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
-    partners = MatchPledge.objects.filter(active=True)
+    partners = MatchPledge.objects.filter(active=True, pledge_type=grant_type) if grant_type else MatchPledge.objects.filter(active=True)
+
+    now = datetime.datetime.now()
+
+    current_partners = partners.filter(end_date__gte=now).order_by('-amount')
+    past_partners = partners.filter(end_date__lt=now).order_by('-amount')
+    current_partners_fund = 0
+
+    for partner in current_partners:
+        current_partners_fund += partner.amount
 
     grant_amount = 0
     grant_stats = Stat.objects.filter(
@@ -110,6 +124,12 @@ def grants(request):
     if grant_stats.exists():
         grant_amount = grant_stats.first().val / 1000
 
+    tech_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='tech'
+    ).count()
+    media_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='media'
+    ).count()
 
     nav_options = [
         {'label': 'All', 'keyword': ''},
@@ -124,23 +144,29 @@ def grants(request):
         {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
     ]
 
-    now = datetime.datetime.now()
+    grant_types = [
+        {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
+        {'label': 'Media', 'keyword': 'media', 'count': media_grants_count}
+    ]
+
     params = {
         'active': 'grants_landing',
         'title': matching_live + str(_('Gitcoin Grants Explorer')),
         'sort': sort,
         'network': network,
         'keyword': keyword,
+        'type': grant_type,
         'clr_matching_banners_style': clr_matching_banners_style,
         'nav_options': nav_options,
-        'current_partners': partners.filter(end_date__gte=now).order_by('-amount'),
-        'past_partners': partners.filter(end_date__lt=now).order_by('-amount'),
+        'grant_types': grant_types,
+        'current_partners_fund': current_partners_fund,
+        'current_partners': current_partners,
+        'past_partners': past_partners,
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),
         'card_player_thumb_override': static('v2/card/grants.png'),
         'grants': grants,
-        'grants_count': _grants.count(),
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
@@ -148,6 +174,7 @@ def grants(request):
         'sort_by_index': sort_by_index,
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
+        'is_staff': request.user.is_staff
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -190,7 +217,18 @@ def grant_details(request, grant_id, grant_slug):
     except Grant.DoesNotExist:
         raise Http404
 
-    if request.method == 'POST' and (profile == grant.admin_profile or request.user.is_staff):
+    is_admin = (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False
+    if is_admin:
+        add_cancel_params = True
+
+    is_team_member = False
+    if profile:
+        for team_member in grant.team_members.all():
+            if team_member.id == profile.id:
+                is_team_member = True
+                break
+
+    if request.method == 'POST' and (is_team_member or request.user.is_staff):
         if request.FILES.get('input_image'):
             logo = request.FILES.get('input_image', None)
             grant.logo = logo
@@ -226,9 +264,6 @@ def grant_details(request, grant_id, grant_slug):
             grant.save()
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-    is_admin = (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False
-    if is_admin:
-        add_cancel_params = True
 
     params = {
         'active': 'grant_details',
@@ -251,6 +286,7 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
+        'is_team_member': is_team_member
     }
 
     if add_cancel_params:
@@ -305,8 +341,7 @@ def grant_new(request):
             team_members.append(profile.id)
             team_members = list(set(team_members))
 
-            for i in range(0, len(team_members)):
-                team_members[i] = int(team_members[i])
+            team_members = [int(i) for i in team_members if i != '']
 
             grant.team_members.add(*team_members)
             grant.save()
@@ -447,8 +482,15 @@ def grant_new_v0(request):
 def milestones(request, grant_id, grant_slug):
     profile = get_profile(request)
     grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
+    is_team_member = False
 
-    if profile != grant.admin_profile:
+    if profile:
+        for team_member in grant.team_members.all():
+            if team_member.id == profile.id:
+                is_team_member = True
+                break
+
+    if not is_team_member:
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == "POST":

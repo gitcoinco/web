@@ -27,7 +27,7 @@
     {% trans "Hello" %} @{{interest.profile.handle}},
   </p>
   <p>
-    {% trans "Good news! The funder has accepted your request to work on"%} <a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "You can go ahead and start working on the issue and as a courtesy provide an update to the maintainer every few days." %}
+    {% trans "Good news! The funder has accepted your request to work on"%} <a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "You can go ahead and start working on the issue. As a courtesy to the maintainer, please provide an update on the Github issue every few days." %}
   </p>
   <br>
   {% include 'emails/bounty.html' with bounty=bounty %}

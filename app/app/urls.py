@@ -62,8 +62,7 @@ urlpatterns = [
     # oauth2 provider
     url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    # create bounty
-    url(r'^create?', dashboard.views.new_bounty, name='create_bounty'),  # TODO: Remove
+    url('^api/v1/bounty/create', dashboard.views.create_bounty, name='create_bounty'),
 
     # inbox
     re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
@@ -143,9 +142,9 @@ urlpatterns = [
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
-
     # chat
     url(r'^chat/', chat.views.embed, name='chat'),
+    url(r'^chat', chat.views.embed, name='chat2'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
@@ -205,6 +204,7 @@ urlpatterns = [
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
     path('hackathon-list', dashboard.views.get_hackathons, name='get_hackathons2'),
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
+    path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
 
     # action URLs
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
@@ -297,7 +297,7 @@ urlpatterns = [
     url(r'^tip/send/2/?', dashboard.tip_views.send_tip_2, name='send_tip_2'),
     url(r'^tip/send/?', dashboard.tip_views.send_tip, name='send_tip'),
     url(r'^send/?', dashboard.tip_views.send_tip, name='tip'),
-    url(r'^tip/?', dashboard.tip_views.send_tip, name='tip'),
+    url(r'^tip/?', dashboard.tip_views.send_tip_2, name='tip'),
 
     # Legal
     re_path(r'^terms/?', dashboard.views.terms, name='_terms'),
@@ -339,6 +339,7 @@ urlpatterns = [
 
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
+    url(r'^sync/etc/?', dashboard.views.sync_etc, name='sync_etc'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
     re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
 
@@ -371,6 +372,9 @@ urlpatterns = [
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
     path('how/<str:work_type>', retail.views.how_it_works, name='how_it_works'),
     re_path(r'^tribes', retail.views.tribes, name='tribes'),
+    path('tribe/<str:handle>/join/', dashboard.views.join_tribe, name='join_tribe'),
+    path('tribe/<str:handle>/save/', dashboard.views.save_tribe, name='save_tribe'),
+    path('tribe/leader/', dashboard.views.tribe_leader, name='tribe_leader'),
 
     # basic redirect retail views
     re_path(r'^press/?', retail.views.presskit, name='press'),

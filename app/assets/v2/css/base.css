@@ -1563,8 +1563,8 @@ div.busyOverlay {
 }
 
 .privaterepo-instructions {
-  background: #F8F8F8;
-  padding: 1rem;
+  color: grey;
+  padding-top: 1rem;
 }
 
 @media (min-width: 768px) {
@@ -1629,4 +1629,8 @@ div.busyOverlay {
 .only_visible_to_me {
   padding: 3px 5px;
   border-radius: 3px;
+}
+
+.card-shadow {
+  box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, .1);
 }

@@ -10,7 +10,7 @@ from django.utils.text import slugify
 # Create your models here.
 from economy.models import SuperModel
 
-num_backgrounds = 23
+num_backgrounds = 33
 
 
 class Quest(SuperModel):
@@ -38,7 +38,8 @@ class Quest(SuperModel):
     game_metadata = JSONField(default=dict, blank=True)
     questions = JSONField(default=dict, blank=True)
     kudos_reward = models.ForeignKey('kudos.Token', blank=True, null=True, related_name='quests_reward', on_delete=models.SET_NULL)
-    unlocked_by = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='unblocks', on_delete=models.SET_NULL)
+    unlocked_by_quest = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='unblocks_quest', on_delete=models.SET_NULL)
+    unlocked_by_hackathon = models.ForeignKey('dashboard.HackathonEvent', blank=True, null=True, related_name='unblocks_quest', on_delete=models.SET_NULL)
     cooldown_minutes = models.IntegerField(default=5)
     visible = models.BooleanField(default=True, db_index=True)
     difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES, db_index=True)
@@ -195,14 +196,20 @@ class Quest(SuperModel):
         return round(self.success_count * 100 / attempts)
 
     def is_unlocked_for(self, user):
-        if not self.unlocked_by:
+        if not self.unlocked_by_quest and not self.unlocked_by_hackathon:
             return True
 
         if not user.is_authenticated:
             return False
 
-        is_completed = user.profile.quest_attempts.filter(success=True, quest=self.unlocked_by).exists()
-        return is_completed
+        is_unlocked = False
+        if self.unlocked_by_quest:
+            is_unlocked = user.profile.quest_attempts.filter(success=True, quest=self.unlocked_by_quest).exists()
+
+        if self.unlocked_by_hackathon:
+            from dashboard.models import HackathonRegistration
+            is_unlocked = HackathonRegistration.objects.filter(hackathon=self.unlocked_by_hackathon, registrant=user.profile).exists()
+        return is_unlocked
 
 
     def is_beaten(self, user):

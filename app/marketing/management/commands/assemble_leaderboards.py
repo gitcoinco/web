@@ -305,8 +305,22 @@ def sum_kudos(kt):
             sum_kudos_helper(kt, YEARLY, index_term, val_usd)
 
 
-def sum_kudos_helper(keyword, time, index_term, val_usd):
+def sum_kudos_helper(t, time, index_term, val_usd):
     add_element(f'{time}_{KUDOS}', index_term, val_usd)
+    add_element(f'{time}_{ALL}', index_term, val_usd)
+    add_element(f'{time}_{FULFILLED}', index_term, val_usd)
+    if t.username == index_term:
+        add_element(f'{time}_{EARNERS}', index_term, val_usd)
+    if t.from_username == index_term:
+        add_element(f'{time}_{PAYERS}', index_term, val_usd)
+    if t.org_name == index_term:
+        add_element(f'{time}_{ORGS}', index_term, val_usd)
+    if index_term in tip_to_country(t):
+        add_element(f'{time}_{COUNTRIES}', index_term, val_usd)
+    if index_term in tip_to_city(t):
+        add_element(f'{time}_{CITIES}', index_term, val_usd)
+    if index_term in tip_to_continent(t):
+        add_element(f'{time}_{CONTINENTS}', index_term, val_usd)
 
 
 def sum_tips(t, index_terms):
@@ -368,84 +382,111 @@ def should_suppress_leaderboard(handle):
     return False
 
 
+def do_leaderboard_feed():
+    from dashboard.models import Activity
+    max_rank = 25
+    for _type in [PAYERS, EARNERS, ORGS]:
+        key = f'{WEEKLY}_{_type}'
+        lrs = LeaderboardRank.objects.active().filter(leaderboard=key, rank__lte=max_rank, product='all')
+        print(key, lrs.count())
+        for lr in lrs:
+            metadata = {
+                'title': f"was ranked #{lr.rank} on the Gitcoin Weekly {_type.title()} Leaderboard",
+                'link': f'/leaderboard/{_type}'
+                }
+            if lr.profile:
+                Activity.objects.create(profile=lr.profile, activity_type='leaderboard_rank', metadata=metadata)
+
+
+def do_leaderboard():
+    global ranks
+    global counts
+
+    products = ['kudos', 'grants', 'bounties', 'tips', 'all']
+    for product in products:
+
+        ranks = default_ranks()
+        counts = default_ranks()
+        index_terms = []
+
+        if product in ['all', 'grants']:
+            # get grants
+            grants = Contribution.objects.filter(subscription__network='mainnet')
+            # iterate
+            for gc in grants:
+                index_terms = grant_index_terms(gc)
+                sum_grants(gc, index_terms)
+
+        if product in ['all', 'bounties']:
+            # get bounties
+            bounties = Bounty.objects.current().filter(network='mainnet')
+
+            # iterate
+            for b in bounties:
+                if not b._val_usd_db:
+                    continue
+
+                index_terms = bounty_index_terms(b)
+                sum_bounties(b, index_terms)
+
+        if product in ['all', 'tips']:
+            # get tips
+            tips = Tip.objects.send_success().filter(network='mainnet')
+
+            # iterate
+            for t in tips:
+                if not t.value_in_usdt_now:
+                    continue
+                index_terms = tip_index_terms(t)
+                sum_tips(t, index_terms)
+
+        if product in ['all', 'kudos']:
+            # kudos'
+            for kt in KudosTransfer.objects.send_success().filter(network='mainnet'):
+                sum_kudos(kt)
+
+        # set old LR as inactive
+        with transaction.atomic():
+            lrs = LeaderboardRank.objects.active().filter(product=product)
+            lrs.update(active=False)
+
+            # save new LR in DB
+            for key, rankings in ranks.items():
+                rank = 1
+                for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
+                    count = counts[key][index_term]
+                    lbr_kwargs = {
+                        'count': count,
+                        'active': True,
+                        'amount': amount,
+                        'rank': rank,
+                        'leaderboard': key,
+                        'github_username': index_term,
+                        'product': product,
+                    }
+
+                    try:
+                        profile = Profile.objects.get(handle__iexact=index_term)
+                        lbr_kwargs['profile'] = profile
+                        lbr_kwargs['tech_keywords'] = profile.keywords
+                    except Profile.MultipleObjectsReturned:
+                        profile = Profile.objects.filter(handle__iexact=index_term).latest('id')
+                        lbr_kwargs['profile'] = profile
+                        lbr_kwargs['tech_keywords'] = profile.keywords
+                        print(f'Multiple profiles found for username: {index_term}')
+                    except Profile.DoesNotExist:
+                        print(f'No profiles found for username: {index_term}')
+
+                    # TODO: Bucket LeaderboardRank objects and .bulk_create
+                    LeaderboardRank.objects.create(**lbr_kwargs)
+                    rank += 1
+                    print(key, index_term, amount, count, rank, product)
+
+
 class Command(BaseCommand):
 
     help = 'creates leaderboard objects'
 
     def handle(self, *args, **options):
-        
-        products = ['kudos', 'grants', 'bounties', 'tips', 'all']
-        for product in products:
-
-            if product in ['all', 'grants']:
-                # get grants
-                grants = Contribution.objects.filter(subscription__network='mainnet')
-                # iterate
-                for gc in grants:
-                    index_terms = grant_index_terms(gc)
-                    sum_grants(gc, index_terms)
-
-            if product in ['all', 'bounties']:
-                # get bounties
-                bounties = Bounty.objects.current().filter(network='mainnet')
-
-                # iterate
-                for b in bounties:
-                    if not b._val_usd_db:
-                        continue
-
-                    index_terms = bounty_index_terms(b)
-                    sum_bounties(b, index_terms)
-
-            if product in ['all', 'tips']:
-                # get tips
-                tips = Tip.objects.send_success().filter(network='mainnet')
-
-                # iterate
-                for t in tips:
-                    if not t.value_in_usdt_now:
-                        continue
-                    index_terms = tip_index_terms(t)
-                    sum_tips(t, index_terms)
-
-            if product in ['all', 'kudos']:
-                # kudos'
-                for kt in KudosTransfer.objects.send_success().filter(network='mainnet'):
-                    sum_kudos(kt)
-
-            # set old LR as inactive
-            with transaction.atomic():
-                lrs = LeaderboardRank.objects.active()
-                lrs.update(active=False)
-
-                # save new LR in DB
-                for key, rankings in ranks.items():
-                    rank = 1
-                    for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
-                        count = counts[key][index_term]
-                        lbr_kwargs = {
-                            'count': count,
-                            'active': True,
-                            'amount': amount,
-                            'rank': rank,
-                            'leaderboard': key,
-                            'github_username': index_term,
-                            'product': product,
-                        }
-
-                        try:
-                            profile = Profile.objects.get(handle__iexact=index_term)
-                            lbr_kwargs['profile'] = profile
-                            lbr_kwargs['tech_keywords'] = profile.keywords
-                        except Profile.MultipleObjectsReturned:
-                            profile = Profile.objects.filter(handle__iexact=index_term).latest('id')
-                            lbr_kwargs['profile'] = profile
-                            lbr_kwargs['tech_keywords'] = profile.keywords
-                            print(f'Multiple profiles found for username: {index_term}')
-                        except Profile.DoesNotExist:
-                            print(f'No profiles found for username: {index_term}')
-
-                        # TODO: Bucket LeaderboardRank objects and .bulk_create
-                        LeaderboardRank.objects.create(**lbr_kwargs)
-                        rank += 1
-                        print(key, index_term, amount, count, rank, product)
+        do_leaderboard()
+        do_leaderboard_feed()

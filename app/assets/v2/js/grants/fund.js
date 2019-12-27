@@ -221,7 +221,9 @@ $(document).ready(function() {
             web3.utils.toTwosComplement(approvalSTR)
           ).send({
             from: accounts[0],
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+            gas: web3.utils.toHex(gas_amount(document.location.href)),
+            gasLimit: web3.utils.toHex(gas_amount(document.location.href))
           }).on('error', function(error) {
             console.log('1', error);
             _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');

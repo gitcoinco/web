@@ -408,7 +408,7 @@ def build_stat_results(keyword=None):
     pp.profile_time('start')
     base_alumni = Alumni.objects.all().cache()
     base_bounties = Bounty.objects.current().filter(network='mainnet').cache()
-    base_leaderboard = LeaderboardRank.objects.all().cache()
+    base_leaderboard = LeaderboardRank.objects.filter(product='all').cache()
 
     pp.profile_time('filters')
     if keyword:

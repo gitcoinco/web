@@ -77,7 +77,13 @@ class Grant(SuperModel):
 
         ordering = ['-created_on']
 
+    GRANT_TYPES = [
+        ('tech', 'tech'),
+        ('media', 'media')
+    ]
+
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
+    grant_type = models.CharField(max_length=15, choices=GRANT_TYPES, default='tech', help_text=_('Grant CLR category'))
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
@@ -212,7 +218,7 @@ class Grant(SuperModel):
 
     def __str__(self):
         """Return the string representation of a Grant."""
-        return f"id: {self.pk}, active: {self.active}, title: {self.title}"
+        return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
 
     def percentage_done(self):
@@ -985,6 +991,11 @@ class CLRMatch(SuperModel):
 class MatchPledge(SuperModel):
     """Define the structure of a MatchingPledge."""
 
+    PLEDGE_TYPES = [
+        ('tech', 'tech'),
+        ('media', 'media')
+    ]
+
     active = models.BooleanField(default=False, help_text=_('Whether or not the MatchingPledge is active.'))
     profile = models.ForeignKey(
         'dashboard.Profile',
@@ -999,6 +1010,7 @@ class MatchPledge(SuperModel):
         max_digits=50,
         help_text=_('The matching pledge amount in DAI.'),
     )
+    pledge_type = models.CharField(max_length=15, choices=PLEDGE_TYPES, default='tech', help_text=_('CLR pledge type'))
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
     end_date = models.DateTimeField(null=False, default=next_month)
     data = models.TextField(blank=True)

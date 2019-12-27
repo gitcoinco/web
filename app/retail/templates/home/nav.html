@@ -26,6 +26,9 @@
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+    {% if user.is_authenticated %}
+      {% include 'shared/notifications.html' %}
+    {% endif %}
   </div>
 
   <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
@@ -52,7 +55,7 @@
             {% trans "Codefund" %} <br>
             <span>{% trans "Ethical Ads Revenue to power open source" %}</span>
           </a>
-          <a class="dropdown-item" href="{% url "labs" %}">
+          <a class="dropdown-item" href="{% url "quests_index" %}">
             {% trans "Quests" %} <br>
             <span>{% trans "A fun new way to learn about the web3 ecosystem & earn rewards!" %}</span>
           </a>
