@@ -479,6 +479,7 @@ def etc_txn_not_already_used(t):
 
 
 def search_for_etc_bounty_payout(bounty, payeeAddress=None):
+    funderAddress = bounty.bounty_owner_profile.etc_address
     blockscout_url = f'https://blockscout.com/etc/mainnet/api?module=account&action=txlist&address={funderAddress}'
     response = requests.get(blockscout_url).json()
     didFindPayout = None
