@@ -143,6 +143,15 @@ def grants(request):
         {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
         {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
     ]
+    if grant_type == 'media':
+        nav_options = [
+            {'label': 'All', 'keyword': ''},
+            {'label': 'Education', 'keyword': 'education'},
+            {'label': 'Twitter', 'keyword': 'twitter'},
+            {'label': 'Reddit', 'keyword': 'reddit'},
+            {'label': 'Blogs', 'keyword': 'blog'},
+            {'label': 'Notes', 'keyword': 'notes'},
+        ]
 
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
@@ -162,7 +171,7 @@ def grants(request):
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
         'past_partners': past_partners,
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
+        'card_desc': _('Get Substantial Sustainable Funding for Your Projects with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),
         'card_player_thumb_override': static('v2/card/grants.png'),
