@@ -10,7 +10,7 @@ function drawChart() {
   var data = google.visualization.arrayToDataTable(document.history);
 
   var view = new google.visualization.DataView(data);
-  var width = parseInt(500);
+  var width = parseInt($('#grant_stats_graph').width());
 
   var ticks = [];
   var increment = 100;
