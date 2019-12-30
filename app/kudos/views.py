@@ -776,6 +776,7 @@ def newkudos(request):
         'active': 'newkudos',
         'msg': None,
         'nav': 'kudos',
+        'title': "Mint new Kudos",
     }
 
     if not request.user.is_authenticated:
@@ -821,8 +822,14 @@ def newkudos(request):
                     'email': request.POST.get('email'),
                     }
                 )
-            new_kudos_request(obj) 
+            new_kudos_request(obj)
 
             context['msg'] = str(_('Your Kudos has been submitted and will be listed within 2 business days if it is accepted.'))
+
+            if request.user.is_staff:
+                if request.POST.get('mint_and_sync'):
+                    from kudos.tasks import mint_token_request
+                    mint_token_request.delay(obj.id)
+                    context['msg'] = str(_('Kudos mint/sync submitted'))
 
     return TemplateResponse(request, 'newkudos.html', context)
