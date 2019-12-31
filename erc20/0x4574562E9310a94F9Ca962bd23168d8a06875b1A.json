@@ -1,0 +1,23 @@
+{
+    "symbol": "TROY",
+    "address": "0x4574562E9310a94F9Ca962bd23168d8a06875b1A",
+    "overview": {
+        "en": "Troy is a global prime broker specializing in crypto trading and asset management. Troy provides crypto brokerage services for institutional clients and professional traders including spot & margin trading, derivatives, data, custody, lending and staking in a single account.",
+        "zh": "TROY作为全球加密数字领域的主经纪商(Prime Broker)，致力于打造开放式的全球交易和清结算网络协议Troy Network，并通过Troy Trade向数字资产和加密货币的专业级客户提供革命性的交易产品及经纪服务，真正实现加密经济在全球范围内的高效流转。"
+    },
+    "email": "bd@troytrade.com",
+    "website": "https://troytrade.com/",
+    "whitepaper": "https://troytrade.com/troy/Troy_Overview.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-12-16",
+    "initial_price": {
+        "ETH": "0.00003549 ETH",
+        "USD": "0.005 USD",
+        "BTC": "0.00000071 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/troytrade",
+        "telegram": "https://t.me/TroyTrade_Official",
+        "medium": "https://medium.com/@troymessage911"
+    }
+}
