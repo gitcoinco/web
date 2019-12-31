@@ -28,9 +28,10 @@ for obj in old_grant.updates.all():
     obj.grant = new_grant
     obj.save()
 
-# do not transfer CLR match over
+for obj in old_grant.clr_matches.all():
+    obj.grant = new_grant
+    obj.save()
 
 old_grant.save()
-new_grant.hidden = True
+old_grant.hidden = True
 new_grant.save()
-
