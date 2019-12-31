@@ -49,6 +49,7 @@ import perftools.views
 import quests.views
 import retail.emails
 import retail.views
+import townsquare.views
 import revenue.views
 import tdi.views
 from avatar.router import router as avatar_router
@@ -348,7 +349,7 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
-    re_path(r'^$', retail.views.index, name='index'),
+    re_path(r'^home/?$', retail.views.index, name='home'),
     re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
     re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
@@ -360,6 +361,8 @@ urlpatterns = [
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
+    re_path(r'^townsquare/?', townsquare.views.index, name='townsquare'),
+    re_path(r'^$', townsquare.views.index, name='inex'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
     url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),

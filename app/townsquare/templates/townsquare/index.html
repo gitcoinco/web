@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load humanize static i18n %}
+{% comment %}
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% block body %}
+
+<div class="row" style="margin-top:-50px; background-color: #7E50FF; color: white;">
+  <div class="container py-0 ">
+    <div class="my-1">
+      <div class="row">
+        What is Gitcoin? - <a style="color: white; font-weight: bold;" href="/home">Learn More <i class="fas fa-share-square"></i> </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="container py-2 ">
+    <div class="my-1">
+      <div class="row">
+        <div class="col-12 col-md-8">
+          {% include 'profiles/status_box.html' %}
+          <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link nav-line  {% if tab == 'activity' %}active{%endif%}" href="#">
+                Tribes
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-line  {% if tab == 'activity' %}active{%endif%}" href="#">
+                My Org
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-line active" href="#">
+                Everywhere
+              </a>
+            </li>
+          </ul>
+
+          <div id="activities" class="activity_stream container">
+            {% include 'shared/activity_container.html' %}
+          </div>
+
+        </div>
+        <div class="col-12 col-md-4">
+          <h4 class="pt-0">Quick Links</h4>
+          <h4 class="pt-0">Offers</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+<script src="{% static "v2/js/status.js" %}"></script>
+<script>
+  $(document).ready(function() {
+    $.get('/activity', function(html){
+      $("#activities").html($(html).find('.activity_stream').html());
+    })
+  });
+</script>
+{% endblock %}
+

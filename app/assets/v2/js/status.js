@@ -41,7 +41,10 @@ $(document).ready(function() {
             'success'
           );
           const activityContainer = document.querySelector('.tab-section.active .activities');
-
+          if(!activityContainer){
+            location.reload();
+            return;
+          }
           activityContainer.setAttribute('page', 0);
           $('.tab-section.active .activities').html('');
           message.val('');
