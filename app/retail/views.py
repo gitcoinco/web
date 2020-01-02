@@ -1112,7 +1112,7 @@ def activity(request):
         'target': f'/activity?what={what}&page={next_page}',
         'title': _('Activity Feed'),
     }
-    context["activities"] = [a.view_props for a in p.get_page(page)]
+    context["activities"] = [a.view_props_for(request.user) for a in p.get_page(page)]
 
     return TemplateResponse(request, 'activity.html', context)
 

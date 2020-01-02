@@ -2056,6 +2056,9 @@ class Activity(SuperModel):
             'url',
         ]
         activity = self.to_standard_dict(properties=properties)
+        activity['pk'] = self.pk
+        activity['likes'] = self.likes.count()
+        activity['comments'] = self.comments.count()
         for key, value in model_to_dict(self).items():
             activity[key] = value
         for fk in ['bounty', 'tip', 'kudos', 'profile']:
@@ -2091,6 +2094,13 @@ class Activity(SuperModel):
         # finally done!
 
         return activity
+
+    def view_props_for(self, user):
+        vp = self.view_props
+        if not user.is_authenticated:
+            return vp
+        vp['liked'] = self.likes.filter(profile=user.profile).exists()
+        return vp
 
     @property
     def secondary_avatar_url(self):

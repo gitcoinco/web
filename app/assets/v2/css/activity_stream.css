@@ -1,4 +1,47 @@
+.comment_container.filled{
+  text-align: left;
+  width: 300px;
+  margin: 0px auto;  
+  background-color: #f2f2f2;
+  padding: 5px;
+  border-radius: 5px;
+}
+.comment_container img{
+  border-radius: 20px;
+  max-width: 20px;
+}
+.comment_container li{
+  list-style: none;
+}
+.comment_container a{
+  color: black;
+  font-weight: bold;
+}
+.comment_container .post_comment{
+  float: right;
+  background-color: #eeeeee;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: black;
+  font-weight: bold;
+}
+.comment_container .post_comment:hover{
+  float: right;
+  background-color: #e9e9e9;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: black;
+  font-weight: bold;
+}
 
+.sup{
+  vertical-align: super;
+  font-size: smaller;  
+}
+.like_activity:hover, .comment_activity:hover{
+  text-decoration: none;
+  font-weight: bolder;
+}
 .activity_stream .avatar {
   width: 2.5rem;
   height: 2.5rem;
