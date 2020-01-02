@@ -1205,27 +1205,26 @@ def tax_report(to_emails=None, zip_paths=None, tax_year=None):
     if tax_year is None:
         # retrieve last year
         tax_year = datetime.date.today().year-1
-    
     for idx, to_email in enumerate(to_emails):
-        cur_language = translation.get_language()
-        try:
-            setup_lang(to_email)
-            subject = f"Your tax report for year ({tax_year})"
-            html, text = render_tax_report(to_email, tax_year)
-            from_email = settings.CONTACT_EMAIL
-            send_mail(
-                from_email, 
-                to_email, 
-                subject, 
-                text, 
-                html, 
-                from_name="Kevin Owocki (Gitcoin.co)",
-                categories=['marketing', func_name()],
-                zip_path=zip_paths[idx]
-            )
-        
-        finally:
-            translation.activate(cur_language)
+        if to_email:
+            cur_language = translation.get_language()
+            try:
+                setup_lang(to_email)
+                subject = f"Your tax report for year ({tax_year})"
+                html, text = render_tax_report(to_email, tax_year)
+                from_email = settings.CONTACT_EMAIL
+                send_mail(
+                    from_email, 
+                    to_email, 
+                    subject, 
+                    text, 
+                    html, 
+                    from_name="Kevin Owocki (Gitcoin.co)",
+                    categories=['marketing', func_name()],
+                    zip_path=zip_paths[idx]
+                )
+            finally:    
+                translation.activate(cur_language)
             
 
 def bounty_expire_warning(bounty, to_emails=None):

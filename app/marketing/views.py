@@ -811,49 +811,7 @@ def tax_settings(request):
         address = profile.address   
     else:
         address = ''
-
-    if request.POST:
-
-        if 'preferred_payout_address' in request.POST.keys():
-            profile.preferred_payout_address = request.POST.get('preferred_payout_address', '')
-            profile.save()
-            msg = _('Updated your Address')
-        elif request.POST.get('disconnect', False):
-            profile.github_access_token = ''
-            profile = record_form_submission(request, profile, 'account-disconnect')
-            profile.email = ''
-            profile.save()
-            create_user_action(profile.user, 'account_disconnected', request)
-            messages.success(request, _('Your account has been disconnected from Github'))
-            logout_redirect = redirect(reverse('logout') + '?next=/')
-            return logout_redirect
-        elif request.POST.get('delete', False):
-
-            # remove profile
-            profile.hide_profile = True
-            profile = record_form_submission(request, profile, 'account-delete')
-            profile.email = ''
-            profile.save()
-
-            # remove email
-            delete_user_from_mailchimp(es.email)
-
-            if es:
-                es.delete()
-            request.user.delete()
-            AccountDeletionRequest.objects.create(
-                handle=profile.handle,
-                profile={
-                        'ip': get_ip(request),
-                    }
-                )
-            profile.delete()
-            messages.success(request, _('Your account has been deleted.'))
-            logout_redirect = redirect(reverse('logout') + '?next=/')
-            return logout_redirect
-        else:
-            msg = _('Error: did not understand your request')
-
+        
     context = {
         'is_logged_in': is_logged_in,
         'nav': 'home',

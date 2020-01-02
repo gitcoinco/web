@@ -233,7 +233,7 @@ def zip_dir(username, username_path):
             if filename.endswith('.zip'):
                 continue
             abs_path = os.path.join(root, filename)
-            zipf.write(abs_path, abs_path.split('code/tax_report')[1])
+            zipf.write(abs_path, abs_path.split('tax_report')[1])
     zipf.close()
     return zip_file_path
 
@@ -324,7 +324,7 @@ class Command(BaseCommand):
                             TOKEN_NAME, 
                             USD_VALUE, 
                             WORKER_TYPE]
-                csv_file_path = os.path.join(username_path, p.username + '_tax_report.csv')
+                csv_file_path = os.path.join(username_path, p.username + '_report.csv')
                 try:
                     with open(csv_file_path, 'w') as csvfile:
                         writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
