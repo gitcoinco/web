@@ -11,13 +11,13 @@ $(document).ready(function() {
     );
   }
 
-  $('#textarea, #btn_post').click(function(e){
+  $('#textarea, #btn_post').click(function(e) {
     if (!document.contxt.github_handle) {
       e.preventDefault();
       _alert('Please login first.', 'error');
       return;
     }
-  })
+  });
 
   $('body').on('focus change paste keyup blur', 'textarea', function() {
     if ($(this).val().trim().length > 4) {

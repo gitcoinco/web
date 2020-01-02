@@ -1,4 +1,5 @@
 from django.db import models
+
 from economy.models import SuperModel
 
 

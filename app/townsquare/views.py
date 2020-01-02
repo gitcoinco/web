@@ -1,10 +1,12 @@
+from django.http import Http404, JsonResponse
 from django.shortcuts import render
 from django.template.response import TemplateResponse
-from django.http import Http404, JsonResponse
-from dashboard.models import Activity
-from .models import Like, Comment
 from django.views.decorators.csrf import csrf_exempt
+
+from dashboard.models import Activity
 from ratelimit.decorators import ratelimit
+
+from .models import Comment, Like
 
 
 def index(request):
@@ -63,4 +65,3 @@ def api(request, activity_id):
         comments = [comment.to_standard_dict(properties=['profile_handle']) for comment in comments]
         response['comments'] = comments
     return JsonResponse(response)
-

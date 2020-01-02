@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Like, Comment
+from .models import Comment, Like
+
 
 # Register your models here.
 class GenericAdmin(admin.ModelAdmin):
