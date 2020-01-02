@@ -24,7 +24,7 @@
           <br>
           <small id="hide_profile_help" class="form__input-help">{% trans "If this option is chosen, we not show that you are a Gitcoin alumni on your profile or about page." %}</small>
         </div>
-      {%endif%}
+      {% endif %}
     </div>
     {% csrf_token %}
     <input class='button button--primary' type='submit' name='submit' value="Save">

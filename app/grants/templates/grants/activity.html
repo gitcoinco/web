@@ -35,7 +35,7 @@
                 <a class="sub_tx_link" href="https://etherscan.io/tx/{{ subscription.new_approve_tx_id }}" target="_blank" rel="noopener noreferrer">
                   {% if subscription.new_approve_tx_id %}
                   View Etherscan
-                  {%endif%}
+                  {% endif %}
                 </a>
               </div>
               <div class="offset-lg-1 col-4 col-md-2 my-auto tags font-caption">
@@ -82,7 +82,7 @@
                 <a class="tx_link" href="https://etherscan.io/tx/{{ transaction.tx_id }}" target="_blank" rel="noopener noreferrer">
                   {% if transaction.tx_id %}
                   View Etherscan
-                  {%endif%}
+                  {% endif %}
                 </a>
               </div>
               <div class="offset-lg-1 col-4 col-md-2 my-auto tags font-caption">
@@ -140,7 +140,7 @@
                 <a class="cancel_tx_link" href="https://etherscan.io/tx/{{ subscription.cancel_tx_id }}" target="_blank" rel="noopener noreferrer">
                   {% if transaction.cancel_tx_id %}
                   View Etherscan
-                  {%endif%}
+                  {% endif %}
                 </a>
               {% endif %}
             </div>
