@@ -19,9 +19,16 @@ $(document).ready(function() {
     }
   });
 
-  $('body').on('focus change paste keyup blur', 'textarea', function() {
+  if($("#textarea").length){
+    $("#textarea").focus();
+  }
+
+  $('body').on('focus change paste keyup blur', 'textarea', function(e) {
     if ($(this).val().trim().length > 4) {
       $('#btn_post').attr('disabled', false);
+      if ($("#textarea").is(":focus") && (e.keyCode == 13)) {
+        $("#btn_post").click();
+      }
     } else {
       $('#btn_post').attr('disabled', true);
     }

@@ -16,14 +16,29 @@ def index(request):
         from retail.views import index as regular_homepage
         return regular_homepage(request)
 
+    tabs = [{
+        'title': "My Tribes",
+        'slug': 'my_tribes',
+    }, {
+        'title': "Everywhere",
+        'slug': 'everywhere',
+    }]
+
+    for keyword in request.user.profile.keywords:
+        tabs.append({
+            'title': keyword.title(),
+            'slug': f'keyword-{keyword}',
+        })
+
     default_tab = 'my_tribes' if request.user.is_authenticated else 'everywhere'
     tab = request.GET.get('tab', default_tab)
-
+    target = f'/activity?what={tab}'
     context = {
-        'title': 'Town Square',
+        'title': 'Home',
         'nav': 'home',
-        'target': '/activity',
+        'target': target,
         'tab': tab,
+        'tabs': tabs,
     }
     return TemplateResponse(request, 'townsquare/index.html', context)
 

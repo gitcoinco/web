@@ -63,7 +63,7 @@ $(document).ready(function() {
 
   });
 
-  var post_comment = function($parent) {
+  var post_comment = function($parent, allow_close_comment_container) {
     if (!document.contxt.github_handle) {
       _alert('Please login first.', 'error');
       return;
@@ -91,11 +91,11 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 
     $.post(url, params, function(response) {
-      view_comments($parent);
+      view_comments($parent, allow_close_comment_container);
     });
   };
 
-  var view_comments = function($parent) {
+  var view_comments = function($parent, allow_close_comment_container) {
 
     // remote post
     var params = {
@@ -103,8 +103,13 @@ $(document).ready(function() {
     };
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 
+    var $target = $parent.parents('.row.box').find('.comment_container');
+    if($target.hasClass('filled') && allow_close_comment_container){
+        $target.html('');
+        $target.removeClass('filled');
+        return;
+    }
     $.get(url, params, function(response) {
-      var $target = $parent.parents('.row.box').find('.comment_container');
 
       $target.addClass('filled');
       $target.html('');
@@ -125,9 +130,9 @@ $(document).ready(function() {
     var num = $(this).find('span.num').html();
 
     if (parseInt(num) == 0) {
-      post_comment($(this));
+      post_comment($(this), true);
     } else {
-      view_comments($(this));
+      view_comments($(this), true);
     }
   });
 
@@ -136,7 +141,7 @@ $(document).ready(function() {
     e.preventDefault();
     var $target = $(this).parents('.row.box').find('.comment_activity');
 
-    post_comment($target);
+    post_comment($target, false);
   });
 
 

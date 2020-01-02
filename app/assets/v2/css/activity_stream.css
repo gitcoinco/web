@@ -1,7 +1,9 @@
+#activities{
+  text-align: left;
+}
 .comment_container.filled{
   text-align: left;
   width: 300px;
-  margin: 0px auto;  
   background-color: #f2f2f2;
   padding: 5px;
   border-radius: 5px;

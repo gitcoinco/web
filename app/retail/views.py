@@ -1092,14 +1092,20 @@ def activity(request):
     page = int(request.GET.get('page', 1))
     what = request.GET.get('what', 'everywhere')
 
+    # create diff filters
     activities = Activity.objects.all().order_by('-created_on')
     if request.user.is_authenticated:
+        relevant_profiles = []
         if what == 'tribes':
             from dashboard.models import get_my_earnings
             relevant_profiles = get_my_earnings(request.user.profile.pk)
+        if 'keyword-' in what:
+            keyword = what.split('-')[1]
+            relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
+        # filters
+        if len(relevant_profiles):
+            print(keyword, len(relevant_profiles))
             activities = activities.filter(profile__in=relevant_profiles)
-        if what == 'my_org':
-            pass
 
     p = Paginator(activities, page_size)
 
