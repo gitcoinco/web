@@ -264,11 +264,11 @@
         title='<div class="tooltip-info tooltip-sm">[[>title]]</div>'>
         [[if pending_acceptance]]
           <a class="button button--primary accept [[if !enabled]]disabled[[/if]]" role="button" href="[[>href]]" target="[[>target]]">
-            <span class="font-caption">[[>text]] ( [[>pending_acceptance]] )</span>
+            <span class="font-caption">[[:text]] ( [[>pending_acceptance]] )</span>
           </a>
         [[else]]
           <a class="button [[if primary]]button--primary[[else]]button--secondary[[/if]] mr-2 font-caption [[if !enabled]]disabled[[/if]] [[>buttonclass]]" role="button" href="[[>href]]" target="[[>target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
-            <span class="font-caption">[[>text]]</span>
+            <span class="font-caption">[[:text]]</span>
           </a>
         [[/if]]
       </span>
