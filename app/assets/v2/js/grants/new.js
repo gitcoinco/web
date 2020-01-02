@@ -259,7 +259,8 @@ const init = () => {
     $('#js-token').select2();
     $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
     $('#js-token').append("<option value='0x0000000000000000000000000000000000000000' selected='selected'>Any Token");
+    $('.select2-selection__rendered').hover(function() {
+      $(this).removeAttr('title');
+    });
   });
-
-  $('.select2-selection__rendered').removeAttr('title');
 };

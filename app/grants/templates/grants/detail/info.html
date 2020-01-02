@@ -57,7 +57,6 @@
   </div>
 
   <div>
-
     <h1 class="font-title-xl my-4 font-weight-bold">
       {% if is_team_member %}
         <textarea id="form--input__title" class="p-0 m-0 inline-edit font-body" maxlength="150" disabled>{{ grant.title }}</textarea>
@@ -68,6 +67,17 @@
 
      <!-- SUMMARY INFO -->
     <div class="summary-info mb-4 pb-1">
+
+      {% if grant.hidden and is_team_member %}
+        <div class="mb-2 font-body">
+          <i style="width: 14px;" class="fas fa-eye mr-2 text-center"></i>
+          <p class="d-inline">
+            Grant is being reviewed by the Gitcoin team.
+          </p>
+        </div>
+      {% endif %}
+
+
       <div class="font-body mb-2">
         {% if is_team_member %}
           <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
