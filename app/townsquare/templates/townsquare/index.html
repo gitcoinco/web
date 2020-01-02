@@ -36,17 +36,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           {% include 'profiles/status_box.html' %}
           <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
             <li class="nav-item">
-              <a class="nav-link nav-line  {% if tab == 'activity' %}active{%endif%}" href="#">
-                Tribes
+              <a class="nav-link nav-line {% if tab == 'my_tribes' %}active{% endif %} " href="/townsquare?tab=my_tribes">
+                My Tribes
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-line  {% if tab == 'activity' %}active{%endif%}" href="#">
-                My Org
+              <a class="nav-link nav-line {% if tab == 'my_orgs' %}active{% endif %} " href="/townsquare?tab=my_orgs">
+                My Orgs
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-line active" href="#">
+              <a class="nav-link nav-line {% if tab == 'everywhere' %}active{% endif %} " href="/townsquare?tab=everywhere">
                 Everywhere
               </a>
             </li>
@@ -70,14 +70,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% block scripts %}
 
+{% include 'shared/activity_scripts.html' %}
 <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
 <script src="{% static "v2/js/status.js" %}"></script>
-<script>
-  $(document).ready(function() {
-    $.get('/activity', function(html){
-      $("#activities").html($(html).find('.activity_stream').html());
-    })
-  });
-</script>
+<script src="{% static "v2/js/pages/townsquare.js" %}"></script>
 {% endblock %}
 

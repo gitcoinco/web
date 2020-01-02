@@ -49,9 +49,9 @@ import perftools.views
 import quests.views
 import retail.emails
 import retail.views
-import townsquare.views
 import revenue.views
 import tdi.views
+import townsquare.views
 from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
 from grants.router import router as grant_router

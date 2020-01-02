@@ -41,7 +41,8 @@ $(document).ready(function() {
             'success'
           );
           const activityContainer = document.querySelector('.tab-section.active .activities');
-          if(!activityContainer){
+
+          if (!activityContainer) {
             location.reload();
             return;
           }

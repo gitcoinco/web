@@ -1089,14 +1089,27 @@ def results(request, keyword=None):
 def activity(request):
     """Render the Activity response."""
     page_size = 15
-    activities = Activity.objects.all().order_by('-created_on')
-    p = Paginator(activities, page_size)
     page = int(request.GET.get('page', 1))
+    what = request.GET.get('what', 'everywhere')
 
+    activities = Activity.objects.all().order_by('-created_on')
+    if request.user.is_authenticated:
+        if what == 'tribes':
+            from dashboard.models import get_my_earnings
+            relevant_profiles = get_my_earnings(request.user.profile.pk)
+            activities = activities.filter(profile__in=relevant_profiles)
+        if what == 'my_org':
+            pass
+
+    p = Paginator(activities, page_size)
+
+    next_page = page + 1
     context = {
         'p': p,
-        'next_page': page + 1,
+        'what': what,
+        'next_page': next_page,
         'page': p.get_page(page),
+        'target': f'/activity?what={what}&page={next_page}',
         'title': _('Activity Feed'),
     }
     context["activities"] = [a.view_props for a in p.get_page(page)]

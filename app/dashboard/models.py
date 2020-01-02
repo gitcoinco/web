@@ -4327,6 +4327,19 @@ class Earning(SuperModel):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
 
 
+def get_my_earnings(profile_pk):
+    from_profile_earnings = Earning.objects.filter(from_profile=profile_pk)
+    to_profile_earnings = Earning.objects.filter(to_profile=profile_pk)
+    org_profile_earnings = Earning.objects.filter(org_profile=profile_pk)
+
+    from_profile_earnings = list(from_profile_earnings.values_list('to_profile', flat=True))
+    to_profile_earnings = list(to_profile_earnings.values_list('from_profile', flat=True))
+    org_profile_earnings = list(org_profile_earnings.values_list('from_profile', flat=True)) + list(org_profile_earnings.values_list('to_profile', flat=True))
+
+    all_earnings = from_profile_earnings + to_profile_earnings + org_profile_earnings
+    return all_earnings
+
+
 class PortfolioItem(SuperModel):
     """Define the structure of PortfolioItem object."""
 
