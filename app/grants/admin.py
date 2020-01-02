@@ -55,7 +55,7 @@ class GrantAdmin(GeneralAdmin):
         'team_member_list',
         'subscriptions_links', 'contributions_links', 'link',
     ]
-    list_display =['pk', 'title', 'active','grant_type', 'link']
+    list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden']
     raw_id_fields = ['admin_profile']
 
     # Custom Avatars
