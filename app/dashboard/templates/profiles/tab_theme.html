@@ -2,7 +2,7 @@
 {% block settings_content %}
 
 <form method="POST" id="settings" class="col-md-8 m-auto">
-    <div class="form-group">
+  <div class="form-group">
 	  <h5 class="text-center">{% trans "Theme Customization" %}</h5>
 	</div>
 	<div class="container">
@@ -20,6 +20,6 @@
 			</div>
 		</div>
 	</div>
-    {% csrf_token %}
+  {% csrf_token %}
 </form>
 {% endblock %}
