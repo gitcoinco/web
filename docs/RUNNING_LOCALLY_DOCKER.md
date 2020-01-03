@@ -33,9 +33,9 @@ docker-compose up --build
 ```
 ### Screens during building
 
-![](imgs/screenshot1.png "Installation screenshot")
+![Installation Screenshot 1](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshot1.png "Installation screenshot")
 
-![](imgs/screenshot2.png "Installation screenshot")
+![Installation Screenshot 2](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshot2.png "Installation screenshot")
 
 
 ### Viewing Logs
@@ -54,13 +54,13 @@ docker-compose logs
 
 Navigate to `http://localhost:8000/`.
 
-![](imgs/screenshoot_server1.png "Running screenshot")
+![Running Screenshot 1](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server1.png "Running screenshot")
 
-![](imgs/screenshoot_server2.png "Running screenshot")
+![Running Screenshot 2](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server2.png "Running screenshot")
 
-![](imgs/screenshoot_server4.png "Running screenshot")
+![Running Screenshot 3](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server4.png "Running screenshot")
 
-![](imgs/screenshoot_server5.png "Running screenshot")
+![Running Screenshot 4](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server5.png "Running screenshot")
 
 For background build, Gitcoin server runs as a service and its always there. You can stop it using `kill process`, docker-compose to stop it  or other means.
 
@@ -98,6 +98,21 @@ docker-compose exec web python3 app/manage.py createsuperuser
 7. Congratulations, your local environment now supports your custom token!
 8. You may continue administering your token over at [http://tokenfactory.surge.sh](http://tokenfactory.surge.sh).  Hint:  Maybe you should mint some? 🤔
 
+
+## Initial test data
+
+The development server is conditioned with a representative sampling of test data fixtures outlined below:
+* 20ish users doing a variety things
+* Bounties in various statuses - so you can get to work!
+* Grants - ask some friends to support your work on Gitcoin
+* A variety of Kudos for you to send to everybody hahrd at work on bounties
+* A default superuser - usage below
+    1. Go to [http://localhost:8000/_administrationeconomy/](http://localhost:8000/_administration) 
+    2. Login with - username - root - password - gitcoinco 
+    3. Poke around the database tables.
+    4. Click the "Impersonate User" link,  pick any user and poke around the site.
+
+Note, using the sync_geth command described below can potentially break some of the fixtures outlined above.
 
 ## Optional: Import bounty data from web3 to your database
 

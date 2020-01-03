@@ -67,8 +67,6 @@ def get_activities(tech_stack=None, num_activities=15):
 
 def index(request):
 
-    user = request.user.profile if request.user.is_authenticated else None
-
     products = [
         {
             'group' : 'grow_oss',

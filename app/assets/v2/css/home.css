@@ -22,14 +22,12 @@
   background-color: transparent;
 }
 
-.banner {
-  background-color: #0d023b;
-  background-size: cover;
-  background-position: 0px 0px;
-  background-repeat: no-repeat;
-  position: relative;
-  color: #fff;
-  padding-top: 8rem;
+.banner__h2 {
+  line-height: 3rem;
+}
+
+.homepage .banner #fund-issue {
+  border: 2px solid #3E00FF;
 }
 
 .optimize_oss p,
@@ -37,23 +35,8 @@
   color: #4A4A4A;
 }
 
-.banner h1 {
-  font-weight: normal;
-  font-size: 2rem;
-}
-
-.banner h1,
-.banner p {
-  margin-bottom: 2.5rem;
-}
-
-.banner .buttons {
-  display: flex;
-  justify-content: center;
-}
-
 .homepage .btn-gc-green {
-  color: #0D0764;
+  color: white;
 }
 
 .homepage .newsletter {
@@ -73,7 +56,7 @@
 }
 
 .homepage #tree-svg svg {
-  max-width: 17rem;
+  max-width: 19rem;
 }
 
 .articles .article {
@@ -108,22 +91,6 @@
 
 .press a {
   margin: auto;
-}
-
-.content-links a {
-  color: #fff;
-  text-decoration: underline;
-}
-
-.banner .buttons a {
-  flex-grow: 1;
-  font-weight: 600;
-}
-
-.row h2 {
-  font-weight: 500;
-  font-size: 1.75rem;
-  margin-bottom: 0.6rem;
 }
 
 img.play {
@@ -253,7 +220,7 @@ p.video-preview__index {
 
 .video-preview__title {
   font-size: 32px;
-  font-weight: bold;
+  font-weight: 600;
   color: #fff;
   max-width: 14em;
   line-height: 1.35;
@@ -317,7 +284,7 @@ figure:hover::before {
   background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .3) 100%);
 }
 
-.compass{
+.compass {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -329,25 +296,25 @@ figure:hover::before {
 .compass__dashes,
 .compass__inner,
 .compass__outer,
-.compass__arrow{
+.compass__arrow {
   position: absolute;
 }
 
-.compass__dashes{
+.compass__dashes {
   width: 50%;
 }
 
-.compass__inner{
+.compass__inner {
   width: 120%;
   animation: rock_small ease-in-out 6s infinite;
 }
 
-.compass__outer{
+.compass__outer {
   width: 80%;
   animation: rock_big ease-in-out 7s infinite;
 }
 
-.compass__arrow{
+.compass__arrow {
   width: 20%;
   animation: rock_arrow ease-in-out 4s infinite;
 }
@@ -366,7 +333,7 @@ figure:hover::before {
 }
 
 @keyframes rock_small {
-  0%, 100%{
+  0%, 100% {
     transform: rotate(-5deg);
   }
   50%{
@@ -375,7 +342,7 @@ figure:hover::before {
 }
 
 @keyframes rock_big {
-  0%, 100%{
+  0%, 100% {
     transform: rotate(-4deg);
   }
   50%{
@@ -384,7 +351,7 @@ figure:hover::before {
 }
 
 @keyframes rock_arrow {
-  0%, 100%{
+  0%, 100% {
     transform: rotate(35deg);
   }
   50%{
@@ -399,12 +366,6 @@ figure:hover::before {
   }
 }
 
-@media (max-width: 1200px) {
-  .banner img {
-    position: absolute;
-    bottom: -2px;
-  }
-}
 
 @media (max-width: 1024px) {
   .realign-img,
@@ -416,13 +377,6 @@ figure:hover::before {
     margin-top: 4rem;
   }
 
-  .bots-img {
-    display: none;
-  }
-
-  .banner {
-    padding-bottom: 5rem;
-  }
 
   .articles .article {
     margin-bottom: 3rem;
@@ -434,38 +388,59 @@ figure:hover::before {
     margin-bottom: 1.5rem;
   }
 
-  .video-row{
+  .video-row {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
-  .compass{
+  .compass {
     height: 300px;
   }
 
-  .compass__dashes{
+  .compass__dashes {
     width: auto;
   }
-  .compass__inner{
-    width: auto;
-  }
-
-  .compass__outer{
+  .compass__inner {
     width: auto;
   }
 
-  .compass__arrow{
+  .compass__outer {
+    width: auto;
+  }
+
+  .compass__arrow {
     width: auto;
   }
 }
 
 @media (max-width: 375px) {
-  .video-preview{
+  .video-preview {
     --padding: 2rem;
   }
+
   .video-preview__title {
     font-size: 24px;
   }
+}
 
+.box-cta {
+  background: #0D0764;
+  margin: 2em;
+  padding: 3em;
+}
+
+.box-cta__left {
+  box-shadow: 33px 33px 0 -20px #3E00FF;
+
+}
+
+.box-cta__right {
+  box-shadow: -33px 33px 0 -20px #3E00FF;
+}
+
+.box-cta__title {
+  font-size: 24px;
+  border-bottom: 4px solid var(--gc-green);
+  font-weight: 700;
 }

@@ -521,6 +521,27 @@ def new_token_request(obj):
         translation.activate(cur_language)
 
 
+def notify_deadbeat_quest(quest):
+    to_email = 'kevin@gitcoin.co'
+    from_email = to_email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("Dead Quest Alert")
+        body = f"This quest is dead ({quest.title}): https://gitcoin.co/{quest.admin_url} "
+        if not should_suppress_notification_email(to_email, 'faucet'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def new_kudos_request(obj):
     to_email = 'founders@gitcoin.co'
     from_email = obj.profile.email

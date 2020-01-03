@@ -5,6 +5,9 @@
   {% if is_staff and not profile.is_org %}
     <button class="btn btn-outline-gc-blue btn-sm flex-grow-1" data-openchat="{{profile}}"> <i class="fas fa-comment-dots"></i></button>
   {% endif %}
+  <a class="btn btn-outline-gc-blue btn-sm flex-grow-1" href="{% url 'tip' %}?username={{ profile.handle }}">
+    <i class="fab fa-ethereum"></i>
+  </a>
   {% if verification %}
     <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
     <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
@@ -41,6 +44,9 @@
     <a href="https://discord.gg/TxRKTn8#{{profile.gitcoin_discord_username}}" title="{{profile.gitcoin_discord_username}}">
       <i class="fab fa-discord"></i>
     </a>
+  {% endif %}
+  {% if is_staff %}
+    <button class="chat btn btn-outline-gc-black" data-openchat="{{profile.handle}}"><i class="fas fa-comment-dots"></i></button>
   {% endif %}
 </p>
 
