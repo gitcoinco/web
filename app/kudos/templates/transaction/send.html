@@ -102,7 +102,7 @@
       </select>
       <input type="text" placeholder="0x408c49a91e46311ddc35737f8c1aaea6191f36e0" id="to_eth_address" value="" class="form-control eth_address hidden" >
       <input type="text" placeholder="(link will be displayed after you click Send)" id="airdrop_link" value="" class="form-control airdrop_link hidden" disabled="disabled">
-
+      <a href="#" style="display: none"  id="clearSelectedUser">Clear selected user</a>
     </div>
 
 
@@ -170,11 +170,52 @@
   </div>
 </section>
 
-{% if not user_json and username %}
 <script>
+function removeStoredUser(e) {
+  e.preventDefault();
+  localStorage.removeItem('current_receiver')
+  document.getElementById('username').innerHTML = '';
+  document.getElementById('clearSelectedUser').style.display = 'none'
+}
+
+
+document.getElementById('clearSelectedUser').addEventListener('click', removeStoredUser);
+
+{% if not user_json and username %}
   setTimeout(function() {
     _alert("Sorry, we can't find the user");
   }, 1000);
-</script>
+{% elif user_json and username %}
+  localStorage.setItem('current_receiver', JSON.stringify({
+    id:  {{user_json.id }},
+    avatar_id: {{ user_json.avatar_id }},
+    avatar_url: '{{ user_json.avatar_url }}',
+    preferred_payout_address: '{{ user_json.preferred_payout_address }}',
+    text: '{{ user_json.text }}',
+    date: new Date()
+  }));
+  document.getElementById('clearSelectedUser').style.display = 'block'
+{% else %}
+  let encoded_data = localStorage.getItem('current_receiver')
+  if (encoded_data !== null) {
+    let data = JSON.parse(encoded_data);
+    let current = new Date();
+    let past = new Date(Date.parse(data.date))
+
+    if ((current.getTime() - past.getTime()) / (60 * 60) > 1440) {
+      localStorage.removeItem('current_receiver')
+    } else {
+      let option = document.createElement('option')
+      option.value = data.id
+      option.setAttribute('avatar_id',  data.avatar_id)
+      option.setAttribute('avatar_url',data.avatar_url)
+      option.setAttribute('preferred_payout_address', data.preferred_payout_address)
+      option.textContent =  data.text
+
+      document.getElementById('username').append(option);
+      document.getElementById('clearSelectedUser').style.display = 'block'
+    }
+  }
 {% endif %}
+</script>
 {% endblock %}
