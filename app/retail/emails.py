@@ -960,7 +960,7 @@ Hey Gitcoiners,
 <h3>What else is new?</h3>
     <ul>
         <li>
-        Join us on todays Gitcoin Livestream to chat Web3 Business Models with Thibauld from Fairmint, Paul from Sablier, and more! <a href="https://http://gitcoin.co/livestream">Join at 2pm ET</a>.
+        Join us on todays Gitcoin Livestream to chat Web3 Business Models with Thibauld from Fairmint, Paul from Sablier, and more! <a href="https://gitcoin.co/livestream">Join at 2pm ET</a>.
         </li>
     </ul>
 </p>
