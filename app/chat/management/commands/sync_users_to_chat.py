@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from dashboard.models import Profile
 from chat.tasks import create_user
@@ -33,21 +33,19 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
 
-            invite_token = ''
             users = Profile.objects.filter(user__is_active=True).prefetch_related('user')
 
             tasks = []
 
             for profile in users:
                 # if profile.chat_id is None:
-                print(profile)
                 tasks.append(create_user.si(options={
                     "email": profile.user.email,
                     "username": profile.handle,
                     "first_name": profile.user.first_name,
                     "last_name": profile.user.last_name,
-                    "nickname": "string",
-                    "auth_data": profile.user.id,
+                    "nickname": profile.handle,
+                    "auth_data": f'{profile.user.id}',
                     "auth_service": "gitcoin",
                     "locale": "en",
                     "props": {},
@@ -61,18 +59,18 @@ class Command(BaseCommand):
                         "first_name": "false"
                     },
                 }, params={
-                    "iid": invite_token
+                    "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
                 }))
-            print(tasks)
             job = group(tasks)
 
             result = job.apply_async()
-
-            print(result.ready())
-
-            print(result.successful())
-
-            print(result.get())
+            for r in result.get():
+                if r is not None:
+                    if 'username' in r and 'id' in r:
+                        profile = Profile.objects.filter(handle=r['username'])[0]
+                        if profile is not None:
+                            profile.chat_id = r['id']
+                            profile.save()
 
         except ConnectionError as exec:
             print(str(exec))

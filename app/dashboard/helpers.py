@@ -524,12 +524,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 latest_old_bounty_dict['coupon_code'] = Coupon.objects.get(pk=latest_old_bounty_dict['coupon_code'])
 
             bounty_kwargs.update(latest_old_bounty_dict)
-            # bounty_on_create.delay()
         try:
             print('new bounty with kwargs:{}'.format(bounty_kwargs))
             new_bounty = Bounty.objects.create(**bounty_kwargs)
             merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details)
-            bounty_on_create.delay(new_bounty)
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
             logger.error(f'{e} encountered during new bounty creation for: {url}')

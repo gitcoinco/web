@@ -233,7 +233,6 @@ def get_auth_url(redirect_uri='/'):
     github_callback = reverse('social:begin', args=('github',))
     redirect_params = {'next': BASE_URI + redirect_uri}
     redirect_uri = urlencode(redirect_params, quote_via=quote_plus)
-
     params = {
         'client_id': settings.GITHUB_CLIENT_ID,
         'scope': settings.GITHUB_SCOPE,
@@ -315,7 +314,6 @@ def get_github_event_emails(oauth_token, username):
 
     userinfo = get_user(username)
     user_name = userinfo.get('name', '')
-    print(user_name)
 
     if response.status_code == 200:
         events = response.json()
@@ -603,7 +601,6 @@ def get_user(user, sub_path='', scope='', scoped=False, auth=None):
     else:
         user = user.replace('@', '')
         url = f'https://api.github.com/users/{user}{sub_path}?per_page={PER_PAGE_LIMIT}'
-
     response = requests.get(url, auth=auth, headers=HEADERS)
 
     try:
