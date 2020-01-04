@@ -5,8 +5,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity
 from ratelimit.decorators import ratelimit
+from django.shortcuts import redirect
 
-from .models import Comment, Like
+from .models import Comment, Like, Offer, OfferAction
 
 
 def index(request):
@@ -32,6 +33,7 @@ def index(request):
 
     default_tab = 'my_tribes' if request.user.is_authenticated else 'everywhere'
     tab = request.GET.get('tab', default_tab)
+    offers = Offer.objects.current()
     target = f'/activity?what={tab}'
     context = {
         'title': 'Home',
@@ -39,6 +41,7 @@ def index(request):
         'target': target,
         'tab': tab,
         'tabs': tabs,
+        'offers': offers,
     }
     return TemplateResponse(request, 'townsquare/index.html', context)
 
@@ -80,3 +83,15 @@ def api(request, activity_id):
         comments = [comment.to_standard_dict(properties=['profile_handle']) for comment in comments]
         response['comments'] = comments
     return JsonResponse(response)
+
+
+def offer(request, offer_id, offer_slug):
+
+    try:
+        offer = Offer.objects.current().get(pk=offer_id)
+        if not request.user.is_authenticated:
+            return redirect('/login/github?next=' + request.get_full_path())
+        OfferAction.objects.create(profile=request.user.profile, offer=offer, what='click')
+        return redirect(offer.url)
+    except:
+        raise Http404

@@ -55,6 +55,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div class="col-12 col-md-4">
           <h4 class="pt-0">Quick Links</h4>
           <h4 class="pt-0">Offers</h4>
+          <div>
+            {% for offer in offers %}
+              <li>
+                <a href="{{offer.go_url}}">{{offer.offer_header}}</a>
+              </li>
+            {% endfor %}
+          </div>
         </div>
       </div>
     </div>

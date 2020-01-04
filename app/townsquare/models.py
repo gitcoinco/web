@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from economy.models import SuperModel
+from django.utils.text import slugify
 
 
 class Like(SuperModel):
@@ -36,7 +37,7 @@ class OfferQuerySet(models.QuerySet):
 
     def current(self):
         """Filter results down to current offers only."""
-        return self.filter(valid_from__lte=timezone.now(), valid_from__gt=timezone.now())
+        return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now())
 
 
 class Offer(SuperModel):
@@ -54,6 +55,11 @@ class Offer(SuperModel):
 
     def __str__(self):
         return f"{self.offer_header}"
+
+    @property
+    def go_url(self):
+        slug = slugify(self.offer_header)
+        return f'/offer/{self.pk}/{slug}'
 
 
 class OfferAction(SuperModel):
