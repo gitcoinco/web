@@ -79,6 +79,7 @@ def grants(request):
     sort = request.GET.get('sort_option', 'weighted_shuffle')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
+    grant_type = request.GET.get('type', 'tech')
     state = request.GET.get('state', 'active')
     _grants = None
 
@@ -89,9 +90,13 @@ def grants(request):
         sort_by = 'pk'
 
     if state == 'active':
-        _grants = Grant.objects.filter(network=network, hidden=False).active().keyword(keyword).order_by(sort)
+        _grants = Grant.objects.filter(
+            network=network, hidden=False, grant_type=grant_type
+        ).active().keyword(keyword).order_by(sort)
     else:
-        _grants = Grant.objects.filter(network=network, hidden=False).keyword(keyword).order_by(sort)
+        _grants = Grant.objects.filter(
+            network=network, hidden=False, grant_type=grant_type
+        ).keyword(keyword).order_by(sort)
 
     clr_prediction_curve_schema_map = {10**x:x+1 for x in range(0, 5)}
     if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
@@ -101,7 +106,16 @@ def grants(request):
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
-    partners = MatchPledge.objects.filter(active=True)
+    partners = MatchPledge.objects.filter(active=True, pledge_type=grant_type) if grant_type else MatchPledge.objects.filter(active=True)
+
+    now = datetime.datetime.now()
+
+    current_partners = partners.filter(end_date__gte=now).order_by('-amount')
+    past_partners = partners.filter(end_date__lt=now).order_by('-amount')
+    current_partners_fund = 0
+
+    for partner in current_partners:
+        current_partners_fund += partner.amount
 
     grant_amount = 0
     grant_stats = Stat.objects.filter(
@@ -110,6 +124,12 @@ def grants(request):
     if grant_stats.exists():
         grant_amount = grant_stats.first().val / 1000
 
+    tech_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='tech'
+    ).count()
+    media_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='media'
+    ).count()
 
     nav_options = [
         {'label': 'All', 'keyword': ''},
@@ -123,24 +143,39 @@ def grants(request):
         {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
         {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
     ]
+    if grant_type == 'media':
+        nav_options = [
+            {'label': 'All', 'keyword': ''},
+            {'label': 'Education', 'keyword': 'education'},
+            {'label': 'Twitter', 'keyword': 'twitter'},
+            {'label': 'Reddit', 'keyword': 'reddit'},
+            {'label': 'Blogs', 'keyword': 'blog'},
+            {'label': 'Notes', 'keyword': 'notes'},
+        ]
 
-    now = datetime.datetime.now()
+    grant_types = [
+        {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
+        {'label': 'Media', 'keyword': 'media', 'count': media_grants_count}
+    ]
+
     params = {
         'active': 'grants_landing',
         'title': matching_live + str(_('Gitcoin Grants Explorer')),
         'sort': sort,
         'network': network,
         'keyword': keyword,
+        'type': grant_type,
         'clr_matching_banners_style': clr_matching_banners_style,
         'nav_options': nav_options,
-        'current_partners': partners.filter(end_date__gte=now).order_by('-amount'),
-        'past_partners': partners.filter(end_date__lt=now).order_by('-amount'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
+        'grant_types': grant_types,
+        'current_partners_fund': current_partners_fund,
+        'current_partners': current_partners,
+        'past_partners': past_partners,
+        'card_desc': _('Get Substantial Sustainable Funding for Your Projects with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),
         'card_player_thumb_override': static('v2/card/grants.png'),
         'grants': grants,
-        'grants_count': _grants.count(),
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
@@ -148,6 +183,7 @@ def grants(request):
         'sort_by_index': sort_by_index,
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
+        'is_staff': request.user.is_staff
     }
 
     # log this search, it might be useful for matching purposes down the line

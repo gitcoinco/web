@@ -438,7 +438,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
         coupon_code = bounty_payload.get('coupon_code', None)
         if coupon_code:
-            coupon = Coupon.objects.get(code=coupon_code)
+            coupon = Coupon.objects.filter(code=coupon_code).first()
             if coupon:
                 bounty_kwargs.update({
                     'coupon_code': coupon
@@ -549,7 +549,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         logger.error(e)
 
     if latest_old_bounty and latest_old_bounty.event:
-        new_bounty.event = latest_old_bounty.event;
+        new_bounty.event = latest_old_bounty.event
         new_bounty.save()
     else:
         event_tag = metadata.get('eventTag', '')

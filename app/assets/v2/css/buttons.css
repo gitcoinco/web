@@ -95,7 +95,7 @@ button:focus {
 }
 
 .btn {
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 .btn-gc-blue,
@@ -285,7 +285,7 @@ button:focus {
 
 .btn-gc-grey {
   color: #171717;
-  background-color: #cbcbcb;
+  background-color: #EEE;
 }
 
 .btn-gc-grey:not(:disabled):not(.disabled).active {

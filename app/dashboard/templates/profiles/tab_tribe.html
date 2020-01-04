@@ -6,7 +6,7 @@
       {% if is_my_org %}
         <div class="">
           <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
-          <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savetribe="{{profile.handle}}">save</button>
+          <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savetribe="{{profile.handle}}">Save</button>
         </div>
       {% endif %}
     </div>
@@ -62,7 +62,7 @@
         Tribe members <span class="badge badge-pill badge--bluelight">{{profile.tribe_members.count}}</span>
       </h5>
       <p class="text-muted">
-        Members of the {{profile.name}} Tribe. <a class="underline" href="{% url 'tribes' %}">What is a Tribe?</a>
+        Members of the {{profile.name}} Tribe. <a class="underline" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='<p class="title">Gitcoin Tribes</p><p>Takes hackathon sponsorship to the next level, with features for maintaining relationships / creating relationships in ways never before possible in a virtual context.</p><p>Build your Gitcoin Tribe through monthly Gitcoin hackathons and a variety of tools to incentivize open source developers and build increasingly interesting projects together.</p>' href="#">What is a Tribe?</a>
       </p>
       <div class="tribe-members pt-4 mt-4">
         {% for follower in profile.tribe_members %}

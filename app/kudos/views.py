@@ -602,6 +602,7 @@ def receive(request, key, txid, network):
             if request.user.is_authenticated:
                 kudos_transfer.recipient_profile = request.user.profile
             kudos_transfer.save()
+            record_user_action(kudos_transfer.username, 'new_kudos', kudos_transfer)
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
             record_kudos_activity(
@@ -665,53 +666,60 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
     else:
 
         signed = w3.eth.account.signTransaction(tx, private_key)
+        retry_later = False
         try:
             txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+        except Exception as e:
+            txid = "pending_celery"
+            retry_later = True
 
-            with transaction.atomic():
-                kudos_transfer = KudosTransfer.objects.create(
-                    emails=[profile.email],
-                    # For kudos, `token` is a kudos.models.Token instance.
-                    kudos_token_cloned_from=coupon.token,
-                    amount=coupon.token.price_in_eth,
-                    comments_public=coupon.comments_to_put_in_kudos_transfer,
-                    ip=ip_address,
-                    github_url='',
-                    from_name=coupon.sender_profile.handle,
-                    from_email='',
-                    from_username=coupon.sender_profile.handle,
-                    username=profile.handle,
-                    network=coupon.token.contract.network,
-                    from_address=kudos_owner_address,
-                    is_for_bounty_fulfiller=False,
-                    metadata={'coupon_redemption': True, 'nonce': nonce},
-                    recipient_profile=profile,
-                    sender_profile=coupon.sender_profile,
-                    txid=txid,
-                    receive_txid=txid,
-                    tx_status='pending',
-                    receive_tx_status='pending',
+        with transaction.atomic():
+            kudos_transfer = KudosTransfer.objects.create(
+                emails=[profile.email],
+                # For kudos, `token` is a kudos.models.Token instance.
+                kudos_token_cloned_from=coupon.token,
+                amount=coupon.token.price_in_eth,
+                comments_public=coupon.comments_to_put_in_kudos_transfer,
+                ip=ip_address,
+                github_url='',
+                from_name=coupon.sender_profile.handle,
+                from_email='',
+                from_username=coupon.sender_profile.handle,
+                username=profile.handle,
+                network=coupon.token.contract.network,
+                from_address=kudos_owner_address,
+                is_for_bounty_fulfiller=False,
+                metadata={'coupon_redemption': True, 'nonce': nonce},
+                recipient_profile=profile,
+                sender_profile=coupon.sender_profile,
+                txid=txid,
+                receive_txid=txid,
+                tx_status='pending',
+                receive_tx_status='pending',
+            )
+
+            # save to DB
+            BulkTransferRedemption.objects.create(
+                coupon=coupon,
+                redeemed_by=profile,
+                ip_address=ip_address,
+                kudostransfer=kudos_transfer,
                 )
 
-                # save to DB
-                BulkTransferRedemption.objects.create(
-                    coupon=coupon,
-                    redeemed_by=profile,
-                    ip_address=ip_address,
-                    kudostransfer=kudos_transfer,
-                    )
+            coupon.num_uses_remaining -= 1
+            coupon.current_uses += 1
+            coupon.save()
 
-                coupon.num_uses_remaining -= 1
-                coupon.current_uses += 1
-                coupon.save()
+            # user actions
+            record_user_action(kudos_transfer.username, 'new_kudos', kudos_transfer)
+            record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
 
-                # send email
-                maybe_market_kudos_to_email(kudos_transfer)
-        except Exception as e:
-            error = "Could not redeem your kudos.  Please try again soon."
-            if "replacement transaction underpriced" in str(e):
-                error = "There is already an airdrop transfer in progress. Please try again in a minute or two.. (note: in the future we will add 'queue'-ing so you dont have to resubmit, as soon as this ticket (https://github.com/gitcoinco/web/issues/4976) is deployed)"
-            return None, error, None
+            # send email
+            maybe_market_kudos_to_email(kudos_transfer)
+
+            if retry_later:
+                from kudos.tasks import redeem_bulk_kudos
+                redeem_bulk_kudos.delay(kudos_transfer.id, signed.rawTransaction.hex())
 
     return True, None, kudos_transfer
 
@@ -768,6 +776,7 @@ def newkudos(request):
         'active': 'newkudos',
         'msg': None,
         'nav': 'kudos',
+        'title': "Mint new Kudos",
     }
 
     if not request.user.is_authenticated:
@@ -813,8 +822,14 @@ def newkudos(request):
                     'email': request.POST.get('email'),
                     }
                 )
-            new_kudos_request(obj) 
+            new_kudos_request(obj)
 
             context['msg'] = str(_('Your Kudos has been submitted and will be listed within 2 business days if it is accepted.'))
+
+            if request.user.is_staff:
+                if request.POST.get('mint_and_sync'):
+                    from kudos.tasks import mint_token_request
+                    mint_token_request.delay(obj.id)
+                    context['msg'] = str(_('Kudos mint/sync submitted'))
 
     return TemplateResponse(request, 'newkudos.html', context)

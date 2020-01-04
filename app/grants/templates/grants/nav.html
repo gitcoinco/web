@@ -33,10 +33,10 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     {% if user.is_authenticated %}
-      {% include 'shared/notifications.html' %}
       {% if user.is_staff %}
         {% include 'shared/chat_nav.html' %}
       {% endif %}
+      {% include 'shared/notifications.html' %}
     {% endif %}
   </div>
 
@@ -47,14 +47,7 @@
       <a class="nav-link{% if active == 'grants_leaderboard' %} selected {% endif %} interior" href="{% url 'grants:leaderboard' %}">{% trans "Leaderboard" %}</a>
       <a class="nav-link{% if active == 'new_grant' %} selected {% endif %} interior" href="{% url 'grants:new' %}"><i class="fab fa-ethereum mr-1" role="aria-hidden"></i> {% trans "Create Grant" %}</a>
 
-      {% if not user.is_authenticated %}
-        <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="nav-link interior" onclick="dataLayer.push({'event': 'login'});">
-          <i class="fab fa-github mr-1" role="aria-hidden"></i>
-          {% trans "LOG IN" %}
-        </a>
-      {% else %}
-        {% include 'shared/nav_auth.html' with source='authed' %}
-      {% endif %}
+      {% include 'shared/nav_auth.html' with source='authed' %}
     </nav>
   </div>
 </nav>
