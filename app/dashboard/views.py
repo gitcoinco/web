@@ -107,7 +107,6 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 
 @protected_resource()
-@login_required()
 def oauth_connect(request, *args, **kwargs):
     active_user_profile = Profile.objects.filter(user_id=request.user.id).select_related()[0]
     from marketing.utils import should_suppress_notification_email
@@ -116,9 +115,17 @@ def oauth_connect(request, *args, **kwargs):
         "email": active_user_profile.user.email,
         "name": active_user_profile.user.get_full_name(),
         "handle": active_user_profile.handle,
-        "id": active_user_profile.user.id,
-        "notifyProps" : {
-            "email": False if should_suppress_notification_email(active_user_profile.user.email, 'chat') else True
+        "id": f'{active_user_profile.user.id}',
+        "auth_data": f'{active_user_profile.user.id}',
+        "auth_service": "gitcoin",
+        "notify_props": {
+            "email": False if should_suppress_notification_email(active_user_profile.user.email, 'chat') else True,
+            "push": "mention",
+            "desktop": "all",
+            "desktop_sound": "true",
+            "mention_keys": f'{active_user_profile.handle}, @{active_user_profile.handle}',
+            "channel": "true",
+            "first_name": "false"
         }
     }
     return JsonResponse(user_profile, status=200, safe=False)
@@ -351,78 +358,113 @@ def new_interest(request, bounty_id):
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
-        if bounty.event is not None:
-            from app.chat.tasks import add_to_channel, create_channel, create_user
+        if bounty.event and bounty.event.slug:
+            from chat.tasks import add_to_channel, create_channel, create_user, chat_driver
             from django.utils.text import slugify
             try:
+
                 if bounty.chat_channel_id is None:
+                    bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
 
-                    result = create_channel.apply_async({
-                        'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                        'channel_name': bounty.title,
-                        'channel_display_name': f'bounty-{slugify(bounty.title)[:50]}'
-                    })
+                    chat_driver.login()
+                    channel_lookup = chat_driver.channels.get_channel_by_name(settings.GITCOIN_HACK_CHAT_TEAM_ID, bounty_channel_name)
 
-                    bounty.chat_channel_id = result.get()
-                    bounty.save()
+                    if 'message' in channel_lookup:
+                        options = {
+                            'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                            'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
+                            'channel_name': bounty_channel_name[:60]
+                        }
+                        result = create_channel.apply_async(args=[options])
+                        bounty_channel_id_response = result.get()
+
+                        if 'message' in bounty_channel_id_response:
+                            raise ValueError(bounty_channel_id_response['message'])
+
+                        bounty.chat_channel_id = bounty_channel_id_response['id']
+                        bounty_channel_id = bounty_channel_id_response['id']
+                        bounty.save()
+                    else:
+                        bounty_channel_id = channel_lookup['id']
+                        bounty.chat_channel_id = bounty_channel_id
+                        bounty.save()
+                else:
+                    bounty_channel_id = bounty.chat_channel_id
+
                 funder_profile = Profile.objects.filter(handle=bounty.bounty_owner_github_username)[0]
 
                 if funder_profile is not None:
                     if funder_profile.chat_id is None:
-                        chat_funder_user = create_user.__call__(
-                            options={
+                        result = create_user.apply_async(args=[{
                                 "email": funder_profile.user.email,
                                 "username": funder_profile.handle,
                                 "first_name": funder_profile.user.first_name,
                                 "last_name": funder_profile.user.last_name,
-                                "nickname": "string",
-                                "auth_data": funder_profile.user.id,
+                                "nickname": funder_profile.handle,
+                                "auth_data": f'{funder_profile.user.id}',
                                 "auth_service": "gitcoin",
                                 "locale": "en",
                                 "props": {},
                                 "notify_props": {
-                                    "email": False if should_suppress_notification_email(funder_profile.user.email, 'chat') else True
-                                }
-                            },
-                            params={
-                              "iid": settings.GITCOIN_HACK_CHAT_TEAM_ID if settings.GITCOIN_HACK_CHAT_TEAM_ID else ""
-                            }
+                                    "email": "false" if should_suppress_notification_email(funder_profile.user.email, 'chat') else "true",
+                                    "push": "mention",
+                                    "desktop": "all",
+                                    "desktop_sound": "true",
+                                    "mention_keys": f'{funder_profile.handle}, @{funder_profile.handle}',
+                                    "channel": "true",
+                                    "first_name": "false"
+                                },
+                            }, {
+                                "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
+                            }]
                         )
 
-                        funder_profile.chat_id = chat_funder_user.id
+                        chat_profile_interest_user = result.get()
+                        if 'message' in chat_profile_interest_user:
+                            raise ValueError(chat_profile_interest_user['message'])
+
+                        funder_profile.chat_id = chat_profile_interest_user['id']
                         funder_profile.save()
 
                     if profile.chat_id is None:
-                        chat_funder_user = create_user.__call__(
-                            options={
-                                "email": profile.user.email,
-                                "username": profile.handle,
-                                "first_name": profile.user.first_name,
-                                "last_name": profile.user.last_name,
-                                "nickname": profile.handle,
-                                "auth_data": profile.user.id,
-                                "auth_service": "gitcoin",
-                                "locale": "en",
-                                "props": {},
-                                "notify_props": {
-                                    "email": False if should_suppress_notification_email(profile.user.email, 'chat') else True
-                                }
+                        result = create_user.apply_async(args=[{
+                            "email": profile.user.email,
+                            "username": profile.handle,
+                            "first_name": profile.user.first_name,
+                            "last_name": profile.user.last_name,
+                            "nickname": profile.handle,
+                            "auth_data": f'{profile.user.id}',
+                            "auth_service": "gitcoin",
+                            "locale": "en",
+                            "props": {},
+                            "notify_props": {
+                                "email": "false" if should_suppress_notification_email(profile.user.email,
+                                                                                       'chat') else "true",
+                                "push": "mention",
+                                "desktop": "all",
+                                "desktop_sound": "true",
+                                "mention_keys": f'{profile.handle}, @{profile.handle}',
+                                "channel": "true",
+                                "first_name": "false"
                             },
-                            params={
-                              "iid": settings.GITCOIN_HACK_CHAT_TEAM_ID if settings.GITCOIN_HACK_CHAT_TEAM_ID else ""
-                            }
+                        }, {
+                            "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
+                        }]
                         )
 
-                        profile.chat_id = chat_funder_user.id
+                        chat_profile_interest_user = result.get()
+                        if 'message' in chat_profile_interest_user:
+                            raise ValueError(chat_profile_interest_user['message'])
+                        profile.chat_id = chat_profile_interest_user['id']
                         profile.save()
 
                     profiles_to_connect = [
-                        funder_profile,
-                        profile
+                        funder_profile.chat_id,
+                        profile.chat_id
                     ]
 
                     add_to_channel.delay({
-                        'bounty': bounty,
+                        'channel_id': bounty_channel_id,
                         'profiles': profiles_to_connect
                     })
 
