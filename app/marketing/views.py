@@ -811,6 +811,8 @@ def tax_settings(request):
         address = profile.address   
     else:
         address = ''
+    
+    g_maps_api_key = "AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ"
         
     context = {
         'is_logged_in': is_logged_in,
@@ -822,6 +824,7 @@ def tax_settings(request):
         'profile': profile,
         'location': location,
         'address': address,
+        'api_key': g_maps_api_key,
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/tax.html', context)

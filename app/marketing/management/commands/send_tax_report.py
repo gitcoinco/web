@@ -249,6 +249,9 @@ class Command(BaseCommand):
         tax_path = os.path.join(os.getcwd(), TAX_REPORT_PATH)
         if not tax_path:
             os.makedirs(tax_path)
+        b_source_type = ContentType.objects.get(app_label='dashboard', model='bountyfulfillment')
+        t_source_type = ContentType.objects.get(app_label='dashboard', model='tip')
+        g_source_type = ContentType.objects.get(app_label='grants', model='contribution')
         for p in profiles:
             csv_record = []
             us_workers = {}
@@ -261,7 +264,6 @@ class Command(BaseCommand):
                                             ).exclude(to_profile=p)
             # Bounties
             # source type id 46 for bounties
-            b_source_type = ContentType.objects.get(app_label='dashboard', model='bountyfulfillment')
             bounties_fulfillments = earnings.filter(source_type_id=b_source_type.id)
             for bf in bounties_fulfillments:
                 bf_obj = BountyFulfillment.objects.get(pk=bf.source_id)
@@ -270,8 +272,7 @@ class Command(BaseCommand):
                 csv_record.append(record)
             # Tips
             # source type id 55 for tips
-            t_source_type = ContentType.objects.get(app_label='dashboard', model='tip')
-            tips = earnings.filter(source_type_id=t_source_type)
+            tips = earnings.filter(source_type_id=t_source_type.id)
             for t in tips:
                 t_obj = Tip.objects.get(pk=t.source_id)
                 
@@ -279,8 +280,7 @@ class Command(BaseCommand):
                 csv_record.append(record)
             # Grants
             # source type id 95 for grants
-            g_source_type = ContentType.objects.get(app_label='grants', model='contribution')
-            grants = earnings.filter(source_type_id=g_source_type)
+            grants = earnings.filter(source_type_id=g_source_type.id)
             for g in grants:
                 g_obj = Grant.objects.get(pk=g.source_id)
                 record, us_workers = create_csv_record(profiles, g_obj, GRANT, us_workers, g.value_usd)
