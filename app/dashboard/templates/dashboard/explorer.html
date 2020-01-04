@@ -25,7 +25,10 @@
     <link rel="stylesheet" href={% static "v2/css/users.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
-    <link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
+    <link rel="stylesheet" href={% static "v2/css/featured-bounties.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/explorer.css" %}>
+
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -35,17 +38,33 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="" id="gc-explorer" v-cloak>
-
-
       <div class="sidebar-container flex-column flex-lg-row">
         <transition name="fade">
           <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
             <div class="">
-              <input type="text" v-model="params.keywords" class="form-control">
-              <!-- [[params]] -->
-              <div v-for="(param,prop, index) in params" v-show="param.length > 1">[[param]] [[prop]] [[index]]</div>
+              <!-- <div class="form-inline">
+                <input type="text" placeholder="Search" v-model="params.keywords" class="form-control mr-2">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </div> -->
+              <div class="g-multiselect mb-2">
+                <div class="form__select2 align-items-center pr-4">
+                  <select2 v-model="params.keywords" data-placeholder="Search by keywords" data-tags="true" multiple class="form-control">
+                  </select2>
+                  <i class="fas fa-search pl-1" aria-hidden="true"></i>
 
+                </div>
+              </div>
 
+              <div v-for="(value, prop, index) in params" :key="index" v-if="value.length">
+                <template v-if="typeof value == 'string'">
+                  <button @click.prevented="removeFilter(prop, 0)" class="btn btn-gc-blue btn-sm font-smaller-5 mr-1">
+                    [[value | stringFixer]] <i class="fas fa-times"></i>
+                  </button>
+                </template>
+                <template v-else-if="typeof value == 'object'">
+                  <button v-for="(res, index) in value" @click.prevented="removeFilter(prop, index, true)" class="btn btn-gc-blue btn-sm font-smaller-5 mr-1">[[res | stringFixer]] <i class="fas fa-times"></i></button>
+                </template>
+              </div>
             </div>
             <div class="border-bottom py-3 font-smaller-1">
               <div class="mb-3 text-black-70 font-weight-semibold">
@@ -158,7 +177,6 @@
             <div @click="showExtraParams = !showExtraParams" class="text-justify btn-block d-flex justify-content-between align-items-center py-3">Advanced Filters <i class="fa fa-fw" :class="showExtraParams ? 'fa-chevron-up': 'fa-chevron-down'"></i></div>
 
             <div v-show="showExtraParams">
-
               <div class="border-bottom py-3 font-smaller-1">
                 <div class="mb-3 text-black-70 font-weight-semibold">My Bounties</div>
                 <div class="form-check mb-2">
@@ -350,10 +368,12 @@
           </nav>
         </transition>
         <div class="container pt-4" @scroll.passive="onScroll($event)">
-          <button class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
-          <div class="pb-5 ">
-            <h1 class="font-bigger-1">Issue Explorer - Freelance Code Bounties</h1>
-            <div class="d-flex justify-content-between align-items-center border-bottom pb-1">
+          <div class="pb-5">
+            <h1 class="font-bigger-1">
+              <button class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters"><i class="fas fa-filter"></i></button>
+              Issue Explorer - Freelance Code Bounties
+            </h1>
+            <div class="d-flex justify-content-between align-items-center border-bottom mx-2 pb-1">
               <div class="font-smaller-1">
                 [[bounties.length]]<span v-show="bountiesHasNext">+</span> bounties
               </div>
@@ -366,14 +386,41 @@
                 </select2>
               </div>
             </div>
+            <div class="featured-bounties my-4" v-if="featuredBounties.length">
+              <div>
+                <h3 class="featured-bounties__title">
+                  {% trans 'Featured Bounties' %}
+                  <span class="status-open">
+                    <i class="g-icon g-icon__dot-circle"></i>
+                    {% trans 'Ready to work' %}
+                  </span>
+                </h3>
+              </div>
+              <button class="featured-bounties__arrow featured-bounties__arrow-left" id="arrowLeft"><i class="fas fa-angle-left fa-2x"></i></button>
+              <button class="featured-bounties__arrow featured-bounties__arrow-right" id="arrowRight"><i class="fas fa-angle-right fa-2x"></i></button>
+              <div class="scroll-carousel" id="featured-card-container">
+                <div class="bounty-card" v-for="bountyFeat in featuredBounties" :key="bountyFeat.pk">
+                  <img :src="bountyFeat.avatar_url" alt="" width="56" height="56" class="bounty-card__avatar rounded-circle">
+                  <div class="">
+                    <p class="bounty-card__title">[[ bountyFeat.title ]] [[ bountyFeat.pk ]]</p>
+                    <div class="d-flex">
+                      <div class="tag token">[[ bountyFeat.rounded_amount ]] <span>[[ bountyFeat.token_name ]]</span></div>
+                      <div class="tag usd">[[ bountyFeat.value_in_usdt ]] <span>USD</span></div>
+                    </div>
+                    <a :href="bountyFeat.url" class="bounty-card__link">View Bounty</a>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div v-if="noResults" class="text-center">
               <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
               <p class="mt-4 font-weight-bold mb-0">No users found</p>
               <button class="btn blue" @click="clearParams(); searchBounties()">Reset Filters</button>
             </div>
+
             <div class="">
               <a v-for="bounty in bounties" :class="[bounty.standard_bounties_id.toString(), bounty.network]" :key="bounty.pk" :href="bounty.url" class="d-flex align-items-center flex-wrap bounty_row" data-container="body" :data-content='popoverConfig(bounty)'>
-                <div class="avatar-container col-1 justify-content-center hide_min_viewport">
+                <div class="avatar-container col-1 justify-content-center d-none d-md-block">
                   <img :src="bounty.avatar_url" class="avatar w-100" :class="bounty.github_org_name">
                 </div>
                 <div class="col-12 col-md-8 d-flex flex-column">
@@ -382,7 +429,7 @@
                     <div class="title font-subheader">
                       [[ bounty.title ]]
                     </div>
-                    <div class="bounty-summary col-12">
+                    <div class="bounty-summary">
                       <div class="info font-caption">
                         <span :class="`status-${bounty.status}`">
                           <i class="g-icon g-icon__dot-circle"></i>
@@ -406,9 +453,50 @@
                           </template>
                         </span>
                         <span class="separator-bull"></span>
-                        [[ bounty.project_type ]] <span class="separator-bull"></span> [[ bounty.experience_level ]] <span class="separator-bull"></span> Cancelled 7 hours ago
+                        [[ bounty.project_type ]] <span class="separator-bull"></span>
+                        [[ bounty.experience_level ]] <span class="separator-bull"></span>
 
-                          <span class="separator-bull"></span> <i class="fas fa-user"></i> [[ bounty.interested.length ]] Applicants
+                        <template v-if="bounty.status === 'open'">
+                          {% trans "Opened" %}
+                          [[bounty.web3_created]]
+                          <time class="" :datetime="[[ bounty.web3_created ]]" :title="[[ bounty.web3_created ]]">
+                            [[ bounty.web3_created | moment ]]
+                          </time>
+                        </template>
+                        <template v-else-if="bounty.status === 'started'">
+                          {% trans "Started" %}
+                          [[bounty.fulfillment_started_on]]
+                          <time class="" :datetime="[[ bounty.fulfillment_started_on ]]" :title="[[ bounty.fulfillment_started_on ]]">
+                            [[ bounty.fulfillment_started_on | moment ]]
+                          </time>
+                        </template>
+                        <template v-else-if="bounty.status === 'submitted'">
+                          {% trans "Submitted" %}
+                          <time class="" :datetime="[[ bounty.fulfillment_submitted_on ]]" :title="[[ bounty.fulfillment_submitted_on ]]">
+                            [[ bounty.fulfillment_submitted_on | moment ]]
+                          </time>
+                        </template>
+                        <template v-else-if="bounty.status === 'done'">
+                          {% trans "Done" %}
+                          <time class="" :datetime="[[ bounty.fulfillment_accepted_on ]]" :title="[[ bounty.fulfillment_accepted_on ]]">
+                            [[ bounty.fulfillment_accepted_on | moment ]]
+                            [[ bounty.fulfillment_accepted_on ]]
+                          </time>
+                        </template>
+                        <template v-else-if="bounty.status === 'cancelled'">
+                          {% trans "Cancelled" %}
+                          <time class="" :datetime="[[ bounty.canceled_on ]]" :title="[[ bounty.canceled_on ]]">
+                            [[ bounty.canceled_on | moment ]]
+                          </time>
+                        </template>
+                        <template v-else-if="bounty.status === 'expired'">
+                          {% trans "Expired" %}
+                          <time class="" :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">
+                            [[ bounty.expires_date | moment ]]
+                          </time>
+                        </template>
+                        <span class="separator-bull"></span>
+                        <i class="fas fa-user"></i> [[ bounty.interested.length ]] Applicants
 
                       </div>
                     </div>
@@ -467,6 +555,8 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
+    <script src="{% static "v2/js/vue-components.js" %}"></script>
+    <script src="{% static "v2/js/explorer.js" %}"></script>
     <script>
       $('[data-toggle="tooltip"]').bootstrapTooltip();
       $('[data-toggle="popover"]').popover()
@@ -485,8 +575,6 @@
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.keywords = {{keywords | safe}};
     </script>
-    <script src="{% static "v2/js/vue-components.js" %}"></script>
-    <script src="{% static "v2/js/explorer.js" %}"></script>
 
   </body>
 </html>
