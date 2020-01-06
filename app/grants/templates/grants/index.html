@@ -60,30 +60,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <strong>Gitcoin Grants</strong> has facilitated the distribution of <strong>${{grant_amount|floatformat:0}}k</strong> to Open Source since it's launch in January 2019.  
           <a class="font-body" href="/results">See more results</a>.
           <br>
-          <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 100px;" class="mt-1" />
+          <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 100px;" class="pt-3" />
 
         </div>
       </div>
 
-      <div class="container-fluid py-5 grants-matching">
+      <div class="container-fluid pt-0 pb-5 grants-matching">
         <div class="container">
-          <div class="row">
-          <div class="col-md-6">
-            <h3 class="mb-1 font-subtitle">$200k Round 4 is now live!</h3>
-            <p class="mb-2 mt-2">
-            From 1/6 through <strong>1/21 at 16:59 PST</strong> we will be matching contributions with quadratic funding.  <a href="https://gitcoin.co/blog/gitcoin-grants-2020/">More details here &gt;&gt;
-              </a>
-            </p>
-            <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 150px;" class="mt-1" />
-          </div>
-
-          <div class="col-md-12 font-smaller-1 text-center mt-4">
+          <div class="col-md-12 font-smaller-1 text-center pt-2">
             <p class="mb-1 font-weight-semibold">
-              $100k Round 3 has closed!
+              $200k Round 4 is now live!!
             </p>
             <p class="mb-1">
-              From 9/16 through 10/2 we were matching contributions with quadratic
-              funding for which we've announced the winners
+              From <strong>1/6 through 1/21 at 16:59 PST</strong> we will be matching contributions with quadratic funding.
+              <a href="https://gitcoin.co/blog/gitcoin-grants-2020/">More details here</a>
             </p>
             <p>
               Gitcoin Grants is the largest pilot for Quadratic Funding around!
@@ -100,48 +90,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </div>
             {% endif %}
           </div>
-          <div class="col-md-6">
-        {% if current_partners or past_partners %}
-          <ul class="nav nav-tabs my-0" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link nav-line active" id="currentpartners-tab" data-toggle="tab" href="#currentpartners" role="tab" aria-controls="currentpartners" aria-selected="true">Current Partners</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link nav-line" id="pastpartners-tab" data-toggle="tab" href="#pastpartners" role="tab" aria-controls="pastpartners" aria-selected="false">Past Partners</a>
-            </li>
-            <li class="align-self-center ml-auto font-smaller-2">
-            </li>
-          </ul>
 
-          <div class="tab-content">
-            <div class="tab-pane fade show active" id="currentpartners" role="tabpanel" aria-labelledby="currentpartners-tab">
-              {% if current_partners|length == 0 %} No current partners.{% endif %}
-              {% for current_partner in current_partners %}
-                <div style="text-align:center; display: inline-block; padding: 10px;">
-                  <h5>
-                    <a href="/profile/{{current_partner.profile.handle}}">
-                      @{{current_partner.profile.handle}}
-                    </a>
-                  </h5>
-                    <a href="/profile/{{current_partner.profile.handle}}">
-                      <img style="max-width:100px; border-radius: 50px;" src="/dynamic/avatar/{{current_partner.profile.handle}}">
-                    </a>
-                  <p>${{current_partner.amount|floatformat}}</p>
-                </div>
-              {% endfor %}
-            </div>
-
-            <div class="tab-pane fade" id="pastpartners" role="tabpanel" aria-labelledby="pastpartners-tab">
-              {% for past_partner in past_partners %}
-                <div style="text-align:center; display: inline-block; padding: 10px;">
-                  <h5>@{{past_partner.profile.handle}}</h5>
-                  <img style="max-width:100px;" src="/dynamic/avatar/{{past_partner.profile.handle}}">
-                  <p>${{past_partner.amount|floatformat}}</p>
-                </div>
-              {% endfor %}
-            </div>
-          </div>
-        {% endif %}          </div>
         </div>
       </div>
     </div>
