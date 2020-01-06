@@ -208,7 +208,7 @@ def grant_details(request, grant_id, grant_slug):
         subscriptions = grant.subscriptions.filter(active=True, error=False).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False).order_by('-created_on')
         _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
-        phantom_funds = grant.phantom_funding.filter(round_number=3)
+        phantom_funds = grant.phantom_funding.filter(round_number=4)
         contributions = list(_contributions.order_by('-created_on')) + [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
         contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
         activity_count = len(cancelled_subscriptions) + len(contributions)
@@ -636,7 +636,7 @@ def grant_fund(request, grant_id, grant_slug):
     # handle phantom funding
     active_tab = 'normal'
     fund_reward = None
-    round_number = 3
+    round_number = 4
     can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
