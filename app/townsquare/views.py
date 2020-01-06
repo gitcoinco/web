@@ -6,9 +6,26 @@ from django.views.decorators.csrf import csrf_exempt
 from dashboard.models import Activity
 from ratelimit.decorators import ratelimit
 from django.shortcuts import redirect
+from django.utils import timezone
 
 from .models import Comment, Like, Offer, OfferAction
 
+
+def get_next_time_available(key):
+    d = timezone.now()
+    if key == 'daily':
+        hours = int(d.strftime('%H'))
+        minutes = int(d.strftime('%M'))
+        d = d + timezone.timedelta(hours=hours) + timezone.timedelta(minutes=minutes)
+    if key == 'weekly':
+        d = d + timezone.timedelta(days=5 - d.weekday())
+    if key == 'monthly':
+        month = int(d.strftime('%m'))
+        year = int(d.strftime('%Y'))
+        year += 1 if month > 11 else 0
+        month += 1
+        d = timezone.datetime(year=year, month=month, day=1)
+    return d
 
 def index(request):
 
@@ -33,15 +50,22 @@ def index(request):
 
     default_tab = 'my_tribes' if request.user.is_authenticated else 'everywhere'
     tab = request.GET.get('tab', default_tab)
-    offers = Offer.objects.current()
-    target = f'/activity?what={tab}'
+    offers_by_category = {}
+    for key in ['daily', 'weekly', 'monthly']:
+        next_time_available = get_next_time_available(key)
+        offers = Offer.objects.current().filter(key=key)
+        # TODO: if user has already clicked offer dont let them do it again
+        offers_by_category[key] = {
+            'offers': offers,
+            'time': next_time_available.strftime('%Y-%m-%dT%H:%M:%SZ'),
+        }
     context = {
         'title': 'Home',
         'nav': 'home',
-        'target': target,
+        'target': f'/activity?what={tab}',
         'tab': tab,
         'tabs': tabs,
-        'offers': offers,
+        'offers_by_category': offers_by_category,
     }
     return TemplateResponse(request, 'townsquare/index.html', context)
 

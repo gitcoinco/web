@@ -53,15 +53,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
         </div>
         <div class="col-12 col-md-4">
-          <h4 class="pt-0">Quick Links</h4>
-          <h4 class="pt-0">Offers</h4>
-          <div>
-            {% for offer in offers %}
-              <li>
-                <a href="{{offer.go_url}}">{{offer.offer_header}}</a>
-              </li>
-            {% endfor %}
-          </div>
+          {% for type, item in offers_by_category.items %}
+            <h4 class="pt-0">{{type|title}} Offer</h4>
+            {% if item.offers|length %}
+            <div class="{{type}} offers">
+              {% for offer in item.offers %}
+                <li class="offer">
+                  <a href="{{offer.go_url}}"> <i class="fas fa-gift"></i>
+                  {{offer.offer_header}}
+                </a>
+                </li>
+              {% endfor %}
+            </div>
+            {% else %}
+              <div class="{{type}} timer" data-time="{{item.time}}">
+              </div>
+            {% endif %}
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -74,6 +82,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% include 'shared/activity_scripts.html' %}
 <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
 <script src="{% static "v2/js/status.js" %}"></script>
 <script src="{% static "v2/js/pages/townsquare.js" %}"></script>
 {% endblock %}
