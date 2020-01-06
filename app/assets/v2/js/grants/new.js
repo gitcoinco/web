@@ -76,7 +76,9 @@ const init = () => {
     $(this).select2();
   });
 
-  $('#create-grant').validate({
+  $('#create-grant').submit(function(e) {
+    e.preventDefault();
+  }).validate({
     submitHandler: function(form) {
       let data = {};
 
@@ -240,6 +242,7 @@ const init = () => {
           });
         });
       });
+      return false;
     }
   });
 
