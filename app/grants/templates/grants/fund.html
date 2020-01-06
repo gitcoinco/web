@@ -135,7 +135,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div class="row">
                       <div class="col-6 col-sm-8">
                         <label class="form__label" id="amount_label">{% trans "Amount Per Period" %}</label>
-                        <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" value="5" required />
+                        <input type="number" min="0.001" step=".001" id="amount" name="amount_per_period" class="form__input" value="5" required />
                       </div>
                       <div class="col-6 col-sm-4">
                         <label class="form__label" id="token_label">{% trans "Token" %}</label>
