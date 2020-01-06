@@ -82,6 +82,8 @@ def grants(request):
     state = request.GET.get('state', 'active')
     _grants = None
 
+    show_past_clr = False
+
     sort_by_index = None
     sort_by_clr_pledge_matching_amount = None
     if 'match_pledge_amount_' in sort:
