@@ -650,7 +650,7 @@ def grant_fund(request, grant_id, grant_slug):
         else:
             msg = "You are now signaling for this grant."
             show_tweet_modal = True
-            name_search = 'grants_round_3_contributor_' if not settings.DEBUG else 'pogs_eth'
+            name_search = 'grants_round_4_contributor' if not settings.DEBUG else 'pogs_eth'
             fund_reward = BulkTransferCoupon.objects.filter(token__name__contains=name_search).order_by('?').first()
             PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
         messages.info(
