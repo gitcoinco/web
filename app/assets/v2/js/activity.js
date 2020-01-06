@@ -36,13 +36,13 @@ $(document).ready(function() {
     var num = $(this).find('span.num').html();
 
     if (is_unliked) { // like
-      $(this).find('span.action').html('👎');
+      $(this).find('span.action').addClass('open');
       $(this).data('state', 'liked');
 
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
     } else { // unlike
-      $(this).find('span.action').html('👍');
+      $(this).find('span.action').removeClass('open');
       $(this).data('state', 'unliked');
     
       num = parseInt(num) - 1;
@@ -107,10 +107,11 @@ $(document).ready(function() {
     if($target.hasClass('filled') && allow_close_comment_container){
         $target.html('');
         $target.removeClass('filled');
+        $parent.find('.action').removeClass('open');
         return;
     }
+    $parent.find('.action').addClass('open');
     $.get(url, params, function(response) {
-
       $target.addClass('filled');
       $target.html('');
       for (var i = 0; i < response['comments'].length; i++) {

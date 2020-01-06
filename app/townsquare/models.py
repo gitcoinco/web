@@ -42,13 +42,19 @@ class OfferQuerySet(models.QuerySet):
 
 class Offer(SuperModel):
     """An offer"""
+    OFFER_TYPES = [
+        ('daily', 'daily'),
+        ('weekly', 'weekly'),
+        ('monthly', 'monthly'),
+        ('other', 'other'),
+    ]
 
     offer_header = models.TextField(default='', blank=True)
     offer_text = models.TextField(default='', blank=True)
     url = models.URLField(db_index=True)
     valid_from = models.DateTimeField(db_index=True)
     valid_to = models.DateTimeField(db_index=True)
-    key = models.CharField(max_length=50, db_index=True)
+    key = models.CharField(max_length=50, db_index=True, choices=OFFER_TYPES)
 
     # Bounty QuerySet Manager
     objects = OfferQuerySet.as_manager()

@@ -1,6 +1,13 @@
 #activities{
   text-align: left;
 }
+.action{
+  padding: 3px;
+}
+.action.open{
+  background-color: #744dfe;
+  border-radius: 5px;
+}
 .comment_container.filled{
   text-align: left;
   width: 300px;
