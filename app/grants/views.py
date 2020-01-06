@@ -57,11 +57,10 @@ logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
-matching_live = '($50K matching live now!) '
-total_clr_pot = 100000
-clr_round = 3
-clr_active = False
-show_past_clr = True
+matching_live = '($200K matching live now!) '
+total_clr_pot = 200000
+clr_round = 4
+clr_active = True
 
 if True:
     clr_matching_banners_style = 'results'
@@ -82,6 +81,8 @@ def grants(request):
     grant_type = request.GET.get('type', 'tech')
     state = request.GET.get('state', 'active')
     _grants = None
+
+    show_past_clr = False
 
     sort_by_index = None
     sort_by_clr_pledge_matching_amount = None
@@ -637,7 +638,6 @@ def grant_fund(request, grant_id, grant_slug):
     fund_reward = None
     round_number = 3
     can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
-    can_phantom_fund = False # round is ded
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
@@ -685,7 +685,7 @@ def grant_fund(request, grant_id, grant_slug):
         'phantom_funds': phantom_funds,
         'clr_round': clr_round,
         'total_clr_pot': total_clr_pot,
-        'clr_active': clr_active,
+        'clr_active': True
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
