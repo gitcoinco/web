@@ -76,6 +76,26 @@ const init = () => {
     $(this).select2();
   });
 
+  $('#input-admin_address').on('change', function() {
+    $('.alert').remove()
+    const validator = $( "#create-grant" ).validate();
+    let address = $(this).val();
+
+    console.log(address)
+    if (isNaN(parseInt(address))) {
+      web3.eth.ens.getAddress(address).then(function (result) {
+        console.log(result);
+        $('#input-admin_address').val(result);
+        return result;
+      }).catch(function(){
+        validator.showErrors({
+          "admin_address": "Please check your address!"
+        });
+        return _alert({ message: gettext('Please check your address and try again.') }, 'error');
+      })
+    }
+  })
+
   $('#create-grant').submit(function(e) {
     e.preventDefault();
   }).validate({
