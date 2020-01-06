@@ -226,7 +226,7 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=No
     if clr_type == 'tech':
         grants = Grant.objects.filter(network=network, hidden=False, grant_type='tech')
     elif clr_type == 'media':
-        grants = Grant.objects.filter(network=network, hidden=False, grant_type='tech')
+        grants = Grant.objects.filter(network=network, hidden=False, grant_type='media')
     else:
         grants = Grant.objects.filter(network=network, hidden=False)
 
