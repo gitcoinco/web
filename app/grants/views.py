@@ -144,6 +144,15 @@ def grants(request):
         {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
         {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
     ]
+    if grant_type == 'media':
+        nav_options = [
+            {'label': 'All', 'keyword': ''},
+            {'label': 'Education', 'keyword': 'education'},
+            {'label': 'Twitter', 'keyword': 'twitter'},
+            {'label': 'Reddit', 'keyword': 'reddit'},
+            {'label': 'Blogs', 'keyword': 'blog'},
+            {'label': 'Notes', 'keyword': 'notes'},
+        ]
 
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
