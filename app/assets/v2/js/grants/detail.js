@@ -15,7 +15,7 @@ $(document).ready(function() {
       $('#grant-admin').text(),
       $('#contract_owner_address').text(),
       '#cancel_grant',
-      'Looks like your grant has been created with ' + 
+      'Looks like your grant has been created with ' +
       $('#contract_owner_address').text() + '. Switch to take action on your grant.'
     );
 
