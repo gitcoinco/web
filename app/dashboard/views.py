@@ -361,7 +361,7 @@ def new_interest(request, bounty_id):
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
-        if bounty.event and bounty.event.slug:
+        if bounty.event:
             from chat.tasks import add_to_channel, create_channel, create_user, chat_driver
             from django.utils.text import slugify
             try:
