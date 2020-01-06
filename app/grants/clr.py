@@ -30,7 +30,7 @@ from grants.models import Contribution, Grant, PhantomFunding
 from perftools.models import JSONStore
 
 LOWER_THRESHOLD = 0.0
-CLR_START_DATE = dt.datetime(2019, 9, 15, 0, 0)
+CLR_START_DATE = dt.datetime(2020, 1, 6, 0, 0)
 
 
 '''
