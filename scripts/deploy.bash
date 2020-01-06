@@ -79,7 +79,7 @@ fi
 
 # let gunicorn know its ok to restart
 if ! [ "$JOBS_NODE" ]; then
-    if ! [[ -z CELERY_NODE  ]];
+    if ! [ -z CELERY_NODE  ];
     then
       echo "- gunicorn"
       for pid in $(pgrep -fl "gunicorn: worke" | awk '{print $1}'); do
