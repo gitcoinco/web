@@ -5,7 +5,6 @@
     Your contribution goes a long way!
     <img class="float-right" src="{% static "v2/images/diamonds_high_fiving.gif" %}" >
   </p>
-  {% if not show_only_estimate %}
   <div class="row mx-1">
     <div class="col-6 px-2 mb-2">
       <p class="predict-label mb-0"><span class="font-weight-semibold">1 DAI</span> contribution</p>
@@ -38,6 +37,6 @@
         <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.4.2|floatformat:0|intcomma }} DAI</span> match
       </p>
     </div>
-  {% endif %}
+
   </div>
 </div>
