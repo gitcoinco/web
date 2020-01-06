@@ -276,6 +276,7 @@ class Grant(SuperModel):
     def history_by_month(self):
         # gets the history of contributions to this grant month over month so they can be shown o grant details
         # returns [["", "Subscription Billing",  "New Subscriptions", "One-Time Contributions", "CLR Matching Funds"], ["December 2017", 5534, 2011, 0, 0], ["January 2018", 10396, 0 , 0, 0 ], ... for each monnth in which this grant has contribution history];
+        CLR_PAYOUT_HANDLES = ['vs77bb', 'gitcoinbot', 'notscottmoore', 'owocki']
         month_to_contribution_numbers = {}
         for sub in self.subscriptions.all():
             for contrib in sub.subscription_contribution.filter(success=True):
@@ -287,7 +288,7 @@ class Grant(SuperModel):
                         subkey = 'New-Recurring'
                     else:
                         subkey = 'Recurring-Recurring'
-                if contrib.subscription.contributor_profile.handle in ['vs77bb', 'gitcoinbot', 'notscottmoore', 'owocki']:
+                if contrib.subscription.contributor_profile.handle in CLR_PAYOUT_HANDLES:
                     subkey = 'CLR'
                 if key not in month_to_contribution_numbers.keys():
                     month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0, 'CLR': 0}
