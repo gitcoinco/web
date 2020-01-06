@@ -34,7 +34,7 @@
               {{ transaction.created_on|date:"Y-m-d" }}
             </div>
             <div class="col-2 col-md-2 justify-content-center special_tag">
-              <img class="avatar" style="max-width: 70px;" src="{% if transaction.logo %}{{ transaction.logo }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=transaction.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+              <img class="avatar" style="max-width: 70px;" src="{% if transaction.logo and transaction.logo.url %}{{ transaction.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=transaction.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
             </div>
             <div class="col-7 col-md-5 my-auto">
               <div class="title font-body">
