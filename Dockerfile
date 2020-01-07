@@ -30,7 +30,7 @@ RUN mkdir -p /usr/share/GeoIP/ && \
     gunzip GeoLite2-City.mmdb.tar.gz && \
     gunzip GeoLite2-Country.mmdb.tar.gz && \
     tar -xvf GeoLite2-City.mmdb.tar && \
-    tar -xvf GeoLite2-Country.mmdb.tar.gz && \
+    tar -xvf GeoLite2-Country.mmdb.tar && \
     mv GeoLite2-City_20191231/*.mmdb /usr/share/GeoIP/ && \
     mv GeoLite2-Country_20191231/*.mmdb /usr/share/GeoIP/
 
