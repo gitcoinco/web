@@ -61,7 +61,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <p class="font-smaller-1">
               <strong>Gitcoin Grants</strong> has facilitated the distribution of
               <strong>${{grant_amount|floatformat:0}}k</strong> to projects since
-              it's launch in January 2019.
+              its launch in January 2019.
               <a href="/results">See more results</a>.
             </p>
             <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 150px;" class="mt-1" />
@@ -262,7 +262,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% endfor %}
           </div>
           {% if grants.has_next %}
-            <a class="infinite-more-link" href="?network={{network}}&type={{type}}keyword={{keyword}}&sort_option={{sort}}&page={{ grants.next_page_number }}">More</a>
+            <p class="mb-0 text-center py-4">
+              <a class="infinite-more-link text-center text-black-70 cursor-pointer"
+                href="?network={{network}}&type={{type}}keyword={{keyword}}&sort_option={{sort}}&page={{ grants.next_page_number }}"
+              >
+                <i class="fas fa-spinner fa-spin mr-2"></i>
+                Collecting more exciting grants
+              </a>
+            </p>
           {% endif %}
         {% else %}
           <div class="col-12 mb-3 mx-auto col-md-6 text-center">
