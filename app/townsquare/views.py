@@ -1,12 +1,11 @@
 from django.http import Http404, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity
 from ratelimit.decorators import ratelimit
-from django.shortcuts import redirect
-from django.utils import timezone
 
 from .models import Comment, Like, Offer, OfferAction
 

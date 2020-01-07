@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils import timezone
-from economy.models import SuperModel
 from django.utils.text import slugify
+
+from economy.models import SuperModel
 
 
 class Like(SuperModel):
@@ -79,5 +80,3 @@ class OfferAction(SuperModel):
 
     def __str__(self):
         return f"{self.profile.handle} => {self.offer.offer_header}"
-
-

@@ -104,11 +104,12 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 
     var $target = $parent.parents('.row.box').find('.comment_container');
-    if($target.hasClass('filled') && allow_close_comment_container){
-        $target.html('');
-        $target.removeClass('filled');
-        $parent.find('.action').removeClass('open');
-        return;
+
+    if ($target.hasClass('filled') && allow_close_comment_container) {
+      $target.html('');
+      $target.removeClass('filled');
+      $parent.find('.action').removeClass('open');
+      return;
     }
     $parent.find('.action').addClass('open');
     $.get(url, params, function(response) {
