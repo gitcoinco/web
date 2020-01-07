@@ -213,7 +213,6 @@ $(document).ready(function() {
           deployedToken.methods.balanceOf(
             accounts[0]
           ).call().then(function(result) {
-            console.log(result);
             if (result < realTokenAmount) {
               _alert({ message: gettext('Your balance could not be verified')}, 'error');
             } else {
