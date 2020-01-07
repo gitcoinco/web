@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
   var time_difference_broken_down = function(difference) {
-    let remaining = 'Available now.. Refresh to view offer!';
-    let prefix = 'Offer available in ';
+    let remaining = ' now.. Refresh to view offer!';
+    let prefix = ' in ';
 
     if (difference > 0) {
       const parts = {
@@ -24,6 +24,13 @@ $(document).ready(function() {
     }
     return prefix + remaining;
   };
+  $(".offer a").click(function(e){
+    var speed = 500;
+    $(this).addClass('clicked');
+    $(this).find('#ribbon').effect('puff', speed, function(){
+      $(this).find('#giftbox').effect('puff', speed);
+    });
+  })
 
   var updateTimers = function() {
     $('.timer').each(function() {

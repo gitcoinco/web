@@ -53,20 +53,27 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
         </div>
         <div class="col-12 col-md-4">
+          <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1"><label for="receive_daily_offers_in_inbox"> <i class="fas fa-envelope"></i> Receive Offers in Inbox</label>
           {% for type, item in offers_by_category.items %}
-            <h4 class="pt-0">{{type|title}} Offer</h4>
-            {% if item.offers|length %}
+            <h4 class="pt-3">{{type|title}} Offer</h4>
+            {% if item.offer %}
             <div class="{{type}} offers">
-              {% for offer in item.offers %}
-                <li class="offer">
-                  <a href="{{offer.go_url}}"> <i class="fas fa-gift"></i>
-                  {{offer.offer_header}}
-                </a>
-                </li>
-              {% endfor %}
+              <li class="offer">
+                <a href="{{item.offer.go_url}}">
+                <div id="circle">
+                  <div id="gift">
+                    <div id="ribbon"></div>
+                    <div id="giftbox"></div>
+                  </div>
+                </div>
+                <span class="expires_label"><i class="fas fa-clock"></i> - Expires <div class="{{type}} timer" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}"></span>
+                </div>
+              </a>
+            </li>
             </div>
             {% else %}
-              <div class="{{type}} timer" data-time="{{item.time}}">
+              <i class="fas fa-clock"></i>
+              Available <div class="{{type}} timer" data-time="{{item.time}}">
               </div>
             {% endif %}
           {% endfor %}

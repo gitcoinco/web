@@ -52,10 +52,12 @@ def index(request):
     offers_by_category = {}
     for key in ['daily', 'weekly', 'monthly']:
         next_time_available = get_next_time_available(key)
-        offers = Offer.objects.current().filter(key=key)
-        # TODO: if user has already clicked offer dont let them do it again
+        offer = Offer.objects.current().filter(key=key).first()
+        if request.user.is_authenticated:
+            if request.user.profile.offeractions.filter(what='click', offer=offer):
+                offer = None
         offers_by_category[key] = {
-            'offers': offers,
+            'offer': offer,
             'time': next_time_available.strftime('%Y-%m-%dT%H:%M:%SZ'),
         }
     context = {
@@ -114,6 +116,8 @@ def offer(request, offer_id, offer_slug):
         offer = Offer.objects.current().get(pk=offer_id)
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
+        if request.user.profile.offeractions.filter(what='click', offer=offer):
+            raise Exception('already visited this offer')
         OfferAction.objects.create(profile=request.user.profile, offer=offer, what='click')
         return redirect(offer.url)
     except:
