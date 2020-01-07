@@ -24,13 +24,15 @@ $(document).ready(function() {
     }
     return prefix + remaining;
   };
-  $(".offer a").click(function(e){
+
+  $('.offer a').click(function(e) {
     var speed = 500;
+
     $(this).addClass('clicked');
-    $(this).find('#ribbon').effect('puff', speed, function(){
+    $(this).find('#ribbon').effect('puff', speed, function() {
       $(this).find('#giftbox').effect('puff', speed);
     });
-  })
+  });
 
   var updateTimers = function() {
     $('.timer').each(function() {

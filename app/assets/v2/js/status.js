@@ -27,13 +27,15 @@ $(document).ready(function() {
 
     // enforce a max length
     var max_len = 280;
+
     if ($(this).val().trim().length > max_len) {
       e.preventDefault();
       $(this).addClass('red');
       var old_val = $(this).val();
-      setTimeout(function(){
-        $('#textarea').val(old_val.slice(0, max_len))
-      },20);
+
+      setTimeout(function() {
+        $('#textarea').val(old_val.slice(0, max_len));
+      }, 20);
     } else {
       $(this).removeClass('red');
     }

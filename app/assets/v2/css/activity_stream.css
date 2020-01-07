@@ -4,6 +4,10 @@
 .action{
   padding: 3px;
 }
+.sup{
+  vertical-align: super;
+  font-size: smaller;  
+}
 .action i,
 a .sup{
   color: black;
@@ -46,11 +50,6 @@ a .sup{
   border-radius: 5px;
   color: black;
   font-weight: bold;
-}
-
-.sup{
-  vertical-align: super;
-  font-size: smaller;  
 }
 .like_activity:hover, .flag_activity:hover, .comment_activity:hover{
   text-decoration: none;

@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from dashboard.models import Activity
 from ratelimit.decorators import ratelimit
 
-from .models import Comment, Like, Offer, OfferAction, Flag
+from .models import Comment, Flag, Like, Offer, OfferAction
 
 
 def get_next_time_available(key):

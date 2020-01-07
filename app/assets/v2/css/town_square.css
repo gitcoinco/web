@@ -14,7 +14,6 @@
   text-align: center;
   border-radius: 5px;
   background-color: #fdedee;
-  padding: 3px;
   position: relative;
   margin-top: 25px;
   margin-bottom: 25px;
@@ -138,14 +137,11 @@
 .daily #circle{
   background-image:radial-gradient(#6E00FF, #3E00FF 30%); 
 }
-.daily #circle:hover{
-  background-image:radial-gradient(#6E00FF, #3E00FF 70%); 
-}
 .daily .speech_label{
-    background-color: #3E00FF;
+  background-color: #3E00FF;
 }
 .daily .speech_label:after{
-    border-bottom-color: #3E00FF;
+  border-bottom-color: #3E00FF;
 }
 .daily #ribbon:before,
 .daily #giftbox:after,
@@ -159,14 +155,11 @@
 .weekly #circle{
   background-image:radial-gradient(#FFCEd8, #FFCE08 30%); 
 }
-.weekly #circle:hover{
-  background-image:radial-gradient(#FFCEd8, #FFCE08 70%); 
-}
 .weekly .speech_label{
-    background-color: #FFCE08;
+  background-color: #FFCE08;
 }
 .weekly .speech_label:after{
-    border-bottom-color: #FFCE08;
+  border-bottom-color: #FFCE08;
 }
 .weekly #ribbon:before,
 .weekly #giftbox:after,
@@ -180,14 +173,11 @@
 .monthly #circle{
   background-image:radial-gradient(#0fde9c, #0fce7c 30%); 
 }
-.monthly #circle:hover{
-  background-image:radial-gradient(#0fde9c, #0fce7c 70%); 
-}
 .monthly .speech_label{
-    background-color: #0fce7c;
+  background-color: #0fce7c;
 }
 .monthly .speech_label:after{
-    border-bottom-color: #0fce7c;
+  border-bottom-color: #0fce7c;
 }
 .monthly #ribbon:before,
 .monthly #giftbox:after,
@@ -197,5 +187,14 @@
 }
 .monthly #circle:after{
   border:7px dashed #8E2ABE;
+}
+.weekly #circle:hover{
+  background-image:radial-gradient(#FFCEd8, #FFCE08 70%); 
+}
+.daily #circle:hover{
+  background-image:radial-gradient(#6E00FF, #3E00FF 70%); 
+}
+.monthly #circle:hover{
+  background-image:radial-gradient(#0fde9c, #0fce7c 70%); 
 }
 
