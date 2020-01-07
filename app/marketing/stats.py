@@ -91,6 +91,17 @@ def slack_users_active():
         )
 
 
+def chat_users():
+    from chat.tasks import chat_driver
+    chat_driver.login()
+    stats_request = chat_driver.users.stats()
+    if 'message' not in stats_request:
+        Stat.objects.create(
+            key='total_users',
+            val=stats_request['total_users_count'],
+        )
+
+
 def profiles_ingested():
     from dashboard.models import Profile
 
