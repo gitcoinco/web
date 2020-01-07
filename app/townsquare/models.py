@@ -72,7 +72,7 @@ class Offer(SuperModel):
     objects = OfferQuerySet.as_manager()
 
     def __str__(self):
-        return f"{self.offer_header}"
+        return f"{self.key} / {self.offer_header}"
 
     @property
     def go_url(self):
