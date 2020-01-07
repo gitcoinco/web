@@ -453,19 +453,21 @@
                           </template>
                         </span>
                         <span class="separator-bull"></span>
-                        [[ bounty.project_type ]] <span class="separator-bull"></span>
-                        [[ bounty.experience_level ]] <span class="separator-bull"></span>
+                        <template v-if="bounty.project_type">
+                          [[ bounty.project_type ]] <span class="separator-bull"></span>
+                        </template>
+                        <template v-if="bounty.experience_level">
+                          [[ bounty.experience_level ]] <span class="separator-bull"></span>
+                        </template>
 
                         <template v-if="bounty.status === 'open'">
                           {% trans "Opened" %}
-                          [[bounty.web3_created]]
                           <time class="" :datetime="[[ bounty.web3_created ]]" :title="[[ bounty.web3_created ]]">
                             [[ bounty.web3_created | moment ]]
                           </time>
                         </template>
                         <template v-else-if="bounty.status === 'started'">
                           {% trans "Started" %}
-                          [[bounty.fulfillment_started_on]]
                           <time class="" :datetime="[[ bounty.fulfillment_started_on ]]" :title="[[ bounty.fulfillment_started_on ]]">
                             [[ bounty.fulfillment_started_on | moment ]]
                           </time>
@@ -480,7 +482,6 @@
                           {% trans "Done" %}
                           <time class="" :datetime="[[ bounty.fulfillment_accepted_on ]]" :title="[[ bounty.fulfillment_accepted_on ]]">
                             [[ bounty.fulfillment_accepted_on | moment ]]
-                            [[ bounty.fulfillment_accepted_on ]]
                           </time>
                         </template>
                         <template v-else-if="bounty.status === 'cancelled'">
