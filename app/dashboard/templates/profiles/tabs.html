@@ -7,86 +7,86 @@
           {% trans "ACTIVITY" %}
         </button>
         {% if profile.tribe_members %}
-        <button type="button" id="nav-description" href="{{profile.url}}/tribe" class="text-center section-tab {% if tab == "tribe" %} active {% endif %}">
-          {% trans "TRIBE" %}{%if not profile.is_org %}S <span class="nav-badge">({{profile.tribe_members.count}})</span>{% endif %}
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/tribe" class="text-center section-tab {% if tab == "tribe" %} active {% endif %}">
+            {% trans "TRIBE" %}{%if not profile.is_org %}S <span class="nav-badge">({{profile.tribe_members.count}})</span>{% endif %}
+          </button>
         {% endif %}
         {% if show_resume_tab %}
-        <button type="button" id="nav-description" href="{{profile.url}}/resume" class="text-center section-tab {% if tab == "resume" %} active {% endif %}">
-          {% if not profile.show_job_status and is_my_profile %}
-            <i class="fas fa-eye"></i>
-          {% endif %}
-          {% trans "RESUME" %}
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/resume" class="text-center section-tab {% if tab == "resume" %} active {% endif %}">
+            {% if not profile.show_job_status and is_my_profile %}
+              <i class="fas fa-eye"></i>
+            {% endif %}
+            {% trans "RESUME" %}
+          </button>
         {% endif %}
         {% if active_bounties_count %}
-        <button type="button" id="nav-description" href="{{profile.url}}/active" class="text-center section-tab {% if tab == "active" %} active {% endif %}">
-          {% trans "ACTIVE ISSUES" %}
-          <span  class="nav-badge">({{active_bounties_count}})</span>
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/active" class="text-center section-tab {% if tab == "active" %} active {% endif %}">
+            {% trans "ACTIVE ISSUES" %}
+            <span  class="nav-badge">({{active_bounties_count}})</span>
+          </button>
         {% endif %}
         {% if all_feedbacks|length %}
-        <button type="button" id="nav-description" href="{{profile.url}}/ratings" class="text-center section-tab {% if tab == "ratings" %} active {% endif %}">
-          {% trans "RATINGS" %}
-          <span  class="nav-badge">({{all_feedbacks|length}})</span>
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/ratings" class="text-center section-tab {% if tab == "ratings" %} active {% endif %}">
+            {% trans "RATINGS" %}
+            <span  class="nav-badge">({{all_feedbacks|length}})</span>
+          </button>
         {% endif %}
         {% if portfolio_count or is_my_profile %}
-        <button type="button" id="nav-description" href="{{profile.url}}/portfolio" class="text-center section-tab {% if tab == "portfolio" %} active {% endif %}">
-          {% trans "PORTFOLIO" %}
-          <span  class="nav-badge">({{portfolio_count}})</span>
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/portfolio" class="text-center section-tab {% if tab == "portfolio" %} active {% endif %}">
+            {% trans "PORTFOLIO" %}
+            <span  class="nav-badge">({{portfolio_count}})</span>
+          </button>
         {% endif %}
         {% if profile.organizations|length %}
-        <button type="button" id="nav-description" href="{{profile.url}}/orgs" class="text-center section-tab {% if tab == "orgs" %} active {% endif %}">
-          {% trans "ORGS" %}
-          <span  class="nav-badge">({{profile.organizations|length}})</span>
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/orgs" class="text-center section-tab {% if tab == "orgs" %} active {% endif %}">
+            {% trans "ORGS" %}
+            <span  class="nav-badge">({{profile.organizations|length}})</span>
+          </button>
         {% endif %}
         {% if profile.is_org %}
-        <button type="button" id="nav-description" href="{{profile.url}}/people" class="text-center section-tab {% if tab == "people" %} active {% endif %}">
-          {% trans "PEOPLE" %}
-          <span  class="nav-badge">({{profile.team|length}})</span>
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/people" class="text-center section-tab {% if tab == "people" %} active {% endif %}">
+            {% trans "PEOPLE" %}
+            <span  class="nav-badge">({{profile.team|length}})</span>
+          </button>
         {% endif %}
         {% if total_grant_actions %}
-        <button type="button" id="nav-description" href="{{profile.url}}/grants" class="text-center section-tab {% if tab == "grants" %} active {% endif %}">
-          {% trans "GRANTS" %}
-          {% if total_grant_actions %}<span  class="nav-badge">({{total_grant_actions}})</span>{%endif%}
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/grants" class="text-center section-tab {% if tab == "grants" %} active {% endif %}">
+            {% trans "GRANTS" %}
+            {% if total_grant_actions %}<span  class="nav-badge">({{total_grant_actions}})</span>{%endif%}
+          </button>
         {% endif %}
         {% if total_quest_success %}
-        <button type="button" id="nav-description" href="{{profile.url}}/quests" class="text-center section-tab {% if tab == "quests" %} active {% endif %}">
-          {% trans "QUESTS" %}
-          {% if total_quest_success %}<span  class="nav-badge">({{total_quest_success}})</span>{%endif%}
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/quests" class="text-center section-tab {% if tab == "quests" %} active {% endif %}">
+            {% trans "QUESTS" %}
+            {% if total_quest_success %}<span  class="nav-badge">({{total_quest_success}})</span>{%endif%}
+          </button>
         {% endif %}
         {% if not profile.is_org or total_kudos_count %}
-        <button type="button" id="nav-description" href="{{profile.url}}/kudos" class="text-center section-tab {% if tab == "kudos" %} active {% endif %}">
-          {% trans "KUDOS" %}
-          {% if total_kudos_count %}<span  class="nav-badge">({{total_kudos_count}})</span>{%endif%}
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/kudos" class="text-center section-tab {% if tab == "kudos" %} active {% endif %}">
+            {% trans "KUDOS" %}
+            {% if total_kudos_count %}<span  class="nav-badge">({{total_kudos_count}})</span>{%endif%}
+          </button>
         {% endif %}
         {% if is_editable and profile.viewed_by.count %}
-        <button type="button" id="nav-description" href="{{profile.url}}/viewers" class="text-center section-tab {% if tab == "viewers" %} active {% endif %}">
-          <i class="fas fa-eye"></i>
-          {% trans "VIEWERS" %}
-          {% if profile.viewed_by.count %}<span  class="nav-badge">({{profile.viewed_by.count}})</span>{%endif%}
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/viewers" class="text-center section-tab {% if tab == "viewers" %} active {% endif %}">
+            <i class="fas fa-eye"></i>
+            {% trans "VIEWERS" %}
+            {% if profile.viewed_by.count %}<span  class="nav-badge">({{profile.viewed_by.count}})</span>{%endif%}
+          </button>
         {% endif %}
         {% if is_editable and profile.persona_is_hunter and earnings_total %}
-        <button type="button" id="nav-description" href="{{profile.url}}/earnings" class="text-center section-tab {% if tab == "earnings" %} active {% endif %}">
-          <i class="fas fa-eye"></i>
-          {% trans "EARNINGS" %}
-          {% if earnings_total %}<span  class="nav-badge">(${{earnings_total}})</span>{%endif%}
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/earnings" class="text-center section-tab {% if tab == "earnings" %} active {% endif %}">
+            <i class="fas fa-eye"></i>
+            {% trans "EARNINGS" %}
+            {% if earnings_total %}<span  class="nav-badge">(${{earnings_total}})</span>{%endif%}
+          </button>
         {% endif %}
         {% if is_editable and profile.persona_is_funder and spent_total %}
-        <button type="button" id="nav-description" href="{{profile.url}}/spent" class="text-center section-tab {% if tab == "spent" %} active {% endif %}">
-          <i class="fas fa-eye"></i>
-          {% trans "SPENT" %}
-          {% if spent_total %}<span  class="nav-badge">(${{spent_total}})</span>{%endif%}
-        </button>
+          <button type="button" id="nav-description" href="{{profile.url}}/spent" class="text-center section-tab {% if tab == "spent" %} active {% endif %}">
+            <i class="fas fa-eye"></i>
+            {% trans "SPENT" %}
+            {% if spent_total %}<span  class="nav-badge">(${{spent_total}})</span>{%endif%}
+          </button>
         {% endif %}
       </div>
     </div>
