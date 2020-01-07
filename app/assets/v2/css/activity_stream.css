@@ -110,7 +110,10 @@ a .sup{
 }
 
 @media (max-width: 767.98px) {
-
+  .comment_container.filled{
+    text-align: center;
+    margin: 0px auto;
+  }
   .activity-info {
     text-align: center;
   }

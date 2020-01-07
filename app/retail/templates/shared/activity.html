@@ -92,7 +92,7 @@
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'status_update' %}
-        {% trans "updated status" %}
+        {% trans "" %}
         <b>{{ row.metadata.title }}</b>
       {% elif row.activity_type == 'leaderboard_rank' %}
         <a href="{{ row.metadata.link }}">{{ row.metadata.title }}</a>
@@ -148,7 +148,7 @@
             </p>
           </div>
         {% endif %}
-        <span class="mx-2">
+        <span class="mx-0">
           {% if not hide_date %}
             {{ row.created_human_time }} | 
           {% endif %}
