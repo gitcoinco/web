@@ -9,7 +9,7 @@
   0%{transform:rotate(0deg);}
   100%{transform:rotate(360deg);}
 }
-.expires_label{
+.speech_label{
   font-size: 14px;
   text-align: center;
   border-radius: 5px;
@@ -29,7 +29,7 @@
   text-decoration: none;
   font-weight: bold;
 }
-.expires_label:after {
+.speech_label:after {
   content: '';
   position: absolute;
   top: 0;
@@ -141,10 +141,10 @@
 .daily #circle:hover{
   background-image:radial-gradient(#6E00FF, #3E00FF 70%); 
 }
-.daily .expires_label{
+.daily .speech_label{
     background-color: #3E00FF;
 }
-.daily .expires_label:after{
+.daily .speech_label:after{
     border-bottom-color: #3E00FF;
 }
 .daily #ribbon:before,
@@ -157,15 +157,15 @@
   border:7px dashed #0fce7c;
 }
 .weekly #circle{
-  background-image:radial-gradient(#FFCE68, #FFCE08 30%); 
+  background-image:radial-gradient(#FFCEd8, #FFCE08 30%); 
 }
 .weekly #circle:hover{
-  background-image:radial-gradient(#FFCE08, #FFCE08 70%); 
+  background-image:radial-gradient(#FFCEd8, #FFCE08 70%); 
 }
-.weekly .expires_label{
+.weekly .speech_label{
     background-color: #FFCE08;
 }
-.weekly .expires_label:after{
+.weekly .speech_label:after{
     border-bottom-color: #FFCE08;
 }
 .weekly #ribbon:before,
@@ -183,10 +183,10 @@
 .monthly #circle:hover{
   background-image:radial-gradient(#0fde9c, #0fce7c 70%); 
 }
-.monthly .expires_label{
+.monthly .speech_label{
     background-color: #0fce7c;
 }
-.monthly .expires_label:after{
+.monthly .speech_label:after{
     border-bottom-color: #0fce7c;
 }
 .monthly #ribbon:before,

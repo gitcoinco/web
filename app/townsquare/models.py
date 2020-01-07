@@ -16,6 +16,17 @@ class Like(SuperModel):
     def __str__(self):
         return f"Like of {self.activity.pk} by {self.profile.handle}"
 
+class Flag(SuperModel):
+    """A Flag is an indication of a flagged activity feed item"""
+
+    profile = models.ForeignKey('dashboard.Profile',
+        on_delete=models.CASCADE, related_name='flags', blank=True)
+    activity = models.ForeignKey('dashboard.Activity',
+        on_delete=models.CASCADE, related_name='flags', blank=True, db_index=True)
+
+    def __str__(self):
+        return f"Flag of {self.activity.pk} by {self.profile.handle}"
+
 class Comment(SuperModel):
     """An comment on an activity feed item"""
 

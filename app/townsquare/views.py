@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from dashboard.models import Activity
 from ratelimit.decorators import ratelimit
 
-from .models import Comment, Like, Offer, OfferAction
+from .models import Comment, Like, Offer, OfferAction, Flag
 
 
 def get_next_time_available(key):
@@ -93,12 +93,21 @@ def api(request, activity_id):
     # deletion request
     if request.POST.get('method') == 'delete':
         activity.delete()
+
     # like request
     elif request.POST.get('method') == 'like':
         if request.POST['direction'] == 'liked':
             Like.objects.create(profile=request.user.profile, activity=activity)
         if request.POST['direction'] == 'unliked':
             activity.likes.filter(profile=request.user.profile).delete()
+
+    # flag request
+    elif request.POST.get('method') == 'flag':
+        if request.POST['direction'] == 'flagged':
+            Flag.objects.create(profile=request.user.profile, activity=activity)
+        if request.POST['direction'] == 'unflagged':
+            activity.flags.filter(profile=request.user.profile).delete()
+
     # comment request
     elif request.POST.get('method') == 'comment':
         comment = request.POST.get('comment')

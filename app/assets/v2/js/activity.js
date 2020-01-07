@@ -25,25 +25,25 @@ $(document).ready(function() {
   });
 
   // like activity
-  $(document).on('click', '.like_activity', function(e) {
+  $(document).on('click', '.like_activity, .flag_activity', function(e) {
     e.preventDefault();
     if (!document.contxt.github_handle) {
       _alert('Please login first.', 'error');
       return;
     }
 
-    var is_unliked = $(this).data('state') == 'unliked';
+    var is_unliked = $(this).data('state') == $(this).data('negative');
     var num = $(this).find('span.num').html();
 
     if (is_unliked) { // like
       $(this).find('span.action').addClass('open');
-      $(this).data('state', 'liked');
+      $(this).data('state', $(this).data('affirmative'));
 
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
     } else { // unlike
       $(this).find('span.action').removeClass('open');
-      $(this).data('state', 'unliked');
+      $(this).data('state', $(this).data('negative'));
     
       num = parseInt(num) - 1;
       $(this).find('span.num').html(num);
@@ -51,7 +51,7 @@ $(document).ready(function() {
 
     // remote post
     var params = {
-      'method': 'like',
+      'method': $(this).data('action'),
       'direction': $(this).data('state')
     };
     var url = '/api/v0.1/activity/' + $(this).data('pk');

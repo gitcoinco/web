@@ -53,9 +53,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
         </div>
         <div class="col-12 col-md-4">
-          <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1"><label for="receive_daily_offers_in_inbox"> <i class="fas fa-envelope"></i> Receive Offers in Inbox</label>
+
+          <div class="text-center">
+            <button class="btn btn-gc-blue" >CREATE ACTION <i class="fas fa-upload"></i></button>
+          </div>
+
           {% for type, item in offers_by_category.items %}
-            <h4 class="pt-3">{{type|title}} Offer</h4>
+            <hr>
+            <h4 class="pt-3">{{type|title}} Action</h4>
             {% if item.offer %}
             <div class="{{type}} offers">
               <li class="offer">
@@ -66,15 +71,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div id="giftbox"></div>
                   </div>
                 </div>
-                <span class="expires_label"><i class="fas fa-clock"></i> - Expires <div class="{{type}} timer" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}"></span>
+                <span class="speech_label"><i class="fas fa-clock"></i> - Expires <div class="{{type}} timer" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}"></span>
                 </div>
               </a>
             </li>
             </div>
             {% else %}
               <i class="fas fa-clock"></i>
-              Available <div class="{{type}} timer" data-time="{{item.time}}">
-              </div>
+              Available <div class="{{type}} timer" data-time="{{item.time}}"></div>
+              <br>
+              <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1"> <label for="receive_daily_offers_in_inbox"> <i class="fas fa-envelope"></i> Email when available</label>
+
             {% endif %}
           {% endfor %}
         </div>

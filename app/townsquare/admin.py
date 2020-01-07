@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Comment, Like, Offer, OfferAction
+from .models import Comment, Like, Offer, OfferAction, Flag
 
 
 # Register your models here.
@@ -19,3 +19,4 @@ admin.site.register(Offer, OfferAdmin)
 admin.site.register(OfferAction, OfferActionAdmin)
 admin.site.register(Comment, GenericAdmin)
 admin.site.register(Like, GenericAdmin)
+admin.site.register(Flag, GenericAdmin)

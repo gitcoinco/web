@@ -23,11 +23,27 @@ $(document).ready(function() {
     $('#textarea').focus();
   }
 
-  $('body').on('focus change paste keyup blur', 'textarea', function(e) {
+  $('body').on('focus change paste keyup blur', '#textarea', function(e) {
+
+    // enforce a max length
+    var max_len = 280;
+    if ($(this).val().trim().length > max_len) {
+      e.preventDefault();
+      $(this).addClass('red');
+      var old_val = $(this).val();
+      setTimeout(function(){
+        $('#textarea').val(old_val.slice(0, max_len))
+      },20);
+    } else {
+      $(this).removeClass('red');
+    }
+
+    // enable post + enter button
     if ($(this).val().trim().length > 4) {
       $('#btn_post').attr('disabled', false);
       if ($('#textarea').is(':focus') && (e.keyCode == 13)) {
-        $('#btn_post').click();
+        submitStatusUpdate();
+        e.preventDefault();
       }
     } else {
       $('#btn_post').attr('disabled', true);

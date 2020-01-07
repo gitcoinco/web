@@ -4,10 +4,15 @@
 .action{
   padding: 3px;
 }
+.action i,
+a .sup{
+  color: black;
+}
 .action.open{
-  background-color: #744dfe;
+  background-color: #eeeeee;
   border-radius: 5px;
 }
+
 .comment_container.filled{
   text-align: left;
   width: 300px;
@@ -47,7 +52,7 @@
   vertical-align: super;
   font-size: smaller;  
 }
-.like_activity:hover, .comment_activity:hover{
+.like_activity:hover, .flag_activity:hover, .comment_activity:hover{
   text-decoration: none;
   font-weight: bolder;
 }
