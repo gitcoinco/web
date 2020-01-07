@@ -104,7 +104,7 @@ def preprocess(request):
 
             if 'message' not in chat_unreads_request:
                 for teams in chat_unreads_request:
-                    if teams['msg_count'] > 0:
+                    if teams['msg_count'] > 0 or teams['mention_count'] > 0:
                         chat_unread_messages = True
                         break
         except Exception as e:
