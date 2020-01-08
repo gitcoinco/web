@@ -55,8 +55,6 @@
     if (res.data) {
       let data = res.data;
 
-      console.log('data', data);
-
       if (data) {
         // get public key-value
         const public_keys = Object.keys(data).filter(k => k[0] !== '_');
@@ -109,10 +107,6 @@
 
     await removeFields(space.public, unused_public_keys);
     await removeFields(space.private, unused_private_keys);
-
-    const count = unused_public_keys.length + unused_private_keys.length;
-
-    console.log(`remove ${count} outdated fields from space`, unused_public_keys, unused_private_keys);
   }
 
   async function removeFields(subspace, keys) {
