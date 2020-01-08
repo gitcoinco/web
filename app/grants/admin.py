@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django.contrib import admin
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from grants.models import CLRMatch, Contribution, Grant, MatchPledge, PhantomFunding, Subscription
@@ -180,6 +181,12 @@ kevin (team gitcoin)
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
+    list_display = ['id', 'txn_url', 'tx_cleared', 'success']
+
+    def txn_url(self, obj):
+        tx_id = obj.tx_id
+        tx_url = 'https://etherscan.io/tx/' + tx_id
+        return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
 
 
 admin.site.register(PhantomFunding, GeneralAdmin)
