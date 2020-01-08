@@ -61,8 +61,8 @@ class Offer(SuperModel):
         ('other', 'other'),
     ]
 
-    offer_header = models.TextField(default='', blank=True)
-    offer_text = models.TextField(default='', blank=True)
+    title = models.TextField(default='', blank=True)
+    desc = models.TextField(default='', blank=True)
     url = models.URLField(db_index=True)
     valid_from = models.DateTimeField(db_index=True)
     valid_to = models.DateTimeField(db_index=True)
@@ -72,12 +72,23 @@ class Offer(SuperModel):
     objects = OfferQuerySet.as_manager()
 
     def __str__(self):
-        return f"{self.key} / {self.offer_header}"
+        return f"{self.key} / {self.title}"
+
+    @property
+    def view_url(self):
+        slug = slugify(self.title)
+        return f'/action/{self.pk}/{slug}'
+
+    def get_absolute_url(self):
+        return self.view_url
 
     @property
     def go_url(self):
-        slug = slugify(self.offer_header)
-        return f'/offer/{self.pk}/{slug}'
+        return self.view_url + '/go'
+
+    @property
+    def decline_url(self):
+        return self.view_url + '/decline'
 
 
 class OfferAction(SuperModel):
@@ -90,5 +101,4 @@ class OfferAction(SuperModel):
     what = models.CharField(max_length=50, db_index=True) # click, completion, etc
 
     def __str__(self):
-        return f"{self.profile.handle} => {self.offer.offer_header}"
-
+        return f"{self.profile.handle} => {self.offer.title}"

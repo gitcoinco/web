@@ -44,16 +44,17 @@ $(document).ready(function() {
 
   setInterval(updateTimers, 1000);
 
-  $("#receive_daily_offers_in_inbox").on('change', function(e){
-    _alert("Your email subscription preferences have been updated", 'success', 2000);
+  $('#receive_daily_offers_in_inbox').on('change', function(e) {
+    _alert('Your email subscription preferences have been updated', 'success', 2000);
 
-    var url = "/api/v0.1/emailsettings/"
+    var url = '/api/v0.1/emailsettings/';
     var params = {
-      'new_bounty_notifications': $(this).is(':checked'),
-    }
+      'new_bounty_notifications': $(this).is(':checked')
+    };
+
     $.post(url, params, function(response) {
       // no message to be sent
     });
-  })
+  });
 
 }(jQuery));

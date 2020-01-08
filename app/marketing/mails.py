@@ -747,8 +747,8 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
     worth = f" worth ${worth}" if worth else ""
     offers = f""
     if to_emails and len(to_emails):
-        from townsquare.utils import is_email_townsquare_enabled
-        if is_email_townsquare_enabled(to_emails[0]):
+        from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
+        if is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available():
             offers = f"1 New Action && 💰"
     subject = _(f"⚡️ {offers} {len(bounties)} New Work{worth} matching your profile")
 

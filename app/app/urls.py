@@ -365,7 +365,9 @@ urlpatterns = [
     re_path(r'^activity/?', retail.views.activity, name='activity'),
     re_path(r'^townsquare/?', townsquare.views.index, name='townsquare'),
     re_path(r'^$', townsquare.views.index, name='inex'),
-    path('offer/<int:offer_id>/<slug:offer_slug>', townsquare.views.offer, name='townsquare_offer'),
+    path('action/<int:offer_id>/<slug:offer_slug>/go', townsquare.views.offer_go, name='townsquare_offer_go'),
+    path('action/<int:offer_id>/<slug:offer_slug>/decline', townsquare.views.offer_decline, name='townsquare_offer_decline'),
+    path('action/<int:offer_id>/<slug:offer_slug>', townsquare.views.offer_view, name='townsquare_offer_view'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
     url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),
@@ -586,8 +588,8 @@ urlpatterns = [
     url(r'^sitemap.xml/?', perftools.views.sitemap, name='django.contrib.sitemaps.views.sitemap'),
     # Interests
     path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
-    path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
-    path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
+    path('action/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
+    path('action/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
     path(
         'actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/',
         dashboard.views.uninterested,

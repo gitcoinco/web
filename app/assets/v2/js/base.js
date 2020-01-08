@@ -238,7 +238,7 @@ const _alert = function(msg, _class, remove_after_ms) {
   }
   var numAlertsAlready = $('.alert:visible').length;
   var top = numAlertsAlready * 44;
-  var id = "msg_" + parseInt(Math.random() * 10**10);
+  var id = 'msg_' + parseInt(Math.random() * 10 ** 10);
 
   var html = function() {
     return (
@@ -255,10 +255,10 @@ const _alert = function(msg, _class, remove_after_ms) {
 
   $('body').append(html);
 
-  if(typeof remove_after_ms != 'undefined'){
-    setTimeout(function(){
-      $("#" + id).remove();
-    }, remove_after_ms)
+  if (typeof remove_after_ms != 'undefined') {
+    setTimeout(function() {
+      $('#' + id).remove();
+    }, remove_after_ms);
   }
 
 };

@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-
+from django.conf import settings
 from dashboard.models import Activity
 from ratelimit.decorators import ratelimit
 
@@ -73,6 +73,7 @@ def index(request):
     # render page context
     context = {
         'title': 'Home',
+        'card_desc': 'View the recent activity on the Gitcoin network',
         'nav': 'home',
         'target': f'/activity?what={tab}',
         'tab': tab,
@@ -153,16 +154,52 @@ def api(request, activity_id):
         response['comments'] = comments
     return JsonResponse(response)
 
+is_debugging_offers = settings.DEBUG
 
-def offer(request, offer_id, offer_slug):
+def offer_go(request, offer_id, offer_slug):
 
     try:
         offer = Offer.objects.current().get(pk=offer_id)
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
-        if request.user.profile.offeractions.filter(what='click', offer=offer):
+        if request.user.profile.offeractions.filter(what='go', offer=offer) and not is_debugging_offers:
+            raise Exception('already visited this offer')
+        OfferAction.objects.create(profile=request.user.profile, offer=offer, what='go')
+        return redirect(offer.url)
+    except:
+        raise Http404
+
+
+def offer_decline(request, offer_id, offer_slug):
+
+    try:
+        offer = Offer.objects.current().get(pk=offer_id)
+        if not request.user.is_authenticated:
+            return redirect('/login/github?next=' + request.get_full_path())
+        if request.user.profile.offeractions.filter(what='decline', offer=offer) and not is_debugging_offers:
+            raise Exception('already visited this offer')
+        OfferAction.objects.create(profile=request.user.profile, offer=offer, what='decline')
+        return redirect('/')
+    except:
+        raise Http404
+
+
+def offer_view(request, offer_id, offer_slug):
+
+    try:
+        offer = Offer.objects.current().get(pk=offer_id)
+        if not request.user.is_authenticated:
+            return redirect('/login/github?next=' + request.get_full_path())
+        if request.user.profile.offeractions.filter(what='click', offer=offer) and not is_debugging_offers:
             raise Exception('already visited this offer')
         OfferAction.objects.create(profile=request.user.profile, offer=offer, what='click')
-        return redirect(offer.url)
+        # render page context
+        context = {
+            'title': offer.title,
+            'card_desc': offer.desc,
+            'nav': 'home',
+            'offer': offer,
+        }
+        return TemplateResponse(request, 'townsquare/offer.html', context)
     except:
         raise Http404
