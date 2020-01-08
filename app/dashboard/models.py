@@ -2006,6 +2006,10 @@ class Activity(SuperModel):
         return ""
 
     @property
+    def url(self):
+        return f"{settings.BASE_URL}?tab=activity:{self.pk}"
+
+    @property
     def humanized_activity_type(self):
         """Turn snake_case into Snake Case.
 

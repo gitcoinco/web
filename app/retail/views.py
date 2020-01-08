@@ -1102,16 +1102,22 @@ def activity(request):
         if 'keyword-' in what:
             keyword = what.split('-')[1]
             relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
+        if 'activity:' in what:
+            pk = what.split(':')[1]
+            activities = activities.filter(pk=pk)
+            if page > 1:
+                activities = Activity.objects.none()
         # filters
         if len(relevant_profiles):
-            print(keyword, len(relevant_profiles))
             activities = activities.filter(profile__in=relevant_profiles)
 
+    suppress_more_link = not len(activities)
     p = Paginator(activities, page_size)
 
     next_page = page + 1
     context = {
         'p': p,
+        'suppress_more_link': suppress_more_link,
         'what': what,
         'next_page': next_page,
         'page': p.get_page(page),

@@ -20,6 +20,9 @@
       {% for row in activities %}
         {% include 'shared/activity.html' %}
       {% endfor %}
-      <a class="infinite-more-link" href="{% if target %}{{target}}{%else%}?what={{what}}&page={{next_page}}{% endif %}" style="display:none;">More</a>
+
+      {% if not suppress_more_link %}
+        <a class="infinite-more-link" href="{% if target %}{{target}}{%else%}?what={{what}}&page={{next_page}}{% endif %}" style="display:none;">More</a>
+      {% endif %}
   </div>
 </div>

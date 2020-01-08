@@ -154,10 +154,11 @@
           {% endif %}
           <a href=# data-action='like' data-affirmative=liked data-negative=unliked data-state="{% if row.liked %}liked{% else %}unliked{%endif%}" data-pk={{row.pk}} class="like_activity"><span class="action {% if row.liked %}open{%endif%}"><i class="far fa-thumbs-up"></i></span><span class="sup">(<span class="num">{{row.likes}}</span>)</span></a> 
           
-          <a href=# data-pk={{row.pk}} class="comment_activity"><span class="action"><i class="far fa-comments"></i></span><span class="sup">(<span class="num">{{row.comments}}</span>)</span></a></span>
+          <a href=# data-pk={{row.pk}} class="comment_activity" {% if row.comments %} data-open="true" {% endif %} ><span class="action"><i class="far fa-comments"></i></span><span class="sup">(<span class="num">{{row.comments}}</span>)</span></a></span>
 
           <a href=# data-action='flag' data-affirmative=flagged data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}} class="flag_activity"><span class="action {% if row.flagged %}open{%endif%}"><i class="far fa-flag"></i></span></a> 
 
+          <a class="action copy_activity" href=# data-url={{row.url}}><i class="fas fa-link"></i></a> 
 
       </div>
       <div class="comment_container">

@@ -3,6 +3,7 @@
 }
 .action{
   padding: 3px;
+  border-radius: 5px;
 }
 .sup{
   vertical-align: super;
@@ -12,11 +13,12 @@
 a .sup{
   color: black;
 }
+.action:hover{
+  background-color: #fafafa;
+}
 .action.open{
   background-color: #eeeeee;
-  border-radius: 5px;
 }
-
 .comment_container.filled{
   text-align: left;
   width: 300px;
@@ -51,7 +53,7 @@ a .sup{
   color: black;
   font-weight: bold;
 }
-.like_activity:hover, .flag_activity:hover, .comment_activity:hover{
+.like_activity:hover, .flag_activity:hover, .comment_activity:hover, .copy_activity:hover{
   text-decoration: none;
   font-weight: bolder;
 }

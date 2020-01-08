@@ -146,5 +146,30 @@ $(document).ready(function() {
     post_comment($target, false);
   });
 
+  // post comment activity
+  $(document).on('click', '.copy_activity', function(e) {
+    e.preventDefault();
+    var url = $(this).data('url');
+    copyToClipboard(url);
+    _alert('Link copied to clipboard.', 'success', 1000);
+    $(this).addClass('open');
+    var $target = $(this);
+    setTimeout(function(){
+      $target.removeClass('open');
+    }, 300);
+  });
+
+
+  // auto open new comment threads
+  setInterval(function(){
+    $(".comment_activity").each(function(){
+      var open = $(this).data('open');
+      if(open){
+        $(this).data('open', false);
+        $(this).click();
+      }
+    })
+  }, 1000);
+
 
 }(jQuery));

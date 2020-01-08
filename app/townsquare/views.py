@@ -50,6 +50,12 @@ def index(request):
         })
     default_tab = 'my_tribes' if request.user.is_authenticated else 'everywhere'
     tab = request.GET.get('tab', default_tab)
+    if "activity:" in tab:
+        tabs.append({
+            'title': "Search",
+            'slug': tab,
+        })
+
 
     # get offers
     offers_by_category = {}
