@@ -1,5 +1,5 @@
 {% comment %}
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
@@ -117,7 +117,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="col-12 col-lg-9">
               <ul class="grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
                 {% for grant_type in grant_types %}
-                  <a data-type="type" data-value="{{grant_type.keyword}}" class="mr-3 px-2 {% if type == grant_type.keyword %}selected{%endif%}">
+                  <a data-type="type" data-value="{{grant_type.keyword}}" class="mr-3 px-2 {% if type == grant_type.keyword %}selected{% endif %}">
                     {{grant_type.label}} ({{grant_type.count}})
                   </a>
                 {% endfor %}
@@ -216,7 +216,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="col-12 col-xl-8">
               <ul class="grants_nav grants_keyword_nav pl-0 mb-0 pb-1 pt-2 mt-2 mt-xl-0 text-center text-xl-left font-body font-weight-semibold">
                 {% for category in nav_options %}
-                  <a  data-type="keyword" data-value="{{category.keyword}}" class="mr-3 mr-md-2 mr-lg-3 {% if keyword == category.keyword %}selected{%endif%}"  >
+                  <a  data-type="keyword" data-value="{{category.keyword}}" class="mr-3 mr-md-2 mr-lg-3 {% if keyword == category.keyword %}selected{% endif %}"  >
                     {{category.label}}
                   </a>
                 {% endfor %}

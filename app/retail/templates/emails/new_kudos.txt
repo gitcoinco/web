@@ -4,7 +4,7 @@
 {{kudos_transfer.from_name}} {% blocktrans %} sent you a {% endblocktrans %}<b>{{ token_elem.name|humanize_name }}</b> kudos!
 {% else %}
 Someone sent you a <b>{{ token_elem.name|humanize_name }}</b> kudos.
-{% endif %}{% if not is_new %} {{kudos_transfer.created_on | naturaltime}}{%endif%}
+{% endif %}{% if not is_new %} {{kudos_transfer.created_on | naturaltime}}{% endif %}
 
 
 
