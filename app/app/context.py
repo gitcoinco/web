@@ -93,7 +93,7 @@ def preprocess(request):
 
     chat_unread_messages = False
 
-    if profile.chat_id:
+    if profile and profile.chat_id:
         try:
             from chat.tasks import get_driver
             chat_driver = get_driver()

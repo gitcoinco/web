@@ -20,7 +20,7 @@ chat_driver = Driver({
 })
 
 
-def get_driver(self):
+def get_driver():
     chat_driver.login()
     return chat_driver
 

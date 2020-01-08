@@ -27,12 +27,16 @@ from chat.tasks import get_driver
 def chat(request):
     """Render chat landing page response."""
 
-    chat_driver = get_driver()
+    try:
+        chat_driver = get_driver()
 
-    chat_stats = chat_driver.teams.get_team_stats(settings.GITCOIN_CHAT_TEAM_ID)
-    if 'message' not in chat_stats:
-        users_online = chat_stats['active_member_count']
-    else:
+        chat_stats = chat_driver.teams.get_team_stats(settings.GITCOIN_CHAT_TEAM_ID)
+        if 'message' not in chat_stats:
+            users_online = chat_stats['active_member_count']
+        else:
+            users_online = 'N/A'
+    except Exception as e:
+
         users_online = 'N/A'
     context = {
         'users_online': users_online
