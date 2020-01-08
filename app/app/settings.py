@@ -120,7 +120,8 @@ INSTALLED_APPS = [
     'event_ethdenver2019',
     'inbox',
     'feeswapper',
-    'oauth2_provider'
+    'oauth2_provider',
+    'compliance'
 ]
 
 MIDDLEWARE = [
