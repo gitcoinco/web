@@ -123,7 +123,7 @@ def oauth_connect(request, *args, **kwargs):
         "auth_data": f'{active_user_profile.user.id}',
         "auth_service": "gitcoin",
         "notify_props": {
-            "email": False if should_suppress_notification_email(active_user_profile.user.email, 'chat') else True,
+            "email": "false",
             "push": "mention",
             "desktop": "all",
             "desktop_sound": "true",
@@ -409,7 +409,7 @@ def new_interest(request, bounty_id):
                                 "locale": "en",
                                 "props": {},
                                 "notify_props": {
-                                    "email": "false" if should_suppress_notification_email(funder_profile.user.email, 'chat') else "true",
+                                    "email": "false",
                                     "push": "mention",
                                     "desktop": "all",
                                     "desktop_sound": "true",
@@ -441,8 +441,7 @@ def new_interest(request, bounty_id):
                             "locale": "en",
                             "props": {},
                             "notify_props": {
-                                "email": "false" if should_suppress_notification_email(profile.user.email,
-                                                                                       'chat') else "true",
+                                "email": "false",
                                 "push": "mention",
                                 "desktop": "all",
                                 "desktop_sound": "true",
