@@ -331,6 +331,7 @@
   cursor: pointer;
 }
 
+.grant-partners .nav-link,
 .grant-partners .nav-link:hover {
   border: none;
 }

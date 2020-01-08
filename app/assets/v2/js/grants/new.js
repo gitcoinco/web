@@ -76,7 +76,27 @@ const init = () => {
     $(this).select2();
   });
 
-  $('#create-grant').validate({
+  $('#input-admin_address').on('change', function() {
+    $('.alert').remove();
+    const validator = $('#create-grant').validate();
+    let address = $(this).val();
+
+    if (isNaN(parseInt(address))) {
+      web3.eth.ens.getAddress(address).then(function(result) {
+        $('#input-admin_address').val(result);
+        return result;
+      }).catch(function() {
+        validator.showErrors({
+          'admin_address': 'Please check your address!'
+        });
+        return _alert({ message: gettext('Please check your address and try again.') }, 'error');
+      });
+    }
+  });
+
+  $('#create-grant').submit(function(e) {
+    e.preventDefault();
+  }).validate({
     submitHandler: function(form) {
       let data = {};
 
@@ -240,6 +260,7 @@ const init = () => {
           });
         });
       });
+      return false;
     }
   });
 
@@ -259,7 +280,8 @@ const init = () => {
     $('#js-token').select2();
     $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
     $('#js-token').append("<option value='0x0000000000000000000000000000000000000000' selected='selected'>Any Token");
+    $('.select2-selection__rendered').hover(function() {
+      $(this).removeAttr('title');
+    });
   });
-
-  $('.select2-selection__rendered').removeAttr('title');
 };

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant admin layout.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -55,7 +55,7 @@ class GrantAdmin(GeneralAdmin):
         'team_member_list',
         'subscriptions_links', 'contributions_links', 'link',
     ]
-    list_display =['pk', 'title', 'active','grant_type', 'link']
+    list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden']
     raw_id_fields = ['admin_profile']
 
     # Custom Avatars
