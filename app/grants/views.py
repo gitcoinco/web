@@ -274,11 +274,12 @@ def grant_details(request, grant_id, grant_slug):
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
+    tab = request.GET.get('tab', 'description')
     params = {
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
-        'tab': request.GET.get('tab', 'description'),
+        'tab': tab,
         'title': matching_live + grant.title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
@@ -295,8 +296,12 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
-        'is_team_member': is_team_member
+        'is_team_member': is_team_member,
     }
+
+    if tab == 'stats':
+        params['max_graph'] = grant.history_by_month_max
+        params['history'] = json.dumps(grant.history_by_month)
 
     if add_cancel_params:
         add_in_params = {

@@ -27,6 +27,10 @@
       <span class="nav-badge">({{ activity_count }})</span>
     </button>
 
+    <button type="button" id="nav-stats" href="{{grant.url}}?tab=stats" class="section-tab {% if tab == "stats" %} active {% endif %}">
+      {% trans "STATS" %}
+    </button>
+
     <button type="button" id="nav-summary" href="{{grant.url}}?tab=updates" class="section-tab {% if tab == "updates" %} active {% endif %}">
       {% trans "UPDATES" %}
       <span class="nav-badge">(0)</span>
@@ -69,6 +73,33 @@
       </div>
     {% endif %}
 
+    {% if tab == "stats" %}
+      <script src="https://www.gstatic.com/charts/loader.js"></script>
+      <script src="{% static "v2/js/grants/stats.js" %}"></script>
+      <div id=grant_stats_graph class="content-block content-block--white">
+        <div class="container">
+
+          <div class="value-container">
+            <div class="chart_container chart_container--big">
+              <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">CONTRIBUTION HISTORY OVER TIME</p>
+              <div class="chart_container__content">
+                <div id="grant_chart"></div>
+              </div>
+              <div class="grant-status-list">
+                <p><span class="box box_1"></span>{% trans "Subscription Billing" %}</p>
+                <p><span class="box box_2"></span>{% trans "New Subscriptions" %}</p>
+                <p><span class="box box_3"></span>{% trans "One-Time Contributions" %}</p>
+                <p><span class="box box_5"></span>{% trans "CLR Matching Funds" %}</p>
+              </div>
+            </div>
+          </div>
+          <script>
+            const max_graph = {{max_graph}};
+            const history = {{history|safe}}; 
+          </script>
+        </div>
+      </div>
+    {% endif %}
     {% if tab == "contributors" %}
     <div id="section-nav-contributors">
       <div class="grant__stakeholders-list d-flex flex-wrap">
