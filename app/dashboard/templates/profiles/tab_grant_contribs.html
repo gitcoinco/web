@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -17,8 +17,10 @@
 {% load i18n static humanize grants_extra %}
 
   <div class="grants-container">
-    <h2 class="font-title my-3 pb-3 title">{% trans "Grant Contribution History" %} {% if total_grant_contributions %} ({{total_grant_contributions}})
-    {%endif%}</h2>
+    <h2 class="font-title my-3 pb-3 title">
+      {% trans "Grant Contribution History" %}
+      {% if total_grant_contributions %} ({{total_grant_contributions}}) {% endif %}
+    </h2>
     <h3 class="font-body mt-1 mb-1">Monthly Summary</h3>
     {% include "profiles/earningsgraph.html" with graph_type="grants" %}
 
@@ -72,7 +74,7 @@
               <a id="tx_link" href="https://etherscan.io/tx/{{transaction.cont.tx_id}}" target="_blank" rel="noopener noreferrer">
                   {% if transaction.tx_id %}
                   View Etherscan
-                  {%endif%}
+                  {% endif %}
               </a>
               <input type="hidden" id="tx_id" name="tx_id" value="{{ transaction.cont.tx_id }}"/>
             </div>
