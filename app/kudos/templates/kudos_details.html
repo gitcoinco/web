@@ -90,7 +90,7 @@
                 <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
               {% if kudos.quests_reward %}
                 {% for quest in reward_for %}
-                  <a class="btn btn-gc-blue" href="{{quest.url}}">Play Quest + Win</a> 
+                  <a class="btn btn-gc-blue m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a> 
                 {% endfor %}
               {% endif %}
               {% else %}

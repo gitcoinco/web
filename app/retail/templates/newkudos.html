@@ -27,23 +27,49 @@
     </div>
     <div class="col-12 col-md-6 pr-2 pl-2 pb-4 form_container">
       <div style="max-width: 500px; margin: 0px auto;">
-        <h4>
-          {% trans "Create a New Kudos" %}
-        </h4>
-        <p>
-          Please checkout the <a href="https://github.com/gitcoinco/kudosbadges/blob/master/README.md#to-create-a-new-kudos">Kudos Creation Guide</a> and especially the <a href="https://github.com/gitcoinco/creative/blob/master/Product/kudos_guide/kudosguide_latest.pdf">Kudos Design Guide</a> and <a href="https://github.com/gitcoinco/kudosbadges/blob/master/kudos_template.svg">SVG template</a> before submitting this form!
-        </p>
-        {% if msg %}
-          <p style="background-color: #ddd;">
-            {{ msg | safe }}
-          </p>
-        {% endif %}
         {% if success %}
           <div style="text-align: center; margin-bottom: 10px">
             <img src="{% static "v2/images/tree/party_robot.jpg" %}">
           </div>
         {% endif %}
-        <form class="mt-5" id="newkudos" method="POST" enctype="multipart/form-data">
+        {% if msg %}
+          <p style="background-color: #ddd;">
+            {{ msg | safe }}
+          </p>
+        {% endif %}
+        <h4>
+          {% trans "Mint a New Kudos" %}
+        </h4>
+        <hr>
+        <h5>
+          Why mint Kudos?
+        </h5>
+        <p>
+          Kudos are a great way to represent your brand, engage a community, and create rewards for desired actions. Browse <a href="/kudos#faq">the Kudos FAQ</a> to learn more, or fill out the form below to get a new Kudos minted.
+        </p>
+        <p>
+          Estimated Turnaround times:
+          <ul>
+            <li>Step 1, artwork creation: 2-4 weeks</li>
+            <li>Step 2, upload artwork: 1-2 business days</li>
+          </ul>
+        </p>
+        <hr>
+        <h5>
+          Step 1: Design artwork.
+        </h5>
+        <p>
+          <strong>Need art designed?</strong> Submit a request <a href="https://github.com/gitcoinco/kudosbadges/issues/new">here</a>.
+        </p>
+        <p>
+          <strong>Creating your own Art?</strong>
+          Please checkout the <a href="https://github.com/gitcoinco/kudosbadges/blob/master/README.md#to-create-a-new-kudos">Kudos Creation Guide</a> and especially the <a href="https://github.com/gitcoinco/creative/blob/master/Product/kudos_guide/kudosguide_latest.pdf">Kudos Design Guide</a> and <a href="https://github.com/gitcoinco/kudosbadges/blob/master/kudos_template.svg">SVG template</a> before submitting this form!
+        </p>
+        <hr>
+        <h5>
+          Step 2: Upload Artwork.
+        </h5>
+        <form class="mt-2" id="newkudos" method="POST" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="form-group">
             <label class="form__label" for="email">{% trans "Contact email address" %}</label>
@@ -85,7 +111,14 @@
             <label class="form__label" for="to_address">{% trans "Owner Address" %}</label>
             <input type="text" name="to_address" class="form__input" placeholder='0x0...abc109' value="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" required>
           </div>
-          <div class="terms_container pt-4">
+          <div class="terms_container pt-2">
+            {% if is_staff %}
+            <div class="form__checkbox">
+              <input name='mint_and_sync' id='mint_and_sync' type="checkbox" value=1 required />
+                <label class="form__label" for=mint_and_sync>{% trans "ADMIN ONLY - mint+sync this kudos immediately" %}
+              </label>
+            </div>
+            {% endif %}
             <div class="form__checkbox">
               <input name='terms' id='terms' type="checkbox" value=1 required />
                 <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}

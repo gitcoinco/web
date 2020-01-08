@@ -385,7 +385,7 @@ thanks for being a member of the community.
 
 alisa / frank (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         elif bounty.status == 'cancelled':
@@ -406,7 +406,7 @@ thanks again for being a member of the community.
 
 alisa / frank (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         else:
@@ -443,7 +443,7 @@ def render_admin_contact_funder(bounty, text, from_user):
     return response_html, response_txt
 
 
-def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+def render_funder_stale(github_username, days=60, time_as_str='a couple months'):
     """Render the stale funder email template.
 
     Args:
@@ -459,14 +459,15 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
     response_txt = f"""
 hi {github_username},
 
-alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}.
+in the spirit of making Gitcoin better + checking in:
 
-- has anything been slipping on your issue board which might be bounty worthy?
+- have any issues which might be bounty worthy or projects you're hoping to build?
 - do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
+- are you interested in joining one of <a href="https://gitcoin.co/hackathon-list/">our upcoming hackathons?</a> it's possible
+we could do so at a discount, as you're a current funder on the platform
 
-our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days.
-
-appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
+appreciate you being a part of the community + let us know if you'd like some Gitcoin schwag, we can send a link your way to order some :)
 
 ~ alisa / frank (gitcoin product team)
 
@@ -927,8 +928,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Grants for the Holidays"
-    new_kudos_pks = [5304, 4033, 1923]
+    subject = "The action starts *Monday 1/6/2020*!"
+    new_kudos_pks = [7315, 7275, 6188]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -938,61 +939,53 @@ def render_new_bounty_roundup(to_email):
         email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
-<h3>Happy Kudos Friday!</h3>
+<h3>New Kudos This Month</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
     '''
+
     intro = f'''
 <p>
-Happy December Friends,
+Hey Gitcoiners,
 </p>
 <p>
-    As we creep into the final month of 2019, it’s humbling to look back and see the incredible growth our ecosystem has seen this year. The Gitcoin and Ethereum developer communities are thriving and the 2020 horizon is looking bright. With your help, we plan to kick off new developer growth initiatives in the coming year to work towards the collaborative goal of <a href="https://onemilliondevs.com/">one million Ethereum Developers</a>.
+    Happy New Years :)  The Gitcoin team has been spending time with friends & family for the last two weeks, celebrating the end of the decade.
 </p>
 <p>
-    In that regard, the Ethereum Foundation and Gitcoin would love to hear about your experience joining and contributing to the Ethereum space. If you have 2 minutes, please fill out this 6 question <a href="https://gitcoin.typeform.com/to/MkoL19">Ethereum Developer Survey</a> so we can make Ethereum more receptive to onboarding new developers.
-</p>
-<p>
-    The Global Communities hackathon is in full swing with <a href="https://gitcoin.co/hackathon/global-communities">29 prizes</a>. In our efforts to increase participation and make these virtual events more accessible, we’ve put together a bundle of <a href="https://gitcoin.co/quests/?focus_hackathon=global-communities">Hackathon Quests</a> for those who want to learn, as well as a <a href="https://gitcoin.co/issue/gitcoinco/skunkworks/136/3759">Community Choice prize</a> for those who want to judge (remember, you must <a href="https://gitcoin.co/hackathon/onboard/global-communities/">register</a> to do either!).
+   Next week we're back in action + looking to start the new year off strong with over $200k in OSS Funding for our community.  The <a href="https://gitcoin.co/hackathon/take-back-the-web/?">Take Back the Web</a> Virtual Hackathon starts 1/6.  And so does <a href="https://gitcoin.co/blog/gitcoin-grants-2020/">Gitcoin Grants Round 4</a>.  Click <a href="https://gitcoin.co/hackathon/take-back-the-web/?">here</a> to checkout Take Back the Web, and click <a href="https://gitcoin.co/grants/">here</a> to checkout Gitcoin Grants.
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        🚀Grants and more grants!🚀 CLR Round 4 is coming up later in December. Remember to <a href="https://gitcoin.co/grants/">start a grant</a> if you’d like to be eligible! 
-        </li>
-        <li>
-        Additionally, ConsenSys Grants Wave III is closing Jan 14th. Apply <a href="https://consensys.net/grants/">here</a> directly and or consider submitting to their <a href="https://gitcoin.co/issue/ConsenSys/Consensys-Grants/2/3780">hackathon bounty</a>. Categories: || Infrastructure || UX and Dev Tooling || Security || Education || Social Impact.
-        </li>
-        <li>
-        We're hosting Johanna from ConsenSys Grants and Pablo from Hashing Systems on today's livestream to discuss hackathon bounties and grants. Join us <a href="https://gitcoin.co/livestream">at 2PM ET this Friday</a>!
+        Join us on todays Gitcoin Livestream to chat Web3 Business Models with Thibauld from Fairmint, Paul from Sablier, and more! <a href="https://http://gitcoin.co/livestream">Join at 2pm ET</a>.
         </li>
     </ul>
 </p>
 <p>
-Back to BuidLing,
+Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'uivlis',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Split Constant-Function Detector',
-        'link': 'https://gitcoin.co/issue/crytic/slither/318/3732',
+        'what': 'Removed Civic from the MyBit application',
+        'link': 'https://gitcoin.co/issue/MyBitFoundation/MyBit-Go.app/515/3801',
         'link_copy': 'View more',
     }, {
-        'who': 'kadenzipfel',
+        'who': 'seichris',
         'who_link': True,
-        'what': 'Smart contract best practices for Gitcoin',
-        'link': 'https://gitcoin.co/issue/ConsenSys/smart-contract-best-practices/239/3740',
+        'what': 'Re-Designed Mockup For Zero-Knowledge Assets',
+        'link': 'https://gitcoin.co/issue/invisible-college/democracy/36/3786',
         'link_copy': 'View more',
     }, {
-        'who': 'nazariyv',
+        'who': 'mul1sh',
         'who_link': True,
-        'what': 'Built Scraper For Coinflex Futures API',
-        'link': 'https://gitcoin.co/issue/diadata-org/diadata/183/3668',
+        'what': 'Removed Cursor Drifts During Navigation on IOS',
+        'link': 'https://gitcoin.co/issue/cybersemics/em/4/3715',
         'link_copy': 'View more',
     }, ]
 
@@ -1009,15 +1002,12 @@ Back to BuidLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/KamesCG/ideas/issues/1',
-        'primer': 'Easy Onboarding: MetaMask Snap + Smart Wallet? + DefI Protocols',
+        'url': 'https://github.com/gitcoinco/web/issues/5465',
+        'primer': 'Are you an illustrator?  Design a Gitcoin bot + earn some DAI!',
     }, {
-        'url': 'https://github.com/status-im/status-react/issues/9576',
-        'primer': 'Status: Disable Search Bar On Empty Chat State And Fix Pull-To-Refresh Gesture',
-    }, {
-        'url': 'https://github.com/hashingsystems/hash.js/issues/9',
-        'primer': 'Hashing Systems $200 hackathon prize: Create A Tutorial For Developers To Use Composer Functionality With ReactJS',
-}, ]
+        'url': 'https://github.com/gitcoinco/web/issues/4943',
+        'primer': 'Find an area where Gitcoins documentation is lacking + earn some ETH by fixing it',
+    }, ]
 
 
     num_leadboard_items = 5

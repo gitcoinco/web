@@ -33,15 +33,15 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     {% if user.is_authenticated %}
-      {% include 'shared/notifications.html' %}
       {% if user.is_staff %}
         {% include 'shared/chat_nav.html' %}
       {% endif %}
+      {% include 'shared/notifications.html' %}
     {% endif %}
   </div>
 
   <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
-    
+
     <nav class="navbar-nav ml-auto mr-3">
       <a class="nav-link selected interior" href="{% url 'quests_index' %}">{% trans "Quests Explorer" %}</a>
       <a class="nav-link interior" href="{% url 'quests_index' %}#leaderboard_top">{% trans "Leaderboard" %}</a>
