@@ -181,12 +181,15 @@ kevin (team gitcoin)
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
-    list_display = ['id', 'txn_url', 'tx_cleared', 'success']
+    list_display = ['id', 'txn_url', 'tx_cleared', 'success', 'profile']
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
         tx_url = 'https://etherscan.io/tx/' + tx_id
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
+
+    def profile(self, obj):
+        return obj.subscription.contributor_profile
 
 
 admin.site.register(PhantomFunding, GeneralAdmin)
