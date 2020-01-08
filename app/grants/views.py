@@ -347,7 +347,7 @@ def grant_new(request):
                 'metadata': receipt,
                 'admin_profile': profile,
                 'logo': logo,
-                'hidden': True,
+                'hidden': False,
             }
             grant = Grant.objects.create(**grant_kwargs)
             new_grant_admin(grant)
