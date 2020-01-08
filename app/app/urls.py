@@ -366,7 +366,11 @@ urlpatterns = [
     re_path(r'^townsquare/?', townsquare.views.index, name='townsquare'),
     re_path(r'^$', townsquare.views.index, name='inex'),
     path('action/<int:offer_id>/<slug:offer_slug>/go', townsquare.views.offer_go, name='townsquare_offer_go'),
-    path('action/<int:offer_id>/<slug:offer_slug>/decline', townsquare.views.offer_decline, name='townsquare_offer_decline'),
+    path(
+        'action/<int:offer_id>/<slug:offer_slug>/decline',
+        townsquare.views.offer_decline,
+        name='townsquare_offer_decline'
+    ),
     path('action/<int:offer_id>/<slug:offer_slug>', townsquare.views.offer_view, name='townsquare_offer_view'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
@@ -475,6 +479,7 @@ urlpatterns = [
         name='unread_notifications_email_weekly_roundup'
     ),
     path('_administration/email/new_bounty_rejection', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
+    path('_administration/email/comment', retail.emails.comment, name='comment_email'),
     path(
         '_administration/email/new_bounty_acceptance',
         retail.emails.new_bounty_acceptance,

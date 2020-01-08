@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 MARKETING_EMAILS = [
     ('welcome_mail', _('Welcome Emails'), _('First 3 days after you sign up')),
     ('roundup', _('Roundup Emails'), _('Weekly')),
-    ('new_bounty_notifications', _('New Bounty Notification Emails'), _('(up to) Daily')),
+    ('new_bounty_notifications', _('Daily Bounty Action Emails'), _('(up to) Daily')),
     ('important_product_updates', _('Product Update Emails'), _('Quarterly')),
 	('general', _('General Email Updates'), _('as it comes')),
 	('quarterly', _('Quarterly Email Updates'), _('Quarterly')),
@@ -61,7 +61,8 @@ TRANSACTIONAL_EMAILS = [
         'bounty_expiration', _('Bounty Expiration Warning Emails'),
         _('Only after you posted a bounty which is going to expire')
     ),
-    ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured'))
+    ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured')),
+    ('comment', _('Comment Emails'), _('Only when you are sent a comment')),
 ]
 
 ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
@@ -678,12 +679,24 @@ def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
 def render_new_bounty_rejection(to_email, bounty):
     params = {
         'bounty': bounty,
-		'email_type': 'bounty',
+        'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_rejection.html", params))
     response_txt = render_to_string("emails/new_bounty_rejection.txt", params)
+
+    return response_html, response_txt
+
+def render_comment(to_email, comment):
+    params = {
+        'comment': comment,
+        'email_type': 'comment',
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/comment.html", params))
+    response_txt = render_to_string("emails/comment.txt", params)
 
     return response_html, response_txt
 
@@ -1196,6 +1209,13 @@ def new_work_submission(request):
 def new_bounty_rejection(request):
     from dashboard.models import Bounty
     response_html, _ = render_new_bounty_rejection(settings.CONTACT_EMAIL, Bounty.objects.last())
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def comment(request):
+    from townsquare.models import Comment
+    response_html, _ = render_comment(settings.CONTACT_EMAIL, Comment.objects.last())
     return HttpResponse(response_html)
 
 

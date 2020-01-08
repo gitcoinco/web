@@ -43,6 +43,10 @@ class Comment(SuperModel):
     def profile_handle(self):
         return self.profile.handle
 
+    @property
+    def url(self):
+        return self.activity.url
+
 
 class OfferQuerySet(models.QuerySet):
     """Handle the manager queryset for Offers."""

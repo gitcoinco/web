@@ -1,14 +1,16 @@
+from django.conf import settings
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
+
 from dashboard.models import Activity
 from ratelimit.decorators import ratelimit
 
 from .models import Comment, Flag, Like, Offer, OfferAction
 from .utils import is_user_townsquare_enabled
+from marketing.mails import comment_email
 
 
 def get_next_time_available(key):
@@ -153,7 +155,10 @@ def api(request, activity_id):
     # comment request
     elif request.POST.get('method') == 'comment':
         comment = request.POST.get('comment')
-        Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
+        comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
+        to_emails = set(activity.comments.exclude(profile=request.user.profile).values_list('profile__email', flat=True))
+        comment_email(comment, to_emails)
+
     elif request.GET.get('method') == 'comment':
         comments = activity.comments.order_by('-created_on')
         comments = [comment.to_standard_dict(properties=['profile_handle']) for comment in comments]
