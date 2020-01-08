@@ -181,7 +181,7 @@ kevin (team gitcoin)
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
-    list_display = ['id', 'txn_url', 'tx_cleared', 'success', 'profile']
+    list_display = ['id', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
@@ -190,6 +190,12 @@ class ContributionAdmin(GeneralAdmin):
 
     def profile(self, obj):
         return obj.subscription.contributor_profile
+
+    def token(self, obj):
+        return obj.subscription.token_symbol
+
+    def amount(self, obj):
+        return obj.subscription.amount_per_period
 
 
 admin.site.register(PhantomFunding, GeneralAdmin)
