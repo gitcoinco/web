@@ -19,7 +19,8 @@
     '><img src="{% static 'v2/images/badge-verify.svg' %}" alt=""></button>
   {% endif %}
 </h1>
-<p class="mb-0">{{ profile.handle }}
+<p class="mb-0">
+  {{ profile.handle }}
   {% if profile.custom_tagline %}
     <span style="font-size: 14px; font-color: #000;">- {{ profile.custom_tagline }}</span>
   {% endif %}
@@ -64,10 +65,25 @@
   <button class="btn btn-gc-blue btn-sm" data-jointribe="{{profile.handle}}">Join Tribe</button>
 {% endif %}
 
-
-{% if 0 %}
-TODO: Re-enable this when we have proper privacy in place a la https://github.com/gitcoinco/web/issues/5654
-{% if profile.preferred_payout_address %}
+{% if not profile.hide_wallet_address %}
+  {% if profile.preferred_payout_address %}
+    <div class="my-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="16" class="mr-2 mb-1"><path fill="#000" fill-rule="nonzero" d="M10 8.113L5.002 11 0 8.113 5.002 0 10 8.113zm-5 3.821L0 9l5 7 5-7-5 2.934z"/></svg>
+      <span id="preferred-address" data-truncatehash title="{{ profile.preferred_payout_address }}">{{ profile.preferred_payout_address }}</span>
+      {% if is_my_profile %}
+        <a href="/settings/account" class=""><i class="fas fa-plus-circle"></i> Update preferred address</a>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="my-2" id="preferred-address">
+      {% if is_my_profile %}
+        <a href="/settings/account" class=""><i class="fas fa-plus-circle"></i> Add a preferred address</a>
+      {% elif not profile.is_org %}
+        No preferred address
+      {% endif %}
+    </div>
+  {% endif %}
+{% elif user.has_done_business_with %}
   <div class="my-2">
     <svg xmlns="http://www.w3.org/2000/svg" width="10" height="16" class="mr-2 mb-1"><path fill="#000" fill-rule="nonzero" d="M10 8.113L5.002 11 0 8.113 5.002 0 10 8.113zm-5 3.821L0 9l5 7 5-7-5 2.934z"/></svg>
     <span id="preferred-address" data-truncatehash title="{{ profile.preferred_payout_address }}">{{ profile.preferred_payout_address }}</span>
@@ -75,16 +91,8 @@ TODO: Re-enable this when we have proper privacy in place a la https://github.co
       <a href="/settings/account" class=""><i class="fas fa-plus-circle"></i> Update preferred address</a>
     {% endif %}
   </div>
-{% else %}
-  <div class="my-2" id="preferred-address">
-    {% if is_my_profile %}
-      <a href="/settings/account" class=""><i class="fas fa-plus-circle"></i> Add a preferred address</a>
-    {% elif not profile.is_org %}
-      No preferred address
-    {% endif %}
-  </div>
 {% endif %}
-{% endif %}
+
 {% if not profile.is_org %}
   <div class="static-stars my-3">
     {% for i in ratings %}
@@ -93,9 +101,9 @@ TODO: Re-enable this when we have proper privacy in place a la https://github.co
     <small class="text-muted">({{ avg_rating.total_rating }} {% trans "rating" %}{{avg_rating.total_rating | pluralize}})</small>
   </div>
 {% endif %}
+
 {% if profile.show_job_status %}
   <div class="my-2" id="job_status">
     <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ profile.job_status_verbose }}
   </div>
 {% endif %}
-</div>

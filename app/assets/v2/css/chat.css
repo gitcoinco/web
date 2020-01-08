@@ -28,16 +28,16 @@
   right: 0.9em;
 }
 
-@media (max-width: 1024px) {
-  .chat-img {
-    display: none;
-  }
-}
-
 .open-app {
   background-color: #0D001A;
 }
 
-img.feature{
+img.feature {
   border-radius: 80px;
+}
+
+@media (max-width: 1024px) {
+  .chat-img {
+    display: none;
+  }
 }

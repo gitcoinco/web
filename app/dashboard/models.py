@@ -2331,6 +2331,10 @@ class Profile(SuperModel):
         default=True,
         help_text='If this option is chosen, we will remove your profile information all_together',
     )
+    hide_wallet_address = models.BooleanField(
+        default=True,
+        help_text='If this option is chosen, we will remove your wallet information all together',
+    )
     trust_profile = models.BooleanField(
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
