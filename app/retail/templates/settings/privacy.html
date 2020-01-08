@@ -17,6 +17,14 @@
           <br>
           <small id="hide_profile_help" class="form__input-help">{% trans "If this option is chosen, we will remove your profile altogether" %}</small>
       </div>
+      <div>
+        <input type="checkbox" name="hide_wallet_address" id=hide_wallet_address {% if profile.hide_wallet_address %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
+        <label class="form__label" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
+        <br>
+        <small id="hide_wallet_address_help" class="form__input-help">
+          {% trans "If this option is chosen, your wallet address will be visible only to user's you've previously done business with on Gitcoin" %}
+        </small>
+      </div>
       {% if profile.alumni.exists %}
         <div>
           <input type="checkbox" name="hide_alumni" id=hide_alumni value="1" {% if not profile.alumni.first.public %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >

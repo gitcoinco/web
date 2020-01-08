@@ -189,7 +189,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </div>
                   </div>
 
-                  <div id="gitcoin-grant-section" class="form__group-horizontal my-5">
+                  <div id="gitcoin-grant-section" class="form__group-horizontal mt-5 mb-2">
                     <div class="row">
                       <div class="col-12 mb-3">
                         <h2 class="font-subheader font-weight-semibold">{% trans "Support Gitcoin" %}</h2>
@@ -228,6 +228,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         </div>
                       </div>
                     </div>
+                  </div>
+                  <div class="mb-4">
+                    <input type="checkbox" name="hide_wallet_address" id=hide_wallet_address {% if profile.hide_wallet_address %} checked="checked" {% endif %} >
+                    <label class="form__label" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
+                    <br>
+                    <small id="hide_wallet_address_help" class="form__input-help">{% trans "If this option is chosen, your wallet addres will be hidden" %}</small>
                   </div>
 
                   <div id="gas-section" class="form__group-horizontal">

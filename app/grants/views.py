@@ -618,6 +618,10 @@ def grant_fund(request, grant_id, grant_slug):
             return JsonResponse({
                 'success': True,
             })
+        
+        if 'hide_wallet_address' in request.POST:
+            profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
+            profile.save()
 
         if 'signature' in request.POST:
             sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
@@ -669,6 +673,7 @@ def grant_fund(request, grant_id, grant_slug):
         is_phantom_funding_this_grant = not is_phantom_funding_this_grant
 
     params = {
+        'profile': profile,
         'active': 'fund_grant',
         'title': _('Fund Grant'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
