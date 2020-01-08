@@ -105,7 +105,7 @@ var start_music_midi = function(name) {
   if (!document.music_enabled) {
     return;
   }
-  if (!MIDIjs) {
+  if (typeof MIDIjs == 'undefined') {
     return;
   }
   try {
@@ -116,14 +116,14 @@ var start_music_midi = function(name) {
 };
 var resume_music_midi = function(name) {
   // get_audio('bossmusic.mid').play();
-  if (!MIDIjs) {
+  if (typeof MIDIjs == 'undefined') {
     return;
   }
   MIDIjs.resume();
 };
 var pause_music_midi = function(name) {
   // get_audio('bossmusic.mid').play();
-  if (!MIDIjs) {
+  if (typeof MIDIjs == 'undefined') {
     return;
   }
   MIDIjs.pause();
