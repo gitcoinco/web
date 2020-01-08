@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.conf import settings
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
-from chat.utils import get_driver
+from chat.tasks import get_driver
 
 
 def chat(request):
@@ -30,9 +30,12 @@ def chat(request):
     chat_driver = get_driver()
 
     chat_stats = chat_driver.teams.get_team_stats(settings.GITCOIN_CHAT_TEAM_ID)
-
+    if 'message' not in chat_stats:
+        users_online = chat_stats['active_member_count']
+    else:
+        users_online = 'N/A'
     context = {
-        'chat_stats': chat_stats
+        'users_online': users_online
     }
 
     return TemplateResponse(request, 'chat.html', context)
@@ -41,13 +44,17 @@ def chat(request):
 def embed(request):
     """Handle the chat embed view."""
 
+    chat_url = settings.CHAT_URL
+    if settings.CHAT_PORT not in [80, 443]:
+        chat_url = f'{settings.CHAT_URL}:{settings.CHAT_PORT}'
+
     context = {
         'is_outside': True,
         'active': 'chat',
         'title': 'Chat',
         'card_title': _('Community Chat'),
         'card_desc': _('Come chat with the community'),
-        'chat_url': settings.CHAT_URL
+        'chat_url': chat_url
     }
 
     return TemplateResponse(request, 'embed.html', context)

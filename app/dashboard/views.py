@@ -57,7 +57,7 @@ from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
 from cacheops import invalidate_obj
-from chat.tasks import add_to_channel, chat_driver, create_channel, create_user
+from chat.tasks import add_to_channel, get_driver, create_channel, create_user
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -368,7 +368,7 @@ def new_interest(request, bounty_id):
                 if bounty.chat_channel_id is None:
                     bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
 
-                    chat_driver.login()
+                    chat_driver = get_driver()
                     channel_lookup = chat_driver.channels.get_channel_by_name(settings.GITCOIN_HACK_CHAT_TEAM_ID, bounty_channel_name)
 
                     if 'message' in channel_lookup:

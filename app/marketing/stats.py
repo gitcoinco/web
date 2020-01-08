@@ -92,8 +92,8 @@ def slack_users_active():
 
 
 def chat_users():
-    from chat.tasks import chat_driver
-    chat_driver.login()
+    from chat.tasks import get_driver
+    chat_driver = get_driver()
     stats_request = chat_driver.users.stats()
     if 'message' not in stats_request:
         Stat.objects.create(

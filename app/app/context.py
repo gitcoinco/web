@@ -95,8 +95,8 @@ def preprocess(request):
 
     if profile.chat_id:
         try:
-            from chat.tasks import chat_driver
-            chat_driver.login()
+            from chat.tasks import get_driver
+            chat_driver = get_driver()
 
             chat_unreads_request = chat_driver.teams.get_team_unreads_for_user(
                 profile.chat_id

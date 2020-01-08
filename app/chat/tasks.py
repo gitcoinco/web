@@ -20,6 +20,11 @@ chat_driver = Driver({
 })
 
 
+def get_driver(self):
+    chat_driver.login()
+    return chat_driver
+
+
 @app.shared_task(bind=True, max_retries=3)
 def create_channel(self, options, retry: bool = True) -> None:
     """
