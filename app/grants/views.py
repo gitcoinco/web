@@ -789,14 +789,7 @@ def quickstart(request):
 def leaderboard(request):
     """Display leaderboard."""
 
-    # setup dict
-    params = {
-        'active': 'grants_leaderboard',
-        'title': _('Grants Leaderboard'),
-        'card_desc': _('View the top contributors to Gitcoin Grants'),
-        'items': get_leaderboard(),
-        }
-    return TemplateResponse(request, 'grants/leaderboard.html', params)
+    return redirect ('https://gitcoin.co/leaderboard/payers?cadence=quarterly&keyword=all&product=grants')
 
 
 def record_subscription_activity_helper(activity_type, subscription, profile):
