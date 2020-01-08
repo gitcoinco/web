@@ -23,6 +23,7 @@ import json
 import logging
 import os
 import time
+
 from copy import deepcopy
 from datetime import datetime
 from decimal import Decimal
@@ -32,7 +33,6 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Avg, Count, Prefetch, Q
@@ -45,11 +45,11 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import escape, strip_tags
 from django.utils.http import is_safe_url
-from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
+from django.utils.text import slugify
 
 import magic
 from app.utils import clean_str, ellipses, get_default_network
@@ -57,6 +57,7 @@ from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
 from cacheops import invalidate_obj
+from chat.tasks import add_to_channel, chat_driver, create_channel, create_user
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -362,8 +363,6 @@ def new_interest(request, bounty_id):
             start_work_new_applicant(interest, bounty)
 
         if bounty.event:
-            from chat.tasks import add_to_channel, create_channel, create_user, chat_driver
-            from django.utils.text import slugify
             try:
 
                 if bounty.chat_channel_id is None:
@@ -394,11 +393,12 @@ def new_interest(request, bounty_id):
                 else:
                     bounty_channel_id = bounty.chat_channel_id
 
-                funder_profile = Profile.objects.filter(handle=bounty.bounty_owner_github_username)[0]
+                funder_profile = Profile.objects.get(handle=bounty.bounty_owner_github_username)
 
                 if funder_profile is not None:
                     if funder_profile.chat_id is None:
-                        result = create_user.apply_async(args=[{
+                        result = create_user.apply_async(args=[
+                            {
                                 "email": funder_profile.user.email,
                                 "username": funder_profile.handle,
                                 "first_name": funder_profile.user.first_name,
@@ -419,8 +419,8 @@ def new_interest(request, bounty_id):
                                 },
                             }, {
                                 "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
-                            }]
-                        )
+                            }
+                        ])
 
                         chat_profile_interest_user = result.get()
                         if 'message' in chat_profile_interest_user:
@@ -458,6 +458,7 @@ def new_interest(request, bounty_id):
                         chat_profile_interest_user = result.get()
                         if 'message' in chat_profile_interest_user:
                             raise ValueError(chat_profile_interest_user['message'])
+
                         profile.chat_id = chat_profile_interest_user['id']
                         profile.save()
 
