@@ -14,6 +14,7 @@ class OfferActionAdmin(admin.ModelAdmin):
 
 class OfferAdmin(admin.ModelAdmin):
     list_display = ['created_on', 'key', 'valid_from', 'valid_to', '__str__']
+    raw_id_fields = ['persona']
 
 admin.site.register(Offer, OfferAdmin)
 admin.site.register(OfferAction, OfferActionAdmin)

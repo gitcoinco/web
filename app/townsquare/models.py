@@ -60,6 +60,12 @@ class Offer(SuperModel):
         ('monthly', 'monthly'),
         ('other', 'other'),
     ]
+    STYLES = [
+        ('announce1', 'pink'),
+        ('announce2', 'blue'),
+        ('announce3', 'teal'),
+        ('announce4', 'yellow'),
+    ]
 
     title = models.TextField(default='', blank=True)
     desc = models.TextField(default='', blank=True)
@@ -67,6 +73,8 @@ class Offer(SuperModel):
     valid_from = models.DateTimeField(db_index=True)
     valid_to = models.DateTimeField(db_index=True)
     key = models.CharField(max_length=50, db_index=True, choices=OFFER_TYPES)
+    style = models.CharField(max_length=50, db_index=True, choices=STYLES, default='announce1')
+    persona = models.ForeignKey('kudos.Token', blank=True, null=True, related_name='offers', on_delete=models.SET_NULL)
 
     # Bounty QuerySet Manager
     objects = OfferQuerySet.as_manager()

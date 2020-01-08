@@ -53,8 +53,13 @@
 }
 
 .announce a {
-  background-color: #f2c3c4;
   color: black;
+}
+.announce a.btn {
+  background-color: #f2c3c4;
+}
+.announce a.decline {
+  font-style: italic;
 }
 
 .announce h4 {
@@ -73,7 +78,7 @@
   background-color: #def390 !important;
 }
 
-.announce5 a {
+.announce5 a.btn {
   background-color: #cee370 !important;
 }
 
@@ -89,7 +94,7 @@
   background-color: #fce5ac !important;
 }
 
-.announce4 a {
+.announce4 a.btn {
   background-color: #dcc58c !important;
 }
 
@@ -105,7 +110,7 @@
   background-color: #d0f9f4 !important;
 }
 
-.announce3 a {
+.announce3 a.btn {
   background-color: #b0d9d4 !important;
 }
 
@@ -121,7 +126,7 @@
   background-color: #a4affc !important;
 }
 
-.announce2 a {
+.announce2 a.btn {
   background-color: #849ffc !important;
 }
 
@@ -137,7 +142,7 @@
   background-color: #fde9ed !important;
 }
 
-.announce6 a {
+.announce6 a.btn {
   background-color: #ddb9bd !important;
 }
 
@@ -159,7 +164,7 @@
   height: 200px;
 }
 
-.announce a:hover {
+.announce a.btn:hover {
   color: black;
   font-weight: bold;
   background-color: #f5d3d4;
