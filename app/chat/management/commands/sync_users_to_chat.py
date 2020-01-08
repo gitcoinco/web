@@ -33,11 +33,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
 
-            users = Profile.objects.filter(user__is_active=True).prefetch_related('user')
+            profiles = Profile.objects.filter(user__is_active=True, chat__id__exact='').prefetch_related('user')
 
             tasks = []
 
-            for profile in users:
+            for profile in profiles:
                 # if profile.chat_id is None:
                 tasks.append(create_user.si(options={
                     "email": profile.user.email,
@@ -64,12 +64,12 @@ class Command(BaseCommand):
             job = group(tasks)
 
             result = job.apply_async()
-            for r in result.get():
-                if r is not None:
-                    if 'username' in r and 'id' in r:
-                        profile = Profile.objects.filter(handle=r['username'])[0]
+            for result_req in result.get():
+                if 'message' not in result_req:
+                    if 'username' in result_req and 'id' in result_req:
+                        profile = Profile.objects.get(handle=result_req['username'])
                         if profile is not None:
-                            profile.chat_id = r['id']
+                            profile.chat_id = result_req['id']
                             profile.save()
 
         except ConnectionError as exec:
