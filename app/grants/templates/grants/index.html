@@ -1,5 +1,5 @@
 {% comment %}
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
@@ -36,11 +36,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </div>
             </div>
             <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
-              <h1 class="font-title-xl font-weight-semibold">{% trans 'Provide sustainable funding for Open Source with Gitcoin Grants' %}</h1>
+              <h1 class="font-title-xl font-weight-semibold">{% trans 'Get Substantial Sustainable Funding for Your Projects' %}</h1>
               <p class="my-4 pt-1 font-header">
                 {% blocktrans %}
-                Gitcoin Grants, powered by the <a target="_blank" rel="noopener noreferrer" href="http://1337alliance.com/">EIP 1337 standard</a>
-                , are a fast, easy and secure way to provide recurring token contributions to your favorite OSS maintainers. <br/><br/>
+                Gitcoin Grants <a target="_blank" rel="noopener noreferrer" href="https://vitalik.ca/general/2019/10/24/gitcoin.html">provides matching funds</a> + <a target="_blank" rel="noopener noreferrer" href="http://1337alliance.com/">monthly subscription</a> for
+                your favorite OSS maintainers, media outlets, and more. <br/><br/>
                 Show your support.
                 {% endblocktrans %}
               </p>
@@ -60,8 +60,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <div class="col-12">
             <p class="font-smaller-1">
               <strong>Gitcoin Grants</strong> has facilitated the distribution of
-              <strong>${{grant_amount|floatformat:0}}k</strong> to Open Source since
-              it's launch in January 2019.
+              <strong>${{grant_amount|floatformat:0}}k</strong> to projects since
+              its launch in January 2019.
               <a href="/results">See more results</a>.
             </p>
             <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 150px;" class="mt-1" />
@@ -117,7 +117,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="col-12 col-lg-9">
               <ul class="grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
                 {% for grant_type in grant_types %}
-                  <a data-type="type" data-value="{{grant_type.keyword}}" class="mr-3 px-2 {% if type == grant_type.keyword %}selected{%endif%}">
+                  <a data-type="type" data-value="{{grant_type.keyword}}" class="mr-3 px-2 {% if type == grant_type.keyword %}selected{% endif %}">
                     {{grant_type.label}} ({{grant_type.count}})
                   </a>
                 {% endfor %}
@@ -216,7 +216,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="col-12 col-xl-8">
               <ul class="grants_nav grants_keyword_nav pl-0 mb-0 pb-1 pt-2 mt-2 mt-xl-0 text-center text-xl-left font-body font-weight-semibold">
                 {% for category in nav_options %}
-                  <a  data-type="keyword" data-value="{{category.keyword}}" class="mr-3 mr-md-2 mr-lg-3 {% if keyword == category.keyword %}selected{%endif%}"  >
+                  <a  data-type="keyword" data-value="{{category.keyword}}" class="mr-3 mr-md-2 mr-lg-3 {% if keyword == category.keyword %}selected{% endif %}"  >
                     {{category.label}}
                   </a>
                 {% endfor %}
@@ -262,7 +262,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% endfor %}
           </div>
           {% if grants.has_next %}
-            <a class="infinite-more-link" href="?network={{network}}&keyword={{keyword}}&sort_option={{sort}}&page={{ grants.next_page_number }}">More</a>
+            <p class="mb-0 text-center py-4">
+              <a class="infinite-more-link text-center text-black-70 cursor-pointer"
+                href="?network={{network}}&type={{type}}keyword={{keyword}}&sort_option={{sort}}&page={{ grants.next_page_number }}"
+              >
+                <i class="fas fa-spinner fa-spin mr-2"></i>
+                Collecting more exciting grants
+              </a>
+            </p>
           {% endif %}
         {% else %}
           <div class="col-12 mb-3 mx-auto col-md-6 text-center">

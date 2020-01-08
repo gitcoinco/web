@@ -116,14 +116,7 @@
       <!-- <a class="nav-link interior" href="{% url "pricing" %}">{% trans "Pricing" %}</a> -->
     </nav>
     <nav class="navbar-nav mr-3">
-      {% if user.is_authenticated %}
-        {% include 'shared/nav_auth.html' with source='authed' %}
-      {% else %}
-        <a href="{% url 'social:begin' 'github' %}?next=/" onclick="dataLayer.push({'event': 'login'});" class="nav-link interior">
-          <i class="fab fa-github mr-1" role="aria-hidden"></i>
-          {% trans "LOG IN" %}
-        </a>
-      {% endif %}
+      {% include 'shared/nav_auth.html' with source='authed' %}
     </nav>
   </div>
 

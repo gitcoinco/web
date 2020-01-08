@@ -51,7 +51,7 @@
         {{tip.from_name}} {% blocktrans %} sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
       {% else %}
         {% blocktrans %}Someone sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
-      {% endif %}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
+      {% endif %}{% if not is_new %} {{tip.created_on | naturaltime}}{% endif %}.
     </h3>
   </div>
 

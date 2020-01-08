@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant views.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -143,6 +143,15 @@ def grants(request):
         {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
         {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
     ]
+    if grant_type == 'media':
+        nav_options = [
+            {'label': 'All', 'keyword': ''},
+            {'label': 'Education', 'keyword': 'education'},
+            {'label': 'Twitter', 'keyword': 'twitter'},
+            {'label': 'Reddit', 'keyword': 'reddit'},
+            {'label': 'Blogs', 'keyword': 'blog'},
+            {'label': 'Notes', 'keyword': 'notes'},
+        ]
 
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
@@ -162,7 +171,7 @@ def grants(request):
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
         'past_partners': past_partners,
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
+        'card_desc': _('Get Substantial Sustainable Funding for Your Projects with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),
         'card_player_thumb_override': static('v2/card/grants.png'),
@@ -265,11 +274,12 @@ def grant_details(request, grant_id, grant_slug):
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
+    tab = request.GET.get('tab', 'description')
     params = {
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
-        'tab': request.GET.get('tab', 'description'),
+        'tab': tab,
         'title': matching_live + grant.title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
@@ -286,8 +296,12 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
-        'is_team_member': is_team_member
+        'is_team_member': is_team_member,
     }
+
+    if tab == 'stats':
+        params['max_graph'] = grant.history_by_month_max
+        params['history'] = json.dumps(grant.history_by_month)
 
     if add_cancel_params:
         add_in_params = {
@@ -609,6 +623,10 @@ def grant_fund(request, grant_id, grant_slug):
             return JsonResponse({
                 'success': True,
             })
+        
+        if 'hide_wallet_address' in request.POST:
+            profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
+            profile.save()
 
         if 'signature' in request.POST:
             sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
@@ -660,6 +678,7 @@ def grant_fund(request, grant_id, grant_slug):
         is_phantom_funding_this_grant = not is_phantom_funding_this_grant
 
     params = {
+        'profile': profile,
         'active': 'fund_grant',
         'title': _('Fund Grant'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
