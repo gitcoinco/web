@@ -3476,7 +3476,7 @@ def get_kudos(request):
             kudos_json['name'] = token.name
             kudos_json['name_human'] = humanize_name(token.name)
             kudos_json['description'] = token.description
-            kudos_json['image'] = token.image
+            kudos_json['image'] = token.preview_img_url
 
             kudos_json['price_finney'] = token.price_finney / 1000
             kudos_json['price_usd'] = eth_to_usd * kudos_json['price_finney']

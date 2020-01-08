@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -42,7 +42,7 @@
           ${{ universe_total_usd|floatformat:0|intcomma }} of {% blocktrans %}
            Gross Marketplace Value
           {% endblocktrans %}
-          {% if keyword %}({{keyword}}){%endif%}
+          {% if keyword %}({{keyword}}){% endif %}
         </h2>
 
         <div class="value-container">
@@ -90,7 +90,7 @@
 
     <div class="content-block content-block--blue-grey">
       <div class="container" id="results_hero">
-        <h2 class="content-block__title">{% trans "Gitcoin Platform Stats" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+        <h2 class="content-block__title">{% trans "Gitcoin Platform Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
         <div class="platform-stats-container">
           <div class="single-stat">
             <img src="{% static "v2/images/results/media-start-time.svg" %}" />
@@ -100,7 +100,7 @@
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
-            <h3 class="single-stat__title">{% trans "18,308" %}</h3>
+            <h3 class="single-stat__title">{% trans "15,397" %}</h3>
             <p class="single-stat__subtitle">{% trans "Monthly Active Users" %}</p>
             <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
           </div>
@@ -175,7 +175,7 @@
     <div class="content-block content-block--grey">
       <div class="container">
         <h2 class="content-block__title">
-          {% trans "Top Organizations" %} {% if keyword %}({{keyword}}){%endif%}
+          {% trans "Top Organizations" %} {% if keyword %}({{keyword}}){% endif %}
         </h2>
         <div class="col-md-12 align-items-center">
           <div id="repo_repos">
@@ -192,7 +192,7 @@
     <div class="content-block content-block--blue-grey">
       <div class="container">
         <h2 class="content-block__title">
-          {% trans "Top Funders" %} {% if keyword %}({{keyword}}){%endif%}
+          {% trans "Top Funders" %} {% if keyword %}({{keyword}}){% endif %}
         </h2>
         <div class="col-md-12 align-items-center">
           <div id="repo_repos_top">
@@ -227,7 +227,7 @@
 
     <div class="content-block content-block--grey">
       <div class="container">
-        <h2 class="content-block__title">{% trans "Top Coders" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+        <h2 class="content-block__title">{% trans "Top Coders" %} {% if keyword %}({{keyword}}){% endif %}</h2>
         <div class="col-md-12 align-items-center">
           <div>
             {% for org in top_coders %}
@@ -251,7 +251,7 @@
     {% if not keyword %}
       <div class="content-block content-block--white">
         <div class="container" id="price_per_hour">
-          <h2 class="content-block__title">{% trans "Hourly Rates of Bounties" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+          <h2 class="content-block__title">{% trans "Hourly Rates of Bounties" %} {% if keyword %}({{keyword}}){% endif %}</h2>
 
           <div class="row mt-5 pb-5 text-center">
             <div class="col">
@@ -357,7 +357,7 @@
 
     <div class="content-block content-block--white">
       <div class="container" id="bounty_jdi">
-        <h2 class="content-block__title">{% trans "Joe Dominance Index" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+        <h2 class="content-block__title">{% trans "Joe Dominance Index" %} {% if keyword %}({{keyword}}){% endif %}</h2>
         <div class="row py-1">
           <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
             <p style="text-align: center; font-size: 0.9rem;">Gitcoin is a double sided market of funders and developers.  In order to jump start the marketplace and dogfood our own product, we've funded some work on the platform ourselves.  The Joe Dominance Index (a portmeanteau of the <a href="https://coinmarketcap.com/charts/#dominance-percentage">Bitcoin Dominance Index</a> and the name of Gitcoin's largest investor, Consensys's CEO <a href="https://twitter.com/ethereumjoseph">Joe Lubin</a>) is a measure of the percentage of work on the platform that is funded by us.   </p>
@@ -376,7 +376,7 @@
 
     <div class="content-block content-block--white">
       <div class="container" id="bounty_jdi">
-        <h2 class="content-block__title">{% trans "Reviews" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+        <h2 class="content-block__title">{% trans "Reviews" %} {% if keyword %}({{keyword}}){% endif %}</h2>
         <div class="row py-1">
           <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
             <p style="text-align: center; font-size: 0.9rem;">Feedback is a gift.  Here are some anonymized reviews left from & to users on the Gitcoin network   </p>
@@ -402,7 +402,7 @@
 
     <div class="content-block content-block--white" id="repo_transaction">
       <div class="container" >
-        <h2 class="content-block__title">{% trans "Coder Engagement Breakdown" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+        <h2 class="content-block__title">{% trans "Coder Engagement Breakdown" %} {% if keyword %}({{keyword}}){% endif %}</h2>
 
         <div class="bounty-status-breakdown">
           <div id="repo_chart"></div>
@@ -427,7 +427,7 @@
 
     <div class="content-block content-block--white">
       <div class="container" id="">
-        <h2 class="content-block__title">{% trans "Coder Community Growth" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+        <h2 class="content-block__title">{% trans "Coder Community Growth" %} {% if keyword %}({{keyword}}){% endif %}</h2>
         <div class="row py-5">
           <script>
             document.slack_ticks = {{slack_ticks|safe}};
@@ -450,7 +450,7 @@
 
     <div class="content-block content-block--white" id="repo_transaction">
       <div class="container" >
-        <h2 class="content-block__title">{% trans "The Path to Break-Even" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+        <h2 class="content-block__title">{% trans "The Path to Break-Even" %} {% if keyword %}({{keyword}}){% endif %}</h2>
           <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
             <p style="text-align: center; font-size: 0.9rem;">We believe that companies, even those in the blockchain-ecosystem, should fully prove out their founder-mission-product-market fit & have revenue.  We believe that software developers at Gitcoin Core need to put food on the table, pay their mortages, and buy extra hard drives -- and that we can do it while living our values; especially without become a rent-seeking-monopolistic intermediary.  We're a little crazy like that! 😜 As such, we are founding members of the <a href="https://bit.ly/web3businessmodels">ETHMagicians Business Models Ring</a> and are practicing what we preach; building a network that makes money to cover it's burn.  Follow our path to a breakeven monthly runrate below: </p>
           </div>

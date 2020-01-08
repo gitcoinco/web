@@ -1,3 +1,10 @@
+.grant_details .box {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  padding: 0px;
+}
+
 @media (min-width: 1200px) {
   .grant-detail .container {
     max-width: 85vw
