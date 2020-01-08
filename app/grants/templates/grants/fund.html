@@ -94,9 +94,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </ol>
               </div>
 
-              <div class="col-12 form__footer pt-2 text-center">
+              <div class="col-12 form__footer pt-2 mt-2 text-center">
                 {% include './clr_estimate.html' with class='' %}
-                <img class="mb-4" src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
+                <img class="mb-4 pl-lg-5" src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
                 <form method=POST>
                   {%csrf_token%}
                   <input type=hidden name=toggle_phantom_fund value=1 />
