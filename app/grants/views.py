@@ -576,8 +576,7 @@ def grant_fund(request, grant_id, grant_slug):
             if freq == 'recurring' and contributor_address == grant.admin_address:
                 messages.info(
                     request,
-                                  _(
-                    'Grant owners cannot self-fund grants via recurring subscription at this time. Please contact founders@gitcoin.co if you believe this message is in error!')
+                    _('Grant owners cannot self-fund grants via recurring subscription at this time. Please contact founders@gitcoin.co if you believe this message is in error!')
                 )
                 logger.error(
                     f"Grant {grant.pk} cannot self-fund.")
