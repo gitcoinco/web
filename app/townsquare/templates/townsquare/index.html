@@ -81,7 +81,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               Available <div class="{{type}} timer" data-time="{{item.time}}"></div>
               {% if type == 'daily' %}
                 <br>
-                <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1"> <label for="receive_daily_offers_in_inbox"> <i class="fas fa-envelope"></i> Email when available</label>
+                <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} > 
+                <label for="receive_daily_offers_in_inbox"> <i class="fas fa-envelope"></i> Email when available</label>
               {% endif %}
 
             {% endif %}

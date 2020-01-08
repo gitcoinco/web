@@ -13,7 +13,7 @@ class OfferActionAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
 
 class OfferAdmin(admin.ModelAdmin):
-    list_display = ['created_on', '__str__']
+    list_display = ['created_on', 'key', 'valid_from', 'valid_to', '__str__']
 
 admin.site.register(Offer, OfferAdmin)
 admin.site.register(OfferAction, OfferActionAdmin)

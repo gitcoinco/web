@@ -8,6 +8,7 @@ from dashboard.models import Activity
 from ratelimit.decorators import ratelimit
 
 from .models import Comment, Flag, Like, Offer, OfferAction
+from .utils import is_user_townsquare_enabled
 
 
 def get_next_time_available(key):
@@ -26,13 +27,15 @@ def get_next_time_available(key):
         d = timezone.datetime(year=year, month=month, day=1)
     return d
 
+
 def index(request):
 
     # TODO: temporary until town square is approved for non-staff use
-    if not request.user.is_authenticated or not request.user.is_staff:
+    if not is_user_townsquare_enabled(request.user):
         from retail.views import index as regular_homepage
         return regular_homepage(request)
 
+    # setup tabas
     tabs = [{
         'title': "My Tribes",
         'slug': 'my_tribes',
@@ -40,15 +43,15 @@ def index(request):
         'title': "Everywhere",
         'slug': 'everywhere',
     }]
-
     for keyword in request.user.profile.keywords:
         tabs.append({
             'title': keyword.title(),
             'slug': f'keyword-{keyword}',
         })
-
     default_tab = 'my_tribes' if request.user.is_authenticated else 'everywhere'
     tab = request.GET.get('tab', default_tab)
+
+    # get offers
     offers_by_category = {}
     for key in ['daily', 'weekly', 'monthly']:
         next_time_available = get_next_time_available(key)
@@ -60,15 +63,47 @@ def index(request):
             'offer': offer,
             'time': next_time_available.strftime('%Y-%m-%dT%H:%M:%SZ'),
         }
+
+    is_subscribed = False
+    if request.user.is_authenticated:
+        email_subscriber = request.user.profile.email_subscriptions.first()
+        if email_subscriber:
+            is_subscribed = email_subscriber.should_send_email_type_to('new_bounty_notifications')
+
+    # render page context
     context = {
         'title': 'Home',
         'nav': 'home',
         'target': f'/activity?what={tab}',
         'tab': tab,
         'tabs': tabs,
+        'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
     }
     return TemplateResponse(request, 'townsquare/index.html', context)
+
+
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+@csrf_exempt
+def emailsettings(request):
+
+    if not request.user.is_authenticated:
+        raise Http404
+
+    is_subscribed = False
+    if request.user.is_authenticated:
+        email_subscriber = request.user.profile.email_subscriptions.first()
+        if email_subscriber:
+            is_subscribed = email_subscriber.should_send_email_type_to('new_bounty_notifications')
+
+            for key in request.POST.keys():
+                email_subscriber.set_should_send_email_type_to(key, bool(request.POST.get(key) == 'true'))
+                email_subscriber.save()
+
+    response = {}
+    return JsonResponse(response)
+
+
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 @csrf_exempt
