@@ -1,3 +1,12 @@
+#new_activity_notifier{
+  text-align: center;
+  background-color: #f0f0f0;
+  border: 1px solid #eee;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 3px;
+  color: black;
+}
 #activities{
   text-align: left;
 }

@@ -1111,6 +1111,10 @@ def activity(request):
         if len(relevant_profiles):
             activities = activities.filter(profile__in=relevant_profiles)
 
+    # after-pk filters
+    if request.GET.get('after-pk'):
+        activities = Activity.objects.filter(pk__gt=request.GET.get('after-pk'))
+
     suppress_more_link = not len(activities)
     p = Paginator(activities, page_size)
 

@@ -16,7 +16,7 @@
 
 {% endcomment %}
 {% load humanize i18n static %}
-<div class="row box activity {{ row.activity_type }} infinite-item">
+<div class="row box activity {{ row.activity_type }} infinite-item" data-pk="{{row.pk}}">
   <div class="col-12 col-md-1 {% if row.secondary_avatar_url %} secondary {% endif %}">
     <div class="activity-avatar my-auto py-2">
       <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>

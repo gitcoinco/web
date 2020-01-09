@@ -27,7 +27,6 @@ $(document).ready(function() {
 
     // enforce a max length
     var max_len = 280;
-
     if ($(this).val().trim().length > max_len) {
       e.preventDefault();
       $(this).addClass('red');
@@ -40,7 +39,7 @@ $(document).ready(function() {
       $(this).removeClass('red');
     }
 
-    // enable post + enter button
+    // enable post via enter button
     if ($(this).val().trim().length > 4) {
       $('#btn_post').attr('disabled', false);
       if ($('#textarea').is(':focus') && (e.keyCode == 13)) {
@@ -59,6 +58,7 @@ $(document).ready(function() {
 
     data.append('ask', ask);
     data.append('data', message.val().trim());
+    message.val('');
     data.append(
       'csrfmiddlewaretoken',
       $('#status input[name="csrfmiddlewaretoken"]').attr('value')
@@ -71,12 +71,13 @@ $(document).ready(function() {
         if (response.status === 200) {
           _alert(
             { message: gettext('Status has been saved.') },
-            'success'
+            'success',
+            1000
           );
           const activityContainer = document.querySelector('.tab-section.active .activities');
 
           if (!activityContainer) {
-            location.reload();
+            // success
             return;
           }
           activityContainer.setAttribute('page', 0);

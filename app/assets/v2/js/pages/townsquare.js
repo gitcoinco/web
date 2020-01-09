@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
+  // gets multi part (ex: 10 hours 2 minutes 5 seconds) time
   var time_difference_broken_down = function(difference) {
     let remaining = ' now.. Refresh to view offer!';
     let prefix = ' in ';
@@ -25,6 +26,7 @@ $(document).ready(function() {
     return prefix + remaining;
   };
 
+  // effects when an offer is clicked upon
   $('.offer a').click(function(e) {
     var speed = 500;
 
@@ -34,6 +36,7 @@ $(document).ready(function() {
     });
   });
 
+  // updates expiry timers with countdowns
   var updateTimers = function() {
     $('.timer').each(function() {
       var time = $(this).data('time');
@@ -41,9 +44,9 @@ $(document).ready(function() {
       $(this).html(time_difference_broken_down(new Date(time) - new Date()));
     });
   };
-
   setInterval(updateTimers, 1000);
 
+  // toggles the daily email sender
   $('#receive_daily_offers_in_inbox').on('change', function(e) {
     _alert('Your email subscription preferences have been updated', 'success', 2000);
 

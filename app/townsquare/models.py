@@ -65,10 +65,12 @@ class Offer(SuperModel):
         ('other', 'other'),
     ]
     STYLES = [
-        ('announce1', 'pink'),
+        ('announce1', 'light-pink'),
         ('announce2', 'blue'),
         ('announce3', 'teal'),
         ('announce4', 'yellow'),
+        ('announce5', 'lime-green'),
+        ('announce6', 'pink'),
     ]
 
     title = models.TextField(default='', blank=True)
