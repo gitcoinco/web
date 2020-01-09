@@ -34,7 +34,7 @@
     <img src="{% static "v2/images/top-bar/hackathons-logo.svg" %}" height="23" width="125" alt="" class="d-md-block d-none" style="margin-top: 0px; margin-left: -10px;">
     <img src="{% static "v2/images/top-bar/hackathons-symbol.svg" %}" height="22" alt="" class="d-md-none" style="height: 55px; width: 55px; margin-top: -7px; margin-left: -15px;">
   </a>
-  <a class="{% if request.path == '/' %}selected{% endif %}" href="{% url 'funder_bounties' %}"></a>
+  <a class="{% if request.path == '/' %}selected{% endif %}" href="{% url 'funder_bounties' %}">
     <img src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="22" alt="" class="d-md-block d-none" style="margin-bottom: 5px;">
     <img src="{% static "v2/images/top-bar/bounties_mobile.svg" %}" height="22" alt="" class="d-md-none">
   </a>
