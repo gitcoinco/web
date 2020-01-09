@@ -152,4 +152,3 @@ class Announcement(SuperModel):
     objects = AnnounceQuerySet.as_manager()
     def __str__(self):
         return f"{self.created_on} => {self.title}"
-

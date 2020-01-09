@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Comment, Flag, Like, Offer, OfferAction, Announcement
+from .models import Announcement, Comment, Flag, Like, Offer, OfferAction
 
 
 # Register your models here.

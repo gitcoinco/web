@@ -1984,6 +1984,7 @@ class Activity(SuperModel):
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
     metadata = JSONField(default=dict)
     needs_review = models.BooleanField(default=False)
+    view_count = models.IntegerField(default=0)
 
     # Activity QuerySet Manager
     objects = ActivityQuerySet.as_manager()
@@ -2094,6 +2095,8 @@ class Activity(SuperModel):
             if 'value_in_token' in obj and activity['token']:
                 activity['value_in_token_disp'] = round((float(obj['value_in_token']) /
                                                       10 ** activity['token']['decimals']) * 1000) / 1000
+
+        activity['view_count'] = self.view_count
 
         # finally done!
 

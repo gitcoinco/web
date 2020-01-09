@@ -62,7 +62,7 @@ $(document).ready(function() {
   });
 
   // clear any announcement
-  $(".announce .remove").click(function(){
+  $('.announce .remove').click(function() {
     $(this).parents('.announce').remove();
   });
 

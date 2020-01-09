@@ -1115,8 +1115,15 @@ def activity(request):
     if request.GET.get('after-pk'):
         activities = Activity.objects.filter(pk__gt=request.GET.get('after-pk'))
 
+    # pagination
     suppress_more_link = not len(activities)
     p = Paginator(activities, page_size)
+
+    # increment view counts
+    activities_pks = [obj.pk for obj in p.page(page)]
+    if len(activities_pks):
+        from townsquare.tasks import increment_view_counts
+        increment_view_counts.delay(activities_pks)
 
     next_page = page + 1
     context = {

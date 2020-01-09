@@ -9,7 +9,7 @@ from dashboard.models import Activity
 from marketing.mails import comment_email
 from ratelimit.decorators import ratelimit
 
-from .models import Comment, Flag, Like, Offer, OfferAction, Announcement
+from .models import Announcement, Comment, Flag, Like, Offer, OfferAction
 from .utils import is_user_townsquare_enabled
 
 
