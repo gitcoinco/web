@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-celery -A taskapp worker -l INFO
+cd /code/app; python3 manage.py celery

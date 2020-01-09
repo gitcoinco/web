@@ -23,6 +23,7 @@ import json
 import logging
 import os
 import time
+
 from copy import deepcopy
 from datetime import datetime
 from decimal import Decimal
@@ -32,7 +33,6 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Avg, Count, Prefetch, Q
@@ -45,11 +45,11 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import escape, strip_tags
 from django.utils.http import is_safe_url
-from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
+from django.utils.text import slugify
 
 import magic
 from app.utils import clean_str, ellipses, get_default_network
@@ -57,6 +57,7 @@ from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
 from cacheops import invalidate_obj
+from chat.tasks import add_to_channel, get_driver, create_channel, create_user
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -75,7 +76,7 @@ from marketing.mails import funder_payout_reminder as funder_payout_reminder_mai
 from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
-from marketing.models import Keyword
+from marketing.models import Keyword, EmailSubscriber
 from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -110,16 +111,26 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 
 @protected_resource()
-@login_required()
 def oauth_connect(request, *args, **kwargs):
     active_user_profile = Profile.objects.filter(user_id=request.user.id).select_related()[0]
-
+    from marketing.utils import should_suppress_notification_email
     user_profile = {
         "login": active_user_profile.handle,
         "email": active_user_profile.user.email,
         "name": active_user_profile.user.get_full_name(),
         "handle": active_user_profile.handle,
-        "id": active_user_profile.user.id,
+        "id": f'{active_user_profile.user.id}',
+        "auth_data": f'{active_user_profile.user.id}',
+        "auth_service": "gitcoin",
+        "notify_props": {
+            "email": "false",
+            "push": "mention",
+            "desktop": "all",
+            "desktop_sound": "true",
+            "mention_keys": f'{active_user_profile.handle}, @{active_user_profile.handle}',
+            "channel": "true",
+            "first_name": "false"
+        }
     }
     return JsonResponse(user_profile, status=200, safe=False)
 
@@ -351,6 +362,117 @@ def new_interest(request, bounty_id):
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
+        if bounty.event:
+            try:
+
+                if bounty.chat_channel_id is None:
+                    bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
+
+                    chat_driver = get_driver()
+                    channel_lookup = chat_driver.channels.get_channel_by_name(settings.GITCOIN_HACK_CHAT_TEAM_ID, bounty_channel_name)
+
+                    if 'message' in channel_lookup:
+                        options = {
+                            'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                            'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
+                            'channel_name': bounty_channel_name[:60]
+                        }
+                        result = create_channel.apply_async(args=[options])
+                        bounty_channel_id_response = result.get()
+
+                        if 'message' in bounty_channel_id_response:
+                            raise ValueError(bounty_channel_id_response['message'])
+
+                        bounty.chat_channel_id = bounty_channel_id_response['id']
+                        bounty_channel_id = bounty_channel_id_response['id']
+                        bounty.save()
+                    else:
+                        bounty_channel_id = channel_lookup['id']
+                        bounty.chat_channel_id = bounty_channel_id
+                        bounty.save()
+                else:
+                    bounty_channel_id = bounty.chat_channel_id
+
+                funder_profile = Profile.objects.get(handle=bounty.bounty_owner_github_username)
+
+                if funder_profile is not None:
+                    if funder_profile.chat_id is None:
+                        result = create_user.apply_async(args=[
+                            {
+                                "email": funder_profile.user.email,
+                                "username": funder_profile.handle,
+                                "first_name": funder_profile.user.first_name,
+                                "last_name": funder_profile.user.last_name,
+                                "nickname": funder_profile.handle,
+                                "auth_data": f'{funder_profile.user.id}',
+                                "auth_service": "gitcoin",
+                                "locale": "en",
+                                "props": {},
+                                "notify_props": {
+                                    "email": "false",
+                                    "push": "mention",
+                                    "desktop": "all",
+                                    "desktop_sound": "true",
+                                    "mention_keys": f'{funder_profile.handle}, @{funder_profile.handle}',
+                                    "channel": "true",
+                                    "first_name": "false"
+                                },
+                            }, {
+                                "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
+                            }
+                        ])
+
+                        chat_profile_interest_user = result.get()
+                        if 'message' in chat_profile_interest_user:
+                            raise ValueError(chat_profile_interest_user['message'])
+
+                        funder_profile.chat_id = chat_profile_interest_user['id']
+                        funder_profile.save()
+
+                    if profile.chat_id is None:
+                        result = create_user.apply_async(args=[{
+                            "email": profile.user.email,
+                            "username": profile.handle,
+                            "first_name": profile.user.first_name,
+                            "last_name": profile.user.last_name,
+                            "nickname": profile.handle,
+                            "auth_data": f'{profile.user.id}',
+                            "auth_service": "gitcoin",
+                            "locale": "en",
+                            "props": {},
+                            "notify_props": {
+                                "email": "false",
+                                "push": "mention",
+                                "desktop": "all",
+                                "desktop_sound": "true",
+                                "mention_keys": f'{profile.handle}, @{profile.handle}',
+                                "channel": "true",
+                                "first_name": "false"
+                            },
+                        }, {
+                            "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
+                        }]
+                        )
+
+                        chat_profile_interest_user = result.get()
+                        if 'message' in chat_profile_interest_user:
+                            raise ValueError(chat_profile_interest_user['message'])
+
+                        profile.chat_id = chat_profile_interest_user['id']
+                        profile.save()
+
+                    profiles_to_connect = [
+                        funder_profile.chat_id,
+                        profile.chat_id
+                    ]
+
+                    add_to_channel.delay({
+                        'channel_id': bounty_channel_id,
+                        'profiles': profiles_to_connect
+                    })
+
+            except Exception as e:
+                print(str(e))
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -3476,7 +3598,7 @@ def get_kudos(request):
             kudos_json['name'] = token.name
             kudos_json['name_human'] = humanize_name(token.name)
             kudos_json['description'] = token.description
-            kudos_json['image'] = token.image
+            kudos_json['image'] = token.preview_img_url
 
             kudos_json['price_finney'] = token.price_finney / 1000
             kudos_json['price_usd'] = eth_to_usd * kudos_json['price_finney']

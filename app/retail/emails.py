@@ -64,7 +64,11 @@ TRANSACTIONAL_EMAILS = [
     ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured'))
 ]
 
-ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
+NOTIFICATION_EMAILS = [
+    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat'))
+]
+
+ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
 
 
 def premailer_transform(html):
@@ -385,7 +389,7 @@ thanks for being a member of the community.
 
 alisa / frank (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         elif bounty.status == 'cancelled':
@@ -406,7 +410,7 @@ thanks again for being a member of the community.
 
 alisa / frank (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         else:
@@ -443,7 +447,7 @@ def render_admin_contact_funder(bounty, text, from_user):
     return response_html, response_txt
 
 
-def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+def render_funder_stale(github_username, days=60, time_as_str='a couple months'):
     """Render the stale funder email template.
 
     Args:
@@ -459,14 +463,15 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
     response_txt = f"""
 hi {github_username},
 
-alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}.
+in the spirit of making Gitcoin better + checking in:
 
-- has anything been slipping on your issue board which might be bounty worthy?
+- have any issues which might be bounty worthy or projects you're hoping to build?
 - do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
+- are you interested in joining one of <a href="https://gitcoin.co/hackathon-list/">our upcoming hackathons?</a> it's possible
+we could do so at a discount, as you're a current funder on the platform
 
-our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days.
-
-appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
+appreciate you being a part of the community + let us know if you'd like some Gitcoin schwag, we can send a link your way to order some :)
 
 ~ alisa / frank (gitcoin product team)
 
@@ -927,8 +932,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Fund Your Code & Code Your Fund"
-    new_kudos_pks = [7259, 7260, 7096]
+    subject = "The action starts *Monday 1/6/2020*!"
+    new_kudos_pks = [7315, 7275, 6188]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -938,39 +943,34 @@ def render_new_bounty_roundup(to_email):
         email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
-<h3>Happy Kudos Friday!</h3>
+<h3>New Kudos This Month</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
     '''
+
     intro = f'''
 <p>
 Hey Gitcoiners,
 </p>
 <p>
-   Happy Friday! There are only 4 days left to go in the <a href="https://gitcoin.co/hackathon/global-communities">Global Communities</a> virtual hackathon, but still plenty of prizes up for grabs and opportunities to start work. We’ll be giving out our first “<a href="https://gitcoin.co/issue/gitcoinco/skunkworks/136/3759">Community Choice</a>” prize this time around (1500 DAI total!), so make sure you <a href="https://hackathons.gitcoin.co/global-communities">register</a> if you want to vote. If you’ve already registered, take another look through the <a href="https://gitcoin.co/hackathon/global-communities">prize explorer</a> to make sure you didn’t miss anything.
+    Happy New Years :)  The Gitcoin team has been spending time with friends & family for the last two weeks, celebrating the end of the decade.
 </p>
 <p>
-   We’ve released two blog posts this hack highlighting <a href="https://gitcoin.co/blog/hashing-cashing-global-communities/">Hashing Systems</a> and <a href="https://gitcoin.co/blog/in-the-lab-with-consensys-global-communities/">ConsenSys Labs</a>. Dive in to learn more about the organizations and the bounties they are hosting. Both have ample opportunities to take home a nice chunk of change.
-</p>
-<p>
-   Finally, there are four new Gitcoin Quests this week for you to dig your teeth into: <a href="https://gitcoin.co/quests/76/uniswap-a-liquidity-provider-perspective">UNISWAP, A liquidity provider perspective</a>, <a href="https://gitcoin.co/quests/75/a-stellar-intro">A Stellar Intro</a>, <a href="https://gitcoin.co/quests/77/crypto-payment-app">Crypto Payment App</a>, and <a href="https://gitcoin.co/quests/78/hashing-systems-via-hashgraph">Hashing Systems via Hashgraph</a>. Earn some kudos while learning at the same time!
+   Next week we're back in action + looking to start the new year off strong with over $200k in OSS Funding for our community.  The <a href="https://gitcoin.co/hackathon/take-back-the-web/?">Take Back the Web</a> Virtual Hackathon starts 1/6.  And so does <a href="https://gitcoin.co/blog/gitcoin-grants-2020/">Gitcoin Grants Round 4</a>.  Click <a href="https://gitcoin.co/hackathon/take-back-the-web/?">here</a> to checkout Take Back the Web, and click <a href="https://gitcoin.co/grants/">here</a> to checkout Gitcoin Grants.
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        <a href="https://codefund.io/">CodeFund</a> (Gitcoin’s ethical advertising network) is going through a new re-design on the administration views, advertiser dashboard, and publisher dashboard, as well as implementing a new strategy for ads rendered (which you can think as Codefund's base USP). They're looking to lock in subscriptions for 2020, so reach out if you’re interested in advertising to open source or blockchain developers! CodeFund is also starting a podcast network, so stay tuned for more info on that. 
-        </li>
-        <li>
-        If you’re not familiar with CodeFund, join us on today’s livestream to hear the founder <a href="https://twitter.com/coderberry?lang=en">Eric Berry</a> discuss why he started CodeFund, how it got to where it is today, and what his mission is to support OSS going forward. <a href="https://http://gitcoin.co/livestream">Join at 2pm ET</a>.
+            Join us on todays Gitcoin Livestream to chat Web3 Business Models with Thibauld from Fairmint, Paul from Sablier, and more! <a href="https://gitcoin.co/livestream">Join at 2pm ET</a>.
         </li>
     </ul>
 </p>
 <p>
-Back to shipping,
+Back to BUIDLing,
 </p>
 '''
     highlights = [{
@@ -1006,15 +1006,12 @@ Back to shipping,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/iamdefinitelyahuman/brownie/issues/262',
-        'primer': 'Brownie - Rebuild / Expand CLI Test Cases',
+        'url': 'https://github.com/gitcoinco/web/issues/5465',
+        'primer': 'Are you an illustrator?  Design a Gitcoin bot + earn some DAI!',
     }, {
-        'url': 'https://github.com/3box/3box/issues/839',
-        'primer': 'Integrate 3Box And Gitcoin: Backup Gitcoin Profiles To 3Box - 1000 DAI Hackathon Bounty',
-    }, {
-        'url': 'https://github.com/ConsenSys/Global-Community-Relay/issues/3',
-        'primer': 'UX Best-In-Show - 7 ETH Hackathon Bounty (Any project is valid!)',
-}, ]
+        'url': 'https://github.com/gitcoinco/web/issues/4943',
+        'primer': 'Find an area where Gitcoins documentation is lacking + earn some ETH by fixing it',
+    }, ]
 
 
     num_leadboard_items = 5

@@ -210,34 +210,42 @@ $(document).ready(function() {
             approvalAddress = data.contract_address;
           }
 
-          deployedToken.methods.approve(
-            approvalAddress,
-            web3.utils.toTwosComplement(approvalSTR)
-          ).send({
-            from: accounts[0],
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
-            gas: web3.utils.toHex(gas_amount(document.location.href)),
-            gasLimit: web3.utils.toHex(gas_amount(document.location.href))
-          }).on('error', function(error) {
-            console.log('1', error);
-            _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
-          }).on('transactionHash', function(transactionHash) {
-            $('#sub_new_approve_tx_id').val(transactionHash);
-          }).on('confirmation', function(confirmationNumber, receipt) {
-            if (data.num_periods == 1) {
-              // call splitter after approval
-              splitPayment(accounts[0], data.admin_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
+          deployedToken.methods.balanceOf(
+            accounts[0]
+          ).call().then(function(result) {
+            if (result < realTokenAmount) {
+              _alert({ message: gettext('Your balance could not be verified')}, 'error');
             } else {
-              if (data.contract_version == 0 && gitcoin_grant_amount > 0) {
-                donationPayment(deployedToken, accounts[0], Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
-              }
-              subscribeToGrant(transactionHash);
-            }
-            waitforData(() => {
-              document.suppress_loading_leave_code = true;
-              window.location = redirectURL;
-            }); // waitforData
-          }); // approve on confirmation
+              deployedToken.methods.approve(
+                approvalAddress,
+                web3.utils.toTwosComplement(approvalSTR)
+              ).send({
+                from: accounts[0],
+                gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+                gas: web3.utils.toHex(gas_amount(document.location.href)),
+                gasLimit: web3.utils.toHex(gas_amount(document.location.href))
+              }).on('error', function(error) {
+                console.log('1', error);
+                _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
+              }).on('transactionHash', function(transactionHash) {
+                $('#sub_new_approve_tx_id').val(transactionHash);
+              }).on('confirmation', function(confirmationNumber, receipt) {
+                if (data.num_periods == 1) {
+                  // call splitter after approval
+                  splitPayment(accounts[0], data.admin_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
+                } else {
+                  if (data.contract_version == 0 && gitcoin_grant_amount > 0) {
+                    donationPayment(deployedToken, accounts[0], Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
+                  }
+                  subscribeToGrant(transactionHash);
+                }
+                waitforData(() => {
+                  document.suppress_loading_leave_code = true;
+                  window.location = redirectURL;
+                }); // waitforData
+              }); // approve on confirmation
+            } // if (result < realTokenAmount)
+          }); // check token balance
         }); // getAccounts
       }); // decimals
     } // submitHandler

@@ -17,7 +17,7 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark gitcoin-background">
-  <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'grants:grants' %}">
+  <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'quests_index' %}">
     <img class="mw-100 logo-static" src="{% static 'v2/images/quests_logo_white.png' %}" alt="Quests" height="50">
     <img class="mw-100 logo-animated" src="{% static 'v2/images/quest_logo_hover.png' %}" alt="Quests" height="50">
   </a>
@@ -33,9 +33,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     {% if user.is_authenticated %}
-      {% if user.is_staff %}
-        {% include 'shared/chat_nav.html' %}
-      {% endif %}
+      {% include 'shared/chat_nav.html' %}
       {% include 'shared/notifications.html' %}
     {% endif %}
   </div>
