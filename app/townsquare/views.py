@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib import messages
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
@@ -6,7 +7,8 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity
-from marketing.mails import comment_email
+from kudos.models import Token
+from marketing.mails import comment_email, new_action_request
 from ratelimit.decorators import ratelimit
 
 from .models import Announcement, Comment, Flag, Like, Offer, OfferAction
@@ -231,3 +233,32 @@ def offer_view(request, offer_id, offer_slug):
         return TemplateResponse(request, 'townsquare/offer.html', context)
     except:
         raise Http404
+
+
+def offer_new(request):
+
+    package = request.POST
+
+    if package:
+        try:
+            offer = Offer.objects.create(
+                title=package.get('title'),
+                desc=package.get('description'),
+                url=package.get('action_url'),
+                persona=Token.objects.get(pk=package.get('persona')),
+                valid_from=timezone.now(),
+                valid_to=timezone.now(),
+                )
+            offer = new_action_request(offer)
+            msg = "Action Submitted | Team Gitcoin will be in touch if it's a fit."
+            messages.info(request, msg)
+        except Exception as e:
+            messages.error(request, e)
+
+    context = {
+        'title': "New Action",
+        'card_desc': "New Action",
+        'package': package,
+        'nav': 'home',
+    }
+    return TemplateResponse(request, 'townsquare/new.html', context)

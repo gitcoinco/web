@@ -53,7 +53,7 @@ class OfferQuerySet(models.QuerySet):
 
     def current(self):
         """Filter results down to current offers only."""
-        return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now())
+        return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now(), public=True)
 
 
 class Offer(SuperModel):
@@ -81,6 +81,9 @@ class Offer(SuperModel):
     key = models.CharField(max_length=50, db_index=True, choices=OFFER_TYPES)
     style = models.CharField(max_length=50, db_index=True, choices=STYLES, default='announce1')
     persona = models.ForeignKey('kudos.Token', blank=True, null=True, related_name='offers', on_delete=models.SET_NULL)
+    created_by = models.ForeignKey('dashboard.Profile',
+        on_delete=models.CASCADE, related_name='offers_created', blank=True, null=True)
+    public = models.BooleanField(help_text='Is this available publicly yet?', default=True)
 
     # Bounty QuerySet Manager
     objects = OfferQuerySet.as_manager()
