@@ -284,7 +284,7 @@ class Grant(SuperModel):
             for contrib in contribs:
                 #add all contributions
                 key = contrib.created_on.strftime("%Y/%m")
-                subkey = 'One-Time' 
+                subkey = 'One-Time'
                 if int(contrib.subscription.num_tx_approved) > 1:
                     if contrib.is_first_in_sequence:
                         subkey = 'New-Recurring'
@@ -421,6 +421,14 @@ class Subscription(SuperModel):
     active = models.BooleanField(default=True, help_text=_('Whether or not the Subscription is active.'))
     error = models.BooleanField(default=False, help_text=_('Whether or not the Subscription is erroring out.'))
     subminer_comments = models.TextField(default='', blank=True, help_text=_('Comments left by the subminer.'))
+
+    split_tx_id = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The tx id of the split transfer'),
+        blank=True,
+    )
+    split_tx_confirmed = models.BooleanField(default=False, help_text=_('Whether or not the split tx succeeded.'))
 
     subscription_hash = models.CharField(
         default='',
@@ -789,6 +797,12 @@ next_valid_timestamp: {next_valid_timestamp}
         return result
 
 
+    def save_split_tx_to_contribution(self):
+        sc = self.subscription_contribution.first()
+        sc.split_tx_id = self.split_tx_id
+        sc.split_tx_confirmed = self.split_tx_confirmed
+        sc.save()
+
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
@@ -797,7 +811,9 @@ next_valid_timestamp: {next_valid_timestamp}
         self.num_tx_processed += 1
         contribution_kwargs = {
             'tx_id': tx_id,
-            'subscription': self
+            'subscription': self,
+            'split_tx_id': self.split_tx_id,
+            'split_tx_confirmed': self.split_tx_confirmed
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
@@ -937,11 +953,20 @@ class Contribution(SuperModel):
 
     success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
     tx_cleared = models.BooleanField(default=False, help_text=_('Whether or not tx cleared.'))
+    tx_override = models.BooleanField(default=False, help_text=_('Whether or not the tx success and tx_cleared have been manually overridden. If this setting is True, update_tx_status will not change this object.'))
+
     tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction ID of the Contribution.'),
     )
+    split_tx_id = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The tx id of the split transfer'),
+        blank=True,
+    )
+    split_tx_confirmed = models.BooleanField(default=False, help_text=_('Whether or not the split tx succeeded.'))
     subscription = models.ForeignKey(
         'grants.Subscription',
         related_name='subscription_contribution',
@@ -970,10 +995,17 @@ class Contribution(SuperModel):
     def update_tx_status(self):
         """Updates tx status."""
         from dashboard.utils import get_tx_status
-        tx_status, tx_time = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+        if self.tx_override:
+            return
+        tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+        if self.split_tx_id:
+            split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
         if tx_status != 'pending':
             self.success = tx_status == 'success'
             self.tx_cleared = True
+        if self.split_tx_id and split_tx_status != 'pending':
+            self.success = split_tx_status == 'success'
+            self.split_tx_confirmed = True
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
 def psave_contrib(sender, instance, **kwargs):
