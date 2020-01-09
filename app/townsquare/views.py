@@ -63,7 +63,7 @@ def index(request):
     offers_by_category = {}
     for key in ['daily', 'weekly', 'monthly']:
         next_time_available = get_next_time_available(key)
-        offer = Offer.objects.current().filter(key=key).first()
+        offer = Offer.objects.current().filter(key=key).order_by('-pk').first()
         if request.user.is_authenticated:
             if request.user.profile.offeractions.filter(what='click', offer=offer):
                 offer = None

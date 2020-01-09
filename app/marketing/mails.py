@@ -768,9 +768,21 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
     offers = f""
     if to_emails and len(to_emails):
         from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
-        if is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available():
-            offers = f"1 New Action && 💰"
-    subject = _(f"⚡️ {offers} {len(bounties)} New Work{worth} matching your profile")
+        offers = ""
+
+        has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
+        if has_offer:
+            offers = f"💰 1 New Action && "
+
+        new_bounties = ""
+        if bounties.count():
+            new_bounties = f"⚡️ {len(bounties)} New Work{worth} matching your profile"
+        else if old_bounties.count()::
+            new_bounties = f"😁 {len(old_bounties)} Bounties Available"
+
+        _and = "&& " if has_offer and new_bounties else ""
+
+        subject = f"{offers} {_and}{new_bounties} "
 
     for to_email in to_emails:
         cur_language = translation.get_language()
