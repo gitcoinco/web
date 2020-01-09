@@ -366,8 +366,8 @@ class Bounty(SuperModel):
         help_text=_('Organization Logo - Override'),
     ) # TODO: Remove POST ORGS
     attached_job_description = models.URLField(blank=True, null=True, db_index=True)
+    chat_channel_id = models.CharField(max_length=255, null=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
-
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
 
@@ -2314,6 +2314,7 @@ class Profile(SuperModel):
     last_calc_date = models.DateTimeField(default=get_time)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
+    chat_id = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES, blank=True)
     slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     slack_token = models.CharField(max_length=255, default='', blank=True)

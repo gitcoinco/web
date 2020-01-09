@@ -18,24 +18,39 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-
 from django.conf import settings
 from django.template.response import TemplateResponse
-from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.clickjacking import xframe_options_exempt
+from chat.tasks import get_driver
 
-import requests
+
+def chat(request):
+    """Render chat landing page response."""
+
+    try:
+        chat_driver = get_driver()
+
+        chat_stats = chat_driver.teams.get_team_stats(settings.GITCOIN_CHAT_TEAM_ID)
+        if 'message' not in chat_stats:
+            users_online = chat_stats['active_member_count']
+        else:
+            users_online = 'N/A'
+    except Exception as e:
+
+        users_online = 'N/A'
+    context = {
+        'users_online': users_online
+    }
+
+    return TemplateResponse(request, 'chat.html', context)
 
 
 def embed(request):
     """Handle the chat embed view."""
 
-    is_staff = request.user.is_staff if request.user.is_authenticated else False
-
-    if not is_staff:
-        context = dict(active='error', code=404, title="Error {}".format(404))
-        return TemplateResponse(request, 'error.html', context, status=404)
+    chat_url = settings.CHAT_URL
+    if settings.CHAT_PORT not in [80, 443]:
+        chat_url = f'{settings.CHAT_URL}:{settings.CHAT_PORT}'
 
     context = {
         'is_outside': True,
@@ -43,9 +58,7 @@ def embed(request):
         'title': 'Chat',
         'card_title': _('Community Chat'),
         'card_desc': _('Come chat with the community'),
-        'avatar_url': static('v2/images/helmet.png'),
-        'is_chat_user': False,
-        'chat_url': settings.CHAT_URL
+        'chat_url': chat_url
     }
 
     return TemplateResponse(request, 'embed.html', context)
