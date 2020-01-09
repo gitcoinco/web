@@ -116,3 +116,40 @@ class OfferAction(SuperModel):
 
     def __str__(self):
         return f"{self.profile.handle} => {self.offer.title}"
+
+
+class AnnounceQuerySet(models.QuerySet):
+    """Handle the manager queryset for Announcements."""
+
+    def current(self):
+        """Filter results down to current offers only."""
+        return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now())
+
+
+class Announcement(SuperModel):
+    """An Announcement to the users to be displayed on town square."""
+
+    title = models.TextField(default='', blank=True)
+    desc = models.TextField(default='', blank=True)
+    valid_from = models.DateTimeField(db_index=True)
+    valid_to = models.DateTimeField(db_index=True)
+
+    STYLES = [
+        ('primary', 'primary'),
+        ('secondary', 'secondary'),
+        ('success', 'success'),
+        ('danger', 'danger'),
+        ('warning', 'warning'),
+        ('info', 'info'),
+        ('light', 'light'),
+        ('dark', 'dark'),
+        ('white', 'white'),
+    ]
+
+    style = models.CharField(max_length=50, db_index=True, choices=STYLES, default='announce1', help_text='https://getbootstrap.com/docs/4.0/utilities/colors/')
+
+    # Bounty QuerySet Manager
+    objects = AnnounceQuerySet.as_manager()
+    def __str__(self):
+        return f"{self.created_on} => {self.title}"
+

@@ -9,7 +9,7 @@ from dashboard.models import Activity
 from marketing.mails import comment_email
 from ratelimit.decorators import ratelimit
 
-from .models import Comment, Flag, Like, Offer, OfferAction
+from .models import Comment, Flag, Like, Offer, OfferAction, Announcement
 from .utils import is_user_townsquare_enabled
 
 
@@ -72,11 +72,15 @@ def index(request):
             'time': next_time_available.strftime('%Y-%m-%dT%H:%M:%SZ'),
         }
 
+    # subscriber info
     is_subscribed = False
     if request.user.is_authenticated:
         email_subscriber = request.user.profile.email_subscriptions.first()
         if email_subscriber:
             is_subscribed = email_subscriber.should_send_email_type_to('new_bounty_notifications')
+
+    # announcements
+    announcements = Announcement.objects.current()
 
     # render page context
     context = {
@@ -86,6 +90,7 @@ def index(request):
         'target': f'/activity?what={tab}',
         'tab': tab,
         'tabs': tabs,
+        'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
     }

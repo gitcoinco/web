@@ -1,3 +1,31 @@
+.announce{
+  border-radius: 5px;
+  width: 80%;
+  color: black;
+  padding: 5px 10px;
+  margin: 10px auto;
+}
+.announce a{
+  color: black;
+  font-weight: bold;
+}
+.announce .row{
+  width: 100%;
+}
+.announce .remove{
+  position: absolute;
+  right: 13%;
+  cursor: pointer;
+}
+.announce.warning {
+  background-color: #FF7F00;
+}
+.announce.success {
+  background-color: #00A652;
+}
+.announce.info {
+  background-color: #008EFF;
+}
 .timer,.offer{
   list-style: none;
   max-width: 200px;

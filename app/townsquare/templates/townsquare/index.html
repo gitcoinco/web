@@ -20,16 +20,36 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% if not profile_id %}
   <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
-  <div class="row" style="margin-top:-50px; background-color: #7E50FF; color: white;">
+  <div class="row announce bg-info">
     <div class="container py-0 ">
       <div class="my-1">
         <div class="row">
-          What is Gitcoin? - <a style="color: white; font-weight: bold;" href="/home">Learn More <i class="fas fa-share-square"></i> </a>
+          <i class="fas fa-info mr-3"></i> 
+          What is Gitcoin? - <a style="font-weight: bold;" href="/home">Learn More <i class="fas fa-share-square"></i> </a>
         </div>
       </div>
     </div>
   </div>
 {% endif %}
+
+{% for announce in announcements %}
+  <div class="row announce bg-{{announce.style}}">
+    <div class="container py-0 ">
+      <div class="my-1">
+        <div class="row">
+          <i class="fas fa-info mr-3"></i> 
+          <strong>
+            {{announce.title}}
+          </strong> ({{announce.valid_from | naturaltime}}) -
+            {{announce.desc | safe}}
+          <div class="remove">
+            X
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
 
 <div class="row">
   <div class="container py-1 ">
