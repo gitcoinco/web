@@ -188,7 +188,8 @@ class Grant(SuperModel):
         related_name='grant_teams',
         help_text=_('The team members contributing to this Grant.'),
     )
-    image_css = models.CharField(default='', blank=True, max_length=255, help_text=_('additional CSS to attach to the grant-banner img.'))
+    image_css = models.CharField(default='', blank=True, max_length=255,
+                                 help_text=_('additional CSS to attach to the grant-banner img.'))
     clr_matching = models.DecimalField(
         default=0,
         decimal_places=2,
@@ -220,18 +221,17 @@ class Grant(SuperModel):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
-
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
         if not self.amount_goal:
             return 0
         return ((float(self.amount_received_with_phantom_funds) / float(self.amount_goal)) * 100)
 
-
     def updateActiveSubscriptions(self):
         """updates the active subscriptions list"""
         handles = []
-        for handle in Subscription.objects.filter(grant=self, active=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
+        for handle in Subscription.objects.filter(grant=self, active=True).distinct('contributor_profile').values_list(
+            'contributor_profile__handle', flat=True):
             handles.append(handle)
         self.activeSubscriptions = handles
 
@@ -250,7 +250,7 @@ class Grant(SuperModel):
             for contrib in sub.subscription_contribution.filter(success=True):
                 num += 1
         for pf in self.phantom_funding.all():
-            num+=1
+            num += 1
         return num
 
     @property
@@ -262,7 +262,6 @@ class Grant(SuperModel):
         for pf in self.phantom_funding.all():
             contributors.append(pf.profile.handle)
         return len(set(contributors))
-
 
     @property
     def org_profile(self):
@@ -282,9 +281,9 @@ class Grant(SuperModel):
         for sub in subs:
             contribs = [sc for sc in sub.subscription_contribution.all() if sc.success]
             for contrib in contribs:
-                #add all contributions
+                # add all contributions
                 key = contrib.created_on.strftime("%Y/%m")
-                subkey = 'One-Time' 
+                subkey = 'One-Time'
                 if int(contrib.subscription.num_tx_approved) > 1:
                     if contrib.is_first_in_sequence:
                         subkey = 'New-Recurring'
@@ -293,20 +292,22 @@ class Grant(SuperModel):
                 if contrib.subscription.contributor_profile.handle in CLR_PAYOUT_HANDLES:
                     subkey = 'CLR'
                 if key not in month_to_contribution_numbers.keys():
-                    month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0, 'CLR': 0}
+                    month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0,
+                                                          'CLR': 0}
                 if contrib.subscription.amount_per_period_usdt:
                     month_to_contribution_numbers[key][subkey] += float(contrib.subscription.amount_per_period_usdt)
         for pf in self.phantom_funding.all():
-            #add all phantom funds
+            # add all phantom funds
             subkey = 'One-Time'
             key = pf.created_on.strftime("%Y/%m")
             if key not in month_to_contribution_numbers.keys():
-                month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0, 'CLR': 0}
+                month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0,
+                                                      'CLR': 0}
             month_to_contribution_numbers[key][subkey] += float(pf.value)
 
         # sort and return
-        return_me = [["", "Subscription Billing",  "New Subscriptions", "One-Time Contributions", "CLR Matching Funds"]]
-        for key, val in (sorted(month_to_contribution_numbers.items(), key=lambda kv:(kv[0]))):
+        return_me = [["", "Subscription Billing", "New Subscriptions", "One-Time Contributions", "CLR Matching Funds"]]
+        for key, val in (sorted(month_to_contribution_numbers.items(), key=lambda kv: (kv[0]))):
             return_me.append([key, val['Recurring-Recurring'], val['New-Recurring'], val['One-Time'], val['CLR']])
         return return_me
 
@@ -315,7 +316,7 @@ class Grant(SuperModel):
         max_amount = 0
         for ele in self.history_by_month:
             if type(ele[1]) is float:
-                max_amount = max(max_amount, ele[1]+ele[2]+ele[3]+ele[4])
+                max_amount = max(max_amount, ele[1] + ele[2] + ele[3] + ele[4])
         return max_amount
 
     @property
@@ -351,22 +352,44 @@ class Grant(SuperModel):
 
 
 class GrantCategory(SuperModel):
-    GRANT_CATEGORIES = [
-        ('not_set', 'not_set'),
-        ('security', 'security'),
-        ('scalability', 'scalability'),
-        ('ux', 'ux'),
-        ('defi', 'defi'),
-        ('education', 'education'),
-        ('wallets', 'wallets'),
-        ('community', 'community'),
-        ('eth2.0', 'eth2.0'),
-        ('eth1.x', 'eth1.x'),
-    ]
+    @staticmethod
+    def category_choices():
+        all_grant_categories = GrantCategory.all_categories()
+        all_grant_categories = ['not_set'] + all_grant_categories
+        return [ (category, category) for category in all_grant_categories ]
+
+
+    @staticmethod
+    def all_categories():
+        all_tech_categories = GrantCategory.tech_categories()
+        filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
+        return all_tech_categories + filtered_media_categories
+
+    @staticmethod
+    def tech_categories():
+        return [
+            'security',
+            'scalability',
+            'defi',
+            'education',
+            'wallets',
+            'community',
+            'eth2.0',
+            'eth1.x',
+        ]
+
+    @staticmethod
+    def media_categories():
+        return [
+            'education',
+            'twitter',
+            'reddit',
+            'blog',
+            'notes',
+        ]
 
     category = models.CharField(
         max_length=50,
-        choices=GRANT_CATEGORIES,
         default='not_set',
         blank=False,
         null=False,
@@ -381,6 +404,7 @@ class GrantCategory(SuperModel):
         null=False,
         help_text=_('The associated Grant.'),
     )
+
 
 class Milestone(SuperModel):
     """Define the structure of a Grant Milestone"""
@@ -465,7 +489,7 @@ class Subscription(SuperModel):
         max_length=255,
         help_text=_('The contributor\'s signature.'),
         blank=True,
-        )
+    )
     contributor_address = models.CharField(
         default='',
         max_length=255,
@@ -578,15 +602,14 @@ class Subscription(SuperModel):
             return "PAST DUE"
         return "CURRENT"
 
-
     def __str__(self):
         """Return the string representation of a Subscription."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
         active_details = f"( active: {self.active}, billed {self.subscription_contribution.count()} times, last contrib: {naturaltime(self.last_contribution_date)},  next contrib: {naturaltime(self.next_contribution_date)} )"
-        if self.last_contribution_date < timezone.now() - timezone.timedelta(days=10*365):
+        if self.last_contribution_date < timezone.now() - timezone.timedelta(days=10 * 365):
             active_details = "(NEVER BILLED)"
 
-        return f"id: {self.pk}; {self.status}, {round(self.amount_per_period,1)} {self.token_symbol} / {self.frequency} {self.frequency_unit}, {int(self.num_tx_approved)} times for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile.handle} {active_details}"
+        return f"id: {self.pk}; {self.status}, {round(self.amount_per_period, 1)} {self.token_symbol} / {self.frequency} {self.frequency_unit}, {int(self.num_tx_approved)} times for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile.handle} {active_details}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
@@ -602,7 +625,8 @@ class Subscription(SuperModel):
                 return "This subscription has no token_address"
             token_contract = web3.eth.contract(Web3.toChecksumAddress(self.token_address), abi=erc20_abi)
             balance = token_contract.functions.balanceOf(Web3.toChecksumAddress(self.contributor_address)).call()
-            allowance = token_contract.functions.allowance(Web3.toChecksumAddress(self.contributor_address), Web3.toChecksumAddress(self.grant.contract_address)).call()
+            allowance = token_contract.functions.allowance(Web3.toChecksumAddress(self.contributor_address),
+                                                           Web3.toChecksumAddress(self.grant.contract_address)).call()
             gasPrice = self.gas_price
             is_active = self.get_is_active_from_web3()
             token = addr_to_token(self.token_address, self.network)
@@ -706,7 +730,7 @@ next_valid_timestamp: {next_valid_timestamp}
             'from': settings.GRANTS_OWNER_ACCOUNT,
             'nonce': get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT),
             'value': 0,
-            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10**9),
+            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10 ** 9),
             'gas': 204066,
         }
 
@@ -763,7 +787,7 @@ next_valid_timestamp: {next_valid_timestamp}
             'from': Web3.toChecksumAddress(_from),
             'to': Web3.toChecksumAddress(to),
             'tokenAddress': Web3.toChecksumAddress(tokenAddress),
-            'tokenAmount': int(tokenAmount * 10**decimals),
+            'tokenAmount': int(tokenAmount * 10 ** decimals),
             'periodSeconds': int(periodSeconds),
             'gasPrice': int(gasPrice),
             'nonce': int(nonce),
@@ -781,7 +805,7 @@ next_valid_timestamp: {next_valid_timestamp}
             args['periodSeconds'],
             args['gasPrice'],
             args['nonce'],
-            ).call()
+        ).call()
 
     def get_converted_amount(self):
         try:
@@ -820,7 +844,6 @@ next_valid_timestamp: {next_valid_timestamp}
 
         return result
 
-
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
@@ -856,18 +879,18 @@ def psave_grant(sender, instance, **kwargs):
     instance.contributor_count = instance.get_contributor_count
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
-    #print(instance.id)
+    # print(instance.id)
     for subscription in instance.subscriptions.all():
         value_usdt = subscription.get_converted_amount()
         for contrib in subscription.subscription_contribution.filter(success=True):
             if value_usdt:
-                #print(f"adding contribution of {round(subscription.amount_per_period,2)} {subscription.token_symbol}, pk: {contrib.pk}, worth ${round(value_usdt,2)} to make total ${round(instance.amount_received,2)}. (txid: {contrib.tx_id} tx_cleared:{contrib.tx_cleared} )")
+                # print(f"adding contribution of {round(subscription.amount_per_period,2)} {subscription.token_symbol}, pk: {contrib.pk}, worth ${round(value_usdt,2)} to make total ${round(instance.amount_received,2)}. (txid: {contrib.tx_id} tx_cleared:{contrib.tx_cleared} )")
                 instance.amount_received += Decimal(value_usdt)
 
         if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
             if subscription.num_tx_approved != 1:
                 instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
-        #print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
+        # print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
 
 
 class DonationQuerySet(models.QuerySet):
@@ -951,7 +974,6 @@ class Donation(SuperModel):
         null=True,
     )
 
-
     def __str__(self):
         """Return the string representation of this object."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
@@ -996,7 +1018,8 @@ class Contribution(SuperModel):
     @property
     def is_first_in_sequence(self):
         """returns true only IFF a contribution is the first in a sequence of subscriptions."""
-        other_contributions_after_this_one = Contribution.objects.filter(subscription=self.subscription, created_on__lt=self.created_on)
+        other_contributions_after_this_one = Contribution.objects.filter(subscription=self.subscription,
+                                                                         created_on__lt=self.created_on)
         return not other_contributions_after_this_one.exists()
 
     def update_tx_status(self):
@@ -1007,28 +1030,28 @@ class Contribution(SuperModel):
             self.success = tx_status == 'success'
             self.tx_cleared = True
 
+
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
 def psave_contrib(sender, instance, **kwargs):
-
     from django.contrib.contenttypes.models import ContentType
     from dashboard.models import Earning
     Earning.objects.update_or_create(
         source_type=ContentType.objects.get(app_label='grants', model='contribution'),
         source_id=instance.pk,
         defaults={
-            "created_on":instance.created_on,
-            "from_profile":instance.subscription.contributor_profile,
-            "org_profile":instance.subscription.grant.org_profile,
-            "to_profile":instance.subscription.grant.admin_profile,
-            "value_usd":instance.subscription.get_converted_amount(),
-            "url":instance.subscription.grant.url,
-            "network":instance.subscription.grant.network,
+            "created_on": instance.created_on,
+            "from_profile": instance.subscription.contributor_profile,
+            "org_profile": instance.subscription.grant.org_profile,
+            "to_profile": instance.subscription.grant.admin_profile,
+            "value_usd": instance.subscription.get_converted_amount(),
+            "url": instance.subscription.grant.url,
+            "network": instance.subscription.grant.network,
         }
-        )
+    )
+
 
 @receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
 def presave_contrib(sender, instance, **kwargs):
-
     ele = instance
     sub = ele.subscription
     grant = sub.grant
@@ -1045,7 +1068,7 @@ def presave_contrib(sender, instance, **kwargs):
         'amount_per_period_usdt': float(sub.amount_per_period_usdt),
         'amount_per_period': float(sub.amount_per_period),
         'tx_id': ele.tx_id,
-        }
+    }
 
 
 def next_month():
@@ -1069,7 +1092,6 @@ class CLRMatch(SuperModel):
     def __str__(self):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, grant: {self.grant.pk}, round: {self.round_number}, amount: {self.amount}"
-
 
 
 class MatchPledge(SuperModel):
@@ -1103,6 +1125,7 @@ class MatchPledge(SuperModel):
         """Return the string representation of this object."""
         return f"{self.profile} <> {self.amount} DAI"
 
+
 class PhantomFunding(SuperModel):
     """Define the structure of a PhantomFunding object.
 
@@ -1134,7 +1157,7 @@ class PhantomFunding(SuperModel):
 
     @property
     def value(self):
-        return 5/(self.competing_phantum_funds().count())
+        return 5 / (self.competing_phantum_funds().count())
 
     def to_mock_contribution(self):
         context = self.to_standard_dict()

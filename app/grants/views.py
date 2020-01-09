@@ -951,13 +951,20 @@ def invoice(request, contribution_pk):
 
     return TemplateResponse(request, 'grants/invoice.html', params)
 
-def basic_grant_categories():
-    categories = GrantCategory.GRANT_CATEGORIES
-    return [ (category[0],idx-1) for idx, category in enumerate(categories) if 'not_set' not in category[0] ]
+def basic_grant_categories(grant_type):
+    categories = GrantCategory.all_categories()
+
+    if grant_type == 'tech':
+        categories = GrantCategory.tech_categories()
+    elif grant_type == 'media':
+        categories = GrantCategory.media_categories()
+
+    return [ (category,idx) for idx, category in enumerate(categories) ]
 
 @csrf_exempt
 def grant_categories(request):
-    categories = basic_grant_categories()
+    grant_type = request.GET.get('type', 'tech')
+    categories = basic_grant_categories(grant_type)
 
     search_term = request.GET.get('term', None)
     if search_term is not None:
