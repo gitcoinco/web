@@ -1,4 +1,5 @@
 from django.utils import timezone
+
 from grants.models import Contribution, PhantomFunding
 
 start = timezone.datetime(2020, 1, 6)
@@ -14,4 +15,3 @@ amount = sum([float(contrib.subscription.amount_per_period_usdt) for contrib in 
 print(total)
 print(contributors)
 print(amount)
-

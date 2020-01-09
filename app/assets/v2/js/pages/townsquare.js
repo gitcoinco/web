@@ -44,6 +44,7 @@ $(document).ready(function() {
       $(this).html(time_difference_broken_down(new Date(time) - new Date()));
     });
   };
+
   setInterval(updateTimers, 1000);
 
   // toggles the daily email sender

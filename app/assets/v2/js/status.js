@@ -27,6 +27,7 @@ $(document).ready(function() {
 
     // enforce a max length
     var max_len = 280;
+
     if ($(this).val().trim().length > max_len) {
       e.preventDefault();
       $(this).addClass('red');
