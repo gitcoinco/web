@@ -624,7 +624,7 @@ def grant_fund(request, grant_id, grant_slug):
             return JsonResponse({
                 'success': True,
             })
-        
+
         if 'hide_wallet_address' in request.POST:
             profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
             profile.save()
@@ -635,6 +635,12 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.active = True
             subscription.subscription_hash = request.POST.get('subscription_hash', '')
             subscription.contributor_signature = request.POST.get('signature', '')
+            if 'split_tx_id' in request.POST:
+                subscription.split_tx_id = request.POST.get('split_tx_id', '')
+                subscription.save_split_tx_to_contribution()
+            if 'split_tx_confirmed' in request.POST:
+                subscription.split_tx_confirmed = bool(request.POST.get('split_tx_confirmed', False))
+                subscription.save_split_tx_to_contribution()
             subscription.save()
 
             value_usdt = subscription.get_converted_amount()
