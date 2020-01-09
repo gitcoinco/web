@@ -77,13 +77,15 @@
           </div>
         </div>
         <div class="col-5 col-md-2 font-caption my-auto txn-link pt-3 pt-md-0">
-          {% if transaction.tx_id %}
-            <a id="tx_link" href="https://etherscan.io/tx/{{transaction.cont.tx_id}}" target="_blank" rel="noopener noreferrer">
+          {% if transaction.tx_id and not profile.hide_wallet_address %}
+            <a id="tx_link" href="https://etherscan.io/tx/{{transaction.tx_id}}" target="_blank" rel="noopener noreferrer">
               View Etherscan
             </a>
           {% endif %}
 
-          <input type="hidden" id="tx_id" name="tx_id" value="{{ transaction.cont.tx_id }}"/>
+          {% if transaction.tx_id %}
+          <input type="hidden" id="tx_id" name="tx_id" value="{{ transaction.tx_id }}"/>
+          {% endif %}
         </div>
         <div class="col-7 col-md-2 my-auto tags font-caption pt-3 pt-md-0">
           <div class="tag tag-lg token">
