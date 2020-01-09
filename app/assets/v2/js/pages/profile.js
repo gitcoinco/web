@@ -216,3 +216,9 @@ $(document).ready(function() {
     });
   });
 }(jQuery));
+
+$(document).ready(() => {
+  $('#profile-tabs button').click(function() {
+    document.location = $(this).attr('href');
+  });
+});
