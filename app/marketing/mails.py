@@ -777,7 +777,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         new_bounties = ""
         if bounties.count():
             new_bounties = f"⚡️ {len(bounties)} New Work{worth} matching your profile"
-        else if old_bounties.count()::
+        elif old_bounties.count():
             new_bounties = f"😁 {len(old_bounties)} Bounties Available"
 
         _and = "&& " if has_offer and new_bounties else ""

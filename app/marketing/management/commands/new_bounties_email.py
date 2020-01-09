@@ -20,6 +20,7 @@ import logging
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from townsquare.utils import is_email_townsquare_enabled
 
 from dashboard.models import Bounty
 from marketing.mails import new_bounty_daily
@@ -64,14 +65,17 @@ class Command(BaseCommand):
         for es in eses:
             try:
                 counter_grant_total += 1
+                to_email = es.email
                 keywords = es.keywords
-                if not keywords:
+                town_square_enabled = is_email_townsquare_enabled(to_email)
+                should_eval = keywords or town_square_enabled
+                if not should_eval:
                     continue
                 counter_total += 1
-                to_email = es.email
                 new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
                 print("{}/{}/{}) {}/{}: got {} new bounties & {} all bounties".format(counter_sent, counter_total, counter_grant_total, to_email, keywords, new_bounties.count(), all_bounties.count()))
-                if new_bounties.count():
+                should_send = new_bounties.count() or town_square_enabled
+                if should_send:
                     print(f"sending to {to_email}")
                     new_bounty_daily(new_bounties, all_bounties, [to_email])
                     print(f"/sent to {to_email}")

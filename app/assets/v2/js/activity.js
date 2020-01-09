@@ -1,6 +1,8 @@
 
 $(document).ready(function() {
 
+  document.base_title = $("title").text();
+
   // notifications of new activities
   var ping_activity_notifier = (function() {
     var plural = document.buffered_rows.length == 1 ? 'y' : 'ies';
@@ -11,6 +13,8 @@ $(document).ready(function() {
     } else {
       $(html).insertBefore($('#activities .row').first());
     }
+    var prefix = "(" + document.buffered_rows.length + ") ";
+    $("title").text(prefix + document.base_title);
 
   });
 
@@ -72,6 +76,7 @@ $(document).ready(function() {
     }
     $(this).remove();
     document.buffered_rows = [];
+    $("title").text(document.base_title);
   });
 
   // delete activity
