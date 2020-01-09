@@ -36,7 +36,7 @@ def chat(request):
         else:
             users_online = 'N/A'
     except Exception as e:
-
+        print(str(e))
         users_online = 'N/A'
     context = {
         'users_online': users_online
@@ -50,8 +50,9 @@ def embed(request):
 
     chat_url = settings.CHAT_URL
     if settings.CHAT_PORT not in [80, 443]:
-        chat_url = f'{settings.CHAT_URL}:{settings.CHAT_PORT}'
-
+        chat_url = f'http://{settings.CHAT_URL}:{settings.CHAT_PORT}'
+    else:
+        chat_url = f'https://{chat_url}'
     context = {
         'is_outside': True,
         'active': 'chat',
