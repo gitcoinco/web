@@ -66,18 +66,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </li>
             {% endfor %}
           </ul>
-
           <div id="activities" class="activity_stream container">
             {% include 'shared/activity_container.html' %}
           </div>
-
         </div>
         <div class="col-12 col-md-4">
-
           <div class="text-center">
             <button class="btn btn-gc-blue" >CREATE ACTION <i class="fas fa-upload"></i></button>
           </div>
-
           {% for type, item in offers_by_category.items %}
             <hr>
             <h4 class="pt-3">{{type|title}} Action</h4>
@@ -104,7 +100,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} > 
                 <label for="receive_daily_offers_in_inbox"> <i class="fas fa-envelope"></i> Email when available</label>
               {% endif %}
-
             {% endif %}
           {% endfor %}
         </div>
