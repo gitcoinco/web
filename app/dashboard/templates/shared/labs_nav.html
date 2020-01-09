@@ -34,9 +34,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     {% if user.is_authenticated %}
-      {% if user.is_staff %}
-        {% include 'shared/chat_nav.html' %}
-      {% endif %}
+      {% include 'shared/chat_nav.html' %}
       {% include 'shared/notifications.html' %}
     {% endif %}
   </div>

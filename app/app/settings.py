@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'health_check.contrib.s3boto3_storage',
     'app',
     'avatar',
+    'chat',
     'retail',
     'rest_framework',
     'marketing',
@@ -469,6 +470,8 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_serializer
 CELERY_RESULT_SERIALIZER = 'json'
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_backend
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default=CACHEOPS_REDIS)
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
@@ -543,8 +546,11 @@ GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
 # Chat
-CHAT_URL = env('CHAT_DRIVER_USER', default='')  # location of where mattermost is hosted
-
+CHAT_PORT = env('CHAT_PORT', default=8065)  # port of where mattermost is hosted
+CHAT_URL = env('CHAT_URL', default='http://localhost')  # location of where mattermost is hosted
+CHAT_DRIVER_TOKEN = env('CHAT_DRIVER_TOKEN', default='')  # driver token
+GITCOIN_HACK_CHAT_TEAM_ID = env('GITCOIN_HACK_CHAT_TEAM_ID', default='')
+GITCOIN_CHAT_TEAM_ID = env('GITCOIN_CHAT_TEAM_ID', default='')
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'

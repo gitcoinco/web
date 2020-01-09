@@ -125,7 +125,7 @@
         {% trans "Grant Has Ended" %}
       </button>
 
-    {% else %}
+    {% elif not is_team_member %}
 
       {% if user_non_errored_subscription %}
         <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
@@ -134,7 +134,7 @@
       {% else %}
         <a href="{% url 'grants:fund' grant.id grant.slug %}">
           <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3">
-            {% if is_team_member %} Fund your own Grant {% else %} Fund this Grant {% endif %}
+            Fund this Grant
           </button>
         </a>
       {% endif %}

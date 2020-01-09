@@ -65,7 +65,11 @@ TRANSACTIONAL_EMAILS = [
     ('comment', _('Comment Emails'), _('Only when you are sent a comment')),
 ]
 
-ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
+NOTIFICATION_EMAILS = [
+    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat'))
+]
+
+ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
 
 
 def premailer_transform(html):
