@@ -1,9 +1,11 @@
+from django.db import transaction
+
 from app.redis_service import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Activity
+
 logger = get_task_logger(__name__)
-from django.db import transaction
 
 redis = RedisService().redis
 
@@ -23,5 +25,3 @@ def increment_view_counts(self, pks, retry=False):
             for activity in activities:
                 activity.view_count += 1
                 activity.save()
-
-
