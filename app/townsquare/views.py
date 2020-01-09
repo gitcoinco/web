@@ -82,10 +82,23 @@ def index(request):
     # announcements
     announcements = Announcement.objects.current()
 
+    # title
+    title = 'Home'
+    desc = 'View the recent activity on the Gitcoin network'
+    if "activity:" in tab:
+        try:
+            pk = int(tab.split(':')[1])
+            activity = Activity.objects.get(pk=pk)
+            title = f"@{activity.profile.handle}'s comment on Gitcoin "
+            desc = f"foo - {activity.text}"
+        except:
+            pass
+
+
     # render page context
     context = {
-        'title': 'Home',
-        'card_desc': 'View the recent activity on the Gitcoin network',
+        'title': title,
+        'card_desc': desc,
         'nav': 'home',
         'target': f'/activity?what={tab}',
         'tab': tab,
@@ -116,7 +129,6 @@ def emailsettings(request):
 
     response = {}
     return JsonResponse(response)
-
 
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)

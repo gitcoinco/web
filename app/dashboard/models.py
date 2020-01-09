@@ -2034,6 +2034,23 @@ class Activity(SuperModel):
         return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
 
     @property
+    def text(self):
+        from django.template.loader import render_to_string
+        from bs4 import BeautifulSoup
+        params = {
+            'row': self,
+            'hide_date': True,
+            'hide_likes': True,
+        }
+        html_str = render_to_string('shared/activity.html', params)
+        soup = BeautifulSoup(html_str)
+        txt = soup.get_text()
+        txt = txt.replace("\n","")
+        for i in range(0, 100):
+            txt = txt.replace("  ",' ')
+        return txt
+
+    @property
     def view_props(self):
         from kudos.models import Token
         icons = {
