@@ -143,9 +143,9 @@ urlpatterns = [
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
     # chat
-    url(r'^chat/web', chat.views.embed, name='web_chat'),
-    url(r'^chat/web/', chat.views.embed, name='web_chat2'),
-    re_path(r'^chat/?', chat.views.chat, name='chat'),
+    url(r'^chat/landing', chat.views.chat, name='landing_chat'),
+    url(r'^chat/landing/', chat.views.chat, name='landing_chat2'),
+    re_path(r'^chat/?', chat.views.embed, name='chat'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
