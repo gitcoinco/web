@@ -31,6 +31,7 @@
                   {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}
                 </div>
               </div>
+              {% if not subscription.contributor_profile.hide_wallet_address %}
               <div class="d-none d-md-block col-4 col-md-2 my-auto font-body">
                 <a class="sub_tx_link" href="https://etherscan.io/tx/{{ subscription.new_approve_tx_id }}" target="_blank" rel="noopener noreferrer">
                   {% if subscription.new_approve_tx_id %}
@@ -38,6 +39,7 @@
                   {% endif %}
                 </a>
               </div>
+              {% endif %}
               <div class="offset-lg-1 col-4 col-md-2 my-auto tags font-caption">
                 <div class="tag tag-lg token">
                   <p>
@@ -78,7 +80,7 @@
                   {% if not transaction.success %} (Failed) {% endif %}
                 </div>
               </div>
-              {% if not profile.hide_wallet_address or subscription.contributor_profile.has_done_business_with %}
+              {% if not subscription.contributor_profile.hide_wallet_address %}
                 <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
                   <a class="tx_link" href="https://etherscan.io/tx/{{ transaction.tx_id }}" target="_blank" rel="noopener noreferrer">
                     {% if transaction.tx_id %}
@@ -137,7 +139,7 @@
                 {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}
               </div>
             </div>
-            {% if not profile.hide_wallet_address %}
+            {% if not subscription.contributor_profile.hide_wallet_address %}
               <div class="d-none d-md-block col-md-2 my-auto font-body">
               {% if subscription.cancel_tx_id != '0x0' %}
                 <a class="cancel_tx_link" href="https://etherscan.io/tx/{{ subscription.cancel_tx_id }}" target="_blank" rel="noopener noreferrer">
