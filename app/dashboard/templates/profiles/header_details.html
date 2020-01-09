@@ -2,8 +2,20 @@
 
 <h1 class="profile-header__handle">
   {{ profile.name }}
+  {% if verification %}
+    <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
+      <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
+      <p>This contributor has completed the Gitcoin verification process, which means that the Gitcoin Core trusts their work.</p>
+      <p>Please note - use your judgement on whether this is the right contributor for your task.</p>'
+    >
+      <img src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+    </button>
+  {% endif %}
 
-  {% if is_staff and not profile.is_org %}
+</h1>
+<p class="mb-0">
+  {{ profile.handle }}
+  {% if not profile.is_org and profile.chat_id %}
     <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" data-openchat="{{profile}}">
       <i class="fas fa-comment-dots" data-placement="bottom" data-toggle="tooltip" data-html="true"
         title="Chat @{{ profile.handle }}">
@@ -20,22 +32,8 @@
   <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="/users?invite={{ profile.handle }}"
     data-placement="bottom" data-toggle="tooltip" data-html="true" title="Invite @{{ profile.handle }} to Bounty"
   >
-  <i class="fas fa-user-plus"></i>
+  <i class="fas fa-envelope-open-text"></i>
   </a>
-
-  {% if verification %}
-    <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
-      <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
-      <p>This contributor has completed the Gitcoin verification process, which means that the Gitcoin Core trusts their work.</p>
-      <p>Please note - use your judgement on whether this is the right contributor for your task.</p>'
-    >
-      <img src="{% static 'v2/images/badge-verify.svg' %}" alt="">
-    </button>
-  {% endif %}
-
-</h1>
-<p class="mb-0">
-  {{ profile.handle }}
   {% if profile.custom_tagline %}
     <span style="font-size: 14px; font-color: #000;">- {{ profile.custom_tagline }}</span>
   {% endif %}
