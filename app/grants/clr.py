@@ -280,7 +280,7 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=No
             base = grant.clr_prediction_curve[0][1]
             if base:
                 grant.clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in grant.clr_prediction_curve ]
-           else:
+            else:
                 grant.clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
 
             JSONStore.objects.create(
