@@ -27,6 +27,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     {% if user.is_authenticated %}
+      {% include 'shared/chat_nav.html' %}
       {% include 'shared/notifications.html' %}
     {% endif %}
   </div>
@@ -109,6 +110,9 @@
           </a>
           <a class="dropdown-item" href="{% url "jobs" %}">
             {% trans "Jobs" %}
+          </a>
+          <a class="dropdown-item" href="{% url "landing_chat" %}">
+            {% trans "Chat" %}
           </a>
         </div>
       </div>
