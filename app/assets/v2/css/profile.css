@@ -18,7 +18,7 @@
   background: #E8F0FA;
   padding: 4px;
   border-radius: 2px;
-  font-size: 12px;
+  font-size: 11px;
   color: #6487AE;
   display: inline-block;
   margin-bottom: 2px;
@@ -71,6 +71,10 @@
   line-height: 1;
   font-weight: 700;
   font-size: 1.7rem;
+}
+
+.profile-header__handle .quick-link {
+  top: -3px;
 }
 
 .profile-header__handle small {
@@ -215,8 +219,11 @@
     display: none;
   }
 
-}
+  .transaction-history.bounty_row .avatar {
+    max-width: 100% !important;
+  }
 
+}
 
 .profile-header__stats {
   border: none;
@@ -237,6 +244,19 @@
 
 .profile-header__stats .card-body {
   padding: 0.7rem;
+}
+
+
+.bounty_row {
+  border-bottom: 1px solid #EFEFEF;
+}
+
+.bounty_row:hover {
+  background: none;
+}
+
+#earn_dataviz {
+  max-width: 100%;
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
