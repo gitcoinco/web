@@ -73,6 +73,10 @@
   font-size: 1.7rem;
 }
 
+.profile-header__handle .quick-link {
+  top: -3px;
+}
+
 .profile-header__handle small {
   text-transform: none;
 }
