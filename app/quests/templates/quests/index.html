@@ -48,13 +48,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
   <div id="tabs">
     <div class="container">
-      <div class="tab-container font-body mt-5 mb-4">
-        {% for difficulty_level, the_quests in quests%}
-          <button type="button" id="nav-description" href="#" data-href="{{difficulty_level}}" class="text-center section-tab {% if difficulty_level == selected_tab %}active{%endif%}">
-            {{difficulty_level}} <span>{{the_quests|length}}</span>
-          </button>
-        {% endfor %}
-      </div>
+      <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+      {% for difficulty_level, the_quests in quests%}
+        <li class="nav-item">
+          <a class="nav-link nav-line {% if difficulty_level == selected_tab %}active{% endif %}" href="#" data-href="{{difficulty_level}}">
+          {{difficulty_level}} <span>({{the_quests|length}})</span>
+          </a>
+        </li>
+      {% endfor %}
+      </ul>
     </div>
   </div>
     <div class="loading w-100 {% if not show_loading %}hidden{% endif %}">
