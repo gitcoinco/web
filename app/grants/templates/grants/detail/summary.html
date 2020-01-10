@@ -25,7 +25,7 @@
                           </p>
                         </div>
                         <div class="font-subheader font-weight-semibold mb-2">{{ milestone.title }}</div>
-                        <p class="milestone-description font-body">{{ milestone.description }}</p>
+                        <pre class="milestone-description font-body">{{ milestone.description }}</pre>
                       </li>
                     {% endfor %}
                   </ul>
@@ -63,7 +63,7 @@
                     <div class="py-4 update">
                       <div class="article-date font-caption mb-2">{{ item.created_on|date:"M d, Y" }}</div>
                       <div class="article-title font-subheader font-weight-semibold mb-2">{{ item.title }}</div>
-                      <div class="article-description font-body mb-2 wrap-text">{{ item.description }}</div>
+                      <pre class="article-description font-body mb-2 wrap-text">{{ item.description }}</pre>
                     </div>
                   {% empty %}
                     <p class="py-4 font-weight-semibold text-center">
