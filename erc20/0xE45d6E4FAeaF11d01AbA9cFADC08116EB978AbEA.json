@@ -9,14 +9,9 @@
   "whitepaper": "http://www.agriculex.com/images/ag.pdf",
   "published_on": "2019-12-25",
   "state": "NORMAL",
-  "initial_price":{
-        "ETH":"",
-        "USD":"",
-        "BTC":""
-  },
   "links": {
     "twitter": "https://twitter.com/AgricultureAgex",
-    "telegram": "0.plus/AgricultureEX",
-    "facebook": "www.facebook.com/AgriculEX"
+    "telegram": "https://0.plus/AgricultureEX",
+    "facebook": "https://www.facebook.com/AgriculEX"
   }
 }
