@@ -5,7 +5,6 @@ from dashboard.models import Profile
 from django.conf import settings
 
 from mattermostdriver import Driver
-import ipdb
 
 logger = get_task_logger(__name__)
 
@@ -37,7 +36,6 @@ def create_channel(self, options, retry: bool = True) -> None:
 
         try:
             chat_driver.login()
-            ipdb.set_trace()
 
             new_channel = chat_driver.channels.create_channel(options={
                 'team_id': options['team_id'],
@@ -66,7 +64,6 @@ def add_to_channel(self, options, retry: bool = True) -> None:
     """
     with redis.lock("tasks:add_to_channel:%s" % options['channel_id'], timeout=LOCK_TIMEOUT):
         chat_driver.login()
-        ipdb.set_trace()
 
         try:
             for x in options['profiles']:
@@ -88,7 +85,6 @@ def create_user(self, options, params, retry: bool = True):
     with redis.lock("tasks:create_user:%s" % options['username'], timeout=LOCK_TIMEOUT):
         try:
             chat_driver.login()
-            ipdb.set_trace()
 
             create_user_response = chat_driver.users.create_user(
                 options=options,
