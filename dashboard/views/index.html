@@ -2272,14 +2272,11 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 <pre><code class="python">cancel_reason(request)
 </code></pre>
 
-<p>Extend expiration of the Bounty.</p>
-<p>Can only be called by funder or staff of the bounty.</p>
-<p>:request method: POST</p>
+<p>Add Cancellation Reason for Bounty during Cancellation</p>
+<p>request method: POST</p>
 <p>Params:
     pk (int): ID of the Bounty.
     canceled_bounty_reason (string): STRING with cancel  reason</p>
-<p>Returns:
-    dict: The success key with a boolean value and accompanying error.</p>
 <h3 id="dashboard.views.cancel_reason.csrf_exempt">csrf_exempt</h3>
 
 <p>bool(x) -&gt; bool</p>
@@ -2358,18 +2355,6 @@ The class bool is a subclass of the class int, and cannot be subclassed.
     Http404: The exception is raised if no associated Bounty is found.</p>
 <p>Returns:
     TemplateResponse: The accept bounty view.</p>
-<h2 id="dashboard.views.contribute">contribute</h2>
-
-<pre><code class="python">contribute(request)
-</code></pre>
-
-<p>Contribute to the bounty.</p>
-<p>Args:
-    pk (int): The primary key of the bounty to be accepted.</p>
-<p>Raises:
-    Http404: The exception is raised if no associated Bounty is found.</p>
-<p>Returns:
-    TemplateResponse: The accept bounty view.</p>
 <h2 id="dashboard.views.invoice">invoice</h2>
 
 <pre><code class="python">invoice(request)
@@ -2382,18 +2367,6 @@ The class bool is a subclass of the class int, and cannot be subclassed.
     Http404: The exception is raised if no associated Bounty is found.</p>
 <p>Returns:
     TemplateResponse: The invoice  view.</p>
-<h2 id="dashboard.views.social_contribution">social_contribution</h2>
-
-<pre><code class="python">social_contribution(request)
-</code></pre>
-
-<p>Social Contributuion to the bounty.</p>
-<p>Args:
-    pk (int): The primary key of the bounty to be accepted.</p>
-<p>Raises:
-    Http404: The exception is raised if no associated Bounty is found.</p>
-<p>Returns:
-    TemplateResponse: The accept bounty view.</p>
 <h2 id="dashboard.views.social_contribution_modal">social_contribution_modal</h2>
 
 <pre><code class="python">social_contribution_modal(request)
@@ -2763,15 +2736,40 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 </code></pre>
 
 <p>Handle Profile Banner Uploads
-<h2 id="dashboard.views.create_bounty">create_bounty</h2></p>
-<pre><code class="python">create_bounty(request)
+<h2 id="dashboard.views.create_bounty_v1">create_bounty_v1</h2></p>
+<pre><code class="python">create_bounty_v1(request)
 </code></pre>
 
-<p>TODO
+<p>ETC-TODO
 - evaluate validity of duplicate / redundant data in models
-- wire in email (invite + successful creation)
-- create activty entry</p>
-<h3 id="dashboard.views.create_bounty.csrf_exempt">csrf_exempt</h3>
+- wire in email (invite + successful creation)</p>
+<h3 id="dashboard.views.create_bounty_v1.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.cancel_bounty_v1">cancel_bounty_v1</h2></p>
+<pre><code class="python">cancel_bounty_v1(request)
+</code></pre>
+
+<p>ETC-TODO
+- wire in email (invite + successful cancellation)</p>
+<h3 id="dashboard.views.cancel_bounty_v1.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.fulfill_bounty_v1">fulfill_bounty_v1</h2></p>
+<pre><code class="python">fulfill_bounty_v1(request)
+</code></pre>
+
+<p>ETC-TODO
+- wire in email (invite + successful fulfillment)
+- create activty entry
+- evalute BountyFulfillment unused fields</p>
+<h3 id="dashboard.views.fulfill_bounty_v1.csrf_exempt">csrf_exempt</h3>
 
 <p>bool(x) -&gt; bool</p>
 <p>Returns True when the argument x is true, False otherwise.
