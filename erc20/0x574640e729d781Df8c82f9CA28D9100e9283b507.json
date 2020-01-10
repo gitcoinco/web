@@ -1,0 +1,18 @@
+{
+    "symbol": "GKB",
+    "address": "0x574640e729d781Df8c82f9CA28D9100e9283b507",
+    "overview":{
+          "en": "GKBLOCK is a public chain project focusing on the commercial application of encrypted futures payment assets industry. It is a decentralized intelligent futures platform based on the block chain network for collaborative operation, providing users with accurate services related to the issuance, trading and management of futures payment assets.",
+          "zh": "GKBLOCK是一个专注于加密期货支付资产行业商业应用的公有链项目，是一个基于区块链网络进行协同操作，为用户精准提供期货支付资产发行、交易及管理相关服务的去中心化的智能期货平台。"
+    },
+    "email": "OrlasJazminoi@yahoo.com",
+    "website": "http://www.gkblock.vip/",
+    "whitepaper": "http://www.gkblock.vip/GKB-en.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-12-13",
+    "links": {
+        "blog": "https://weibo.com/GKBLOCK",
+        "telegram": "https://t.me/gkblock",
+        "twitter": "https://twitter.com/GK_BLOCK"
+      }
+}
