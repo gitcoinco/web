@@ -15,10 +15,17 @@ class Command(BaseCommand):
             # if bounty.chat_channel_id is None:
             # bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
             bounty_channel_name = "andrew-test-channel"
-            channel_lookup = chat_driver.channels.get_channel_by_name(settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                                                                      bounty_channel_name)
+            try:
+                channel_lookup = chat_driver.channels.get_channel_by_name(settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                                                                          bounty_channel_name)
 
-            if 'message' in channel_lookup:
+                bounty_channel_id = channel_lookup['id']
+                # bounty.chat_channel_id = bounty_channel_id
+                # bounty.save()
+                # else:
+                # bounty_channel_id = bounty.chat_channel_id
+            except Exception as e:
+                print(str(e))
                 options = {
                     'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
                     'channel_display_name': f'{bounty_channel_name}'[:60],
@@ -33,24 +40,18 @@ class Command(BaseCommand):
                 # bounty.chat_channel_id = bounty_channel_id_response['id']
                 bounty_channel_id = bounty_channel_id_response['id']
                 # bounty.save()
-            else:
-                bounty_channel_id = channel_lookup['id']
-                # bounty.chat_channel_id = bounty_channel_id
-                # bounty.save()
-            # else:
-            # bounty_channel_id = bounty.chat_channel_id
 
             funder_profile = Profile.objects.get(handle="owocki")
             profile = Profile.objects.get(handle="androolloyd")
             if funder_profile is not None:
                 if funder_profile.chat_id is None:
-
-                    funder_chat_profile_lookup = chat_driver.users.get_users_by_usernames(
-                        options=[funder_profile.handle]
-                    )
-
-                    if 'message' in funder_chat_profile_lookup:
-
+                    try:
+                        funder_chat_profile_lookup = chat_driver.users.get_users_by_usernames(
+                            options=[funder_profile.handle]
+                        )
+                    except Exception as e:
+                        print("failing on lookups")
+                        print(str(e))
                         result = create_user.apply_async(
                             args=[
                                 {
@@ -78,9 +79,9 @@ class Command(BaseCommand):
                                 }
                             ]
                         )
-                        funder_chat_profile_lookup = result.get()
-                        if 'message' in funder_chat_profile_lookup:
-                            raise ValueError(funder_chat_profile_lookup['message'])
+                    funder_chat_profile_lookup = result.get()
+                    if 'message' in funder_chat_profile_lookup:
+                        raise ValueError(funder_chat_profile_lookup['message'])
                     elif len(funder_chat_profile_lookup) > 1:
                         raise ValueError("More than one username in chat")
                     funder_profile.chat_id = funder_chat_profile_lookup[0]['id']
@@ -141,4 +142,5 @@ class Command(BaseCommand):
                     'profiles': profiles_to_connect
                 })
         except Exception as e:
+            print("erroring here")
             print(str(e))
