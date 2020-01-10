@@ -201,9 +201,9 @@
           <td>
             {% if amount_per_period %}
                {% trans "Total:" %} ${{amount_per_period|default:0.0|floatformat:'2'}} USD
-            {%else%}
+            {% else %}
                {% trans "Total:" %} $0.00 USD
-            {%endif%}
+            {% endif %}
           </td>
         </tr>
       </table>

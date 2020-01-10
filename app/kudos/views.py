@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define view for the Kudos app.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -602,6 +602,7 @@ def receive(request, key, txid, network):
             if request.user.is_authenticated:
                 kudos_transfer.recipient_profile = request.user.profile
             kudos_transfer.save()
+            record_user_action(kudos_transfer.username, 'new_kudos', kudos_transfer)
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
             record_kudos_activity(
@@ -709,6 +710,10 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
             coupon.current_uses += 1
             coupon.save()
 
+            # user actions
+            record_user_action(kudos_transfer.username, 'new_kudos', kudos_transfer)
+            record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
+
             # send email
             maybe_market_kudos_to_email(kudos_transfer)
 
@@ -771,6 +776,7 @@ def newkudos(request):
         'active': 'newkudos',
         'msg': None,
         'nav': 'kudos',
+        'title': "Mint new Kudos",
     }
 
     if not request.user.is_authenticated:
@@ -816,8 +822,14 @@ def newkudos(request):
                     'email': request.POST.get('email'),
                     }
                 )
-            new_kudos_request(obj) 
+            new_kudos_request(obj)
 
             context['msg'] = str(_('Your Kudos has been submitted and will be listed within 2 business days if it is accepted.'))
+
+            if request.user.is_staff:
+                if request.POST.get('mint_and_sync'):
+                    from kudos.tasks import mint_token_request
+                    mint_token_request.delay(obj.id)
+                    context['msg'] = str(_('Kudos mint/sync submitted'))
 
     return TemplateResponse(request, 'newkudos.html', context)

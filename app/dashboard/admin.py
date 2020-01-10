@@ -51,6 +51,12 @@ class GeneralAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
 
 
+class BlockedUserAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    raw_id_fields = ['user']
+    list_display = ['created_on', '__str__']
+
+
 class ProfileViewAdmin(admin.ModelAdmin):
     ordering = ['-id']
     raw_id_fields = ['target', 'viewer']
@@ -408,7 +414,7 @@ admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Earning, EarningAdmin)
-admin.site.register(BlockedUser, GeneralAdmin)
+admin.site.register(BlockedUser, BlockedUserAdmin)
 admin.site.register(PortfolioItem, PortfolioItemAdmin)
 admin.site.register(ProfileView, ProfileViewAdmin)
 admin.site.register(UserAction, UserActionAdmin)

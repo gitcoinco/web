@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grants application configuration.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -30,7 +30,7 @@ from grants.models import Contribution, Grant, PhantomFunding
 from perftools.models import JSONStore
 
 LOWER_THRESHOLD = 0.0
-CLR_START_DATE = dt.datetime(2019, 9, 15, 0, 0)
+CLR_START_DATE = dt.datetime(2020, 1, 6, 0, 0)
 
 
 '''
@@ -226,7 +226,7 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=No
     if clr_type == 'tech':
         grants = Grant.objects.filter(network=network, hidden=False, grant_type='tech')
     elif clr_type == 'media':
-        grants = Grant.objects.filter(network=network, hidden=False, grant_type='tech')
+        grants = Grant.objects.filter(network=network, hidden=False, grant_type='media')
     else:
         grants = Grant.objects.filter(network=network, hidden=False)
 
@@ -280,14 +280,17 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=No
             base = grant.clr_prediction_curve[0][1]
             if base:
                 grant.clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in grant.clr_prediction_curve ]
-                JSONStore.objects.create(
-                    created_on=from_date,
-                    view='clr_contribution',
-                    key=f'{grant.id}',
-                    data=grant.clr_prediction_curve,
-                )
-                if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
-                    grant.save()
+            else:
+                grant.clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
+
+            JSONStore.objects.create(
+                created_on=from_date,
+                view='clr_contribution',
+                key=f'{grant.id}',
+                data=grant.clr_prediction_curve,
+            )
+            if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
+                grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
     return debug_output
