@@ -468,7 +468,7 @@ def send_4(request):
             kudos_transfer.username,
             'receive_kudos'
         )
-        
+
     return JsonResponse(response)
 
 
@@ -508,6 +508,7 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
 
 def record_kudos_activity(kudos_transfer, github_handle, event_name):
     logger.debug(kudos_transfer)
+    github_handle = github_handle.replace('@', '')
     kwargs = {
         'activity_type': event_name,
         'kudos': kudos_transfer,
