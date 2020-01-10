@@ -1,12 +1,7 @@
 
 $(document).ready(function() {
-  $("a").click(function(e){
-    var href = $(this).attr('href');
-    if (href=='#'){
+  $("a.comingsoon").click(function(e){
       alert("Coming soon!");
       e.preventDefault();
-      return;
-    }
   })
-
 });
