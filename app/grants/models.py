@@ -1009,7 +1009,7 @@ class Contribution(SuperModel):
 
         should_have_split_tx_id = self.created_on > timezone.datetime(2020, 1, 9)
         if should_have_split_tx_id and not self.split_tx_id:
-            self.success = True
+            self.success = False
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
 def psave_contrib(sender, instance, **kwargs):
