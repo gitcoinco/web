@@ -23,7 +23,6 @@ import json
 import logging
 import os
 import time
-
 from copy import deepcopy
 from datetime import datetime
 from decimal import Decimal
@@ -45,11 +44,11 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import escape, strip_tags
 from django.utils.http import is_safe_url
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-from django.utils.text import slugify
 
 import magic
 from app.utils import clean_str, ellipses, get_default_network
@@ -57,7 +56,7 @@ from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
 from cacheops import invalidate_obj
-from chat.tasks import add_to_channel, get_driver, create_channel, create_user
+from chat.tasks import add_to_channel, create_channel, create_user, get_driver
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -76,7 +75,7 @@ from marketing.mails import funder_payout_reminder as funder_payout_reminder_mai
 from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
-from marketing.models import Keyword, EmailSubscriber
+from marketing.models import EmailSubscriber, Keyword
 from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
