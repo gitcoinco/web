@@ -98,9 +98,7 @@ def preprocess(request):
             from chat.tasks import get_driver
             chat_driver = get_driver()
 
-            chat_unreads_request = chat_driver.teams.get_team_unreads_for_user(
-                profile.chat_id
-            )
+            chat_unreads_request = chat_driver.teams.get_team_unreads_for_user(profile.chat_id)
 
             if 'message' not in chat_unreads_request:
                 for teams in chat_unreads_request:
@@ -114,7 +112,7 @@ def preprocess(request):
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
         'num_slack': num_slack,
-        'chat_unread_messages' : chat_unread_messages,
+        'chat_unread_messages': chat_unread_messages,
         'github_handle': request.user.username if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,

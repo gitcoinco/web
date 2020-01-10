@@ -1,12 +1,11 @@
 import datetime as dt
-from time import sleep
 from datetime import timezone
+from time import sleep
 
 from django.core.management.base import BaseCommand
 
-from grants.models import Contribution
-
 import requests
+from grants.models import Contribution
 
 start_date = dt.date(2020, 1, 5) # date to start checking
 
