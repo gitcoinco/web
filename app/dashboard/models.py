@@ -434,6 +434,12 @@ class Bounty(SuperModel):
             self.save()
 
     @property
+    def is_bounties_network(self):
+        if self.web3_type == 'bounties_network':
+            return True
+        return False
+
+    @property
     def latest_activity(self):
         activity = Activity.objects.filter(bounty=self.pk).order_by('-pk')
         if activity.exists():
@@ -1046,8 +1052,7 @@ class Bounty(SuperModel):
         """
         params = f'pk={self.pk}&network={self.network}'
         urls = {}
-        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout', 'contribute',
-                     'advanced_payout', 'social_contribution', 'invoice', ]:
+        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout', 'advanced_payout', 'invoice', ]:
             urls.update({item: f'/issue/{item}?{params}'})
         return urls
 
@@ -2856,7 +2861,6 @@ class Profile(SuperModel):
             int: a number of repeat relationships
 
         """
-        bounties = self.bounties
         relationships = []
         relationships += list(self.sent_earnings.values_list('to_profile__handle', flat=True))
         relationships += list(self.earnings.values_list('from_profile__handle', flat=True))
