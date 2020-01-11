@@ -364,14 +364,17 @@ def new_interest(request, bounty_id):
 
         if bounty.event:
             try:
+                chat_driver = get_driver()
 
                 if bounty.chat_channel_id is None:
                     bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
 
-                    chat_driver = get_driver()
-                    channel_lookup = chat_driver.channels.get_channel_by_name(settings.GITCOIN_HACK_CHAT_TEAM_ID, bounty_channel_name)
-
-                    if 'message' in channel_lookup:
+                    try:
+                        channel_lookup = chat_driver.channels.get_channel_by_name(settings.GITCOIN_HACK_CHAT_TEAM_ID, bounty_channel_name)
+                        bounty_channel_id = channel_lookup['id']
+                        bounty.chat_channel_id = bounty_channel_id
+                        bounty.save()
+                    except Exception as e:
                         options = {
                             'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
                             'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
@@ -386,10 +389,6 @@ def new_interest(request, bounty_id):
                         bounty.chat_channel_id = bounty_channel_id_response['id']
                         bounty_channel_id = bounty_channel_id_response['id']
                         bounty.save()
-                    else:
-                        bounty_channel_id = channel_lookup['id']
-                        bounty.chat_channel_id = bounty_channel_id
-                        bounty.save()
                 else:
                     bounty_channel_id = bounty.chat_channel_id
 
@@ -397,69 +396,79 @@ def new_interest(request, bounty_id):
 
                 if funder_profile is not None:
                     if funder_profile.chat_id is None:
-                        result = create_user.apply_async(args=[
-                            {
-                                "email": funder_profile.user.email,
-                                "username": funder_profile.handle,
-                                "first_name": funder_profile.user.first_name,
-                                "last_name": funder_profile.user.last_name,
-                                "nickname": funder_profile.handle,
-                                "auth_data": f'{funder_profile.user.id}',
-                                "auth_service": "gitcoin",
-                                "locale": "en",
-                                "props": {},
-                                "notify_props": {
-                                    "email": "false",
-                                    "push": "mention",
-                                    "desktop": "all",
-                                    "desktop_sound": "true",
-                                    "mention_keys": f'{funder_profile.handle}, @{funder_profile.handle}',
-                                    "channel": "true",
-                                    "first_name": "false"
-                                },
-                            }, {
-                                "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
-                            }
-                        ])
-
-                        chat_profile_interest_user = result.get()
-                        if 'message' in chat_profile_interest_user:
-                            raise ValueError(chat_profile_interest_user['message'])
-
-                        funder_profile.chat_id = chat_profile_interest_user['id']
-                        funder_profile.save()
+                        try:
+                            funder_lookup = chat_driver.users.get_users_by_username(funder_profile.handle)
+                            funder_profile.chat_id = funder_lookup['id']
+                            funder_profile.save()
+                        except Exception as e:
+                            result = create_user.apply_async(
+                                args=[
+                                    {
+                                        "email": funder_profile.user.email,
+                                        "username": funder_profile.handle,
+                                        "first_name": funder_profile.user.first_name,
+                                        "last_name": funder_profile.user.last_name,
+                                        "nickname": funder_profile.handle,
+                                        "auth_data": f'{funder_profile.user.id}',
+                                        "auth_service": "gitcoin",
+                                        "locale": "en",
+                                        "props": {},
+                                        "notify_props": {
+                                            "email": "false",
+                                            "push": "mention",
+                                            "desktop": "all",
+                                            "desktop_sound": "true",
+                                            "mention_keys": f'{funder_profile.handle}, @{funder_profile.handle}',
+                                            "channel": "true",
+                                            "first_name": "false"
+                                        },
+                                    }, {
+                                        "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
+                                    }
+                                ]
+                            )
+                            funder_profile_chat_user_new = result.get()
+                            funder_profile.chat_id = funder_profile_chat_user_new['id']
+                            funder_profile.save()
 
                     if profile.chat_id is None:
-                        result = create_user.apply_async(args=[{
-                            "email": profile.user.email,
-                            "username": profile.handle,
-                            "first_name": profile.user.first_name,
-                            "last_name": profile.user.last_name,
-                            "nickname": profile.handle,
-                            "auth_data": f'{profile.user.id}',
-                            "auth_service": "gitcoin",
-                            "locale": "en",
-                            "props": {},
-                            "notify_props": {
-                                "email": "false",
-                                "push": "mention",
-                                "desktop": "all",
-                                "desktop_sound": "true",
-                                "mention_keys": f'{profile.handle}, @{profile.handle}',
-                                "channel": "true",
-                                "first_name": "false"
-                            },
-                        }, {
-                            "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
-                        }]
-                        )
 
-                        chat_profile_interest_user = result.get()
-                        if 'message' in chat_profile_interest_user:
-                            raise ValueError(chat_profile_interest_user['message'])
+                        try:
+                            profile_lookup = chat_driver.users.get_users_by_username(profile.handle)
+                            profile_lookup.chat_id = profile_lookup['id']
+                            profile_lookup.save()
+                        except Exception as e:
+                            result = create_user.apply_async(
+                                args=[
+                                    {
+                                        "email": profile.user.email,
+                                        "username": profile.handle,
+                                        "first_name": profile.user.first_name,
+                                        "last_name": profile.user.last_name,
+                                        "nickname": profile.handle,
+                                        "auth_data": f'{profile.user.id}',
+                                        "auth_service": "gitcoin",
+                                        "locale": "en",
+                                        "props": {},
+                                        "notify_props": {
+                                            "email": "false",
+                                            "push": "mention",
+                                            "desktop": "all",
+                                            "desktop_sound": "true",
+                                            "mention_keys": f'{profile.handle}, @{profile.handle}',
+                                            "channel": "true",
+                                            "first_name": "false"
+                                        },
+                                    },
+                                    {
+                                        "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
+                                    }
+                                ]
+                            )
 
-                        profile.chat_id = chat_profile_interest_user['id']
-                        profile.save()
+                            profile_interest_user = result.get()
+                            profile.chat_id = profile_interest_user['id']
+                            profile.save()
 
                     profiles_to_connect = [
                         funder_profile.chat_id,
