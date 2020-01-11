@@ -368,7 +368,7 @@ def new_interest(request, bounty_id):
 
                 if bounty.chat_channel_id is None:
                     bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
-
+                    bounty_channel_name = bounty_channel_name[:60]
                     try:
                         channel_lookup = chat_driver.channels.get_channel_by_name(settings.GITCOIN_HACK_CHAT_TEAM_ID, bounty_channel_name)
                         bounty_channel_id = channel_lookup['id']
