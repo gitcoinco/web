@@ -348,6 +348,8 @@ def grant_new(request):
                 'admin_profile': profile,
                 'logo': logo,
                 'hidden': False,
+                'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
+
             }
             grant = Grant.objects.create(**grant_kwargs)
             new_grant_admin(grant)

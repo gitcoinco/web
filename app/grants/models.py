@@ -212,6 +212,16 @@ class Grant(SuperModel):
         help_text=_('The Grant that this grant defers it CLR contributions to (if any).'),
         null=True,
     )
+    last_clr_calc_date = models.DateTimeField(
+        help_text=_('The last clr calculation date'),
+        null=True,
+        blank=True,
+    )
+    next_clr_calc_date = models.DateTimeField(
+        help_text=_('The last clr calculation date'),
+        null=True,
+        blank=True,
+    )
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
