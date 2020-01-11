@@ -5,6 +5,9 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from mattermostdriver import Driver
+from mattermostdriver.exceptions import (
+    ResourceNotFound
+)
 
 logger = get_task_logger(__name__)
 
@@ -13,11 +16,14 @@ redis = RedisService().redis
 # Lock timeout of 2 minutes (just in the case that the application hangs to avoid a redis deadlock)
 LOCK_TIMEOUT = 60 * 2
 
-chat_driver = Driver({
+driver_opts = {
+    'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
     'url': settings.CHAT_URL,
     'port': settings.CHAT_PORT,
     'token': settings.CHAT_DRIVER_TOKEN
-})
+}
+
+chat_driver = Driver(driver_opts)
 
 
 def get_driver():
@@ -34,8 +40,14 @@ def create_channel(self, options, retry: bool = True) -> None:
     """
     with redis.lock("tasks:create_channel:%s" % options['channel_name'], timeout=LOCK_TIMEOUT):
 
+        chat_driver.login()
         try:
-            chat_driver.login()
+            channel_lookup = chat_driver.channels.get_channel_by_name(
+                options['team_id'],
+                options['channel_name']
+            )
+            return channel_lookup
+        except ResourceNotFound as RNF:
             new_channel = chat_driver.channels.create_channel(options={
                 'team_id': options['team_id'],
                 'name': options['channel_name'],
@@ -54,19 +66,19 @@ def create_channel(self, options, retry: bool = True) -> None:
 
 
 @app.shared_task(bind=True, max_retries=3)
-def add_to_channel(self, options, retry: bool = True) -> None:
+def add_to_channel(self, options, chat_user_ids, retry: bool = True) -> None:
     """
     :param options:
     :param retry:
     :return:
     """
-    with redis.lock("tasks:add_to_channel:%s" % options['channel_id'], timeout=LOCK_TIMEOUT):
+    with redis.lock("tasks:add_to_channel:%s" % options['id'], timeout=LOCK_TIMEOUT):
         chat_driver.login()
         try:
-            for x in options['profiles']:
-                if x is not None:
-                    response = chat_driver.channels.add_user(options['channel_id'], options={
-                        'user_id': x
+            for chat_id in chat_user_ids:
+                if chat_id is not None and chat_id is not '':
+                    response = chat_driver.channels.add_user(options['id'], options={
+                        'user_id': chat_id
                     })
         except ConnectionError as exc:
             logger.info(str(exc))
