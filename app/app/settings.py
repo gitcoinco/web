@@ -114,6 +114,7 @@ INSTALLED_APPS = [
     'impersonate',
     'grants',
     'kudos',
+    'mentor',
     'django.contrib.postgres',
     'bounty_requests',
     'perftools',

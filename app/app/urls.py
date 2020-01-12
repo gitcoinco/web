@@ -45,6 +45,7 @@ import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
+import mentor.views
 import perftools.views
 import quests.views
 import retail.emails
@@ -71,6 +72,11 @@ urlpatterns = [
 
     # board
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
+
+    # kudos
+    re_path(r'^mentor/?$', mentor.views.mentor_home, name='mentor_home'),
+    re_path(r'^mentor/new/?$', mentor.views.new_session, name='mentor_new'),
+    re_path(r'^mentor/session/(?P<session>\d+)??$', mentor.views.join_session, name='session_join'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
