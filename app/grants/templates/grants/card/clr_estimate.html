@@ -39,12 +39,12 @@
     </div>
   </div>
   {% if grant.last_clr_calc_date %}
-  <div class="row mx-1" style="font-size: 10px; font-style: #fafafa;">
-    <div class="float-right" style="text-align:right; width: 100%;">
-      Estimates last updated: {{grant.last_clr_calc_date | naturaltime}} 
-      <BR>
-      Next update: {{grant.next_clr_calc_date | naturaltime}}
+    <div class="row mx-0" style="font-size: 10px;">
+      <div class="w-100 text-center text-black-70 pb-1">
+        Next update : {{grant.next_clr_calc_date | naturaltime}}
+        <span class="mx-1">|</span>
+        Last updated : {{grant.last_clr_calc_date | naturaltime}}
+      </div>
     </div>
-  </div>
   {% endif %}
 </div>
