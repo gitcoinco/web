@@ -22,27 +22,24 @@ from django.conf import settings
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 
-from chat.tasks import get_driver
+from marketing.models import Stat
 
 
 def chat(request):
     """Render chat landing page response."""
 
     try:
-        chat_driver = get_driver()
+        users_online_count = Stat.objects.get(key='chat_active_users')
+        users_total_count = Stat.objects.get(key='chat_total_users')
 
-        chat_stats = chat_driver.teams.get_team_stats(settings.GITCOIN_CHAT_TEAM_ID)
-        if 'message' not in chat_stats:
-            users_online = chat_stats['active_member_count']
-        else:
-            users_online = 'N/A'
     except Exception as e:
-        print(str(e))
-        users_online = 'N/A'
+        users_online_count = 'N/A'
+        users_total_count = 'N/A'
     context = {
-        'users_online': users_online,
+        'users_online': users_online_count,
+        'users_count': users_total_count,
         'title': "Chat",
-        'cards_desc': f"Gitcoin chat has {users_online} users online now!"
+        'cards_desc': f"Gitcoin chat has {users_online_count} users online now!"
     }
 
     return TemplateResponse(request, 'chat.html', context)

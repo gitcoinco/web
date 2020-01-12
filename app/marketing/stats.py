@@ -93,13 +93,30 @@ def slack_users_active():
 
 def chat_users():
     from chat.tasks import get_driver
-    chat_driver = get_driver()
-    stats_request = chat_driver.users.stats()
-    if 'message' not in stats_request:
+    try:
+        chat_driver = get_driver()
+        stats_request = chat_driver.users.stats()
         Stat.objects.create(
-            key='total_users',
+            key='chat_total_users',
             val=stats_request['total_users_count'],
         )
+        hack_team_stats = chat_driver.teams.get_team_stats(
+            settings.GITCOIN_HACK_CHAT_TEAM_ID
+        )
+        core_team_stats = chat_driver.teams.get_team_stats(
+            settings.GITCOIN_CHAT_TEAM_ID
+        )
+
+        active_user_count = hack_team_stats['active_member_count'] = core_team_stats['active_member_count']
+
+        Stat.objects.create(
+            key='chat_active_users',
+            val=active_user_count,
+        )
+
+    except Exception as e:
+        logging.info(str(e))
+
 
 
 def profiles_ingested():
