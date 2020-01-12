@@ -125,9 +125,12 @@ def update_user(self, query_opts, update_opts, retry: bool = True) -> None:
         try:
 
             if query_opts['chat_id'] is None:
-                chat_user = chat_driver.users.get_user_by_username(query_opts['handle'])
-                if 'message' not in chat_user:
+                try:
+
+                    chat_user = chat_driver.users.get_user_by_username(query_opts['handle'])
                     chat_id = chat_user['id']
+                except Exception as e:
+                    logger.info(f"Unable to find chat user for {query_opts['handle']}")
             else:
                 chat_id = query_opts['chat_id']
 
