@@ -214,7 +214,7 @@ $(document).ready(function() {
             accounts[0]
           ).call().then(function(result) {
             if (result < realTokenAmount) {
-              _alert({ message: gettext('Your balance could not be verified')}, 'error');
+              _alert({ message: gettext('You do not have enough tokens to make this transaction.')}, 'error');
             } else {
               deployedToken.methods.approve(
                 approvalAddress,
