@@ -15,16 +15,18 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import logging
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from dashboard.models import Profile
-from chat.tasks import create_user
-import logging
+
 from celery import group
+from chat.tasks import create_user
+from dashboard.models import Profile
+from marketing.utils import should_suppress_notification_email
 
 logger = logging.getLogger(__name__)
 
-from marketing.utils import should_suppress_notification_email
 
 
 class Command(BaseCommand):

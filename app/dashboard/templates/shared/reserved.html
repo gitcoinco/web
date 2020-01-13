@@ -40,18 +40,20 @@
     </select>
   </div>
   <div id="invite-all-container" class="font-body my-2">
-    <b>Suggested Contributors: </b>
-    <button class="select2-add_byskill btn btn-gc-blue btn-sm rounded-sm">Invite based on skills: <span></span></button>
+    <b class="font-caption">Suggested Contributors</b>
+    <button class="select2-add_byskill font-smaller-4 btn btn-gc-blue btn-sm rounded-sm">
+      Invite based on skills : <span></span>
+    </button>
   </div>
   <div id="contributor-suggestion-container" class="font-body">
     {% if suggested_developers %}
-      <b>Suggested Contributors: </b>
-      <div id="contributor-suggestions">
+      <b class="font-caption">Suggested Contributors: </b>
+      <div id="contributor-suggestions" class="font-smaller-4">
         {% for contributor in suggested_developers %}
           <li class="select2-tag__choice p-1" data-id="{{ forloop.counter0 }}">
             <img src="/dynamic/avatar/{{ contributor.fulfiller_github_username }}" alt="" class="rounded-circle mx-2" width="20">
             <span class="text">{{ contributor.fulfiller_github_username }}</span>
-            <i class="fas fa-plus ml-2"></i>
+            <i class="fas fa-plus ml-2 font-smaller-4"></i>
           </li>
         {% endfor %}
       </div>

@@ -62,7 +62,9 @@ urlpatterns = [
     # oauth2 provider
     url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    url('^api/v1/bounty/create', dashboard.views.create_bounty, name='create_bounty'),
+    url('^api/v1/bounty/create', dashboard.views.create_bounty_v1, name='create_bounty_v1'),
+    url('^api/v1/bounty/cancel', dashboard.views.cancel_bounty_v1, name='cancel_bounty_v1'),
+    url('^api/v1/bounty/fulfill', dashboard.views.fulfill_bounty_v1, name='fulfill_bounty_v1'),
 
     # inbox
     re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
@@ -233,8 +235,6 @@ urlpatterns = [
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
     path('issue/refund_request', dashboard.views.refund_request, name='refund_request'),
     path('issue/cancel_reason', dashboard.views.cancel_reason, name='cancel_reason'),
-    path('issue/contribute', dashboard.views.contribute, name='contribute'),
-    path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
     path('modal/social_contribution', dashboard.views.social_contribution_modal, name='social_contribution_modal'),
     path(
         '<str:bounty_network>/<int:stdbounties_id>/modal/funder_payout_reminder/',
