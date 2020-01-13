@@ -53,7 +53,8 @@ $(document).ready(function() {
 
     var url = '/api/v0.1/emailsettings/';
     var params = {
-      'new_bounty_notifications': $(this).is(':checked')
+      'new_bounty_notifications': $(this).is(':checked'),
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
     };
 
     $.post(url, params, function(response) {

@@ -4,7 +4,6 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
-from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity
 from kudos.models import Token
@@ -113,7 +112,6 @@ def index(request):
 
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
-@csrf_exempt
 def emailsettings(request):
 
     if not request.user.is_authenticated:
@@ -134,7 +132,6 @@ def emailsettings(request):
 
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
-@csrf_exempt
 def api(request, activity_id):
 
     # pull back the obj

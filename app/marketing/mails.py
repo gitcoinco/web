@@ -44,6 +44,7 @@ from retail.emails import (
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
+from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
 
 logger = logging.getLogger(__name__)
 
@@ -788,8 +789,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
     worth = round(sum([bounty.value_in_usdt for bounty in bounties if bounty.value_in_usdt]), 2)
     worth = f" worth ${worth}" if worth else ""
     offers = f""
-    if to_emails and len(to_emails):
-        from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
+    if to_emails:
         offers = ""
 
         has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()

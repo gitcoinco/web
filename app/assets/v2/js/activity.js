@@ -93,7 +93,8 @@ $(document).ready(function() {
 
     // remote post
     var params = {
-      'method': 'delete'
+      'method': 'delete',
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
     };
     var url = '/api/v0.1/activity/' + $(this).data('pk');
 
@@ -131,7 +132,8 @@ $(document).ready(function() {
     // remote post
     var params = {
       'method': $(this).data('action'),
-      'direction': $(this).data('state')
+      'direction': $(this).data('state'),
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
     };
     var url = '/api/v0.1/activity/' + $(this).data('pk');
 
@@ -165,7 +167,8 @@ $(document).ready(function() {
     // remote post
     var params = {
       'method': 'comment',
-      'comment': comment
+      'comment': comment,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
     };
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 

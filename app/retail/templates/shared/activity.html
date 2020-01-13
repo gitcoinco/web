@@ -92,7 +92,6 @@
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'status_update' %}
-        {% trans "" %}
         <b>{{ row.metadata.title }}</b>
       {% elif row.activity_type == 'leaderboard_rank' %}
         <a href="{{ row.metadata.link }}">{{ row.metadata.title }}</a>

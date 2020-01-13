@@ -39,6 +39,7 @@ from django.db.models import Count, F, Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
+from django.template.loader import render_to_string
 from django.templatetags.static import static
 from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
@@ -50,6 +51,7 @@ import pytz
 import requests
 from app.utils import get_upload_filename
 from bleach import clean
+from bs4 import BeautifulSoup
 from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -2035,8 +2037,6 @@ class Activity(SuperModel):
 
     @property
     def text(self):
-        from django.template.loader import render_to_string
-        from bs4 import BeautifulSoup
         params = {
             'row': self,
             'hide_date': True,

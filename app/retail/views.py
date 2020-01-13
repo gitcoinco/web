@@ -36,7 +36,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Bounty, Profile
+from dashboard.models import Activity, Bounty, Profile, get_my_earnings
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
@@ -46,6 +46,7 @@ from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
+from townsquare.tasks import increment_view_counts
 
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
@@ -1097,7 +1098,6 @@ def activity(request):
     if request.user.is_authenticated:
         relevant_profiles = []
         if what == 'tribes':
-            from dashboard.models import get_my_earnings
             relevant_profiles = get_my_earnings(request.user.profile.pk)
         if 'keyword-' in what:
             keyword = what.split('-')[1]
@@ -1122,7 +1122,6 @@ def activity(request):
     # increment view counts
     activities_pks = [obj.pk for obj in p.page(page)]
     if len(activities_pks):
-        from townsquare.tasks import increment_view_counts
         increment_view_counts.delay(activities_pks)
 
     next_page = page + 1
