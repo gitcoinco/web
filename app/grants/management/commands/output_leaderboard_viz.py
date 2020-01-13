@@ -28,12 +28,14 @@ graph_type = 'scatter'
 opposing_axis = 'counts'
 opposing_axis = 'clr'
 
-start_date = timezone.datetime(2019, 9, 16)
+start_date = timezone.datetime(2020, 1, 6)
+end_date = timezone.datetime(2020, 1, 13)
+grant_type = 'media'
+
 #skip_until_start_date = timezone.datetime(2019, 9, 30)
-output_extra_frames_at_date = timezone.datetime(2019, 10, 1) #useful because after 10/1 we didnt have the prod compute power to do more than 1 frame per 4 hours
+output_extra_frames_at_date = timezone.datetime(2020, 10, 1) #useful because after 10/1 we didnt have the prod compute power to do more than 1 frame per 4 hours
 num_output_extra_frames = 4
 skip_until_start_date = start_date
-end_date = timezone.datetime(2019, 10, 2)
 base_offset = 300
 y_axis_limit = 1005
 
