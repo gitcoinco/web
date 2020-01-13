@@ -948,8 +948,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "The action starts *Monday 1/6/2020*!"
-    new_kudos_pks = [7315, 7275, 6188]
+    subject = "To Take Back or Give Back?"
+    new_kudos_pks = [7335, 7323, 7339]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -971,17 +971,20 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-    Happy New Years :)  The Gitcoin team has been spending time with friends & family for the last two weeks, celebrating the end of the decade.
+As you may have heard, the <a href="https://hackathons.gitcoin.co/take-back-the-web">Take Back the Web</a> Virtual Hackathon kicked off yesterday. Check out the <a href="https://gitcoin.co/hackathon/take-back-the-web/">prize explorer</a> to see the bounties posted by Status, MetaMask, ETC Labs, Infura, Blockstack, Kickback, and Sablier. We also just released a new in-app <a href="https://chat.gitcoin.co/hackathons/">Gitcoin Chat</a> feature for this hackathon and beyond, so join the conversation!
 </p>
 <p>
-   Next week we're back in action + looking to start the new year off strong with over $200k in OSS Funding for our community.  The <a href="https://gitcoin.co/hackathon/take-back-the-web/?">Take Back the Web</a> Virtual Hackathon starts 1/6.  And so does <a href="https://gitcoin.co/blog/gitcoin-grants-2020/">Gitcoin Grants Round 4</a>.  Click <a href="https://gitcoin.co/hackathon/take-back-the-web/?">here</a> to checkout Take Back the Web, and click <a href="https://gitcoin.co/grants/">here</a> to checkout Gitcoin Grants.
+We are also now almost 5 days into <a href="https://gitcoin.co/blog/gitcoin-grants-2020/">Gitcoin Grants Round 4</a>, with over 838 contributions from 241 unique community members, worth $22297, after the first 3 days. Click <a href="https://gitcoin.co/grants/">here</a> to checkout the round 4 grants. It’s up to you to decide - are you going to help us take back the web, or help us give back grants to the community?
+</p>
+<p>
+Finally, we are exited to share <a href="https://web3.sustainoss.org/">Sustain Web3</a> has a <a href="https://twitter.com/gitcoin/status/1215427678465118208">new venue</a>: The EthDenver Sports Castle in Denver, alongside DAOFest. Now, all things DAOs and Web3 sustainability will be in one place on Feb 13th! We hope to see you there.
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Join us on todays Gitcoin Livestream to chat Web3 Business Models with Thibauld from Fairmint, Paul from Sablier, and more! <a href="https://gitcoin.co/livestream">Join at 2pm ET</a>.
+            Join us on today's Gitcoin Livestream to hear from the Take Back The Web sponsors mentioned above discuss their projects, bounties, and how they are giving power back to the end users on the internet. <a href="https://gitcoin.co/livestream">Join at 2pm ET</a>.
         </li>
     </ul>
 </p>
@@ -992,20 +995,20 @@ Back to BUIDLing,
     highlights = [{
         'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Removed Civic from the MyBit application',
-        'link': 'https://gitcoin.co/issue/MyBitFoundation/MyBit-Go.app/515/3801',
+        'what': 'Enabled address privacy for Gitcoin Grant contributors',
+        'link': 'https://gitcoin.co/issue/gitcoinco/web/5654/3826',
         'link_copy': 'View more',
     }, {
-        'who': 'seichris',
+        'who': 'think-in-universe',
         'who_link': True,
-        'what': 'Re-Designed Mockup For Zero-Knowledge Assets',
-        'link': 'https://gitcoin.co/issue/invisible-college/democracy/36/3786',
+        'what': 'Translated articles to Chinese for Web3Foundation',
+        'link': 'https://gitcoin.co/issue/staketechnologies/Plasm/88/3790',
         'link_copy': 'View more',
     }, {
-        'who': 'mul1sh',
+        'who': 'man-jain',
         'who_link': True,
-        'what': 'Removed Cursor Drifts During Navigation on IOS',
-        'link': 'https://gitcoin.co/issue/cybersemics/em/4/3715',
+        'what': 'Created a Smart Contract That Creates A Uniswap Market For Pegged Token Upon Creation',
+        'link': 'https://gitcoin.co/issue/ProofSuite/OrFeedSmartContracts/26/3796',
         'link_copy': 'View more',
     }, ]
 
@@ -1022,11 +1025,11 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/gitcoinco/web/issues/5465',
-        'primer': 'Are you an illustrator?  Design a Gitcoin bot + earn some DAI!',
+        'url': 'https://github.com/blockstack/bounties/issues/2',
+        'primer': 'Provide A Way To Create An Invitation For Users That Have not Signed Up Yet (Blockstack)',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/4943',
-        'primer': 'Find an area where Gitcoins documentation is lacking + earn some ETH by fixing it',
+        'url': 'https://github.com/INFURA/hackathons/issues/3',
+        'primer': 'Infura Ethereum API Optimization',
     }, ]
 
 

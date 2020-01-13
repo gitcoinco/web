@@ -411,10 +411,6 @@ const gitcoinUpdates = (force) => {
   });
 };
 
-if (document.contxt.github_handle) {
-  gitcoinUpdates();
-}
-
 if (document.contxt.chat_unread_messages) {
   $('#chat-notification-dot').addClass('notification__dot__active');
 }

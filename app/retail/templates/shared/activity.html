@@ -25,8 +25,8 @@
       {% endif %}
     </div>
   </div>
-  <div class="col-12 col-md-10 activity-info my-auto {% if row.secondary_avatar_url %} position-relative {% endif %}">
-    <div class="activity-status font-body mb-1">
+  <div class="col-12 col-md-10 activity-info my-auto {% if row.secondary_avatar_url %}position-relative{% endif %}">
+    <div class="activity-status font-body">
       <a href="https://gitcoin.co/profile/{{ row.profile.handle }}" target="_blank">
         @{{ row.profile.handle }}
       </a>
@@ -64,7 +64,7 @@
           </a>
         {% endif %}
       {% elif row.activity_type == 'new_grant' %}
-        {% trans "created" %}
+        {% trans "created a new grant" %}
         <a href="{{ row.metadata.grant_url }}" target="_blank">
           {{ row.metadata.title }}
         </a>
@@ -138,7 +138,7 @@
     </div>
     <div class="font-caption" >
       <div class="activity-tags activity-tag-first align-items-center">
-        {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token %}
+        {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
           <div class="tag token">
             <p>
               {% if row.value_in_token_disp %}
@@ -188,7 +188,7 @@
       </div>
       <div class="comment_container">
       </div>
-    </div>
+      </div>
   </div>
   <div class="col-12 col-md-1 text-center my-auto">
     {% if row.profile.handle == github_handle %}

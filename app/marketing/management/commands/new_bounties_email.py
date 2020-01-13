@@ -30,14 +30,18 @@ from townsquare.utils import is_email_townsquare_enabled
 def get_bounties_for_keywords(keywords, hours_back):
     new_bounties_pks = []
     all_bounties_pks = []
+
+    new_bounty_cutoff = (timezone.now() - timezone.timedelta(hours=hours_back))
+    all_bounty_cutoff = (timezone.now() - timezone.timedelta(days=60))
+
     for keyword in keywords:
         relevant_bounties = Bounty.objects.current().filter(
             network='mainnet',
             idx_status__in=['open'],
         ).keyword(keyword).exclude(bounty_reserved_for_user__isnull=False)
-        for bounty in relevant_bounties.filter(web3_created__gt=(timezone.now() - timezone.timedelta(hours=hours_back))):
+        for bounty in relevant_bounties.filter(web3_created__gt=new_bounty_cutoff):
             new_bounties_pks.append(bounty.pk)
-        for bounty in relevant_bounties:
+        for bounty in relevant_bounties.filter(web3_created__gt=all_bounty_cutoff):
             all_bounties_pks.append(bounty.pk)
     new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks).order_by('-_val_usd_db')
     all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('-_val_usd_db')
