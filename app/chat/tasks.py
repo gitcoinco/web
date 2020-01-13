@@ -66,26 +66,25 @@ def create_channel(self, options, retry: bool = True) -> None:
 
 
 @app.shared_task(bind=True, max_retries=3)
-def add_to_channel(self, options, chat_user_ids, retry: bool = True) -> None:
+def add_to_channel(self, channel_details, chat_user_ids, retry: bool = True) -> None:
     """
-    :param options:
+    :param channel_details:
     :param retry:
     :return:
     """
-    with redis.lock("tasks:add_to_channel:%s" % options['id'], timeout=LOCK_TIMEOUT):
-        chat_driver.login()
-        try:
-            for chat_id in chat_user_ids:
-                if chat_id is not None and chat_id is not '':
-                    response = chat_driver.channels.add_user(options['id'], options={
-                        'user_id': chat_id
-                    })
-        except ConnectionError as exc:
-            logger.info(str(exc))
-            logger.info("Retrying connection")
-            self.retry(30)
-        except Exception as e:
-            logger.error(str(e))
+    chat_driver.login()
+    try:
+        for chat_id in chat_user_ids:
+            if chat_id is not None and chat_id is not '':
+                response = chat_driver.channels.add_user(channel_details['id'], options={
+                    'user_id': chat_id
+                })
+    except ConnectionError as exc:
+        logger.info(str(exc))
+        logger.info("Retrying connection")
+        self.retry(30)
+    except Exception as e:
+        logger.error(str(e))
 
 
 @app.shared_task(bind=True, max_retries=1)

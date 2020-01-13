@@ -58,6 +58,7 @@ from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
 from cacheops import invalidate_obj
 from chat.tasks import add_to_channel, get_driver, create_channel, create_user
+from chat.utils import create_channel_if_not_exists, create_user_if_not_exists
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -362,123 +363,55 @@ def new_interest(request, bounty_id):
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
-        if bounty.event:
+        if bounty.event or True:
             try:
-                chat_driver = get_driver()
-
-                if bounty.chat_channel_id is None:
-                    bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
-                    bounty_channel_name = bounty_channel_name[:60]
+                if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
                     try:
-                        channel_lookup = chat_driver.channels.get_channel_by_name(settings.GITCOIN_HACK_CHAT_TEAM_ID, bounty_channel_name)
-                        bounty_channel_id = channel_lookup['id']
-                        bounty.chat_channel_id = bounty_channel_id
-                        bounty.save()
-                    except Exception as e:
-                        options = {
+                        bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
+                        created, channel_details = create_channel_if_not_exists({
                             'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
                             'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
                             'channel_name': bounty_channel_name[:60]
-                        }
-                        result = create_channel.apply_async(args=[options])
-                        bounty_channel_id_response = result.get()
-
-                        if 'message' in bounty_channel_id_response:
-                            raise ValueError(bounty_channel_id_response['message'])
-
-                        bounty.chat_channel_id = bounty_channel_id_response['id']
-                        bounty_channel_id = bounty_channel_id_response['id']
+                        })
+                        bounty_channel_id = channel_details['id']
+                        bounty.chat_channel_id = bounty_channel_id
                         bounty.save()
+                    except Exception as e:
+                        logger.error(str(e))
+                        raise ValueError(e)
                 else:
                     bounty_channel_id = bounty.chat_channel_id
 
                 funder_profile = Profile.objects.get(handle=bounty.bounty_owner_github_username)
 
                 if funder_profile is not None:
-                    if funder_profile.chat_id is None:
+                    if funder_profile.chat_id is '':
                         try:
-                            funder_lookup = chat_driver.users.get_users_by_username(funder_profile.handle)
-                            funder_profile.chat_id = funder_lookup['id']
+                            print("no funder id")
+                            created, funder_details_response = create_user_if_not_exists(funder_profile)
+                            funder_profile.chat_id = funder_details_response['id']
                             funder_profile.save()
                         except Exception as e:
-                            result = create_user.apply_async(
-                                args=[
-                                    {
-                                        "email": funder_profile.user.email,
-                                        "username": funder_profile.handle,
-                                        "first_name": funder_profile.user.first_name,
-                                        "last_name": funder_profile.user.last_name,
-                                        "nickname": funder_profile.handle,
-                                        "auth_data": f'{funder_profile.user.id}',
-                                        "auth_service": "gitcoin",
-                                        "locale": "en",
-                                        "props": {},
-                                        "notify_props": {
-                                            "email": "false",
-                                            "push": "mention",
-                                            "desktop": "all",
-                                            "desktop_sound": "true",
-                                            "mention_keys": f'{funder_profile.handle}, @{funder_profile.handle}',
-                                            "channel": "true",
-                                            "first_name": "false"
-                                        },
-                                    }, {
-                                        "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
-                                    }
-                                ]
-                            )
-                            funder_profile_chat_user_new = result.get()
-                            funder_profile.chat_id = funder_profile_chat_user_new['id']
-                            funder_profile.save()
+                            logger.error(str(e))
+                            raise ValueError(e)
 
-                    if profile.chat_id is None:
+                    if profile.chat_id is '':
 
                         try:
-                            profile_lookup = chat_driver.users.get_users_by_username(profile.handle)
-                            profile_lookup.chat_id = profile_lookup['id']
-                            profile_lookup.save()
-                        except Exception as e:
-                            result = create_user.apply_async(
-                                args=[
-                                    {
-                                        "email": profile.user.email,
-                                        "username": profile.handle,
-                                        "first_name": profile.user.first_name,
-                                        "last_name": profile.user.last_name,
-                                        "nickname": profile.handle,
-                                        "auth_data": f'{profile.user.id}',
-                                        "auth_service": "gitcoin",
-                                        "locale": "en",
-                                        "props": {},
-                                        "notify_props": {
-                                            "email": "false",
-                                            "push": "mention",
-                                            "desktop": "all",
-                                            "desktop_sound": "true",
-                                            "mention_keys": f'{profile.handle}, @{profile.handle}',
-                                            "channel": "true",
-                                            "first_name": "false"
-                                        },
-                                    },
-                                    {
-                                        "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
-                                    }
-                                ]
-                            )
-
-                            profile_interest_user = result.get()
-                            profile.chat_id = profile_interest_user['id']
+                            created, profile_lookup_response = create_user_if_not_exists(profile)
+                            profile.chat_id = profile_lookup_response['id']
                             profile.save()
+                        except Exception as e:
+                            logger.error(str(e))
+                            raise ValueError(e)
 
                     profiles_to_connect = [
                         funder_profile.chat_id,
                         profile.chat_id
                     ]
-
-                    add_to_channel.delay({
-                        'channel_id': bounty_channel_id,
-                        'profiles': profiles_to_connect
-                    })
+                    add_to_channel.delay(
+                        {'id': bounty_channel_id}, profiles_to_connect
+                    )
 
             except Exception as e:
                 print(str(e))
