@@ -44,7 +44,7 @@ ENV = env('ENV', default='local')
 DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test'])
 IS_DEBUG_ENV = ENV in DEBUG_ENVS
 HOSTNAME = env('HOSTNAME', default=socket.gethostname())
-BASE_URL = env('BASE_URL', default='https://dapp.ngrok.io/')
+BASE_URL = env('BASE_URL', default='http://localhost:8000')
 OVERRIDE_NETWORK = env('OVERRIDE_NETWORK', default=None)
 SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
 ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
