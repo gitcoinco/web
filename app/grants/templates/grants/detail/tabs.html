@@ -22,8 +22,8 @@
       {% trans "DESCRIPTION" %}
     </button>
 
-    <button type="button" id="nav-transactions" href="{{grant.url}}?tab=activity" class="section-tab {% if tab == "activity" %} active {% endif %}">
-      {% trans "ACTIVITY" %}
+    <button type="button" id="nav-transactions" href="{{grant.url}}?tab=transactions" class="section-tab {% if tab == "transactions" %} active {% endif %}">
+      {% trans "TRANSACTIONS" %}
       <span class="nav-badge">({{ activity_count }})</span>
     </button>
 
@@ -38,7 +38,7 @@
 
     <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">
       {% trans "CONTRIBUTORS" %}
-      <span class="nav-badge">({{ contributors|length }})</span>
+      <span class="nav-badge">({{ grant.contributor_count }})</span>
     </button>
 
   </div>
@@ -56,7 +56,7 @@
     </div>
     {% endif %}
 
-    {% if tab == "activity" %}
+    {% if tab == "transactions" %}
       <div id="section-nav-transactions">
         {% if not subscriptions and not cancelled_subscriptions and not contributions %}
           <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
