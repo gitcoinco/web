@@ -21,12 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.conf import settings
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
-<<<<<<< HEAD
 from marketing.models import Stat
-=======
-
-from chat.tasks import get_driver
->>>>>>> e4f3a69048893c1a98b1782edb735040f7610be5
 
 
 def chat(request):
