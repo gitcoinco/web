@@ -268,8 +268,8 @@ def get_platform_wide_stats(since_last_n_days=90):
     bounties = Bounty.objects.current().filter(network='mainnet', created_on__gte=last_n_days)
     bounties = bounties.exclude(interested__isnull=True)
     total_bounties = bounties.count()
-    completed_bounties = bounties.filter(idx_status__in=['done'])
-    terminal_state_bounties = bounties.filter(idx_status__in=['done', 'expired', 'cancelled'])
+    completed_bounties = bounties.filter(bounty_state__in=['done'])
+    terminal_state_bounties = bounties.filter(bounty_state__in=['done', 'expired', 'cancelled'])
     num_completed_bounties = completed_bounties.count()
     bounties_completion_percent = (num_completed_bounties / terminal_state_bounties.count()) * 100
 
@@ -290,8 +290,6 @@ def get_platform_wide_stats(since_last_n_days=90):
         created_on__gte=last_n_days).order_by('-_val_usd_db').first()
     largest_bounty_value = largest_bounty.value_in_usdt
 
-    bounty_fulfillments = BountyFulfillment.objects.filter(
-        accepted_on__gte=last_n_days).order_by('-bounty__value_in_token')[:5]
     num_items = 10
     hunters = LeaderboardRank.objects.active().filter(leaderboard='quarterly_earners').order_by('-amount')[0:num_items].values_list('github_username', flat=True)
 

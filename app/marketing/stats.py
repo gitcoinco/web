@@ -39,7 +39,7 @@ def gitter():
     Stat.objects.create(
         key='gitter_users',
         val=val,
-        )
+    )
 
 
 def google_analytics():
@@ -47,19 +47,17 @@ def google_analytics():
 
     view_id = '166793585'  # ethwallpaer
     val = run(view_id)
-    #print(val)
     Stat.objects.create(
         key='google_analytics_sessions_ethwallpaper',
         val=val,
-        )
+    )
 
     view_id = '154797887'  # gitcoin
     val = run(view_id)
-    #print(val)
     Stat.objects.create(
         key='google_analytics_sessions_gitcoin',
         val=val,
-        )
+    )
 
 
 def slack_users():
@@ -68,7 +66,7 @@ def slack_users():
     Stat.objects.create(
         key='slack_users',
         val=len(ul['members']),
-        )
+    )
 
 
 def slack_users_active():
@@ -83,12 +81,12 @@ def slack_users_active():
     Stat.objects.create(
         key='slack_users_active',
         val=num_active,
-        )
+    )
 
     Stat.objects.create(
         key='slack_users_away',
         val=num_away,
-        )
+    )
 
 
 def chat_users():
@@ -108,7 +106,7 @@ def profiles_ingested():
     Stat.objects.create(
         key='profiles_ingested',
         val=Profile.objects.count(),
-        )
+    )
 
 
 def faucet():
@@ -117,22 +115,22 @@ def faucet():
     Stat.objects.create(
         key='FaucetRequest',
         val=FaucetRequest.objects.count(),
-        )
+    )
 
     Stat.objects.create(
         key='FaucetRequest_rejected',
         val=FaucetRequest.objects.filter(rejected=True).count(),
-        )
+    )
 
     Stat.objects.create(
         key='FaucetRequest_fulfilled',
         val=FaucetRequest.objects.filter(fulfilled=True).count(),
-        )
+    )
 
     Stat.objects.create(
         key='FaucetRequest_pending',
         val=FaucetRequest.objects.filter(fulfilled=False, rejected=False).count(),
-        )
+    )
 
 
 def user_actions():
@@ -159,14 +157,14 @@ def github_stars():
     Stat.objects.create(
         key='github_forks_count',
         val=forks_count,
-        )
+    )
 
     stargazers_count = sum([repo['stargazers_count'] for repo in reops])
 
     Stat.objects.create(
         key='github_stargazers_count',
         val=stargazers_count,
-        )
+    )
 
 
 def github_issues():
@@ -196,12 +194,11 @@ def github_issues():
                 created_on=timezone.now(),
                 key=key,
                 val=(val),
-                )
+            )
         except Exception:
             pass
         if not val:
             break
-        #print(key, val)
 
 
 def chrome_ext_users():
@@ -217,7 +214,7 @@ def chrome_ext_users():
     Stat.objects.create(
         key='browser_ext_chrome',
         val=num_users,
-        )
+    )
 
 
 def firefox_ext_users():
@@ -232,7 +229,7 @@ def firefox_ext_users():
     Stat.objects.create(
         key='browser_ext_firefox',
         val=num_users,
-        )
+    )
 
 
 def medium_subscribers():
@@ -247,7 +244,7 @@ def medium_subscribers():
     Stat.objects.create(
         key='medium_subscribers',
         val=num_users,
-        )
+    )
 
 
 def twitter_followers():
@@ -266,7 +263,7 @@ def twitter_followers():
     Stat.objects.create(
         key='twitter_followers',
         val=(user.followers_count),
-        )
+    )
 
     for username in ['owocki', 'gitcoinfeed']:
         user = api.GetUser(screen_name=username)
@@ -274,7 +271,7 @@ def twitter_followers():
         Stat.objects.create(
             key='twitter_followers_{}'.format(username),
             val=(user.followers_count),
-            )
+        )
 
 
 def bounties():
@@ -283,7 +280,7 @@ def bounties():
     Stat.objects.create(
         key='bounties',
         val=(Bounty.objects.current().filter(network='mainnet').count()),
-        )
+    )
 
 
 def grants():
@@ -298,7 +295,7 @@ def grants():
     Stat.objects.create(
         key='grants',
         val=val,
-        )
+    )
 
 
 def bounties_hourly_rate():
@@ -324,7 +321,7 @@ def bounties_hourly_rate():
                 created_on=that_time,
                 key=key,
                 val=(val),
-                )
+            )
         except Exception:
             pass
 
@@ -333,7 +330,7 @@ def bounties_by_status_and_keyword(created_before=timezone.now()):
     from dashboard.models import Bounty
     from retail.utils import programming_languages
     keywords = [''] + programming_languages
-    statuses = Bounty.objects.distinct('idx_status').values_list('idx_status', flat=True)
+    statuses = Bounty.objects.distinct('bounty_state').values_list('bounty_state', flat=True)
     days_back = 9999
     created_after = created_before - timezone.timedelta(days=days_back)
     for status in statuses:
@@ -341,7 +338,7 @@ def bounties_by_status_and_keyword(created_before=timezone.now()):
             eligible_bounties = Bounty.objects.current().filter(network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
             if keyword:
                 eligible_bounties = eligible_bounties.filter(raw_data__icontains=keyword)
-            numerator_bounties = eligible_bounties.filter(idx_status=status)
+            numerator_bounties = eligible_bounties.filter(bounty_state=status)
             val = int(100 * (numerator_bounties.count()) / (eligible_bounties.count()))
             val_rev = sum(numerator_bounties.values_list('_val_usd_db', flat=True))
 
@@ -359,7 +356,7 @@ def bounties_by_status_and_keyword(created_before=timezone.now()):
                     created_on=created_before,
                     key=stat[0],
                     val=stat[1],
-                    )
+                )
 
 
 def joe_dominance_index(created_before=timezone.now()):
@@ -406,7 +403,7 @@ def joe_dominance_index(created_before=timezone.now()):
                     created_on=created_before,
                     key=stat[0],
                     val=stat[1],
-                    )
+                )
 
 def avg_time_bounty_turnaround():
     import statistics
@@ -415,7 +412,7 @@ def avg_time_bounty_turnaround():
     for days in [7, 30, 90, 360]:
         all_bounties = Bounty.objects.current().filter(
             network='mainnet',
-            idx_status='done',
+            bounty_state='done',
             web3_created__gt=(timezone.now() - timezone.timedelta(days=days))
         )
         if not all_bounties.count():
@@ -451,8 +448,8 @@ def bounties_open():
 
     Stat.objects.create(
         key='bounties_open',
-        val=(Bounty.objects.current().filter(network='mainnet', idx_status='open').count()),
-        )
+        val=(Bounty.objects.current().filter(network='mainnet', bounty_state='open').count()),
+    )
 
 
 def bounties_fulfilled():
@@ -460,8 +457,8 @@ def bounties_fulfilled():
 
     Stat.objects.create(
         key='bounties_fulfilled',
-        val=(Bounty.objects.current().filter(network='mainnet', idx_status='done').count()),
-        )
+        val=(Bounty.objects.current().filter(network='mainnet', bounty_state='done').count()),
+    )
 
 
 def ens():
@@ -470,7 +467,7 @@ def ens():
     Stat.objects.create(
         key='ens_subdomains',
         val=(ENSSubdomainRegistration.objects.count()),
-        )
+    )
 
 
 def sendcryptoassets():
@@ -498,7 +495,7 @@ def sendcryptoassets():
             Stat.objects.create(
                 key=stat[0],
                 val=stat[1],
-                )
+            )
 
 
 def tips_received():
@@ -507,7 +504,7 @@ def tips_received():
     Stat.objects.create(
         key='tips_received',
         val=(Tip.objects.filter(network='mainnet').send_success().receive_success().count()),
-        )
+    )
 
 
 def subs():
@@ -516,7 +513,7 @@ def subs():
     Stat.objects.create(
         key='email_subscriberse',
         val=(EmailSubscriber.objects.count()),
-        )
+    )
 
 
 def subs_active():
@@ -538,7 +535,7 @@ def subs_active():
         Stat.objects.create(
             key=f'email_subscribers_active_{key}',
             val=val,
-            )
+        )
         print(key, val, unsubs)
 
 
@@ -549,7 +546,7 @@ def whitepaper_access():
     Stat.objects.create(
         key='whitepaper_access',
         val=(WhitepaperAccess.objects.count()),
-        )
+    )
 
 
 def whitepaper_access_request():
@@ -558,7 +555,7 @@ def whitepaper_access_request():
     Stat.objects.create(
         key='whitepaper_access_request',
         val=(WhitepaperAccessRequest.objects.count()),
-        )
+    )
 
 
 def get_skills_keyword_counts():
@@ -575,7 +572,7 @@ def get_skills_keyword_counts():
         Stat.objects.create(
             key=f"subscribers_with_skill_{keyword}",
             val=(val),
-            )
+        )
 
 
 def get_bounty_keyword_counts():
@@ -593,7 +590,7 @@ def get_bounty_keyword_counts():
             Stat.objects.create(
                 key=f"bounties_with_skill_{keyword}",
                 val=(val),
-                )
+            )
         except:
             pass
 
@@ -607,4 +604,4 @@ def email_events():
         Stat.objects.create(
             key='email_{}'.format(event),
             val=(val),
-            )
+        )

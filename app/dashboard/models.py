@@ -3004,7 +3004,9 @@ class Profile(SuperModel):
         """
         network = self.get_network()
         return self.bounties.filter(
-            idx_status__in=['done'], network=network).count()
+            bounty_state__in=['done'],
+            network=network
+        ).count()
 
 
     @property

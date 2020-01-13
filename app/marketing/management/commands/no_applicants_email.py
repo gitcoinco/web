@@ -40,9 +40,9 @@ class Command(BaseCommand):
         end_time_7_days = timezone.now() - timezone.timedelta(hours=24 * 8)
         bounties = Bounty.objects.current().filter(
             (Q(created_on__range=[end_time_3_days, start_time_3_days]) | Q(created_on__range=[end_time_7_days, start_time_7_days])),
-            idx_status='open',
+            bounty_state='open',
             network='mainnet'
-            )
+        )
 
         for bounty in [b for b in bounties if b.no_of_applicants == 0]:
             no_applicant_reminder(bounty.bounty_owner_email, bounty)

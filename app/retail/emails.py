@@ -1181,7 +1181,7 @@ def new_bounty(request):
 @staff_member_required
 def new_work_submission(request):
     from dashboard.models import Bounty
-    bounty = Bounty.objects.current().filter(idx_status='submitted').last()
+    bounty = Bounty.objects.current().filter(bounty_state='work_submitted').last()
     response_html, _ = render_new_work_submission(settings.CONTACT_EMAIL, bounty)
     return HttpResponse(response_html)
 
@@ -1203,7 +1203,7 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
+    response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(bounty_state='done').last(), 'foo')
     return HttpResponse(response_html)
 
 
@@ -1238,7 +1238,7 @@ def no_applicant_reminder(request):
     """
     from dashboard.models import Bounty
     bounty = Bounty.objects.filter(
-        idx_status='open', current_bounty=True, interested__isnull=True
+        bounty_state='open', current_bounty=True, interested__isnull=True
     ).first()
     response_html, _ = render_no_applicant_reminder(bounty=bounty)
     return HttpResponse(response_html)

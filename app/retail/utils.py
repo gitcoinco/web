@@ -230,13 +230,13 @@ def get_history(base_stats, copy, num_months=6):
 
 def get_completion_rate(keyword):
     from dashboard.models import Bounty
-    base_bounties = Bounty.objects.current().filter(network='mainnet', idx_status__in=['done', 'expired', 'cancelled'])
+    base_bounties = Bounty.objects.current().filter(network='mainnet', bounty_state__in=['done', 'expired', 'cancelled'])
     if keyword:
         base_bounties = base_bounties.filter(raw_data__icontains=keyword)
     eligible_bounties = base_bounties.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=60)))
     eligible_bounties = eligible_bounties.exclude(interested__isnull=True)
-    completed_bounties = eligible_bounties.filter(idx_status__in=['done']).count()
-    not_completed_bounties = eligible_bounties.filter(idx_status__in=['expired', 'cancelled']).count()
+    completed_bounties = eligible_bounties.filter(bounty_state__in=['done']).count()
+    not_completed_bounties = eligible_bounties.filter(bounty_state__in=['expired', 'cancelled']).count()
     total_bounties = completed_bounties + not_completed_bounties
 
     try:
@@ -268,7 +268,10 @@ def get_funder_receiver_stats(keyword):
 
 def get_base_done_bounties(keyword):
     from dashboard.models import Bounty
-    base_bounties = Bounty.objects.current().filter(network='mainnet', idx_status__in=['done', 'expired', 'cancelled'])
+    base_bounties = Bounty.objects.current().filter(
+        network='mainnet',
+        bounty_state__in=['done', 'expired', 'cancelled']
+    )
     if keyword:
         base_bounties = base_bounties.filter(raw_data__icontains=keyword)
     return base_bounties
@@ -329,7 +332,7 @@ def get_hourly_rate_distribution(keyword, bounty_value_range=None, methodology=N
 
 def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=None):
     base_bounties = get_base_done_bounties(keyword)
-    eligible_bounties = base_bounties.exclude(idx_status='open') \
+    eligible_bounties = base_bounties.exclude(bounty_state='open') \
         .filter(created_on__gt=(timezone.now() - timezone.timedelta(days=60)))
     pickup_time_hours = []
     for bounty in eligible_bounties:
@@ -496,7 +499,7 @@ def build_stat_results(keyword=None):
     context['audience'] = json.loads(context['members_history'])[-1][1]
     pp.profile_time('completion_rate')
     bounty_abandonment_rate = round(100 - completion_rate, 1)
-    total_bounties_usd = sum(base_bounties.exclude(idx_status__in=['expired', 'cancelled', 'canceled', 'unknown']).values_list('_val_usd_db', flat=True))
+    total_bounties_usd = sum(base_bounties.exclude(bounty_state__in=['expired', 'cancelled']).values_list('_val_usd_db', flat=True))
     total_tips_usd = sum([
         tip.value_in_usdt
         for tip in Tip.objects.filter(network='mainnet').send_happy_path() if tip.value_in_usdt

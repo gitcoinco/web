@@ -144,7 +144,7 @@ def viz_chord(request, key='bounties_paid'):
     if request.GET.get('data'):
         rows = [['creditor', 'debtor', 'amount', 'risk']]
         network = 'mainnet'
-        for bounty in Bounty.objects.current().filter(network=network, web3_type='bounties_network', idx_status='done'):
+        for bounty in Bounty.objects.current().filter(network=network, web3_type='bounties_network', bounty_state='done'):
             weight = bounty.value_in_usdt_then
             if weight:
                 for fulfillment in bounty.fulfillments.filter(accepted=True):
@@ -177,14 +177,14 @@ def viz_steamgraph(request, key='open'):
         TemplateResponse: The populated steamgraph data visualization template.
 
     """
-    type_options = Bounty.objects.all().distinct('idx_status').values_list('idx_status', flat=True)
+    type_options = Bounty.objects.all().distinct('bounty_state').values_list('bounty_state', flat=True)
     if key not in type_options:
         key = type_options[0]
 
     if request.GET.get('data'):
         rows = [['key', 'value', 'date']]
         network = 'mainnet'
-        bounties = Bounty.objects.filter(network=network, web3_type='bounties_network', idx_status=key)
+        bounties = Bounty.objects.filter(network=network, web3_type='bounties_network', bounty_state=key)
         org_names = set([bounty.org_name for bounty in bounties])
         #start_date = bounties.order_by('web3_created').first().web3_created
         start_date = timezone.now() - timezone.timedelta(days=30)
@@ -383,7 +383,7 @@ def viz_sunburst(request, visual_type, template='sunburst'):
     if visual_type == 'status_progression':
         title = "Status Progression Viz"
         comment = 'of statuses begin with this sequence of status'
-        categories = list(Bounty.objects.distinct('idx_status').values_list('idx_status', flat=True)) + ['_']
+        categories = list(Bounty.objects.distinct('bounty_state').values_list('bounty_state', flat=True)) + ['_']
     elif visual_type == 'repos':
         title = "Github Structure of All Bounties"
         comment = 'of bounties value with this github structure'

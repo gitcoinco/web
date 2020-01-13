@@ -30,7 +30,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         bounties = Bounty.objects.current().filter(
             network='mainnet',
-            idx_status='open')
+            bounty_state='open'
+        )
         if bounties.count() < 3:
             print('count is only {}. exiting'.format(bounties.count()))
             return

@@ -112,7 +112,7 @@ def embed(request):
                 .filter(
                     github_url__startswith=repo_url,
                     network='mainnet',
-                    idx_status__in=['open']
+                    bounty_state__in=['open']
                 )
 
             tmpl = loader.get_template('svg_badge.txt')
@@ -163,7 +163,7 @@ def embed(request):
             .filter(
                 github_url__startswith=repo_url,
                 network='mainnet',
-                idx_status__in=['open', 'started', 'submitted']
+                bounty_state__in=['open', 'work_started', 'work_submitted']
             ).order_by('-_val_usd_db')
         bounties = super_bounties[:length]
 

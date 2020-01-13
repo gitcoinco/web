@@ -34,19 +34,19 @@ class Command(BaseCommand):
 
         start_time = timezone.now() - timezone.timedelta(hours=36)
         end_time = timezone.now() - timezone.timedelta(hours=12)
-        statues = ['done', 'cancelled']
+        states = ['done', 'cancelled']
         bounties_fulfilled_last_timeperiod = Bounty.objects.current().filter(
             network='mainnet',
             fulfillment_accepted_on__gt=start_time,
             fulfillment_accepted_on__lt=end_time,
-            idx_status='done'
-            ).values_list('pk', flat=True)
+            bounty_state='done'
+        ).values_list('pk', flat=True)
         bounties_cancelled_last_timeperiod = Bounty.objects.current().filter(
             network='mainnet',
             canceled_on__gt=start_time,
             canceled_on__lt=end_time,
-            idx_status='cancelled'
-            ).values_list('pk', flat=True)
+            bounty_state='cancelled'
+        ).values_list('pk', flat=True)
         bounty_pks = list(bounties_cancelled_last_timeperiod) + list(bounties_fulfilled_last_timeperiod)
         bounties_to_process = Bounty.objects.filter(pk__in=bounty_pks)
         print(bounties_to_process.count())
@@ -63,13 +63,13 @@ class Command(BaseCommand):
                 fulfiller_email = accepted_fulfillment.fulfiller_email
                 is_fulfiller_and_funder_same_person = (fulfiller_email == submitter_email)
                 fulfillment_pks = BountyFulfillment.objects.filter(accepted=True, fulfiller_email=fulfiller_email).values_list('pk', flat=True)
-                previous_bounties = Bounty.objects.current().filter(idx_status__in=statues, fulfillments__pk__in=fulfillment_pks).exclude(pk=bounty.pk).distinct()
+                previous_bounties = Bounty.objects.current().filter(bounty_state__in=states, fulfillments__pk__in=fulfillment_pks).exclude(pk=bounty.pk).distinct()
                 has_been_sent_before_to_persona = previous_bounties.count()
                 if not has_been_sent_before_to_persona and not is_fulfiller_and_funder_same_person:
                     bounty_feedback(bounty, 'fulfiller', previous_bounties)
 
             # send email to the funder
-            previous_bounties = Bounty.objects.filter(idx_status__in=statues, bounty_owner_email=submitter_email, current_bounty=True).exclude(pk=bounty.pk).distinct()
+            previous_bounties = Bounty.objects.filter(bounty_state__in=states, bounty_owner_email=submitter_email, current_bounty=True).exclude(pk=bounty.pk).distinct()
             has_been_sent_before_to_persona = previous_bounties.count()
             if not has_been_sent_before_to_persona and not is_fulfiller_and_funder_same_person:
                 bounty_feedback(bounty, 'funder', previous_bounties)

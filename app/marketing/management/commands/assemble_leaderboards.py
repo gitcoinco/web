@@ -257,7 +257,7 @@ def sum_bounty_helper(b, time, index_term, val_usd):
 def sum_bounties(b, index_terms):
     val_usd = b._val_usd_db
     for index_term in index_terms:
-        if b.idx_status == 'done':
+        if b.bounty_state == 'done':
             sum_bounty_helper(b, ALL, index_term, val_usd)
             if b.created_on > WEEKLY_CUTOFF:
                 sum_bounty_helper(b, WEEKLY, index_term, val_usd)

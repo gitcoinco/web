@@ -1171,7 +1171,7 @@ def get_user_bounties(request):
     else:
         is_funder = False
 
-    open_bounties = all_bounties.exclude(idx_status='cancelled').exclude(idx_status='done')
+    open_bounties = all_bounties.exclude(bounty_state='cancelled').exclude(bounty_state='done')
     for bounty in open_bounties:
         bounty_json = {}
         bounty_json = bounty.to_standard_dict()

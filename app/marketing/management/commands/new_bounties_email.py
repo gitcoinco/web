@@ -32,7 +32,7 @@ def get_bounties_for_keywords(keywords, hours_back):
     for keyword in keywords:
         relevant_bounties = Bounty.objects.current().filter(
             network='mainnet',
-            idx_status__in=['open'],
+            bounty_state__in=['open'],
         ).keyword(keyword).exclude(bounty_reserved_for_user__isnull=False)
         for bounty in relevant_bounties.filter(web3_created__gt=(timezone.now() - timezone.timedelta(hours=hours_back))):
             new_bounties_pks.append(bounty.pk)

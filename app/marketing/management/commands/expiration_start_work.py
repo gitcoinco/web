@@ -77,7 +77,7 @@ class Command(BaseCommand):
                         interested=interest,
                         project_type='traditional',
                         network='mainnet',
-                        idx_status__in=['open', 'started'],
+                        bounty_state__in=['open', 'work_started'],
                         permission_type='approval',
                     )
                 else:
@@ -86,7 +86,7 @@ class Command(BaseCommand):
                         interested=interest,
                         project_type='traditional',
                         network='mainnet',
-                        idx_status__in=['open', 'started'],
+                        bounty_state__in=['open', 'work_started'],
                         permission_type='permissionless',
                     )
 

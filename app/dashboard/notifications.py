@@ -716,7 +716,7 @@ def open_bounties():
 
     """
     from dashboard.models import Bounty
-    return Bounty.objects.current().filter(network='mainnet', idx_status__in=['open', 'submitted']).cache()
+    return Bounty.objects.current().filter(network='mainnet', bounty_state__in=['open', 'work_submitted']).cache()
 
 
 def maybe_market_tip_to_github(tip):
