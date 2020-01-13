@@ -38,9 +38,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             bounties_to_sync = Bounty.objects.filter(
-                Q(event_id=options['event_id']), Q(chat_channel_id__isnull=True) | Q(chat_channel_id__exact='')
+                Q(event__pk=options['event_id']), Q(chat_channel_id__isnull=True) | Q(chat_channel_id__exact='')
             )
-
             tasks = []
             if len(bounties_to_sync) > 0:
                 for bounty in bounties_to_sync:
