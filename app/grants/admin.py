@@ -189,7 +189,7 @@ class ContributionAdmin(GeneralAdmin):
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
 
     def profile(self, obj):
-        return format_html(f"<a href='{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
+        return format_html(f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
 
     def token(self, obj):
         return obj.subscription.token_symbol
@@ -200,7 +200,7 @@ class ContributionAdmin(GeneralAdmin):
     def github_created_on(self, instance):
         from django.contrib.humanize.templatetags.humanize import naturaltime
         return naturaltime(instance.subscription.contributor_profile.github_created_on)
-        
+
 
 
 admin.site.register(PhantomFunding, GeneralAdmin)
