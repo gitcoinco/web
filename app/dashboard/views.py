@@ -362,7 +362,7 @@ def new_interest(request, bounty_id):
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
-        if bounty.event or True:
+        if bounty.event:
             try:
                 if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
                     try:
@@ -386,7 +386,6 @@ def new_interest(request, bounty_id):
                 if funder_profile is not None:
                     if funder_profile.chat_id is '':
                         try:
-                            print("no funder id")
                             created, funder_details_response = create_user_if_not_exists(funder_profile)
                             funder_profile.chat_id = funder_details_response['id']
                             funder_profile.save()
