@@ -1,7 +1,7 @@
 from app.redis_service import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
-from dashboard.models import Profile
+from dashboard.models import Bounty, Profile
 from django.conf import settings
 
 from mattermostdriver import Driver
@@ -32,7 +32,7 @@ def get_driver():
 
 
 @app.shared_task(bind=True, max_retries=3)
-def create_channel(self, options, retry: bool = True) -> None:
+def create_channel(self, options, bounty_id, retry: bool = True) -> None:
     """
     :param options:
     :param retry:
@@ -46,6 +46,10 @@ def create_channel(self, options, retry: bool = True) -> None:
                 options['team_id'],
                 options['channel_name']
             )
+            if bounty_id:
+                active_bounty = Bounty.objects.get(id=bounty_id)
+                active_bounty.chat_channel_id = channel_lookup['id']
+                active_bounty.save()
             return channel_lookup
         except ResourceNotFound as RNF:
             new_channel = chat_driver.channels.create_channel(options={
@@ -54,7 +58,10 @@ def create_channel(self, options, retry: bool = True) -> None:
                 'display_name': options['channel_display_name'],
                 'type': 'O'
             })
-
+            if bounty_id:
+                active_bounty = Bounty.objects.get(id=bounty_id)
+                active_bounty.chat_channel_id = new_channel['id']
+                active_bounty.save()
             return new_channel
         except ConnectionError as exc:
             logger.info(str(exc))
