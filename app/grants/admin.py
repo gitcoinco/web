@@ -49,7 +49,7 @@ class GrantAdmin(GeneralAdmin):
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
-        'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type'
+        'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
@@ -181,7 +181,7 @@ kevin (team gitcoin)
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
-    list_display = ['id', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
+    list_display = ['id', 'github_created_on', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
@@ -189,13 +189,18 @@ class ContributionAdmin(GeneralAdmin):
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
 
     def profile(self, obj):
-        return obj.subscription.contributor_profile
+        return format_html(f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
 
     def token(self, obj):
         return obj.subscription.token_symbol
 
     def amount(self, obj):
         return obj.subscription.amount_per_period
+
+    def github_created_on(self, instance):
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        return naturaltime(instance.subscription.contributor_profile.github_created_on)
+
 
 
 admin.site.register(PhantomFunding, GeneralAdmin)

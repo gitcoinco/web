@@ -57,7 +57,6 @@ from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
 from cacheops import invalidate_obj
 from chat.utils import create_channel_if_not_exists, create_user_if_not_exists
-
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,

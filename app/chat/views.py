@@ -23,14 +23,12 @@ from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from marketing.models import Stat
 
-
 def chat(request):
     """Render chat landing page response."""
 
     try:
         users_online_count = Stat.objects.get(key='chat_active_users')
         users_total_count = Stat.objects.get(key='chat_total_users')
-
     except Exception as e:
         users_online_count = 'N/A'
         users_total_count = 'N/A'
