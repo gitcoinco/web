@@ -545,11 +545,11 @@ GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
 # Chat
-CHAT_PORT = env('CHAT_PORT', default=443)  # port of where mattermost is hosted
-CHAT_URL = env('CHAT_URL', default='0x.ngrok.io')  # location of where mattermost is hosted
-CHAT_DRIVER_TOKEN = env('CHAT_DRIVER_TOKEN', default='6uga1ofwrtyc7bc8skgbn63owy')  # driver token
-GITCOIN_HACK_CHAT_TEAM_ID = env('GITCOIN_HACK_CHAT_TEAM_ID', default='idnnj9xm6jdetrs4dep3p9ebjo')
-GITCOIN_CHAT_TEAM_ID = env('GITCOIN_CHAT_TEAM_ID', default='idnnj9xm6jdetrs4dep3p9ebjo')
+CHAT_PORT = env('CHAT_PORT', default=8065)  # port of where mattermost is hosted
+CHAT_URL = env('CHAT_URL', default='localhost')  # location of where mattermost is hosted
+CHAT_DRIVER_TOKEN = env('CHAT_DRIVER_TOKEN', default='')  # driver token
+GITCOIN_HACK_CHAT_TEAM_ID = env('GITCOIN_HACK_CHAT_TEAM_ID', default='')
+GITCOIN_CHAT_TEAM_ID = env('GITCOIN_CHAT_TEAM_ID', default='')
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
