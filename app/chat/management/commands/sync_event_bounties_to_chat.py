@@ -61,7 +61,7 @@ class Command(BaseCommand):
                                     interest.profile.chat_id = chat_user['id']
                                     interest.profile.save()
                                 profiles_to_connect.append(interest.profile.chat_id)
-                        if bounty.chat_channel_id is None:
+                        if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
                             bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
                             bounty_channel_name = bounty_channel_name[:60]
                             create_channel_opts = {
