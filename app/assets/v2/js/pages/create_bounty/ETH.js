@@ -1,5 +1,5 @@
 /**
- * Handles Bounty created for bounties funded in ETH/ERC20 tokens
+ * Handles Bounty creation for bounties funded in ETH/ERC20 tokens
  * Data is stored on IPFS + the data is stored in
  * standard bounties contract on the ethereum blockchain
  */

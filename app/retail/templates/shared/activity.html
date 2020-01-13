@@ -39,11 +39,30 @@
         {% trans "sent a" %}
         Kudos
         {% if row.metadata.to_username %}
-        {% trans "to" %}
+          {% trans "to" %}
+          <a href="/profile/{{ row.metadata.to_username|cut:'@' }}">
+            {{ row.metadata.to_username }}
+          </a>
+        {% elif row.kudos %}
+          {% trans "to" %}
+          <a href="/profile/{{ row.kudos.username|cut:'@' }}">
+            {{ row.kudos.username }}
+          </a>
         {% endif %}
-        <a href="/profile/{{ row.metadata.to_username|cut:'@' }}">
-          {{ row.metadata.to_username }}
-        </a>
+      {% elif row.activity_type == 'receive_kudos' %}
+        {% trans "received a" %}
+        Kudos
+        {% if row.metadata.from_username %}
+          {% trans "from" %}
+          <a href="/profile/{{ row.metadata.from_username|cut:'@' }}">
+            {{ row.metadata.from_username }}
+          </a>
+        {% elif row.kudos %}
+          {% trans "from" %}
+          <a href="/profile/{{ row.kudos.from_username|cut:'@' }}">
+            {{ row.kudos.from_username }}
+          </a>
+        {% endif %}
       {% elif row.activity_type == 'new_grant' %}
         {% trans "created" %}
         <a href="{{ row.metadata.grant_url }}" target="_blank">
@@ -143,7 +162,7 @@
         {% if row.bounty.network and row.bounty.network != 'mainnet' %}
           <div class="tag network_warning">
             <p>
-              <span>{{ activity.bounty.network }}</span>
+              <span>{{ row.bounty.network }}</span>
             </p>
           </div>
         {% endif %}

@@ -40,7 +40,9 @@ def chat(request):
         print(str(e))
         users_online = 'N/A'
     context = {
-        'users_online': users_online
+        'users_online': users_online,
+        'title': "Chat",
+        'cards_desc': f"Gitcoin chat has {users_online} users online now!"
     }
 
     return TemplateResponse(request, 'chat.html', context)
