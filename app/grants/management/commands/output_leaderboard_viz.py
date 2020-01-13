@@ -13,6 +13,20 @@ from grants.models import Contribution, Grant
 from numpy import array
 from perftools.models import JSONStore
 
+
+#############
+## CONFIGURE ME!!
+#############
+
+start_date = timezone.datetime(2020, 1, 6)
+end_date = timezone.datetime(2020, 1, 13)
+grant_type = 'media'
+round_no = 4
+framerate = 7
+
+#####
+
+
 colors = ["#011f4b", "#03396c", "#005b96", "#6497b1", '#b3cde0', '#d3ddf0', '#DDDDDD']
 # hack to make infinite
 for i in range(0, 3):
@@ -27,10 +41,6 @@ graph_type = 'scatter'
 
 opposing_axis = 'counts'
 opposing_axis = 'clr'
-
-start_date = timezone.datetime(2020, 1, 6)
-end_date = timezone.datetime(2020, 1, 13)
-grant_type = 'media'
 
 #skip_until_start_date = timezone.datetime(2019, 9, 30)
 output_extra_frames_at_date = timezone.datetime(2020, 10, 1) #useful because after 10/1 we didnt have the prod compute power to do more than 1 frame per 4 hours
@@ -48,9 +58,9 @@ def get_graph_plot(d1, this_date, limit=5):
     match_amounts = []
 
     for label in labels:
-        contributions = Contribution.objects.filter(subscription__network='mainnet', subscription__grant__title=label, created_on__lt=this_date, created_on__gt=d1)
+        contributions = Contribution.objects.filter(subscription__network='mainnet', subscription__grant__title=label, created_on__lt=this_date, created_on__gt=d1, subscription__grant__grant_type=grant_type)
         if label_spec == 'handle':
-            contributions = Contribution.objects.filter(subscription__network='mainnet', subscription__contributor_profile__handle=label, created_on__lt=this_date, created_on__gt=d1)
+            contributions = Contribution.objects.filter(subscription__network='mainnet', subscription__contributor_profile__handle=label, created_on__lt=this_date, created_on__gt=d1, subscription__grant__grant_type=grant_type)
         crowd_contributions = contributions.values_list('subscription__amount_per_period_usdt', flat=True)
         match_contributions = contributions.none().values_list('subscription__amount_per_period_usdt', flat=True)
         crowd_amounts.append(float(aggregation_function(crowd_contributions)))
@@ -73,7 +83,7 @@ def clr_amount_at_time(grant, d1):
     return 0
 
 def get_tree_plot(d1, this_date, limit=5, append_amounts_to_labels=True):
-    contributions = Contribution.objects.filter(subscription__network='mainnet', created_on__lt=this_date,  created_on__gt=d1)
+    contributions = Contribution.objects.filter(subscription__network='mainnet', created_on__lt=this_date,  created_on__gt=d1, subscription__grant__grant_type=grant_type)
     total_amount = 0
     plot_me = {}
     counts = {}
@@ -100,7 +110,7 @@ def get_tree_plot(d1, this_date, limit=5, append_amounts_to_labels=True):
 
     # phantom contribs
     from grants.models import PhantomFunding
-    contributions = PhantomFunding.objects.filter(grant__network='mainnet', created_on__lt=this_date,  created_on__gt=d1)
+    contributions = PhantomFunding.objects.filter(grant__network='mainnet', created_on__lt=this_date,  created_on__gt=d1, grant__grant_type=grant_type)
     for cont in contributions:
         key = cont.grant.title
         if label_spec == 'handle':
@@ -222,7 +232,7 @@ class Command(BaseCommand):
                     _plt.text(sizes[j]+.03, counts[j]+.03, labels[j], fontsize=9)
 
 
-            title = f"Gitcoin Grants CLR Round 3 Funding at {this_date_str}: ${round(total_amount)}"
+            title = f"Gitcoin Grants {grant_type} CLR Round {round_no} Funding at {this_date_str}: ${round(total_amount)}"
             _plt.title(title)
             if export_frame:
                 num_frames_to_output = num_output_extra_frames if this_date > output_extra_frames_at_date else 1
@@ -232,6 +242,6 @@ class Command(BaseCommand):
                 _plt.tight_layout()
                 _plt.savefig(png_file)
                 _plt.close()
-        convert_to_movie(framerate=10)
+        convert_to_movie(framerate=framerate)
         #url = upload_to_s3()
         #print(url)
