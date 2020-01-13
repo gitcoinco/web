@@ -16,71 +16,45 @@
 
 '''
 from django.conf import settings
+from django.db.models import Q
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 from dashboard.models import Bounty, Interest, Profile
 from chat.tasks import create_user, get_driver, create_channel, add_to_channel
+from chat.utils import create_user_if_not_exists, create_channel_if_not_exists
 import logging
 from celery import group
-from mattermostdriver.exceptions import (
-    ResourceNotFound
-)
+
 logger = logging.getLogger(__name__)
-
-
-def create_user_if_not_exists(profile):
-    try:
-        chat_driver = get_driver()
-
-        current_chat_user = chat_driver.users.get_user_by_username(profile.handle)
-        profile.chat_id = current_chat_user['id']
-        profile.save()
-        return False, current_chat_user
-    except ResourceNotFound as RNF:
-        new_user_request = create_user.apply_async(options={
-            "email": profile.user.email,
-            "username": profile.handle,
-            "first_name": profile.user.first_name,
-            "last_name": profile.user.last_name,
-            "nickname": profile.handle,
-            "auth_data": f'{profile.user.id}',
-            "auth_service": "gitcoin",
-            "locale": "en",
-            "props": {},
-            "notify_props": {
-                "email": "false",
-                "push": "mention",
-                "desktop": "all",
-                "desktop_sound": "true",
-                "mention_keys": f'{profile.handle}, @{profile.handle}',
-                "channel": "true",
-                "first_name": "false"
-            },
-        }, params={
-            "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
-        })
-
-        return True, new_user_request
 
 
 class Command(BaseCommand):
     help = "Create channels for all active hackathon bounties"
 
+    def add_arguments(self, parser):
+        # Positional arguments
+        parser.add_argument('event_id', type=str, help="The event ID to synchronize bounties and channels for")
+
     def handle(self, *args, **options):
         try:
-            print(args)
-            print(options)
-            bounties_to_sync = Bounty.objects.filter(event_id__exact=options['event_id'])
+            bounties_to_sync = Bounty.objects.filter(
+                Q(chat_channel_id__isnull=True) | Q(chat_channel_id__exact='')
+            )
+
             tasks = []
 
             for bounty in bounties_to_sync:
-
                 profiles_to_connect = []
-
-                funder_profile = Profile.objects.get(bounty.bounty_owner_github_username)
+                try:
+                    funder_profile = Profile.objects.get(handle=bounty.bounty_owner_github_username)
+                except Exception as e:
+                    continue
 
                 if funder_profile is not None:
-                    profiles_to_connect.append(funder_profile)
+                    if funder_profile.chat_id is None:
+                        created, funder_profile_request = create_user_if_not_exists(funder_profile)
+                        funder_profile.chat_id = funder_profile_request['id']
+                    profiles_to_connect.append(funder_profile.chat_id)
                     for interest in bounty.interested.all():
                         if interest.profile is not None:
                             if interest.profile.chat_id is None:
@@ -96,7 +70,8 @@ class Command(BaseCommand):
                             'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
                             'channel_name': bounty_channel_name[:60]
                         }
-                        task = create_channel.s(create_channel_opts, link=add_to_channel.s(profiles_to_connect))
+                        task = create_channel.s(create_channel_opts, bounty.id)
+                        task.link(add_to_channel.s(profiles_to_connect))
                     else:
                         task = add_to_channel.s(bounty.chat_channel_id, profiles_to_connect)
 
@@ -104,8 +79,5 @@ class Command(BaseCommand):
 
             job = group(tasks)
             result = job.apply_async()
-            print(result)
-        except ConnectionError as exec:
-            self.retry(30)
         except Exception as e:
             logger.error(str(e))
