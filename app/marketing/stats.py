@@ -107,7 +107,7 @@ def chat_users():
             settings.GITCOIN_CHAT_TEAM_ID
         )
 
-        active_user_count = hack_team_stats['active_member_count'] = core_team_stats['active_member_count']
+        active_user_count = hack_team_stats['active_member_count'] + core_team_stats['active_member_count']
 
         Stat.objects.create(
             key='chat_active_users',
