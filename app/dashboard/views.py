@@ -329,13 +329,17 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
 
-    num_issues = profile.max_num_issues_start_work
-    is_working_on_too_much_stuff = profile.active_bounties.count() >= num_issues
-    if is_working_on_too_much_stuff:
-        return JsonResponse({
-            'error': _(f'You may only work on max of {num_issues} issues at once.'),
-            'success': False},
-            status=401)
+    max_num_issues = profile.max_num_issues_start_work
+    currently_working_on = profile.active_bounties.count()
+
+    if currently_working_on >= max_num_issues:
+        return JsonResponse(
+            {
+                'error': _(f'You cannot work on more than {max_num_issues} issues at once'),
+                'success': False
+            },
+            status=401
+        )
 
     if profile.no_times_slashed_by_staff():
         return JsonResponse({
