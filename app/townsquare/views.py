@@ -166,7 +166,10 @@ def api(request, activity_id):
         if request.POST['direction'] == 'flagged':
             Flag.objects.create(profile=request.user.profile, activity=activity)
             flag_threshold_to_hide = 3 #hides comment after 3 flags
-            if activity.flags.count() > flag_threshold_to_hide:
+            is_hidden_by_users = activity.flags.count() > flag_threshold_to_hide
+            is_hidden_by_staff = activity.flags.filter(profile__user__is_staff=True).count() > 0
+            is_hidden = is_hidden_by_users or is_hidden_by_staff
+            if is_hidden:
                 activity.hidden = True
                 activity.save()
         if request.POST['direction'] == 'unflagged':
