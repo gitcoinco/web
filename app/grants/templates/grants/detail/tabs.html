@@ -18,6 +18,10 @@
 <div class="px-lg-5">
   <div id="grant-profile-tabs" class="tab-container font-body mt-5 mb-4">
 
+    <button type="button" id="nav-activity" href="{{grant.url}}?tab=activity" class="section-tab {% if tab == "activity" %} active {% endif %}">
+      {% trans "ACTIVITY" %}
+    </button>
+
     <button type="button" id="nav-description" href="{{grant.url}}?tab=description" class="section-tab {% if tab == "description" %} active {% endif %}">
       {% trans "DESCRIPTION" %}
     </button>
@@ -44,6 +48,16 @@
   </div>
 
   <div id="grant-profile-tabs-sections" class="tab-sections section pt-2">
+
+    {% if tab == "activity" %}
+    <div id="section-nav-activity" class="tab-section active">
+       <div id="activities" class="activity_stream container">
+        {% include 'shared/activity_container.html' %}
+      </div>
+     
+    </div>
+    {% endif %}
+
     {% if tab == "description" %}
     <div id="section-nav-description" class="tab-section active">
       <div id="editor">

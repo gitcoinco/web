@@ -1095,6 +1095,9 @@ def activity(request):
 
     # create diff filters
     activities = Activity.objects.all().order_by('-created_on')
+    if 'grant:' in what:
+        pk = what.split(':')[1]
+        activities = activities.filter(grant=pk)
     if request.user.is_authenticated:
         relevant_profiles = []
         if what == 'tribes':
@@ -1113,7 +1116,7 @@ def activity(request):
 
     # after-pk filters
     if request.GET.get('after-pk'):
-        activities = Activity.objects.filter(pk__gt=request.GET.get('after-pk'))
+        activities = activities.filter(pk__gt=request.GET.get('after-pk'))
 
     # pagination
     suppress_more_link = not len(activities)

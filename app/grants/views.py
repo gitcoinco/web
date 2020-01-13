@@ -275,7 +275,7 @@ def grant_details(request, grant_id, grant_slug):
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
-    tab = request.GET.get('tab', 'description')
+    tab = request.GET.get('tab', 'activity')
     params = {
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
@@ -294,6 +294,7 @@ def grant_details(request, grant_id, grant_slug):
         'updates': updates,
         'milestones': milestones,
         'keywords': get_keywords(),
+        'target': f'/activity?what=grant:{grant.pk}',
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
@@ -679,6 +680,8 @@ def grant_fund(request, grant_id, grant_slug):
             name_search = 'grants_round_4_contributor' if not settings.DEBUG else 'pogs_eth'
             fund_reward = BulkTransferCoupon.objects.filter(token__name__contains=name_search).order_by('?').first()
             PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
+            record_grant_activity_helper('new_grant_contribution', grant, request.user.profile)
+
         messages.info(
             request,
             msg
@@ -826,6 +829,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
     kwargs = {
         'profile': profile,
         'subscription': subscription,
+        'grant': subscription.grant,
         'activity_type': activity_type,
         'metadata': metadata,
     }

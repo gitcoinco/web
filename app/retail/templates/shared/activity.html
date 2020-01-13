@@ -139,18 +139,20 @@
     <div class="font-caption" >
       <div class="activity-tags activity-tag-first align-items-center">
         {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
-          <div class="tag token">
-            <p>
-              {% if row.value_in_token_disp %}
-                <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
-              {% elif row.metadata.value_in_eth %}
-                <span class="value_in_eth">{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
-              {% elif row.metadata.value_in_token %}
-                <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
-              {% else %}
-              {% endif %}
-            </p>
-          </div>
+          {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name %}
+            <div class="tag token">
+              <p>
+                {% if row.value_in_token_disp %}
+                  <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
+                {% elif row.metadata.value_in_eth %}
+                  <span class="value_in_eth">{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
+                {% elif row.metadata.value_in_token and row.metadata.token_name %}
+                  <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
+                {% else %}
+                {% endif %}
+              </p>
+            </div>
+          {% endif %}
         {% endif %}
         {% if row.value_in_usdt_now %}
           <div class="tag usd">

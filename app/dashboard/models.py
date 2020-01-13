@@ -2113,7 +2113,7 @@ class Activity(SuperModel):
             activity['humanized_activity_type'] = self.humanized_activity_type
         if 'value_in_usdt_now' in obj:
             activity['value_in_usdt_now'] = obj['value_in_usdt_now']
-        if 'token_name' in obj:
+        if 'token_name' in obj and obj['token_name']:
             activity['token'] = token_by_name(obj['token_name'])
             if 'value_in_token' in obj and activity['token']:
                 activity['value_in_token_disp'] = round((float(obj['value_in_token']) /
