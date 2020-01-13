@@ -203,6 +203,7 @@ def details(request, kudos_id, name):
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
         'related_handles': list(set(kudos.owners_handles))[:num_kudos_limit],
+        'target': f'/activity?what=kudos:{kudos.pk}',
     }
     if kudos:
         token = Token.objects.select_related('contract').get(

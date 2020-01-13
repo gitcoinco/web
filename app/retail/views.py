@@ -1094,10 +1094,13 @@ def activity(request):
     what = request.GET.get('what', 'everywhere')
 
     # create diff filters
-    activities = Activity.objects.all().order_by('-created_on')
-    if 'grant:' in what:
+    activities = Activity.objects.filter(hidden=False).order_by('-created_on')
+    if ':' in what:
         pk = what.split(':')[1]
-        activities = activities.filter(grant=pk)
+        key = what.split(':')[0] + "_id"
+        kwargs = {}
+        kwargs[key] = pk
+        activities = activities.filter(**kwargs)
     if request.user.is_authenticated:
         relevant_profiles = []
         if what == 'tribes':
