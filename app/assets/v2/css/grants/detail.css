@@ -1,3 +1,10 @@
+.grant_details .box {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  padding: 0px;
+}
+
 @media (min-width: 1200px) {
   .grant-detail .container {
     max-width: 85vw
@@ -10,6 +17,14 @@
   #editor .ql-editor p {
     font-size: 1rem;
   }
+}
+
+.ql-editor {
+  font-family: 'Muli';
+}
+
+.ql-editor[contenteditable="false"] {
+  padding: 12px 15px !important;
 }
 
 .grant_details {
@@ -94,9 +109,15 @@
   background: white !important;
 }
 
+input:disabled,
+textarea:disabled {
+  background: white;
+  color: #000;
+}
+
 input.editable,
 textarea.editable {
-  margin-top: 6px;
+  margin-top: 6px !important;
   border: 1px solid #e2eaf2;
   background: white;
   padding: 7px 14px !important;

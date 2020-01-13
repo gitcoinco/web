@@ -1,0 +1,48 @@
+{% extends 'quests/base.html' %}
+{% load humanize static i18n %}
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% block 'extrahead' %}
+<link rel="stylesheet" href="{% static "v2/css/quests.example.css" %}" />
+{% endblock %}
+
+{% block 'content' %}
+
+<h1>Example Quiz</h1>
+<p>Hello World.  Make me into a formiddable challenge that brings "a-ha moment"s to devs!</p>
+
+
+<form method="POST">
+  {% if prize_url %}
+  YOU WIN!!!
+  {% elif started %}
+    <input type="submit" name="win" value="win">
+    <input type="submit" name="lose" value="lose">
+  {% else %}
+    <input type="submit" name="start" value="start">
+  {% endif %}
+
+</form>
+
+{% endblock %}
+{% block 'scripts' %}
+<script src="{% static "v2/js/pages/quests.example.js" %}"></script>
+<script type="text/javascript">
+  document.prize_url = '{{prize_url}}';
+</script>
+{% endblock %}

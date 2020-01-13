@@ -53,6 +53,7 @@
 <script src="{% static "v2/js/base.js" %}"></script>
 <script src="{% static "v2/js/lib/purify.min.js" %}"></script>
 <script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/open-chat.js" %}"></script>
 <script src="{% static "v2/js/truncate-hash.js" %}"></script>
 <script defer src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
 <script src="{% static "v2/js/note.js" %}"></script>
@@ -61,6 +62,11 @@
   <script src="{% static "v2/js/notifications.js" %}"></script>
 {% endif %}
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
+
+{% if not ignore_inject_web3 %}
+  {% include 'shared/shared_scripts.html' %}
+{% endif %}
+
 
 <script>
   var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");

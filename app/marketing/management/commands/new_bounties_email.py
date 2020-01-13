@@ -57,19 +57,25 @@ class Command(BaseCommand):
             return
         hours_back = 24
         eses = EmailSubscriber.objects.filter(active=True)
+        counter_grant_total = 0
+        counter_total = 0
+        counter_sent = 0
         print("got {} emails".format(eses.count()))
         for es in eses:
             try:
+                counter_grant_total += 1
                 keywords = es.keywords
                 if not keywords:
                     continue
+                counter_total += 1
                 to_email = es.email
                 new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
-                print("{}/{}: got {} new bounties & {} all bounties".format(to_email, keywords, new_bounties.count(), all_bounties.count()))
+                print("{}/{}/{}) {}/{}: got {} new bounties & {} all bounties".format(counter_sent, counter_total, counter_grant_total, to_email, keywords, new_bounties.count(), all_bounties.count()))
                 if new_bounties.count():
                     print(f"sending to {to_email}")
                     new_bounty_daily(new_bounties, all_bounties, [to_email])
                     print(f"/sent to {to_email}")
+                    counter_sent += 1
             except Exception as e:
                 logging.exception(e)
                 print(e)

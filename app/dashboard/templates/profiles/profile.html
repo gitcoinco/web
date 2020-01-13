@@ -7,6 +7,9 @@
     {% endif %}
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+    {% if not hidden %}
+      <link rel="canonical" href="{{profile.url}}/{{tab}}" />
+    {% endif %}
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
     <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
@@ -30,57 +33,52 @@
       {% endif %}
       {% if is_editable %}
         <div class="position-relative profile-banner">
-      <div class="container mt-5">
-        <div class="row">
-        <div class="col-12">
-        <span class="profile-banner-cta">
-            <i class="fa fa-camera"></i>
-          Update Header Image
-        </span>
-        </div>
-      </div>
-      </div>
+          <div class="container mt-5">
+            <div class="row">
+              <div class="col-12">
+                <p class="profile-banner-cta text-center">
+                  <i class="fa fa-camera"></i>
+                  Update Header Image
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       {% endif %}
     </div>
+
     <div class="container-fluid bg-light">
-      <div class="container profile-card mt-md-n5 mh-150">
+      <div class="container profile-card mh-150">
         <div class="row">
           {% if total_kudos_count %}
-            <div id=kudos_header>
+            <div id="kudos_header" class="d-md-block d-none">
               {% for kudos_group in my_kudos %}
                 <img src="{{ kudos_group.kudos_token_cloned_from.preview_img_url }}" title="{{ kudos_group.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="70">
               {% endfor %}
             </div>
           {% endif %}
 
-          <div class="col-12 col-lg-6 profile-header__main-infos">
-            {% if not hidden %}
+          {% if not hidden %}
+            <div class="col-12 col-lg-6 profile-header__main-infos">
               {% include 'profiles/header_avatar.html' %}
               {% include 'profiles/header_details.html' %}
+            </div>
+            {% if profile.is_org %}
+              {% include 'profiles/organization.html' %}
 
-            {% if not hidden %}
-              {% if profile.is_org %}
-                {% include 'profiles/organization.html' %}
-              {% else %}
-              {% if profile.cascaded_persona == 'funder' %}
-                {% include 'profiles/scorecard_funder.html' %}
-              {% elif profile.cascaded_persona == 'hunter' %}
-                {% include 'profiles/scorecard_hunter.html' %}
-              {% else %}
-                {% include 'profiles/scorecard_hunter.html' %}
-              {% endif %}
-          </div>
-        </div>
+            {% elif profile.cascaded_persona == 'funder' %}
+              {% include 'profiles/scorecard_funder.html' %}
+
+            {% else %}
+              {% include 'profiles/scorecard_hunter.html' %}
+            {% endif %}
           {% endif %}
-        {% endif %}
+        </div>
       </div>
     </div>
-    {% endif%}
-    
-      {% include 'profiles/tabs.html' %}
 
-    </div>
+    {% include 'profiles/tabs.html' %}
+
     <div class="container">
       {% if hidden %}
         {% include 'profiles/hidden.html' %}
@@ -97,7 +95,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
-    
+
 
     <!-- jQuery -->
     <script src="{% static "v2/js/abi.js" %}"></script>
@@ -109,9 +107,11 @@
     </script>
     <script src="{% static "v2/js/pages/tabs.js" %}"></script>
     <script src="{% static "v2/js/pages/profile.js" %}"></script>
+    <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
     <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
     <script src="{% static "v2/js/rating.js" %}"></script>
     <script src="{% static "v2/js/status.js" %}"></script>
+    <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
     <script>
       {% if profile.preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;

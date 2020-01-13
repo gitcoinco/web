@@ -1,3 +1,13 @@
+/* stylelint-disable no-descending-specificity */
+
+@media (min-width: 1200px) {
+  .leaderboard .earning {
+    float: right;
+    top: 2px;
+    right: 2rem;
+    position: relative;
+  }
+}
 
 .tab-projects__item img {
   width: 50px;
@@ -8,8 +18,11 @@
   background: #E8F0FA;
   padding: 4px;
   border-radius: 2px;
-  font-size: 14px;
+  font-size: 11px;
   color: #6487AE;
+  display: inline-block;
+  margin-bottom: 2px;
+  margin-top: 2px;
 }
 
 .review-comment {
@@ -105,8 +118,6 @@
 .float_avatar_image img {
   height: 186px;
   width: 186px;
-  border: 3px solid #FFFFFF;
-  box-shadow: 0 -2px 4px 0 rgba(0,0,0,0.50);
 }
 
 .avatar_edit {
@@ -114,10 +125,10 @@
   background: #000;
   opacity: 0.7;
   border-radius: 0% 0% 50% 50% / 0% 0% 100% 100%;
-  height: 60px;
+  height: 71px;
   width: 173px;
   position: absolute;
-  top: 122px;
+  top: 113px;
   margin: auto;
   right: 0;
   left: 0;
@@ -137,8 +148,6 @@
 
 .odd{
   background-color: #f9f9f9;
-  border-top: #eeeeee 1px solid;
-  border-bottom: #eeeeee 1px solid;
 }
 
 .profile_details .nav-link {
@@ -206,8 +215,11 @@
     display: none;
   }
 
-}
+  .transaction-history.bounty_row .avatar {
+    max-width: 100% !important;
+  }
 
+}
 
 .profile-header__stats {
   border: none;
@@ -228,6 +240,19 @@
 
 .profile-header__stats .card-body {
   padding: 0.7rem;
+}
+
+
+.bounty_row {
+  border-bottom: 1px solid #EFEFEF;
+}
+
+.bounty_row:hover {
+  background: none;
+}
+
+#earn_dataviz {
+  max-width: 100%;
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
@@ -294,6 +319,10 @@
   100% {
     transform: scale(1);
   }
+}
+
+.profile-header__links .chat{
+  padding: 0px 0px 6px 0px;
 }
 
 .profile-header__stats--contributor .card-header::after {
@@ -412,7 +441,7 @@
   padding: 5px;
 }
 #kudos_header img{
-  box-shadow: none;  
+  box-shadow: none;
   background: none;
 }
 
@@ -436,7 +465,7 @@
 }
 
 .profile-banner-cta {
-  background-color: #000;
+  background-color: transparent;
   padding: 6px 10px;
   border-radius: 2px;
   cursor: pointer;
@@ -462,4 +491,101 @@ nav.navbar.navbar-dark{
   font-size: 12px;
   color: black;
   text-decoration: underline;
+}
+
+.tribe-members {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 3rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .tribe-members {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .tribe-members {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .tribe-members {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.badge-tribe {
+  position: absolute;
+  top: 33px;
+  left: 60%;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  border: 2px solid white;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  background: #fff;
+  font-size: 14px;
+}
+
+.badge-tribe_leader {
+  background: linear-gradient(180deg,rgb(222,165,91), rgb(243,203,82));
+}
+
+.ql-picker-label svg {
+  vertical-align: inherit;
+}
+
+.description-tribes.ql-container {
+  height: auto;
+}
+
+.description-tribes,
+.description-tribes.ql-container {
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.description-tribes p {
+  margin: 0;
+  padding: 0;
+}
+
+.description-tribes img {
+  max-width: 100%;
+}
+
+.description-tribes h1 {
+  font-size: 2em;
+}
+
+.description-tribes h2 {
+  font-size: 1.5em;
+}
+
+.inactive .ql-editor {
+  padding:0;
+  line-height:inherit;
+}
+
+.inactive .ql-toolbar {
+  display:none;
+}
+
+.inactive .ql-container.ql-snow {
+  border:none;
+}
+
+.ql-align-center {
+  text-align: center;
+}
+
+.ql-align-right {
+  text-align: right;
+}
+
+.ql-align-justify {
+  text-align: justify;
 }

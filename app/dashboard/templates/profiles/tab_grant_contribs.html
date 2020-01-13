@@ -1,0 +1,108 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static humanize grants_extra %}
+
+  <div class="grants-container">
+    <h2 class="font-title my-3 pb-3 title">
+      {% trans "Grant Contribution History" %}
+      {% if total_grant_contributions %} ({{total_grant_contributions}}) {% endif %}
+    </h2>
+    <h3 class="font-body mt-1 mb-2 font-weight-semibold">Monthly Summary</h3>
+
+    {% include "profiles/earningsgraph.html" with graph_type="grants" %}
+
+    <h2 class="font-body m-3 pb-3 title">Grants Created ({{profile.grant_admin.count}})</h3>
+
+    {% if not profile.grant_admin.count %}
+      <h2 class="font-title m-3 pb-3 title">
+        No Grants Created. <a href=grants/new>Create a Grant &gt;</a>
+      </h2>
+    {% endif %}
+
+    {% for transaction in profile.grant_admin.all %}
+      <div class="py-3 mx-sm-0 px-lg-0 row transaction-history bounty_row">
+        <div class="col-5 col-sm-4 col-md-2 font-body my-auto">
+          {{ transaction.created_on|date:"Y-m-d" }}
+        </div>
+        <div class="col-2 col-md-2 px-0 justify-content-center special_tag">
+          <img class="avatar" style="max-width: 70px;" src="{% if transaction.logo and transaction.logo.url %}{{ transaction.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=transaction.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+        </div>
+        <div class="col-5 col-md-4 my-auto">
+          <div class="title font-body">
+            <a href="{{ transaction.url }}">{{ transaction.title }}</a>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-2 my-auto">
+          <div class="info font-caption mt-4 mt-md-0 text-center text-sm-left">
+            <span class="font-weight-semibold">Goal: </span> {{ transaction.amount_goal}}<br>
+            <span class="font-weight-semibold">Received:</span> {{ transaction.amount_received }}<br>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-2 my-auto">
+          <div class="info font-caption mt-sm-4 mt-md-0 text-center text-sm-left">
+            <span class="font-weight-semibold">Contributons Count:</span> {{ transaction.contribution_count }} <br>
+            <span class="font-weight-semibold">Contributors Count:</span> {{ transaction.contributor_count }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+    <h2 class="font-body mx-3 pb-2 mt-5 title">Grant Contribution History ({{history|length}})</h2>
+
+    {% for transaction in history %}
+      <div class="py-3 mx-sm-0 px-lg-0 row transaction-history bounty_row">
+        <div class="col-5 col-sm-4 col-md-2 font-body my-auto">
+          {{ transaction.created_on }}
+        </div>
+        <div class="col-2 col-md-2 px-0 justify-content-center special_tag">
+          <img class="avatar" style="max-width: 70px;" src="{% if transaction.logo %}{{ transaction.logo }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=transaction.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+        </div>
+        <div class="col-5 col-md-4 my-auto">
+          <div class="title font-body">
+            <a href="{{ transaction.url }}">{{ transaction.title }}</a>
+          </div>
+        </div>
+        <div class="col-5 col-md-2 font-caption my-auto txn-link pt-3 pt-md-0">
+          {% if transaction.tx_id and not profile.hide_wallet_address %}
+            <a id="tx_link" href="https://etherscan.io/tx/{{transaction.tx_id}}" target="_blank" rel="noopener noreferrer">
+              View Etherscan
+            </a>
+          {% endif %}
+
+          {% if transaction.tx_id %}
+          <input type="hidden" id="tx_id" name="tx_id" value="{{ transaction.tx_id }}"/>
+          {% endif %}
+        </div>
+        <div class="col-7 col-md-2 my-auto tags font-caption pt-3 pt-md-0">
+          <div class="tag tag-lg token">
+            <p>
+              {{ transaction.amount_per_period|floatformat:4|intcomma }}
+              <span>{{ transaction.token_symbol }}</span>
+            </p>
+          </div>
+          {% if transaction.amount_per_period_usdt %}
+            <div class="tag tag-lg usd">
+              <p>
+                {{ transaction.amount_per_period_usdt|floatformat:2 }}
+                <span>USD</span>
+              </p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>

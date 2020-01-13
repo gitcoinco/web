@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle grant URLs.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    grant_details, grant_fund, grant_new, grant_new_v0, grants, leaderboard, milestones, new_matching_partner, profile,
-    quickstart, subscription_cancel,
+    grant_details, grant_fund, grant_new, grant_new_v0, grants, invoice, leaderboard, milestones, new_matching_partner,
+    profile, quickstart, subscription_cancel,
 )
 
 app_name = 'grants'
@@ -42,4 +42,9 @@ urlpatterns = [
     re_path(r'^quickstart', quickstart, name='quickstart'),
     re_path(r'^leaderboard', leaderboard, name='leaderboard'),
     re_path(r'^matching-partners/new', new_matching_partner, name='new_matching_partner'),
+    path(
+        'invoice/contribution/<int:contribution_pk>',
+        invoice,
+        name='contribution_invoice'
+    ),
 ]

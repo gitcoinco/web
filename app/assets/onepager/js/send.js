@@ -178,7 +178,8 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
     username = '@' + username;
   }
 
-  var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
+  var gas_multiplier = 1.008;
+  var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * gas_multiplier) / Math.pow(10, 9)));
   var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
   var tokenDetails = tokenAddressToDetails(tokenAddress);
   var tokenName = 'ETH';
@@ -303,6 +304,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
         indicateMetamaskPopup();
         if (isSendingETH) {
           web3.eth.sendTransaction({
+            from: fromAccount,
             to: destinationAccount,
             value: amountInDenom,
             gasPrice: web3.toHex(get_gas_price())

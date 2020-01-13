@@ -36,7 +36,7 @@
 .section-tab.active {
   color: var(--gc-blue);
   border-bottom: 4px var(--gc-blue) solid;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .tab-sections {
@@ -54,21 +54,10 @@
   display: block;
 }
 
-.nav-badge::after {
-  padding: 4px 11px;
-  background-color: rgba(62,0,255, 0.10);
-  content: '';
-  border-radius: 50%;
-  position: relative;
-  left: -1rem;
-}
-
 .nav-badge {
-  font-size: 10px;
+  font-size: 9px;
   color: rgba(62,0,255);
-  line-height: 10px;
-  margin-left: 0.5rem;
-  top: -2px;
+  top: -8px;
   position: relative;
   font-weight: bold;
 }

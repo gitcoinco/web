@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -20,28 +20,31 @@
 <html>
   <head>
     {% include 'shared/head.html' %}
+    {% block 'extrahead' %}
     <link rel="stylesheet" href="{% static "v2/css/quests.css" %}" />
-    {% include 'shared/cards.html' %}
+    {% endblock %}
+    {% include 'shared/cards_pic.html' %}
   </head>
-  <body class="g-font-muli {{body_class}}">
+  <body class="g-font-muli {{body_class}} {{quest.background}} {{quest.style}}">
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <div class="container-fluid header dash">
-      {% include 'home/nav.html' %}
+      {% include 'quests/nav.html' %}
     </div>
-    <div class="row">
-      <div class="col-12 col-sm-10 m-auto">
+    <div class="row back_gradient">
+      <div class="{% if not hide_col %}col-12 col-sm-10 m-auto{%endif %}" style="{% if hide_col %}width:100%;{%endif %}">
         {% block 'content' %}
         {% endblock %}
       </div>
     </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' with prefix="data-" %}
     
   </body>
   {% csrf_token %}
   <script>
   </script>
-  <script src="{% static "v2/js/pages/quests.helpers.js" %}"></script>
-  <script src="{% static "v2/js/pages/quests.js" %}"></script>
+  {% block 'scripts' %}
+  {% endblock %}
 </html>

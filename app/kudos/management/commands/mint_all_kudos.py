@@ -1,6 +1,6 @@
 """Define the mint all kudos management command.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -22,6 +22,7 @@ import warnings
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.db import IntegrityError
 
 import oyaml as yaml
 from kudos.utils import KudosContract, get_rarity_score, humanize_name
@@ -35,23 +36,37 @@ logger = logging.getLogger(__name__)
 formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
 
 
-def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=False, skip_sync=True):
-    image_name = urllib.parse.quote(kudos.get('image'))
-    if image_name:
-        # Support Open Sea
-        if kudos_contract.network == 'rinkeby':
-            image_path = f'https://ss.gitcoin.co/static/v2/images/kudos/{image_name}'
-            external_url = f'https://stage.gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
-        elif kudos_contract.network == 'mainnet':
-            image_path = f'https://s.gitcoin.co/static/v2/images/kudos/{image_name}'
-            external_url = f'https://gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
-        elif kudos_contract.network == 'localhost':
-            image_path = f'v2/images/kudos/{image_name}'
-            external_url = f'http://localhost:8000/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
-        else:
-            raise RuntimeError('Need to set the image path for that network')
+def sync_latest(the_buffer=0, network='mainnet'):
+    try:
+        kudos_contract = KudosContract(network=network)
+        kudos_contract.sync_latest(the_buffer)
+    except IntegrityError as e:
+        print(e)
+
+
+def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=False, skip_sync=True, dont_wait_for_kudos_id_return_tx_hash_instead=False):
+    image_path = kudos.get('artwork_url')
+    if not image_path:
+        image_name = urllib.parse.quote(kudos.get('image'))
+        if image_name:
+            # Support Open Sea
+            if kudos_contract.network == 'rinkeby':
+                image_path = f'https://ss.gitcoin.co/static/v2/images/kudos/{image_name}'
+            elif kudos_contract.network == 'mainnet':
+                image_path = f'https://s.gitcoin.co/static/v2/images/kudos/{image_name}'
+            elif kudos_contract.network == 'localhost':
+                image_path = f'v2/images/kudos/{image_name}'
+            else:
+                raise RuntimeError('Need to set the image path for that network')
+
+    if kudos_contract.network == 'rinkeby':
+        external_url = f'https://stage.gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
+    elif kudos_contract.network == 'mainnet':
+        external_url = f'https://gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
+    elif kudos_contract.network == 'localhost':
+        external_url = f'http://localhost:8000/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
     else:
-        image_path = ''
+        raise RuntimeError('Need to set the external url for that network')
 
     attributes = []
     # "trait_type": "investor_experience",
@@ -109,17 +124,19 @@ def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint
     else:
         mint_to = kudos_contract._w3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
 
+    response = None
     is_live = live
     if is_live:
         try:
             token_uri_url = kudos_contract.create_token_uri_url(**metadata)
             args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], token_uri_url)
-            kudos_contract.mint(
+            response = kudos_contract.mint(
                 *args,
                 account=account,
                 private_key=private_key,
                 skip_sync=skip_sync,
                 gas_price_gwei=gas_price_gwei,
+                dont_wait_for_kudos_id_return_tx_hash_instead=dont_wait_for_kudos_id_return_tx_hash_instead,
             )
             print('Live run - Name: ', readable_name, ' - Account: ', account, 'Minted!')
         except Exception as e:
@@ -127,6 +144,7 @@ def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint
     else:
         print('Dry run - Name: ', readable_name, ' - Account: ', account, 'Skipping!')
 
+    return response
 
 
 class Command(BaseCommand):

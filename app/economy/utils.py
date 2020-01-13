@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define utilities and generic logic for the economy application.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -61,13 +61,15 @@ def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
     if to_currency in settings.STABLE_COINS:
         to_currency = 'USDT'
 
-    
+
     if timestamp:
         conversion_rate = ConversionRate.objects.filter(
             from_currency=from_currency,
             to_currency=to_currency,
-            timestamp__gte=timestamp
-        ).order_by('-timestamp').last()
+            timestamp__lte=timestamp
+        ).order_by('-timestamp').first()
+        if not conversion_rate:
+            return convert_amount(from_amount, from_currency, to_currency)
     else:
         conversion_rate = ConversionRate.objects.filter(
             from_currency=from_currency,

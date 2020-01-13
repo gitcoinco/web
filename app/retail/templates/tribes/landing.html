@@ -1,0 +1,232 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'shared/head.html' %}
+  <head>
+    <meta name="title" content="Gitcoin Tribes">
+    <meta name="description" content="Build relationships and meaningful projects while forming an open source tribe.">
+    <link rel="stylesheet" href="{% static "v2/css/retail/plans.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/retail/tribes_landing.css" %}" />
+  </head>
+  <body class="tribes-landing g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash px-md-0">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'home/nav.html' %}
+    </div>
+
+    <div class="text-center bg-blue py-5">
+      <div class="col-12 py-5">
+        <img src="{% static "v2/images/tribes/logo-with-text.svg" %}">
+      </div>
+      <h1 class="font-title-xl text-center py-3 font-weight-semibold">
+        <span class="d-block">Build relationships and meaningful projects </span>
+        <span>while forming </span>
+        <span class="gc-green-text">an open source tribe.</span>
+      </h1>
+      <h2 class="font-title-lg text-center my-4 pt-1 pb-2">
+        <span class="d-block">Open source companies can grow faster with our</span>
+        <span class="d-block gc-green-text">global network of 21,000+ creatives, developers</span>
+        <span class="gc-green-text">and entrepreneurs.</span>
+      </h2>
+    </div>
+
+    <div class="how-it-works py-5 text-center mx-4 mx-md-auto">
+      <h1 class="text-center font-title-xl mb-5 py-3">
+        <span class="pb-2 title font-weight-bold">How it works</span>
+      </h1>
+      <img class="mt-4 g-fadein" data-fade-duration=1000 data-fade-direction="mid"  src="{% static "v2/images/tribes/how-it-works.svg" %}">
+    </div>
+
+    <div class="col-12 testimonial-section py-5">
+      <h1 class="text-center font-title-xl mb-5 py-4 font-weight-semibold">
+        <span class="title pb-3">
+          <span class="d-block pb-2">Community begins by</span>
+          <span class="gc-green-text">building, together</span>
+        </span>
+      </h1>
+      <img class="square-1 position-absolute" src="{% static "v2/images/tribes/landing/abstract-square.svg" %}">
+      <p class="pt-2 col-12 col-md-7 mx-auto text-center font-title-xl">
+          Build your Gitcoin Tribe through
+          <span class="gc-green-text">monthly Gitcoin hackathons </span>
+          and a variety of tools to incentivize open source developers and
+          build increasingly interesting projects, together
+      </p>
+      <img class="square-2 position-absolute" src="{% static "v2/images/tribes/landing/abstract-square.svg" %}">
+      <p class="col-12 col-md-5 mx-auto text-center font-title-xl mt-5">
+        In the last six months, we’ve hosted
+        5 open source hackathons:
+      </p>
+
+      <div class="row col-lg-8 mx-auto mt-5 py-4">
+        <div class="col-12 col-md-4 mb-4 text-center g-fadein" data-fade-duration=1000 data-fade-direction="left">
+          <p class="font-weight-bold stats mb-1 gc-green-text">25+</p>
+          <p class="font-title">
+            <span class="d-block">open source</span>
+            <span>companies participated</span>
+          </p>
+        </div>
+        <div class="col-12 col-md-4 mb-4 text-center g-fadein" data-fade-duration=1000 data-fade-direction="mid">
+          <p class="font-weight-bold stats mb-1 gc-green-text">$250k+</p>
+          <p class="font-title">
+            <span class="d-block">open source</span>
+            <span>prizes sponsored</span>
+          </p>
+        </div>
+        <div class="col-12 col-md-4 mb-4 text-center g-fadein" data-fade-duration=1000 data-fade-direction="right">
+          <p class="font-weight-bold stats mb-1 gc-green-text">250+</p>
+          <p class="font-title">
+            <span class="d-block">open source projects</span>
+            <span>created</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="row mt-5 mx-md-2">
+        {% for testimonial in testimonials %}
+          <div class="col-12 col-lg-4 g-fadein" data-fade-duration=1000 data-fade-direction="mid">
+            <div class="testimonial-box text-center mb-5 pb-4">
+
+              <div class="position-absolute testimonial-photo-container mx-auto">
+                <div class="rounded-circle img-container overflow-hidden d-inline-block">
+                  <img src="{{ testimonial.photo }}" alt="{{ testimonial.author }}"/>
+                </div>
+                {% if testimonial.org_photo %}
+                  <div class="rounded-circle img-container overflow-hidden d-inline-block position-relative org-container">
+                    <img class="bg-white w-100 h-100" src="{{ testimonial.org_photo }}" alt="{{ testimonial.org_photo }}"/>
+                  </div>
+                {% endif %}
+              </div>
+
+              <p class="font-title-lg font-weight-bold gc-green-text mb-0 mt-4 pt-4">
+                {{ testimonial.author }}
+              </p>
+              <p class="font-title mb-4">
+                {{ testimonial.designation }}
+              </p>
+
+              <p class="mx-5 px-4 mb-5 quote-container">
+                <i class="fas fa-quote-left font-body float-left"></i>
+                <span class="mx-4 font-italic quote-text text-center">{{ testimonial.text|safe }}</span>
+                <i class="fas fa-quote-right font-body float-right mt-2"></i>
+              </p>
+
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <div class="row text-center companies mt-5 pt-5 mx-2 mx-md-auto">
+      {% for company in companies %}
+        <img src="{{ company.img }}" alt="{{ company.name }}" class="mx-2 mx-md-5 mb-4 mt-3"/>
+      {% endfor %}
+    </div>
+
+    <div class="row col-12 col-lg-9 mx-auto py-5">
+      <div class="col-12 text-center mb-4">
+        <img class="mt-4" src="{% static "v2/images/modals/persona-choose.svg" %}" height="160">
+        <h1 class="text-center font-title-xl mb-5 py-3">
+          <span class="pb-2 title font-weight-bold">Get Started</span>
+        </h1>
+      </div>
+
+      {% for plan in plans %}
+        <div class="col-12 col-md-6 col-xl-4 mb-5 mb-lg-2 g-fadein mx-auto" data-fade-duration=1000
+          data-fade-direction="{% if plan.type == 'lite' %}left{% elif plan.type == 'pro' %}mid{% else %}right{% endif %}"
+        >
+          <div id="{{ plan.type }}" class="py-4 plan text-center">
+            {% if plan.discount %}
+              <div class="ribbon ribbon-top-right">
+                <span class="font-caption font-weight-semibold">
+                  SAVE {{ plan.discount }}
+                </span>
+              </div>
+            {% endif %}
+            <div class="plan-header">
+              <img class="mb-4" src="{% static plan.img %}" alt="{{ plan.type }}-logo">
+              <h3 class="font-title-lg font-weight-semibold">GITCOIN-{{ plan.type|upper }}</h3>
+              <h2 class="mt-3 mb-0 font-weight-semibold">
+                $<span id="{{ plan.type }}-price">{{ plan.price }}</span>
+                <span class="month"> / hackathon</span>
+              </h2>
+            </div>
+
+            <div class="text-left font-weight-semibold features py-4 mx-auto">
+              {% for feature in plan.features %}
+                <p class="features-available">
+                  <i class="fas fa-check mr-3"></i>
+                  {% autoescape off %}
+                    {% if feature.title %}
+                      <span>{{ feature.title }}</span>
+                      {% if feature.info %}
+                        <span class="text-secondary">({{ feature.info }})</span>
+                      {% endif %}
+                    {% else %}
+                      {{ feature }}
+                    {% endif %}
+                  {% endautoescape %}
+                </p>
+              {% endfor %}
+              {% for feature in plan.features_na %}
+                <p class="features-available-na">
+                  <i class="fas fa-times mr-3"></i>
+                  {% if feature.title %}
+                    <span>{{ feature.title }}</span>
+                    {% if feature.info %}
+                      <span class="text-secondary">({{ feature.info }})</span>
+                    {% endif %}
+                  {% else %}
+                    {{ feature }}
+                  {% endif %}
+                </p>
+              {% endfor %}
+            </div>
+            <div class="plan-button mx-5 pb-2">
+              <a id="{{ plan.type }}-plan" href="/tribes?plan={{ plan.type }}"
+                class="btn button--full px-3 {% if plan.type == 'pro' %} btn-gc-blue {% else %} button--primary {% endif %}">
+                {% trans "Get in touch" %}
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+
+      <p class="col-12 text-center text-secondary mt-md-5 pt-md-4 font-weight-semibold">
+        *Your Hackathon Credits are eligible for 12 months.
+      </p>
+    </div>
+
+    <img class="strip" src="{% static "v2/images/tribes/landing/purple-strip.svg" %}" width="100%">
+    <div class="col-12 text-center work-section py-5">
+      <div class="white-line mx-auto my-5"></div>
+      <p class="font-title-lg mb-1">Work with Gitcoin to educate your community.</p>
+      <p class="font-title-lg mb-1">Build great things in your open source world.</p>
+      <p class="font-title-lg">Help entrepreneurs build on your technology!</p>
+      <img class="mt-4 mb-5 g-fadein" data-fade-duration=1000 data-fade-direction="mid" src="{% static "v2/images/team/gitcoinbot.png" %}" height="160">
+
+    </div>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+  </body>
+</html>

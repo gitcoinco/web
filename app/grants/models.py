@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant models.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -77,7 +77,13 @@ class Grant(SuperModel):
 
         ordering = ['-created_on']
 
+    GRANT_TYPES = [
+        ('tech', 'tech'),
+        ('media', 'media')
+    ]
+
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
+    grant_type = models.CharField(max_length=15, choices=GRANT_TYPES, default='tech', help_text=_('Grant CLR category'))
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
@@ -196,13 +202,23 @@ class Grant(SuperModel):
         ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
+    weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
+    contribution_count = models.PositiveIntegerField(blank=True, default=0)
+    contributor_count = models.PositiveIntegerField(blank=True, default=0)
+    defer_clr_to = models.ForeignKey(
+        'grants.Grant',
+        related_name='defered_clr_from',
+        on_delete=models.CASCADE,
+        help_text=_('The Grant that this grant defers it CLR contributions to (if any).'),
+        null=True,
+    )
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
 
     def __str__(self):
         """Return the string representation of a Grant."""
-        return f"id: {self.pk}, active: {self.active}, title: {self.title}"
+        return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
 
     def percentage_done(self):
@@ -228,12 +244,79 @@ class Grant(SuperModel):
             return None
 
     @property
+    def get_contribution_count(self):
+        num = 0
+        for sub in self.subscriptions.all():
+            for contrib in sub.subscription_contribution.filter(success=True):
+                num += 1
+        for pf in self.phantom_funding.all():
+            num+=1
+        return num
+
+    @property
+    def get_contributor_count(self):
+        contributors = []
+        for sub in self.subscriptions.all():
+            for contrib in sub.subscription_contribution.filter(success=True):
+                contributors.append(contrib.subscription.contributor_profile.handle)
+        for pf in self.phantom_funding.all():
+            contributors.append(pf.profile.handle)
+        return len(set(contributors))
+
+
+    @property
     def org_profile(self):
         from dashboard.models import Profile
         profiles = Profile.objects.filter(handle__iexact=self.org_name)
         if profiles.count():
             return profiles.first()
         return None
+
+    @property
+    def history_by_month(self):
+        # gets the history of contributions to this grant month over month so they can be shown o grant details
+        # returns [["", "Subscription Billing",  "New Subscriptions", "One-Time Contributions", "CLR Matching Funds"], ["December 2017", 5534, 2011, 0, 0], ["January 2018", 10396, 0 , 0, 0 ], ... for each monnth in which this grant has contribution history];
+        CLR_PAYOUT_HANDLES = ['vs77bb', 'gitcoinbot', 'notscottmoore', 'owocki']
+        month_to_contribution_numbers = {}
+        subs = self.subscriptions.all().prefetch_related('subscription_contribution')
+        for sub in subs:
+            contribs = [sc for sc in sub.subscription_contribution.all() if sc.success]
+            for contrib in contribs:
+                #add all contributions
+                key = contrib.created_on.strftime("%Y/%m")
+                subkey = 'One-Time' 
+                if int(contrib.subscription.num_tx_approved) > 1:
+                    if contrib.is_first_in_sequence:
+                        subkey = 'New-Recurring'
+                    else:
+                        subkey = 'Recurring-Recurring'
+                if contrib.subscription.contributor_profile.handle in CLR_PAYOUT_HANDLES:
+                    subkey = 'CLR'
+                if key not in month_to_contribution_numbers.keys():
+                    month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0, 'CLR': 0}
+                if contrib.subscription.amount_per_period_usdt:
+                    month_to_contribution_numbers[key][subkey] += float(contrib.subscription.amount_per_period_usdt)
+        for pf in self.phantom_funding.all():
+            #add all phantom funds
+            subkey = 'One-Time'
+            key = pf.created_on.strftime("%Y/%m")
+            if key not in month_to_contribution_numbers.keys():
+                month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0, 'CLR': 0}
+            month_to_contribution_numbers[key][subkey] += float(pf.value)
+
+        # sort and return
+        return_me = [["", "Subscription Billing",  "New Subscriptions", "One-Time Contributions", "CLR Matching Funds"]]
+        for key, val in (sorted(month_to_contribution_numbers.items(), key=lambda kv:(kv[0]))):
+            return_me.append([key, val['Recurring-Recurring'], val['New-Recurring'], val['One-Time'], val['CLR']])
+        return return_me
+
+    @property
+    def history_by_month_max(self):
+        max_amount = 0
+        for ele in self.history_by_month:
+            if type(ele[1]) is float:
+                max_amount = max(max_amount, ele[1]+ele[2]+ele[3]+ele[4])
+        return max_amount
 
     @property
     def amount_received_with_phantom_funds(self):
@@ -249,13 +332,14 @@ class Grant(SuperModel):
             from grants.abi import abi_v1
             return abi_v1
 
-
     @property
     def url(self):
         """Return grants url."""
         from django.urls import reverse
         return reverse('grants:details', kwargs={'grant_id': self.pk, 'grant_slug': self.slug})
 
+    def get_absolute_url(self):
+        return self.url
 
     @property
     def contract(self):
@@ -470,7 +554,7 @@ class Subscription(SuperModel):
         if self.last_contribution_date < timezone.now() - timezone.timedelta(days=10*365):
             active_details = "(NEVER BILLED)"
 
-        return f"id: {self.pk}; {self.status}, {self.amount_per_period} {self.token_symbol} / {self.frequency} {self.frequency_unit} for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile.handle} {active_details}"
+        return f"id: {self.pk}; {self.status}, {round(self.amount_per_period,1)} {self.token_symbol} / {self.frequency} {self.frequency_unit}, {int(self.num_tx_approved)} times for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile.handle} {active_details}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
@@ -693,7 +777,7 @@ next_valid_timestamp: {next_valid_timestamp}
                 return None
 
     def get_converted_monthly_amount(self):
-        converted_amount = self.get_converted_amount()
+        converted_amount = self.get_converted_amount() or 0
 
         total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
 
@@ -736,7 +820,8 @@ next_valid_timestamp: {next_valid_timestamp}
 
 @receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
 def psave_grant(sender, instance, **kwargs):
-
+    instance.contribution_count = instance.get_contribution_count
+    instance.contributor_count = instance.get_contributor_count
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
     #print(instance.id)
@@ -864,12 +949,23 @@ class Contribution(SuperModel):
         null=True,
         help_text=_('The associated Subscription.'),
     )
+    normalized_data = JSONField(
+        default=dict,
+        blank=True,
+        help_text=_('the normalized grant data; for easy consumption on read'),
+    )
 
     def __str__(self):
         """Return the string representation of this object."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
         txid_shortened = self.tx_id[0:10] + "..."
         return f"id: {self.pk}; {txid_shortened} => subs:{self.subscription}; {naturaltime(self.created_on)}"
+
+    @property
+    def is_first_in_sequence(self):
+        """returns true only IFF a contribution is the first in a sequence of subscriptions."""
+        other_contributions_after_this_one = Contribution.objects.filter(subscription=self.subscription, created_on__lt=self.created_on)
+        return not other_contributions_after_this_one.exists()
 
     def update_tx_status(self):
         """Updates tx status."""
@@ -897,6 +993,27 @@ def psave_contrib(sender, instance, **kwargs):
             "network":instance.subscription.grant.network,
         }
         )
+
+@receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
+def presave_contrib(sender, instance, **kwargs):
+
+    ele = instance
+    sub = ele.subscription
+    grant = sub.grant
+    instance.normalized_data = {
+        'id': grant.id,
+        'logo': grant.logo.url if grant.logo else None,
+        'url': grant.url,
+        'title': grant.title,
+        'created_on': ele.created_on.strftime('%Y-%m-%d'),
+        'frequency': int(sub.frequency),
+        'frequency_unit': sub.frequency_unit,
+        'num_tx_approved': int(sub.num_tx_approved),
+        'token_symbol': sub.token_symbol,
+        'amount_per_period_usdt': float(sub.amount_per_period_usdt),
+        'amount_per_period': float(sub.amount_per_period),
+        'tx_id': ele.tx_id,
+        }
 
 
 def next_month():
@@ -926,6 +1043,11 @@ class CLRMatch(SuperModel):
 class MatchPledge(SuperModel):
     """Define the structure of a MatchingPledge."""
 
+    PLEDGE_TYPES = [
+        ('tech', 'tech'),
+        ('media', 'media')
+    ]
+
     active = models.BooleanField(default=False, help_text=_('Whether or not the MatchingPledge is active.'))
     profile = models.ForeignKey(
         'dashboard.Profile',
@@ -940,6 +1062,7 @@ class MatchPledge(SuperModel):
         max_digits=50,
         help_text=_('The matching pledge amount in DAI.'),
     )
+    pledge_type = models.CharField(max_length=15, choices=PLEDGE_TYPES, default='tech', help_text=_('CLR pledge type'))
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
     end_date = models.DateTimeField(null=False, default=next_month)
     data = models.TextField(blank=True)

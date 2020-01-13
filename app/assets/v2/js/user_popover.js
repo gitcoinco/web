@@ -50,7 +50,7 @@ const renderPopOverData = data => {
         </div>
         <div class="stat-card mx-1 mb-2 py-2 px-5 px-sm-3 d-inline-block text-center">
           <h2 class="font-title font-weight-bold mb-0">
-            ${data.stats.success_rate ? Math.round(data.stats.success_rate * 100) : 0} %
+            ${data.stats.success_rate ? Math.round(data.stats.success_rate) : 0} %
           </h2>
           <p class="font-body mb-0">success rate</p>
         </div>
@@ -81,15 +81,24 @@ const renderPopOverData = data => {
     </div>
   `;
 };
+let controller = null;
 
 function openContributorPopOver(contributor, element) {
   const keywords = document.result.keywords || '';
   const contributorURL = `/api/v0.1/profile/${contributor}?keywords=${keywords}`;
 
   if (popoverData.filter(index => index[contributor]).length === 0) {
-    fetch(contributorURL, { method: 'GET' })
+    if (controller) {
+      controller.abort();
+    }
+    controller = new AbortController();
+    const signal = controller.signal;
+
+    userRequest = fetch(contributorURL, { method: 'GET', signal })
       .then(response => response.json())
       .then(response => {
+        popoverData.push({ [contributor]: response });
+        controller = null;
         element.popover({
           placement: 'auto',
           trigger: 'hover',
@@ -103,10 +112,9 @@ function openContributorPopOver(contributor, element) {
           html: true
         });
         $(element).popover('show');
-        popoverData.push({ [contributor]: response });
       })
       .catch(err => {
-        return console.error({ message: err }, 'error');
+        return console.warn({ message: err });
       });
   } else {
     element.popover({

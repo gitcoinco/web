@@ -20,6 +20,10 @@ a {
   color: #3E00FF;
 }
 
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
 .nav_avatar {
   width: 40px;
   height: 40px;
@@ -490,7 +494,7 @@ input[type=text].loading {
 }
 
 #primary_form {
-  max-width: 550px;
+  max-width: 550px; /* TODO: REMOVE */
   margin: 0 auto;
   padding: 0 2em;
 }
@@ -501,7 +505,9 @@ input[type=text].loading {
 }
 
 .submit_bounty #primary_form,
-.fulfill_bounty #primary_form {
+.fulfill_bounty #primary_form,
+.increase_bounty #primary_form,
+.payout_bounty #primary_form {
   max-width: none;
 }
 
@@ -546,22 +552,8 @@ input[type=text].loading {
   color: white;
 }
 
-.submit_bounty #network_status div {
-  display: inline;
-}
-
-#network_status div span {
-  color: #4aeba8;
-}
-
 .submit_bounty select[name=denomination] {
   text-align: left;
-}
-
-.admin-only {
-  background-color: #5495E1 !important;
-  color:white !important;
-  border: 1px solid white !important;
 }
 
 /* The alert message box */
@@ -1412,13 +1404,8 @@ input.is-invalid {
   letter-spacing: 0;
 }
 
-.modal.delete_account,
-.modal.notify_policy_update {
+.modal.delete_account {
   max-width: 34rem;
-}
-
-.notify_policy_update .button {
-  padding: 0.25rem 1.25rem;
 }
 
 .box_1 {
@@ -1580,8 +1567,8 @@ div.busyOverlay {
 }
 
 .privaterepo-instructions {
-  background: #F8F8F8;
-  padding: 1rem;
+  color: grey;
+  padding-top: 1rem;
 }
 
 @media (min-width: 768px) {
@@ -1646,4 +1633,8 @@ div.busyOverlay {
 .only_visible_to_me {
   padding: 3px 5px;
   border-radius: 3px;
+}
+
+.card-shadow {
+  box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, .1);
 }

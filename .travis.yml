@@ -32,11 +32,13 @@ jobs:
         - pip install codecov
         # Fetch and Install GeoIP database files.
         - sudo apt-get update && sudo apt-get install -y libmaxminddb-dev
-        - wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
-        - wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz
-        - gunzip GeoLite2-City.mmdb.gz && gunzip GeoLite2-Country.mmdb.gz
+        - wget --output-document GeoLite2-City.mmdb.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&date=20191231&license_key=7PZQgKNxgqTRhkWy&suffix=tar.gz"
+        - wget --output-document GeoLite2-Country.mmdb.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&date=20191231&license_key=7PZQgKNxgqTRhkWy&suffix=tar.gz"
+        - gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz
+        - tar -xvf GeoLite2-City.mmdb.tar && tar -xvf GeoLite2-Country.mmdb.tar
         - sudo mkdir -p /opt/GeoIP/
-        - sudo mv *.mmdb /opt/GeoIP/
+        - sudo mv GeoLite2-City_20191231/*.mmdb /opt/GeoIP/
+        - sudo mv GeoLite2-Country_20191231/*.mmdb /opt/GeoIP/
         # Install libvips dependencies.
         - sudo apt-get install -y libvips libvips-dev
         # Install Node and Python dependencies.

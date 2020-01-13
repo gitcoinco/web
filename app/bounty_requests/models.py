@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define bounty requests related models.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -54,10 +54,13 @@ class BountyRequest(SuperModel):
         related_name='bounty_requests',
     )
     github_url = models.CharField(max_length=255, default='')
+    github_org_name = models.CharField(max_length=50, default='')
     eth_address = models.CharField(max_length=50, blank=True)
     comment = models.TextField(max_length=500, default='')
     comment_admin = models.TextField(max_length=500, blank=True)
     amount = models.FloatField(blank=False, validators=[MinValueValidator(1.0)])
+
+    github_org_email = models.CharField(max_length=255, default='')
 
     objects = BountyQuerySet.as_manager()
 

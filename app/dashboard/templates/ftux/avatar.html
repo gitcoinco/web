@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -19,7 +19,10 @@
 
 <ul id="avatar-tabs" class="nav nav-tabs my-5" role="tablist">
   <li class="nav-item">
-    <a class="nav-link nav-line active" data-toggle="tab" href="#avatars-builder-tab" data-toggle="avatars-builder-tab" role="tab">Avatar Builder</a>
+    <a class="nav-link nav-line" data-toggle="tab" href="#avatars-builder-tab" data-toggle="avatars-builder-tab" role="tab">Avatar Builder (classic)</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link nav-line active" data-toggle="tab" href="#avatars-builder-3d-tab" data-toggle="avatars-builder-3d-tab" role="tab">Avatar Builder (3d)</a>
   </li>
   <li class="nav-item">
     <a class="nav-link nav-line" data-toggle="tab" href="#my-avatars-tab" data-toggle="my-avatars-tab" role="tab">My Avatars</a>
@@ -29,7 +32,7 @@
   </li>
 </ul>
 <div class="tab-content">
-  <div class="tab-pane fade show active" id="avatars-builder-tab" role="tabpanel">
+  <div class="tab-pane fade" id="avatars-builder-tab" role="tabpanel">
     <div class="row">
       <div class="col-12">
         <h2>{% trans "Build Your Gitcoin Avatar" %}
@@ -155,6 +158,54 @@
       </div>
     </div>
   </div>
+  <div class="tab-pane fade show active" id="avatars-builder-3d-tab" role="tabpanel">
+    <div id="avatars-builder-3d">
+      <div class="text-muted text-cetner empty-avatars">Build Your 3d Gitcoin Avatar</div>
+      <div class="avatars-container">
+        <img id=tdavatartarget src="/avatar/view3d">
+      </div>
+        <button type="button" id="random-3d-avatar-button" class="button button--primary">
+          Random Avatar
+        </button>
+        <button type="button" id="save-3d-avatar" class="button button--primary">
+          Save Avatar
+        </button>
+        <div id=skin_tones class=tones>
+          Skin:
+          {% for st in possible_skin_tones %}
+          <li data-tone='{{st}}' style="background-color: #{{st}}">
+            &nbsp;
+          </li>
+          {% endfor %}
+        </div>
+        <div id=hair_tones class=tones>
+          Hair:
+          {% for ht in possible_hair_tones %}
+          <li data-tone='{{ht}}' style="background-color: #{{ht}}">
+            &nbsp;
+          </li>
+          {% endfor %}
+        </div>
+      <div class="action-buttons">
+        {% for category, ids in 3d_avatar_params.by_category.items %}
+          <a href="#" class="select_avatar_type {{category}}" data-target="{{category}}">{{category}}</a>
+        {% endfor %}
+      </div>
+      <div class="targets">
+        {% for category, ids in 3d_avatar_params.by_category.items %}
+          <div class="category {{category}} {% if category != 'background' %}hidden{% endif %}">
+            {% for id in ids %}
+              <img class=tdselection data-id="{{id}}"
+                data-src="/avatar/view3d?mode=preview&ids={{id}}" data-altsrc="/avatar/view3d?mode=preview&ids={{id}}"
+                {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}"{% endif %}
+              >
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <a href="https://github.com/gitcoinco/web/issues/5326" target="_blank" rel="noopener noreferrer">{% trans "Don't see the right schwag?  Request new avatar attributes here" %}</a>
+  </div>
   <div class="tab-pane fade show" id="preset-avatars-tab" role="tabpanel">
     <div id="preset-avatars">
       <div class="text-muted text-cetner empty-avatars">No avatars</div>
@@ -179,3 +230,4 @@
   }
 </script>
 <script src="{% static "v2/js/avatar.js" %}"></script>
+<script src="{% static "v2/js/avatar3d.js" %}"></script>

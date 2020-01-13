@@ -47,6 +47,8 @@ MARKETING_EMAILS = [
     ('roundup', _('Roundup Emails'), _('Weekly')),
     ('new_bounty_notifications', _('New Bounty Notification Emails'), _('(up to) Daily')),
     ('important_product_updates', _('Product Update Emails'), _('Quarterly')),
+	('general', _('General Email Updates'), _('as it comes')),
+	('quarterly', _('Quarterly Email Updates'), _('Quarterly')),
 ]
 
 TRANSACTIONAL_EMAILS = [
@@ -62,7 +64,11 @@ TRANSACTIONAL_EMAILS = [
     ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured'))
 ]
 
-ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
+NOTIFICATION_EMAILS = [
+    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat'))
+]
+
+ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
 
 
 def premailer_transform(html):
@@ -92,6 +98,7 @@ def render_nth_day_email_campaign(to_email, nth, firstname):
     params = {
         "firstname": firstname,
         "subscriber": get_or_save_email_subscriber(to_email, "internal"),
+		"email_type": "welcome_mail"
     }
     response_html = premailer_transform(render_to_string(f"emails/campaigns/email_campaign_day_{nth}.html", params))
     response_txt = render_to_string(f"emails/campaigns/email_campaign_day_{nth}.txt", params)
@@ -240,6 +247,7 @@ def render_tip_email(to_email, tip, is_new):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'is_sender': to_email not in tip.emails,
         'is_receiver': to_email in tip.emails,
+		'email_type': 'tip'
     }
 
     response_html = premailer_transform(render_to_string("emails/new_tip.html", params))
@@ -294,6 +302,7 @@ def render_match_email(bounty, github_username):
     params = {
         'bounty': bounty,
         'github_username': github_username,
+		'email_type': 'bounty_match'
     }
     response_html = premailer_transform(render_to_string("emails/new_match.html", params))
     response_txt = render_to_string("emails/new_match.txt", params)
@@ -308,6 +317,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     params = {**quarterly_stats, **platform_wide_stats}
     params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
+    params['email_type'] = 'quarterly'
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
 
@@ -379,7 +389,7 @@ thanks for being a member of the community.
 
 alisa / frank (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         elif bounty.status == 'cancelled':
@@ -400,7 +410,7 @@ thanks again for being a member of the community.
 
 alisa / frank (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         else:
@@ -410,6 +420,7 @@ PS - we've got some new gitcoin schwag on order. send me your mailing address an
 
     params = {
         'txt': txt,
+		'email_type': 'bounty_feedback'
     }
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
     response_txt = txt
@@ -428,6 +439,7 @@ def render_admin_contact_funder(bounty, text, from_user):
 """
     params = {
         'txt': txt,
+		'email_type': 'admin_contact_funder'
     }
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
     response_txt = txt
@@ -435,7 +447,7 @@ def render_admin_contact_funder(bounty, text, from_user):
     return response_html, response_txt
 
 
-def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+def render_funder_stale(github_username, days=60, time_as_str='a couple months'):
     """Render the stale funder email template.
 
     Args:
@@ -451,14 +463,15 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
     response_txt = f"""
 hi {github_username},
 
-alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}.
+in the spirit of making Gitcoin better + checking in:
 
-- has anything been slipping on your issue board which might be bounty worthy?
+- have any issues which might be bounty worthy or projects you're hoping to build?
 - do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
+- are you interested in joining one of <a href="https://gitcoin.co/hackathon-list/">our upcoming hackathons?</a> it's possible
+we could do so at a discount, as you're a current funder on the platform
 
-our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days.
-
-appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
+appreciate you being a part of the community + let us know if you'd like some Gitcoin schwag, we can send a link your way to order some :)
 
 ~ alisa / frank (gitcoin product team)
 
@@ -477,8 +490,9 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'old_bounties': old_bounties,
         'bounties': bounties,
         'subscriber': sub,
-        'keywords': ",".join(sub.keywords),
+        'keywords': ",".join(sub.keywords) if sub and sub.keywords else '',
         'email_style': email_style,
+		'email_type': 'new_bounty_notifications'
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -501,6 +515,7 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
         'subscriber': subscriber,
         'profile': profile.handle,
         'notifications': notifications,
+		'email_type': 'roundup'
     }
 
     subject = "Your unread notifications"
@@ -588,7 +603,8 @@ def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
           'from': from_date,
           'to': to_date
         },
-        'debug': activity_types
+        'debug': activity_types,
+		'email_type': 'roundup'
     }
 
     response_html = premailer_transform(render_to_string("emails/recap/weekly_founder_recap.html", params))
@@ -601,6 +617,7 @@ def render_gdpr_reconsent(to_email):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
         'subscriber': sub,
+		'email_type': 'roundup'
     }
 
     response_html = premailer_transform(render_to_string("emails/gdpr_reconsent.html", params))
@@ -625,7 +642,8 @@ def render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invi
         'from_profile': from_profile,
         'to_email': to_email,
         'invite_url': invite_url,
-        'kudos_invite': kudos_invite
+        'kudos_invite': kudos_invite,
+		'email_type': 'bounty'
     }
     response_html = premailer_transform(render_to_string("emails/share_bounty_email.html", params))
     response_txt = render_to_string("emails/share_bounty_email.txt", params)
@@ -635,6 +653,7 @@ def render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invi
 def render_new_work_submission(to_email, bounty):
     params = {
         'bounty': bounty,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -648,6 +667,7 @@ def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
     params = {
         'bounty': bounty,
         'unrated_count': unrated_count,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -660,6 +680,7 @@ def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
 def render_new_bounty_rejection(to_email, bounty):
     params = {
         'bounty': bounty,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -672,6 +693,7 @@ def render_new_bounty_rejection(to_email, bounty):
 def render_bounty_changed(to_email, bounty):
     params = {
         'bounty': bounty,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -698,6 +720,7 @@ def render_bounty_expire_warning(to_email, bounty):
         'unit': unit,
         'is_claimee': (to_email.lower() in fulfiller_emails),
         'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -712,6 +735,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
         'bounty': bounty,
         'interest': interest,
         'time_delta_days': time_delta_days,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -725,6 +749,7 @@ def render_bounty_unintersted(to_email, bounty, interest):
     params = {
         'bounty': bounty,
         'interest': interest,
+		'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -753,6 +778,7 @@ def render_faucet_request(fr):
     params = {
         'fr': fr,
         'amount': settings.FAUCET_AMOUNT,
+		'email_type': 'faucet',
         'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
     }
 
@@ -766,6 +792,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
     params = {
         'bounty': bounty,
         'interest': interest,
+		'email_type': 'bounty',
         'time_delta_days': time_delta_days,
         'subscriber': get_or_save_email_subscriber(interest.profile.email, 'internal'),
     }
@@ -782,6 +809,7 @@ def render_gdpr_update(to_email):
         'terms_of_use_link': 'https://gitcoin.co/legal/terms',
         'privacy_policy_link': 'https://gitcoin.co/legal/privacy',
         'cookie_policy_link': 'https://gitcoin.co/legal/cookie',
+		'email_type': 'general'
     }
 
     subject = "Gitcoin: Updated Terms & Policies"
@@ -795,11 +823,24 @@ def render_reserved_issue(to_email, user, bounty):
     params = {
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'user': user,
-        'bounty': bounty
+        'bounty': bounty,
+		'email_type': 'bounty'
     }
     subject = "Reserved Issue"
     response_html = premailer_transform(render_to_string("emails/reserved_issue.html", params))
     response_txt = render_to_string("emails/reserved_issue.txt", params)
+    return response_html, response_txt, subject
+
+
+def render_bounty_request(to_email, model, base_url):
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'model': model,
+        'base_url': base_url
+    }
+    subject = _("New Bounty Request")
+    response_html = premailer_transform(render_to_string("emails/bounty_request.html", params))
+    response_txt = render_to_string("emails/bounty_request.txt", params)
     return response_html, response_txt, subject
 
 
@@ -809,6 +850,7 @@ def render_start_work_approved(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -825,6 +867,7 @@ def render_start_work_rejected(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -841,6 +884,7 @@ def render_start_work_new_applicant(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -857,6 +901,7 @@ def render_start_work_applicant_about_to_expire(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -873,6 +918,7 @@ def render_start_work_applicant_expired(interest, bounty):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'interest': interest,
         'bounty': bounty,
+		'email_type': 'bounty',
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -886,8 +932,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "The Long and Winding Road"
-    new_kudos_pks = [4546, 4550, 4542]
+    subject = "The action starts *Monday 1/6/2020*!"
+    new_kudos_pks = [7315, 7275, 6188]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -897,82 +943,75 @@ def render_new_bounty_roundup(to_email):
         email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
-<h3>Happy Kudos Friday!</h3>
+<h3>New Kudos This Month</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
     '''
+
     intro = f'''
 <p>
 Hey Gitcoiners,
 </p>
 <p>
-    The <i>Long and Winding Road</i> that leads to Devcon draws near; it's time to get excited. We're proud to announce a bricolage of top tier sponsors: the Ethereum Foundation, Algorand, ConsenSys Grants, ConsenSys Labs, and more. Winners of the hackathon will be revealed at <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347624">Gitcoin's Grow Open Source Day in Tokyo.</a> Expect more of the goodness we've captured with our hackathons so far — compelling challenges, glorious prize pools, and impeccible support. Get signed up for the <a href="https://hackathons.gitcoin.co/the-road-to-devcon/">Road to Devcon here.</a>
+    Happy New Years :)  The Gitcoin team has been spending time with friends & family for the last two weeks, celebrating the end of the decade.
 </p>
 <p>
-    Want $5? Help us decide where the $100k for Gitcoin Grants Round 3 is allocated. The steps are as follows: Step 1) Use this link: https://gitcoin.co/grants?cb=grants_signal_fund_enable Step 2) Click ‘Fund Grant’ any grant you’d like to support. Step 3) Click ‘Use Voucher For This Grant’. Until the 30th of September, we'll be matching contributions to Gitcoin Grants with quadratic voting. Check out the projects on Gitcoin Grants <a href="https://gitcoin.co/grants/">here.</a>
+   Next week we're back in action + looking to start the new year off strong with over $200k in OSS Funding for our community.  The <a href="https://gitcoin.co/hackathon/take-back-the-web/?">Take Back the Web</a> Virtual Hackathon starts 1/6.  And so does <a href="https://gitcoin.co/blog/gitcoin-grants-2020/">Gitcoin Grants Round 4</a>.  Click <a href="https://gitcoin.co/hackathon/take-back-the-web/?">here</a> to checkout Take Back the Web, and click <a href="https://gitcoin.co/grants/">here</a> to checkout Gitcoin Grants.
 </p>
-<p>
-    Speaking of Devcon, <i>Here Comes the Devcon Events</i>. We're excited to host a suite of events during our Grow Open Source Day alongside Infura, Bounties Network, and C-Dili. If you'll be in Japan for Devcon, stop by. Reserve a spot <a href="https://www.eventbrite.com/e/grow-open-source-day-by-gitcoin-infura-bounties-network-c-dili-tickets-71705347625">here.</a>
-</p>
+
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is back this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday with Algorand, one of our sponsors for The Road to Devcon. </a>
-        </li>
-        <li>
-        Thanks to all who participated in the Ethereal Blocks hackathon. We have the announcement post for the winners ready to drop tomorrow. Keep an eye on the ol' <a href="https://twitter.com/gitcoin">Twitter feed.</a>
+            Join us on todays Gitcoin Livestream to chat Web3 Business Models with Thibauld from Fairmint, Paul from Sablier, and more! <a href="https://gitcoin.co/livestream">Join at 2pm ET</a>.
         </li>
     </ul>
 </p>
 <p>
-Back to shipping,
+Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'mirshko',  
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Fix Metadata For Subpages',
-        'link': 'https://gitcoin.co/issue/centrifuge/website/144/3449',
+        'what': 'Removed Civic from the MyBit application',
+        'link': 'https://gitcoin.co/issue/MyBitFoundation/MyBit-Go.app/515/3801',
         'link_copy': 'View more',
     }, {
-        'who': 'AshleyOyt',
+        'who': 'seichris',
         'who_link': True,
-        'what': '768px width to 639px, columns get messed up',
-        'link': 'https://gitcoin.co/issue/nateberkopec/speedshop/1/3470',
+        'what': 'Re-Designed Mockup For Zero-Knowledge Assets',
+        'link': 'https://gitcoin.co/issue/invisible-college/democracy/36/3786',
         'link_copy': 'View more',
     }, {
-        'who': 'chuckwagoncomputing',
+        'who': 'mul1sh',
         'who_link': True,
-        'what': 'Create upload pipeline',
-        'link': 'https://gitcoin.co/issue/knocte/DotNetLightning/1/3412',
+        'what': 'Removed Cursor Drifts During Navigation on IOS',
+        'link': 'https://gitcoin.co/issue/cybersemics/em/4/3715',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Solana',
-        'title': 'Build on Solana: Join the Private Beta',
-        'image_url': '',
-        'link': 'http://bit.ly/solana-beta',
-        'cta': 'Join the Private Beta',
-        'body': [
-            'Solana is a Lightning-fast distributed ledger technology for mission-critical decentralized apps.',
-            'We are currently taking applications for an incredibly limited beta program for early adopters of Solana to launch their projects alongside our mainnet later in 2019.'
-        ]
-    }
+    'name': 'CodeFund',
+    'title': 'Does your project need 🦄 developers?',
+    'image_url': '',
+    'link': 'http://bit.ly/codefund-gitcoin-weekly',
+    'cta': 'Learn More',
+    'body': [
+       'CodeFund is a privacy-focused ethical advertising network (by Gitcoin) that funds open source projects.',
+       'We specialize in helping companies connect with talented developers and potential customers on developer-centric sites that typically do not allow ads.'
+    ]
+}
 
     bounties_spec = [{
-        'url': 'https://github.com/ArweaveTeam/Bounties/issues/13',
-        'primer': 'Decentralized Discussion Board',
+        'url': 'https://github.com/gitcoinco/web/issues/5465',
+        'primer': 'Are you an illustrator?  Design a Gitcoin bot + earn some DAI!',
     }, {
-        'url': 'https://github.com/kauri-io/Content/issues/52',
-        'primer': 'Deploying Full stack Dapp to Google Cloud',
-    }, {
-        'url': 'https://github.com/hoprnet/hopr-website/issues/8',
-        'primer': 'Create d3.js chart from Ethereum events via web3.js / Metamask',
-}, ]
+        'url': 'https://github.com/gitcoinco/web/issues/4943',
+        'primer': 'Find an area where Gitcoins documentation is lacking + earn some ETH by fixing it',
+    }, ]
 
 
     num_leadboard_items = 5
@@ -1004,7 +1043,7 @@ Back to shipping,
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
-            .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
+            .filter(leaderboard=key, product='all').order_by('rank')[0:num_leadboard_items]
     if not len(leaderboard['quarterly_payers']['items']):
         leaderboard = []
 
@@ -1033,6 +1072,7 @@ Back to shipping,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
         'sponsor': sponsor,
+		'email_type': 'roundup',
         'email_style': email_style,
     }
 

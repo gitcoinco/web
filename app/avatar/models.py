@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Avatar models.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -96,14 +96,22 @@ class BaseAvatar(SuperModel):
         if self.hash:
             return BaseAvatar.objects.filter(profile=self.profile, hash=self.hash).last()
 
-    def convert_field(self, source, input_fmt, output_fmt):
+    def convert_field(self, source, input_fmt, output_fmt, height=215, width=215, preferred_method='', extra_flags=''):
         """Handle converting from the source field to the target based on format."""
         try:
             # Convert the provided source to the specified output and store in BytesIO.
             if output_fmt == 'svg':
                 tmpfile_io = convert_wand(source, input_fmt=input_fmt, output_fmt=output_fmt)
             else:
-                tmpfile_io = convert_img(source, input_fmt=input_fmt, output_fmt=output_fmt)
+                tmpfile_io = convert_img(
+                    source,
+                    input_fmt=input_fmt,
+                    output_fmt=output_fmt,
+                    height=height,
+                    width=width,
+                    preferred_method=preferred_method,
+                    extra_flags=extra_flags
+                )
             if self.profile:
                 png_name = self.profile.handle
             else:
@@ -131,6 +139,7 @@ class BaseAvatar(SuperModel):
 
 class CustomAvatar(BaseAvatar):
     recommended_by_staff = models.BooleanField(default=False)
+    style = models.CharField(max_length=10, default='original')
     config = JSONField(default=dict, help_text=_('The JSON configuration.'))
 
     @classmethod
@@ -146,6 +155,36 @@ class CustomAvatar(BaseAvatar):
                 return similar_avatar
         except Exception as e:
             logger.warning("There was error during avatar conversion")
+        return avatar
+
+    @classmethod
+    def create_3d(cls, profile, params, svg):
+        avatar = cls(profile=profile, config=params, style='3d', svg=svg)
+
+        with NamedTemporaryFile(mode='w+', suffix='.svg') as tmp:
+            tmp.write(svg)
+            with open(tmp.name) as file:
+                svg_name = profile.handle if profile and profile.handle else token_hex(8)
+                avatar.svg.save(f"{svg_name}.svg", File(file), save=False)
+
+        try:
+            avatar_png = avatar.convert_field(
+                avatar.svg,
+                'svg',
+                'png',
+                height=1000,
+                width=1000,
+                preferred_method='inkscape',
+                extra_flags='--export-area-drawing'
+            )
+            avatar.png = avatar_png
+            avatar.hash = BaseAvatar.calculate_hash(Image.open(BytesIO(avatar.png.read())))
+            similar_avatar = avatar.find_similar()
+            if similar_avatar:
+                return similar_avatar
+        except Exception as e:
+            logger.warning("There was error during avatar conversion")
+            logger.exception(e)
         return avatar
 
     def select(self, profile):
@@ -215,6 +254,8 @@ class SocialAvatar(BaseAvatar):
 @receiver(post_save, sender=SocialAvatar, dispatch_uid="psave_avatar")
 @receiver(post_save, sender=CustomAvatar, dispatch_uid="psave_avatar2")
 def psave_avatar(sender, instance, **kwargs):
+    if kwargs['raw']:  # Skip adding updated_avatar activity if loading avatars from fixture
+        return
     from dashboard.models import Activity
     metadata = {'url': instance.png.url if getattr(instance, 'png', False) else None, }
     Activity.objects.create(profile=instance.profile, activity_type='updated_avatar', metadata=metadata)

@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -93,7 +93,7 @@
                   <div class="row">
                     <div class="col-12 col-md-6">
                       <label class="font-body">{% trans "Monthly amount sought in DAI" %}</label>
-                      <input type="number" id="amount_goal" name="amount_goal" class="form__input form__input-lg" min="0.001" required />
+                      <input type="number" id="amount_goal" name="amount_goal" class="form__input form__input-lg" min="0.001" step=".001" required />
                     </div>
                     <div class="col-12 col-md-6">
                       <label class="font-body">{% trans "Required Token For Subscription" %}</label>
@@ -106,7 +106,7 @@
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-admin_address">{% trans "Recipient Wallet Address" %}</label>
-                  <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required/>
+                  <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required placeholder="0x00... or domain.eth"/>
                 </div>
 
 
@@ -114,7 +114,8 @@
                   <label class="font-body">{% trans "Project Logo" %}</label>
                   <div class="form__drop" id="js-drop">
                     <input id="img-project" type="file" name="input_image" accept="image/*">
-                    <span>{% trans "Drag & Drop or Browse" %}</span>
+                    <span>{% trans "Drag & Drop or Browse" %} </span> 
+                    <span> | {% trans "Square or 16:9; above 400x400 preferred" %}</span>
                     <img id="preview"/>
                   </div>
                 </div>
@@ -127,6 +128,7 @@
                 </div>
 
                 <div class="form__footer text-center">
+                  <p class="font-caption mb-3 text-black-60">* Grant will appear on the grants search only after being reviewed by the Gitcoin Team</p>
                   <button class="button button--primary button--full" id="new_button">{% trans "Create Grant" %}</button>
                 </div>
 
@@ -150,7 +152,7 @@
     {% include 'shared/current_profile.html' %}
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
   </body>

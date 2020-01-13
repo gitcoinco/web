@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define additional context data to be passed to any request.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -60,15 +60,19 @@ def preprocess(request):
         record_visit = not profile.last_visit or profile.last_visit < (
             timezone.now() - timezone.timedelta(seconds=RECORD_VISIT_EVERY_N_SECONDS)
         )
-
         if record_visit:
             ip_address = get_ip(request)
             profile.last_visit = timezone.now()
             try:
+                profile.as_dict = json.loads(json.dumps(profile.to_dict()))
                 profile.save()
             except Exception as e:
                 logger.exception(e)
-            metadata = {'useragent': request.META['HTTP_USER_AGENT'], }
+            metadata = {
+                'useragent': request.META['HTTP_USER_AGENT'],
+                'referrer': request.META.get('HTTP_REFERER', None),
+                'path': request.META.get('PATH_INFO', None),
+            }
             UserAction.objects.create(
                 user=request.user,
                 profile=profile,
@@ -87,10 +91,28 @@ def preprocess(request):
         callback = request.GET.get('cb')
         handle_marketing_callback(callback, request)
 
+    chat_unread_messages = False
+
+    if profile and profile.chat_id:
+        try:
+            from chat.tasks import get_driver
+            chat_driver = get_driver()
+
+            chat_unreads_request = chat_driver.teams.get_team_unreads_for_user(profile.chat_id)
+
+            if 'message' not in chat_unreads_request:
+                for teams in chat_unreads_request:
+                    if teams['msg_count'] > 0 or teams['mention_count'] > 0:
+                        chat_unread_messages = True
+                        break
+        except Exception as e:
+            logger.error(str(e))
+
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
         'num_slack': num_slack,
+        'chat_unread_messages': chat_unread_messages,
         'github_handle': request.user.username if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
@@ -98,6 +120,7 @@ def preprocess(request):
         'raven_js_dsn': settings.SENTRY_JS_DSN,
         'release': settings.RELEASE,
         'env': settings.ENV,
+        'INFURA_V3_PROJECT_ID': settings.INFURA_V3_PROJECT_ID,
         'email_key': email_key,
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
@@ -113,6 +136,8 @@ def preprocess(request):
         'is_moderator': profile.is_moderator if profile else False,
         'persona_is_funder': profile.persona_is_funder if profile else False,
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
+        'profile_url': profile.url if profile else False,
+        'quests_live': settings.QUESTS_LIVE,
     }
     context['json_context'] = json.dumps(context)
 

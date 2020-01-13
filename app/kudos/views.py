@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define view for the Kudos app.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -23,6 +23,7 @@ import logging
 import random
 import re
 import urllib.parse
+import uuid
 
 from django.conf import settings
 from django.contrib import messages
@@ -38,6 +39,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+import boto3
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_nonce, get_web3
@@ -45,13 +47,14 @@ from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
 from kudos.utils import kudos_abi
+from marketing.mails import new_kudos_request
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
 
 from .forms import KudosSearchForm
 from .helpers import get_token
-from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, TransferEnabledFor
+from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, TokenRequest, TransferEnabledFor
 
 logger = logging.getLogger(__name__)
 
@@ -175,7 +178,7 @@ def image(request, kudos_id, name):
     return response
 
 
-def details_by_address_and_token_id(request, address, token_id, name):
+def details_by_address_and_token_id(request, address, token_id, name=None):
     kudos = get_token(token_id=token_id, network=settings.KUDOS_NETWORK, address=address)
     return redirect(f'/kudos/{kudos.id}/{kudos.name}')
 
@@ -192,6 +195,7 @@ def details(request, kudos_id, name):
     context = {
         'send_enabled': kudos.send_enabled_for(request.user),
         'is_outside': True,
+        'reward_for': kudos.quests_reward.filter(visible=True),
         'active': 'details',
         'title': 'Details',
         'card_title': _('Each Kudos is a unique work of art.'),
@@ -458,6 +462,13 @@ def send_4(request):
         kudos_transfer.from_username,
         'new_kudos',
     )
+    if is_direct_to_recipient:
+        record_kudos_activity(
+            kudos_transfer,
+            kudos_transfer.username,
+            'receive_kudos'
+        )
+        
     return JsonResponse(response)
 
 
@@ -507,6 +518,7 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
             'value_in_usdt_now': str(kudos_transfer.value_in_usdt_now),
             'github_url': kudos_transfer.github_url,
             'to_username': kudos_transfer.username,
+            'from_username': kudos_transfer.from_username,
             'from_name': kudos_transfer.from_name,
             'received_on': str(kudos_transfer.received_on) if kudos_transfer.received_on else None
         }
@@ -598,12 +610,13 @@ def receive(request, key, txid, network):
             if request.user.is_authenticated:
                 kudos_transfer.recipient_profile = request.user.profile
             kudos_transfer.save()
+            record_user_action(kudos_transfer.username, 'new_kudos', kudos_transfer)
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
             record_kudos_activity(
                 kudos_transfer,
-                kudos_transfer.from_username,
-                'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+                kudos_transfer.username,
+                'receive_kudos'
             )
             messages.success(request, _('This kudos has been received'))
         except Exception as e:
@@ -661,52 +674,65 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
     else:
 
         signed = w3.eth.account.signTransaction(tx, private_key)
+        retry_later = False
         try:
             txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+        except Exception as e:
+            txid = "pending_celery"
+            retry_later = True
 
-            with transaction.atomic():
-                kudos_transfer = KudosTransfer.objects.create(
-                    emails=[profile.email],
-                    # For kudos, `token` is a kudos.models.Token instance.
-                    kudos_token_cloned_from=coupon.token,
-                    amount=coupon.token.price_in_eth,
-                    comments_public=coupon.comments_to_put_in_kudos_transfer,
-                    ip=ip_address,
-                    github_url='',
-                    from_name=coupon.sender_profile.handle,
-                    from_email='',
-                    from_username=coupon.sender_profile.handle,
-                    username=profile.handle,
-                    network=coupon.token.contract.network,
-                    from_address=kudos_owner_address,
-                    is_for_bounty_fulfiller=False,
-                    metadata={'coupon_redemption': True, 'nonce': nonce},
-                    recipient_profile=profile,
-                    sender_profile=coupon.sender_profile,
-                    txid=txid,
-                    receive_txid=txid,
-                    tx_status='pending',
-                    receive_tx_status='pending',
+        with transaction.atomic():
+            kudos_transfer = KudosTransfer.objects.create(
+                emails=[profile.email],
+                # For kudos, `token` is a kudos.models.Token instance.
+                kudos_token_cloned_from=coupon.token,
+                amount=coupon.token.price_in_eth,
+                comments_public=coupon.comments_to_put_in_kudos_transfer,
+                ip=ip_address,
+                github_url='',
+                from_name=coupon.sender_profile.handle,
+                from_email='',
+                from_username=coupon.sender_profile.handle,
+                username=profile.handle,
+                network=coupon.token.contract.network,
+                from_address=kudos_owner_address,
+                is_for_bounty_fulfiller=False,
+                metadata={'coupon_redemption': True, 'nonce': nonce},
+                recipient_profile=profile,
+                sender_profile=coupon.sender_profile,
+                txid=txid,
+                receive_txid=txid,
+                tx_status='pending',
+                receive_tx_status='pending',
+            )
+
+            # save to DB
+            BulkTransferRedemption.objects.create(
+                coupon=coupon,
+                redeemed_by=profile,
+                ip_address=ip_address,
+                kudostransfer=kudos_transfer,
                 )
 
-                # save to DB
-                BulkTransferRedemption.objects.create(
-                    coupon=coupon,
-                    redeemed_by=profile,
-                    ip_address=ip_address,
-                    kudostransfer=kudos_transfer,
-                    )
+            coupon.num_uses_remaining -= 1
+            coupon.current_uses += 1
+            coupon.save()
 
-                coupon.num_uses_remaining -= 1
-                coupon.current_uses += 1
-                coupon.save()
+            # user actions
+            record_user_action(kudos_transfer.username, 'new_kudos', kudos_transfer)
+            record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
+            record_kudos_activity(
+                kudos_transfer,
+                kudos_transfer.username,
+                'receive_kudos'
+            )
 
-                # send email
-                maybe_market_kudos_to_email(kudos_transfer)
-        except Exception as e:
-            logger.exception(e)
-            error = "Could not redeem your kudos.  Please try again soon."
-            return None, error, None
+            # send email
+            maybe_market_kudos_to_email(kudos_transfer)
+
+            if retry_later:
+                from kudos.tasks import redeem_bulk_kudos
+                redeem_bulk_kudos.delay(kudos_transfer.id, signed.rawTransaction.hex())
 
     return True, None, kudos_transfer
 
@@ -720,7 +746,7 @@ def receive_bulk(request, secret):
     coupon = coupons.first()
     _class = request.GET.get('class', '')
     if coupon.num_uses_remaining <= 0:
-        messages.info(request, f'Sorry but the coupon for a free kudos has has expired.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
+        messages.info(request, f'Sorry but the coupon for a free kudos has been used already.  Contact the person who sent you the coupon link, or you can still purchase one on this page.')
         return redirect(coupon.token.url)
 
     error = False
@@ -752,6 +778,71 @@ def receive_bulk(request, secret):
         'class': _class,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
-        'tweet_text': urllib.parse.quote_plus(tweet_text)
+        'tweet_text': urllib.parse.quote_plus(tweet_text),
+        'tweet_url': coupon.token.url if not request.GET.get('tweet_url') else request.GET.get('tweet_url'),
     }
     return TemplateResponse(request, 'transaction/receive_bulk.html', params)
+
+
+def newkudos(request):
+    context = {
+        'active': 'newkudos',
+        'msg': None,
+        'nav': 'kudos',
+        'title': "Mint new Kudos",
+    }
+
+    if not request.user.is_authenticated:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+        required_fields = ['name', 'description', 'priceFinney', 'artist', 'platform', 'numClonesAllowed', 'tags', 'to_address']
+        validation_passed = True
+        for key in required_fields:
+            if not request.POST.get(key):
+                context['msg'] = str(_('You must provide the following fields: ')) + key
+                validation_passed = False
+        if validation_passed:
+            #upload to s3
+            img = request.FILES.get('photo')
+            session = boto3.Session(
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            )
+
+            s3 = session.resource('s3')
+            key = f'media/uploads/{uuid.uuid4()}_{img.name}'
+            response = s3.Bucket(settings.MEDIA_BUCKET).put_object(Key=key, Body=img, ACL='public-read', ContentType='image/svg+xml')
+            artwork_url = f'https://{settings.MEDIA_BUCKET}.s3-us-west-2.amazonaws.com/{key}'
+
+            # save / send email
+            obj = TokenRequest.objects.create(
+                profile=request.user.profile,
+                name=request.POST['name'],
+                description=request.POST['description'],
+                priceFinney=request.POST['priceFinney'],
+                artist=request.POST['artist'],
+                platform=request.POST['platform'],
+                numClonesAllowed=request.POST['numClonesAllowed'],
+                tags=request.POST['tags'].split(","),
+                to_address=request.POST['to_address'],
+                artwork_url=artwork_url,
+                network='mainnet',
+                approved=False,
+                metadata={
+                    'ip': get_ip(request),
+                    'email': request.POST.get('email'),
+                    }
+                )
+            new_kudos_request(obj)
+
+            context['msg'] = str(_('Your Kudos has been submitted and will be listed within 2 business days if it is accepted.'))
+
+            if request.user.is_staff:
+                if request.POST.get('mint_and_sync'):
+                    from kudos.tasks import mint_token_request
+                    mint_token_request.delay(obj.id)
+                    context['msg'] = str(_('Kudos mint/sync submitted'))
+
+    return TemplateResponse(request, 'newkudos.html', context)

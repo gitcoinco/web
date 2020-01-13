@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -16,14 +16,15 @@
 {% endcomment %}
 {% load i18n static %}
 <div class="row" id="success_container" style="display: none; min-height: 500px;">
-  <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center">
-    <div class="d-flex justify-content-center flex-column mt-5">
-      <h3>{% trans "Transaction Sent" %}</h3>
-      {% include 'svgs/success.svg' %}
-      <a class="button button--primary mt-3 text-center" href="{{bounty.url}}">
-        {% trans "Back to Bounty" %}
-      </a>
+  <div class="col text-center">
+    <div class="mt-5">
+      <h3 class="font-title text-center">{% trans "Transaction Sent" %}</h3>
+      <img class="my-4" src="{% static "v2/images/modals/persona-choose.svg" %}" height="180">
+      <p>
+        <a class="mt-4 font-body btn btn-gc-blue btn-lg text-center" href="{{bounty.url}}">
+          {% trans "Back to Bounty" %}
+        </a>
+      </p>
     </div>
   </div>
 </div>
-

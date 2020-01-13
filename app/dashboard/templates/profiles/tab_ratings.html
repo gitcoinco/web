@@ -4,14 +4,15 @@
     {% include "shared/rate_bounties.html" %}
   </div>
 {% endif %}
-<div class="static-stars my-3 d-flex">
+<div class="static-stars rating--small my-3 d-flex">
   {% for i in ratings %}
-    <i class="fa fa-star align-self-center {% if avg_rating_scaled.overall != 0 and i <= avg_rating_scaled.overall %}fas{% endif %}"></i>
+    <i class="far fa-star align-self-center {% if avg_rating_scaled.overall != 0 and i <= avg_rating_scaled.overall %}fas{% endif %}"></i>
   {% endfor %}
   <div class="font-weight-bold">
 	  &nbsp;&nbsp;{{ avg_rating_scaled.total_rating }} {% trans "rating" %}{{avg_rating_scaled.total_rating | pluralize}}
   </div>
 </div>
+
 <div class="row">
   <div class="col-4">
 	  <div class="row">
@@ -74,10 +75,31 @@
 	  </div>
   </div>
 </div>
+
+<div class="border-bottom my-3"></div>
+
+{% if not profile.is_org %}
+  <div class="container px-md-0 tab2">
+    <div class="row">
+      <h3 class="font-body mt-1 mb-1">Monthly Summary</h3>
+      {% include "profiles/earningsgraph.html" with amount=5.1 graph_type="ratings/rating" %}
+    </div>
+  </div>
+{% endif %}
+
 <div class="border-bottom my-3"></div>
 <div class="tab-reviews">
-  <h6 class="font-weight-bold">Reviews</h6>
+  <h6 class="font-weight-bold">Reviews Received</h6>
   {% for feedback in feedbacks_got %}
+    <div class="d-flex activity row mb-0 {% cycle 'odd' 'even' %} pt-3 pb-3">
+      {% include "shared/feedback.html" %}
+    </div>
+  {% endfor %}
+</div>
+<div class="border-bottom my-3"></div>
+<div class="tab-reviews">
+  <h6 class="font-weight-bold">Reviews Sent</h6>
+  {% for feedback in feedbacks_sent %}
     <div class="d-flex activity row mb-0 {% cycle 'odd' 'even' %} pt-3 pb-3">
       {% include "shared/feedback.html" %}
     </div>

@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -44,13 +44,9 @@
           {% trans "Send Kudos" %}
         </a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" data-gtm="profile" href="{% url "profile" %}">
+        <a class="dropdown-item" data-gtm="profile" href="{{profile_url}}">
           <i class="fas fa-user"></i>
           {% trans "My Profile" %}
-        </a>
-        <a class="dropdown-item" href="{% url "grants:profile" %}">
-          <i class="fas"><img src="{% static "v2/images/grants/icons/black.svg" %}"></i>
-          {% trans "My Grants" %}
         </a>
       {% else %}
         <a class="dropdown-item" data-gtm="get started" href="{% url "get_gitcoin" %}">
@@ -95,9 +91,16 @@
       </a>
     </div>
   </div>
-  <a href="/profile/" class="nav_avatar d-none d-md-block"
-    style="background-image:url({% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %})" data-gtm="profile">
+  <a href="/profile/" id="nav_auth_profile" class="nav_avatar d-none d-md-block"
+   data-gtm="profile">
   </a>
+  <script>
+    setInterval(function(){
+      if($ && !$("#nav_auth_profile").attr('background-image')){
+        $("#nav_auth_profile").css('background-image', 'url("{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}")')
+      }
+    }, 1000)
+  </script>
 
 {% else %}
   <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">

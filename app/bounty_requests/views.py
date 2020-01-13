@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define bounty request views.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -24,6 +24,7 @@ from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+import requests
 from linkshortener.models import Link
 from marketing.mails import new_bounty_request
 from ratelimit.decorators import ratelimit
@@ -60,7 +61,16 @@ def bounty_request(request):
             return JsonResponse({'error': 'Invalid JSON.'}, status=400)
 
         model = result.save(commit=False)
+
+        gh_org_api_url = 'https://api.github.com/orgs/' + model.github_org_name
+        gh_org_api_resp = requests.get(url=gh_org_api_url).json()
+
+        gh_org_email = ''
+        if gh_org_api_resp is not None and gh_org_api_resp.get('email') is not None:
+            gh_org_email = gh_org_api_resp['email']
+
         model.requested_by = profile
+        model.github_org_email = gh_org_email
         model.save()
         new_bounty_request(model)
         return JsonResponse({'msg': _('Bounty Request received.')}, status=200)

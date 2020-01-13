@@ -76,7 +76,27 @@ const init = () => {
     $(this).select2();
   });
 
-  $('#create-grant').validate({
+  $('#input-admin_address').on('change', function() {
+    $('.alert').remove();
+    const validator = $('#create-grant').validate();
+    let address = $(this).val();
+
+    if (isNaN(parseInt(address))) {
+      web3.eth.ens.getAddress(address).then(function(result) {
+        $('#input-admin_address').val(result);
+        return result;
+      }).catch(function() {
+        validator.showErrors({
+          'admin_address': 'Please check your address!'
+        });
+        return _alert({ message: gettext('Please check your address and try again.') }, 'error');
+      });
+    }
+  });
+
+  $('#create-grant').submit(function(e) {
+    e.preventDefault();
+  }).validate({
     submitHandler: function(form) {
       let data = {};
 
@@ -142,8 +162,9 @@ const init = () => {
             arguments: args
           }).send({
             from: accounts[0],
-            gas: 3000000,
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+            gas: web3.utils.toHex(gas_amount(document.location.href)),
+            gasLimit: web3.utils.toHex(gas_amount(document.location.href))
           }).on('error', function(error) {
             console.log('1', error);
           }).on('transactionHash', function(transactionHash) {
@@ -167,7 +188,7 @@ const init = () => {
             formData.append('contract_version', $('#contract_version').val());
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('network', $('#network').val());
-            formData.append('team_members', $('#input-team_members').val());
+            formData.append('team_members[]', $('#input-team_members').val());
             saveGrant(formData, false);
 
             document.issueURL = linkURL;
@@ -239,6 +260,7 @@ const init = () => {
           });
         });
       });
+      return false;
     }
   });
 
@@ -258,7 +280,8 @@ const init = () => {
     $('#js-token').select2();
     $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
     $('#js-token').append("<option value='0x0000000000000000000000000000000000000000' selected='selected'>Any Token");
+    $('.select2-selection__rendered').hover(function() {
+      $(this).removeAttr('title');
+    });
   });
-
-  $('.select2-selection__rendered').removeAttr('title');
 };

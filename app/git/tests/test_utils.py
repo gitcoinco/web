@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle github utility related tests.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -240,7 +240,7 @@ class GitUtilitiesTest(TestCase):
     @responses.activate
     def test_get_user(self):
         """Test the github utility get_user method."""
-        url = 'https://api.github.com/users/gitcoin'
+        url = 'https://api.github.com/users/gitcoin?per_page=100'
         responses.add(responses.GET, url, headers=HEADERS, json={}, status=200)
         get_user('@gitcoin')
 
@@ -249,7 +249,7 @@ class GitUtilitiesTest(TestCase):
     @responses.activate
     def test_get_user_subpath(self):
         """Test the github utility get_user method with a subpath."""
-        url = 'https://api.github.com/users/gitcoin/test'
+        url = 'https://api.github.com/users/gitcoin/test?per_page=100'
         responses.add(responses.GET, url, headers=HEADERS, json={}, status=200)
         get_user('@gitcoin', '/test')
 

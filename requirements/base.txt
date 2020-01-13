@@ -2,6 +2,8 @@ bs4
 ccxt
 cryptocompare==0.6
 cryptography==2.3
+celery==4.4.0
+django-celery-beat==1.1.1
 django==2.2.4
 django-cors-headers==2.4.0
 django-filter==2.0.0
@@ -27,7 +29,7 @@ eth-tester
 websockets
 web3==4.5.0
 eth-abi==1.1.1
-mailchimp3
+mailchimp3==3.0.7
 django_chartit==0.2.9
 MechanicalSoup==0.9.0.post4
 pyshorteners
@@ -40,7 +42,7 @@ django-environ==0.4.5
 ipfshttpclient
 eth-utils==1.4.1
 jsondiff==1.1.1
-social-auth-app-django==2.1.0
+social-auth-app-django==3.1.0
 django-ipware==2.0.2
 geoip2==2.8.0
 django-silk==2.0.0
@@ -86,3 +88,5 @@ sentry-sdk
 websocket-client
 bleach
 python-magic
+django-oauth-toolkit
+mattermostdriver

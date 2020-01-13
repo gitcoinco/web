@@ -1,4 +1,4 @@
-<img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width=75px height=75px alt="Gitcoin logo">
+<img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width="75" height="75" alt="Gitcoin logo">
 
 # Gitcoin
 
@@ -115,7 +115,7 @@ Technically, the system is architected:
 If you
 
 * have some work on your Github Issues board that you don't have time (or skills) to do.
-* are dependant upon an upstream repo for something, and you'd like to incentivize them to work onit.
+* are dependant upon an upstream repo for something, and you'd like to incentivize them to work on it.
 
 try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
 
@@ -191,7 +191,7 @@ We may introduce Arbitration [via Delphi](http://delphi.network/) at some point 
 #### Showing Support to Individuals
 
 - via [Tips](https://gitcoin.co/tips) 
-  - A free, fast way to show immediate gratitude towards an individual via github username or email adress
+  - A free, fast way to show immediate gratitude towards an individual via github username or email address
   
 - via [Kudos](https://gitcoin.co/kudos)
   - Showcases special skills and appreciation towards other Gitcoin members.

@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -47,12 +47,9 @@
                   {% endblocktrans %}
                 </p>
                 <div class="faucet-form-img">
-                  <div class="faucet-form-svg">
+                  <div class="faucet-form-svg mb-3">
                     {% include 'svgs/gas.svg' %}
                   </div>
-                </div>
-                <div class="hidden-mobile">
-                  {% include 'shared/faucet_network_status.html' %}
                 </div>
                 <input type="hidden" id="currentFaucet" name="currentFaucet" value="{{ faucet_amount }}">
                 <p class="hidden-mobile">

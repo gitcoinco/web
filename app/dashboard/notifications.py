@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle dashboard related notifications.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -27,6 +27,7 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.templatetags.static import static
 from django.utils import timezone, translation
 from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 
 import requests
 import twitter
@@ -40,6 +41,32 @@ from retail.emails import render_new_kudos_email
 from slackclient import SlackClient
 
 logger = logging.getLogger(__name__)
+
+
+def notify_of_lowball_bounty(bounty):
+    """Send an email to founders@gitcoin.co with the lowball bounty info
+
+    Args:
+        bounty (dashboard.models.Bounty): The lowball bounty object
+
+    """
+    to_email = 'founders@gitcoin.co'
+    cc_emails = 'scott.moore@consensys.net'
+    from_email = settings.CONTACT_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("Low Bounty Notification")
+        body = \
+            f"Bounty: {bounty}\n\n" \
+            f"url: {bounty.url}\n\n" \
+            f"Owner Name: {bounty.bounty_owner_name}\n\n" \
+            f"Owner Email: {bounty.bounty_owner_email}\n\n" \
+            f"Owner Address: {bounty.bounty_owner_address}\n\n" \
+            f"Owner Profile: {bounty.bounty_owner_profile}"
+        send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"), categories=['admin'], cc_emails=cc_emails)
+    finally:
+        translation.activate(cur_language)
 
 
 def github_org_to_twitter_tags(github_org):
@@ -209,6 +236,10 @@ def build_message_for_integration(bounty, event_name):
 
     """
     from dashboard.utils import humanize_event_name
+    event_name_in_msg = humanize_event_name(event_name)
+    if event_name == 'killed_bounty':
+        if (bounty.bulk_payout_tips.count()):
+            event_name_in_msg = humanize_event_name('work_done')
     conv_details = ""
     usdt_details = ""
     try:
@@ -218,7 +249,7 @@ def build_message_for_integration(bounty, event_name):
         pass  # no USD conversion rate
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = f"*{humanize_event_name(event_name)}*" \
+    msg = f"*{event_name_in_msg}*" \
           f"\n*Issue*: {title}" \
           f"\n*Bounty value*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
           f"\n{bounty.get_absolute_url()}"
@@ -345,6 +376,10 @@ def maybe_market_tip_to_slack(tip, event_name):
     """
     if not tip.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
+
+    if tip.bounty:
+        if tip in tip.bounty.bulk_payout_tips:
+            event_name = 'Payout'
 
     msg = f"{event_name} worth {round(tip.amount, 4)} {tip.tokenName}"
 
@@ -801,7 +836,6 @@ def maybe_market_kudos_to_github(kt):
         print(e)
         return False
     return True
-
 
 
 

@@ -1,0 +1,246 @@
+{% extends 'quests/base.html' %}
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% block 'content' %}
+<link rel="stylesheet" href="{% static "v2/css/onepagesubmit.css" %}">
+<style type="text/css">
+.add_answer,
+.add_question,
+.close_question,
+.close_answer{
+  font-size: 12px;
+}
+.kudos-module .kudos-comment,
+.kudos-module .msg-alert{
+  display: none !important;
+}
+</style>
+<link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12 col-md-12 pr-2 pl-2 pb-4 mt-2 form_container">
+      <div style="text-align:center;">
+        <img src="{% static 'v2/images/grants/robots.png' %}" style="margin: 0px auto;" />
+        <h4>
+          {% if not the_quest %}
+            {% trans "New Quest Application" %}
+          {% else %}
+            {% trans "Edit Quest" %}
+          {% endif %}
+        </h4>
+        {% if not the_quest %}
+        <p>
+          Hello and thank you for your interest in submitting an application to host your content on Gitcoin Quests.
+        </p>
+        <p>
+          Gitcoin Quests was designed to educate, inspired, and entertain web2 and web3 developers alike.  It was designed to guide users to their 'a-ha' moments about cryptocurrency, decentralization, and the potential of a free and open source financial system.
+        </p>
+        <p>
+          We look forward to guiding your community through an engaging decentralization learning experience, and working with you to do so!
+        </p>
+        <p>
+          &lt;3 <a href="/about#team">Team Gitcoin</a>
+        </p>
+        {% else %}
+        <p>
+          <a href="{{the_quest.url}}">View Quest</a>
+        </p>
+        {% endif %}
+      </div>
+      <div>
+        {% if msg %}
+          <p>
+            {{ msg | safe }}
+          </p>
+        {% endif %}
+        {% if success %}
+          <div style="text-align: center; margin-bottom: 10px">
+            <img src="{% static "v2/images/tree/party_robot.jpg" %}">
+          </div>
+        {% endif %}
+        <form class="mt-5" id="newkudos" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="form__label" for="style">{% trans "Type" %}</label>
+            <select name="style" class="select2">
+              <option value="quiz" {% if response.style == 'Quiz' %}selected=selected{% endif %}>Quiz</option>
+              <option disabled="disabled">More options coming soon</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="difficulty">{% trans "Difficulty" %}</label>
+            <select name="difficulty" class="select2">
+              <option>Beginner</option>
+              <option {% if package.difficulty == "Intermediate" %}selected=selected{% endif %} >Intermediate</option>
+              <option {% if package.difficulty == "Advanced" %}selected=selected{% endif %}>Advanced</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="title">{% trans "Title" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="This is the copy that users will see on gitcoin.co/quests ; sell your quest by giving a fun, concise, title!"></i>
+            <input type="text" name="title" class="form__input" placeholder='Battle of the Crypto-Ancients' value="{{package.title}}" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="description">{% trans "Description" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="This is the copy that users will see on gitcoin.co/quests ; sell your quest by talking about how fun it is and how relevant the material!"></i>
+            <textarea name="description" class="form__input" placeholder='This quest is a test for all those who want to learn about ZK-Snarks!' value="" required>{{package.description}}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="reading_material_url">{% trans "Reading Material URL" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="Before each quest, questees will have to study some reading material to prepare for their journey. Enter the reading material's URL/Title respectively.."></i>
+            <input type="url" name="reading_material_url" class="form__input" placeholder='https://github.com/ethereum/wiki/wiki/White-Paper' value="{{package.reading_material_url}}" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="reading_material_name">{% trans "Reading Material Title" %}</label>
+            <input type="text" name="reading_material_name" class="form__input" placeholder='Ethereum Whitepaper' value="{{package.reading_material_name}}" required>
+          </div>
+            <label class="form__label" for="enemy">{% trans "Reading Material Time Commitment (minutes)" %}</label>
+            <input type="number" name="est_read_time_mins" class="form__input" placeholder='10' min="0" value="{{package.est_read_time_mins}}" required>
+          <div class="form-group">
+            <label class="form__label" for="enemy">{% trans "Enemy Kudos" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The enemy to be battled during the quest"></i>
+            {% if package.enemy %}
+              <BR>
+              <span class=default_kudos>Kudos ID {{package.enemy}}</span>
+              <input name=enemy type="hidden" value={{package.enemy}}>
+              <a class="remove" href=#>Remove</a>
+              <div class=hidden>
+                {% include 'shared/add_kudos.html' with name='enemy2' %}
+              </div>
+            {% else %}
+              {% include 'shared/add_kudos.html' with name='enemy' %}
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="reward">{% trans "Reward Kudos " %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The reward kudos to be minted if the hero wins the quest"></i>
+            {% if package.reward %}
+              <BR>
+              <span class=default_kudos>Kudos ID {{package.reward}}</span>
+              <input name=reward type="hidden" value={{package.reward}}>
+              <a class="remove" href=#>Remove</a>
+              <div class=hidden>
+                {% include 'shared/add_kudos.html' with name='reward2' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
+              </div>
+            {% else %}
+              {% include 'shared/add_kudos.html' with name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="points">{% trans "Reward Points Value" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The number of Gitcoin Quest Points rewarded to winner. Should scale with difficulty (Subject to final approval by Gitcoin team)"></i>
+            <input type="number" name="points" class="form__input" placeholder='1' value="{{package.points}}" min="0" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="minutes">{% trans "Cooldown Minutes" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="If someone fails the quest, how many minutes until they can try again?"></i>
+            <input type="number" name="minutes" class="form__input" placeholder='3' value="{{package.minutes}}" min="0" required>
+          </div>
+          {% for question in questions %}
+            <div class="form-group question pl-3">
+              <a href="#" class="float-right close_question">X</a>
+              <label class="form__label" for="points">{% trans "Question" %}</label>
+              <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="This is the meat & potatoes of the event so take care in writing this copy! Other tips:
+              <BR>
+              <BR>
+              - Make sure that each answer can be found in the reading material.
+              - There can be many correct answers, but not ZERO correct answers.
+              - Questions should be about key 'a-ha moments' about the decentralized internet and/or your product.
+              "></i>
+              <br>
+              <label class="form__label" for="seconds_to_respond[]">{% trans "Seconds to Respond" %}</label>
+              <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="How many seconds will the user have to respond to this question? Recommending starting point: 30"></i>
+              <input type="number" name="seconds_to_respond[]" class="form__input" placeholder='Seconds To Respond' value="{{question.seconds_to_respond}}" min="0" required>
+              <label class="form__label" for="question[]">{% trans "Question Text" %}</label>
+              <input type="text" name="question[]" class="form__input" placeholder='Does Ethereum foo the bar?' value="{{question.question}}" required>
+              {% for response in question.responses %}
+              <span>
+                <hr>
+                <label class="form__label" for="points">{% trans "Correct?" %}</label>
+                <a href="#" class="float-right close_answer">X</a>
+                <select type="checkbox" name="answer_correct[]">
+                  <option {% if response.correct %}selected=selected{% endif %} >YES</option>
+                  <option {% if not response.correct %}selected=selected{% endif %} >NO</option>
+                </select>
+                <input type="text" name="answer[]" class="form__input" placeholder='Yes' value="{{response.answer}}" required>
+                <hr>
+              </span>
+              {% endfor %}
+              <a href="#" class="add_answer">[Add Answer]</a>
+              <input type="hidden" name="answer[]" value="_DELIMITER_">
+              <input type="hidden" name="answer_correct[]" value="_DELIMITER_">
+            </div>
+            <a href="#" class="add_question">[Add Question]</a>
+          {% endfor %}
+
+
+          {% if the_quest %}
+            <div class="background_container pt-4">
+              <label class="form__label" for="reading_material_url">{% trans "Edit Comment (Viewable only by admins)" %}</label>
+              <textarea class="w-100" style="height: 100px;" name="comment">{{package.comment}}</textarea>
+            </div>
+          {% endif %}
+
+
+            <div class="background_container pt-4">
+              <label class="form__label" for="reading_material_url">{% trans "Arena" %}</label>
+              <BR>
+              {% for bg in backgrounds %}
+                <div data-value="{{bg}}" class="new_quest_background {{bg}} {% if bg == package.background %}selected{% endif %}">&nbsp;</div>
+              {% endfor %}
+              <input type="hidden" name="background" id="background" value="{{package.background}}">
+            </div>
+
+            <div class="terms_container pt-4">
+              <div class="form__checkbox">
+                <input name='terms' id='terms' type="checkbox" value=1 required {% if package.terms%}checked=checked{% endif %} />
+                  <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
+                    <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
+                </label>
+              </div>
+            </div>
+
+          <input name=pk type="hidden" value="{% if the_quest %}{{the_quest.pk}}{% else %}{{package.pk}}{% endif %}">
+
+          {% csrf_token %}
+          <button class='button button--primary joinslack mt-2 float-right' style="font-size: 35px; padding-top: 20px;" type='submit' name='submit' value="Submit Quest">
+          <img src="{% static 'v2/images/quests/orb.png' %}" style="max-width: 80px; margin-top: -20px" />
+          {% if not the_quest %} Create {% else %} Edit {% endif %} Quest
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block 'scripts' %}
+<script src="{% static "v2/js/pages/quests.new.js" %}"></script>
+<script src="{% static "v2/js/kudos-search.js" %}"></script>
+<script>
+  $('[data-toggle="popover"]').popover()
+  $('[data-toggle="tooltip"]').bootstrapTooltip();
+</script>
+
+<script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+<script>
+  $(document).ready(function() {
+    $("img").unveil(200);
+  });
+</script>
+{% endblock %}

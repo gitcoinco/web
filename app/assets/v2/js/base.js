@@ -2,11 +2,54 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 $(document).ready(function() {
+  $.fn.isInViewport = function() {
+    var elementTop = $(this).offset().top;
+    var elementBottom = elementTop + $(this).outerHeight();
+    var viewportTop = $(window).scrollTop();
+    var viewportBottom = viewportTop + $(window).height();
+
+    return elementBottom > viewportTop && elementTop < viewportBottom;
+  };
 
   if (typeof ($('body').tooltip) != 'undefined') {
     $('body').tooltip({
       items: ':not([data-toggle])'
     });
+  }
+
+  function getParam(parameterName) {
+    var result = null;
+    var tmp = [];
+
+    location.search
+      .substr(1)
+      .split('&')
+      .forEach(function(item) {
+        tmp = item.split('=');
+        if (tmp[0] === parameterName)
+          result = decodeURIComponent(tmp[1]);
+      });
+    return result;
+  }
+
+  // makes the reflink sticky
+  if (getParam('cb')) {
+    var cb = getParam('cb');
+    // only if user is not logged in tho
+
+    if (cb.indexOf('ref') != -1 && !document.contxt.github_handle) {
+      localStorage.setItem('cb', cb);
+    }
+  }
+
+  // if there exists a sticky reflink but the user navigated away from the link in the course of logging in...
+  if (localStorage.getItem('cb') && document.contxt.github_handle && !getParam('cb')) {
+    var this_url = new URL(document.location.href);
+
+    this_url.searchParams.append('cb', localStorage.getItem('cb'));
+    this_url.search = this_url.search.replace('%3A', ':');
+    localStorage.setItem('cb', '');
+    document.location.href = this_url;
   }
 
   var force_no_www = function() {
@@ -114,7 +157,7 @@ $(document).ready(function() {
     });
   }
 
-  var top_nav_salt = 4;
+  var top_nav_salt = 6;
   var remove_top_row = function() {
     $('#top_nav_notification').parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
@@ -212,38 +255,6 @@ const _alert = function(msg, _class) {
   $('body').append(html);
 };
 
-
-if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_update']) {
-  localStorage['notify_policy_update'] = true;
-
-  const content = $.parseHTML(
-    `<div id="notify_policy_update" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content px-4 py-3">
-          <div class="col-12">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-          </div>
-          <div class="col-12 pt-2 pb-2 text-center">
-            <h2 class="font-title">${gettext('We Care About Your Privacy')}</h2>
-          </div>
-          <div class="col-12 pt-2 pb-2 font-body">
-            <p>${gettext('As a Web 3.0 company, we think carefully about user data and privacy and how the internet is evolving. We hope Web 3.0 will bring more control of data to users. With this ethos in mind, we are always careful about how we use your information.')}</p>
-            <p>${gettext('We recently reviewed our Privacy Policy to comply with requirements of General Data Protection Regulation (GDPR), improving our Terms of Use, Privacy Policy and Cookie Policy. These changes are in effect and your continued use of the Gitcoin will be subjected to our updated Terms of Use and Privacy Policy.')}</p>
-          </div>
-          <div class="col-12 font-caption">
-            <a href="/legal/policy" target="_blank">${gettext('Read Our Updated Terms')}</a>
-          </div>
-          <div class="col-12 mt-4 mb-2 text-right font-caption">
-            <button type="button" class="button button--primary" data-dismiss="modal">ok</button>
-          </div>
-        </div>
-      </div>
-    </div>`);
-
-  $(content).appendTo('body');
-  $('#notify_policy_update').bootstrapModal('show');
-}
-
 var show_persona_modal = function(e) {
   const content = $.parseHTML(
     `<div id="persona_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -259,11 +270,11 @@ var show_persona_modal = function(e) {
             <h2 class="font-title mt-4">${gettext('Are you a Funder or a Contributor?')}</h2>
           </div>
           <div class="col-12 pt-2 text-center">
-            <p>${gettext('Let us know so we could optimize the <br>best experience for you!')}</p>
+            <p class="mb-0">${gettext('Let us know so we could optimize the <br>best experience for you!')}</p>
           </div>
-          <div class="col-12 my-4 d-flex justify-content-around">
-            <button type="button" class="btn btn-gc-blue col-5" data-persona="persona_is_funder">I'm a Funder</button>
-            <button type="button" class="btn btn-gc-blue col-5" data-persona="persona_is_hunter">I'm a Contributor</button>
+          <div class="col-12 my-4 text-center">
+            <button type="button" class="btn btn-gc-blue px-5 mb-2 mx-2" data-persona="persona_is_funder">I'm a Funder</button>
+            <button type="button" class="btn btn-gc-blue px-5 mx-2" data-persona="persona_is_hunter">I'm a Contributor</button>
           </div>
         </div>
       </div>
@@ -394,4 +405,8 @@ const gitcoinUpdates = (force) => {
 
 if (document.contxt.github_handle) {
   gitcoinUpdates();
+}
+
+if (document.contxt.chat_unread_messages) {
+  $('#chat-notification-dot').addClass('notification__dot__active');
 }

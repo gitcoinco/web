@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant subminer management command.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -32,13 +32,31 @@ class Command(BaseCommand):
 
     help = 'calculate CLR estimates for all grants'
 
-    def handle(self, *args, **options):
-        d1 = timezone.now() - timezone.timedelta(days=12)
-        d2 = timezone.now()
+    def add_arguments(self, parser):
 
-        for i in range((d2 - d1).days * 24 + 1):
-            this_date = d1 + timezone.timedelta(hours=i)
-            clr_prediction_curves = predict_clr(random_data=False, save_to_db=True, from_date=this_date)
+        parser.add_argument('clr_type', type=str, default='all', choices=['tech', 'media', 'all'])
+        parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
+        parser.add_argument('clr_amount', type=float, default=0.0)
+
+    def handle(self, *args, **options):
+        clr_type = options['clr_type']
+        network = options['network']
+        clr_amount = options['clr_amount']
+
+        clr_prediction_curves = predict_clr(
+            random_data=False,
+            save_to_db=True,
+            from_date=timezone.now(),
+            clr_type=clr_type,
+            network=network,
+            clr_amount=clr_amount
+        )
+
+        # Uncomment these for debugging and sanity checking
+        # for grant in clr_prediction_curves:
+            #print("CLR predictions for grant {}".format(grant['grant']))
+            #print("All grants: {}".clr_typeformat(grant['grants_clr']))
+            #print("prediction curve: {}\n\n".format(grant['clr_prediction_curve']))
 
             # Uncomment these for debugging and sanity checking
             # for grant in clr_prediction_curves:

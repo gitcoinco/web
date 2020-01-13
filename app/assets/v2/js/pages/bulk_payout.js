@@ -1,7 +1,7 @@
 const rateUser = (elem) => {
   let userSelected = $(elem).select2('data')[0].text;
 
-  $(elem).parents('.new-user').next().find('[data-open-rating]').data('openUsername', userSelected.trim());
+  $(elem).parents('.new-user').find('[data-open-rating]').data('openUsername', userSelected.trim());
 };
 
 const normalizeUsername = function(username) {
@@ -18,34 +18,40 @@ $(document).ready(function($) {
     update_registry();
   });
 
-
-  $(document).on('click', '.toggleType', function(event) {
-    event.preventDefault();
-    if ($(this).data('type') == 'no') {
-      $(this).html('(%)');
-      $(this).data('type', 'pct');
-    } else {
-      $(this).html('(#)');
-      $(this).data('type', 'no');
-    }
-    $('.input_amount').trigger('input');
-  });
-
-
   $(document).on('input', '.input_amount', function(event) {
     event.preventDefault();
-    var input_amount = $(this).text();
-    var is_error = !$.isNumeric(input_amount) || input_amount < 0;
+    const percentage = $(this).text();
+    const is_error = !$.isNumeric(percentage) || percentage < 0;
 
     if (is_error) {
       $(this).addClass('error');
       $(this).parents('tr').find('.amount').text(0);
     } else {
       $(this).removeClass('error');
-      var decimals = 3;
-      var amount = $('.toggleType').data('type') == 'no' ? input_amount : round(get_amount(input_amount), decimals);
+      const decimals = 3;
+      const amount = round(get_amount(percentage), decimals);
 
       $(this).parents('tr').find('.amount').text(amount);
+    }
+    update_registry();
+  });
+
+
+  $(document).on('input', '.amount', function(event) {
+
+    event.preventDefault();
+    const amount = $(this).text();
+    const is_error = amount < 0;
+
+    if (is_error) {
+      $(this).addClass('error');
+      $(this).parents('tr').find('.input_amount').text(0);
+    } else {
+      $(this).removeClass('error');
+      const decimals = 1;
+      const percentage = round(get_percentage(amount), decimals);
+
+      $(this).parents('tr').find('.input_amount').text(percentage);
     }
     update_registry();
   });
@@ -63,15 +69,12 @@ $(document).ready(function($) {
     var transaction = document.transactions[i];
 
     if (!transaction) {
-      // msg
       _alert('All transactions have been sent.  Your bounty is now paid out.', 'info');
-
-      // show green checkmark
       $('#success_container').css('display', 'block');
       $('.row.content').css('display', 'none');
-
       return;
     }
+
     $('.entry').removeClass('active');
     $('.entry_' + transaction['id']).addClass('active');
 
@@ -82,15 +85,15 @@ $(document).ready(function($) {
         if (error) {
           _alert({ message: error }, 'error');
         } else {
-          var url = 'https://' + etherscanDomain() + '/tx/' + txid;
-          var msg = 'This tx has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+          const url = 'https://' + etherscanDomain() + '/tx/' + txid;
+          const msg = 'This tx has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
 
           // send msg to frontend
           _alert(msg, 'info');
           sendTransaction(i + 1);
 
           // tell frontend that this issue has a pending tx
-          localStorage[$('#issueURL').val()] = JSON.stringify({
+          localStorage[$('#issueURL').text()] = JSON.stringify({
             timestamp: timestamp(),
             dataHash: null,
             issuer: web3.eth.coinbase,
@@ -105,39 +108,51 @@ $(document).ready(function($) {
       bounty.killBounty(
         $('#standard_bounties_id').val(),
         gas_dict,
+        {from: web3.eth.accounts[0]},
         callback
       );
 
     } else {
-      // get form data
-      var email = '';
-      var github_url = $('#issueURL').val();
-      var from_name = document.contxt['github_handle'];
-      var username = transaction['data']['to'];
-      var amountInEth = transaction['data']['amount'];
-      var comments_priv = '';
-      var comments_public = '';
-      var from_email = '';
-      var accept_tos = $('#terms').is(':checked');
-      var tokenAddress = transaction['data']['token_address'];
-      var expires = 9999999999;
+      const email = '';
+      const github_url = $('#issueURL').text();
+      const from_name = document.contxt['github_handle'];
+      const username = transaction['data']['to'];
+      const amountInEth = transaction['data']['amount'];
+      const comments_priv = '';
+      const comments_public = '';
+      const from_email = '';
+      const accept_tos = $('#terms').is(':checked');
+      const tokenAddress = transaction['data']['token_address'];
+      const expires = 9999999999;
 
       var success_callback = function(txid) {
-        var url = 'https://' + etherscanDomain() + '/tx/' + txid;
-        var msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+        const url = 'https://' + etherscanDomain() + '/tx/' + txid;
+        const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
 
-        // send msg to frontend
         _alert(msg, 'info');
-
-        // text transaction
-        sendTransaction(i + 1);
+        sendTransaction(i + 1); // text transaction
       };
+
       var failure_callback = function() {
-        // do nothing
-        $.noop();
+        $.noop(); // do nothing
       };
 
-      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
+      return sendTip(
+        email,
+        github_url,
+        from_name,
+        username,
+        amountInEth,
+        comments_public,
+        comments_priv,
+        from_email,
+        accept_tos,
+        tokenAddress,
+        expires,
+        success_callback,
+        failure_callback,
+        false
+      );
     }
   };
 
@@ -178,36 +193,35 @@ $(document).ready(function($) {
   });
 });
 
-var get_amount = function(percent) {
-  var total_amount = $('#amount').val();
+const get_amount = percent => {
+  const total_amount = $('#amount').text();
 
   return percent * 0.01 * total_amount;
 };
 
+const get_percentage = amount => {
+  const total_amount = $('#amount').text();
+
+  return (amount * 100) / total_amount;
+};
+
 var add_row = function() {
-  let bountyId = $('#bountyId').val();
-  var num_rows = $('#payout_table tbody').find('tr.new-user').length;
-  var input_amount = num_rows <= 1 ? 100 : '';
-  var denomination = $('#token_name').text();
-  var amount = get_amount(input_amount);
+  const bountyId = $('#bountyId').val();
+  const num_rows = $('#payout_table tbody').find('tr.new-user').length;
+  const input_amount = num_rows <= 1 ? 100 : '';
+  const denomination = $('#token_name').text();
+  const amount = get_amount(input_amount);
   let username = '';
-  var html = `
+  const html = `
     <tr class="new-user">
       <td class="pl-0 pb-0">
         <div class="pl-0">
           <select onchange="update_registry()" class="username-search custom-select w-100 ml-auto mr-auto"></select>
         </div>
       </td>
-      <td class="pb-0"><div class="input_amount" contenteditable="true">${input_amount}</div></td>
-      <td class="pb-0"><div class="amount"><span class=amount>${amount}</span> <span class=denomination>${denomination}</span></div></td>
-      <td class="pb-0"><a class=remove href=#><i class="fas fa-times mt-2"></i></a>
-      </td>
-    </tr>
-    <tr>
       <td>
-        <fieldset class="" id="${num_rows}-${bountyId}" >
-          <label for="" class="form__label">Rate contributor</label>
-          <div class="rating" data-open-rating=${bountyId} data-open-username=${username}>
+        <fieldset id="${num_rows}-${bountyId}" >
+          <div class="rating pt-2" data-open-rating=${bountyId} data-open-username=${username}>
             <input type="radio" id="${num_rows}-${bountyId}-5" name="${num_rows}${bountyId}" value="5" />
             <label class ="rating-star full" for="${num_rows}-${bountyId}-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
             <input type="radio" id="${num_rows}-${bountyId}-4" name="${num_rows}${bountyId}" value="4" />
@@ -221,7 +235,21 @@ var add_row = function() {
           </div>
         </fieldset>
       </td>
-    </tr>`;
+      <td class="pb-0">
+        <div class="input_amount position-relative" contenteditable="true">${input_amount}</div>
+        <span class="label font-weight-bold position-relative float-right">%</span>
+      </td>
+      <td class="pb-0">
+        <div class="amount position-relative" contenteditable="true">${amount}</div>
+        <span class="label font-weight-bold denomination position-relative float-right">${denomination}</span>
+      </td>
+      <td class="pb-0">
+        <a class="remove position-relative" href=#>
+          <i class="fas fa-times mt-2"></i>
+        </a>
+      </td>
+    </tr>
+  `;
 
   $('#payout_table tbody').append(html);
   userSearch('.username-search:last', true);
@@ -234,15 +262,38 @@ var add_row = function() {
   $(this).focus();
 };
 
-var get_total_cost = function() {
-  var rows = $('#payout_table tbody tr.new-user');
-  var total = 0;
+const get_total_cost = function() {
+  const rows = $('#payout_table tbody tr.new-user');
+  let total = 0;
 
-  for (i = 0; i < rows.length; i += 1) {
-    var $rows = $(rows[i]);
-    var amount = parseFloat($rows.find('.amount').text());
-    var username = $rows.find('.username-search').text();
-    var is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
+  for (let i = 0; i < rows.length; i += 1) {
+    const $rows = $(rows[i]);
+    const amount = parseFloat($rows.find('.amount').text());
+    const username = $rows.find('.username-search').text();
+    const is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
+
+    const amount_in_percentage = $rows.find('.input_amount');
+    const amount_in_qty = $rows.find('.amount');
+
+    if (username == '' || username == '@') {
+      amount_in_percentage.attr('contenteditable', false);
+      amount_in_percentage.attr('title', 'Add Github user to edit this field');
+
+      $('.rating input:radio').attr('disabled', true);
+      $('.rating').attr('title', 'Add Github user to rate them');
+
+      amount_in_qty.attr('contenteditable', false);
+      amount_in_qty.attr('title', 'Add Github user to edit this field');
+    } else {
+      amount_in_percentage.attr('contenteditable', true);
+      amount_in_percentage.attr('title', null);
+
+      $('.rating input:radio').attr('disabled', false);
+      $('.rating').attr('title', null);
+
+      amount_in_qty.attr('contenteditable', true);
+      amount_in_qty.attr('title', null);
+    }
 
     if (!is_error) {
       total += amount;
@@ -252,7 +303,6 @@ var get_total_cost = function() {
 };
 
 var update_registry = function(coinbase) {
-
   if (!coinbase) {
     web3.eth.getCoinbase(function(err, result) {
       update_registry(result);
@@ -264,60 +314,54 @@ var update_registry = function(coinbase) {
   var tc = round(get_total_cost(), 2);
   var denomination = $('#token_name').text();
   var original_amount = $('#original_amount').val();
-  var net = round(original_amount - tc, 2);
-  var over = round((original_amount - get_total_cost()) * -1, 4);
-  var addr = coinbase.substring(38);
-  var pay_with_bounty = $('#pay_with_bounty').is(':checked');
-
-  $('#total_cost').html(tc + ' ' + denomination);
+  const over = round((original_amount - get_total_cost()) * -1, 4);
+  const addr = new truncate(coinbase).elem;
+  const pay_with_bounty = $('input[name=pay_with]:checked').val() == 'bounty';
+  const amount_from_bounty = $('#amount').text() > get_total_cost() ? get_total_cost() : $('#amount').text();
 
   let transactions = [];
 
   first_transaction = {
     'id': 0,
     'type': 'cancel',
-    'reason': 'Bounty cancellation and refund.',
-    'amount': '+' + original_amount + ' ' + denomination
+    'reason': 'Bounty Funds refund to your wallet',
+    'amount': '<i class="fas fa-plus font-smaller-7 pr-1 position-relative"></i>' + original_amount + ' ' + denomination
   };
 
-  if (over > 0 && pay_with_bounty) {
-    $('#total_net').html(net + ' ' + denomination);
-    $('.overageAlert').css('display', 'inline-block');
-    $('.overagePreview').css('display', 'inline-block');
-    $('#total_overage').html(over + ' ' + denomination);
-    $('#address_ending').html(addr + ' ');
-    $('#preview_ending').html(addr + ' ');
-    $('#preview_overage').html(over + ' ' + denomination);
+  $('#summary_wallet_address').text(addr);
+  $('#summary_wallet_amount').text(over);
+  $('#summary_bounty_amount').text(amount_from_bounty);
+
+  if (pay_with_bounty) {
+
+    if (over > 0) {
+      $('.overageAlert').css('display', 'inline-block');
+      $('#total_overage').html(over + ' ' + denomination);
+      $('#address_ending').html(addr + ' ');
+      $('.summary_wallet_info').show();
+    } else {
+      $('.overageAlert').css('display', 'none');
+      $('.summary_wallet_info').hide();
+    }
+    $('.summary_bounty_info').show();
     $('.tipAlert').css('display', 'none');
-    $('.asyncAlert').css('display', 'none');
-    $('.tipPreview').css('display', 'none');
     transactions.push(first_transaction);
-  } else if (pay_with_bounty) {
-    $('#total_net').html(net + ' ' + denomination);
-    $('.overageAlert').css('display', 'none');
-    $('.overagePreview').css('display', 'none');
-    $('.tipAlert').css('display', 'none');
-    $('.asyncAlert').css('display', 'none');
-    $('.tipPreview').css('display', 'none');
-    transactions.push(first_transaction);
+
   } else {
-    $('#total_net').html(tc + ' ' + denomination);
+
+    $('.summary_bounty_info').hide();
     $('.tipAlert').css('display', 'inline-block');
-    $('.asyncAlert').css('display', 'inline-block');
-    $('.tipPreview').css('display', 'inline-block');
     $('#total_tip_overage').html(tc + ' ' + denomination);
     $('#address_tip_ending').html(addr + ' ');
-    $('#preview_tip_ending').html(addr + ' ');
     $('#preview_tip_overage').html(tc + ' ' + denomination);
     $('.overageAlert').css('display', 'none');
-    $('.overagePreview').css('display', 'none');
+    $('.summary_wallet_info').show();
   }
 
   for (let j = 0; j <= num_rows; j++) {
-
-    var $row = $('#payout_table tbody').find('tr:nth-child(' + ((j * 2) + 1) + ')');
-    var amount = parseFloat($row.find('.amount').text());
-    var username = $row.find('.username-search').text();
+    var $row = $('#payout_table tbody').find('tr:nth-child(' + (j + 1) + ')');
+    const amount = parseFloat($row.find('.amount').text());
+    const username = $row.find('.username-search').text();
 
     if (username == '')
       continue;
@@ -325,8 +369,8 @@ var update_registry = function(coinbase) {
     transaction = {
       'id': j,
       'type': 'tip',
-      'reason': 'Payment to ' + normalizeUsername(username),
-      'amount': '-' + amount + ' ' + denomination,
+      'reason': 'Payout to ' + normalizeUsername(username),
+      'amount': '<i class="fas fa-minus font-smaller-7 pr-1 position-relative"></i>' + amount + ' ' + denomination,
       'data': {
         'to': username,
         'amount': amount,
@@ -335,20 +379,30 @@ var update_registry = function(coinbase) {
       }
     };
 
-    var is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
+    const is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
 
     if (!is_error)
       transactions.push(transaction);
   }
 
-
-  // paint on screen
   $('#transaction_registry tr.entry').remove();
-  var k = 0;
+  $('#metamask-txn-count').text(transactions.length);
 
-  for (k = 0; k < transactions.length; k += 1) {
-    var trans = transactions[k];
-    var html = "<tr class='entry entry_" + trans['id'] + "'><td>" + trans['id'] + '</td><td>' + trans['amount'] + '</td><td>' + trans['reason'] + '</td></tr>';
+  for (let k = 0; k < transactions.length; k += 1) {
+    const trans = transactions[k];
+    let direction;
+
+    if (trans.type == 'cancel') {
+      direction = '<span class="direction in font-caption font-weight-semibold ml-2 py-1 px-3">IN</span>';
+    } else {
+      direction = '<span class="direction out font-caption font-weight-semibold ml-2 py-1 px-3">OUT</span>';
+    }
+
+    const html = `<tr class='entry entry_${trans['id']}'>
+      <td class="text-center">${k + 1}</td>
+      <td class="font-weight-semibold">${trans['amount']} ${direction}</td>
+      <td>${trans['reason']}</td>
+    </tr>`;
 
     $('#transaction_registry').append(html);
   }
@@ -390,4 +444,9 @@ $(document).on('click', '.user-fulfiller', function(event) {
   $search.val(term);
   $search.trigger('input');
 
+});
+
+
+$('input[type=radio][name=pay_with]').on('change', event => {
+  update_registry();
 });

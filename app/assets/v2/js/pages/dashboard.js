@@ -21,7 +21,18 @@ local_storage_keys.push('org');
 results_limit = 10;
 
 if (document.hackathon) {
-  results_limit = 10;
+  let hackathon_orgs = [];
+
+  $('[name=org]').each(function() {
+    hackathon_orgs.push($(this).val());
+  });
+
+  const org = getURLParams('org');
+
+  hackathon_orgs.includes(org) ?
+    $(`#${org}`).prop('checked', true) :
+    $(`#${hackathon_orgs[0]}`).prop('checked', true);
+
 }
 
 var localStorage;
@@ -33,32 +44,6 @@ try {
 } catch (e) {
   localStorage = {};
 }
-
-var paint_search_tabs = function() {
-  if (!localStorage['searches'])
-    return;
-
-  var container = $('#dashboard-title');
-  var target = $('#search_nav');
-
-  searches = localStorage['searches'].split(',');
-
-  if (searches.length <= 1)
-    return target.html('');
-
-  var html = "<ul class='nav'><i class='fas fa-history'></i>";
-
-  for (var i = 0; i < searches.length; i++) {
-    var search_no = searches[i];
-    var title = get_search_tab_name(search_no);
-
-    if (title) {
-      html += "<li class='nav-item' data-num='" + search_no + "'><span>" + title + '</span><a><i class="fas fa-times"></i></a></li>';
-    }
-  }
-  html += '</ul>';
-  target.html(html);
-};
 
 function scrollSlider(element, cardSize) {
   const arrowLeft = $('#arrowLeft');
@@ -108,7 +93,7 @@ function debounce(func, wait, immediate) {
   };
 }
 
-const scrub = value => value.replace(/[\W]+/g, '');
+const scrub = value => value.replace(/[!@#$%^&*(),.?":{}|<>]+/g, '');
 
 /**
  * Fetches all filters options from the URI
@@ -135,11 +120,17 @@ var getActiveFilters = function() {
 /**
  * Build URI based on selected filter
  */
-var buildURI = function() {
+var buildURI = function(custom_filters) {
   let uri = '';
-  let _filters = filters.slice();
+  let _filters = [];
 
-  _filters.push('keywords', 'order_by', 'org');
+  if (custom_filters) {
+    _filters = custom_filters;
+  } else {
+    _filters = filters.slice();
+    _filters.push('keywords', 'order_by', 'org');
+  }
+
   _filters.forEach((filter) => {
     if (localStorage[filter] &&
       localStorage[filter] != 'any') {
@@ -329,7 +320,7 @@ var removeFilter = function(key, value) {
   }
 
   reset_offset();
-  refreshBounties(null, 0, false, false);
+  refreshBounties(null, 0, false);
 };
 
 var get_search_URI = function(offset, order) {
@@ -464,7 +455,7 @@ var trigger_scroll = debounce(function() {
     $('.loading_img').css('display', 'block');
 
     document.offset = parseInt(document.offset) + parseInt(results_limit);
-    refreshBounties(null, document.offset, true, false);
+    refreshBounties(null, document.offset, true);
   }
 }, 200);
 
@@ -478,7 +469,7 @@ var reset_offset = function() {
 
 let organizations = [];
 
-var refreshBounties = function(event, offset, append, do_save_search) {
+var refreshBounties = function(event, offset, append) {
 
   // Allow search for freeform text
   var searchInput = $('#keywords')[0];
@@ -503,17 +494,15 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     save_sidebar_latest();
     toggleAny(event);
     getFilters();
-    if (do_save_search) {
-      if (!is_search_already_saved()) {
-        save_search();
-      }
-
-      paint_search_tabs();
-      window.history.pushState('', '', window.location.pathname + '?' + buildURI());
-    }
+    window.history.pushState('', '', window.location.pathname + '?' + buildURI());
   } else {
     toggleAny(event);
+
+    const org = $("input[name='org']:checked").val();
+
+    localStorage['org'] = org === 'any' ? '' : org;
     localStorage['order_by'] = $('#sort_option').val();
+    window.history.pushState('', '', window.location.pathname + '?' + buildURI(['org']));
   }
 
   if (!append) {
@@ -621,7 +610,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
 window.addEventListener('load', function() {
   set_sidebar_defaults();
   reset_offset();
-  refreshBounties(null, 0, false, false);
+  refreshBounties(null, 0, false);
 });
 
 /**
@@ -655,7 +644,7 @@ var resetFilters = function(resetKeyword) {
     });
   }
 
-  if (resetKeyword && localStorage['org']) {
+  if (resetKeyword && localStorage['org'] && !document.hackathon) {
     localStorage['org'].split(',').forEach(function(v, k) {
       removeFilter('org', v);
     });
@@ -729,7 +718,7 @@ $(document).ready(function() {
   $('#sort_option').selectmenu({
     select: function(event, ui) {
       reset_offset();
-      refreshBounties(null, 0, false, true);
+      refreshBounties(null, 0, false);
       event.preventDefault();
     }
   });
@@ -802,147 +791,30 @@ $(document).ready(function() {
     e.preventDefault();
     resetFilters(true);
     reset_offset();
-    refreshBounties(null, 0, false, true);
+    refreshBounties(null, 0, false);
   });
 
   // search bar
   $('#sidebar_container').delegate('#new_search', 'click', function(e) {
     reset_offset();
-    refreshBounties(null, 0, false, true);
+    refreshBounties(null, 0, false);
     e.preventDefault();
   });
-
-  // search bar -- remove bounty
-  $('#bounties').delegate('#search_nav li a', 'click', function(e) {
-    var n = $(this).parents('li').data('num');
-
-    remove_search(n);
-    paint_search_tabs();
-  });
-
-  // search bar
-  $('#bounties').delegate('#search_nav li span', 'click', function(e) {
-    var n = $(this).parents('li').data('num');
-
-    load_search(n);
-    refreshBounties(null, 0, false, false);
-  });
-
 
   $('.search-area input[type=text]').keypress(function(e) {
     if (e.which == 13) {
       reset_offset();
-      refreshBounties(null, 0, false, true);
+      refreshBounties(null, 0, false);
       e.preventDefault();
     }
   });
 
-  // sidebar filters
-  $(`.sidebar_search input[type=radio],
-      .sidebar_search input[type=checkbox],
-      .sidebar_search .js-select2,
-      #org`).change(function(e) {
+  $(`
+    .sidebar_search input[type=radio], .sidebar_search input[type=checkbox],
+    .sidebar_search .js-select2, #org
+  `).change(function(e) {
     reset_offset();
-    refreshBounties(null, 0, false, true);
+    refreshBounties(null, 0, false);
     e.preventDefault();
   });
 });
-
-
-var get_this_search_name = function() {
-  var names = [];
-  var eles = $('.filter-tag');
-
-  for (let i = 0; i < eles.length; i++) {
-    var ele = eles[i];
-
-    names.push(ele.text.toLowerCase());
-  }
-  names = names.join(',');
-  return names;
-};
-
-var is_search_already_saved = function() {
-  var this_search = get_this_search_name();
-
-  for (let i = 0; i < 100; i++) {
-    var new_key = '_name_' + i;
-    var result = localStorage[new_key];
-
-    if (typeof result != 'undefined') {
-      if (this_search == result) {
-        return true;
-      }
-    }
-  }
-  return false;
-};
-
-// search sidebar saving
-
-// saves search info in local storage
-var save_search = function() {
-  if (typeof localStorage['searches'] == 'undefined') {
-    localStorage['searches'] = '0';
-  }
-  searches = localStorage['searches'].split(',');
-  max = parseInt(Math.max.apply(Math, searches));
-  next = max + 1;
-  searches = searches + ',' + next;
-  localStorage['searches'] = searches;
-  // save each key
-  for (let i = 0; i < local_storage_keys.length; i++) {
-    var key = local_storage_keys[i];
-    let new_key = '_' + key + '_' + next;
-
-    localStorage[new_key] = localStorage[key];
-  }
-
-  // save the name
-  let new_key = '_name_' + next;
-
-  localStorage[new_key] = get_this_search_name();
-
-};
-
-var get_search_tab_name = function(n) {
-  var new_key = '_name_' + n;
-
-  return localStorage[new_key];
-
-};
-
-// gets available searches
-var get_available_searches = function() {
-  if (typeof localStorage['searches'] == 'undefined') {
-    localStorage['searches'] = '';
-  }
-  return localStorage['searches'].split(',');
-};
-
-// loads search info from local storage
-var load_search = function(n) {
-
-  for (var i = 0; i < local_storage_keys.length; i++) {
-    var key = local_storage_keys[i];
-    var new_key = '_' + key + '_' + n;
-
-    localStorage[key] = localStorage[new_key];
-  }
-};
-
-// removes this search
-var remove_search = function(n) {
-  var is_last_element = ('0,' + n) == localStorage['searches'];
-
-  if (is_last_element) {
-    localStorage['searches'] = '0';
-    return;
-  }
-  search_str = ',' + n + ',';
-  replace_str = ',';
-  localStorage['searches'] = localStorage['searches'].replace(search_str, replace_str);
-  var key = '_name_' + n;
-
-  localStorage.removeItem(key);
-};
