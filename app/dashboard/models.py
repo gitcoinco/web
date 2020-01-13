@@ -1993,6 +1993,13 @@ class Activity(SuperModel):
     metadata = JSONField(default=dict)
     needs_review = models.BooleanField(default=False)
     view_count = models.IntegerField(default=0)
+    other_profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='other_activities',
+        on_delete=models.CASCADE,
+        null=True
+    )
+    hidden = models.BooleanField(default=False, db_index=True)
 
     # Activity QuerySet Manager
     objects = ActivityQuerySet.as_manager()
@@ -3601,7 +3608,7 @@ class Profile(SuperModel):
         """
 
         if not self.is_org:
-            all_activities = self.activities
+            all_activities = self.activities.all() | self.other_activities.all()
         else:
             # orgs
             url = self.github_url

@@ -22,6 +22,8 @@
       <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>
       {% if row.secondary_avatar_url %}
         <img class="avatar my-auto secondary_avatar" src="{{row.secondary_avatar_url}}" />
+      {% elif row.other_profile %}
+        <img class="avatar my-auto secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
       {% endif %}
     </div>
   </div>

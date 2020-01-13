@@ -1154,6 +1154,13 @@ def create_status_update(request):
             }
         }
         kwargs['profile'] = profile
+        if ':' in request.POST.get('what'):
+            what = request.POST.get('what')
+            key = what.split(':')[0]
+            result = what.split(':')[1]
+            if key and result:
+                key = f"{key}_id"
+                kwargs[key] = result
         try:
             Activity.objects.create(**kwargs)
             response['status'] = 200

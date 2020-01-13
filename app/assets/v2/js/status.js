@@ -59,6 +59,7 @@ $(document).ready(function() {
 
     data.append('ask', ask);
     data.append('data', message.val().trim());
+    data.append('what', $("#status [name=what]").val());
     message.val('');
     data.append(
       'csrfmiddlewaretoken',
