@@ -25,8 +25,8 @@
       {% endif %}
     </div>
   </div>
-  <div class="col-12 col-md-10 activity-info my-auto {% if row.secondary_avatar_url %} position-relative {% endif %}">
-    <div class="activity-status font-body mb-1">
+  <div class="col-12 col-md-10 activity-info my-auto {% if row.secondary_avatar_url %}position-relative{% endif %}">
+    <div class="activity-status font-body">
       <a href="https://gitcoin.co/profile/{{ row.profile.handle }}" target="_blank">
         @{{ row.profile.handle }}
       </a>
@@ -64,7 +64,7 @@
           </a>
         {% endif %}
       {% elif row.activity_type == 'new_grant' %}
-        {% trans "created" %}
+        {% trans "created a new grant" %}
         <a href="{{ row.metadata.grant_url }}" target="_blank">
           {{ row.metadata.title }}
         </a>
@@ -137,47 +137,50 @@
         {% endif %}
       {% endif %}
     </div>
-    <div class="font-caption" >
-      <div class="activity-tags activity-tag-first align-items-center">
-        {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token %}
-          <div class="tag token">
-            <p>
-              {% if row.value_in_token_disp %}
-                <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
-              {% elif row.metadata.value_in_eth %}
-                <span class="value_in_eth">{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
-              {% elif row.metadata.value_in_token %}
-                <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
-              {% else %}
-              {% endif %}
-            </p>
-          </div>
-        {% endif %}
-        {% if row.value_in_usdt_now %}
-          <div class="tag usd">
-            <p>
-              <span>{{ row.value_in_usdt_now }} USD</span>
-            </p>
-          </div>
-        {% endif %}
-        {% if row.bounty.network and row.bounty.network != 'mainnet' %}
-          <div class="tag network_warning">
-            <p>
-              <span>{{ row.bounty.network }}</span>
-            </p>
-          </div>
-        {% endif %}
-        <span class="mx-2">
-          {% if not hide_date %}
-            {{ row.created_human_time }}
+      <div class="font-caption mt-1">
+        <div class="activity-tags activity-tag-first align-items-center">
+          {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
+            {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token %}
+              <div class="tag token">
+                <p>
+                  {% if row.value_in_token_disp %}
+                    <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
+                  {% elif row.metadata.value_in_eth %}
+                    <span class="value_in_eth">{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
+                  {% elif row.metadata.value_in_token %}
+                    <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
+                  {% endif %}
+                </p>
+              </div>
+            {% endif %}
+
+            {% if row.value_in_usdt_now %}
+              <div class="tag usd">
+                <p>
+                  <span>{{ row.value_in_usdt_now }} USD</span>
+                </p>
+              </div>
+            {% endif %}
+
+            {% if row.bounty.network and row.bounty.network != 'mainnet' %}
+              <div class="tag network_warning">
+                <p>
+                  <span>{{ activity.bounty.network }}</span>
+                </p>
+              </div>
+            {% endif %}
           {% endif %}
-        </span>
+          <span class="mr-2">
+            {% if not hide_date %}
+              {{ row.created_human_time }}
+            {% endif %}
+          </span>
+        </div>
       </div>
-    </div>
   </div>
   <div class="col-12 col-md-1 text-center my-auto">
     {% if row.kudos %}
-      <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
+      <a href="{{row.kudos.kudos_token_cloned_from.url}}">
         <img src="{% static row.kudos_data.image %}" alt="" class="w-100" style="max-width:100px;">
       </a>
     {% elif row.activity_type == 'leaderboard_rank' %}

@@ -71,7 +71,7 @@
   </p>
 
   <p>{% trans "You can see the transaction history for " %}{{ grant.title }}
-      <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>
+      <a href="{{grant.url}}">{% trans "here." %}</a>
   </p>
 </div>
 <hr>
