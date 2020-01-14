@@ -46,8 +46,7 @@ class Command(BaseCommand):
 
                 profiles_to_connect = []
                 try:
-                    funder_profile = Profile.objects.get(handle=bounty.bounty_owner_github_username)
-
+                    funder_profile = Profile.objects.get(handle__iexact=[bounty.bounty_owner_github_username])
                 except Exception as e:
                     print("here")
                     print(str(e))
