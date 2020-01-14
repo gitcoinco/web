@@ -33,49 +33,55 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         # Positional arguments
-        parser.add_argument('event_id', type=str, help="The event ID to synchronize bounties and channels for")
+        parser.add_argument('event_id', type=int, help="The event ID to synchronize bounties and channels for")
 
     def handle(self, *args, **options):
         try:
+            print(options['event_id'])
             bounties_to_sync = Bounty.objects.filter(
-                Q(event__pk=options['event_id']), Q(chat_channel_id__isnull=True) | Q(chat_channel_id__exact='')
+                Q(event__pk=options['event_id']) & Q(chat_channel_id__isnull=True) | Q(chat_channel_id__exact='')
             )
             tasks = []
-            if len(bounties_to_sync) > 0:
-                for bounty in bounties_to_sync:
-                    profiles_to_connect = []
-                    try:
-                        funder_profile = Profile.objects.get(handle=bounty.bounty_owner_github_username)
-                    except Exception as e:
-                        continue
+            for bounty in bounties_to_sync:
 
-                    if funder_profile is not None:
-                        if funder_profile.chat_id is None:
-                            created, funder_profile_request = create_user_if_not_exists(funder_profile)
-                            funder_profile.chat_id = funder_profile_request['id']
-                        profiles_to_connect.append(funder_profile.chat_id)
-                        for interest in bounty.interested.all():
-                            if interest.profile is not None:
-                                if interest.profile.chat_id is None:
-                                    created, chat_user = create_user_if_not_exists(interest.profile)
-                                    interest.profile.chat_id = chat_user['id']
-                                    interest.profile.save()
-                                profiles_to_connect.append(interest.profile.chat_id)
-                        if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
-                            bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
-                            bounty_channel_name = bounty_channel_name[:60]
-                            create_channel_opts = {
-                                'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                                'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
-                                'channel_name': bounty_channel_name[:60]
-                            }
-                            task = create_channel.s(create_channel_opts, bounty.id)
-                            task.link(add_to_channel.s(profiles_to_connect))
-                        else:
-                            task = add_to_channel.s(bounty.chat_channel_id, profiles_to_connect)
+                profiles_to_connect = []
+                try:
+                    funder_profile = Profile.objects.get(handle=bounty.bounty_owner_github_username)
 
-                        tasks.append(task)
+                except Exception as e:
+                    print("here")
+                    print(str(e))
+                    continue
 
+                if funder_profile is not None:
+                    if funder_profile.chat_id is None:
+                        created, funder_profile_request = create_user_if_not_exists(funder_profile)
+                        funder_profile.chat_id = funder_profile_request['id']
+                        funder_profile.save()
+                    profiles_to_connect.append(funder_profile.chat_id)
+                    for interest in bounty.interested.all():
+                        if interest.profile is not None:
+                            if interest.profile.chat_id is None:
+                                created, chat_user = create_user_if_not_exists(interest.profile)
+                                interest.profile.chat_id = chat_user['id']
+                                interest.profile.save()
+                            profiles_to_connect.append(interest.profile.chat_id)
+                    if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
+                        bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
+                        bounty_channel_name = bounty_channel_name[:60]
+                        create_channel_opts = {
+                            'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                            'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
+                            'channel_name': bounty_channel_name[:60]
+                        }
+                        task = create_channel.s(create_channel_opts, bounty.id)
+                        task.link(add_to_channel.s(profiles_to_connect))
+                    else:
+                        task = add_to_channel.s(bounty.chat_channel_id, profiles_to_connect)
+
+                    tasks.append(task)
+
+            if len(tasks) > 0:
                 job = group(tasks)
                 result = job.apply_async()
             else:

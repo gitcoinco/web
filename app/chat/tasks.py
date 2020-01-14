@@ -33,7 +33,7 @@ def get_driver():
 
 
 @app.shared_task(bind=True, max_retries=3)
-def create_channel(self, options, bounty_id, retry: bool = True) -> None:
+def create_channel(self, options, bounty_id = None, retry: bool = True) -> None:
     """
     :param options:
     :param retry:
