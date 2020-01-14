@@ -49,16 +49,16 @@ class Command(BaseCommand):
                 try:
                     funder_profile = Profile.objects.get(handle__iexact=bounty.bounty_owner_github_username.lower())
 
-                    if funder_profile is not None:
-                        if funder_profile.chat_id is '':
+                    if funder_profile:
+                        if funder_profile.chat_id:
                             print("no funder chat id")
                             created, funder_profile_request = create_user_if_not_exists(funder_profile)
                             funder_profile.chat_id = funder_profile_request['id']
                             funder_profile.save()
                         profiles_to_connect.append(funder_profile.chat_id)
                         for interest in bounty.interested.all():
-                            if interest.profile is not None:
-                                if interest.profile.chat_id is '':
+                            if interest.profile:
+                                if interest.profile.chat_id:
                                     print(f"no hunter chat id: {interest.profile.handle}")
                                     created, chat_user = create_user_if_not_exists(interest.profile)
                                     interest.profile.chat_id = chat_user['id']
@@ -75,8 +75,8 @@ class Command(BaseCommand):
                             task = create_channel.s(create_channel_opts, bounty.id)
                             task.link(add_to_channel.s(profiles_to_connect))
                         else:
-                            task = add_to_channel.s(bounty.chat_channel_id, profiles_to_connect)
-
+                            task = add_to_channel.s({'id': bounty.chat_channel_id}, profiles_to_connect)
+                        print(profiles_to_connect)
                         tasks.append(task)
                 except Exception as e:
                     print("here")
