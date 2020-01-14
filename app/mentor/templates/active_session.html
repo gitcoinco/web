@@ -23,11 +23,13 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/mentor/styles.css" %}" />
+		<script src='https://meet.jit.si/external_api.js'></script>
   </head>
   <body class="{{ active }} g-font-muli">
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <header class="header">
       {% include 'shared/mentor_nav.html' %}
+			<!-- TODO replace it by the correct mentor nav -->>
       <div class="container text-center mt-5">
         <h1 class="white h2">
           {{ session.name }}
@@ -39,13 +41,35 @@
           Mentoring to {{ session.mentee.name }}
         </p>
       </div>
-      <div class="container pt-5">
-
-
-      </div>
     </header>
 
     </section>
+
+		<section class="container">
+			<div class="row">
+				<div class="col-sm">
+					<div id="jitsy_placeholder">
+						<div style="background-color: grey; width: 400px; height: 400px;">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm">
+					<div class="info-panel">
+						<h2>Mentoring session</h2>
+						<p class="counter">23:04</p>
+						<button class="stop">Stop session</button>
+						<ul class="activity_logs">
+							<li>Sarah initiated the session with an initial stake of 0.05ETH</li>	
+							<li>The available fund have already reached with 0.015ETH streamed</li>
+							<li>You have successfully withdrawn 0.01 ETH 12 minutes after the session start</li>
+						</ul>
+				</div>
+				<div class="progress-info-bar">
+					42&percnt; 	of the 0.05 bounty funds have been streamed for your work <a href="http://todo.com">more info</a>
+					<button>Withdraw</button>
+				</div>
+			</div>
+		</section>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
