@@ -43,7 +43,8 @@ class Command(BaseCommand):
             )
             tasks = []
             for bounty in bounties_to_sync:
-
+                print("current bounty owner")
+                print(bounty.bounty_owner_github_username)
                 profiles_to_connect = []
                 try:
                     funder_profile = Profile.objects.get(handle__iexact=bounty.bounty_owner_github_username.lower())
@@ -54,6 +55,7 @@ class Command(BaseCommand):
 
                 if funder_profile is not None:
                     if funder_profile.chat_id is None:
+                        print("no funder chat id")
                         created, funder_profile_request = create_user_if_not_exists(funder_profile)
                         funder_profile.chat_id = funder_profile_request['id']
                         funder_profile.save()
@@ -61,6 +63,7 @@ class Command(BaseCommand):
                     for interest in bounty.interested.all():
                         if interest.profile is not None:
                             if interest.profile.chat_id is None:
+                                print(f"no hunter chat id: {interest.profile.handle}")
                                 created, chat_user = create_user_if_not_exists(interest.profile)
                                 interest.profile.chat_id = chat_user['id']
                                 interest.profile.save()
