@@ -22,6 +22,7 @@ import json
 import logging
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.db import transaction
 from django.db.models import Q
@@ -47,7 +48,7 @@ def mentor_home(request):
     return TemplateResponse(request, 'mentor_home.html', context)
 
 
-
+@login_required
 def join_session(request, session):
     """Render the sessions home page."""
     session = get_object_or_404(Sessions, id=session)
@@ -58,7 +59,7 @@ def join_session(request, session):
     }
     return TemplateResponse(request, 'active_session.html', context)
 
-
+@login_required
 def new_session(request):
     """Render the sessions home page."""
 
