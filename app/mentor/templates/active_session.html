@@ -30,12 +30,12 @@
       {% include 'shared/mentor_nav.html' %}
       <div class="container text-center mt-5">
         <h1 class="white h2">
-          {{ session.name }}
         </h1>
         <h1 class="white h4">
           {{ session.description }}
         </h1>
         <p class="white">
+          {% if is_mentor %} I'm the mentor {% else %}{{ session.mentor.name }} {% endif %}
           Mentoring to {{ session.mentee.name }}
         </p>
       </div>
