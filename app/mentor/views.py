@@ -53,7 +53,8 @@ def join_session(request, session):
     session = get_object_or_404(Sessions, id=session)
     context = {
         'title': 'Mentor',
-        "session": session
+        "session": session,
+        'is_mentor': session.mentor.id == request.user.profile.id
     }
     return TemplateResponse(request, 'active_session.html', context)
 
