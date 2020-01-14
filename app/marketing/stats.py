@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2018 Gitcoin Core
+    Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -88,6 +88,17 @@ def slack_users_active():
     Stat.objects.create(
         key='slack_users_away',
         val=num_away,
+        )
+
+
+def chat_users():
+    from chat.tasks import get_driver
+    chat_driver = get_driver()
+    stats_request = chat_driver.users.stats()
+    if 'message' not in stats_request:
+        Stat.objects.create(
+            key='total_users',
+            val=stats_request['total_users_count'],
         )
 
 

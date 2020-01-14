@@ -291,7 +291,6 @@ var callbacks = {
     }
 
     const tokenDecimals = 3;
-    const dollarDecimals = 2;
     const bountyTokenName = result['token_name'];
     const bountyTokenAmount = token_value_to_display(result['value_in_token'], tokenDecimals);
     const dateNow = new Date();
@@ -483,11 +482,20 @@ const isAvailableIfReserved = function(bounty) {
 };
 
 const isBountyOwner = result => {
-  if (typeof web3 == 'undefined' || !web3.eth ||
-      typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase || !result) {
+  if (document.is_bounties_network) {
+    return isFundedByCurrentAddress(result) && isBountyOwnerPerLogin(result);
+  }
+  return isBountyOwnerPerLogin(result);
+};
+
+const isFundedByCurrentAddress = result => {
+  if (
+    typeof web3 == 'undefined' || !web3.eth ||
+    typeof cb_address == 'undefined' || !cb_address || !result
+  ) {
     return false;
   }
-  return caseInsensitiveCompare(web3.eth.coinbase, result['bounty_owner_address']);
+  return caseInsensitiveCompare(cb_address, result['bounty_owner_address']);
 };
 
 const isBountyOwnerPerLogin = result => {
@@ -542,6 +550,7 @@ waitforWeb3(function() {
     if (document.web3Changed) {
       return;
     }
+    reloadCbAddress();
 
     if (typeof document.lastWeb3Network == 'undefined') {
       document.lastWeb3Network = document.web3network;
@@ -549,11 +558,19 @@ waitforWeb3(function() {
     }
 
     if (typeof document.lastCoinbase == 'undefined') {
-      document.lastCoinbase = web3 ? web3.eth.coinbase : null;
+
+      try {
+        // invoke infura synchronous call, if it fails metamask is locked
+        document.lastCoinbase = web3.eth.coinbase;
+      } catch (error) {
+        document.lastCoinbase = null;
+        // catch error so sentry doesn't alert on metamask call failure
+        console.log('web3.eth.coinbase could not be loaded');
+      }
       return;
     }
 
-    if (web3 && (document.lastCoinbase != web3.eth.coinbase) ||
+    if (web3 && (document.lastCoinbase != cb_address) ||
       (document.lastWeb3Network != document.web3network)) {
       _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
       document.location.reload();
@@ -877,7 +894,7 @@ var show_extend_deadline_modal = function() {
 };
 
 const showGithubSync = function(result) {
-  if (isBountyOwner(result) || currentProfile.isStaff) {
+  if (isBountyOwnerPerLogin(result) || currentProfile.isStaff) {
     $('#bounty-options-link').append(
       `<a id="sync-github-issue" class="dropdown-item p-2">
         <i class="fas fa-sync mr-2"></i>
@@ -941,11 +958,17 @@ var build_detail_page = function(result) {
   $('.title').html(gettext('Funded Issue Details: ') + result['title']);
 
   // funded by
-  if (isBountyOwnerPerLogin(result) && !isBountyOwner(result)) {
-    $('#funder_notif_info').html(gettext('Funder Address: ') +
-      '<span id="bounty_funded_by">' + result['bounty_owner_address'] + '</span>');
+  if (
+    isBountyOwnerPerLogin(result) &&
+    !isFundedByCurrentAddress(result)
+  ) {
+    $('#funder_notif_info').html(
+      gettext('Funder Address: ') +
+      '<span id="bounty_funded_by">' +
+      result['bounty_owner_address'] + '</span>'
+    );
     $('#funder_notif_info').append('\
-        <span class="bounty-notification ml-2">\
+      <span class="bounty-notification ml-2">\
         <i class="far fa-bell mr-2"></i>\
         Ready to Pay? Set Your Metamask to this address!\
         <img src="' + static_url + 'v2/images/metamask.svg" class="ml-2">\
@@ -1034,16 +1057,17 @@ const is_funder_notifiable = (result) => {
 };
 
 var do_actions = function(result) {
-  var is_legacy = result['web3_type'] == 'legacy_gitcoin';
-  var is_status_expired = result['status'] == 'expired';
-  var is_status_done = result['status'] == 'done';
-  var is_status_cancelled = result['status'] == 'cancelled';
-  var can_submit_after_expiration_date = result['can_submit_after_expiration_date'];
-  var is_still_on_happy_path = result['status'] == 'reserved' || result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
-  var needs_review = result['needs_review'];
+  const is_legacy = result['web3_type'] == 'legacy_gitcoin';
+  const is_status_expired = result['status'] == 'expired';
+  const is_status_done = result['status'] == 'done';
+  const is_status_cancelled = result['status'] == 'cancelled';
+  const can_submit_after_expiration_date = result['can_submit_after_expiration_date'];
+  const is_still_on_happy_path = result['status'] == 'reserved' || result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
+  const needs_review = result['needs_review'];
   const is_open = result['is_open'];
-  let bounty_path = result['network'] + '/' + result['standard_bounties_id'];
+  const is_bounties_network = document.is_bounties_network;
 
+  let bounty_path = result['network'] + '/' + result['standard_bounties_id'];
 
   const is_interested = is_current_user_interested(result);
 
@@ -1072,10 +1096,10 @@ var do_actions = function(result) {
   let show_submit_work = is_open && !has_fulfilled;
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
-  const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
+  const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && is_bounties_network;
   const submit_work_enabled = !isBountyOwner(result) && current_user_is_approved;
   const notify_funder_enabled = is_funder_notifiable(result);
-  let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
+  let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result) && !is_status_cancelled;
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_invoice = isBountyOwner(result);
   let show_notify_funder = is_open && has_fulfilled;
@@ -1186,8 +1210,8 @@ var do_actions = function(result) {
     const enabled = true;
     const _entry = {
       enabled: enabled,
-      href: result['action_urls']['contribute'],
-      text: gettext('Contribute Funds'),
+      href: result['action_urls']['increase'],
+      text: isBountyOwner(result) ? gettext('Increase Funding') : gettext('Contribute Funds'),
       parent: 'bounty_actions',
       title: gettext('Help by funding or promoting this issue')
     };
@@ -1456,26 +1480,27 @@ var pull_bounty_from_api = function() {
 
 
 const process_activities = function(result, bounty_activities) {
+
   const activity_names = {
-    new_bounty: gettext('New Bounty'),
+    new_bounty: gettext('Bounty Created'),
     start_work: gettext('Work Started'),
     stop_work: gettext('Work Stopped'),
     work_submitted: gettext('Work Submitted'),
     work_done: gettext('Work Done'),
-    worker_approved: gettext('Worker Approved'),
-    worker_rejected: gettext('Worker Rejected'),
-    worker_applied: gettext('Worker Applied'),
+    worker_approved: gettext('Approved'),
+    worker_rejected: gettext('Rejected Contributor'),
+    worker_applied: gettext('Contributor Applied'),
     increased_bounty: gettext('Increased Funding'),
     killed_bounty: gettext('Canceled Bounty'),
-    new_crowdfund: gettext('New Crowdfund Contribution'),
-    new_tip: gettext('New Tip'),
+    new_crowdfund: gettext('Added new Crowdfund Contribution'),
+    new_tip: gettext('Tip Sent'),
     receive_tip: gettext('Tip Received'),
     bounty_abandonment_escalation_to_mods: gettext('Escalated for Abandonment of Bounty'),
     bounty_abandonment_warning: gettext('Warned for Abandonment of Bounty'),
     bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
     bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
     bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
-    bounty_changed: gettext('Bounty Details Changed'),
+    bounty_changed: gettext('Bounty Details Updated'),
     extend_expiration: gettext('Extended Bounty Expiration')
   };
 
@@ -1484,6 +1509,7 @@ const process_activities = function(result, bounty_activities) {
   const _result = [];
 
   bounty_activities = bounty_activities || [];
+
   bounty_activities.forEach(function(_activity) {
     const type = _activity.activity_type;
 
@@ -1528,10 +1554,25 @@ const process_activities = function(result, bounty_activities) {
 
     let to_username = null;
     let kudos = null;
+    let tip = null;
+    let crowdfund = null;
 
     if (type === 'new_kudos') {
       to_username = meta.to_username.slice(1);
       kudos = _activity.kudos.kudos_token_cloned_from.image;
+    } else if (type == 'new_tip') {
+      tip = {
+        amount: meta.amount,
+        token: meta.token_name,
+        from: meta.from_name,
+        to: meta.to_username
+      };
+    } else if (type == 'new_crowdfund') {
+      crowdfund = {
+        amount: meta.amount,
+        token: meta.token_name,
+        from: meta.from_name
+      };
     }
 
     _result.push({
@@ -1567,7 +1608,9 @@ const process_activities = function(result, bounty_activities) {
       token_name: result['token_name'],
       to_username: to_username,
       kudos: kudos,
-      permission_type: result['permission_type']
+      permission_type: result['permission_type'],
+      tip: tip,
+      crowdfund: crowdfund
     });
   });
 

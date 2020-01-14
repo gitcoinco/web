@@ -23,22 +23,37 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
-    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView, RefundFeeRequest, SearchHistory,
-    Sponsor, Tip, TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
+    Activity, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest,
+    CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject,
+    HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView,
+    RefundFeeRequest, SearchHistory, Sponsor, Tip, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
+    UserVerificationModel,
 )
+
+
+class BountyEventAdmin(admin.ModelAdmin):
+    list_display = ['created_on', '__str__', 'event_type']
+    raw_id_fields = ['bounty', 'created_by']
 
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
-    search_fields = ['fulfiller_address', 'fulfiller_email', 'fulfiller_github_username',
-                     'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url']
+    list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url']
+    search_fields = [
+        'fulfiller_address', 'fulfiller_email', 'fulfiller_github_username',
+        'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url'
+    ]
     ordering = ['-id']
 
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
+
+
+class BlockedUserAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    raw_id_fields = ['user']
     list_display = ['created_on', '__str__']
 
 
@@ -167,6 +182,7 @@ class SearchHistoryAdmin(admin.ModelAdmin):
 
 
 class TipAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'created_on','sender_profile', 'recipient_profile', 'amount', 'tokenName', 'txid', 'receive_txid']
     raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
     readonly_fields = ['resend', 'claim']
@@ -202,7 +218,7 @@ class BountyAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
-    list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
+    list_display = ['pk', 'img', 'bounty_state', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
     readonly_fields = [
         'what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link',
         '_action_urls', 'coupon_link'
@@ -389,15 +405,22 @@ class HackathonProjectAdmin(admin.ModelAdmin):
         return obj.bounty.org_name
 
 
+class TribeMemberAdmin(admin.ModelAdmin):
+    raw_id_fields = ['profile', 'org',]
+    list_display = ['pk', 'profile', 'org', 'leader', 'status']
+
+
+admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Earning, EarningAdmin)
-admin.site.register(BlockedUser, GeneralAdmin)
+admin.site.register(BlockedUser, BlockedUserAdmin)
 admin.site.register(PortfolioItem, PortfolioItemAdmin)
 admin.site.register(ProfileView, ProfileViewAdmin)
 admin.site.register(UserAction, UserActionAdmin)
 admin.site.register(Interest, InterestAdmin)
 admin.site.register(Profile, ProfileAdmin)
+admin.site.register(BlockedURLFilter, GeneralAdmin)
 admin.site.register(Bounty, BountyAdmin)
 admin.site.register(BountyFulfillment, BountyFulfillmentAdmin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
@@ -418,3 +441,4 @@ admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(RefundFeeRequest, RefundFeeRequestAdmin)
 admin.site.register(Coupon, CouponAdmin)
+admin.site.register(TribeMember, TribeMemberAdmin)

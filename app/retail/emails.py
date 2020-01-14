@@ -64,7 +64,11 @@ TRANSACTIONAL_EMAILS = [
     ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured'))
 ]
 
-ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
+NOTIFICATION_EMAILS = [
+    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat'))
+]
+
+ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
 
 
 def premailer_transform(html):
@@ -385,7 +389,7 @@ thanks for being a member of the community.
 
 alisa / frank (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         elif bounty.status == 'cancelled':
@@ -406,7 +410,7 @@ thanks again for being a member of the community.
 
 alisa / frank (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         else:
@@ -443,7 +447,7 @@ def render_admin_contact_funder(bounty, text, from_user):
     return response_html, response_txt
 
 
-def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+def render_funder_stale(github_username, days=60, time_as_str='a couple months'):
     """Render the stale funder email template.
 
     Args:
@@ -459,14 +463,15 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
     response_txt = f"""
 hi {github_username},
 
-alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}.
+in the spirit of making Gitcoin better + checking in:
 
-- has anything been slipping on your issue board which might be bounty worthy?
+- have any issues which might be bounty worthy or projects you're hoping to build?
 - do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
+- are you interested in joining one of <a href="https://gitcoin.co/hackathon-list/">our upcoming hackathons?</a> it's possible
+we could do so at a discount, as you're a current funder on the platform
 
-our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days.
-
-appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
+appreciate you being a part of the community + let us know if you'd like some Gitcoin schwag, we can send a link your way to order some :)
 
 ~ alisa / frank (gitcoin product team)
 
@@ -927,8 +932,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Waterloo Sunrise"
-    new_kudos_pks = [5163, 5077, 5126]
+    subject = "To Take Back or Give Back?"
+    new_kudos_pks = [7335, 7323, 7339]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -938,82 +943,78 @@ def render_new_bounty_roundup(to_email):
         email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
-<h3>Happy Kudos Friday!</h3>
+<h3>New Kudos This Month</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
     '''
+
     intro = f'''
 <p>
 Hey Gitcoiners,
 </p>
 <p>
-    I'm back on the road again, hitting the tarmac once more to join the hacking goodness and celebration at ETH Waterloo. If you'll be attending, be sure to say hello: I'm looking forward to seeing all of your incredible faces.  You can check out the schedule <a href="https://ethwaterloo.com/#schedule"> with more information about my talk here.</a> Tweet at me: I'm <a href="https://twitter.com/owocki">@owocki.</a>
+As you may have heard, the <a href="https://hackathons.gitcoin.co/take-back-the-web">Take Back the Web</a> Virtual Hackathon kicked off yesterday. Check out the <a href="https://gitcoin.co/hackathon/take-back-the-web/">prize explorer</a> to see the bounties posted by Status, MetaMask, ETC Labs, Infura, Blockstack, Kickback, and Sablier. We also just released a new in-app <a href="https://chat.gitcoin.co/hackathons/">Gitcoin Chat</a> feature for this hackathon and beyond, so join the conversation!
 </p>
 <p>
-    The development team is hard at work again with the successful push to release another version of Gitcoin. If you'd like to take a look at our release notes (with fun goodies such as new Kudos, fresh quests, and boundless bug fixes) be sure to take a look at our Github repo. The latest release notes live <a href="https://github.com/gitcoinco/web/releases/tag/20191106master"> here</a>.
+We are also now almost 5 days into <a href="https://gitcoin.co/blog/gitcoin-grants-2020/">Gitcoin Grants Round 4</a>, with over 838 contributions from 241 unique community members, worth $22297, after the first 3 days. Click <a href="https://gitcoin.co/grants/">here</a> to checkout the round 4 grants. It’s up to you to decide - are you going to help us take back the web, or help us give back grants to the community?
 </p>
 <p>
-    Web3 World is progressing along! If you're joining us for this fall/winter hack, be sure to get your submissions in by 11:59 PM EST on November 11th. We're excited to see your work and projects you've put together.
+Finally, we are exited to share <a href="https://web3.sustainoss.org/">Sustain Web3</a> has a <a href="https://twitter.com/gitcoin/status/1215427678465118208">new venue</a>: The EthDenver Sports Castle in Denver, alongside DAOFest. Now, all things DAOs and Web3 sustainability will be in one place on Feb 13th! We hope to see you there.
 </p>
+
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is on for this week! Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
-        </li>
-        <li>
-        As we mentioned earlier this week, YouTube recordings of our livestreams are finally being released. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
+            Join us on today's Gitcoin Livestream to hear from the Take Back The Web sponsors mentioned above discuss their projects, bounties, and how they are giving power back to the end users on the internet. <a href="https://gitcoin.co/livestream">Join at 2pm ET</a>.
         </li>
     </ul>
 </p>
 <p>
-Back to shipping,
+Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'nionis',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Create HOPR Widget According To Design Mockup',
-        'link': 'https://gitcoin.co/issue/hoprnet/hopr-website/16/3607',
+        'what': 'Enabled address privacy for Gitcoin Grant contributors',
+        'link': 'https://gitcoin.co/issue/gitcoinco/web/5654/3826',
         'link_copy': 'View more',
     }, {
-        'who': 'frippo40',
+        'who': 'think-in-universe',
         'who_link': True,
-        'what': 'Ultimate Package Tracker',
-        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/23/3420',
+        'what': 'Translated articles to Chinese for Web3Foundation',
+        'link': 'https://gitcoin.co/issue/staketechnologies/Plasm/88/3790',
         'link_copy': 'View more',
     }, {
-        'who': 'janus',
+        'who': 'man-jain',
         'who_link': True,
-        'what': 'Ethereum Anemometer',
-        'link': 'https://gitcoin.co/issue/iExecBlockchainComputing/iexec-apps/24/3421',
+        'what': 'Created a Smart Contract That Creates A Uniswap Market For Pegged Token Upon Creation',
+        'link': 'https://gitcoin.co/issue/ProofSuite/OrFeedSmartContracts/26/3796',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'Sarchy',
-        'title': '5 minute thinking game with Ether for winner',
-        'image_url': '',
-        'link': 'http://bit.ly/sarchy-gitcoin-weekly',
-        'cta': 'Play the \'Trusting Trust\' game',
-        'body': [
-           'Due to data manipulation by big tech companies, Trust is becoming a key issue in the internet.',
-           '"Trusting Trust" is a game about Trust. It uses the "Prisoners Dilemma" concept. This concept has even been used in the movie "The Dark Knight" by the Joker in the climax scene.'
-        ]
-    }
-    
+    'name': 'CodeFund',
+    'title': 'Does your project need 🦄 developers?',
+    'image_url': '',
+    'link': 'http://bit.ly/codefund-gitcoin-weekly',
+    'cta': 'Learn More',
+    'body': [
+       'CodeFund is a privacy-focused ethical advertising network (by Gitcoin) that funds open source projects.',
+       'We specialize in helping companies connect with talented developers and potential customers on developer-centric sites that typically do not allow ads.'
+    ]
+}
+
     bounties_spec = [{
-        'url': 'https://github.com/diadata-org/diadata/issues/181',
-        'primer': 'Scraper For Bitflyer Futures',
+        'url': 'https://github.com/blockstack/bounties/issues/2',
+        'primer': 'Provide A Way To Create An Invitation For Users That Have not Signed Up Yet (Blockstack)',
     }, {
-        'url': 'https://github.com/fsprojects/fantomas/issues/555',
-        'primer': 'SpaceBeforeArguments Inconsistency: Should Apply To Functions That Receive `Unit` Arg Too',
-    }, {
-        'url': 'https://github.com/gitcoinco/skunkworks/issues/134',
-        'primer': 'Web3 Sustain Event Page',
-}, ]
+        'url': 'https://github.com/INFURA/hackathons/issues/3',
+        'primer': 'Infura Ethereum API Optimization',
+    }, ]
 
 
     num_leadboard_items = 5
@@ -1045,7 +1046,7 @@ Back to shipping,
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
-            .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
+            .filter(leaderboard=key, product='all').order_by('rank')[0:num_leadboard_items]
     if not len(leaderboard['quarterly_payers']['items']):
         leaderboard = []
 

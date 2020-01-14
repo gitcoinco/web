@@ -157,7 +157,7 @@ $(document).ready(function() {
     });
   }
 
-  var top_nav_salt = 5;
+  var top_nav_salt = 6;
   var remove_top_row = function() {
     $('#top_nav_notification').parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
@@ -270,11 +270,11 @@ var show_persona_modal = function(e) {
             <h2 class="font-title mt-4">${gettext('Are you a Funder or a Contributor?')}</h2>
           </div>
           <div class="col-12 pt-2 text-center">
-            <p>${gettext('Let us know so we could optimize the <br>best experience for you!')}</p>
+            <p class="mb-0">${gettext('Let us know so we could optimize the <br>best experience for you!')}</p>
           </div>
-          <div class="col-12 my-4 d-flex justify-content-around">
-            <button type="button" class="btn btn-gc-blue col-5" data-persona="persona_is_funder">I'm a Funder</button>
-            <button type="button" class="btn btn-gc-blue col-5" data-persona="persona_is_hunter">I'm a Contributor</button>
+          <div class="col-12 my-4 text-center">
+            <button type="button" class="btn btn-gc-blue px-5 mb-2 mx-2" data-persona="persona_is_funder">I'm a Funder</button>
+            <button type="button" class="btn btn-gc-blue px-5 mx-2" data-persona="persona_is_hunter">I'm a Contributor</button>
           </div>
         </div>
       </div>
@@ -403,6 +403,6 @@ const gitcoinUpdates = (force) => {
   });
 };
 
-if (document.contxt.github_handle) {
-  gitcoinUpdates();
+if (document.contxt.chat_unread_messages) {
+  $('#chat-notification-dot').addClass('notification__dot__active');
 }

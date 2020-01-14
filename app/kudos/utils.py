@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define utility functions.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -380,8 +380,12 @@ class KudosContract:
             obj: Web3py contract object.
 
         """
-        with open('kudos/Kudos.json') as f:
-            abi = json.load(f)
+        try:
+            with open('kudos/Kudos.json') as f:
+                abi = json.load(f)
+        except:
+            with open('app/kudos/Kudos.json') as f:
+                abi = json.load(f)
         address = self._get_contract_address()
         return self._w3.eth.contract(address=address, abi=abi)
 

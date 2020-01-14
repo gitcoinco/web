@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define models.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -573,6 +573,9 @@ class BulkTransferCoupon(SuperModel):
     def __str__(self):
         """Return the string representation of a model."""
         return f"Token: {self.token} num_uses_total: {self.num_uses_total}"
+
+    def get_absolute_url(self):
+        return settings.BASE_URL + f"kudos/redeem/{self.secret}"
 
     @property
     def url(self):

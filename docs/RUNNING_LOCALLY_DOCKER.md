@@ -8,17 +8,35 @@ cp app/app/local.env app/app/.env
 
 ## Startup server
 
+*Check that you have Docker and Docker-compose properly installed*
+```shell
+docker --version
+Docker version 18.09.7, build 2d0083d
+
+docker-compose --version
+docker-compose version 1.24.1, build 4667896b
+```
+The above should work.
+
 ### Running in Detached mode
 
 ```shell
 docker-compose up -d --build
 ```
 
+The above would create a background daemon when it finished installation. It takes pretty long time, an hour or more. The good news is that it runs on its own. If you have error while running this it is likely to come from docker and docker-compose.
+
 ### Running in the foreground
 
 ```shell
 docker-compose up --build
 ```
+### Screens during building
+
+![Installation Screenshot 1](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshot1.png "Installation screenshot")
+
+![Installation Screenshot 2](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshot2.png "Installation screenshot")
+
 
 ### Viewing Logs
 
@@ -35,6 +53,16 @@ docker-compose logs
 ```
 
 Navigate to `http://localhost:8000/`.
+
+![Running Screenshot 1](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server1.png "Running screenshot")
+
+![Running Screenshot 2](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server2.png "Running screenshot")
+
+![Running Screenshot 3](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server4.png "Running screenshot")
+
+![Running Screenshot 4](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server5.png "Running screenshot")
+
+For background build, Gitcoin server runs as a service and its always there. You can stop it using `kill process`, docker-compose to stop it  or other means.
 
 *Note: Running `docker-compose logs --tail=50 -f <optional container_name>` will follow all container output in the active terminal window, while specifying a container name will follow that specific container's output. `--tail` is optional.*
 Check out the [Docker Compose CLI Reference](https://docs.docker.com/compose/reference/) for more information.
@@ -70,6 +98,21 @@ docker-compose exec web python3 app/manage.py createsuperuser
 7. Congratulations, your local environment now supports your custom token!
 8. You may continue administering your token over at [http://tokenfactory.surge.sh](http://tokenfactory.surge.sh).  Hint:  Maybe you should mint some? 🤔
 
+
+## Initial test data
+
+The development server is conditioned with a representative sampling of test data fixtures outlined below:
+* 20ish users doing a variety things
+* Bounties in various statuses - so you can get to work!
+* Grants - ask some friends to support your work on Gitcoin
+* A variety of Kudos for you to send to everybody hahrd at work on bounties
+* A default superuser - usage below
+    1. Go to [http://localhost:8000/_administrationeconomy/](http://localhost:8000/_administration) 
+    2. Login with - username - root - password - gitcoinco 
+    3. Poke around the database tables.
+    4. Click the "Impersonate User" link,  pick any user and poke around the site.
+
+Note, using the sync_geth command described below can potentially break some of the fixtures outlined above.
 
 ## Optional: Import bounty data from web3 to your database
 
@@ -129,8 +172,58 @@ make fix # npm run eslint:fix; docker-compose exec web isort -rc --atomic .;
 
 `Q: How can I see a complete list of Makefile commands and descriptions?`
 
+Run:
 ```shell
-make # make help
+make
+
+autotranslate                  Automatically translate all untranslated entries for all LOCALES in settings.py.
+build                          Build the Gitcoin Web image.
+collect-static                 Collect newly added static resources from the assets directory.
+compilemessages                Execute compilemessages for translations on the web container.
+compress-images                Compress and optimize images throughout the repository. Requires optipng, svgo, and jpeg-recompress.
+cypress                        Open cypress testing UI
+eslint                         Run eslint against the project directory. Requires node, npm, and project dependencies.
+fix-eslint                     Run eslint --fix against the project directory. Requires node, npm, and project dependencies.
+fix                            Attempt to run all fixes against the project directory.
+fix-isort                      Run isort against python files in the project directory.
+fix-stylelint                  Run stylelint --fix against the project directory. Requires node, npm, and project dependencies.
+fix-yapf                       Run yapf against any included or newly introduced Python code.
+fresh                          Completely destroy all compose assets and start compose with a fresh build.
+get_django_shell               Open a standard Django shell.
+get_ipdb_shell                 Drop into the active Django shell for inspection via ipdb.
+get_shell_plus                 Open a standard Django shell.
+load_initial_data              Load initial development fixtures.
+login                          Login to Docker Hub.
+logs                           Print and actively tail the docker compose logs.
+makemessages                   Execute makemessages for translations on the web container.
+migrate                        Migrate the database schema with the latest unapplied migrations.
+migrations                     Generate migration files for schema changes.
+pgactivity                     Run pg_activivty against the local postgresql instance.
+pgtop                          Run pg_top against the local postgresql instance.
+push                           Push the Docker image to the Docker Hub repository.
+pytest-pdb                     Run pytest with pdb support (Backend)
+pytest                         Run pytest (Backend)
+stylelint                      Run stylelint against the project directory. Requires node, npm, and project dependencies.
+tests                          Run the full test suite.
+update_fork                    Update the current fork master branch with upstream master.
+update_stable                  Update the stable branch with master.
+
+```
+
+These are commands that you can use to play with Gitcoin web. However, they are for developer. If you want to play around some may need special docker setup. `make build` uses  docker experimental functions.
+
+### Enable docker experimental functions
+
+```shell
+sudo nano /etc/docker/daemon.json
+```
+
+Copy and paste
+
+```
+{ 
+    "experimental": true 
+} 
 ```
 
 #### On-chain activities

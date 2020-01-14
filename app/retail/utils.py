@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Retail utility methods and general logic.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -408,7 +408,7 @@ def build_stat_results(keyword=None):
     pp.profile_time('start')
     base_alumni = Alumni.objects.all().cache()
     base_bounties = Bounty.objects.current().filter(network='mainnet').cache()
-    base_leaderboard = LeaderboardRank.objects.all().cache()
+    base_leaderboard = LeaderboardRank.objects.filter(product='all').cache()
 
     pp.profile_time('filters')
     if keyword:

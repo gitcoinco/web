@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -28,7 +28,7 @@
   <br>
   <br>
 
-    You <strong>started work upon</strong> a funded issue {{ interest.created|naturaltime }}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{ time_delta_days }} days{% endif %}.
+    You <strong>started work on</strong> a funded issue {{ interest.created|naturaltime }}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{ time_delta_days }} days{% endif %}.
 
   <br>
   <br>

@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -65,7 +65,7 @@
   <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
 </a>
 <p>{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}</p>
-<p>{% trans "You can see the grant cancellation transaction on etherscan" %}
+<p>{% trans "You can see the grant cancellation transaction on Etherscan" %}
   {% if grant.network == 'mainnet' %}
     <a href="http://etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
   {% else %}

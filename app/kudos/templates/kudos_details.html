@@ -49,7 +49,7 @@
           <div>Owner Address: <a target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="kudos-details__address" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></div>
           {% if kudos.quests_reward.count %}
             Reward for beating
-            {% for quest in kudos.quests_reward.all %}
+            {% for quest in reward_for %}
               <a href="{{quest.url}}">{{quest.title}} Quest</a> 
             {% endfor %}
           {% endif %}
@@ -89,8 +89,8 @@
               {% if send_enabled %}
                 <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
               {% if kudos.quests_reward %}
-                {% for quest in kudos.quests_reward.all %}
-                  <a class="btn btn-gc-blue" href="{{quest.url}}">Play Quest + Win</a> 
+                {% for quest in reward_for %}
+                  <a class="btn btn-gc-blue m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a> 
                 {% endfor %}
               {% endif %}
               {% else %}

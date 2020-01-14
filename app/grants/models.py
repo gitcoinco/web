@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant models.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -77,7 +77,13 @@ class Grant(SuperModel):
 
         ordering = ['-created_on']
 
+    GRANT_TYPES = [
+        ('tech', 'tech'),
+        ('media', 'media')
+    ]
+
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
+    grant_type = models.CharField(max_length=15, choices=GRANT_TYPES, default='tech', help_text=_('Grant CLR category'))
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
@@ -206,13 +212,23 @@ class Grant(SuperModel):
         help_text=_('The Grant that this grant defers it CLR contributions to (if any).'),
         null=True,
     )
+    last_clr_calc_date = models.DateTimeField(
+        help_text=_('The last clr calculation date'),
+        null=True,
+        blank=True,
+    )
+    next_clr_calc_date = models.DateTimeField(
+        help_text=_('The last clr calculation date'),
+        null=True,
+        blank=True,
+    )
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
 
     def __str__(self):
         """Return the string representation of a Grant."""
-        return f"id: {self.pk}, active: {self.active}, title: {self.title}"
+        return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
 
     def percentage_done(self):
@@ -265,6 +281,52 @@ class Grant(SuperModel):
         if profiles.count():
             return profiles.first()
         return None
+
+    @property
+    def history_by_month(self):
+        # gets the history of contributions to this grant month over month so they can be shown o grant details
+        # returns [["", "Subscription Billing",  "New Subscriptions", "One-Time Contributions", "CLR Matching Funds"], ["December 2017", 5534, 2011, 0, 0], ["January 2018", 10396, 0 , 0, 0 ], ... for each monnth in which this grant has contribution history];
+        CLR_PAYOUT_HANDLES = ['vs77bb', 'gitcoinbot', 'notscottmoore', 'owocki']
+        month_to_contribution_numbers = {}
+        subs = self.subscriptions.all().prefetch_related('subscription_contribution')
+        for sub in subs:
+            contribs = [sc for sc in sub.subscription_contribution.all() if sc.success]
+            for contrib in contribs:
+                #add all contributions
+                key = contrib.created_on.strftime("%Y/%m")
+                subkey = 'One-Time'
+                if int(contrib.subscription.num_tx_approved) > 1:
+                    if contrib.is_first_in_sequence:
+                        subkey = 'New-Recurring'
+                    else:
+                        subkey = 'Recurring-Recurring'
+                if contrib.subscription.contributor_profile.handle in CLR_PAYOUT_HANDLES:
+                    subkey = 'CLR'
+                if key not in month_to_contribution_numbers.keys():
+                    month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0, 'CLR': 0}
+                if contrib.subscription.amount_per_period_usdt:
+                    month_to_contribution_numbers[key][subkey] += float(contrib.subscription.amount_per_period_usdt)
+        for pf in self.phantom_funding.all():
+            #add all phantom funds
+            subkey = 'One-Time'
+            key = pf.created_on.strftime("%Y/%m")
+            if key not in month_to_contribution_numbers.keys():
+                month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0, 'CLR': 0}
+            month_to_contribution_numbers[key][subkey] += float(pf.value)
+
+        # sort and return
+        return_me = [["", "Subscription Billing",  "New Subscriptions", "One-Time Contributions", "CLR Matching Funds"]]
+        for key, val in (sorted(month_to_contribution_numbers.items(), key=lambda kv:(kv[0]))):
+            return_me.append([key, val['Recurring-Recurring'], val['New-Recurring'], val['One-Time'], val['CLR']])
+        return return_me
+
+    @property
+    def history_by_month_max(self):
+        max_amount = 0
+        for ele in self.history_by_month:
+            if type(ele[1]) is float:
+                max_amount = max(max_amount, ele[1]+ele[2]+ele[3]+ele[4])
+        return max_amount
 
     @property
     def amount_received_with_phantom_funds(self):
@@ -369,6 +431,14 @@ class Subscription(SuperModel):
     active = models.BooleanField(default=True, help_text=_('Whether or not the Subscription is active.'))
     error = models.BooleanField(default=False, help_text=_('Whether or not the Subscription is erroring out.'))
     subminer_comments = models.TextField(default='', blank=True, help_text=_('Comments left by the subminer.'))
+
+    split_tx_id = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The tx id of the split transfer'),
+        blank=True,
+    )
+    split_tx_confirmed = models.BooleanField(default=False, help_text=_('Whether or not the split tx succeeded.'))
 
     subscription_hash = models.CharField(
         default='',
@@ -502,7 +572,7 @@ class Subscription(SuperModel):
         if self.last_contribution_date < timezone.now() - timezone.timedelta(days=10*365):
             active_details = "(NEVER BILLED)"
 
-        return f"id: {self.pk}; {self.status}, {self.amount_per_period} {self.token_symbol} / {self.frequency} {self.frequency_unit} for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile.handle} {active_details}"
+        return f"id: {self.pk}; {self.status}, {round(self.amount_per_period,1)} {self.token_symbol} / {self.frequency} {self.frequency_unit}, {int(self.num_tx_approved)} times for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile.handle} {active_details}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
@@ -737,6 +807,12 @@ next_valid_timestamp: {next_valid_timestamp}
         return result
 
 
+    def save_split_tx_to_contribution(self):
+        sc = self.subscription_contribution.first()
+        sc.split_tx_id = self.split_tx_id
+        sc.split_tx_confirmed = self.split_tx_confirmed
+        sc.save()
+
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
         from marketing.mails import successful_contribution
@@ -745,7 +821,9 @@ next_valid_timestamp: {next_valid_timestamp}
         self.num_tx_processed += 1
         contribution_kwargs = {
             'tx_id': tx_id,
-            'subscription': self
+            'subscription': self,
+            'split_tx_id': self.split_tx_id,
+            'split_tx_confirmed': self.split_tx_confirmed
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
@@ -899,11 +977,20 @@ class Contribution(SuperModel):
 
     success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
     tx_cleared = models.BooleanField(default=False, help_text=_('Whether or not tx cleared.'))
+    tx_override = models.BooleanField(default=False, help_text=_('Whether or not the tx success and tx_cleared have been manually overridden. If this setting is True, update_tx_status will not change this object.'))
+
     tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction ID of the Contribution.'),
     )
+    split_tx_id = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The tx id of the split transfer'),
+        blank=True,
+    )
+    split_tx_confirmed = models.BooleanField(default=False, help_text=_('Whether or not the split tx succeeded.'))
     subscription = models.ForeignKey(
         'grants.Subscription',
         related_name='subscription_contribution',
@@ -923,13 +1010,26 @@ class Contribution(SuperModel):
         txid_shortened = self.tx_id[0:10] + "..."
         return f"id: {self.pk}; {txid_shortened} => subs:{self.subscription}; {naturaltime(self.created_on)}"
 
+    @property
+    def is_first_in_sequence(self):
+        """returns true only IFF a contribution is the first in a sequence of subscriptions."""
+        other_contributions_after_this_one = Contribution.objects.filter(subscription=self.subscription, created_on__lt=self.created_on)
+        return not other_contributions_after_this_one.exists()
+
     def update_tx_status(self):
         """Updates tx status."""
         from dashboard.utils import get_tx_status
-        tx_status, tx_time = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+        if self.tx_override:
+            return
+        tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+        if self.split_tx_id:
+            split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
         if tx_status != 'pending':
             self.success = tx_status == 'success'
             self.tx_cleared = True
+        if self.split_tx_id and split_tx_status != 'pending':
+            self.success = split_tx_status == 'success'
+            self.split_tx_confirmed = True
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
 def psave_contrib(sender, instance, **kwargs):
@@ -999,6 +1099,11 @@ class CLRMatch(SuperModel):
 class MatchPledge(SuperModel):
     """Define the structure of a MatchingPledge."""
 
+    PLEDGE_TYPES = [
+        ('tech', 'tech'),
+        ('media', 'media')
+    ]
+
     active = models.BooleanField(default=False, help_text=_('Whether or not the MatchingPledge is active.'))
     profile = models.ForeignKey(
         'dashboard.Profile',
@@ -1013,6 +1118,7 @@ class MatchPledge(SuperModel):
         max_digits=50,
         help_text=_('The matching pledge amount in DAI.'),
     )
+    pledge_type = models.CharField(max_length=15, choices=PLEDGE_TYPES, default='tech', help_text=_('CLR pledge type'))
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
     end_date = models.DateTimeField(null=False, default=next_month)
     data = models.TextField(blank=True)

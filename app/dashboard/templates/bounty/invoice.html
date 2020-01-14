@@ -231,9 +231,9 @@
         <td>
           {% if total %}
              {% trans "Total:" %} ${{total|floatformat:2}}
-          {%else%}
+          {% else %}
              {% trans "Total:" %} $0.00
-          {%endif%}
+          {% endif %}
         </td>
       </tr>
     </table>

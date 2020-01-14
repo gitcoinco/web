@@ -26,6 +26,10 @@
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+    {% if user.is_authenticated %}
+      {% include 'shared/chat_nav.html' %}
+      {% include 'shared/notifications.html' %}
+    {% endif %}
   </div>
 
   <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
@@ -52,7 +56,7 @@
             {% trans "Codefund" %} <br>
             <span>{% trans "Ethical Ads Revenue to power open source" %}</span>
           </a>
-          <a class="dropdown-item" href="{% url "labs" %}">
+          <a class="dropdown-item" href="{% url "quests_index" %}">
             {% trans "Quests" %} <br>
             <span>{% trans "A fun new way to learn about the web3 ecosystem & earn rewards!" %}</span>
           </a>
@@ -82,6 +86,9 @@
           </a>
           <a class="dropdown-item" href="{% url "activity" %}">
             {% trans "Activity Feed" %}
+          </a>
+          <a class="dropdown-item" href="{% url "landing_chat" %}">
+            {% trans "Chat" %}
           </a>
         </div>
       </div>
@@ -113,14 +120,7 @@
       <!-- <a class="nav-link interior" href="{% url "pricing" %}">{% trans "Pricing" %}</a> -->
     </nav>
     <nav class="navbar-nav mr-3">
-      {% if user.is_authenticated %}
-        {% include 'shared/nav_auth.html' with source='authed' %}
-      {% else %}
-        <a href="{% url 'social:begin' 'github' %}?next=/" onclick="dataLayer.push({'event': 'login'});" class="nav-link interior">
-          <i class="fab fa-github mr-1" role="aria-hidden"></i>
-          {% trans "LOG IN" %}
-        </a>
-      {% endif %}
+      {% include 'shared/nav_auth.html' with source='authed' %}
     </nav>
   </div>
 

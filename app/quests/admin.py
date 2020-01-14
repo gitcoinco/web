@@ -6,7 +6,7 @@ from .models import Quest, QuestAttempt, QuestFeedback, QuestPointAward
 
 
 class QuestAdmin(admin.ModelAdmin):
-    raw_id_fields = ['kudos_reward', 'unlocked_by', 'creator']
+    raw_id_fields = ['kudos_reward', 'unlocked_by_quest', 'unlocked_by_hackathon', 'creator']
     ordering = ['-id']
     list_display = ['created_on', '__str__']
     readonly_fields = ['feedback','background_preview']
@@ -57,7 +57,7 @@ feedback: {fb['feedback']}
 
     def background_preview(self, instance):
         html = ''
-        for ext in ['png', 'jpg']:
+        for ext in ['jpeg']:
             url = f'/static/v2/images/quests/backs/{instance.background}.{ext}'
             html += f"<img style='max-width: 400px;' src='{url}'>"
         return mark_safe(html)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the marketing views.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -153,6 +153,7 @@ def privacy_settings(request):
         if profile:
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
             profile = record_form_submission(request, profile, 'privacy')
             if profile.alumni and profile.alumni.exists():
                 alumni = profile.alumni.first()
@@ -286,7 +287,7 @@ def email_settings(request, key):
         email_types[em[0]] = str(em[1])
     email_type = request.GET.get('type')
     if email_type in email_types:
-        email = request.user.profile.email
+        email = es.email
         if es:
             key = get_or_save_email_subscriber(email, 'settings')
             es.email = email
@@ -698,11 +699,15 @@ def org_settings(request):
     """
     msg = ''
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
+    current_scopes = []
 
     if not user or not profile or not is_logged_in:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
+    social_auth = user.social_auth.first()
+    if social_auth and social_auth.extra_data:
+        current_scopes = social_auth.extra_data.get('scope').split(',')
     orgs = get_orgs_perms(profile)
     context = {
         'is_logged_in': is_logged_in,
@@ -714,6 +719,7 @@ def org_settings(request):
         'orgs': orgs,
         'profile': profile,
         'msg': msg,
+        'current_scopes': current_scopes,
     }
     return TemplateResponse(request, 'settings/organizations.html', context)
 
@@ -744,10 +750,11 @@ def leaderboard(request, key=''):
     cadences = ['all', 'weekly', 'monthly', 'quarterly', 'yearly']
 
 
+    product = request.GET.get('product', 'all')
     keyword_search = request.GET.get('keyword', '')
     keyword_search = '' if keyword_search == 'all' else keyword_search
     limit = request.GET.get('limit', 50)
-    cadence = request.GET.get('cadence', 'quarterly')
+    cadence = request.GET.get('cadence', 'weekly')
 
     # backwards compatibility fix for old inbound links
     for ele in cadences:
@@ -773,7 +780,7 @@ def leaderboard(request, key=''):
 
     title = titles[key]
     which_leaderboard = f"{cadence}_{key}"
-    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard)
+    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard, product=product)
     if keyword_search:
         ranks = ranks.filter(tech_keywords__icontains=keyword_search)
 
@@ -799,12 +806,15 @@ def leaderboard(request, key=''):
     is_linked_to_profile = any(sub in key for sub in profile_keys)
 
     cadence_ui = cadence if cadence != 'all' else 'All-Time'
-    page_title = f'{cadence_ui.title()} {keyword_search.title()} Leaderboard: {title.title()}'
+    product_ui = product.capitalize() if product != 'all' else ''
+    page_title = f'{cadence_ui.title()} {keyword_search.title()} {product_ui} Leaderboard: {title.title()}'
     context = {
         'items': items[0:limit],
         'nav': 'home',
         'titles': titles,
         'cadence': cadence,
+        'product': product,
+        'products': ['kudos', 'grants', 'bounties', 'tips', 'all'],
         'selected': title,
         'is_linked_to_profile': is_linked_to_profile,
         'title': page_title,

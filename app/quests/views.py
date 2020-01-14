@@ -92,13 +92,15 @@ def editquest(request, pk=None):
         # multi dimensional array hack
         counter = 0
         answer_idx = 0
+
         answers = package.getlist('answer[]',[])
         answer_correct = package.getlist('answer_correct[]',[])
         seconds_to_respond = package.getlist('seconds_to_respond[]',[])
+        points = abs(int(package.get('points')))
 
         # continue building questions object
         for i in range(0, len(seconds_to_respond)):
-            questions[i]['seconds_to_respond'] = int(seconds_to_respond[i])
+            questions[i]['seconds_to_respond'] = abs(int(seconds_to_respond[i]))
 
         for answer in answers:
             if answer == '_DELIMITER_':
@@ -148,7 +150,7 @@ def editquest(request, pk=None):
                 if pk:
                     funct = Quest.objects.filter(pk=pk).update
                     edit_comments = quest.edit_comments
-                    visible = True
+                    visible = quest.visible
                 if package.get('comment'):
                     edit_comments += f"\n {timezone.now().strftime('%Y-%m-%dT%H:%M')}: {package['comment']} "
 
@@ -164,7 +166,7 @@ def editquest(request, pk=None):
                     visible=visible,
                     difficulty=package.get('difficulty'),
                     style=package.get('style'),
-                    value=package.get('points'),
+                    value=points,
                     creator=quest.creator if pk else request.user.profile,
                     edit_comments=edit_comments,
                     )
@@ -181,7 +183,7 @@ def editquest(request, pk=None):
                 if settings.DEBUG:
                     raise e
                 logger.exception(e)
-                messages.error(request, 'An unexpected error has occured')
+                messages.error(request, 'An unexpected error has occurred')
 
     #load edit page
     if pk and not package.get('title'):
@@ -224,8 +226,19 @@ def index(request):
     selected_tab = 'Search' if query else 'Beginner'
     show_quests = request.GET.get('show_quests', False)
     show_loading = not show_quests
+    focus_hackathon = request.GET.get('focus_hackathon', False)
 
     if show_quests:
+
+        # hackathon tab
+        if focus_hackathon:
+            quest_qs = Quest.objects.filter(visible=True).filter(unlocked_by_hackathon__slug=focus_hackathon)
+            quest_package = get_package_helper(quest_qs, request)
+            package = ('Hackathon Quests', quest_package)
+            quests.append(package)
+
+        print(f" phase1.0 at {round(time.time(),2)} ")
+
         # search tab
         if query:
             quest_qs = Quest.objects.filter(visible=True).filter(Q(title__icontains=query) | Q(description__icontains=query) | Q(questions__icontains=query) | Q(game_schema__icontains=query) | Q(game_metadata__icontains=query)).order_by('-ui_data__success_pct')
@@ -271,6 +284,10 @@ def index(request):
         if popular.exists():
             quests.append(('Popular', get_package_helper(popular, request)))
 
+        # select focus
+        if focus_hackathon:
+            selected_tab = 'Hackathon Quests'
+
 
     print(f" phase2 at {round(time.time(),2)} ")
     rewards_schedule = []
@@ -295,14 +312,19 @@ def index(request):
     point_history = request.user.profile.questpointawards.all() if request.user.is_authenticated else QuestPointAward.objects.none()
     point_value = sum(point_history.values_list('value', flat=True))
     print(f" phase4 at {round(time.time(),2)} ")
+
+    quests_attempts_per_day = (abs(round(QuestAttempt.objects.count() /
+                                         (QuestAttempt.objects.first().created_on - timezone.now()).days, 1))
+                               if QuestAttempt.objects.count() else 0)
+    success_ratio = int(success_count / attempt_count * 100) if attempt_count else 0
     # community_created
     params = {
         'profile': request.user.profile if request.user.is_authenticated else None,
         'quests': quests,
-        'avg_play_count': round(QuestAttempt.objects.count()/Quest.objects.count(), 1),
+        'avg_play_count': round(QuestAttempt.objects.count()/(Quest.objects.count() or 1), 1),
         'quests_attempts_total': QuestAttempt.objects.count(),
         'quests_total': Quest.objects.filter(visible=True).count(),
-        'quests_attempts_per_day': abs(round(QuestAttempt.objects.count()/(QuestAttempt.objects.first().created_on-timezone.now()).days,1)),
+        'quests_attempts_per_day': quests_attempts_per_day,
         'total_visible_quest_count': Quest.objects.filter(visible=True).count(),
         'gitcoin_created': Quest.objects.filter(visible=True).filter(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
         'community_created': Quest.objects.filter(visible=True).exclude(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
@@ -310,7 +332,7 @@ def index(request):
         'email_count': EmailSubscriber.objects.count(),
         'attempt_count': attempt_count,
         'success_count': success_count,
-        'success_ratio': int(success_count/attempt_count * 100),
+        'success_ratio': success_ratio,
         'user_count': QuestAttempt.objects.distinct('profile').count(),
         'leaderboard': leaderboard,
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
@@ -347,7 +369,8 @@ def details(request, obj_id, name, allow_feedback=False):
     try:
         quest = Quest.objects.get(pk=obj_id)
         if not quest.is_unlocked_for(request.user):
-            messages.info(request, 'This quest is locked. Try again after you have unlocked it')
+            unlock_how = f"Unlock this quest by registering for {quest.unlocked_by_hackathon.name} Hackathon" if quest.unlocked_by_hackathon else f"Unlock by beating the '{quest.self.unlocked_by_quest}' Quest"
+            messages.info(request, f'This quest is locked. Try again after you have unlocked it. ({unlock_how})')
             return redirect('/quests')
     except:
         raise Http404

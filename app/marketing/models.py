@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the marketing models and related logic.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -204,6 +204,7 @@ class LeaderboardRank(SuperModel):
     active = models.BooleanField(db_index=True)
     count = models.IntegerField(default=0)
     rank = models.IntegerField(default=0)
+    product = models.CharField(max_length=255, db_index=True)
     tech_keywords = ArrayField(models.CharField(max_length=50), blank=True, default=list)
 
     objects = LeaderboardRankQuerySet.as_manager()

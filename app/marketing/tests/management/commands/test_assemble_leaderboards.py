@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle marketing commands related tests.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -289,11 +289,11 @@ class TestAssembleLeaderboards(TestCase):
         """Test command assemble leaderboards."""
         Command().handle()
 
-        assert LeaderboardRank.objects.all().count() == 225
-        assert LeaderboardRank.objects.filter(leaderboard="all_all").count() == 15
-        assert LeaderboardRank.objects.filter(leaderboard="all_fulfilled").count() == 15
-        assert LeaderboardRank.objects.filter(leaderboard="all_earners").count() == 1
-        assert LeaderboardRank.objects.filter(leaderboard="all_payers").count() == 1
-        assert LeaderboardRank.objects.filter(leaderboard="all_tokens").count() == 1
-        assert LeaderboardRank.objects.filter(leaderboard="all_countries").count() == 3
-        assert LeaderboardRank.objects.filter(leaderboard="all_keywords").count() == 2
+        assert LeaderboardRank.objects.filter(product='all').all().count() == 225
+        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_all").count() == 15
+        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_fulfilled").count() == 15
+        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_earners").count() == 1
+        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_payers").count() == 1
+        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_tokens").count() == 1
+        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_countries").count() == 3
+        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_keywords").count() == 2

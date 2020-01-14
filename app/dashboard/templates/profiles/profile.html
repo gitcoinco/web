@@ -46,8 +46,9 @@
         </div>
       {% endif %}
     </div>
+
     <div class="container-fluid bg-light">
-      <div class="container profile-card mt-md-n5 mh-150">
+      <div class="container profile-card mh-150">
         <div class="row">
           {% if total_kudos_count %}
             <div id="kudos_header" class="d-md-block d-none">
@@ -57,33 +58,27 @@
             </div>
           {% endif %}
 
-          <div class="col-12 col-lg-6 profile-header__main-infos">
-            {% if not hidden %}
+          {% if not hidden %}
+            <div class="col-12 col-lg-6 profile-header__main-infos">
               {% include 'profiles/header_avatar.html' %}
               {% include 'profiles/header_details.html' %}
+            </div>
+            {% if profile.is_org %}
+              {% include 'profiles/organization.html' %}
 
-            {% if not hidden %}
-              {% if profile.is_org %}
-                {% include 'profiles/organization.html' %}
-              {% else %}
-              {% if profile.cascaded_persona == 'funder' %}
-                {% include 'profiles/scorecard_funder.html' %}
-              {% elif profile.cascaded_persona == 'hunter' %}
-                {% include 'profiles/scorecard_hunter.html' %}
-              {% else %}
-                {% include 'profiles/scorecard_hunter.html' %}
-              {% endif %}
-          </div>
-        </div>
+            {% elif profile.cascaded_persona == 'funder' %}
+              {% include 'profiles/scorecard_funder.html' %}
+
+            {% else %}
+              {% include 'profiles/scorecard_hunter.html' %}
+            {% endif %}
           {% endif %}
-        {% endif %}
+        </div>
       </div>
     </div>
-    {% endif%}
-    
-      {% include 'profiles/tabs.html' %}
 
-    </div>
+    {% include 'profiles/tabs.html' %}
+
     <div class="container">
       {% if hidden %}
         {% include 'profiles/hidden.html' %}
@@ -100,7 +95,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
-    
+
 
     <!-- jQuery -->
     <script src="{% static "v2/js/abi.js" %}"></script>
@@ -112,9 +107,11 @@
     </script>
     <script src="{% static "v2/js/pages/tabs.js" %}"></script>
     <script src="{% static "v2/js/pages/profile.js" %}"></script>
+    <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
     <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
     <script src="{% static "v2/js/rating.js" %}"></script>
     <script src="{% static "v2/js/status.js" %}"></script>
+    <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
     <script>
       {% if profile.preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;

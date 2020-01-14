@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Avatar models.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -254,6 +254,8 @@ class SocialAvatar(BaseAvatar):
 @receiver(post_save, sender=SocialAvatar, dispatch_uid="psave_avatar")
 @receiver(post_save, sender=CustomAvatar, dispatch_uid="psave_avatar2")
 def psave_avatar(sender, instance, **kwargs):
+    if kwargs['raw']:  # Skip adding updated_avatar activity if loading avatars from fixture
+        return
     from dashboard.models import Activity
     metadata = {'url': instance.png.url if getattr(instance, 'png', False) else None, }
     Activity.objects.create(profile=instance.profile, activity_type='updated_avatar', metadata=metadata)

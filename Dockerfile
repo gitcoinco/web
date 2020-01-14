@@ -1,33 +1,49 @@
-FROM python:3.7-alpine3.8
+FROM ubuntu:18.04
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
-ARG PACKAGES="postgresql-libs libxml2 libxslt freetype libffi jpeg libmaxminddb bash git tar gzip inkscape libmagic"
-ARG BUILD_DEPS="gcc g++ postgresql-dev libxml2-dev libxslt-dev freetype-dev libffi-dev jpeg-dev linux-headers autoconf automake libtool make dos2unix"
+ENV DEBIAN_FRONTEND=noninteractive
+
+ARG PACKAGES="libpq-dev libxml2 libxslt1-dev libfreetype6 libjpeg-dev libmaxminddb-dev bash git tar gzip inkscape libmagic-dev"
+ARG BUILD_DEPS="gcc g++ postgresql libxml2-dev libxslt-dev libfreetype6 libffi-dev libjpeg-dev autoconf automake libtool make dos2unix libvips libvips-dev"
 WORKDIR /code
 
+# Inkscape
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository ppa:inkscape.dev/stable
+RUN apt-get update
+
 # Install general dependencies.
-RUN apk add --no-cache --update $PACKAGES && \
-    apk add --no-cache --update --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ vips && \
-    apk add --no-cache --update --virtual .builder $BUILD_DEPS
+RUN apt-get install -y $PACKAGES
+RUN apt-get update
+RUN apt-get install -y $BUILD_DEPS
+
+RUN apt-get install -y wget
+
+RUN apt-get install -y python3-pip
 
 # GeoIP2 Data Files
 RUN mkdir -p /usr/share/GeoIP/ && \
-    wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz && \
-    wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz && \
-    gunzip GeoLite2-City.mmdb.gz && \
-    gunzip GeoLite2-Country.mmdb.gz && \
-    mv *.mmdb /usr/share/GeoIP/
+    wget --output-document GeoLite2-City.mmdb.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&date=20191231&license_key=7PZQgKNxgqTRhkWy&suffix=tar.gz" && \
+    wget --output-document GeoLite2-Country.mmdb.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&date=20191231&license_key=7PZQgKNxgqTRhkWy&suffix=tar.gz" && \
+    gunzip GeoLite2-City.mmdb.tar.gz && \
+    gunzip GeoLite2-Country.mmdb.tar.gz && \
+    tar -xvf GeoLite2-City.mmdb.tar && \
+    tar -xvf GeoLite2-Country.mmdb.tar && \
+    mv GeoLite2-City_20191231/*.mmdb /usr/share/GeoIP/ && \
+    mv GeoLite2-Country_20191231/*.mmdb /usr/share/GeoIP/
 
 # Upgrade package essentials.
 RUN pip3 install --upgrade pip setuptools wheel dumb-init pipenv
 
 COPY requirements/ /code/
+RUN apt-get install -y build-essential libssl-dev python3-dev
+RUN apt-get install -y libsecp256k1-dev
 RUN pip3 install --upgrade -r test.txt
 
 COPY bin/docker-command.bash /bin/docker-command.bash
-RUN dos2unix /bin/docker-command.bash && \
-    apk del .builder
+RUN dos2unix /bin/docker-command.bash
 
 COPY app/ /code/app/
 

@@ -24,6 +24,7 @@ from git.utils import _AUTH, HEADERS, get_user
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
 from pyshorteners import Shortener
+from social_core.backends.github import GithubOAuth2
 from social_django.models import UserSocialAuth
 
 logger = logging.getLogger(__name__)
@@ -458,3 +459,15 @@ def get_profile(request):
         profile = sync_profile(request.user.username, request.user, hide_profile=False)
 
     return profile
+
+
+class CustomGithubOAuth2(GithubOAuth2):
+    EXTRA_DATA = [('scope', 'scope'), ]
+
+    def get_scope(self):
+        scope = super(CustomGithubOAuth2, self).get_scope()
+        if self.data.get('extrascope'):
+            scope += ['public_repo', 'read:org']
+            from dashboard.management.commands.sync_orgs_repos import Command
+            Command().handle()
+        return scope
