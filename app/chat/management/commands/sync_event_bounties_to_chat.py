@@ -37,21 +37,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            print(options['event_id'])
             bounties_to_sync = Bounty.objects.filter(
                 Q(event__pk=options['event_id'])
             )
             tasks = []
             for bounty in bounties_to_sync:
-                print("current bounty owner")
-                print(bounty.bounty_owner_github_username)
                 profiles_to_connect = []
                 try:
                     funder_profile = Profile.objects.get(handle__iexact=bounty.bounty_owner_github_username.lower())
 
                     if funder_profile:
                         if funder_profile.chat_id:
-                            print("no funder chat id")
                             created, funder_profile_request = create_user_if_not_exists(funder_profile)
                             funder_profile.chat_id = funder_profile_request['id']
                             funder_profile.save()
@@ -59,7 +55,6 @@ class Command(BaseCommand):
                         for interest in bounty.interested.all():
                             if interest.profile:
                                 if interest.profile.chat_id:
-                                    print(f"no hunter chat id: {interest.profile.handle}")
                                     created, chat_user = create_user_if_not_exists(interest.profile)
                                     interest.profile.chat_id = chat_user['id']
                                     interest.profile.save()
@@ -76,14 +71,11 @@ class Command(BaseCommand):
                             task.link(add_to_channel.s(profiles_to_connect))
                         else:
                             task = add_to_channel.s({'id': bounty.chat_channel_id}, profiles_to_connect)
-                        print(profiles_to_connect)
                         tasks.append(task)
                 except Exception as e:
-                    print("here")
-                    print(str(e))
+                    logger.error(str(e))
                     continue
             if len(tasks) > 0:
-                print(tasks)
                 job = group(tasks)
                 result = job.apply_async()
             else:

@@ -83,7 +83,7 @@ def add_to_channel(self, channel_details, chat_user_ids, retry: bool = True) -> 
     chat_driver.login()
     try:
         for chat_id in chat_user_ids:
-            if chat_id is not None and chat_id is not '':
+            if chat_id:
                 response = chat_driver.channels.add_user(channel_details['id'], options={
                     'user_id': chat_id
                 })
