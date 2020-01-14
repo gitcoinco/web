@@ -190,15 +190,21 @@ def api(request, activity_id):
 
 is_debugging_offers = settings.DEBUG
 
+
+def get_offer_and_create_offer_action(profile, offer_id, what, do_not_allow_more_than_one_offeraction=False):
+    offer = Offer.objects.current().get(pk=offer_id)
+    if do_not_allow_more_than_one_offeraction and profile.offeractions.filter(what=what, offer=offer) and not is_debugging_offers:
+        raise Exception('already visited this offer')
+    OfferAction.objects.create(profile=profile, offer=offer, what=what)
+    return offer
+
+
 def offer_go(request, offer_id, offer_slug):
 
     try:
-        offer = Offer.objects.current().get(pk=offer_id)
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
-        if request.user.profile.offeractions.filter(what='go', offer=offer) and not is_debugging_offers:
-            raise Exception('already visited this offer')
-        OfferAction.objects.create(profile=request.user.profile, offer=offer, what='go')
+        offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'go', True)
         return redirect(offer.url)
     except:
         raise Http404
@@ -210,9 +216,7 @@ def offer_decline(request, offer_id, offer_slug):
         offer = Offer.objects.current().get(pk=offer_id)
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
-        if request.user.profile.offeractions.filter(what='decline', offer=offer) and not is_debugging_offers:
-            raise Exception('already visited this offer')
-        OfferAction.objects.create(profile=request.user.profile, offer=offer, what='decline')
+        offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'decline', True)
         return redirect('/')
     except:
         raise Http404

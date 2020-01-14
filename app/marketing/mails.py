@@ -393,8 +393,8 @@ def comment_email(comment, to_emails):
 
     subject = gettext("💬 New Comment")
 
+    cur_language = translation.get_language()
     for to_email in to_emails:
-        cur_language = translation.get_language()
         try:
             setup_lang(to_email)
             from_email = settings.CONTACT_EMAIL
@@ -403,7 +403,8 @@ def comment_email(comment, to_emails):
             if not should_suppress_notification_email(to_email, 'comment'):
                 send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
         finally:
-            translation.activate(cur_language)
+            pass
+    translation.activate(cur_language)
 
 
 def new_faucet_request(fr):
