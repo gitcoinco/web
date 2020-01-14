@@ -39,7 +39,7 @@ class Command(BaseCommand):
         try:
             print(options['event_id'])
             bounties_to_sync = Bounty.objects.filter(
-                Q(event__pk=options['event_id']) & Q(chat_channel_id__isnull=True) | Q(chat_channel_id__exact='')
+                Q(event__pk=options['event_id'])
             )
             tasks = []
             for bounty in bounties_to_sync:
