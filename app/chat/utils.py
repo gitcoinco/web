@@ -15,14 +15,14 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf import settings
-from dashboard.models import Profile
-from chat.tasks import create_user, get_driver, create_channel, add_to_channel
 import logging
+
+from django.conf import settings
+
 from celery import group
-from mattermostdriver.exceptions import (
-    ResourceNotFound
-)
+from chat.tasks import add_to_channel, create_channel, create_user, get_driver
+from dashboard.models import Profile
+from mattermostdriver.exceptions import ResourceNotFound
 
 logger = logging.getLogger(__name__)
 

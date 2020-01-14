@@ -21,7 +21,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from grants.models import CLRMatch, Contribution, Grant, MatchPledge, PhantomFunding, Subscription
+from grants.models import CLRMatch, Contribution, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -202,6 +202,17 @@ class ContributionAdmin(GeneralAdmin):
         return naturaltime(instance.subscription.contributor_profile.github_created_on)
 
 
+class MilestoneAdmin(admin.ModelAdmin):
+    """Define the Milestone administration layout."""
+
+    ordering = ['-id']
+    list_display =['pk', 'grant', 'title', 'created_on']
+
+class UpdateAdmin(admin.ModelAdmin):
+    """Define the Update administration layout."""
+
+    ordering = ['-id']
+    list_display =['pk', 'grant', 'title', 'created_on']
 
 admin.site.register(PhantomFunding, GeneralAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
@@ -209,3 +220,5 @@ admin.site.register(Grant, GrantAdmin)
 admin.site.register(CLRMatch, GeneralAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
+admin.site.register(Milestone, MilestoneAdmin)
+admin.site.register(Update, UpdateAdmin)
