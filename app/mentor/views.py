@@ -73,6 +73,8 @@ def join_session(request, session):
         "is_mentor": is_mentor,
         "is_mentee": is_mentee,
         'finised': session.active is False
+        # TODO: Not sure about the merge here
+        # 'is_mentor': session.mentor.id == request.user.profile.id
     }
 
     return TemplateResponse(request, 'active_session.html', context)
