@@ -45,12 +45,10 @@
 
     </section>
 
-		<section class="container">
+		<section class="container main">
 			<div class="row">
 				<div class="col-sm">
-					<div id="jitsy_placeholder">
-						<div style="background-color: grey; width: 400px; height: 400px;">
-						</div>
+					<div id="jitsy-placeholder">
 					</div>
 				</div>
 				<div class="col-sm">
@@ -65,7 +63,7 @@
 						</ul>
 				</div>
 				<div class="progress-info-bar">
-					42&percnt; 	of the 0.05 bounty funds have been streamed for your work <a href="http://todo.com">more info</a>
+					42&percnt; of the 0.05 bounty funds have been streamed for your work <a href="http://todo.com">more info</a>
 					<button>Withdraw</button>
 				</div>
 			</div>
@@ -77,7 +75,14 @@
     <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
     <script>
       $(document).ready(function() {
-
+				const domain = 'meet.jit.si';
+				const options = {
+						roomName: "{{ session.name }}",
+						width: 700,
+						height: 700,
+						parentNode: document.querySelector('#jitsy-placeholder')
+				};
+				const api = new JitsiMeetExternalAPI(domain, options);
       });
     </script>
 
