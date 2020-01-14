@@ -4,11 +4,8 @@ from app.redis_service import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Bounty, Profile
-from django.conf import settings
 from mattermostdriver import Driver
-from mattermostdriver.exceptions import (
-    ResourceNotFound
-)
+from mattermostdriver.exceptions import ResourceNotFound
 
 logger = get_task_logger(__name__)
 

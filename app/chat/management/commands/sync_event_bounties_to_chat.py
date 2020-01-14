@@ -15,15 +15,17 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf import settings
-from django.db.models import Q
-from django.core.management.base import BaseCommand
-from django.utils.text import slugify
-from dashboard.models import Bounty, Interest, Profile
-from chat.tasks import create_user, get_driver, create_channel, add_to_channel
-from chat.utils import create_user_if_not_exists, create_channel_if_not_exists
 import logging
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+from django.db.models import Q
+from django.utils.text import slugify
+
 from celery import group
+from chat.tasks import add_to_channel, create_channel, create_user, get_driver
+from chat.utils import create_channel_if_not_exists, create_user_if_not_exists
+from dashboard.models import Bounty, Interest, Profile
 
 logger = logging.getLogger(__name__)
 
