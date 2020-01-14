@@ -95,7 +95,7 @@ def chat_users():
     from chat.tasks import get_driver
     try:
         chat_driver = get_driver()
-        stats_request = chat_driver.users.stats()
+        stats_request = chat_driver.users.get_stats()
         Stat.objects.create(
             key='chat_total_users',
             val=stats_request['total_users_count'],
