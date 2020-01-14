@@ -83,6 +83,7 @@ class Command(BaseCommand):
                     print(str(e))
                     continue
             if len(tasks) > 0:
+                print(tasks)
                 job = group(tasks)
                 result = job.apply_async()
             else:
