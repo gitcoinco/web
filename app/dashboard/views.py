@@ -381,9 +381,9 @@ def new_interest(request, bounty_id):
                 else:
                     bounty_channel_id = bounty.chat_channel_id
 
-                funder_profile = Profile.objects.get(handle=bounty.bounty_owner_github_username)
+                funder_profile = Profile.objects.get(handle__iexact=bounty.bounty_owner_github_username)
 
-                if funder_profile is not None:
+                if funder_profile:
                     if funder_profile.chat_id is '':
                         try:
                             created, funder_details_response = create_user_if_not_exists(funder_profile)
