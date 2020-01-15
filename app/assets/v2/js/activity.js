@@ -64,8 +64,9 @@ $(document).ready(function() {
       }, 1000);
     }
   };
-
-  schedule_long_poller();
+  if(document.long_poller_live){
+    schedule_long_poller();
+  }
 
   // refresh new actviity feed items
   $(document).on('click', '#new_activity_notifier', function(e) {
