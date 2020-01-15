@@ -3,7 +3,7 @@ from django.db import transaction
 from app.redis_service import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
-from dashboard.models import Activity
+from django.db import connection
 
 logger = get_task_logger(__name__)
 
@@ -20,8 +20,10 @@ def increment_view_counts(self, pks, retry=False):
     :return:
     """
     with redis.lock("tasks:increment_view_counts", timeout=LOCK_TIMEOUT):
-        activities = Activity.objects.filter(pk__in=pks)
-        with transaction.atomic():
-            for activity in activities:
-                activity.view_count += 1
-                activity.save()
+        with connection.cursor() as cursor:
+            id_as_str = ",".join(str(id) for id in pks)
+            query = f"UPDATE dashboard_activity SET view_count = view_count + 1 WHERE id in ({id_as_str});"
+            cursor.execute(query)
+            row = cursor.fetchone()
+            print('done')
+
