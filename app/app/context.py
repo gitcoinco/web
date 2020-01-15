@@ -100,11 +100,10 @@ def preprocess(request):
 
             chat_unreads_request = chat_driver.teams.get_team_unreads_for_user(profile.chat_id)
 
-            if 'message' not in chat_unreads_request:
-                for teams in chat_unreads_request:
-                    if teams['msg_count'] > 0 or teams['mention_count'] > 0:
-                        chat_unread_messages = True
-                        break
+            for teams in chat_unreads_request:
+                if teams['msg_count'] > 0 or teams['mention_count'] > 0:
+                    chat_unread_messages = True
+                    break
         except Exception as e:
             logger.error(str(e))
 

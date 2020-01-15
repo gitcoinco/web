@@ -1,0 +1,48 @@
+{% load static humanize i18n grants_extra %}
+  <div class="py-3 mx-sm-0 row transaction-history">
+    <div class="d-none d-sm-block col-2 font-subheader text-center text-md-left my-auto">
+      {{ transaction.created_on|date:"d M Y" }}
+    </div>
+    <div class="col-3 col-sm-2 col-md-1 justify-content-center special_tag">
+      <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
+        <img class="avatar rounded-circle" src="{{ transaction.subscription.contributor_profile.avatar_url }}">
+      </a>
+    </div>
+    <div class="col-5 col-sm-4 my-auto">
+      <div class="font-weight-bold font-body">
+        <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
+          {{ transaction.subscription.contributor_profile }}
+        </a>
+      </div>
+      <div class="info font-caption">
+        {{ transaction.subscription.amount_per_period|floatformat:4|intcomma }} {{ transaction.subscription.token_symbol }}
+        {% if not transaction.tx_cleared %} (Pending) {% endif %}
+        {% if not transaction.success %} (Failed) {% endif %}
+      </div>
+    </div>
+    {% if not transaction.subscription.contributor_profile.hide_wallet_address %}
+      <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
+        <a class="tx_link" href="https://etherscan.io/tx/{{ transaction.tx_id }}" target="_blank" rel="noopener noreferrer">
+          {% if transaction.tx_id %}
+            View Etherscan
+          {% endif %}
+        </a>
+      </div>
+    {% endif %}
+    <div class="offset-lg-1 col-4 col-md-2 my-auto tags font-caption">
+      <div class="tag tag-lg token">
+        <p>
+          {{ transaction.subscription.amount_per_period|floatformat:4|intcomma }}
+          <span>{{ transaction.subscription.token_symbol }}</span>
+        </p>
+      </div>
+      {% if transaction.value_in_usdt_now %}
+        <div class="tag tag-lg usd">
+          <p>
+            {{ transaction.value_in_usdt_now }}
+            <span>USD</span>
+          </p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
