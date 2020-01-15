@@ -77,9 +77,17 @@
           </li>
         {% endif %}
         {% if not profile.is_org or total_kudos_count %}
+        <li class="nav-item">
+          <a class="nav-link nav-line  {% if tab == 'kudos' %}active{% endif %}" href="{{profile.url}}/kudos">
+            Kudos {% if total_kudos_count %}<span>{{total_kudos_count}}</span>{% endif %}
+          </a>
+        </li>
+        {% endif %}
+        {% if projects_count %}
           <li class="nav-item">
-            <a class="nav-link nav-line  {% if tab == 'kudos' %}active{% endif %}" href="{{profile.url}}/kudos">
-              Kudos {% if total_kudos_count %}<span>{{total_kudos_count}}</span>{% endif %}
+            <a class="nav-link nav-line  {% if tab == 'hackathons' %}active{% endif %}" href="{{profile.url}}/hackathons">
+              Hackathons
+              {% if projects_count %}<span>{{projects_count}}</span>{% endif %}
             </a>
           </li>
         {% endif %}
@@ -146,6 +154,8 @@
             {% include 'profiles/tab_grant_contribs.html' %}
           {% elif tab == 'quests' %}
             {% include 'profiles/tab_quests.html' %}
+          {% elif tab == 'hackathons' %}
+            {% include 'profiles/tab_hackathons.html' %}
           {% endif %}
         </div>
       </div>
