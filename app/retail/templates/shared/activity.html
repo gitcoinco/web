@@ -29,12 +29,12 @@
   </div>
   <div class="col-12 col-md-10 activity-info my-auto {% if row.secondary_avatar_url %}position-relative{% endif %}">
     <div class="activity-status font-body">
-      <a href="https://gitcoin.co/profile/{{ row.profile.handle }}" target="_blank">
+      <a href="https://gitcoin.co/profile/{{ row.profile.handle }}" >
         @{{ row.profile.handle }}
       </a>
       {% if row.activity_type == 'new_tip' %}
         {% trans "tipped" %}
-        <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" target="_blank">
+        <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
           @{{ row.metadata.to_username }}
         </a>
       {% elif row.activity_type == 'new_kudos' %}
@@ -67,49 +67,49 @@
         {% endif %}
       {% elif row.activity_type == 'new_grant' %}
         {% trans "created a new grant" %}
-        <a href="{{ row.metadata.grant_url }}" target="_blank">
+        <a href="{{ row.metadata.grant_url }}" >
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'joined' %}
         {% trans "joined Gitcoin" %}
       {% elif row.activity_type == 'update_grant' %}
         {% trans "updated" %}
-        <a href="{{ row.metadata.grant_url }}" target="_blank">
+        <a href="{{ row.metadata.grant_url }}" >
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'killed_grant' %}
         {% trans "cancelled" %}
-        <a href="{{ row.metadata.grant_url }}" target="_blank">
+        <a href="{{ row.metadata.grant_url }}" >
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'new_grant_contribution' %}
         {% trans "contributed to" %}
-        <a href="{{ row.metadata.grant_url }}" target="_blank">
+        <a href="{{ row.metadata.grant_url }}" >
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'played_quest' %}
         {% trans "played" %}
-        <a href="{{ row.metadata.quest_url }}" target="_blank">
+        <a href="{{ row.metadata.quest_url }}" >
            Quest: {{ row.metadata.quest_title }}
         </a>
       {% elif row.activity_type == 'created_quest' %}
         {% trans "created " %}
-        <a href="{{ row.metadata.quest_url }}" target="_blank">
+        <a href="{{ row.metadata.quest_url }}" >
            Quest: {{ row.metadata.quest_title }}
         </a>
       {% elif row.activity_type == 'beat_quest' %}
         {% trans "beat " %}
-        <a href="{{ row.metadata.quest_url }}" target="_blank">
+        <a href="{{ row.metadata.quest_url }}" >
            Quest: {{ row.metadata.quest_title }}
         </a>
       {% elif row.activity_type == 'new_grant_subscription' %}
         {% trans "subscribed to" %}
-        <a href="{{ row.metadata.grant_url }}" target="_blank">
+        <a href="{{ row.metadata.grant_url }}" >
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'killed_grant_contribution' %}
         {% trans "unsubscribed from" %}
-        <a href="{{ row.metadata.grant_url }}" target="_blank">
+        <a href="{{ row.metadata.grant_url }}" >
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'status_update' %}
