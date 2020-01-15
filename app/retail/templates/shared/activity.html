@@ -114,6 +114,23 @@
         </a>
       {% elif row.activity_type == 'status_update' %}
         <b>{{ row.metadata.title }}</b>
+      {% elif row.activity_type == 'wall_post' %}
+        &gt; 
+      {% if row.grant %}
+        <a href="{{ row.grant.url }}">
+          {{ row.grant.title }}
+        </a>
+      {% elif row.kudos_data %}
+        <a href="{{ row.kudos_data.url }}">
+          {{ row.kudos_data.ui_name }}
+        </a>
+      {% elif row.other_profile %}
+        <a href="{{ row.other_profile.url }}">
+          @{{ row.other_profile.handle }}
+        </a>
+      {% endif %}
+      : 
+        <b>{{ row.metadata.title }}</b>
       {% elif row.activity_type == 'leaderboard_rank' %}
         <a href="{{ row.metadata.link }}">{{ row.metadata.title }}</a>
       {% elif row.activity_type == 'new_bounty' %}

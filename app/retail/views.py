@@ -1164,6 +1164,7 @@ def create_status_update(request):
             if key and result:
                 key = f"{key}_id"
                 kwargs[key] = result
+                kwargs['activity_type'] = 'wall_post'
         try:
             Activity.objects.create(**kwargs)
             response['status'] = 200

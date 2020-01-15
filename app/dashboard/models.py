@@ -1914,6 +1914,7 @@ class Activity(SuperModel):
     """
 
     ACTIVITY_TYPES = [
+        ('wall_post', 'Wall Post'),
         ('status_update', 'Update status'),
         ('new_bounty', 'New Bounty'),
         ('start_work', 'Work Started'),
@@ -2096,7 +2097,7 @@ class Activity(SuperModel):
         activity['comments'] = self.comments.count()
         for key, value in model_to_dict(self).items():
             activity[key] = value
-        for fk in ['bounty', 'tip', 'kudos', 'profile']:
+        for fk in ['bounty', 'tip', 'kudos', 'profile', 'grant', 'other_profile']:
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
         activity['secondary_avatar_url'] = self.secondary_avatar_url
