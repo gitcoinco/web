@@ -26,7 +26,7 @@ $(document).ready(function() {
   var run_longpoller = function(recursively) {
     if (document.hidden) {
       return setTimeout(function() {
-        if(recursively){
+        if (recursively) {
           run_longpoller(true);
         }
       }, refresh_interval);
@@ -54,7 +54,7 @@ $(document).ready(function() {
         }
         // recursively run the longpoller
         setTimeout(function() {
-          if(recursively){
+          if (recursively) {
             run_longpoller(true);
           }
         }, refresh_interval);
@@ -62,6 +62,7 @@ $(document).ready(function() {
     }
   };
   // hack to make this available to status.js
+
   document.run_long_poller = run_longpoller;
 
   // schedule long poller when first activity feed item shows up
