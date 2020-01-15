@@ -64,7 +64,8 @@ $(document).ready(function() {
       }, 1000);
     }
   };
-  if(document.long_poller_live){
+
+  if (document.long_poller_live) {
     schedule_long_poller();
   }
 
