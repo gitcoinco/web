@@ -17,12 +17,12 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark g-font-muli gitcoin-background">
-  <a class="navbar-brand navbar-brand-extra pt-0 pb-0" href="/">
-    <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
+  <a class="d-none d-md-block mr-2" href="{% url 'index' %}">
+    <img src="{% static "v2/images/helmet.svg" %}" height="35" class="mw-100"/>
   </a>
-  <span class="logo_intermediary">&gt;</span>
-  <a class="navbar-brand navbar-subbrand bounties_brand pt-0 pb-0" href="/bounties/funder">
-    <img id="logo" src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="35" alt="Logo" />
+  <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
+  <a class="navbar-brand ml-2 pt-0 pb-0" href="/bounties/funder">
+    <img id="logo" src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="40" alt="Logo" class="w-auto" />
   </a>
   {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
     <!-- TODO: FIGURE HOW TO HANDLE FOR CROSS CHAIN -->

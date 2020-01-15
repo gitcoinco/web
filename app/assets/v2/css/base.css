@@ -1638,24 +1638,3 @@ div.busyOverlay {
 .card-shadow {
   box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, .1);
 }
-.logo_intermediary{
-  color: white;
-  font-size: 25px;
-  font-weight: bold;
-  margin-top: 10px;
-}
-.navbar-subbrand.grants_brand{
-  margin-top: 12px;
-}
-.navbar-subbrand.kudos_brand,
-.navbar-subbrand.hackathons_brand,
-.navbar-subbrand.bounties_brand{
-  margin-top: 15px;
-  margin-left: 10px;
-}
-@media (max-width: 769px) {
-  .navbar-brand-extra,
-  .logo_intermediary{
-    display: none;
-  }
-}
