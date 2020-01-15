@@ -568,6 +568,33 @@ def grant_fund(request, grant_id, grant_slug):
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
+    is_team_member = False
+    if grant.admin_profile == profile:
+        is_team_member = True
+    else:
+        for team_member in grant.team_members.all():
+            if team_member.id == profile.id:
+                is_team_member = True
+                break
+
+    if is_team_member:
+        params = {
+            'active': 'grant_error',
+            'title': _('Invalid Grant Subscription'),
+            'grant': grant,
+            'text': _('You cannot fund your own Grant.')
+        }
+        return TemplateResponse(request, 'grants/shared/error.html', params)
+
+    if grant.link_to_new_grant:
+        params = {
+            'active': 'grant_error',
+            'title': _('This Grant has been shifted'),
+            'grant': grant.link_to_new_grant,
+            'text': f'Click below to view {grant.title}\'s active grant'
+        }
+        return TemplateResponse(request, 'grants/shared/error.html', params)
+
     active_subscription = Subscription.objects.select_related('grant').filter(
         grant=grant_id, active=True, error=False, contributor_profile=request.user.profile
     )

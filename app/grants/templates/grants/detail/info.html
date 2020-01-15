@@ -18,7 +18,7 @@
 <div class="summary p-5 px-md-3">
   <!-- GRANT LOGO -->
   <div class="grant-logo pb-2">
-    {% if is_team_member and not grant_is_inactive %}
+    {% if is_team_member %}
       <a id="change-logo" data-toggle="modal" data-target="#changeLogo">
         <i class="far fa-image" data-toggle="tooltip" data-placement="right" title="Change Grant Profile Photo"></i>
         <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{grant.image_css}}">
@@ -68,7 +68,7 @@
      <!-- SUMMARY INFO -->
     <div class="summary-info mb-4 pb-1">
 
-      {% if grant.hidden %}
+      {% if grant.hidden and not grant.link_to_new_grant %}
         <div class="mb-2 font-smaller-2">
           <i style="width: 14px; top:0.6rem" class="mb-2 mb-md-0 fas fa-eye-slash mr-2 text-center position-relative"></i>
           <p class="d-md-inline">
@@ -98,7 +98,14 @@
         </a>
       </div>
 
-      {% if grant.token_symbol %}
+      {% if grant.link_to_new_grant %}
+        <div class="font-body mb-2">
+          <i style="width: 14px;" class="fas fa-times mr-2 text-center"></i>
+          <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="The grant owner has migrated to a new grant. Click below to visit new grant and fund">
+            Not accepting contributions as grant has been migrated.
+          </p>
+        </div>
+      {% elif grant.token_symbol %}
         <div class="font-body mb-2">
           <i style="width: 14px;" class="fas fa-coins mr-2 text-center"></i>
           <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="ERC20 Token">
@@ -130,6 +137,12 @@
       {% if user_non_errored_subscription %}
         <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
           <button class="button button--primary button--warning button--full shadow-none font-weight-bold py-3">{% trans "Cancel Your Funding" %}</button>
+        </a>
+      {% elif grant.link_to_new_grant %}
+        <a href="{{ grant.link_to_new_grant.url }}">
+          <button class="button button--primary shadow-none font-weight-bold button--full py-3">
+            Visit the active grant to fund
+          </button>
         </a>
       {% else %}
         <a href="{% url 'grants:fund' grant.id grant.slug %}">

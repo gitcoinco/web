@@ -89,6 +89,12 @@ class Grant(SuperModel):
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
     description_rich = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
+    link_to_new_grant = models.ForeignKey(
+        'grants.Grant',
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text=_('Link to new grant if migrated')
+    )
     logo = models.ImageField(
         upload_to=get_upload_filename,
         null=True,

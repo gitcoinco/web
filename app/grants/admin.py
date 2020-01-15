@@ -43,6 +43,7 @@ class GrantAdmin(GeneralAdmin):
 
     ordering = ['-id']
     fields = [
+        'migrated_to',
         'title', 'description', 'reference_url', 'admin_address', 'active',
         'amount_goal', 'amount_received', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
@@ -55,8 +56,9 @@ class GrantAdmin(GeneralAdmin):
         'logo_svg_asset', 'logo_asset',
         'team_member_list',
         'subscriptions_links', 'contributions_links', 'link',
+        'migrated_to'
     ]
-    list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden']
+    list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile']
 
     # Custom Avatars
@@ -110,6 +112,11 @@ class GrantAdmin(GeneralAdmin):
                 eles.append(html)
 
         return mark_safe("<BR>".join(eles))
+
+    def migrated_to(self, instance):
+        if instance.link_to_new_grant:
+            html = f"<a href='{instance.link_to_new_grant.pk}'>{instance.link_to_new_grant.pk}</a>"
+            return mark_safe(html)
 
     logo_svg_asset.short_description = 'Logo SVG Asset'
     logo_asset.short_description = 'Logo Image Asset'
