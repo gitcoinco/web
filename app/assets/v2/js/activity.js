@@ -24,6 +24,11 @@ $(document).ready(function() {
   var refresh_interval = 7000;
   var max_pk = null;
   var run_longpoller = function() {
+    if (document.hidden) {
+      return setTimeout(function() {
+        run_longpoller();
+      }, refresh_interval);
+    }
     if ($('.infinite-more-link').length) {
       if (!max_pk) {
         max_pk = $('#activities .row').first().data('pk');
@@ -126,7 +131,7 @@ $(document).ready(function() {
     } else { // unlike
       $(this).find('span.action').removeClass('open');
       $(this).data('state', $(this).data('negative'));
-    
+
       num = parseInt(num) - 1;
       $(this).find('span.num').html(num);
     }
@@ -165,7 +170,7 @@ $(document).ready(function() {
 
     num = parseInt(num) + 1;
     $parent.find('span.num').html(num);
-        
+
     // remote post
     var params = {
       'method': 'comment',
