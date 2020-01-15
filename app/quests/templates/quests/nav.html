@@ -17,7 +17,11 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark gitcoin-background">
-  <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'quests_index' %}">
+  <a class="navbar-brand navbar-brand-extra pt-0 pb-0" href="/">
+    <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
+  </a>
+  <span class="logo_intermediary">&gt;</span>
+  <a class="navbar-brand navbar-subbrand quests_brand pt-0 pb-0 brand-hover" href="{% url 'quests_index' %}">
     <img class="mw-100 logo-static" src="{% static 'v2/images/quests_logo_white.png' %}" alt="Quests" height="50">
     <img class="mw-100 logo-animated" src="{% static 'v2/images/quest_logo_hover.png' %}" alt="Quests" height="50">
   </a>
@@ -41,7 +45,7 @@
   <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
 
     <nav class="navbar-nav ml-auto mr-3">
-      <a class="nav-link selected interior" href="{% url 'quests_index' %}">{% trans "Quests Explorer" %}</a>
+      <a class="nav-link selected interior" href="{% url 'quests_index' %}">{% trans "Explorer" %}</a>
       <a class="nav-link interior" href="{% url 'quests_index' %}#leaderboard_top">{% trans "Leaderboard" %}</a>
       <a class="nav-link interior" href="{% url 'newquest' %}"><i class="fab fa-ethereum mr-1" role="aria-hidden"></i> {% trans "Create Quest" %}</a>
 

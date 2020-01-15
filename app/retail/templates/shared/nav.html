@@ -17,7 +17,11 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark g-font-muli gitcoin-background">
-  <a class="navbar-brand pt-0 pb-0" href="/bounties/funder">
+  <a class="navbar-brand navbar-brand-extra pt-0 pb-0" href="/">
+    <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
+  </a>
+  <span class="logo_intermediary">&gt;</span>
+  <a class="navbar-brand navbar-subbrand bounties_brand pt-0 pb-0" href="/bounties/funder">
     <img id="logo" src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="35" alt="Logo" />
   </a>
   {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
