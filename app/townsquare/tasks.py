@@ -25,5 +25,5 @@ def increment_view_counts(self, pks, retry=False):
             query = f"UPDATE dashboard_activity SET view_count = view_count + 1 WHERE id in ({id_as_str});"
             cursor.execute(query)
             cursor.close()
-            print('done')
+            print(query)
 
