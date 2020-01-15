@@ -63,6 +63,7 @@ TRANSACTIONAL_EMAILS = [
     ),
     ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured')),
     ('comment', _('Comment Emails'), _('Only when you are sent a comment')),
+    ('wall_post', _('Wall Post Emails'), _('Only when someone writes on your wall')),
 ]
 
 NOTIFICATION_EMAILS = [
@@ -693,6 +694,7 @@ def render_new_bounty_rejection(to_email, bounty):
 
     return response_html, response_txt
 
+
 def render_comment(to_email, comment):
     params = {
         'comment': comment,
@@ -702,6 +704,20 @@ def render_comment(to_email, comment):
 
     response_html = premailer_transform(render_to_string("emails/comment.html", params))
     response_txt = render_to_string("emails/comment.txt", params)
+
+    return response_html, response_txt
+
+
+def render_wallpost(to_email, activity):
+    params = {
+        'activity': activity,
+        'email_type': 'wall_post',
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'what': activity.what,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/wall_post.html", params))
+    response_txt = render_to_string("emails/wall_post.txt", params)
 
     return response_html, response_txt
 
@@ -1216,6 +1232,13 @@ def new_bounty_rejection(request):
 def comment(request):
     from townsquare.models import Comment
     response_html, _ = render_comment(settings.CONTACT_EMAIL, Comment.objects.last())
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def wallpost(request):
+    from dashboard.models import Activity
+    response_html, _ = render_wallpost(settings.CONTACT_EMAIL, Activity.objects.filter(activity_type='wall_post').last())
     return HttpResponse(response_html)
 
 

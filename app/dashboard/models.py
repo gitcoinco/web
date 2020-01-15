@@ -2023,6 +2023,17 @@ class Activity(SuperModel):
         return ""
 
     @property
+    def what(self):
+        # returns what your wall post target is
+        if self.grant:
+            return 'grant'
+        if self.kudos:
+            return 'kudos'
+        if self.other_profile:
+            return 'profile'
+        return ""
+
+    @property
     def url(self):
         return f"{settings.BASE_URL}?tab=activity:{self.pk}"
 

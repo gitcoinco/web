@@ -40,7 +40,7 @@ from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Bounty, Profile, get_my_earnings
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
-from marketing.mails import new_funding_limit_increase_request, new_token_request
+from marketing.mails import new_funding_limit_increase_request, new_token_request, wall_post_email
 from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
@@ -1187,9 +1187,13 @@ def create_status_update(request):
                 kwargs[key] = result
                 kwargs['activity_type'] = 'wall_post'
         try:
-            Activity.objects.create(**kwargs)
+            activity = Activity.objects.create(**kwargs)
             response['status'] = 200
             response['message'] = 'Status updated!'
+
+            if kwargs['activity_type'] == 'wall_post':
+                wall_post_email(activity)
+
         except Exception as e:
             response['status'] = 400
             response['message'] = 'Bad Request'

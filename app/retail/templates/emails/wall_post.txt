@@ -1,0 +1,6 @@
+💬 New Wall Post 💬
+
+@{{activity.profile.handle}} posted on your wall
+
+To view the post click here: {{activity.url}}
+

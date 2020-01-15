@@ -407,6 +407,36 @@ def comment_email(comment, to_emails):
     translation.activate(cur_language)
 
 
+def wall_post_email(activity):
+
+    to_emails = []
+    what = ''
+    if activity.what == 'profile':
+        to_emails.append(activity.profile.other_profile.email)
+        what = f"@{activity.profile.other_profile.handle}"
+    if activity.what == 'kudos':
+        what = activity.kudos.ui_name
+        pass
+    if activity.what == 'grant':
+        what = activity.grant.title
+        for tm in activity.grant.team_members.all():
+            to_emails.append(tm.email)
+    subject = f"💬 New Wall Post on {what}'s wall"
+
+    cur_language = translation.get_language()
+    for to_email in to_emails:
+        try:
+            setup_lang(to_email)
+            from_email = settings.CONTACT_EMAIL
+            html, text = render_comment(to_email, comment)
+
+            if not should_suppress_notification_email(to_email, 'wall_post'):
+                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        finally:
+            pass
+    translation.activate(cur_language)
+
+
 def new_faucet_request(fr):
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL
