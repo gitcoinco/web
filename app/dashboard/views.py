@@ -2732,6 +2732,7 @@ def profile(request, handle, tab=None):
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
+    context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:

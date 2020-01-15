@@ -276,6 +276,20 @@ def grant_details(request, grant_id, grant_slug):
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
+    # handle grant updates unsubscribe
+    key = 'unsubscribed_profiles'
+    is_unsubscribed_from_updates_from_this_grant = request.user.is_authenticated and request.user.profile.pk in grant.metadata.get(key, [])
+    if request.GET.get('unsubscribe') and request.user.is_authenticated:
+        ups = grant.metadata.get(key, [])
+        ups.append(request.user.profile.pk)
+        grant.metadata[key] = ups
+        grant.save()
+        messages.info(
+                request,
+                _('You have been unsubscribed from the updates from this grant.')
+            )
+        is_unsubscribed_from_updates_from_this_grant = True
+
     tab = request.GET.get('tab', 'activity')
     params = {
         'active': 'grant_details',
@@ -301,6 +315,8 @@ def grant_details(request, grant_id, grant_slug):
         'clr_active': clr_active,
         'is_team_member': is_team_member,
         'voucher_fundings': voucher_fundings,
+        'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
+        'tags': [(f'Email Grant Funders ({len(contributors)})', 'bullhorn')],
     }
 
     if tab == 'stats':

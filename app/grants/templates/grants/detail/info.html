@@ -98,6 +98,14 @@
         </a>
       </div>
 
+      {% if is_unsubscribed_from_updates_from_this_grant %}
+        <div class="font-body mb-2">
+          <i style="width: 14px;" class="fas fa-comment-slash mr-2 text-center"></i>
+            You are unsubscribed from updates for this grant.
+          </p>
+        </div>
+      {% endif %}
+
       {% if grant.token_symbol %}
         <div class="font-body mb-2">
           <i style="width: 14px;" class="fas fa-coins mr-2 text-center"></i>

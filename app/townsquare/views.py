@@ -104,6 +104,7 @@ def index(request):
         'target': f'/activity?what={tab}',
         'tab': tab,
         'tabs': tabs,
+        'tags': [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ],
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
