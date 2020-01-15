@@ -17,6 +17,7 @@
 
 '''
 import logging
+import time
 from json import loads as json_parse
 from os import walk as walkdir
 
@@ -1095,12 +1096,14 @@ def results(request, keyword=None):
 
 def activity(request):
     """Render the Activity response."""
-    page_size = 15
+    page_size = 7
     page = int(request.GET.get('page', 1))
     what = request.GET.get('what', 'everywhere')
 
     # create diff filters
+    print(1, round(time.time(), 1))
     activities = Activity.objects.filter(hidden=False).order_by('-created_on')
+    ## filtering
     if ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
@@ -1128,27 +1131,37 @@ def activity(request):
     # after-pk filters
     if request.GET.get('after-pk'):
         activities = activities.filter(pk__gt=request.GET.get('after-pk'))
+    print(2, round(time.time(), 1))
 
     # pagination
-    suppress_more_link = not len(activities)
-    p = Paginator(activities, page_size)
+    next_page = page + 1
+    start_index = (page-1) * page_size
+    end_index = page * page_size
+    print(activities.query)
+    #p = Paginator(activities, page_size)
+    #page = p.get_page(page)
+    page = activities[start_index:end_index]
+    suppress_more_link = not len(page)
 
+    print(2.5, round(time.time(), 1))
     # increment view counts
-    activities_pks = [obj.pk for obj in p.page(page)]
+    activities_pks = [obj.pk for obj in page]
     if len(activities_pks):
         increment_view_counts.delay(activities_pks)
 
-    next_page = page + 1
+    print(3, round(time.time(), 1))
+
     context = {
-        'p': p,
         'suppress_more_link': suppress_more_link,
         'what': what,
         'next_page': next_page,
-        'page': p.get_page(page),
+        'page': page,
         'target': f'/activity?what={what}&page={next_page}',
         'title': _('Activity Feed'),
     }
-    context["activities"] = [a.view_props_for(request.user) for a in p.get_page(page)]
+    context["activities"] = [a.view_props_for(request.user) for a in page]
+
+    print(4, round(time.time(), 1))
 
     return TemplateResponse(request, 'activity.html', context)
 
