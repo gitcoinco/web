@@ -56,16 +56,16 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
 
     if [ "$DISABLE_INITIAL_LOADDATA" != "on" ]; then
 
-        python manage.py loaddata app/fixtures/users.json
-        python manage.py loaddata app/fixtures/economy.json
-        python manage.py loaddata app/fixtures/profiles.json
-        python manage.py loaddata app/fixtures/kudos.json
-        python manage.py loaddata app/fixtures/grants.json
-        python manage.py loaddata app/fixtures/dashboard.json
-        python manage.py loaddata app/fixtures/avatar.json
-        python manage.py loaddata app/fixtures/marketing.json
-        python manage.py loaddata app/fixtures/profiles.json
-        python manage.py loaddata app/fixtures/grants.json
+        manage.py loaddata app/app/fixtures/users.json
+        manage.py loaddata app/app/fixtures/economy.json
+        manage.py loaddata app/app/fixtures/profiles.json
+        manage.py loaddata app/app/fixtures/kudos.json
+        manage.py loaddata app/app/fixtures/grants.json
+        manage.py loaddata app/app/fixtures/dashboard.json
+        manage.py loaddata app/app/fixtures/avatar.json
+        manage.py loaddata app/app/fixtures/marketing.json
+        manage.py loaddata app/app/fixtures/profiles.json
+        manage.py loaddata app/app/fixtures/grants.json
 
     fi
     date >> /provisioned
