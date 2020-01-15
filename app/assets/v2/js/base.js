@@ -230,7 +230,7 @@ const alertMessage = function(msg) {
   return html;
 };
 
-const _alert = function(msg, _class) {
+const _alert = function(msg, _class, remove_after_ms) {
   if (typeof msg == 'string') {
     msg = {
       'message': msg
@@ -238,10 +238,11 @@ const _alert = function(msg, _class) {
   }
   var numAlertsAlready = $('.alert:visible').length;
   var top = numAlertsAlready * 44;
+  var id = 'msg_' + parseInt(Math.random() * 10 ** 10);
 
   var html = function() {
     return (
-      `<div class="alert ${_class} g-font-muli" style="top: ${top}px">
+      `<div id="${id}" class="alert ${_class} g-font-muli" style="top: ${top}px">
         <div class="message">
           <div class="content">
             ${alertMessage(msg)}
@@ -253,6 +254,13 @@ const _alert = function(msg, _class) {
   };
 
   $('body').append(html);
+
+  if (typeof remove_after_ms != 'undefined') {
+    setTimeout(function() {
+      $('#' + id).remove();
+    }, remove_after_ms);
+  }
+
 };
 
 var show_persona_modal = function(e) {

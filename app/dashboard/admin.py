@@ -84,7 +84,7 @@ class ToolAdmin(admin.ModelAdmin):
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription']
+    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile']
     search_fields = ['metadata', 'activity_type', 'profile__handle']
 
 

@@ -1,0 +1,130 @@
+{% extends 'quests/base.html' %}
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% block 'content' %}
+<link rel="stylesheet" href="{% static "v2/css/onepagesubmit.css" %}">
+<style type="text/css">
+.add_answer,
+.add_question,
+.close_question,
+.close_answer{
+  font-size: 12px;
+}
+.kudos-module .kudos-comment,
+.kudos-module .msg-alert{
+  display: none !important;
+}
+</style>
+<link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12 col-md-12 pr-2 pl-2 pb-4 mt-2 form_container">
+      <div style="text-align:center;">
+        <img src="{% static 'v2/images/grants/robots.png' %}" style="margin: 0px auto;" />
+        <h4>
+          {% trans "New Action Application" %}
+        </h4>
+        <p>
+          Hello and thank you for your interest in submitting an application to create an action on Gitcoin.
+        </p>
+        <p>
+          Gitcoin Actions was designed to driver users to relevant tools, experiences, and resources in their ecosystems.  By creating an action, you've taken the first step towards telling Gitcoin's userbase about your resource.
+        </p>
+        <p>
+          &lt;3 <a href="/about#team">Team Gitcoin</a>
+        </p>
+      </div>
+      <div>
+        {% if msg %}
+          <p>
+            {{ msg | safe }}
+          </p>
+        {% endif %}
+        {% if success %}
+          <div style="text-align: center; margin-bottom: 10px">
+            <img src="{% static "v2/images/tree/party_robot.jpg" %}">
+          </div>
+        {% endif %}
+        <form class="mt-5" id="newkudos" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="form__label" for="title">{% trans "Title" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="This is the title of your action. Keep it short, sweet, and catchy."></i>
+            <input type="text" name="title" class="form__input" placeholder='View the Ether-Wizards + Get 100 Ether-Wizard Points' value="{{package.title}}" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="description">{% trans "Description" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="This is the copy that users will see about the action; sell your action by talking about how fun it is and how relevant the material!"></i>
+            <textarea name="description" class="form__input" placeholder='Ether-wizards is a top 5 dapp; By working on this action, you will earn a free Ether-wizard and start your journey to becoming an Ether-wizard yourself!' value="" required>{{package.description}}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="action_url">{% trans "Action URL" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="This is the URL that the user will go to if they accept the action."></i>
+            <input type="url" name="action_url" class="form__input" placeholder='https://gitcoin.co/quests/26/ether-wizard' value="{{package.action_url}}" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="persona">{% trans "Prompt Kudos" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The kudos that will be displayed to present the action to the user"></i>
+            {% if package.persona %}
+              <BR>
+              <span class=default_kudos>Kudos ID {{package.persona}}</span>
+              <input name=persona type="hidden" value={{package.persona}}>
+              <a class="remove" href=#>Remove</a>
+              <div class=hidden>
+                {% include 'shared/add_kudos.html' with name='persona2' %}
+              </div>
+            {% else %}
+              {% include 'shared/add_kudos.html' with name='persona' %}
+            {% endif %}
+          </div>
+            <div class="terms_container pt-4">
+              <div class="form__checkbox">
+                <input name='terms' id='terms' type="checkbox" value=1 required {% if package.terms%}checked=checked{% endif %} />
+                  <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
+                    <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
+                </label>
+              </div>
+            </div>
+          <input name=pk type="hidden" value="{% if the_quest %}{{the_quest.pk}}{% else %}{{package.pk}}{% endif %}">
+          {% csrf_token %}
+          <button class='button button--primary mt-2 float-right' style="font-size: 35px; padding-top: 20px; width: 400px;" type='submit' name='submit' value="Submit Quest">
+          <img src="{% static 'v2/images/helmet.svg' %}" style="max-width: 50px; margin-top: -20px" />
+          Create Action
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block 'scripts' %}
+<script src="{% static "v2/js/pages/actions.new.js" %}"></script>
+<script src="{% static "v2/js/kudos-search.js" %}"></script>
+<script>
+  $('[data-toggle="popover"]').popover()
+  $('[data-toggle="tooltip"]').bootstrapTooltip();
+</script>
+
+<script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+<script>
+  $(document).ready(function() {
+    $("img").unveil(200);
+  });
+</script>
+{% endblock %}
