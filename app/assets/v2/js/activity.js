@@ -70,9 +70,11 @@ $(document).ready(function() {
     }
   };
 
-  if (document.long_poller_live) {
-    schedule_long_poller();
-  }
+  setTimeout(function(){
+    if (document.long_poller_live) {
+      schedule_long_poller();
+    }
+  }, 1000);
 
   // refresh new actviity feed items
   $(document).on('click', '#new_activity_notifier', function(e) {
