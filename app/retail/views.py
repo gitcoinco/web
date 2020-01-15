@@ -1104,6 +1104,8 @@ def activity(request):
     if ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
+        if key == 'activity_id':
+            key = 'pk'
         kwargs = {}
         kwargs[key] = pk
         activities = activities.filter(**kwargs)
