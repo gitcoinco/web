@@ -77,8 +77,8 @@ $(document).ready(function() {
             1000
           );
           const activityContainer = document.querySelector('.tab-section.active .activities');
-
           if (!activityContainer) {
+            document.run_long_poller(false);
             // success
             return;
           }

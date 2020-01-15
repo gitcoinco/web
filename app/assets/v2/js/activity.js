@@ -23,10 +23,12 @@ $(document).ready(function() {
   document.buffered_rows = [];
   var refresh_interval = 7000;
   var max_pk = null;
-  var run_longpoller = function() {
+  var run_longpoller = function(recursively) {
     if (document.hidden) {
       return setTimeout(function() {
-        run_longpoller();
+        if(recursively){
+          run_longpoller(true);
+        }
       }, refresh_interval);
     }
     if ($('.infinite-more-link').length) {
@@ -52,17 +54,21 @@ $(document).ready(function() {
         }
         // recursively run the longpoller
         setTimeout(function() {
-          run_longpoller();
+          if(recursively){
+            run_longpoller(true);
+          }
         }, refresh_interval);
       });
     }
   };
+  // hack to make this available to status.js
+  document.run_long_poller = run_longpoller;
 
   // schedule long poller when first activity feed item shows up
   // by recursively waiting for the activity items to show up
   var schedule_long_poller = function() {
     if ($('#activities .row').length) {
-      run_longpoller();
+      run_longpoller(true);
     } else {
       setTimeout(function() {
         schedule_long_poller();
