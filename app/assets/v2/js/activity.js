@@ -70,7 +70,7 @@ $(document).ready(function() {
     }
   };
 
-  setTimeout(function(){
+  setTimeout(function() {
     if (document.long_poller_live) {
       schedule_long_poller();
     }
