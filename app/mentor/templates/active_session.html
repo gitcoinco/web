@@ -36,10 +36,7 @@
         <h1 class="white h4">
           {{ session.description }}
         </h1>
-        <p class="white">
-          {% if is_mentor %} I'm the mentor {% else %}{{ session.mentor.name }} {% endif %}
-          Mentoring to {{ session.mentee.name }}
-        </p>
+
       </div>
     </header>
 
@@ -73,9 +70,14 @@
     {% include 'shared/footer_scripts.html' with slim=1 %}
     <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
     <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
-    <script src="{% static "v2/js/mentor.js" %}"></script>
+		<!-- <script src="{% static "v2/js/mentor.js" %}"></script> -->
+		<script src="{% static "v2/js/abi.js" %}"></script>
     <script>
       $(document).ready(function() {
+
+				// Connect the videoplayer
+
+				/*
 				const domain = 'meet.jit.si';
 				const options = {
 						roomName: "{{ session.name }}",
@@ -84,6 +86,24 @@
 						parentNode: document.querySelector('#jitsy-placeholder')
 				};
 				const api = new JitsiMeetExternalAPI(domain, options);
+				*/
+
+				{% if role == "mentee" %}
+					ethereum.enable().then(address => {
+						console.warn('sablier_abi', sablier_abi)
+						console.warn('sablier_address', sablier_address())
+						const mentor_address = "{{ session.mentor.address }}";
+						const sablier_contract = web3.eth.contract(sablier_abi).at(sablier_address());
+						const deposit = 2;
+						console.warn('sablier_contract', sablier_contract);
+						
+						const now = Math.floor(Date.now() / 1000);
+
+						//sablier_contract.approve(mentor_address, deposit); 
+						sablier_contract.createStream(mentor_address, deposit, testdai_address(), now + 60 * 2, now + 60 * 7, () => console.warn('DONE'));
+					});
+				{% endif %}
+
       });
     </script>
 

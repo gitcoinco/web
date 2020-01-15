@@ -74,12 +74,15 @@ urlpatterns = [
     # board
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
 
-    # kudos
+    # mentor
     re_path(r'^mentor/?$', mentor.views.mentor_home, name='mentor_home'),
     re_path(r'^mentor/new/?$', mentor.views.new_session, name='mentor_new'),
     re_path(r'^mentor/session/(?P<session>\d+)??$', mentor.views.join_session, name='session_join'),
     re_path(r'^mentor/session/(?P<session>\d+)/update', mentor.views.update_session, name='session_update'),
     re_path(r'^mentor/session/(?P<session>\d+)/finish', mentor.views.finish_session, name='session_finish'),
+    # Decomment for demo
+    # re_path(r'^mentor/session/demo$', mentor.views.join_session, name='session_join'),
+    re_path(r'^mentor/session/(?P<session>\d+)??$', mentor.views.join_session, name='session_join'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),

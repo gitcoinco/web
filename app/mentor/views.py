@@ -50,9 +50,11 @@ def mentor_home(request):
     return TemplateResponse(request, 'mentor_home.html', context)
 
 
+<<<<<<< HEAD
 @login_required
 def join_session(request, session):
     """Render the sessions home page."""
+    # DEMO: Comment for demo
     session = get_object_or_404(Sessions, id=session)
 
     is_mentor = session.mentor_id == request.user.profile.id
@@ -67,15 +69,35 @@ def join_session(request, session):
     if not is_mentor and not is_mentee:
         return TemplateResponse(request, 'waiting_session.html')
 
+    # Prod
     context = {
         'title': 'Mentor',
         "session": session,
         "is_mentor": is_mentor,
         "is_mentee": is_mentee,
+        # TODO: finished* ? typo here
         'finised': session.active is False
         # TODO: Not sure about the merge here
         # 'is_mentor': session.mentor.id == request.user.profile.id
     }
+
+    # DEMO: Decomment here for demo
+    # context = {
+    #     'title': 'Mentor',
+    #     # "session": session,
+    #     # 'is_mentor': session.mentor.id == request.user.profile.id
+    #     "session": {
+    #         "name": "Get help with your bug!",
+    #         "description": "I'm a very knowledgable dev",
+    #         "mentee":{
+    #             "name": "Jean Louis"
+    #         },
+    #         "mentor": {
+    #             "address": '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb'
+    #         }
+    #     },
+    #     "role": "mentee"
+    # }
 
     return TemplateResponse(request, 'active_session.html', context)
 
