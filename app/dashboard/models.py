@@ -2551,7 +2551,7 @@ class Profile(SuperModel):
 
     @property
     def active_bounties(self):
-        active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
+        active_bounties = Bounty.objects.current().filter(bounty_state='work_started')
         return Interest.objects.filter(profile_id=self.pk, bounty__in=active_bounties)
 
     @property
