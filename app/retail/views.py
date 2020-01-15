@@ -1425,7 +1425,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'title': _('Leverage Gitcoin’s Firehose of Talent to Do More Faster'),
     }, {
         'img': static('v2/images/tools/api.jpg'),
-        'url': 'https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e',
+        'url': 'https://gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/',
         'title': _('How to Price Work on Gitcoin'),
     }, {
         'img': 'https://raw.github.com/gitcoinco/Gitcoin-Exemplars/master/helpImage.png',
