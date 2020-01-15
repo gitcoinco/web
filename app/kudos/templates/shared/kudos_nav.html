@@ -17,11 +17,11 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark gitcoin-background">
-  <a class="navbar-brand navbar-brand-extra pt-0 pb-0" href="/">
-    <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
+  <a class="d-none d-md-block mr-2" href="{% url 'index' %}">
+    <img src="{% static "v2/images/helmet.svg" %}" height="35" class="mw-100"/>
   </a>
-  <span class="logo_intermediary">&gt;</span>
-  <a class="navbar-brand navbar-subbrand kudos_brand pt-0 pb-0 brand-hover" href="{% url 'kudos_main' %}">
+  <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
+  <a class="navbar-brand ml-2 pt-0 pb-0 brand-hover" href="{% url 'kudos_main' %}">
     <img class="mw-100 logo-static" src="{% static "v2/images/kudos/logo.svg" %}" alt="kudos" height="50">
     <img class="mw-100 logo-animated" src="{% static "v2/images/kudos/kudos_faster_repeat.gif" %}" alt="kudos" height="50">
   </a>
