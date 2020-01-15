@@ -365,7 +365,7 @@ urlpatterns = [
     re_path(r'^results/?', retail.views.results, name='results'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
     re_path(r'^townsquare/?', townsquare.views.index, name='townsquare'),
-    re_path(r'^$', townsquare.views.index, name='inex'),
+    re_path(r'^$', townsquare.views.index, name='index'),
     path('action/<int:offer_id>/<slug:offer_slug>/go', townsquare.views.offer_go, name='townsquare_offer_go'),
     path('action/new', townsquare.views.offer_new, name='townsquare_offer_new'),
     path(
