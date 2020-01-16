@@ -118,7 +118,7 @@ class OfferAction(SuperModel):
     what = models.CharField(max_length=50, db_index=True) # click, completion, etc
 
     def __str__(self):
-        return f"{self.profile.handle} => {self.offer.title}"
+        return f"{self.profile.handle} => {self.what} => {self.offer.title}"
 
 
 class AnnounceQuerySet(models.QuerySet):
