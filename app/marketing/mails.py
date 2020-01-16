@@ -439,7 +439,7 @@ def wall_post_email(activity):
 def grant_update_email(activity):
 
     what = activity.grant.title
-    subject = f"📣 Message from @{{activity.profile.handle}} of Gitcoin Grant: {what}"
+    subject = f"📣 Message from @{activity.profile.handle} of Gitcoin Grant: {what}"
     to_emails = [profile.email for profile in activity.grant.contributors if profile.pk not in activity.grant.metadata.get('unsubscribed_profiles', [])]
     cur_language = translation.get_language()
     for to_email in to_emails:
