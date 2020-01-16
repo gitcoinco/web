@@ -272,5 +272,17 @@ $(document).ready(function() {
     });
   }, 1000);
 
+  $(".activity .wall_post .activity-status b, .activity .status_update .activity-status b").each(function(){
+    $(this).html(urlify($(this).text()));
+  });
+
+  // inserts links into the text where there are URLS detected 
+  function urlify(text) {
+      var urlRegex = /(https?:\/\/[^\s]+)/g;
+      return text.replace(urlRegex, function(url) {
+          return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
+      })
+  }
+
 
 }(jQuery));
