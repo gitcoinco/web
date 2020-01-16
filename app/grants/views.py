@@ -606,7 +606,7 @@ def grant_fund(request, grant_id, grant_slug):
     if grant.link_to_new_grant:
         params = {
             'active': 'grant_error',
-            'title': _('This Grant has been shifted'),
+            'title': _('This Grant has been migrated'),
             'grant': grant.link_to_new_grant,
             'text': f'Click below to view {grant.title}\'s active grant'
         }
