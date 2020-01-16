@@ -270,6 +270,29 @@ $(document).ready(function() {
         $(this).click();
       }
     });
+
+    $('.activity.wall_post .activity-status b, .activity.status_update .activity-status b').each(function() {
+      let new_text = $(this).text();
+
+      new_text = new_text.replace('&lt;', '_');
+      new_text = new_text.replace('&gt;', '_');
+      new_text = new_text.replace('>', '_');
+      new_text = new_text.replace('<', '_');
+      new_text = urlify(new_text);
+      new_text = new_text.replace(/#(\S*)/g, '<a href="/?tab=search-$1">#$1</a>');
+      new_text = new_text.replace(/@(\S*)/g, '<a href="/profile/$1">@$1</a>');
+      $(this).html(new_text);
+    });
+
+    // inserts links into the text where there are URLS detected
+    function urlify(text) {
+      var urlRegex = /(https?:\/\/[^\s]+)/g;
+
+      return text.replace(urlRegex, function(url) {
+        return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
+      });
+    }
+
   }, 1000);
 
 

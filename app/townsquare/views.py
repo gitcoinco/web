@@ -46,19 +46,24 @@ def index(request):
         'title': "Everywhere",
         'slug': 'everywhere',
     }]
+    add_keywords = False
     for keyword in request.user.profile.keywords:
-        tabs.append({
-            'title': keyword.title(),
-            'slug': f'keyword-{keyword}',
-        })
+        if add_keywords:
+            tabs.append({
+                'title': keyword.title(),
+                'slug': f'keyword-{keyword}',
+            })
     default_tab = 'my_tribes' if request.user.is_authenticated else 'everywhere'
     tab = request.GET.get('tab', default_tab)
-    if "activity:" in tab:
+    is_search = "activity:" in tab or "search-" in tab
+    if is_search:
         tabs.append({
             'title': "Search",
             'slug': tab,
         })
-
+    search = ''
+    if "search-" in tab:
+        search = tab.split('-')[1]
 
     # get offers
     offers_by_category = {}
@@ -104,6 +109,7 @@ def index(request):
         'target': f'/activity?what={tab}',
         'tab': tab,
         'tabs': tabs,
+        'search': search,
         'tags': [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ],
         'announcements': announcements,
         'is_subscribed': is_subscribed,

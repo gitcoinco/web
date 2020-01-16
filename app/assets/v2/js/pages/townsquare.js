@@ -36,6 +36,13 @@ $(document).ready(function() {
     });
   });
 
+  $('body').on('focus change paste keyup blur', '#keyword', function(e) {
+    if ((e.keyCode == 13)) {
+      e.preventDefault();
+      document.location.href = '/?tab=search-' + $('#keyword').val();
+    }
+  });
+
   // updates expiry timers with countdowns
   var updateTimers = function() {
     $('.timer').each(function() {

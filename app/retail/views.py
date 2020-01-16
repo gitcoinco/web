@@ -1119,6 +1119,9 @@ def activity(request):
         if 'keyword-' in what:
             keyword = what.split('-')[1]
             relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
+        if 'search-' in what:
+            keyword = what.split('-')[1]
+            activities = activities.filter(metadata__icontains=keyword)
         if 'activity:' in what:
             pk = what.split(':')[1]
             activities = activities.filter(pk=pk)
