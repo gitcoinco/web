@@ -482,6 +482,8 @@ urlpatterns = [
     ),
     path('_administration/email/new_bounty_rejection', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
     path('_administration/email/comment', retail.emails.comment, name='comment_email'),
+    path('_administration/email/wallpost', retail.emails.wallpost, name='wallpost_email'),
+    path('_administration/email/grant_update', retail.emails.grant_update, name='grant_update_email'),
     path(
         '_administration/email/new_bounty_acceptance',
         retail.emails.new_bounty_acceptance,

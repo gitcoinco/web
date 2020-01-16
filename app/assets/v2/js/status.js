@@ -26,8 +26,8 @@ $(document).ready(function() {
   $('body').on('focus change paste keyup blur', '#textarea', function(e) {
 
     // enforce a max length
-    var max_len = 280;
-
+    var max_len = $(this).data('maxlen');
+    
     if ($(this).val().trim().length > max_len) {
       e.preventDefault();
       $(this).addClass('red');
@@ -79,6 +79,7 @@ $(document).ready(function() {
           const activityContainer = document.querySelector('.tab-section.active .activities');
 
           if (!activityContainer) {
+            document.run_long_poller(false);
             // success
             return;
           }

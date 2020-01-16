@@ -16,6 +16,14 @@ class Like(SuperModel):
     def __str__(self):
         return f"Like of {self.activity.pk} by {self.profile.handle}"
 
+    @property
+    def url(self):
+        return self.activity.url
+
+    def get_absolute_url(self):
+        return self.activity.url
+
+
 class Flag(SuperModel):
     """A Flag is an indication of a flagged activity feed item"""
 
@@ -26,6 +34,14 @@ class Flag(SuperModel):
 
     def __str__(self):
         return f"Flag of {self.activity.pk} by {self.profile.handle}"
+
+    @property
+    def url(self):
+        return self.activity.url
+
+    def get_absolute_url(self):
+        return self.activity.url
+
 
 class Comment(SuperModel):
     """An comment on an activity feed item"""
@@ -46,6 +62,9 @@ class Comment(SuperModel):
     @property
     def url(self):
         return self.activity.url
+
+    def get_absolute_url(self):
+        return self.url
 
 
 class OfferQuerySet(models.QuerySet):
@@ -118,7 +137,7 @@ class OfferAction(SuperModel):
     what = models.CharField(max_length=50, db_index=True) # click, completion, etc
 
     def __str__(self):
-        return f"{self.profile.handle} => {self.offer.title}"
+        return f"{self.profile.handle} => {self.what} => {self.offer.title}"
 
 
 class AnnounceQuerySet(models.QuerySet):

@@ -16,7 +16,7 @@ class OfferActionAdmin(admin.ModelAdmin):
 
 class OfferAdmin(admin.ModelAdmin):
     list_display = ['created_on', 'key', 'valid_from', 'valid_to', '__str__']
-    raw_id_fields = ['persona']
+    raw_id_fields = ['persona', 'created_by']
 
 
 class AnnounceAdmin(admin.ModelAdmin):

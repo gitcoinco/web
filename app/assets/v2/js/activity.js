@@ -23,7 +23,14 @@ $(document).ready(function() {
   document.buffered_rows = [];
   var refresh_interval = 7000;
   var max_pk = null;
-  var run_longpoller = function() {
+  var run_longpoller = function(recursively) {
+    if (document.hidden) {
+      return setTimeout(function() {
+        if (recursively) {
+          run_longpoller(true);
+        }
+      }, refresh_interval);
+    }
     if ($('.infinite-more-link').length) {
       if (!max_pk) {
         max_pk = $('#activities .row').first().data('pk');
@@ -47,17 +54,22 @@ $(document).ready(function() {
         }
         // recursively run the longpoller
         setTimeout(function() {
-          run_longpoller();
+          if (recursively) {
+            run_longpoller(true);
+          }
         }, refresh_interval);
       });
     }
   };
+  // hack to make this available to status.js
+
+  document.run_long_poller = run_longpoller;
 
   // schedule long poller when first activity feed item shows up
   // by recursively waiting for the activity items to show up
   var schedule_long_poller = function() {
     if ($('#activities .row').length) {
-      run_longpoller();
+      run_longpoller(true);
     } else {
       setTimeout(function() {
         schedule_long_poller();
@@ -65,7 +77,11 @@ $(document).ready(function() {
     }
   };
 
-  schedule_long_poller();
+  setTimeout(function() {
+    if (document.long_poller_live) {
+      schedule_long_poller();
+    }
+  }, 1000);
 
   // refresh new actviity feed items
   $(document).on('click', '#new_activity_notifier', function(e) {
@@ -124,7 +140,7 @@ $(document).ready(function() {
     } else { // unlike
       $(this).find('span.action').removeClass('open');
       $(this).data('state', $(this).data('negative'));
-    
+
       num = parseInt(num) - 1;
       $(this).find('span.num').html(num);
     }
@@ -163,7 +179,7 @@ $(document).ready(function() {
 
     num = parseInt(num) + 1;
     $parent.find('span.num').html(num);
-        
+
     // remote post
     var params = {
       'method': 'comment',
@@ -254,6 +270,29 @@ $(document).ready(function() {
         $(this).click();
       }
     });
+
+    $('.activity.wall_post .activity-status b, .activity.status_update .activity-status b').each(function() {
+      let new_text = $(this).text();
+
+      new_text = new_text.replace('&lt;', '_');
+      new_text = new_text.replace('&gt;', '_');
+      new_text = new_text.replace('>', '_');
+      new_text = new_text.replace('<', '_');
+      new_text = urlify(new_text);
+      new_text = new_text.replace(/#(\S*)/g, '<a href="/?tab=search-$1">#$1</a>');
+      new_text = new_text.replace(/@(\S*)/g, '<a href="/profile/$1">@$1</a>');
+      $(this).html(new_text);
+    });
+
+    // inserts links into the text where there are URLS detected
+    function urlify(text) {
+      var urlRegex = /(https?:\/\/[^\s]+)/g;
+
+      return text.replace(urlRegex, function(url) {
+        return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
+      });
+    }
+
   }, 1000);
 
 
