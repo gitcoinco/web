@@ -51,6 +51,7 @@ import retail.emails
 import retail.views
 import revenue.views
 import tdi.views
+import townsquare.views
 from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
 from grants.router import router as grant_router
@@ -62,7 +63,9 @@ urlpatterns = [
     # oauth2 provider
     url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    url('^api/v1/bounty/create', dashboard.views.create_bounty, name='create_bounty'),
+    url('^api/v1/bounty/create', dashboard.views.create_bounty_v1, name='create_bounty_v1'),
+    url('^api/v1/bounty/cancel', dashboard.views.cancel_bounty_v1, name='cancel_bounty_v1'),
+    url('^api/v1/bounty/fulfill', dashboard.views.fulfill_bounty_v1, name='fulfill_bounty_v1'),
 
     # inbox
     re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
@@ -111,6 +114,8 @@ urlpatterns = [
     url(r'^api/v0.1/profile/(.*)?/viewers.csv', dashboard.views.profile_viewers, name='profile_viewers'),
     url(r'^api/v0.1/profile/(.*)?/spent.csv', dashboard.views.profile_spent, name='profile_spent'),
     url(r'^api/v0.1/profile/banner', dashboard.views.change_user_profile_banner, name='change_user_profile_banner'),
+    path('api/v0.1/activity/<int:activity_id>', townsquare.views.api, name='townsquare_api'),
+    path('api/v0.1/emailsettings/', townsquare.views.emailsettings, name='townsquare_emailsettings'),
     url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
     url(
         r'^api/v0.1/profile/(.*)?/jobopportunity',
@@ -233,8 +238,6 @@ urlpatterns = [
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
     path('issue/refund_request', dashboard.views.refund_request, name='refund_request'),
     path('issue/cancel_reason', dashboard.views.cancel_reason, name='cancel_reason'),
-    path('issue/contribute', dashboard.views.contribute, name='contribute'),
-    path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
     path('modal/social_contribution', dashboard.views.social_contribution_modal, name='social_contribution_modal'),
     path(
         '<str:bounty_network>/<int:stdbounties_id>/modal/funder_payout_reminder/',
@@ -349,7 +352,7 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
-    re_path(r'^$', retail.views.index, name='index'),
+    re_path(r'^home/?$', retail.views.index, name='home'),
     re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
     re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
@@ -361,6 +364,16 @@ urlpatterns = [
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
+    re_path(r'^townsquare/?', townsquare.views.index, name='townsquare'),
+    re_path(r'^$', townsquare.views.index, name='index'),
+    path('action/<int:offer_id>/<slug:offer_slug>/go', townsquare.views.offer_go, name='townsquare_offer_go'),
+    path('action/new', townsquare.views.offer_new, name='townsquare_offer_new'),
+    path(
+        'action/<int:offer_id>/<slug:offer_slug>/decline',
+        townsquare.views.offer_decline,
+        name='townsquare_offer_decline'
+    ),
+    path('action/<int:offer_id>/<slug:offer_slug>', townsquare.views.offer_view, name='townsquare_offer_view'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
     url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),
@@ -468,6 +481,9 @@ urlpatterns = [
         name='unread_notifications_email_weekly_roundup'
     ),
     path('_administration/email/new_bounty_rejection', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
+    path('_administration/email/comment', retail.emails.comment, name='comment_email'),
+    path('_administration/email/wallpost', retail.emails.wallpost, name='wallpost_email'),
+    path('_administration/email/grant_update', retail.emails.grant_update, name='grant_update_email'),
     path(
         '_administration/email/new_bounty_acceptance',
         retail.emails.new_bounty_acceptance,

@@ -1,0 +1,6 @@
+💬 New Comment 💬
+
+@{{comment.profile.handle}} commented on your status update.
+
+To view the comment click here: {{comment.url}}
+

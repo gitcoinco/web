@@ -90,7 +90,7 @@
   <div class="col-12 font-body mt-4">
     <label class="form__label label d-block" for="linkedinUrl">{% trans "Linkedin profile" %}</label>
     <div class="d-flex align-items-center">
-      <span>https://www.linkedin.com/in/</span><input name="linkedinUrl" id="linkedinUrl" value="{{profile.linkedin_url}}" class="form__input" type="text" placeholder="username" />
+      <span>https://www.linkedin.com/in/</span><input name="linkedinUrl" id="linkedinUrl" value="{% firstof profile.linkedin_url or '' %}" class="form__input" type="text" placeholder="username" />
     </div>
   </div>
 

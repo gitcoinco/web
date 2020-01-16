@@ -39,6 +39,7 @@ from django.db.models import Count, F, Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
+from django.template.loader import render_to_string
 from django.templatetags.static import static
 from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
@@ -50,6 +51,7 @@ import pytz
 import requests
 from app.utils import get_upload_filename
 from bleach import clean
+from bs4 import BeautifulSoup
 from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -432,6 +434,12 @@ class Bounty(SuperModel):
         if next_state:
             self.bounty_state = next_state
             self.save()
+
+    @property
+    def is_bounties_network(self):
+        if self.web3_type == 'bounties_network':
+            return True
+        return False
 
     @property
     def latest_activity(self):
@@ -1046,8 +1054,7 @@ class Bounty(SuperModel):
         """
         params = f'pk={self.pk}&network={self.network}'
         urls = {}
-        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout', 'contribute',
-                     'advanced_payout', 'social_contribution', 'invoice', ]:
+        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout', 'advanced_payout', 'invoice', ]:
             urls.update({item: f'/issue/{item}?{params}'})
         return urls
 
@@ -1907,6 +1914,7 @@ class Activity(SuperModel):
     """
 
     ACTIVITY_TYPES = [
+        ('wall_post', 'Wall Post'),
         ('status_update', 'Update status'),
         ('new_bounty', 'New Bounty'),
         ('start_work', 'Work Started'),
@@ -1985,6 +1993,14 @@ class Activity(SuperModel):
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
     metadata = JSONField(default=dict)
     needs_review = models.BooleanField(default=False)
+    view_count = models.IntegerField(default=0)
+    other_profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='other_activities',
+        on_delete=models.CASCADE,
+        null=True
+    )
+    hidden = models.BooleanField(default=False, db_index=True)
 
     # Activity QuerySet Manager
     objects = ActivityQuerySet.as_manager()
@@ -2005,6 +2021,21 @@ class Activity(SuperModel):
         if self.profile:
             return self.profile.url
         return ""
+
+    @property
+    def what(self):
+        # returns what your wall post target is
+        if self.grant:
+            return 'grant'
+        if self.kudos:
+            return 'kudos'
+        if self.other_profile:
+            return 'profile'
+        return ""
+
+    @property
+    def url(self):
+        return f"{settings.BASE_URL}?tab=activity:{self.pk}"
 
     @property
     def humanized_activity_type(self):
@@ -2028,6 +2059,21 @@ class Activity(SuperModel):
 
     def i18n_name(self):
         return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
+
+    @property
+    def text(self):
+        params = {
+            'row': self,
+            'hide_date': True,
+            'hide_likes': True,
+        }
+        html_str = render_to_string('shared/activity.html', params)
+        soup = BeautifulSoup(html_str)
+        txt = soup.get_text()
+        txt = txt.replace("\n","")
+        for i in range(0, 100):
+            txt = txt.replace("  ",' ')
+        return txt
 
     @property
     def view_props(self):
@@ -2057,9 +2103,12 @@ class Activity(SuperModel):
             'url',
         ]
         activity = self.to_standard_dict(properties=properties)
+        activity['pk'] = self.pk
+        activity['likes'] = self.likes.count()
+        activity['comments'] = self.comments.count()
         for key, value in model_to_dict(self).items():
             activity[key] = value
-        for fk in ['bounty', 'tip', 'kudos', 'profile']:
+        for fk in ['bounty', 'tip', 'kudos', 'profile', 'grant', 'other_profile']:
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
         activity['secondary_avatar_url'] = self.secondary_avatar_url
@@ -2083,15 +2132,24 @@ class Activity(SuperModel):
             activity['humanized_activity_type'] = self.humanized_activity_type
         if 'value_in_usdt_now' in obj:
             activity['value_in_usdt_now'] = obj['value_in_usdt_now']
-        if 'token_name' in obj:
+        if 'token_name' in obj and obj['token_name']:
             activity['token'] = token_by_name(obj['token_name'])
             if 'value_in_token' in obj and activity['token']:
                 activity['value_in_token_disp'] = round((float(obj['value_in_token']) /
                                                       10 ** activity['token']['decimals']) * 1000) / 1000
 
+        activity['view_count'] = self.view_count
+
         # finally done!
 
         return activity
+
+    def view_props_for(self, user):
+        vp = self.view_props
+        if not user.is_authenticated:
+            return vp
+        vp['liked'] = self.likes.filter(profile=user.profile).exists()
+        return vp
 
     @property
     def secondary_avatar_url(self):
@@ -2546,7 +2604,7 @@ class Profile(SuperModel):
 
     @property
     def active_bounties(self):
-        active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
+        active_bounties = Bounty.objects.current().filter(bounty_state='work_started')
         return Interest.objects.filter(profile_id=self.pk, bounty__in=active_bounties)
 
     @property
@@ -2857,7 +2915,6 @@ class Profile(SuperModel):
             int: a number of repeat relationships
 
         """
-        bounties = self.bounties
         relationships = []
         relationships += list(self.sent_earnings.values_list('to_profile__handle', flat=True))
         relationships += list(self.earnings.values_list('from_profile__handle', flat=True))
@@ -3563,7 +3620,7 @@ class Profile(SuperModel):
         """
 
         if not self.is_org:
-            all_activities = self.activities
+            all_activities = self.activities.all() | self.other_activities.all()
         else:
             # orgs
             url = self.github_url
@@ -4331,6 +4388,19 @@ class Earning(SuperModel):
 
     def __str__(self):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
+
+
+def get_my_earnings(profile_pk):
+    from_profile_earnings = Earning.objects.filter(from_profile=profile_pk)
+    to_profile_earnings = Earning.objects.filter(to_profile=profile_pk)
+    org_profile_earnings = Earning.objects.filter(org_profile=profile_pk)
+
+    from_profile_earnings = list(from_profile_earnings.values_list('to_profile', flat=True))
+    to_profile_earnings = list(to_profile_earnings.values_list('from_profile', flat=True))
+    org_profile_earnings = list(org_profile_earnings.values_list('from_profile', flat=True)) + list(org_profile_earnings.values_list('to_profile', flat=True))
+
+    all_earnings = from_profile_earnings + to_profile_earnings + org_profile_earnings
+    return all_earnings
 
 
 class PortfolioItem(SuperModel):

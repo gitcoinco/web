@@ -122,7 +122,8 @@ INSTALLED_APPS = [
     'inbox',
     'feeswapper',
     'oauth2_provider',
-    'compliance'
+    'townsquare',
+    'compliance',
 ]
 
 MIDDLEWARE = [
@@ -155,7 +156,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates'],
+    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [

@@ -287,7 +287,7 @@
 
           <div class="row mt-5 pb-5 text-center">
             <div class="col">
-              <a class="button button--primary" role="button" href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e"
+              <a class="button button--primary" role="button" href="https://gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/"
                 target="_blank" rel="noopener noreferrer">{% trans "Read More about Pricing on Gitcoin" %}</a>
             </div>
           </div>
@@ -306,7 +306,7 @@
             </div>
             <div class="col-md-12 p-3">
               <div>
-                {% for kudos in kudos_tokens %} 
+                {% for kudos in kudos_tokens %}
                   <a href="{{kudos.url}}" title="{{kudos.name}}">
                     <img data-src="{{kudos.static_image}}" alts="{{kudos.name}}" title="{{kudos.name}}"  style="max-width: 100px; max-height: 100px; margin: 5px;">
                   </a>
@@ -331,7 +331,7 @@
             </div>
             <div class="col-md-12 p-3">
               <div>
-                {% for quest in top_quests %} 
+                {% for quest in top_quests %}
                   <a href="{{quest.url}}" title="{{quest.title}}">
                     <img data-src="{{quest.img}}" alts="{{quest.title}}: {{quest.plays}} plays" title="{{quest.title}}: {{quest.plays}} plays"  style="max-width: 100px; max-height: 100px; margin: 5px;">
                   </a>
@@ -529,7 +529,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    
+
 
     <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
     <script>
@@ -538,7 +538,7 @@
           var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
           if (scrollTop > 500 && !document.offset_loaded){
             $("img").unveil(200);
-            document.offset_loaded = true; 
+            document.offset_loaded = true;
           }
         }, 3000);
         $.get('/activity', function(html){
@@ -550,4 +550,5 @@
   </body>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>
+  <script src="{% static "v2/js/activity.js" %}"></script>
 </html>

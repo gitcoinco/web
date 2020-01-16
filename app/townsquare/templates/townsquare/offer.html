@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load humanize static i18n %}
+{% comment %}
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% block 'extrahead' %}
+{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{% static "v2/css/actions.css" %}" />
+
+<div class="container-fluid py-1 announce-bot announce-bot4 indent_on_mobile">
+  <div class="container">
+    <img src="{{offer.persona.preview_img_url}}" />
+  </div>
+</div>
+
+<div class="container-fluid py-1 pt-3 announce {{offer.style}} indent_on_mobile">
+  <div class="container">
+    
+    <h4 class="pt-0">{{offer.title}}</h4>
+    <p>
+      {{offer.desc}}
+    </p>
+    <p>
+        Expires: {{offer.valid_to | naturaltime}}
+    </p>
+
+    <a class="accept hero-p-mobile btn btn-gc-blue my-2" href="{{offer.go_url}}">
+      Go
+    </a>
+    <BR>
+    - or -
+    <BR>
+    <a class="decline" href="{{offer.decline_url}}">
+      Decline
+    </a>
+  </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
+

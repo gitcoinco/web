@@ -29,7 +29,7 @@
       <a href="{% url 'kudos_marketplace' %}">&lt; {% trans "Kudos Marketplace" %}</a>
     </div>
 
-  	<section class="container my-5 pb-5">
+  	<section class="container my-2 pb-2">
       <div class="row justify-content-around">
         <div class="col-md-6 col-lg-5 mb-5">
           <div class="kudos_msg">
@@ -137,8 +137,12 @@
         </div>
       </div>
     </section>
-    <section class="container my-5 py-5">
-      {% include 'shared/disqus.html' with page_url=request.build_absolute_uri  %}
+    <section class="container my-1 py-1">
+      {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on wall" what="kudos" whatid=kudos.pk %}
+      <div id="activities" class="activity_stream container">
+      {% include 'shared/activity_container.html' %}
+      </div>
+
     </section>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
@@ -148,6 +152,9 @@
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/amounts.js" %}"></script>
     <script src="{% static "v2/js/eth-price.js" %}"></script>
+    {% include 'shared/activity_scripts.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    <script src="{% static "v2/js/status.js" %}"></script>
     <script>
       $('[data-toggle="tooltip"]').bootstrapTooltip();
     </script>

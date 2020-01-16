@@ -270,6 +270,16 @@ class Grant(SuperModel):
         return num
 
     @property
+    def contributors(self):
+        return_me = []
+        for sub in self.subscriptions.all():
+            for contrib in sub.subscription_contribution.filter(success=True):
+                return_me.append(contrib.subscription.contributor_profile)
+        for pf in self.phantom_funding.all():
+            return_me.append(pf.profile)
+        return return_me
+
+    @property
     def get_contributor_count(self):
         contributors = []
         for sub in self.subscriptions.all():
