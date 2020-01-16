@@ -87,7 +87,7 @@ if ! [ "$JOBS_NODE" ]; then
       done
     else
       echo "- celery"
-      sudo systemctl restart celery
+      sudo systemctl restart celery.service
     fi
 fi
 
