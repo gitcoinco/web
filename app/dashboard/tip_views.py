@@ -60,7 +60,7 @@ def send_tip(request):
     return TemplateResponse(request, 'onepager/send1.html', params)
 
 
-def record_tip_activity(tip, github_handle, event_name, override_created=None):
+def record_tip_activity(tip, github_handle, event_name, override_created=None, other_handle=None):
     kwargs = {
         'created_on': timezone.now() if not override_created else override_created,
         'activity_type': event_name,
@@ -80,6 +80,10 @@ def record_tip_activity(tip, github_handle, event_name, override_created=None):
     associated_profile = get_profile(github_handle)
     if associated_profile:
         kwargs['profile'] = associated_profile
+
+    associated_profile = get_profile(other_handle) if other_handle else None
+    if associated_profile:
+        kwargs['other_profile'] = associated_profile
 
     try:
         if tip.bounty:
@@ -218,7 +222,7 @@ def send_tip_4(request):
     if tip.primary_email:
         maybe_market_tip_to_email(tip, [tip.primary_email])
     record_user_action(tip.from_username, 'send_tip', tip)
-    record_tip_activity(tip, tip.from_username, 'new_tip' if tip.username else 'new_crowdfund')
+    record_tip_activity(tip, tip.from_username, 'new_tip' if tip.username else 'new_crowdfund', False, tip.username)
 
     return JsonResponse(response)
 
