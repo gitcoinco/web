@@ -273,7 +273,7 @@ def offer_new(request):
 
     context = {
         'title': "New Action",
-        'card_desc': "New Action",
+        'card_desc': "Create an Action for Devs on Gitcoin - Its FREE!",
         'package': package,
         'nav': 'home',
     }
