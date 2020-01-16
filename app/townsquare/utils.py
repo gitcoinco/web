@@ -8,10 +8,7 @@ def is_user_townsquare_enabled(user):
     if user.is_staff:
         return True
 
-    if user.groups.filter(name='townsquare').exists():
-        return True
-
-    return False
+    return True
 
 
 def is_email_townsquare_enabled(email):
