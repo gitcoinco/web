@@ -43,7 +43,7 @@ from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update
-from grants.utils import get_leaderboard
+from grants.utils import get_leaderboard, is_grant_team_member
 from kudos.models import BulkTransferCoupon
 from marketing.mails import (
     grant_cancellation, new_grant, new_grant_admin, new_supporter, subscription_terminated, support_cancellation,
@@ -232,12 +232,7 @@ def grant_details(request, grant_id, grant_slug):
     if is_admin:
         add_cancel_params = True
 
-    is_team_member = False
-    if profile:
-        for team_member in grant.team_members.all():
-            if team_member.id == profile.id:
-                is_team_member = True
-                break
+    is_team_member = is_grant_team_member(grant, profile)
 
     if request.method == 'POST' and (is_team_member or request.user.is_staff):
         if request.FILES.get('input_image'):
@@ -518,15 +513,8 @@ def grant_new_v0(request):
 def milestones(request, grant_id, grant_slug):
     profile = get_profile(request)
     grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
-    is_team_member = False
 
-    if profile:
-        for team_member in grant.team_members.all():
-            if team_member.id == profile.id:
-                is_team_member = True
-                break
-
-    if not is_team_member:
+    if not is_grant_team_member(grant, profile):
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == "POST":
@@ -579,36 +567,31 @@ def grant_fund(request, grant_id, grant_slug):
     if not grant.active:
         params = {
             'active': 'grant_error',
-            'title': _('Grant Ended'),
+            'title': _('Fund - Grant Ended'),
             'grant': grant,
-            'text': _('This Grant is not longer active.')
+            'text': _('This Grant has ended.'),
+            'subtext': _('Contributions can no longer be made this grant')
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
-    is_team_member = False
-    if grant.admin_profile == profile:
-        is_team_member = True
-    else:
-        for team_member in grant.team_members.all():
-            if team_member.id == profile.id:
-                is_team_member = True
-                break
-
-    if is_team_member:
+    if is_grant_team_member(grant, profile):
         params = {
             'active': 'grant_error',
-            'title': _('Invalid Grant Subscription'),
+            'title': _('Fund - Grant funding blocked'),
             'grant': grant,
-            'text': _('You cannot fund your own Grant.')
+            'text': _('This Grant cannot be funded'),
+            'subtext': _('Grant team members cannot contribute to their own grant.')
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
     if grant.link_to_new_grant:
         params = {
             'active': 'grant_error',
-            'title': _('This Grant has been migrated'),
+            'title': _('Fund - Grant Migrated'),
             'grant': grant.link_to_new_grant,
-            'text': f'Click below to view {grant.title}\'s active grant'
+            'text': f'This Grant has ended',
+            'subtext': 'Contributions can no longer be made to this grant. <br> Visit the new grant to contribute.',
+            'button_txt': 'View New Grant'
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
