@@ -69,18 +69,21 @@ $(document).ready(function() {
       const mentor_address = room_address;
 
       // Compute a deposit_rounded (deposit should be a multiple of delta)
-      const deposit = deposit_min * rate_per_min;
-      const deposit_rounded = closer_multiple(deposit);
       const now = Math.round(new Date().getTime() / 1000);
       const startTime = now + 3600;
       const stopTime = now + 3600 * 2;
       const delta = stopTime - startTime;
+      const deposit = deposit_min * rate_per_min;
+      const deposit_rounded = closer_multiple(deposit, delta);
 
       if (deposit_rounded % delta) throw "Not multiple";
+			if (now > startTime) throw 'startTime should be in the future';
+			if (startTime > stopTime) throw 'endTime should be after startTime';
 
       console.warn("mentor_address", mentor_address);
 
       console.warn("deposit", deposit);
+      console.warn("deposit_rounded", deposit_rounded);
 			console.warn("deposit in dai", deposit / 1000000000000000000);
       console.warn("now", now);
       console.warn("startTime", startTime);
@@ -94,7 +97,7 @@ $(document).ready(function() {
           );
           sablier_contract.createStream(
             mentor_address,
-            deposit,
+            deposit_rounded,
             testdai_address(),
             startTime,
             stopTime,
