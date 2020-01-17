@@ -1993,12 +1993,13 @@ class Activity(SuperModel):
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
     metadata = JSONField(default=dict)
     needs_review = models.BooleanField(default=False)
-    view_count = models.IntegerField(default=0)
+    view_count = models.IntegerField(default=0, db_index=True)
     other_profile = models.ForeignKey(
         'dashboard.Profile',
         related_name='other_activities',
         on_delete=models.CASCADE,
-        null=True
+        null=True,
+        blank=True
     )
     hidden = models.BooleanField(default=False, db_index=True)
 
@@ -4393,7 +4394,8 @@ class Earning(SuperModel):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
 
 
-def get_my_earnings(profile_pk):
+def get_my_earnings_counter_profiles(profile_pk):
+    # returns profiles that a user has done business with
     from_profile_earnings = Earning.objects.filter(from_profile=profile_pk)
     to_profile_earnings = Earning.objects.filter(to_profile=profile_pk)
     org_profile_earnings = Earning.objects.filter(org_profile=profile_pk)
@@ -4404,6 +4406,15 @@ def get_my_earnings(profile_pk):
 
     all_earnings = from_profile_earnings + to_profile_earnings + org_profile_earnings
     return all_earnings
+
+
+def get_my_grants(profile):
+    # returns grants that a profile has done business with
+    relevant_grants = list(profile.grant_contributor.all().values_list('grant', flat=True)) \
+        + list(profile.grant_teams.all().values_list('pk', flat=True)) \
+        + list(profile.grant_admin.all().values_list('pk', flat=True)) \
+        + list(profile.grant_phantom_funding.values_list('pk', flat=True))
+    return relevant_grants
 
 
 class PortfolioItem(SuperModel):

@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
-from dashboard.models import Activity
+from dashboard.models import Activity, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
 from ratelimit.decorators import ratelimit
@@ -43,12 +43,27 @@ def index(request):
 
     # setup tabas
     tabs = [{
-        'title': "My Tribes",
-        'slug': 'my_tribes',
-    }, {
         'title': "Everywhere",
         'slug': 'everywhere',
     }]
+    default_tab = 'everywhere'
+    if request.user.is_authenticated:
+        num_business_relationships = len(set(get_my_earnings_counter_profiles(request.user.profile.pk)))
+        if num_business_relationships:
+            new_tab = {
+                'title': f"My Relationships ({num_business_relationships})",
+                'slug': 'my_tribes',
+            }
+            tabs = [new_tab] + tabs
+            default_tab = 'my_tribes'
+        num_grants_relationships = len(set(get_my_grants(request.user.profile)))
+        if num_grants_relationships:
+            new_tab = {
+                'title': f'My Grants ({num_grants_relationships})',
+                'slug': f'grants',
+            }
+            tabs = [new_tab] + tabs
+            default_tab = 'grants'
     add_keywords = False
     for keyword in request.user.profile.keywords:
         if add_keywords:
@@ -56,7 +71,6 @@ def index(request):
                 'title': keyword.title(),
                 'slug': f'keyword-{keyword}',
             })
-    default_tab = 'my_tribes' if request.user.is_authenticated else 'everywhere'
     tab = request.GET.get('tab', default_tab)
     is_search = "activity:" in tab or "search-" in tab
     if is_search:
@@ -109,15 +123,17 @@ def index(request):
 
 
     # render page context
+    trending_only = int(request.GET.get('trending', 1))
     context = {
         'title': title,
         'card_desc': desc,
         'avatar_url': avatar_url,
         'page_seo_text_insert': page_seo_text_insert,
         'nav': 'home',
-        'target': f'/activity?what={tab}',
+        'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'trending_only': bool(trending_only),
         'search': search,
         'tags': [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ],
         'announcements': announcements,

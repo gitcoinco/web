@@ -37,7 +37,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Bounty, Profile, get_my_earnings
+from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import grant_update_email, new_funding_limit_increase_request, new_token_request, wall_post_email
@@ -1099,10 +1099,12 @@ def activity(request):
     page_size = 7
     page = int(request.GET.get('page', 1))
     what = request.GET.get('what', 'everywhere')
+    trending_only = int(request.GET.get('trending_only', 0))
 
     # create diff filters
     print(1, round(time.time(), 1))
     activities = Activity.objects.filter(hidden=False).order_by('-created_on')
+
     ## filtering
     if ':' in what:
         pk = what.split(':')[1]
@@ -1114,8 +1116,11 @@ def activity(request):
         activities = activities.filter(**kwargs)
     if request.user.is_authenticated:
         relevant_profiles = []
+        relevant_grants = []
         if what == 'tribes':
-            relevant_profiles = get_my_earnings(request.user.profile.pk)
+            relevant_profiles = get_my_earnings_counter_profiles(request.user.profile.pk)
+        if what == 'grants':
+            relevant_grants = get_my_grants(request.user.profile)
         if 'keyword-' in what:
             keyword = what.split('-')[1]
             relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
@@ -1130,10 +1135,17 @@ def activity(request):
         # filters
         if len(relevant_profiles):
             activities = activities.filter(profile__in=relevant_profiles)
+        if len(relevant_grants):
+            activities = activities.filter(grant__in=relevant_grants)
 
     # after-pk filters
     if request.GET.get('after-pk'):
         activities = activities.filter(pk__gt=request.GET.get('after-pk'))
+    if trending_only:
+        view_count_threshold = 10
+        if what == 'everywhere':
+            view_count_threshold = 40
+        activities = activities.filter(view_count__gt=view_count_threshold)
     print(2, round(time.time(), 1))
 
     # pagination
@@ -1159,7 +1171,7 @@ def activity(request):
         'what': what,
         'next_page': next_page,
         'page': page,
-        'target': f'/activity?what={what}&page={next_page}',
+        'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]

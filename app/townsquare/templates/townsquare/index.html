@@ -57,13 +57,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div class="row">
         <div class="col-12 col-md-8">
           {% include 'profiles/status_box.html' %}
-          <div class="float-right right mt-3">
+          <div class="float-right right mt-4">
             <input type="search" class="form__input" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
+            <BR>
+            <input type="checkbox" name="trending" id="trending" value="0" {% if trending_only %}checked=checked{%endif%} ><label for="trending">Trending Only</label>
           </div>
           <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
             {% for this_tab in tabs %}
               <li class="nav-item">
-                <a class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="/townsquare?tab={{this_tab.slug}}">
+                <a class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
                   {{this_tab.title}}
                 </a>
               </li>

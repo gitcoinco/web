@@ -36,11 +36,31 @@ $(document).ready(function() {
     });
   });
 
+  var get_redir_location = function(tab) {
+    let trending = $('#trending').is(':checked') ? 1 : 0;
+
+    return '/?tab=' + tab + '&trending=' + trending;
+  };
+
   $('body').on('focus change paste keyup blur', '#keyword', function(e) {
     if ((e.keyCode == 13)) {
       e.preventDefault();
-      document.location.href = '/?tab=search-' + $('#keyword').val();
+      document.location.href = get_redir_location('search-' + $('#keyword').val());
     }
+  });
+
+  $('body').on('click', '#trending', function(e) {
+    setTimeout(function() {
+      document.location.href = get_redir_location($('.nav-link.active').data('slug'));
+    }, 10);
+  });
+  $('body').on('click', '.nav-link', function(e) {
+    $('.nav-link').removeClass('active');
+    $(this).addClass('active');
+    e.preventDefault();
+    setTimeout(function() {
+      document.location.href = get_redir_location($('.nav-link.active').data('slug'));
+    }, 10);
   });
 
   // updates expiry timers with countdowns
