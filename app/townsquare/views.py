@@ -127,7 +127,7 @@ def town_square(request):
 
 
     # render page context
-    trending_only = int(request.GET.get('trending', 1))
+    trending_only = int(request.GET.get('trending', 0))
     context = {
         'title': title,
         'card_desc': desc,
