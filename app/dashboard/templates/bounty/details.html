@@ -510,6 +510,18 @@
       <p>{{ noscript.issue_description_text }}</p>
     </noscript>
 
+    <script>
+      const is_bounties_network = {{ is_bounties_network|lower }};
+
+      document.issueURL = '{{ issueURL }}';
+      document.issueNetwork = '{{ network }}';
+      document.issue_stdbounties_id = '{{ stdbounties_id }}';
+
+      {% if event_tag %}
+        document.eventTag = '{{ event_tag }}';
+      {% endif %}
+    </script>
+
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
@@ -517,19 +529,6 @@
   </body>
 
   {% include 'shared/current_profile.html' %}
-
-  <script>
-    const is_bounties_network = {{ is_bounties_network|lower }};
-    document.issueURL = '{{ issueURL }}';
-
-    // ETC-TODO: remove network + std bounties for ETC
-    document.issueNetwork = '{{ network }}';
-    document.issue_stdbounties_id = '{{ stdbounties_id }}';
-
-    {% if event_tag %}
-      document.eventTag = '{{ event_tag }}';
-    {% endif %}
-  </script>
 
   <script src="{% static "v2/js/lib/highlight.js" %}"></script>
   <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>

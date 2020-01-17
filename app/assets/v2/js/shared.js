@@ -695,7 +695,6 @@ const randomElement = array => {
 var currentNetwork = function(network) {
 
   $('.navbar-network').removeClass('hidden');
-  let tooltip_info;
 
   document.web3network = network;
   if (document.location.href.startsWith('https://gitcoin.co')) { // Live
@@ -1024,9 +1023,11 @@ var actions_page_warn_if_not_on_same_network = function() {
 
 attach_change_element_type();
 
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 1000);
-});
+if (typeof is_bounties_network == 'undefined' || is_bounties_network) {
+  window.addEventListener('load', function() {
+    setInterval(listen_for_web3_changes, 1000);
+  });
+}
 
 var setUsdAmount = function() {
   const amount = $('input[name=amount]').val();

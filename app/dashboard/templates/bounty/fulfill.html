@@ -156,6 +156,10 @@
         </div>
       </div>
     </div>
+
+    <script>
+      const is_bounties_network = {{ is_bounties_network|lower }};
+    </script>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
@@ -166,7 +170,6 @@
   <script>
     $('[data-toggle="popover"]').popover()
     $('[data-toggle="tooltip"]').bootstrapTooltip();
-    const is_bounties_network = {{ is_bounties_network|lower }};
     let eventTag;
     {% if bounty.event %}
       eventTag = '{{ bounty.event.slug }}';
