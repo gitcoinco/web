@@ -160,9 +160,17 @@
   </div>
   <div class="tab-pane fade show active" id="avatars-builder-3d-tab" role="tabpanel">
     <div id="avatars-builder-3d">
-      <div class="text-muted text-cetner empty-avatars">Build Your 3d Gitcoin Avatar</div>
+      <div class="text-muted text-cetner empty-avatars mb-2">Build
+
+      <select id=theme>
+        {% for option in avatar_options %}
+          <option value="{{option.1}}" {% if option.0 == theme %} selected="selected" {% endif %} >{{option.0}}</option>
+        {% endfor %}
+      </select>
+
+       Gitcoin Avatar</div>
       <div class="avatars-container">
-        <img id=tdavatartarget src="/avatar/view3d">
+        <img id=tdavatartarget class="{{theme}}" src="/avatar/view3d?theme={{theme}}">
       </div>
         <button type="button" id="random-3d-avatar-button" class="button button--primary">
           Random Avatar
@@ -195,7 +203,7 @@
         {% for category, ids in 3d_avatar_params.by_category.items %}
           <div class="category {{category}} {% if category != 'background' %}hidden{%endif%}">
             {% for id in ids %}
-              <img class=tdselection data-id="{{id}}" data-src="/avatar/view3d?mode=preview&ids={{id}}" data-altsrc="/avatar/view3d?mode=preview&ids={{id}}" {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}"{%endif%}>            
+              <img class=tdselection data-id="{{id}}" data-src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" data-altsrc="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}"{%endif%}>            
             {% endfor %}
           </div>
         {% endfor %}

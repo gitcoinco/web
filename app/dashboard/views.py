@@ -54,7 +54,7 @@ from django.views.decorators.http import require_GET, require_POST
 import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
-from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
+from avatar.views_3d import avatar3dids_helper
 from bleach import clean
 from cacheops import invalidate_obj
 from dashboard.context import quickstart as qs
@@ -788,13 +788,24 @@ def onboard(request, flow=None):
         profile.preferred_payout_address = eth_address
         profile.save()
         return JsonResponse({'OK': True})
+    
+    theme = request.GET.get('theme', '3d')
+    from avatar.views_3d import get_avatar_attrs
+    skin_tones = get_avatar_attrs(theme, 'skin_tones')
+    hair_tones = get_avatar_attrs(theme, 'hair_tones')
+    avatar_options = [
+        ('basic', '/onboard/profile?steps=avatar&theme=3d'),
+        ('bufficorn', '/onboard/profile?steps=avatar&theme=bufficorn'),
+    ]
 
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
         'flow': flow,
         'profile': profile,
-        '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(),
+        'theme': theme,
+        'avatar_options': avatar_options,
+        '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(theme),
         'possible_skin_tones': skin_tones,
         'possible_hair_tones': hair_tones,
     }

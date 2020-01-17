@@ -32,24 +32,47 @@ from PIL import Image, ImageOps
 from .models import BaseAvatar, CustomAvatar, SocialAvatar
 
 logger = logging.getLogger(__name__)
-avatar_3d_base_path = 'assets/v2/images/avatar3d/avatar_bufficorn.svg'
 
-preview_viewbox = {
-    #section: x_pos y_pox x_size y_size
-    'background': '0 0 200 200',
-    'facial': '80 180 220 220',
-    'glasses': '80 80 220 220',
-    'hat': '20 30 300 300',
-    'shirt': '130 200 200 200',
-    'accessory': '50 180 150 200',
-    'horn': '120 80 150 150',
-}
-
-skin_tones = [
-    'D7723B', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '392D16'
-]
-hair_tones = ['F495A8', '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C']
-tone_maps = ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair']
+def get_avatar_attrs(theme, key):
+    avatar_attrs = {
+        'bufficorn' : {
+            'preview_viewbox' : {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 200 200',
+                'facial': '80 180 220 220',
+                'glasses': '80 80 220 220',
+                'hat': '20 30 300 300',
+                'shirt': '130 200 200 200',
+                'accessory': '50 180 150 200',
+                'horn': '120 80 150 150',
+            },
+            'skin_tones' : [
+                'D7723B', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '392D16'
+            ],
+            'hair_tones' : ['F495A8', '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'],
+            'tone_maps' : ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
+            'path': 'assets/v2/images/avatar3d/avatar_bufficorn.svg',
+        },
+        '3d' : {
+            'preview_viewbox' : {
+                'background': '0 0 350 350',
+                'clothing': '60 80 260 300',
+                'ears': '100 70 50 50',
+                'head': '80 10 170 170',
+                'mouth': '130 90 70 70',
+                'nose': '140 80 50 50',
+                'eyes': '120 40 80 80',
+                'hair': '110 0 110 110',
+            },
+            'skin_tones' : [
+                'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '392D16'
+            ],
+            'hair_tones' : ['000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'],
+            'tone_maps' : ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
+            'path': 'assets/v2/images/avatar3d/avatar.svg',
+        },
+    }
+    return avatar_attrs[theme][key]
 
 
 def get_avatar_tone_map(tone='skin', skinTone=''):
@@ -101,6 +124,7 @@ def get_avatar_tone_map(tone='skin', skinTone=''):
 def avatar3d(request):
     """Serve an 3d avatar."""
 
+    theme = request.GET.get('theme', '3d')
     #get request
     accept_ids = request.GET.getlist('ids')
     if not accept_ids:
@@ -119,7 +143,7 @@ def avatar3d(request):
         height = 30
         width = 30
         _type = accept_ids[0].split('_')[0]
-        viewBox = preview_viewbox.get(_type, '0 0 600 600')
+        viewBox = get_avatar_attrs(theme, 'preview_viewbox').get(_type, '0 0 600 600')
         force_show_whole_body = False
     else:
         accept_ids.append('frame')
@@ -137,13 +161,14 @@ def avatar3d(request):
     #ensure at least one per category
 
     if bool(int(force_show_whole_body)):
-        categories = avatar3dids_helper()['by_category']
+        categories = avatar3dids_helper(theme)['by_category']
         for category_name, ids in categories.items():
             has_ids_in_category = any([ele in accept_ids for ele in ids])
             if not has_ids_in_category:
                 accept_ids.append(ids[0])
 
     # asseble response
+    avatar_3d_base_path = get_avatar_attrs(theme, 'path')
     with open(avatar_3d_base_path) as file:
         elements = []
         tree = ET.parse(file)
@@ -152,6 +177,7 @@ def avatar3d(request):
             if include_item:
                 elements.append(ET.tostring(item).decode('utf-8'))
         output = prepend + "".join(elements) + postpend
+        tone_maps = get_avatar_attrs(theme, 'tone_maps')
         for _type in tone_maps:
             base_tone = skinTone if 'hair' not in _type else hairTone
             if base_tone:
@@ -163,7 +189,8 @@ def avatar3d(request):
     return response
 
 
-def avatar3dids_helper():
+def avatar3dids_helper(theme):
+    avatar_3d_base_path = get_avatar_attrs(theme, 'path')
     with open(avatar_3d_base_path) as file:
         tree = ET.parse(file)
         ids = [item.attrib.get('id') for item in tree.getroot()]
@@ -179,7 +206,9 @@ def avatar3dids_helper():
 
 def avatar3dids(request):
     """Serve an 3d avatar id list."""
-    response = JsonResponse(avatar3dids_helper())
+
+    theme = request.GET.get('theme', '3d')
+    response = JsonResponse(avatar3dids_helper(theme))
     return response
 
 
