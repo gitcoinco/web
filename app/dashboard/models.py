@@ -1971,8 +1971,14 @@ class Activity(SuperModel):
         blank=True,
         null=True
     )
-    kudos = models.ForeignKey(
+    kudos_transfer = models.ForeignKey(
         'kudos.KudosTransfer',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    kudos = models.ForeignKey(
+        'kudos.Token',
         related_name='activities',
         on_delete=models.CASCADE,
         blank=True, null=True
@@ -2121,7 +2127,7 @@ class Activity(SuperModel):
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
         activity['icon'] = icons.get(self.activity_type, 'fa-check-circle')
         if activity.get('kudos'):
-            activity['kudos_data'] = Token.objects.get(pk=self.kudos.kudos_token_cloned_from_id)
+            activity['kudos_data'] = self.kudos
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']

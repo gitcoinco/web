@@ -215,7 +215,7 @@
     {% if row.profile.handle == github_handle %}
       <a href=# data-pk={{row.pk}} class="delete_activity" style="color:black; font-size: 10px;"><i class="fas fa-trash"></i></a>
     {% elif row.kudos %}
-      <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
+      <a href="{{row.kudos_data.url}}">
         <img src="{% static row.kudos_data.image %}" alt="" class="w-100" style="max-width:100px;">
       </a>
     {% elif row.activity_type == 'leaderboard_rank' %}
