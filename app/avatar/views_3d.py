@@ -72,7 +72,7 @@ def get_avatar_attrs(theme, key):
             'path': 'assets/v2/images/avatar3d/avatar.svg',
         },
     }
-    return avatar_attrs[theme][key]
+    return avatar_attrs.get(theme, {}).get(key, {})
 
 
 def get_avatar_tone_map(tone='skin', skinTone=''):
@@ -169,39 +169,41 @@ def avatar3d(request):
 
     # asseble response
     avatar_3d_base_path = get_avatar_attrs(theme, 'path')
-    with open(avatar_3d_base_path) as file:
-        elements = []
-        tree = ET.parse(file)
-        for item in tree.getroot():
-            include_item = item.attrib.get('id') in accept_ids or item.tag in tags
-            if include_item:
-                elements.append(ET.tostring(item).decode('utf-8'))
-        output = prepend + "".join(elements) + postpend
-        tone_maps = get_avatar_attrs(theme, 'tone_maps')
-        for _type in tone_maps:
-            base_tone = skinTone if 'hair' not in _type else hairTone
-            if base_tone:
-                for _from, to in get_avatar_tone_map(_type, base_tone).items():
-                    output = output.replace(_from, to)
-        if request.method == 'POST':
-            return save_custom_avatar(request, output)
-        response = HttpResponse(output, content_type='image/svg+xml')
+    if avatar_3d_base_path:
+        with open(avatar_3d_base_path) as file:
+            elements = []
+            tree = ET.parse(file)
+            for item in tree.getroot():
+                include_item = item.attrib.get('id') in accept_ids or item.tag in tags
+                if include_item:
+                    elements.append(ET.tostring(item).decode('utf-8'))
+            output = prepend + "".join(elements) + postpend
+            tone_maps = get_avatar_attrs(theme, 'tone_maps')
+            for _type in tone_maps:
+                base_tone = skinTone if 'hair' not in _type else hairTone
+                if base_tone:
+                    for _from, to in get_avatar_tone_map(_type, base_tone).items():
+                        output = output.replace(_from, to)
+            if request.method == 'POST':
+                return save_custom_avatar(request, output)
+            response = HttpResponse(output, content_type='image/svg+xml')
     return response
 
 
 def avatar3dids_helper(theme):
     avatar_3d_base_path = get_avatar_attrs(theme, 'path')
-    with open(avatar_3d_base_path) as file:
-        tree = ET.parse(file)
-        ids = [item.attrib.get('id') for item in tree.getroot()]
-        ids = [ele for ele in ids if ele and ele != 'base']
-        category_list = {ele.split("_")[0]: [] for ele in ids}
-        for ele in ids:
-            category = ele.split("_")[0]
-            category_list[category].append(ele)
+    if avatar_3d_base_path:
+        with open(avatar_3d_base_path) as file:
+            tree = ET.parse(file)
+            ids = [item.attrib.get('id') for item in tree.getroot()]
+            ids = [ele for ele in ids if ele and ele != 'base']
+            category_list = {ele.split("_")[0]: [] for ele in ids}
+            for ele in ids:
+                category = ele.split("_")[0]
+                category_list[category].append(ele)
 
-        response = {'ids': ids, 'by_category': category_list, }
-        return response
+            response = {'ids': ids, 'by_category': category_list, }
+            return response
 
 
 def avatar3dids(request):

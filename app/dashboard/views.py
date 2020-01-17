@@ -862,7 +862,8 @@ def onboard(request, flow=None):
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
     avatar_options = [
-        ('basic', '/onboard/profile?steps=avatar&theme=3d'),
+        ('classic', '/onboard/profile?steps=avatar&theme=classic'),
+        ('3d', '/onboard/profile?steps=avatar&theme=3d'),
         ('bufficorn', '/onboard/profile?steps=avatar&theme=bufficorn'),
     ]
 
