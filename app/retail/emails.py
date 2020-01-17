@@ -979,8 +979,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "To Take Back or Give Back?"
-    new_kudos_pks = [7335, 7323, 7339]
+    subject = "Take Action in the Town Square"
+    new_kudos_pks = [7096, 7351, 7319]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1002,20 +1002,20 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-As you may have heard, the <a href="https://hackathons.gitcoin.co/take-back-the-web">Take Back the Web</a> Virtual Hackathon kicked off yesterday. Check out the <a href="https://gitcoin.co/hackathon/take-back-the-web/">prize explorer</a> to see the bounties posted by Status, MetaMask, ETC Labs, Infura, Blockstack, Kickback, and Sablier. We also just released a new in-app <a href="https://chat.gitcoin.co/hackathons/">Gitcoin Chat</a> feature for this hackathon and beyond, so join the conversation!
+We just rolled out a ton of new features! Welcome to the Gitcoin <a href="https://gitcoin.co/townsquare">Town Square</a>, a social newsfeed where you can like, comment on, flag, and link to any activity feed item. You’ll find a daily, weekly, and monthly action to complete with free goodies, invites, and more - you can also create your own action for the community. Finally, you can now send “status updates” to all your grant funders (with privacy options to opt out).
 </p>
 <p>
-We are also now almost 5 days into <a href="https://gitcoin.co/blog/gitcoin-grants-2020/">Gitcoin Grants Round 4</a>, with over 838 contributions from 241 unique community members, worth $22297, after the first 3 days. Click <a href="https://gitcoin.co/grants/">here</a> to checkout the round 4 grants. It’s up to you to decide - are you going to help us take back the web, or help us give back grants to the community?
+On another note, <a href="https://gitcoin.co/grants/">Grants Round 4</a> and the <a href="https://gitcoin.co/hackathon/take-back-the-web?">Take Back The Web</a> hackathon both conclude next week. So far this grants round has seen 3,857 contributions from 853 unique community members, worth $74,023, in just over 10 days (4 more to go!). The hackathon already has 368 registrations, 175 work starts, and 46 submissions (with 6 more days to go). It’s never too late to make a donation or start work on a hackathon project!
 </p>
 <p>
-Finally, we are exited to share <a href="https://web3.sustainoss.org/">Sustain Web3</a> has a <a href="https://twitter.com/gitcoin/status/1215427678465118208">new venue</a>: The EthDenver Sports Castle in Denver, alongside DAOFest. Now, all things DAOs and Web3 sustainability will be in one place on Feb 13th! We hope to see you there.
+Last but not least, we’re excited to share Vitalik Buterin will be the keynote speaker at <a href="https://web3.sustainoss.org/">Sustain Web3</a> the day before ETHDenver. <a href="https://web3.sustainoss.org/">Sign up</a> to attend the free event if you can make it, and if you’re feeling generous, any contribution to our <a href="https://gitcoin.co/grants/195/sustain-web3-sustainers">Grant</a> for the event will help us in supporting OSS.
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Join us on today's Gitcoin Livestream to hear from the Take Back The Web sponsors mentioned above discuss their projects, bounties, and how they are giving power back to the end users on the internet. <a href="https://gitcoin.co/livestream">Join at 2pm ET</a>.
+            Today's special edition Livestream is on Gitcoin Grants Round 4. The kicker: You can only present a project you funded, not one you built. <a href="https://gitcoin.co/livestream">Join us</a> for a party celebrating the end of the biggest CLR Round yet at 2pm ET. 
         </li>
     </ul>
 </p>
@@ -1024,22 +1024,22 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'iamonuwa',
+        'who': 'TomAFrench',
         'who_link': True,
-        'what': 'Enabled address privacy for Gitcoin Grant contributors',
-        'link': 'https://gitcoin.co/issue/gitcoinco/web/5654/3826',
+        'what': 'Created A Fork Of The Burner Wallet That Uses Liquidity Network L2 Solution Instead Of XDai',
+        'link': 'https://gitcoin.co/issue/liquidity-network/liquidity-burner/1/2972',
         'link_copy': 'View more',
     }, {
-        'who': 'think-in-universe',
+        'who': 'aquiladev',
         'who_link': True,
-        'what': 'Translated articles to Chinese for Web3Foundation',
-        'link': 'https://gitcoin.co/issue/staketechnologies/Plasm/88/3790',
+        'what': 'Integrated WalletConnect as provider for Truffle smart contract deployment',
+        'link': 'https://gitcoin.co/issue/WalletConnect/walletconnect-monorepo/205/3766',
         'link_copy': 'View more',
     }, {
-        'who': 'man-jain',
+        'who': 'matkt',
         'who_link': True,
-        'what': 'Created a Smart Contract That Creates A Uniswap Market For Pegged Token Upon Creation',
-        'link': 'https://gitcoin.co/issue/ProofSuite/OrFeedSmartContracts/26/3796',
+        'what': 'Created a general internal API to support Network Address Translation (NAT) technologies in Besu',
+        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/2/2694',
         'link_copy': 'View more',
     }, ]
 
@@ -1056,12 +1056,15 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/blockstack/bounties/issues/2',
-        'primer': 'Provide A Way To Create An Invitation For Users That Have not Signed Up Yet (Blockstack)',
+        'url': 'https://github.com/OneMillionDevs/bounties/issues/4',
+        'primer': '1 ETH For The Top 3 One Million Developers At Gitcoin Community Call',
     }, {
-        'url': 'https://github.com/INFURA/hackathons/issues/3',
-        'primer': 'Infura Ethereum API Optimization',
-    }, ]
+        'url': 'https://github.com/Minds/minds/issues/153',
+        'primer': 'Setting To Reduce Mobile Data Usage for Minds',
+    }, {
+        'url': 'https://github.com/unlock-protocol/unlock/issues/5265',
+        'primer': 'Shopify plugin for Unlock Protocol',
+    }]
 
 
     num_leadboard_items = 5
