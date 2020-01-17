@@ -2039,7 +2039,7 @@ class Activity(SuperModel):
 
     @property
     def url(self):
-        return f"{settings.BASE_URL}?tab=activity:{self.pk}"
+        return f"{settings.BASE_URL}townsquare?tab=activity:{self.pk}"
 
     @property
     def humanized_activity_type(self):

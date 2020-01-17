@@ -1104,6 +1104,7 @@ def activity(request):
     # create diff filters
     print(1, round(time.time(), 1))
     activities = Activity.objects.filter(hidden=False).order_by('-created_on')
+    view_count_threshold = 10
 
     ## filtering
     if ':' in what:
@@ -1126,8 +1127,10 @@ def activity(request):
             relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
         if 'search-' in what:
             keyword = what.split('-')[1]
+            view_count_threshold = 5
             activities = activities.filter(metadata__icontains=keyword)
         if 'activity:' in what:
+            view_count_threshold = 0
             pk = what.split(':')[1]
             activities = activities.filter(pk=pk)
             if page > 1:
@@ -1142,7 +1145,6 @@ def activity(request):
     if request.GET.get('after-pk'):
         activities = activities.filter(pk__gt=request.GET.get('after-pk'))
     if trending_only:
-        view_count_threshold = 10
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)

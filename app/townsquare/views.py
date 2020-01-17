@@ -41,6 +41,10 @@ def index(request):
         from retail.views import index as regular_homepage
         return regular_homepage(request)
 
+    return town_square(request)
+
+def town_square(request):
+
     # setup tabas
     tabs = [{
         'title': "Everywhere",
@@ -65,8 +69,8 @@ def index(request):
             tabs = [new_tab] + tabs
             default_tab = 'grants'
     add_keywords = False
-    for keyword in request.user.profile.keywords:
-        if add_keywords:
+    if add_keywords and request.user.is_authenticated:
+        for keyword in request.user.profile.keywords:
             tabs.append({
                 'title': keyword.title(),
                 'slug': f'keyword-{keyword}',
