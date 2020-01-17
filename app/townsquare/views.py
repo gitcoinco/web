@@ -47,10 +47,6 @@ def town_square(request):
 
     # setup tabas
     tabs = [{
-        'title': "Connect",
-        'slug': f'connect',
-        'helper_text': f'Announcements, requests for help, jobs, mentorship, or other connective requests on Gitcoin.',
-    },{
         'title': "Everywhere",
         'slug': 'everywhere',
         'helper_text': 'Activity everywhere in the Gitcoin network',
@@ -60,7 +56,7 @@ def town_square(request):
         num_business_relationships = len(set(get_my_earnings_counter_profiles(request.user.profile.pk)))
         if num_business_relationships:
             new_tab = {
-                'title': f"My Relationships ({num_business_relationships})",
+                'title': f"Relationships ({num_business_relationships})",
                 'slug': 'my_tribes',
                 'helper_text': f'Activity from the {num_business_relationships} users who you\'ve done business with Gitcoin',
             }
@@ -69,12 +65,22 @@ def town_square(request):
         num_grants_relationships = len(set(get_my_grants(request.user.profile)))
         if num_grants_relationships:
             new_tab = {
-                'title': f'My Grants ({num_grants_relationships})',
+                'title': f'Grants ({num_grants_relationships})',
                 'slug': f'grants',
                 'helper_text': f'Activity on the {num_grants_relationships} Grants you\'ve created or funded.',
             }
             tabs = [new_tab] + tabs
             default_tab = 'grants'
+
+    connect_last_24_hours = Activity.objects.filter(activity_type='status_update', created_on__gt=timezone.now() - timezone.timedelta(hours=24)).count()
+    if connect_last_24_hours:
+        default_tab = 'connect'
+        connect = {
+            'title': f"Connect ({connect_last_24_hours})",
+            'slug': f'connect',
+            'helper_text': f'The {connect_last_24_hours} announcements, requests for help, jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
+        }
+        tabs = [connect] + tabs
 
     tab = request.GET.get('tab', default_tab)
     is_search = "activity:" in tab or "search-" in tab
