@@ -38,13 +38,22 @@ class BountyEventAdmin(admin.ModelAdmin):
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
-    search_fields = ['fulfiller_address', 'fulfiller_email', 'fulfiller_github_username',
-                     'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url']
+    list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url']
+    search_fields = [
+        'fulfiller_address', 'fulfiller_email', 'fulfiller_github_username',
+        'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url'
+    ]
     ordering = ['-id']
 
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
+
+
+class BlockedUserAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    raw_id_fields = ['user']
     list_display = ['created_on', '__str__']
 
 
@@ -75,7 +84,7 @@ class ToolAdmin(admin.ModelAdmin):
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription']
+    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile']
     search_fields = ['metadata', 'activity_type', 'profile__handle']
 
 
@@ -173,6 +182,7 @@ class SearchHistoryAdmin(admin.ModelAdmin):
 
 
 class TipAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'created_on','sender_profile', 'recipient_profile', 'amount', 'tokenName', 'txid', 'receive_txid']
     raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
     readonly_fields = ['resend', 'claim']
@@ -208,7 +218,7 @@ class BountyAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
-    list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what', 'bounty_state']
+    list_display = ['pk', 'img', 'bounty_state', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
     readonly_fields = [
         'what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link',
         '_action_urls', 'coupon_link'
@@ -404,7 +414,7 @@ admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Earning, EarningAdmin)
-admin.site.register(BlockedUser, GeneralAdmin)
+admin.site.register(BlockedUser, BlockedUserAdmin)
 admin.site.register(PortfolioItem, PortfolioItemAdmin)
 admin.site.register(ProfileView, ProfileViewAdmin)
 admin.site.register(UserAction, UserActionAdmin)

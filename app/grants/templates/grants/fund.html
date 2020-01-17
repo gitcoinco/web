@@ -1,5 +1,5 @@
 {% comment %}
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -94,9 +94,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </ol>
               </div>
 
-              <div class="col-12 form__footer pt-2 text-center">
+              <div class="col-12 form__footer pt-2 mt-2 text-center">
                 {% include './clr_estimate.html' with class='' %}
-                <img class="mb-4" src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
+                <img class="mb-4 pl-lg-5" src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
                 <form method=POST>
                   {%csrf_token%}
                   <input type=hidden name=toggle_phantom_fund value=1 />
@@ -135,7 +135,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div class="row">
                       <div class="col-6 col-sm-8">
                         <label class="form__label" id="amount_label">{% trans "Amount Per Period" %}</label>
-                        <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" value="5" required />
+                        <input type="number" min="0.001" step=".001" id="amount" name="amount_per_period" class="form__input" value="5" required />
                       </div>
                       <div class="col-6 col-sm-4">
                         <label class="form__label" id="token_label">{% trans "Token" %}</label>
@@ -189,7 +189,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </div>
                   </div>
 
-                  <div id="gitcoin-grant-section" class="form__group-horizontal my-5">
+                  <div id="gitcoin-grant-section" class="form__group-horizontal mt-5 mb-2">
                     <div class="row">
                       <div class="col-12 mb-3">
                         <h2 class="font-subheader font-weight-semibold">{% trans "Support Gitcoin" %}</h2>
@@ -228,6 +228,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         </div>
                       </div>
                     </div>
+                  </div>
+
+                  <div class="my-3 text-center">
+                    <input type="checkbox" name="hide_wallet_address" id="hide_wallet_address" {% if profile.hide_wallet_address %} checked="checked" {% endif %} >
+                    <label class="form__label" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
+                    <small id="hide_wallet_address_help" class="form__input-help">{% trans "If this option is chosen, your wallet address will be hidden" %}</small>
                   </div>
 
                   <div id="gas-section" class="form__group-horizontal">

@@ -20,7 +20,7 @@
 <!--- Top Row Notification -->
 <div class="row bottom_notification font-caption bottom_notification" style="text-align: center;">
   <span style="text-align: center; margin: auto;">
-    {% blocktrans %}The <strong>Global Communities</strong> Virtual Hackathon runs December 2nd to December 17th - <a href="https://gitcoin.co/hackathon/global-communities/">Check out the Details</a>.{% endblocktrans %}
+    {% blocktrans %}<strong>Take Back The Web</strong> Virtual Hackathon runs January 9th to January 23rd - <a href="https://gitcoin.co/hackathon/take-back-the-web/">Check out the Details</a>.{% endblocktrans %}
   </span>
   <span style="cursor: pointer;" id="top_nav_notification">
       &times;
@@ -30,7 +30,7 @@
 
 <div class="top-nav g-font-muli {{class}}">
   <a class="link d-md-block d-none" href="{% url 'products' %}">Grow Open Source</a>
-  <a class="{% if request.path|matches:'^\/((hackathons.*))$' %}selected{% endif %}" href="https://hackathons.gitcoin.co">
+  <a class="{% if request.path|matches:'^\/((hackathon.*))$' %}selected{% endif %}" href="{% url 'get_hackathons' %}">
     <img src="{% static "v2/images/top-bar/hackathons-logo.svg" %}" height="23" width="125" alt="" class="d-md-block d-none" style="margin-top: 0px; margin-left: -10px;">
     <img src="{% static "v2/images/top-bar/hackathons-symbol.svg" %}" height="22" alt="" class="d-md-none" style="height: 55px; width: 55px; margin-top: -7px; margin-left: -15px;">
   </a>

@@ -24,19 +24,24 @@ from django.utils import timezone
 from dashboard.models import Bounty
 from marketing.mails import new_bounty_daily
 from marketing.models import EmailSubscriber
+from townsquare.utils import is_email_townsquare_enabled
 
 
 def get_bounties_for_keywords(keywords, hours_back):
     new_bounties_pks = []
     all_bounties_pks = []
+
+    new_bounty_cutoff = (timezone.now() - timezone.timedelta(hours=hours_back))
+    all_bounty_cutoff = (timezone.now() - timezone.timedelta(days=60))
+
     for keyword in keywords:
         relevant_bounties = Bounty.objects.current().filter(
             network='mainnet',
             idx_status__in=['open'],
         ).keyword(keyword).exclude(bounty_reserved_for_user__isnull=False)
-        for bounty in relevant_bounties.filter(web3_created__gt=(timezone.now() - timezone.timedelta(hours=hours_back))):
+        for bounty in relevant_bounties.filter(web3_created__gt=new_bounty_cutoff):
             new_bounties_pks.append(bounty.pk)
-        for bounty in relevant_bounties:
+        for bounty in relevant_bounties.filter(web3_created__gt=all_bounty_cutoff):
             all_bounties_pks.append(bounty.pk)
     new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks).order_by('-_val_usd_db')
     all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('-_val_usd_db')
@@ -57,19 +62,28 @@ class Command(BaseCommand):
             return
         hours_back = 24
         eses = EmailSubscriber.objects.filter(active=True)
+        counter_grant_total = 0
+        counter_total = 0
+        counter_sent = 0
         print("got {} emails".format(eses.count()))
         for es in eses:
             try:
-                keywords = es.keywords
-                if not keywords:
-                    continue
+                counter_grant_total += 1
                 to_email = es.email
+                keywords = es.keywords
+                town_square_enabled = is_email_townsquare_enabled(to_email)
+                should_eval = keywords or town_square_enabled
+                if not should_eval:
+                    continue
+                counter_total += 1
                 new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
-                print("{}/{}: got {} new bounties & {} all bounties".format(to_email, keywords, new_bounties.count(), all_bounties.count()))
-                if new_bounties.count():
+                print("{}/{}/{}) {}/{}: got {} new bounties & {} all bounties".format(counter_sent, counter_total, counter_grant_total, to_email, keywords, new_bounties.count(), all_bounties.count()))
+                should_send = new_bounties.count() or town_square_enabled
+                if should_send:
                     print(f"sending to {to_email}")
                     new_bounty_daily(new_bounties, all_bounties, [to_email])
                     print(f"/sent to {to_email}")
+                    counter_sent += 1
             except Exception as e:
                 logging.exception(e)
                 print(e)

@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -201,9 +201,12 @@
       </div>
       <div class="targets">
         {% for category, ids in 3d_avatar_params.by_category.items %}
-          <div class="category {{category}} {% if category != 'background' %}hidden{%endif%}">
+          <div class="category {{category}} {% if category != 'background' %}hidden{% endif %}">
             {% for id in ids %}
-              <img class=tdselection data-id="{{id}}" data-src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" data-altsrc="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}"{%endif%}>            
+              <img class=tdselection data-id="{{id}}" 
+              data-src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" 
+              data-altsrc="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" 
+              {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}"{%endif%}>            
             {% endfor %}
           </div>
         {% endfor %}

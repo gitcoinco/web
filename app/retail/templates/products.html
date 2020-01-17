@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -60,7 +60,6 @@
               </span>
               <span class=" mb-2 product-heading">{{ product.heading }}</span>
               <span class="mb-4 product-desc">{{ product.description }}</span>
-              <span class="mb-4 tag">{{ product.service_level }}</span>
               {% if product.link %}
                 <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
                   {% trans "Get Started" %}
@@ -81,7 +80,6 @@
               </span>
               <span class="mb-2 product-heading">{{ product.heading }}</span>
               <span class="mb-4 product-desc">{{ product.description }}</span>
-              <span class="mb-4 tag">{{ product.service_level }}</span>
               {% if product.link %}
                 <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
                   {% trans "Get Started" %}

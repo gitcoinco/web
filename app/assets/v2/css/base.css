@@ -20,6 +20,10 @@ a {
   color: #3E00FF;
 }
 
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
 .nav_avatar {
   width: 40px;
   height: 40px;

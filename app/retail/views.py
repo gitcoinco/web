@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2018 Gitcoin Core
+    Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -36,7 +36,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Bounty, Profile
+from dashboard.models import Activity, Bounty, Profile, get_my_earnings
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_funding_limit_increase_request, new_token_request
@@ -46,6 +46,7 @@ from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
+from townsquare.tasks import increment_view_counts
 
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
@@ -66,8 +67,6 @@ def get_activities(tech_stack=None, num_activities=15):
 
 
 def index(request):
-
-    user = request.user.profile if request.user.is_authenticated else None
 
     products = [
         {
@@ -952,11 +951,17 @@ def jobs(request):
 
 def vision(request):
     """Render the Vision response."""
+    videoLinks = [
+        'https://www.youtube.com/embed/wo0KkSH-6eg',
+        'https://www.youtube.com/embed/nZTVMEh9k5U',
+        'https://www.youtube.com/embed/F2yeOFlRE0E'
+    ]
     context = {
         'is_outside': True,
         'active': 'vision',
         'avatar_url': static('v2/images/vision/triangle.jpg'),
         'title': 'Vision',
+        'videoLinks': videoLinks,
         'card_title': _("Gitcoin's Vision for a Web3 World"),
         'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
     }
@@ -1091,17 +1096,57 @@ def results(request, keyword=None):
 def activity(request):
     """Render the Activity response."""
     page_size = 15
-    activities = Activity.objects.all().order_by('-created_on')
-    p = Paginator(activities, page_size)
     page = int(request.GET.get('page', 1))
+    what = request.GET.get('what', 'everywhere')
 
+    # create diff filters
+    activities = Activity.objects.filter(hidden=False).order_by('-created_on')
+    if ':' in what:
+        pk = what.split(':')[1]
+        key = what.split(':')[0] + "_id"
+        kwargs = {}
+        kwargs[key] = pk
+        activities = activities.filter(**kwargs)
+    if request.user.is_authenticated:
+        relevant_profiles = []
+        if what == 'tribes':
+            relevant_profiles = get_my_earnings(request.user.profile.pk)
+        if 'keyword-' in what:
+            keyword = what.split('-')[1]
+            relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
+        if 'activity:' in what:
+            pk = what.split(':')[1]
+            activities = activities.filter(pk=pk)
+            if page > 1:
+                activities = Activity.objects.none()
+        # filters
+        if len(relevant_profiles):
+            activities = activities.filter(profile__in=relevant_profiles)
+
+    # after-pk filters
+    if request.GET.get('after-pk'):
+        activities = activities.filter(pk__gt=request.GET.get('after-pk'))
+
+    # pagination
+    suppress_more_link = not len(activities)
+    p = Paginator(activities, page_size)
+
+    # increment view counts
+    activities_pks = [obj.pk for obj in p.page(page)]
+    if len(activities_pks):
+        increment_view_counts.delay(activities_pks)
+
+    next_page = page + 1
     context = {
         'p': p,
-        'next_page': page + 1,
+        'suppress_more_link': suppress_more_link,
+        'what': what,
+        'next_page': next_page,
         'page': p.get_page(page),
+        'target': f'/activity?what={what}&page={next_page}',
         'title': _('Activity Feed'),
     }
-    context["activities"] = [a.view_props for a in p.get_page(page)]
+    context["activities"] = [a.view_props_for(request.user) for a in p.get_page(page)]
 
     return TemplateResponse(request, 'activity.html', context)
 
@@ -1118,6 +1163,14 @@ def create_status_update(request):
             }
         }
         kwargs['profile'] = profile
+        if ':' in request.POST.get('what'):
+            what = request.POST.get('what')
+            key = what.split(':')[0]
+            result = what.split(':')[1]
+            if key and result:
+                key = f"{key}_id"
+                kwargs[key] = result
+                kwargs['activity_type'] = 'wall_post'
         try:
             Activity.objects.create(**kwargs)
             response['status'] = 200
@@ -1421,7 +1474,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'title': _('Leverage Gitcoin’s Firehose of Talent to Do More Faster'),
     }, {
         'img': static('v2/images/tools/api.jpg'),
-        'url': 'https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e',
+        'url': 'https://gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/',
         'title': _('How to Price Work on Gitcoin'),
     }, {
         'img': 'https://raw.github.com/gitcoinco/Gitcoin-Exemplars/master/helpImage.png',
