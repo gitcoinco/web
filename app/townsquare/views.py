@@ -16,9 +16,12 @@ from .utils import is_user_townsquare_enabled
 
 def get_next_time_available(key):
     d = timezone.now()
+    next_offer = Offer.objects.filter(key=key, valid_from__gt=d).order_by('valid_from')
+    if next_offer.exists():
+        return next_offer.first().valid_from
     if key == 'daily':
-        hours = int(d.strftime('%H'))
-        minutes = int(d.strftime('%M'))
+        hours = 24 - int(d.strftime('%H'))
+        minutes = 60 - int(d.strftime('%M'))
         d = d + timezone.timedelta(hours=hours) + timezone.timedelta(minutes=minutes)
     if key == 'weekly':
         d = d + timezone.timedelta(days=5 - d.weekday())

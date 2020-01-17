@@ -16,8 +16,14 @@ class OfferActionAdmin(admin.ModelAdmin):
 
 
 class OfferAdmin(admin.ModelAdmin):
-    list_display = ['created_on', 'key', 'valid_from', 'valid_to', '__str__']
+    list_display = ['created_on', 'active_now', 'key', 'valid_from', 'valid_to', '__str__']
     raw_id_fields = ['persona', 'created_by']
+    readonly_fields = ['active_now']
+
+    def active_now(self, obj):
+        if obj.valid_from < timezone.now() and obj.valid_to > timezone.now():
+            return "ACTIVE NOW"
+        return "-"
 
     def response_change(self, request, obj):
         if "_copy_offer" in request.POST:
