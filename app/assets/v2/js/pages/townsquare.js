@@ -54,7 +54,7 @@ $(document).ready(function() {
       document.location.href = get_redir_location($('.nav-link.active').data('slug'));
     }, 10);
   });
-  $('body').on('click', '.nav-link', function(e) {
+  $('body').on('click', '.container .nav-link', function(e) {
     $('.nav-link').removeClass('active');
     $(this).addClass('active');
     e.preventDefault();
