@@ -1632,7 +1632,8 @@ def handler400(request, exception=None):
 def error(request, code):
     context = {
         'active': 'error',
-        'code': code
+        'code': code,
+        'nav': 'home',
     }
     context['title'] = "Error {}".format(code)
     return_as_json = 'api' in request.path

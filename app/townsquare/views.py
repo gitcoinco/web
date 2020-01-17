@@ -220,12 +220,10 @@ def api(request, activity_id):
         response['comments'] = comments
     return JsonResponse(response)
 
-is_debugging_offers = settings.DEBUG
-
 
 def get_offer_and_create_offer_action(profile, offer_id, what, do_not_allow_more_than_one_offeraction=False):
     offer = Offer.objects.current().get(pk=offer_id)
-    if do_not_allow_more_than_one_offeraction and profile.offeractions.filter(what=what, offer=offer) and not is_debugging_offers:
+    if do_not_allow_more_than_one_offeraction and profile.offeractions.filter(what=what, offer=offer):
         raise Exception('already visited this offer')
     OfferAction.objects.create(profile=profile, offer=offer, what=what)
     return offer
@@ -260,6 +258,7 @@ def offer_view(request, offer_id, offer_slug):
         offer = Offer.objects.current().get(pk=offer_id)
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
+        is_debugging_offers = request.GET.get('preview', 0)
         if request.user.profile.offeractions.filter(what='click', offer=offer) and not is_debugging_offers:
             raise Exception('already visited this offer')
         OfferAction.objects.create(profile=request.user.profile, offer=offer, what='click')

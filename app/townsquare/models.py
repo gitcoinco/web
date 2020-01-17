@@ -116,7 +116,7 @@ class Offer(SuperModel):
         return f'/action/{self.pk}/{slug}'
 
     def get_absolute_url(self):
-        return self.view_url
+        return self.view_url + '?preview=1'
 
     @property
     def go_url(self):
