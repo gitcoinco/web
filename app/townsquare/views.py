@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
-from dashboard.models import Activity, get_my_earnings_counter_profiles, get_my_grants
+from dashboard.models import Activity, HackathonEvent, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
 from ratelimit.decorators import ratelimit
@@ -81,6 +81,19 @@ def town_square(request):
             'helper_text': f'The {connect_last_24_hours} announcements, requests for help, jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
         }
         tabs = [connect] + tabs
+
+    if request.user.is_authenticated:
+        hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now(), end_date__gt=timezone.now())
+        if hackathons.count():
+            user_registered_hackathon = request.user.profile.hackathon_registration.filter(registrant=request.user.profile, hackathon__in=hackathons).first()
+            if user_registered_hackathon:
+                default_tab = f'hackathon:{user_registered_hackathon.hackathon.pk}'
+                connect = {
+                    'title': user_registered_hackathon.hackathon.name,
+                    'slug': default_tab,
+                    'helper_text': f'Activity from the {user_registered_hackathon.hackathon.name} Hackathon.',
+                }
+                tabs = [connect] + tabs
 
     tab = request.GET.get('tab', default_tab)
     is_search = "activity:" in tab or "search-" in tab

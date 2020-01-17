@@ -1107,7 +1107,10 @@ def activity(request):
     view_count_threshold = 10
 
     ## filtering
-    if ':' in what:
+    if 'hackathon:' in what:
+        pk = what.split(':')[1]
+        activities = activities.filter(bounty__event=pk)
+    elif ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
         if key == 'activity_id':
