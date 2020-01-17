@@ -2109,6 +2109,9 @@ class Activity(SuperModel):
         activity = self.to_standard_dict(properties=properties)
         activity['pk'] = self.pk
         activity['likes'] = self.likes.count()
+        if activity['likes']:
+            activity['likes_title'] = "Liked by " + ",".join(self.likes.values_list('profile__handle', flat=True)) + '. '
+
         activity['comments'] = self.comments.count()
         for key, value in model_to_dict(self).items():
             activity[key] = value
@@ -2149,6 +2152,7 @@ class Activity(SuperModel):
         return activity
 
     def view_props_for(self, user):
+
         vp = self.view_props
         if not user.is_authenticated:
             return vp

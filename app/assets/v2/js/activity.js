@@ -264,6 +264,10 @@ $(document).ready(function() {
 
   // auto open new comment threads
   setInterval(function() {
+    
+    $('[data-toggle="popover"]').popover()
+    $('[data-toggle="tooltip"]').bootstrapTooltip();
+
     $('.comment_activity').each(function() {
       var open = $(this).data('open');
 
