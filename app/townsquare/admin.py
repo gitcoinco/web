@@ -21,8 +21,9 @@ class OfferAdmin(admin.ModelAdmin):
     readonly_fields = ['active_now']
 
     def active_now(self, obj):
-        if obj.valid_from < timezone.now() and obj.valid_to > timezone.now():
-            return "ACTIVE NOW"
+        if obj.valid_from and obj.valid_to:
+            if obj.valid_from < timezone.now() and obj.valid_to > timezone.now():
+                return "ACTIVE NOW"
         return "-"
 
     def response_change(self, request, obj):
