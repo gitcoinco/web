@@ -95,6 +95,7 @@ def join_session(request, session):
     #         "mentor": {
     #             "address": '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb'
     #         }
+    #         "rate_per_min": 50000000000000000
     #     },
     #     "role": "mentee"
     # }

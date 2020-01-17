@@ -50,7 +50,7 @@ var kudos_address = function() {
 };
 
 var sablier_address = function() {
-	return '0x7ee114C3628Ca90119fC699f03665bF9dB8f5faF';
+	return '0xc04Ad234E01327b24a831e3718DBFcbE245904CC';
 }
 
 var testdai_address = function() {
