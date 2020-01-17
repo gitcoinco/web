@@ -205,6 +205,18 @@ Vue.mixin({
           }
         }
       }
+    },
+    joinTribe: function(user, event) {
+      event.target.disabled = true;
+      const url = `/tribe/${user.handle}/join/`;
+      const sendJoin = fetchData (url, 'POST', {}, {'X-CSRFToken':csrftoken});
+
+      $.when(sendJoin).then(function(response) {
+        event.target.disabled = false;
+        response.is_member ? event.target.innerText = 'Leave Tribe' : event.target.innerText = 'Join Tribe';
+      }).fail(function(error) {
+        event.target.disabled = false;
+      });
     }
   }
 });
