@@ -33,10 +33,11 @@ from .models import BaseAvatar, CustomAvatar, SocialAvatar
 
 logger = logging.getLogger(__name__)
 
+
 def get_avatar_attrs(theme, key):
     avatar_attrs = {
-        'bufficorn' : {
-            'preview_viewbox' : {
+        'bufficorn': {
+            'preview_viewbox': {
                 #section: x_pos y_pox x_size y_size
                 'background': '0 0 200 200',
                 'facial': '80 180 220 220',
@@ -46,15 +47,19 @@ def get_avatar_attrs(theme, key):
                 'accessory': '50 180 150 200',
                 'horn': '120 80 150 150',
             },
-            'skin_tones' : [
-                'D7723B', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '392D16'
+            'skin_tones': [
+                'D7723B', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031',
+                '593D26', '392D16'
             ],
-            'hair_tones' : ['F495A8', '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'],
-            'tone_maps' : ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
+            'hair_tones': [
+                'F495A8', '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC',
+                '0ECF7C'
+            ],
+            'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar_bufficorn.svg',
         },
-        '3d' : {
-            'preview_viewbox' : {
+        '3d': {
+            'preview_viewbox': {
                 'background': '0 0 350 350',
                 'clothing': '60 80 260 300',
                 'ears': '100 70 50 50',
@@ -64,11 +69,14 @@ def get_avatar_attrs(theme, key):
                 'eyes': '120 40 80 80',
                 'hair': '110 0 110 110',
             },
-            'skin_tones' : [
-                'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '392D16'
+            'skin_tones': [
+                'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26',
+                '392D16'
             ],
-            'hair_tones' : ['000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'],
-            'tone_maps' : ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
+            'hair_tones': [
+                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+            ],
+            'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar.svg',
         },
     }

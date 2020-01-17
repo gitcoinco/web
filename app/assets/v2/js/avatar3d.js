@@ -1,9 +1,9 @@
 $(document).ready(function() {
 
-  $("#theme").on('change', function(e){
+  $('#theme').on('change', function(e) {
     e.preventDefault();
     document.location.href = $(this).val();
-  })
+  });
 
   $('#skin_tones li:nth-child(1)').addClass('selected');
   $('#hair_tones li:nth-child(1)').addClass('selected');
@@ -20,7 +20,8 @@ $(document).ready(function() {
     url += '&skinTone=' + document.skin_tone;
     url += '&hairTone=' + document.hair_tone;
     var theme = getParam('theme');
-    if(!theme){
+
+    if (!theme) {
       theme = '3d';
     }
     url += '&theme=' + theme;
