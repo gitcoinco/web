@@ -47,8 +47,13 @@ def town_square(request):
 
     # setup tabas
     tabs = [{
+        'title': "Connect",
+        'slug': f'connect',
+        'helper_text': f'Announcements, requests for help, jobs, mentorship, or other connective requests on Gitcoin.',
+    },{
         'title': "Everywhere",
         'slug': 'everywhere',
+        'helper_text': 'Activity everywhere in the Gitcoin network',
     }]
     default_tab = 'everywhere'
     if request.user.is_authenticated:
@@ -57,6 +62,7 @@ def town_square(request):
             new_tab = {
                 'title': f"My Relationships ({num_business_relationships})",
                 'slug': 'my_tribes',
+                'helper_text': f'Activity from the {num_business_relationships} users who you\'ve done business with Gitcoin',
             }
             tabs = [new_tab] + tabs
             default_tab = 'my_tribes'
@@ -65,16 +71,11 @@ def town_square(request):
             new_tab = {
                 'title': f'My Grants ({num_grants_relationships})',
                 'slug': f'grants',
+                'helper_text': f'Activity on the {num_grants_relationships} Grants you\'ve created or funded.',
             }
             tabs = [new_tab] + tabs
             default_tab = 'grants'
-    add_keywords = False
-    if add_keywords and request.user.is_authenticated:
-        for keyword in request.user.profile.keywords:
-            tabs.append({
-                'title': keyword.title(),
-                'slug': f'keyword-{keyword}',
-            })
+
     tab = request.GET.get('tab', default_tab)
     is_search = "activity:" in tab or "search-" in tab
     if is_search:

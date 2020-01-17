@@ -113,7 +113,7 @@
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'status_update' %}
-        <b>{{ row.metadata.title }}</b>
+        <b>{{ row.metadata.title }} {{ row.metadata.ask }}</b>
       {% elif row.activity_type == 'wall_post' %}
         &gt; 
       {% if row.grant %}

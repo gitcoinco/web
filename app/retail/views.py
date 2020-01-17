@@ -1140,6 +1140,8 @@ def activity(request):
             activities = activities.filter(profile__in=relevant_profiles)
         if len(relevant_grants):
             activities = activities.filter(grant__in=relevant_grants)
+    if what == 'connect':
+        activities = activities.filter(activity_type='status_update')
 
     # after-pk filters
     if request.GET.get('after-pk'):
