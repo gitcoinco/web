@@ -94,12 +94,16 @@ def index(request):
     # title
     title = 'Home'
     desc = 'View the recent activity on the Gitcoin network'
+    page_seo_text_insert = ''
+    avatar_url = ''
     if "activity:" in tab:
         try:
             pk = int(tab.split(':')[1])
             activity = Activity.objects.get(pk=pk)
             title = f"@{activity.profile.handle}'s comment on Gitcoin "
-            desc = f"foo - {activity.text}"
+            avatar_url = activity.profile.get_avatar_url()
+            desc = f"{activity.text}"
+            page_seo_text_insert = desc
         except:
             pass
 
@@ -108,6 +112,8 @@ def index(request):
     context = {
         'title': title,
         'card_desc': desc,
+        'avatar_url': avatar_url,
+        'page_seo_text_insert': page_seo_text_insert,
         'nav': 'home',
         'target': f'/activity?what={tab}',
         'tab': tab,

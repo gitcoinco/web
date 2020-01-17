@@ -3,6 +3,8 @@ $(document).ready(function() {
 
   document.base_title = $('title').text();
 
+  $('#activity_subheader').remove();
+
   // notifications of new activities
   var ping_activity_notifier = (function() {
     var plural = document.buffered_rows.length == 1 ? 'y' : 'ies';
@@ -167,7 +169,7 @@ $(document).ready(function() {
     }
 
     // user input
-    var comment = prompt('What is your comment?', 'Comment: ');
+    var comment = prompt('What is your comment?', '');
 
     // validation
     if (!comment) {

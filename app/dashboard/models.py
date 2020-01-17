@@ -2010,6 +2010,9 @@ class Activity(SuperModel):
         return f"{self.profile.handle} type: {self.activity_type} created: {naturalday(self.created)} " \
                f"needs review: {self.needs_review}"
 
+    def get_absolute_url(self):
+        return self.url
+
     @property
     def action_url(self):
         if self.bounty:
