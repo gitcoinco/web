@@ -209,7 +209,7 @@ Vue.mixin({
     joinTribe: function(user, event) {
       event.target.disabled = true;
       const url = `/tribe/${user.handle}/join/`;
-      const sendJoin = fetchData (url, 'POST', {}, {'X-CSRFToken':csrftoken});
+      const sendJoin = fetchData (url, 'POST', {}, {'X-CSRFToken': csrftoken});
 
       $.when(sendJoin).then(function(response) {
         event.target.disabled = false;
