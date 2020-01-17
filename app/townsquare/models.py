@@ -78,6 +78,7 @@ class OfferQuerySet(models.QuerySet):
 class Offer(SuperModel):
     """An offer"""
     OFFER_TYPES = [
+        ('random', 'random'),
         ('daily', 'daily'),
         ('weekly', 'weekly'),
         ('monthly', 'monthly'),
