@@ -40,8 +40,6 @@
       </div>
     </header>
 
-    </section>
-
 		<section class="container main">
 			<div class="row">
 				<div class="col-sm">
@@ -51,22 +49,51 @@
 				<div class="col-sm">
 					<div class="info-panel">
 						<h2>Mentoring session</h2>
-						<p class="counter">23:04</p>
+						<p class="counter">
+							<span class="diff">
+								<span class="min"></span>
+								:
+								<span class="sec"></span>
+							</span> / 
+							<span class="total">
+								<span class="min"></span>
+								:
+								<span class="sec"></span>
+							<span>
+						</p>
+						<p class="deposit">
+							<span class="deposit-dai"></span>  DAI have been streamed out of 
+							<span class="streaming-dai"></span> DAI.
+						</p>
 						<button class="stop">Stop session</button>
-						<ul class="activity_logs">
-							<li>Sarah initiated the session with an initial stake of 0.05ETH</li>
-							<li>The available fund have already reached with 0.015ETH streamed</li>
-							<li>You have successfully withdrawn 0.01 ETH 12 minutes after the session start</li>
+						<ul class="activity-logs">
+							<li>{{ mentee.name }} initiated the session with an initial stake of ETH</li>	
+							<li>
+								The available fund have already reached with 
+								<span class="deposit-dai"></span>
+								DAI streamed
+							</li>
+							<!-- <li>You have successfully withdrawn 0.01 ETH 12 minutes after the session start</li> -->
 						</ul>
 				</div>
-				<div class="progress-info-bar">
-					42&percnt; of the 0.05 bounty funds have been streamed for your work <a href="http://todo.com">more info</a>
+				<div class="withdrawn-btn-show">
+					42&percnt; of the 0.05 bounty funds have been streamed for your work
 					<button>Withdraw</button>
 				</div>
 			</div>
 		</section>
 		<section class="container wait">
-			Waiting for somebody to connect to the stream
+			Waiting for somebody to connect to the stream.
+		</section>
+		<section class="container wait-stream">
+			The stream will start in 
+			<span class="if-min">
+				<span class="min"></span> minutes and 
+			</span>
+			<span class="sec"></span> seconds.
+		</section>
+		<section class="container wait-stream-register">
+			Waiting for the stream to be published.
 		</section>
 		<section class="container create-stream">
 			<form>
