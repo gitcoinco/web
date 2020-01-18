@@ -69,10 +69,11 @@ $(document).ready(function() {
       var time = $(this).data('time');
       var base_time = $(this).data('base_time');
       var counter = $(this).data('counter');
-      if(!counter){
-        counter = 0
+
+      if (!counter) {
+        counter = 0;
       }
-      counter += 1
+      counter += 1;
       $(this).data('counter', counter);
       var start_date = new Date(new Date(time).getTime() - (1000 * counter));
       var countdown = start_date - new Date(base_time);
