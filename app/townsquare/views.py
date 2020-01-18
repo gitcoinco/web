@@ -144,8 +144,11 @@ def town_square(request):
             pk = int(tab.split(':')[1])
             activity = Activity.objects.get(pk=pk)
             title = f"@{activity.profile.handle}'s comment on Gitcoin "
-            avatar_url = activity.profile.get_avatar_url()
             desc = f"{activity.text}"
+            comments_count = activity.comments.count()
+            if comments_count:
+                title += f"(+ {comments_count} comments)"
+            avatar_url = activity.profile.avatar_url
             page_seo_text_insert = desc
         except:
             pass
