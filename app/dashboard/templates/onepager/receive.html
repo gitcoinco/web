@@ -42,7 +42,7 @@
       </a>
     </span>
   </header>
-  <div id="receove_eth" {% if tip.receive_txid %} style="display:none;" {% endif %} >
+  <div id="receove_eth" {% if not is_redeemable %} style="display:none;" {% endif %} >
     <form method="POST">
       <h1 id="oneh1">{% trans "You've got" %} {{tip.amount}} {{tip.tokenName}} </h1>
       <div>
@@ -73,6 +73,9 @@
   {% if not tip.receive_txid and is_authed %}
     <script>
       document.gas_price = {{gas_price}};
+      {% if tip.metadata.override_send_amount %}
+        document.override_send_amount = parseFloat("{{tip.amount}}")
+      {% endif %}
       document.ipfs_key_to_secret = '{{key}}';
       document.gitcoin_secret = '{{tip.metadata.gitcoin_secret}}';
       document.tip = {
