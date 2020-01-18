@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils import timezone
+from django.utils.html import format_html
 
 from .models import Announcement, Comment, Flag, Like, Offer, OfferAction
 
@@ -16,15 +17,23 @@ class OfferActionAdmin(admin.ModelAdmin):
 
 
 class OfferAdmin(admin.ModelAdmin):
-    list_display = ['created_on', 'active_now', 'key', 'valid_from', 'valid_to', '__str__']
+    list_display = ['created_on', 'active_now', 'key', 'valid_from', 'valid_to', '__str__', 'stats']
     raw_id_fields = ['persona', 'created_by']
-    readonly_fields = ['active_now']
+    readonly_fields = ['active_now', 'stats']
 
     def active_now(self, obj):
         if obj.valid_from and obj.valid_to:
             if obj.valid_from < timezone.now() and obj.valid_to > timezone.now():
                 return "ACTIVE NOW"
         return "-"
+
+    def stats(self, obj):
+        views = obj.view_count
+        click = obj.actions.filter(what='click').count()
+        go = obj.actions.filter(what='go').count()
+        pct_go = round(go/click*100,0) if click else "-"
+        pct_click = round(click/views*100,0) if views else "-"
+        return format_html(f"views => click => go<BR>{views} => {click} ({pct_click}%) => {go} ({pct_go}%)")
 
     def response_change(self, request, obj):
         if "_copy_offer" in request.POST:

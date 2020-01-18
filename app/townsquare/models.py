@@ -105,6 +105,7 @@ class Offer(SuperModel):
     created_by = models.ForeignKey('dashboard.Profile',
         on_delete=models.CASCADE, related_name='offers_created', blank=True, null=True)
     public = models.BooleanField(help_text='Is this available publicly yet?', default=True)
+    view_count = models.IntegerField(default=0, db_index=True)
 
     # Bounty QuerySet Manager
     objects = OfferQuerySet.as_manager()

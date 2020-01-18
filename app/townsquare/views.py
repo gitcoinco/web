@@ -11,6 +11,7 @@ from marketing.mails import comment_email, new_action_request
 from ratelimit.decorators import ratelimit
 
 from .models import Announcement, Comment, Flag, Like, Offer, OfferAction
+from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
 
@@ -107,10 +108,13 @@ def town_square(request):
         search = tab.split('-')[1]
 
     # get offers
+    offer_pks = []
     offers_by_category = {}
     for key in ['secret', 'random', 'daily', 'weekly', 'monthly']:
         next_time_available = get_next_time_available(key)
         offer = Offer.objects.current().filter(key=key).order_by('-pk').first()
+        if offer:
+            offer_pks.append(offer.pk)
         if request.user.is_authenticated:
             if request.user.profile.offeractions.filter(what='click', offer=offer):
                 offer = None
@@ -118,6 +122,7 @@ def town_square(request):
             'offer': offer,
             'time': next_time_available.strftime('%Y-%m-%dT%H:%M:%SZ'),
         }
+    increment_offer_view_counts.delay(offer_pks)
 
     # subscriber info
     is_subscribed = False
