@@ -46,6 +46,6 @@ def increment_offer_view_counts(self, pks, retry=False):
         # update DB directly
         with connection.cursor() as cursor:
             id_as_str = ",".join(str(id) for id in pks)
-            query = f"UPDATE dashboard_offer SET view_count = view_count + 1 WHERE id in ({id_as_str});"
+            query = f"UPDATE townsquare_offer SET view_count = view_count + 1 WHERE id in ({id_as_str});"
             cursor.execute(query)
             cursor.close()
