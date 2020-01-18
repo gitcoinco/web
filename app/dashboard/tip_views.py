@@ -124,7 +124,8 @@ def receive_tip_v3(request, key, txid, network):
     num_redemptions = tip.metadata.get("num_redemptions", 0)
     max_redemptions = tip.metadata.get("max_redemptions", 0)
     is_redeemable = not (tip.receive_txid and (num_redemptions >= max_redemptions)) and is_authed
-    if request.user.profile.tip_payouts.filter(tip=tip).count():
+    has_this_user_redeemed = request.user.profile.tip_payouts.filter(tip=tip).count()
+    if has_this_user_redeemed:
         is_redeemable = False
     if not is_redeemable:
         messages.info(request, 'This tip has been received already')
@@ -167,6 +168,7 @@ def receive_tip_v3(request, key, txid, network):
                 )
             messages.success(request, 'This tip has been received')
             is_redeemable = False
+            has_this_user_redeemed = True
         except Exception as e:
             messages.error(request, str(e))
             logger.exception(e)
@@ -177,6 +179,7 @@ def receive_tip_v3(request, key, txid, network):
         'title': _('Receive Tip'),
         'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
         'tip': tip,
+        'has_this_user_redeemed': has_this_user_redeemed,
         'key': key,
         'is_redeemable': is_redeemable,
         'is_authed': is_authed,
