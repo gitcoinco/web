@@ -113,6 +113,8 @@ $(document).ready(function() {
 						console.log('ongoingStream', ongoingStream);
 
             if (ongoingStream) {
+							// TODO: Check if the user is the sender or the reciever
+							// of the stream
 							startEarningRefresh(ongoingStream);	
               clearInterval(pooling);
 							$('.main').show()
@@ -203,7 +205,22 @@ $(document).ready(function() {
     });
 
     // Stop the stream
+		// TODO: react to button click
+		
+		$('stop-stream-btn').click(() => {
+			sablier_contract.cancelStream(currentStream.id, () => {
+				// TODO: come back to default state	
+			});	
+		});
 
-    // Withdrawn money
+    // Withdraw money
+		$('withdraw-btn').click(() => {
+			// TODO: show a dialog to ask how much to withdraw
+			const sum = parseInt($('withdraw-btn-show').val());
+			sablier_contract.takeEarnings(address, sum, () => {
+				// 	TODO: show a dialog to signal the user fund 
+				//	have been withdrawn
+			});
+		});
   });
 });
