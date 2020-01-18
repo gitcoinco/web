@@ -1,3 +1,5 @@
+// TODO: capitasation
+
 // Test DAI have 18 decimals
 const TESTDAI_DECIMAL = Math.pow(10, 18);
 // Waiting time between approval and attempting to call the contract (in ms)
@@ -29,6 +31,8 @@ const startEarningRefresh = function(stream) {
 
     const streamedDai = ((diff / total) * deposit) / TESTDAI_DECIMAL;
     $(".streamed-dai").text(streamedDai.toFixed(2));
+
+		// TODO: handle end of stream
   });
 };
 
@@ -67,6 +71,8 @@ $(document).ready(function() {
 			*/
 
   $(".main").hide();
+  $(".wait-stream").hide();
+  $(".wait-stream-register").hide();
 
   ethereum.enable().then(([address]) => {
     // Pool to recover stream from Sablier API
@@ -110,15 +116,15 @@ $(document).ready(function() {
             const ongoingStream = streams.find(
               stream => stream.startTime < now && now < stream.endTime
             );
-						console.log('ongoingStream', ongoingStream);
+            console.log("ongoingStream", ongoingStream);
 
             if (ongoingStream) {
-							// TODO: Check if the user is the sender or the reciever
-							// of the stream
-							startEarningRefresh(ongoingStream);	
+              // TODO: Check if the user is the sender or the reciever
+              // of the stream
+              startEarningRefresh(ongoingStream);
               clearInterval(pooling);
-							$('.main').show()
-							$('.wait').hide()
+              $(".main").show();
+              $(".wait").hide();
             }
 
             const nextStream = streams.find(stream => stream.startTime > now);
@@ -142,14 +148,12 @@ $(document).ready(function() {
       $(".create-stream").show();
     }
 
-		// Load contracts
+    // Load contracts
 
-		const sablier_contract = web3.eth
-			.contract(sablier_abi)
-			.at(sablier_address());
-		const testdai_contract = web3.eth
-			.contract(token_abi)
-			.at(testdai_address());
+    const sablier_contract = web3.eth
+      .contract(sablier_abi)
+      .at(sablier_address());
+    const testdai_contract = web3.eth.contract(token_abi).at(testdai_address());
 
     // Create the stream
 
@@ -165,7 +169,7 @@ $(document).ready(function() {
       const startTime = now + STREAM_START_TIME_DELAY;
       const stopTime = now + STREAM_START_TIME_DELAY + depositMin;
       const delta = stopTime - startTime;
-      const deposit = deposit_min * rate_per_min;
+      const deposit = depositMin * rate_per_min;
       const deposit_rounded = closerMultiple(deposit, delta);
 
       if (deposit_rounded % delta) throw "Not multiple";
@@ -205,22 +209,22 @@ $(document).ready(function() {
     });
 
     // Stop the stream
-		// TODO: react to button click
-		
-		$('stop-stream-btn').click(() => {
-			sablier_contract.cancelStream(currentStream.id, () => {
-				// TODO: come back to default state	
-			});	
-		});
+    // TODO: react to button click
+
+    $("stop-stream-btn").click(() => {
+      sablier_contract.cancelStream(currentStream.id, () => {
+        // TODO: come back to default state
+      });
+    });
 
     // Withdraw money
-		$('withdraw-btn').click(() => {
-			// TODO: show a dialog to ask how much to withdraw
-			const sum = parseInt($('withdraw-btn-show').val());
-			sablier_contract.takeEarnings(address, sum, () => {
-				// 	TODO: show a dialog to signal the user fund 
-				//	have been withdrawn
-			});
-		});
+    $("withdraw-btn").click(() => {
+      // TODO: show a dialog to ask how much to withdraw
+      const sum = parseInt($("withdraw-btn-show").val());
+      sablier_contract.takeEarnings(address, sum, () => {
+        // 	TODO: show a dialog to signal the user fund
+        //	have been withdrawn
+      });
+    });
   });
 });
