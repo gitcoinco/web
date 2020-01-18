@@ -264,7 +264,8 @@
 .monthly #circle:hover{
   background-image:radial-gradient(#0fde9c, #0fce7c 70%); 
 }
-.offer_container.random.empty{
+.offer_container.random.empty,
+.offer_container.secret.empty{
   display: none;
 }
 
