@@ -108,7 +108,7 @@ def town_square(request):
 
     # get offers
     offers_by_category = {}
-    for key in ['random', 'daily', 'weekly', 'monthly']:
+    for key in ['secret', 'random', 'daily', 'weekly', 'monthly']:
         next_time_available = get_next_time_available(key)
         offer = Offer.objects.current().filter(key=key).order_by('-pk').first()
         if request.user.is_authenticated:

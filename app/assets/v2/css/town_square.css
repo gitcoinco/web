@@ -200,6 +200,25 @@
   border:7px dashed #25e899;
 }
 
+.secret #circle{
+  background-image:radial-gradient(#15003e, #45407e 30%); 
+}
+.secret .speech_label{
+  background-color: #15003e;
+}
+.secret .speech_label:after{
+  border-bottom-color: #15003e;
+}
+.secret #ribbon:before,
+.secret #giftbox:after,
+.secret #giftbox:before,
+.secret #ribbon:after{
+  background-color:#F9006C;
+}
+.secret #circle:after{
+  border:7px dashed #15003e;
+}
+
 .weekly #circle{
   background-image:radial-gradient(#FFCEd8, #FFCE08 30%); 
 }

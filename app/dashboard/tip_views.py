@@ -155,6 +155,7 @@ def receive_tip_v3(request, key, txid, network):
             # tip.metadata.max_redemptions
             # tip.metadata.override_send_amount
             # tip.amount to the amount you want to send 
+            # ,"override_send_amount":1,"max_redemptions":10
 
             num_redemptions += 1
             tip.metadata["num_redemptions"] = num_redemptions
