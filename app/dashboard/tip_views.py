@@ -39,7 +39,7 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
 
-from .models import Activity, Profile, Tip
+from .models import Activity, Profile, Tip, TipPayout
 from .notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 
 logging.basicConfig(level=logging.DEBUG)
@@ -109,7 +109,7 @@ def receive_tip_v3(request, key, txid, network):
     these_tips = Tip.objects.filter(web3_type='v3', txid=txid, network=network)
     tips = these_tips.filter(metadata__reference_hash_for_receipient=key) | these_tips.filter(metadata__reference_hash_for_funder=key)
     tip = tips.first()
-    is_authed = request.user.username.lower() == tip.username.lower() or request.user.username.lower() == tip.from_username.lower()
+    is_authed = request.user.username.lower() == tip.username.lower() or request.user.username.lower() == tip.from_username.lower() or not tip.username
     not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
     did_fail = False
     if not_mined_yet:
@@ -121,15 +121,20 @@ def receive_tip_v3(request, key, txid, network):
     ):
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
-    if tip.receive_txid:
-        messages.info(request, 'This tip has been received')
+    num_redemptions = tip.metadata.get("num_redemptions", 0)
+    max_redemptions = tip.metadata.get("max_redemptions", 0)
+    is_redeemable = not (tip.receive_txid and (num_redemptions >= max_redemptions)) and is_authed
+    if request.user.profile.tip_payouts.filter(tip=tip).count():
+        is_redeemable = False
+    if not is_redeemable:
+        messages.info(request, 'This tip has been received already')
     elif not is_authed:
         messages.error(request, f'This tip is for @{tip.username} but you are logged in as @{request.user.username}.  Please logout and log back in as {tip.username}.')
     elif did_fail:
         messages.info(request, f'This tx {tip.txid}, failed.  Please contact the sender and ask them to send the tx again.')
     elif not_mined_yet:
         messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
-    elif request.GET.get('receive_txid') and not tip.receive_txid:
+    elif request.GET.get('receive_txid') and is_redeemable:
         params = request.GET
 
         # db mutations
@@ -143,10 +148,25 @@ def receive_tip_v3(request, key, txid, network):
             tip.receive_tx_status = 'pending'
             tip.receive_address = params['forwarding_address']
             tip.received_on = timezone.now()
+            num_redemptions = tip.metadata.get("num_redemptions", 0)
+            # note to future self: to create a tip like this in the future set
+            # tip.username
+            # tip.metadata.max_redemptions
+            # tip.metadata.override_send_amount
+            # tip.amount to the amount you want to send 
+
+            num_redemptions += 1
+            tip.metadata["num_redemptions"] = num_redemptions
             tip.save()
             record_user_action(tip.from_username, 'receive_tip', tip)
             record_tip_activity(tip, tip.username, 'receive_tip')
+            TipPayout.objects.create(
+                txid=tip.receive_txid,
+                profile=request.user.profile,
+                tip=tip,
+                )
             messages.success(request, 'This tip has been received')
+            is_redeemable = False
         except Exception as e:
             messages.error(request, str(e))
             logger.exception(e)
@@ -158,8 +178,9 @@ def receive_tip_v3(request, key, txid, network):
         'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
         'tip': tip,
         'key': key,
+        'is_redeemable': is_redeemable,
         'is_authed': is_authed,
-        'disable_inputs': tip.receive_txid or not_mined_yet or not is_authed,
+        'disable_inputs': not is_redeemable or not is_authed,
     }
 
     return TemplateResponse(request, 'onepager/receive.html', params)
@@ -214,6 +235,11 @@ def send_tip_4(request):
         tip.receive_txid = txid
         tip.receive_tx_status = 'pending'
         tip.receive_address = destinationAccount
+        TipPayout.objects.create(
+            txid=txid,
+            profile=get_profile(tip.username),
+            tip=tip,
+            )
     tip.save()
 
     # notifications

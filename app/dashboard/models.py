@@ -1695,6 +1695,24 @@ class TipPayoutException(Exception):
     pass
 
 
+
+class TipPayout(SuperModel):
+
+    """Model representing redemption of a Kudos
+    """
+    tip = models.ForeignKey(
+        'dashboard.tip', related_name='payouts', on_delete=models.CASCADE
+    )
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='tip_payouts', on_delete=models.CASCADE
+    )
+    txid = models.CharField(max_length=255, default='')
+
+    def __str__(self):
+        """Return the string representation of a model."""
+        return f"tip: {self.tip.pk} profile: {self.profile.handle}"
+
+
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
     # when a new tip is saved, make sure it doesnt have whitespace in it
