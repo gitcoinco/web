@@ -36,6 +36,7 @@
       src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
       {{ user }}
     </a>
+    {% include 'shared/search.html' %}
     {% include 'shared/notifications.html' %}
   </div>
 
