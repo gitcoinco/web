@@ -11,7 +11,7 @@ const STREAM_START_TIME_DELAY = 300000;
 const closerMultiple = (deposit, delta) => deposit - (deposit % delta);
 // Show an element if a condition is filled, hide it otherwise
 const showIf = (condition, element) =>
-  conndition ? element.show() : element.hide();
+  condition ? element.show() : element.hide();
 
 const startEarningRefresh = function(stream) {
   const { startTime, endTime } = stream;
@@ -42,8 +42,9 @@ const startStreamCountdown = function(stream) {
     const now = Math.round(new Date().getTime() / 1000);
     const diff = startTime - now;
     const diffMin = Math.floor(diff / 60);
-    const diffSec = y % 60;
+    const diffSec = diff % 60;
     $(".wait-stream .min").text(diffMin);
+		console.log('diffMin', diffMin);
     showIf(diffMin < 0, $(".wait-stream .if-min"));
     $(".wait-stream .sec").text(diffSec);
 
@@ -94,6 +95,7 @@ $(document).ready(function() {
     console.log("query", query);
 
     const pooling = setInterval(() => {
+			console.warn('fetching');
       fetch(
         "https://api.thegraph.com/subgraphs/name/sablierhq/sablier-rinkeby",
         {
@@ -134,8 +136,9 @@ $(document).ready(function() {
               startStreamCountdown(nextStream);
               clearInterval(pooling);
 
-              $(".main").show();
+              $(".wait-stream").show();
               $(".wait").hide();
+							$('.create-stream').hide();
             }
           }
         });
