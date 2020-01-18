@@ -317,6 +317,7 @@ def offer_new(request):
                 valid_from=timezone.now(),
                 valid_to=timezone.now(),
                 public=False,
+                created_by=request.user.profile,
                 )
             offer = new_action_request(offer)
             msg = "Action Submitted | Team Gitcoin will be in touch if it's a fit."
