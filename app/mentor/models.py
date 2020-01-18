@@ -47,14 +47,35 @@ logger = logging.getLogger(__name__)
 class Sessions(SuperModel):
     """Define the TokenRequest model."""
 
+    TX_STATUS_CHOICES = (
+        ('na', 'na'),  # not applicable
+        ('pending', 'pending'),
+        ('success', 'success'),
+        ('error', 'error'),
+        ('unknown', 'unknown'),
+        ('dropped', 'dropped'),
+    )
+
     name = models.CharField(max_length=255, db_index=True)
     description = models.TextField(max_length=500, default='')
     priceFinney = models.IntegerField(default=18)
+
     network = models.CharField(max_length=25, db_index=True)
     to_address = models.CharField(max_length=255)
     metadata = JSONField(null=True, default=dict, blank=True)
     tags = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     active = models.BooleanField(default=False)
+
+    price_per_min = models.DecimalField(default=1, decimal_places=4, max_digits=50)
+    amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
+    tokenName = models.CharField(max_length=255, default='ETH')
+    tokenAddress = models.CharField(max_length=255, blank=True)
+
+    tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
+    tx_id = models.CharField(max_length=255, default='', blank=True)
+    tx_received_on = models.DateTimeField(null=True, blank=True)
+    tx_time = models.DateTimeField(null=True, blank=True)
+
     mentor = models.ForeignKey(
         'dashboard.Profile', related_name='session_mentor', on_delete=models.SET_NULL, null=True
     )

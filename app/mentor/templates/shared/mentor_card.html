@@ -1,0 +1,12 @@
+<div class="col-xs-12 col-sm-6 col-lg-4" style="user-select: auto;">
+  <div class="card mb-5"  style="user-select: auto; margin: 0">
+    <img class="card-img-top" width="364" src="{{ session.mentor.avatar_url }}" alt="Mentor avatar" style="user-select: auto;">
+    <div class="card-body" style="user-select: auto;">
+      <h5 class="card-title" style="user-select: auto;"><a href="{%  url 'session_join' session=session.id %}" style="user-select: auto;">{{ session.mentor.name }}</a></h5>
+      <p>Get a mentoring session with </p>
+      <div class="text-center mt-3" style="user-select: auto;">
+        <a href="{%  url 'session_join' session=session.id %}" class="btn btn-gc-blue" style="user-select: auto;">Join</a>
+      </div>
+    </div>
+  </div>
+</div>

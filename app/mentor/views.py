@@ -67,10 +67,15 @@ def new_session(request):
         print(p.handle)
 
     if request.method == "POST":
-        name = request.POST.get('name')
-        desc = request.POST.get('description')
-        network = request.POST.get('network')
-        mentee = request.POST.get('mentee')
+        name = request.POST.get('name', 'Mentoring')
+        desc = request.POST.get('description', '')
+        network = request.POST.get('network', 4)
+        mentee = request.POST.get('mentee', None)
+        try:
+            price_per_min = request.POST.get('price_per_min')
+        except ValueError:
+            price_per_min = 1
+
         amount = 0
         mentee_profile = get_object_or_404(Profile, handle=mentee)
         session = Sessions(name=name,
@@ -78,6 +83,7 @@ def new_session(request):
                            priceFinney=amount,
                            network=network,
                            active=True,
+                           price_per_min=price_per_min,
                            mentor=request.user.profile,
                            mentee=mentee_profile
                            )
@@ -85,7 +91,7 @@ def new_session(request):
 
         return redirect('session_join', session=session.id)
 
-    listings = Sessions.objects.filter()
+    listings = Sessions.objects.all()
     context = {
         'title': 'Mentor',
         "sessions": listings
