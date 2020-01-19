@@ -96,7 +96,13 @@ def town_square(request):
                 }
                 tabs = [connect] + tabs
 
+    # set tab
+    if request.COOKIES.get('tab'):
+        all_tabs = [tab.get('slug') for tab in tabs]
+        if request.COOKIES.get('tab') in all_tabs:
+            default_tab = request.COOKIES.get('tab')
     tab = request.GET.get('tab', default_tab)
+
     is_search = "activity:" in tab or "search-" in tab
     if is_search:
         tabs.append({
@@ -173,7 +179,10 @@ def town_square(request):
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
     }
-    return TemplateResponse(request, 'townsquare/index.html', context)
+    response = TemplateResponse(request, 'townsquare/index.html', context)
+    if request.GET.get('tab'):
+        response.set_cookie('tab', request.GET.get('tab'))
+    return response
 
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
