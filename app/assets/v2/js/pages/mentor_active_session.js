@@ -54,7 +54,7 @@ const startEarningRefresh = function(stream, address) {
 
     if (now > stopTime) {
       resetScreen(room_address, address);
-			startAPIPooling(address);
+      startAPIPooling(address);
     }
   });
 };
@@ -80,7 +80,7 @@ const startStreamCountdown = function(stream, address) {
 };
 
 const startAPIPooling = function(address) {
-	console.warn('starting fetching');
+  console.warn("starting fetching");
   const pooling = setInterval(() => {
     console.warn("fetching");
     fetch("https://api.thegraph.com/subgraphs/name/sablierhq/sablier-rinkeby", {
@@ -137,20 +137,18 @@ const startAPIPooling = function(address) {
 $(document).ready(function() {
   // Connect the videoplayer
 
-  /*
-			const domain = 'meet.jit.si';
-			const options = {
-					roomName: room_address,
-					width: 700,
-					height: 700,
-					parentNode: document.querySelector('#jitsy-placeholder')
-			};
-			const api = new JitsiMeetExternalAPI(domain, options);
-			*/
+  const domain = "meet.jit.si";
+  const options = {
+    roomName: room_address,
+    width: 700,
+    height: 700,
+    parentNode: document.querySelector("#jitsy-placeholder")
+  };
+  const api = new JitsiMeetExternalAPI(domain, options);
 
   ethereum.enable().then(([address]) => {
     // Pool to recover stream from Sablier API
-		startAPIPooling(address);
+    startAPIPooling(address);
 
     console.log("address", address);
     const query = `
