@@ -50,7 +50,6 @@ def mentor_home(request):
     return TemplateResponse(request, 'mentor_home.html', context)
 
 
-<<<<<<< HEAD
 @login_required
 def join_session(request, session):
     """Render the sessions home page."""
