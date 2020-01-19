@@ -1,11 +1,22 @@
-// TODO: capitasation
+// TODO: capitalization
+
+const selectScreen = screen => {
+	[
+		$('.main'),
+		$('.create-stream'),
+		$('.wait'),
+		$('.wait-stream'),
+		$('.wait-stream-register')
+	].map(screen => screen.hide());
+	screen.show();
+}
 
 // Test DAI have 18 decimals
 const TESTDAI_DECIMAL = Math.pow(10, 18);
 // Waiting time between approval and attempting to call the contract (in ms)
 const CONFIRMATION_WAIT_TIME = 30000;
 // Delay before stream startTime (in ms)
-const STREAM_START_TIME_DELAY = 300000;
+const STREAM_START_TIME_DELAY = 300;
 
 // Find the closer multiple
 const closerMultiple = (deposit, delta) => deposit - (deposit % delta);
@@ -14,7 +25,7 @@ const showIf = (condition, element) =>
   condition ? element.show() : element.hide();
 
 const startEarningRefresh = function(stream) {
-  const { startTime, endTime } = stream;
+  const { startTime, stopTime } = stream;
   const refresh = setInterval(() => {
     const now = Math.round(new Date().getTime() / 1000);
     const diff = startTime - now;
@@ -22,7 +33,7 @@ const startEarningRefresh = function(stream) {
     $(".diff .min").text(Math.floor(diff / 60));
     $(".diff .sec").text(diff % 60);
 
-    const total = endTime - startTime;
+    const total = stopTime - startTime;
     $(".total .min").text(Math.floor(total / 60));
     $(".total .sec").text(total % 60);
 
@@ -37,22 +48,20 @@ const startEarningRefresh = function(stream) {
 };
 
 const startStreamCountdown = function(stream) {
-  const { startTime, endTime } = stream;
+  const { startTime, stopTime } = stream;
   const countDown = setInterval(() => {
     const now = Math.round(new Date().getTime() / 1000);
     const diff = startTime - now;
     const diffMin = Math.floor(diff / 60);
     const diffSec = diff % 60;
     $(".wait-stream .min").text(diffMin);
-		console.log('diffMin', diffMin);
-    showIf(diffMin < 0, $(".wait-stream .if-min"));
+    showIf(diffMin > 0, $(".wait-stream .if-min"));
     $(".wait-stream .sec").text(diffSec);
 
     if (now > startTime) {
-      $(".main").show();
-      $(".wait-stream").hide();
+			selectScreen($('.main'));
       clearInterval(countDown);
-      startEarningRefresh({ startTime, endTime });
+      startEarningRefresh({ startTime, stopTime });
     }
   }, 1000);
 };
@@ -70,10 +79,6 @@ $(document).ready(function() {
 			};
 			const api = new JitsiMeetExternalAPI(domain, options);
 			*/
-
-  $(".main").hide();
-  $(".wait-stream").hide();
-  $(".wait-stream-register").hide();
 
   ethereum.enable().then(([address]) => {
     // Pool to recover stream from Sablier API
@@ -116,7 +121,7 @@ $(document).ready(function() {
             console.log("streams", streams);
 
             const ongoingStream = streams.find(
-              stream => stream.startTime < now && now < stream.endTime
+							stream => stream.startTime < now && now < stream.stopTime
             );
             console.log("ongoingStream", ongoingStream);
 
@@ -125,8 +130,7 @@ $(document).ready(function() {
               // of the stream
               startEarningRefresh(ongoingStream);
               clearInterval(pooling);
-              $(".main").show();
-              $(".wait").hide();
+							selectScreen($('.main'))
             }
 
             const nextStream = streams.find(stream => stream.startTime > now);
@@ -136,9 +140,7 @@ $(document).ready(function() {
               startStreamCountdown(nextStream);
               clearInterval(pooling);
 
-              $(".wait-stream").show();
-              $(".wait").hide();
-							$('.create-stream').hide();
+							selectScreen($('.wait-stream'));
             }
           }
         });
@@ -146,9 +148,9 @@ $(document).ready(function() {
 
     // Check if the user is the room owner
     if (room_address === address) {
-      $(".wait").show();
+			selectScreen($('.wait'));
     } else {
-      $(".create-stream").show();
+			selectScreen($('.create-stream'));
     }
 
     // Load contracts
@@ -170,14 +172,10 @@ $(document).ready(function() {
       // Compute a deposit_rounded (deposit should be a multiple of delta)
       const now = Math.round(new Date().getTime() / 1000);
       const startTime = now + STREAM_START_TIME_DELAY;
-      const stopTime = now + STREAM_START_TIME_DELAY + depositMin;
+      const stopTime = now + STREAM_START_TIME_DELAY + (depositMin * 60);
       const delta = stopTime - startTime;
       const deposit = depositMin * rate_per_min;
       const deposit_rounded = closerMultiple(deposit, delta);
-
-      if (deposit_rounded % delta) throw "Not multiple";
-      if (now > startTime) throw "startTime should be in the future";
-      if (startTime > stopTime) throw "endTime should be after startTime";
 
       console.warn("mentor_address", mentor_address);
 
@@ -187,11 +185,15 @@ $(document).ready(function() {
       console.warn("now", now);
       console.warn("startTime", startTime);
       console.warn("stopTime", stopTime);
+      console.warn("delta", delta);
+
+      // if (deposit_rounded % delta) throw "Not multiple";
+      if (now > startTime) throw "startTime should be in the future";
+      if (startTime > stopTime) throw "stopTime should be after startTime";
 
       testdai_contract.approve(sablier_address(), deposit, () => {
         setTimeout(() => {
-          $(".wait-stream-register").show();
-          $(".create-stream").hide();
+					selectScreen($('.wait-stream-register'));
           console.warn(
             "creating the stream at ",
             Math.round(new Date().getTime() / 1000)
