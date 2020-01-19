@@ -1,5 +1,5 @@
 // TODO: capitalization
-
+const two_digit = n => ('0' + n).slice(-2)
 const selectScreen = screen => {
 	[
 		$('.main'),
@@ -12,8 +12,6 @@ const selectScreen = screen => {
 }
 
 const resetScreen = (room_address, address) => {
-	console.log('room_address', room_address)
-	console.log('address', address)
 	if (room_address.toLowerCase() === address.toLowerCase()) {
 		selectScreen($('.wait'));
 	} else {
@@ -25,8 +23,8 @@ const resetScreen = (room_address, address) => {
 const TESTDAI_DECIMAL = Math.pow(10, 18);
 // Waiting time between approval and attempting to call the contract (in ms)
 const CONFIRMATION_WAIT_TIME = 30000;
-// Delay before stream startTime (in ms)
-const STREAM_START_TIME_DELAY = 300;
+// Delay before stream startTime (in s)
+const STREAM_START_TIME_DELAY = 120;
 
 // Find the closer multiple
 const closerMultiple = (deposit, delta) => deposit - (deposit % delta);
@@ -41,12 +39,12 @@ const startEarningRefresh = function(stream, address) {
     const now = Math.round(new Date().getTime() / 1000);
     const diff = now - startTime;;
 
-    $(".diff .min").text(Math.floor(diff / 60));
-    $(".diff .sec").text(diff % 60);
+    $(".diff .min").text(two_digit(Math.floor(diff / 60)));
+    $(".diff .sec").text(two_digit(diff % 60));
 
     const total = stopTime - startTime;
-    $(".total .min").text(Math.floor(total / 60));
-    $(".total .sec").text(total % 60);
+    $(".total .min").text(two_digit(Math.floor(total / 60)));
+    $(".total .sec").text(two_digit(total % 60));
 
     const depositDai = stream.deposit / TESTDAI_DECIMAL;
     $(".deposit-dai").text(depositDai.toFixed(2));
@@ -68,9 +66,9 @@ const startStreamCountdown = function(stream, address) {
     const diff = startTime - now;
     const diffMin = Math.floor(diff / 60);
     const diffSec = diff % 60;
-    $(".wait-stream .min").text(diffMin);
+    $(".wait-stream .min").text(two_digit(diffMin));
     showIf(diffMin > 0, $(".wait-stream .if-min"));
-    $(".wait-stream .sec").text(diffSec);
+    $(".wait-stream .sec").text(two_digit(diffSec));
 		console.log('now', now);
 		console.log('stopTime', stopTime);
     if (now > startTime) {
