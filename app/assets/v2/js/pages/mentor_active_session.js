@@ -71,8 +71,9 @@ const startStreamCountdown = function(stream, address) {
     $(".wait-stream .min").text(diffMin);
     showIf(diffMin > 0, $(".wait-stream .if-min"));
     $(".wait-stream .sec").text(diffSec);
-
-    if (now > stopTime) {
+		console.log('now', now);
+		console.log('stopTime', stopTime);
+    if (now > startTime) {
 			selectScreen($('.main'));
       clearInterval(countDown);
       startEarningRefresh(stream, address);
