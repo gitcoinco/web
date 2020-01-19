@@ -1,24 +1,24 @@
 // TODO: capitalization
-const two_digit = n => ('0' + n).slice(-2)
+const two_digit = n => ("0" + n).slice(-2);
 const selectScreen = screen => {
-	[
-		$('.main'),
-		$('.create-stream'),
-		$('.wait'),
-		$('.wait-stream'),
-		$('.wait-stream-register'),
-		$('.stream-busy')
-	].map(screen => screen.hide());
-	screen.show();
-}
+  [
+    $(".main"),
+    $(".create-stream"),
+    $(".wait"),
+    $(".wait-stream"),
+    $(".wait-stream-register"),
+    $(".stream-busy")
+  ].map(screen => screen.hide());
+  screen.show();
+};
 
 const resetScreen = (room_address, address) => {
-	if (room_address.toLowerCase() === address.toLowerCase()) {
-		selectScreen($('.wait'));
-	} else {
-		selectScreen($('.create-stream'));
-	}
-}
+  if (room_address.toLowerCase() === address.toLowerCase()) {
+    selectScreen($(".wait"));
+  } else {
+    selectScreen($(".create-stream"));
+  }
+};
 
 // Test DAI have 18 decimals
 const TESTDAI_DECIMAL = Math.pow(10, 18);
@@ -37,7 +37,7 @@ const startEarningRefresh = function(stream, address) {
   const { startTime, stopTime } = stream;
   const refresh = setInterval(() => {
     const now = Math.round(new Date().getTime() / 1000);
-    const diff = now - startTime;;
+    const diff = now - startTime;
 
     $(".diff .min").text(two_digit(Math.floor(diff / 60)));
     $(".diff .sec").text(two_digit(diff % 60));
@@ -52,10 +52,9 @@ const startEarningRefresh = function(stream, address) {
     const streamedDai = ((diff / total) * deposit) / TESTDAI_DECIMAL;
     $(".streamed-dai").text(streamedDai.toFixed(2));
 
-		if(now > stopTime) {
-			resetScreen(room_address, address);
-		}
-
+    if (now > stopTime) {
+      resetScreen(room_address, address);
+    }
   });
 };
 
@@ -69,14 +68,69 @@ const startStreamCountdown = function(stream, address) {
     $(".wait-stream .min").text(two_digit(diffMin));
     showIf(diffMin > 0, $(".wait-stream .if-min"));
     $(".wait-stream .sec").text(two_digit(diffSec));
-		console.log('now', now);
-		console.log('stopTime', stopTime);
+    console.log("now", now);
+    console.log("stopTime", stopTime);
     if (now > startTime) {
-			selectScreen($('.main'));
+      selectScreen($(".main"));
       clearInterval(countDown);
       startEarningRefresh(stream, address);
     }
   }, 1000);
+};
+
+const startAPIPooling = function(address) {
+	console.warn('starting fetching');
+  const pooling = setInterval(() => {
+    console.warn("fetching");
+    fetch("https://api.thegraph.com/subgraphs/name/sablierhq/sablier-rinkeby", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query })
+    })
+      .then(answer => answer.json())
+      .then(answer => {
+        console.log("answer", answer);
+        // Find if there's a next stream
+        if (answer.data.streams.length) {
+          const now = Math.round(new Date().getTime() / 1000);
+          const streams = answer.data.streams.sort(
+            (a, b) => a.startTime < b.startTime
+          );
+          console.log("streams", streams);
+
+          const ongoingStream = streams.find(
+            stream => stream.startTime < now && now < stream.stopTime
+          );
+          console.log("ongoingStream", ongoingStream);
+
+          if (ongoingStream) {
+            // TODO: Check if the user is the sender or the reciever
+            // of the stream
+            if (
+              ongoingStream.recipient.toLowerCase() === address.toLowerCase() ||
+              ongoingStream.sender.toLowerCase() === address.toLowerCase()
+            ) {
+              startEarningRefresh(ongoingStream, address);
+              clearInterval(pooling);
+              selectScreen($(".main"));
+            } else {
+              selectScreen($(".stream-busy"));
+            }
+          }
+
+          const nextStream = streams.find(stream => stream.startTime > now);
+          console.log("nextStream", nextStream);
+
+          if (nextStream) {
+            startStreamCountdown(nextStream);
+            clearInterval(pooling);
+
+            console.log("wait-stream loading");
+            selectScreen($(".wait-stream"));
+          }
+        }
+      });
+  }, 10000);
 };
 
 $(document).ready(function() {
@@ -95,6 +149,7 @@ $(document).ready(function() {
 
   ethereum.enable().then(([address]) => {
     // Pool to recover stream from Sablier API
+		startAPIPooling(address);
 
     console.log("address", address);
     const query = `
@@ -112,63 +167,8 @@ $(document).ready(function() {
 
     console.log("query", query);
 
-    const pooling = setInterval(() => {
-			console.warn('fetching');
-      fetch(
-        "https://api.thegraph.com/subgraphs/name/sablierhq/sablier-rinkeby",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query })
-        }
-      )
-        .then(answer => answer.json())
-        .then(answer => {
-          console.log("answer", answer);
-          // Find if there's a next stream
-          if (answer.data.streams.length) {
-            const now = Math.round(new Date().getTime() / 1000);
-            const streams = answer.data.streams.sort(
-              (a, b) => a.startTime < b.startTime
-            );
-            console.log("streams", streams);
-
-            const ongoingStream = streams.find(
-							stream => stream.startTime < now && now < stream.stopTime
-            );
-            console.log("ongoingStream", ongoingStream);
-
-            if (ongoingStream) {
-              // TODO: Check if the user is the sender or the reciever
-              // of the stream
-							if(	ongoingStream.recipient.toLowerCase() === address.toLowerCase() ||
-								ongoingStream.sender.toLowerCase() === address.toLowerCase()) { 
-									startEarningRefresh(ongoingStream, address);
-									clearInterval(pooling);
-									selectScreen($('.main'))
-							}
-							else {
-								selectScreen($('.stream-busy'))	
-							}
-
-            }
-
-            const nextStream = streams.find(stream => stream.startTime > now);
-            console.log("nextStream", nextStream);
-
-            if (nextStream) {
-              startStreamCountdown(nextStream);
-              clearInterval(pooling);
-
-							console.log('wait-stream loading')
-							selectScreen($('.wait-stream'));
-            }
-          }
-        });
-    }, 10000);
-
     // Check if the user is the room owner
-		resetScreen(room_address, address)
+    resetScreen(room_address, address);
 
     // Load contracts
 
@@ -189,7 +189,7 @@ $(document).ready(function() {
       // Compute a deposit_rounded (deposit should be a multiple of delta)
       const now = Math.round(new Date().getTime() / 1000);
       const startTime = now + STREAM_START_TIME_DELAY;
-      const stopTime = now + STREAM_START_TIME_DELAY + (depositMin * 60);
+      const stopTime = now + STREAM_START_TIME_DELAY + depositMin * 60;
       const delta = stopTime - startTime;
       const deposit = depositMin * rate_per_min;
       const deposit_rounded = closerMultiple(deposit, delta);
@@ -210,7 +210,7 @@ $(document).ready(function() {
 
       testdai_contract.approve(sablier_address(), deposit, () => {
         setTimeout(() => {
-					selectScreen($('.wait-stream-register'));
+          selectScreen($(".wait-stream-register"));
           console.warn(
             "creating the stream at ",
             Math.round(new Date().getTime() / 1000)
@@ -235,7 +235,8 @@ $(document).ready(function() {
 
     $("stop-stream-btn").click(() => {
       sablier_contract.cancelStream(currentStream.id, () => {
-				resetScreen(room_address, address);
+        resetScreen(room_address, address);
+        startAPIPooling(address);
       });
     });
 
