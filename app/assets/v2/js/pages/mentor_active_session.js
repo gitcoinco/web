@@ -12,7 +12,9 @@ const selectScreen = screen => {
 }
 
 const resetScreen = (room_address, address) => {
-	if (room_address === address) {
+	console.log('room_address', room_address)
+	console.log('address', address)
+	if (room_address.toLowerCase() === address.toLowerCase()) {
 		selectScreen($('.wait'));
 	} else {
 		selectScreen($('.create-stream'));
@@ -52,7 +54,7 @@ const startEarningRefresh = function(stream, address) {
     const streamedDai = ((diff / total) * deposit) / TESTDAI_DECIMAL;
     $(".streamed-dai").text(streamedDai.toFixed(2));
 
-		if(now > startTime) {
+		if(now > stopTime) {
 			resetScreen(room_address, address);
 		}
 
@@ -70,7 +72,7 @@ const startStreamCountdown = function(stream, address) {
     showIf(diffMin > 0, $(".wait-stream .if-min"));
     $(".wait-stream .sec").text(diffSec);
 
-    if (now > startTime) {
+    if (now > stopTime) {
 			selectScreen($('.main'));
       clearInterval(countDown);
       startEarningRefresh(stream, address);
