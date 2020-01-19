@@ -6,7 +6,8 @@ const selectScreen = screen => {
 		$('.create-stream'),
 		$('.wait'),
 		$('.wait-stream'),
-		$('.wait-stream-register')
+		$('.wait-stream-register'),
+		$('.stream-busy')
 	].map(screen => screen.hide());
 	screen.show();
 }
@@ -33,7 +34,6 @@ const showIf = (condition, element) =>
   condition ? element.show() : element.hide();
 
 const startEarningRefresh = function(stream, address) {
-	console.log('yo')
   const { startTime, stopTime } = stream;
   const refresh = setInterval(() => {
     const now = Math.round(new Date().getTime() / 1000);
@@ -141,9 +141,16 @@ $(document).ready(function() {
             if (ongoingStream) {
               // TODO: Check if the user is the sender or the reciever
               // of the stream
-              startEarningRefresh(ongoingStream, address);
-              clearInterval(pooling);
-							selectScreen($('.main'))
+							if(	ongoingStream.recipient.toLowerCase() === address.toLowerCase() ||
+								ongoingStream.sender.toLowerCase() === address.toLowerCase()) { 
+									startEarningRefresh(ongoingStream, address);
+									clearInterval(pooling);
+									selectScreen($('.main'))
+							}
+							else {
+								selectScreen($('.stream-busy'))	
+							}
+
             }
 
             const nextStream = streams.find(stream => stream.startTime > now);
