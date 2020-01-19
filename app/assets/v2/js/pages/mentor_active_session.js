@@ -54,6 +54,7 @@ const startEarningRefresh = function(stream, address) {
 
     if (now > stopTime) {
       resetScreen(room_address, address);
+			startAPIPooling(address);
     }
   });
 };
