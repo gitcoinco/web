@@ -9,17 +9,24 @@
     data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
   ></textarea>
   <input type="hidden" name="what" value="{{what}}:{{whatid}}">
-  <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
-    {% if tags %}
-      {% for tag in tags %}
-        <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" >
-          <input type="checkbox" name="activity_type" value="{{tag.0}}" autocomplete="off">
-          <i class="fas fa-{{tag.1}} mr-2"></i>
-        {{tag.0}}
-        </label>
-      {% endfor %}
-    {% endif %}
-    <button class="btn btn-gc-blue font-caption" id="btn_post" disabled="true">SHARE <i class="fas fa-share"></i></button>
+
+    <div class="d-flex">
+      <label for="file-upload" class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption profile-file-upload py-2 px-3">
+        <i class="fas fa-cloud-upload"></i>
+        Upload image
+      </label>
+      <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
+      {% if tags %}
+        {% for tag in tags %}
+          <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" >
+            <input type="checkbox" name="activity_type" value="{{tag.0}}" autocomplete="off">
+            <i class="fas fa-{{tag.1}} mr-2"></i>
+            {{tag.0}}
+          </label>
+        {% endfor %}
+      {% endif %}
+      <button class="btn btn-gc-blue font-caption" id="btn_post" disabled="true">SHARE <i class="fas fa-share"></i></button>
+    </div>
   </div>
 
 </div>

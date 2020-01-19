@@ -48,6 +48,7 @@ from ratelimit.decorators import ratelimit
 from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
 from townsquare.tasks import increment_view_counts
+from dashboard.views import invalid_file_response
 
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
@@ -1171,6 +1172,7 @@ def activity(request):
 @ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def create_status_update(request):
     response = {}
+    uploaded_file = request.FILES.get('file')
     if request.POST:
         profile = request.user.profile
         kwargs = {
@@ -1180,6 +1182,11 @@ def create_status_update(request):
                 'ask': request.POST.get('ask'),
             }
         }
+        if uploaded_file:
+            error_response = invalid_file_response(uploaded_file, supported=['image/png','image/gif','image/jpeg'])
+            if error_response and error_response['status'] != 400:
+                return JsonResponse(error_response)
+            kwargs['file'] = uploaded_file if not error_response else None
         kwargs['profile'] = profile
         if ':' in request.POST.get('what'):
             what = request.POST.get('what')

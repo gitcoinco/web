@@ -1992,6 +1992,7 @@ class Activity(SuperModel):
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
     metadata = JSONField(default=dict)
+    file= models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The image (jpeg, png, gif) url.'))
     needs_review = models.BooleanField(default=False)
     view_count = models.IntegerField(default=0)
     other_profile = models.ForeignKey(

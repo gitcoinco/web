@@ -55,12 +55,14 @@ $(document).ready(function() {
   function submitStatusUpdate() {
     const data = new FormData();
     const message = $('#textarea');
+    const file = $("#file-upload").prop("files")[0];
     const ask = $('.activity_type_selector .active input').val();
 
     data.append('ask', ask);
     data.append('data', message.val().trim());
     data.append('what', $('#status [name=what]').val());
     message.val('');
+    data.append('file', file)
     data.append(
       'csrfmiddlewaretoken',
       $('#status input[name="csrfmiddlewaretoken"]').attr('value')
