@@ -11,6 +11,14 @@ const selectScreen = screen => {
 	screen.show();
 }
 
+const resetScreen = (room_address, address) => {
+	if (room_address === address) {
+		selectScreen($('.wait'));
+	} else {
+		selectScreen($('.create-stream'));
+	}
+}
+
 // Test DAI have 18 decimals
 const TESTDAI_DECIMAL = Math.pow(10, 18);
 // Waiting time between approval and attempting to call the contract (in ms)
@@ -24,11 +32,12 @@ const closerMultiple = (deposit, delta) => deposit - (deposit % delta);
 const showIf = (condition, element) =>
   condition ? element.show() : element.hide();
 
-const startEarningRefresh = function(stream) {
+const startEarningRefresh = function(stream, address) {
+	console.log('yo')
   const { startTime, stopTime } = stream;
   const refresh = setInterval(() => {
     const now = Math.round(new Date().getTime() / 1000);
-    const diff = startTime - now;
+    const diff = now - startTime;;
 
     $(".diff .min").text(Math.floor(diff / 60));
     $(".diff .sec").text(diff % 60);
@@ -43,11 +52,14 @@ const startEarningRefresh = function(stream) {
     const streamedDai = ((diff / total) * deposit) / TESTDAI_DECIMAL;
     $(".streamed-dai").text(streamedDai.toFixed(2));
 
-		// TODO: handle end of stream
+		if(now > startTime) {
+			resetScreen(room_address, address);
+		}
+
   });
 };
 
-const startStreamCountdown = function(stream) {
+const startStreamCountdown = function(stream, address) {
   const { startTime, stopTime } = stream;
   const countDown = setInterval(() => {
     const now = Math.round(new Date().getTime() / 1000);
@@ -61,7 +73,7 @@ const startStreamCountdown = function(stream) {
     if (now > startTime) {
 			selectScreen($('.main'));
       clearInterval(countDown);
-      startEarningRefresh({ startTime, stopTime });
+      startEarningRefresh(stream, address);
     }
   }, 1000);
 };
@@ -128,7 +140,7 @@ $(document).ready(function() {
             if (ongoingStream) {
               // TODO: Check if the user is the sender or the reciever
               // of the stream
-              startEarningRefresh(ongoingStream);
+              startEarningRefresh(ongoingStream, address);
               clearInterval(pooling);
 							selectScreen($('.main'))
             }
@@ -140,6 +152,7 @@ $(document).ready(function() {
               startStreamCountdown(nextStream);
               clearInterval(pooling);
 
+							console.log('wait-stream loading')
 							selectScreen($('.wait-stream'));
             }
           }
@@ -147,11 +160,7 @@ $(document).ready(function() {
     }, 10000);
 
     // Check if the user is the room owner
-    if (room_address === address) {
-			selectScreen($('.wait'));
-    } else {
-			selectScreen($('.create-stream'));
-    }
+		resetScreen(room_address, address)
 
     // Load contracts
 
@@ -218,7 +227,7 @@ $(document).ready(function() {
 
     $("stop-stream-btn").click(() => {
       sablier_contract.cancelStream(currentStream.id, () => {
-        // TODO: come back to default state
+				resetScreen(room_address, address);
       });
     });
 
