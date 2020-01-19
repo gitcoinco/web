@@ -248,7 +248,7 @@ def api(request, activity_id):
         comment_email(comment, to_emails)
 
     elif request.GET.get('method') == 'comment':
-        comments = activity.comments.order_by('-created_on')
+        comments = activity.comments.order_by('created_on')
         comments = [comment.to_standard_dict(properties=['profile_handle']) for comment in comments]
         response['comments'] = comments
     return JsonResponse(response)
