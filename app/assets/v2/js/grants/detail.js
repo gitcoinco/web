@@ -42,7 +42,7 @@ function updateValuesOfExistingCategories() {
 }
 
 function initGrantCategoriesInput() {
-  grantCategoriesSelection('#grant-categories');
+  grantCategoriesSelection('#grant-categories', '/grants/categories');
   updateValuesOfExistingCategories();
 }
 

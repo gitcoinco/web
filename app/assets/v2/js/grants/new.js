@@ -56,8 +56,8 @@ const processReceipt = receipt => {
   saveGrant(formData, true);
 };
 
-const setupGrantCategoriesInput = () => {
-  grantCategoriesSelection('.categories');
+const setupGrantCategoriesInput = (grantType) => {
+  grantCategoriesSelection('.categories', `/grants/categories?type=${grantType}`);
 };
 
 const init = () => {
@@ -290,6 +290,11 @@ const init = () => {
     });
 
 
-    setupGrantCategoriesInput();
+    setupGrantCategoriesInput('tech');
+
+    $('#input-grant_type').on('change', function() {
+      $('.categories').val(null).trigger('change');
+      setupGrantCategoriesInput(this.value);
+    });
   });
 };

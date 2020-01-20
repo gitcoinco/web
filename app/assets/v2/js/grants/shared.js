@@ -3,16 +3,15 @@ var compiledSubscription;
 var compiledSplitter;
 var contractVersion;
 
-function grantCategoriesSelection(target) {
+function grantCategoriesSelection(target, apiUrl) {
   $(target).each(function() {
     if (!$(this).length) {
       return;
     }
-    var url = '/grants/categories';
 
     $(this).select2({
       ajax: {
-        url: url,
+        url: apiUrl,
         dataType: 'json',
         delay: 250,
         data: function(params) {

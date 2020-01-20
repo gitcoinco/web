@@ -82,6 +82,16 @@
                 </div>
 
                 <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-grant_type">{% trans "Grant Type" %}</label>
+                  <div>
+                    <select id="input-grant_type" class="form__input form__input-lg">
+                      <option value="tech">{% trans "Technology" %}</option>
+                      <option value="media">{% trans "Media" %}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-team_members">{% trans "Team members" %}</label>
                   <div class="form__select2 g-multiselect">
                     <select id="input-team_members" class="form__input form__input-lg  team_members" name="team_members[]" multiple="multiple">
@@ -122,7 +132,7 @@
                   <label class="font-body">{% trans "Project Logo" %}</label>
                   <div class="form__drop" id="js-drop">
                     <input id="img-project" type="file" name="input_image" accept="image/*">
-                    <span>{% trans "Drag & Drop or Browse" %} </span> 
+                    <span>{% trans "Drag & Drop or Browse" %} </span>
                     <span> | {% trans "Square or 16:9; above 400x400 preferred" %}</span>
                     <img id="preview"/>
                   </div>
