@@ -54,11 +54,27 @@ def mentor_home(request):
 def join_session(request, session):
     """Render the sessions home page."""
     session = get_object_or_404(Sessions, id=session)
+
+    is_mentor = session.mentor_id == request.user.profile.id
+
+    # If no meentee, then another user join the url is set as mentee
+    if session.mentee is None and not is_mentor:
+        session.mentee = request.user.profile.id
+        session.save()
+
+    is_mentee = session.mentee_id == request.user.profile.id
+
+    if not is_mentor and not is_mentee:
+        return TemplateResponse(request, 'waiting_session.html')
+
     context = {
         'title': 'Mentor',
         "session": session,
-        'is_mentor': session.mentor.id == request.user.profile.id
+        "is_mentor": is_mentor,
+        "is_mentee": is_mentee,
+        'finised': session.active is False
     }
+
     return TemplateResponse(request, 'active_session.html', context)
 
 
@@ -114,6 +130,14 @@ def update_session(request, session):
     tx_status = request.POST.get('tx_status', None)
     tx_id = request.POST.get('tx_id', None)
     tx_time = request.POST.get('tx_time', None)
+    mentee_handler = request.POST.get('mentee_handler', None)
+
+    if mentee_handler:
+        mentee = Profile.objects.get(handle__iexact=mentee_handler)
+        if mentee:
+            session.mentee = mentee
+
+            print('mentee')
 
     if name:
         session.name = name

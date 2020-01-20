@@ -36,5 +36,9 @@ function update_session(sessionId, data) {
     session.tags = JSON.stringify(data.tags)
   }
 
+  if (data.menteeHandler) {
+    session.mentee_handler = data.menteeHandler
+  }
+
   return fetchData('/mentor/session/' + sessionId + '/update', 'POST', session);
 }
