@@ -139,7 +139,7 @@ const startAPIPooling = function(address) {
           console.log("nextStream", nextStream);
 
           if (nextStream) {
-            startStreamCountdown(nextStream);
+            startStreamCountdown(nextStream, address);
             clearInterval(pooling);
 
             console.log("wait-stream loading");
