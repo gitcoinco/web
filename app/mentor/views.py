@@ -78,6 +78,23 @@ def join_session(request, session):
     return TemplateResponse(request, 'active_session.html', context)
 
 
+@csrf_exempt
+@login_required
+def finish_session(request, session):
+    """Render the sessions home page."""
+    session = get_object_or_404(Sessions, id=session)
+    is_mentor = session.mentor_id == request.user.profile.id
+
+    if is_mentor:
+        if session.active:
+            session.active = False
+            session.end_datetime = datetime.now()
+            session.save()
+        return JsonResponse({'status': 'ok', 'msg': ''})
+
+    return JsonResponse({'status': 'error', 'msg': 'Only the owner finsh the session'}, status=403)
+
+
 @login_required
 def new_session(request):
     """Render the sessions home page."""
@@ -137,49 +154,39 @@ def update_session(request, session):
         if mentee:
             session.mentee = mentee
 
-            print('mentee')
-
     if name:
         session.name = name
-        print('name')
 
     if description:
         session.description = description
-        print('description')
 
     if metadata:
         try:
             session.metadata = json.loads(metadata)
-            print(metadata)
         except json.decoder.JSONDecodeError:
             errors.append({'metadata': ['Error parsing json metadata']})
 
     if not active is None:
-        print(active)
         session.active = active == 'true'
 
     if amount:
         try:
             session.amount = float(amount)
-            print('amount')
         except ValueError:
             errors.append({'amount': ['Error parsing amount data']})
 
     if tx_status in ['na', 'pending', 'success''error', 'error', 'unknown', 'dropped']:
         session.tx_status = tx_status
-        print('status')
 
     if not session.tx_id and tx_id:
         session.tx_received_on = datetime.now()
         try:
             session.tx_id = int(tx_id)
-            print('tx')
         except ValueError:
             errors.append({'tx_id': ['Error parsing tx id']})
 
         try:
             session.tx_time = parser.parse(tx_time)
-            print(tx_time)
         except ValueError:
             errors.append({'tx_time': ['Error parsing tx datetime']})
 
@@ -192,7 +199,6 @@ def update_session(request, session):
             errors.append({'metadata': ['Error parsing tags data']})
 
     if errors:
-        print('errors')
         return JsonResponse({
             'status': 'error',
             'message': 'Validation errors',
@@ -200,5 +206,5 @@ def update_session(request, session):
         }, status=422)
 
     session.save()
-    print('save')
+
     return JsonResponse({'status': 'ok', 'message': ''})
