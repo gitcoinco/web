@@ -1,5 +1,13 @@
 // TODO: capitalization
+
+// Global state
+let currentStream = null;
+let jitsy = null;
+let address = null;
+
+// Utils
 const two_digit = n => ("0" + n).slice(-2);
+
 const selectScreen = screen => {
   [
     $(".main"),
@@ -12,13 +20,18 @@ const selectScreen = screen => {
   screen.show();
 };
 
-const resetScreen = (room_address, address) => {
+const resetScreen = () => {
   if (room_address.toLowerCase() === address.toLowerCase()) {
     selectScreen($(".wait"));
   } else {
     selectScreen($(".create-stream"));
   }
 };
+
+// Session storage default
+if(!sessionStorage.getItem('blacklist_stream')) {
+	sessionStorage.setItem('blacklist_stream', []);
+}
 
 // Test DAI have 18 decimals
 const TESTDAI_DECIMAL = Math.pow(10, 18);
@@ -33,8 +46,14 @@ const closerMultiple = (deposit, delta) => deposit - (deposit % delta);
 const showIf = (condition, element) =>
   condition ? element.show() : element.hide();
 
-const startEarningRefresh = function(stream, address) {
-  const { startTime, stopTime } = stream;
+// Load contracts
+
+const sablier_contract = web3.eth.contract(sablier_abi).at(sablier_address());
+const testdai_contract = web3.eth.contract(token_abi).at(testdai_address());
+
+// Start the main session loop
+const startEarningRefresh = function() {
+  const { startTime, stopTime } = currentStream;
   const refresh = setInterval(() => {
     const now = Math.round(new Date().getTime() / 1000);
     const diff = now - startTime;
@@ -46,45 +65,47 @@ const startEarningRefresh = function(stream, address) {
     $(".total .min").text(two_digit(Math.floor(total / 60)));
     $(".total .sec").text(two_digit(total % 60));
 
-    const depositDai = stream.deposit / TESTDAI_DECIMAL;
+    // TODO: not working
+    const depositDai = currentStream.deposit / TESTDAI_DECIMAL;
     $(".deposit-dai").text(depositDai.toFixed(2));
 
-    const streamedDai = ((diff / total) * deposit) / TESTDAI_DECIMAL;
+    const streamedDai = ((diff / total) * depositDai) / TESTDAI_DECIMAL;
     $(".streamed-dai").text(streamedDai.toFixed(2));
 
     if (now > stopTime) {
-			console.log('address', address)
-			console.log('room_address', address)
-      resetScreen(room_address, address);
-			destroyJitsy();
+      console.log("address", address);
+      console.log("room_address", address);
+      resetScreen();
+      destroyJitsy();
       startAPIPooling(address);
-			clearInterval(refresh);
+      clearInterval(refresh);
     }
   });
 };
 
-const startStreamCountdown = function(stream, address) {
-  const { startTime, stopTime } = stream;
+// Start the countdown loop
+const startStreamCountdown = function() {
+  const { startTime, stopTime } = currentStream;
   const countDown = setInterval(() => {
     const now = Math.round(new Date().getTime() / 1000);
     const diff = startTime - now;
     const diffMin = Math.floor(diff / 60);
     const diffSec = diff % 60;
+
     $(".wait-stream .min").text(two_digit(diffMin));
     showIf(diffMin > 0, $(".wait-stream .if-min"));
     $(".wait-stream .sec").text(two_digit(diffSec));
-    console.log("now", now);
-    console.log("stopTime", stopTime);
+
     if (now > startTime) {
       selectScreen($(".main"));
       clearInterval(countDown);
-      startEarningRefresh(stream, address);
-			initJitsy();
+      startEarningRefresh();
+      initJitsy();
     }
   }, 1000);
 };
 
-const startAPIPooling = function(address) {
+const startAPIPooling = function() {
   console.warn("starting fetching");
   const query = `
 			{
@@ -95,6 +116,9 @@ const startAPIPooling = function(address) {
 					recipient
 					startTime
 					stopTime
+				}
+				cancellations {
+					id
 				}
 			}
 		`;
@@ -113,9 +137,10 @@ const startAPIPooling = function(address) {
         // Find if there's a next stream
         if (answer.data.streams.length) {
           const now = Math.round(new Date().getTime() / 1000);
-          const streams = answer.data.streams.sort(
-            (a, b) => a.startTime < b.startTime
-          );
+          const blacklist_stream = sessionStorage.getItem('blacklist_stream');
+          const streams = answer.data.streams
+            .filter(stream => !blacklist_stream.includes(stream.id))
+            .sort((a, b) => a.startTime < b.startTime);
           console.log("streams", streams);
 
           const ongoingStream = streams.find(
@@ -124,18 +149,18 @@ const startAPIPooling = function(address) {
           console.log("ongoingStream", ongoingStream);
 
           if (ongoingStream) {
-            // TODO: Check if the user is the sender or the reciever
-            // of the stream
             if (
               ongoingStream.recipient.toLowerCase() === address.toLowerCase() ||
               ongoingStream.sender.toLowerCase() === address.toLowerCase()
             ) {
-              startEarningRefresh(ongoingStream, address);
+              currentStream = ongoingStream;
+              startEarningRefresh();
               clearInterval(pooling);
               selectScreen($(".main"));
-							initJitsy();
+              initJitsy();
             } else {
               selectScreen($(".stream-busy"));
+              // TODO what happens next?
             }
           }
 
@@ -143,10 +168,9 @@ const startAPIPooling = function(address) {
           console.log("nextStream", nextStream);
 
           if (nextStream) {
+            currentStream = nextStream;
             startStreamCountdown(nextStream, address);
             clearInterval(pooling);
-
-            console.log("wait-stream loading");
             selectScreen($(".wait-stream"));
           }
         }
@@ -154,9 +178,30 @@ const startAPIPooling = function(address) {
   }, 10000);
 };
 
-let jitsy = null;
-const initJitsy = function() {
+// Jitsy-related functions
 
+const cancelStream = () => {
+  if (address.toLowerCase() !== room_address.toLowerCase()) {
+    sablier_contract.cancelStream(currentStream.id, () => {
+      let blacklist_stream = sessionStorage.getItem('blacklist_stream');
+			console.log('what is blacklist_stream', blacklist_stream)
+      blacklist_stream.push(currentStream.id);
+      sessionStorage.setItem('blacklist_stream', blacklist_stream)
+
+      jitsy.executeCommand("hangup");
+      destroyJitsy();
+      resetScreen();
+      startAPIPooling(address);
+    });
+  } else {
+    jitsy.executeCommand("hangup");
+    destroyJitsy();
+    resetScreen();
+    startAPIPooling(address);
+  }
+};
+
+const initJitsy = function() {
   const domain = "meet.jit.si";
   const options = {
     roomName: room_address,
@@ -165,32 +210,31 @@ const initJitsy = function() {
     parentNode: document.querySelector("#jitsy-placeholder")
   };
   jitsy = new JitsiMeetExternalAPI(domain, options);
-
-}
+  jitsy.on("participantLeft", () => {
+    console.warn("other participant left the room");
+    cancelStream();
+  });
+};
 
 const destroyJitsy = function() {
-	console.log('freeing jitsy')
-	jitsy.dispose();	
-}
+  console.log("freeing jitsy");
+  jitsy.dispose();
+};
 
 $(document).ready(function() {
   // Connect the videoplayer
 
-  ethereum.enable().then(([address]) => {
+  ethereum.enable().then(([metamask_address]) => {
+    // Register address in global variable
+    address = metamask_address;
+
     // Pool to recover stream from Sablier API
     startAPIPooling(address);
 
     console.log("address", address);
 
-    // Check if the user is the room owner
-    resetScreen(room_address, address);
-
-    // Load contracts
-
-    const sablier_contract = web3.eth
-      .contract(sablier_abi)
-      .at(sablier_address());
-    const testdai_contract = web3.eth.contract(token_abi).at(testdai_address());
+    // Initiate screen
+    resetScreen();
 
     // Create the stream
 
@@ -246,14 +290,8 @@ $(document).ready(function() {
     });
 
     // Stop the stream
-    // TODO: react to button click
 
-    $("stop-stream-btn").click(() => {
-      sablier_contract.cancelStream(currentStream.id, () => {
-        resetScreen(room_address, address);
-        startAPIPooling(address);
-      });
-    });
+    $(".stop-stream-btn").click(cancelStream);
 
     // Withdraw money
     $("withdraw-btn").click(() => {
