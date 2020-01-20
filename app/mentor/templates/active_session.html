@@ -57,7 +57,7 @@
 						<p class="counter">23:04</p>
 						<button class="stop">Stop session</button>
 						<ul class="activity_logs">
-							<li>Sarah initiated the session with an initial stake of 0.05ETH</li>	
+							<li>Sarah initiated the session with an initial stake of 0.05ETH</li>
 							<li>The available fund have already reached with 0.015ETH streamed</li>
 							<li>You have successfully withdrawn 0.01 ETH 12 minutes after the session start</li>
 						</ul>
@@ -73,6 +73,7 @@
     {% include 'shared/footer_scripts.html' with slim=1 %}
     <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
     <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    <script src="{% static "v2/js/mentor.js" %}"></script>
     <script>
       $(document).ready(function() {
 				const domain = 'meet.jit.si';

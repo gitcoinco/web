@@ -77,6 +77,7 @@ urlpatterns = [
     re_path(r'^mentor/?$', mentor.views.mentor_home, name='mentor_home'),
     re_path(r'^mentor/new/?$', mentor.views.new_session, name='mentor_new'),
     re_path(r'^mentor/session/(?P<session>\d+)??$', mentor.views.join_session, name='session_join'),
+    re_path(r'^mentor/session/(?P<session>\d+)/update', mentor.views.update_session, name='session_update'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
