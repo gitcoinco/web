@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django.contrib import admin
+from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
@@ -182,7 +183,7 @@ kevin (team gitcoin)
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
-    list_display = ['id', 'github_created_on', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
+    list_display = ['id', 'github_created_on', 'from_ip_address', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
@@ -201,6 +202,13 @@ class ContributionAdmin(GeneralAdmin):
     def github_created_on(self, instance):
         from django.contrib.humanize.templatetags.humanize import naturaltime
         return naturaltime(instance.subscription.contributor_profile.github_created_on)
+
+    def from_ip_address(self, instance):
+        end = instance.created_on + timezone.timedelta(hours=1)
+        start = instance.created_on - timezone.timedelta(hours=1)
+        visits = set(instance.subscription.contributor_profile.actions.filter(created_on__gt=start, created_on__lte=end).values_list('ip_address', flat=True))
+        visits = [visit for visit in visits if visit]
+        return " , ".join(visits)
 
 
 class MilestoneAdmin(admin.ModelAdmin):
@@ -221,11 +229,18 @@ class PhantomFundingAdmin(admin.ModelAdmin):
     """Define the GeneralAdmin administration layout."""
 
     ordering = ['-id']
-    list_display = ['id', 'github_created_on', '__str__']
+    list_display = ['id', 'github_created_on', 'from_ip_address', '__str__']
 
     def github_created_on(self, instance):
         from django.contrib.humanize.templatetags.humanize import naturaltime
         return naturaltime(instance.profile.github_created_on)
+
+    def from_ip_address(self, instance):
+        end = instance.created_on + timezone.timedelta(hours=1)
+        start = instance.created_on - timezone.timedelta(hours=1)
+        visits = set(instance.profile.actions.filter(created_on__gt=start, created_on__lte=end).values_list('ip_address', flat=True))
+        visits = [visit for visit in visits if visit]
+        return " , ".join(visits)
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)

@@ -12,8 +12,19 @@ class GenericAdmin(admin.ModelAdmin):
 
 
 class OfferActionAdmin(admin.ModelAdmin):
-    list_display = ['created_on', '__str__']
+    list_display = ['created_on', 'github_created_on', 'from_ip_address', '__str__']
     raw_id_fields = ['profile']
+
+    def github_created_on(self, instance):
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        return naturaltime(instance.profile.github_created_on)
+
+    def from_ip_address(self, instance):
+        end = instance.created_on + timezone.timedelta(hours=1)
+        start = instance.created_on - timezone.timedelta(hours=1)
+        visits = set(instance.profile.actions.filter(created_on__gt=start, created_on__lte=end).values_list('ip_address', flat=True))
+        visits = [visit for visit in visits if visit]
+        return " , ".join(visits)
 
 
 class OfferAdmin(admin.ModelAdmin):
