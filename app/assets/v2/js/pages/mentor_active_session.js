@@ -53,6 +53,8 @@ const startEarningRefresh = function(stream, address) {
     $(".streamed-dai").text(streamedDai.toFixed(2));
 
     if (now > stopTime) {
+			console.log('address', address)
+			console.log('room_address', address)
       resetScreen(room_address, address);
       startAPIPooling(address);
     }
@@ -81,6 +83,20 @@ const startStreamCountdown = function(stream, address) {
 
 const startAPIPooling = function(address) {
   console.warn("starting fetching");
+  const query = `
+			{
+				streams (where: {recipient: "${room_address}"}) {
+					id
+					deposit
+					sender
+					recipient
+					startTime
+					stopTime
+				}
+			}
+		`;
+
+  console.log("query", query);
   const pooling = setInterval(() => {
     console.warn("fetching");
     fetch("https://api.thegraph.com/subgraphs/name/sablierhq/sablier-rinkeby", {
@@ -151,20 +167,6 @@ $(document).ready(function() {
     startAPIPooling(address);
 
     console.log("address", address);
-    const query = `
-			{
-				streams (where: {recipient: "${room_address}"}) {
-					id
-					deposit
-					sender
-					recipient
-					startTime
-					stopTime
-				}
-			}
-		`;
-
-    console.log("query", query);
 
     // Check if the user is the room owner
     resetScreen(room_address, address);

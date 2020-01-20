@@ -78,6 +78,18 @@ def join_session(request, session):
         'finised': session.active is False
         # TODO: Not sure about the merge here
         # 'is_mentor': session.mentor.id == request.user.profile.id
+        "session": {
+            "name": "Get help with your bug!",
+            "description": "I'm a very knowledgable dev",
+            "mentee":{
+                "name": "Jean Louis"
+            },
+            "mentor": {
+                "address": '0x454C754c3783a8287bE9F976bA7003941702c898'
+            },
+            "rate_per_min": 50000000000000000
+        },
+        "role": "mentee"
     }
 
     # DEMO: Decomment here for demo
