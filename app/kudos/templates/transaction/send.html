@@ -41,6 +41,10 @@
   $(document).ready(function() {
     if (typeof userSearch != 'undefined') {
       userSearch('.username-search', true, 'bootstrap4');
+      $('.select2').on('click', removeStoredUser);
+      $('.clearSelectedUser').on('click', removeStoredUser);
+      $('.eth').on('click', removeStoredUser);
+      $('.airdrop').on('click', removeStoredUser);
     }
   })
   </script>
@@ -95,7 +99,7 @@
     <input type="hidden" name="send_type" value="github">
 
     <div class="form-group username">
-      <select id="username" class="username-search custom-select" {% if not kudos.name  %}disabled{% endif %}>
+      <select id="username" class="username-search custom-select">
         {% if user_json %}
         <option value="{{ user_json.id }}" avatar_id="{{ user_json.avatar_id }}" avatar_url="{{ user_json.avatar_url }}"  preferred_payout_address="{{ user_json.preferred_payout_address }}">{{ user_json.text }}</option>
         {% endif %}
@@ -177,9 +181,6 @@ function removeStoredUser(e) {
   document.getElementById('username').innerHTML = '';
   document.getElementById('clearSelectedUser').style.display = 'none'
 }
-
-
-document.getElementById('clearSelectedUser').addEventListener('click', removeStoredUser);
 
 {% if not user_json and username %}
   setTimeout(function() {
