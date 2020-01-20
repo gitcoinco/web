@@ -42,6 +42,7 @@ class OfferAdmin(admin.ModelAdmin):
             if obj.key == 'monthly':
                 days = 30
             obj.valid_from = timezone.now() - timezone.timedelta(days=days)
+            obj.view_count = 0
             while True:
                 next_timestamp = obj.valid_from + timezone.timedelta(days=days)
                 other_offers = Offer.objects.filter(valid_from__gte=obj.valid_from, valid_from__lt=next_timestamp, key=obj.key)
