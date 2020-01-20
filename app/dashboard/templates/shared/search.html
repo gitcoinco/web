@@ -17,39 +17,39 @@
 {% load i18n static humanize %}
 
 <div id="gc-search" class="nav-item dropdown search order-md-last">
-    <a href="" class="search__icon nav-link dropdown-toggle" id="searchDropdown" role="button"
+  <a href="" class="search__icon nav-link dropdown-toggle" id="searchDropdown" role="button"
     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i class="fas fa-search fa-fw"></i>
-    </a>
-    <div class="dropdown-menu dropdown-menu-right animation slideDownIn search-box" aria-labelledby="searchDropdown">
-      <div class="form-group has-search search-box__form">
-        <input type="text" class="form-control" v-model="term" @input="search">
-      </div>
-      <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
-        <li class="nav-item" v-for='(source_type, index) in source_types' :key="index">
-            <a class="nav-link nav-line" @click="currentTab = index" :class="{active: currentTab === index}" v-bind:href="'#' + source_type" data-toggle="tab">[[ source_type | capitalize]]
-              <span v-if="typeof results[source_type] !== 'undefined'">([[ results[source_type].length ]])</span>
-              <span v-else>(0)</span>
+    <i class="fas fa-search fa-fw"></i>
+  </a>
+  <div class="dropdown-menu dropdown-menu-right animation slideDownIn search-box" aria-labelledby="searchDropdown">
+    <div class="form-group has-search search-box__form">
+      <input type="text" class="form-control" v-model="term" @input="search">
+    </div>
+    <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+      <li class="nav-item" v-for='(source_type, index) in source_types' :key="index">
+        <a class="nav-link nav-line" @click="currentTab = index" :class="{active: currentTab === index}" v-bind:href="'#' + source_type" data-toggle="tab">[[ source_type | capitalize]]
+          <span v-if="typeof results[source_type] !== 'undefined'">([[ results[source_type].length ]])</span>
+          <span v-else>(0)</span>
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content clearfix">
+      <div class="tab-pane" :class="{active: currentTab === index}" v-bind:id="source_type" v-for='(source_type, index) in source_types' :key="index">
+        <ul class="search-result" @scroll.passive="onScroll($event)">
+          <li v-if="typeof results[source_type] !== 'undefined'" v-for="result in results[source_type]" class="search-result__item search-result__content" :key="result.id">
+            <a :href="[[ result.url ]]" class="d-flex">
+              <img class="search__avatar" :src="[[ result.img_url ]]" :alt="result.title" />
+              <div class="d-flex flex-column">
+                <span class="search-result__title">[[ result.title ]]</span>
+                <span class="search-result__description">[[ result.description ]]</span>
+                <div class="tag mt-2">
+                  <span>[[ result.source_type | capitalize ]]</span>
+                </div>
+              </div>
             </a>
-        </li>
-      </ul>
-      <div class="tab-content clearfix">
-          <div class="tab-pane" :class="{active: currentTab === index}" v-bind:id="source_type" v-for='(source_type, index) in source_types' :key="index">
-            <ul class="search-result" @scroll.passive="onScroll($event)">
-              <li v-if="typeof results[source_type] !== 'undefined'" v-for="result in results[source_type]" class="search-result__item search-result__content" :key="result.id">
-                <a :href="[[ result.url ]]" class="d-flex">
-                  <img class="search__avatar" :src="[[ result.img_url ]]" :alt="result.title">
-                  <div class="d-flex flex-column">
-                    <span class="search-result__title">[[ result.title ]]</span>
-                    <span class="search-result__description">[[ result.description ]]</span>
-                    <div class="tag mt-2">
-                      <span>[[ result.source_type | capitalize ]]</span>
-                    </div>
-                  </div>
-                </a>
-              </li>
-            </ul>
-          </div>
+          </li>
+        </ul>
       </div>
     </div>
+  </div>
 </div>
