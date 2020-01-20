@@ -245,14 +245,125 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         to_emails = []
         zip_paths = []
-        profiles = Profile.objects.all()
+        profiles_all = Profile.objects.all()
         tax_path = os.path.join(os.getcwd(), TAX_REPORT_PATH)
         if not tax_path:
             os.makedirs(tax_path)
         b_source_type = ContentType.objects.get(app_label='dashboard', model='bountyfulfillment')
         t_source_type = ContentType.objects.get(app_label='dashboard', model='tip')
         g_source_type = ContentType.objects.get(app_label='grants', model='contribution')
-        for p in profiles:
+        # start new code
+        total_earning = Earning.objects.filter(
+                                            network=WEB3_NETWORK,
+                                            created_on__year=TAX_YEAR,
+                                            value_usd__gt=0
+                                            )
+        profiles = {}
+        for e in total_earning:
+            if e.from_profile == None:
+                print('from_profile not defined, skip it')
+                continue
+            user = e.from_profile.handle
+            if user not in profiles:
+                profiles[user] = {}
+                profiles[user]['csv_record'] = []
+                profiles[user]['us_workers'] = {}
+                profiles[user]['email'] = e.from_profile.email
+                profiles[user]['name'] = e.from_profile.name
+                profiles[user]['address'] = e.from_profile.address
+                profiles[user]['location'] = get_profile_location(e.from_profile)[0]
+            # Bounty
+            if e.source_type_id==b_source_type.id:
+                bf_obj = BountyFulfillment.objects.get(pk=e.source_id)
+                b_obj = Bounty.objects.get(pk=bf_obj.bounty_id)
+                record, profiles[user]['us_workers'] = create_csv_record(
+                                                                        profiles_all, 
+                                                                        b_obj, 
+                                                                        BOUNTY, 
+                                                                        profiles[user]['us_workers'], 
+                                                                        e.value_usd, 
+                                                                        b_ff=bf_obj
+                                                                        )
+                profiles[user]['csv_record'].append(record)
+            # Tips
+            elif e.source_type_id==t_source_type.id:
+                t_obj = Tip.objects.get(pk=e.source_id)
+                record, profiles[user]['us_workers'] = create_csv_record(
+                                                                        profiles_all, 
+                                                                        t_obj, 
+                                                                        TIP, 
+                                                                        profiles[user]['us_workers'], 
+                                                                        e.value_usd
+                                                                        )
+                profiles[user]['csv_record'].append(record)
+            # Grants
+            elif e.source_type_id==g_source_type.id:
+                g_obj = Grant.objects.get(pk=e.source_id)
+                record, profiles[user]['us_workers'] = create_csv_record(
+                                                                        profiles_all, 
+                                                                        g_obj, 
+                                                                        GRANT, 
+                                                                        profiles[user]['us_workers'], 
+                                                                        e.value_usd
+                                                                        )
+                profiles[user]['csv_record'].append(record)
+            else:
+                print('Source id not valid')
+        for username, info in profiles.items():
+            if len(info['csv_record']) > 0:
+                # check for create 1099
+                username_path = os.path.join(os.getcwd(), TAX_REPORT_PATH, username)
+                if not os.path.isdir(username_path):
+                    os.makedirs(username_path)
+                misc_path = os.path.join(username_path, MISC_1099_OUTPUT_PATH)
+                if not os.path.isdir(misc_path):
+                    os.makedirs(misc_path)
+                for us_w, usd_value in info['us_workers'].items():
+                    recipient_profiles = profiles_all.filter(handle__iexact=us_w)
+                    if recipient_profiles.exists():
+                        recipient_profile = recipient_profiles.first()
+                        # create 1099 only if total funded in usd is greater than 600$
+                        if usd_value > 1:
+                            recipient_path = os.path.join(misc_path, recipient_profile.username)
+                            if not os.path.isdir(recipient_path):
+                                os.makedirs(recipient_path)
+                            form_data = {}
+                            form_data[PAYER] = {}
+                            form_data[PAYER][NAME] = info['name']
+                            form_data[PAYER][LOCATION] = info['location']
+                            form_data[PAYER][ADDRESS] = info['address']
+                            form_data[RECIPIENT] = {}
+                            form_data[RECIPIENT][NAME] = recipient_profile.name
+                            form_data[RECIPIENT][LOCATION] = get_profile_location(recipient_profile)[0]
+                            form_data[RECIPIENT][ADDRESS] = recipient_profile.address
+                            form_data[USD_VALUE] = usd_value
+                            for template in MISC_1099_TEMPLATES:
+                                create_1099(form_data, recipient_path, template)
+                # create csv
+                csv_columns = [DATETIME, 
+                            COUNTER_PARTY_NAME, 
+                            COUNTER_PARTY_GITHUB_USERNAME, 
+                            COUNTER_PARTY_LOCATION, 
+                            TOKEN_AMOUNT, 
+                            TOKEN_NAME, 
+                            USD_VALUE, 
+                            WORKER_TYPE]
+                csv_file_path = os.path.join(username_path, username + '_report.csv')
+                try:
+                    with open(csv_file_path, 'w') as csvfile:
+                        writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+                        writer.writeheader()
+                        for row in info['csv_record']:
+                            writer.writerow(row)
+                except IOError:
+                    print("I/O error")
+                if os.path.isfile(csv_file_path):
+                    # zip username dir
+                    zip_file_path = zip_dir(username, username_path)
+                    zip_paths.append(zip_file_path)
+                    to_emails.append(info['email'])
+
+        '''for p in profiles:
             csv_record = []
             us_workers = {}
             # Total Earning
@@ -261,7 +372,8 @@ class Command(BaseCommand):
                                             network=WEB3_NETWORK, 
                                             created_on__year=TAX_YEAR, 
                                             value_usd__gt=0
-                                            ).exclude(to_profile=p)
+                                            )
+            #.exclude(to_profile=p)
             # Bounties
             # source type id 46 for bounties
             bounties_fulfillments = earnings.filter(source_type_id=b_source_type.id)
@@ -299,7 +411,7 @@ class Command(BaseCommand):
                     if recipient_profiles.exists():
                         recipient_profile = recipient_profiles.first()
                         # create 1099 only if total funded in usd is greater than 600$
-                        if usd_value > 600:
+                        if usd_value > 1:
                             recipient_path = os.path.join(misc_path, recipient_profile.username)
                             if not os.path.isdir(recipient_path):
                                 os.makedirs(recipient_path)
@@ -338,5 +450,5 @@ class Command(BaseCommand):
                     zip_file_path = zip_dir(p.username, username_path)
                     zip_paths.append(zip_file_path)
                     to_emails.append(p.email)
-        # send emails to all funders
-        tax_report(to_emails, zip_paths, TAX_YEAR) 
+        # send emails to all funders'''
+        tax_report(to_emails, zip_paths, TAX_YEAR)
