@@ -209,13 +209,26 @@ class MilestoneAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display =['pk', 'grant', 'title', 'created_on']
 
+
 class UpdateAdmin(admin.ModelAdmin):
     """Define the Update administration layout."""
 
     ordering = ['-id']
     list_display =['pk', 'grant', 'title', 'created_on']
 
-admin.site.register(PhantomFunding, GeneralAdmin)
+
+class PhantomFundingAdmin(admin.ModelAdmin):
+    """Define the GeneralAdmin administration layout."""
+
+    ordering = ['-id']
+    list_display = ['id', 'github_created_on', '__str__']
+
+    def github_created_on(self, instance):
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        return naturaltime(instance.profile.github_created_on)
+
+
+admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
 admin.site.register(CLRMatch, GeneralAdmin)
