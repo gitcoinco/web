@@ -56,7 +56,9 @@ const startEarningRefresh = function(stream, address) {
 			console.log('address', address)
 			console.log('room_address', address)
       resetScreen(room_address, address);
+			destroyJitsy();
       startAPIPooling(address);
+			clearInterval(refresh);
     }
   });
 };
@@ -77,6 +79,7 @@ const startStreamCountdown = function(stream, address) {
       selectScreen($(".main"));
       clearInterval(countDown);
       startEarningRefresh(stream, address);
+			initJitsy();
     }
   }, 1000);
 };
@@ -130,6 +133,7 @@ const startAPIPooling = function(address) {
               startEarningRefresh(ongoingStream, address);
               clearInterval(pooling);
               selectScreen($(".main"));
+							initJitsy();
             } else {
               selectScreen($(".stream-busy"));
             }
@@ -150,8 +154,8 @@ const startAPIPooling = function(address) {
   }, 10000);
 };
 
-$(document).ready(function() {
-  // Connect the videoplayer
+let jitsy = null;
+const initJitsy = function() {
 
   const domain = "meet.jit.si";
   const options = {
@@ -160,7 +164,17 @@ $(document).ready(function() {
     height: 700,
     parentNode: document.querySelector("#jitsy-placeholder")
   };
-  const api = new JitsiMeetExternalAPI(domain, options);
+  jitsy = new JitsiMeetExternalAPI(domain, options);
+
+}
+
+const destroyJitsy = function() {
+	console.log('freeing jitsy')
+	jitsy.dispose();	
+}
+
+$(document).ready(function() {
+  // Connect the videoplayer
 
   ethereum.enable().then(([address]) => {
     // Pool to recover stream from Sablier API
