@@ -189,7 +189,7 @@
         {% endif %}
         <span class="mx-0">
           {% if not hide_likes %}
-            <i class="far fa-eye"></i> {{ row.view_count }} | 
+            <i class="far fa-eye" data-toggle="tooltip" title="The number of views this post has gotten." ></i> {{ row.view_count }} | 
           {% endif %}
 
           {% if not hide_date %}
