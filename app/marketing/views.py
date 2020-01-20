@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the marketing views.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -153,6 +153,7 @@ def privacy_settings(request):
         if profile:
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
             profile = record_form_submission(request, profile, 'privacy')
             if profile.alumni and profile.alumni.exists():
                 alumni = profile.alumni.first()

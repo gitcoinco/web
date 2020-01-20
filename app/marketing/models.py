@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the marketing models and related logic.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -75,6 +75,11 @@ class EmailSubscriber(SuperModel):
 
         should_suppress = self.preferences.get('suppression_preferences', {}).get(email_type, False)
         return not should_suppress
+
+    def set_should_send_email_type_to(self, key, should_send):
+        suppression_preferences = self.preferences.get('suppression_preferences', {})
+        suppression_preferences[key] = not should_send #db = suppressed? request format = send?
+        self.preferences['suppression_preferences'] = suppression_preferences
 
     def build_email_preferences(self, form=None):
         from retail.emails import ALL_EMAILS, TRANSACTIONAL_EMAILS, MARKETING_EMAILS

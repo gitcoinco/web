@@ -17,6 +17,10 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark gitcoin-background">
+  <a class="navbar-brand d-none d-md-block mr-2" href="{% url 'index' %}">
+    <img id="logo" src="{% static "v2/images/helmet-white.svg" %}" height="40" class="mw-100"/>
+  </a>
+  <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
   <a class="navbar-brand pt-0 pb-0 brand-hover" href="{% url 'grants:grants' %}">
     <img class="mw-100 logo-static" src="{% static "v2/images/grants/grants-logo.svg" %}" alt="Grants" height="50">
     <img class="mw-100 logo-animated" src="{% static "v2/images/grants/grants-white.gif" %}" alt="Grants" height="50">
@@ -33,28 +37,19 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     {% if user.is_authenticated %}
-      {% if user.is_staff %}
-        {% include 'shared/chat_nav.html' %}
-      {% endif %}
+      {% include 'shared/chat_nav.html' %}
       {% include 'shared/notifications.html' %}
     {% endif %}
   </div>
 
   <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
     <nav class="navbar-nav ml-auto mr-3">
-      <a class="nav-link{% if active == 'grants_landing' %} selected {% endif %} interior" href="{% url 'grants:grants' %}">{% trans "Grants Explorer" %}</a>
+      <a class="nav-link{% if active == 'grants_landing' %} selected {% endif %} interior" href="{% url 'grants:grants' %}">{% trans "Explorer" %}</a>
       <a class="nav-link{% if active == 'grants_quickstart' %} selected {% endif %} interior" href="{% url 'grants:quickstart' %}">{% trans "What is Grants?" %}</a>
       <a class="nav-link{% if active == 'grants_leaderboard' %} selected {% endif %} interior" href="{% url 'grants:leaderboard' %}">{% trans "Leaderboard" %}</a>
       <a class="nav-link{% if active == 'new_grant' %} selected {% endif %} interior" href="{% url 'grants:new' %}"><i class="fab fa-ethereum mr-1" role="aria-hidden"></i> {% trans "Create Grant" %}</a>
 
-      {% if not user.is_authenticated %}
-        <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="nav-link interior" onclick="dataLayer.push({'event': 'login'});">
-          <i class="fab fa-github mr-1" role="aria-hidden"></i>
-          {% trans "LOG IN" %}
-        </a>
-      {% else %}
-        {% include 'shared/nav_auth.html' with source='authed' %}
-      {% endif %}
+      {% include 'shared/nav_auth.html' with source='authed' %}
     </nav>
   </div>
 </nav>

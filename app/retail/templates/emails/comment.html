@@ -1,3 +1,4 @@
+{% extends 'emails/template.html' %}
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
 
@@ -14,12 +15,31 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n %}
-<div class="w-100 mt-2">
-  <label class="form__label" for="payoutAddress">{% trans "Payout Address" %}</label>
-      <label id="tooltip">
-      <i class='fa fa-info-circle' title="This bounty will be paid out from your web3 address. To change this address, update your web3 wallet to a new address. "></i>
-    </label>
+{% load i18n humanize %}
 
-  <input name='payoutAddress' id='payoutAddress' class="form__input" type="text" placeholder="0x0000000000000" value="" disabled="" />
+{% block content %}
+
+<h1>💬{% trans "New Comment" %} 💬</h1>
+
+<p>
+
+<a href="{{comment.profile.url}}">@{{comment.profile.handle}}</a> commented on your status update. This is what the thread looks like:
+
+<pre>
+{% for comment in comment.activity.comments.all %}
+- @{{comment.profile.handle}} ({{comment.created_on | naturaltime}}): {{comment.comment}}
+{% endfor %}
+</pre>
+
+<div style="margin-bottom: 2em; margin-top: 2em;">
+  <a class="button" href="{{ comment.url }}">View Thread</a>
 </div>
+
+</p>
+
+<br>
+
+
+
+
+{% endblock %}

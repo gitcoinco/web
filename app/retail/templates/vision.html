@@ -110,7 +110,7 @@
       <div class="tl-component pt-5">
         <div class="tl">
           <div class="tl-event" data-time="2019">
-            <b>{% trans "Founding" %}</b>
+            <b>{% trans "Year 0" %}</b>
             <ul class="list-special">
               <li class="macro">{% trans "Sharding / POS in research stage" %}</li>
               <li class="market">{% trans "Bear Market" %}</li>
@@ -236,6 +236,20 @@
             <a href="{% url 'results' %}" target="_blank" class="btn btn-block btn-gc-purple">{% trans "See Our Results" %}</a>
           </div>
         </div>
+      </div>
+    </section>
+    <section class="container bg-white pb-5">
+      <div class="row py-4">
+        <div class="col-12 text-center mb-4">
+          <h2 class="font-bigger-4 mb-3">{% trans "Gitcoin Videos" %}</h2>
+        </div>
+        {% for videoLink in videoLinks %}
+          <div class="col-12 col-md-4 mt-3">
+            <div class="embed-responsive embed-responsive-21by9">
+              <iframe width="700" height="600" src="{{ videoLink }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"></iframe>
+            </div>
+          </div>
+        {% endfor %}
       </div>
     </section>
 

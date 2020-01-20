@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant admin layout.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -18,9 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django.contrib import admin
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from grants.models import CLRMatch, Contribution, Grant, MatchPledge, PhantomFunding, Subscription
+from grants.models import CLRMatch, Contribution, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -48,14 +49,15 @@ class GrantAdmin(GeneralAdmin):
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
-        'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type'
+        'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
+        'metadata'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
         'team_member_list',
         'subscriptions_links', 'contributions_links', 'link',
     ]
-    list_display =['pk', 'title', 'active','grant_type', 'link']
+    list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden']
     raw_id_fields = ['admin_profile']
 
     # Custom Avatars
@@ -180,7 +182,38 @@ kevin (team gitcoin)
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
+    list_display = ['id', 'github_created_on', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
 
+    def txn_url(self, obj):
+        tx_id = obj.tx_id
+        tx_url = 'https://etherscan.io/tx/' + tx_id
+        return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
+
+    def profile(self, obj):
+        return format_html(f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
+
+    def token(self, obj):
+        return obj.subscription.token_symbol
+
+    def amount(self, obj):
+        return obj.subscription.amount_per_period
+
+    def github_created_on(self, instance):
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        return naturaltime(instance.subscription.contributor_profile.github_created_on)
+
+
+class MilestoneAdmin(admin.ModelAdmin):
+    """Define the Milestone administration layout."""
+
+    ordering = ['-id']
+    list_display =['pk', 'grant', 'title', 'created_on']
+
+class UpdateAdmin(admin.ModelAdmin):
+    """Define the Update administration layout."""
+
+    ordering = ['-id']
+    list_display =['pk', 'grant', 'title', 'created_on']
 
 admin.site.register(PhantomFunding, GeneralAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
@@ -188,3 +221,5 @@ admin.site.register(Grant, GrantAdmin)
 admin.site.register(CLRMatch, GeneralAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
+admin.site.register(Milestone, MilestoneAdmin)
+admin.site.register(Update, UpdateAdmin)

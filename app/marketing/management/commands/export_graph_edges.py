@@ -19,6 +19,9 @@ import re
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.utils import timezone
+
+import pytz
 
 
 def is_an_edge(handle, edges):
@@ -44,12 +47,14 @@ class Command(BaseCommand):
         # output me as simple_graph.js
         handles = []
         edges = []
+        start_date = timezone.now()
+        start_date = timezone.datetime(2020, 1, 1, 1, tzinfo=pytz.UTC)
 
         what = options['what']
 
         if what in ['all', 'economics']:
             from dashboard.models import BountyFulfillment
-            for obj in BountyFulfillment.objects.filter(accepted=True):
+            for obj in BountyFulfillment.objects.filter(accepted=True, created_on__gt=start_date):
                 handle1 = obj.bounty.bounty_owner_github_username
                 handle2 = obj.fulfiller_github_username
                 handles.append(handle1)
@@ -58,7 +63,7 @@ class Command(BaseCommand):
 
         if what in ['all', 'economics']:
             from dashboard.models import Tip
-            for obj in Tip.objects.filter(network='mainnet'):
+            for obj in Tip.objects.filter(network='mainnet', created_on__gt=start_date):
                 handle1 = obj.from_username
                 handle2 = obj.username
                 handles.append(handle1)
@@ -67,16 +72,16 @@ class Command(BaseCommand):
 
         if what in ['all', 'economics']:
             from kudos.models import KudosTransfer
-            for obj in KudosTransfer.objects.filter(network='mainnet'):
+            for obj in KudosTransfer.objects.filter(network='mainnet', created_on__gt=start_date):
                 handle1 = obj.from_username
                 handle2 = obj.username
                 handles.append(handle1)
                 handles.append(handle2)
                 edges.append([handle1, handle2])
 
-        if what in ['all', 'economics']:
+        if what in ['all', 'economics', 'grants']:
             from grants.models import Contribution
-            for obj in Contribution.objects.filter(subscription__network='mainnet'):
+            for obj in Contribution.objects.filter(subscription__network='mainnet', created_on__gt=start_date):
                 handle1 = obj.subscription.grant.admin_profile.handle
                 handle2 = obj.subscription.contributor_profile.handle
                 handles.append(handle1)
@@ -85,7 +90,7 @@ class Command(BaseCommand):
 
         if what in ['all', 'social']:
             from quests.models import QuestAttempt
-            for obj in QuestAttempt.objects.all():
+            for obj in QuestAttempt.objects.filter(created_on__gt=start_date):
                 handle1 = obj.quest.title
                 handle2 = obj.profile.handle
                 handles.append(handle1)

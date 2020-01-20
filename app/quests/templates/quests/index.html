@@ -1,7 +1,7 @@
 {% extends 'quests/base.html' %}
 {% load humanize static i18n %}
 {% comment %}
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -51,7 +51,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
       {% for difficulty_level, the_quests in quests%}
         <li class="nav-item">
-          <a class="nav-link nav-line {% if difficulty_level == selected_tab %}active{%endif%}" href="#" data-href="{{difficulty_level}}">
+          <a class="nav-link nav-line {% if difficulty_level == selected_tab %}active{% endif %}" href="#" data-href="{{difficulty_level}}">
           {{difficulty_level}} <span>{{the_quests|length}}</span>
           </a>
         </li>
@@ -63,7 +63,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ..." style="max-width: 200px; margin: 0px 30% 100px 30%;">
     </div>
   {% for difficulty_level, the_quests in quests%}
-  <div class="difficulty_tab {{difficulty_level}} {% if difficulty_level != selected_tab %}hidden{%endif%}">
+  <div class="difficulty_tab {{difficulty_level}} {% if difficulty_level != selected_tab %}hidden{% endif %}">
     {% if the_quests|length == 0 %}
       <div style='min-height: 400px; text-align: center; vertical-align: middle; padding: 100px; border-left: 2px solid #fafafa; '>
       <h3>No Quests Found</h3>
@@ -74,7 +74,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
     {% endif %}
     {% for unlocked, beaten, cooldown, quest in the_quests %}
-    <div id="{{difficulty_level}}" style="{% cycle 'background-color: #fafafa;' '' %}; width: 250px; display: block; float: left; border-radius: 10px; height: 530px; text-align: center;" class="{{quest.style}} m-3 p-2 quest-card {%if not unlocked%}locked{%elif beaten%}beaten{%else%}available{%endif%} {%if cooldown%}cooldown{%endif%}">
+    <div id="{{difficulty_level}}" style="{% cycle 'background-color: #fafafa;' '' %}; width: 250px; display: block; float: left; border-radius: 10px; height: 530px; text-align: center;" class="{{quest.style}} m-3 p-2 quest-card {% if not unlocked %} locked {% elif beaten %} beaten {% else %} available {% endif %} {% if cooldown %} cooldown {% endif %}">
       <div class="card_head">
         <span class="boss">#boss</span>
         <img class="card_img boss" data-src="{{quest.art_url}}" title="{{quest.game_metadata.enemy.title}}">
@@ -83,15 +83,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
       <div style="background-color: #eee; border-top: 3px solid #bbb; border-radius: 5px;" class="pr-3 pt-3 pl-3 pb-1 mb-1 mt-3">
         <span style="position: relative; top: -50px; font-size: 30px;">
-          {%if cooldown%}
-          🥶
-          {%elif beaten%}
-          ✅
-          {%elif unlocked%}
-          🔓
-          {%else%}
-          🔒
-          {%endif%}
+          {% if cooldown %}
+            🥶
+          {% elif beaten %}
+            ✅
+          {% else %}
+            🔒
+          {% endif %}
         </span>
         <a href="{{quest.url}}">
           <h2 style="margin-top: -50px; font-size: 20px;">
@@ -106,23 +104,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <p style="color: #222; font-size: 11px; margin-bottom: 3px;"><strong>{{quest.ui_data.attempts_count}}</strong> Attempts | <strong>{{quest.ui_data.success_pct}}%</strong> Winners | Created by <a href="{{quest.ui_data.creator.url}}">@{{quest.ui_data.creator.handle}}</a> | Prize: <a href="{{quest.kudos_reward.url}}">{{quest.kudos_reward.humanized_name}} Kudos</a> </p>
         <p class="desc" style=" max-height: 90px; overflow-y: scroll; font-size: 10px; border-top: 1px solid #333;">{{quest.description}}</p>
       </div>
-      {%if beaten%}
-      ( ✅ Quest Beaten)
-      {%elif cooldown%}
-      ( 🥶 In Cooldown Period)
-      {%elif unlocked%}
-      <p style="font-size: 10px;"><span style="font-weight: bold;">Play Time:</span><BR>{{quest.est_total_time_required}} mins (reading)
-      <BR>{{quest.est_skim_time_mins}} mins (skimming)</p>
+      {% if beaten %}
+        ( ✅ Quest Beaten)
+      {% elif cooldown %}
+        ( 🥶 In Cooldown Period)
+      {% elif unlocked %}
+        <p style="font-size: 10px;">
+          <span style="font-weight: bold;">Play Time:</span> <br>
+          {{quest.est_total_time_required}} mins (reading) <br>
+          {{quest.est_skim_time_mins}} mins (skimming)
+        </p>
 
-      <a style="position: relative; bottom: 20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Play Quest</a>
-      {%else%}
-      🔒Locked; To unlock 
+        <a style="position: relative; bottom: 20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Play Quest</a>
+      {% else %}
+        🔒Locked; To unlock 
         {% if quest.unlocked_by_hackathon %}
           register for <a href="{{quest.unlocked_by_hackathon.onboard_url}}">{{quest.unlocked_by_hackathon.name}}</a>.
-        {%else%}
+        {% else %}
           beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
-        {%endif%}
-      {%endif%}
+        {% endif %}
+      {% endif %}
       {% if difficulty_level == 'Created' %}
         <BR>
         <a class="mt-2" role="button" href="{{quest.edit_url}}">(Edit Quest)</a>
@@ -137,9 +138,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <h1 id=leaderboard style="margin-top: 100px;">Leaderboard</h1>
   <div id="announce">
     <img class="mr-1" data-src="{% static "v2/images/quests/enemies/samurai.svg" %}">
-    {% if false %}
-      <h4><strong>Round 2 Challenge is now Live!</strong></h4>
-      <p>Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on October 30 will <strong>win a KeepKey hardware wallet</strong> and a <a href="https://gitcoin.co/kudos/174/diamond">very special Kudos</a>.
+    {% if 1 %}
+      <h4><strong>Round 3 Challenge is now Live!</strong></h4>
+      <p>Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on January 30 will <strong>win a special 60 DAI prize</strong> and a <a href="https://gitcoin.co/kudos/174/diamond">very special Kudos</a>.
     {% else %}
     <h4><strong>Round 2 Challenge ended on 10/30!</strong></h4>
     <p class="mb-0">Congratulations to</p> 
@@ -179,7 +180,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         {% endif %}
       {% for round_number, this_leaderboard in leaderboard.items %}
         <li class="nav-item">
-          <a class="nav-link nav-line {% if current_round_number == round_number %}active{%endif%}" href="#" data-href="leaderboard_{{round_number}}">
+          <a class="nav-link nav-line {% if current_round_number == round_number %}active{% endif %}" href="#" data-href="leaderboard_{{round_number}}">
           Round {{round_number}} Leaderboard
           </a>
         </li>
@@ -360,7 +361,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 </div>
 </div>
 {% for round_number, this_leaderboard in leaderboard.items %}
-  <div class="row indent_on_mobile leaderboard_tab leaderboard_{{round_number}}  {% if current_round_number != round_number %}hidden{%endif%}">
+  <div class="row indent_on_mobile leaderboard_tab leaderboard_{{round_number}}  {% if current_round_number != round_number %}hidden{% endif %}">
     <div class="leaderboard_hero hide_on_mobile">
       {% for item in this_leaderboard.1 %}
       <div class="inner_row {{ item.4|apnumber }}"> 
@@ -389,7 +390,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
     <div id=leaderboard>
       {% for item in this_leaderboard.0 %}
-      <div class="inner_row {% if item.4 < 4 %}show_on_mobile{%endif%} " style="{% if item.0 == github_handle %}background-color: #edf5fc;{%else%}{% cycle 'background-color: #fafafa;' '' %}{%endif%}";>
+      <div class="inner_row {% if item.4 < 4 %}show_on_mobile{% endif %} " style="{% if item.0 == github_handle %}background-color: #edf5fc;{% else %}{% cycle 'background-color: #fafafa;' '' %}{% endif %}";>
         <div class="float-left mr-2 ml-2">{{ forloop.counter|ordinal }}</div>
         <div class="float-left mr-2 ml-2"><img data-src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px; width: 120px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
         {% if item.0 == github_handle %}

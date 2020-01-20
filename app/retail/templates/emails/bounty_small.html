@@ -46,7 +46,7 @@
   }
 </style>
 
-<div class="text-center bounty-box {% if count|divisibleby:2 %}even{%else%}odd{%endif%}">
+<div class="text-center bounty-box {% if count|divisibleby:2 %}even{% else %}odd{% endif %}">
   {% if primer %}
     <div class="bounty-primer">
       <p>{{primer}}<p>

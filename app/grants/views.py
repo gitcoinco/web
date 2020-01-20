@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant views.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -57,11 +57,10 @@ logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
-matching_live = '($50K matching live now!) '
-total_clr_pot = 100000
-clr_round = 3
-clr_active = False
-show_past_clr = True
+matching_live = '($200K matching live now!) '
+total_clr_pot = 200000
+clr_round = 4
+clr_active = True
 
 if True:
     clr_matching_banners_style = 'results'
@@ -82,6 +81,8 @@ def grants(request):
     grant_type = request.GET.get('type', 'tech')
     state = request.GET.get('state', 'active')
     _grants = None
+
+    show_past_clr = False
 
     sort_by_index = None
     sort_by_clr_pledge_matching_amount = None
@@ -143,6 +144,15 @@ def grants(request):
         {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
         {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
     ]
+    if grant_type == 'media':
+        nav_options = [
+            {'label': 'All', 'keyword': ''},
+            {'label': 'Education', 'keyword': 'education'},
+            {'label': 'Twitter', 'keyword': 'twitter'},
+            {'label': 'Reddit', 'keyword': 'reddit'},
+            {'label': 'Blogs', 'keyword': 'blog'},
+            {'label': 'Notes', 'keyword': 'notes'},
+        ]
 
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
@@ -162,7 +172,7 @@ def grants(request):
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
         'past_partners': past_partners,
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
+        'card_desc': _('Get Substantial Sustainable Funding for Your Projects with Gitcoin Grants'),
         'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
         'card_player_stream_override': static('v2/card/grants.mp4'),
         'card_player_thumb_override': static('v2/card/grants.png'),
@@ -207,8 +217,9 @@ def grant_details(request, grant_id, grant_slug):
         subscriptions = grant.subscriptions.filter(active=True, error=False).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False).order_by('-created_on')
         _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
-        phantom_funds = grant.phantom_funding.filter(round_number=3)
-        contributions = list(_contributions.order_by('-created_on')) + [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
+        phantom_funds = grant.phantom_funding.all()
+        contributions = list(_contributions.order_by('-created_on'))
+        voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
         contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
         activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
@@ -265,11 +276,26 @@ def grant_details(request, grant_id, grant_slug):
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
+    # handle grant updates unsubscribe
+    key = 'unsubscribed_profiles'
+    is_unsubscribed_from_updates_from_this_grant = request.user.is_authenticated and request.user.profile.pk in grant.metadata.get(key, [])
+    if request.GET.get('unsubscribe') and request.user.is_authenticated:
+        ups = grant.metadata.get(key, [])
+        ups.append(request.user.profile.pk)
+        grant.metadata[key] = ups
+        grant.save()
+        messages.info(
+                request,
+                _('You have been unsubscribed from the updates from this grant.')
+            )
+        is_unsubscribed_from_updates_from_this_grant = True
+
+    tab = request.GET.get('tab', 'activity')
     params = {
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
-        'tab': request.GET.get('tab', 'description'),
+        'tab': tab,
         'title': matching_live + grant.title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
@@ -283,11 +309,19 @@ def grant_details(request, grant_id, grant_slug):
         'updates': updates,
         'milestones': milestones,
         'keywords': get_keywords(),
+        'target': f'/activity?what=grant:{grant.pk}',
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
-        'is_team_member': is_team_member
+        'is_team_member': is_team_member,
+        'voucher_fundings': voucher_fundings,
+        'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
+        'tags': [(f'Email Grant Funders ({len(contributors)})', 'bullhorn')] if is_team_member else [],
     }
+
+    if tab == 'stats':
+        params['max_graph'] = grant.history_by_month_max
+        params['history'] = json.dumps(grant.history_by_month)
 
     if add_cancel_params:
         add_in_params = {
@@ -332,7 +366,9 @@ def grant_new(request):
                 'metadata': receipt,
                 'admin_profile': profile,
                 'logo': logo,
-                'hidden': True,
+                'hidden': False,
+                'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
+
             }
             grant = Grant.objects.create(**grant_kwargs)
             new_grant_admin(grant)
@@ -610,12 +646,22 @@ def grant_fund(request, grant_id, grant_slug):
                 'success': True,
             })
 
+        if 'hide_wallet_address' in request.POST:
+            profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
+            profile.save()
+
         if 'signature' in request.POST:
             sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
             subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
             subscription.active = True
             subscription.subscription_hash = request.POST.get('subscription_hash', '')
             subscription.contributor_signature = request.POST.get('signature', '')
+            if 'split_tx_id' in request.POST:
+                subscription.split_tx_id = request.POST.get('split_tx_id', '')
+                subscription.save_split_tx_to_contribution()
+            if 'split_tx_confirmed' in request.POST:
+                subscription.split_tx_confirmed = bool(request.POST.get('split_tx_confirmed', False))
+                subscription.save_split_tx_to_contribution()
             subscription.save()
 
             value_usdt = subscription.get_converted_amount()
@@ -635,9 +681,8 @@ def grant_fund(request, grant_id, grant_slug):
     # handle phantom funding
     active_tab = 'normal'
     fund_reward = None
-    round_number = 3
+    round_number = 4
     can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
-    can_phantom_fund = False # round is ded
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
@@ -650,9 +695,11 @@ def grant_fund(request, grant_id, grant_slug):
         else:
             msg = "You are now signaling for this grant."
             show_tweet_modal = True
-            name_search = 'grants_round_3_contributor_' if not settings.DEBUG else 'pogs_eth'
+            name_search = 'grants_round_4_contributor' if not settings.DEBUG else 'pogs_eth'
             fund_reward = BulkTransferCoupon.objects.filter(token__name__contains=name_search).order_by('?').first()
             PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
+            record_grant_activity_helper('new_grant_contribution', grant, request.user.profile)
+
         messages.info(
             request,
             msg
@@ -660,6 +707,7 @@ def grant_fund(request, grant_id, grant_slug):
         is_phantom_funding_this_grant = not is_phantom_funding_this_grant
 
     params = {
+        'profile': profile,
         'active': 'fund_grant',
         'title': _('Fund Grant'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
@@ -685,7 +733,7 @@ def grant_fund(request, grant_id, grant_slug):
         'phantom_funds': phantom_funds,
         'clr_round': clr_round,
         'total_clr_pot': total_clr_pot,
-        'clr_active': clr_active,
+        'clr_active': True
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
@@ -770,14 +818,7 @@ def quickstart(request):
 def leaderboard(request):
     """Display leaderboard."""
 
-    # setup dict
-    params = {
-        'active': 'grants_leaderboard',
-        'title': _('Grants Leaderboard'),
-        'card_desc': _('View the top contributors to Gitcoin Grants'),
-        'items': get_leaderboard(),
-        }
-    return TemplateResponse(request, 'grants/leaderboard.html', params)
+    return redirect ('https://gitcoin.co/leaderboard/payers?cadence=quarterly&keyword=all&product=grants')
 
 
 def record_subscription_activity_helper(activity_type, subscription, profile):
@@ -806,6 +847,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
     kwargs = {
         'profile': profile,
         'subscription': subscription,
+        'grant': subscription.grant,
         'activity_type': activity_type,
         'metadata': metadata,
     }

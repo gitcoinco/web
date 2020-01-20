@@ -32,7 +32,6 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Avg, Count, Prefetch, Q
@@ -57,6 +56,8 @@ from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
 from cacheops import invalidate_obj
+from chat.tasks import add_to_channel
+from chat.utils import create_channel_if_not_exists, create_user_if_not_exists
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -75,7 +76,7 @@ from marketing.mails import funder_payout_reminder as funder_payout_reminder_mai
 from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
-from marketing.models import Keyword
+from marketing.models import EmailSubscriber, Keyword
 from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -110,16 +111,26 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 
 @protected_resource()
-@login_required()
 def oauth_connect(request, *args, **kwargs):
     active_user_profile = Profile.objects.filter(user_id=request.user.id).select_related()[0]
-
+    from marketing.utils import should_suppress_notification_email
     user_profile = {
         "login": active_user_profile.handle,
         "email": active_user_profile.user.email,
         "name": active_user_profile.user.get_full_name(),
         "handle": active_user_profile.handle,
-        "id": active_user_profile.user.id,
+        "id": f'{active_user_profile.user.id}',
+        "auth_data": f'{active_user_profile.user.id}',
+        "auth_service": "gitcoin",
+        "notify_props": {
+            "email": "false",
+            "push": "mention",
+            "desktop": "all",
+            "desktop_sound": "true",
+            "mention_keys": f'{active_user_profile.handle}, @{active_user_profile.handle}',
+            "channel": "true",
+            "first_name": "false"
+        }
     }
     return JsonResponse(user_profile, status=200, safe=False)
 
@@ -319,13 +330,17 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
 
-    num_issues = profile.max_num_issues_start_work
-    is_working_on_too_much_stuff = profile.active_bounties.count() >= num_issues
-    if is_working_on_too_much_stuff:
-        return JsonResponse({
-            'error': _(f'You may only work on max of {num_issues} issues at once.'),
-            'success': False},
-            status=401)
+    max_num_issues = profile.max_num_issues_start_work
+    currently_working_on = profile.active_bounties.count()
+
+    if currently_working_on >= max_num_issues:
+        return JsonResponse(
+            {
+                'error': _(f'You cannot work on more than {max_num_issues} issues at once'),
+                'success': False
+            },
+            status=401
+        )
 
     if profile.no_times_slashed_by_staff():
         return JsonResponse({
@@ -351,6 +366,57 @@ def new_interest(request, bounty_id):
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
+        if bounty.event:
+            try:
+                if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
+                    try:
+                        bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
+                        created, channel_details = create_channel_if_not_exists({
+                            'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                            'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
+                            'channel_name': bounty_channel_name[:60]
+                        })
+                        bounty_channel_id = channel_details['id']
+                        bounty.chat_channel_id = bounty_channel_id
+                        bounty.save()
+                    except Exception as e:
+                        logger.error(str(e))
+                        raise ValueError(e)
+                else:
+                    bounty_channel_id = bounty.chat_channel_id
+
+                funder_profile = Profile.objects.get(handle__iexact=bounty.bounty_owner_github_username)
+
+                if funder_profile:
+                    if funder_profile.chat_id is '':
+                        try:
+                            created, funder_details_response = create_user_if_not_exists(funder_profile)
+                            funder_profile.chat_id = funder_details_response['id']
+                            funder_profile.save()
+                        except Exception as e:
+                            logger.error(str(e))
+                            raise ValueError(e)
+
+                    if profile.chat_id is '':
+
+                        try:
+                            created, profile_lookup_response = create_user_if_not_exists(profile)
+                            profile.chat_id = profile_lookup_response['id']
+                            profile.save()
+                        except Exception as e:
+                            logger.error(str(e))
+                            raise ValueError(e)
+
+                    profiles_to_connect = [
+                        funder_profile.chat_id,
+                        profile.chat_id
+                    ]
+                    add_to_channel.delay(
+                        {'id': bounty_channel_id}, profiles_to_connect
+                    )
+
+            except Exception as e:
+                print(str(e))
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -629,33 +695,29 @@ def extend_expiration(request, bounty_id):
 @csrf_exempt
 @require_POST
 def cancel_reason(request):
-    """Extend expiration of the Bounty.
+    """Add Cancellation Reason for Bounty during Cancellation
 
-    Can only be called by funder or staff of the bounty.
-
-    :request method: POST
+    request method: POST
 
     Params:
         pk (int): ID of the Bounty.
         canceled_bounty_reason (string): STRING with cancel  reason
-
-    Returns:
-        dict: The success key with a boolean value and accompanying error.
-
     """
-    print(request.POST.get('canceled_bounty_reason'))
     user = request.user if request.user.is_authenticated else None
 
     if not user:
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
-            status=401)
+            status=401
+        )
 
     try:
         bounty = Bounty.objects.get(pk=request.POST.get('pk'))
     except Bounty.DoesNotExist:
-        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
-                            status=401)
+        return JsonResponse(
+            {'errors': ['Bounty not found']},
+            status=404
+        )
 
     is_funder = bounty.is_funder(user.username.lower()) if user else False
     if is_funder:
@@ -665,12 +727,15 @@ def cancel_reason(request):
 
         return JsonResponse({
             'success': True,
-            'msg': _("Cancel reason added."),
+            'msg': _("cancel reason added."),
         })
 
-    return JsonResponse({
-        'error': _("You must be funder to add a reason"),
-    }, status=200)
+    return JsonResponse(
+        {
+            'error': _('bounty cancellation is bounty funder operatio'),
+        },
+        status=410
+    )
 
 
 @require_POST
@@ -1118,31 +1183,6 @@ def accept_bounty(request):
     return TemplateResponse(request, 'process_bounty.html', params)
 
 
-def contribute(request):
-    """Contribute to the bounty.
-
-    Args:
-        pk (int): The primary key of the bounty to be accepted.
-
-    Raises:
-        Http404: The exception is raised if no associated Bounty is found.
-
-    Returns:
-        TemplateResponse: The accept bounty view.
-
-    """
-    bounty = handle_bounty_views(request)
-
-    params = get_context(
-        ref_object=bounty,
-        user=request.user if request.user.is_authenticated else None,
-        confirm_time_minutes_target=confirm_time_minutes_target,
-        active='contribute_bounty',
-        title=_('Contribute'),
-    )
-    return TemplateResponse(request, 'contribute_bounty.html', params)
-
-
 def invoice(request):
     """invoice view.
 
@@ -1182,35 +1222,6 @@ def invoice(request):
             params['total'] += Decimal(tip.value_in_usdt)
 
     return TemplateResponse(request, 'bounty/invoice.html', params)
-
-
-def social_contribution(request):
-    """Social Contributuion to the bounty.
-
-    Args:
-        pk (int): The primary key of the bounty to be accepted.
-
-    Raises:
-        Http404: The exception is raised if no associated Bounty is found.
-
-    Returns:
-        TemplateResponse: The accept bounty view.
-
-    """
-    bounty = handle_bounty_views(request)
-    promo_text = str(_("Check out this bounty that pays out ")) + f"{bounty.get_value_true} {bounty.token_name} {bounty.url}"
-    for keyword in bounty.keywords_list:
-        promo_text += f" #{keyword}"
-
-    params = get_context(
-        ref_object=bounty,
-        user=request.user if request.user.is_authenticated else None,
-        confirm_time_minutes_target=confirm_time_minutes_target,
-        active='social_contribute',
-        title=_('Social Contribute'),
-    )
-    params['promo_text'] = promo_text
-    return TemplateResponse(request, 'social_contribution.html', params)
 
 
 def social_contribution_modal(request):
@@ -1413,6 +1424,7 @@ def bulk_payout_bounty(request):
 
 
 @require_GET
+@login_required
 def fulfill_bounty(request):
     """Fulfill a bounty.
 
@@ -1438,8 +1450,9 @@ def fulfill_bounty(request):
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='fulfill_bounty',
-        title=_('Submit Work'),
+        title=_('Submit Work')
     )
+    params['is_bounties_network'] = bounty.is_bounties_network
     return TemplateResponse(request, 'bounty/fulfill.html', params)
 
 
@@ -1503,9 +1516,12 @@ def cancel_bounty(request):
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='kill_bounty',
-        title=_('Cancel Bounty'),
+        title=_('Cancel Bounty')
     )
-    return TemplateResponse(request, 'bounty/kill.html', params)
+
+    params['is_bounties_network'] = bounty.is_bounties_network
+
+    return TemplateResponse(request, 'bounty/cancel.html', params)
 
 
 def refund_request(request):
@@ -1904,9 +1920,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
                 params['canonical_url'] = bounty.canonical_url
-
-                if bounty.web3_type == 'bounties_network':
-                    params['is_bounties_network'] = True
+                params['is_bounties_network'] = bounty.is_bounties_network
 
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
@@ -2433,6 +2447,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     active_bounties = active_bounties.order_by('-web3_created')
     context['active_bounties_count'] = active_bounties.count()
     context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.count()
+    context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).count()
     context['my_kudos'] = profile.get_my_kudos.distinct('kudos_token_cloned_from__name')[0:7]
 
     # specific tabs
@@ -2536,6 +2551,8 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'people':
         pass
+    elif tab == 'hackathons':
+        context['projects'] = HackathonProject.objects.filter( profiles__id=profile.id)
     elif tab == 'quests':
         context['quest_wins'] = profile.quest_attempts.filter(success=True)
     elif tab == 'grants':
@@ -2649,7 +2666,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe']
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2715,6 +2732,7 @@ def profile(request, handle, tab=None):
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
+    context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
@@ -2791,7 +2809,6 @@ def get_quickstart_video(request):
 def extend_issue_deadline(request):
     """Show quickstart video."""
     bounty = Bounty.objects.get(pk=request.GET.get("pk"))
-    print(bounty)
     context = {
         'active': 'extend_issue_deadline',
         'title': _('Extend Expiration'),
@@ -3277,9 +3294,12 @@ def get_suggested_contributors(request):
                 },
                 status=200)
 
+
 @csrf_exempt
+@login_required
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def change_bounty(request, bounty_id):
+    # ETC-TODO: ADD UPDATE AMOUNT for ETC
     user = request.user if request.user.is_authenticated else None
 
     if not user:
@@ -3358,6 +3378,31 @@ def change_bounty(request, bounty_id):
                     if key == 'reserved_for_user_handle' and value:
                         new_reservation = True
 
+        if not bounty.is_bounties_network:
+            current_amount = float(bounty.value_true)
+            new_amount = float(params.get('amount'))
+            if new_amount and current_amount != new_amount:
+                print("SHIT-2")
+                bounty.value_true = new_amount
+                value_in_token = params.get('value_in_token')
+                bounty.value_in_token = value_in_token
+                bounty.balance = value_in_token
+                try:
+                    bounty.token_value_in_usdt = convert_token_to_usdt(bounty.token_name)
+                    bounty.value_in_usdt = convert_amount(bounty.value_true, bounty.token_name, 'USDT')
+                    bounty.value_in_usdt_now = bounty.value_in_usdt
+                    bounty.value_in_eth = convert_amount(bounty.value_true, bounty.token_name, 'ETH')
+                    bounty_changed = True
+                except ConversionRateNotFoundError as e:
+                    logger.debug(e)
+
+            current_hours = int(bounty.estimated_hours)
+            new_hours = int(params.get('hours'))
+            if new_hours and current_hours != new_hours:
+                bounty.estimated_hours = new_hours
+                bounty.metadata['estimatedHours'] = new_hours
+                bounty_changed = True
+
         if not bounty_changed:
             return JsonResponse({
                 'success': True,
@@ -3392,8 +3437,14 @@ def change_bounty(request, bounty_id):
     params = {
         'title': _('Change Bounty Details'),
         'pk': bounty.pk,
-        'result': json.dumps(result)
+        'result': json.dumps(result),
+        'is_bounties_network': bounty.is_bounties_network,
+        'token_name': bounty.token_name,
+        'token_address': bounty.token_address,
+        'amount': bounty.get_value_true,
+        'estimated_hours': bounty.estimated_hours
     }
+
     return TemplateResponse(request, 'bounty/change.html', params)
 
 
@@ -3476,7 +3527,7 @@ def get_kudos(request):
             kudos_json['name'] = token.name
             kudos_json['name_human'] = humanize_name(token.name)
             kudos_json['description'] = token.description
-            kudos_json['image'] = token.image
+            kudos_json['image'] = token.preview_img_url
 
             kudos_json['price_finney'] = token.price_finney / 1000
             kudos_json['price_usd'] = eth_to_usd * kudos_json['price_finney']
@@ -3819,7 +3870,7 @@ def hackathon_registration(request):
             status=401)
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
-        registration_data = HackathonRegistration.objects.create(
+        HackathonRegistration.objects.create(
             name=hackathon,
             hackathon= hackathon_event,
             referer=referer,
@@ -4312,20 +4363,21 @@ def save_tribe(request,handle):
 @csrf_exempt
 @require_POST
 @staff_member_required
-def create_bounty(request):
+def create_bounty_v1(request):
 
     '''
-        TODO
+        ETC-TODO
         - evaluate validity of duplicate / redundant data in models
         - wire in email (invite + successful creation)
-        - create activty entry
     '''
     response = {
         'status': 400,
         'message': 'error: Bad Request. Unable to create bounty'
     }
 
-    if not request.user.is_authenticated:
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
         response['message'] = 'error: user needs to be authenticated to create bounty'
         return JsonResponse(response)
 
@@ -4377,14 +4429,14 @@ def create_bounty(request):
     bounty.value_in_token = request.POST.get("value_in_token", 0)
     bounty.token_address = request.POST.get("token_address")
     bounty.bounty_owner_email = request.POST.get("bounty_owner_email")
-    bounty.bounty_owner_name = request.POST.get("bounty_owner_name", '') # TODO: REMOVE ?
-    bounty.contract_address = bounty.token_address          # TODO: REMOVE ?
-    bounty.balance = bounty.value_in_token                  # TODO: REMOVE ?
-    bounty.raw_data = request.POST.get("raw_data", {})      # TODO: REMOVE ?
+    bounty.bounty_owner_name = request.POST.get("bounty_owner_name", '') # ETC-TODO: REMOVE ?
+    bounty.contract_address = bounty.token_address          # ETC-TODO: REMOVE ?
+    bounty.balance = bounty.value_in_token                  # ETC-TODO: REMOVE ?
+    bounty.raw_data = request.POST.get("raw_data", {})      # ETC-TODO: REMOVE ?
     bounty.web3_type = request.POST.get("web3_type", '')
     bounty.value_true = request.POST.get("amount", 0)
 
-    ''' TODO
+    ''' ETC-TODO
     bounty.unsigned_nda = request.POST.get("unsigned_nda")
     '''
 
@@ -4455,9 +4507,199 @@ def create_bounty(request):
 
     bounty.save()
 
+    event_name = 'new_bounty'
+    record_bounty_activity(bounty, user, event_name)
+    maybe_market_to_email(bounty, event_name)
+
+    # maybe_market_to_slack(bounty, event_name)
+    # maybe_market_to_user_slack(bounty, event_name)
+    # maybe_market_to_user_discord(bounty, event_name)
+
     response = {
         'status': 204,
         'message': 'bounty successfully created',
+        'bounty_url': bounty.url
+    }
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+@staff_member_required
+def cancel_bounty_v1(request):
+    '''
+        ETC-TODO
+        - wire in email (invite + successful cancellation)
+    '''
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to cancel bounty'
+    }
+
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to cancel bounty'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: cancel bounty is a POST operation'
+        return JsonResponse(response)
+
+    try:
+       bounty = Bounty.objects.get(pk=request.POST.get('pk'))
+    except Bounty.DoesNotExist:
+        response['message'] = 'error: bounty not found'
+        return JsonResponse(response)
+
+    if bounty.bounty_state in ['cancelled', 'done']:
+        response['message'] = 'error: bounty in ' + bounty.bounty_state + ' state cannot be cancelled'
+        return JsonResponse(response)
+
+    is_funder = bounty.is_funder(user.username.lower()) if user else False
+
+    if not is_funder:
+        response['message'] = 'error: bounty cancellation is bounty funder operation'
+        return JsonResponse(response)
+
+    canceled_bounty_reason = request.POST.get('canceled_bounty_reason')
+    if not canceled_bounty_reason:
+        response['message'] = 'error: missing canceled_bounty_reason'
+        return JsonResponse(response)
+
+    event_name = 'killed_bounty'
+    record_bounty_activity(bounty, user, event_name)
+    # maybe_market_to_email(bounty, event_name)
+    # maybe_market_to_slack(bounty, event_name)
+    # maybe_market_to_user_slack(bounty, event_name)
+
+    bounty.bounty_state = 'cancelled'
+    bounty.idx_status = 'cancelled'
+    bounty.is_open = False
+    bounty.canceled_on = timezone.now()
+    bounty.canceled_bounty_reason = canceled_bounty_reason
+    bounty.save()
+
+    response = {
+        'status': 204,
+        'message': 'bounty successfully cancelled',
+        'bounty_url': bounty.url
+    }
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+@staff_member_required
+def fulfill_bounty_v1(request):
+    '''
+        ETC-TODO
+        - wire in email (invite + successful fulfillment)
+        - create activty entry
+        - evalute BountyFulfillment unused fields
+    '''
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to fulfill bounty'
+    }
+
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to fulfill bounty'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: fulfill bounty is a POST operation'
+        return JsonResponse(response)
+
+    try:
+       bounty = Bounty.objects.get(github_url=request.POST.get('issueURL'))
+    except Bounty.DoesNotExist:
+        response['message'] = 'error: bounty not found'
+        return JsonResponse(response)
+
+    if bounty.bounty_state in ['cancelled', 'done']:
+        response['message'] = 'error: bounty in ' + bounty.bounty_state + ' state cannot be fulfilled'
+        return JsonResponse(response)
+
+    if BountyFulfillment.objects.filter(bounty=bounty):
+        response['message'] = 'error: user can submit once per bounty'
+        return JsonResponse(response)
+
+    event_name = 'work_submitted'
+    record_bounty_activity(bounty, user, event_name)
+    maybe_market_to_email(bounty, event_name)
+    # maybe_market_to_slack(bounty, event_name)
+    # maybe_market_to_user_slack(bounty, event_name)
+
+    if bounty.bounty_state != 'work_submitted':
+        bounty.bounty_state = 'work_submitted'
+        bounty.idx_status = 'submitted'
+
+    bounty.num_fulfillments += 1
+    bounty.save()
+
+    fulfillment = BountyFulfillment()
+
+    fulfillment.bounty = bounty
+    fulfillment.profile = profile
+
+    now = timezone.now()
+    fulfillment.created_on = now
+    fulfillment.modified_on = now
+    fulfillment.funder_last_notified_on = now
+    fulfillment.fulfiller_github_username = profile.handle
+
+    # fulfillment.fulfiller_name    ETC-TODO: REMOVE ?
+    # fulfillment.fulfillment_id    ETC-TODO: REMOVE ?
+
+    fulfiller_address = request.POST.get('fulfiller_address')
+    if not fulfiller_address:
+        response['message'] = 'error: missing fulfiller_address'
+        return JsonResponse(response)
+    fulfillment.fulfiller_address = fulfiller_address
+
+    fulfiller_email = request.POST.get('email')
+    if not fulfiller_email:
+        response['message'] = 'error: missing email'
+        return JsonResponse(response)
+    fulfillment.fulfiller_email = fulfiller_email
+
+    hours_worked = request.POST.get('hoursWorked')
+    if not hours_worked or not hours_worked.isdigit():
+        response['message'] = 'error: missing hoursWorked'
+        return JsonResponse(response)
+    fulfillment.fulfiller_hours_worked = hours_worked
+
+    fulfiller_github_url = request.POST.get('githubPRLink')
+    if not fulfiller_github_url:
+        response['message'] = 'error: missing githubPRLink'
+        return JsonResponse(response)
+    fulfillment.fulfiller_github_url = fulfiller_github_url
+
+    fulfiller_metadata = request.POST.get('metadata', {})
+    fulfillment.fulfiller_metadata = json.loads(fulfiller_metadata)
+
+    fulfillment.save()
+
+    response = {
+        'status': 204,
+        'message': 'bounty successfully fulfilled',
         'bounty_url': bounty.url
     }
 

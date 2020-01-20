@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle dashboard helpers and related logic.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -524,12 +524,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 latest_old_bounty_dict['coupon_code'] = Coupon.objects.get(pk=latest_old_bounty_dict['coupon_code'])
 
             bounty_kwargs.update(latest_old_bounty_dict)
-
         try:
             print('new bounty with kwargs:{}'.format(bounty_kwargs))
             new_bounty = Bounty.objects.create(**bounty_kwargs)
             merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details)
-
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
             logger.error(f'{e} encountered during new bounty creation for: {url}')

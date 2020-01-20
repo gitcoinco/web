@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -92,7 +92,7 @@
                   <div class="row">
                     <div class="col-12 col-md-6">
                       <label class="font-body">{% trans "Monthly amount sought in DAI" %}</label>
-                      <input type="number" id="amount_goal" name="amount_goal" class="form__input form__input-lg" min="0.001" required />
+                      <input type="number" id="amount_goal" name="amount_goal" class="form__input form__input-lg" min="0.001" step=".001" required />
                     </div>
                     <div class="col-12 col-md-6">
                       <label class="font-body">{% trans "Required Token For Subscription" %}</label>
