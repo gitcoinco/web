@@ -20,7 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import json
 import logging
+from datetime import datetime
 
+from dateutil import parser
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -59,12 +61,10 @@ def join_session(request, session):
     }
     return TemplateResponse(request, 'active_session.html', context)
 
+
 @login_required
 def new_session(request):
     """Render the sessions home page."""
-
-    for p in Profile.objects.all():
-        print(p.handle)
 
     if request.method == "POST":
         name = request.POST.get('name', 'Mentoring')
@@ -97,3 +97,84 @@ def new_session(request):
         "sessions": listings
     }
     return TemplateResponse(request, 'new_session.html', context)
+
+
+@csrf_exempt
+@login_required
+def update_session(request, session):
+    """Update current info of this set"""
+    errors = []
+    session = get_object_or_404(Sessions, id=session)
+    name = request.POST.get('name', None)
+    description = request.POST.get('description', None)
+    metadata = request.POST.get('metadata', None)
+    tags = request.POST.get('tags', None)
+    active = request.POST.get('active', None)
+    amount = request.POST.get('amount', None)
+    tx_status = request.POST.get('tx_status', None)
+    tx_id = request.POST.get('tx_id', None)
+    tx_time = request.POST.get('tx_time', None)
+
+    if name:
+        session.name = name
+        print('name')
+
+    if description:
+        session.description = description
+        print('description')
+
+    if metadata:
+        try:
+            session.metadata = json.loads(metadata)
+            print(metadata)
+        except json.decoder.JSONDecodeError:
+            errors.append({'metadata': ['Error parsing json metadata']})
+
+    if not active is None:
+        print(active)
+        session.active = active == 'true'
+
+    if amount:
+        try:
+            session.amount = float(amount)
+            print('amount')
+        except ValueError:
+            errors.append({'amount': ['Error parsing amount data']})
+
+    if tx_status in ['na', 'pending', 'success''error', 'error', 'unknown', 'dropped']:
+        session.tx_status = tx_status
+        print('status')
+
+    if not session.tx_id and tx_id:
+        session.tx_received_on = datetime.now()
+        try:
+            session.tx_id = int(tx_id)
+            print('tx')
+        except ValueError:
+            errors.append({'tx_id': ['Error parsing tx id']})
+
+        try:
+            session.tx_time = parser.parse(tx_time)
+            print(tx_time)
+        except ValueError:
+            errors.append({'tx_time': ['Error parsing tx datetime']})
+
+    if tags:
+        try:
+            session.tags = json.loads(tags)
+            if not type(session.tags) is list:
+                raise ValueError('Expected list')
+        except (json.decoder.JSONDecodeError, ValueError):
+            errors.append({'metadata': ['Error parsing tags data']})
+
+    if errors:
+        print('errors')
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Validation errors',
+            'errors': errors
+        }, status=422)
+
+    session.save()
+    print('save')
+    return JsonResponse({'status': 'ok', 'message': ''})
