@@ -2475,7 +2475,7 @@ class Profile(SuperModel):
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
     tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
-
+    as_representation = JSONField(default=dict, blank=True)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2718,6 +2718,7 @@ class Profile(SuperModel):
         self.success_rate = self.calc_success_rate()
         self.reliability = self.calc_reliability_ranking() # must be calc'd last
         self.as_dict = json.loads(json.dumps(self.to_dict()))
+        self.as_representation = json.loads(json.dumps(self.to_representation))
         self.last_calc_date = timezone.now() + timezone.timedelta(seconds=1)
 
     def get_persona_action_count(self):
@@ -3661,6 +3662,21 @@ class Profile(SuperModel):
         self.avatar_baseavatar_related.update(active=False)
         self.avatar_baseavatar_related.filter(pk=avatar_pk).update(active=True)
 
+    @property
+    def to_representation(instance):
+        return {
+            'id': instance.id,
+            'handle': instance.handle,
+            'github_url': instance.github_url,
+            'avatar_url': instance.avatar_url,
+            'keywords': instance.keywords,
+            'url': instance.get_relative_url(),
+            'position': instance.get_contributor_leaderboard_index(),
+            'organizations': instance.get_who_works_with(network=None),
+            'total_earned': instance.get_eth_sum(network=None)
+        }
+
+
     def to_dict(self):
         """Get the dictionary representation with additional data.
 
@@ -3882,18 +3898,11 @@ class ProfileSerializer(serializers.BaseSerializer):
             dict: The serialized Profile.
 
         """
-
-        return {
-            'id': instance.id,
-            'handle': instance.handle,
-            'github_url': instance.github_url,
-            'avatar_url': instance.avatar_url,
-            'keywords': instance.keywords,
-            'url': instance.get_relative_url(),
-            'position': instance.get_contributor_leaderboard_index(),
-            'organizations': instance.get_who_works_with(network=None),
-            'total_earned': instance.get_eth_sum(network=None)
-        }
+        has_representation = instance.as_representation.get('id')
+        if not has_representation:
+            instance.calculate_all()
+            instance.save()
+        return instance.as_representation
 
 
 @receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
