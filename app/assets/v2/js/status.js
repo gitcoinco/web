@@ -58,43 +58,51 @@ $(document).ready(function() {
     const file = $("#file-upload").prop("files")[0];
     const ask = $('.activity_type_selector .active input').val();
 
-    data.append('ask', ask);
-    data.append('data', message.val().trim());
-    data.append('what', $('#status [name=what]').val());
-    message.val('');
-    data.append('file', file)
-    data.append(
-      'csrfmiddlewaretoken',
-      $('#status input[name="csrfmiddlewaretoken"]').attr('value')
-    );
-    fetch('/api/v0.1/activity', {
-      method: 'post',
-      body: data
-    })
-      .then(response => {
-        if (response.status === 200) {
-          _alert(
-            { message: gettext('Status has been saved.') },
-            'success',
-            1000
-          );
-          const activityContainer = document.querySelector('.tab-section.active .activities');
-
-          if (!activityContainer) {
-            document.run_long_poller(false);
-            // success
-            return;
-          }
-          activityContainer.setAttribute('page', 0);
-          $('.tab-section.active .activities').html('');
-          message.val('');
-        } else {
-          _alert(
-            { message: gettext('An error occurred. Please try again.') },
-            'error'
-          );
-        }
+    if (file && file.size > 3145728) {
+      _alert(
+        { message: gettext('File size exceeded. Please ensure your file is less than 3MB.') },
+        'error',
+        5000
+      );
+    } else {
+      data.append('ask', ask);
+      data.append('data', message.val().trim());
+      data.append('what', $('#status [name=what]').val());
+      message.val('');
+      data.append('file', file)
+      data.append(
+        'csrfmiddlewaretoken',
+        $('#status input[name="csrfmiddlewaretoken"]').attr('value')
+      );
+      fetch('/api/v0.1/activity', {
+        method: 'post',
+        body: data
       })
-      .catch(err => console.log('Error ', err));
-  }
+        .then(response => {
+          if (response.status === 200) {
+            _alert(
+              { message: gettext('Status has been saved.') },
+              'success',
+              1000
+            );
+            const activityContainer = document.querySelector('.tab-section.active .activities');
+
+            if (!activityContainer) {
+              document.run_long_poller(false);
+              // success
+              return;
+            }
+            activityContainer.setAttribute('page', 0);
+            $('.tab-section.active .activities').html('');
+            message.val('');
+          } else {
+            _alert(
+              { message: gettext('An error occurred. Please try again.') },
+              'error'
+            );
+          }
+        })
+        .catch(err => console.log('Error ', err));
+      }
+    }
 });

@@ -9,13 +9,13 @@
     data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
   ></textarea>
   <input type="hidden" name="what" value="{{what}}:{{whatid}}">
-
-    <div class="d-flex">
-      <label for="file-upload" class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption profile-file-upload py-2 px-3">
-        <i class="fas fa-cloud-upload"></i>
-        Upload image
-      </label>
-      <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
+  <div class="d-flex">
+    <label for="file-upload" class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption status-file-upload py-2 px-3">
+      <i class="fas fa-cloud-upload"></i>
+      Upload image
+    </label>
+    <input type="file" id="file-upload" accept="image/x-png,image/gif,image/jpeg"/>
+    <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
       {% if tags %}
         {% for tag in tags %}
           <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" >
@@ -28,5 +28,4 @@
       <button class="btn btn-gc-blue font-caption" id="btn_post" disabled="true">SHARE <i class="fas fa-share"></i></button>
     </div>
   </div>
-
 </div>
