@@ -14,6 +14,7 @@ const selectScreen = screen => {
     $(".create-stream"),
     $(".wait"),
     $(".wait-stream"),
+    $(".wait-stream-deletion"),
     $(".wait-stream-register"),
     $(".stream-busy")
   ].map(screen => screen.hide());
@@ -28,15 +29,10 @@ const resetScreen = () => {
   }
 };
 
-// Session storage default
-if(!sessionStorage.getItem('blacklist_stream')) {
-	sessionStorage.setItem('blacklist_stream', []);
-}
-
 // Test DAI have 18 decimals
 const TESTDAI_DECIMAL = Math.pow(10, 18);
 // Waiting time between approval and attempting to call the contract (in ms)
-const CONFIRMATION_WAIT_TIME = 30000;
+const CONFIRMATION_WAIT_TIME = 25000;
 // Delay before stream startTime (in s)
 const STREAM_START_TIME_DELAY = 120;
 
@@ -105,8 +101,32 @@ const startStreamCountdown = function() {
   }, 1000);
 };
 
+// Check cancellations before calling the cancelStream contracts
+const checkCancellations = function(streamId) {
+  const query = `
+			{
+				cancellations {
+					id
+				}
+			}
+		`;
+
+  return fetch(
+    "https://api.thegraph.com/subgraphs/name/sablierhq/sablier-rinkeby",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query })
+    }
+  )
+    .then(answer => answer.json())
+    .then(answer => answer.data.cancellations.map(stream => stream.id))
+    .then(cancelledStreams => cancelledStreams.includes(streamId));
+};
+
 const startAPIPooling = function() {
   console.warn("starting fetching");
+  // TODO filter cancellations
   const query = `
 			{
 				streams (where: {recipient: "${room_address}"}) {
@@ -137,9 +157,10 @@ const startAPIPooling = function() {
         // Find if there's a next stream
         if (answer.data.streams.length) {
           const now = Math.round(new Date().getTime() / 1000);
-          const blacklist_stream = sessionStorage.getItem('blacklist_stream');
+          const cancelled = answer.data.cancellations.map(stream => stream.id);
+          console.log("cancelled", cancelled);
           const streams = answer.data.streams
-            .filter(stream => !blacklist_stream.includes(stream.id))
+            .filter(stream => !cancelled.includes(stream.id))
             .sort((a, b) => a.startTime < b.startTime);
           console.log("streams", streams);
 
@@ -181,24 +202,23 @@ const startAPIPooling = function() {
 // Jitsy-related functions
 
 const cancelStream = () => {
-  if (address.toLowerCase() !== room_address.toLowerCase()) {
-    sablier_contract.cancelStream(currentStream.id, () => {
-      let blacklist_stream = sessionStorage.getItem('blacklist_stream');
-			console.log('what is blacklist_stream', blacklist_stream)
-      blacklist_stream.push(currentStream.id);
-      sessionStorage.setItem('blacklist_stream', blacklist_stream)
-
-      jitsy.executeCommand("hangup");
-      destroyJitsy();
-      resetScreen();
-      startAPIPooling(address);
-    });
-  } else {
-    jitsy.executeCommand("hangup");
-    destroyJitsy();
-    resetScreen();
-    startAPIPooling(address);
-  }
+	setTimeout(() => {
+		checkCancellations(currentStream.id).then(cancelled => {
+			if (cancelled) {
+				jitsy.executeCommand("hangup");
+				destroyJitsy();
+				resetScreen();
+				startAPIPooling(address);
+			} else {
+				sablier_contract.cancelStream(currentStream.id, () => {
+					jitsy.executeCommand("hangup");
+					destroyJitsy();
+					resetScreen();
+					startAPIPooling(address);
+				});
+			}
+		});
+	}, CONFIRMATION_WAIT_TIME);
 };
 
 const initJitsy = function() {
@@ -210,9 +230,27 @@ const initJitsy = function() {
     parentNode: document.querySelector("#jitsy-placeholder")
   };
   jitsy = new JitsiMeetExternalAPI(domain, options);
+	// If the session disconnect, we will attempt to cancel the stream
   jitsy.on("participantLeft", () => {
     console.warn("other participant left the room");
-    cancelStream();
+		selectScreen($('.wait-stream-deletion'))
+		setTimeout(() => {
+			checkCancellations(currentStream.id).then(cancelled => {
+				if (cancelled) {
+					jitsy.executeCommand("hangup");
+					destroyJitsy();
+					resetScreen();
+					startAPIPooling(address);
+				} else {
+					sablier_contract.cancelStream(currentStream.id, () => {
+						jitsy.executeCommand("hangup");
+						destroyJitsy();
+						resetScreen();
+						startAPIPooling(address);
+					});
+				}
+			});
+		}, CONFIRMATION_WAIT_TIME);
   });
 };
 
@@ -242,6 +280,8 @@ $(document).ready(function() {
       const depositMin = parseInt($("#deposit").val());
       if (depositMin === NaN) return;
       // TODO: show an error message
+			
+			selectScreen($(".wait-stream-register"));
 
       const mentor_address = room_address;
 
@@ -269,7 +309,6 @@ $(document).ready(function() {
 
       testdai_contract.approve(sablier_address(), deposit, () => {
         setTimeout(() => {
-          selectScreen($(".wait-stream-register"));
           console.warn(
             "creating the stream at ",
             Math.round(new Date().getTime() / 1000)
@@ -291,7 +330,17 @@ $(document).ready(function() {
 
     // Stop the stream
 
-    $(".stop-stream-btn").click(cancelStream);
+		$(".stop-stream-btn").click(() => {
+			selectScreen($('.wait-stream-deletion'))
+			sablier_contract.cancelStream(currentStream.id, () => {
+				jitsy.executeCommand("hangup");
+				destroyJitsy();
+				setTimeout(() => {
+					resetScreen();
+					startAPIPooling(address);
+				}, CONFIRMATION_WAIT_TIME);
+			});
+		});
 
     // Withdraw money
     $("withdraw-btn").click(() => {
