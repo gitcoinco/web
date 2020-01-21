@@ -24,10 +24,29 @@ const selectScreen = screen => {
 const resetScreen = () => {
   if (room_address.toLowerCase() === address.toLowerCase()) {
     selectScreen($(".wait"));
+		$('withdran-btn').show();
   } else {
     selectScreen($(".create-stream"));
+		$('withdran-btn').hide();
   }
 };
+
+$('#depositDescribe').hide()	
+const updatePrice = () => {
+	const value = $('#deposit').val();
+	const depositMin = parseInt(value);
+	if(depositMin === NaN) {
+		$('#depositDescribe').hide()	
+	}
+	else {
+		$('#depositDescribe').show()	
+		const depositDai = depositMin * rate_per_min / TESTDAI_DECIMAL;
+		$('.deposit-dai').text(depositDai.toFixed(2));
+		$('.deposit-rate').text(rate_per_min / TESTDAI_DECIMAL);
+	}
+}
+
+$('#deposit').keyup(updatePrice).change(updatePrice);
 
 // Test DAI have 18 decimals
 const TESTDAI_DECIMAL = Math.pow(10, 18);
@@ -64,9 +83,13 @@ const startEarningRefresh = function() {
     // TODO: not working
     const depositDai = currentStream.deposit / TESTDAI_DECIMAL;
     $(".deposit-dai").text(depositDai.toFixed(2));
-
+		console.log('diff', diff);
+		console.log('total', total);
+		console.log('depositDai', depositDai)
     const streamedDai = ((diff / total) * depositDai) / TESTDAI_DECIMAL;
+		console.log('streamedDai',streamedDai)	
     $(".streamed-dai").text(streamedDai.toFixed(2));
+		$('.progress-bar').css('width', `${diff / total}%`);
 
     if (now > stopTime) {
       console.log("address", address);
@@ -199,6 +222,58 @@ const startAPIPooling = function() {
   }, 10000);
 };
 
+const createStream = () => {
+	const depositMin = parseInt($("#deposit").val());
+	if (depositMin === NaN) return;
+	// TODO: show an error message
+	
+	selectScreen($(".wait-stream-register"));
+
+	const mentor_address = room_address;
+
+	// Compute a deposit_rounded (deposit should be a multiple of delta)
+	const now = Math.round(new Date().getTime() / 1000);
+	const startTime = now + STREAM_START_TIME_DELAY;
+	const stopTime = now + STREAM_START_TIME_DELAY + depositMin * 60;
+	const delta = stopTime - startTime;
+	const deposit = depositMin * rate_per_min;
+	const deposit_rounded = closerMultiple(deposit, delta);
+
+	console.warn("mentor_address", mentor_address);
+
+	console.warn("deposit", deposit);
+	console.warn("deposit_rounded", deposit_rounded);
+	console.warn("deposit in dai", deposit / 1000000000000000000);
+	console.warn("now", now);
+	console.warn("startTime", startTime);
+	console.warn("stopTime", stopTime);
+	console.warn("delta", delta);
+
+	// if (deposit_rounded % delta) throw "Not multiple";
+	if (now > startTime) throw "startTime should be in the future";
+	if (startTime > stopTime) throw "stopTime should be after startTime";
+
+	testdai_contract.approve(sablier_address(), deposit, () => {
+		setTimeout(() => {
+			console.warn(
+				"creating the stream at ",
+				Math.round(new Date().getTime() / 1000)
+			);
+			sablier_contract.createStream(
+				mentor_address,
+				deposit_rounded,
+				testdai_address(),
+				startTime,
+				stopTime,
+				() => {
+					// Wait for the beginning of the stream
+					console.warn("DONE", Math.round(new Date().getTime() / 1000));
+				}
+			);
+		}, CONFIRMATION_WAIT_TIME);
+	});
+}
+
 // Jitsy-related functions
 
 const cancelStream = () => {
@@ -275,58 +350,11 @@ $(document).ready(function() {
     resetScreen();
 
     // Create the stream
-
-    $(".create-btn").click(() => {
-      const depositMin = parseInt($("#deposit").val());
-      if (depositMin === NaN) return;
-      // TODO: show an error message
-			
-			selectScreen($(".wait-stream-register"));
-
-      const mentor_address = room_address;
-
-      // Compute a deposit_rounded (deposit should be a multiple of delta)
-      const now = Math.round(new Date().getTime() / 1000);
-      const startTime = now + STREAM_START_TIME_DELAY;
-      const stopTime = now + STREAM_START_TIME_DELAY + depositMin * 60;
-      const delta = stopTime - startTime;
-      const deposit = depositMin * rate_per_min;
-      const deposit_rounded = closerMultiple(deposit, delta);
-
-      console.warn("mentor_address", mentor_address);
-
-      console.warn("deposit", deposit);
-      console.warn("deposit_rounded", deposit_rounded);
-      console.warn("deposit in dai", deposit / 1000000000000000000);
-      console.warn("now", now);
-      console.warn("startTime", startTime);
-      console.warn("stopTime", stopTime);
-      console.warn("delta", delta);
-
-      // if (deposit_rounded % delta) throw "Not multiple";
-      if (now > startTime) throw "startTime should be in the future";
-      if (startTime > stopTime) throw "stopTime should be after startTime";
-
-      testdai_contract.approve(sablier_address(), deposit, () => {
-        setTimeout(() => {
-          console.warn(
-            "creating the stream at ",
-            Math.round(new Date().getTime() / 1000)
-          );
-          sablier_contract.createStream(
-            mentor_address,
-            deposit_rounded,
-            testdai_address(),
-            startTime,
-            stopTime,
-            () => {
-              // Wait for the beginning of the stream
-              console.warn("DONE", Math.round(new Date().getTime() / 1000));
-            }
-          );
-        }, CONFIRMATION_WAIT_TIME);
-      });
-    });
+    $(".create-btn").click(createStream);
+		$(".create-retry-btn").click(createStream)
+		$(".create-cancel-btn").click(() => {
+			selectScreen($('.create-stream'));	
+		})
 
     // Stop the stream
 

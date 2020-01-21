@@ -40,74 +40,112 @@
       </div>
     </header>
 
-		<section class="container main">
+		<section class="container main my-3">
 			<div class="row">
 				<div class="col-sm">
 					<div id="jitsy-placeholder">
 					</div>
 				</div>
-				<div class="col-sm">
-					<div class="info-panel">
-						<h2>Mentoring session</h2>
-						<p class="counter">
-							<span class="diff">
-								<span class="min"></span>
-								:
-								<span class="sec"></span>
-							</span> / 
-							<span class="total">
-								<span class="min"></span>
-								:
-								<span class="sec"></span>
-							<span>
-						</p>
+				<div class="col-sm text-centered my-3">
+					<p>You're currently streaming with {{session.mentor.name}}</p>
+					<p class="lead">
+						<span class="diff">
+							<span class="min"></span>
+							:
+							<span class="sec"></span>
+						</span> / 
+						<span class="total">
+							<span class="min"></span>
+							:
+							<span class="sec"></span>
+						<span>
+					</p>
+					<div class="progress">
+						<div 
+							class="progress-bar progress-bar-striped" 
+							role="progressbar" 
+							style="width: 1%" 
+							aria-valuenow="10" 
+			 				aria-valuemin="0" 
+							aria-valuemax="100"></div>
+					</div>
 						<p class="deposit">
-							<span class="deposit-dai"></span>  DAI have been streamed out of 
-							<span class="streaming-dai"></span> DAI.
-						</p>
-						<button class="stop-stream-btn">Stop session</button>
-						<ul class="activity-logs">
-							<li>{{ mentee.name }} initiated the session with an initial stake of ETH</li>	
-							<li>
-								The available fund have already reached with 
-								<span class="deposit-dai"></span>
-								DAI streamed
-							</li>
-							<!-- TODO: show history -->
-							<!-- <li>You have successfully withdrawn 0.01 ETH 12 minutes after the session start</li> -->
-						</ul>
-				</div>
-				<div class="withdrawn-btn-show">
-					<!-- TODO: refresh this -->>
-					42&percnt; of the 0.05 bounty funds have been streamed for your work
-					<button>Withdraw</button>
+						<span class="streamed-dai"></span>  DAI out of 
+						<span class="deposit-dai"></span> DAI.
+					</p>
+					<button class="btn btn-primary stop-stream-btn">Stop session</button>
+					<button class="btn btn-secondary withdrawn-btn-show">Withdraw</button>
 				</div>
 			</div>
 		</section>
-		<section class="container wait">
-			Waiting for somebody to connect to the stream.
+		<section class="container wait my-3 text-center">
+			<div class="spinner-border" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<p class="lead">
+				Waiting for somebody to connect to the stream.
+			</p>
 		</section>
-		<section class="container wait-stream">
-			The stream will start in 
-			<span class="if-min">
-				<span class="min"></span> minutes and 
-			</span>
-			<span class="sec"></span> seconds.
+		<section class="container wait-stream my-3 text-center">
+			<div class="spinner-grow" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<p class="lead">
+				The stream will start in 
+				<span class="if-min">
+					<span class="min"></span> minutes and 
+				</span>
+				<span class="sec"></span> seconds.
+			</p>
 		</section>
-		<section class="container wait-stream-register">
-			Waiting for the stream to be published.
+		<section class="container wait-stream-register my-3 text-center">
+			<div class="spinner-border" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<p class="lead">Waiting for the stream to be published.</p>
+			<p><small>Don't forget to check your Metamask extension!</small></p>
+			<button class="btn btn-primary create-retry-btn">Retry</button>
+			<button class="btn btn-secondary create-cancel-btn">Cancel</button>
 		</section>
-		<section class="container wait-stream-deletion">
-			The stream is being deleted, please wait.
+		<section class="container wait-stream-deletion my-3 text-center">
+			<div class="spinner-border" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<p class="lead">
+				The stream is being deleted, please wait.
+			</p>
 		</section>
-		<section class="container stream-busy">
-			This stream is busy. Try later.
+		<section class="container stream-busy my-3 text-center">
+			<div class="spinner-grow" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<p class="lead">
+				This stream is busy. Try again later.
+			</p>
 		</section>
-		<section class="container create-stream">
-			<form>
-				<label for="deposit">Deposit</label>
-				<input id="deposit" type="number" /> minutes
-				<button type="button" class="create-btn">Create stream</input>
+		<section class="container create-stream my-3 text-centered">
+			<img src="https://www.sablier.finance/static/media/logo.ace48f85.svg">
+			<h1>Deposit to the stream</h1>
+			<p class="lead">
+				Commission the real-time stream using the form below! The mentor will be yours in a minute!
+			</p>
+			<p>The stream can be cancelled at every moment and you will be refunded with the rest of the money.</p>
+			<form class="deposit-form">
+				<div class="form-group">
+					<label for="deposit">Deposit</label>
+					<input 
+						id="deposit" 
+						type="number" 
+						class="form-number" 
+						aria-describedby="depositDescribe" 
+						min="0"
+						placeholder="30"/> minutes
+					<small id="depositDescribe" class="form-text text-muted">
+						You will commission <span class="deposit-dai"></span> DAI
+						(<span class="deposit-rate"></span> DAI / minute).
+					</small>
+				</div>
+				<button type="button" class="btn btn-primary create-btn">Create stream</input>
 			</form>
 		</section>
     {% include 'shared/footer.html' %}

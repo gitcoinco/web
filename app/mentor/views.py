@@ -85,7 +85,8 @@ def join_session(request, session):
                 "name": "Jean Louis"
             },
             "mentor": {
-                "address": '0x4ee0533dDb6A576Cd6b9a46ed7E94Cf6b75Fe0Dd'
+                "name": "Jean Francois",
+                "address": '0x5268b3d996b375Bf39777ffdE95D615d0D7bd56B'
             },
             "rate_per_min": 50000000000000000
         },
