@@ -2,7 +2,7 @@ from django.contrib import sitemaps
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
-from dashboard.models import Bounty, Profile
+from dashboard.models import Activity, Bounty, HackathonEvent, Profile
 from grants.models import Grant
 from kudos.models import Token
 from quests.models import Quest
@@ -130,6 +130,34 @@ class QuestsSitemap(Sitemap):
         return item.url
 
 
+class HackathonEventSiteMap(Sitemap):
+    changefreq = "weekly"
+    priority = 0.6
+
+    def items(self):
+        return HackathonEvent.objects.filter(visible=True).cache()
+
+    def lastmod(self, obj):
+        return obj.modified_on
+
+    def location(self, item):
+        return item.url
+
+
+class ActivitySitemap(Sitemap):
+    changefreq = "weekly"
+    priority = 0.6
+
+    def items(self):
+        return Activity.objects.filter(private=False).cache()
+
+    def lastmod(self, obj):
+        return obj.modified_on
+
+    def location(self, item):
+        return item.url
+
+
 sitemaps = {
     'landers': ContributorLandingPageSitemap,
     'results': ResultsSitemap,
@@ -137,6 +165,8 @@ sitemaps = {
     'issues': IssueSitemap,
     'orgs': ProfileSitemap,
     'kudos': KudosSitemap,
+    'activity': ActivitySitemap,
     'quests': QuestsSitemap,
     'grants': GrantsSitemap,
+    'hackathons': HackathonEventSiteMap,
 }
