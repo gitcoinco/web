@@ -417,8 +417,8 @@ def mention_email(activity, to_emails):
             from_email = settings.CONTACT_EMAIL
             html, text = render_mention(to_email, activity)
 
-            # TODO: check for email preferences
-            send_mail(from_email, to_email, subject, text, html, categories=['notification', func_name()])
+            if not should_suppress_notification_email(to_email, 'mention'):
+                send_mail(from_email, to_email, subject, text, html, categories=['notification', func_name()])
         finally:
             pass
     translation.activate(cur_language)
