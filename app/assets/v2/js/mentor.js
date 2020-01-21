@@ -47,3 +47,7 @@ function update_session(sessionId, data) {
 function finish_session(sessionId) {
   return fetchData('/mentor/session/' + sessionId + '/finish', 'POST');
 }
+
+function get_session(sessionId) {
+  return fetchData('/mentor/session/' + sessionId + '/get', 'GET');
+}

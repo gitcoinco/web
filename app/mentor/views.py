@@ -59,7 +59,12 @@ def join_session(request, session):
 
     # If no meentee, then another user join the url is set as mentee
     if session.mentee is None and not is_mentor:
+        session.mentee_join = datetime.now()
         session.mentee = request.user.profile.id
+        session.save()
+
+    if is_mentor and not session.mentor_join:
+        session.mentor_join = datetime.now()
         session.save()
 
     is_mentee = session.mentee_id == request.user.profile.id
@@ -84,11 +89,19 @@ def finish_session(request, session):
     """Render the sessions home page."""
     session = get_object_or_404(Sessions, id=session)
     is_mentor = session.mentor_id == request.user.profile.id
+    is_mentee = session.mentee_id == request.user.profile.id
+
+    if is_mentee and not session.mentee_leave:
+        session.mentee_leave = datetime.now()
+        session.save()
+
+        return JsonResponse({'status': 'ok', 'msg': ''})
 
     if is_mentor:
         if session.active:
             session.active = False
             session.end_datetime = datetime.now()
+            session.mentor_leave = datetime.now()
             session.save()
         return JsonResponse({'status': 'ok', 'msg': ''})
 
@@ -110,7 +123,11 @@ def new_session(request):
             price_per_min = 1
 
         amount = 0
-        mentee_profile = get_object_or_404(Profile, handle=mentee)
+        mentee_profile = None
+
+        if mentee:
+            mentee_profile = get_object_or_404(Profile, handle=mentee)
+
         session = Sessions(name=name,
                            description=desc,
                            priceFinney=amount,
@@ -118,7 +135,8 @@ def new_session(request):
                            active=True,
                            price_per_min=price_per_min,
                            mentor=request.user.profile,
-                           mentee=mentee_profile
+                           mentee=mentee_profile,
+                           start_datetime=datetime.now()
                            )
         session.save()
 
@@ -130,6 +148,52 @@ def new_session(request):
         "sessions": listings
     }
     return TemplateResponse(request, 'new_session.html', context)
+
+
+@login_required
+def get_session(request, session):
+    """Update current info of this set"""
+    errors = []
+    session = get_object_or_404(Sessions, id=session)
+
+    is_mentor = session.mentor_id == request.user.profile.id
+    is_mentee = session.mentee_id == request.user.profile.id
+
+    return JsonResponse({
+        'name': session.name,
+        'description': session.description,
+        'network': session.network,
+        'to_address': session.to_address,
+        'metadata': session.metadata,
+        'tags': session.tags,
+        'active': session.active,
+
+        'price_per_min': session.price_per_min,
+        'amount': session.price_per_min,
+        'tokenName': session.tokenName,
+        'tokenAddress': session.tokenAddress,
+
+        'tx_status': session.tx_status,
+        'tx_id': session.tx_id,
+        'tx_time': session.tx_time,
+
+        'mentor_name': session.mentor.name if session.mentor else '',
+        'mentor_id': session.mentor.id if session.mentor else None,
+        'mentor_handle': session.mentor.handle if session.mentor else '',
+        'is_mentor': is_mentor,
+        'mentor_leave': session.mentor_leave,
+        'mentor_join': session.mentor_join,
+
+        'mentee_join': session.mentee_join,
+        'mentee_leave': session.mentee_leave,
+        'mentee_name': session.mentee.name if session.mentee else '',
+        'mentee_id': session.mentee.id if session.mentee else None,
+        'mentee_handle': session.mentee.handle if session.mentee else '',
+        'is_mentee': is_mentee,
+
+        'start_datetime': session.start_datetime,
+        'end_datetime': session.end_datetime
+    })
 
 
 @csrf_exempt

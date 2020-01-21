@@ -65,6 +65,10 @@ class Sessions(SuperModel):
     metadata = JSONField(null=True, default=dict, blank=True)
     tags = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     active = models.BooleanField(default=False)
+    mentor_leave = models.DateTimeField(null=True, blank=True)
+    mentee_leave = models.DateTimeField(null=True, blank=True)
+    mentor_join = models.DateTimeField(null=True, blank=True)
+    mentee_join = models.DateTimeField(null=True, blank=True)
 
     price_per_min = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
