@@ -17,6 +17,7 @@
 
 '''
 import logging
+import time
 from json import loads as json_parse
 from os import walk as walkdir
 
@@ -36,16 +37,17 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Bounty, Profile
+from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
-from marketing.mails import new_funding_limit_increase_request, new_token_request
+from marketing.mails import grant_update_email, new_funding_limit_increase_request, new_token_request, wall_post_email
 from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
+from townsquare.tasks import increment_view_counts
 
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import programming_languages
@@ -950,11 +952,17 @@ def jobs(request):
 
 def vision(request):
     """Render the Vision response."""
+    videoLinks = [
+        'https://www.youtube.com/embed/wo0KkSH-6eg',
+        'https://www.youtube.com/embed/nZTVMEh9k5U',
+        'https://www.youtube.com/embed/F2yeOFlRE0E'
+    ]
     context = {
         'is_outside': True,
         'active': 'vision',
         'avatar_url': static('v2/images/vision/triangle.jpg'),
         'title': 'Vision',
+        'videoLinks': videoLinks,
         'card_title': _("Gitcoin's Vision for a Web3 World"),
         'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
     }
@@ -1088,18 +1096,94 @@ def results(request, keyword=None):
 
 def activity(request):
     """Render the Activity response."""
-    page_size = 15
-    activities = Activity.objects.all().order_by('-created_on')
-    p = Paginator(activities, page_size)
+    page_size = 7
     page = int(request.GET.get('page', 1))
+    what = request.GET.get('what', 'everywhere')
+    trending_only = int(request.GET.get('trending_only', 0))
+
+    # create diff filters
+    print(1, round(time.time(), 1))
+    activities = Activity.objects.filter(hidden=False).order_by('-created_on')
+    view_count_threshold = 10
+
+    ## filtering
+    if 'hackathon:' in what:
+        pk = what.split(':')[1]
+        activities = activities.filter(bounty__event=pk)
+    elif ':' in what:
+        pk = what.split(':')[1]
+        key = what.split(':')[0] + "_id"
+        if key == 'activity_id':
+            key = 'pk'
+        kwargs = {}
+        kwargs[key] = pk
+        activities = activities.filter(**kwargs)
+    if request.user.is_authenticated:
+        relevant_profiles = []
+        relevant_grants = []
+        if what == 'tribes':
+            relevant_profiles = get_my_earnings_counter_profiles(request.user.profile.pk)
+        if what == 'grants':
+            relevant_grants = get_my_grants(request.user.profile)
+        if 'keyword-' in what:
+            keyword = what.split('-')[1]
+            relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
+        if 'search-' in what:
+            keyword = what.split('-')[1]
+            view_count_threshold = 5
+            activities = activities.filter(metadata__icontains=keyword)
+        if 'activity:' in what:
+            view_count_threshold = 0
+            pk = what.split(':')[1]
+            activities = activities.filter(pk=pk)
+            if page > 1:
+                activities = Activity.objects.none()
+        # filters
+        if len(relevant_profiles):
+            activities = activities.filter(profile__in=relevant_profiles)
+        if len(relevant_grants):
+            activities = activities.filter(grant__in=relevant_grants)
+    if what == 'connect':
+        activities = activities.filter(activity_type='status_update')
+
+    # after-pk filters
+    if request.GET.get('after-pk'):
+        activities = activities.filter(pk__gt=request.GET.get('after-pk'))
+    if trending_only:
+        if what == 'everywhere':
+            view_count_threshold = 40
+        activities = activities.filter(view_count__gt=view_count_threshold)
+    print(2, round(time.time(), 1))
+
+    # pagination
+    next_page = page + 1
+    start_index = (page-1) * page_size
+    end_index = page * page_size
+    print(activities.query)
+    #p = Paginator(activities, page_size)
+    #page = p.get_page(page)
+    page = activities[start_index:end_index]
+    suppress_more_link = not len(page)
+
+    print(2.5, round(time.time(), 1))
+    # increment view counts
+    activities_pks = [obj.pk for obj in page]
+    if len(activities_pks):
+        increment_view_counts.delay(activities_pks)
+
+    print(3, round(time.time(), 1))
 
     context = {
-        'p': p,
-        'next_page': page + 1,
-        'page': p.get_page(page),
+        'suppress_more_link': suppress_more_link,
+        'what': what,
+        'next_page': next_page,
+        'page': page,
+        'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
     }
-    context["activities"] = [a.view_props for a in p.get_page(page)]
+    context["activities"] = [a.view_props_for(request.user) for a in page]
+
+    print(4, round(time.time(), 1))
 
     return TemplateResponse(request, 'activity.html', context)
 
@@ -1116,10 +1200,25 @@ def create_status_update(request):
             }
         }
         kwargs['profile'] = profile
+        if ':' in request.POST.get('what'):
+            what = request.POST.get('what')
+            key = what.split(':')[0]
+            result = what.split(':')[1]
+            if key and result:
+                key = f"{key}_id"
+                kwargs[key] = result
+                kwargs['activity_type'] = 'wall_post'
         try:
-            Activity.objects.create(**kwargs)
+            activity = Activity.objects.create(**kwargs)
             response['status'] = 200
             response['message'] = 'Status updated!'
+
+            if kwargs['activity_type'] == 'wall_post':
+                if 'Email Grant Funders' in activity.metadata.get('ask'):
+                    grant_update_email(activity)
+                else:
+                    wall_post_email(activity)
+
         except Exception as e:
             response['status'] = 400
             response['message'] = 'Bad Request'
@@ -1419,7 +1518,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'title': _('Leverage Gitcoin’s Firehose of Talent to Do More Faster'),
     }, {
         'img': static('v2/images/tools/api.jpg'),
-        'url': 'https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e',
+        'url': 'https://gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/',
         'title': _('How to Price Work on Gitcoin'),
     }, {
         'img': 'https://raw.github.com/gitcoinco/Gitcoin-Exemplars/master/helpImage.png',
@@ -1540,7 +1639,8 @@ def handler400(request, exception=None):
 def error(request, code):
     context = {
         'active': 'error',
-        'code': code
+        'code': code,
+        'nav': 'home',
     }
     context['title'] = "Error {}".format(code)
     return_as_json = 'api' in request.path

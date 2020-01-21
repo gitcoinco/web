@@ -238,6 +238,20 @@
         </div>
       </div>
     </section>
+    <section class="container bg-white pb-5">
+      <div class="row py-4">
+        <div class="col-12 text-center mb-4">
+          <h2 class="font-bigger-4 mb-3">{% trans "Gitcoin Videos" %}</h2>
+        </div>
+        {% for videoLink in videoLinks %}
+          <div class="col-12 col-md-4 mt-3">
+            <div class="embed-responsive embed-responsive-21by9">
+              <iframe width="700" height="600" src="{{ videoLink }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"></iframe>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}

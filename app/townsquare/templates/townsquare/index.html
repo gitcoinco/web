@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load humanize static i18n %}
+{% comment %}
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% block body %}
+
+{% if not profile_id %}
+  <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
+  <div class="row announce bg-info">
+    <div class="container py-0 ">
+      <div class="my-1">
+        <div class="row">
+          <i class="fas fa-info mr-3"></i> 
+          What is Gitcoin? - <a style="font-weight: bold;" href="/home">Learn More <i class="fas fa-share-square"></i> </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% for announce in announcements %}
+  <div class="row announce bg-{{announce.style}}">
+    <div class="container py-0 ">
+      <div class="my-1">
+        <div class="row">
+          <i class="fas fa-info mr-3"></i> 
+          <strong>
+            {{announce.title}}
+          </strong> ({{announce.valid_from | naturaltime}}) -
+            {{announce.desc | safe}}
+          <div class="remove">
+            X
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+<div class="row">
+  <div class="container py-1 ">
+    <div class="my-1">
+      <div class="row">
+        <div class="col-12 col-md-8">
+          {% include 'profiles/status_box.html' %}
+          <div class="float-right right mt-4">
+            <input type="search" class="form__input" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
+            <BR>
+            <input type="checkbox" name="trending" id="trending" value="0" {% if trending_only %}checked=checked{%endif%} ><label for="trending">Trending Only</label>
+          </div>
+          <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+            {% for this_tab in tabs %}
+              <li class="nav-item">
+                <a data-toggle="tooltip" title="{{this_tab.helper_text}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
+                  {{this_tab.title}}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+
+          <div id="activities" class="activity_stream container">
+            <span id=activity_subheader>{{card_desc}}</span>
+            {% include 'shared/activity_container.html' %}
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="text-center">
+            <a href="/action/new" class="btn btn-gc-blue" >CREATE ACTION <i class="fas fa-upload"></i></a>
+          </div>
+          {% for type, item in offers_by_category.items %}
+            <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%}">
+              <hr>
+              <h4 class="pt-3">{{type|title}} Action</h4>
+              {% if item.offer %}
+              <div class="{{type}} offers">
+                <li class="offer">
+                  <a href="{{item.offer.view_url}}">
+                  <div id="circle">
+                    <div id="gift">
+                      <div id="ribbon"></div>
+                      <div id="giftbox"></div>
+                    </div>
+                  </div>
+                  <span class="speech_label"><i class="fas fa-clock"></i> - Expires <div class="{{type}} timer" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>
+                  </div>
+                </a>
+              </li>
+              </div>
+              {% else %}
+              <div class="offer_coming {{type}}">
+                <i class="fas fa-clock"></i>
+                Available <div class="{{type}} timer" data-time="{{item.time}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></div>
+                {% if type == 'daily' %}
+                  <br>
+                  <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} > 
+                  <label for="receive_daily_offers_in_inbox"> <i class="fas fa-envelope"></i> Email when available</label>
+                {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+{% include 'shared/activity_scripts.html' %}
+<link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
+<script src="{% static "v2/js/status.js" %}"></script>
+<script src="{% static "v2/js/pages/townsquare.js" %}"></script>
+{% endblock %}
+

@@ -16,23 +16,25 @@
 
 {% endcomment %}
 {% load humanize i18n static %}
-<div class="row box activity {{ row.activity_type }} infinite-item">
+<div class="row box activity {{ row.activity_type }} infinite-item" data-pk="{{row.pk}}">
   <div class="col-12 col-md-1 {% if row.secondary_avatar_url %} secondary {% endif %}">
     <div class="activity-avatar my-auto py-2">
       <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>
       {% if row.secondary_avatar_url %}
         <img class="avatar my-auto secondary_avatar" src="{{row.secondary_avatar_url}}" />
+      {% elif row.other_profile %}
+        <img class="avatar my-auto secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
       {% endif %}
     </div>
   </div>
-  <div class="col-12 col-md-10 activity-info my-auto {% if row.secondary_avatar_url %} position-relative {% endif %}">
-    <div class="activity-status font-body mb-1">
-      <a href="https://gitcoin.co/profile/{{ row.profile.handle }}" target="_blank">
+  <div class="col-12 col-md-10 activity-info my-auto {% if row.secondary_avatar_url %}position-relative{% endif %}">
+    <div class="activity-status font-body">
+      <a href="https://gitcoin.co/profile/{{ row.profile.handle }}" >
         @{{ row.profile.handle }}
       </a>
       {% if row.activity_type == 'new_tip' %}
         {% trans "tipped" %}
-        <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" target="_blank">
+        <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
           @{{ row.metadata.to_username }}
         </a>
       {% elif row.activity_type == 'new_kudos' %}
@@ -64,54 +66,70 @@
           </a>
         {% endif %}
       {% elif row.activity_type == 'new_grant' %}
-        {% trans "created" %}
-        <a href="{{ row.metadata.grant_url }}" target="_blank">
+        {% trans "created a new grant" %}
+        <a href="{{ row.metadata.grant_url }}" >
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'joined' %}
         {% trans "joined Gitcoin" %}
       {% elif row.activity_type == 'update_grant' %}
         {% trans "updated" %}
-        <a href="{{ row.metadata.grant_url }}" target="_blank">
+        <a href="{{ row.metadata.grant_url }}" >
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'killed_grant' %}
         {% trans "cancelled" %}
-        <a href="{{ row.metadata.grant_url }}" target="_blank">
+        <a href="{{ row.metadata.grant_url }}" >
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'new_grant_contribution' %}
         {% trans "contributed to" %}
-        <a href="{{ row.metadata.grant_url }}" target="_blank">
+        <a href="{{ row.metadata.grant_url }}" >
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'played_quest' %}
         {% trans "played" %}
-        <a href="{{ row.metadata.quest_url }}" target="_blank">
+        <a href="{{ row.metadata.quest_url }}" >
            Quest: {{ row.metadata.quest_title }}
         </a>
       {% elif row.activity_type == 'created_quest' %}
         {% trans "created " %}
-        <a href="{{ row.metadata.quest_url }}" target="_blank">
+        <a href="{{ row.metadata.quest_url }}" >
            Quest: {{ row.metadata.quest_title }}
         </a>
       {% elif row.activity_type == 'beat_quest' %}
         {% trans "beat " %}
-        <a href="{{ row.metadata.quest_url }}" target="_blank">
+        <a href="{{ row.metadata.quest_url }}" >
            Quest: {{ row.metadata.quest_title }}
         </a>
       {% elif row.activity_type == 'new_grant_subscription' %}
         {% trans "subscribed to" %}
-        <a href="{{ row.metadata.grant_url }}" target="_blank">
+        <a href="{{ row.metadata.grant_url }}" >
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'killed_grant_contribution' %}
         {% trans "unsubscribed from" %}
-        <a href="{{ row.metadata.grant_url }}" target="_blank">
+        <a href="{{ row.metadata.grant_url }}" >
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'status_update' %}
-        {% trans "updated status" %}
+        <b>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</b>
+      {% elif row.activity_type == 'wall_post' %}
+        &gt; 
+      {% if row.grant %}
+        <a href="{{ row.grant.url }}">
+          {{ row.grant.title }}
+        </a>
+      {% elif row.kudos_data %}
+        <a href="{{ row.kudos_data.url }}">
+          {{ row.kudos_data.ui_name }}
+        </a>
+      {% elif row.other_profile %}
+        <a href="{{ row.other_profile.url }}">
+          @{{ row.other_profile.handle }}
+        </a>
+      {% endif %}
+      : 
         <b>{{ row.metadata.title }}</b>
       {% elif row.activity_type == 'leaderboard_rank' %}
         <a href="{{ row.metadata.link }}">{{ row.metadata.title }}</a>
@@ -139,19 +157,21 @@
     </div>
     <div class="font-caption" >
       <div class="activity-tags activity-tag-first align-items-center">
-        {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token %}
-          <div class="tag token">
-            <p>
-              {% if row.value_in_token_disp %}
-                <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
-              {% elif row.metadata.value_in_eth %}
-                <span class="value_in_eth">{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
-              {% elif row.metadata.value_in_token %}
-                <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
-              {% else %}
-              {% endif %}
-            </p>
-          </div>
+        {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
+          {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name %}
+            <div class="tag token">
+              <p>
+                {% if row.value_in_token_disp %}
+                  <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
+                {% elif row.metadata.value_in_eth %}
+                  <span class="value_in_eth">{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
+                {% elif row.metadata.value_in_token and row.metadata.token_name %}
+                  <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
+                {% else %}
+                {% endif %}
+              </p>
+            </div>
+          {% endif %}
         {% endif %}
         {% if row.value_in_usdt_now %}
           <div class="tag usd">
@@ -167,16 +187,34 @@
             </p>
           </div>
         {% endif %}
-        <span class="mx-2">
-          {% if not hide_date %}
-            {{ row.created_human_time }}
+        <span class="mx-0">
+          {% if not hide_likes %}
+            <i class="far fa-eye" data-toggle="tooltip" title="The number of views this post has gotten." ></i> {{ row.view_count }} | 
           {% endif %}
-        </span>
+
+          {% if not hide_date %}
+            {{ row.created_human_time }} | 
+          {% endif %}
+
+          {% if not hide_likes %}
+            <a href=# data-action='like' data-toggle="tooltip" title="{{row.likes_title}}Click to {% if row.liked %}unlike{% else %}like{%endif%} feed item." data-affirmative=liked data-negative=unliked data-state="{% if row.liked %}liked{% else %}unliked{%endif%}" data-pk={{row.pk}} class="like_activity"><span class="action {% if row.liked %}open{%endif%}"><i class="far fa-thumbs-up"></i></span><span class="sup">(<span class="num">{{row.likes}}</span>)</span></a> 
+            
+            <a href=# data-pk={{row.pk}} class="comment_activity" data-toggle="tooltip" title="Comment on this feed item." {% if row.comments %} data-open="true" {% endif %} ><span class="action"><i class="far fa-comments"></i></span><span class="sup">(<span class="num">{{row.comments}}</span>)</span></a></span>
+
+            <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}} class="flag_activity"><span class="action {% if row.flagged %}open{%endif%}"><i class="far fa-flag"></i></span></a> 
+
+            <a class="action copy_activity" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}><i class="fas fa-link"></i></a> 
+          {% endif %}
+
       </div>
-    </div>
+      <div class="comment_container">
+      </div>
+      </div>
   </div>
   <div class="col-12 col-md-1 text-center my-auto">
-    {% if row.kudos %}
+    {% if row.profile.handle == github_handle %}
+      <a href=# data-pk={{row.pk}} class="delete_activity" style="color:black; font-size: 10px;"><i class="fas fa-trash"></i></a>
+    {% elif row.kudos %}
       <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
         <img src="{% static row.kudos_data.image %}" alt="" class="w-100" style="max-width:100px;">
       </a>

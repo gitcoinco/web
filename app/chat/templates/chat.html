@@ -41,7 +41,7 @@
           {% endblocktrans %}
           </h2>
           <div class="buttons mt-5">
-          <a class="btn btn-sm btn-gc-blue mr-2 shadow-none font-weight-bold py-3 px-5" href="/chat/web">{% trans "Open Web Chat" %}</a>
+          <a class="btn btn-sm btn-gc-blue mr-2 shadow-none font-weight-bold py-3 px-5" href="{% url "chat" %}">{% trans "Open Web Chat" %}</a>
           <a class="btn btn-sm text-white ml-2 shadow-none font-weight-bold py-3 px-5 d-none" href="#joinus">{% trans "Download Apps" %}</a>
           </div>
           <div class="online mt-4">
@@ -130,7 +130,7 @@
                 <img src="{% static "v2/images/chat/apple.png" %}" alt="Mac App" />
                 {% trans "Mac" %}
               </a>
-              <a class="btn btn-gc-blue btn-sm ml-2 shadow-none font-weight-bold py-3 px-4 comingsoon" href="#">
+              <a class="btn btn-gc-blue btn-sm ml-2 shadow-none font-weight-bold py-3 px-4 comingsoon" href="https://gitcoin-static.s3-us-west-2.amazonaws.com/desktopapps/gitcoin-windows.zip">
                 <img src="{% static "v2/images/chat/windows.png" %}" alt="Windows" />
                 {% trans "Windows" %}
               </a>

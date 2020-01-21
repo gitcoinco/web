@@ -49,6 +49,9 @@ $(document).ready(function() {
     $('#edit-amount_goal').removeClass('hidden');
     $('.grant__progress').addClass('hidden');
 
+    $('#section-nav-description .ql-toolbar').css('display', 'inherit');
+    $('#section-nav-description .ql-container').css('border-color', '#ccc');
+
     copyDuplicateDetails();
 
     editableFields.forEach(field => {
@@ -62,6 +65,9 @@ $(document).ready(function() {
     $('#cancel-details').addClass('hidden');
     $('#edit-amount_goal').addClass('hidden');
     $('.grant__progress').removeClass('hidden');
+
+    $('#section-nav-description .ql-toolbar').css('display', 'none');
+    $('#section-nav-description .ql-container').css('border-color', 'transparent');
 
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
@@ -110,6 +116,9 @@ $(document).ready(function() {
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
     $('.grant__progress').removeClass('hidden');
+
+    $('#section-nav-description .ql-toolbar').css('display', 'none');
+    $('#section-nav-description .ql-container').css('border-color', 'transparent');
 
     editableFields.forEach(field => disableEdit(field));
   });

@@ -218,7 +218,8 @@ def grant_details(request, grant_id, grant_slug):
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False).order_by('-created_on')
         _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
         phantom_funds = grant.phantom_funding.all()
-        contributions = list(_contributions.order_by('-created_on')) + [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
+        contributions = list(_contributions.order_by('-created_on'))
+        voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
         contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
         activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
@@ -275,7 +276,21 @@ def grant_details(request, grant_id, grant_slug):
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
-    tab = request.GET.get('tab', 'description')
+    # handle grant updates unsubscribe
+    key = 'unsubscribed_profiles'
+    is_unsubscribed_from_updates_from_this_grant = request.user.is_authenticated and request.user.profile.pk in grant.metadata.get(key, [])
+    if request.GET.get('unsubscribe') and request.user.is_authenticated:
+        ups = grant.metadata.get(key, [])
+        ups.append(request.user.profile.pk)
+        grant.metadata[key] = ups
+        grant.save()
+        messages.info(
+                request,
+                _('You have been unsubscribed from the updates from this grant.')
+            )
+        is_unsubscribed_from_updates_from_this_grant = True
+
+    tab = request.GET.get('tab', 'activity')
     params = {
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
@@ -294,10 +309,14 @@ def grant_details(request, grant_id, grant_slug):
         'updates': updates,
         'milestones': milestones,
         'keywords': get_keywords(),
+        'target': f'/activity?what=grant:{grant.pk}',
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
         'is_team_member': is_team_member,
+        'voucher_fundings': voucher_fundings,
+        'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
+        'tags': [(f'Email Grant Funders ({len(contributors)})', 'bullhorn')] if is_team_member else [],
     }
 
     if tab == 'stats':
@@ -348,6 +367,8 @@ def grant_new(request):
                 'admin_profile': profile,
                 'logo': logo,
                 'hidden': False,
+                'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
+
             }
             grant = Grant.objects.create(**grant_kwargs)
             new_grant_admin(grant)
@@ -624,7 +645,7 @@ def grant_fund(request, grant_id, grant_slug):
             return JsonResponse({
                 'success': True,
             })
-        
+
         if 'hide_wallet_address' in request.POST:
             profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
             profile.save()
@@ -635,6 +656,12 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.active = True
             subscription.subscription_hash = request.POST.get('subscription_hash', '')
             subscription.contributor_signature = request.POST.get('signature', '')
+            if 'split_tx_id' in request.POST:
+                subscription.split_tx_id = request.POST.get('split_tx_id', '')
+                subscription.save_split_tx_to_contribution()
+            if 'split_tx_confirmed' in request.POST:
+                subscription.split_tx_confirmed = bool(request.POST.get('split_tx_confirmed', False))
+                subscription.save_split_tx_to_contribution()
             subscription.save()
 
             value_usdt = subscription.get_converted_amount()
@@ -671,6 +698,8 @@ def grant_fund(request, grant_id, grant_slug):
             name_search = 'grants_round_4_contributor' if not settings.DEBUG else 'pogs_eth'
             fund_reward = BulkTransferCoupon.objects.filter(token__name__contains=name_search).order_by('?').first()
             PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
+            record_grant_activity_helper('new_grant_contribution', grant, request.user.profile)
+
         messages.info(
             request,
             msg
@@ -818,6 +847,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
     kwargs = {
         'profile': profile,
         'subscription': subscription,
+        'grant': subscription.grant,
         'activity_type': activity_type,
         'metadata': metadata,
     }

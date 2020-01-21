@@ -56,7 +56,8 @@ from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
 from cacheops import invalidate_obj
-from chat.tasks import add_to_channel, create_channel, create_user, get_driver
+from chat.tasks import add_to_channel
+from chat.utils import create_channel_if_not_exists, create_user_if_not_exists
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -329,13 +330,17 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
 
-    num_issues = profile.max_num_issues_start_work
-    is_working_on_too_much_stuff = profile.active_bounties.count() >= num_issues
-    if is_working_on_too_much_stuff:
-        return JsonResponse({
-            'error': _(f'You may only work on max of {num_issues} issues at once.'),
-            'success': False},
-            status=401)
+    max_num_issues = profile.max_num_issues_start_work
+    currently_working_on = profile.active_bounties.count()
+
+    if currently_working_on >= max_num_issues:
+        return JsonResponse(
+            {
+                'error': _(f'You cannot work on more than {max_num_issues} issues at once'),
+                'success': False
+            },
+            status=401
+        )
 
     if profile.no_times_slashed_by_staff():
         return JsonResponse({
@@ -363,112 +368,52 @@ def new_interest(request, bounty_id):
 
         if bounty.event:
             try:
-
-                if bounty.chat_channel_id is None:
-                    bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
-
-                    chat_driver = get_driver()
-                    channel_lookup = chat_driver.channels.get_channel_by_name(settings.GITCOIN_HACK_CHAT_TEAM_ID, bounty_channel_name)
-
-                    if 'message' in channel_lookup:
-                        options = {
+                if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
+                    try:
+                        bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
+                        created, channel_details = create_channel_if_not_exists({
                             'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
                             'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
                             'channel_name': bounty_channel_name[:60]
-                        }
-                        result = create_channel.apply_async(args=[options])
-                        bounty_channel_id_response = result.get()
-
-                        if 'message' in bounty_channel_id_response:
-                            raise ValueError(bounty_channel_id_response['message'])
-
-                        bounty.chat_channel_id = bounty_channel_id_response['id']
-                        bounty_channel_id = bounty_channel_id_response['id']
-                        bounty.save()
-                    else:
-                        bounty_channel_id = channel_lookup['id']
+                        })
+                        bounty_channel_id = channel_details['id']
                         bounty.chat_channel_id = bounty_channel_id
                         bounty.save()
+                    except Exception as e:
+                        logger.error(str(e))
+                        raise ValueError(e)
                 else:
                     bounty_channel_id = bounty.chat_channel_id
 
-                funder_profile = Profile.objects.get(handle=bounty.bounty_owner_github_username)
+                funder_profile = Profile.objects.get(handle__iexact=bounty.bounty_owner_github_username)
 
-                if funder_profile is not None:
-                    if funder_profile.chat_id is None:
-                        result = create_user.apply_async(args=[
-                            {
-                                "email": funder_profile.user.email,
-                                "username": funder_profile.handle,
-                                "first_name": funder_profile.user.first_name,
-                                "last_name": funder_profile.user.last_name,
-                                "nickname": funder_profile.handle,
-                                "auth_data": f'{funder_profile.user.id}',
-                                "auth_service": "gitcoin",
-                                "locale": "en",
-                                "props": {},
-                                "notify_props": {
-                                    "email": "false",
-                                    "push": "mention",
-                                    "desktop": "all",
-                                    "desktop_sound": "true",
-                                    "mention_keys": f'{funder_profile.handle}, @{funder_profile.handle}',
-                                    "channel": "true",
-                                    "first_name": "false"
-                                },
-                            }, {
-                                "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
-                            }
-                        ])
+                if funder_profile:
+                    if funder_profile.chat_id is '':
+                        try:
+                            created, funder_details_response = create_user_if_not_exists(funder_profile)
+                            funder_profile.chat_id = funder_details_response['id']
+                            funder_profile.save()
+                        except Exception as e:
+                            logger.error(str(e))
+                            raise ValueError(e)
 
-                        chat_profile_interest_user = result.get()
-                        if 'message' in chat_profile_interest_user:
-                            raise ValueError(chat_profile_interest_user['message'])
+                    if profile.chat_id is '':
 
-                        funder_profile.chat_id = chat_profile_interest_user['id']
-                        funder_profile.save()
-
-                    if profile.chat_id is None:
-                        result = create_user.apply_async(args=[{
-                            "email": profile.user.email,
-                            "username": profile.handle,
-                            "first_name": profile.user.first_name,
-                            "last_name": profile.user.last_name,
-                            "nickname": profile.handle,
-                            "auth_data": f'{profile.user.id}',
-                            "auth_service": "gitcoin",
-                            "locale": "en",
-                            "props": {},
-                            "notify_props": {
-                                "email": "false",
-                                "push": "mention",
-                                "desktop": "all",
-                                "desktop_sound": "true",
-                                "mention_keys": f'{profile.handle}, @{profile.handle}',
-                                "channel": "true",
-                                "first_name": "false"
-                            },
-                        }, {
-                            "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
-                        }]
-                        )
-
-                        chat_profile_interest_user = result.get()
-                        if 'message' in chat_profile_interest_user:
-                            raise ValueError(chat_profile_interest_user['message'])
-
-                        profile.chat_id = chat_profile_interest_user['id']
-                        profile.save()
+                        try:
+                            created, profile_lookup_response = create_user_if_not_exists(profile)
+                            profile.chat_id = profile_lookup_response['id']
+                            profile.save()
+                        except Exception as e:
+                            logger.error(str(e))
+                            raise ValueError(e)
 
                     profiles_to_connect = [
                         funder_profile.chat_id,
                         profile.chat_id
                     ]
-
-                    add_to_channel.delay({
-                        'channel_id': bounty_channel_id,
-                        'profiles': profiles_to_connect
-                    })
+                    add_to_channel.delay(
+                        {'id': bounty_channel_id}, profiles_to_connect
+                    )
 
             except Exception as e:
                 print(str(e))
@@ -2502,6 +2447,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     active_bounties = active_bounties.order_by('-web3_created')
     context['active_bounties_count'] = active_bounties.count()
     context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.count()
+    context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).count()
     context['my_kudos'] = profile.get_my_kudos.distinct('kudos_token_cloned_from__name')[0:7]
 
     # specific tabs
@@ -2605,6 +2551,8 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'people':
         pass
+    elif tab == 'hackathons':
+        context['projects'] = HackathonProject.objects.filter( profiles__id=profile.id)
     elif tab == 'quests':
         context['quest_wins'] = profile.quest_attempts.filter(success=True)
     elif tab == 'grants':
@@ -2718,7 +2666,7 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe']
+    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2784,6 +2732,7 @@ def profile(request, handle, tab=None):
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
+    context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:

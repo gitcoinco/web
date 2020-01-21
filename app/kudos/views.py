@@ -203,6 +203,7 @@ def details(request, kudos_id, name):
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
         'related_handles': list(set(kudos.owners_handles))[:num_kudos_limit],
+        'target': f'/activity?what=kudos:{kudos.pk}',
     }
     if kudos:
         token = Token.objects.select_related('contract').get(
@@ -468,7 +469,7 @@ def send_4(request):
             kudos_transfer.username,
             'receive_kudos'
         )
-        
+
     return JsonResponse(response)
 
 
@@ -508,6 +509,7 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
 
 def record_kudos_activity(kudos_transfer, github_handle, event_name):
     logger.debug(kudos_transfer)
+    github_handle = github_handle.replace('@', '')
     kwargs = {
         'activity_type': event_name,
         'kudos': kudos_transfer,

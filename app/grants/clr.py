@@ -220,7 +220,7 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=No
     clr_calc_start_time = timezone.now()
 
     # get all the eligible contributions and calculate total
-    contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=CLR_START_DATE, created_on__lte=from_date)
+    contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=CLR_START_DATE, created_on__lte=from_date, success=True)
     debug_output = []
 
     if clr_type == 'tech':
@@ -278,6 +278,8 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=No
         if save_to_db:
             grant.clr_prediction_curve = list(zip(potential_donations, potential_clr))
             base = grant.clr_prediction_curve[0][1]
+            grant.last_clr_calc_date = timezone.now()
+            grant.next_clr_calc_date = timezone.now() + timezone.timedelta(hours=4)
             if base:
                 grant.clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in grant.clr_prediction_curve ]
             else:

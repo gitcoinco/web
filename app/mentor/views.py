@@ -195,7 +195,6 @@ def get_session(request, session):
         'end_datetime': session.end_datetime
     })
 
-
 @csrf_exempt
 @login_required
 def update_session(request, session):

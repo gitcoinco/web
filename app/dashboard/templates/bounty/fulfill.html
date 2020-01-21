@@ -34,7 +34,7 @@
       <div class="row no-gutters metamask-banner">
         <div class="col-12">
           {% include 'shared/no_issue_error.html' with page='fulfill_bounty' %}
-          {% if not is_bounties_network %}
+          {% if is_bounties_network %}
             {% include 'shared/no_metamask_error.html' %}
             {% include 'shared/zero_balance_error.html' %}
             {% include 'shared/unlock_metamask.html' %}
