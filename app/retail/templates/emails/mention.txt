@@ -1,0 +1,6 @@
+💬 @{{activity.profile.handle}} mentioned you in a post 💬
+
+@{{activity.profile.handle}} mentioned you in a {{activity.humanized_activity_type.lower()}}
+
+To view the post click here: {{activity.url}}
+
