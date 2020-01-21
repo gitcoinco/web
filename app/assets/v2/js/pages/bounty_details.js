@@ -1594,7 +1594,6 @@ const process_activities = function(result, bounty_activities) {
       fulfiller_github_url: fulfillment.fulfiller_github_url,
       fulfillment_id: fulfillment.fulfillment_id,
       fulfiller_github_username: fulfillment.fulfiller_github_username,
-      fulfiller_email: fulfillment.fulfiller_email,
       fulfiller_address: fulfillment.fulfiller_address,
       fulfillment_accepted: fulfillment.accepted,
       fulfillment_accepted_on: fulfillment.accepted_on,
