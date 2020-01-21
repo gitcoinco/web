@@ -407,15 +407,15 @@ def comment_email(comment, to_emails):
     translation.activate(cur_language)
 
 
-def mention_email(activity, to_emails):
-    subject = gettext("💬 @{} mentioned you in a post").format(activity.profile.handle)
+def mention_email(post, to_emails):
+    subject = gettext("💬 @{} mentioned you in a post").format(post.profile.handle)
     cur_language = translation.get_language()
 
     for to_email in to_emails:
         try:
             setup_lang(to_email)
             from_email = settings.CONTACT_EMAIL
-            html, text = render_mention(to_email, activity)
+            html, text = render_mention(to_email, post)
 
             if not should_suppress_notification_email(to_email, 'mention'):
                 send_mail(from_email, to_email, subject, text, html, categories=['notification', func_name()])

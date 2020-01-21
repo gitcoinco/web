@@ -711,9 +711,9 @@ def render_comment(to_email, comment):
     return response_html, response_txt
 
 
-def render_mention(to_email, activity):
+def render_mention(to_email, post):
     params = {
-        'activity': activity,
+        'post': post,
         'email_type': 'mention',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }

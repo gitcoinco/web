@@ -19,18 +19,22 @@
 
 {% block content %}
 
-<h1>💬@{{activity.profile.handle}} {% trans "mentioned you in a post" %} 💬</h1>
+<h1>💬@{{post.profile.handle}} {% trans "mentioned you in a post" %} 💬</h1>
 
 <p>
 
-<a href="{{activity.profile.url}}">@{{activity.profile.handle}}</a> mentioned you on a {{activity.humanized_activity_type.lower()}}. This is what the post looks like:
+<a href="{{post.profile.url}}">@{{post.profile.handle}}</a> mentioned you in a post. This is what the post looks like:
 
 <pre>
-  {{activity.metadata.title}}
+{% if isinstance(post, Activity) %}
+  {{post.metadata.title}}
+{% else %}
+  - @{{post.profile.handle}} ({{post.created_on | naturaltime}}): {{post.comment}}
+{% endif %}
 </pre>
 
 <div style="margin-bottom: 2em; margin-top: 2em;">
-  <a class="button" href="{{ activity.url }}">View Thread</a>
+  <a class="button" href="{{ post.url }}">View Thread</a>
 </div>
 
 </p>
