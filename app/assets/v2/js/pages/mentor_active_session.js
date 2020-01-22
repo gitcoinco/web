@@ -16,6 +16,7 @@ const selectScreen = screen => {
     $(".wait-stream"),
     $(".wait-stream-deletion"),
     $(".wait-stream-register"),
+    $(".wait-metamask"),
     $(".stream-busy")
   ].map(screen => screen.hide());
   screen.show();
@@ -24,10 +25,10 @@ const selectScreen = screen => {
 const resetScreen = () => {
   if (room_address.toLowerCase() === address.toLowerCase()) {
     selectScreen($(".wait"));
-		$('withdran-btn').show();
+		$('.withdran-btn').show();
   } else {
     selectScreen($(".create-stream"));
-		$('withdran-btn').hide();
+		$('.withdran-btn').hide();
   }
 };
 
@@ -297,14 +298,14 @@ const cancelStream = () => {
 };
 
 const initJitsy = function() {
-  const domain = "meet.jit.si";
-  const options = {
-    roomName: room_address,
-    width: 700,
-    height: 700,
-    parentNode: document.querySelector("#jitsy-placeholder")
-  };
-  jitsy = new JitsiMeetExternalAPI(domain, options);
+  // const domain = "meet.jit.si";
+  // const options = {
+  //   roomName: room_address,
+  //   width: 700,
+  //   height: 700,
+  //   parentNode: document.querySelector("#jitsy-placeholder")
+  // };
+  // jitsy = new JitsiMeetExternalAPI(domain, options);
 	// If the session disconnect, we will attempt to cancel the stream
   jitsy.on("participantLeft", () => {
     console.warn("other participant left the room");
@@ -334,6 +335,7 @@ const destroyJitsy = function() {
   jitsy.dispose();
 };
 
+selectScreen($('.wait-metamask'))
 $(document).ready(function() {
   // Connect the videoplayer
 
@@ -371,7 +373,7 @@ $(document).ready(function() {
 		});
 
     // Withdraw money
-    $("withdraw-btn").click(() => {
+    $(".withdraw-btn").click(() => {
       // TODO: show a dialog to ask how much to withdraw
       const sum = parseInt($("withdraw-btn-show").val());
       sablier_contract.takeEarnings(address, sum, () => {
