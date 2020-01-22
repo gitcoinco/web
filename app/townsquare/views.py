@@ -166,6 +166,7 @@ def town_square(request):
         'title': title,
         'card_desc': desc,
         'avatar_url': avatar_url,
+        'use_pic_card': True,
         'page_seo_text_insert': page_seo_text_insert,
         'nav': 'home',
         'target': f'/activity?what={tab}&trending_only={trending_only}',
