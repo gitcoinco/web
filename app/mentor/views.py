@@ -25,6 +25,7 @@ from datetime import datetime, timedelta
 from dateutil import parser
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.db import transaction
 from django.db.models import Q
@@ -45,8 +46,10 @@ logger = logging.getLogger(__name__)
 
 def mentor_home(request):
     """Render the sessions home page."""
-    listings = Sessions.objects.filter(Q(mentor=request.user.profile) | Q(mentee=request.user.profile), active=True)
-    mentoring = Sessions.objects.filter(Q(mentor=request.user.profile) | Q(mentee=request.user.profile), active=True).values_list('mentor__id', flat=True)
+    listings = []
+    if not request.user.is_anonymous:
+        listings = Sessions.objects.filter(Q(mentor=request.user.profile) | Q(mentee=request.user.profile), active=True)
+    mentoring = Sessions.objects.filter(active=True).values_list('mentor__id', flat=True)
     available_mentors = MentoringAvailable.objects.filter(active=True, active_until__gt=datetime.now()).exclude(mentor__in=mentoring)
     unavailable_mentors = MentoringAvailable.objects.filter(active=True, active_until__gte=datetime.now(UTC),
                                                             mentor__in=mentoring)
