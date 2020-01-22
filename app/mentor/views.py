@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from dateutil import parser
 from django.contrib import messages
@@ -33,9 +33,12 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST, require_GET
+from pytz import UTC
 
 from dashboard.models import Profile
-from .models import Sessions
+from .models import Sessions, MentoringAvailable
+from .serializers import AvailabilitySerializer
 
 logger = logging.getLogger(__name__)
 
@@ -271,3 +274,96 @@ def update_session(request, session):
     session.save()
 
     return JsonResponse({'status': 'ok', 'message': ''})
+
+
+def get_my_availability(request):
+    try:
+        available = MentoringAvailable.objects.get(mentor=request.user.profile)
+
+        return JsonResponse(AvailabilitySerializer(available).data)
+    except MentoringAvailable.DoesNotExist:
+        return JsonResponse({
+            'available': False,
+            'active_until': '',
+            'period_time': '',
+            'joined': None
+        }, status=404)
+
+
+@csrf_exempt
+@require_POST
+def set_mentor_available(request):
+    deltas = {
+        '5 minutes': timedelta(minutes=5),
+        '15 minutes': timedelta(minutes=15),
+        '30 minutes': timedelta(minutes=30),
+        '1 hour': timedelta(hours=1),
+        '2 hours': timedelta(hours=2),
+        '6 hours': timedelta(hours=6)
+    }
+
+    period_time = request.POST.get('period_time')
+
+    until = datetime.now(UTC) + deltas['30 minutes']
+    if period_time in deltas.keys():
+        until = datetime.now(UTC) + deltas[period_time]
+
+    try:
+        available = MentoringAvailable.objects.get(mentor=request.user.profile)
+
+        available.active_until = until
+        available.period_time = period_time
+        available.active = True
+        available.save()
+    except MentoringAvailable.DoesNotExist:
+        available = MentoringAvailable(
+            mentor=request.user.profile,
+            active_until=until,
+            active=True,
+            period_time=period_time
+        )
+        available.save()
+
+    return JsonResponse(AvailabilitySerializer(available).data)
+
+@csrf_exempt
+@require_POST
+def set_mentor_unavailable(request):
+    try:
+        available = MentoringAvailable.objects.get(mentor=request.user.profile)
+        available.active = False
+        available.save()
+        return JsonResponse(AvailabilitySerializer(available).data)
+    except MentoringAvailable.DoesNotExist:
+        return JsonResponse({
+            'available': False,
+            'active_until': '',
+            'period_time': '',
+            'joined': None
+        }, status=404)
+
+
+@csrf_exempt
+@require_POST
+def toggle_availability(request):
+    try:
+        available = MentoringAvailable.objects.get(mentor=request.user.profile)
+        if available.active:
+            return set_mentor_unavailable(request)
+        else:
+            return set_mentor_available(request=request)
+    except MentoringAvailable.DoesNotExist:
+        return set_mentor_available(request=request)
+
+
+def get_mentors(request):
+    available = request.GET.get('status', None)
+
+    if available == 'available':
+        mentors = MentoringAvailable.objects.filter(active=True, active_until__gt=datetime.now())
+    elif available == 'unavailable':
+        mentors = MentoringAvailable.objects.filter(Q(active=False) | Q(active_until__lte=datetime.now()))
+    else:
+        mentors = MentoringAvailable.objects.all()
+
+    return AvailabilitySerializer(mentors, many=True).data

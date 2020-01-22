@@ -41,6 +41,50 @@
   <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
     <nav class="navbar-nav ml-auto mr-3">
       <a class="nav-link{% if active == 'new' %} selected{% endif %} interior" href="{% url 'mentor_new' %}"><i class="fab fa-ethereum mr-1" role="aria-hidden"></i>{% trans "Create session" %}</a>
+  {% if user.is_authenticated %}
+  <div class="nav-item dropdown interior">
+    <a class="nav-link dropdown-toggle" href="#" id="avaialableStatus" role="button"
+      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+      {%  if user.profile.mentor_availability.is_active %}
+        Mentoring: Active<br>
+        <span id="until" style="font-size: 12px;"> </span>
+        <script>
+          var date = new Date('{{ user.profile.mentor_availability.active_until_iso }}');
+          var time = date.getHours() + ':' + date.getMinutes();
+          document.getElementById('until').textContent = 'Until ' + time
+        </script>
+      {% else %}
+        No mentoring
+      {% endif %}
+    </a>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="avaialableStatus">
+        <a class="dropdown-item inactive-mentor" onclick="update_availability()">
+          {% trans "No mentoring" %}
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item active-mentor"  onclick="update_availability('5 minutes')">
+          {% trans "5 minutes" %}
+        </a>
+        <a class="dropdown-item active-mentor" onclick="update_availability('15 minutes')">
+          {% trans "15 minutes" %}
+        </a>
+        <a class="dropdown-item active-mentor" onclick="update_availability('30 minutes')">
+          {% trans "30 minutes" %}
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item active-mentor" onclick="update_availability('1 hour')">
+          {% trans "1 hour" %}
+        </a>
+        <a class="dropdown-item active-mentor" data-gtm="profile" onclick="update_availability('2 hours')">
+          {% trans "2 hours" %}
+        </a>
+        <a class="dropdown-item active-mentor" data-gtm="get started" onclick="update_availability('6 hours')">
+          {% trans "6 hours" %}
+        </a>
+    </div>
+  </div>
+{% endif %}
 
       {% include 'shared/nav_auth.html' with source='authed' %}
     </nav>

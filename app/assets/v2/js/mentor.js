@@ -51,3 +51,50 @@ function finish_session(sessionId) {
 function get_session(sessionId) {
   return fetchData('/mentor/session/' + sessionId + '/get', 'GET');
 }
+
+function myAvailability() {
+  return fetchData('/mentor/availability', 'GET');
+}
+
+function availableMentor(period_time) {
+  return fetchData('/mentor/available', 'POST', {
+    period_time: period_time,
+    current_time: new Date().toISOString()
+  });
+}
+
+function unavailableMentor() {
+  return fetchData('/mentor/unavailable', 'POST');
+}
+
+function toggleAvailableMentor() {
+  return fetchData('/mentor/availability/toggle', 'POST');
+}
+
+function availableMentors() {
+  return fetchData('/mentors', 'GET');
+}
+
+
+function update_availability(period_time) {
+  if (period_time) {
+    availableMentor(period_time).then(function(res) {
+      console.log(res);
+      var date = new Date(res.active_until);
+      var time = date.getHours() + ':' + date.getMinutes();
+
+      $('#avaialableStatus').html('Mentoring: Active<br><span style="font-size: 12px">Until: ' + time + '</span>');
+      $('.active-mentor').hide();
+      $('.inactive-mentor').show();
+    });
+  } else {
+    unavailableMentor().then(function(res) {
+      console.log(res);
+      $('#avaialableStatus').html('Mentoring: Inactive');
+      $('.active-mentor').show();
+      $('.inactive-mentor').hide();
+    });
+  }
+
+  $('#avaialableStatus + .dropdown-menu').toggle();
+}

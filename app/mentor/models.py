@@ -19,9 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 import urllib.request
+from datetime import datetime
 from io import BytesIO
 from os import path
 
+import pytz
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.files import File
@@ -43,6 +45,31 @@ from pyvips.error import Error as VipsError
 
 logger = logging.getLogger(__name__)
 
+
+class MentoringAvailable(SuperModel):
+    PERIOD_TIME = (
+        ('5 minutes', '5 minutes'),
+        ('15 minutes', '15 minutes'),
+        ('30 minutes', '30 minutes'),
+        ('1 hour', '1 hour'),
+        ('2 hours', '2 hour'),
+        ('6 hours', '6 hour'),
+    )
+
+    mentor = models.OneToOneField(
+        'dashboard.Profile', related_name='mentor_availability', on_delete=models.SET_NULL, null=True
+    )
+    active = models.BooleanField(default=False)
+    active_until = models.DateTimeField(blank=True, null=True)
+    period_time = models.CharField(choices=PERIOD_TIME, default='1 hour', max_length=20)
+    created_on = models.DateTimeField(auto_now=True)
+
+    def is_active(self):
+        tz = pytz.UTC
+        return self.active and self.active_until.replace(tzinfo=tz) > datetime.now().replace(tzinfo=tz)
+
+    def active_until_iso(self):
+        return self.active_until.isoformat()
 
 class Sessions(SuperModel):
     """Define the TokenRequest model."""
