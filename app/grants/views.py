@@ -186,7 +186,8 @@ def grants(request):
         'sort_by_index': sort_by_index,
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
-        'is_staff': request.user.is_staff
+        'is_staff': request.user.is_staff,
+        'clr_round': clr_round
     }
 
     # log this search, it might be useful for matching purposes down the line

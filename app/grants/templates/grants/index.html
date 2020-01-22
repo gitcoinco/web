@@ -57,7 +57,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
       <div class="container-fluid py-4 grants-results">
         <div class="container">
-          <strong>Gitcoin Grants</strong> has facilitated the distribution of <strong>${{grant_amount|floatformat:0}}k</strong> to community public goods since it's launch in January 2019.  
+          <strong>Gitcoin Grants</strong> has facilitated the distribution of <strong>${{grant_amount|floatformat:0}}k</strong> to community public goods since it's launch in January 2019.
           <a class="font-body" href="/results">See more results</a>.
           <br>
           <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 100px;" class="pt-3" />
@@ -142,13 +142,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           {% if current_partners or past_partners %}
             <div class="row grant-partners text-white my-5">
               <div class="col-12 col-md-9">
-                <h2 class="text-uppercase font-weight-semibold font-bigger-3 pt-4 mt-2 px-4">
-                  {{ type }} GRANTS CLR MATCHING ROUND 4
-                </h2>
-                <p class="px-4">Jan 6, 2020 - Jan 21, 2020</p>
+                {% if current_partners %}
+                  <h2 class="text-uppercase font-weight-semibold font-bigger-3 pt-4 mt-2 px-4">
+                    {{ type }} GRANTS CLR MATCHING ROUND {{clr_round}}
+                  </h2>
+                  <p class="px-4">Jan 6, 2020 - Jan 21, 2020</p>
+                {% else %}
+                  <h2 class="text-uppercase font-weight-semibold font-bigger-3 pt-4 mt-2 px-4">
+                    GRANTS CLR {{ clr_round|add:"1" }} ( COMING SOON )
+                  </h2>
+                {% endif %}
               </div>
               <div class="col-12 col-md-3 total_active_fund">
-                <p class="pt-4 mb-0 font-weight-semibold">${{current_partners_fund|floatformat|intcomma}}</p>
+                {% if current_partners %}
+                  <p class="pt-4 mb-0 font-weight-semibold">${{current_partners_fund|floatformat|intcomma}}</p>
+                {% endif %}
               </div>
               <div class="col-12">
                 <ul class="nav nav-tabs my-0 font-smaller-1 px-4" role="tablist">
@@ -167,7 +175,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         href="#pastpartners" role="tab" aria-controls="pastpartners" class="text-white"
                         aria-selected="false"
                       >
-                        View Past Sponsors
+                        Past Sponsors
                       </a>
                     </li>
                   {% endif %}
@@ -195,7 +203,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   {% endif %}
 
                   {% if past_partners %}
-                    <div class="tab-pane fade" id="pastpartners" role="tabpanel" aria-labelledby="pastpartners-tab">
+                    <div class="tab-pane fade {% if not current_partners %}show active{% endif %}" id="pastpartners"
+                      role="tabpanel" aria-labelledby="pastpartners-tab"
+                    >
                       {% for past_partner in past_partners %}
                         <div class="text-center px-3" style="display: inline-block; padding: 10px;">
                           <a class="text-white" href="/profile/{{past_partner.profile.handle}}">
