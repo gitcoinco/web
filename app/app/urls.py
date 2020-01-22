@@ -162,6 +162,10 @@ urlpatterns = [
     path('grants/', include('grants.urls', namespace='grants')),
     re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall')),
 
+    # gitmentor viewers
+    path('gitmentor/', include('gitmentor.urls', namespace='gitmentor')),
+    re_path(r'^gitmentor/?', include('gitmentor.urls', namespace='gitmentor_catchall')),
+
     # dashboard views
     re_path(r'^onboard/(?P<flow>\w+)/?$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
