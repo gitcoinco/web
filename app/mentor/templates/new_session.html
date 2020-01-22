@@ -40,7 +40,7 @@
               <div class="row justify-content-center">
                 {% for listing in listings %}
                   <div class="col-xs-12 col-sm-6 col-lg-3">
-                    {% include 'shared/mentor_card.html' %}
+                    {% include 'shared/session_card.html' %}
                   </div>
                 {% if forloop.counter|divisibleby:4 and not forloop.last %}
               </div>
@@ -102,6 +102,8 @@
     {% include 'shared/footer_scripts.html' with slim=1 %}
     <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
     <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    <script src="{% static "v2/js/mentor.js" %}"></script>
+
     <script>
       $(document).ready(function() {
 

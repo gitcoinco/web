@@ -35,12 +35,30 @@
       </div>
     </header>
 
-    </section>
 
-      <div class="container pt-5">
+    <div class="container pt-5">
+    <h2>My sessions</h2>
         <div class="row justify-content-around my-5">
           {% for session in sessions %}
-              {% include 'shared/mentor_card.html' with session=session %}
+              {% include 'shared/session_card.html' with session=session %}
+          {%  endfor %}
+        </div>
+      </div>
+
+    <div class="container pt-5">
+    <h2>Available mentors</h2>
+      <div class="row justify-content-around my-5">
+        {% for mentor in available_mentors %}
+            {% include 'shared/mentor_card.html' with mentor=mentor %}
+        {%  endfor %}
+      </div>
+    </div>
+    <div class="container pt-5">
+
+    <h2>Busy mentors</h2>
+      <div class="row justify-content-around my-5">
+          {% for mentor in unavailable_mentors %}
+              {% include 'shared/mentor_card.html' with mentor=mentor %}
           {%  endfor %}
         </div>
       </div>
@@ -49,6 +67,8 @@
     {% include 'shared/footer_scripts.html' with slim=1 %}
     <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
     <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    <script src="{% static "v2/js/mentor.js" %}"></script>
+
     <script>
       $(document).ready(function() {
 
