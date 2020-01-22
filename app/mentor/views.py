@@ -373,4 +373,4 @@ def get_mentors(request):
     else:
         mentors = MentoringAvailable.objects.all()
 
-    return AvailabilitySerializer(mentors, many=True).data
+    return JsonResponse(AvailabilitySerializer(mentors, many=True).data, safe=False)
