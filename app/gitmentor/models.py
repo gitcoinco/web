@@ -85,7 +85,7 @@ class SessionScheduling(SuperModel):
         """Return the string representation of a Milestone."""
         return (
             f"id: {self.pk}, mentor: {self.mentor}, session_type: {self.session_type}, "
-            f"session_date: {self.session_date}, session_time: {self.session_time},
+            f"session_date: {self.session_date}, session_time: {self.session_time}, "
             f"notes: {notes}"
         )
 
