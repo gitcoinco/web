@@ -2009,6 +2009,7 @@ class Activity(SuperModel):
     )
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
+    activity_score = models.FloatField(default=0)
     metadata = JSONField(default=dict)
     needs_review = models.BooleanField(default=False)
     view_count = models.IntegerField(default=0, db_index=True)

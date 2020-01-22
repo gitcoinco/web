@@ -1150,9 +1150,7 @@ def activity(request):
     if request.GET.get('after-pk'):
         activities = activities.filter(pk__gt=request.GET.get('after-pk'))
     if trending_only:
-        if what == 'everywhere':
-            view_count_threshold = 40
-        activities = activities.filter(view_count__gt=view_count_threshold)
+        activities = activities.order_by('-activity_score')
     print(2, round(time.time(), 1))
 
     # pagination

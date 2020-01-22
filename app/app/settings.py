@@ -754,3 +754,16 @@ UNISWAP_TRADE_DEADLINE = env.int('UNISWAP_TRADE_DEADLINE', default=300)
 RE_MARKET_LIMIT = env.int('RE_MARKET_LIMIT', default=2)
 MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=60)
 
+EDGERANK_SETTINGS = {'hourly_decay': 0.95,
+                     'user_affinity': 2.0,
+                     'activity_weights': {'bounty': 50.0,
+                                          'comment': 100.0,
+                                          'tip': 100.0,
+                                          'grant': 100.0,
+                                          'kudos': 200.0,
+                                          'joined': 300.0,
+                                          'quest': 100.0,
+                                          'avatar': 75.0},
+                     'metadata_bonuses': {'view': 1.0,
+                                          'comment': 10.0}}
+

@@ -15,6 +15,22 @@ from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
 
+ACTIVITY_TYPE_SCORES = {'wall_post': 'comment',
+                        'status_update': 'comment',
+                        'new_bounty': 'bounty',
+                        'start_work': 'bounty',
+                        'new_tip': 'tip',
+                        'new_grant': 'grant',
+                        'update_grant': 'grant',
+                        'new_grant_contribution': 'grant',
+                        'new_grant_subscription': 'grant',
+                        'receive_kudos': 'kudos',
+                        'joined': 'joined',
+                        'played_quest': 'quest',
+                        'beat_quest': 'quest',
+                        'created_quest': 'quest',
+                        'updated_avatar': 'avatar'}
+
 def get_next_time_available(key):
     d = timezone.now()
     next_offer = Offer.objects.filter(key=key, valid_from__gt=d).order_by('valid_from')
@@ -345,3 +361,12 @@ def offer_new(request):
         'nav': 'home',
     }
     return TemplateResponse(request, 'townsquare/new.html', context)
+
+def activity_score(activity):
+    if activity.activity_type in ACTIVITY_TYPE_SCORES:
+        base_score = settings.EDGERANK_SETTINGS['activity_weights'][ACTIVITY_TYPE_SCORES[activity.activity_type]]
+    else:
+        base_score = 0
+    decay_time = int((timezone.now() - activity.created).total_seconds()) // 3600
+    decay = settings.EDGERANK_SETTINGS['hourly_decay'] ** decay_time
+    return base_score + activity.view_count * settings.EDGERANK_SETTINGS['metadata_bonuses']['view'] + activity.comments.count() * settings.EDGERANK_SETTINGS['metadata_bonuses']['comment'] * decay
