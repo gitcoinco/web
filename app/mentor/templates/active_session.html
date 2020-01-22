@@ -29,7 +29,8 @@
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <header class="header">
       {% include 'shared/mentor_nav.html' %}
-			<!-- TODO replace it by the correct mentor nav -->>
+			{% if  session %}
+      <!-- TODO replace it by the correct mentor nav -->>
       <div class="container text-center mt-5">
         <h1 class="white h2">
         </h1>
@@ -41,10 +42,10 @@
           Mentoring to {{ session.mentee.name }}
         </p>
       </div>
+      {% endif %}
     </header>
 
-    </section>
-
+    {% if session %}
 		<section class="container main">
 			<div class="row">
 				<div class="col-sm">
@@ -68,6 +69,19 @@
 				</div>
 			</div>
 		</section>
+    {% else %}
+      <section class="container main">
+			<div class="row">
+        <div class="col-sm-12 col-md-8 offset-md-2 mt-5 mb-5 text-center" >
+          <h2 class="center">Hey there's nobody here yet, would you like to create a session?</h2>
+          <a class="center btn btn-lg btn-gc-blue mt-4" href="{% url 'mentor_new' %}">Create session</a>
+          <img style="display: block" src="https://media3.giphy.com/media/JY5dig6xQ9S7u/source.gif" alt="">
+        </div>
+
+
+			</div>
+		</section>
+    {% endif %}
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}

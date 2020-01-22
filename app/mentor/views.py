@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
 def mentor_home(request):
     """Render the sessions home page."""
     listings = []
-    if not request.user.is_anonymous:
+    if request.user.is_authenticated:
         listings = Sessions.objects.filter(Q(mentor=request.user.profile) | Q(mentee=request.user.profile), active=True)
     mentoring = Sessions.objects.filter(active=True, mentor_leave=None).values_list('mentor_id', flat=True)
     mentees = Sessions.objects.filter(active=True, mentee_leave=None).values_list('mentee_id', flat=True)
@@ -337,10 +337,13 @@ def update_session(request, session):
 
 def get_my_availability(request):
     try:
-        busy_mentor = Sessions.objects.filter(mentor=request.user.profile, mentor_leave=None, active=True)
-        busy_mentee = Sessions.objects.filter(mentee=request.user.profile, mentee_leave=None, active=True)
+        busy_mentor = Sessions.objects.filter(mentor=request.user.profile, active=True)
+        busy_mentee = Sessions.objects.filter(mentee=request.user.profile, active=True)
         ctx = {
-            'available': not busy_mentee.exists() and not busy_mentor.exists()
+            'available': not busy_mentee.exists() and not busy_mentor.exists(),
+            'sessions': list(set(
+                list(busy_mentor.values_list('to_address', flat=True)) +
+                list(busy_mentee.values_list('to_address', flat=True))))
         }
         # available = MentoringAvailable.objects.get(mentor=request.user.profile)
         # return JsonResponse(AvailabilitySerializer(available).data)
