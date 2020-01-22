@@ -14,7 +14,7 @@
   </a>
   <a class="btn btn-outline-gc-blue btn-sm flex-grow-1" href="{% url 'kudos_send' %}?username={{ profile.handle }}" data-placement="bottom" data-toggle="tooltip" data-html="true" title="Kudos @{{ profile.handle }}">
      <i class="fas fa-dice-d6"></i>
-   </a>
+  </a>
   {% if verification %}
     <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
       <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
