@@ -213,9 +213,14 @@ const startAPIPooling = function() {
           console.log("nextStream", nextStream);
 
           if (nextStream) {
+						// Contact the API to signal the backend a session have been joined
+						join_session(address);
             currentStream = nextStream;
+						// Launch the countdown
             startStreamCountdown(nextStream, address);
+						// Delete the pooling loop
             clearInterval(pooling);
+						//	Open the wait-stream screen
             selectScreen($(".wait-stream"));
           }
         }
@@ -279,8 +284,11 @@ const createStream = () => {
 
 const cancelStream = () => {
 	setTimeout(() => {
+		// Check if the stream have already been cancelled from the API
 		checkCancellations(currentStream.id).then(cancelled => {
 			if (cancelled) {
+				// Attempt to signal the API the session have been terminated
+				finish_session(room_address);
 				jitsy.executeCommand("hangup");
 				destroyJitsy();
 				resetScreen();
@@ -383,3 +391,7 @@ $(document).ready(function() {
     });
   });
 });
+
+window.onbeforeunload = function(){
+	finish_session(room_address);
+}
