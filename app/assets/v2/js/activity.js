@@ -71,7 +71,9 @@ $(document).ready(function() {
   // by recursively waiting for the activity items to show up
   var schedule_long_poller = function() {
     if ($('#activities .row').length) {
-      run_longpoller(true);
+      if (!$('#trending').is(':checked')) {
+        run_longpoller(true);
+      }
     } else {
       setTimeout(function() {
         schedule_long_poller();
