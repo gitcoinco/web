@@ -63,18 +63,8 @@ class MoneyStream(SuperModel):
 
 
 class SessionScheduling(SuperModel):
-    SESSION_TYPE = [
-        ('Debug', 'Debug'),
-        ('Code Review', 'Code Review'),
-        ('Peer Programming', 'Peer Programming'),
-        ('Other', 'Other'),
-    ]
 
-    mentor = models.ManyToManyField(
-        'dashboard.Profile',
-        help_text=_('Select mentor'),
-    )
-    session_type = models.CharField(max_length=50, choices=SESSION_TYPE, blank=True, db_index=True)
+    """
     session_date = models.DateField(help_text=_('Requested session date.'))
     session_time = models.TimeField(help_text=_('Requested session time.'))
     # value_in_token = models.DecimalField(default=1, decimal_places=18, max_digits=50)
@@ -82,13 +72,33 @@ class SessionScheduling(SuperModel):
     notes = models.TextField(help_text=_('Anything the user wants to send to the mentor.'))
 
     def __str__(self):
-        """Return the string representation of a Milestone."""
+        \"""Return the string representation of a Milestone.\"""
         return (
             f"id: {self.pk}, mentor: {self.mentor}, session_type: {self.session_type}, "
             f"session_date: {self.session_date}, session_time: {self.session_time}, "
             f"notes: {notes}"
         )
+    """
+    SESSION_TYPE = [
+        ('Debugging', 'debugging'),
+        ('Code Review', 'code-review'),
+        ('Peer Programming', 'peer-programming'),
+        ('Other', 'other'),
+    ]
 
+    mentor = models.ManyToManyField(
+        'dashboard.Profile',
+        help_text=_('Select mentor'),
+    )
+    session_type = models.CharField(max_length=50, choices=SESSION_TYPE, blank=True, db_index=True)
+    session_datetime = models.DateTimeField(help_text=_('Requested session date and time.'))
+
+    def __str__(self):
+        """Return the string representation of a Milestone."""
+        return (
+            f"mentor: {self.mentor}, session_type: {self.session_type}, "
+            f"id: {self.pk}, session_datetime: {self.session_datetime}"
+        )
 
 class MentoringSession(SuperModel):
     pass

@@ -27,7 +27,8 @@ class SessionSchedulingForm(forms.ModelForm):
     """Define the Session scheduling form logic."""
 
     class Meta:
-        """Define the metadata for the SessionScheduling model form."""
+        """
+        \"""Define the metadata for the SessionScheduling model form.\"""
 
         model = SessionScheduling
         fields = ('mentor', 'session_type', 'session_date', 'session_time',
@@ -43,6 +44,21 @@ class SessionSchedulingForm(forms.ModelForm):
                         'type': 'text',
                         'class': 'form__input form__input-lg',
                         'placeholder': _('Due Date for completion')
+                    }
+                )
+        }
+        """
+
+        model = SessionScheduling
+        fields = ('mentor', 'session_type', 'session_datetime',)
+        widgets = {
+            'session_datetime':
+                forms.DateTimeInput(
+                    attrs={
+                        'type': 'text',
+                        'class': 'form__input form__input-lg',
+                        'id': 'session_datetime',
+                        'placeholder': _('Request session date and time')
                     }
                 )
         }

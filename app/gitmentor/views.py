@@ -43,6 +43,7 @@ from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from gitmentor.models import SessionScheduling
 from gitmentor.forms import SessionSchedulingForm
+from marketing.models import Keyword, Stat
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
@@ -57,9 +58,19 @@ def index(request):
 
 @login_required
 def schedule_session(request):
+    profile = get_profile(request)
+
+    if request.method == "POST":
+        method = request.POST.get('method')
+
+        if method == "POST":
+            form = SessionSchedulingForm(request.POST)
+            form.save()
+
     form = SessionSchedulingForm()
 
     params = {
+        'active': 'schedule_session',
         'form': form,
     }
     return TemplateResponse(request, 'gitmentor/schedule.html', params)
