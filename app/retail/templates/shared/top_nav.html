@@ -55,6 +55,6 @@
     <img src="{% static "v2/images/top-bar/quests-symbol.svg" %}" height="22" alt="" class="d-md-none" style="height: 55px; width: 55px; margin-top: -15px; margin-left: -15px;">
   </a>
   <a class="{% if request.path|matches:'^\/((mentor.*))$' %}selected{% endif %}" href="{% url "mentor_home" %}">
-    Mentor
+    <img src="{% static "v2/images/top-bar/mentor-logo.png" %}" style="witdh: 20px; height: 20px;"  alt="" class="d-md-block d-none" style="margin-top: -2px; margin-left: -10px;">
   </a>
 </div>
