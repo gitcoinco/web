@@ -49,12 +49,8 @@ def mentor_home(request):
     listings = []
     if request.user.is_authenticated:
         listings = Sessions.objects.filter(Q(mentor=request.user.profile) | Q(mentee=request.user.profile), active=True)
-    mentoring = Sessions.objects.filter(active=True, mentor_leave=None).values_list('mentor_id', flat=True)
-    mentees = Sessions.objects.filter(active=True, mentee_leave=None).values_list('mentee_id', flat=True)
-    busy = list(mentoring) + list(mentees)
-    available_mentors = MentoringAvailable.objects.filter(active=True, active_until__gt=datetime.now()).exclude(mentor__in=busy)
-    unavailable_mentors = MentoringAvailable.objects.filter(active=True, active_until__gte=datetime.now(UTC),
-                                                            mentor__in=busy)
+    available_mentors = Sessions.objects.filter(active=True, mentee=None)
+    unavailable_mentors = Sessions.objects.filter(active=True).exclude(mentee=None)
 
     context = {
         'title': 'Mentor',
@@ -82,7 +78,7 @@ def join_session(request, session):
         is_mentee = session.mentee_id == request.user.profile.id
 
         # If no meentee and no mentor user join the room then such user is set as mentee
-        if session.mentee is None and not is_mentor:
+        if session.mentee is None:
             session.mentee_join = datetime.now()
             session.mentee = request.user.profile
             session.save()
@@ -145,6 +141,9 @@ def finish_session(request, session):
 @login_required
 def new_session(request):
     """Render the sessions home page."""
+
+    if not request.user.profile.preferred_payout_address:
+        return TemplateResponse(request, 'setup_session.html')
 
     if request.method == "POST":
         name = request.POST.get('name', 'Mentoring')

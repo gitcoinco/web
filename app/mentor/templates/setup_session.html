@@ -28,12 +28,26 @@
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <header class="header">
       {% include 'shared/mentor_nav.html' %}
-      <div class="container text-center mt-5">
-        <h1 class="white h2">
-          The mentor is busy right now, please wait!
+      <div class="container text-center mt-5 pb-5">
+        <h1 class="white h2 center">
+          To continue, please setup the prefered payout address to associate one session with you account.
         </h1>
+
       </div>
     </header>
+    <div class="mt-5 mb-5 container text-center">
+       <p>Go to <a href="/settings/account">your preferences</a> and set up you address</p>
+
+       <div class="row">
+         <div class="col-md-8">
+          <img width="100%" src="{%  static 'v2/images/mentor/account.png' %}">
+         </div>
+       </div>
+      <a class="mt-4 mb-4 btn btn-lg btn-primary" href="/settings/account">Add default address</a>
+    </div>
+
+
+    </div>
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
