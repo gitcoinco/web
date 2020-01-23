@@ -36,55 +36,137 @@
         <h1 class="white h4">
           {{ session.description }}
         </h1>
-        <p class="white">
-          {% if is_mentor %} I'm the mentor {% else %}{{ session.mentor.name }} {% endif %}
-          Mentoring to {{ session.mentee.name }}
-        </p>
+
       </div>
     </header>
 
-    </section>
-
-		<section class="container main">
+		<section class="container main my-3">
 			<div class="row">
 				<div class="col-sm">
 					<div id="jitsy-placeholder">
 					</div>
 				</div>
-				<div class="col-sm">
-					<div class="info-panel">
-						<h2>Mentoring session</h2>
-						<p class="counter">23:04</p>
-						<button class="stop">Stop session</button>
-						<ul class="activity_logs">
-							<li>Sarah initiated the session with an initial stake of 0.05ETH</li>
-							<li>The available fund have already reached with 0.015ETH streamed</li>
-							<li>You have successfully withdrawn 0.01 ETH 12 minutes after the session start</li>
-						</ul>
-				</div>
-				<div class="progress-info-bar">
-					42&percnt; of the 0.05 bounty funds have been streamed for your work <a href="http://todo.com">more info</a>
-					<button>Withdraw</button>
+				<div class="col-sm text-centered my-3">
+					<p>You're currently streaming with {{session.mentor.name}}</p>
+					<p class="lead">
+						<span class="diff">
+							<span class="min"></span>
+							:
+							<span class="sec"></span>
+						</span> / 
+						<span class="total">
+							<span class="min"></span>
+							:
+							<span class="sec"></span>
+						<span>
+					</p>
+					<div class="progress">
+						<div 
+							class="progress-bar progress-bar-striped" 
+							role="progressbar" 
+							style="width: 1%" 
+							aria-valuenow="10" 
+			 				aria-valuemin="0" 
+							aria-valuemax="100"></div>
+					</div>
+						<p class="deposit">
+						<span class="streamed-dai"></span>  DAI out of 
+						<span class="deposit-dai"></span> DAI.
+					</p>
+					<button class="btn btn-primary stop-stream-btn">Stop session</button>
+					<button class="btn btn-secondary withdrawn-btn-show">Withdraw</button>
 				</div>
 			</div>
+		</section>
+		<section class="container wait my-3 text-center">
+			<div class="spinner-border" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<p class="lead">
+				Waiting for somebody to connect to the stream.
+			</p>
+		</section>
+		<section class="container wait-stream my-3 text-center">
+			<div class="spinner-grow" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<p class="lead">
+				The stream will start in 
+				<span class="if-min">
+					<span class="min"></span> minutes and 
+				</span>
+				<span class="sec"></span> seconds.
+			</p>
+		</section>
+		<section class="container wait-stream-register my-3 text-center">
+			<div class="spinner-border" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<p class="lead">Waiting for the stream to be published.</p>
+			<p><small>Don't forget to check your Metamask extension!</small></p>
+			<button class="btn btn-primary create-retry-btn">Retry</button>
+			<button class="btn btn-secondary create-cancel-btn">Cancel</button>
+		</section>
+		<section class="container wait-stream-deletion my-3 text-center">
+			<div class="spinner-border" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<p class="lead">
+				The stream is being deleted, please wait.
+			</p>
+		</section>
+		<section class="container wait-metamask my-3 text-center">
+			<div class="spinner-border" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<p class="lead">
+				Please enable metamask!
+			</p>
+		</section>
+		<section class="container stream-busy my-3 text-center">
+			<div class="spinner-grow" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<p class="lead">
+				This stream is busy. Try again later.
+			</p>
+		</section>
+		<section class="container create-stream my-3 text-centered">
+			<img src="https://www.sablier.finance/static/media/logo.ace48f85.svg">
+			<h1>Deposit to the stream</h1>
+			<p class="lead">
+				Commission the real-time stream using the form below! The mentor will be yours in a minute!
+			</p>
+			<p>The stream can be cancelled at every moment and you will be refunded with the rest of the money.</p>
+			<form class="deposit-form">
+				<div class="form-group">
+					<label for="deposit">Deposit</label>
+					<input 
+						id="deposit" 
+						type="number" 
+						class="form-number" 
+						aria-describedby="depositDescribe" 
+						min="0"
+						placeholder="30"/> minutes
+					<small id="depositDescribe" class="form-text text-muted">
+						You will commission <span class="deposit-dai"></span> DAI
+						(<span class="deposit-rate"></span> DAI / minute).
+					</small>
+				</div>
+				<button type="button" class="btn btn-primary create-btn">Create stream</input>
+			</form>
 		</section>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
+		<script>
+  		const room_address = "{{ session.mentor.address }}";
+			const rate_per_min = {{session.rate_per_min}};
+		</script>
     <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
     <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
-    <script src="{% static "v2/js/mentor.js" %}"></script>
-    <script>
-      $(document).ready(function() {
-				const domain = 'meet.jit.si';
-				const options = {
-						roomName: "{{ session.name }}",
-						width: 700,
-						height: 700,
-						parentNode: document.querySelector('#jitsy-placeholder')
-				};
-				const api = new JitsiMeetExternalAPI(domain, options);
-      });
-    </script>
+		<!-- <script src="{% static "v2/js/mentor.js" %}"></script> -->
+		<script src="{% static "v2/js/abi.js" %}"></script>
+		<script src="{% static "v2/js/pages/mentor_active_session.js" %}"></script>
 
   </body>

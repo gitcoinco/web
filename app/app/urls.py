@@ -86,7 +86,8 @@ urlpatterns = [
     re_path(r'^mentor/unavailable$', mentor.views.set_mentor_unavailable, name='mentor-unavailable'),
     re_path(r'^mentor/availability/toggle', mentor.views.toggle_availability, name='mentor-toggle'),
     re_path(r'^mentors$', mentor.views.get_mentors, name='mentor-list'),
-
+    # Decomment for demo
+    # re_path(r'^mentor/session/demo$', mentor.views.join_session, name='session_join'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
