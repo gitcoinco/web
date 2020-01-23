@@ -65,6 +65,13 @@ def mentor_home(request):
 @login_required
 def join_session(request, session):
     """Render the sessions home page."""
+
+    # DEMO: Comment for demo
+
+    # session = get_object_or_404(Sessions, mentor__id=session)
+
+    # is_mentor = session.mentor_id == request.user.profile.id
+
     sessions = Sessions.objects.filter(to_address=session, active=True).order_by('-created_on')
     is_mentor = False
     is_mentee = False
