@@ -37,7 +37,7 @@ const updatePrice = () => {
   const value = $('#deposit').val();
   const depositMin = parseInt(value);
 
-  if (depositMin === NaN) {
+  if (Number.isNaN(depositMin)) {
     $('#depositDescribe').hide();
   } else {
     $('#depositDescribe').show();
@@ -46,7 +46,7 @@ const updatePrice = () => {
     $('.deposit-dai').text(depositDai.toFixed(2));
     $('.deposit-rate').text(rate_per_min / TESTDAI_DECIMAL);
   }
-}
+};
 
 $('#deposit').keyup(updatePrice).change(updatePrice);
 
@@ -151,7 +151,7 @@ const checkCancellations = function(streamId) {
     .then(cancelledStreams => cancelledStreams.includes(streamId));
 };
 
-const startAPIPooling = function () {
+const startAPIPooling = function() {
   // console.warn('starting fetching');
   // TODO filter cancellations
   const query = `
@@ -237,7 +237,10 @@ const startAPIPooling = function () {
 
 const createStream = () => {
   const depositMin = parseInt($('#deposit').val());
-  if (depositMin === NaN) return;
+
+  if (Number.isNaN(depositMin)) {
+    return;
+  }
   // TODO: show an error message
 
   selectScreen($('.wait-stream-register'));
@@ -296,7 +299,7 @@ const createStream = () => {
       );
     }, CONFIRMATION_WAIT_TIME);
   });
-}
+};
 
 // Jitsy-related functions
 
@@ -411,6 +414,6 @@ $(document).ready(function() {
   });
 });
 
-window.onbeforeunload = function () {
+window.onbeforeunload = function() {
   finish_session(room_address);
 };
