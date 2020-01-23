@@ -4011,6 +4011,17 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Tip.payouts">payouts</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Tip.recipient_profile">recipient_profile</h3>
 
 <p>Accessor to the related object on the forward side of a many-to-one or
@@ -4034,6 +4045,66 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 </code></pre>
 <p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
 <h3 id="dashboard.models.Tip.sender_profile_id">sender_profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="dashboard.models.TipPayout">TipPayout</h2>
+
+<pre><code class="python">TipPayout(self, *args, **kwargs)
+</code></pre>
+
+<p>Model representing redemption of a Kudos</p>
+<h3 id="dashboard.models.TipPayout.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">TipPayout._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.TipPayout.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">TipPayout._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.TipPayout.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">TipPayout._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.TipPayout.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">TipPayout._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.TipPayout.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.TipPayout.profile">profile</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.TipPayout.profile_id">profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.TipPayout.tip">tip</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.TipPayout.tip_id">tip_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.TipPayout.txid">txid</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -4944,6 +5015,10 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.as_representation">as_representation</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.avatar_baseavatar_related">avatar_baseavatar_related</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -5837,6 +5912,17 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.tip_payouts">tip_payouts</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.token_approvals">token_approvals</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
