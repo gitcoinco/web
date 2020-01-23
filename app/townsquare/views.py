@@ -15,21 +15,23 @@ from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
 
-ACTIVITY_TYPE_SCORES = {'wall_post': 'comment',
-                        'status_update': 'comment',
-                        'new_bounty': 'bounty',
-                        'start_work': 'bounty',
-                        'new_tip': 'tip',
-                        'new_grant': 'grant',
-                        'update_grant': 'grant',
-                        'new_grant_contribution': 'grant',
-                        'new_grant_subscription': 'grant',
-                        'receive_kudos': 'kudos',
-                        'joined': 'joined',
-                        'played_quest': 'quest',
-                        'beat_quest': 'quest',
-                        'created_quest': 'quest',
-                        'updated_avatar': 'avatar'}
+ACTIVITY_TYPE_SCORES = {
+    'wall_post': 'comment',
+    'status_update': 'comment',
+    'new_bounty': 'bounty',
+    'start_work': 'bounty',
+    'new_tip': 'tip',
+    'new_grant': 'grant',
+    'update_grant': 'grant',
+    'new_grant_contribution': 'grant',
+    'new_grant_subscription': 'grant',
+    'receive_kudos': 'kudos',
+    'joined': 'joined',
+    'played_quest': 'quest',
+    'beat_quest': 'quest',
+    'created_quest': 'quest',
+    'updated_avatar': 'avatar'
+}
 
 def get_next_time_available(key):
     d = timezone.now()
