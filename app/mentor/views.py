@@ -67,7 +67,7 @@ def join_session(request, session):
     """Render the sessions home page."""
     # DEMO: Comment for demo
     sessions = Sessions.objects.filter(to_address=session, active=True).order_by('-created_on')
-    # session = get_object_or_404(Sessions, mentor__id=session)
+    session = get_object_or_404(Sessions, mentor__id=session)
 
     # is_mentor = session.mentor_id == request.user.profile.id
 
