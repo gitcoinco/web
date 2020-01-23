@@ -85,7 +85,7 @@ def join_session(request, session):
         is_mentee = session.mentee_id == request.user.profile.id
 
         # If no meentee and no mentor user join the room then such user is set as mentee
-        if session.mentee is None:
+        if session.mentee is None and not is_mentor:
             session.mentee_join = datetime.now()
             session.mentee = request.user.profile
             session.save()
