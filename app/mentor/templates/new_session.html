@@ -67,35 +67,28 @@
       </div>
     </header>
 
-    <form action="/mentor/new" method="post">
-      <fieldset>
-        <label>Nombre de sesion</label>
-        <input name="name">
-      </fieldset>
+		<div class="container">
+			<form action="/mentor/new" method="post">
+				<div class="form-group my-3 mx-auto w-25">
+					<p class="lead">Create a new mentoring room below!</p>
 
-      <fieldset>
-        <label>Description de sesion</label>
-        <input name="description">
-      </fieldset>
+					<label for="name">Name of the room</label>
+					<input type="text" class="form-control" name="name" id="name" />
 
-      <fieldset>
-        <label>Network de sesion</label>
-        <input name="network" value="4">
-      </fieldset>
+					<label for="description">Description</label>
+					<input name="description" class="form-control" name="description" id="description" class="form-control"/>
 
+					<label for="price_per_min">Price per minute in DAI</label>
+					<input name="price_per_min" type="number" min="0" class="form-control" placeholder="0.50 DAI / minute"> 
 
-      <fieldset>
-        <label>Mentee Github handler</label>
-        <input name="mentee" placeholder="username">
-      </fieldset>
+					<label>Ethereum address</label>
+					<input name="to_address" type="to_address" id="to_address" class="form-control" />
 
-      <fieldset>
-        <label>Mentee Github handler</label>
-        <input name="price_per_min" placeholder="Price per minute">
-      </fieldset>
-      {% csrf_token %}
-      <input type="submit" value="Submit">
-    </form>
+					{% csrf_token %}
+					<input type="submit" class="btn btn-primary" value="Submit" />
+				</div>
+			</form>
+		</div>
     </section>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
@@ -106,7 +99,11 @@
 
     <script>
       $(document).ready(function() {
-
+				console.log('ready')	
+				ethereum.enable().then(([address]) => {
+					console.log('hello', address)
+					$('#to_address').val(address);
+				})
       });
     </script>
 

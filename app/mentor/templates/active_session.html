@@ -160,7 +160,7 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
 		<script>
-  		const room_address = "{{ session.mentor.address }}";
+  		const room_address = "{{session.mentor.address}}";
 			const rate_per_min = {{session.rate_per_min}};
 		</script>
     <script src="{% static "v2/js/lib/popper.min.js" %}"></script>

@@ -67,7 +67,7 @@ def mentor_home(request):
 def join_session(request, session):
     """Render the sessions home page."""
     # DEMO: Comment for demo
-    session = get_object_or_404(Sessions, id=session)
+    session = get_object_or_404(Sessions, mentor__id=session)
 
     is_mentor = session.mentor_id == request.user.profile.id
 
@@ -165,28 +165,38 @@ def new_session(request):
     if request.method == "POST":
         name = request.POST.get('name', 'Mentoring')
         desc = request.POST.get('description', '')
+        # Not used
         network = request.POST.get('network', 4)
+        # Not used
         mentee = request.POST.get('mentee', None)
         try:
             price_per_min = request.POST.get('price_per_min')
         except ValueError:
-            price_per_min = 1
-
-        amount = 0
+            raise Exception("Price is needed")
+        # amount = 0
+        # Not used 
         mentee_profile = None
 
-        if mentee:
-            mentee_profile = get_object_or_404(Profile, handle=mentee)
+        try:
+            to_address = request.POST.get('to_address')
+        except ValueError:
+            raise Exception("Ethereum address is needed")
+
+        print("to_address", to_address)
+
+        # TO REMOVE
+        # if mentee:
+        #     mentee_profile = get_object_or_404(Profile, handle=mentee)
 
         session = Sessions(name=name,
                            description=desc,
-                           priceFinney=amount,
                            network=network,
                            active=True,
                            price_per_min=price_per_min,
                            mentor=request.user.profile,
                            mentee=mentee_profile,
-                           start_datetime=datetime.now()
+                           start_datetime=datetime.now(),
+                           to_address=to_address
                            )
         session.save()
 
