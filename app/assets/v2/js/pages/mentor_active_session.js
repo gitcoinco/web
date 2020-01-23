@@ -81,7 +81,6 @@ const startEarningRefresh = function() {
     $(".total .min").text(two_digit(Math.floor(total / 60)));
     $(".total .sec").text(two_digit(total % 60));
 
-    // TODO: not working
     const depositDai = currentStream.deposit / TESTDAI_DECIMAL;
     $(".deposit-dai").text(depositDai.toFixed(2));
 		console.log('diff', diff);
@@ -242,20 +241,21 @@ const createStream = () => {
 	const startTime = now + STREAM_START_TIME_DELAY;
 	const stopTime = now + STREAM_START_TIME_DELAY + depositMin * 60;
 	const delta = stopTime - startTime;
-	const deposit = depositMin * rate_per_min;
-	const deposit_rounded = closerMultiple(deposit, delta);
+	const deposit = BigInt(depositMin) * BigInt(rate_per_min);
+	const deposit_rounded = deposit - (deposit % BigInt(delta));
 
 	console.warn("mentor_address", mentor_address);
 
 	console.warn("deposit", deposit);
 	console.warn("deposit_rounded", deposit_rounded);
-	console.warn("deposit in dai", deposit / 1000000000000000000);
+	console.warn("deposit in dai", deposit_rounded / 1000000000000000000n);
 	console.warn("now", now);
 	console.warn("startTime", startTime);
 	console.warn("stopTime", stopTime);
 	console.warn("delta", delta);
+	console.warn("deposit_rounded % BigInt(delta)", deposit_rounded % BigInt(delta));
 
-	// if (deposit_rounded % delta) throw "Not multiple";
+	if (deposit_rounded % BigInt(delta) !== BigInt(0)) throw "Not multiple";
 	if (now > startTime) throw "startTime should be in the future";
 	if (startTime > stopTime) throw "stopTime should be after startTime";
 
@@ -265,6 +265,10 @@ const createStream = () => {
 				"creating the stream at ",
 				Math.round(new Date().getTime() / 1000)
 			);
+			console.log('mentor_address', mentor_address);
+			console.log('deposit_rounded', deposit_rounded);
+			console.log('startTime', startTime);
+			console.log('stopTime', deposit_rounded);
 			sablier_contract.createStream(
 				mentor_address,
 				deposit_rounded,
