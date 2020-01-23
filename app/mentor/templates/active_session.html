@@ -56,7 +56,7 @@
 							<span class="min"></span>
 							:
 							<span class="sec"></span>
-						</span> / 
+						</span> /
 						<span class="total">
 							<span class="min"></span>
 							:
@@ -64,16 +64,16 @@
 						<span>
 					</p>
 					<div class="progress">
-						<div 
-							class="progress-bar progress-bar-striped" 
-							role="progressbar" 
-							style="width: 1%" 
-							aria-valuenow="10" 
-			 				aria-valuemin="0" 
+						<div
+							class="progress-bar progress-bar-striped"
+							role="progressbar"
+							style="width: 1%"
+							aria-valuenow="10"
+			 				aria-valuemin="0"
 							aria-valuemax="100"></div>
 					</div>
 						<p class="deposit">
-						<span class="streamed-dai"></span>  DAI out of 
+						<span class="streamed-dai"></span>  DAI out of
 						<span class="deposit-dai"></span> DAI.
 					</p>
 					<button class="btn btn-primary stop-stream-btn">Stop session</button>
@@ -94,9 +94,9 @@
 				<span class="sr-only">Loading...</span>
 			</div>
 			<p class="lead">
-				The stream will start in 
+				The stream will start in
 				<span class="if-min">
-					<span class="min"></span> minutes and 
+					<span class="min"></span> minutes and
 				</span>
 				<span class="sec"></span> seconds.
 			</p>
@@ -144,11 +144,11 @@
 			<form class="deposit-form">
 				<div class="form-group">
 					<label for="deposit">Deposit</label>
-					<input 
-						id="deposit" 
-						type="number" 
-						class="form-number" 
-						aria-describedby="depositDescribe" 
+					<input
+						id="deposit"
+						type="number"
+						class="form-number"
+						aria-describedby="depositDescribe"
 						min="0"
 						placeholder="30"/> minutes
 					<small id="depositDescribe" class="form-text text-muted">
@@ -176,8 +176,8 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
 		<script>
-  		const room_address = "{{session.mentor.address}}";
-			const rate_per_min = {{session.rate_per_min}};
+  		const room_address = "{{session.to_address}}";
+			const rate_per_min = {{session.price_per_min}};
 		</script>
     <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
     <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
