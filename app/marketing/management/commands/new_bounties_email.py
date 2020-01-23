@@ -78,8 +78,8 @@ class Command(BaseCommand):
                 counter_total += 1
                 new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
                 print("{}/{}/{}) {}/{}: got {} new bounties & {} all bounties".format(counter_sent, counter_total, counter_grant_total, to_email, keywords, new_bounties.count(), all_bounties.count()))
-                #should_send = new_bounties.count() or town_square_enabled
-                should_send = new_bounties.count()
+                should_send = new_bounties.count() or town_square_enabled
+                #should_send = new_bounties.count()
                 if should_send:
                     print(f"sending to {to_email}")
                     new_bounty_daily(new_bounties, all_bounties, [to_email])
