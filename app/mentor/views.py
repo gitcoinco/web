@@ -67,19 +67,10 @@ def join_session(request, session):
     """Render the sessions home page."""
     # DEMO: Comment for demo
     sessions = Sessions.objects.filter(to_address=session, active=True).order_by('-created_on')
-    session = get_object_or_404(Sessions, mentor__id=session)
+    # session = get_object_or_404(Sessions, mentor__id=session)
 
     # is_mentor = session.mentor_id == request.user.profile.id
 
-    # If no meentee, then another user join the url is set as mentee
-    if session.mentee is None and not is_mentor:
-        session.mentee_join = datetime.now()
-        session.mentee = request.user.profile.id
-        session.save()
-
-    if is_mentor and not session.mentor_join:
-        session.mentor_join = datetime.now()
-        session.save()
 
     sessions = Sessions.objects.filter(to_address=session, active=True).order_by('-created_on')
     is_mentor = False
