@@ -1,11 +1,17 @@
-<div class="col-xs-12 col-sm-6 col-lg-4" style="user-select: auto;">
+<div class="col-xs-6 col-sm-4 col-lg-3" style="user-select: auto;">
   <div class="card mb-5"  style="user-select: auto; margin: 0">
-    <img class="card-img-top" width="364" src="{{ mentor.mentor.avatar_url }}" alt="Mentor avatar" style="user-select: auto;">
+    <img class="card-img-top" width="364" src="{{ session.mentor.avatar_url }}" alt="Mentor avatar" style="user-select: auto;">
     <div class="card-body" style="user-select: auto;">
-      <h5 class="card-title" style="user-select: auto;"><a href="{%  url 'profile' mentor.mentor.handle %}" style="user-select: auto;">{{ mentor.mentor.name }}</a></h5>
+    <h4 class="card-title text-left pt-0" style="user-select: auto;">{{ session.name }}</h4>
+
+    <p class="card-subtitle" style="user-select: auto;"><a href="{%  url 'profile' session.mentor.handle %}" style="user-select: auto;">{{ session.mentor.name }}</a></p>
+    <small>$ {{ session.price_per_min|floatformat:2   }} DAI/min</small>
+      <p class="" style="user-select: auto;">{{ session.description }}</p>
+      {% if session.mentor.preferred_payout_address %}
       <div class="text-center mt-3" style="user-select: auto;">
-        <a href="{%  url 'session_join' session=mentor.mentor.id %}" class="btn btn-gc-blue" style="user-select: auto;">Join</a>
+        <a href="{%  url 'session_join' session=session.mentor.preferred_payout_address %}" class="btn btn-gc-blue" style="user-select: auto;">Join</a>
       </div>
+      {% endif %}
     </div>
   </div>
 </div>

@@ -47,12 +47,10 @@ logger = logging.getLogger(__name__)
 def mentor_home(request):
     """Render the sessions home page."""
     listings = []
-    if not request.user.is_anonymous:
+    if request.user.is_authenticated:
         listings = Sessions.objects.filter(Q(mentor=request.user.profile) | Q(mentee=request.user.profile), active=True)
-    mentoring = Sessions.objects.filter(active=True).values_list('mentor__id', flat=True)
-    available_mentors = MentoringAvailable.objects.filter(active=True, active_until__gt=datetime.now()).exclude(mentor__in=mentoring)
-    unavailable_mentors = MentoringAvailable.objects.filter(active=True, active_until__gte=datetime.now(UTC),
-                                                            mentor__in=mentoring)
+    available_mentors = Sessions.objects.filter(active=True, mentee=None)
+    unavailable_mentors = Sessions.objects.filter(active=True).exclude(mentee=None)
 
     context = {
         'title': 'Mentor',
@@ -63,6 +61,7 @@ def mentor_home(request):
     return TemplateResponse(request, 'mentor_home.html', context)
 
 
+@csrf_exempt
 @login_required
 def join_session(request, session):
     """Render the sessions home page."""
@@ -81,14 +80,36 @@ def join_session(request, session):
         session.mentor_join = datetime.now()
         session.save()
 
-    is_mentee = session.mentee_id == request.user.profile.id
+    sessions = Sessions.objects.filter(to_address=session, active=True).order_by('-created_on')
+    is_mentor = False
+    is_mentee = False
+    session = None
 
-    if not is_mentor and not is_mentee:
-        return TemplateResponse(request, 'waiting_session.html')
+    if sessions.exists():
+        session = sessions.first()
+
+    if session:
+        is_mentor = session.mentor_id == request.user.profile.id
+        is_mentee = session.mentee_id == request.user.profile.id
+
+        # If no meentee and no mentor user join the room then such user is set as mentee
+        if session.mentee is None:
+            session.mentee_join = datetime.now()
+            session.mentee = request.user.profile
+            session.save()
+
+        if is_mentor and not session.mentor_join:
+            session.mentor_join = datetime.now()
+            session.save()
+
+        if request.method == 'POST':
+            return JsonResponse({
+                "is_mentor": is_mentor,
+                "is_mentee": is_mentee,
+            })
 
     # Prod
     context = {
-        'title': 'Mentor',
         "session": session,
         "is_mentor": is_mentor,
         "is_mentee": is_mentee,
@@ -96,19 +117,6 @@ def join_session(request, session):
         'finised': session.active is False,
         # TODO: Not sure about the merge here
         # 'is_mentor': session.mentor.id == request.user.profile.id
-        "session": {
-            "name": "Get help with your bug!",
-            "description": "I'm a very knowledgable dev",
-            "mentee":{
-                "name": "Jean Louis"
-            },
-            "mentor": {
-                "name": "Jean Francois",
-                "address": '0x5268b3d996b375Bf39777ffdE95D615d0D7bd56B'
-            },
-            "rate_per_min": 50000000000000000
-        },
-        "role": "mentee"
     }
 
     # DEMO: Decomment here for demo
@@ -137,12 +145,23 @@ def join_session(request, session):
 @login_required
 def finish_session(request, session):
     """Render the sessions home page."""
-    session = get_object_or_404(Sessions, id=session)
+    sessions = Sessions.objects.filter(to_address=session, active=True).order_by('-created_on')
+    session = None
+
+    if sessions.exists():
+        session = sessions.first()
+    else:
+        return JsonResponse({
+            'status': 'ok',
+            'message': 'no active session exists'
+        })
+
     is_mentor = session.mentor_id == request.user.profile.id
     is_mentee = session.mentee_id == request.user.profile.id
 
     if is_mentee and not session.mentee_leave:
         session.mentee_leave = datetime.now()
+        session.active = False
         session.save()
 
         return JsonResponse({'status': 'ok', 'msg': ''})
@@ -155,20 +174,23 @@ def finish_session(request, session):
             session.save()
         return JsonResponse({'status': 'ok', 'msg': ''})
 
-    return JsonResponse({'status': 'error', 'msg': 'Only the owner finsh the session'}, status=403)
+    return JsonResponse({'status': 'error', 'msg': 'Only the owner finish the session'}, status=403)
 
 
 @login_required
 def new_session(request):
     """Render the sessions home page."""
 
+    if not request.user.profile.preferred_payout_address:
+        return TemplateResponse(request, 'setup_session.html')
+
     if request.method == "POST":
         name = request.POST.get('name', 'Mentoring')
         desc = request.POST.get('description', '')
         # Not used
         network = request.POST.get('network', 4)
-        # Not used
-        mentee = request.POST.get('mentee', None)
+        address = request.POST.get('address', request.user.profile.preferred_payout_address)
+
         try:
             price_per_min = request.POST.get('price_per_min')
         except ValueError:
@@ -176,13 +198,6 @@ def new_session(request):
         # amount = 0
         # Not used 
         mentee_profile = None
-
-        try:
-            to_address = request.POST.get('to_address')
-        except ValueError:
-            raise Exception("Ethereum address is needed")
-
-        print("to_address", to_address)
 
         # TO REMOVE
         # if mentee:
@@ -195,12 +210,12 @@ def new_session(request):
                            price_per_min=price_per_min,
                            mentor=request.user.profile,
                            mentee=mentee_profile,
-                           start_datetime=datetime.now(),
-                           to_address=to_address
+                           start_datetime=datetime.now(UTC),
+                           to_address=address
                            )
         session.save()
 
-        return redirect('session_join', session=session.id)
+        return redirect('session_join', session=address)
 
     listings = Sessions.objects.all()
     context = {
@@ -214,7 +229,18 @@ def new_session(request):
 def get_session(request, session):
     """Update current info of this set"""
     errors = []
-    session = get_object_or_404(Sessions, id=session)
+    sessions = Sessions.objects.filter(to_address=session, active=True).order_by('-created_on')
+    session = None
+
+    if sessions.exists():
+        session = sessions.first()
+    else:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'No active session exists'
+        }, status=404)
+
+    session = sessions.first()
 
     is_mentor = session.mentor_id == request.user.profile.id
     is_mentee = session.mentee_id == request.user.profile.id
@@ -255,12 +281,30 @@ def get_session(request, session):
         'end_datetime': session.end_datetime
     })
 
+
 @csrf_exempt
 @login_required
 def update_session(request, session):
     """Update current info of this set"""
     errors = []
-    session = get_object_or_404(Sessions, id=session)
+    sessions = Sessions.objects.filter(to_address=session, active=True).order_by('-created_on')
+
+    if not sessions.exists():
+        return JsonResponse({
+            'status': 'error',
+            'message': 'No active session exists'
+        }, status=404)
+
+    session = sessions.first()
+    is_mentor = session.mentor_id == request.user.profile.id
+    is_mentee = session.mentee_id == request.user.profile.id
+
+    if not is_mentor and not is_mentee:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Only members could update the current session'
+        }, status=404)
+
     name = request.POST.get('name', None)
     description = request.POST.get('description', None)
     metadata = request.POST.get('metadata', None)
@@ -335,15 +379,21 @@ def update_session(request, session):
 
 def get_my_availability(request):
     try:
-        available = MentoringAvailable.objects.get(mentor=request.user.profile)
+        busy_mentor = Sessions.objects.filter(mentor=request.user.profile, active=True)
+        busy_mentee = Sessions.objects.filter(mentee=request.user.profile, active=True)
+        ctx = {
+            'available': not busy_mentee.exists() and not busy_mentor.exists(),
+            'sessions': list(set(
+                list(busy_mentor.values_list('to_address', flat=True)) +
+                list(busy_mentee.values_list('to_address', flat=True))))
+        }
+        # available = MentoringAvailable.objects.get(mentor=request.user.profile)
+        # return JsonResponse(AvailabilitySerializer(available).data)
 
-        return JsonResponse(AvailabilitySerializer(available).data)
+        return JsonResponse(ctx)
     except MentoringAvailable.DoesNotExist:
         return JsonResponse({
             'available': False,
-            'active_until': '',
-            'period_time': '',
-            'joined': None
         }, status=404)
 
 
@@ -383,6 +433,7 @@ def set_mentor_available(request):
 
     return JsonResponse(AvailabilitySerializer(available).data)
 
+
 @csrf_exempt
 @require_POST
 def set_mentor_unavailable(request):
@@ -415,11 +466,14 @@ def toggle_availability(request):
 
 def get_mentors(request):
     available = request.GET.get('status', None)
+    mentoring = Sessions.objects.filter(active=True).values_list('mentor_id', flat=True)
+    mentees = Sessions.objects.filter(active=True).values_list('mentee_id', flat=True)
+    busy = list(mentoring) + list(mentees)
 
     if available == 'available':
-        mentors = MentoringAvailable.objects.filter(active=True, active_until__gt=datetime.now())
+        mentors = MentoringAvailable.objects.filter(active=True, active_until__gt=datetime.now(UTC)).exclude(mentor__in=busy)
     elif available == 'unavailable':
-        mentors = MentoringAvailable.objects.filter(Q(active=False) | Q(active_until__lte=datetime.now()))
+        mentors = MentoringAvailable.objects.filter(active=True, active_until__gte=datetime.now(UTC), mentor__in=busy)
     else:
         mentors = MentoringAvailable.objects.all()
 

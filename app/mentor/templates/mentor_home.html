@@ -35,30 +35,30 @@
       </div>
     </header>
 
-  {% if listing %}
+  {% if sessions %}
     <div class="container pt-5">
     <h2>My sessions</h2>
         <div class="row justify-content-around my-5">
           {% for session in sessions %}
-              {% include 'shared/session_card.html' with session=session %}
+              {% include 'shared/mentor_card.html' with session=session %}
           {%  endfor %}
         </div>
       </div>
   {% endif %}
     <div class="container pt-5">
-    <!-- <h2>Available mentors</h2> -->
-    <!--   <div class="row justify-content-around my-5"> -->
-    <!--     {% for mentor in available_mentors %} -->
-    <!--         {% include 'shared/mentor_card.html' with mentor=mentor %} -->
-    <!--     {%  endfor %} -->
-    <!--   </div> -->
-    <!-- </div> -->
-    <!-- <div class="container pt-5"> -->
-
-    <h2>Avaible mentors</h2>
+    <h2>Available mentors</h2>
       <div class="row justify-content-around my-5">
-          {% for mentor in unavailable_mentors %}
-              {% include 'shared/mentor_card.html' with mentor=mentor %}
+        {% for session in available_mentors %}
+            {% include 'shared/mentor_card.html' with mentor=session.mentor %}
+        {%  endfor %}
+      </div>
+    </div>
+    <div class="container pt-5">
+
+    <h2>Busy mentors</h2>
+      <div class="row justify-content-around my-5">
+          {% for session in unavailable_mentors %}
+              {% include 'shared/mentor_card.html' with mentor=session.mentor %}
           {%  endfor %}
         </div>
       </div>

@@ -45,6 +45,9 @@ function update_session(sessionId, data) {
 
 }
 
+function join_session(sessionId) {
+  return fetchData('/mentor/session/' + sessionId, 'POST');
+}
 
 function finish_session(sessionId) {
   return fetchData('/mentor/session/' + sessionId + '/finish', 'POST');

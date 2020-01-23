@@ -75,19 +75,19 @@ urlpatterns = [
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
 
     # mentor
-    re_path(r'^mentor/?$', mentor.views.mentor_home, name='mentor_home'),
+    re_path(r'^mentor/session/(?P<session>0x[a-fA-F0-9]{40})/get$', mentor.views.get_session, name='session_get'),
     re_path(r'^mentor/new/?$', mentor.views.new_session, name='mentor_new'),
-    re_path(r'^mentor/session/(?P<session>\d+)??$', mentor.views.join_session, name='session_join'),
-    re_path(r'^mentor/session/(?P<session>\d+)/update', mentor.views.update_session, name='session_update'),
-    re_path(r'^mentor/session/(?P<session>\d+)/finish', mentor.views.finish_session, name='session_finish'),
-    re_path(r'^mentor/session/(?P<session>\d+)/get', mentor.views.get_session, name='session_get'),
+    re_path(r'^mentor/session/(?P<session>0x[a-fA-F0-9]{40})$', mentor.views.join_session, name='session_join'),
+    re_path(r'^mentor/session/(?P<session>0x[a-fA-F0-9]{40})/update$', mentor.views.update_session, name='session_update'),
+    re_path(r'^mentor/session/(?P<session>0x[a-fA-F0-9]{40})/finish$', mentor.views.finish_session, name='session_finish'),
     re_path(r'^mentor/availability$', mentor.views.get_my_availability, name='my-avalability'),
     re_path(r'^mentor/available$', mentor.views.set_mentor_available, name='mentor-available'),
     re_path(r'^mentor/unavailable$', mentor.views.set_mentor_unavailable, name='mentor-unavailable'),
-    re_path(r'^mentor/availability/toggle', mentor.views.toggle_availability, name='mentor-toggle'),
+    re_path(r'^mentor/availability/toggle$', mentor.views.toggle_availability, name='mentor-toggle'),
     re_path(r'^mentors$', mentor.views.get_mentors, name='mentor-list'),
     # Decomment for demo
     # re_path(r'^mentor/session/demo$', mentor.views.join_session, name='session_join'),
+    re_path(r'^mentor/?$', mentor.views.mentor_home, name='mentor_home'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
