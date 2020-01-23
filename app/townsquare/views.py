@@ -149,7 +149,7 @@ def town_square(request):
         try:
             pk = int(tab.split(':')[1])
             activity = Activity.objects.get(pk=pk)
-            title = f"@{activity.profile.handle}'s comment on Gitcoin "
+            title = f"@{activity.profile.handle}'s post on Gitcoin "
             desc = f"{activity.text}"
             comments_count = activity.comments.count()
             if comments_count:
