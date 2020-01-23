@@ -1454,7 +1454,7 @@ var pull_bounty_from_api = function() {
 
         document.result = result;
 
-        if (document.result.event && localStorage['pendingProject']) {
+        if (document.result.event && localStorage['pendingProject'] && (document.result.standard_bounties_id == localStorage['pendingProject'])) {
           projectModal(document.result.pk);
         }
 
