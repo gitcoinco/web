@@ -97,14 +97,13 @@ $(document).ready(function() {
   });
 
   // delete activity
-  $(document).on('click', '.delete_activity', function(e) {
-    e.preventDefault();
-    if (confirm('Are you sure you want to delete this?'))
-       return;
-    else:
-         if (!document.contxt.github_handle) {
-           _alert('Please login first.', 'error');
-       return;
+  if (!document.contxt.github_handle) {
+        _alert('Please login first.', 'error');
+        return;
+    }
+
+    if (!confirm('Are you sure you want to delete this?')) {
+        return
     }
 
     // update UI
