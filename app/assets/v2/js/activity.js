@@ -304,6 +304,7 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 
     var $target = $parent.parents('.row.box').find('.comment_container');
+    if (!$target.length) $target = $parent.parents('.box').find('.comment_container');
 
     if ($target.hasClass('filled') && allow_close_comment_container) {
       $target.html('');
@@ -321,15 +322,30 @@ $(document).ready(function() {
         var comment = sanitizeAPIResults(response['comments'])[i];
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         var show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
-        var html = '<li><a href=/profile/' + comment['profile_handle'] + '\
-          ' + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '\
-          ' + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + '\
-          ' + comment['profile_handle'] + '</a> ' + (show_tip ? ' \
-          <a href=# class="tip_on_comment" data-pk=' + comment['id'] + ' data-username=\
-          "' + comment['profile_handle'] + '"> ( <i class="fab fa-ethereum" >\
-          </i> <span class=amount>' + (Math.round(100 * comment['tip_count_eth']) / 100) + '</span> </a>) ' : '') + '\
-          ' + timeAgo + ':<br> ' + '\
-          <span class=comment>' + comment['comment'] + '</span></li>';
+        var html = `
+        <div class="d-flex justify-content-between">
+          <div class="activity-avatar">
+              <img src="/dynamic/avatar/${comment['profile_handle']}">
+          </div>
+          <div class="activity_comments_main px-3">
+            <div class="mb-1">
+              <b>${comment['profile_handle']}</b> 
+              <span class="grey">@${comment['profile_handle']}</span>
+              ${show_tip ? 
+                `<a href="#" class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}">
+                  ( <i class="fab fa-ethereum"></i> <span class="amount">${Math.round(100 * comment['tip_count_eth']) / 100}</span>)
+                </a>
+                ` : ''}
+            </div>
+            <div class="activity_comments_main_comment">
+              ${comment['comment']}
+            </div>
+          </div>
+          <div class="grey">
+            ${timeAgo}
+          </div>
+        </div>
+        `;
 
         $target.append(html);
       }

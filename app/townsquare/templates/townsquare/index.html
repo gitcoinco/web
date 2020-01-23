@@ -17,140 +17,191 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% block body %}
+{% load static %}
+<div class="townsquare_main bg-lightblue">
+  {% if is_staff and admin_link %}
+  <div class="alpha-warning font-caption mb-0">
+    <span class="font-weight-bold">Staff only</span>
+    <a style="color:white;" href="{{admin_link}}">{% trans "Activity Feed Admin" %}</a>
+  </div>
+  {% endif %}
 
-{% if is_staff and admin_link %}
-<div class="alpha-warning font-caption mb-0">
-  <span class="font-weight-bold">Staff only</span>
-  <a style="color:white;" href="{{admin_link}}">{% trans "Activity Feed Admin" %}</a>
-</div>
-{% endif %}
+  {% if not profile_id %}
+    <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
+    <div class="row announce bg-info">
+      <div class="container py-0 ">
+        <div class="my-1">
+          <div class="row">
+            <i class="fas fa-info mr-3"></i> 
+            What is Gitcoin? - <a style="font-weight: bold;" href="/home">Learn More <i class="fas fa-share-square"></i> </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
 
-{% if not profile_id %}
+  {% if offers_by_category.top.offers %}
   <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
-  <div class="row announce bg-info">
-    <div class="container py-0 ">
-      <div class="my-1">
-        <div class="row">
-          <i class="fas fa-info mr-3"></i>
-          What is Gitcoin? - <a style="font-weight: bold;" href="/home">Learn More <i class="fas fa-share-square"></i> </a>
-        </div>
-      </div>
-    </div>
-  </div>
-{% endif %}
-
-{% if offers_by_category.top.offers %}
-  <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
-  <div class="row top_offers pb-2">
-    <div class="container py-0 ">
-      <div class="my-1">
-        <div class="row">
-          <h4 class="pt-3">Nano-Bounties</h4>
-        </div>
-        <div class="row">
-          {% for nb in offers_by_category.top.offers|slice:3 %}
-            <div class="top_offer">
-              <a class="decline float-right" href="{{nb.decline_url}}">X</a>
-              <img src=dynamic/avatar/{{nb.created_by.handle}}>
-              <h5>{{nb.title}}</h5>
-              <p>{{nb.desc}}</p>
-              <div class="float-right">
-                <span class="tag">{{nb.amount}}</span>
-                <a class="btn btn-gc-blue btn-sm" href="{{nb.go_url}}">View</a>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-  </div>
-  <hr>
-{% endif %}
-
-
-{% for announce in announcements %}
-  <div class="row announce bg-{{announce.style}}">
-    <div class="container py-0 ">
-      <div class="my-1">
-        <div class="row">
-          <i class="fas fa-info mr-3"></i>
-          <strong>
-            {{announce.title}}
-          </strong> ({{announce.valid_from | naturaltime}}) -
-            {{announce.desc | safe}}
-          <div class="remove">
-            X
+    <div class="row top_offers pb-2">
+      <div class="container py-0 ">
+        <div class="my-1">
+          <div class="row">
+            <h4 class="pt-3">Nano-Bounties</h4>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-{% endfor %}
-
-<div class="row">
-  <div class="container py-1 ">
-    <div class="my-1">
-      <div class="row">
-        <div class="col-12 col-md-8">
-          {% if tab == 'connect' %}
-            {% include 'profiles/status_box.html' %}
-          {% endif %}
-          <div class="float-right right mt-4">
-            <input type="search" class="form__input" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
-            <BR>
-            <input type="checkbox" name="trending" id="trending" value="0" {% if trending_only %}checked=checked{%endif%} ><label for="trending">Trending Only</label>
-          </div>
-          <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
-            {% for this_tab in tabs %}
-              <li class="nav-item">
-                <a data-toggle="tooltip" title="{{this_tab.helper_text}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
-                  {{this_tab.title}}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-
-          <div id="activities" class="activity_stream container">
-            <span id=activity_subheader>{{card_desc}}</span>
-            {% include 'shared/activity_container.html' %}
-          </div>
-        </div>
-        <div class="col-12 col-md-4">
-          {% for type, item in offers_by_category.items %}
-            <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%}">
-              <hr>
-              <h4 class="pt-3">{{type|title}} Action</h4>
-              {% if item.offer %}
-              <div class="{{type}} offers">
-                <li class="offer">
-                  <a href="{{item.offer.view_url}}">
-                  <div id="circle">
-                    <div id="gift">
-                      <div id="ribbon"></div>
-                      <div id="giftbox"></div>
-                    </div>
-                  </div>
-                  <span class="speech_label"><i class="fas fa-clock"></i> - Expires <div class="{{type}} timer" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>
-                  </div>
-                </a>
-              </li>
-              </div>
-              {% else %}
-              <div class="offer_coming {{type}}">
-                <i class="fas fa-clock"></i>
-                Available <div class="{{type}} timer" data-time="{{item.time|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></div>
-                {% if type == 'daily' %}
-                  <br>
-                  <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} >
-                  <label for="receive_daily_offers_in_inbox"> <i class="fas fa-envelope"></i> Email when available</label>
-                {% endif %}
+          <div class="row">
+            {% for nb in offers_by_category.top.offers|slice:3 %}
+              <div class="top_offer">
+                <a class="decline float-right" href="{{nb.decline_url}}">X</a>
+                <img src=dynamic/avatar/{{nb.created_by.handle}}>
+                <h5>{{nb.title}}</h5>
+                <p>{{nb.desc}}</p>
+                <div class="float-right">
+                  <span class="tag">{{nb.amount}}</span>
+                  <a class="btn btn-gc-blue btn-sm" href="{{nb.go_url}}">View</a>
                 </div>
-              {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+  {% endif %}
+  
+  {% for announce in announcements %}
+    <div class="row announce bg-{{announce.style}}">
+      <div class="container py-0 ">
+        <div class="my-1">
+          <div class="row">
+            <i class="fas fa-info mr-3"></i> 
+            <strong>
+              {{announce.title}}
+            </strong> ({{announce.valid_from | naturaltime}}) -
+              {{announce.desc | safe}}
+            <div class="remove">
+              X
             </div>
-          {% endfor %}
-          <hr>
-          <div class="text-center">
-            <a href="/action/new" class="btn btn-gc-blue" >CREATE ACTION <i class="fas fa-upload"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+  <div class="row">
+    <div class="container py-1">
+      <div class="my-1">
+        <div class="row">
+          <div class="col-12">
+            <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">           
+                <li class="nav-item">
+                  <a data-toggle="tooltip" title="" class="nav-link nav-line active " href="#" data-slug="townsquare">
+                    Town Square
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a data-toggle="tooltip" title="" class="nav-link nav-line  " href="#" data-slug="tribes">
+                    Tribes
+                  </a>
+                </li>
+            </ul>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-12 col-md-3">
+            <div class="townsquare_left-sidebar">
+              <div class="search font-caption mb-5">
+                <div class="search-area col-12">
+                  <input type="search" class="form__input" id="keyword" name="keyword" placeholder="Search" value="{{search}}" style="width: 100px;">
+                  <a id="new_search" href="#">
+                    <i class="fas fa-search"></i>
+                  </a>
+                  <input type="checkbox" name="trending" id="trending" value="0" {% if trending_only %}checked=checked{%endif%} ><label for="trending">Trending Only</label>
+                </div>
+                <div class="col-12">
+                  <div class="filter-tags"></div> <!-- Populate the filters -->
+                </div>
+              </div>
+              <div class="townsquare_nav-list mb-5">
+                <div class="townsquare_block-header">
+                  Feed
+                </div>
+                <ul class="nav flex-column">
+                  {% for this_tab in tabs %}
+                    <li class="nav-item">
+                      <a class="nav-link nav-line" href="#">
+                        # {{this_tab.title}}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+                <div class="townsquare_nav-list_footer">
+                  <a href="#">Explore Topics...</a>
+                </div>
+              </div>
+              <div class="townsquare_nav-list mb-5">
+                <div class="townsquare_block-header">
+                  Tribe
+                </div>
+                <ul class="nav flex-column">
+                  {% for this_tab in tabs %}
+                    <li class="nav-item">
+                      <a class="nav-link nav-line" href="#">
+                        # {{this_tab.title}}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+                <div class="townsquare_nav-list_footer">
+                  <a href="#">Explore Tribes...</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="bg-white rounded border">
+              <div id="status">
+                {% csrf_token %}
+                <div class="d-flex flex-row px-2 pt-4 pb-2">
+                  <div class="status-avatar">
+                    <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>
+                    {% if row.secondary_avatar_url %}
+                      <img class="avatar my-auto secondary_avatar" src="{{row.secondary_avatar_url}}" />
+                    {% elif row.other_profile %}
+                      <img class="avatar my-auto secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
+                    {% endif %}
+                  </div>
+                  <textarea
+                    id="textarea"
+                    class="form__input border-0"
+                    placeholder="{% if placeholder %}{{placeholder}}{%else%}What are you thinking?{%endif%}"
+                    style="resize: none"
+                    data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
+                  ></textarea>
+                </div>
+                <input type="hidden" name="what" value="{{what}}:{{whatid}}">
+                <div class="bg-lightblue p-2 d-flex justify-content-between">
+                  <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
+                    {% if tags %}
+                      {% for tag in tags %}
+                        <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" >
+                          <input type="checkbox" name="activity_type" value="{{tag.0}}" autocomplete="off">
+                        {{tag.0}}
+                        </label>
+                      {% endfor %}
+                    {% endif %}
+                  </div>
+                  <button class="btn btn-gc-blue font-caption" id="btn_post" disabled="true">POST</button>
+                </div>
+              
+              </div>
+            </div>
+            <div id="activities" class="activity_stream mt-4">
+              <span id=activity_subheader>{{card_desc}}</span>
+              {% include 'shared/activity_container.html' %}
+            </div>
+          </div>
+          <div class="col-12 col-md-3">
+            
           </div>
         </div>
       </div>
