@@ -6,45 +6,46 @@ let jitsy = null;
 let address = null;
 
 // Utils
-const two_digit = n => ("0" + n).slice(-2);
+const two_digit = n => ('0' + n).slice(-2);
 
 const selectScreen = screen => {
   [
-    $(".main"),
-    $(".create-stream"),
-    $(".wait"),
-    $(".wait-stream"),
-    $(".wait-stream-deletion"),
-    $(".wait-stream-register"),
-    $(".wait-metamask"),
-    $(".stream-busy")
+    $('.main'),
+    $('.create-stream'),
+    $('.wait'),
+    $('.wait-stream'),
+    $('.wait-stream-deletion'),
+    $('.wait-stream-register'),
+    $('.wait-metamask'),
+    $('.stream-busy')
   ].map(screen => screen.hide());
   screen.show();
 };
 
 const resetScreen = () => {
   if (room_address.toLowerCase() === address.toLowerCase()) {
-    selectScreen($(".wait"));
-		$('.withdran-btn').show();
+    selectScreen($('.wait'));
+    $('.withdran-btn').show();
   } else {
-    selectScreen($(".create-stream"));
-		$('.withdran-btn').hide();
+    selectScreen($('.create-stream'));
+    $('.withdran-btn').hide();
   }
 };
 
-$('#depositDescribe').hide()	
+$('#depositDescribe').hide();
 const updatePrice = () => {
-	const value = $('#deposit').val();
-	const depositMin = parseInt(value);
-	if(depositMin === NaN) {
-		$('#depositDescribe').hide()	
-	}
-	else {
-		$('#depositDescribe').show()	
-		const depositDai = depositMin * rate_per_min / TESTDAI_DECIMAL;
-		$('.deposit-dai').text(depositDai.toFixed(2));
-		$('.deposit-rate').text(rate_per_min / TESTDAI_DECIMAL);
-	}
+  const value = $('#deposit').val();
+  const depositMin = parseInt(value);
+
+  if (depositMin === NaN) {
+    $('#depositDescribe').hide();
+  } else {
+    $('#depositDescribe').show();
+    const depositDai = depositMin * rate_per_min / TESTDAI_DECIMAL;
+
+    $('.deposit-dai').text(depositDai.toFixed(2));
+    $('.deposit-rate').text(rate_per_min / TESTDAI_DECIMAL);
+  }
 }
 
 $('#deposit').keyup(updatePrice).change(updatePrice);
@@ -69,31 +70,34 @@ const testdai_contract = web3.eth.contract(token_abi).at(testdai_address());
 
 // Start the main session loop
 const startEarningRefresh = function() {
-  const { startTime, stopTime } = currentStream;
+  const {startTime, stopTime} = currentStream;
   const refresh = setInterval(() => {
     const now = Math.round(new Date().getTime() / 1000);
     const diff = now - startTime;
 
-    $(".diff .min").text(two_digit(Math.floor(diff / 60)));
-    $(".diff .sec").text(two_digit(diff % 60));
+    $('.diff .min').text(two_digit(Math.floor(diff / 60)));
+    $('.diff .sec').text(two_digit(diff % 60));
 
     const total = stopTime - startTime;
-    $(".total .min").text(two_digit(Math.floor(total / 60)));
-    $(".total .sec").text(two_digit(total % 60));
+
+    $('.total .min').text(two_digit(Math.floor(total / 60)));
+    $('.total .sec').text(two_digit(total % 60));
 
     const depositDai = currentStream.deposit / TESTDAI_DECIMAL;
-    $(".deposit-dai").text(depositDai.toFixed(2));
-		console.log('diff', diff);
-		console.log('total', total);
-		console.log('depositDai', depositDai)
+
+    $('.deposit-dai').text(depositDai.toFixed(2));
+    // console.log('diff', diff);
+    // console.log('total', total);
+    // console.log('depositDai', depositDai)
     const streamedDai = ((diff / total) * depositDai) / TESTDAI_DECIMAL;
-		console.log('streamedDai',streamedDai)	
-    $(".streamed-dai").text(streamedDai.toFixed(2));
-		$('.progress-bar').css('width', `${diff / total}%`);
+
+    // console.log('streamedDai', streamedDai)
+    $('.streamed-dai').text(streamedDai.toFixed(2));
+    $('.progress-bar').css('width', `${diff / total}%`);
 
     if (now > stopTime) {
-      console.log("address", address);
-      console.log("room_address", address);
+      // console.log('address', address);
+      // console.log('room_address', address);
       resetScreen();
       destroyJitsy();
       startAPIPooling(address);
@@ -104,19 +108,19 @@ const startEarningRefresh = function() {
 
 // Start the countdown loop
 const startStreamCountdown = function() {
-  const { startTime, stopTime } = currentStream;
+  const {startTime, stopTime} = currentStream;
   const countDown = setInterval(() => {
     const now = Math.round(new Date().getTime() / 1000);
     const diff = startTime - now;
     const diffMin = Math.floor(diff / 60);
     const diffSec = diff % 60;
 
-    $(".wait-stream .min").text(two_digit(diffMin));
-    showIf(diffMin > 0, $(".wait-stream .if-min"));
-    $(".wait-stream .sec").text(two_digit(diffSec));
+    $('.wait-stream .min').text(two_digit(diffMin));
+    showIf(diffMin > 0, $('.wait-stream .if-min'));
+    $('.wait-stream .sec').text(two_digit(diffSec));
 
     if (now > startTime) {
-      selectScreen($(".main"));
+      selectScreen($('.main'));
       clearInterval(countDown);
       startEarningRefresh();
       initJitsy();
@@ -135,11 +139,11 @@ const checkCancellations = function(streamId) {
 		`;
 
   return fetch(
-    "https://api.thegraph.com/subgraphs/name/sablierhq/sablier-rinkeby",
+    'https://api.thegraph.com/subgraphs/name/sablierhq/sablier-rinkeby',
     {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query })
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({query})
     }
   )
     .then(answer => answer.json())
@@ -147,12 +151,12 @@ const checkCancellations = function(streamId) {
     .then(cancelledStreams => cancelledStreams.includes(streamId));
 };
 
-const startAPIPooling = function() {
-  console.warn("starting fetching");
+const startAPIPooling = function () {
+  // console.warn('starting fetching');
   // TODO filter cancellations
   const query = `
 			{
-				streams (where: {recipient: "${room_address}"}) {
+				streams (where: {recipient: '${room_address}'}) {
 					id
 					deposit
 					sender
@@ -166,31 +170,34 @@ const startAPIPooling = function() {
 			}
 		`;
 
-  console.log("query", query);
+  // console.log('query', query);
   const pooling = setInterval(() => {
-    console.warn("fetching");
-    fetch("https://api.thegraph.com/subgraphs/name/sablierhq/sablier-rinkeby", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query })
+    // console.warn('fetching');
+    fetch('https://api.thegraph.com/subgraphs/name/sablierhq/sablier-rinkeby', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({query})
     })
       .then(answer => answer.json())
       .then(answer => {
-        console.log("answer", answer);
+        // console.log('answer', answer);
         // Find if there's a next stream
         if (answer.data.streams.length) {
           const now = Math.round(new Date().getTime() / 1000);
           const cancelled = answer.data.cancellations.map(stream => stream.id);
-          console.log("cancelled", cancelled);
+
+          // console.log('cancelled', cancelled);
           const streams = answer.data.streams
             .filter(stream => !cancelled.includes(stream.id))
             .sort((a, b) => a.startTime < b.startTime);
-          console.log("streams", streams);
+
+          // console.log('streams', streams);
 
           const ongoingStream = streams.find(
             stream => stream.startTime < now && now < stream.stopTime
           );
-          console.log("ongoingStream", ongoingStream);
+
+          // console.log('ongoingStream', ongoingStream);
 
           if (ongoingStream) {
             if (
@@ -200,27 +207,28 @@ const startAPIPooling = function() {
               currentStream = ongoingStream;
               startEarningRefresh();
               clearInterval(pooling);
-              selectScreen($(".main"));
+              selectScreen($('.main'));
               initJitsy();
             } else {
-              selectScreen($(".stream-busy"));
+              selectScreen($('.stream-busy'));
               // TODO what happens next?
             }
           }
 
           const nextStream = streams.find(stream => stream.startTime > now);
-          console.log("nextStream", nextStream);
+
+          // console.log('nextStream', nextStream);
 
           if (nextStream) {
-						// Contact the API to signal the backend a session have been joined
-						join_session(address);
+            // Contact the API to signal the backend a session have been joined
+            join_session(address);
             currentStream = nextStream;
-						// Launch the countdown
+            // Launch the countdown
             startStreamCountdown(nextStream, address);
-						// Delete the pooling loop
+            // Delete the pooling loop
             clearInterval(pooling);
-						//	Open the wait-stream screen
-            selectScreen($(".wait-stream"));
+            //	Open the wait-stream screen
+            selectScreen($('.wait-stream'));
           }
         }
       });
@@ -228,126 +236,132 @@ const startAPIPooling = function() {
 };
 
 const createStream = () => {
-	const depositMin = parseInt($("#deposit").val());
-	if (depositMin === NaN) return;
-	// TODO: show an error message
-	
-	selectScreen($(".wait-stream-register"));
+  const depositMin = parseInt($('#deposit').val());
+  if (depositMin === NaN) return;
+  // TODO: show an error message
 
-	const mentor_address = room_address;
+  selectScreen($('.wait-stream-register'));
 
-	// Compute a deposit_rounded (deposit should be a multiple of delta)
-	const now = Math.round(new Date().getTime() / 1000);
-	const startTime = now + STREAM_START_TIME_DELAY;
-	const stopTime = now + STREAM_START_TIME_DELAY + depositMin * 60;
-	const delta = stopTime - startTime;
-	const deposit = BigInt(depositMin) * BigInt(rate_per_min);
-	const deposit_rounded = deposit - (deposit % BigInt(delta));
+  const mentor_address = room_address;
 
-	console.warn("mentor_address", mentor_address);
+  // Compute a deposit_rounded (deposit should be a multiple of delta)
+  const now = Math.round(new Date().getTime() / 1000);
+  const startTime = now + STREAM_START_TIME_DELAY;
+  const stopTime = now + STREAM_START_TIME_DELAY + depositMin * 60;
+  const delta = stopTime - startTime;
+  const deposit = BigInt(depositMin) * BigInt(rate_per_min);
+  const deposit_rounded = deposit - (deposit % BigInt(delta));
 
-	console.warn("deposit", deposit);
-	console.warn("deposit_rounded", deposit_rounded);
-	console.warn("deposit in dai", deposit_rounded / 1000000000000000000n);
-	console.warn("now", now);
-	console.warn("startTime", startTime);
-	console.warn("stopTime", stopTime);
-	console.warn("delta", delta);
-	console.warn("deposit_rounded % BigInt(delta)", deposit_rounded % BigInt(delta));
+  // console.warn('mentor_address', mentor_address);
 
-	if (deposit_rounded % BigInt(delta) !== BigInt(0)) throw "Not multiple";
-	if (now > startTime) throw "startTime should be in the future";
-	if (startTime > stopTime) throw "stopTime should be after startTime";
+  // console.warn('deposit', deposit);
+  // console.warn('deposit_rounded', deposit_rounded);
+  // console.warn('deposit in dai', deposit_rounded / 1000000000000000000);
+  // console.warn('now', now);
+  // console.warn('startTime', startTime);
+  // console.warn('stopTime', stopTime);
+  // console.warn('delta', delta);
+  // console.warn('deposit_rounded % BigInt(delta)', deposit_rounded % BigInt(delta));
 
-	testdai_contract.approve(sablier_address(), deposit, () => {
-		setTimeout(() => {
-			console.warn(
-				"creating the stream at ",
-				Math.round(new Date().getTime() / 1000)
-			);
-			console.log('mentor_address', mentor_address);
-			console.log('deposit_rounded', deposit_rounded);
-			console.log('startTime', startTime);
-			console.log('stopTime', deposit_rounded);
-			sablier_contract.createStream(
-				mentor_address,
-				deposit_rounded,
-				testdai_address(),
-				startTime,
-				stopTime,
-				() => {
-					// Wait for the beginning of the stream
-					console.warn("DONE", Math.round(new Date().getTime() / 1000));
-				}
-			);
-		}, CONFIRMATION_WAIT_TIME);
-	});
+  if (deposit_rounded % BigInt(delta) !== BigInt(0)) {
+    throw 'Not multiple';
+  }
+  if (now > startTime) {
+    throw 'startTime should be in the future';
+  }
+  if (startTime > stopTime) {
+    throw 'stopTime should be after startTime';
+  }
+
+  testdai_contract.approve(sablier_address(), deposit, () => {
+    setTimeout(() => {
+      console.warn(
+        'creating the stream at ',
+        Math.round(new Date().getTime() / 1000)
+      );
+      // console.log('mentor_address', mentor_address);
+      // console.log('deposit_rounded', deposit_rounded);
+      // console.log('startTime', startTime);
+      // console.log('stopTime', deposit_rounded);
+      sablier_contract.createStream(
+        mentor_address,
+        deposit_rounded,
+        testdai_address(),
+        startTime,
+        stopTime,
+        () => {
+          // Wait for the beginning of the stream
+          // console.warn('DONE', Math.round(new Date().getTime() / 1000));
+        }
+      );
+    }, CONFIRMATION_WAIT_TIME);
+  });
 }
 
 // Jitsy-related functions
 
 const cancelStream = () => {
-	setTimeout(() => {
-		// Check if the stream have already been cancelled from the API
-		checkCancellations(currentStream.id).then(cancelled => {
-			if (cancelled) {
-				// Attempt to signal the API the session have been terminated
-				finish_session(room_address);
-				jitsy.executeCommand("hangup");
-				destroyJitsy();
-				resetScreen();
-				startAPIPooling(address);
-			} else {
-				sablier_contract.cancelStream(currentStream.id, () => {
-					jitsy.executeCommand("hangup");
-					destroyJitsy();
-					resetScreen();
-					startAPIPooling(address);
-				});
-			}
-		});
-	}, CONFIRMATION_WAIT_TIME);
+  setTimeout(() => {
+    // Check if the stream have already been cancelled from the API
+    checkCancellations(currentStream.id).then(cancelled => {
+      if (cancelled) {
+        // Attempt to signal the API the session have been terminated
+        finish_session(room_address);
+        jitsy.executeCommand('hangup');
+        destroyJitsy();
+        resetScreen();
+        startAPIPooling(address);
+      } else {
+        sablier_contract.cancelStream(currentStream.id, () => {
+          jitsy.executeCommand('hangup');
+          destroyJitsy();
+          resetScreen();
+          startAPIPooling(address);
+        });
+      }
+    });
+  }, CONFIRMATION_WAIT_TIME);
 };
 
 const initJitsy = function() {
-  // const domain = "meet.jit.si";
+  // const domain = 'meet.jit.si';
   // const options = {
   //   roomName: room_address,
   //   width: 700,
   //   height: 700,
-  //   parentNode: document.querySelector("#jitsy-placeholder")
+  //   parentNode: document.querySelector('#jitsy-placeholder')
   // };
   // jitsy = new JitsiMeetExternalAPI(domain, options);
-	// If the session disconnect, we will attempt to cancel the stream
-  jitsy.on("participantLeft", () => {
-    console.warn("other participant left the room");
-		selectScreen($('.wait-stream-deletion'))
-		setTimeout(() => {
-			checkCancellations(currentStream.id).then(cancelled => {
-				if (cancelled) {
-					jitsy.executeCommand("hangup");
-					destroyJitsy();
-					resetScreen();
-					startAPIPooling(address);
-				} else {
-					sablier_contract.cancelStream(currentStream.id, () => {
-						jitsy.executeCommand("hangup");
-						destroyJitsy();
-						resetScreen();
-						startAPIPooling(address);
-					});
-				}
-			});
-		}, CONFIRMATION_WAIT_TIME);
+  // If the session disconnect, we will attempt to cancel the stream
+  jitsy.on('participantLeft', () => {
+    // console.warn('other participant left the room');
+    selectScreen($('.wait-stream-deletion'));
+    setTimeout(() => {
+      checkCancellations(currentStream.id).then(cancelled => {
+        if (cancelled) {
+          jitsy.executeCommand('hangup');
+          destroyJitsy();
+          resetScreen();
+          startAPIPooling(address);
+        } else {
+          sablier_contract.cancelStream(currentStream.id, () => {
+            jitsy.executeCommand('hangup');
+            destroyJitsy();
+            resetScreen();
+            startAPIPooling(address);
+          });
+        }
+      });
+    }, CONFIRMATION_WAIT_TIME);
   });
 };
 
 const destroyJitsy = function() {
-  console.log("freeing jitsy");
+  // console.log('freeing jitsy');
   jitsy.dispose();
 };
 
-selectScreen($('.wait-metamask'))
+selectScreen($('.wait-metamask'));
 $(document).ready(function() {
   // Connect the videoplayer
 
@@ -358,36 +372,37 @@ $(document).ready(function() {
     // Pool to recover stream from Sablier API
     startAPIPooling(address);
 
-    console.log("address", address);
+    // console.log('address', address);
 
     // Initiate screen
     resetScreen();
 
     // Create the stream
-    $(".create-btn").click(createStream);
-		$(".create-retry-btn").click(createStream)
-		$(".create-cancel-btn").click(() => {
-			selectScreen($('.create-stream'));	
-		})
+    $('.create-btn').click(createStream);
+    $('.create-retry-btn').click(createStream);
+    $('.create-cancel-btn').click(() => {
+      selectScreen($('.create-stream'));
+    });
 
     // Stop the stream
 
-		$(".stop-stream-btn").click(() => {
-			selectScreen($('.wait-stream-deletion'))
-			sablier_contract.cancelStream(currentStream.id, () => {
-				jitsy.executeCommand("hangup");
-				destroyJitsy();
-				setTimeout(() => {
-					resetScreen();
-					startAPIPooling(address);
-				}, CONFIRMATION_WAIT_TIME);
-			});
-		});
+    $('.stop-stream-btn').click(() => {
+      selectScreen($('.wait-stream-deletion'));
+      sablier_contract.cancelStream(currentStream.id, () => {
+        jitsy.executeCommand('hangup');
+        destroyJitsy();
+        setTimeout(() => {
+          resetScreen();
+          startAPIPooling(address);
+        }, CONFIRMATION_WAIT_TIME);
+      });
+    });
 
     // Withdraw money
-    $(".withdraw-btn").click(() => {
+    $('.withdraw-btn').click(() => {
       // TODO: show a dialog to ask how much to withdraw
-      const sum = parseInt($("withdraw-btn-show").val());
+      const sum = parseInt($('withdraw-btn-show').val());
+
       sablier_contract.takeEarnings(address, sum, () => {
         // 	TODO: show a dialog to signal the user fund
         //	have been withdrawn
@@ -396,6 +411,6 @@ $(document).ready(function() {
   });
 });
 
-window.onbeforeunload = function(){
-	finish_session(room_address);
-}
+window.onbeforeunload = function () {
+  finish_session(room_address);
+};
