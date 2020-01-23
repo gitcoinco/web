@@ -32,6 +32,8 @@ for obj in old_grant.clr_matches.all():
     obj.grant = new_grant
     obj.save()
 
-old_grant.save()
 old_grant.hidden = True
+old_grant.link_to_new_grant = new_grant
+
+old_grant.save()
 new_grant.save()
