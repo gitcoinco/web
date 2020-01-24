@@ -8,6 +8,7 @@
     style="resize: none"
     data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
   ></textarea>
+  <div id="textarea-dropdown" class="dropdown-menu" style="top: initial; left: initial;"></div>
   <input type="hidden" name="what" value="{{what}}:{{whatid}}">
   <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
     {% if tags %}
