@@ -64,6 +64,10 @@
         <input type="checkbox" class="custom-control-input" name="persona_is_hunter" id="persona_is_hunter" {% if profile.persona_is_hunter %} checked="checked" {% endif %}>
         <label class="custom-control-label" for="persona_is_hunter">{% trans "I'm a Contributor" %}</label>
       </div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" name="persona_is_mentor" id="persona_is_mentor" {% if profile.persona_is_mentor %} checked="checked" {% endif %}>
+        <label class="custom-control-label" for="persona_is_mentor">{% trans "I'm a Mentor" %}</label>
+      </div>
     </div>
   </div>
   <div class="form-group">

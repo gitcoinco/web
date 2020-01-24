@@ -16,17 +16,17 @@
 {% endcomment %}
 {% load i18n static %}
 
-<div class="btn-group-toggle" data-toggle="buttons">
+<div id="select-session_type" class="btn-group-toggle" data-toggle="buttons">
   <label class="btn btn-radio frontend mr-1 mb-1 font-weight-bold py-1 px-2" for="debugging_cat">
-    <input type="checkbox" name="bounty_categories" id="debugging_cat" value="debugging" autocomplete="off" required><i class="fas fa-code mr-1 mb-1"></i> {% trans "Debugging" %}
+    <input type="radio" name="bounty_categories" id="debugging_cat" value="debugging" autocomplete="off" checked="checked" required><i class="fas fa-code mr-1 mb-1"></i> {% trans "Debugging" %}
   </label>
   <label class="btn btn-radio frontend mr-1 mb-1 font-weight-bold py-1 px-2" for="code-review_cat">
-    <input type="checkbox" name="bounty_categories" id="code-review_cat" value="code-review" autocomplete="off" required><i class="fas fa-laptop-code mr-1 mb-1"></i> {% trans "Code Review" %}
+    <input type="radio" name="bounty_categories" id="code-review_cat" value="code-review" autocomplete="off" required><i class="fas fa-laptop-code mr-1 mb-1"></i> {% trans "Code Review" %}
   </label>
   <label class="btn btn-radio frontend mr-1 mb-1 font-weight-bold py-1 px-2" for="peer-programming_cat">
-    <input type="checkbox" name="bounty_categories" id="peer-programming_cat" value="peer-programming" autocomplete="off" required><i class="fas fa-pencil-ruler mr-1 mb-1"></i> {% trans "Peer Programming" %}
+    <input type="radio" name="bounty_categories" id="peer-programming_cat" value="peer-programming" autocomplete="off" required><i class="fas fa-pencil-ruler mr-1 mb-1"></i> {% trans "Peer Programming" %}
   </label>
   <label class="btn btn-radio frontend mr-1 mb-1 font-weight-bold py-1 px-2" for="other_cat">
-    <input type="checkbox" name="bounty_categories" id="other_cat" value="other" autocomplete="off" required><i class="fas fa-briefcase mr-1 mb-1"></i> {% trans "Other" %}
+    <input type="radio" name="bounty_categories" id="other_cat" value="other" autocomplete="off" required><i class="fas fa-briefcase mr-1 mb-1"></i> {% trans "Other" %}
   </label>
 </div>

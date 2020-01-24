@@ -977,6 +977,8 @@ def users_fetch(request):
             profile_list = profile_list.filter(dominant_persona='funder')
         if persona == 'Coder':
             profile_list = profile_list.filter(dominant_persona='hunter')
+        if persona == 'Mentor':
+            profile_list = profile_list.filter(dominant_persona='mentor')
         if persona == 'Organization':
             profile_list = profile_list.filter(data__type='Organization')
 
@@ -1033,8 +1035,8 @@ def users_fetch(request):
             k: getattr(user, k) for k in
             ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
             'show_job_status', 'job_location', 'job_salary', 'job_search_status',
-            'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
-            'organizations', 'is_org']}
+            'job_type', 'linkedin_url', 'persona_is_mentor', 'resume', 'remote',
+            'keywords','organizations', 'is_org']}
 
         profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
         profile_json['previously_worked'] = user.previous_worked_count > 0

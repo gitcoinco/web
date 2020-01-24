@@ -41,6 +41,21 @@ from web3 import Web3
 
 logger = logging.getLogger(__name__)
 
+class Appointment(SuperModel):
+    pass
+
+
+class Mentor(SuperModel):
+    pass
+
+
+class Mentee(SuperModel):
+    pass
+
+
+class Session(SuperModel):
+    pass
+
 
 class MoneyStream(SuperModel):
     network = models.CharField(
@@ -63,7 +78,6 @@ class MoneyStream(SuperModel):
 
 
 class SessionScheduling(SuperModel):
-
     """
     session_date = models.DateField(help_text=_('Requested session date.'))
     session_time = models.TimeField(help_text=_('Requested session time.'))
@@ -99,6 +113,3 @@ class SessionScheduling(SuperModel):
             f"mentor: {self.mentor}, session_type: {self.session_type}, "
             f"id: {self.pk}, session_datetime: {self.session_datetime}"
         )
-
-class MentoringSession(SuperModel):
-    pass

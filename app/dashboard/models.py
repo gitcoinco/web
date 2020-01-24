@@ -2364,7 +2364,6 @@ class Organization(SuperModel):
     def __str__(self):
         return self.name
 
-
 class BlockedURLFilter(SuperModel):
     expression = models.CharField(max_length=255, help_text='the expression to search for in order to block that github url (or website)')
     comment = models.TextField(blank=True)
@@ -2410,6 +2409,7 @@ class Profile(SuperModel):
     PERSONAS = [
         ('hunter', 'Hunter'),
         ('funder', 'Funder'),
+        ('mentor', 'Mentor'),
         ('', 'Neither'),
     ]
 
@@ -2475,6 +2475,7 @@ class Profile(SuperModel):
     fee_percentage = models.IntegerField(default=10)
     persona_is_funder = models.BooleanField(default=False)
     persona_is_hunter = models.BooleanField(default=False)
+    persona_is_mentor = models.BooleanField(default=False)
     admin_override_name = models.CharField(max_length=255, blank=True, help_text=_('override profile name.'))
     admin_override_avatar = models.ImageField(
         upload_to=get_upload_filename,
@@ -2708,6 +2709,8 @@ class Profile(SuperModel):
             return 'funder'
         if self.persona_is_hunter:
             return 'hunter'
+        if self.persona_is_mentor:
+            return 'mentor'
         return 'hunter'
 
     @property
@@ -2755,7 +2758,10 @@ class Profile(SuperModel):
         funder_count += self.sent_tips.count()
         funder_count += self.grant_contributor.count()
 
-        return hunter_count, funder_count
+        if self.persona_is_mentor:
+            return hunter_count, funder_count, True
+
+        return hunter_count, funder_count, False
 
     def calculate_and_save_persona(self, respect_defaults=True, decide_only_one=False):
         if respect_defaults and decide_only_one:
@@ -2764,12 +2770,14 @@ class Profile(SuperModel):
         # respect to defaults
         is_hunter = False
         is_funder = False
+        is_mentor = False
         if respect_defaults:
             is_hunter = self.persona_is_hunter
             is_funder = self.persona_is_funder
+            is_mentor = self.persona_is_mentor
 
         # calculate persona
-        hunter_count, funder_count = self.get_persona_action_count()
+        hunter_count, funder_count, mentor_count = self.get_persona_action_count()
         if hunter_count > funder_count:
             self.dominant_persona = 'hunter'
         elif hunter_count < funder_count:
@@ -2781,6 +2789,8 @@ class Profile(SuperModel):
                 self.persona_is_hunter = True
             if funder_count > 0:
                 self.persona_is_funder = True
+            if mentor_count > 0:
+                self.persona_is_mentor = True
         else:
             if hunter_count > funder_count:
                 self.persona_is_hunter = True
