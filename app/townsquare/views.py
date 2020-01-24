@@ -277,7 +277,7 @@ def offer_go(request, offer_id, offer_slug):
     try:
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
-        offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'go', True)
+        offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'go', False)
         return redirect(offer.url)
     except:
         raise Http404
@@ -289,7 +289,7 @@ def offer_decline(request, offer_id, offer_slug):
         offer = Offer.objects.current().get(pk=offer_id)
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
-        offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'decline', True)
+        offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'decline', False)
         return redirect('/')
     except:
         raise Http404
@@ -301,10 +301,10 @@ def offer_view(request, offer_id, offer_slug):
         offer = Offer.objects.current().get(pk=offer_id)
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
-        is_debugging_offers = request.GET.get('preview', 0)
+        is_debugging_offers = request.GET.get('preview', 0) and request.user.is_staff
         if request.user.profile.offeractions.filter(what='click', offer=offer) and not is_debugging_offers:
             raise Exception('already visited this offer')
-        OfferAction.objects.create(profile=request.user.profile, offer=offer, what='click')
+        OfferAction.objects.create(profile=request.user.profile, offer=offer, what='click', not is_debugging_offers)
         # render page context
         context = {
             'title': offer.title,
