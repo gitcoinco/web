@@ -1194,13 +1194,23 @@ def create_status_update(request):
     if request.POST:
         profile = request.user.profile
         title = request.POST.get('data')
+        resource = request.POST.get('resource', '')
+        provider = request.POST.get('resourceProvider', '')
+        resource_id = request.POST.get('resourceId', '')
+
         kwargs = {
             'activity_type': 'status_update',
             'metadata': {
                 'title': title,
                 'ask': request.POST.get('ask'),
+                'resource': {
+                    'type': resource,
+                    'provider': provider,
+                    'id': resource_id
+                }
             }
         }
+
         kwargs['profile'] = profile
         if ':' in request.POST.get('what'):
             what = request.POST.get('what')

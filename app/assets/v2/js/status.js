@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  last_video = '';
   let button = document.querySelector('#btn_post');
 
   if (button) {
@@ -22,6 +23,40 @@ $(document).ready(function() {
   // dropdown for usernames when @ is detected in the post
   $('#textarea').on('input', function(e) {
     const lastWord = e.target.value.split(' ').pop();
+    const youtube_re = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+    let url = e.target.value.match(youtube_re);
+    console.log(e.target.value)
+    console.log(url)
+    let videoId;
+
+    if (url)
+      videoId = url[7].slice(0, 11);
+
+    if (url && videoId.length === 11) {
+      if (last_video !== videoId) {
+        var apiKey = ''; // TODO: add youtube API key to query titles
+
+        let getVideoData = fetchData('https://www.googleapis.com/youtube/v3/videos?key=' + apiKey + '&fields=items(snippet(title))&part=snippet&id=' + videoId);
+
+        $.when(getVideoData).then(function(response) {
+          console.log(response)
+          if (response.items.length !== 0) {
+            $('#thumbnail-title').text(response.items[0].snippet.title);
+            $('#thumbnail-provider').text('Youtube');
+            $('#thumbnail-img').attr('src', 'https://img.youtube.com/vi/' + videoId + '/default.jpg');
+
+            last_video = videoId;
+            $('#thumbnail').show();
+          } else {
+            $('#thumbnail').hide();
+            last_video = '';
+          }
+        });
+      }
+    } else {
+      $('#thumbnail').hide();
+      last_video = '';
+    }
 
     if (lastWord.startsWith('@')) {
       const usernameFilter = lastWord.slice(1);
@@ -84,7 +119,7 @@ $(document).ready(function() {
 
     // enforce a max length
     var max_len = $(this).data('maxlen');
-    
+
     if ($(this).val().trim().length > max_len) {
       e.preventDefault();
       $(this).addClass('red');
@@ -122,6 +157,13 @@ $(document).ready(function() {
       'csrfmiddlewaretoken',
       $('#status input[name="csrfmiddlewaretoken"]').attr('value')
     );
+
+    if (last_video) {
+      data.append('resource', 'video');
+      data.append('resourceProvider', 'youtube');
+      data.append('resourceId', last_video);
+    }
+
     fetch('/api/v0.1/activity', {
       method: 'post',
       body: data
@@ -143,6 +185,7 @@ $(document).ready(function() {
           activityContainer.setAttribute('page', 0);
           $('.tab-section.active .activities').html('');
           message.val('');
+          $('#thumbnail').hide();
         } else {
           _alert(
             { message: gettext('An error occurred. Please try again.') },
