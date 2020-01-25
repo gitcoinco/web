@@ -1145,6 +1145,8 @@ def activity(request):
             activities = activities.filter(grant__in=relevant_grants)
     if what == 'connect':
         activities = activities.filter(activity_type='status_update')
+    if what == 'kudos':
+        activities = activities.filter(activity_type='new_kudos')
 
     # after-pk filters
     if request.GET.get('after-pk'):
