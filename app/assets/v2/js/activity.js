@@ -218,7 +218,7 @@ $(document).ready(function() {
       for (var i = 0; i < response['comments'].length; i++) {
         var comment = sanitizeAPIResults(response['comments'])[i];
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
-        var html = '<li><a href=/profile/' + comment['profile_handle'] + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + comment['profile_handle'] + '</a>, ' + timeAgo + ': ' + comment['comment'] + '</li>';
+        var html = '<li><a href=/profile/' + comment['profile_handle'] + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + comment['profile_handle'] + '</a>, ' + timeAgo + ': ' + comment['comment'] + '<br><button style="color: #3E00FF;" class=" mt-2 mb-2 font-caption btn btn-link btn-sm btn-outline-primary">award</button></li>';
 
         $target.append(html);
       }

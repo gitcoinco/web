@@ -20,10 +20,36 @@
         </label>
       {% endfor %}
     {% endif %}
+    <button class="btn btn-gc-purple font-smaller-5" id="btn_attach">
+      attach tokens <i class="fab fa-ethereum"></i>
+    </button>
     <button class="btn btn-gc-blue font-smaller-7" id="btn_post" disabled="true">
       SHARE <i class="fas fa-share"></i>
     </button>
   </div>
+  <div id="attach-dropdown" class="attach text-left mt-4" style="display: none">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+              <label class="sup featured-text">Amount</label>
+              <input id="attachAmount" type="number" class="form-control">
+       
+            </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="sup featured-text">Token</label>
+            <select class="form-control" id="attachToken">
+            {% for token in TOKENS %}
+              <option value="{{ token.symbol }}">{{ token.name }}</option>
+            {% endfor %}
+            </select>
+          </div>
+        </div>      
+    </div>
+  
+</div>
+    
 
   <div id="thumbnail" class="mt-1 mb-2" style="display: none; top: initial; left: initial; background-color: #FAFAFA">
     <div class="row">

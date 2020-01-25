@@ -19,7 +19,6 @@ $(document).ready(function() {
       return;
     }
   });
-
   // dropdown for usernames when @ is detected in the post
   $('#textarea').on('input', function(e) {
     const lastWord = e.target.value.split(' ').pop();
@@ -141,6 +140,12 @@ $(document).ready(function() {
     }
   });
 
+  $('#btn_attach').on('click', function() {
+    const el = $('#attach-dropdown');
+    
+    el.toggle();
+  });
+  
   function submitStatusUpdate() {
     const data = new FormData();
     const message = $('#textarea');
@@ -159,6 +164,33 @@ $(document).ready(function() {
       data.append('resource', 'video');
       data.append('resourceProvider', 'youtube');
       data.append('resourceId', last_video);
+    }
+    
+    const attach = $('#attach-dropdown')[0].style.display;
+    const attachAmount = $('#attachAmount').val();
+    const attachToken = $('#attachToken').val();
+    
+    if (attach !== 'none' && !isNaN(attachAmount)) {
+      data.append('attachToken', attachToken);
+      data.append('attachAmount', attachAmount);
+      /*
+      sendTip(
+        email,
+        github_url,
+        from_name,
+        username,
+        amountInEth,
+        comments_public,
+        comments_priv,
+        from_email,
+        accept_tos,
+        tokenAddress,
+        expires,
+        success_callback,
+        failure_callback,
+        false
+      );
+       */
     }
 
     fetch('/api/v0.1/activity', {

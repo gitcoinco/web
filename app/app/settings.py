@@ -754,3 +754,8 @@ UNISWAP_TRADE_DEADLINE = env.int('UNISWAP_TRADE_DEADLINE', default=300)
 RE_MARKET_LIMIT = env.int('RE_MARKET_LIMIT', default=2)
 MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=60)
 
+
+TOKENS = [
+    {'name': 'DAI', 'symbol': 'DAI'},
+    {'name': 'Ethereum', 'symbol': 'ETH'}
+]

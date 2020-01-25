@@ -205,7 +205,12 @@
 
             <a class="action copy_activity" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}><i class="fas fa-link"></i></a> 
           {% endif %}
-
+          {% if row.metadata.attach.token %}
+            | <button class="btn btn-sm btn-link" style="color: #3E00FF;"> 
+            <i class="fab fa-ethereum gc-blue-text" ></i>
+            Tip attached
+            </button>
+          {% endif %}
       </div>
       <div class="comment_container">
       </div>

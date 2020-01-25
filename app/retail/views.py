@@ -36,6 +36,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+from app.settings import TOKENS
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants
@@ -1181,6 +1182,7 @@ def activity(request):
         'page': page,
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
+        'TOKENS': TOKENS
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]
 
@@ -1197,6 +1199,8 @@ def create_status_update(request):
         resource = request.POST.get('resource', '')
         provider = request.POST.get('resourceProvider', '')
         resource_id = request.POST.get('resourceId', '')
+        attachToken = request.POST.get('attachToken', '')
+        attachAmount = request.POST.get('attachAmount', '')
 
         kwargs = {
             'activity_type': 'status_update',
@@ -1210,6 +1214,13 @@ def create_status_update(request):
                 }
             }
         }
+
+        if attachAmount:
+            amount = float(attachAmount)
+            kwargs['metadata']['attach'] = {
+                'amount': amount,
+                'token': attachToken
+            }
 
         kwargs['profile'] = profile
         if ':' in request.POST.get('what'):

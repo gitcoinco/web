@@ -7,6 +7,7 @@ from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
+from app.settings import TOKENS
 from dashboard.models import Activity, HackathonEvent, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, mention_email, new_action_request
@@ -180,6 +181,7 @@ def town_square(request):
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
+        'TOKENS': TOKENS
     }
     response = TemplateResponse(request, 'townsquare/index.html', context)
     if request.GET.get('tab'):
