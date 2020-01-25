@@ -768,9 +768,6 @@ body.green.offer_view .announce {
   font-weight: 400 !important;
 }
 
-.townsquare_main .like_activity .action.open {
-  background-color: transparent;
-}
 .townsquare_main .like_activity .action.open i,
 .townsquare_main .like_activity .action.open + .num {
   color: var(--gc-pink) !important;

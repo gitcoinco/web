@@ -304,7 +304,10 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 
     var $target = $parent.parents('.row.box').find('.comment_container');
-    if (!$target.length) $target = $parent.parents('.box').find('.comment_container');
+
+    if (!$target.length) {
+      $target = $parent.parents('.box').find('.comment_container');
+    }
 
     if ($target.hasClass('filled') && allow_close_comment_container) {
       $target.html('');
@@ -352,13 +355,14 @@ $(document).ready(function() {
       var post_comment_html = `
       <div class="d-flex py-2">
         <div class="activity-avatar mr-1">
-            <img src="/dynamic/avatar/${comment['profile_handle']}">
+            <img src="/dynamic/avatar/${document.contxt.github_handle}">
         </div>
         <div class="pl-3 flex-grow-1">
           <input type="text" class="form-control bg-lightblue font-caption" placeholder="Enter comment">
         </div>
       </div>
       `;
+
       $target.append(post_comment_html);
     });
   };
