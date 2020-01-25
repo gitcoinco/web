@@ -304,7 +304,8 @@ def offer_view(request, offer_id, offer_slug):
         is_debugging_offers = request.GET.get('preview', 0) and request.user.is_staff
         if request.user.profile.offeractions.filter(what='click', offer=offer) and not is_debugging_offers:
             raise Exception('already visited this offer')
-        OfferAction.objects.create(profile=request.user.profile, offer=offer, what='click', not is_debugging_offers)
+        if not is_debugging_offers:
+            OfferAction.objects.create(profile=request.user.profile, offer=offer, what='click')
         # render page context
         context = {
             'title': offer.title,
