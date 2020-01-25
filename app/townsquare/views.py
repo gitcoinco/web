@@ -83,6 +83,16 @@ def town_square(request):
         }
         tabs = [connect] + tabs
 
+    kudos_last_24_hours = Activity.objects.filter(activity_type='receive_kudos', created_on__gt=timezone.now() - timezone.timedelta(hours=24)).count()
+    if kudos_last_24_hours:
+        default_tab = 'kudos'
+        connect = {
+            'title': f"Kudos ({connect_last_24_hours})",
+            'slug': f'kudos',
+            'helper_text': f'The {connect_last_24_hours} Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
+        }
+        tabs = [connect] + tabs
+
     if request.user.is_authenticated:
         hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now(), end_date__gt=timezone.now())
         if hackathons.count():
