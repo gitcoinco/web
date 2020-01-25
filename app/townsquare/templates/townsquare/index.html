@@ -89,7 +89,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <div class="row">
     <div class="container py-1">
-      <div class="my-1">
+      <div class="my-1 px-3">
         <div class="row">
           <div class="col-12">
             <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">           
@@ -107,7 +107,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </div>
         </div>
         <div class="row mt-4">
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-lg-3 d-none d-lg-block">
             <div class="townsquare_left-sidebar">
               <div class="search font-caption mb-5">
                 <div class="search-area col-12">
@@ -157,7 +157,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </div>
             </div>
           </div>
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-8 col-lg-6">
             <div class="bg-white rounded border">
               <div id="status">
                 {% csrf_token %}
@@ -179,8 +179,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   ></textarea>
                 </div>
                 <input type="hidden" name="what" value="{{what}}:{{whatid}}">
-                <div class="bg-lightblue p-2 d-flex justify-content-between">
-                  <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
+                <div class="bg-lightblue p-2 d-flex flex-column flex-sm-row justify-content-between">
+                  <div class="btn-group-toggle text-left activity_type_selector" data-toggle="buttons">
                     {% if tags %}
                       {% for tag in tags %}
                         <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" >
@@ -200,8 +200,41 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {% include 'shared/activity_container.html' %}
             </div>
           </div>
-          <div class="col-12 col-md-3">
-            
+          <div class="col-12 col-md-4 col-lg-3">
+            <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-4">
+              Actions
+            </div>
+            {% for type, item in offers_by_category.items %}
+              <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%} mb-4">
+                <div class="d-flex align-items-center mb-2">
+                  <div class="offer_icon border mr-1">
+                      <i class="far fa-clock"></i>
+                  </div>
+                  <h4 class="m-0 p-0 offer_container_type grey">{{type|title}} <br> Action</h4>
+                </div>
+                <div class="font-caption text-left">
+                  {% if item.offer %}
+                    <i class="fas fa-hourglass-end"></i>
+                    <span class="grey">Expires <span class="{{type}} timer m-0" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span></span>                 
+                  {% else %}
+                    <i class="fas fa-hourglass-end"></i>
+                    <span class="grey">Available <span class="{{type}} timer m-0" data-time="{{item.time}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span></span>
+                  {% endif %}
+                </div>
+                {% if item.offer %}
+                <div class="{{type}} offers">
+                  
+                </div>
+                {% else %}
+                <div class="offer_coming {{type}} font-caption text-left d-flex align-items-center">
+                  {% if type == 'daily' %}
+                    <input type="checkbox" class="mr-1" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} > 
+                    <label for="receive_daily_offers_in_inbox" class="m-0 grey"> <i class="fas fa-envelope"></i> Email when available</label>
+                  {% endif %}
+                </div>
+                {% endif %}
+              </div>
+            {% endfor %}
           </div>
         </div>
       </div>

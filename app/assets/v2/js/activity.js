@@ -323,8 +323,8 @@ $(document).ready(function() {
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         var show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
         var html = `
-        <div class="d-flex justify-content-between">
-          <div class="activity-avatar">
+        <div class="d-flex justify-content-between py-2">
+          <div class="activity-avatar mr-1">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
           </div>
           <div class="activity_comments_main px-3">
@@ -349,7 +349,17 @@ $(document).ready(function() {
 
         $target.append(html);
       }
-      $target.append('<a href=# class=post_comment>Post comment &gt;</a>');
+      var post_comment_html = `
+      <div class="d-flex py-2">
+        <div class="activity-avatar mr-1">
+            <img src="/dynamic/avatar/${comment['profile_handle']}">
+        </div>
+        <div class="pl-3 flex-grow-1">
+          <input type="text" class="form-control bg-lightblue font-caption" placeholder="Enter comment">
+        </div>
+      </div>
+      `;
+      $target.append(post_comment_html);
     });
   };
 
