@@ -24,9 +24,7 @@ $(document).ready(function() {
   $('#textarea').on('input', function(e) {
     const lastWord = e.target.value.split(' ').pop();
     const youtube_re = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
-    let url = e.target.value.match(youtube_re);
-    console.log(e.target.value)
-    console.log(url)
+    const url = e.target.value.match(youtube_re);
     let videoId;
 
     if (url)
@@ -39,7 +37,6 @@ $(document).ready(function() {
         let getVideoData = fetchData('https://www.googleapis.com/youtube/v3/videos?key=' + apiKey + '&fields=items(snippet(title))&part=snippet&id=' + videoId);
 
         $.when(getVideoData).then(function(response) {
-          console.log(response)
           if (response.items.length !== 0) {
             $('#thumbnail-title').text(response.items[0].snippet.title);
             $('#thumbnail-provider').text('Youtube');
