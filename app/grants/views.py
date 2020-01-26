@@ -72,6 +72,12 @@ def get_keywords():
     return json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)])
 
 
+def lazy_round_number(n):
+    if n>1000:
+        return f"{round(n/1000, 1)}k"
+    return n
+
+
 def grants(request):
     """Handle grants explorer."""
     limit = request.GET.get('limit', 6)
@@ -124,7 +130,7 @@ def grants(request):
         key='grants',
         ).order_by('-pk')
     if grant_stats.exists():
-        grant_amount = grant_stats.first().val / 1000
+        grant_amount = lazy_round_number(grant_stats.first().val)
 
     tech_grants_count = Grant.objects.filter(
         network=network, hidden=False, grant_type='tech'

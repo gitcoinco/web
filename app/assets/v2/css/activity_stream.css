@@ -18,6 +18,9 @@
   vertical-align: super;
   font-size: smaller;  
 }
+.activity_feed_kudos_image{
+  max-width: 70px;
+}
 .action i,
 a .sup{
   color: black;
@@ -114,6 +117,9 @@ a .sup{
 }
 
 @media (min-width: 768px) {
+  .activity_feed_kudos_image{
+    max-width: 110px;
+  }
   .activity .secondary {
     position: relative;
     left: -10px;

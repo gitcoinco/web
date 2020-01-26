@@ -44,17 +44,24 @@ def index(request):
 
     return town_square(request)
 
+def lazy_round_number(n):
+    if n>1000:
+        return f"{round(n/1000, 1)}k"
+    return n
+
 def town_square(request):
 
     # setup tabas
+    hours = 24 if not settings.DEBUG else 1000
+    posts_last_24_hours = lazy_round_number(Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     tabs = [{
-        'title': "Everywhere",
+        'title': f"Everywhere ({posts_last_24_hours})",
         'slug': 'everywhere',
-        'helper_text': 'Activity everywhere in the Gitcoin network',
+        'helper_text': f'The {posts_last_24_hours} activity feed items everywhere in the Gitcoin network',
     }]
     default_tab = 'everywhere'
     if request.user.is_authenticated:
-        num_business_relationships = len(set(get_my_earnings_counter_profiles(request.user.profile.pk)))
+        num_business_relationships = lazy_round_number(len(set(get_my_earnings_counter_profiles(request.user.profile.pk))))
         if num_business_relationships:
             new_tab = {
                 'title': f"Relationships ({num_business_relationships})",
@@ -63,7 +70,8 @@ def town_square(request):
             }
             tabs = [new_tab] + tabs
             default_tab = 'my_tribes'
-        num_grants_relationships = len(set(get_my_grants(request.user.profile)))
+        num_grants_relationships = lazy_round_number(len(set(get_my_grants(request.user.profile))))
+
         if num_grants_relationships:
             new_tab = {
                 'title': f'Grants ({num_grants_relationships})',
@@ -73,25 +81,26 @@ def town_square(request):
             tabs = [new_tab] + tabs
             default_tab = 'grants'
 
-    connect_last_24_hours = Activity.objects.filter(activity_type='status_update', created_on__gt=timezone.now() - timezone.timedelta(hours=24)).count()
+    hours = 24 if not settings.DEBUG else 1000
+    connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if connect_last_24_hours:
         default_tab = 'connect'
         connect = {
             'title': f"Connect ({connect_last_24_hours})",
             'slug': f'connect',
-            'helper_text': f'The {connect_last_24_hours} announcements, requests for help, jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
+            'helper_text': f'The {connect_last_24_hours} announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
         }
         tabs = [connect] + tabs
 
-    kudos_last_24_hours = Activity.objects.filter(activity_type='receive_kudos', created_on__gt=timezone.now() - timezone.timedelta(hours=24)).count()
+    kudos_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['new_kudos', 'receive_kudos'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if kudos_last_24_hours:
         default_tab = 'kudos'
         connect = {
-            'title': f"Kudos ({connect_last_24_hours})",
+            'title': f"Kudos ({kudos_last_24_hours})",
             'slug': f'kudos',
-            'helper_text': f'The {connect_last_24_hours} Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
+            'helper_text': f'The {kudos_last_24_hours} Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
         }
-        tabs = [connect] + tabs
+        tabs = tabs + [connect]
 
     if request.user.is_authenticated:
         hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now(), end_date__gt=timezone.now())

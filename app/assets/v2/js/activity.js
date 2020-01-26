@@ -155,8 +155,12 @@ $(document).ready(function() {
     };
     var url = '/api/v0.1/activity/' + $(this).data('pk');
 
+    $(this).parents('.row.box').find('.loading').removeClass('hidden');
     $.post(url, params, function(response) {
       // no message to be sent
+      $(this).parents('.row.box').find('.loading').addClass('hidden');
+    }).fail(function() {
+      $(this).parents('.row.box').find('.error').removeClass('hidden');
     });
 
 
@@ -176,6 +180,8 @@ $(document).ready(function() {
       return;
     }
 
+    $parent.parents('.row.box').find('.loading').removeClass('hidden');
+
     // increment number
     var num = $parent.find('span.num').html();
 
@@ -192,7 +198,15 @@ $(document).ready(function() {
 
     $.post(url, params, function(response) {
       view_comments($parent, allow_close_comment_container);
-    });
+    }).done(function() {
+      // pass
+    })
+      .fail(function() {
+        $parent.parents('.row.box').find('.error').removeClass('hidden');
+      })
+      .always(function() {
+        $parent.parents('.row.box').find('.loading').addClass('hidden');
+      });
   };
 
   var view_comments = function($parent, allow_close_comment_container) {
@@ -212,7 +226,9 @@ $(document).ready(function() {
       return;
     }
     $parent.find('.action').addClass('open');
+    $parent.parents('.row.box').find('.loading').removeClass('hidden');
     $.get(url, params, function(response) {
+      $parent.parents('.row.box').find('.loading').addClass('hidden');
       $target.addClass('filled');
       $target.html('');
       for (var i = 0; i < response['comments'].length; i++) {
