@@ -1,5 +1,6 @@
 import re
 
+import metadata_parser
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404, JsonResponse
@@ -354,3 +355,27 @@ def offer_new(request):
         'nav': 'home',
     }
     return TemplateResponse(request, 'townsquare/new.html', context)
+
+
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def extract_metadata_page(request):
+    url = request.GET.get('url')
+
+    if url:
+        page = metadata_parser.MetadataParser(url=url)
+        meta = page.parsed_result.metadata
+        return JsonResponse({
+            'og': meta['og'],
+            'twitter': meta['twitter'],
+            'meta': meta['meta'],
+            'dc': meta['dc'],
+            'title': page.get_metadatas('title')[0],
+            'image': page.get_metadata_link('image'),
+            'description': page.get_metadata('description'),
+            'link': page.get_discrete_url()
+        })
+
+    return JsonResponse({
+        'status': 'error',
+        'message': 'no url was provided'
+    }, status=404)

@@ -87,3 +87,4 @@ python-magic
 django-oauth-toolkit
 mattermostdriver
 ddtrace
+metadata-parser==0.10.0

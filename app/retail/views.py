@@ -1211,6 +1211,12 @@ def create_status_update(request):
             }
         }
 
+        if resource == 'content':
+            meta = kwargs['metadata']['resource']
+            meta['title'] = request.POST.get('title', '')
+            meta['description'] = request.POST.get('description', '')
+            meta['image'] = request.POST.get('image', '')
+
         kwargs['profile'] = profile
         if ':' in request.POST.get('what'):
             what = request.POST.get('what')
