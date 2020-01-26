@@ -57,7 +57,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
       <div class="container-fluid py-4 grants-results">
         <div class="container">
-          <strong>Gitcoin Grants</strong> has facilitated the distribution of <strong>${{grant_amount|floatformat:0}}k</strong> to Open Source since it's launch in January 2019.
+          <strong>Gitcoin Grants</strong> has facilitated the distribution of <strong>${{grant_amount|floatformat:0}}k</strong> to community public goods since it's launch in January 2019.
           <a class="font-body" href="/results">See more results</a>.
           <br>
           <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 100px;" class="pt-3" />
@@ -79,6 +79,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               Gitcoin Grants is the largest pilot for Quadratic Funding around!
               Want to help fund open source in the 'mathematically optimal' way?
             </p>
+            <p>
+              <a href="https://twitter.com/owocki/status/1217993123311177728">Update 2020/1/17 - Statement on Quid Pro Quos on Gitcoin Grants</a>
+            </p>
 
             {% if not user.is_authenticated %}
               <a class="btn btn-gc-blue font-body font-weight-semibold" href="mailto:founders@gitcoin.co">
@@ -90,6 +93,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </div>
             {% endif %}
           </div>
+
         </div>
       </div>
     </div>
@@ -283,7 +287,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {% trans "Please try another search term or browse for a grant." %}
             </p>
           </div>
-          <div class="col-12 pt-4 pb-5 mx-auto text-center">
+          <div class="col-12 pt-4 pb-2 mx-auto text-center">
             <a class="button-lg btn-gc btn-gc-blue py-3 px-5 font-weight-semibold" href="{% url 'grants:grants' %}">
               {% trans "Browse Grants" %}
             </a>

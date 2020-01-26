@@ -17,8 +17,12 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark g-font-muli gitcoin-background">
-  <a class="navbar-brand pt-0 pb-0" href="/bounties/funder">
-    <img id="logo" src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="35" alt="Logo" />
+  <a class="d-none d-md-block mr-2 mb-1" href="{% url 'index' %}">
+    {% include 'shared/helmet-white-animated.html' %}
+  </a>
+  <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
+  <a class="navbar-brand ml-2 pt-0 pb-0" href="/bounties/funder">
+    <img id="logo" src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="40" alt="Logo" class="w-auto" />
   </a>
   {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
     <!-- TODO: FIGURE HOW TO HANDLE FOR CROSS CHAIN -->
@@ -33,9 +37,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     {% if user.is_authenticated %}
-      {% if user.is_staff %}
-        {% include 'shared/chat_nav.html' %}
-      {% endif %}
+      {% include 'shared/chat_nav.html' %}
       {% include 'shared/notifications.html' %}
     {% endif %}
   </div>

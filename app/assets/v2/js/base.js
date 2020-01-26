@@ -230,7 +230,7 @@ const alertMessage = function(msg) {
   return html;
 };
 
-const _alert = function(msg, _class) {
+const _alert = function(msg, _class, remove_after_ms) {
   if (typeof msg == 'string') {
     msg = {
       'message': msg
@@ -238,10 +238,11 @@ const _alert = function(msg, _class) {
   }
   var numAlertsAlready = $('.alert:visible').length;
   var top = numAlertsAlready * 44;
+  var id = 'msg_' + parseInt(Math.random() * 10 ** 10);
 
   var html = function() {
     return (
-      `<div class="alert ${_class} g-font-muli" style="top: ${top}px">
+      `<div id="${id}" class="alert ${_class} g-font-muli" style="top: ${top}px">
         <div class="message">
           <div class="content">
             ${alertMessage(msg)}
@@ -253,6 +254,13 @@ const _alert = function(msg, _class) {
   };
 
   $('body').append(html);
+
+  if (typeof remove_after_ms != 'undefined') {
+    setTimeout(function() {
+      $('#' + id).remove();
+    }, remove_after_ms);
+  }
+
 };
 
 var show_persona_modal = function(e) {
@@ -344,24 +352,12 @@ const sendPersonal = (persona) => {
 };
 
 
-const gitcoinUpdates = (force) => {
-  let urlUpdates = `https://api.github.com/repos/gitcoinco/web/issues/5057?access_token=${document.contxt.access_token}`;
-  let today = new Date();
-  let showedUpdates = JSON.parse(localStorage.getItem('showed_updates'));
-  let lastPromp = showedUpdates ? showedUpdates.last_promp : today;
-  let lastUpdated = showedUpdates ? showedUpdates.last_updated : 0;
+const gitcoinUpdates = () => {
+  const urlUpdates = `https://api.github.com/repos/gitcoinco/web/issues/5057?access_token=${document.contxt.access_token}`;
 
-  if (!force && showedUpdates && (moment(today).diff(moment(lastPromp), 'days') < 7)) {
-    return;
-  }
+  const getUpdates = fetchData (urlUpdates, 'GET');
 
-  let getUpdates = fetchData (urlUpdates, 'GET');
-
-  $.when(getUpdates).then(function(response) {
-
-    if (!force && (response.updated_at == lastUpdated)) {
-      return;
-    }
+  $.when(getUpdates).then(response => {
 
     const content = $.parseHTML(
       `<div id="gitcoin_updates" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -388,13 +384,6 @@ const gitcoinUpdates = (force) => {
 
     $(content).appendTo('body');
     $('#gitcoin_updates').bootstrapModal('show');
-    let newPrompt = {
-      'last_promp': new Date(),
-      'last_updated': response.updated_at
-    };
-
-    localStorage.setItem('showed_updates', JSON.stringify(newPrompt));
-
   });
 
   $(document, '#gitcoin_updates').on('hidden.bs.modal', function(e) {
@@ -403,6 +392,6 @@ const gitcoinUpdates = (force) => {
   });
 };
 
-if (document.contxt.github_handle) {
-  gitcoinUpdates();
+if (document.contxt.chat_unread_messages) {
+  $('#chat-notification-dot').addClass('notification__dot__active');
 }

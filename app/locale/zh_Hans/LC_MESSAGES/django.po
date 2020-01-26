@@ -8704,10 +8704,10 @@ msgstr "Gitcoin是开源的吗？"
 msgid ""
 "Yes, all of Gitcoin's core software systems are open source and available at"
 " <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  "
-"Please see the liscense.txt file in each repo for more details."
+"Please see the license.txt file in each repo for more details."
 msgstr ""
 "是的，Gitcoin的所有核心软件系统都是开源的，可以在<a href=https://github.com/gitcoinco/> "
-"https://github.com/gitcoinco/ </a>上找到。有关更多详细信息，请参阅每个仓库中的liscense.txt文件。"
+"https://github.com/gitcoinco/ </a>上找到。有关更多详细信息，请参阅每个仓库中的license.txt文件。"
 
 #: retail/views.py:572
 msgid "Is a token distribution event planned for Gitcoin?"

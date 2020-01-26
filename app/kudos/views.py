@@ -203,6 +203,7 @@ def details(request, kudos_id, name):
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
         'related_handles': list(set(kudos.owners_handles))[:num_kudos_limit],
+        'target': f'/activity?what=kudos:{kudos.pk}',
     }
     if kudos:
         token = Token.objects.select_related('contract').get(
@@ -462,6 +463,13 @@ def send_4(request):
         kudos_transfer.from_username,
         'new_kudos',
     )
+    if is_direct_to_recipient:
+        record_kudos_activity(
+            kudos_transfer,
+            kudos_transfer.username,
+            'receive_kudos'
+        )
+
     return JsonResponse(response)
 
 
@@ -501,6 +509,7 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
 
 def record_kudos_activity(kudos_transfer, github_handle, event_name):
     logger.debug(kudos_transfer)
+    github_handle = github_handle.replace('@', '')
     kwargs = {
         'activity_type': event_name,
         'kudos': kudos_transfer,
@@ -511,6 +520,7 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
             'value_in_usdt_now': str(kudos_transfer.value_in_usdt_now),
             'github_url': kudos_transfer.github_url,
             'to_username': kudos_transfer.username,
+            'from_username': kudos_transfer.from_username,
             'from_name': kudos_transfer.from_name,
             'received_on': str(kudos_transfer.received_on) if kudos_transfer.received_on else None
         }
@@ -607,8 +617,8 @@ def receive(request, key, txid, network):
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
             record_kudos_activity(
                 kudos_transfer,
-                kudos_transfer.from_username,
-                'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+                kudos_transfer.username,
+                'receive_kudos'
             )
             messages.success(request, _('This kudos has been received'))
         except Exception as e:
@@ -713,6 +723,11 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
             # user actions
             record_user_action(kudos_transfer.username, 'new_kudos', kudos_transfer)
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
+            record_kudos_activity(
+                kudos_transfer,
+                kudos_transfer.username,
+                'receive_kudos'
+            )
 
             # send email
             maybe_market_kudos_to_email(kudos_transfer)

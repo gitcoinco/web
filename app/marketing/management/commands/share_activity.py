@@ -19,11 +19,9 @@
 '''
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.template.loader import render_to_string
 from django.utils import timezone
 
 import twitter
-from bs4 import BeautifulSoup
 from dashboard.models import Activity
 
 
@@ -46,16 +44,8 @@ class Command(BaseCommand):
         activities = Activity.objects.filter(created_on__gt=created_before)
         print(f" got {activities.count()} activities")
         for activity in activities:
-            params = {
-                'row': activity,
-                'hide_date': True
-            }
-            html_str = render_to_string('shared/activity.html', params)
-            soup = BeautifulSoup(html_str)
-            txt = soup.get_text()
-            txt = txt.replace("\n","")
-            for i in range(0, 100):
-                txt = txt.replace("  ",' ')
+
+            txt = activity.text
 
             txt = f". {txt} {activity.action_url}"
 

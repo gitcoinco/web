@@ -37,6 +37,14 @@
         <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.4.2|floatformat:0|intcomma|default:0 }} DAI</span> match
       </p>
     </div>
-
   </div>
+  {% if grant.last_clr_calc_date %}
+    <div class="row mx-0" style="font-size: 10px;">
+      <div class="w-100 text-center text-black-70 pb-1">
+        Next update : {{grant.next_clr_calc_date | naturaltime}}
+        <span class="mx-1">|</span>
+        Last updated : {{grant.last_clr_calc_date | naturaltime}}
+      </div>
+    </div>
+  {% endif %}
 </div>
