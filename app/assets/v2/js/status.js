@@ -23,16 +23,15 @@ $(document).ready(function() {
   // dropdown for usernames when @ is detected in the post
   $('#textarea').on('input', function(e) {
     const lastWord = e.target.value.split(' ').pop();
-    const youtube_re = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+    const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
     const url = e.target.value.match(youtube_re);
-    let videoId;
 
-    if (url)
-      videoId = url[7].slice(0, 11);
 
-    if (url && videoId.length === 11) {
+    if (url !== null && url[1].length === 11) {
+      let videoId = url[1];
+      
       if (last_video !== videoId) {
-        var apiKey = ''; // TODO: add youtube API key to query titles
+        var apiKey = 'AIzaSyDi-EFpC2ntx9PnM_-oiJHk5zCY53KdIf0'; // TODO: add youtube API key to query titles
 
         let getVideoData = fetchData('https://www.googleapis.com/youtube/v3/videos?key=' + apiKey + '&fields=items(snippet(title))&part=snippet&id=' + videoId);
 
