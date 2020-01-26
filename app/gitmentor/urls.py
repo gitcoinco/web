@@ -19,11 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.urls import path, re_path
 
-from gitmentor.views import index, schedule_session
+from gitmentor.views import index, request_session
 
 
 app_name = 'gitmentor'
 urlpatterns = [
     path('', index, name='gitmentor'),
-    path('schedule', schedule_session, name='schedule'),
+    path('request', request_session, name='request'),
 ]

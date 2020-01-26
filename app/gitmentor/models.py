@@ -30,8 +30,9 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
-
 from django_extensions.db.fields import AutoSlugField
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
@@ -77,7 +78,7 @@ class MoneyStream(SuperModel):
     token_address = models.CharField(max_length=50)
 
 
-class SessionScheduling(SuperModel):
+class SessionRequest(SuperModel):
     """
     session_date = models.DateField(help_text=_('Requested session date.'))
     session_time = models.TimeField(help_text=_('Requested session time.'))
@@ -99,17 +100,40 @@ class SessionScheduling(SuperModel):
         ('Peer Programming', 'peer-programming'),
         ('Other', 'other'),
     ]
+    SESSION_REQUEST_STATE = [
+        ("Pending", "pending"),
+        ("Accepted", "accepted"),
+        ("Rejected", "rejected")
+    ]
 
     mentor = models.ManyToManyField(
         'dashboard.Profile',
+        #limit_choices_to={'persona_is_mentor': True},
         help_text=_('Select mentor'),
     )
-    session_type = models.CharField(max_length=50, choices=SESSION_TYPE, blank=True, db_index=True)
-    session_datetime = models.DateTimeField(help_text=_('Requested session date and time.'))
+    # session_type = models.CharField(max_length=50, choices=SESSION_TYPE, blank=True, db_index=True)
+    # UTC
+    session_datetime = models.CharField(max_length=256, blank=True, help_text=_('Requested session date and time.'))
+    # Minutes
+    session_duration = models.PositiveSmallIntegerField(default=15, validators=[MinValueValidator(15), MaxValueValidator(1440)])
+    # USD
+    session_cost = models.FloatField(default=5, validators=[MinValueValidator(5)])
+    session_state = models.CharField(max_length=50, choices=SESSION_REQUEST_STATE, blank=True, db_index=True)
+    mentee_address = models.CharField(default='0xd21aEff7Fc73AB5D608808c99427B1B9084D372e', max_length=256, blank=True, db_index=True)
+
+    sablier_tx_receipt = JSONField(null=True, default=dict, blank=True)
+    sablier_stream_id = models.CharField(max_length=50, blank=True, db_index=True)
+    gitmentor_session_id = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
-        """Return the string representation of a Milestone."""
+        """Return the string representation of a Session request."""
         return (
-            f"mentor: {self.mentor}, session_type: {self.session_type}, "
-            f"id: {self.pk}, session_datetime: {self.session_datetime}"
+            f"id: {self.pk}, mentor: {self.mentor}, "
+            f"session_datetime: {self.session_datetime}, "
+            f"session_duration: {self.session_duration}, "
+            f"session_cost: {self.session_cost}, "
+            f"mentee_address: {self.mentee_address}, "
+            f"sablierTxReceipt: {self.sablier_tx_receipt}, "
+            f"sablier_stream_id: {self.sablier_stream_id}, "
+            f"gitmentor_session_id: {self.gitmentor_session_id}"
         )

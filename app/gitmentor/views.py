@@ -41,8 +41,7 @@ from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
-from gitmentor.models import SessionScheduling
-from gitmentor.forms import SessionSchedulingForm
+from gitmentor.forms import SessionRequestForm
 from marketing.models import Keyword, Stat
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
@@ -57,20 +56,33 @@ def index(request):
 
 
 @login_required
-def schedule_session(request):
+def request_session(request):
     profile = get_profile(request)
 
     if request.method == "POST":
-        method = request.POST.get('method')
+        form = SessionRequestForm(request.POST)
 
-        if method == "POST":
-            form = SessionSchedulingForm(request.POST)
-            form.save()
+        if form.is_valid():
+            session_request = form.save(commit=False)
+            session_request.sablier_tx_receipt = json.loads(
+                request.POST.get('sablier_tx_receipt', '{}')
+            )
+            session_request.session_datetime = json.loads(
+                request.POST.get('session_datetime', '{}')
+            )
+            session_request.gitmentor_session_id = json.loads(
+                request.POST.get('gitmentor_session_id', '{}')
+            )
+            session_request.mentee_address = '0xd21aEff7Fc73AB5D608808c99427B1B9084D372e'
+            session_request.session_cost = 5;
+            session_request.session_duration = 15;
+            session_request.save()
 
-    form = SessionSchedulingForm()
+    form = SessionRequestForm()
 
     params = {
         'active': 'schedule_session',
+        'profile': profile,
         'form': form,
     }
     return TemplateResponse(request, 'gitmentor/schedule.html', params)

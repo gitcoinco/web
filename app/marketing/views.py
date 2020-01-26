@@ -553,7 +553,7 @@ def account_settings(request):
         return login_redirect
 
     if request.POST:
-        if 'persona_is_funder' or 'persona_is_hunter' in request.POST.keys():
+        if 'persona_is_funder' or 'persona_is_hunter' or 'persona_is_mentor' in request.POST.keys():
             profile.persona_is_funder = bool(request.POST.get('persona_is_funder', False))
             profile.persona_is_hunter = bool(request.POST.get('persona_is_hunter', False))
             profile.persona_is_mentor = bool(request.POST.get('persona_is_mentor', False))

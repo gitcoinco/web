@@ -2,68 +2,102 @@
 {% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    {% include 'shared/head.html' with slim=1 %}
-    {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/grants/new.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
-  </head>
-  <body class="interior {{ active }} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'grants/nav.html' %}
-      <div class="row no-gutters metamask-banner">
-        <div class="col-12">
-          {% include 'shared/no_metamask_error.html' %}
-          {% include 'shared/zero_balance_error.html' %}
-          {% include 'shared/unlock_metamask.html' %}
-          {% include 'shared/connect_metamask.html' %}
-        </div>
+<head>
+  {% include 'shared/head.html' with slim=1 %}
+  {% include 'shared/cards.html' %}
+  <link rel="stylesheet" href="{% static "v2/css/grants/new.css" %}">
+  <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+</head>
+<body class="interior {{ active }} g-font-muli">
+  {% include 'shared/tag_manager_2.html' %}
+  <div class="container-fluid header dash">
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'grants/nav.html' %}
+    <div class="row no-gutters metamask-banner">
+      <div class="col-12">
+        {% include 'shared/no_metamask_error.html' %}
+        {% include 'shared/zero_balance_error.html' %}
+        {% include 'shared/unlock_metamask.html' %}
+        {% include 'shared/connect_metamask.html' %}
       </div>
     </div>
+  </div>
 
-    <div class="grant-container">
-      <div class="container new-grant" id="new-grant">
-        <div class="row justify-content-md-center pb-5">
-          <div id="robot_error" class="hidden mt-5">
-            <img src="{% static "v2/images/prime.png" %}">
+  <div class="session-request-container">
+    <div class="container session-request" id="session-request">
+      <div class="row justify-content-md-center pb-5">
+        <div id="robot_error" class="hidden mt-5">
+          <img src="{% static "v2/images/prime.png" %}">
+        </div>
+        <div class="col-12 col-md-10 col-lg-8 mt-5" id="grants_form">
+          <div class="form__intro my-4 text-center">
+            <img src="{% static "v2/images/gitmentor/gitmentor.svg" %}">
+            <h1 class="text-center font-title-xl">{% trans "Request a Session" %}</h1>
+            <p class="mb-1">
+              {% trans "Request a session with any mentor." %}
+            </p>
           </div>
-          <div class="col-12 col-md-10 col-lg-8 mt-5" id="grants_form">
-            <div class="form__intro my-4 text-center">
-              <img src="{% static "v2/images/gitmentor/gitmentor.svg" %}">
-              <h1 class="text-center font-title-xl">{% trans "Request a Session" %}</h1>
-              <p class="mb-1">
-                {% trans "Request a session with any mentor." %}
-              </p>
-            </div>
-            <div class="primary-form py-5">
-              <form method="POST" id="create-grant" class="px-5">
-                {% csrf_token %}
-                <input type="hidden" name="method" value="POST">
+          <div class="primary-form py-5">
+            <form method="POST" onsubmit="return false" id="request-session" class="px-5">
+              {% csrf_token %}
+              <!-- <input type="hidden" name="method" value="POST"> -->
 
-                <div class="form__group-horizontal pb-3">
-                  <label class="font-body" for="input-mentor">{% trans "Find your Mentor" %}</label>
-                  <div class="form__select2 g-multiselect">
-                    <select id="input-mentor" class="form__input form__input-lg  mentor" name="mentor"></select>
-                  </div>
+              <div class="form__group-horizontal pb-3">
+                <label class="font-body" for="input-mentor">{% trans "Find your Mentor" %}</label>
+                <div class="form__select2 g-multiselect">
+                  <!-- <select id="input-mentor" class="form__input form__input-lg  mentor" name="mentor"></select> -->
+                  {{ form.mentor }}
+                  {{ form.mentor.errors }}
                 </div>
+              </div>
 
-                <div class="form__group-horizontal pb-3">
-                  <label class="font-body" for="select-session_type">{% trans "Select the type of session" %}</label>
-                    {% include 'gitmentor/session_types.html' %}
-                </div>
+              <!-- <div class="form__group-horizontal pb-3">
+                <label class="font-body" for="select-session_type">{% trans "Select the type of session" %}</label>
+                  {% include 'gitmentor/session_types.html' %}
+              </div> -->
 
-                <div class="form__group-horizontal pb-3">
+              <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="session_datetime">{% trans "Request Date and Time" %}</label>
                   {{ form.session_datetime }}
                   {{ form.session_datetime.errors }}
                 </div>
 
-                <div class="form__footer text-center">
-                  <button class="button button--primary button--full">{% trans "Request Session" %}</button>
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="session_duration">{% trans "Set session duration. Cancel at any time" %}</label>
+                  {{ form.session_duration }}
+                  {{ form.session_duration.errors }}
                 </div>
 
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="mentee_address">{% trans "Your Address" %}</label>
+                  {{ form.mentee_address }}
+                  {{ form.mentee_address.errors }}
+                </div>
+
+                <div class="form__group-horizontal pb-3">
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <label class="font-body" for="session_cost">{% trans "Session Worth as a number" %}</label>
+                      {{ form.session_cost }}
+                      {{ form.session_cost.errors }}
+                    </div>
+                    <div class="col-12 col-md-6 d-flex justify-content-center gas-dark-bg py-2" style="/*background-color: #EAEAEA;*/">
+                      <div class="text-center pl-3">
+                        <h5 class="font-subheader green">Default Token:</h5>
+                        <p class="font-body">Temporarily using Testnet Dai</p>
+                        <p class="font-body">Rinkeby</p>
+                      </div>
+                  </div>
+                </div>
+
+                <div class="form__footer text-center">
+                  <button id="submitRequest" class="button button--primary button--full">{% trans "Request Session" %}</button>
+                </div>
+
+                <div>
+                  <input type="hidden" id="sablier_tx_receipt" name="sablier_tx_receipt" />
+                  <input type="hidden" id="gitmentor_session_id" name="gitmentor_session_id" />
+                </div>
               </form>
             </div>
           </div>
@@ -71,50 +105,25 @@
       </div>
     </div>
 
-    <!--
-    <div class="container">
-      <div class="row justify-content-md-center mt-3">
-        <div class="col-sm-12 col-md-12 col-lg-8 px-md-5 py-4 my-lg-5">
-          <div>
-            <form method="POST">
-              {% csrf_token %}
-              <input type="hidden" name="method" value="POST">
-              <div class="form__group-horizontal mb-5">
-                <div class="row">
-                  <div class="col-12">
-                    {{ form.session_datetime }}
-                    {{ form.session_datetime.errors }}
-                  </div>
-                </div>
-              </div>
-              <div class="col-12 mt-4 text-center">
-                <button class="btn btn-gc-blue">{% trans "Schedule Session" %}</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    -->
+  {% include 'shared/current_profile.html' %}
+  {% include 'shared/bottom_notification.html' %}
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/footer.html' %}
+  {% include 'grants/shared/shared_scripts.html' %}
+</body>
 
-    {% include 'shared/current_profile.html' %}
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-    {% include 'grants/shared/shared_scripts.html' %}
-  </body>
-
-  <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="/dynamic/js/tokens_dynamic.js"></script>
-  <script src="{% static "v2/js/tokens.js" %}"></script>
-  <script src="{% static "v2/js/shared.js" %}"></script>
-  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-  <script src="{% static "v2/js/ipfs.js" %}"></script>
-  <script src="{% static "v2/js/user-search.js" %}"></script>
-  <script src="https://cdn.jsdelivr.net/momentjs/latest/lib/moment.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-  <script src="{% static "v2/js/gitmentor/schedule.js" %}"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/lib/bignumber.min.js" %}"></script>
+<script src="/dynamic/js/tokens_dynamic.js"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/ipfs.js" %}"></script>
+<script src="{% static "v2/js/user-search.js" %}"></script>
+<script src="https://cdn.jsdelivr.net/momentjs/latest/lib/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script src="{% static "v2/js/gitmentor/schedule.js" %}"></script>
 
 </html>
