@@ -108,14 +108,14 @@ def grants(request):
         field_name = f'clr_prediction_curve__{sort_by_index}__2'
         _grants = _grants.order_by(f"-{field_name}")
 
-    if category:
+    '''if category:
         grants_with_category = GrantCategory.objects.filter(
             category=category,
             grant__hidden=False,
             grant__network=network,
             grant__grant_type=grant_type
         )
-        _grants = [ grant_with_category.grant for grant_with_category in grants_with_category ]
+        _grants = [ grant_with_category.grant for grant_with_category in grants_with_category ]'''
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -205,15 +205,15 @@ def grants(request):
 
 def add_form_categories_to_grant(form_category_ids, grant):
     form_category_ids = [int(i) for i in form_category_ids if i != '']
-    print('form category ids int')
-    print(form_category_ids)
 
-    model_categories = basic_grant_categories()
+    model_categories = basic_grant_categories('tech')
     model_categories = [ category[0] for category in model_categories ]
     selected_categories = [model_categories[i] for i in form_category_ids]
 
+    '''todo:fix'''
     for category in selected_categories:
-        GrantCategory.objects.create(category=category,grant=grant)
+        grant_category = GrantCategory.objects.get_or_create(category=category)
+        grant.categories.add(grant_category)
 
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
@@ -280,7 +280,7 @@ def grant_details(request, grant_id, grant_slug):
             form_category_ids = request.POST.getlist('edit-categories[]')
 
             '''Overwrite the existing categories'''
-            grant.categories.all().delete()
+            grant.categories.clear()
 
             add_form_categories_to_grant(form_category_ids, grant)
 

@@ -68,6 +68,42 @@ class GrantQuerySet(models.QuerySet):
             Q(reference_url__icontains=keyword)
         )
 
+class GrantCategory(SuperModel):
+    @staticmethod
+    def all_categories():
+        all_tech_categories = GrantCategory.tech_categories()
+        filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
+        return all_tech_categories + filtered_media_categories
+
+    @staticmethod
+    def tech_categories():
+        return [
+            'security',
+            'scalability',
+            'defi',
+            'education',
+            'wallets',
+            'community',
+            'eth2.0',
+            'eth1.x',
+        ]
+
+    @staticmethod
+    def media_categories():
+        return [
+            'education',
+            'twitter',
+            'reddit',
+            'blog',
+            'notes',
+        ]
+
+    category = models.CharField(
+        max_length=50,
+        blank=False,
+        null=False,
+        help_text=_('Grant Category'),
+    )
 
 class Grant(SuperModel):
     """Define the structure of a Grant."""
@@ -228,6 +264,7 @@ class Grant(SuperModel):
         null=True,
         blank=True,
     )
+    categories = models.ManyToManyField(GrantCategory)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -374,53 +411,6 @@ class Grant(SuperModel):
         web3 = get_web3(self.network)
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
-
-
-class GrantCategory(SuperModel):
-    @staticmethod
-    def all_categories():
-        all_tech_categories = GrantCategory.tech_categories()
-        filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
-        return all_tech_categories + filtered_media_categories
-
-    @staticmethod
-    def tech_categories():
-        return [
-            'security',
-            'scalability',
-            'defi',
-            'education',
-            'wallets',
-            'community',
-            'eth2.0',
-            'eth1.x',
-        ]
-
-    @staticmethod
-    def media_categories():
-        return [
-            'education',
-            'twitter',
-            'reddit',
-            'blog',
-            'notes',
-        ]
-
-    category = models.CharField(
-        max_length=50,
-        blank=False,
-        null=False,
-        help_text=_('Grant Category'),
-    )
-
-    grant = models.ForeignKey(
-        'Grant',
-        related_name='categories',
-        on_delete=models.CASCADE,
-        blank=False,
-        null=False,
-        help_text=_('The associated Grant.'),
-    )
 
 
 class Milestone(SuperModel):
