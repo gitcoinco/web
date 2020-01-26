@@ -1234,7 +1234,7 @@ def create_status_update(request):
             username_pattern = re.compile(r'@(\S+)')
             mentioned_usernames = re.findall(username_pattern, title)
             to_emails = set(Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True))
-            mention_email(profile, to_emails)
+            mention_email(activity, to_emails)
 
             if kwargs['activity_type'] == 'wall_post':
                 if 'Email Grant Funders' in activity.metadata.get('ask'):
@@ -1246,6 +1246,7 @@ def create_status_update(request):
             response['status'] = 400
             response['message'] = 'Bad Request'
             logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
+            return JsonResponse(response, status=400)
     return JsonResponse(response)
 
 def help(request):

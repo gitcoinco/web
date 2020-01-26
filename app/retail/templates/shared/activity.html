@@ -238,7 +238,7 @@
     <div class="col ml-1 col-sm-3 col-md-2"><img style="width: 130%;" src="{{ row.metadata.resource.image }}"></div>
       <div class="col ml-2 text-left">
         <p class="mt-2 mb-1" style="font-size: 1.2em; font-weight: bold">{{ row.metadata.resource.title }}</p>
-        <p class="small">{{ row.metadata.resource.description }}</p>
+        <p class="small">{{ row.metadata.resource.description|truncatechars:200}}</p>
         <p class="small" style="color: #0056b3">{{ row.metadata.resource.provider }}</p>
       </div>
     </div>

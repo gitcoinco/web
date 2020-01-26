@@ -1,3 +1,6 @@
+const url_re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
+
 $(document).ready(function() {
   embedded_resource = '';
   let button = document.querySelector('#btn_post');
@@ -22,16 +25,16 @@ $(document).ready(function() {
 
   // dropdown for usernames when @ is detected in the post
   $('#textarea').on('input', function(e) {
+    e.preventDefault();
     const lastWord = e.target.value.split(' ').pop();
-    const url_re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
-    const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
-    const url = e.target.value.match(youtube_re);
     const site = e.target.value.match(url_re);
+    const youtube = e.target.value.match(youtube_re);
+    const no_lb = e.originalEvent.inputType !== 'insertLineBreak';
     
-    if (url !== null && url[1].length === 11) {
-      let videoId = url[1];
+    if (youtube !== null && youtube[1].length === 11 && no_lb) {
+      let videoId = youtube[1];
       
-      if (embedded_resource !== videoId) {
+      if (embedded_resource !== youtube[0]) {
         var apiKey = 'AIzaSyDi-EFpC2ntx9PnM_-oiJHk5zCY53KdIf0'; // TODO: add youtube API key to query titles
 
         let getVideoData = fetchData('https://www.googleapis.com/youtube/v3/videos?key=' + apiKey + '&fields=items(snippet(title))&part=snippet&id=' + videoId);
@@ -41,8 +44,7 @@ $(document).ready(function() {
             $('#thumbnail-title').text(response.items[0].snippet.title);
             $('#thumbnail-provider').text('Youtube');
             $('#thumbnail-img').attr('src', 'https://img.youtube.com/vi/' + videoId + '/default.jpg');
-
-            embedded_resource = videoId;
+            embedded_resource = youtube[0];
             $('#thumbnail').show();
           } else {
             $('#thumbnail').hide();
@@ -51,13 +53,12 @@ $(document).ready(function() {
           }
         });
       }
-    } else if (site && site.length > 1) {
+    } else if (site && site.length > 1 && no_lb) {
       let url = site[0];
       
       let getMetadata = fetchData('service/metadata/?url=' + url);
 
       $.when(getMetadata).then(function(response) {
-        console.log(response)
         if (response) {
           $('#thumbnail-title').text(response.title);
           $('#thumbnail-provider').text(response.link);
@@ -73,10 +74,11 @@ $(document).ready(function() {
         }
       });
     } else {
-      $('#thumbnail').hide();
       $('#thumbnail-desc').text('');
-
-      embedded_resource = '';
+      if (no_lb) {
+        embedded_resource = '';
+        $('#thumbnail').hide();
+      }
     }
 
     if (lastWord.startsWith('@')) {
@@ -180,23 +182,24 @@ $(document).ready(function() {
     );
 
     if (embedded_resource) {
-      let title = $('#thumbnail-title').text();
-      let link = $('#thumbnail-provider').text();
-      let description = $('#thumbnail-desc').text();
-      let image = $('#thumbnail-img').attr('src');
+      const title = $('#thumbnail-title').text();
+      const link = $('#thumbnail-provider').text();
+      const description = $('#thumbnail-desc').text();
+      const image = $('#thumbnail-img').attr('src');
+      const youtube = embedded_resource.match(youtube_re);
       
-      if (embedded_resource.length == 11) {
+      if (youtube !== null && youtube[1].length === 11) {
         data.append('resource', 'video');
         data.append('resourceProvider', 'youtube');
-        data.append('resourceId', embedded_resource);
+        data.append('resourceId', youtube[1]);
       } else {
         data.append('resource', 'content');
         data.append('resourceProvider', link);
         data.append('resourceId', embedded_resource);
-        data.append('title', title);
-        data.append('description', description);
-        data.append('image', image);
       }
+      data.append('title', title);
+      data.append('description', description);
+      data.append('image', image);
     }
 
     fetch('/api/v0.1/activity', {
@@ -206,6 +209,12 @@ $(document).ready(function() {
       .then(response => {
         if (response.status === 200) {
           $('#thumbnail').hide();
+          $('#thumbnail-title').text('');
+          $('#thumbnail-provider').text('');
+          $('#thumbnail-desc').text('');
+          $('#thumbnail-img').attr('');
+          embedded_resource = '';
+
           _alert(
             { message: gettext('Status has been saved.') },
             'success',
