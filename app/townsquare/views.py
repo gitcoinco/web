@@ -192,6 +192,7 @@ def town_square(request):
         'tab': tab,
         'tabs': tabs,
         'now': timezone.now(),
+        'is_townsquare': True,
         'trending_only': bool(trending_only),
         'search': search,
         'tags': [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ],
