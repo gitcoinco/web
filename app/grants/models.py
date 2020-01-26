@@ -378,13 +378,6 @@ class Grant(SuperModel):
 
 class GrantCategory(SuperModel):
     @staticmethod
-    def category_choices():
-        all_grant_categories = GrantCategory.all_categories()
-        all_grant_categories = ['not_set'] + all_grant_categories
-        return [ (category, category) for category in all_grant_categories ]
-
-
-    @staticmethod
     def all_categories():
         all_tech_categories = GrantCategory.tech_categories()
         filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
@@ -415,7 +408,6 @@ class GrantCategory(SuperModel):
 
     category = models.CharField(
         max_length=50,
-        default='not_set',
         blank=False,
         null=False,
         help_text=_('Grant Category'),
