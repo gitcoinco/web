@@ -155,12 +155,13 @@ $(document).ready(function() {
     };
     var url = '/api/v0.1/activity/' + $(this).data('pk');
 
-    $(this).parents('.row.box').find('.loading').removeClass('hidden');
+    var parent = $(this).parents('.row.box');
+    parent.find('.loading').removeClass('hidden');
     $.post(url, params, function(response) {
       // no message to be sent
-      $(this).parents('.row.box').find('.loading').addClass('hidden');
+      parent.find('.loading').addClass('hidden');
     }).fail(function() {
-      $(this).parents('.row.box').find('.error').removeClass('hidden');
+      parent.find('.error').removeClass('hidden');
     });
 
 
