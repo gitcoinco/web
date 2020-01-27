@@ -846,6 +846,8 @@ def reject_faucet_request(fr):
 
 
 def new_bounty_daily(bounties, old_bounties, to_emails=None):
+    if not bounties:
+        return
     max_bounties = 10
     if len(bounties) > max_bounties:
         bounties = bounties[0:max_bounties]
@@ -860,11 +862,11 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
 
         has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
         if has_offer:
-            offers = f"💰 1 New Action && "
+            offers = f"💰 1 New Action"
 
         new_bounties = ""
         if bounties.count():
-            new_bounties = f"⚡️ {len(bounties)} New Work{worth} matching your profile"
+            new_bounties = f"⚡️ {worth} In New Bounties Available"
         elif old_bounties.count():
             new_bounties = f"😁 {len(old_bounties)} Bounties Available"
 
