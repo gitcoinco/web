@@ -57,13 +57,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div class="row">
         <div class="col-12 col-md-8">
           {% include 'profiles/status_box.html' %}
-          <div class="float-right right mt-3">
+          <div class="float-right right mt-4">
             <input type="search" class="form__input" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
+            <BR>
+            <input type="checkbox" name="trending" id="trending" value="0" {% if trending_only %}checked=checked{%endif%} ><label for="trending">Trending Only</label>
           </div>
           <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
             {% for this_tab in tabs %}
               <li class="nav-item">
-                <a class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="/townsquare?tab={{this_tab.slug}}">
+                <a data-toggle="tooltip" title="{{this_tab.helper_text}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
                   {{this_tab.title}}
                 </a>
               </li>
@@ -71,6 +73,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </ul>
 
           <div id="activities" class="activity_stream container">
+            <span id=activity_subheader>{{card_desc}}</span>
             {% include 'shared/activity_container.html' %}
           </div>
         </div>
@@ -79,32 +82,36 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <a href="/action/new" class="btn btn-gc-blue" >CREATE ACTION <i class="fas fa-upload"></i></a>
           </div>
           {% for type, item in offers_by_category.items %}
-            <hr>
-            <h4 class="pt-3">{{type|title}} Action</h4>
-            {% if item.offer %}
-            <div class="{{type}} offers">
-              <li class="offer">
-                <a href="{{item.offer.view_url}}">
-                <div id="circle">
-                  <div id="gift">
-                    <div id="ribbon"></div>
-                    <div id="giftbox"></div>
+            <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%}">
+              <hr>
+              <h4 class="pt-3">{{type|title}} Action</h4>
+              {% if item.offer %}
+              <div class="{{type}} offers">
+                <li class="offer">
+                  <a href="{{item.offer.view_url}}">
+                  <div id="circle">
+                    <div id="gift">
+                      <div id="ribbon"></div>
+                      <div id="giftbox"></div>
+                    </div>
                   </div>
+                  <span class="speech_label"><i class="fas fa-clock"></i> - Expires <div class="{{type}} timer" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>
+                  </div>
+                </a>
+              </li>
+              </div>
+              {% else %}
+              <div class="offer_coming {{type}}">
+                <i class="fas fa-clock"></i>
+                Available <div class="{{type}} timer" data-time="{{item.time}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></div>
+                {% if type == 'daily' %}
+                  <br>
+                  <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} > 
+                  <label for="receive_daily_offers_in_inbox"> <i class="fas fa-envelope"></i> Email when available</label>
+                {% endif %}
                 </div>
-                <span class="speech_label"><i class="fas fa-clock"></i> - Expires <div class="{{type}} timer" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}"></span>
-                </div>
-              </a>
-            </li>
-            </div>
-            {% else %}
-              <i class="fas fa-clock"></i>
-              Available <div class="{{type}} timer" data-time="{{item.time}}"></div>
-              {% if type == 'daily' %}
-                <br>
-                <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} > 
-                <label for="receive_daily_offers_in_inbox"> <i class="fas fa-envelope"></i> Email when available</label>
               {% endif %}
-            {% endif %}
+            </div>
           {% endfor %}
         </div>
       </div>

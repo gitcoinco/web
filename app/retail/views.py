@@ -17,6 +17,7 @@
 
 '''
 import logging
+import re
 import time
 from json import loads as json_parse
 from os import walk as walkdir
@@ -37,10 +38,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Bounty, Profile, get_my_earnings
+from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
-from marketing.mails import grant_update_email, new_funding_limit_increase_request, new_token_request, wall_post_email
+from marketing.mails import grant_update_email, mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
 from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
@@ -1099,12 +1100,18 @@ def activity(request):
     page_size = 7
     page = int(request.GET.get('page', 1))
     what = request.GET.get('what', 'everywhere')
+    trending_only = int(request.GET.get('trending_only', 0))
 
     # create diff filters
     print(1, round(time.time(), 1))
     activities = Activity.objects.filter(hidden=False).order_by('-created_on')
+    view_count_threshold = 10
+
     ## filtering
-    if ':' in what:
+    if 'hackathon:' in what:
+        pk = what.split(':')[1]
+        activities = activities.filter(bounty__event=pk)
+    elif ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
         if key == 'activity_id':
@@ -1114,15 +1121,20 @@ def activity(request):
         activities = activities.filter(**kwargs)
     if request.user.is_authenticated:
         relevant_profiles = []
+        relevant_grants = []
         if what == 'tribes':
-            relevant_profiles = get_my_earnings(request.user.profile.pk)
+            relevant_profiles = get_my_earnings_counter_profiles(request.user.profile.pk)
+        if what == 'grants':
+            relevant_grants = get_my_grants(request.user.profile)
         if 'keyword-' in what:
             keyword = what.split('-')[1]
             relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
         if 'search-' in what:
             keyword = what.split('-')[1]
+            view_count_threshold = 5
             activities = activities.filter(metadata__icontains=keyword)
         if 'activity:' in what:
+            view_count_threshold = 0
             pk = what.split(':')[1]
             activities = activities.filter(pk=pk)
             if page > 1:
@@ -1130,10 +1142,18 @@ def activity(request):
         # filters
         if len(relevant_profiles):
             activities = activities.filter(profile__in=relevant_profiles)
+        if len(relevant_grants):
+            activities = activities.filter(grant__in=relevant_grants)
+    if what == 'connect':
+        activities = activities.filter(activity_type='status_update')
 
     # after-pk filters
     if request.GET.get('after-pk'):
         activities = activities.filter(pk__gt=request.GET.get('after-pk'))
+    if trending_only:
+        if what == 'everywhere':
+            view_count_threshold = 40
+        activities = activities.filter(view_count__gt=view_count_threshold)
     print(2, round(time.time(), 1))
 
     # pagination
@@ -1159,7 +1179,7 @@ def activity(request):
         'what': what,
         'next_page': next_page,
         'page': page,
-        'target': f'/activity?what={what}&page={next_page}',
+        'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]
@@ -1173,10 +1193,11 @@ def create_status_update(request):
     response = {}
     if request.POST:
         profile = request.user.profile
+        title = request.POST.get('data')
         kwargs = {
             'activity_type': 'status_update',
             'metadata': {
-                'title': request.POST.get('data'),
+                'title': title,
                 'ask': request.POST.get('ask'),
             }
         }
@@ -1193,6 +1214,11 @@ def create_status_update(request):
             activity = Activity.objects.create(**kwargs)
             response['status'] = 200
             response['message'] = 'Status updated!'
+
+            username_pattern = re.compile(r'@(\S+)')
+            mentioned_usernames = re.findall(username_pattern, title)
+            to_emails = set(Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True))
+            mention_email(profile, to_emails)
 
             if kwargs['activity_type'] == 'wall_post':
                 if 'Email Grant Funders' in activity.metadata.get('ask'):
@@ -1620,7 +1646,8 @@ def handler400(request, exception=None):
 def error(request, code):
     context = {
         'active': 'error',
-        'code': code
+        'code': code,
+        'nav': 'home',
     }
     context['title'] = "Error {}".format(code)
     return_as_json = 'api' in request.path
