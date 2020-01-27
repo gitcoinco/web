@@ -855,7 +855,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         to_emails = []
     plural = "s" if len(bounties) != 1 else ""
     worth = round(sum([bounty.value_in_usdt for bounty in bounties if bounty.value_in_usdt]), 2)
-    worth = f" worth ${worth}" if worth else ""
+    worth = f"${worth}" if worth else ""
     offers = f""
     if to_emails:
         offers = ""
