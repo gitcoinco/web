@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from __future__ import unicode_literals
 
 from django.contrib import admin
+from django.utils.html import format_html
 
 from .models import ConversionRate, Token
 
@@ -29,7 +30,21 @@ class TokenAdmin(admin.ModelAdmin):
 
     ordering = ['-id']
     search_fields = ['symbol', 'address']
-    list_display = ['approved', 'symbol', 'address']
+    list_display = ['id', 'created_on' ,'approved', 'symbol', 'address_url']
+    readonly_fields = ['address_url']
+
+    def address_url(self, obj):
+        tx_url = 'https://etherscan.io/address/' + obj.address
+        return format_html("<a href='{}' target='_blank'>{}</a>", obj.address, obj.address)
+
+    def response_change(self, request, obj):
+        if "_approve_token" in request.POST:
+            from marketing.mails import new_token_request_approved
+            new_token_request_approved(obj)
+            obj.approved = True
+            obj.save()
+            self.message_user(request, f"Token approved + requester emailed")
+        return super().response_change(request, obj)
 
 
 # Register your models here.

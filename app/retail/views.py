@@ -1104,9 +1104,13 @@ def activity(request):
     # create diff filters
     print(1, round(time.time(), 1))
     activities = Activity.objects.filter(hidden=False).order_by('-created_on')
+    view_count_threshold = 10
 
     ## filtering
-    if ':' in what:
+    if 'hackathon:' in what:
+        pk = what.split(':')[1]
+        activities = activities.filter(bounty__event=pk)
+    elif ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
         if key == 'activity_id':
@@ -1126,10 +1130,12 @@ def activity(request):
             relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
         if 'search-' in what:
             keyword = what.split('-')[1]
+            view_count_threshold = 5
             activities = activities.filter(metadata__icontains=keyword)
         if 'activity:' in what:
+            view_count_threshold = 0
             pk = what.split(':')[1]
-            activities = activities.filter(pk=pk)
+            activities = Activity.objects.filter(pk=pk)
             if page > 1:
                 activities = Activity.objects.none()
         # filters
@@ -1137,12 +1143,15 @@ def activity(request):
             activities = activities.filter(profile__in=relevant_profiles)
         if len(relevant_grants):
             activities = activities.filter(grant__in=relevant_grants)
+    if what == 'connect':
+        activities = activities.filter(activity_type__in=['status_update', 'wall_post'])
+    if what == 'kudos':
+        activities = activities.filter(activity_type__in=['new_kudos', 'receive_kudos'])
 
     # after-pk filters
     if request.GET.get('after-pk'):
         activities = activities.filter(pk__gt=request.GET.get('after-pk'))
     if trending_only:
-        view_count_threshold = 10
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
@@ -1152,7 +1161,7 @@ def activity(request):
     next_page = page + 1
     start_index = (page-1) * page_size
     end_index = page * page_size
-    print(activities.query)
+    
     #p = Paginator(activities, page_size)
     #page = p.get_page(page)
     page = activities[start_index:end_index]
@@ -1632,7 +1641,8 @@ def handler400(request, exception=None):
 def error(request, code):
     context = {
         'active': 'error',
-        'code': code
+        'code': code,
+        'nav': 'home',
     }
     context['title'] = "Error {}".format(code)
     return_as_json = 'api' in request.path

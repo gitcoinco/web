@@ -33,3 +33,19 @@ def increment_view_counts(self, pks, retry=False):
         activities = Activity.objects.filter(pk__in=pks)
         for obj in activities:
             invalidate_obj(obj)
+
+@app.shared_task(bind=True, max_retries=3)
+def increment_offer_view_counts(self, pks, retry=False):
+    """
+    :param self:
+    :param pks:
+    :return:
+    """
+    with redis.lock("tasks:increment_offer_view_counts", timeout=LOCK_TIMEOUT):
+
+        # update DB directly
+        with connection.cursor() as cursor:
+            id_as_str = ",".join(str(id) for id in pks)
+            query = f"UPDATE townsquare_offer SET view_count = view_count + 1 WHERE id in ({id_as_str});"
+            cursor.execute(query)
+            cursor.close()

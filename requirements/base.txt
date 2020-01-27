@@ -86,3 +86,4 @@ bleach
 python-magic
 django-oauth-toolkit
 mattermostdriver
+ddtrace

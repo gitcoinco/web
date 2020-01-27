@@ -67,8 +67,18 @@ $(document).ready(function() {
   var updateTimers = function() {
     $('.timer').each(function() {
       var time = $(this).data('time');
+      var base_time = $(this).data('base_time');
+      var counter = $(this).data('counter');
 
-      $(this).html(time_difference_broken_down(new Date(time) - new Date()));
+      if (!counter) {
+        counter = 0;
+      }
+      counter += 1;
+      $(this).data('counter', counter);
+      var start_date = new Date(new Date(time).getTime() - (1000 * counter));
+      var countdown = start_date - new Date(base_time);
+
+      $(this).html(time_difference_broken_down(countdown));
     });
   };
 

@@ -3715,6 +3715,9 @@ def hackathon_projects(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
+    if order_by not in {'created_on', '-created_on'}:
+        order_by = '-created_on'
+
     projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles').order_by(order_by).select_related('bounty')
 
     sponsors_list = []
