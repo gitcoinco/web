@@ -519,7 +519,11 @@
   {% include 'shared/current_profile.html' %}
 
   <script>
+    {% if is_bounties_network %}
     const is_bounties_network = {{ is_bounties_network|lower }};
+    {% else %}
+    const is_bounties_network = true;
+    {% endif %}
     document.issueURL = '{{ issueURL }}';
 
     // ETC-TODO: remove network + std bounties for ETC
