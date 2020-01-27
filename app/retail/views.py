@@ -1135,7 +1135,7 @@ def activity(request):
         if 'activity:' in what:
             view_count_threshold = 0
             pk = what.split(':')[1]
-            activities = activities.filter(pk=pk)
+            activities = Activity.objects.filter(pk=pk)
             if page > 1:
                 activities = Activity.objects.none()
         # filters

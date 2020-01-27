@@ -600,15 +600,34 @@ def new_token_request(obj):
         subject = _("New Token Request")
         body_str = _("A new token request was completed. You may fund the token request here")
         body = f"{body_str}: https://gitcoin.co/{obj.admin_url} \n\n {obj.email}"
-        if not should_suppress_notification_email(to_email, 'faucet'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                body,
-                from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
-            )
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            body,
+            from_name=_("No Reply from Gitcoin.co"),
+            categories=['admin', func_name()],
+        )
+    finally:
+        translation.activate(cur_language)
+
+
+def new_token_request_approved(obj):
+    to_email = obj.metadata.get('email')
+    from_email = 'founders@gitcoin.co'
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = f"Token {obj.symbol} approved on Gitcoin"
+        body = f"Token {obj.symbol} approved on Gitcoin -- You will now see it available in the (1) settings area (2) bounty posting form (3) grant funding form (4) tipping form and (5) anywhere else tokens are listed on Gitcoin. "
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            body,
+            from_name=_("No Reply from Gitcoin.co"),
+            categories=['admin', func_name()],
+        )
     finally:
         translation.activate(cur_language)
 
