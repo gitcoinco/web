@@ -1161,7 +1161,7 @@ def activity(request):
     next_page = page + 1
     start_index = (page-1) * page_size
     end_index = page * page_size
-    print(activities.query)
+    
     #p = Paginator(activities, page_size)
     #page = p.get_page(page)
     page = activities[start_index:end_index]
