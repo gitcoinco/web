@@ -1893,8 +1893,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     if issue_url:
         try:
             bounties = Bounty.objects.current().filter(github_url=issue_url)
-            stdbounties_id = clean_str(stdbounties_id)
             if stdbounties_id and stdbounties_id.isdigit():
+                stdbounties_id = clean_str(stdbounties_id)
                 bounties = bounties.filter(standard_bounties_id=stdbounties_id)
             if bounties:
                 bounty = bounties.order_by('-pk').first()

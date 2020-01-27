@@ -482,7 +482,7 @@ const isAvailableIfReserved = function(bounty) {
 };
 
 const isBountyOwner = result => {
-  if (document.is_bounties_network) {
+  if (is_bounties_network) {
     return isFundedByCurrentAddress(result) && isBountyOwnerPerLogin(result);
   }
   return isBountyOwnerPerLogin(result);
@@ -1065,7 +1065,6 @@ var do_actions = function(result) {
   const is_still_on_happy_path = result['status'] == 'reserved' || result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
   const needs_review = result['needs_review'];
   const is_open = result['is_open'];
-  const is_bounties_network = document.is_bounties_network;
 
   let bounty_path = result['network'] + '/' + result['standard_bounties_id'];
 
