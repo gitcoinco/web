@@ -341,7 +341,7 @@ class Command(BaseCommand):
                     if recipient_profiles.exists():
                         recipient_profile = recipient_profiles.first()
                         # create 1099 only if total funded in usd is greater than 600$
-                        if usd_value > 1:
+                        if usd_value > 600:
                             recipient_path = os.path.join(misc_path, recipient_profile.username)
                             if not os.path.isdir(recipient_path):
                                 os.makedirs(recipient_path)
