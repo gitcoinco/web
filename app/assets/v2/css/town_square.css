@@ -488,9 +488,9 @@ body.green {
 
 .offer_view .announce{
   background-color: #0c0861;
-  opacity: 0.7;
+  opacity: 0.8;
   padding: 20px;
-  filter: alpha(opacity=70); /* For IE8 and earlier */
+  filter: alpha(opacity=80); /* For IE8 and earlier */
   color: white;
   border-radius: 20px 5px 20px 5px;
   border-bottom-color: #0c0861;
