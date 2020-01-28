@@ -324,7 +324,7 @@ def offer_view(request, offer_id, offer_slug):
         offer = offers.get(pk=offer_id)
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
-        if request.user.profile.offeractions.filter(what='click', offer=offer) and not is_debugging_offers:
+        if request.user.profile.offeractions.filter(what='go', offer=offer) and not is_debugging_offers:
             raise Exception('already visited this offer')
         if not is_debugging_offers:
             OfferAction.objects.create(profile=request.user.profile, offer=offer, what='click')
