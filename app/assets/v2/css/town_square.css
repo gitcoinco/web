@@ -500,6 +500,9 @@ body.green {
   border-bottom: 2px solid white !important;
   padding: 5px 10px;
 }
+.offer_view .announce:after{
+  border-bottom-color: #0c0861;
+}
 
 body.back1.offer_view .announce {
   background-color: #102945;

@@ -351,9 +351,12 @@ def offer_new(request):
                 title=package.get('title'),
                 desc=package.get('description'),
                 url=package.get('action_url'),
+                from_name=package.get('from_name'),
+                from_link=package.get('from_link'),
                 persona=Token.objects.get(pk=package.get('persona')),
                 valid_from=timezone.now(),
                 valid_to=timezone.now(),
+                style=package.get('background'),
                 public=False,
                 created_by=request.user.profile,
                 )
@@ -367,6 +370,7 @@ def offer_new(request):
         'title': "New Action",
         'card_desc': "Create an Action for Devs on Gitcoin - Its FREE!",
         'package': package,
+        'backgrounds': [ele[0] for ele in Offer.STYLES],
         'nav': 'home',
     }
     return TemplateResponse(request, 'townsquare/new.html', context)
