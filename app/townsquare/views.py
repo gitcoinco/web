@@ -94,7 +94,6 @@ def town_square(request):
 
     kudos_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['new_kudos', 'receive_kudos'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if kudos_last_24_hours:
-        default_tab = 'kudos'
         connect = {
             'title': f"Kudos ({kudos_last_24_hours})",
             'slug': f'kudos',
