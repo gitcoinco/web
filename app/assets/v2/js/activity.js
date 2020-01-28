@@ -156,6 +156,7 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $(this).data('pk');
 
     var parent = $(this).parents('.row.box');
+
     parent.find('.loading').removeClass('hidden');
     $.post(url, params, function(response) {
       // no message to be sent
