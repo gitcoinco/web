@@ -318,10 +318,13 @@ def offer_decline(request, offer_id, offer_slug):
 def offer_view(request, offer_id, offer_slug):
 
     try:
-        offer = Offer.objects.current().get(pk=offer_id)
+        is_debugging_offers = request.GET.get('preview', 0) and request.user.is_staff
+        offers = Offer.objects.all()
+        if not is_debugging_offers:
+            offers = offers.current()
+        offer = offers.get(pk=offer_id)
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
-        is_debugging_offers = request.GET.get('preview', 0) and request.user.is_staff
         if request.user.profile.offeractions.filter(what='click', offer=offer) and not is_debugging_offers:
             raise Exception('already visited this offer')
         if not is_debugging_offers:
@@ -332,6 +335,7 @@ def offer_view(request, offer_id, offer_slug):
             'card_desc': offer.desc,
             'nav': 'home',
             'offer': offer,
+            'active': f'offer_view gitcoin-background {offer.style}',
         }
         return TemplateResponse(request, 'townsquare/offer.html', context)
     except:

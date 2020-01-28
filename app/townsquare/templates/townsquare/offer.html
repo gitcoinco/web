@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endblock %}
 
 {% block body %}
+<link rel="stylesheet" href="{% static "v2/css/town_square.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/actions.css" %}" />
 
 <div class="container-fluid py-1 announce-bot announce-bot4 indent_on_mobile">
@@ -29,7 +30,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
 </div>
 
-<div class="container-fluid py-1 pt-3 announce {{offer.style}} indent_on_mobile">
+<div class="container-fluid py-1 pt-3 announce indent_on_mobile">
   <div class="container">
     
     <h4 class="pt-0">{{offer.title}}</h4>
