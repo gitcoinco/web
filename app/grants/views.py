@@ -73,6 +73,8 @@ def get_keywords():
 
 
 def lazy_round_number(n):
+    if n>1000000:
+        return f"{round(n/1000000, 1)}m"
     if n>1000:
         return f"{round(n/1000, 1)}k"
     return n

@@ -93,6 +93,8 @@ class Offer(SuperModel):
         ('blue', 'blue'),
     ] + [(f'back{i}', f'back{i}') for i in range(0, num_backgrounds + 1)]
 
+    from_name = models.CharField(max_length=50, blank=True)
+    from_link = models.URLField(blank=True)
     title = models.TextField(default='', blank=True)
     desc = models.TextField(default='', blank=True)
     url = models.URLField(db_index=True)

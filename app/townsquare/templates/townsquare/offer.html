@@ -28,6 +28,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <div class="container">
     <img src="{{offer.persona.preview_img_url}}" />
   </div>
+  {% if offer.from_name %}
+    <div class="name-tag">
+      {% if offer.from_link %}
+        <a href="{{offer.from_link}}">
+      {% endif %}
+          {{offer.from_name}}
+      {% if offer.from_link %}
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
 </div>
 
 <div class="container-fluid py-1 pt-3 announce indent_on_mobile">

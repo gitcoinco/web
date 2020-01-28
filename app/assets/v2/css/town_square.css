@@ -52,6 +52,10 @@
   color: white;
   text-decoration: none;
 }
+.name-tag a{
+  color: white;
+  text-decoration: underline;
+}
 .offer a:hover{
   text-decoration: none;
   font-weight: bold;
@@ -600,6 +604,20 @@ body.green.offer_view .announce {
 }
 .offer_view.green .announce:after{
   border-bottom-color: #9EaB97;
+}
+
+.name-tag {
+  font-weight: 900;
+  background-color: #666;
+  color: white;
+  display: block;
+  font-size: 32px;
+  width: 20%;
+  margin: 0px auto;
+  margin-top: -20px;
+  margin-bottom: 40px;
+  padding: 10px 15px;
+  transform: rotate(-12deg);
 }
 
 .announce a.decline {
