@@ -1731,7 +1731,7 @@ def psave_tip(sender, instance, **kwargs):
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
 def postsave_tip(sender, instance, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
-    if is_valid:
+    if instance.pk and is_valid:
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
             source_id=instance.pk,
@@ -1803,14 +1803,14 @@ def psave_bounty(sender, instance, **kwargs):
             }
             )
         # delete any old bounties
-        if instance.prev_bounty:
+        if instance.prev_bounty and instance.prev_bounty.pk:
             for sr in SearchResult.objects.filter(source_type=ct, source_id=instance.prev_bounty.pk):
                 sr.delete()
 
 
 @receiver(post_save, sender=BountyFulfillment, dispatch_uid="psave_bounty_fulfill")
 def psave_bounty_fulfilll(sender, instance, **kwargs):
-    if instance.accepted:
+    if instance.pk and instance.accepted:
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='bountyfulfillment'),
             source_id=instance.pk,
@@ -3883,18 +3883,20 @@ def psave_profile(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
-    SearchResult.objects.update_or_create(
-        source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
-        source_id=instance.pk,
-        defaults={
-            "created_on":instance.created_on,
-            "title":instance.handle,
-            "description":instance.desc,
-            "url":instance.url,
-            "visible_to":None,
-            'img_url': instance.avatar_url,
-        }
-        )
+
+    if instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.handle,
+                "description":instance.desc,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.avatar_url,
+            }
+            )
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
