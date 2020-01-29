@@ -214,8 +214,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </div>
                 <div class="font-caption text-left">
                   {% if item.offer %}
-                    <i class="fas fa-hourglass-end"></i>
-                    <span class="grey">Expires <span class="{{type}} timer m-0" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span></span>                 
+                    <a href="{{item.offer.view_url}}">
+                      <i class="fas fa-hourglass-end"></i>
+                      <span class="grey">Expires <span class="{{type}} timer m-0" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span></span>                 
+                    </a>
                   {% else %}
                     <i class="fas fa-hourglass-end"></i>
                     <span class="grey">Available <span class="{{type}} timer m-0" data-time="{{item.time}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span></span>
