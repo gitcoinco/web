@@ -29,8 +29,10 @@
   font-size: 14px;
   margin-top: 5px;
 }
-#search{
+#search_container{
   width: 20px;
+  margin-left: 5px;
+  margin-right: -5px;
 }
 
 .navbar-nav .nav-link.search__icon {
