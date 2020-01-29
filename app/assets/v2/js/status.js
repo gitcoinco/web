@@ -7,6 +7,13 @@ $(document).ready(function() {
   
   let button = document.querySelector('#btn_post');
   
+  function selectGif(e) {
+    embedded_resource = e.target.src;
+    console.log(embedded_resource);
+    $('#preview-img').attr('src', embedded_resource);
+    $('#preview').show();
+  }
+  
   
   $('#search-gif').on('input', function(e) {
     e.preventDefault()
@@ -15,24 +22,22 @@ $(document).ready(function() {
     
     
     const result = fetchData(endpoint);
+    
     $.when(result).then(function(response) {
-      $('.gif-grid').empty();
+      $('.pick-gif').remove();
+      window.stop()
       
       for (let i = 0; i < response.data.length; i++) {
         let item = response.data[i];
         
         console.log(item);
-        $('.gif-grid').append('<img class="pick-gif" src="' + item.images.downsized.url + '" alt="' + item.slug + '">');
-        $('.gif-grid').on('click', function (e) {
-          embedded_resource = e.target.src;
-          console.log(embedded_resource);
-          $('#thumbnail-img').attr('src', embedded_resource);
-          $('#thumbnail').show();
-        });
+        $('.gif-grid').append('<img class="lazy pick-gif" src="https://jmperezperez.com/amp-dist/sample/sample-placeholder.png" data-src="' + item.images.downsized.url + '" alt="' + item.slug + '">');
       }
+      $('.pick-gif').on('click', selectGif);
+      yall();
     });
     // $('.pick-gif')
-  })
+  });
 
   if (button) {
     button.addEventListener(
