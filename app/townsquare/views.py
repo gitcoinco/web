@@ -144,7 +144,7 @@ def town_square(request):
                 offer = None
         offers_by_category[key] = {
             'offer': offer,
-            'time': next_time_available.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'time': next_time_available,
         }
     increment_offer_view_counts.delay(offer_pks)
 

@@ -103,7 +103,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {% else %}
               <div class="offer_coming {{type}}">
                 <i class="fas fa-clock"></i>
-                Available <div class="{{type}} timer" data-time="{{item.time}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></div>
+                Available <div class="{{type}} timer" data-time="{{item.time|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></div>
                 {% if type == 'daily' %}
                   <br>
                   <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} > 
