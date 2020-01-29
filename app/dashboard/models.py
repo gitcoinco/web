@@ -1731,7 +1731,7 @@ def psave_tip(sender, instance, **kwargs):
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
 def postsave_tip(sender, instance, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
-    if is_valid:
+    if instance.pk and is_valid:
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
             source_id=instance.pk,
@@ -1803,14 +1803,14 @@ def psave_bounty(sender, instance, **kwargs):
             }
             )
         # delete any old bounties
-        if instance.prev_bounty:
+        if instance.prev_bounty and instance.prev_bounty.pk:
             for sr in SearchResult.objects.filter(source_type=ct, source_id=instance.prev_bounty.pk):
                 sr.delete()
 
 
 @receiver(post_save, sender=BountyFulfillment, dispatch_uid="psave_bounty_fulfill")
 def psave_bounty_fulfilll(sender, instance, **kwargs):
-    if instance.accepted:
+    if instance.pk and instance.accepted:
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='bountyfulfillment'),
             source_id=instance.pk,
