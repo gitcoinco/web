@@ -837,3 +837,15 @@ def day_email_campaign(request, day):
         raise Http404
     response_html, _, _, = render_nth_day_email_campaign('foo@bar.com', day, 'staff member')
     return HttpResponse(response_html)
+
+@staff_member_required
+def new_bounty_daily_preview(request):
+    profile = request.user.profile
+    from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
+    from retail.emails import render_new_bounty
+    keywords = profile.keywords
+    hours_back = 2000
+    new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
+    response_html, _ = render_new_bounty('foo@bar.com', new_bounties, all_bounties)
+    return HttpResponse(response_html)
+
