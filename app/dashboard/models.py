@@ -4255,7 +4255,7 @@ class HackathonEvent(SuperModel):
 
     @property
     def url(self):
-        return settings.SITE_URL + self.slug
+        return settings.BASE_URL + self.slug
 
     @property
     def stats(self):
