@@ -1,5 +1,6 @@
 const url_re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
+const giphy_re = /(?:https?:\/\/)?(?:media0\.)?(?:giphy\.com\/media\/)/;
 
 $(document).ready(function() {
   var embedded_resource = '';
@@ -8,35 +9,37 @@ $(document).ready(function() {
   let button = document.querySelector('#btn_post');
   
   function selectGif(e) {
-    embedded_resource = e.target.src;
-    console.log(embedded_resource);
+    embedded_resource = $(e.target).data('src');
     $('#preview-img').attr('src', embedded_resource);
     $('#preview').show();
+    $('#thumbnail').hide();
   }
   
   
-  $('#search-gif').on('input', function(e) {
-    e.preventDefault()
-    const query = e.target.value;
-    const endpoint = 'https://api.giphy.com/v1/gifs/search?limit=8&api_key=' + GIPHY_API_KEY + '&offset=0&rating=G&lang=en&q=' + query;
-    
-    
+  function injectGiphy(query) {
+    const endpoint = 'https://api.giphy.com/v1/gifs/search?limit=13&api_key=' + GIPHY_API_KEY + '&offset=0&rating=G&lang=en&q=' + query;
     const result = fetchData(endpoint);
-    
-    $.when(result).then(function(response) {
+
+    $.when(result).then(function (response) {
       $('.pick-gif').remove();
-      window.stop()
-      
+
       for (let i = 0; i < response.data.length; i++) {
         let item = response.data[i];
-        
-        console.log(item);
-        $('.gif-grid').append('<img class="lazy pick-gif" src="https://jmperezperez.com/amp-dist/sample/sample-placeholder.png" data-src="' + item.images.downsized.url + '" alt="' + item.slug + '">');
+        console.log(item)
+        let downsize = item.images.downsized.url;
+        let preview = item.images.fixed_width_downsampled.url;
+
+        $('.gif-grid').append('<img class="lazy pick-gif" src="' + preview + '" data-src="' + downsize + '" alt="' + item.slug + '">');
       }
       $('.pick-gif').on('click', selectGif);
-      yall();
     });
-    // $('.pick-gif')
+  }
+  
+  $('#search-gif').on('input', function(e) {
+    e.preventDefault();
+    const query = e.target.value;
+    
+    injectGiphy(query);
   });
 
   if (button) {
@@ -65,6 +68,10 @@ $(document).ready(function() {
     const youtube = e.target.value.match(youtube_re);
     const no_lb = e.originalEvent.inputType !== 'insertLineBreak';
     
+    if (typeof embedded_resource === 'string' && embedded_resource.match(giphy_re)) {
+      return;
+    }
+    
     if (youtube !== null && youtube[1].length === 11 && no_lb) {
       let videoId = youtube[1];
       
@@ -80,6 +87,7 @@ $(document).ready(function() {
             $('#thumbnail-img').attr('src', 'https://img.youtube.com/vi/' + videoId + '/default.jpg');
             embedded_resource = youtube[0];
             $('#thumbnail').show();
+            $('#preview').hide();
           } else {
             $('#thumbnail').hide();
             $('#thumbnail-desc').text('');
@@ -101,6 +109,7 @@ $(document).ready(function() {
 
           embedded_resource = url;
           $('#thumbnail').show();
+          $('#preview').hide();
         } else {
           $('#thumbnail').hide();
           $('#thumbnail-desc').text('');
@@ -222,18 +231,26 @@ $(document).ready(function() {
       const image = $('#thumbnail-img').attr('src');
       const youtube = embedded_resource.match(youtube_re);
       
-      if (youtube !== null && youtube[1].length === 11) {
+      if (embedded_resource.match(giphy_re)) {
+        data.append('resource', 'gif');
+        data.append('resourceProvider', 'giphy');
+        data.append('resourceId', embedded_resource);
+      } else if (youtube !== null && youtube[1].length === 11) {
         data.append('resource', 'video');
         data.append('resourceProvider', 'youtube');
         data.append('resourceId', youtube[1]);
+        data.append('title', title);
+        data.append('description', description);
+        data.append('image', image);
       } else {
         data.append('resource', 'content');
         data.append('resourceProvider', link);
         data.append('resourceId', embedded_resource);
+        data.append('title', title);
+        data.append('description', description);
+        data.append('image', image);
       }
-      data.append('title', title);
-      data.append('description', description);
-      data.append('image', image);
+      
     }
 
     fetch('/api/v0.1/activity', {
@@ -246,7 +263,9 @@ $(document).ready(function() {
           $('#thumbnail-title').text('');
           $('#thumbnail-provider').text('');
           $('#thumbnail-desc').text('');
-          $('#thumbnail-img').attr('');
+          $('#thumbnail-img').attr('src', '');
+          $('#preview').hide();
+          $('#preview-img').attr('src', '');
           embedded_resource = '';
 
           _alert(
@@ -273,4 +292,6 @@ $(document).ready(function() {
       })
       .catch(err => console.log('Error ', err));
   }
+  
+  injectGiphy('latest');
 });

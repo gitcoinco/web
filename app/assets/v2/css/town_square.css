@@ -271,7 +271,7 @@
 
 .gif-grid {
   display: flex;
-  width: 380px;
+  width: 300px;
   height: 450px;
   flex-wrap: wrap;
   overflow: scroll;

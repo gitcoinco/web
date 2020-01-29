@@ -226,7 +226,13 @@
       <i class="far {{ row.icon }} last-icon"></i>
     {% endif %}
   </div>
-  {% if row.metadata.resource.provider == 'youtube' %}
+  {% if row.metadata.resource.type == 'gif' %}
+  <div class="mt-1 mb-2" style="top: initial; left: initial;">
+    <div class="row ml-2">
+        <img class="lazy" style="max-width: 80%; max-height: 350px;" src="{{ row.metadata.resource.id }}">
+    </div>
+  </div>
+  {% elif row.metadata.resource.provider == 'youtube' %}
   <div class="ml-md-5 col-md-10 col-sm-12">
     <iframe class="col-sm-12" height="315" src="https://www.youtube.com/embed/{{ row.metadata.resource.id }}"
             frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
