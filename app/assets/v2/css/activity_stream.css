@@ -22,13 +22,19 @@
   font-size: smaller;  
 }
 
+.activity_feed_kudos_image{
+  max-width: 70px;
+}
+
 .action i,
 a .sup {
   color: black;
 }
+
 .action:hover {
   background-color: #fafafa;
 }
+
 .action.open {
   background-color: #eeeeee;
 }
@@ -130,6 +136,10 @@ a .sup {
 }
 
 @media (min-width: 768px) {
+  .activity_feed_kudos_image{
+    max-width: 110px;
+  }
+
   .activity .secondary {
     position: relative;
     left: -10px;
@@ -141,6 +151,7 @@ a .sup {
     text-align: center;
     margin: 0px auto;
   }
+
   .activity-info {
     text-align: center;
   }

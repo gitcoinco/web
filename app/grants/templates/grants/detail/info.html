@@ -174,7 +174,7 @@
 
       <div class="row progress-container  {% if clr_active %} mb-2 {% endif %} {% if not is_team_member %} mt-4 {% endif %}">
         <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6 mb-xl-0 ">
-          {% if clr_active %}
+          {% if clr_active or show_clr_card %}
             {% include 'grants/card/clr_match.html' %}
           {% else %}
             <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">MONTHLY RECURRING</p>
@@ -196,7 +196,7 @@
 
       </div>
 
-      {% if clr_active %}
+      {% if clr_active or show_clr_card %}
         {% include 'grants/card/clr_estimate.html' %}
       {% endif %}
     </div>

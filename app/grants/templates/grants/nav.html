@@ -44,8 +44,8 @@
 
   <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
     <nav class="navbar-nav ml-auto mr-3">
-      <a class="nav-link{% if active == 'grants_landing' %} selected {% endif %} interior" href="{% url 'grants:grants' %}">{% trans "Explorer" %}</a>
-      <a class="nav-link{% if active == 'grants_quickstart' %} selected {% endif %} interior" href="{% url 'grants:quickstart' %}">{% trans "What is Grants?" %}</a>
+      <a class="nav-link{% if active == 'grants_landing' %} selected {% endif %} interior" href="{% url 'grants:grants' %}">{% trans "Marketplace" %}</a>
+      <a class="nav-link{% if active == 'grants_quickstart' %} selected {% endif %} interior" href="{% url 'grants:quickstart' %}">{% trans "About" %}</a>
       <a class="nav-link{% if active == 'grants_leaderboard' %} selected {% endif %} interior" href="{% url 'grants:leaderboard' %}">{% trans "Leaderboard" %}</a>
       <a class="nav-link{% if active == 'new_grant' %} selected {% endif %} interior" href="{% url 'grants:new' %}"><i class="fab fa-ethereum mr-1" role="aria-hidden"></i> {% trans "Create Grant" %}</a>
 

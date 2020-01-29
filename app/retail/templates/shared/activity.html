@@ -40,17 +40,23 @@
       {% elif row.activity_type == 'new_kudos' %}
         {% trans "sent a" %}
         Kudos
-        {% if row.metadata.to_username %}
+
+        {% if row.metadata.to_username|cut:'@' %}
           {% trans "to" %}
           <a href="/profile/{{ row.metadata.to_username|cut:'@' }}">
             {{ row.metadata.to_username }}
           </a>
-        {% elif row.kudos %}
+        {% elif row.kudos and row.kudos.username|cut:'@' %}
           {% trans "to" %}
           <a href="/profile/{{ row.kudos.username|cut:'@' }}">
             {{ row.kudos.username }}
           </a>
         {% endif %}
+
+        {% if row.kudos and row.kudos.comments_public %}
+          w. comment "{{row.kudos.comments_public}}"
+        {% endif %}
+
       {% elif row.activity_type == 'receive_kudos' %}
         {% trans "received a" %}
         Kudos
@@ -65,6 +71,11 @@
             {{ row.kudos.from_username }}
           </a>
         {% endif %}
+
+        {% if row.kudos and row.kudos.comments_public %}
+          w. comment "{{row.kudos.comments_public}}"
+        {% endif %}
+
       {% elif row.activity_type == 'new_grant' %}
         {% trans "created a new grant" %}
         <a href="{{ row.metadata.grant_url }}" >
@@ -113,7 +124,7 @@
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'status_update' %}
-        <b>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</b>
+        : <b>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</b>
       {% elif row.activity_type == 'wall_post' %}
         &gt; 
       {% if row.grant %}
@@ -204,6 +215,9 @@
             <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}} class="flag_activity"><span class="action {% if row.flagged %}open{%endif%}"><i class="far fa-flag"></i></span></a> 
 
             <a class="action copy_activity" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}><i class="fas fa-link"></i></a> 
+
+            <i class="fas fa-circle-notch fa-spin loading blue hidden"></i>
+            <i class="fas fa-exclamation-triangle error red hidden"></i>
           {% endif %}
 
       </div>
@@ -216,7 +230,7 @@
       <a href=# data-pk={{row.pk}} class="delete_activity" style="color:black; font-size: 10px;"><i class="fas fa-trash"></i></a>
     {% elif row.kudos %}
       <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
-        <img src="{% static row.kudos_data.image %}" alt="" class="w-100" style="max-width:100px;">
+        <img class="activity_feed_kudos_image" src="{{row.kudos_data.preview_img_url }}" alt="">
       </a>
     {% elif row.activity_type == 'leaderboard_rank' %}
       <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100" style="max-width:100px;">

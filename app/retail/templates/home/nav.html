@@ -20,7 +20,6 @@
   <a class="navbar-brand pt-0 pb-0" href="/">
     <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
   </a>
-
   <div class="d-flex order-0 order-md-last">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +33,22 @@
 
   <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
     <nav class="navbar-nav mx-auto">
+      <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Home" %}</a>
+      <a class="nav-link {% if request.path|matches:"^\/((.*chat.*))$" %} selected {% endif %} interior" href="/chat/landing">{% trans "Chat" %}</a>
+
+      <div class="nav-item dropdown interior">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {% trans "Browse" %}
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" id="explore-tab" aria-labelledby="navbarDropdownHow">
+          <a class="dropdown-item{% if active == 'dashboard' %} selected{% endif %} interior" href="{% url "explorer" %}">{% trans "Bounties" %}</a>
+          <a class="dropdown-item{% if active == 'get_hackathons' %} selected{% endif %} interior" href="{% url "get_hackathons" %}">{% trans "Hackathons" %}</a>
+          <a class="dropdown-item{% if active == 'users_directory' %} selected{% endif %} interior" href="{% url "users_directory" %}">{% trans "Users" %}</a>
+          <a class="dropdown-item{% if active == 'leaderboard' %} selected{% endif %} interior" href="{% url "_leaderboard" %}">{% trans "Leaderboard" %}</a>
+          <a class="dropdown-item{% if active == 'activity' %} selected{% endif %} interior" href="{% url "activity" %}">{% trans "Activity Stream" %}</a>
+        </div>
+      </div>      
       <div class="nav-item dropdown interior">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

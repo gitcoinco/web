@@ -200,6 +200,8 @@ def tip_index_terms(tip):
 
 def grant_index_terms(gc):
     index_terms = []
+    if not gc.subscription:
+        return index_terms
     if not should_suppress_leaderboard(gc.subscription.contributor_profile.handle):
         index_terms.append(gc.subscription.contributor_profile.handle.lower())
     if not should_suppress_leaderboard(gc.subscription.grant.admin_profile.handle):
