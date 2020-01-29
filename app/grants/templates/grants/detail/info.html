@@ -137,14 +137,47 @@
 
       {% if user_non_errored_subscription %}
         <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
-          <button class="button button--primary button--warning button--full shadow-none font-weight-bold py-3">{% trans "Cancel Your Funding" %}</button>
+          <button class="button button--primary button--warning button--full shadow-none font-weight-bold py-3">{% trans "Cancel Your Subscription" %}</button>
         </a>
       {% else %}
-        <a href="{% url 'grants:fund' grant.id grant.slug %}">
-          <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3">
-            Fund this Grant
+
+      <div class="p-4" style="background-color: #fafafa; border-radius: 2px;">
+        <i style="width: 14px;" class="float-right fas fa-info-circle mr-2 text-center" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></i>
+        <h3><i class="fas fa-funnel-dollar" ></i> Quick Fund</h3>
+        <hr>
+        <div class="row mb-3">
+          <div class="col-6 col-sm-6">
+            <label class="form__label" id="amount_label">{% trans "Amount" %}</label>
+            <input type="number" min="0.001" step=".001" id="amount" name="amount_per_period" class="form__input" value="5" required />
+          </div>
+          <div class="col-6 col-sm-4">
+            <label class="form__label" id="token_label">{% trans "Token" %}</label>
+            <BR>
+            DAI
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-12 ">
+            <input type="checkbox" id="amount" name="subscribe_label" class="form__input" style="width:14px; height: 14px;" value="1" checked="checked" />
+            <label class="form__label" for="subscribe_label">{% trans "Subscribe to this grant" %}</label>
+        <i style="width: 14px;" class="fas fa-info-circle mr-2 text-center" data-toggle="tooltip" data-placement="bottom" title="If this option is chosen, Gitcoin will automatically deduct the specified amount from your wallet for every upcoming CLR round, until (1) you cancel the subscription (2) your balance runs out or (3) 2 years (or 12 CLR rounds) pass"></i>
+
+          </div>
+        </div>
+        <a href="#" class="inhline-fund">
+          <button class="btn btn-gc-blue button--half shadow-none font-weight-bold py-3 w-100">
+            Fund Grant <i class="fab fa-ethereum"></i>
           </button>
         </a>
+        <div class="float-right" style="text-align:right;">
+          or <a href="#"><i class="far fa-thumbs-down"></i> Fund w. Negative Signal </a>
+          <BR>
+          <a href="#"><i class="fas fa-cogs"></i> Advanced Funding Options </a>
+        </div>
+        <br class="clear">
+        <br class="clear">
+      </div>
+
       {% endif %}
 
     {% endif %}
