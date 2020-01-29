@@ -4480,6 +4480,7 @@ class TribeMember(SuperModel):
     profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
     org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE)
     leader = models.BooleanField(default=False, help_text=_('tribe leader'))
+    title = models.CharField(max_length=255, blank=True, default='')
     status = models.CharField(
         max_length=20,
         choices=MEMBER_STATUS,
