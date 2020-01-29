@@ -139,7 +139,6 @@
             @{{ row.other_profile.handle }}
           </a>
         {% endif %}
-      {% endif %}
       : 
         <b>{{ row.metadata.title }}</b>
       {% elif row.activity_type == 'leaderboard_rank' %}
@@ -164,6 +163,7 @@
         {% if row.bounty %}
           : <a href="{{ row.bounty.url }}">{{ row.bounty.title }}</a>
         {% endif %}
+      {% endif %}
       </div>
       <div class="activity-tags activity-tag-first align-items-center">
         {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
