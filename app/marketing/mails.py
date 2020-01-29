@@ -879,7 +879,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
     if to_emails:
         offers = ""
 
-        has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
+        has_offer = True # is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
         if has_offer:
             offers = f"💰 1 New Action"
 

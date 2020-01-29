@@ -838,6 +838,15 @@ def day_email_campaign(request, day):
     response_html, _, _, = render_nth_day_email_campaign('foo@bar.com', day, 'staff member')
     return HttpResponse(response_html)
 
+def trending_quests():
+    from quests.models import Quest
+    from django.db.models import Count, Q
+    cutoff_date = timezone.now() - timezone.timedelta(days=7)
+    quests = Quest.objects.annotate(recent_attempts=Count('attempts', filter=Q(
+        created_on__gte=cutoff_date))
+        ).order_by('-recent_attempts').all()[0:10]
+    return quests
+
 @staff_member_required
 def new_bounty_daily_preview(request):
     profile = request.user.profile
@@ -846,6 +855,7 @@ def new_bounty_daily_preview(request):
     keywords = profile.keywords
     hours_back = 2000
     new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
-    response_html, _ = render_new_bounty('foo@bar.com', new_bounties, all_bounties)
+    quests = trending_quests()
+    response_html, _ = render_new_bounty('foo@bar.com', new_bounties, all_bounties, offset=3, trending_quests=quests)
     return HttpResponse(response_html)
 
