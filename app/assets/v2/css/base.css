@@ -1634,6 +1634,34 @@ div.busyOverlay {
   padding: 3px 5px;
   border-radius: 3px;
 }
+/* search */
+.navbar-nav .select2-selection__placeholder{
+  color: white;
+}
+.navbar-nav .select2{
+  height: 14px;
+}
+.select2-container--search .select2-dropdown{
+  width: 200px !important;
+  left: -200px !important;
+}
+.select2-container--search .element-search-result img{
+  max-width: 50px;
+  max-height: 50px;
+}
+.navbar-nav .select2-container--search .select2-selection.select2-selection--single{
+  border: none !important;
+  float: right;
+  font-size: 14px;
+  margin-top: 5px;
+}
+.select2-container--search .select2-results__option:hover{
+  background-color: yellow;
+  cursor: pointer;
+}
+#search{
+  width: 20px;
+}
 
 .card-shadow {
   box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, .1);

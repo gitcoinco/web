@@ -21,15 +21,27 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endblock %}
 
 {% block body %}
+<link rel="stylesheet" href="{% static "v2/css/town_square.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/actions.css" %}" />
 
 <div class="container-fluid py-1 announce-bot announce-bot4 indent_on_mobile">
   <div class="container">
     <img src="{{offer.persona.preview_img_url}}" />
   </div>
+  {% if offer.from_name %}
+    <div class="name-tag">
+      {% if offer.from_link %}
+        <a href="{{offer.from_link}}">
+      {% endif %}
+          {{offer.from_name}}
+      {% if offer.from_link %}
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
 </div>
 
-<div class="container-fluid py-1 pt-3 announce {{offer.style}} indent_on_mobile">
+<div class="container-fluid py-1 pt-3 announce indent_on_mobile">
   <div class="container">
     
     <h4 class="pt-0">{{offer.title}}</h4>

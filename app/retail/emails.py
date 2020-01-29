@@ -993,8 +993,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Take Action in the Town Square"
-    new_kudos_pks = [7096, 7351, 7319]
+    subject = "$344k for Ethereum Public Goods"
+    new_kudos_pks = [7260, 5304, 7275]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1016,20 +1016,20 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-We just rolled out a ton of new features! Welcome to the Gitcoin <a href="https://gitcoin.co/townsquare">Town Square</a>, a social newsfeed where you can like, comment on, flag, and link to any activity feed item. You’ll find a daily, weekly, and monthly action to complete with free goodies, invites, and more - you can also create your own action for the community. Finally, you can now send “status updates” to all your grant funders (with privacy options to opt out).
+What a start to 2020 it’s been! Between the new <a href="https://gitcoin.co/townsquare">Town Square</a>, Gitcoin <a href="https://gitcoin.co/grants/">Grants Round 4</a>, and <a href="https://gitcoin.co/hackathon/take-back-the-web?">Take Back The Web</a>, this month has seen the most activity ever on the Gitcoin platform. Let’s keep that momentum going, make sure to check back on the home page for daily, weekly, and monthly actions. Keep an eye out for temporary “secret actions” as well, we may have given out a bit of ETH recently… ;)
 </p>
 <p>
-On another note, <a href="https://gitcoin.co/grants/">Grants Round 4</a> and the <a href="https://gitcoin.co/hackathon/take-back-the-web?">Take Back The Web</a> hackathon both conclude next week. So far this grants round has seen 3,857 contributions from 853 unique community members, worth $74,023, in just over 10 days (4 more to go!). The hackathon already has 368 registrations, 175 work starts, and 46 submissions (with 6 more days to go). It’s never too late to make a donation or start work on a hackathon project!
+We’re proud to share that <a href="https://gitcoin.co/grants/">CLR Round 4</a> was the biggest and best grants round yet. A total of 1,315 unique community members made 6,473 contributions worth $144,810 in 14 days. With matches, that is $344k... wild! No good social experiment in crypto is without a bit of Twitter drama, but we’re extremely thankful to all of you who helped fund public goods and made this a success.
 </p>
 <p>
-Last but not least, we’re excited to share Vitalik Buterin will be the keynote speaker at <a href="https://web3.sustainoss.org/">Sustain Web3</a> the day before ETHDenver. <a href="https://web3.sustainoss.org/">Sign up</a> to attend the free event if you can make it, and if you’re feeling generous, any contribution to our <a href="https://gitcoin.co/grants/195/sustain-web3-sustainers">Grant</a> for the event will help us in supporting OSS.
+On another note, only 6 more days until the <a href="https://hackathons.gitcoin.co/sustain-web3/">Sustain Web3</a> Virtual Hackathon kicks off. Sponsors include FOAM, Dfuse, and Xpring, with more be announced next week. This hackathon will lead into our physical <a href="https://web3.sustainoss.org/">Sustain Web3</a> conference the day before ETHDenver. To learn more about Sustain Web3 and what Gitcoin will be up to at ETHDenver, check out our most recent blog post: <a href="https://gitcoin.co/blog/git-coins-at-ethdenver/">Git Coins at ETHDenver</a>. 
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Today's special edition Livestream is on Gitcoin Grants Round 4. The kicker: You can only present a project you funded, not one you built. <a href="https://gitcoin.co/livestream">Join us</a> for a party celebrating the end of the biggest CLR Round yet at 2pm ET. 
+            Today's Livestream will feature lightning talks on the <a href="https://onemilliondevs.com/">One Million Devs</a> initiative from industry leaders. Come share your ideas for how to onboard more developers onto Ethereum. <a href="https://gitcoin.co/livestream">Join us</a> 2pm ET.
         </li>
     </ul>
 </p>
@@ -1038,22 +1038,22 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'TomAFrench',
+        'who': 'kfichter',
         'who_link': True,
-        'what': 'Created A Fork Of The Burner Wallet That Uses Liquidity Network L2 Solution Instead Of XDai',
-        'link': 'https://gitcoin.co/issue/liquidity-network/liquidity-burner/1/2972',
+        'what': 'Created the Initial Design for the Eth2 Book',
+        'link': 'https://gitcoin.co/issue/quilt/pm/6/3904',
         'link_copy': 'View more',
     }, {
-        'who': 'aquiladev',
+        'who': 'marcoautiero',
         'who_link': True,
-        'what': 'Integrated WalletConnect as provider for Truffle smart contract deployment',
-        'link': 'https://gitcoin.co/issue/WalletConnect/walletconnect-monorepo/205/3766',
+        'what': 'Created a React Component To Responsively Render Externally Hosted PDF Files On Mobile, Tablet And Desktop Devices',
+        'link': 'https://gitcoin.co/issue/consensys-space/trusat-frontend/215/3845',
         'link_copy': 'View more',
     }, {
-        'who': 'matkt',
+        'who': 'acolytec3',
         'who_link': True,
-        'what': 'Created a general internal API to support Network Address Translation (NAT) technologies in Besu',
-        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/2/2694',
+        'what': 'Made an outline for the eth2 client architecture under the Ethereum 2.0 section',
+        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/418/3885',
         'link_copy': 'View more',
     }, ]
 
@@ -1070,14 +1070,14 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/OneMillionDevs/bounties/issues/4',
-        'primer': '1 ETH For The Top 3 One Million Developers At Gitcoin Community Call',
+        'url': 'https://github.com/ProofSuite/OrFeed/issues/31',
+        'primer': 'Bug(S) Fix: Leveraged Positions Smart Contract Example',
     }, {
-        'url': 'https://github.com/Minds/minds/issues/153',
-        'primer': 'Setting To Reduce Mobile Data Usage for Minds',
+        'url': 'https://github.com/harmonylion/99designsformemes/issues/1',
+        'primer': 'Create A Meme For "The Fed Is Bad"',
     }, {
-        'url': 'https://github.com/unlock-protocol/unlock/issues/5265',
-        'primer': 'Shopify plugin for Unlock Protocol',
+        'url': 'https://github.com/Minds/minds/issues/151',
+        'primer': 'Show A List Of Who Has Voted On A Post',
     }]
 
 

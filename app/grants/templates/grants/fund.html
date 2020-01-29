@@ -313,7 +313,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <div class="form__group-horizontal">
                     <div class="row">
-                      {% include './clr_estimate.html' with class='extraleft' %}
+                      {% if clr_active %}
+                        {% include './clr_estimate.html' with class='extraleft' %}
+                      {% endif %}
                       <div class="col-12 form__footer text-center">
                         <button class="button button--primary button--full" id='js-fundGrant-button'>{% trans "Contribute to Grant" %}</button>
                       </div>

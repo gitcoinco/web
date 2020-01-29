@@ -836,7 +836,7 @@ class Bounty(SuperModel):
     def value_in_usdt_at_time(self, at_time):
         decimals = 10 ** 18
         if self.token_name == 'USDT':
-            return float(self.value_in_token)
+            return float(self.value_in_token / 10 ** 6)
         if self.token_name in settings.STABLE_COINS:
             return float(self.value_in_token / 10 ** 18)
         try:
@@ -1785,6 +1785,27 @@ def psave_bounty(sender, instance, **kwargs):
             profiles = Profile.objects.filter(handle=instance.bounty_owner_github_username.lower().replace('@',''))
             if profiles.exists():
                 instance.bounty_owner_profile = profiles.first()
+
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    ct = ContentType.objects.get(app_label='dashboard', model='bounty')
+    if instance.current_bounty:
+        SearchResult.objects.update_or_create(
+            source_type=ct,
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.web3_created,
+                "title":instance.title,
+                "description":instance.issue_description,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.get_avatar_url(True),
+            }
+            )
+        # delete any old bounties
+        if instance.prev_bounty:
+            for sr in SearchResult.objects.filter(source_type=ct, source_id=instance.prev_bounty.pk):
+                sr.delete()
 
 
 @receiver(post_save, sender=BountyFulfillment, dispatch_uid="psave_bounty_fulfill")
@@ -3860,6 +3881,20 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
 
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    SearchResult.objects.update_or_create(
+        source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
+        source_id=instance.pk,
+        defaults={
+            "created_on":instance.created_on,
+            "title":instance.handle,
+            "description":instance.desc,
+            "url":instance.url,
+            "visible_to":None,
+            'img_url': instance.avatar_url,
+        }
+        )
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
@@ -4219,6 +4254,10 @@ class HackathonEvent(SuperModel):
         return Bounty.objects.filter(event=self, network='mainnet').current()
 
     @property
+    def url(self):
+        return settings.BASE_URL + self.slug
+
+    @property
     def stats(self):
         stats = {
             'range': f"{self.start_date.strftime('%m/%d/%Y')} to {self.end_date.strftime('%m/%d/%Y')}",
@@ -4236,6 +4275,24 @@ class HackathonEvent(SuperModel):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+# method for updating
+@receiver(pre_save, sender=HackathonEvent, dispatch_uid="psave_hackathonevent")
+def psave_hackathonevent(sender, instance, **kwargs):
+
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    SearchResult.objects.update_or_create(
+        source_type=ContentType.objects.get(app_label='dashboard', model='hackathonevent'),
+        source_id=instance.pk,
+        defaults={
+            "created_on":instance.created_on,
+            "title":instance.name,
+            "description":instance.stats['range'],
+            "url":instance.url,
+            "visible_to":None,
+            'img_url': instance.logo.url if instance.logo else None,
+        }
+        )
 
 class HackathonSponsor(SuperModel):
     SPONSOR_TYPES = [
