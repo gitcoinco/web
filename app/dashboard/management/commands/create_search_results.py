@@ -106,7 +106,7 @@ class Command(BaseCommand):
         # objects
         qses = [
             Grant.objects.all(),
-            Token.objects.all(),
+            Token.objects.filter(num_clones_allowed__gt=0),
             Bounty.objects.current(),
             Quest.objects.filter(visible=True),
             Profile.objects.filter(hide_profile=False),
