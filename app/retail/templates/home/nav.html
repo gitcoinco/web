@@ -34,7 +34,7 @@
   <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
     <nav class="navbar-nav mx-auto">
       <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Home" %}</a>
-      <a class="nav-link {% if request.path|matches:"^\/((.*chat.*))$" %} selected {% endif %} interior" href="/chat/landing">{% trans "Chat" %}</a>
+      <a class="nav-link {% if request.path|matches:"^\/((.*chat.*))$" %} selected {% endif %} interior" href="/chat/">{% trans "Chat" %}</a>
 
       <div class="nav-item dropdown interior">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"

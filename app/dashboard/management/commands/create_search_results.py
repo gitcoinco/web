@@ -68,17 +68,18 @@ class Command(BaseCommand):
                         "description":description,
                     }
                 )
-                SearchResult.objects.update_or_create(
-                    source_type=ContentType.objects.get(app_label='search', model='page'),
-                    source_id=obj.pk,
-                    defaults={
-                        "title":title,
-                        "description":description,
-                        "url":url,
-                        "visible_to":None,
-                        'img_url': img_url,
-                    }
-                    )
+                if obj.pk:
+                    SearchResult.objects.update_or_create(
+                        source_type=ContentType.objects.get(app_label='search', model='page'),
+                        source_id=obj.pk,
+                        defaults={
+                            "title":title,
+                            "description":description,
+                            "url":url,
+                            "visible_to":None,
+                            'img_url': img_url,
+                        }
+                        )
             except Exception as e:
                 print(item, e)
 
@@ -93,16 +94,17 @@ class Command(BaseCommand):
                 if 'users' in url:
                     title = f"View {pl} Coders"
                 description = title
-                SearchResult.objects.update_or_create(
-                    source_type=ContentType.objects.get(app_label='search', model='programminglanguage'),
-                    source_id=obj.pk,
-                    title=title,
-                    defaults={
-                        "description":description,
-                        "url":url,
-                        "visible_to":None,
-                    }
-                    )
+                if obj.pk:
+                    SearchResult.objects.update_or_create(
+                        source_type=ContentType.objects.get(app_label='search', model='programminglanguage'),
+                        source_id=obj.pk,
+                        title=title,
+                        defaults={
+                            "description":description,
+                            "url":url,
+                            "visible_to":None,
+                        }
+                        )
         # objects
         qses = [
             Grant.objects.all(),
