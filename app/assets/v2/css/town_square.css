@@ -713,6 +713,17 @@ body.green.offer_view .announce {
   color: black;
 }
 
+.townsquare_nav-list .nav-item .nav-link.active {
+  font-weight: bold;
+  color: var(--link-color);
+}
+
+.townsquare_nav-list .nav-item .nav-link.active span {
+  display: inline-block;
+  padding-bottom: 2px;
+  border-bottom: 3px solid;
+}
+
 .townsquare_nav-list_footer {
   padding: .5rem 1rem .5rem 0;
 }
