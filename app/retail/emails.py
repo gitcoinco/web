@@ -426,8 +426,8 @@ PS - we've got some new gitcoin schwag on order. if interested, let us know and 
         'txt': txt,
 		'email_type': 'bounty_feedback'
     }
-    response_html = premailer_transform(render_to_string("emails/txt.html", params))
-    response_txt = txt
+    response_txt = premailer_transform(render_to_string("emails/txt.html", params))
+    response_html = f"<pre>{response_txt}</pre>"
 
     return response_html, response_txt
 

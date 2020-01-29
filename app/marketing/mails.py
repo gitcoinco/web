@@ -349,7 +349,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
             return
 
         subject = bounty.github_url
-        __, text = render_bounty_feedback(bounty, persona, previous_bounties)
+        html, text = render_bounty_feedback(bounty, persona, previous_bounties)
         cc_emails = [from_email, 'team@gitcoin.co']
         if not should_suppress_notification_email(to_email, 'bounty_feedback'):
             send_mail(
@@ -357,6 +357,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
                 to_email,
                 subject,
                 text,
+                html,
                 cc_emails=cc_emails,
                 from_name="Alisa March (Gitcoin.co)",
                 categories=['transactional', func_name()],
