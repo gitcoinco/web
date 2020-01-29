@@ -20,12 +20,12 @@ $(document).ready(function() {
     const endpoint = 'https://api.giphy.com/v1/gifs/search?limit=13&api_key=' + GIPHY_API_KEY + '&offset=0&rating=G&lang=en&q=' + query;
     const result = fetchData(endpoint);
 
-    $.when(result).then(function (response) {
+    $.when(result).then(function(response) {
       $('.pick-gif').remove();
 
       for (let i = 0; i < response.data.length; i++) {
         let item = response.data[i];
-        console.log(item)
+        
         let downsize = item.images.downsized.url;
         let preview = item.images.fixed_width_downsampled.url;
 
