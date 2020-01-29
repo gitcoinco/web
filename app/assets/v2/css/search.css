@@ -71,11 +71,14 @@
 .select2-results__option:nth-child(even) {
   background-color: #f9f9f9;
 }
-.select2-results__option:hover {
+.select2-results__option:hover,
+.select2-results__option.selected {
   background-color: #fafafa;
   color: #5d666f;
   cursor: pointer;
   text-decoration: none;
+  border: none;
+  border-left: 5px solid #3E00FF;
 }
 
 .select2-results__option a {
@@ -201,4 +204,11 @@
   width: max-content;
   font-weight: bold;
   font-size: 12px;
+}
+
+.select2-results__option:hover .tag,
+.select2-results__option.selected  .tag{
+  background-color: #6700FF;
+  color: #E7F0FA;
+  
 }

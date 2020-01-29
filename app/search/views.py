@@ -27,7 +27,7 @@ def search(request):
                 'description': ele.description,
                 'url': ele.url,
                 'img_url': ele.img_url if ele.img_url else "/static/v2/images/helmet.svg",
-                'source_type': str(ele.source_type)
+                'source_type': str(str(ele.source_type).replace('token', 'kudos')).title()
             } for ele in results
         ]
         print(len(return_results), len(inner_results))
