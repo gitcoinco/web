@@ -1789,7 +1789,7 @@ def psave_bounty(sender, instance, **kwargs):
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
     ct = ContentType.objects.get(app_label='dashboard', model='bounty')
-    if instance.current_bounty:
+    if instance.current_bounty and instance.pk:
         SearchResult.objects.update_or_create(
             source_type=ct,
             source_id=instance.pk,
@@ -3883,18 +3883,19 @@ def psave_profile(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
-    SearchResult.objects.update_or_create(
-        source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
-        source_id=instance.pk,
-        defaults={
-            "created_on":instance.created_on,
-            "title":instance.handle,
-            "description":instance.desc,
-            "url":instance.url,
-            "visible_to":None,
-            'img_url': instance.avatar_url,
-        }
-        )
+    if instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.handle,
+                "description":instance.desc,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.avatar_url,
+            }
+            )
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
@@ -4281,18 +4282,19 @@ def psave_hackathonevent(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
-    SearchResult.objects.update_or_create(
-        source_type=ContentType.objects.get(app_label='dashboard', model='hackathonevent'),
-        source_id=instance.pk,
-        defaults={
-            "created_on":instance.created_on,
-            "title":instance.name,
-            "description":instance.stats['range'],
-            "url":instance.url,
-            "visible_to":None,
-            'img_url': instance.logo.url if instance.logo else None,
-        }
-        )
+    if instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='dashboard', model='hackathonevent'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.name,
+                "description":instance.stats['range'],
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.logo.url if instance.logo else None,
+            }
+            )
 
 class HackathonSponsor(SuperModel):
     SPONSOR_TYPES = [

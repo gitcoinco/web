@@ -261,18 +261,19 @@ def psave_quest(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
-    SearchResult.objects.update_or_create(
-        source_type=ContentType.objects.get(app_label='quests', model='quest'),
-        source_id=instance.pk,
-        defaults={
-            "created_on":instance.created_on,
-            "title":instance.title,
-            "description":instance.description,
-            "url":instance.url,
-            "visible_to":None,
-            'img_url': instance.enemy_img_url,
-        }
-        )
+    if instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='quests', model='quest'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.title,
+                "description":instance.description,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.enemy_img_url,
+            }
+            )
 
 
 
