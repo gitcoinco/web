@@ -5,27 +5,33 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from dashboard.models import SearchHistory
+from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
 from .models import SearchResult
 
 
+@ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def search(request):
     keyword = request.GET.get('term', '')
-    results = SearchResult.objects.filter(Q(title__icontains=keyword) | Q(description__icontains=keyword))
-    if request.user.is_authenticated:
-        results = results.filter(Q(visible_to__isnull=True) | Q(visible_to=request.user.profile))
-    else:
-        results = results.filter(visible_to__isnull=True)
-    results = [
-        {
-            'title': ele.title,
-            'description': ele.description,
-            'url': ele.url,
-            'img_url': ele.img_url if ele.img_url else "/static/v2/images/helmet.svg",
-            'source_type': str(ele.source_type)
-        } for ele in results
-    ]
+    all_result_sets = [SearchResult.objects.filter(title__icontains=keyword), SearchResult.objects.filter(description__icontains=keyword)]
+    return_results = []
+    for results in all_result_sets:
+        if request.user.is_authenticated:
+            results = results.filter(Q(visible_to__isnull=True) | Q(visible_to=request.user.profile))
+        else:
+            results = results.filter(visible_to__isnull=True)
+        inner_results = [
+            {
+                'title': ele.title,
+                'description': ele.description,
+                'url': ele.url,
+                'img_url': ele.img_url if ele.img_url else "/static/v2/images/helmet.svg",
+                'source_type': str(ele.source_type)
+            } for ele in results
+        ]
+        print(len(return_results), len(inner_results))
+        return_results = return_results + inner_results
 
     if request.user.is_authenticated:
         SearchHistory.objects.update_or_create(
@@ -36,4 +42,4 @@ def search(request):
         )
 
     mimetype = 'application/json'
-    return HttpResponse(json.dumps(results), mimetype)
+    return HttpResponse(json.dumps(return_results), mimetype)

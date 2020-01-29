@@ -52,14 +52,14 @@ function search(elem) {
       }
       var markup;
 
-      markup = `<div data-url="${element.url}" class="d-flex m-2 align-items-center element-search-result">
+      markup = `<div data-url="${element.url}" class="d-flex m-2 align-items-center element-search-result search-result">
                       <div style="min-width: 0;width: 100%;">
-                        <img src="${element.img_url}">
+                        <img class=search__avatar src="${element.img_url}">
                         <div class="d-flex justify-content-between">
-                          <div class="element-type">${element.source_type}</div>
-                          <div class="element-title">${element.title}</div>
+                          <div class="element-title search__title">${element.title}</div>
                         </div>
-                        <div class="text-truncate element-description">${element.description}</div>
+                        <div class="text-truncate element-description search-result__description">${element.description}</div>
+                        <div class="element-type tag">${element.source_type}</div>
                       <div>
                     </div>`;
 
