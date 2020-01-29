@@ -873,6 +873,20 @@ def psave_grant(sender, instance, **kwargs):
                 instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
         #print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
 
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    SearchResult.objects.update_or_create(
+        source_type=ContentType.objects.get(app_label='grants', model='grant'),
+        source_id=instance.pk,
+        defaults={
+            "created_on":instance.created_on,
+            "title":instance.title,
+            "description":instance.description,
+            "url":instance.url,
+            "visible_to":None,
+            'img_url': instance.logo.url if instance.logo else None,
+        }
+        )
 
 class DonationQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""

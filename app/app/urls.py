@@ -50,6 +50,7 @@ import quests.views
 import retail.emails
 import retail.views
 import revenue.views
+import search.views
 import tdi.views
 import townsquare.views
 from avatar.router import router as avatar_router
@@ -145,6 +146,7 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
+    url(r'^api/v0.1/search/', search.views.search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
     # chat
