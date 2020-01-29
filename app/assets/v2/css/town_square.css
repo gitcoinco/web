@@ -269,3 +269,17 @@
   display: none;
 }
 
+.gif-grid {
+  display: flex;
+  width: 380px;
+  height: 450px;
+  flex-wrap: wrap;
+  overflow: scroll;
+  overflow-x: hidden;
+
+}
+.pick-gif {
+  max-width: 300px;
+  max-height: 250px;
+  flex-grow: 1;
+}

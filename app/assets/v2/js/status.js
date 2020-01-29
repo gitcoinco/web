@@ -2,8 +2,37 @@ const url_re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b(
 const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
 
 $(document).ready(function() {
-  embedded_resource = '';
+  var embedded_resource = '';
+  const GIPHY_API_KEY = '1WfeOI2i4lJiBKvO2Q1W3yUqdjQ27UTy';
+  
   let button = document.querySelector('#btn_post');
+  
+  
+  $('#search-gif').on('input', function(e) {
+    e.preventDefault()
+    const query = e.target.value;
+    const endpoint = 'https://api.giphy.com/v1/gifs/search?limit=8&api_key=' + GIPHY_API_KEY + '&offset=0&rating=G&lang=en&q=' + query;
+    
+    
+    const result = fetchData(endpoint);
+    $.when(result).then(function(response) {
+      $('.gif-grid').empty();
+      
+      for (let i = 0; i < response.data.length; i++) {
+        let item = response.data[i];
+        
+        console.log(item);
+        $('.gif-grid').append('<img class="pick-gif" src="' + item.images.downsized.url + '" alt="' + item.slug + '">');
+        $('.gif-grid').on('click', function (e) {
+          embedded_resource = e.target.src;
+          console.log(embedded_resource);
+          $('#thumbnail-img').attr('src', embedded_resource);
+          $('#thumbnail').show();
+        });
+      }
+    });
+    // $('.pick-gif')
+  })
 
   if (button) {
     button.addEventListener(
