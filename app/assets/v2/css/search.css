@@ -6,7 +6,10 @@
   --badge-blue-bg: #e7f0fa;
   --badge-blue-text: #6587ae;
 }
-
+.select2-results{
+  max-height: 1100px;
+  overflow-y: scroll;
+}
 .navbar-nav .select2-selection__placeholder{
   color: white;
 }
