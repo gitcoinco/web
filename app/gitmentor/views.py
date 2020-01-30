@@ -56,6 +56,16 @@ def index(request):
 
 
 @login_required
+def load_session(request):
+    profile = get_profile(request)
+    params = {
+        'active': 'mentor_session',
+        'profile': profile,
+    }
+    return TemplateResponse(request, 'gitmentor/session.html', params)
+
+
+@login_required
 def request_session(request):
     profile = get_profile(request)
 
@@ -77,6 +87,7 @@ def request_session(request):
             session_request.session_cost = 5;
             session_request.session_duration = 15;
             session_request.save()
+
 
     form = SessionRequestForm()
 

@@ -1,0 +1,45 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/grants/new.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+  </head>
+  <body class="interior {{ active }} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'gitmentor/nav.html' %}
+      <div class="row no-gutters metamask-banner">
+        <div class="col-12">
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+          {% include 'shared/connect_metamask.html' %}
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/current_profile.html' %}
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'grants/shared/shared_scripts.html' %}
+  </body>
+
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="https://cdn.jsdelivr.net/momentjs/latest/lib/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+</html>
