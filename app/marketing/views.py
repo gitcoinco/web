@@ -28,7 +28,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
-from django.db.models import Max
+from django.db.models import Count, Max, Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -44,11 +44,13 @@ from dashboard.utils import create_user_action, get_orgs_perms
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_feedback
+from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
 from marketing.utils import (
     delete_user_from_mailchimp, get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration,
 )
-from retail.emails import ALL_EMAILS, render_nth_day_email_campaign
+from quests.models import Quest
+from retail.emails import ALL_EMAILS, render_new_bounty, render_nth_day_email_campaign
 from retail.helpers import get_ip
 
 logger = logging.getLogger(__name__)
@@ -839,8 +841,6 @@ def day_email_campaign(request, day):
     return HttpResponse(response_html)
 
 def trending_quests():
-    from quests.models import Quest
-    from django.db.models import Count, Q
     cutoff_date = timezone.now() - timezone.timedelta(days=7)
     quests = Quest.objects.annotate(recent_attempts=Count('attempts', filter=Q(
         created_on__gte=cutoff_date))
@@ -850,8 +850,6 @@ def trending_quests():
 @staff_member_required
 def new_bounty_daily_preview(request):
     profile = request.user.profile
-    from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
-    from retail.emails import render_new_bounty
     keywords = profile.keywords
     hours_back = 2000
     new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
