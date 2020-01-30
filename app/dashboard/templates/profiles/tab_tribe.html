@@ -4,9 +4,15 @@
     <div class="d-flex justify-content-between my-4">
       <h5 class="font-weight-bold">About {{profile.name}}</h5>
       {% if is_my_org %}
-        <div class="">
-          <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
-          <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savetribe="{{profile.handle}}">Save</button>
+        <div>
+          <button class="btn btn-gc-blue btn-sm d-none font-caption px-3" id="save-description-btn" data-savetribe="{{profile.handle}}">
+            <i class="fas fa-save mr-1"></i>
+            SAVE
+          </button>
+          <button class="btn btn-gc-blue btn-sm font-caption px-3" id="edit-btn">
+            <i class="fas fa-edit mr-1"></i>
+            EDIT
+          </button>
         </div>
       {% endif %}
     </div>

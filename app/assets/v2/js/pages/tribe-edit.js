@@ -19,6 +19,9 @@ $('#edit-btn').on('click', function() {
       placeholder: 'Compose an epic description for your Tribe...'
     });
     $('#save-description-btn').removeClass('d-none');
+    $('#edit-btn i').removeClass('fa-edit');
+    $('#edit-btn i').addClass('fa-times');
+    $('#edit-btn').addClass('btn-gc-pink');
     return quill;
   };
 
@@ -78,6 +81,9 @@ const destroyQuill = () => {
   editorContainer.addClass('inactive');
   quill.enable(false);
   $('#save-description-btn').addClass('d-none');
+  $('#edit-btn i').addClass('fa-edit');
+  $('#edit-btn i').removeClass('fa-times');
+  $('#edit-btn').removeClass('btn-gc-pink');
 };
 
 const rebuildQuill = () => {
@@ -86,4 +92,7 @@ const rebuildQuill = () => {
   editorContainer.removeClass('inactive');
   quill.enable(true);
   $('#save-description-btn').removeClass('d-none');
+  $('#edit-btn').addClass('btn-gc-pink');
+  $('#edit-btn i').removeClass('fa-edit');
+  $('#edit-btn i').addClass('fa-times');
 };
