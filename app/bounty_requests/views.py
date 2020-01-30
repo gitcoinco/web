@@ -19,12 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 
+from django.core.exceptions import MultipleObjectsReturned
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 import requests
+from dashboard.models import Bounty, Profile, TribeMember
 from linkshortener.models import Link
 from marketing.mails import new_bounty_request
 from ratelimit.decorators import ratelimit
@@ -86,3 +89,179 @@ def bounty_request(request):
     }
 
     return TemplateResponse(request, 'bounty_request_form.html', params)
+
+
+
+@require_POST
+@csrf_exempt
+@ratelimit(key='ip', rate='5/s', method=ratelimit.UNSAFE, block=True)
+def create_bounty_request_v1(request):
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to create bounty request'
+    }
+
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to submit bounty request'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: create bounty request is a POST operation'
+        return JsonResponse(response)
+
+    github_url = request.POST.get("github_url", None)
+
+    if not github_url:
+        response['message'] = 'error: missing github_url parameter'
+        return JsonResponse(response)
+
+    if Bounty.objects.filter(github_url=github_url).exists():
+        response = {
+            'status': 303,
+            'message': 'bounty already exists for this github issue'
+        }
+        return JsonResponse(response)
+
+    title = request.POST.get("title", None)
+    if not title:
+        response['title'] = 'error: missing title parameter'
+        return JsonResponse(response)
+
+    comment = request.POST.get("comment", None)
+    if not comment:
+        response['message'] = 'error: missing comment parameter'
+        return JsonResponse(response)
+
+    amount = request.POST.get("amount", None)
+    if not amount:
+        response['message'] = 'error: missing amount parameter'
+        return JsonResponse(response)
+
+    tribe = request.POST.get("tribe", None)
+    if not tribe:
+        response['message'] = 'error: missing tribe parameter'
+        return JsonResponse(response)
+
+    try:
+        tribe_profile = Profile.objects.get(handle=tribe)
+    except Profile.DoesNotExist:
+        response = {
+            'status': 400,
+            'message': 'error: could not find tribe'
+        }
+        return JsonResponse(response)
+    except Profile.MultipleObjectsReturned:
+        response = {
+            'status': 500,
+            'message': 'error: found multiple tribes'
+        }
+        return JsonResponse(response)
+
+
+    token_name = request.POST.get("token_name", 'ETH')
+    if token_name == '':
+        token_name = 'ETH'
+
+    bounty_request = BountyRequest()
+    bounty_request.requested_by = profile
+    bounty_request.github_url = github_url
+    bounty_request.amount = amount
+    bounty_request.token_name = token_name
+    bounty_request.comment = comment
+    bounty_request.title = title
+    bounty_request.tribe = tribe_profile
+
+    bounty_request.save()
+
+    try:
+        TribeMember.objects.get(profile=profile, org=tribe_profile)
+    except TribeMember.DoesNotExist:
+        kwargs = {
+            'org': tribe_profile,
+            'profile': profile
+        }
+        tribemember = TribeMember.objects.create(**kwargs)
+        tribemember.save()
+
+
+    response = {
+        'status': 204,
+        'message': 'bounty request successfully created'
+    }
+
+    return JsonResponse(response)
+
+
+@require_POST
+@csrf_exempt
+@ratelimit(key='ip', rate='5/s', method=ratelimit.UNSAFE, block=True)
+def update_bounty_request_v1(request):
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to edit bounty request'
+    }
+
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to edit bounty request'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: create bounty edit is a POST operation'
+        return JsonResponse(response)
+
+    bounty_request_id = request.POST.get("bounty_request_id", None)
+
+    if not bounty_request_id:
+        response['message'] = 'error: missing bounty_request_id parameter'
+        return JsonResponse(response)
+
+    try:
+        bounty_request = BountyRequest.objects.get(pk=bounty_request_id)
+    except BountyRequest.DoesNotExist:
+        response = {
+            'status': 404,
+            'message': 'request bounty request does not exsist'
+        }
+        return JsonResponse(response)
+    except BountyRequest.MultipleObjectsReturned:
+        response = {
+            'status': 500,
+            'message': 'error: found multiple bounty requests'
+        }
+        return JsonResponse(response)
+
+    is_my_org = any([bounty_request.tribe.handle.lower() == org.lower() for org in request.user.profile.organizations ])
+    if not is_my_org:
+        response = {
+            'status': 405,
+            'message': 'operation on bounty request can be performed by tribe owner'
+        }
+        return JsonResponse(response)
+
+    request_status = request.POST.get("request_status", None)
+    if request_status == 'c' and bounty_request.status != 'c':
+        bounty_request.status = 'c'
+        bounty_request.save()
+
+    response = {
+        'status': 200,
+        'message': 'bounty request updated successfully'
+    }
+
+    return JsonResponse(response)

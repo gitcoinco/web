@@ -32,6 +32,7 @@ from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
+from bounty_requests.models import BountyRequest
 from dashboard.models import (
     Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, Coupon, HackathonEvent, UserAction,
@@ -388,6 +389,13 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         url = normalize_url(url)
     else:
         raise UnsupportedSchemaException('No webReferenceURL found. Cannot continue!')
+
+    try:
+        bounty_request = BountyRequest.objects.get(github_url=url, status='o')
+        bounty_request.status = 'f'
+        bounty_request.save()
+    except BountyRequest.DoesNotExist:
+        pass
 
     # check conditions for private repos
     if metadata.get('repo_type', None) == 'private' and \

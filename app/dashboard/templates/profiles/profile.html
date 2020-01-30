@@ -47,7 +47,7 @@
       {% endif %}
     </div>
 
-    <div class="container-fluid bg-light">
+    <div class="container-fluid">
       <div class="container profile-card mh-150">
         <div class="row">
           {% if total_kudos_count %}
@@ -95,6 +95,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
+    {% include 'shared/current_profile.html' %}
 
     <!-- jQuery -->
     <script src="{% static "v2/js/abi.js" %}"></script>

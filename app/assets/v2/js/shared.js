@@ -1536,3 +1536,31 @@ function check_balance_and_alert_user_if_not_enough(
   });
 
 }
+
+/**
+ * fetches github issue details of the issue_url
+ * @param {string} issue_url
+ */
+const fetchIssueDetailsFromGithub = issue_url => {
+  return new Promise((resolve, reject) => {
+    if (!issue_url || issue_url.length < 5 || issue_url.indexOf('github') == -1) {
+      reject('error: issue_url needs to be a valid github URL');
+    }
+
+    const github_token = currentProfile.githubToken;
+
+    if (!github_token) {
+      reject('error: API calls needs user to be logged in');
+    }
+
+    const request_url = '/sync/get_issue_details?url=' + encodeURIComponent(issue_url) + '&token=' + github_token;
+
+    $.get(request_url, function(result) {
+      result = sanitizeAPIResults(result);
+      resolve(result);
+    }).fail(err => {
+      console.log(err);
+      reject(error);
+    });
+  });
+};
