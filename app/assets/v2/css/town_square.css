@@ -637,3 +637,8 @@ body.green.offer_view .announce {
 .announce a.accept.btn:hover {
   background-color: #8E2ABE;
 }
+#takegivepenny img{
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+}

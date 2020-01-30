@@ -78,8 +78,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </div>
         </div>
         <div class="col-12 col-md-4">
-          <div class="text-center">
-            <a href="/action/new" class="btn btn-gc-blue" >CREATE ACTION <i class="fas fa-upload"></i></a>
+          <div id=takegivepenny>
+            <h4>Take a Penny Give A Penny Jar</h4>
+            {% if pennyjar.empty %}
+              {% if pennyjar.since %} has been empty since {{pennyjar.since|naturaltime}} when <a href="/{{pennyjar.sponsor}}"><img src="/dynamic/avatar/{{pennyjar.sponsor}}" class="sponsor">@{{pennyjar.sponsor}}</a> had generiously sponsored. {% else %}is empty{% endif %}  <a href="#" id='givepenny'>Click here to *give* a penny</a>
+            {% else %}
+              <img src="/dynamic/avatar/{{pennyjar.sponsor}}" class="sponsor">
+              Has {{pennyjar.amount}} ETH in it courtesy of <a href="/{{pennyjar.sponsor}}">@{{pennyjar.sponsor}}</a>. 
+              <br>
+              <br>
+              <a href="{{pennyjar.url}}" id='takepenny'>Refresh the jar! Click here to *get* a penny</a>
+            {% endif %}
+
           </div>
           {% for type, item in offers_by_category.items %}
             <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%}">
@@ -113,6 +123,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {% endif %}
             </div>
           {% endfor %}
+          <hr>
+          <div class="text-center">
+            <a href="/action/new" class="btn btn-gc-blue" >CREATE ACTION <i class="fas fa-upload"></i></a>
+          </div>
         </div>
       </div>
     </div>
@@ -128,5 +142,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
 <script src="{% static "v2/js/status.js" %}"></script>
 <script src="{% static "v2/js/pages/townsquare.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="/dynamic/js/tokens_dynamic.js"></script>
+<script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/ipfs.js" %}"></script>
+<script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
+<script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+<script src="{% static "onepager/js/send.js" %}"></script>
+<script src="{% static "v2/js/truncate-hash.js" %}"></script>
+
+
 {% endblock %}
 

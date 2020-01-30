@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
-from dashboard.models import Activity, HackathonEvent, get_my_earnings_counter_profiles, get_my_grants
+from dashboard.models import Activity, HackathonEvent, get_my_earnings_counter_profiles, get_my_grants, Tip
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
 from ratelimit.decorators import ratelimit
@@ -177,6 +177,31 @@ def town_square(request):
         except:
             pass
 
+    # pennyjar
+    network = 'rinkeby' if  settings.DEBUG else 'mainnet'
+    pennyjar = {
+        'empty': True,
+    }
+    tip_jars = Tip.objects.filter(network=network, metadata__is_tip_jar=True, username='').order_by('-created_on')
+    invalid_tip_jars = tip_jars.filter(metadata__still_valid=False)
+    valid_tip_jars = tip_jars.filter(metadata__still_valid=True)
+    if invalid_tip_jars.exists():
+        pennyjar['since'] = invalid_tip_jars.first().created_on
+        pennyjar['sponsor'] = invalid_tip_jars.first().from_username
+    if request.user.is_authenticated and valid_tip_jars.exists():
+        tip = valid_tip_jars.first()
+        payouts = tip.payouts.filter(profile=request.user.profile)
+        if not payouts.exists():
+            from dashboard.tip_views import penny_jar_amount
+            pennyjar = {
+                'empty': False,
+                'amount': penny_jar_amount,
+                'sponsor': tip.from_username,
+                'url': tip.receive_url,
+            }
+        else:
+            pennyjar['since'] = payouts.first().created_on
+            pennyjar['sponsor'] = tip.from_username
 
     # render page context
     trending_only = int(request.GET.get('trending', 0))
@@ -190,6 +215,7 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'pennyjar': pennyjar,
         'now': timezone.now(),
         'is_townsquare': True,
         'trending_only': bool(trending_only),

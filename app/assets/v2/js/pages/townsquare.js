@@ -84,6 +84,62 @@ $(document).ready(function() {
 
   setInterval(updateTimers, 1000);
 
+  $("#givepenny").on('click', function(e){
+      if (!document.contxt.github_handle) {
+        _alert('Please login first.', 'error');
+        return;
+      }
+      if (!web3) {
+        _alert('Please enable and unlock your web3 wallet.', 'error');
+        return;
+      }
+
+      const email = '';
+      const github_url = $('#issueURL').text();
+      const from_name = document.contxt['github_handle'];
+      const username = '';
+      const amountInEth = parseFloat(prompt("How much ETH do you want to give?", "0.01").replace('ETH',''));
+      if (amountInEth < 0.01) {
+        _alert('Amount must be 0.01 or more.', 'error');
+        return;
+      }
+      const comments_priv = '';
+      const comments_public = "Take a penny; leave a penny jar"
+      const accept_tos = (confirm("Do you accept Gitcoin's terms of service at gitcoin.co/terms ?"));
+      const from_email = '';
+      const tokenAddress = '0x0';
+      const expires = 9999999999;
+
+      var success_callback = function(txid) {
+        const url = 'https://' + etherscanDomain() + '/tx/' + txid;
+        const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+
+        _alert(msg, 'info', 1000);
+        location.reload();
+      };
+
+      var failure_callback = function() {
+        $.noop(); // do nothing
+      };
+
+      return sendTip(
+        email,
+        github_url,
+        from_name,
+        username,
+        amountInEth,
+        comments_public,
+        comments_priv,
+        from_email,
+        accept_tos,
+        tokenAddress,
+        expires,
+        success_callback,
+        failure_callback,
+        false
+      );
+  });
+
   // toggles the daily email sender
   $('#receive_daily_offers_in_inbox').on('change', function(e) {
     _alert('Your email subscription preferences have been updated', 'success', 2000);

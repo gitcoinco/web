@@ -48,6 +48,7 @@ confirm_time_minutes_target = 4
 
 logger = logging.getLogger(__name__)
 
+penny_jar_amount = 0.001
 
 def send_tip(request):
     """Handle the first stage of sending a tip."""
@@ -140,6 +141,9 @@ def receive_tip_v3(request, key, txid, network):
 
         # db mutations
         try:
+            if params['follow_sender']:
+                pass # todo: when followers are built then build this
+
             if params['save_addr']:
                 profile = get_profile(tip.username)
                 if profile:
@@ -159,6 +163,8 @@ def receive_tip_v3(request, key, txid, network):
 
             num_redemptions += 1
             tip.metadata["num_redemptions"] = num_redemptions
+            tip.metadata["still_valid"] = tip.metadata["num_redemptions"] < tip.metadata["max_redemptions"] - 1
+
             tip.save()
             record_user_action(tip.from_username, 'receive_tip', tip)
             record_tip_activity(tip, tip.username, 'receive_tip')
@@ -334,6 +340,11 @@ def send_tip_3(request):
     # metadata
     metadata = params['metadata']
     metadata['user_agent'] = request.META.get('HTTP_USER_AGENT', '')
+    if "Take a penny; leave a penny jar" == params['comments_public']:
+        metadata["max_redemptions"] = params['amount'] / penny_jar_amount
+        params['amount'] = penny_jar_amount
+        metadata["still_valid"] = True
+        metadata["is_tip_jar"] = True
 
     # db mutations
     tip = Tip.objects.create(

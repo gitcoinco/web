@@ -52,9 +52,13 @@
         <input type="text" name="forwarding_address" id="forwarding_address" placeholder="0x0" {% if disable_inputs %}disabled=disabled{% endif %}>
       </div>
       <div>
+        <hr class="mt-4 mb-4 pt-0 pb-0">
+        <input type="checkbox" name="follow_sender" id="follow_sender" value=1 checked="" {% if disable_inputs %}disabled=disabled{% endif %}>
+        <label for=follow_sender>{% trans "Follow the sender of this tip," %} <img src=/dynamic/avatar/{{tip.from_username}} style="width: 20px; height: 20px; border-radius: 10px"> @{{tip.from_username}}</label>
+        <br>
         <input type="checkbox" name="save_addr" id="save_addr" value=1 checked="" {% if disable_inputs %}disabled=disabled{% endif %}>
         <label for=save_addr>{% trans "Save this address as my direct payment address" %}</label>
-        <br>
+        <hr class="mt-2 mb-2 pt-0 pb-0">
         <input type="checkbox" id="tos" value="1" >
         <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
 
