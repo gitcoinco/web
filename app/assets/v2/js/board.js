@@ -160,6 +160,17 @@ Vue.mixin({
     },
     tabOnLoad() {
       let vm = this;
+      let tab = getURLParams('tab');
+
+      if (tab) {
+        console.log(`#${tab}-tab`)
+        if (tab == 'matching') {
+          vm.fetchMatchingBounties()
+        } else {
+          vm.checkData(tab);
+        }
+        return $(`#${tab}-tab`).tab('show');
+      }
 
       if (document.contxt.persona_is_hunter) {
         vm.checkData('contributor');

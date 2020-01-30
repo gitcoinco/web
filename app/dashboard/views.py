@@ -3947,6 +3947,8 @@ def board(request):
 
     user = request.user if request.user.is_authenticated else None
     keywords = user.profile.keywords
+    network = 'mainnet' if not settings.DEBUG else 'rinkeby'
+    works_with_collected = user.profile.get_who_works_with(work_type='collected', network=network)
 
     context = {
         'is_outside': True,
@@ -3956,6 +3958,7 @@ def board(request):
         'card_desc': _('Manage all your activity.'),
         'avatar_url': static('v2/images/helmet.png'),
         'keywords': keywords,
+        'works_with_collected': works_with_collected
     }
     return TemplateResponse(request, 'board/index.html', context)
 
