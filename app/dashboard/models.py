@@ -4290,7 +4290,7 @@ def psave_hackathonevent(sender, instance, **kwargs):
                 "created_on":instance.created_on,
                 "title":instance.name,
                 "description":instance.stats['range'],
-                "url":instance.url,
+                "url":instance.onboard_url,
                 "visible_to":None,
                 'img_url': instance.logo.url if instance.logo else None,
             }
