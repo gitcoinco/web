@@ -130,6 +130,7 @@ $('document').ready(function() {
       } else if (e.keyCode === KEYS.ENTER) {
         target = $('.select2-results__option.selected');
         var url = target.find('.search-result').data('url');
+
         if (target && url) {
           document.location.href = url;
         }

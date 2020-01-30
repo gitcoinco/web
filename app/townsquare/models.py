@@ -155,10 +155,17 @@ class AnnounceQuerySet(models.QuerySet):
 class Announcement(SuperModel):
     """An Announcement to the users to be displayed on town square."""
 
+    _TYPES = [
+        ('townsquare', 'townsquare'),
+        ('header', 'header'),
+        ('footer', 'footer'),
+    ]
+    key = models.CharField(max_length=50, db_index=True, choices=_TYPES)
     title = models.TextField(default='', blank=True)
     desc = models.TextField(default='', blank=True)
     valid_from = models.DateTimeField(db_index=True)
     valid_to = models.DateTimeField(db_index=True)
+    rank = models.IntegerField(default=0)
 
     STYLES = [
         ('primary', 'primary'),

@@ -156,7 +156,7 @@ def town_square(request):
             is_subscribed = email_subscriber.should_send_email_type_to('new_bounty_notifications')
 
     # announcements
-    announcements = Announcement.objects.current()
+    announcements = Announcement.objects.current().filter(key='townsquare')
 
     # title
     title = 'Home'
