@@ -32,6 +32,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
@@ -41,7 +42,9 @@ from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
-from marketing.mails import grant_update_email, mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
+from marketing.mails import (
+    grant_update_email, mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email,
+)
 from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
@@ -400,7 +403,7 @@ def funder_bounties(request):
         'is_outside': True,
         'slides': slides,
         'slideDurationInMs': 6000,
-        'active': 'home',
+        'active': 'bounties_funder',
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
@@ -549,7 +552,7 @@ def contributor_bounties(request, tech_stack):
         'onboard_slides': onboard_slides,
         'slides': slides,
         'slideDurationInMs': 6000,
-        'active': 'home',
+        'active': 'bounties_coder',
         'newsletter_headline': _("Be the first to find out about newly posted freelance jobs."),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
@@ -981,6 +984,7 @@ def products(request):
             'img': static('v2/images/products/engine.svg'),
             'logo': static('v2/images/products/engine-logo.png'),
             'service_level': 'Integrated',
+            'traction': 'Matching 20k devs/mo',
         },
         {
             'name': 'hackathons',
@@ -990,6 +994,7 @@ def products(request):
             'img': static('v2/images/products/graphics-hackathons.png'),
             'logo': static('v2/images/products/hackathons-logo.svg'),
             'service_level': 'Full Service',
+            'traction': '1-3 hacks/month worth $40k/mo',
         },
         {
             'name': 'bounties',
@@ -1000,6 +1005,7 @@ def products(request):
             'img': static('v2/images/products/graphics-Bounties.png'),
             'logo': static('v2/images/products/gitcoin-logo.svg'),
             'service_level': 'Self Service',
+            'traction': '$25k/mo',
         },
         {
             'name': 'kudos',
@@ -1010,6 +1016,7 @@ def products(request):
             'img': static('v2/images/products/graphics-Kudos.png'),
             'logo': static('v2/images/products/kudos-logo.svg'),
             'service_level': 'Self Service',
+            'traction': '1200+ kudos sent/month',
         },
         {
             'name': 'grants',
@@ -1020,6 +1027,7 @@ def products(request):
             'img': static('v2/images/products/graphics-Grants.png'),
             'logo': static('v2/images/products/grants-logo.svg'),
             'service_level': 'Self Service',
+            'traction': 'over $1mm in GMV',
         },
         {
             'name': 'codefund',
@@ -1030,6 +1038,7 @@ def products(request):
             'img': static('v2/images/products/graphics-Codefund.svg'),
             'logo': static('v2/images/products/codefund-logo.svg'),
             'service_level': 'Self Service or Full Service',
+            'traction': 'over 300mm impressions',
         },
         {
             'name': 'labs',
@@ -1040,6 +1049,7 @@ def products(request):
             'img': static('v2/images/products/graphics-Labs.png'),
             'logo': static('v2/images/products/labs-logo.svg'),
             'service_level': 'Self Service',
+            'traction': '12 Articles Shipped',
         }
     ]
 
@@ -1052,7 +1062,17 @@ def products(request):
             'img': static('v2/images/products/graphics-Quests.png'),
             'logo': static('v2/images/products/quests-symbol.svg'),
             'service_level': 'Self Service',
+            'traction': 'over 3000 plays/month',
         })
+
+    default_back_safe = [['s10.png', i] for i in range(24, 33)]
+    default_back_crazy = [['s9.png', 3], ['s10.png', 10], ['s10.png', 25], ['s10.png', 33], ['s10.png', 4], ['s10.png', 8], ['s9.png', 14]]
+    default_back = default_back_safe
+
+    default_back_i = int(request.GET.get('i', int(timezone.now().strftime("%j")))) % len(default_back)
+    default_back = default_back[default_back_i]
+    back = request.GET.get('back', default_back[1])
+    img = request.GET.get('img', default_back[0])
 
     context = {
         'is_outside': True,
@@ -1062,6 +1082,8 @@ def products(request):
         'card_desc': _('At Gitcoin, we build products that allow for better incentivized collaboration \
                         in the realm of open source software'),
         'avatar_url': static('v2/images/grow_open_source.png'),
+        'back': back,
+        'img': img,
         'products': products,
     }
     return TemplateResponse(request, 'products.html', context)
@@ -1136,7 +1158,7 @@ def activity(request):
         if 'activity:' in what:
             view_count_threshold = 0
             pk = what.split(':')[1]
-            activities = activities.filter(pk=pk)
+            activities = Activity.objects.filter(pk=pk)
             if page > 1:
                 activities = Activity.objects.none()
         # filters
@@ -1145,7 +1167,9 @@ def activity(request):
         if len(relevant_grants):
             activities = activities.filter(grant__in=relevant_grants)
     if what == 'connect':
-        activities = activities.filter(activity_type='status_update')
+        activities = activities.filter(activity_type__in=['status_update', 'wall_post'])
+    if what == 'kudos':
+        activities = activities.filter(activity_type__in=['new_kudos', 'receive_kudos'])
 
     # after-pk filters
     if request.GET.get('after-pk'):
@@ -1160,7 +1184,7 @@ def activity(request):
     next_page = page + 1
     start_index = (page-1) * page_size
     end_index = page * page_size
-    print(activities.query)
+    
     #p = Paginator(activities, page_size)
     #page = p.get_page(page)
     page = activities[start_index:end_index]

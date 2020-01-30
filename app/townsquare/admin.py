@@ -28,15 +28,25 @@ class OfferActionAdmin(admin.ModelAdmin):
 
 
 class OfferAdmin(admin.ModelAdmin):
-    list_display = ['created_on', 'active_now', 'key', 'valid_from', 'valid_to', '__str__', 'stats']
+    list_display = ['created_on', 'active_now', 'key', 'valid_from', 'valid_to', '__str__', 'stats', 'background_preview_small']
     raw_id_fields = ['persona', 'created_by']
-    readonly_fields = ['active_now', 'stats']
+    readonly_fields = ['active_now', 'stats', 'background_preview']
 
     def active_now(self, obj):
         if obj.valid_from and obj.valid_to:
             if obj.valid_from < timezone.now() and obj.valid_to > timezone.now():
                 return "ACTIVE NOW"
         return "-"
+
+    def background_preview(self, instance, size=400):
+        html = ''
+        for ext in ['jpeg']:
+            url = f'/static/v2/images/quests/backs/{instance.style}.{ext}'
+            html += f"<img style='max-width: {size}px;' src='{url}'>"
+        return format_html(html)
+
+    def background_preview_small(self, instance):
+        return self.background_preview(instance, 120);
 
     def stats(self, obj):
         views = obj.view_count

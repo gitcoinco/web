@@ -1132,7 +1132,7 @@ def dashboard(request):
     params = {
         'active': 'dashboard',
         'title': title,
-        'meta_title': "Issue & Open Bug Bounty Explorer | Gitcoin",
+        'meta_title': "Issue & Open Bug Bounty Marketplace | Gitcoin",
         'meta_description': "Find open bug bounties & freelance development jobs including crypto bounty reward value in USD, expiration date and bounty age.",
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
@@ -3714,6 +3714,9 @@ def hackathon_projects(request, hackathon=''):
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
+
+    if order_by not in {'created_on', '-created_on'}:
+        order_by = '-created_on'
 
     projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles').order_by(order_by).select_related('bounty')
 
