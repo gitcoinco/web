@@ -31,8 +31,8 @@
 }
 #search_container{
   width: 20px;
-  margin-left: 5px;
-  margin-right: -5px;
+  margin-left: 25px;
+  margin-right: -10px;
 }
 
 .navbar-nav .nav-link.search__icon {
