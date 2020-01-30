@@ -1,4 +1,99 @@
+var localStorage;
+
+try {
+  localStorage = window.localStorage;
+} catch (e) {
+  localStorage = {};
+}
+
+const scrub = value => value.replace(/[!@#$%^&*(),.?":{}|<>]+/g, '');
+
+
+var buildURI = function(custom_filters) {
+  let uri = '';
+  let _filters = [];
+
+  if (custom_filters) {
+    _filters = custom_filters;
+  } else {
+    _filters.push('ts_keywords');
+  }
+
+  _filters.forEach((filter) => {
+    if (localStorage[filter] &&
+      localStorage[filter] != 'any') {
+        uri += (filter + '=' + localStorage[filter] + '&');
+    }
+  });
+
+  return uri.slice(0, -1);
+}
+
+var storeFilters = function(value) {
+  if (localStorage['ts_keywords']) {
+    const ts_keywords = localStorage['ts_keywords'];
+    const new_value = ',' + value;
+
+    if (ts_keywords === value ||
+      ts_keywords.indexOf(new_value) !== -1 ||
+      ts_keywords.indexOf(value + ',') !== -1) {
+        return;
+    }
+    
+    localStorage['ts_keywords'] = ts_keywords + new_value;
+  } else {
+    localStorage['ts_keywords'] = value;
+  }
+}
+
+var getFilters = function() {
+  var _filters = [];
+
+  if (localStorage['ts_keywords']) {
+    localStorage['ts_keywords'].split(',').forEach(function(v, k) {
+      _filters.push('<a class="filter-tag ts_keywords"><span>' + scrub(v) + '</span>' +
+      '<i class="fas fa-times" onclick="removeFilter(\'ts_keywords\', \'' + scrub(v) + '\')"></i></a>');
+    });
+  }
+
+  $('.filter-tags').html(_filters);
+}
+
+var removeFilter = function () {
+
+}
+
+var removeFilter = function(key, value) {
+  if (key !== 'ts_keywords') {
+    $('input[name="' + key + '"][value="' + value + '"]').prop('checked', false);
+  } else {
+    localStorage[key] = localStorage[key].replace(value, '').replace(',,', ',');
+
+    // Removing the start and last comma to avoid empty element when splitting with comma
+    localStorage[key] = localStorage[key].replace(/^,|,\s*$/g, '');
+  }
+
+  refreshActivities();
+};
+
+var refreshActivities = function () {
+  var searchInput = $('#keywords')[0];
+
+  if (searchInput && searchInput.value.length > 0) {
+    storeFilters(searchInput.value.trim());
+    searchInput.value = '';
+    searchInput.blur();
+  }
+
+  getFilters();
+
+  // fetch activities
+
+  window.history.pushState('', '', window.location.pathname + window.location.search + '&' + buildURI());
+}
+
 $(document).ready(function() {
+  refreshActivities();
 
   // gets multi part (ex: 10 hours 2 minutes 5 seconds) time
   var time_difference_broken_down = function(difference) {
@@ -106,6 +201,19 @@ $(document).ready(function() {
   // clear any announcement
   $('.announce .remove').click(function() {
     $(this).parents('.announce').remove();
+  });
+
+   // search bar
+   $('.townsquare_main').delegate('#new_search', 'click', function(e) {
+    refreshActivities();
+    e.preventDefault();
+  });
+
+  $('.search-area input[type=text]').keypress(function(e) {
+    if (e.which == 13) {
+      refreshActivities();
+      e.preventDefault();
+    }
   });
 
 }(jQuery));

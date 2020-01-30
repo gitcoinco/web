@@ -827,3 +827,19 @@ body.green.offer_view .announce {
   color: var(--purple);
 }
 
+.filter-tag {
+  margin: 2px;
+  text-transform: lowercase;
+  background-color: #3E00FF;
+  color: white !important;
+  border-radius: 2px;
+  font-size: 12px;
+  padding: 4px 5px;
+  display: inline-block;
+}
+
+.filter-tag i {
+  margin-left: 7px;
+  font-size: 9px;
+}
+
