@@ -32,69 +32,155 @@
   </div>
 
   <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
-    <nav class="navbar-nav mx-auto">
+    <nav class="navbar-nav mx-auto gc-megamenu">
       <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Home" %}</a>
-      <a class="nav-link {% if request.path|matches:"^\/((.*chat.*))$" %} selected {% endif %} interior" href="/chat/">{% trans "Chat" %}</a>
 
-      <div class="nav-item dropdown interior">
+      <!-- <div class="nav-item dropdown interior">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {% trans "Browse" %}
         </a>
-        <div class="dropdown-menu dropdown-menu-right" id="explore-tab" aria-labelledby="navbarDropdownHow">
+        <div class="dropdown-menu " id="explore-tab" aria-labelledby="navbarDropdownHow">
           <a class="dropdown-item{% if active == 'dashboard' %} selected{% endif %} interior" href="{% url "explorer" %}">{% trans "Bounties" %}</a>
           <a class="dropdown-item{% if active == 'get_hackathons' %} selected{% endif %} interior" href="{% url "get_hackathons" %}">{% trans "Hackathons" %}</a>
           <a class="dropdown-item{% if active == 'users_directory' %} selected{% endif %} interior" href="{% url "users_directory" %}">{% trans "Users" %}</a>
           <a class="dropdown-item{% if active == 'leaderboard' %} selected{% endif %} interior" href="{% url "_leaderboard" %}">{% trans "Leaderboard" %}</a>
           <a class="dropdown-item{% if active == 'activity' %} selected{% endif %} interior" href="{% url "activity" %}">{% trans "Activity Stream" %}</a>
         </div>
-      </div>      
-      <div class="nav-item dropdown interior">
+      </div> -->
+      <div class="nav-item dropdown interior gc-megamenu-fw">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {% trans "Products" %}
         </a>
-        <div class="dropdown-menu dropdown-menu-right" id="why-gitcoin" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url "funder_bounties" %}">
-            {% trans "Bounties" %} <br>
-            <span>{% trans "Development resources at your finger tips" %}</span>
-          </a>
-          <a class="dropdown-item" href="{% url "kudos_main" %}">
-            {% trans "Kudos" %} <br>
-            <span>{% trans "Show appreciation for each other." %}</span>
-          </a>
-          <a class="dropdown-item" href="{% url "grants:grants" %}">
-            {% trans "Grants" %} <br>
-            <span>{% trans "Recurring Funding for open source" %}</span>
-          </a>
-          <a class="dropdown-item" href="https://codefund.app/">
-            {% trans "Codefund" %} <br>
-            <span>{% trans "Ethical Ads Revenue to power open source" %}</span>
-          </a>
-          <a class="dropdown-item" href="{% url "quests_index" %}">
-            {% trans "Quests" %} <br>
-            <span>{% trans "A fun new way to learn about the web3 ecosystem & earn rewards!" %}</span>
-          </a>
-          <a class="dropdown-item" href="https://hackathons.gitcoin.co">
-            {% trans "Hackathons" %} <br>
-            <span>{% trans "Work with the best sponsors in web3 via 2 week Virtual Hackathons." %}</span>
-          </a>
+        <div class="dropdown-menu " aria-labelledby="navbarDropdown">
+          <div class="gc-megamenu-content">
+            <div class="row">
+              <ul class="col-md-4 col-lg-2 list-unstyled">
+                <li>
+                  <a class="text-reset" href="{% url "funder_bounties" %}">
+                    <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/bounties_symbol_dark.svg" %}" alt="Bounties" height="48">
+                    <b>{% trans "Bounties" %}</b>
+                  </a>
+                  <p class="px-1 m-0 text-wrap font-smaller-2">{% trans "Development resources at your finger tips" %}</p>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'new_bounty' %}">{% trans "Fund Issue" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'explorer' %}">{% trans "Explore Bounties" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'quickstart' %}">{% trans "Funder Quickstart" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'funder_bounties' %}">{% trans "About Bounties" %}</a>
+                </li>
+              </ul>
+
+              <ul class="col-md-4 col-lg-2 list-unstyled">
+                <li>
+                  <a class="text-reset" href="{% url 'get_hackathons' %}">
+                    <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/hackathons_symbol_dark.svg" %}" alt="Bounties" height="48">
+                    <b>{% trans "Hackathons" %}</b>
+                  </a>
+                  <p class="px-1 m-0 text-wrap font-smaller-2">{% trans "Work with the best sponsors in web3 via 2 week Virtual Hackathons." %}</p>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'get_hackathons' %}">{% trans "Explore Hackathons" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="http://hackathons.gitcoin.co/contact" target="_blank">{% trans "Get Involved" %}</a>
+                </li>
+              </ul>
+
+              <ul class="col-md-4 col-lg-2 list-unstyled">
+                <li>
+                  <a class="text-reset" href="{% url 'grants:grants' %}">
+                    <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/grants_symbol_dark.svg" %}" alt="Bounties" height="48">
+                    <b>{% trans "Grants" %}</b>
+                  </a>
+                  <p class="px-1 m-0 text-wrap font-smaller-2">{% trans "Recurring Funding for open source" %}</p>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'grants:grants' %}">{% trans "Explore Grants" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'grants:leaderboard' %}">{% trans "Grants Leaderboard" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'grants:new' %}">{% trans "Create Grant" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'grants:quickstart' %}">{% trans "About Grants" %}</a>
+                </li>
+              </ul>
+              <ul class="col-md-4 col-lg-2 list-unstyled">
+                <li>
+                  <a class="text-reset" href="https://codefund.app/">
+                    <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/codefund_symbol_dark.svg" %}" alt="Bounties" height="48">
+                    <b>{% trans "Codefund" %}</b>
+                  </a>
+                  <p class="px-1 m-0 text-wrap font-smaller-2">{% trans "Ethical Ads Revenue to power open source." %}</p>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="https://codefund.io/advertisers">{% trans "Advertise with us" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="https://codefund.io/publishers">{% trans "Become a publisher" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="https://codefund.io">{% trans "About Codefund" %}</a>
+                </li>
+              </ul>
+
+              <ul class="col-md-4 col-lg-2 list-unstyled">
+                <li>
+                  <a class="text-reset" href="{% url 'quests_index' %}">
+                    <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/quests_symbol_dark.svg" %}" alt="Bounties" height="48">
+                    <b>{% trans "Quests" %}</b>
+                  </a>
+                  <p class="px-1 m-0 text-wrap font-smaller-2">{% trans "A fun new way to learn about the web3 ecosystem & earn rewards!" %}</p>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'quests_index' %}">{% trans "Explore Quests" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'newquest' %}">{% trans "Create Quests" %}</a>
+                </li>
+              </ul>
+
+              <ul class="col-md-4 col-lg-2 list-unstyled">
+                <li>
+                  <a class="text-reset" href="{% url 'kudos_main' %}">
+                    <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/kudos_symbol_dark.svg" %}" alt="Bounties" height="48">
+                    <b>{% trans "Kudos" %}</b>
+                  </a>
+                  <p class="px-1 m-0 text-wrap font-smaller-2">{% trans "Show appreciation for each other." %}</p>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'kudos_marketplace' %}">{% trans "Explore Kudos" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'newkudos' %}">{% trans "Mint Kudos" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'kudos_about' %}">{% trans "About Kudos" %}</a>
+                </li>
+              </ul>
+
+            </div>
+          </div>
         </div>
       </div>
       <div class="nav-item dropdown interior">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {% trans "Network" %}
+          {% trans "Community" %}
         </a>
-        <div class="dropdown-menu dropdown-menu-right" id="how-it-works" aria-labelledby="navbarDropdownHow">
-          <a class="dropdown-item" href="{% url "vision" %}">
-            {% trans "Vision" %}
-          </a>
-          <a class="dropdown-item" href="{% url "mission" %}">
-            {% trans "Mission" %}
-          </a>
-          <a class="dropdown-item" href="{% url "results" %}">
-            {% trans "Results" %}
+        <div class="dropdown-menu " id="" aria-labelledby="navbarDropdownHow">
+          <a class="dropdown-item" href="{% url "landing_chat" %}">
+            {% trans "Chat" %}
           </a>
           <a class="dropdown-item" href="{% url "leaderboard" "" %}">
             {% trans "Leaderboard" %}
@@ -102,33 +188,84 @@
           <a class="dropdown-item" href="{% url "activity" %}">
             {% trans "Activity Feed" %}
           </a>
-          <a class="dropdown-item" href="{% url "landing_chat" %}">
-            {% trans "Chat" %}
+          <a class="dropdown-item" href="{% url "users_directory" %}">
+            {% trans "Users Explorer" %}
+          </a>
+          <a class="dropdown-item" href="{% url "users_directory" %}?persona=Organization">
+            {% trans "Org Tribes" %}
           </a>
         </div>
       </div>
 
-      <div class="nav-item dropdown interior">
+      <div class="nav-item dropdown interior gc-megamenu-fw">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {% trans "Company" %}
         </a>
-        <div class="dropdown-menu dropdown-menu-right" id="how-it-works" aria-labelledby="navbarDropdownHow">
-          <a class="dropdown-item" href="{% url "about" %}">
-            {% trans "About" %}
-          </a>
-          <a class="dropdown-item" href="{% url "about" %}#team">
-            {% trans "Team" %}
-          </a>
-          <a class="dropdown-item" href="{% url "blog" %}">
-            {% trans "Blog" %}
-          </a>
-          <a class="dropdown-item" href="{% url "not_a_token" %}">
-            {% trans "No Utility Token ICO" %}
-          </a>
-          <a class="dropdown-item" href="{% url "jobs" %}">
-            {% trans "Jobs" %}
-          </a>
+        <div class="dropdown-menu " id="" aria-labelledby="navbarDropdownHow">
+          <div class="gc-megamenu-content">
+            <div class="row">
+
+              <ul class="col-md-2 list-unstyled offset-md-2">
+                <li>
+                  <a class="dropdown-item" href="{% url "about" %}">
+                    {% trans "About" %}
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'products' %}">
+                    {% trans "Gitcoin Products" %}
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url "vision" %}">
+                    {% trans "Vision" %}
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url "mission" %}">
+                    {% trans "Mission" %}
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="col-md-2 list-unstyled">
+                <li>
+                  <a class="dropdown-item" href="{% url "results" %}">
+                    {% trans "Results" %}
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url "blog" %}">
+                    {% trans "Blog" %}
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url "not_a_token" %}">
+                    {% trans "No Utility Token ICO" %}
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url "jobs" %}">
+                    {% trans "Jobs" %}
+                  </a>
+                </li>
+              </ul>
+              <ul class="col-md-5 list-unstyled">
+                {% for post in last_posts %}
+                <li class="media p-2 flex-column flex-md-row align-items-center font-smaller-2">
+                  <div class="w-25 align-self-center text-center mb-2 mb-md-0">
+                    <img src="{{post.jetpack_featured_media_url}}" width="100" alt="" class="mw-100">
+                  </div>
+                  <a class="media-body text-reset" href="{{post.link}}">
+                    <b>{{post.title.rendered}}</b>
+                    {{post.excerpt.rendered |truncatechars_html:150|safe}}
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 

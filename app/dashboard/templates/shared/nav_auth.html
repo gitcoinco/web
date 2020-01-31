@@ -17,6 +17,9 @@
 {% load i18n static %}
 {% load kudos_extras %}
 <input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
+{% if is_staff %}
+  <div id=search_container class=""></div>
+{% endif %}
 {% if user.is_authenticated %}
   <div class="nav-item dropdown interior">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -110,6 +113,4 @@
     <i class="fab fa-github"></i><span class="nav-link__text">{% trans "Log in" %}</span>
   </a>
 {% endif %}
-{% if is_staff %}
-  <div id=search_container></div>
-{% endif %}
+
