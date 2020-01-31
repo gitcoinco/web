@@ -32,10 +32,6 @@ a {
   background-size: cover;
 }
 
-#navbarDropdown {
-  text-transform: none;
-}
-
 .dropdown-menu {
   z-index: 9999999999;
 }
@@ -1692,4 +1688,15 @@ div.busyOverlay {
 .gc-megamenu .dropup.gc-megamenu-fw .dropdown-menu {
   left: 0;
   right: 0;
+}
+.dropdown-menu .gc-megamenu-content .dropdown-item {
+  padding: 0.4em 0.7em!important;
+}
+
+.gc-megamenu-title {
+
+}
+.gc-megamenu-active {
+  background: rgba(12, 3, 59, 0.1);
+  border-radius: 4px;
 }

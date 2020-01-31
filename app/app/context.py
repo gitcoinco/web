@@ -154,9 +154,7 @@ def preprocess(request):
         'quests_live': settings.QUESTS_LIVE,
     }
     context['json_context'] = json.dumps(context)
-    context['last_posts'] = cache.get_or_set('last_posts', fetchPost(), 5000)
-    # context['last_posts'] = fetchPost()
-
+    context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)
 
     if context['github_handle']:
         context['unclaimed_tips'] = Tip.objects.filter(

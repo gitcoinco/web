@@ -94,16 +94,6 @@ $(document).ready(function() {
     $('.header').css('overflow', 'visible');
   }
 
-  $('.nav-link.dropdown-toggle').on('click', function(e) {
-    e.preventDefault();
-    var parent = $(this).parents('.nav-item');
-
-    var parentSiblings = parent.siblings('.nav-item');
-
-    parent.find('.dropdown-menu').toggle().toggleClass('show');
-    parentSiblings.find('.dropdown-menu').hide();
-  });
-
   // get started modal
   $("a[href='/get']").on('click', function(e) {
     e.preventDefault();

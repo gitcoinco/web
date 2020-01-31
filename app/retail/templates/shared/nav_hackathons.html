@@ -30,44 +30,7 @@
       <span id="current-network"></span>
     </div>
   {% endif %}
-  <div class="d-flex order-0 order-md-last">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    {% if user.is_authenticated %}
-      {% include 'shared/chat_nav.html' %}
-      {% include 'shared/notifications.html' %}
-    {% endif %}
-  </div>
-
-  <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
-    <nav class="navbar-nav ml-auto mr-3">
-      {% if request.path == '/bounties/funder' %}
-        <span class="navbar__cta mr-2">{% trans "Want to get help on your repo? Easily get started!" %}</span>
-      {% endif %}
-
-      <div class="nav-item interior">
-        <a class="nav-link selected" href="/hackathon-list" id="navbarDropdownHow" role="button">
-          {% trans "Marketplace" %}
-        </a>
-      </div>
-
-      <div class="nav-item interior">
-        <a class="nav-link" href="mailto:founders@gitcoin.co?subject=I+want+to+work+together+on+a+hackathon." id="navbarDropdownHow" role="button">
-          {% trans "Get involved" %} 
-          <i class="fas fa-rocket"></i>
-        </a>
-      </div>
-
-
-
-      {% if request.path != '/' or user.is_authenticated %}
-        {% include 'shared/nav_auth.html' with source='authed' %}
-      {% endif %}
-    </nav>
-  </div>
-
+  {% include 'shared/menu.html' %}
 </nav>
 {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*)|(.*fund.*)|(.*cancel.*))$" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>

@@ -15,13 +15,13 @@ $(document).ready(function() {
   scrollContainer.scroll(RAFThrottle((e) => {
     moveBackground(e);
     // Robot and Tree Parallax
-    if (!navFollowState && scrollContainer.scrollTop() > followStateHeight) {
-      $navbar.addClass('following');
-      navFollowState = true;
-    } else if (navFollowState && scrollContainer.scrollTop() < followStateHeight) {
-      $navbar.removeClass('following');
-      navFollowState = false;
-    }
+    // if (!navFollowState && scrollContainer.scrollTop() > followStateHeight) {
+    //   $navbar.addClass('following');
+    //   navFollowState = true;
+    // } else if (navFollowState && scrollContainer.scrollTop() < followStateHeight) {
+    //   $navbar.removeClass('following');
+    //   navFollowState = false;
+    // }
 
     if (scrollContainer.scrollTop() > treeAnimationPosition) {
       $('#gc-tree #tree-svg .lines').removeClass('pause-animation');
