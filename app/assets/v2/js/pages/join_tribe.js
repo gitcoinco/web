@@ -1,7 +1,12 @@
 const joinTribe = () => {
   $('[data-jointribe]').each(function(index, elem) {
 
-    $(elem).on('click', function() {
+    $(elem).on('click', function(e) {
+      if (!document.contxt.github_handle) {
+        e.preventDefault();
+        _alert('Please login first.', 'error');
+        return;
+      }
       $(elem).attr('disabled', true);
 
       const tribe = $(elem).data('jointribe');
@@ -10,8 +15,14 @@ const joinTribe = () => {
 
       $.when(sendJoin).then(function(response) {
         $(elem).attr('disabled', false);
-        response.is_member ? $(elem).text('Leave Tribe') : $(elem).text('Join Tribe');
+        response.is_member ? $(elem).html('Unfollow <i class="fas fa-minus"></i>') : $(elem).html('Follow <i class="fas fa-plus"></i>');
+        let old_count = parseInt($('#follower_count span').text());
+        var new_count = response.is_member ? old_count + 1 : old_count - 1;
 
+        $('#follower_count span').fadeOut();
+        setTimeout(function() {
+          $('#follower_count span').text(new_count).fadeIn();
+        }, 500);
       }).fail(function(error) {
         $(elem).attr('disabled', false);
       });

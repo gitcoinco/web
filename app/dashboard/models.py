@@ -2492,6 +2492,11 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
+    dont_autofollow_earnings = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, Gitcoin will not auto-follow users you do business with',
+    )
+
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     profile_organizations = models.ManyToManyField(Organization, blank=True)
@@ -4530,6 +4535,28 @@ class Earning(SuperModel):
     def __str__(self):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
 
+    def create_auto_follow(self):
+        profiles = [self.to_profile, self.from_profile, self.org_profile]
+        count = 0
+        for p1 in profiles:
+            for p2 in profiles:
+                if not p1 or not p2:
+                    continue
+                if p1.pk == p2.pk:
+                    continue
+                if not p1.dont_autofollow_earnings:
+                    TribeMember.objects.update_or_create(
+                        profile=p1,
+                        org=p2,
+                        defaults={'why':'auto'}
+                        )
+                    count += 1
+        return count
+
+@receiver(post_save, sender=Earning, dispatch_uid="post_save_tip")
+def postsave_tip(sender, instance, created, **kwargs):
+    if created:
+        instance.create_auto_follow()
 
 def get_my_earnings_counter_profiles(profile_pk):
     # returns profiles that a user has done business with
@@ -4589,5 +4616,9 @@ class TribeMember(SuperModel):
     status = models.CharField(
         max_length=20,
         choices=MEMBER_STATUS,
+        blank=True
+    )
+    why = models.CharField(
+        max_length=20,
         blank=True
     )
