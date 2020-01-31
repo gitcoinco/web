@@ -410,6 +410,9 @@ urlpatterns = [
     re_path(r'^livestream/?', retail.views.livestream, name='livestream'),
     re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
     re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
+    re_path(r'^wallpaper/?', retail.views.wallpaper, name='wallpaper'),
+    re_path(r'^wallpapers/?', retail.views.wallpaper, name='wallpapers'),
+
     re_path(r'^gitter/?', retail.views.gitter, name='gitter'),
     re_path(r'^refer/?', retail.views.refer, name='refer'),
     re_path(r'^fb/?', retail.views.fb, name='fb'),

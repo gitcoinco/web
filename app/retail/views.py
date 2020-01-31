@@ -1692,6 +1692,10 @@ def feedback(request):
     return redirect('https://goo.gl/forms/9rs9pNKJDnUDYEeA3')
 
 
+def wallpaper(request):
+    return redirect('https://bits.owocki.com/items/kpumqWGv/download')
+
+
 def help_dev(request):
     return redirect('https://docs.google.com/document/d/1S8BLKJF7J5RbrfFw-mX0iYcy4VSc6-a1aQXtKT_ta0Y/edit')
 
