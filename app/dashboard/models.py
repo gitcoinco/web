@@ -1667,6 +1667,18 @@ class Tip(SendCryptoAsset):
     )
 
     @property
+    def is_programmatic_comment(self):
+        return 'activity:' in self.comments_priv
+
+    @property
+    def attached_object(self):
+        if 'activity:' in self.comments_priv:
+            pk = self.comments_priv.split(":")[1]
+            activity = Activity.objects.get(pk=pk)
+            return activity
+
+
+    @property
     def receive_url(self):
         if self.web3_type == 'yge':
             return self.url
@@ -1729,7 +1741,7 @@ def psave_tip(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
-def postsave_tip(sender, instance, **kwargs):
+def postsave_tip(sender, instance, created, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
     if instance.pk and is_valid:
         Earning.objects.update_or_create(
@@ -1745,6 +1757,15 @@ def postsave_tip(sender, instance, **kwargs):
                 "network":instance.network,
             }
             )
+    if created:
+        if 'activity:' in instance.comments_priv:
+            if instance.network == 'mainnet' or settings.DEBUG:
+                activity=instance.attached_object
+                from townsquare.models import Comment
+                comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
+                comment = Comment.objects.create(profile=instance.sender_profile, activity=activity, comment=comment)
+
+
 
 
 # method for updating
@@ -2185,6 +2206,8 @@ class Activity(SuperModel):
                                                       10 ** activity['token']['decimals']) * 1000) / 1000
 
         activity['view_count'] = self.view_count
+        activity['tip_count_usd'] = self.tip_count_usd
+        activity['tip_count_eth'] = self.tip_count_eth
 
         # finally done!
 
@@ -2197,6 +2220,18 @@ class Activity(SuperModel):
             return vp
         vp['liked'] = self.likes.filter(profile=user.profile).exists()
         return vp
+
+    @property
+    def tip_count_usd(self):
+        network = 'rinkeby' if settings.DEBUG else 'mainnet'
+        tips = Tip.objects.filter(comments_priv=f"activity:{self.pk}", network=network)
+        return sum([tip.value_in_usdt for tip in tips])
+
+    @property
+    def tip_count_eth(self):
+        network = 'rinkeby' if settings.DEBUG else 'mainnet'
+        tips = Tip.objects.filter(comments_priv=f"activity:{self.pk}", network=network)
+        return sum([tip.value_in_eth for tip in tips])
 
     @property
     def secondary_avatar_url(self):

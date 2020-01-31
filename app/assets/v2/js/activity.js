@@ -121,6 +121,77 @@ $(document).ready(function() {
     });
 
   });
+  // like activity
+  $(document).on('click', '.tip_activity', function(e) {
+    if (!document.contxt.github_handle) {
+      _alert('Please login first.', 'error');
+      return;
+    }
+    if (!web3) {
+      _alert('Please enable and unlock your web3 wallet.', 'error');
+      return;
+    }
+
+    var $amount = $(this).find('.amount');
+
+    const email = '';
+    const github_url = '';
+    const from_name = document.contxt['github_handle'];
+    const username = $(this).data('username');
+    const amountInEth = parseFloat(prompt('How much ETH do you want to give?', '0.01').replace('ETH', ''));
+
+    if (amountInEth < 0.001) {
+      _alert('Amount must be 0.001 or more.', 'error');
+      return;
+    }
+    const comments_priv = 'activity:' + $(this).data('pk');
+    const comments_public = '';
+    const accept_tos = (confirm("Do you accept Gitcoin's terms of service at gitcoin.co/terms ?"));
+    const from_email = '';
+    const tokenAddress = '0x0';
+    const expires = 9999999999;
+    var $parent = $(this);
+    var success_callback = function(txid) {
+      const url = 'https://' + etherscanDomain() + '/tx/' + txid;
+      const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+
+      var old_amount = $amount.text();
+      var new_amount = Math.round(100 * parseFloat(old_amount) + parseFloat(amountInEth)) / 100;
+
+      $amount.fadeOut().text(new_amount).fadeIn();
+      setTimeout(function() {
+        var $target = $parent.parents('.row.box').find('.comment_activity');
+
+        view_comments($target, false);
+      }, 1000);
+
+      _alert(msg, 'info', 1000);
+      // todo: update amount
+    };
+
+    var failure_callback = function() {
+      $.noop(); // do nothing
+    };
+
+    return sendTip(
+      email,
+      github_url,
+      from_name,
+      username,
+      amountInEth,
+      comments_public,
+      comments_priv,
+      from_email,
+      accept_tos,
+      tokenAddress,
+      expires,
+      success_callback,
+      failure_callback,
+      false
+    );
+
+  });
+
 
   // like activity
   $(document).on('click', '.like_activity, .flag_activity', function(e) {

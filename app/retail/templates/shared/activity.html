@@ -215,6 +215,12 @@
           {% endif %}
 
           {% if not hide_likes %}
+          {% if is_staff %}
+            <a data-pk={{row.pk}} data-username={{row.profile.handle}} class="tip_activity" href="#"  data-toggle="tooltip" title="This activity feed has generated {{ row.tip_count_eth|floatformat:2 }} ETH (${{row.tip_count_usd|floatformat:2}}) in Tips.">
+              <i class="fab fa-ethereum" ></i> <span class="amount">{{ row.tip_count_eth|floatformat:2}}</span> | 
+            </a>
+          {% endif %}
+
             <a href=# data-action='like' data-toggle="tooltip" title="{{row.likes_title}}Click to {% if row.liked %}unlike{% else %}like{%endif%} feed item." data-affirmative=liked data-negative=unliked data-state="{% if row.liked %}liked{% else %}unliked{%endif%}" data-pk={{row.pk}} class="like_activity"><span class="action {% if row.liked %}open{%endif%}"><i class="far fa-thumbs-up"></i></span><span class="sup">(<span class="num">{{row.likes}}</span>)</span></a> 
             
             <a href=# data-pk={{row.pk}} class="comment_activity" data-toggle="tooltip" title="Comment on this feed item." {% if row.comments %} data-open="true" {% endif %} ><span class="action"><i class="far fa-comments"></i></span><span class="sup">(<span class="num">{{row.comments}}</span>)</span></a></span>

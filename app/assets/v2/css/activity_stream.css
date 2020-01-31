@@ -25,7 +25,7 @@
 a .sup{
   color: black;
 }
-.action:hover{
+.tip_activity, .action:hover{
   background-color: #fafafa;
 }
 .action.open{
@@ -65,7 +65,10 @@ a .sup{
   color: black;
   font-weight: bold;
 }
-.like_activity:hover, .flag_activity:hover, .comment_activity:hover, .copy_activity:hover{
+.tip_activity{
+  color: black;
+}
+.tip_activity:hover, .like_activity:hover, .flag_activity:hover, .comment_activity:hover, .copy_activity:hover{
   text-decoration: none;
   font-weight: bolder;
 }
