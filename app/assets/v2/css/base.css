@@ -1689,7 +1689,7 @@ div.busyOverlay {
   left: 0;
   right: 0;
 }
-.dropdown-menu .gc-megamenu-content .dropdown-item {
+.dropdown-menu .gc-megamenu-content .dropdown-item-small {
   padding: 0.4em 0.7em!important;
 }
 
