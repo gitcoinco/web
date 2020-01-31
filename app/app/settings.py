@@ -125,6 +125,8 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'townsquare',
     'compliance',
+    'questions'
+    #'questions.apps.QuestionsConfig'
 ]
 
 MIDDLEWARE = [

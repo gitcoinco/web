@@ -46,6 +46,7 @@ import linkshortener.views
 import marketing.views
 import marketing.webhookviews
 import perftools.views
+import questions.views
 import quests.views
 import retail.emails
 import retail.views
@@ -176,6 +177,11 @@ urlpatterns = [
         dashboard.views.funder_dashboard_bounty_info,
         name='funder_dashboard_bounty_info'
     ),
+
+    # questions
+    re_path(r'^questions/?$', questions.views.questions, name='questions'),
+    re_path(r'^questions/(?P<question_id>\d+)/answers/?$', questions.views.question_answers, name='question_answers'),
+    re_path(r'^questions_index/?$', questions.views.questions_index, name='questions_index'),
 
     # quests
     re_path(r'^quests/?$', quests.views.index, name='quests_index'),

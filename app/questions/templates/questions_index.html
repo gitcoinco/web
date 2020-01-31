@@ -1,0 +1,87 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not,see
+  <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static add_url_schema avatar_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/vue-loader.css" %} />
+
+    <link rel="stylesheet" href="{% static "v2/css/board.css" %}" />
+
+  </head>
+  <body class="{{ active }} bg-lightblue g-font-muli" >
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'shared/nav.html' %}
+    <div id="questions-board" v-cloak>
+      {% csrf_token %}
+      <div class="tab-content" id="questions-board">
+        <section class="container">
+          <div class="row">
+            <div class="col-12">
+              <div class="bg-white rounded border my-4">
+                <div class="p-4 border-bottom font-weight-bold">
+                  [[ questions.length ]] Open Question
+                  <button class="btn btn-gc-blue btn-sm float-right" v-on:click="ask">Ask a Question</button>
+                </div>
+                <ul class="list-unstyled list-bounty">
+                  <li v-for="(question, index) in questions.questions" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
+                    <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
+                      <div class="list-bounty-item_content my-auto">
+                        <div class="d-flex flex-column flex-md-row">
+                          <div class="d-flex flex-column w-100 ml-md-3">
+                            <a :href="question.absolute_url" title="View question details" class="text-truncate mb-2 text-dark">[[ question.text ]]</a>
+                            <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
+                              <span class="my-1">[[ question.value_in_eth ]] ETH</span>
+                              <a :href="'/questions/' + question.id" title="View question details" class="mx-md-2 my-1"><i class="fas fa-eye"></i>View Question Details</a>
+                              <button class="btn btn-gc-blue btn-sm btm-block" v-on:click="answer" :data-questionid=question.id>Answer</button>
+                            </div>
+                            <ul class="list-unstyled">
+                             <li v-for="(answer, index) in question.answers" class="position-relative font-smaller-1 mt-3 p-3">[[ answer.text ]]</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+                <loading-screen v-if="isLoading.open"></loading-screen>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html'%}
+    <script src="{% static "v2/js/vue-components.js" %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-axios@2.1.5/dist/vue-axios.min.js"></script>
+    <script src="{% static "v2/js/questions.js" %}"></script>
+
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+    </script>
+
+  </body>
+</html>

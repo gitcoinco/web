@@ -28,6 +28,8 @@
 {% elif user.is_authenticated %}
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {% endif %}
+<script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-axios@2.1.5/dist/vue-axios.min.js"></script>
 {% include 'shared/sentry.html' %}
 <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
 <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
