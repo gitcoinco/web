@@ -50,11 +50,14 @@
                             <a :href="question.absolute_url" title="View question details" class="text-truncate mb-2 text-dark">[[ question.text ]]</a>
                             <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
                               <span class="my-1">[[ question.value_in_eth ]] ETH</span>
-                              <a :href="'/questions/' + question.id" title="View question details" class="mx-md-2 my-1"><i class="fas fa-eye"></i>View Question Details</a>
-                              <button class="btn btn-gc-blue btn-sm btm-block" v-on:click="answer" :data-questionid=question.id>Answer</button>
+                              <button class="btn btn-gc-blue btn-sm btm-block" v-on:click="answer(question.id)" :data-questionid=question.id>Answer</button>
                             </div>
                             <ul class="list-unstyled">
-                             <li v-for="(answer, index) in question.answers" class="position-relative font-smaller-1 mt-3 p-3">[[ answer.text ]]</li>
+                              <li v-for="(answer, index) in question.answers" class="position-relative font-smaller-1 mt-3 p-3">
+                                <hr/>
+                                [[ answer.text ]]
+                                <button class="btn btn-gc-blue btn-sm btm-block float-right" v-on:click="selectAnswer(answer.id)">Select Answer & Tip</button>
+                              </li>
                             </ul>
                           </div>
                         </div>

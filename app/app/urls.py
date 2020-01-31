@@ -180,6 +180,8 @@ urlpatterns = [
 
     # questions
     re_path(r'^questions/?$', questions.views.questions, name='questions'),
+    re_path(r'^questions/ask/?$', questions.views.ask_question, name='ask_question'),
+
     re_path(r'^questions/(?P<question_id>\d+)/answers/?$', questions.views.question_answers, name='question_answers'),
     re_path(r'^questions_index/?$', questions.views.questions_index, name='questions_index'),
 

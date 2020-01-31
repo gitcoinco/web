@@ -8,22 +8,40 @@ from django.http import Http404, JsonResponse
 
 import json
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 @permission_classes((permissions.AllowAny,))
 def questions(request):
     if request.method == 'GET':
-        questions = Question.objects.all()
+        questions = Question.objects.order_by('-created_on').all()
         serializer = QuestionSerializer(questions, many=True)
         return Response(serializer.data)
-    elif request.method == 'POST':
-        if request.user.profile != request.POST.get('owner'):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        serializer = QuestionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+def ask_question(request):
+    data = json.loads(request.body)
+    for k in ['owner', 'text']:
+        if not data.get(k):
+            print('key {} not found or empty: {}'.format(k, data.get(k)))
+            return JsonResponse({'error': 'missing data'}, status=400)
+    Question.objects.create(owner_id=data.get('owner'),
+                            text=data.get('text'),
+                            value_in_eth=data.get('value_in_eth', 0.0))
+    return JsonResponse({'success': 'true'}, status=201)
+
+
+def accept_answer(request):
+    data = json.loads(request.body)
+    for k in ['answer_id']:
+        if not data.get(k):
+            print('key {} not found or empty: {}'.format(k, data.get(k)))
+            return JsonResponse({'error': 'missing data'}, status=400)
+    answer = Answer.objects.get(id=answer_id);
+    if answer.question.owner != request.user.profile:
+        return JsonResponse({'error': 'not your question'}, status=400)
+    answer.is_accepted = True
+    answer.save()
+    return JsonResponse({'success': 'true'}, status=200)
 
 def question_answers(request, question_id):
     print('received query')
