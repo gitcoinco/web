@@ -123,6 +123,7 @@ $(document).ready(function() {
   });
   // like activity
   $(document).on('click', '.tip_activity', function(e) {
+    e.preventDefault();
     if (!document.contxt.github_handle) {
       _alert('Please login first.', 'error');
       return;
@@ -156,7 +157,7 @@ $(document).ready(function() {
       const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
 
       var old_amount = $amount.text();
-      var new_amount = Math.round(100 * parseFloat(old_amount) + parseFloat(amountInEth)) / 100;
+      var new_amount = Math.round(100 * (parseFloat(old_amount) + parseFloat(amountInEth))) / 100;
 
       $amount.fadeOut().text(new_amount).fadeIn();
       setTimeout(function() {
