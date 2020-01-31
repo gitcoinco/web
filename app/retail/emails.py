@@ -979,8 +979,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "$344k for Ethereum Public Goods"
-    new_kudos_pks = [7260, 5304, 7275]
+    subject = "We Need YOU to Sustain Web3!"
+    new_kudos_pks = [8179, 7511, 7503]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1002,20 +1002,20 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-What a start to 2020 it’s been! Between the new <a href="https://gitcoin.co/townsquare">Town Square</a>, Gitcoin <a href="https://gitcoin.co/grants/">Grants Round 4</a>, and <a href="https://gitcoin.co/hackathon/take-back-the-web?">Take Back The Web</a>, this month has seen the most activity ever on the Gitcoin platform. Let’s keep that momentum going, make sure to check back on the home page for daily, weekly, and monthly actions. Keep an eye out for temporary “secret actions” as well, we may have given out a bit of ETH recently… ;)
+The <a href="https://hackathons.gitcoin.co/sustain-web3">Sustain Web3</a> virtual hackathon is officially live with $17k in prizes up for grabs! You can now view all the bounties on the <a href="https://gitcoin.co/hackathon/sustain-web3">prize explorer</a>. The two week hackathon will run until February 12th at 23:59 UTC, right before <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a>. Sponsors include <a href="https://foam.space/">FOAM</a>, <a href="https://xpring.io/">Xpring</a>, <a href="https://www.dfuse.io/">dfuse</a>, <a href="https://www.bancor.network/">Bancor</a>, <a href="https://labs.consensys.net/">ConsenSys Labs</a>, and more.
 </p>
 <p>
-We’re proud to share that <a href="https://gitcoin.co/grants/">CLR Round 4</a> was the biggest and best grants round yet. A total of 1,315 unique community members made 6,473 contributions worth $144,810 in 14 days. With matches, that is $344k... wild! No good social experiment in crypto is without a bit of Twitter drama, but we’re extremely thankful to all of you who helped fund public goods and made this a success.
+Gitcoin <a href="https://gitcoin.co/grants/">Grants Round 4</a> is closed and funds will be distributed shortly. Check out our newest <a href="https://gitcoin.co/blog/gitcoin-grants-round-4/">blog post</a> for the full results, and we also recommend reading <a href="https://vitalik.ca/general/2020/01/28/round4.html">Vitalik’s review</a> as well. Thank you to everyone who helped make this round the biggest success yet!
 </p>
 <p>
-On another note, only 6 more days until the <a href="https://hackathons.gitcoin.co/sustain-web3/">Sustain Web3</a> Virtual Hackathon kicks off. Sponsors include FOAM, Dfuse, and Xpring, with more be announced next week. This hackathon will lead into our physical <a href="https://web3.sustainoss.org/">Sustain Web3</a> conference the day before ETHDenver. To learn more about Sustain Web3 and what Gitcoin will be up to at ETHDenver, check out our most recent blog post: <a href="https://gitcoin.co/blog/git-coins-at-ethdenver/">Git Coins at ETHDenver</a>. 
+ Join us this weekend (Feb 1st & 2nd) for Trust-Less 2020: A Proof-Of-Stake (PoS) Validator summit. Attendees will learn about Ethereum 2.0 Validator Economics with ConsenSys Codefi, get updates on the beacon chain with Prysmatic Labs, learn how to spin up their own ETH 2.0 Validator with RocketPool, and more. The conf is 100% free & virtual so you can tune in from anywhere in the world to learn. Claim your spot <a href="https://trust-less-2020.dystopialabs.com/">here</a>.
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Today's Livestream will feature lightning talks on the <a href="https://onemilliondevs.com/">One Million Devs</a> initiative from industry leaders. Come share your ideas for how to onboard more developers onto Ethereum. <a href="https://gitcoin.co/livestream">Join us</a> 2pm ET.
+            Today's Livestream will feature Sustain Web3 hackathon sponsors to discuss their companies and prizes. <a href="https://gitcoin.co/livestream">Join us</a> 2pm ET to hear from FOAM, Xpring, ConsenSys Labs, and dfuse.
         </li>
     </ul>
 </p>
@@ -1024,22 +1024,22 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'kfichter',
+        'who': 'pengiundev',
         'who_link': True,
-        'what': 'Created the Initial Design for the Eth2 Book',
-        'link': 'https://gitcoin.co/issue/quilt/pm/6/3904',
+        'what': 'Adjusted "Hatching Period" In Bonding Curve Smart Contract',
+        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/10/3962',
         'link_copy': 'View more',
     }, {
-        'who': 'marcoautiero',
+        'who': 'adrianhacker-pdx',
         'who_link': True,
-        'what': 'Created a React Component To Responsively Render Externally Hosted PDF Files On Mobile, Tablet And Desktop Devices',
-        'link': 'https://gitcoin.co/issue/consensys-space/trusat-frontend/215/3845',
+        'what': 'Created an Explainer Page For Account Abstraction with EthHub',
+        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/422/3908',
         'link_copy': 'View more',
     }, {
-        'who': 'acolytec3',
+        'who': 'jmsofarelli',
         'who_link': True,
-        'what': 'Made an outline for the eth2 client architecture under the Ethereum 2.0 section',
-        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/418/3885',
+        'what': 'Made a Dapp With a Frontend Hosted on IPFS With Infuras API.',
+        'link': 'https://gitcoin.co/issue/INFURA/hackathons/2/3868',
         'link_copy': 'View more',
     }, ]
 
@@ -1056,14 +1056,14 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/ProofSuite/OrFeed/issues/31',
-        'primer': 'Bug(S) Fix: Leveraged Positions Smart Contract Example',
+        'url': 'https://github.com/ryan-foamspace/Sustain-Web3-hackathon/issues/3',
+        'primer': 'Create a Mobile-Friendly Map Viewer with FOAM',
     }, {
-        'url': 'https://github.com/harmonylion/99designsformemes/issues/1',
-        'primer': 'Create A Meme For "The Fed Is Bad"',
+        'url': 'https://github.com/ConsenSys/Relays/issues/2',
+        'primer': 'Growth Hacking For Established Projects - Drive Viral Growth to Your Startup',
     }, {
-        'url': 'https://github.com/Minds/minds/issues/151',
-        'primer': 'Show A List Of Who Has Voted On A Post',
+        'url': 'https://github.com/gitcoinco/web/issues/5914',
+        'primer': 'Allow Gitcoin.Co/Tips To Support Sablier Style Streams',
     }]
 
 
