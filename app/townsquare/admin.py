@@ -30,7 +30,7 @@ class OfferActionAdmin(admin.ModelAdmin):
 class OfferAdmin(admin.ModelAdmin):
     list_display = ['created_on', 'active_now', 'key', 'valid_from', 'valid_to', '__str__', 'stats', 'background_preview_small']
     raw_id_fields = ['persona', 'created_by']
-    readonly_fields = ['active_now', 'stats', 'background_preview']
+    readonly_fields = ['active_now', 'stats', 'background_preview', 'schedule_preview']
 
     def active_now(self, obj):
         if obj.valid_from and obj.valid_to:
@@ -43,6 +43,36 @@ class OfferAdmin(admin.ModelAdmin):
         for ext in ['jpeg']:
             url = f'/static/v2/images/quests/backs/{instance.style}.{ext}'
             html += f"<img style='max-width: {size}px;' src='{url}'>"
+        return format_html(html)
+
+    def schedule_preview(self, instance, size=400):
+        import pytz
+        html = "<table style='max-width:700px; overflow-x: scroll;'>"
+        for _type in ['monthly', 'weekly', 'daily']:
+            days = 1 if _type == 'daily' else 7
+            if _type == 'monthly':
+                days = 30
+            start = timezone.datetime(2020, 1, 1).replace(tzinfo=pytz.utc)
+            current = start
+            end = timezone.now() + timezone.timedelta(days=30*2)
+            html += f"<tr>"
+            html += f"<td>{_type}</td>"
+            while current < end:
+                next_current = current + timezone.timedelta(days=days)
+                cursor = current + timezone.timedelta(hours=1)
+                has_offer = Offer.objects.filter(key=_type, valid_from__lte=cursor, valid_to__gt=cursor)
+                color = 'green' if has_offer.exists() else 'white'
+                if has_offer.filter(pk=instance.pk):
+                    color='red'
+                label = f"{current.strftime('%m/%d')} - {next_current.strftime('%m/%d')}" if _type != 'daily' else f"{current.strftime('%d')}"
+                if has_offer.exists():
+                    url = has_offer.first().admin_url
+                    label = f"<a style='color:white' href={url}>{label}</a>"
+                html += f"<td style='background-color:{color}; border: 1px solid grey;' colspan={days}>{label}</td>"
+                current = next_current
+            html += f"</tr>"
+
+        html += "</table>"
         return format_html(html)
 
     def background_preview_small(self, instance):
