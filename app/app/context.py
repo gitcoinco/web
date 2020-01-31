@@ -93,17 +93,19 @@ def preprocess(request):
 
     chat_unread_messages = False
 
-    if profile and profile.chat_id:
+    if profile and hasattr(profile, 'chat_id'):
         try:
-            from chat.tasks import get_driver
-            chat_driver = get_driver()
+            make_external_api_call = False
+            if make_external_api_call:
+                from chat.tasks import get_driver
+                chat_driver = get_driver()
 
-            chat_unreads_request = chat_driver.teams.get_team_unreads_for_user(profile.chat_id)
+                chat_unreads_request = chat_driver.teams.get_team_unreads_for_user(profile.chat_id)
 
-            for teams in chat_unreads_request:
-                if teams['msg_count'] > 0 or teams['mention_count'] > 0:
-                    chat_unread_messages = True
-                    break
+                for teams in chat_unreads_request:
+                    if teams['msg_count'] > 0 or teams['mention_count'] > 0:
+                        chat_unread_messages = True
+                        break
         except Exception as e:
             logger.error(str(e))
 

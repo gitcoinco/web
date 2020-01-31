@@ -100,6 +100,13 @@ const init = () => {
     submitHandler: function(form) {
       let data = {};
 
+      var recipient_addr = $('#input-admin_address').val();
+      var msg = 'You have specified ' + recipient_addr + ' as the grant funding recipient address. Please TRIPLE CHECK that this is the correct address to receive funds for contributions to this grant.  If access to this address is lost, you will not be able to access funds from contributors to this grant.';
+
+      if (!confirm(msg)) {
+        return;
+      }
+
       $(form).find(':input:disabled').removeAttr('disabled');
 
       $.each($(form).serializeArray(), function() {

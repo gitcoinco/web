@@ -20,7 +20,7 @@
 <!--- Top Row Notification -->
 <div class="row bottom_notification font-caption bottom_notification" style="text-align: center;">
   <span style="text-align: center; margin: auto;">
-    {% blocktrans %}<strong>Take Back The Web</strong> Virtual Hackathon runs January 9th to January 23rd - <a href="https://gitcoin.co/hackathon/take-back-the-web/">Check out the Details</a>.{% endblocktrans %}
+    {% blocktrans %}<strong>Sustain Web3</strong> Virtual Hackathon runs January 29th to February 12nd - <a href="https://gitcoin.co/hackathon/sustain-web3/">Check out the details</a>.{% endblocktrans %}
   </span>
   <span style="cursor: pointer;" id="top_nav_notification">
       &times;
@@ -34,7 +34,7 @@
     <img src="{% static "v2/images/top-bar/hackathons-logo.svg" %}" height="23" width="125" alt="" class="d-md-block d-none" style="margin-top: 0px; margin-left: -10px;">
     <img src="{% static "v2/images/top-bar/hackathons-symbol.svg" %}" height="22" alt="" class="d-md-none">
   </a>
-  <a class="{% if request.path == '/' %}selected{% endif %}" href="{% url 'funder_bounties' %}">
+  <a class="{% if request.path == '/explorer' %}selected{% endif %}" href="{% url 'explorer' %}">
     <img src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="22" alt="" class="d-md-block d-none">
     <img src="{% static "v2/images/top-bar/bounties_mobile.svg" %}" height="22" alt="" class="d-md-none">
   </a>
@@ -42,7 +42,7 @@
     <img src="{% static "v2/images/top-bar/codefund-logo.svg" %}" height="20" alt="" class="d-md-block d-none">
     <img src="{% static "v2/images/top-bar/codefund-symbol.svg" %}" height="20" alt="" class="d-md-none">
   </a>
-  <a class="{% if request.path|matches:'^\/((kudos.*))$' %}selected{% endif %}" href="{% url 'kudos_main' %}">
+  <a class="{% if request.path|matches:'^\/((kudos.*))$' %}selected{% endif %}" href="{% url 'kudos_marketplace' %}">
     <img src="{% static "v2/images/top-bar/kudos-logo.svg" %}" height="22" alt="" class="d-md-block d-none">
     <img src="{% static "v2/images/top-bar/kudos-symbol.svg" %}" height="22" alt="" class="d-md-none">
   </a>

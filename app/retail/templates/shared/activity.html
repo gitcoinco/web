@@ -26,6 +26,11 @@
         <img class="avatar my-auto secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
       {% endif %}
     </div>
+    {% for org in row.profile.organizations %}
+      <span>
+        <img data-toggle="tooltip" title="Member of @{{org}}" src="/dynamic/avatar/{{ org }}" style="border-radius: 15px; width: 15px; height: 15px;" />
+      </span>
+    {% endfor %}
   </div>
   <div class="col-12 col-md-10 activity-info my-auto {% if row.secondary_avatar_url %}position-relative{% endif %}">
     <div class="activity-status font-body">
@@ -40,17 +45,23 @@
       {% elif row.activity_type == 'new_kudos' %}
         {% trans "sent a" %}
         Kudos
-        {% if row.metadata.to_username %}
+
+        {% if row.metadata.to_username|cut:'@' %}
           {% trans "to" %}
           <a href="/profile/{{ row.metadata.to_username|cut:'@' }}">
             {{ row.metadata.to_username }}
           </a>
-        {% elif row.kudos %}
+        {% elif row.kudos and row.kudos.username|cut:'@' %}
           {% trans "to" %}
           <a href="/profile/{{ row.kudos.username|cut:'@' }}">
             {{ row.kudos.username }}
           </a>
         {% endif %}
+
+        {% if row.kudos and row.kudos.comments_public %}
+          w. comment "{{row.kudos.comments_public}}"
+        {% endif %}
+
       {% elif row.activity_type == 'receive_kudos' %}
         {% trans "received a" %}
         Kudos
@@ -65,6 +76,11 @@
             {{ row.kudos.from_username }}
           </a>
         {% endif %}
+
+        {% if row.kudos and row.kudos.comments_public %}
+          w. comment "{{row.kudos.comments_public}}"
+        {% endif %}
+
       {% elif row.activity_type == 'new_grant' %}
         {% trans "created a new grant" %}
         <a href="{{ row.metadata.grant_url }}" >
@@ -113,7 +129,7 @@
           {{ row.metadata.title }}
         </a>
       {% elif row.activity_type == 'status_update' %}
-        <b>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</b>
+        : <b>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</b>
       {% elif row.activity_type == 'wall_post' %}
         &gt; 
       {% if row.grant %}
@@ -204,6 +220,9 @@
             <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}} class="flag_activity"><span class="action {% if row.flagged %}open{%endif%}"><i class="far fa-flag"></i></span></a> 
 
             <a class="action copy_activity" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}><i class="fas fa-link"></i></a> 
+
+            <i class="fas fa-circle-notch fa-spin loading blue hidden"></i>
+            <i class="fas fa-exclamation-triangle error red hidden"></i>
           {% endif %}
           {% if row.metadata.attach.token %}
             | <button class="btn btn-sm btn-link" style="color: #3E00FF;"> 
@@ -221,7 +240,7 @@
       <a href=# data-pk={{row.pk}} class="delete_activity" style="color:black; font-size: 10px;"><i class="fas fa-trash"></i></a>
     {% elif row.kudos %}
       <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
-        <img src="{% static row.kudos_data.image %}" alt="" class="w-100" style="max-width:100px;">
+        <img class="activity_feed_kudos_image" src="{{row.kudos_data.preview_img_url }}" alt="">
       </a>
     {% elif row.activity_type == 'leaderboard_rank' %}
       <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100" style="max-width:100px;">
@@ -231,11 +250,28 @@
       <i class="far {{ row.icon }} last-icon"></i>
     {% endif %}
   </div>
-  {% if row.metadata.resource.provider == 'youtube' %}
-  <div class="ml-5">
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ row.metadata.resource.id }}"
-              frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen></iframe>
+  {% if row.metadata.resource.type == 'gif' %}
+  <div class="mt-1 mb-2" style="top: initial; left: initial;">
+    <div class="row ml-2">
+        <img class="lazy" style="max-width: 80%; max-height: 350px;" src="{{ row.metadata.resource.id }}">
     </div>
+  </div>
+  {% elif row.metadata.resource.provider == 'youtube' %}
+  <div class="ml-md-5 col-md-10 col-sm-12">
+    <iframe class="col-sm-12" height="315" src="https://www.youtube.com/embed/{{ row.metadata.resource.id }}"
+            frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+  </div>
+  {% elif row.metadata.resource.type == 'content' %}
+  <div class="mt-1 mb-2" style="top: initial; left: initial; background-color: #FAFAFA">
+    <div class="row" style="display: flex; justify-content: center; align-items: center; ">
+    <div class="col ml-1 col-sm-3 col-md-2"><img style="width: 130%;" src="{{ row.metadata.resource.image }}"></div>
+      <div class="col ml-2 text-left">
+        <p class="mt-2 mb-1" style="font-size: 1.2em; font-weight: bold">{{ row.metadata.resource.title }}</p>
+        <p class="small">{{ row.metadata.resource.description|truncatechars:200}}</p>
+        <p class="small" style="color: #0056b3">{{ row.metadata.resource.provider }}</p>
+      </div>
+    </div>
+  </div>
   {% endif %}
 </div>

@@ -60,7 +60,8 @@ clr_matching_banners_style = 'pledging'
 matching_live = '($200K matching live now!) '
 total_clr_pot = 200000
 clr_round = 4
-clr_active = True
+clr_active = False
+show_clr_card = True
 
 if True:
     clr_matching_banners_style = 'results'
@@ -69,6 +70,14 @@ if True:
 def get_keywords():
     """Get all Keywords."""
     return json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)])
+
+
+def lazy_round_number(n):
+    if n>1000000:
+        return f"{round(n/1000000, 1)}m"
+    if n>1000:
+        return f"{round(n/1000, 1)}k"
+    return n
 
 
 def grants(request):
@@ -123,7 +132,7 @@ def grants(request):
         key='grants',
         ).order_by('-pk')
     if grant_stats.exists():
-        grant_amount = grant_stats.first().val / 1000
+        grant_amount = lazy_round_number(grant_stats.first().val)
 
     tech_grants_count = Grant.objects.filter(
         network=network, hidden=False, grant_type='tech'
@@ -181,10 +190,12 @@ def grants(request):
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
         'clr_active': clr_active,
+        'show_clr_card': show_clr_card,
         'sort_by_index': sort_by_index,
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
-        'is_staff': request.user.is_staff
+        'is_staff': request.user.is_staff,
+        'clr_round': clr_round
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -308,6 +319,7 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
+        'show_clr_card': show_clr_card,
         'is_team_member': is_team_member,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
@@ -692,7 +704,7 @@ def grant_fund(request, grant_id, grant_slug):
     active_tab = 'normal'
     fund_reward = None
     round_number = 4
-    can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
+    can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists() and clr_active
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
@@ -742,8 +754,8 @@ def grant_fund(request, grant_id, grant_slug):
         'fund_reward': fund_reward,
         'phantom_funds': phantom_funds,
         'clr_round': clr_round,
+        'clr_active': clr_active,
         'total_clr_pot': total_clr_pot,
-        'clr_active': True
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 

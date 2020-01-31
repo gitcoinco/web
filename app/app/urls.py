@@ -50,6 +50,7 @@ import quests.views
 import retail.emails
 import retail.views
 import revenue.views
+import search.views
 import tdi.views
 import townsquare.views
 from avatar.router import router as avatar_router
@@ -145,6 +146,7 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
+    url(r'^api/v0.1/search/', search.views.search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
     # chat
@@ -374,6 +376,7 @@ urlpatterns = [
         name='townsquare_offer_decline'
     ),
     path('action/<int:offer_id>/<slug:offer_slug>', townsquare.views.offer_view, name='townsquare_offer_view'),
+    url(r'^service/metadata/$', townsquare.views.extract_metadata_page, name='meta-extractor'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
     url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),
