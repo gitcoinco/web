@@ -51,6 +51,13 @@ class Comment(SuperModel):
     activity = models.ForeignKey('dashboard.Activity',
         on_delete=models.CASCADE, related_name='comments', blank=True, db_index=True)
     comment = models.TextField(default='', blank=True)
+    tip = models.ForeignKey(
+        'dashboard.Tip',
+        related_name='awards',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return f"Comment of {self.activity.pk} by {self.profile.handle}: {self.comment}"
@@ -58,6 +65,12 @@ class Comment(SuperModel):
     @property
     def profile_handle(self):
         return self.profile.handle
+
+    @property
+    def redeem_link(self):
+        if self.tip:
+            return self.tip.receive_url
+        return ''
 
     @property
     def url(self):

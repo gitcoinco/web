@@ -39,7 +39,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants
+from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants, Tip
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import (
@@ -1222,8 +1222,9 @@ def create_status_update(request):
         resource = request.POST.get('resource', '')
         provider = request.POST.get('resourceProvider', '')
         resource_id = request.POST.get('resourceId', '')
-        attachToken = request.POST.get('attachToken', '')
-        attachAmount = request.POST.get('attachAmount', '')
+        attach_token = request.POST.get('attachToken', '')
+        attach_amount = request.POST.get('attachAmount', '')
+        tx_id = request.POST.get('attachTxId', '')
 
         kwargs = {
             'activity_type': 'status_update',
@@ -1238,12 +1239,14 @@ def create_status_update(request):
             }
         }
 
-        if attachAmount:
-            amount = float(attachAmount)
+        if tx_id:
+            kwargs['tip'] = Tip.objects.get(txid=tx_id)
+            amount = float(attach_amount)
             kwargs['metadata']['attach'] = {
                 'amount': amount,
-                'token': attachToken
+                'token': attach_token
             }
+
         if resource == 'content':
             meta = kwargs['metadata']['resource']
             meta['title'] = request.POST.get('title', '')

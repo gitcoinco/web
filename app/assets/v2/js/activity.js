@@ -123,6 +123,38 @@ $(document).ready(function() {
   });
 
   // like activity
+  $(document).on('click', '.award', function(e) {
+    e.preventDefault();
+    if (!document.contxt.github_handle) {
+      _alert('Please login first.', 'error');
+      return;
+    }
+
+    activityId = $(this).data('activity');
+    commentId = $(this).data('comment');
+
+    // remote post
+    var params = {
+      'method': 'award',
+      'comment': commentId,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+    var url = '/api/v0.1/activity/' + activityId;
+    var parent = $(this).parents('.row.box');
+
+    parent.find('.loading').removeClass('hidden');
+    $.post(url, params, function(response) {
+      // no message to be sent
+      $('button[data-activity=' + activityId + ']').remove();
+      parent.find('.loading').addClass('hidden');
+      _alert('Tip user successful!');
+    }).fail(function() {
+      parent.find('.error').removeClass('hidden');
+    });
+  });
+
+
+  // like activity
   $(document).on('click', '.like_activity, .flag_activity', function(e) {
     e.preventDefault();
     if (!document.contxt.github_handle) {
@@ -236,8 +268,17 @@ $(document).ready(function() {
       for (var i = 0; i < response['comments'].length; i++) {
         var comment = sanitizeAPIResults(response['comments'])[i];
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
-        var html = '<li><a href=/profile/' + comment['profile_handle'] + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + comment['profile_handle'] + '</a>, ' + timeAgo + ': ' + comment['comment'] + '<br><button style="color: #3E00FF;" class=" mt-2 mb-2 font-caption btn btn-link btn-sm btn-outline-primary">award</button></li>';
-
+        var html = '<li><a href=/profile/' + comment['profile_handle'] + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + comment['profile_handle'] + '</a>, ' + timeAgo + ': ' + comment['comment'];
+        
+        if (response.author === document.contxt.github_handle && response.has_tip == true && response.tip_available == true) {
+          html += '<br><button data-comment=' + comment['id'] + ' data-user=' + comment['profile_handle'] + ' data-activity=' + comment['activity'] + ' class="award btn mt-1 mb-1 btn-radio font-smaller-5"><i class="fas fa-gift mr-2"></i> award</button>';
+        }
+        
+        if (comment['redeem_link']) {
+          html += '<br><a  class="btn mt-1 mb-1 btn-radio font-smaller-5" href="' + comment['redeem_link'] + '">Redeem tip</a>';
+        }
+        
+        html += '</li>';
         $target.append(html);
       }
       $target.append('<a href=# class=post_comment>Post comment &gt;</a>');

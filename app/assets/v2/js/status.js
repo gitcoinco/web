@@ -259,37 +259,20 @@ $(document).ready(function() {
     }
     
     const attach = $('#attach-dropdown')[0].style.display;
-    const attachAmount = $('#attachAmount').val();
-    const attachToken = $('#attachToken').val();
-    
-    if (attach !== 'none' && !isNaN(attachAmount)) {
-      data.append('attachToken', attachToken);
-      data.append('attachAmount', attachAmount);
-      /*
-      sendTip(
-        email,
-        github_url,
-        from_name,
-        username,
-        amountInEth,
-        comments_public,
-        comments_priv,
-        from_email,
-        accept_tos,
-        tokenAddress,
-        expires,
-        success_callback,
-        failure_callback,
-        false
-      );
-       */
-    }
+    const amount = $('#attachAmount').val();
+    const address = $('#attachToken').val();
 
-    fetch('/api/v0.1/activity', {
-      method: 'post',
-      body: data
-    })
-      .then(response => {
+    const success_callback = function(txid) {
+      const url = 'https://' + etherscanDomain() + '/tx/' + txid;
+      const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+      
+      _alert(msg, 'info', 1000);
+      
+      data.append('attachTxId', txid);
+      fetch('/api/v0.1/activity', {
+        method: 'post',
+        body: data
+      }).then(response => {
         if (response.status === 200) {
           $('#thumbnail').hide();
           $('#thumbnail-title').text('');
@@ -321,8 +304,84 @@ $(document).ready(function() {
             'error'
           );
         }
-      })
-      .catch(err => console.log('Error ', err));
+      }).catch(err => console.log('Error ', err));
+    };
+
+    const failure_callback = function() {
+      $.noop(); // do nothing
+    };
+    
+    if (!isNaN(parseFloat(amount)) && address) {
+      data.append('attachToken', address);
+      data.append('attachAmount', amount);
+      const email = '';
+      const github_url = '';
+      const from_name = document.contxt['github_handle'];
+      const username = '';
+      const amountInEth = amount;
+      const comments_priv = '';
+      const comments_public = '';
+      const from_email = '';
+      const accept_tos = true;
+      const tokenAddress = address;
+      const expires = 9999999999;
+      
+      sendTip(
+        email,
+        github_url,
+        from_name,
+        username,
+        amountInEth,
+        comments_public,
+        comments_priv,
+        from_email,
+        accept_tos,
+        tokenAddress,
+        expires,
+        success_callback,
+        failure_callback,
+        false,
+        true, // No available user to send tip at this moment
+      );
+      
+    } else {
+      fetch('/api/v0.1/activity', {
+        method: 'post',
+        body: data
+      }).then(response => {
+        if (response.status === 200) {
+          $('#thumbnail').hide();
+          $('#thumbnail-title').text('');
+          $('#thumbnail-provider').text('');
+          $('#thumbnail-desc').text('');
+          $('#thumbnail-img').attr('src', '');
+          $('#preview').hide();
+          $('#preview-img').attr('src', '');
+          embedded_resource = '';
+
+          _alert(
+            { message: gettext('Status has been saved.') },
+            'success',
+            1000
+          );
+          const activityContainer = document.querySelector('.tab-section.active .activities');
+
+          if (!activityContainer) {
+            document.run_long_poller(false);
+            // success
+            return;
+          }
+          activityContainer.setAttribute('page', 0);
+          $('.tab-section.active .activities').html('');
+          message.val('');
+        } else {
+          _alert(
+            { message: gettext('An error occurred. Please try again.') },
+            'error'
+          );
+        }
+      }).catch(err => console.log('Error ', err));
+    }
   }
   
   injectGiphy('latest');

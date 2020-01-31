@@ -171,7 +171,7 @@ function isNumeric(n) {
 }
 
 
-function sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller) {
+function sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller, noAvailableUser) {
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
     failure_callback();
@@ -229,7 +229,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
     failure_callback();
     return;
   }
-  if (username == '') {
+  if (username == '' && !noAvailableUser) {
     _alert({ message: gettext('You must enter a username.') }, 'warning');
     failure_callback();
     return;

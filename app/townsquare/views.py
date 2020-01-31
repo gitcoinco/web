@@ -4,10 +4,11 @@ import metadata_parser
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
+from app.utils import get_profile
 from dashboard.models import Activity, HackathonEvent, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, mention_email, new_action_request
@@ -259,6 +260,21 @@ def api(request, activity_id):
         if request.POST['direction'] == 'unliked':
             activity.likes.filter(profile=request.user.profile).delete()
 
+    # award request
+    elif request.POST.get('method') == 'award':
+        print('==== Award')
+        comment = get_object_or_404(Comment, id=int(request.POST['comment']))
+        print('=== Has comment')
+        if request.user.profile.id == activity.profile.id and comment.activity_id == activity.id:
+            recipient_profile = comment.profile
+            activity.tip.username = recipient_profile.username
+            activity.tip.recipient_profile = recipient_profile
+            activity.tip.save()
+            print('+==== Has recipient ')
+            comment.tip = activity.tip
+            comment.save()
+            print('Associate tip with comment')
+
     # flag request
     elif request.POST.get('method') == 'flag':
         if request.POST['direction'] == 'flagged':
@@ -289,7 +305,24 @@ def api(request, activity_id):
 
     elif request.GET.get('method') == 'comment':
         comments = activity.comments.order_by('created_on')
-        comments = [comment.to_standard_dict(properties=['profile_handle']) for comment in comments]
+        profile = request.user.profile
+        comments = [{
+            'activity': comment.activity_id,
+            'comment': comment.comment,
+            'created_on': comment.created_on,
+            'id': comment.id,
+            'modified_on': comment.modified_on,
+            'profile': comment.profile_id,
+            'profile_handle': comment.profile_handle,
+            'redeem_link': comment.redeem_link if comment.tip and comment.tip.recipient_profile_id == profile.id else '',
+            'tip': bool(comment.tip)
+        } for comment in comments]
+        response['has_tip'] = False
+        if activity.tip:
+            is_redeemable = not activity.tip.recipient_profile
+            response['has_tip'] = True
+            response['tip_available'] = is_redeemable
+        response['author'] = activity.profile.handle
         response['comments'] = comments
     return JsonResponse(response)
 
