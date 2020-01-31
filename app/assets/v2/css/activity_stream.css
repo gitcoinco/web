@@ -31,11 +31,14 @@ a .sup{
 .action.open{
   background-color: #eeeeee;
 }
+.comment_container{
+  padding: 0px;
+}
 .comment_container.filled{
   text-align: left;
   width: 300px;
   background-color: #f2f2f2;
-  padding: 5px;
+  padding: 0px;
   border-radius: 5px;
 }
 .comment_container img{
@@ -43,7 +46,15 @@ a .sup{
   max-width: 20px;
 }
 .comment_container li{
+  text-align: left;
   list-style: none;
+  padding: 5px;
+}
+.comment_container li .comment{
+  padding-left: 25px;
+}
+.comment_container li:nth-child(even){
+  background-color: #fafafa;
 }
 .comment_container a{
   color: black;

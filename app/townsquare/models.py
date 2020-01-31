@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
@@ -62,6 +63,13 @@ class Comment(SuperModel):
     @property
     def url(self):
         return self.activity.url
+
+    @property
+    def tip_count_eth(self):
+        from dashboard.models import Tip
+        network = 'rinkeby' if settings.DEBUG else 'mainnet'
+        tips = Tip.objects.filter(comments_priv=f"comment:{self.pk}", network=network)
+        return sum([tip.value_in_eth for tip in tips])
 
     def get_absolute_url(self):
         return self.url

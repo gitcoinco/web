@@ -1,3 +1,4 @@
+/* eslint no-useless-concat: 0 */ // --> OFF
 
 $(document).ready(function() {
 
@@ -122,7 +123,7 @@ $(document).ready(function() {
 
   });
   // like activity
-  $(document).on('click', '.tip_activity', function(e) {
+  var send_tip_to_object = function($parent, e, tag) {
     e.preventDefault();
     if (!document.contxt.github_handle) {
       _alert('Please login first.', 'error');
@@ -133,25 +134,29 @@ $(document).ready(function() {
       return;
     }
 
-    var $amount = $(this).find('.amount');
+    var $amount = $parent.find('.amount');
 
     const email = '';
     const github_url = '';
     const from_name = document.contxt['github_handle'];
-    const username = $(this).data('username');
-    const amountInEth = parseFloat(prompt('How much ETH do you want to give?', '0.01').replace('ETH', ''));
+    const username = $parent.data('username');
+    var amount_input = prompt('How much ETH do you want to send to ' + username + '?', '0.01');
+
+    if (!amount_input) {
+      return;
+    }
+    const amountInEth = parseFloat(amount_input.replace('ETH', ''));
 
     if (amountInEth < 0.001) {
       _alert('Amount must be 0.001 or more.', 'error');
       return;
     }
-    const comments_priv = 'activity:' + $(this).data('pk');
+    const comments_priv = tag + ':' + $parent.data('pk');
     const comments_public = '';
     const accept_tos = (confirm("Do you accept Gitcoin's terms of service at gitcoin.co/terms ?"));
     const from_email = '';
     const tokenAddress = '0x0';
     const expires = 9999999999;
-    var $parent = $(this);
     var success_callback = function(txid) {
       const url = 'https://' + etherscanDomain() + '/tx/' + txid;
       const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
@@ -191,6 +196,13 @@ $(document).ready(function() {
       false
     );
 
+  };
+
+  $(document).on('click', '.tip_on_comment', function(e) {
+    send_tip_to_object($(this), e, 'comment');
+  });
+  $(document).on('click', '.tip_activity', function(e) {
+    send_tip_to_object($(this), e, 'activity');
   });
 
 
@@ -308,7 +320,15 @@ $(document).ready(function() {
       for (var i = 0; i < response['comments'].length; i++) {
         var comment = sanitizeAPIResults(response['comments'])[i];
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
-        var html = '<li><a href=/profile/' + comment['profile_handle'] + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + comment['profile_handle'] + '</a>, ' + timeAgo + ': ' + comment['comment'] + '</li>';
+        var html = '<li><a href=/profile/' + comment['profile_handle'] + '\
+          ' + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '\
+          ' + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + '\
+          ' + comment['profile_handle'] + '</a> ' + (document.contxt.is_staff ? ' \
+          <a href=# class="tip_on_comment" data-pk=' + comment['id'] + ' data-username=\
+          "' + comment['profile_handle'] + '"> ( <i class="fab fa-ethereum" >\
+          </i> <span class=amount>' + (Math.round(100 * comment['tip_count_eth']) / 100) + '</span> </a>) ' : '') + '\
+          ' + timeAgo + ':<br> ' + '\
+          <span class=comment>' + comment['comment'] + '</span></li>';
 
         $target.append(html);
       }

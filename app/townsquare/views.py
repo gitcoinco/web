@@ -237,6 +237,16 @@ def api(request, activity_id):
     # setup response
     response = {}
 
+    # no perms needed responses go here
+    if request.GET.get('method') == 'comment':
+        comments = activity.comments.order_by('created_on')
+        response['comments'] = []
+        for comment in comments:
+            comment_dict = comment.to_standard_dict(properties=['profile_handle'])
+            comment_dict['tip_count_eth'] = comment.tip_count_eth
+            response['comments'].append(comment_dict)
+        return JsonResponse(response)
+
     # check for permissions
     has_perms = request.user.is_authenticated
     if request.POST.get('method') == 'delete':
@@ -276,10 +286,6 @@ def api(request, activity_id):
         to_emails = set(activity.comments.exclude(profile=request.user.profile).values_list('profile__email', flat=True))
         comment_email(comment, to_emails)
 
-    elif request.GET.get('method') == 'comment':
-        comments = activity.comments.order_by('created_on')
-        comments = [comment.to_standard_dict(properties=['profile_handle']) for comment in comments]
-        response['comments'] = comments
     return JsonResponse(response)
 
 

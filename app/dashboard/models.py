@@ -1668,14 +1668,22 @@ class Tip(SendCryptoAsset):
 
     @property
     def is_programmatic_comment(self):
-        return 'activity:' in self.comments_priv
+        if 'activity:' in self.comments_priv:
+            return True
+        if 'comment:' in self.comments_priv:
+            return True
 
     @property
     def attached_object(self):
         if 'activity:' in self.comments_priv:
             pk = self.comments_priv.split(":")[1]
-            activity = Activity.objects.get(pk=pk)
-            return activity
+            obj = Activity.objects.get(pk=pk)
+            return obj
+        if 'comment:' in self.comments_priv:
+            pk = self.comments_priv.split(":")[1]
+            from townsquare.models import Comment
+            obj = Comment.objects.get(pk=pk)
+            return obj
 
 
     @property
@@ -1758,12 +1766,16 @@ def postsave_tip(sender, instance, created, **kwargs):
             }
             )
     if created:
-        if 'activity:' in instance.comments_priv:
-            if instance.network == 'mainnet' or settings.DEBUG:
+        if instance.network == 'mainnet' or settings.DEBUG:
+            from townsquare.models import Comment
+            if 'activity:' in instance.comments_priv:
                 activity=instance.attached_object
-                from townsquare.models import Comment
                 comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
                 comment = Comment.objects.create(profile=instance.sender_profile, activity=activity, comment=comment)
+            if 'comment:' in instance.comments_priv:
+                _comment=instance.attached_object
+                comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
+                comment = Comment.objects.create(profile=instance.sender_profile, activity=_comment.activity, comment=comment)
 
 
 
