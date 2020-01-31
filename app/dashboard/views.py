@@ -865,6 +865,7 @@ def onboard(request, flow=None):
         ('classic', '/onboard/profile?steps=avatar&theme=classic'),
         ('3d', '/onboard/profile?steps=avatar&theme=3d'),
         ('bufficorn', '/onboard/profile?steps=avatar&theme=bufficorn'),
+        ('female', '/onboard/profile?steps=avatar&theme=female'),
     ]
 
     params = {
