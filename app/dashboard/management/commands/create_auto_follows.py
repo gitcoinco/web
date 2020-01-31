@@ -20,6 +20,7 @@ from django.core.management.base import BaseCommand
 
 from dashboard.models import Earning
 
+
 class Command(BaseCommand):
 
     help = 'creates earnings records for deploy of https://github.com/gitcoinco/web/pull/5093'
