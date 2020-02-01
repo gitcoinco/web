@@ -320,10 +320,11 @@ $(document).ready(function() {
       for (var i = 0; i < response['comments'].length; i++) {
         var comment = sanitizeAPIResults(response['comments'])[i];
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
+        var show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
         var html = '<li><a href=/profile/' + comment['profile_handle'] + '\
           ' + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '\
           ' + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + '\
-          ' + comment['profile_handle'] + '</a> ' + (document.contxt.is_staff ? ' \
+          ' + comment['profile_handle'] + '</a> ' + (show_tip ? ' \
           <a href=# class="tip_on_comment" data-pk=' + comment['id'] + ' data-username=\
           "' + comment['profile_handle'] + '"> ( <i class="fab fa-ethereum" >\
           </i> <span class=amount>' + (Math.round(100 * comment['tip_count_eth']) / 100) + '</span> </a>) ' : '') + '\

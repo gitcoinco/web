@@ -215,7 +215,7 @@
           {% endif %}
 
           {% if not hide_likes %}
-          {% if is_staff %}
+          {% if is_alpha_tester or row.metadata.tip_able %}
             <a data-pk={{row.pk}} data-username={{row.profile.handle}} class="tip_activity" href="#"  data-toggle="tooltip" title="This activity feed has generated {{ row.tip_count_eth|floatformat:2 }} ETH (${{row.tip_count_usd|floatformat:2}}) in Tips.">
               <i class="fab fa-ethereum" ></i> <span class="amount">{{ row.tip_count_eth|floatformat:2}}</span> | 
             </a>

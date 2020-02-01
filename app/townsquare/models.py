@@ -61,6 +61,10 @@ class Comment(SuperModel):
         return self.profile.handle
 
     @property
+    def tip_able(self):
+        return self.activity.metadata.get("tip_able", False)
+
+    @property
     def url(self):
         return self.activity.url
 
