@@ -374,6 +374,7 @@ class MarketingCallback(SuperModel):
 
     key = models.CharField(max_length=255, db_index=True)
     val = models.CharField(max_length=255)
+    msg = models.TextField()
 
     def __str__(self):
         return f"{self.key} - {self.val}"
