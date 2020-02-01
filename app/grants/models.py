@@ -441,6 +441,7 @@ class Subscription(SuperModel):
     active = models.BooleanField(default=True, help_text=_('Whether or not the Subscription is active.'))
     error = models.BooleanField(default=False, help_text=_('Whether or not the Subscription is erroring out.'))
     subminer_comments = models.TextField(default='', blank=True, help_text=_('Comments left by the subminer.'))
+    comments = models.TextField(default='', blank=True, help_text=_('Comments left by subscriber.'))
 
     split_tx_id = models.CharField(
         default='',

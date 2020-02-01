@@ -216,9 +216,8 @@ def thank_you_for_supporting(request):
 
 @staff_member_required
 def new_supporter(request):
-    grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_new_supporter_email(grant, subscription)
+    subscription = Subscription.objects.last()
+    response_html, __, __ = render_new_supporter_email(subscription.grant, subscription)
     return HttpResponse(response_html)
 
 

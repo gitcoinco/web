@@ -44,6 +44,12 @@ $(document).ready(function() {
     e.preventDefault();
   });
 
+  $('#adjust').click(function(e) {
+    $(this).remove();
+    $('.unhide_if_expanded').removeClass('hidden');
+    e.preventDefault();
+  });
+
   $('#frequency_unit, #js-token').on('select2:select', event => {
     updateSummary();
   });
@@ -124,7 +130,6 @@ $(document).ready(function() {
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
-
 
       if (data.frequency) {
 

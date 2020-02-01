@@ -51,6 +51,7 @@ from marketing.mails import (
 )
 from marketing.models import Keyword, Stat
 from retail.helpers import get_ip
+from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
@@ -636,17 +637,27 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.network = request.POST.get('network', '')
             subscription.contributor_profile = profile
             subscription.grant = grant
+            subscription.comments = request.POST.get('comment', '')
             subscription.save()
 
             # one time payments
+            activity = None
             if int(subscription.num_tx_approved) == 1:
                 subscription.successful_contribution(subscription.new_approve_tx_id);
                 subscription.error = True #cancel subs so it doesnt try to bill again
                 subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
                 subscription.save()
-                record_subscription_activity_helper('new_grant_contribution', subscription, profile)
+                activity = record_subscription_activity_helper('new_grant_contribution', subscription, profile)
             else:
-                record_subscription_activity_helper('new_grant_subscription', subscription, profile)
+                activity = record_subscription_activity_helper('new_grant_subscription', subscription, profile)
+
+            if 'comment' in request.POST:
+                comment = request.POST.get('comment')
+                if comment and activity:
+                    comment = Comment.objects.create(
+                        profile=request.user.profile,
+                        activity=activity,
+                        comment=comment)
 
             # TODO - how do we attach the tweet modal WITH BULK TRANSFER COUPON next pageload??
             messages.info(
@@ -863,7 +874,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         'activity_type': activity_type,
         'metadata': metadata,
     }
-    Activity.objects.create(**kwargs)
+    return Activity.objects.create(**kwargs)
 
 def record_grant_activity_helper(activity_type, grant, profile):
     """Registers a new activity concerning a grant

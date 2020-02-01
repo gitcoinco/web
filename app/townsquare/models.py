@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -77,6 +79,13 @@ class Comment(SuperModel):
 
     def get_absolute_url(self):
         return self.url
+
+
+@receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
+def postsave_comment(sender, instance, created, **kwargs):
+    from marketing.mails import comment_email
+    comment_email(instance)
+    print("SENT EMAIL")
 
 
 class OfferQuerySet(models.QuerySet):
