@@ -327,7 +327,7 @@ def handle_marketing_callback(_input, request):
     key = _input if not ':' in _input else _input.split(':')[0]
     callbacks = MarketingCallback.objects.filter(key=key)
     if callbacks.exists():
-        obj = callbacks.first().val
+        obj = callbacks.first()
         callback_reference = obj
         #set user referrer
         if key == 'ref':
