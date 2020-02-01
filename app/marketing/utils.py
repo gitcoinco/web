@@ -327,7 +327,8 @@ def handle_marketing_callback(_input, request):
     key = _input if not ':' in _input else _input.split(':')[0]
     callbacks = MarketingCallback.objects.filter(key=key)
     if callbacks.exists():
-        callback_reference = callbacks.first().val
+        obj = callbacks.first().val
+        callback_reference = obj
         #set user referrer
         if key == 'ref':
             if request.user.is_authenticated:
@@ -346,7 +347,7 @@ def handle_marketing_callback(_input, request):
             if request.user.is_authenticated:
                 from django.contrib.auth.models import Group
                 group_name = callback_reference.split(':')[1]
-                messages.info(request, callback_reference.msg)
+                messages.info(request, obj.msg)
                 group = Group.objects.get_or_create(name=group_name)
                 group.user_set.add(request.user)
             else:
