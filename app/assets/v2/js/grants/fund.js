@@ -98,7 +98,6 @@ $(document).ready(function() {
     $(event.currentTarget).removeClass('badge-inactive');
     $(event.currentTarget).addClass('badge-active');
   });
-
   $('.contribution_type select').change(function() {
     if ($('.contribution_type select').val() == 'once') {
       $('.frequency').addClass('hidden');
@@ -116,6 +115,7 @@ $(document).ready(function() {
       $('.hide_if_recurring').addClass('hidden');
     }
   });
+  $('.contribution_type select').trigger('change');
 
   $('#js-fundGrant').validate({
     rules: {
