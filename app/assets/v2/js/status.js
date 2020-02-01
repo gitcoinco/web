@@ -261,6 +261,7 @@ $(document).ready(function() {
     const attach = $('#attach-dropdown')[0].style.display;
     const amount = $('#attachAmount').val();
     const address = $('#attachToken').val();
+    const token_name = $('#attachToken :selected').text();
 
     const success_callback = function(txid) {
       const url = 'https://' + etherscanDomain() + '/tx/' + txid;
@@ -281,6 +282,9 @@ $(document).ready(function() {
           $('#thumbnail-img').attr('src', '');
           $('#preview').hide();
           $('#preview-img').attr('src', '');
+          $('#attach-dropdown').toggle();
+          $('#attachAmount').val('');
+
           embedded_resource = '';
 
           _alert(
@@ -314,6 +318,7 @@ $(document).ready(function() {
     if (!isNaN(parseFloat(amount)) && address) {
       data.append('attachToken', address);
       data.append('attachAmount', amount);
+      data.append('attachTokenName', token_name);
       const email = '';
       const github_url = '';
       const from_name = document.contxt['github_handle'];
@@ -357,6 +362,8 @@ $(document).ready(function() {
           $('#thumbnail-img').attr('src', '');
           $('#preview').hide();
           $('#preview-img').attr('src', '');
+          $('#attach-dropdown').toggle();
+          $('#attachAmount').val('');
           embedded_resource = '';
 
           _alert(

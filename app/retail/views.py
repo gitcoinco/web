@@ -1205,7 +1205,7 @@ def activity(request):
         'page': page,
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
-        'TOKENS': request.user.profile.token_approvals.all(),
+        'TOKENS': request.user.profile.token_approvals.all() if request.user.is_authenticated else [],
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]
 
@@ -1224,6 +1224,7 @@ def create_status_update(request):
         resource_id = request.POST.get('resourceId', '')
         attach_token = request.POST.get('attachToken', '')
         attach_amount = request.POST.get('attachAmount', '')
+        attach_token_name = request.POST.get('attachTokenName', '')
         tx_id = request.POST.get('attachTxId', '')
 
         kwargs = {
@@ -1244,7 +1245,8 @@ def create_status_update(request):
             amount = float(attach_amount)
             kwargs['metadata']['attach'] = {
                 'amount': amount,
-                'token': attach_token
+                'token': attach_token,
+                'token_name': attach_token_name,
             }
 
         if resource == 'content':

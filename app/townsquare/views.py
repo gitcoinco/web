@@ -9,9 +9,9 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 
 from app.utils import get_profile
-from dashboard.models import Activity, HackathonEvent, get_my_earnings_counter_profiles, get_my_grants
+from dashboard.models import Activity, HackathonEvent, get_my_earnings_counter_profiles, get_my_grants, Profile
 from kudos.models import Token
-from marketing.mails import comment_email, mention_email, new_action_request
+from marketing.mails import comment_email, mention_email, new_action_request, tip_comment_awarded_email
 from ratelimit.decorators import ratelimit
 
 from .models import Announcement, Comment, Flag, Like, Offer, OfferAction
@@ -202,7 +202,7 @@ def town_square(request):
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
-        'TOKENS': request.user.profile.token_approvals.all(),
+        'TOKENS': request.user.profile.token_approvals.all() if request.user.is_authenticated else [],
     }
     response = TemplateResponse(request, 'townsquare/index.html', context)
     if request.GET.get('tab'):
@@ -262,18 +262,15 @@ def api(request, activity_id):
 
     # award request
     elif request.POST.get('method') == 'award':
-        print('==== Award')
         comment = get_object_or_404(Comment, id=int(request.POST['comment']))
-        print('=== Has comment')
         if request.user.profile.id == activity.profile.id and comment.activity_id == activity.id:
             recipient_profile = comment.profile
             activity.tip.username = recipient_profile.username
             activity.tip.recipient_profile = recipient_profile
             activity.tip.save()
-            print('+==== Has recipient ')
             comment.tip = activity.tip
             comment.save()
-            print('Associate tip with comment')
+            tip_comment_awarded_email(comment, [recipient_profile.email])
 
     # flag request
     elif request.POST.get('method') == 'flag':
@@ -297,7 +294,7 @@ def api(request, activity_id):
         comment_email(comment, to_emails)
 
         username_pattern = re.compile(r'@(\S+)')
-        mentioned_usernames = re.findall(username_pattern, title)
+        mentioned_usernames = re.findall(username_pattern, comment.comment)
         mentioned_emails = set(Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True))
         # Don't send emails again to users who already received a comment email
         deduped_emails = mentioned_emails.difference(to_emails)
@@ -305,7 +302,9 @@ def api(request, activity_id):
 
     elif request.GET.get('method') == 'comment':
         comments = activity.comments.order_by('created_on')
-        profile = request.user.profile
+        if has_perms:
+            profile = request.user.profile
+
         comments = [{
             'activity': comment.activity_id,
             'comment': comment.comment,
@@ -314,7 +313,7 @@ def api(request, activity_id):
             'modified_on': comment.modified_on,
             'profile': comment.profile_id,
             'profile_handle': comment.profile_handle,
-            'redeem_link': comment.redeem_link if comment.tip and comment.tip.recipient_profile_id == profile.id else '',
+            'redeem_link': comment.redeem_link if has_perms and comment.tip and comment.tip.recipient_profile_id == profile.id else '',
             'tip': bool(comment.tip)
         } for comment in comments]
         response['has_tip'] = False
