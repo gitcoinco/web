@@ -583,7 +583,7 @@ class Subscription(SuperModel):
         if self.last_contribution_date < timezone.now() - timezone.timedelta(days=10*365):
             active_details = "(NEVER BILLED)"
 
-        return f"id: {self.pk}; {self.status}, {round(self.amount_per_period,1)} {self.token_symbol} / {self.frequency} {self.frequency_unit}, {int(self.num_tx_approved)} times for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile.handle} {active_details}"
+        return f"id: {self.pk}; {self.status}, {round(self.amount_per_period,1)} {self.token_symbol} / {self.frequency} {self.frequency_unit}, {int(self.num_tx_approved)} times for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile} {active_details}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
