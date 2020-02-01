@@ -47,15 +47,31 @@
                       <div class="list-bounty-item_content my-auto">
                         <div class="d-flex flex-column flex-md-row">
                           <div class="d-flex flex-column w-100 ml-md-3">
+                            <div class="mr-2 d-inline-block">
+                              <img style="max-width:50px" v-bind:src="'/dynamic/avatar/' + question.owner.handle">
+                              <a v-bind:href="'/' + question.owner.handle">
+                                <span>[[ question.owner.handle ]]</span>
+                              </a>
+                              <hr/>
+                            </div>
                             <a :href="question.absolute_url" title="View question details" class="text-truncate mb-2 text-dark">[[ question.text ]]</a>
-                            <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
-                              <span class="my-1">[[ question.value_in_eth ]] ETH</span>
+                            <div v-if="question.tip" class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
+                              <span class="my-1">[[ question.tip.amount ]] ETH</span>
                               <button class="btn btn-gc-blue btn-sm btm-block" v-on:click="answer(question.id)" :data-questionid=question.id>Answer</button>
+                            </div>
+                            <div v-else class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
+                              <button class="btn btn-gc-blue btn-sm btm-block" v-on:click="attachTip(question.id)" :data-questionid=question.id>Attach Funds</button>
                             </div>
                             <ul class="list-unstyled">
                               <li v-for="(answer, index) in question.answers" class="position-relative font-smaller-1 mt-3 p-3">
                                 <hr/>
-                                [[ answer.text ]]
+                                <img style="max-width:50px" v-bind:src="'/dynamic/avatar/' + question.owner.handle">
+                                <a v-bind:href="'/' + answer.owner.handle">
+                                  <span>@[[ answer.owner.handle ]]</span>
+                                </a>
+                                <div class="mr-2 d-inline-block">
+                                  [[ answer.text ]]
+                                </div>
                                 <button class="btn btn-gc-blue btn-sm btm-block float-right" v-on:click="selectAnswer(answer.id)">Select Answer & Tip</button>
                               </li>
                             </ul>
@@ -73,13 +89,18 @@
       </div>
     </div>
     {% include 'shared/footer.html' %}
+    {% include 'shared/footer_scripts_lite.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
     <script src="{% static "v2/js/vue-components.js" %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-axios@2.1.5/dist/vue-axios.min.js"></script>
+    <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+    <script src="{% static "v2/js/ipfs.js" %}"></script>
+    <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
+    <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "onepager/js/send.js" %}"></script>
     <script src="{% static "v2/js/questions.js" %}"></script>
-
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'

@@ -4,6 +4,7 @@ from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from .models import Question, Answer, QuestionSerializer, AnswerSerializer
+from dashboard.models import Tip
 from django.http import Http404, JsonResponse
 
 import json
@@ -61,6 +62,20 @@ def question_answers(request, question_id):
         return JsonResponse({'success': 'true'}, status=201)
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+def attach_tip_to_question(request, question_id):
+    data = json.loads(request.body)
+    for k in ['tip_txid', 'question_id']:
+        if not data.get(k):
+            print('key {} not found or empty: {}'.format(k, data.get(k)))
+            return JsonResponse({'error': 'missing data'}, status=400)
+    tip = Tip.objects.get(txid=data['tip_txid'])
+    question = Question.objects.get(id=question_id)
+    question.tip = tip
+    question.save()
+    return JsonResponse({'success': 'true'}, status=200)
+
 
 def questions_index(request):
     return TemplateResponse(request, 'questions_index.html', {})

@@ -3952,6 +3952,14 @@ def normalize_tip_usernames(sender, instance, **kwargs):
 m2m_changed.connect(m2m_changed_interested, sender=Bounty.interested.through)
 
 
+class TipSerializer(serializers.ModelSerializer):
+    recipient_profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = Tip
+        fields = ('recipient_profile', 'amount',)
+
+
 class UserAction(SuperModel):
     """Records Actions that a user has taken ."""
 
