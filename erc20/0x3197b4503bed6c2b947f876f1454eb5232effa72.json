@@ -1,5 +1,11 @@
 {
   "symbol": "ETV",
   "address": "0x3197b4503bed6c2b947f876f1454eb5232effa72",
+  "overview":{
+    "en": "ETV Exchange Platform Coin",
+    "zh": "ETV交易所平台分红币"
+  },
+  "state": "NORMAL",
+  "published_on": "2020-01-10",
   "website": "https://etvcoins.com"
 }
