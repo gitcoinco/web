@@ -77,5 +77,23 @@ def attach_tip_to_question(request, question_id):
     return JsonResponse({'success': 'true'}, status=200)
 
 
+def award_tip(request, question_id, answer_id):
+    data = json.loads(request.body)
+    for k in ['answer_id', 'question_id']:
+        if not data.get(k):
+            print('key {} not found or empty: {}'.format(k, data.get(k)))
+            return JsonResponse({'error': 'missing data'}, status=400)
+    question = Question.objects.get(id=question_id)
+    answer = Answer.objects.get(id=answer_id)
+    if question.tip:
+        question.tip.recipient_profile = answer.owner
+        question.tip.save()
+        question.save()
+        answer.tip = question.tip
+    answer.is_accepted = True
+    answer.save()
+    return JsonResponse({'success': 'true'}, status=200)
+
+
 def questions_index(request):
     return TemplateResponse(request, 'questions_index.html', {})

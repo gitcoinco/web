@@ -157,6 +157,22 @@ Vue.mixin({
         false, true,
       ); // No available user to send tip at this moment
     },
+    awardTip: function(answer_id, question_id) {
+      let vm = this;
+      let apiUrlAwardTip = `/questions/${question_id}/answers/${answer_id}/award/`;
+      fetch(apiUrlAwardTip, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'X-CSRFToken': csrftoken},
+        body: JSON.stringify({
+          question_id: question_id,
+          answer_id: answer_id,
+        })
+      }).then(response => {
+        vm.fetchQuestions();
+      });
+    },
     onLoad() {
       let vm = this;
       vm.fetchQuestions();

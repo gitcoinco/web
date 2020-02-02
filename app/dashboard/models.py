@@ -3957,7 +3957,7 @@ class TipSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tip
-        fields = ('recipient_profile', 'amount',)
+        fields = ('recipient_profile', 'amount', 'receive_url',)
 
 
 class UserAction(SuperModel):

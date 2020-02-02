@@ -184,7 +184,7 @@ urlpatterns = [
 
     re_path(r'^questions/(?P<question_id>\d+)/answers/?$', questions.views.question_answers, name='question_answers'),
     re_path(r'^questions/(?P<question_id>\d+)/attach_tip/?$', questions.views.attach_tip_to_question, name='attach_tip_to_question'),
-
+    re_path(r'^questions/(?P<question_id>\d+)/answers/(?P<answer_id>\d+)/award/?$', questions.views.award_tip, name='award_tip'),
     re_path(r'^questions_index/?$', questions.views.questions_index, name='questions_index'),
 
     # quests

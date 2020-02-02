@@ -65,14 +65,25 @@
                             <ul class="list-unstyled">
                               <li v-for="(answer, index) in question.answers" class="position-relative font-smaller-1 mt-3 p-3">
                                 <hr/>
-                                <img style="max-width:50px" v-bind:src="'/dynamic/avatar/' + question.owner.handle">
+                                <img style="max-width:50px" v-bind:src="'/dynamic/avatar/' + answer.owner.handle">
                                 <a v-bind:href="'/' + answer.owner.handle">
                                   <span>@[[ answer.owner.handle ]]</span>
                                 </a>
                                 <div class="mr-2 d-inline-block">
                                   [[ answer.text ]]
                                 </div>
-                                <button class="btn btn-gc-blue btn-sm btm-block float-right" v-on:click="selectAnswer(answer.id)">Select Answer & Tip</button>
+                                <div v-if="answer.is_accepted">
+                                  Selected!
+                                  <div v-if="answer.tip" class="justify-content-between">
+                                    Awarded [[question.tip.amount ]] ETH
+                                    <a class="btn btn-gc-blue btn-sm btm-block float-right" v-if="answer.tip.recipient_profile.id === authProfile" :href="question.tip.receive_url">
+                                      Redeem Tip
+                                    </a>
+                                  </div>
+                                </div>
+                                <div v-else>
+                                  <button class="btn btn-gc-blue btn-sm btm-block float-right" v-on:click="awardTip(answer.id, question.id)">Select Answer</button>
+                                </div>
                               </li>
                             </ul>
                           </div>
