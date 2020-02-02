@@ -134,16 +134,18 @@ def town_square(request):
     # get offers
     offer_pks = []
     offers_by_category = {}
-    for key in ['secret', 'random', 'daily', 'weekly', 'monthly']:
+    available_offers = Offer.objects.current()
+    if request.user.is_authenticated:
+        available_offers = available_offers.exclude(actions__profile=request.user.profile, actions__what__in=['click', 'decline', 'go'])
+    for key in ['top', 'secret', 'random', 'daily', 'weekly', 'monthly']:
         next_time_available = get_next_time_available(key)
-        offer = Offer.objects.current().filter(key=key).order_by('-pk').first()
-        if offer:
+        offers = available_offers.filter(key=key).order_by('-pk')
+        offer = offers.first()
+        for offer in offers:
             offer_pks.append(offer.pk)
-        if request.user.is_authenticated:
-            if request.user.profile.offeractions.filter(what='click', offer=offer):
-                offer = None
         offers_by_category[key] = {
             'offer': offer,
+            'offers': offers,
             'time': next_time_available,
         }
     increment_offer_view_counts.delay(offer_pks)

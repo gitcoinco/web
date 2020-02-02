@@ -28,7 +28,7 @@
         <img class="avatar my-auto secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
       {% endif %}
     </div>
-    <div style="width: 50px;">
+    <div style="width: 50px;" class="organizations">
     {% for org in row.profile.organizations %}
         <img data-toggle="tooltip" title="Member of @{{org}}" src="/dynamic/avatar/{{ org }}" style="border-radius: 15px; width: 10px; height: 10px;" />
     {% endfor %}

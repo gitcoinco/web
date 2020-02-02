@@ -107,6 +107,7 @@ class Offer(SuperModel):
         ('weekly', 'weekly'),
         ('monthly', 'monthly'),
         ('other', 'other'),
+        ('top', 'top'),
     ]
     STYLES = [
         ('red', 'red'),
@@ -128,6 +129,7 @@ class Offer(SuperModel):
         on_delete=models.CASCADE, related_name='offers_created', blank=True, null=True)
     public = models.BooleanField(help_text='Is this available publicly yet?', default=True)
     view_count = models.IntegerField(default=0, db_index=True)
+    amount = models.CharField(max_length=50, blank=True)
 
     # Bounty QuerySet Manager
     objects = OfferQuerySet.as_manager()

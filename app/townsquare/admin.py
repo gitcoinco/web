@@ -87,28 +87,38 @@ class OfferAdmin(admin.ModelAdmin):
         return format_html(f"views => click => go<BR>{views} => {click} ({pct_click}%) => {go} ({pct_go}%)")
 
     def response_change(self, request, obj):
+        from django.shortcuts import redirect
         if "_copy_offer" in request.POST:
             obj.pk = None
-            days = 1 if obj.key == 'daily' else 7
-            if obj.key == 'monthly':
-                days = 30
-            obj.valid_from = timezone.now() - timezone.timedelta(days=days)
             obj.view_count = 0
-            while True:
-                next_timestamp = obj.valid_from + timezone.timedelta(days=days)
-                other_offers = Offer.objects.filter(valid_from__gte=obj.valid_from, valid_from__lt=next_timestamp, key=obj.key)
-                if not other_offers.exists():
-                    break
-                obj.valid_from = next_timestamp
-            obj.valid_from = obj.valid_from + timezone.timedelta(days=days)
-            obj.valid_from = obj.valid_from - timezone.timedelta(hours=int(obj.valid_from.strftime('%H')))
-            obj.valid_from = obj.valid_from - timezone.timedelta(minutes=int(obj.valid_from.strftime('%M')))
-            obj.valid_from = obj.valid_from - timezone.timedelta(seconds=int(obj.valid_from.strftime('%S')))
-            obj.valid_to = obj.valid_from + timezone.timedelta(days=days)
+            obj.valid_to, obj.valid_from = schedule_helper(obj)
             self.message_user(request, f"Copied Object")
-
+        return redirect(obj.admin_url)
+        if "_schedule_offer" in request.POST:
+            obj.valid_to, obj.valid_from = schedule_helper(obj)
+            print(obj.valid_to, obj.valid_from)
+            self.message_user(request, f"Scheduled Object")
             obj.save()
-        return super().response_change(request, obj)
+        return redirect(obj.admin_url)
+
+
+def schedule_helper(obj):
+    days = 1 if obj.key == 'daily' else 7
+    if obj.key == 'monthly':
+        days = 30
+    obj.valid_from = timezone.now() - timezone.timedelta(days=days)
+    while True:
+        next_timestamp = obj.valid_from + timezone.timedelta(days=days)
+        other_offers = Offer.objects.filter(valid_from__gte=obj.valid_from, valid_from__lt=next_timestamp, key=obj.key)
+        if not other_offers.exists():
+            break
+        obj.valid_from = next_timestamp
+    obj.valid_from = obj.valid_from + timezone.timedelta(days=days)
+    obj.valid_from = obj.valid_from - timezone.timedelta(hours=int(obj.valid_from.strftime('%H')))
+    obj.valid_from = obj.valid_from - timezone.timedelta(minutes=int(obj.valid_from.strftime('%M')))
+    obj.valid_from = obj.valid_from - timezone.timedelta(seconds=int(obj.valid_from.strftime('%S')))
+    obj.valid_to = obj.valid_from + timezone.timedelta(days=days)
+    return obj.valid_to, obj.valid_from
 
 
 class AnnounceAdmin(admin.ModelAdmin):
