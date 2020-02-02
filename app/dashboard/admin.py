@@ -99,8 +99,8 @@ class ActivityAdmin(admin.ModelAdmin):
             from townsquare.models import Offer
             obj = Offer.objects.create(
                 created_by=obj.profile,
-                title='New Offer worth x ETH',
-                desc=obj.metadata.get('title',''),
+                title='Offer for x ETH',
+                desc=obj.metadata.get('title', ''),
                 key='top',
                 url=obj.url,
                 valid_from=timezone.now(),

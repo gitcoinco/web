@@ -647,12 +647,16 @@ body.green.offer_view .announce {
   background-color: white;
   text-align: left;
   display: inline-block;
-  width: 300px;
-  height: 150px;
+  width: 330px;
+  height: 200px;
   padding: 10px;
   cursor: pointer;
   border-radius: 5px;
   margin-right: 10px;
+}
+.top_offer .desc{
+  font-size: 14px;
+  max-height: 55px;
 }
 .top_offer:hover{
   background-color: #fafafa;
