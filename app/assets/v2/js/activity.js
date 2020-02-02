@@ -153,7 +153,7 @@ $(document).ready(function() {
     }
     const comments_priv = tag + ':' + $parent.data('pk');
     const comments_public = '';
-    const accept_tos = (confirm("Do you accept Gitcoin's terms of service at gitcoin.co/terms ?"));
+    const accept_tos = true; // accepted upon signup
     const from_email = '';
     const tokenAddress = '0x0';
     const expires = 9999999999;
