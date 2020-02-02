@@ -165,6 +165,7 @@ def town_square(request):
     desc = 'View the recent activity on the Gitcoin network'
     page_seo_text_insert = ''
     avatar_url = ''
+    admin_link = ''
     if "activity:" in tab:
         try:
             pk = int(tab.split(':')[1])
@@ -172,12 +173,13 @@ def town_square(request):
             title = f"@{activity.profile.handle}'s post on Gitcoin "
             desc = f"{activity.text}"
             comments_count = activity.comments.count()
+            admin_link = activity.admin_url
             if comments_count:
                 title += f"(+ {comments_count} comments)"
             avatar_url = activity.profile.avatar_url
             page_seo_text_insert = desc
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
 
     # render page context
@@ -192,6 +194,7 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'admin_link': admin_link,
         'now': timezone.now(),
         'is_townsquare': True,
         'trending_only': bool(trending_only),

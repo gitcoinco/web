@@ -153,6 +153,7 @@ class Grant(SuperModel):
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for endContract.'),
+        blank=True,
     )
     contract_version = models.DecimalField(
         default=0,
