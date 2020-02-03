@@ -127,20 +127,20 @@ def update_user(self, query_opts, update_opts, retry: bool = True) -> None:
     with redis.lock("tasks:update_user:%s" % query_opts['handle'], timeout=LOCK_TIMEOUT):
 
         try:
-
+            chat_id = None
             if query_opts['chat_id'] is None:
                 try:
 
                     chat_user = chat_driver.users.get_user_by_username(query_opts['handle'])
                     chat_id = chat_user['id']
+                    user_profile = Profile.objects.filter(handle=query_opts['handle'])
+                    user_profile.chat_id = chat_id
+                    user_profile.save()
                 except Exception as e:
                     logger.info(f"Unable to find chat user for {query_opts['handle']}")
             else:
                 chat_id = query_opts['chat_id']
 
-            user_profile = Profile.objects.filter(handle=query_opts['handle'])
-            user_profile.chat_id = chat_id
-            user_profile.save()
             chat_driver.users.update_user(chat_id, options=update_opts)
         except ConnectionError as exc:
             logger.info(str(exc))

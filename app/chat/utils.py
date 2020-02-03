@@ -20,7 +20,7 @@ import logging
 from django.conf import settings
 
 from celery import group
-from chat.tasks import add_to_channel, create_channel, create_user, get_driver
+from chat.tasks import add_to_channel, create_channel, create_user, get_driver, update_user
 from dashboard.models import Profile
 from mattermostdriver.exceptions import ResourceNotFound
 
@@ -47,6 +47,16 @@ def create_channel_if_not_exists(channel_opts):
             return True, bounty_channel_id_response
         except Exception as e:
             logger.error(str(e))
+
+
+def update_chat_notifications(profile, notification_key, status):
+    query_opts = {}
+    if profile.chat_id is not '' or profile.chat_id is not None:
+        query_opts['chat_id'] = profile.chat_id
+    else:
+        query_opts['handle'] = profile.handle
+
+    update_user.delay(query_opts=query_opts, update_opts={'notify_props': {notification_key: status}})
 
 
 def create_user_if_not_exists(profile):
