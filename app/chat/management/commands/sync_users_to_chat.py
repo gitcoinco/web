@@ -28,7 +28,6 @@ from marketing.utils import should_suppress_notification_email
 logger = logging.getLogger(__name__)
 
 
-
 class Command(BaseCommand):
     help = "create users to Gitcoin chat, creates the user if it doesn't exist"
 
@@ -67,15 +66,17 @@ class Command(BaseCommand):
 
             result = job.apply_async()
             for result_req in result.get():
-                if 'message' not in result_req:
-                    if 'username' in result_req and 'id' in result_req:
-                        profile = Profile.objects.get(handle=result_req['username'])
-                        if profile is not None:
-                            profile.chat_id = result_req['id']
-                            profile.save()
+                if 'message' not in result_req and 'username' in result_req and 'id' in result_req:
+                    try:
+                        profile = Profile.objects.get(handle__iexact=result_req['username'])
+                        profile.chat_id = result_req['id']
+                        profile.save()
+                    except Exception as e:
+                        logger.error(str(e))
+                        continue
 
         except ConnectionError as exec:
-            print(str(exec))
+            logger.error(str(exec))
             self.retry(30)
         except Exception as e:
             logger.error(str(e))
