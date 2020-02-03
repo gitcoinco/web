@@ -191,11 +191,6 @@
   color: #aaa;
 }
 
-.nav-item {
-  font-size: 10px;
-  font-weight: 800;
-}
-
 .search-result__description .tag {
   display: inline-block;
 }
@@ -213,5 +208,5 @@
 .select2-results__option.selected  .tag{
   background-color: #6700FF;
   color: #E7F0FA;
-  
+
 }

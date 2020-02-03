@@ -167,7 +167,7 @@
 }
 
 .daily #circle{
-  background-image:radial-gradient(#6E00FF, #3E00FF 30%); 
+  background-image:radial-gradient(#6E00FF, #3E00FF 30%);
 }
 .daily .speech_label{
   background-color: #3E00FF;
@@ -186,7 +186,7 @@
 }
 
 .random #circle{
-  background-image:radial-gradient(#25e899, #45f8a9 30%); 
+  background-image:radial-gradient(#25e899, #45f8a9 30%);
 }
 .random .speech_label{
   background-color: #25e899;
@@ -205,7 +205,7 @@
 }
 
 .secret #circle{
-  background-image:radial-gradient(#15003e, #45407e 30%); 
+  background-image:radial-gradient(#15003e, #45407e 30%);
 }
 .secret .speech_label{
   background-color: #15003e;
@@ -224,7 +224,7 @@
 }
 
 .weekly #circle{
-  background-image:radial-gradient(#FFCEd8, #FFCE08 30%); 
+  background-image:radial-gradient(#FFCEd8, #FFCE08 30%);
 }
 .weekly .speech_label{
   background-color: #FFCE08;
@@ -242,7 +242,7 @@
   border:7px dashed #3E00FF;
 }
 .monthly #circle{
-  background-image:radial-gradient(#0fde9c, #0fce7c 30%); 
+  background-image:radial-gradient(#0fde9c, #0fce7c 30%);
 }
 .monthly .speech_label{
   background-color: #0fce7c;
@@ -260,13 +260,13 @@
   border:7px dashed #8E2ABE;
 }
 .weekly #circle:hover{
-  background-image:radial-gradient(#FFCEd8, #FFCE08 70%); 
+  background-image:radial-gradient(#FFCEd8, #FFCE08 70%);
 }
 .daily #circle:hover{
-  background-image:radial-gradient(#6E00FF, #3E00FF 70%); 
+  background-image:radial-gradient(#6E00FF, #3E00FF 70%);
 }
 .monthly #circle:hover{
-  background-image:radial-gradient(#0fde9c, #0fce7c 70%); 
+  background-image:radial-gradient(#0fde9c, #0fce7c 70%);
 }
 .offer_container.random.empty,
 .offer_container.secret.empty{
@@ -636,4 +636,11 @@ body.green.offer_view .announce {
 }
 .announce a.accept.btn:hover {
   background-color: #8E2ABE;
+}
+
+.emoji-picker__tab {
+  font-size: 32px;
+}
+.emoji-picker__emoji {
+  font-size: 1.6rem;
 }
