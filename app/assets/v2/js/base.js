@@ -157,13 +157,16 @@ $(document).ready(function() {
     });
   }
 
-  var top_nav_salt = 6;
+  var top_nav_salt = document.nav_salt;
   var remove_top_row = function() {
     $('#top_nav_notification').parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
   };
 
   if (localStorage['top_nav_notification_remove_' + top_nav_salt]) {
+    remove_top_row();
+  }
+  if (top_nav_salt == 0) {
     remove_top_row();
   }
   $('#top_nav_notification').click(remove_top_row);

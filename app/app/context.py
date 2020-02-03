@@ -24,15 +24,31 @@ from django.conf import settings
 from django.utils import timezone
 
 from app.utils import get_location_from_ip
+from cacheops import cached_as
 from dashboard.models import Activity, Tip, UserAction
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
 from marketing.utils import handle_marketing_callback
 from retail.helpers import get_ip
+from townsquare.models import Announcement
 
 RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
 
 logger = logging.getLogger(__name__)
+
+
+@cached_as(Announcement.objects.filter(key__in=['footer', 'header']), timeout=120)
+def get_sitewide_announcements():
+    announcements = Announcement.objects.filter(key__in=['footer', 'header'])
+    announcement = announcements.filter(key='footer').first()
+    header_msg, footer_msg, nav_salt = '', '', 0
+    if announcement:
+        footer_msg = announcement.title + announcement.desc
+    announcement = announcements.filter(key='header').first()
+    if announcement:
+        header_msg = announcement.title + announcement.desc
+        nav_salt = announcement.rank
+    return header_msg, footer_msg, nav_salt
 
 
 def preprocess(request):
@@ -109,6 +125,8 @@ def preprocess(request):
         except Exception as e:
             logger.error(str(e))
 
+    header_msg, footer_msg, nav_salt = get_sitewide_announcements()
+
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
@@ -121,6 +139,9 @@ def preprocess(request):
         'raven_js_dsn': settings.SENTRY_JS_DSN,
         'release': settings.RELEASE,
         'env': settings.ENV,
+        'header_msg': header_msg,
+        'nav_salt': nav_salt,
+        'footer_msg': footer_msg,
         'INFURA_V3_PROJECT_ID': settings.INFURA_V3_PROJECT_ID,
         'email_key': email_key,
         'orgs': profile.organizations if profile else [],
@@ -135,6 +156,7 @@ def preprocess(request):
         'access_token': profile.access_token if profile else '',
         'is_staff': request.user.is_staff if user_is_authenticated else False,
         'is_moderator': profile.is_moderator if profile else False,
+        'is_alpha_tester': profile.is_alpha_tester if profile else False,
         'persona_is_funder': profile.persona_is_funder if profile else False,
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
         'profile_url': profile.url if profile else False,

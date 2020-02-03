@@ -349,7 +349,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
             return
 
         subject = bounty.github_url
-        __, text = render_bounty_feedback(bounty, persona, previous_bounties)
+        html, text = render_bounty_feedback(bounty, persona, previous_bounties)
         cc_emails = [from_email, 'team@gitcoin.co']
         if not should_suppress_notification_email(to_email, 'bounty_feedback'):
             send_mail(
@@ -357,6 +357,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
                 to_email,
                 subject,
                 text,
+                html,
                 cc_emails=cc_emails,
                 from_name="Alisa March (Gitcoin.co)",
                 categories=['transactional', func_name()],
@@ -389,11 +390,16 @@ def tip_email(tip, to_emails, is_new):
             translation.activate(cur_language)
 
 
-def comment_email(comment, to_emails):
+def comment_email(comment):
 
     subject = gettext("💬 New Comment")
 
     cur_language = translation.get_language()
+    to_emails = list(comment.activity.comments.values_list('profile__email', flat=True))
+    to_emails.append(comment.activity.profile.email)
+    if comment.activity.other_profile:
+        to_emails.append(comment.activity.other_profile.email)
+    to_emails = set([e for e in to_emails if e != comment.profile.email])
     for to_email in to_emails:
         try:
             setup_lang(to_email)
