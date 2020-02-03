@@ -49,3 +49,19 @@ def increment_offer_view_counts(self, pks, retry=False):
             query = f"UPDATE townsquare_offer SET view_count = view_count + 1 WHERE id in ({id_as_str});"
             cursor.execute(query)
             cursor.close()
+
+
+@app.shared_task(bind=True, max_retries=3)
+def send_comment_email(self, pk, retry=False):
+    """
+    :param self:
+    :param pk:
+    :return:
+    """
+    with redis.lock("tasks:send_comment_email", timeout=LOCK_TIMEOUT):
+
+        from townsquare.models import Comment
+        from marketing.mails import comment_email
+        instance = Comment.objects.get(pk=pk)
+        comment_email(instance)
+        print("SENT EMAIL")
