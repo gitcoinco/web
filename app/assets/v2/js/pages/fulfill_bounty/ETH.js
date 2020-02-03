@@ -56,7 +56,7 @@ const ethFulfillBounty = data => {
 
   const _callback = function(error, result) {
     let ignore_error = false;
-    
+
     if (error) {
       console.error(error);
       ignore_error = String(error).indexOf('BigNumber') != -1;
@@ -82,7 +82,7 @@ const ethFulfillBounty = data => {
             });
 
             if (eventTag) {
-              localStorage['pendingProject'] = true;
+              localStorage['pendingProject'] = standardBountyId;
             }
 
             const finishedComment = function() {
