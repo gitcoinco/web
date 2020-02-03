@@ -445,5 +445,5 @@ $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
 });
 
 if (document.contxt.chat_unread_messages) {
-  $('#chat-notification-dot').addClass('notification__dot__active');
+  $('#chat-notification-dot').addClass('notification__dot_active');
 }

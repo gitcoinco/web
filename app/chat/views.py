@@ -22,7 +22,10 @@ from django.conf import settings
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 
+import logging
 from marketing.models import Stat
+
+logger = logging.getLogger(__name__)
 
 
 def chat(request):
@@ -33,6 +36,7 @@ def chat(request):
         users_total_count = Stat.objects.get(key='chat_total_users')
 
     except Exception as e:
+        logger.error(str(e))
         users_online_count = 'N/A'
         users_total_count = 'N/A'
     context = {
