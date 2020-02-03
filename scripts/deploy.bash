@@ -77,6 +77,8 @@ if [ "$CREATE_CACHE_TABLE" ] && [ "$JOBS_NODE" ]; then
     python3 manage.py createcachetable
 fi
 
+mkdir -p /home/ubuntu/gitcoin/coin/app/static/wallpapers
+
 # let gunicorn know its ok to restart
 if ! [ "$JOBS_NODE" ]; then
     echo "- gunicorn"
