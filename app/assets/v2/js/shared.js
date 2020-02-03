@@ -1025,7 +1025,7 @@ var actions_page_warn_if_not_on_same_network = function() {
 attach_change_element_type();
 
 window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 1000);
+  setInterval(listen_for_web3_changes, 5000);
 });
 
 var setUsdAmount = function() {
