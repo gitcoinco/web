@@ -237,7 +237,6 @@ class Grant(SuperModel):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
-
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
         if not self.amount_goal:
@@ -583,6 +582,19 @@ class Subscription(SuperModel):
         return "CURRENT"
 
 
+    @property
+    def amount_per_period_minus_gas_price(self):
+        amount = self.amount_per_period - self.amount_per_period_to_gitcoin
+        return amount
+
+    @property
+    def amount_per_period_to_gitcoin(self):
+        from dashboard.tokens import addr_to_token
+        token = addr_to_token(self.token_address, self.network)
+        decimals = token.get('decimals', 0)
+        return (self.gas_price / 10 ** decimals)
+
+
     def __str__(self):
         """Return the string representation of a Subscription."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
@@ -787,13 +799,14 @@ next_valid_timestamp: {next_valid_timestamp}
             args['nonce'],
             ).call()
 
-    def get_converted_amount(self):
+    def get_converted_amount(self, ignore_gitcoin_fee=False):
+        amount = self.amount_per_period if ignore_gitcoin_fee else self.amount_per_period_minus_gas_price
         try:
             if self.token_symbol == "ETH" or self.token_symbol == "WETH":
-                return Decimal(float(self.amount_per_period) * float(eth_usd_conv_rate()))
+                return Decimal(float(amount) * float(eth_usd_conv_rate()))
             else:
                 value_token_to_eth = Decimal(convert_amount(
-                    self.amount_per_period,
+                    amount,
                     self.token_symbol,
                     "ETH")
                 )
@@ -805,15 +818,15 @@ next_valid_timestamp: {next_valid_timestamp}
         except ConversionRateNotFoundError as e:
             try:
                 return Decimal(convert_amount(
-                    self.amount_per_period,
+                    amount,
                     self.token_symbol,
                     "USDT"))
             except ConversionRateNotFoundError as no_conversion_e:
                 logger.info(no_conversion_e)
                 return None
 
-    def get_converted_monthly_amount(self):
-        converted_amount = self.get_converted_amount() or 0
+    def get_converted_monthly_amount(self, ignore_gitcoin_fee=False):
+        converted_amount = self.get_converted_amount(ignore_gitcoin_fee=ignore_gitcoin_fee) or 0
 
         total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
 
@@ -846,7 +859,7 @@ next_valid_timestamp: {next_valid_timestamp}
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
 
-        value_usdt = self.get_converted_amount()
+        value_usdt = self.get_converted_amount(False)
         if value_usdt:
             self.amount_per_period_usdt = value_usdt
             grant.amount_received += Decimal(value_usdt)
@@ -870,7 +883,7 @@ def psave_grant(sender, instance, **kwargs):
     instance.monthly_amount_subscribed = 0
     #print(instance.id)
     for subscription in instance.subscriptions.all():
-        value_usdt = subscription.get_converted_amount()
+        value_usdt = subscription.get_converted_amount(False)
         for contrib in subscription.subscription_contribution.filter(success=True):
             if value_usdt:
                 #print(f"adding contribution of {round(subscription.amount_per_period,2)} {subscription.token_symbol}, pk: {contrib.pk}, worth ${round(value_usdt,2)} to make total ${round(instance.amount_received,2)}. (txid: {contrib.tx_id} tx_cleared:{contrib.tx_cleared} )")
@@ -1063,7 +1076,7 @@ def psave_contrib(sender, instance, **kwargs):
             "from_profile":instance.subscription.contributor_profile,
             "org_profile":instance.subscription.grant.org_profile,
             "to_profile":instance.subscription.grant.admin_profile,
-            "value_usd":instance.subscription.get_converted_amount(),
+            "value_usd":instance.subscription.get_converted_amount(False),
             "url":instance.subscription.grant.url,
             "network":instance.subscription.grant.network,
         }
