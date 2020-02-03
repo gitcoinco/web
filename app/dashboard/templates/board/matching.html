@@ -21,41 +21,44 @@
   <header class="container position-relative">
     <div class="row mb-2">
       <div class="col-12">
-        Join these orgs tribes
-        <p>You can join organisations tribes to keep working on their bounties</p>
+        <div class="bg-white rounded p-3">
+          <h5 class="font-weight-bold">
+            Organisation tribes
+          </h5>
+          <p>You can join organisations tribes to keep working on their bounties. <a href="">What is a Tribe?</a></p>
+          <!-- {{user.profile.tribe_members}} -->
+          <div class="grid-5 mt-5">
+            {% for profile, num_times in works_with_collected.items %}
+              <!-- {{profile}} -->
+              {% if profile in user.profile.tribe_members.list %}
+              is here
+              {% endif %}
 
+              <div class="card border-0 card-shadow">
+                <div class="bg-lightblue text-center">
+                  <img height="80" width="80" class="rounded-circle mt-n4 mx-auto mb-2 d-block shadow-sm" src="{% avatar_url profile %}" />
+                  <span class="d-block text-truncate">{{profile}}</span>
+                  <a class="font-body" href="{% url 'profile' profile %}">
+                    {{profile}}
+                  </a>
+                </div>
+                <div class="p-2 card-body d-flex flex-column justify-content-end">
+                  {% if user.is_authenticated and profile%}
+                    <div class="d-flex justify-content-between mt-2">
+                        <!-- <a href="{% url 'bounty_requests' %}" class="btn btn-outline-gc-blue btn-sm btn-block">Suggest a Bounty</a> -->
+                        <button class="btn btn-sm btn-gc-blue btn-block" @click="joinTribe({{profile}}, $event)">Join Tribe</button>
 
-{{user.profile.tribe_members}}
-
-        {% for profile, num_times in works_with_collected.items %}
-        {{profile}}
-        {% if profile in user.profile.tribe_members.list %}
-         is here
-        {% endif %}
-
-        <div class="card border-0 card-shadow">
-          <div class="bg-lightblue text-center">
-            <img height="80" width="80" class="rounded-circle mt-n4 mx-auto mb-2 d-block" src="{% avatar_url profile %}" />
-            <span class="d-block text-truncate">{{profile}}</span>
-            <a class="font-body" href="{% url 'profile' profile %}">
-              {{profile}}
-            </a>
-          </div>
-          <div class="p-2 card-body d-flex flex-column justify-content-end">
-            {% if user.is_authenticated %}
-              <div class="d-flex justify-content-between mt-2">
-                  <!-- <a href="{% url 'bounty_requests' %}" class="btn btn-outline-gc-blue btn-sm btn-block">Suggest a Bounty</a> -->
-                  <button class="btn btn-gc-blue btn-sm btn-block" data-jointribe="{{profile.handle}}">Join Tribe</button>
+                    </div>
+                  {% endif %}
+                </div>
               </div>
-            {% endif %}
+
+            {% endfor %}
           </div>
+          <!-- {% for tribe in user.profile.tribe_members %}
+          {{tribe.org}} tribe
+          {% endfor %} -->
         </div>
-
-      {% endfor %}
-
-        <!-- {% for tribe in user.profile.tribe_members %}
-        {{tribe.org}} tribe
-        {% endfor %} -->
       </div>
     </div>
   </header>
@@ -66,10 +69,6 @@
           <div class="d-flex justify-content-between p-4 border-bottom btn-gc-blue btn-sm">
             <div v-if="skills && skills[0]">
               Bounties matching your skills: <b>[[ skills.join(', ') ]]</b> <a href="{% url 'matching_settings' %}" class="white underline">(Update Skills)</a>
-              <div class="custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
-              </div>
             </div>
             <div v-else>
               Update your skills to get the right matches <a href="{% url 'matching_settings' %}" class="white underline">Update Skills</a>
