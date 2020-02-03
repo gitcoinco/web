@@ -22,6 +22,8 @@ def increment_view_counts(self, pks, retry=False):
     """
     with redis.lock("tasks:increment_view_counts", timeout=LOCK_TIMEOUT):
 
+        if len(pks) == 0:
+            return
         # update DB directly
         with connection.cursor() as cursor:
             id_as_str = ",".join(str(id) for id in pks)
@@ -42,7 +44,8 @@ def increment_offer_view_counts(self, pks, retry=False):
     :return:
     """
     with redis.lock("tasks:increment_offer_view_counts", timeout=LOCK_TIMEOUT):
-
+        if len(pks) == 0:
+            return
         # update DB directly
         with connection.cursor() as cursor:
             id_as_str = ",".join(str(id) for id in pks)
