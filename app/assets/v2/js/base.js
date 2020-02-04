@@ -386,7 +386,7 @@ const gitcoinUpdates = () => {
 // carousel/collabs/... inside menu
 $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
   e.stopPropagation();
-})
+});
 
 if (document.contxt.chat_unread_messages) {
   $('#chat-notification-dot').addClass('notification__dot__active');
