@@ -1,4 +1,8 @@
 $(document).ready(function() {
+  $('#profile-tabs button').on('click', function() {
+    document.location = $(this).attr('href');
+  });
+
   $('#kudos-section').on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a')) {
       e.stopPropagation();
