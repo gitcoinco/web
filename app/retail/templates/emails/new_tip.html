@@ -70,12 +70,18 @@
           </p>
         {% endif %}
 
-        {% if comments_priv %}
+        {% if comments_priv and not tip.is_programmatic_comment %}
           <p>
             {% trans "They had the following private comments:" %}
             <pre>
               {{comments_priv}}
             </pre>
+          </p>
+          {% endif %}
+
+        {% if comments_priv and tip.is_programmatic_comment %}
+          <p>
+            The tip was attached to <a href="{{tip.attached_object.url}}">this activity feed item</a>.
           </p>
           {% endif %}
 

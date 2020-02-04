@@ -1,3 +1,4 @@
+/* eslint no-useless-concat: 0 */ // --> OFF
 
 $(document).ready(function() {
 
@@ -121,6 +122,89 @@ $(document).ready(function() {
     });
 
   });
+  // like activity
+  var send_tip_to_object = function($parent, e, tag) {
+    e.preventDefault();
+    if (!document.contxt.github_handle) {
+      _alert('Please login first.', 'error');
+      return;
+    }
+    if (!web3) {
+      _alert('Please enable and unlock your web3 wallet.', 'error');
+      return;
+    }
+
+    var $amount = $parent.find('.amount');
+
+    const email = '';
+    const github_url = '';
+    const from_name = document.contxt['github_handle'];
+    const username = $parent.data('username');
+    var amount_input = prompt('How much ETH do you want to send to ' + username + '?', '0.01');
+
+    if (!amount_input) {
+      return;
+    }
+    const amountInEth = parseFloat(amount_input.replace('ETH', ''));
+
+    if (amountInEth < 0.001) {
+      _alert('Amount must be 0.001 or more.', 'error');
+      return;
+    }
+    const comments_priv = tag + ':' + $parent.data('pk');
+    const comments_public = '';
+    const accept_tos = true; // accepted upon signup
+    const from_email = '';
+    const tokenAddress = '0x0';
+    const expires = 9999999999;
+    var success_callback = function(txid) {
+      const url = 'https://' + etherscanDomain() + '/tx/' + txid;
+      const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+
+      var old_amount = $amount.text();
+      var new_amount = Math.round(100 * (parseFloat(old_amount) + parseFloat(amountInEth))) / 100;
+
+      $amount.fadeOut().text(new_amount).fadeIn();
+      setTimeout(function() {
+        var $target = $parent.parents('.row.box').find('.comment_activity');
+
+        view_comments($target, false);
+      }, 1000);
+
+      _alert(msg, 'info', 1000);
+      // todo: update amount
+    };
+
+    var failure_callback = function() {
+      $.noop(); // do nothing
+    };
+
+    return sendTip(
+      email,
+      github_url,
+      from_name,
+      username,
+      amountInEth,
+      comments_public,
+      comments_priv,
+      from_email,
+      accept_tos,
+      tokenAddress,
+      expires,
+      success_callback,
+      failure_callback,
+      false
+    );
+
+  };
+
+  $(document).on('click', '.tip_on_comment', function(e) {
+    send_tip_to_object($(this), e, 'comment');
+  });
+  $(document).on('click', '.tip_activity', function(e) {
+    send_tip_to_object($(this), e, 'activity');
+  });
+
 
   // like activity
   $(document).on('click', '.like_activity, .flag_activity', function(e) {
@@ -236,7 +320,16 @@ $(document).ready(function() {
       for (var i = 0; i < response['comments'].length; i++) {
         var comment = sanitizeAPIResults(response['comments'])[i];
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
-        var html = '<li><a href=/profile/' + comment['profile_handle'] + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + comment['profile_handle'] + '</a>, ' + timeAgo + ': ' + comment['comment'] + '</li>';
+        var show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
+        var html = '<li><a href=/profile/' + comment['profile_handle'] + '\
+          ' + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '\
+          ' + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + '\
+          ' + comment['profile_handle'] + '</a> ' + (show_tip ? ' \
+          <a href=# class="tip_on_comment" data-pk=' + comment['id'] + ' data-username=\
+          "' + comment['profile_handle'] + '"> ( <i class="fab fa-ethereum" >\
+          </i> <span class=amount>' + (Math.round(100 * comment['tip_count_eth']) / 100) + '</span> </a>) ' : '') + '\
+          ' + timeAgo + ':<br> ' + '\
+          <span class=comment>' + comment['comment'] + '</span></li>';
 
         $target.append(html);
       }
