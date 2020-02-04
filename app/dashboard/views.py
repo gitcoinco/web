@@ -97,8 +97,8 @@ from .notifications import (
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from .utils import (
-    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count,
-    get_web3, has_tx_mined, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public,
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count, get_web3,
+    has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public,
     web3_process_bounty,
 )
 
@@ -850,12 +850,14 @@ def onboard(request, flow=None):
             login_redirect = redirect('/login/github?next=' + request.get_full_path())
             return login_redirect
 
-    if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
+    if request.POST.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
-        eth_address = request.GET.get('eth_address')
-        profile.preferred_payout_address = eth_address
-        profile.save()
-        return JsonResponse({'OK': True})
+        eth_address = request.POST.get('eth_address')
+        valid_address = is_valid_eth_address(eth_address)
+        if valid_address:
+            profile.preferred_payout_address = eth_address
+            profile.save()
+        return JsonResponse({'OK': valid_address})
 
     params = {
         'title': _('Onboarding Flow'),
