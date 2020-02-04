@@ -99,8 +99,8 @@ $(document).ready(function() {
       if (err) {
         _alert(err.message.split('\n')[0], 'error');
       } else {
-        var url = window.location.href.split('?')[0];
-        var form = $('<form action="' + url + '" method="post">' +
+        const url = window.location.href.split('?')[0];
+        const form = $('<form action="' + url + '" method="post">' +
           '<input type="text" name="receive_txid" value="' + txid + '" />' +
           '<input type="text" name="forwarding_address" value="' + $('#forwarding_address').val() + '" />' +
           '<input type="text" name="save_addr" value="' + ($('#save_addr').is(':checked') ? '1' : '0') + '" />' +
