@@ -27,9 +27,11 @@ function search(elem) {
         },
         cache: true
       },
-      theme: 'search',
-      placeholder: '<i class="fas fa-search"></i>',
+      theme: 'gc-search',
+      placeholder: '<i class="fas fa-search fa-fw"></i>',
       allowClear: true,
+
+      // dropdownAutoWidth: true,
       minimumInputLength: 3,
       escapeMarkup: function(markup) {
         return markup;
@@ -91,7 +93,7 @@ $('document').ready(function() {
     e.preventDefault();
   });
 
-  $(document).on ('click', '.element-search-result', function() {
+  $(document).on ('click', '.select2-container--gc-search .element-search-result', function() {
     document.location.href = $(this).data('url');
   });
 
@@ -99,36 +101,36 @@ $('document').ready(function() {
     minimumResultsForSearch: 20
   });
 
-  $('.select2-search').select2({});
+  // $('.select2-search').select2({});
 
   // listen for keyups in both input widget AND dropdown
-  $('body').on('keyup', '.select2,.select2-dropdown', function(e) {
+  $('body').on('keyup', '.select2-container--gc-search', function(e) {
     var KEYS = { UP: 38, DOWN: 40, ENTER: 13 };
-    var $sel = $('.select2.select2-container--open');
+    var $sel = $('.select2-container--gc-search.select2-container--open');
 
     if ($sel.length) {
       var target;
 
       if (e.keyCode === KEYS.DOWN && !e.altKey) {
-        target = $('.select2-results__option.selected');
+        target = $('.select2-container--gc-search .select2-results__option.selected');
         if (!target.length) {
-          target = $('.select2-results__option:first-child');
+          target = $('.select2-container--gc-search .select2-results__option:first-child');
         } else if (target.next().length) {
           target.removeClass('selected');
           target = target.next();
         }
         target.addClass('selected');
       } else if (e.keyCode === KEYS.UP) {
-        target = $('.select2-results__option.selected');
+        target = $('.select2-container--gc-search .select2-results__option.selected');
         if (!target.length) {
-          target = $('.select2-results__option:first-child');
+          target = $('.select2-container--gc-search .select2-results__option:first-child');
         } else if (target.prev().length) {
           target.removeClass('selected');
           target = target.prev();
         }
         target.addClass('selected');
       } else if (e.keyCode === KEYS.ENTER) {
-        target = $('.select2-results__option.selected');
+        target = $('.select2-container--gc-search .select2-results__option.selected');
         var url = target.find('.search-result').data('url');
 
         if (target && url) {
