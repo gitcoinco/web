@@ -43,7 +43,7 @@ from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
 from grants.models import Contribution, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update
-from grants.utils import get_leaderboard
+from grants.utils import get_leaderboard, is_grant_team_member
 from kudos.models import BulkTransferCoupon
 from marketing.mails import (
     grant_cancellation, new_grant, new_grant_admin, new_supporter, subscription_terminated, support_cancellation,
@@ -51,6 +51,7 @@ from marketing.mails import (
 )
 from marketing.models import Keyword, Stat
 from retail.helpers import get_ip
+from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
@@ -60,7 +61,8 @@ clr_matching_banners_style = 'pledging'
 matching_live = '($200K matching live now!) '
 total_clr_pot = 200000
 clr_round = 4
-clr_active = True
+clr_active = False
+show_clr_card = True
 
 if True:
     clr_matching_banners_style = 'results'
@@ -69,6 +71,14 @@ if True:
 def get_keywords():
     """Get all Keywords."""
     return json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)])
+
+
+def lazy_round_number(n):
+    if n>1000000:
+        return f"{round(n/1000000, 1)}m"
+    if n>1000:
+        return f"{round(n/1000, 1)}k"
+    return n
 
 
 def grants(request):
@@ -123,7 +133,7 @@ def grants(request):
         key='grants',
         ).order_by('-pk')
     if grant_stats.exists():
-        grant_amount = grant_stats.first().val / 1000
+        grant_amount = lazy_round_number(grant_stats.first().val)
 
     tech_grants_count = Grant.objects.filter(
         network=network, hidden=False, grant_type='tech'
@@ -181,10 +191,12 @@ def grants(request):
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
         'clr_active': clr_active,
+        'show_clr_card': show_clr_card,
         'sort_by_index': sort_by_index,
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
-        'is_staff': request.user.is_staff
+        'is_staff': request.user.is_staff,
+        'clr_round': clr_round
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -232,12 +244,7 @@ def grant_details(request, grant_id, grant_slug):
     if is_admin:
         add_cancel_params = True
 
-    is_team_member = False
-    if profile:
-        for team_member in grant.team_members.all():
-            if team_member.id == profile.id:
-                is_team_member = True
-                break
+    is_team_member = is_grant_team_member(grant, profile)
 
     if request.method == 'POST' and (is_team_member or request.user.is_staff):
         if request.FILES.get('input_image'):
@@ -276,6 +283,20 @@ def grant_details(request, grant_id, grant_slug):
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
+    # handle grant updates unsubscribe
+    key = 'unsubscribed_profiles'
+    is_unsubscribed_from_updates_from_this_grant = request.user.is_authenticated and request.user.profile.pk in grant.metadata.get(key, [])
+    if request.GET.get('unsubscribe') and request.user.is_authenticated:
+        ups = grant.metadata.get(key, [])
+        ups.append(request.user.profile.pk)
+        grant.metadata[key] = ups
+        grant.save()
+        messages.info(
+                request,
+                _('You have been unsubscribed from the updates from this grant.')
+            )
+        is_unsubscribed_from_updates_from_this_grant = True
+
     tab = request.GET.get('tab', 'activity')
     params = {
         'active': 'grant_details',
@@ -299,8 +320,11 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
+        'show_clr_card': show_clr_card,
         'is_team_member': is_team_member,
         'voucher_fundings': voucher_fundings,
+        'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
+        'tags': [(f'Email Grant Funders ({len(contributors)})', 'bullhorn')] if is_team_member else [],
     }
 
     if tab == 'stats':
@@ -502,15 +526,8 @@ def grant_new_v0(request):
 def milestones(request, grant_id, grant_slug):
     profile = get_profile(request)
     grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
-    is_team_member = False
 
-    if profile:
-        for team_member in grant.team_members.all():
-            if team_member.id == profile.id:
-                is_team_member = True
-                break
-
-    if not is_team_member:
+    if not is_grant_team_member(grant, profile):
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == "POST":
@@ -563,9 +580,31 @@ def grant_fund(request, grant_id, grant_slug):
     if not grant.active:
         params = {
             'active': 'grant_error',
-            'title': _('Grant Ended'),
+            'title': _('Fund - Grant Ended'),
             'grant': grant,
-            'text': _('This Grant is not longer active.')
+            'text': _('This Grant has ended.'),
+            'subtext': _('Contributions can no longer be made this grant')
+        }
+        return TemplateResponse(request, 'grants/shared/error.html', params)
+
+    if is_grant_team_member(grant, profile):
+        params = {
+            'active': 'grant_error',
+            'title': _('Fund - Grant funding blocked'),
+            'grant': grant,
+            'text': _('This Grant cannot be funded'),
+            'subtext': _('Grant team members cannot contribute to their own grant.')
+        }
+        return TemplateResponse(request, 'grants/shared/error.html', params)
+
+    if grant.link_to_new_grant:
+        params = {
+            'active': 'grant_error',
+            'title': _('Fund - Grant Migrated'),
+            'grant': grant.link_to_new_grant,
+            'text': f'This Grant has ended',
+            'subtext': 'Contributions can no longer be made to this grant. <br> Visit the new grant to contribute.',
+            'button_txt': 'View New Grant'
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
@@ -608,17 +647,27 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.network = request.POST.get('network', '')
             subscription.contributor_profile = profile
             subscription.grant = grant
+            subscription.comments = request.POST.get('comment', '')
             subscription.save()
 
             # one time payments
+            activity = None
             if int(subscription.num_tx_approved) == 1:
                 subscription.successful_contribution(subscription.new_approve_tx_id);
                 subscription.error = True #cancel subs so it doesnt try to bill again
                 subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
                 subscription.save()
-                record_subscription_activity_helper('new_grant_contribution', subscription, profile)
+                activity = record_subscription_activity_helper('new_grant_contribution', subscription, profile)
             else:
-                record_subscription_activity_helper('new_grant_subscription', subscription, profile)
+                activity = record_subscription_activity_helper('new_grant_subscription', subscription, profile)
+
+            if 'comment' in request.POST:
+                comment = request.POST.get('comment')
+                if comment and activity:
+                    comment = Comment.objects.create(
+                        profile=request.user.profile,
+                        activity=activity,
+                        comment=comment)
 
             # TODO - how do we attach the tweet modal WITH BULK TRANSFER COUPON next pageload??
             messages.info(
@@ -666,7 +715,7 @@ def grant_fund(request, grant_id, grant_slug):
     active_tab = 'normal'
     fund_reward = None
     round_number = 4
-    can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
+    can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists() and clr_active
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
@@ -716,8 +765,8 @@ def grant_fund(request, grant_id, grant_slug):
         'fund_reward': fund_reward,
         'phantom_funds': phantom_funds,
         'clr_round': clr_round,
+        'clr_active': clr_active,
         'total_clr_pot': total_clr_pot,
-        'clr_active': True
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
@@ -835,7 +884,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         'activity_type': activity_type,
         'metadata': metadata,
     }
-    Activity.objects.create(**kwargs)
+    return Activity.objects.create(**kwargs)
 
 def record_grant_activity_helper(activity_type, grant, profile):
     """Registers a new activity concerning a grant

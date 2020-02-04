@@ -836,7 +836,7 @@ class Bounty(SuperModel):
     def value_in_usdt_at_time(self, at_time):
         decimals = 10 ** 18
         if self.token_name == 'USDT':
-            return float(self.value_in_token)
+            return float(self.value_in_token / 10 ** 6)
         if self.token_name in settings.STABLE_COINS:
             return float(self.value_in_token / 10 ** 18)
         try:
@@ -1667,6 +1667,26 @@ class Tip(SendCryptoAsset):
     )
 
     @property
+    def is_programmatic_comment(self):
+        if 'activity:' in self.comments_priv:
+            return True
+        if 'comment:' in self.comments_priv:
+            return True
+
+    @property
+    def attached_object(self):
+        if 'activity:' in self.comments_priv:
+            pk = self.comments_priv.split(":")[1]
+            obj = Activity.objects.get(pk=pk)
+            return obj
+        if 'comment:' in self.comments_priv:
+            pk = self.comments_priv.split(":")[1]
+            from townsquare.models import Comment
+            obj = Comment.objects.get(pk=pk)
+            return obj
+
+
+    @property
     def receive_url(self):
         if self.web3_type == 'yge':
             return self.url
@@ -1695,6 +1715,24 @@ class TipPayoutException(Exception):
     pass
 
 
+
+class TipPayout(SuperModel):
+
+    """Model representing redemption of a Kudos
+    """
+    tip = models.ForeignKey(
+        'dashboard.tip', related_name='payouts', on_delete=models.CASCADE
+    )
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='tip_payouts', on_delete=models.CASCADE
+    )
+    txid = models.CharField(max_length=255, default='')
+
+    def __str__(self):
+        """Return the string representation of a model."""
+        return f"tip: {self.tip.pk} profile: {self.profile.handle}"
+
+
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
     # when a new tip is saved, make sure it doesnt have whitespace in it
@@ -1711,9 +1749,9 @@ def psave_tip(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
-def postsave_tip(sender, instance, **kwargs):
+def postsave_tip(sender, instance, created, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
-    if is_valid:
+    if instance.pk and is_valid:
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
             source_id=instance.pk,
@@ -1727,6 +1765,19 @@ def postsave_tip(sender, instance, **kwargs):
                 "network":instance.network,
             }
             )
+    if created:
+        if instance.network == 'mainnet' or settings.DEBUG:
+            from townsquare.models import Comment
+            if 'activity:' in instance.comments_priv:
+                activity=instance.attached_object
+                comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
+                comment = Comment.objects.create(profile=instance.sender_profile, activity=activity, comment=comment)
+            if 'comment:' in instance.comments_priv:
+                _comment=instance.attached_object
+                comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
+                comment = Comment.objects.create(profile=instance.sender_profile, activity=_comment.activity, comment=comment)
+
+
 
 
 # method for updating
@@ -1768,10 +1819,31 @@ def psave_bounty(sender, instance, **kwargs):
             if profiles.exists():
                 instance.bounty_owner_profile = profiles.first()
 
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    ct = ContentType.objects.get(app_label='dashboard', model='bounty')
+    if instance.current_bounty and instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ct,
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.web3_created,
+                "title":instance.title,
+                "description":instance.issue_description,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.get_avatar_url(True),
+            }
+            )
+        # delete any old bounties
+        if instance.prev_bounty and instance.prev_bounty.pk:
+            for sr in SearchResult.objects.filter(source_type=ct, source_id=instance.prev_bounty.pk):
+                sr.delete()
+
 
 @receiver(post_save, sender=BountyFulfillment, dispatch_uid="psave_bounty_fulfill")
 def psave_bounty_fulfilll(sender, instance, **kwargs):
-    if instance.accepted:
+    if instance.pk and instance.accepted:
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='bountyfulfillment'),
             source_id=instance.pk,
@@ -1993,12 +2065,13 @@ class Activity(SuperModel):
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
     metadata = JSONField(default=dict)
     needs_review = models.BooleanField(default=False)
-    view_count = models.IntegerField(default=0)
+    view_count = models.IntegerField(default=0, db_index=True)
     other_profile = models.ForeignKey(
         'dashboard.Profile',
         related_name='other_activities',
         on_delete=models.CASCADE,
-        null=True
+        null=True,
+        blank=True
     )
     hidden = models.BooleanField(default=False, db_index=True)
 
@@ -2009,6 +2082,9 @@ class Activity(SuperModel):
         """Define the string representation of an interested profile."""
         return f"{self.profile.handle} type: {self.activity_type} created: {naturalday(self.created)} " \
                f"needs review: {self.needs_review}"
+
+    def get_absolute_url(self):
+        return self.url
 
     @property
     def action_url(self):
@@ -2023,8 +2099,19 @@ class Activity(SuperModel):
         return ""
 
     @property
+    def what(self):
+        # returns what your wall post target is
+        if self.grant:
+            return 'grant'
+        if self.kudos:
+            return 'kudos'
+        if self.other_profile:
+            return 'profile'
+        return ""
+
+    @property
     def url(self):
-        return f"{settings.BASE_URL}?tab=activity:{self.pk}"
+        return f"{settings.BASE_URL}townsquare?tab=activity:{self.pk}"
 
     @property
     def humanized_activity_type(self):
@@ -2094,6 +2181,9 @@ class Activity(SuperModel):
         activity = self.to_standard_dict(properties=properties)
         activity['pk'] = self.pk
         activity['likes'] = self.likes.count()
+        if activity['likes']:
+            activity['likes_title'] = "Liked by " + ",".join(self.likes.values_list('profile__handle', flat=True)) + '. '
+
         activity['comments'] = self.comments.count()
         for key, value in model_to_dict(self).items():
             activity[key] = value
@@ -2128,17 +2218,32 @@ class Activity(SuperModel):
                                                       10 ** activity['token']['decimals']) * 1000) / 1000
 
         activity['view_count'] = self.view_count
+        activity['tip_count_usd'] = self.tip_count_usd
+        activity['tip_count_eth'] = self.tip_count_eth
 
         # finally done!
 
         return activity
 
     def view_props_for(self, user):
+
         vp = self.view_props
         if not user.is_authenticated:
             return vp
         vp['liked'] = self.likes.filter(profile=user.profile).exists()
         return vp
+
+    @property
+    def tip_count_usd(self):
+        network = 'rinkeby' if settings.DEBUG else 'mainnet'
+        tips = Tip.objects.filter(comments_priv=f"activity:{self.pk}", network=network)
+        return sum([tip.value_in_usdt for tip in tips])
+
+    @property
+    def tip_count_eth(self):
+        network = 'rinkeby' if settings.DEBUG else 'mainnet'
+        tips = Tip.objects.filter(comments_priv=f"activity:{self.pk}", network=network)
+        return sum([tip.value_in_eth for tip in tips])
 
     @property
     def secondary_avatar_url(self):
@@ -2438,7 +2543,7 @@ class Profile(SuperModel):
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
     tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
-
+    as_representation = JSONField(default=dict, blank=True)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -2681,6 +2786,7 @@ class Profile(SuperModel):
         self.success_rate = self.calc_success_rate()
         self.reliability = self.calc_reliability_ranking() # must be calc'd last
         self.as_dict = json.loads(json.dumps(self.to_dict()))
+        self.as_representation = json.loads(json.dumps(self.to_representation))
         self.last_calc_date = timezone.now() + timezone.timedelta(seconds=1)
 
     def get_persona_action_count(self):
@@ -2825,6 +2931,18 @@ class Profile(SuperModel):
 
         """
         return self.user.groups.filter(name='Moderators').exists() if self.user else False
+
+    @property
+    def is_alpha_tester(self):
+        """Determine whether or not the user is an alpha tester.
+
+        Returns:
+            bool: Whether or not the user is an alpha tester.
+
+        """
+        if self.user.is_staff:
+            return True
+        return self.user.groups.filter(name='Alpha_Testers').exists() if self.user else False
 
     @property
     def is_staff(self):
@@ -3436,7 +3554,7 @@ class Profile(SuperModel):
         bounties = Bounty.objects.current().filter(network=network, github_url__icontains=url)
         return bounties
 
-    def get_leaderboard_index(self, key='quarterly_earners'):
+    def get_leaderboard_index(self, key='weekly_earners'):
         try:
             rank = self.leaderboard_ranks.active().filter(leaderboard=key, product='all').latest('id')
             return rank.rank
@@ -3448,10 +3566,10 @@ class Profile(SuperModel):
         return self.get_leaderboard_index()
 
     def get_funder_leaderboard_index(self):
-        return self.get_leaderboard_index('quarterly_payers')
+        return self.get_leaderboard_index('weekly_payers')
 
     def get_org_leaderboard_index(self):
-        return self.get_leaderboard_index('quarterly_orgs')
+        return self.get_leaderboard_index('weekly_orgs')
 
     def get_eth_sum(self, sum_type='collected', network='mainnet', bounties=None):
         """Get the sum of collected or funded ETH based on the provided type.
@@ -3623,6 +3741,21 @@ class Profile(SuperModel):
     def activate_avatar(self, avatar_pk):
         self.avatar_baseavatar_related.update(active=False)
         self.avatar_baseavatar_related.filter(pk=avatar_pk).update(active=True)
+
+    @property
+    def to_representation(instance):
+        return {
+            'id': instance.id,
+            'handle': instance.handle,
+            'github_url': instance.github_url,
+            'avatar_url': instance.avatar_url,
+            'keywords': instance.keywords,
+            'url': instance.get_relative_url(),
+            'position': instance.get_contributor_leaderboard_index(),
+            'organizations': instance.get_who_works_with(network=None),
+            'total_earned': instance.get_eth_sum(network=None)
+        }
+
 
     def to_dict(self):
         """Get the dictionary representation with additional data.
@@ -3807,6 +3940,22 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
 
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+
+    if instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.handle,
+                "description":instance.desc,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.avatar_url,
+            }
+            )
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
@@ -3845,18 +3994,11 @@ class ProfileSerializer(serializers.BaseSerializer):
             dict: The serialized Profile.
 
         """
-
-        return {
-            'id': instance.id,
-            'handle': instance.handle,
-            'github_url': instance.github_url,
-            'avatar_url': instance.avatar_url,
-            'keywords': instance.keywords,
-            'url': instance.get_relative_url(),
-            'position': instance.get_contributor_leaderboard_index(),
-            'organizations': instance.get_who_works_with(network=None),
-            'total_earned': instance.get_eth_sum(network=None)
-        }
+        has_representation = instance.as_representation.get('id')
+        if not has_representation:
+            instance.calculate_all()
+            instance.save()
+        return instance.as_representation
 
 
 @receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
@@ -4173,6 +4315,10 @@ class HackathonEvent(SuperModel):
         return Bounty.objects.filter(event=self, network='mainnet').current()
 
     @property
+    def url(self):
+        return settings.BASE_URL + self.slug
+
+    @property
     def stats(self):
         stats = {
             'range': f"{self.start_date.strftime('%m/%d/%Y')} to {self.end_date.strftime('%m/%d/%Y')}",
@@ -4190,6 +4336,25 @@ class HackathonEvent(SuperModel):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+# method for updating
+@receiver(pre_save, sender=HackathonEvent, dispatch_uid="psave_hackathonevent")
+def psave_hackathonevent(sender, instance, **kwargs):
+
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    if instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='dashboard', model='hackathonevent'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.name,
+                "description":instance.stats['range'],
+                "url":instance.onboard_url,
+                "visible_to":None,
+                'img_url': instance.logo.url if instance.logo else None,
+            }
+            )
 
 class HackathonSponsor(SuperModel):
     SPONSOR_TYPES = [
@@ -4379,7 +4544,8 @@ class Earning(SuperModel):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
 
 
-def get_my_earnings(profile_pk):
+def get_my_earnings_counter_profiles(profile_pk):
+    # returns profiles that a user has done business with
     from_profile_earnings = Earning.objects.filter(from_profile=profile_pk)
     to_profile_earnings = Earning.objects.filter(to_profile=profile_pk)
     org_profile_earnings = Earning.objects.filter(org_profile=profile_pk)
@@ -4390,6 +4556,15 @@ def get_my_earnings(profile_pk):
 
     all_earnings = from_profile_earnings + to_profile_earnings + org_profile_earnings
     return all_earnings
+
+
+def get_my_grants(profile):
+    # returns grants that a profile has done business with
+    relevant_grants = list(profile.grant_contributor.all().values_list('grant', flat=True)) \
+        + list(profile.grant_teams.all().values_list('pk', flat=True)) \
+        + list(profile.grant_admin.all().values_list('pk', flat=True)) \
+        + list(profile.grant_phantom_funding.values_list('pk', flat=True))
+    return relevant_grants
 
 
 class PortfolioItem(SuperModel):
@@ -4424,6 +4599,7 @@ class TribeMember(SuperModel):
     profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
     org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE)
     leader = models.BooleanField(default=False, help_text=_('tribe leader'))
+    title = models.CharField(max_length=255, blank=True, default='')
     status = models.CharField(
         max_length=20,
         choices=MEMBER_STATUS,

@@ -157,13 +157,16 @@ $(document).ready(function() {
     });
   }
 
-  var top_nav_salt = 6;
+  var top_nav_salt = document.nav_salt;
   var remove_top_row = function() {
     $('#top_nav_notification').parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
   };
 
   if (localStorage['top_nav_notification_remove_' + top_nav_salt]) {
+    remove_top_row();
+  }
+  if (top_nav_salt == 0) {
     remove_top_row();
   }
   $('#top_nav_notification').click(remove_top_row);
@@ -352,24 +355,12 @@ const sendPersonal = (persona) => {
 };
 
 
-const gitcoinUpdates = (force) => {
-  let urlUpdates = `https://api.github.com/repos/gitcoinco/web/issues/5057?access_token=${document.contxt.access_token}`;
-  let today = new Date();
-  let showedUpdates = JSON.parse(localStorage.getItem('showed_updates'));
-  let lastPromp = showedUpdates ? showedUpdates.last_promp : today;
-  let lastUpdated = showedUpdates ? showedUpdates.last_updated : 0;
+const gitcoinUpdates = () => {
+  const urlUpdates = `https://api.github.com/repos/gitcoinco/web/issues/5057?access_token=${document.contxt.access_token}`;
 
-  if (!force && showedUpdates && (moment(today).diff(moment(lastPromp), 'days') < 7)) {
-    return;
-  }
+  const getUpdates = fetchData (urlUpdates, 'GET');
 
-  let getUpdates = fetchData (urlUpdates, 'GET');
-
-  $.when(getUpdates).then(function(response) {
-
-    if (!force && (response.updated_at == lastUpdated)) {
-      return;
-    }
+  $.when(getUpdates).then(response => {
 
     const content = $.parseHTML(
       `<div id="gitcoin_updates" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -396,13 +387,6 @@ const gitcoinUpdates = (force) => {
 
     $(content).appendTo('body');
     $('#gitcoin_updates').bootstrapModal('show');
-    let newPrompt = {
-      'last_promp': new Date(),
-      'last_updated': response.updated_at
-    };
-
-    localStorage.setItem('showed_updates', JSON.stringify(newPrompt));
-
   });
 
   $(document, '#gitcoin_updates').on('hidden.bs.modal', function(e) {

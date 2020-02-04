@@ -121,6 +121,7 @@ INSTALLED_APPS = [
     'event_ethdenver2019',
     'inbox',
     'feeswapper',
+    'search',
     'oauth2_provider',
     'townsquare',
     'compliance',
@@ -554,8 +555,8 @@ GITCOIN_CHAT_TEAM_ID = env('GITCOIN_CHAT_TEAM_ID', default='')
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = 'explorer'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'explorer'
+LOGIN_REDIRECT_URL = 'index'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'index'
 SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
@@ -735,6 +736,11 @@ if ENABLE_SILK:
             'name': 'Index View',
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
+
+# Datadog Monitoring
+ENABLE_DDTRACE = env.bool('ENABLE_DDTRACE', default=False)
+if ENABLE_DDTRACE:
+    INSTALLED_APPS += ['ddtrace.contrib.django']
 
 # Sending an email when a bounty is funded below a threshold
 LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)

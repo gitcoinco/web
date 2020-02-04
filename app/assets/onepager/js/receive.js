@@ -91,10 +91,14 @@ $(document).ready(function() {
       if (err) {
         _alert(err.message.split('\n')[0], 'error');
       } else {
-        document.location.href = window.location.href.split('?')[0] +
-        '?receive_txid=' + txid +
-        '&forwarding_address=' + $('#forwarding_address').val() +
-        '&save_addr=' + ($('#save_addr').is(':checked') ? '1' : '0');
+        var url = window.location.href.split('?')[0];
+        var form = $('<form action="' + url + '" method="post">' +
+          '<input type="text" name="receive_txid" value="' + txid + '" />' +
+          '<input type="text" name="forwarding_address" value="' + $('#forwarding_address').val() + '" />' +
+          '<input type="text" name="save_addr" value="' + ($('#save_addr').is(':checked') ? '1' : '0') + '" />' +
+          '</form>');
+        $('body').append(form);
+        form.submit();
       }
     };
 
@@ -136,6 +140,10 @@ $(document).ready(function() {
 
             gasLimit = new BigNumber(gasLimit);
             var send_amount = balance.minus(gasLimit.times(gas_price_wei)).minus(buffer);
+
+            if (document.override_send_amount) {
+              send_amount = document.override_send_amount * 10 ** 18; // TODO: decimals
+            }
 
             rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
             rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());

@@ -46,7 +46,7 @@
     <div class="row metamask-banner">
       <div class="col-12">
         {% include 'shared/no_issue_error.html' with page='kill_bounty' %}
-        {% if not is_bounties_network %}
+        {% if is_bounties_network %}
           {% include 'shared/no_metamask_error.html' %}
           {% include 'shared/zero_balance_error.html' %}
           {% include 'shared/unlock_metamask.html' %}
@@ -122,6 +122,12 @@
                       <input name="canceled_bounty_reason" id="reason_6" type="radio" value="6- Not needed anymore" />
                       <label class="filter-label" for=reason_6>{% trans "The bounty was not needed anymore." %}</label>
                     </div>
+
+                    <div class="form__radio option">
+                      <input name="canceled_bounty_reason" id="reason_7" type="radio" value="7 - Success but paid elsewhere" />
+                      <label class="filter-label" for=reason_7>{% trans "The bounty was completed successfully, I'm just paying it out elsewher." %}</label>
+                    </div>
+
 
                     <div class="form__radio option">
                       <input name="canceled_bounty_reason" id="reason_other" type="radio" value="other" />

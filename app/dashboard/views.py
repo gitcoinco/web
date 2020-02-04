@@ -97,8 +97,8 @@ from .notifications import (
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from .utils import (
-    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count,
-    get_web3, has_tx_mined, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public,
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count, get_web3,
+    has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public,
     web3_process_bounty,
 )
 
@@ -850,11 +850,13 @@ def onboard(request, flow=None):
             login_redirect = redirect('/login/github?next=' + request.get_full_path())
             return login_redirect
 
-    if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
+    if request.POST.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
         eth_address = request.GET.get('eth_address')
-        profile.preferred_payout_address = eth_address
-        profile.save()
+        valid_address = is_valid_eth_address(eth_address)
+        if valid_address:
+            profile.preferred_payout_address = eth_address
+            profile.save()
         return JsonResponse({'OK': True})
     
     theme = request.GET.get('theme', '3d')
@@ -1145,7 +1147,7 @@ def dashboard(request):
     params = {
         'active': 'dashboard',
         'title': title,
-        'meta_title': "Issue & Open Bug Bounty Explorer | Gitcoin",
+        'meta_title': "Issue & Open Bug Bounty Marketplace | Gitcoin",
         'meta_description': "Find open bug bounties & freelance development jobs including crypto bounty reward value in USD, expiration date and bounty age.",
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
@@ -1234,6 +1236,9 @@ def invoice(request):
         if tip.value_in_usdt:
             params['total'] += Decimal(tip.value_in_usdt)
 
+    if bounty.fee_amount > 0:
+        params['fee_value_in_usdt'] = bounty.fee_amount * Decimal(bounty.get_value_in_usdt) / bounty.value_true
+        params['total'] = params['total'] + params['fee_value_in_usdt']
     return TemplateResponse(request, 'bounty/invoice.html', params)
 
 
@@ -2745,6 +2750,7 @@ def profile(request, handle, tab=None):
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
+    context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
@@ -3727,6 +3733,9 @@ def hackathon_projects(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
+    if order_by not in {'created_on', '-created_on'}:
+        order_by = '-created_on'
+
     projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles').order_by(order_by).select_related('bounty')
 
     sponsors_list = []
@@ -4260,6 +4269,29 @@ def choose_persona(request):
             'persona': persona,
         },
         status=200)
+
+
+def is_my_tribe_member(leader_profile, tribe_member):
+    return any([tribe_member.org.handle.lower() == org.lower()
+                for org in leader_profile.organizations])
+
+
+@require_POST
+def set_tribe_title(request):
+    if request.user.is_authenticated:
+        leader_profile = request.user.profile if hasattr(request.user,
+                                                         'profile') else None
+        member = request.POST.get('member')
+        tribe_member = TribeMember.objects.get(pk=member)
+        if not tribe_member:
+            raise Http404
+        if not is_my_tribe_member(leader_profile, tribe_member):
+            return HttpResponse(status=403)
+        tribe_member.title = request.POST.get('title')
+        tribe_member.save()
+        return JsonResponse({'success': True}, status=200)
+    else:
+        raise Http404
 
 
 @csrf_exempt

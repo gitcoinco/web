@@ -6,37 +6,23 @@
     class="form__input p-2"
     placeholder="{% if placeholder %}{{placeholder}}{%else%}What are you thinking?{%endif%}"
     style="resize: none"
+    data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
   ></textarea>
+  <div id="textarea-dropdown" class="dropdown-menu" style="top: initial; left: initial;"></div>
   <input type="hidden" name="what" value="{{what}}:{{whatid}}">
   <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
-    {% if not suppress_tags %}
-      <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" >
-        <input type="checkbox" name="activity_type" value="announcement" autocomplete="off">
-        <i class="fas fa-bullhorn mr-2"></i>
-        #announce
-      </label>
-      <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" >
-        <input type="checkbox" name="activity_type" value="mentor" autocomplete="off">
-        <i class="fas fa-terminal mr-2"></i>
-        #mentor
-      </label>
-      <label class="btn btn-radio mr-2 mb-2 mb-md-0 job font-weight-semibold font-caption py-1 px-2">
-        <input type="checkbox" name="activity_type" value="job" autocomplete="off">
-        <i class="fas fa-code mr-2"></i>
-        #jobs
-      </label>
-      <label class="btn btn-radio mr-2 mb-2 mb-md-0 help font-weight-semibold font-caption py-1 px-2">
-        <input type="checkbox" name="activity_type" value="help" autocomplete="off">
-        <i class="fas fa-laptop-code mr-2"></i>
-        #help
-      </label>
-      <label class="btn btn-radio custom mb-2 mb-md-0 font-weight-semibold font-caption py-1 px-2 active">
-        <input type="checkbox" name="activity_type" value="custom" autocomplete="off">
-        <i class="fas fa-briefcase mr-2"></i>
-        #other
-      </label>
+    {% if tags %}
+      {% for tag in tags %}
+        <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" >
+          <input type="checkbox" name="activity_type" value="{{tag.0}}" autocomplete="off">
+          <i class="fas fa-{{tag.1}} mr-2"></i>
+        {{tag.0}}
+        </label>
+      {% endfor %}
     {% endif %}
-    <button class="btn btn-gc-blue font-caption" id="btn_post" disabled="true">SHARE <i class="fas fa-share"></i></button>
+    <button class="btn btn-gc-blue font-smaller-7" id="btn_post" disabled="true">
+      SHARE <i class="fas fa-share"></i>
+    </button>
   </div>
 
 </div>

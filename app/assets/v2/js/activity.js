@@ -1,7 +1,10 @@
+/* eslint no-useless-concat: 0 */ // --> OFF
 
 $(document).ready(function() {
 
   document.base_title = $('title').text();
+
+  $('#activity_subheader').remove();
 
   // notifications of new activities
   var ping_activity_notifier = (function() {
@@ -23,7 +26,14 @@ $(document).ready(function() {
   document.buffered_rows = [];
   var refresh_interval = 7000;
   var max_pk = null;
-  var run_longpoller = function() {
+  var run_longpoller = function(recursively) {
+    if (document.hidden) {
+      return setTimeout(function() {
+        if (recursively) {
+          run_longpoller(true);
+        }
+      }, refresh_interval);
+    }
     if ($('.infinite-more-link').length) {
       if (!max_pk) {
         max_pk = $('#activities .row').first().data('pk');
@@ -47,17 +57,22 @@ $(document).ready(function() {
         }
         // recursively run the longpoller
         setTimeout(function() {
-          run_longpoller();
+          if (recursively) {
+            run_longpoller(true);
+          }
         }, refresh_interval);
       });
     }
   };
+  // hack to make this available to status.js
+
+  document.run_long_poller = run_longpoller;
 
   // schedule long poller when first activity feed item shows up
   // by recursively waiting for the activity items to show up
   var schedule_long_poller = function() {
     if ($('#activities .row').length) {
-      run_longpoller();
+      run_longpoller(true);
     } else {
       setTimeout(function() {
         schedule_long_poller();
@@ -65,7 +80,11 @@ $(document).ready(function() {
     }
   };
 
-  schedule_long_poller();
+  setTimeout(function() {
+    if (document.long_poller_live) {
+      schedule_long_poller();
+    }
+  }, 1000);
 
   // refresh new actviity feed items
   $(document).on('click', '#new_activity_notifier', function(e) {
@@ -103,6 +122,89 @@ $(document).ready(function() {
     });
 
   });
+  // like activity
+  var send_tip_to_object = function($parent, e, tag) {
+    e.preventDefault();
+    if (!document.contxt.github_handle) {
+      _alert('Please login first.', 'error');
+      return;
+    }
+    if (!web3) {
+      _alert('Please enable and unlock your web3 wallet.', 'error');
+      return;
+    }
+
+    var $amount = $parent.find('.amount');
+
+    const email = '';
+    const github_url = '';
+    const from_name = document.contxt['github_handle'];
+    const username = $parent.data('username');
+    var amount_input = prompt('How much ETH do you want to send to ' + username + '?', '0.01');
+
+    if (!amount_input) {
+      return;
+    }
+    const amountInEth = parseFloat(amount_input.replace('ETH', ''));
+
+    if (amountInEth < 0.001) {
+      _alert('Amount must be 0.001 or more.', 'error');
+      return;
+    }
+    const comments_priv = tag + ':' + $parent.data('pk');
+    const comments_public = '';
+    const accept_tos = true; // accepted upon signup
+    const from_email = '';
+    const tokenAddress = '0x0';
+    const expires = 9999999999;
+    var success_callback = function(txid) {
+      const url = 'https://' + etherscanDomain() + '/tx/' + txid;
+      const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+
+      var old_amount = $amount.text();
+      var new_amount = Math.round(100 * (parseFloat(old_amount) + parseFloat(amountInEth))) / 100;
+
+      $amount.fadeOut().text(new_amount).fadeIn();
+      setTimeout(function() {
+        var $target = $parent.parents('.row.box').find('.comment_activity');
+
+        view_comments($target, false);
+      }, 1000);
+
+      _alert(msg, 'info', 1000);
+      // todo: update amount
+    };
+
+    var failure_callback = function() {
+      $.noop(); // do nothing
+    };
+
+    return sendTip(
+      email,
+      github_url,
+      from_name,
+      username,
+      amountInEth,
+      comments_public,
+      comments_priv,
+      from_email,
+      accept_tos,
+      tokenAddress,
+      expires,
+      success_callback,
+      failure_callback,
+      false
+    );
+
+  };
+
+  $(document).on('click', '.tip_on_comment', function(e) {
+    send_tip_to_object($(this), e, 'comment');
+  });
+  $(document).on('click', '.tip_activity', function(e) {
+    send_tip_to_object($(this), e, 'activity');
+  });
+
 
   // like activity
   $(document).on('click', '.like_activity, .flag_activity', function(e) {
@@ -124,7 +226,7 @@ $(document).ready(function() {
     } else { // unlike
       $(this).find('span.action').removeClass('open');
       $(this).data('state', $(this).data('negative'));
-    
+
       num = parseInt(num) - 1;
       $(this).find('span.num').html(num);
     }
@@ -137,8 +239,14 @@ $(document).ready(function() {
     };
     var url = '/api/v0.1/activity/' + $(this).data('pk');
 
+    var parent = $(this).parents('.row.box');
+
+    parent.find('.loading').removeClass('hidden');
     $.post(url, params, function(response) {
       // no message to be sent
+      parent.find('.loading').addClass('hidden');
+    }).fail(function() {
+      parent.find('.error').removeClass('hidden');
     });
 
 
@@ -151,19 +259,21 @@ $(document).ready(function() {
     }
 
     // user input
-    var comment = prompt('What is your comment?', 'Comment: ');
+    var comment = prompt('What is your comment?', '');
 
     // validation
     if (!comment) {
       return;
     }
 
+    $parent.parents('.row.box').find('.loading').removeClass('hidden');
+
     // increment number
     var num = $parent.find('span.num').html();
 
     num = parseInt(num) + 1;
     $parent.find('span.num').html(num);
-        
+
     // remote post
     var params = {
       'method': 'comment',
@@ -174,7 +284,15 @@ $(document).ready(function() {
 
     $.post(url, params, function(response) {
       view_comments($parent, allow_close_comment_container);
-    });
+    }).done(function() {
+      // pass
+    })
+      .fail(function() {
+        $parent.parents('.row.box').find('.error').removeClass('hidden');
+      })
+      .always(function() {
+        $parent.parents('.row.box').find('.loading').addClass('hidden');
+      });
   };
 
   var view_comments = function($parent, allow_close_comment_container) {
@@ -194,13 +312,24 @@ $(document).ready(function() {
       return;
     }
     $parent.find('.action').addClass('open');
+    $parent.parents('.row.box').find('.loading').removeClass('hidden');
     $.get(url, params, function(response) {
+      $parent.parents('.row.box').find('.loading').addClass('hidden');
       $target.addClass('filled');
       $target.html('');
       for (var i = 0; i < response['comments'].length; i++) {
         var comment = sanitizeAPIResults(response['comments'])[i];
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
-        var html = '<li><a href=/profile/' + comment['profile_handle'] + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + comment['profile_handle'] + '</a>, ' + timeAgo + ': ' + comment['comment'] + '</li>';
+        var show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
+        var html = '<li><a href=/profile/' + comment['profile_handle'] + '\
+          ' + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '\
+          ' + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + '\
+          ' + comment['profile_handle'] + '</a> ' + (show_tip ? ' \
+          <a href=# class="tip_on_comment" data-pk=' + comment['id'] + ' data-username=\
+          "' + comment['profile_handle'] + '"> ( <i class="fab fa-ethereum" >\
+          </i> <span class=amount>' + (Math.round(100 * comment['tip_count_eth']) / 100) + '</span> </a>) ' : '') + '\
+          ' + timeAgo + ':<br> ' + '\
+          <span class=comment>' + comment['comment'] + '</span></li>';
 
         $target.append(html);
       }
@@ -246,6 +375,10 @@ $(document).ready(function() {
 
   // auto open new comment threads
   setInterval(function() {
+    
+    $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').bootstrapTooltip();
+
     $('.comment_activity').each(function() {
       var open = $(this).data('open');
 
@@ -254,6 +387,29 @@ $(document).ready(function() {
         $(this).click();
       }
     });
+
+    $('.activity.wall_post .activity-status b, .activity.status_update .activity-status b').each(function() {
+      let new_text = $(this).text();
+
+      new_text = new_text.replace('&lt;', '_');
+      new_text = new_text.replace('&gt;', '_');
+      new_text = new_text.replace('>', '_');
+      new_text = new_text.replace('<', '_');
+      new_text = urlify(new_text);
+      new_text = new_text.replace(/#(\S*)/g, '<a href="/?tab=search-$1">#$1</a>');
+      new_text = new_text.replace(/@(\S*)/g, '<a href="/profile/$1">@$1</a>');
+      $(this).html(new_text);
+    });
+
+    // inserts links into the text where there are URLS detected
+    function urlify(text) {
+      var urlRegex = /(https?:\/\/[^\s]+)/g;
+
+      return text.replace(urlRegex, function(url) {
+        return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
+      });
+    }
+
   }, 1000);
 
 

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django.contrib import admin
+from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
@@ -43,20 +44,23 @@ class GrantAdmin(GeneralAdmin):
 
     ordering = ['-id']
     fields = [
+        'migrated_to',
         'title', 'description', 'reference_url', 'admin_address', 'active',
         'amount_goal', 'amount_received', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
-        'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date'
+        'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
+        'metadata'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
         'team_member_list',
         'subscriptions_links', 'contributions_links', 'link',
+        'migrated_to'
     ]
-    list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden']
+    list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile']
 
     # Custom Avatars
@@ -110,6 +114,11 @@ class GrantAdmin(GeneralAdmin):
                 eles.append(html)
 
         return mark_safe("<BR>".join(eles))
+
+    def migrated_to(self, instance):
+        if instance.link_to_new_grant:
+            html = f"<a href='{instance.link_to_new_grant.pk}'>{instance.link_to_new_grant.pk}</a>"
+            return mark_safe(html)
 
     logo_svg_asset.short_description = 'Logo SVG Asset'
     logo_asset.short_description = 'Logo Image Asset'
@@ -181,7 +190,7 @@ kevin (team gitcoin)
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
-    list_display = ['id', 'github_created_on', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
+    list_display = ['id', 'github_created_on', 'from_ip_address', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
@@ -201,6 +210,13 @@ class ContributionAdmin(GeneralAdmin):
         from django.contrib.humanize.templatetags.humanize import naturaltime
         return naturaltime(instance.subscription.contributor_profile.github_created_on)
 
+    def from_ip_address(self, instance):
+        end = instance.created_on + timezone.timedelta(hours=1)
+        start = instance.created_on - timezone.timedelta(hours=1)
+        visits = set(instance.subscription.contributor_profile.actions.filter(created_on__gt=start, created_on__lte=end).values_list('ip_address', flat=True))
+        visits = [visit for visit in visits if visit]
+        return " , ".join(visits)
+
 
 class MilestoneAdmin(admin.ModelAdmin):
     """Define the Milestone administration layout."""
@@ -208,13 +224,33 @@ class MilestoneAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display =['pk', 'grant', 'title', 'created_on']
 
+
 class UpdateAdmin(admin.ModelAdmin):
     """Define the Update administration layout."""
 
     ordering = ['-id']
     list_display =['pk', 'grant', 'title', 'created_on']
 
-admin.site.register(PhantomFunding, GeneralAdmin)
+
+class PhantomFundingAdmin(admin.ModelAdmin):
+    """Define the GeneralAdmin administration layout."""
+
+    ordering = ['-id']
+    list_display = ['id', 'github_created_on', 'from_ip_address', '__str__']
+
+    def github_created_on(self, instance):
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        return naturaltime(instance.profile.github_created_on)
+
+    def from_ip_address(self, instance):
+        end = instance.created_on + timezone.timedelta(hours=1)
+        start = instance.created_on - timezone.timedelta(hours=1)
+        visits = set(instance.profile.actions.filter(created_on__gt=start, created_on__lte=end).values_list('ip_address', flat=True))
+        visits = [visit for visit in visits if visit]
+        return " , ".join(visits)
+
+
+admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
 admin.site.register(CLRMatch, GeneralAdmin)
