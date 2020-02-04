@@ -1,14 +1,18 @@
 const tribeTitle = () => {
   $('[data-tribetitle]').each(function(index, elem) {
-  console.log('loaded');
     $(elem).on('click', function() {
       $(elem).attr('disabled', true);
-      var title = prompt('Enter a new title for your tribe member')
+      let title = prompt('Enter a new title for your tribe member');
       const memberId = $(elem).data('tribetitle');
       const url = '/tribe/title/';
       const template = '<span class="tribe_title text-center p-1 text-highlight-green">' + title + '</span>';
 
-      const sendTitle = fetchData (url, 'POST', {'member': memberId, 'title': title}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+      const sendTitle = fetchData (
+        url,
+        'POST',
+        { 'member': memberId, 'title': title },
+        { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()}
+      );
 
       $.when(sendTitle).then(function(response) {
         $(elem).closest('.card').find('.tribe_title').remove();
@@ -24,5 +28,3 @@ const tribeTitle = () => {
 };
 
 tribeTitle();
-
-
