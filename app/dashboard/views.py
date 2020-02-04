@@ -4253,6 +4253,29 @@ def choose_persona(request):
         status=200)
 
 
+def is_my_tribe_member(leader_profile, tribe_member):
+    return any([tribe_member.org.handle.lower() == org.lower()
+                for org in leader_profile.organizations])
+
+
+@require_POST
+def set_tribe_title(request):
+    if request.user.is_authenticated:
+        leader_profile = request.user.profile if hasattr(request.user,
+                                                         'profile') else None
+        member = request.POST.get('member')
+        tribe_member = TribeMember.objects.get(pk=member)
+        if not tribe_member:
+            raise Http404
+        if not is_my_tribe_member(leader_profile, tribe_member):
+            return HttpResponse(status=403)
+        tribe_member.title = request.POST.get('title')
+        tribe_member.save()
+        return JsonResponse({'success': True}, status=200)
+    else:
+        raise Http404
+
+
 @csrf_exempt
 @require_POST
 def join_tribe(request, handle):
