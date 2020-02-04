@@ -33,10 +33,10 @@ from retail.emails import (
     render_bounty_request, render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment,
     render_faucet_rejected, render_faucet_request, render_featured_funded_bounty, render_funder_payout_reminder,
     render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email,
-    render_grant_update, render_kudos_email, render_match_email, render_new_bounty, render_new_bounty_acceptance,
-    render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email, render_new_supporter_email,
-    render_new_work_submission, render_no_applicant_reminder, render_nth_day_email_campaign, render_quarterly_stats,
-    render_reserved_issue, render_share_bounty, render_start_work_applicant_about_to_expire,
+    render_grant_update, render_kudos_email, render_match_email, render_mention, render_new_bounty,
+    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email,
+    render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder, render_nth_day_email_campaign,
+    render_quarterly_stats, render_reserved_issue, render_share_bounty, render_start_work_applicant_about_to_expire,
     render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
     render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
     render_support_cancellation_email, render_thank_you_for_supporting_email, render_tip_email,
@@ -349,7 +349,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
             return
 
         subject = bounty.github_url
-        __, text = render_bounty_feedback(bounty, persona, previous_bounties)
+        html, text = render_bounty_feedback(bounty, persona, previous_bounties)
         cc_emails = [from_email, 'team@gitcoin.co']
         if not should_suppress_notification_email(to_email, 'bounty_feedback'):
             send_mail(
@@ -357,6 +357,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
                 to_email,
                 subject,
                 text,
+                html,
                 cc_emails=cc_emails,
                 from_name="Alisa March (Gitcoin.co)",
                 categories=['transactional', func_name()],
@@ -389,11 +390,16 @@ def tip_email(tip, to_emails, is_new):
             translation.activate(cur_language)
 
 
-def comment_email(comment, to_emails):
+def comment_email(comment):
 
     subject = gettext("💬 New Comment")
 
     cur_language = translation.get_language()
+    to_emails = list(comment.activity.comments.values_list('profile__email', flat=True))
+    to_emails.append(comment.activity.profile.email)
+    if comment.activity.other_profile:
+        to_emails.append(comment.activity.other_profile.email)
+    to_emails = set([e for e in to_emails if e != comment.profile.email])
     for to_email in to_emails:
         try:
             setup_lang(to_email)
@@ -405,6 +411,25 @@ def comment_email(comment, to_emails):
         finally:
             pass
     translation.activate(cur_language)
+
+
+def mention_email(post, to_emails):
+    subject = gettext("💬 @{} mentioned you in a post").format(post.profile.handle)
+    cur_language = translation.get_language()
+
+    for to_email in to_emails:
+        try:
+            setup_lang(to_email)
+            from_email = settings.CONTACT_EMAIL
+            html, text = render_mention(to_email, post)
+
+            if not should_suppress_notification_email(to_email, 'mention'):
+                send_mail(from_email, to_email, subject, text, html, categories=['notification', func_name()])
+        finally:
+            pass
+    translation.activate(cur_language)
+
+
 
 def wall_post_email(activity):
 
@@ -600,15 +625,34 @@ def new_token_request(obj):
         subject = _("New Token Request")
         body_str = _("A new token request was completed. You may fund the token request here")
         body = f"{body_str}: https://gitcoin.co/{obj.admin_url} \n\n {obj.email}"
-        if not should_suppress_notification_email(to_email, 'faucet'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                body,
-                from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
-            )
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            body,
+            from_name=_("No Reply from Gitcoin.co"),
+            categories=['admin', func_name()],
+        )
+    finally:
+        translation.activate(cur_language)
+
+
+def new_token_request_approved(obj):
+    to_email = obj.metadata.get('email')
+    from_email = 'founders@gitcoin.co'
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = f"Token {obj.symbol} approved on Gitcoin"
+        body = f"Token {obj.symbol} approved on Gitcoin -- You will now see it available in the (1) settings area (2) bounty posting form (3) grant funding form (4) tipping form and (5) anywhere else tokens are listed on Gitcoin. "
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            body,
+            from_name=_("No Reply from Gitcoin.co"),
+            categories=['admin', func_name()],
+        )
     finally:
         translation.activate(cur_language)
 
@@ -836,18 +880,18 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         to_emails = []
     plural = "s" if len(bounties) != 1 else ""
     worth = round(sum([bounty.value_in_usdt for bounty in bounties if bounty.value_in_usdt]), 2)
-    worth = f" worth ${worth}" if worth else ""
+    worth = f"${worth}" if worth else ""
     offers = f""
     if to_emails:
         offers = ""
 
         has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
         if has_offer:
-            offers = f"💰 1 New Action && "
+            offers = f"💰 1 New Action"
 
         new_bounties = ""
         if bounties.count():
-            new_bounties = f"⚡️ {len(bounties)} New Work{worth} matching your profile"
+            new_bounties = f"⚡️ {worth} In New Bounties Available"
         elif old_bounties.count():
             new_bounties = f"😁 {len(old_bounties)} Bounties Available"
 

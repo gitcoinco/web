@@ -69,7 +69,8 @@ TRANSACTIONAL_EMAILS = [
 
 
 NOTIFICATION_EMAILS = [
-    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat'))
+    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat')),
+    ('mention', _('Mentions'), _('Only when other users mention you on posts')),
 ]
 
 ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
@@ -216,9 +217,8 @@ def thank_you_for_supporting(request):
 
 @staff_member_required
 def new_supporter(request):
-    grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_new_supporter_email(grant, subscription)
+    subscription = Subscription.objects.last()
+    response_html, __, __ = render_new_supporter_email(subscription.grant, subscription)
     return HttpResponse(response_html)
 
 
@@ -426,8 +426,8 @@ PS - we've got some new gitcoin schwag on order. if interested, let us know and 
         'txt': txt,
 		'email_type': 'bounty_feedback'
     }
-    response_html = premailer_transform(render_to_string("emails/txt.html", params))
-    response_txt = txt
+    response_txt = premailer_transform(render_to_string("emails/txt.html", params))
+    response_html = f"<pre>{response_txt}</pre>"
 
     return response_html, response_txt
 
@@ -710,6 +710,19 @@ def render_comment(to_email, comment):
     return response_html, response_txt
 
 
+def render_mention(to_email, post):
+    params = {
+        'post': post,
+        'email_type': 'mention',
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/mention.html", params))
+    response_txt = render_to_string("emails/mention.txt", params)
+
+    return response_html, response_txt
+
+
 def render_grant_update(to_email, activity):
     params = {
         'activity': activity,
@@ -979,8 +992,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "To Take Back or Give Back?"
-    new_kudos_pks = [7335, 7323, 7339]
+    subject = "We Need YOU to Sustain Web3!"
+    new_kudos_pks = [8179, 7511, 7503]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1002,20 +1015,20 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-As you may have heard, the <a href="https://hackathons.gitcoin.co/take-back-the-web">Take Back the Web</a> Virtual Hackathon kicked off yesterday. Check out the <a href="https://gitcoin.co/hackathon/take-back-the-web/">prize explorer</a> to see the bounties posted by Status, MetaMask, ETC Labs, Infura, Blockstack, Kickback, and Sablier. We also just released a new in-app <a href="https://chat.gitcoin.co/hackathons/">Gitcoin Chat</a> feature for this hackathon and beyond, so join the conversation!
+The <a href="https://hackathons.gitcoin.co/sustain-web3">Sustain Web3</a> virtual hackathon is officially live with $17k in prizes up for grabs! You can now view all the bounties on the <a href="https://gitcoin.co/hackathon/sustain-web3">prize explorer</a>. The two week hackathon will run until February 12th at 23:59 UTC, right before <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a>. Sponsors include <a href="https://foam.space/">FOAM</a>, <a href="https://xpring.io/">Xpring</a>, <a href="https://www.dfuse.io/">dfuse</a>, <a href="https://www.bancor.network/">Bancor</a>, <a href="https://labs.consensys.net/">ConsenSys Labs</a>, and more.
 </p>
 <p>
-We are also now almost 5 days into <a href="https://gitcoin.co/blog/gitcoin-grants-2020/">Gitcoin Grants Round 4</a>, with over 838 contributions from 241 unique community members, worth $22297, after the first 3 days. Click <a href="https://gitcoin.co/grants/">here</a> to checkout the round 4 grants. It’s up to you to decide - are you going to help us take back the web, or help us give back grants to the community?
+Gitcoin <a href="https://gitcoin.co/grants/">Grants Round 4</a> is closed and funds will be distributed shortly. Check out our newest <a href="https://gitcoin.co/blog/gitcoin-grants-round-4/">blog post</a> for the full results, and we also recommend reading <a href="https://vitalik.ca/general/2020/01/28/round4.html">Vitalik’s review</a> as well. Thank you to everyone who helped make this round the biggest success yet!
 </p>
 <p>
-Finally, we are exited to share <a href="https://web3.sustainoss.org/">Sustain Web3</a> has a <a href="https://twitter.com/gitcoin/status/1215427678465118208">new venue</a>: The EthDenver Sports Castle in Denver, alongside DAOFest. Now, all things DAOs and Web3 sustainability will be in one place on Feb 13th! We hope to see you there.
+ Join us this weekend (Feb 1st & 2nd) for Trust-Less 2020: A Proof-Of-Stake (PoS) Validator summit. Attendees will learn about Ethereum 2.0 Validator Economics with ConsenSys Codefi, get updates on the beacon chain with Prysmatic Labs, learn how to spin up their own ETH 2.0 Validator with RocketPool, and more. The conf is 100% free & virtual so you can tune in from anywhere in the world to learn. Claim your spot <a href="https://trust-less-2020.dystopialabs.com/">here</a>.
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Join us on today's Gitcoin Livestream to hear from the Take Back The Web sponsors mentioned above discuss their projects, bounties, and how they are giving power back to the end users on the internet. <a href="https://gitcoin.co/livestream">Join at 2pm ET</a>.
+            Today's Livestream will feature Sustain Web3 hackathon sponsors to discuss their companies and prizes. <a href="https://gitcoin.co/livestream">Join us</a> 2pm ET to hear from FOAM, Xpring, ConsenSys Labs, and dfuse.
         </li>
     </ul>
 </p>
@@ -1024,22 +1037,22 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'iamonuwa',
+        'who': 'pengiundev',
         'who_link': True,
-        'what': 'Enabled address privacy for Gitcoin Grant contributors',
-        'link': 'https://gitcoin.co/issue/gitcoinco/web/5654/3826',
+        'what': 'Adjusted "Hatching Period" In Bonding Curve Smart Contract',
+        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/10/3962',
         'link_copy': 'View more',
     }, {
-        'who': 'think-in-universe',
+        'who': 'adrianhacker-pdx',
         'who_link': True,
-        'what': 'Translated articles to Chinese for Web3Foundation',
-        'link': 'https://gitcoin.co/issue/staketechnologies/Plasm/88/3790',
+        'what': 'Created an Explainer Page For Account Abstraction with EthHub',
+        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/422/3908',
         'link_copy': 'View more',
     }, {
-        'who': 'man-jain',
+        'who': 'jmsofarelli',
         'who_link': True,
-        'what': 'Created a Smart Contract That Creates A Uniswap Market For Pegged Token Upon Creation',
-        'link': 'https://gitcoin.co/issue/ProofSuite/OrFeedSmartContracts/26/3796',
+        'what': 'Made a Dapp With a Frontend Hosted on IPFS With Infuras API.',
+        'link': 'https://gitcoin.co/issue/INFURA/hackathons/2/3868',
         'link_copy': 'View more',
     }, ]
 
@@ -1056,12 +1069,15 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/blockstack/bounties/issues/2',
-        'primer': 'Provide A Way To Create An Invitation For Users That Have not Signed Up Yet (Blockstack)',
+        'url': 'https://github.com/ryan-foamspace/Sustain-Web3-hackathon/issues/3',
+        'primer': 'Create a Mobile-Friendly Map Viewer with FOAM',
     }, {
-        'url': 'https://github.com/INFURA/hackathons/issues/3',
-        'primer': 'Infura Ethereum API Optimization',
-    }, ]
+        'url': 'https://github.com/ConsenSys/Relays/issues/2',
+        'primer': 'Growth Hacking For Established Projects - Drive Viral Growth to Your Startup',
+    }, {
+        'url': 'https://github.com/gitcoinco/web/issues/5914',
+        'primer': 'Allow Gitcoin.Co/Tips To Support Sablier Style Streams',
+    }]
 
 
     num_leadboard_items = 5
@@ -1247,6 +1263,13 @@ def new_bounty_rejection(request):
 def comment(request):
     from townsquare.models import Comment
     response_html, _ = render_comment(settings.CONTACT_EMAIL, Comment.objects.last())
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def mention(request):
+    from townsquare.models import Activity
+    response_html, _ = render_mention(settings.CONTACT_EMAIL, Activity.objects.last())
     return HttpResponse(response_html)
 
 

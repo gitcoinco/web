@@ -50,6 +50,7 @@ import quests.views
 import retail.emails
 import retail.views
 import revenue.views
+import search.views
 import tdi.views
 import townsquare.views
 from avatar.router import router as avatar_router
@@ -145,6 +146,7 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
+    url(r'^api/v0.1/search/', search.views.search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
     # chat
@@ -364,7 +366,7 @@ urlpatterns = [
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
-    re_path(r'^townsquare/?', townsquare.views.index, name='townsquare'),
+    re_path(r'^townsquare/?', townsquare.views.town_square, name='townsquare'),
     re_path(r'^$', townsquare.views.index, name='index'),
     path('action/<int:offer_id>/<slug:offer_slug>/go', townsquare.views.offer_go, name='townsquare_offer_go'),
     path('action/new', townsquare.views.offer_new, name='townsquare_offer_new'),
@@ -388,6 +390,7 @@ urlpatterns = [
     re_path(r'^tribes', retail.views.tribes, name='tribes'),
     path('tribe/<str:handle>/join/', dashboard.views.join_tribe, name='join_tribe'),
     path('tribe/<str:handle>/save/', dashboard.views.save_tribe, name='save_tribe'),
+    path('tribe/title/', dashboard.views.set_tribe_title, name='set_tribe_title'),
     path('tribe/leader/', dashboard.views.tribe_leader, name='tribe_leader'),
 
     # basic redirect retail views
@@ -408,6 +411,8 @@ urlpatterns = [
     re_path(r'^livestream/?', retail.views.livestream, name='livestream'),
     re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
     re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
+    re_path(r'^wallpaper/?', retail.views.wallpaper, name='wallpaper'),
+    re_path(r'^wallpapers/?', retail.views.wallpaper, name='wallpapers'),
     re_path(r'^gitter/?', retail.views.gitter, name='gitter'),
     re_path(r'^refer/?', retail.views.refer, name='refer'),
     re_path(r'^fb/?', retail.views.fb, name='fb'),
@@ -482,6 +487,7 @@ urlpatterns = [
     ),
     path('_administration/email/new_bounty_rejection', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
     path('_administration/email/comment', retail.emails.comment, name='comment_email'),
+    path('_administration/email/mention', retail.emails.mention, name='mention_email'),
     path('_administration/email/wallpost', retail.emails.wallpost, name='wallpost_email'),
     path('_administration/email/grant_update', retail.emails.grant_update, name='grant_update_email'),
     path(

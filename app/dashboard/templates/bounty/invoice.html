@@ -209,6 +209,18 @@
         </tr>
       {% endfor %}
 
+      {% if fee_value_in_usdt %}
+      <tr class="item">
+          <td>
+              Platform Fee Payment
+          </td>
+
+          <td>
+              {{bounty.fee_amount}} {{bounty.token_name}} (${{fee_value_in_usdt|floatformat:2}})
+          </td>
+        </tr>
+      {% endif %}
+
       {% if not tips and not accepted_fulfillments %}
         <tr class="item">
           <td colspan="2">

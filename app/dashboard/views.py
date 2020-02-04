@@ -1132,7 +1132,7 @@ def dashboard(request):
     params = {
         'active': 'dashboard',
         'title': title,
-        'meta_title': "Issue & Open Bug Bounty Explorer | Gitcoin",
+        'meta_title': "Issue & Open Bug Bounty Marketplace | Gitcoin",
         'meta_description': "Find open bug bounties & freelance development jobs including crypto bounty reward value in USD, expiration date and bounty age.",
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
@@ -1221,6 +1221,9 @@ def invoice(request):
         if tip.value_in_usdt:
             params['total'] += Decimal(tip.value_in_usdt)
 
+    if bounty.fee_amount > 0:
+        params['fee_value_in_usdt'] = bounty.fee_amount * Decimal(bounty.get_value_in_usdt) / bounty.value_true
+        params['total'] = params['total'] + params['fee_value_in_usdt']
     return TemplateResponse(request, 'bounty/invoice.html', params)
 
 
@@ -3715,6 +3718,9 @@ def hackathon_projects(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
+    if order_by not in {'created_on', '-created_on'}:
+        order_by = '-created_on'
+
     projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles').order_by(order_by).select_related('bounty')
 
     sponsors_list = []
@@ -4248,6 +4254,29 @@ def choose_persona(request):
             'persona': persona,
         },
         status=200)
+
+
+def is_my_tribe_member(leader_profile, tribe_member):
+    return any([tribe_member.org.handle.lower() == org.lower()
+                for org in leader_profile.organizations])
+
+
+@require_POST
+def set_tribe_title(request):
+    if request.user.is_authenticated:
+        leader_profile = request.user.profile if hasattr(request.user,
+                                                         'profile') else None
+        member = request.POST.get('member')
+        tribe_member = TribeMember.objects.get(pk=member)
+        if not tribe_member:
+            raise Http404
+        if not is_my_tribe_member(leader_profile, tribe_member):
+            return HttpResponse(status=403)
+        tribe_member.title = request.POST.get('title')
+        tribe_member.save()
+        return JsonResponse({'success': True}, status=200)
+    else:
+        raise Http404
 
 
 @csrf_exempt

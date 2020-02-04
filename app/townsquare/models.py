@@ -1,4 +1,7 @@
+from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -60,11 +63,29 @@ class Comment(SuperModel):
         return self.profile.handle
 
     @property
+    def tip_able(self):
+        return self.activity.metadata.get("tip_able", False)
+
+    @property
     def url(self):
         return self.activity.url
 
+    @property
+    def tip_count_eth(self):
+        from dashboard.models import Tip
+        network = 'rinkeby' if settings.DEBUG else 'mainnet'
+        tips = Tip.objects.filter(comments_priv=f"comment:{self.pk}", network=network)
+        return sum([tip.value_in_eth for tip in tips])
+
     def get_absolute_url(self):
         return self.url
+
+
+@receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
+def postsave_comment(sender, instance, created, **kwargs):
+    from marketing.mails import comment_email
+    comment_email(instance)
+    print("SENT EMAIL")
 
 
 class OfferQuerySet(models.QuerySet):
@@ -74,24 +95,28 @@ class OfferQuerySet(models.QuerySet):
         """Filter results down to current offers only."""
         return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now(), public=True)
 
+num_backgrounds = 33
+
 
 class Offer(SuperModel):
     """An offer"""
     OFFER_TYPES = [
+        ('secret', 'secret'),
+        ('random', 'random'),
         ('daily', 'daily'),
         ('weekly', 'weekly'),
         ('monthly', 'monthly'),
         ('other', 'other'),
+        ('top', 'top'),
     ]
     STYLES = [
-        ('announce1', 'light-pink'),
-        ('announce2', 'blue'),
-        ('announce3', 'teal'),
-        ('announce4', 'yellow'),
-        ('announce5', 'lime-green'),
-        ('announce6', 'pink'),
-    ]
+        ('red', 'red'),
+        ('green', 'green'),
+        ('blue', 'blue'),
+    ] + [(f'back{i}', f'back{i}') for i in range(0, num_backgrounds + 1)]
 
+    from_name = models.CharField(max_length=50, blank=True)
+    from_link = models.URLField(blank=True)
     title = models.TextField(default='', blank=True)
     desc = models.TextField(default='', blank=True)
     url = models.URLField(db_index=True)
@@ -103,6 +128,8 @@ class Offer(SuperModel):
     created_by = models.ForeignKey('dashboard.Profile',
         on_delete=models.CASCADE, related_name='offers_created', blank=True, null=True)
     public = models.BooleanField(help_text='Is this available publicly yet?', default=True)
+    view_count = models.IntegerField(default=0, db_index=True)
+    amount = models.CharField(max_length=50, blank=True)
 
     # Bounty QuerySet Manager
     objects = OfferQuerySet.as_manager()
@@ -116,7 +143,7 @@ class Offer(SuperModel):
         return f'/action/{self.pk}/{slug}'
 
     def get_absolute_url(self):
-        return self.view_url
+        return self.view_url + '?preview=1'
 
     @property
     def go_url(self):
@@ -151,10 +178,17 @@ class AnnounceQuerySet(models.QuerySet):
 class Announcement(SuperModel):
     """An Announcement to the users to be displayed on town square."""
 
+    _TYPES = [
+        ('townsquare', 'townsquare'),
+        ('header', 'header'),
+        ('footer', 'footer'),
+    ]
+    key = models.CharField(max_length=50, db_index=True, choices=_TYPES)
     title = models.TextField(default='', blank=True)
     desc = models.TextField(default='', blank=True)
     valid_from = models.DateTimeField(db_index=True)
     valid_to = models.DateTimeField(db_index=True)
+    rank = models.IntegerField(default=0)
 
     STYLES = [
         ('primary', 'primary'),
