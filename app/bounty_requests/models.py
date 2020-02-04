@@ -67,7 +67,7 @@ class BountyRequest(SuperModel):
         help_text='tribe which is being requested to fund the issue'
     )
 
-    title = models.CharField(max_length=1000)
+    title = models.CharField(max_length=1000, default='')
     github_url = models.CharField(max_length=255, help_text='github url of suggested bounty')
     comment = models.TextField(max_length=500, help_text='description from the requestor to justify the bounty request')
     amount = models.FloatField(blank=False, help_text='amount for which the requested bounty is to be funded', validators=[MinValueValidator(1.0)])
