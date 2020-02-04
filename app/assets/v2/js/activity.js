@@ -389,16 +389,19 @@ $(document).ready(function() {
     });
 
     $('.activity.wall_post .activity-status b, .activity.status_update .activity-status b').each(function() {
-      let new_text = $(this).text();
+      if (!$(this).hasClass('clean')) {
+        let new_text = $(this).text();
 
-      new_text = new_text.replace('&lt;', '_');
-      new_text = new_text.replace('&gt;', '_');
-      new_text = new_text.replace('>', '_');
-      new_text = new_text.replace('<', '_');
-      new_text = urlify(new_text);
-      new_text = new_text.replace(/#(\S*)/g, '<a href="/?tab=search-$1">#$1</a>');
-      new_text = new_text.replace(/@(\S*)/g, '<a href="/profile/$1">@$1</a>');
-      $(this).html(new_text);
+        new_text = new_text.replace('&lt;', '_');
+        new_text = new_text.replace('&gt;', '_');
+        new_text = new_text.replace('>', '_');
+        new_text = new_text.replace('<', '_');
+        new_text = urlify(new_text);
+        new_text = new_text.replace(/#(\S*)/g, '<a href="/?tab=search-$1">#$1</a>');
+        new_text = new_text.replace(/@(\S*)/g, '<a href="/profile/$1">@$1</a>');
+        $(this).html(new_text);
+        $(this).addClass('clean');
+      }
     });
 
     // inserts links into the text where there are URLS detected
