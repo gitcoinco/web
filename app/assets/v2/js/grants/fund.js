@@ -44,6 +44,12 @@ $(document).ready(function() {
     e.preventDefault();
   });
 
+  $('#adjust').click(function(e) {
+    $(this).remove();
+    $('.unhide_if_expanded').removeClass('hidden');
+    e.preventDefault();
+  });
+
   $('#frequency_unit, #js-token').on('select2:select', event => {
     updateSummary();
   });
@@ -92,7 +98,6 @@ $(document).ready(function() {
     $(event.currentTarget).removeClass('badge-inactive');
     $(event.currentTarget).addClass('badge-active');
   });
-
   $('.contribution_type select').change(function() {
     if ($('.contribution_type select').val() == 'once') {
       $('.frequency').addClass('hidden');
@@ -110,6 +115,7 @@ $(document).ready(function() {
       $('.hide_if_recurring').addClass('hidden');
     }
   });
+  $('.contribution_type select').trigger('change');
 
   $('#js-fundGrant').validate({
     rules: {
@@ -124,7 +130,6 @@ $(document).ready(function() {
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
-
 
       if (data.frequency) {
 

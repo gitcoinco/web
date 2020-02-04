@@ -17,7 +17,7 @@
 {% load i18n static %}
 {% load kudos_extras %}
 <input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
-{% if is_staff %}
+{% if is_alpha_tester %}
   <div id=search_container class=""></div>
 {% endif %}
 {% if user.is_authenticated %}
@@ -113,4 +113,3 @@
     <i class="fab fa-github"></i><span class="nav-link__text">{% trans "Log in" %}</span>
   </a>
 {% endif %}
-

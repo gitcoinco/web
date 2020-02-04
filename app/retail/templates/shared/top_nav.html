@@ -19,8 +19,11 @@
 
 <!--- Top Row Notification -->
 <div class="row bottom_notification font-caption bottom_notification" style="text-align: center;">
+  <script>
+    document.nav_salt = {{nav_salt|safe}};
+  </script>
   <span style="text-align: center; margin: auto;">
-    {% blocktrans %}<strong>Sustain Web3</strong> Virtual Hackathon runs January 29th to February 12nd - <a href="https://gitcoin.co/hackathon/sustain-web3/">Check out the details</a>.{% endblocktrans %}
+    {{header_msg|safe}}
   </span>
   <span style="cursor: pointer;" id="top_nav_notification">
       &times;
