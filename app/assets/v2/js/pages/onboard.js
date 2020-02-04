@@ -97,13 +97,16 @@ onboard.watchMetamask = function() {
       $('.controls').show();
       $('#metamask-video').hide();
       $('#next-btn').on('click', function(e) {
-        var eth_address = $('#eth_address').val();
 
         $.ajax({
           url: '/onboard/contributor/',
           method: 'POST',
-          headers: {'X-CSRFToken': csrftoken},
-          data: {eth_address: eth_address}
+          headers: {
+            'X-CSRFToken': csrftoken
+          },
+          data: {
+            eth_address:  $('#eth_address').val()
+          }
         });
       });
     }
