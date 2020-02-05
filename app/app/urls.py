@@ -115,6 +115,8 @@ urlpatterns = [
     url(r'^api/v0.1/profile/(.*)?/viewers.csv', dashboard.views.profile_viewers, name='profile_viewers'),
     url(r'^api/v0.1/profile/(.*)?/spent.csv', dashboard.views.profile_spent, name='profile_spent'),
     url(r'^api/v0.1/profile/banner', dashboard.views.change_user_profile_banner, name='change_user_profile_banner'),
+    url(r'^api/v0.1/profile/settings', dashboard.views.profile_settings, name='profile_settings'),
+    url(r'^api/v0.1/profile/backup', dashboard.views.profile_backup, name='profile_backup'),
     path('api/v0.1/activity/<int:activity_id>', townsquare.views.api, name='townsquare_api'),
     path('api/v0.1/emailsettings/', townsquare.views.emailsettings, name='townsquare_emailsettings'),
     url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
@@ -391,6 +393,7 @@ urlpatterns = [
     re_path(r'^tribes', retail.views.tribes, name='tribes'),
     path('tribe/<str:handle>/join/', dashboard.views.join_tribe, name='join_tribe'),
     path('tribe/<str:handle>/save/', dashboard.views.save_tribe, name='save_tribe'),
+    path('tribe/title/', dashboard.views.set_tribe_title, name='set_tribe_title'),
     path('tribe/leader/', dashboard.views.tribe_leader, name='tribe_leader'),
 
     # basic redirect retail views
@@ -411,6 +414,8 @@ urlpatterns = [
     re_path(r'^livestream/?', retail.views.livestream, name='livestream'),
     re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
     re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
+    re_path(r'^wallpaper/?', retail.views.wallpaper, name='wallpaper'),
+    re_path(r'^wallpapers/?', retail.views.wallpaper, name='wallpapers'),
     re_path(r'^gitter/?', retail.views.gitter, name='gitter'),
     re_path(r'^refer/?', retail.views.refer, name='refer'),
     re_path(r'^fb/?', retail.views.fb, name='fb'),
@@ -435,6 +440,8 @@ urlpatterns = [
 
     # bounty requests
     re_path(r'^requests/?', bounty_requests.views.bounty_request, name='bounty_requests'),
+    url('^api/v1/bounty_request/create', bounty_requests.views.create_bounty_request_v1, name='create_bounty_request_v1'),
+    url('^api/v1/bounty_request/update', bounty_requests.views.update_bounty_request_v1, name='update_bounty_request_v1'),
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),

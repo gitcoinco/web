@@ -18,13 +18,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% block body %}
 
+{% if is_staff and admin_link %}
+<div class="alpha-warning font-caption mb-0">
+  <span class="font-weight-bold">Staff only</span>
+  <a style="color:white;" href="{{admin_link}}">{% trans "Activity Feed Admin" %}</a>
+</div>
+{% endif %}
+
 {% if not profile_id %}
   <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
   <div class="row announce bg-info">
     <div class="container py-0 ">
       <div class="my-1">
         <div class="row">
-          <i class="fas fa-info mr-3"></i> 
+          <i class="fas fa-info mr-3"></i>
           What is Gitcoin? - <a style="font-weight: bold;" href="/home">Learn More <i class="fas fa-share-square"></i> </a>
         </div>
       </div>
@@ -32,12 +39,41 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
 {% endif %}
 
+{% if offers_by_category.top.offers %}
+  <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
+  <div class="row top_offers pb-2">
+    <div class="container py-0 ">
+      <div class="my-1">
+        <div class="row">
+          <h4 class="pt-3">Nano-Bounties</h4>
+        </div>
+        <div class="row">
+          {% for nb in offers_by_category.top.offers|slice:3 %}
+            <div class="top_offer">
+              <a class="decline float-right" href="{{nb.decline_url}}">X</a>
+              <img src=dynamic/avatar/{{nb.created_by.handle}}>
+              <h5>{{nb.title}}</h5>
+              <p>{{nb.desc}}</p>
+              <div class="float-right">
+                <span class="tag">{{nb.amount}}</span>
+                <a class="btn btn-gc-blue btn-sm" href="{{nb.go_url}}">View</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+{% endif %}
+
+
 {% for announce in announcements %}
   <div class="row announce bg-{{announce.style}}">
     <div class="container py-0 ">
       <div class="my-1">
         <div class="row">
-          <i class="fas fa-info mr-3"></i> 
+          <i class="fas fa-info mr-3"></i>
           <strong>
             {{announce.title}}
           </strong> ({{announce.valid_from | naturaltime}}) -
@@ -56,7 +92,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="my-1">
       <div class="row">
         <div class="col-12 col-md-8">
-          {% include 'profiles/status_box.html' %}
+          {% if tab == 'connect' %}
+            {% include 'profiles/status_box.html' %}
+          {% endif %}
           <div class="float-right right mt-4">
             <input type="search" class="form__input" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
             <BR>
@@ -78,9 +116,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </div>
         </div>
         <div class="col-12 col-md-4">
-          <div class="text-center">
-            <a href="/action/new" class="btn btn-gc-blue" >CREATE ACTION <i class="fas fa-upload"></i></a>
-          </div>
           {% for type, item in offers_by_category.items %}
             <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%}">
               <hr>
@@ -103,16 +138,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {% else %}
               <div class="offer_coming {{type}}">
                 <i class="fas fa-clock"></i>
-                Available <div class="{{type}} timer" data-time="{{item.time}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></div>
+                Available <div class="{{type}} timer" data-time="{{item.time|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></div>
                 {% if type == 'daily' %}
                   <br>
-                  <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} > 
+                  <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} >
                   <label for="receive_daily_offers_in_inbox"> <i class="fas fa-envelope"></i> Email when available</label>
                 {% endif %}
                 </div>
               {% endif %}
             </div>
           {% endfor %}
+          <hr>
+          <div class="text-center">
+            <a href="/action/new" class="btn btn-gc-blue" >CREATE ACTION <i class="fas fa-upload"></i></a>
+          </div>
         </div>
       </div>
     </div>
@@ -129,5 +168,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
 <script src="{% static "v2/js/status.js" %}"></script>
 <script src="{% static "v2/js/pages/townsquare.js" %}"></script>
+
 {% endblock %}
 

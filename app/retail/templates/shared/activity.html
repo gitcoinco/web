@@ -19,18 +19,20 @@
 <div class="row box activity {{ row.activity_type }} infinite-item" data-pk="{{row.pk}}">
   <div class="col-12 col-md-1 {% if row.secondary_avatar_url %} secondary {% endif %}">
     <div class="activity-avatar my-auto py-2">
-      <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>
+      <a href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
+        <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>
+      </a>
       {% if row.secondary_avatar_url %}
         <img class="avatar my-auto secondary_avatar" src="{{row.secondary_avatar_url}}" />
       {% elif row.other_profile %}
         <img class="avatar my-auto secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
       {% endif %}
     </div>
+    <div style="width: 50px;" class="organizations">
     {% for org in row.profile.organizations %}
-      <span>
-        <img data-toggle="tooltip" title="Member of @{{org}}" src="/dynamic/avatar/{{ org }}" style="border-radius: 15px; width: 15px; height: 15px;" />
-      </span>
+        <img data-toggle="tooltip" title="Member of @{{org}}" src="/dynamic/avatar/{{ org }}" style="border-radius: 15px; width: 10px; height: 10px;" />
     {% endfor %}
+    </div>
   </div>
   <div class="col-12 col-md-10 activity-info my-auto {% if row.secondary_avatar_url %}position-relative{% endif %}">
     <div class="activity-status font-body">
@@ -213,6 +215,12 @@
           {% endif %}
 
           {% if not hide_likes %}
+          {% if is_alpha_tester or row.metadata.tip_able %}
+            <a data-pk={{row.pk}} data-username={{row.profile.handle}} class="tip_activity" href="#"  data-toggle="tooltip" title="This activity feed has generated {{ row.tip_count_eth|floatformat:2 }} ETH (${{row.tip_count_usd|floatformat:2}}) in Tips.">
+              <i class="fab fa-ethereum" ></i> <span class="amount">{{ row.tip_count_eth|floatformat:2}}</span> | 
+            </a>
+          {% endif %}
+
             <a href=# data-action='like' data-toggle="tooltip" title="{{row.likes_title}}Click to {% if row.liked %}unlike{% else %}like{%endif%} feed item." data-affirmative=liked data-negative=unliked data-state="{% if row.liked %}liked{% else %}unliked{%endif%}" data-pk={{row.pk}} class="like_activity"><span class="action {% if row.liked %}open{%endif%}"><i class="far fa-thumbs-up"></i></span><span class="sup">(<span class="num">{{row.likes}}</span>)</span></a> 
             
             <a href=# data-pk={{row.pk}} class="comment_activity" data-toggle="tooltip" title="Comment on this feed item." {% if row.comments %} data-open="true" {% endif %} ><span class="action"><i class="far fa-comments"></i></span><span class="sup">(<span class="num">{{row.comments}}</span>)</span></a></span>
@@ -234,8 +242,8 @@
     {% if row.profile.handle == github_handle %}
       <a href=# data-pk={{row.pk}} class="delete_activity" style="color:black; font-size: 10px;"><i class="fas fa-trash"></i></a>
     {% elif row.kudos %}
-      <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
-        <img class="activity_feed_kudos_image" src="{{row.kudos_data.preview_img_url }}" alt="">
+      <a href="{{row.kudos_data.url}}">
+        <img src="{% static row.kudos_data.image %}" alt="{% static row.kudos_data.name %}">
       </a>
     {% elif row.activity_type == 'leaderboard_rank' %}
       <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100" style="max-width:100px;">

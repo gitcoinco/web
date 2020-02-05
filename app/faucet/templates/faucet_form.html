@@ -53,7 +53,10 @@
                 </div>
                 <input type="hidden" id="currentFaucet" name="currentFaucet" value="{{ faucet_amount }}">
                 <p class="hidden-mobile">
-                  {% trans "Please note, all input fields are required. Comment is optional." %}
+                  {% trans "This form requires human review (thanks to automated bots that have tried to abuse the system!).  Please allow up to 1-2 business days for review.  " %}
+                  <BR>
+                  <BR>
+                  All input fields are required.
                 </p>
                 <div class="faucet-input-group">
                   <label for="githubProfile" class="form__label float-left">{% trans "Github Profile" %}

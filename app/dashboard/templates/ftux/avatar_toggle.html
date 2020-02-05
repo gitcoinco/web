@@ -1,0 +1,5 @@
+      <select id=theme>
+        {% for option in avatar_options %}
+          <option value="{{option.1}}" {% if option.0 == theme %} selected="selected" {% endif %} >{{option.0}}</option>
+        {% endfor %}
+      </select>

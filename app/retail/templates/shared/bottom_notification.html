@@ -17,9 +17,5 @@
 {% endcomment %}
 {% load i18n %}
 <div class="row bottom_notification font-caption">
-  {% blocktrans %}
-    <strong>GRANTS CLR ROUND 4 is LIVE </strong>.
-    Visit <a class="pr-1" href="http://gitcoin.co/grants">Gitcoin Grants</a>
-    to contribute to your project and help grow open source.
-  {% endblocktrans %}
+  {{footer_msg|safe}}
 </div>
