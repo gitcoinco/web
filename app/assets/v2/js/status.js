@@ -159,11 +159,13 @@ window.addEventListener('DOMContentLoaded', function() {
     position: 'left-end'
   });
 
-  picker.on('emoji', function(emoji) {
-    document.querySelector('textarea').value += emoji;
-  });
+  if (button && picker) {
+    picker.on('emoji', function(emoji) {
+      document.querySelector('textarea').value += emoji;
+    });
 
-  button.addEventListener('click', function() {
-    picker.pickerVisible ? picker.hidePicker() : picker.showPicker(button);
-  });
+    button.addEventListener('click', function() {
+      picker.pickerVisible ? picker.hidePicker() : picker.showPicker(button);
+    });
+  }
 });

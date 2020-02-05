@@ -1661,12 +1661,12 @@ div.busyOverlay {
 .gc-megamenu-active {
   background: rgba(12, 3, 59, 0.1);
   border-radius: 4px;
+}
 
-  .emoji-picker__tab {
-    font-size: 32px!important;
-  }
+.emoji-picker__tab {
+  font-size: 32px!important;
+}
 
-  .emoji-picker__emoji {
-    font-size: 1.6rem!important;
-  }
+.emoji-picker__emoji {
+  font-size: 1.6rem!important;
 }
