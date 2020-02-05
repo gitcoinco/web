@@ -1,5 +1,5 @@
 {% load i18n static humanize grants_extra %}
-
+{% if clr_active %}
 <div class="clr clr-prediction arrow_box">
   <p class="title">
     Your contribution goes a long way!
@@ -48,3 +48,4 @@
     </div>
   {% endif %}
 </div>
+{% endif %}

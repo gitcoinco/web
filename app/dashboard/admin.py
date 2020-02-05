@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
@@ -89,8 +90,26 @@ class ToolAdmin(admin.ModelAdmin):
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile']
+    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile', 'kudos_transfer']
     search_fields = ['metadata', 'activity_type', 'profile__handle']
+
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        if "_make_nano_bounty" in request.POST:
+            from townsquare.models import Offer
+            obj = Offer.objects.create(
+                created_by=obj.profile,
+                title='Offer for x ETH',
+                desc=obj.metadata.get('title', ''),
+                key='top',
+                url=obj.url,
+                valid_from=timezone.now(),
+                valid_to=timezone.now() + timezone.timedelta(days=1),
+                public=False,
+                )
+            self.message_user(request, "Nano bounty made - You still need to make it public + edit amounts tho.")
+            return redirect(obj.admin_url)
+        return super().response_change(request, obj)
 
 
 class TokenApprovalAdmin(admin.ModelAdmin):
@@ -170,7 +189,7 @@ class ProfileAdmin(admin.ModelAdmin):
             obj.calculate_all()
             obj.save()
             self.message_user(request, "Recalc done")
-            return redirect(obj.url)
+            return redirect(obj.admin_url)
         if "_impersonate" in request.POST:
             return redirect(f"/impersonate/{obj.user.pk}/")
         return super().response_change(request, obj)

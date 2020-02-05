@@ -482,7 +482,7 @@ const isAvailableIfReserved = function(bounty) {
 };
 
 const isBountyOwner = result => {
-  if (document.is_bounties_network) {
+  if (is_bounties_network) {
     return isFundedByCurrentAddress(result) && isBountyOwnerPerLogin(result);
   }
   return isBountyOwnerPerLogin(result);
@@ -1065,7 +1065,6 @@ var do_actions = function(result) {
   const is_still_on_happy_path = result['status'] == 'reserved' || result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
   const needs_review = result['needs_review'];
   const is_open = result['is_open'];
-  const is_bounties_network = document.is_bounties_network;
 
   let bounty_path = result['network'] + '/' + result['standard_bounties_id'];
 
@@ -1096,7 +1095,7 @@ var do_actions = function(result) {
   let show_submit_work = is_open && !has_fulfilled;
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
-  const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && is_bounties_network;
+  const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && is_bounties_network && isBountyOwner(result);
   const submit_work_enabled = !isBountyOwner(result) && current_user_is_approved;
   const notify_funder_enabled = is_funder_notifiable(result);
   let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result) && !is_status_cancelled;

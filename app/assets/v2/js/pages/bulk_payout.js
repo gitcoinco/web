@@ -129,7 +129,7 @@ $(document).ready(function($) {
         const url = 'https://' + etherscanDomain() + '/tx/' + txid;
         const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
 
-        _alert(msg, 'info');
+        _alert(msg, 'info', 1000);
         sendTransaction(i + 1); // text transaction
       };
 

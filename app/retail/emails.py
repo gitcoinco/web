@@ -217,9 +217,8 @@ def thank_you_for_supporting(request):
 
 @staff_member_required
 def new_supporter(request):
-    grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_new_supporter_email(grant, subscription)
+    subscription = Subscription.objects.last()
+    response_html, __, __ = render_new_supporter_email(subscription.grant, subscription)
     return HttpResponse(response_html)
 
 
@@ -427,8 +426,8 @@ PS - we've got some new gitcoin schwag on order. if interested, let us know and 
         'txt': txt,
 		'email_type': 'bounty_feedback'
     }
-    response_html = premailer_transform(render_to_string("emails/txt.html", params))
-    response_txt = txt
+    response_txt = premailer_transform(render_to_string("emails/txt.html", params))
+    response_html = f"<pre>{response_txt}</pre>"
 
     return response_html, response_txt
 
@@ -993,8 +992,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Take Action in the Town Square"
-    new_kudos_pks = [7096, 7351, 7319]
+    subject = "We Need YOU to Sustain Web3!"
+    new_kudos_pks = [8179, 7511, 7503]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1016,20 +1015,20 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-We just rolled out a ton of new features! Welcome to the Gitcoin <a href="https://gitcoin.co/townsquare">Town Square</a>, a social newsfeed where you can like, comment on, flag, and link to any activity feed item. You’ll find a daily, weekly, and monthly action to complete with free goodies, invites, and more - you can also create your own action for the community. Finally, you can now send “status updates” to all your grant funders (with privacy options to opt out).
+The <a href="https://hackathons.gitcoin.co/sustain-web3">Sustain Web3</a> virtual hackathon is officially live with $17k in prizes up for grabs! You can now view all the bounties on the <a href="https://gitcoin.co/hackathon/sustain-web3">prize explorer</a>. The two week hackathon will run until February 12th at 23:59 UTC, right before <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a>. Sponsors include <a href="https://foam.space/">FOAM</a>, <a href="https://xpring.io/">Xpring</a>, <a href="https://www.dfuse.io/">dfuse</a>, <a href="https://www.bancor.network/">Bancor</a>, <a href="https://labs.consensys.net/">ConsenSys Labs</a>, and more.
 </p>
 <p>
-On another note, <a href="https://gitcoin.co/grants/">Grants Round 4</a> and the <a href="https://gitcoin.co/hackathon/take-back-the-web?">Take Back The Web</a> hackathon both conclude next week. So far this grants round has seen 3,857 contributions from 853 unique community members, worth $74,023, in just over 10 days (4 more to go!). The hackathon already has 368 registrations, 175 work starts, and 46 submissions (with 6 more days to go). It’s never too late to make a donation or start work on a hackathon project!
+Gitcoin <a href="https://gitcoin.co/grants/">Grants Round 4</a> is closed and funds will be distributed shortly. Check out our newest <a href="https://gitcoin.co/blog/gitcoin-grants-round-4/">blog post</a> for the full results, and we also recommend reading <a href="https://vitalik.ca/general/2020/01/28/round4.html">Vitalik’s review</a> as well. Thank you to everyone who helped make this round the biggest success yet!
 </p>
 <p>
-Last but not least, we’re excited to share Vitalik Buterin will be the keynote speaker at <a href="https://web3.sustainoss.org/">Sustain Web3</a> the day before ETHDenver. <a href="https://web3.sustainoss.org/">Sign up</a> to attend the free event if you can make it, and if you’re feeling generous, any contribution to our <a href="https://gitcoin.co/grants/195/sustain-web3-sustainers">Grant</a> for the event will help us in supporting OSS.
+ Join us this weekend (Feb 1st & 2nd) for Trust-Less 2020: A Proof-Of-Stake (PoS) Validator summit. Attendees will learn about Ethereum 2.0 Validator Economics with ConsenSys Codefi, get updates on the beacon chain with Prysmatic Labs, learn how to spin up their own ETH 2.0 Validator with RocketPool, and more. The conf is 100% free & virtual so you can tune in from anywhere in the world to learn. Claim your spot <a href="https://trust-less-2020.dystopialabs.com/">here</a>.
 </p>
 
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-            Today's special edition Livestream is on Gitcoin Grants Round 4. The kicker: You can only present a project you funded, not one you built. <a href="https://gitcoin.co/livestream">Join us</a> for a party celebrating the end of the biggest CLR Round yet at 2pm ET. 
+            Today's Livestream will feature Sustain Web3 hackathon sponsors to discuss their companies and prizes. <a href="https://gitcoin.co/livestream">Join us</a> 2pm ET to hear from FOAM, Xpring, ConsenSys Labs, and dfuse.
         </li>
     </ul>
 </p>
@@ -1038,22 +1037,22 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'TomAFrench',
+        'who': 'pengiundev',
         'who_link': True,
-        'what': 'Created A Fork Of The Burner Wallet That Uses Liquidity Network L2 Solution Instead Of XDai',
-        'link': 'https://gitcoin.co/issue/liquidity-network/liquidity-burner/1/2972',
+        'what': 'Adjusted "Hatching Period" In Bonding Curve Smart Contract',
+        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/10/3962',
         'link_copy': 'View more',
     }, {
-        'who': 'aquiladev',
+        'who': 'adrianhacker-pdx',
         'who_link': True,
-        'what': 'Integrated WalletConnect as provider for Truffle smart contract deployment',
-        'link': 'https://gitcoin.co/issue/WalletConnect/walletconnect-monorepo/205/3766',
+        'what': 'Created an Explainer Page For Account Abstraction with EthHub',
+        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/422/3908',
         'link_copy': 'View more',
     }, {
-        'who': 'matkt',
+        'who': 'jmsofarelli',
         'who_link': True,
-        'what': 'Created a general internal API to support Network Address Translation (NAT) technologies in Besu',
-        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/2/2694',
+        'what': 'Made a Dapp With a Frontend Hosted on IPFS With Infuras API.',
+        'link': 'https://gitcoin.co/issue/INFURA/hackathons/2/3868',
         'link_copy': 'View more',
     }, ]
 
@@ -1070,14 +1069,14 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/OneMillionDevs/bounties/issues/4',
-        'primer': '1 ETH For The Top 3 One Million Developers At Gitcoin Community Call',
+        'url': 'https://github.com/ryan-foamspace/Sustain-Web3-hackathon/issues/3',
+        'primer': 'Create a Mobile-Friendly Map Viewer with FOAM',
     }, {
-        'url': 'https://github.com/Minds/minds/issues/153',
-        'primer': 'Setting To Reduce Mobile Data Usage for Minds',
+        'url': 'https://github.com/ConsenSys/Relays/issues/2',
+        'primer': 'Growth Hacking For Established Projects - Drive Viral Growth to Your Startup',
     }, {
-        'url': 'https://github.com/unlock-protocol/unlock/issues/5265',
-        'primer': 'Shopify plugin for Unlock Protocol',
+        'url': 'https://github.com/gitcoinco/web/issues/5914',
+        'primer': 'Allow Gitcoin.Co/Tips To Support Sablier Style Streams',
     }]
 
 

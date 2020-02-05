@@ -135,7 +135,7 @@
                       </label>
                     </div>
                   </div>
-                  <div class="mt-2 terms_container">
+                  <div class="terms_container">
                     <div class="form__checkbox">
                       <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
                       <label class="form__label" for=blockchain_tos>
@@ -156,6 +156,10 @@
         </div>
       </div>
     </div>
+
+    <script>
+      const is_bounties_network = {{ is_bounties_network|lower }};
+    </script>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
@@ -166,7 +170,6 @@
   <script>
     $('[data-toggle="popover"]').popover()
     $('[data-toggle="tooltip"]').bootstrapTooltip();
-    const is_bounties_network = {{ is_bounties_network|lower }};
     let eventTag;
     let standardBountyId;
     {% if bounty.event %}

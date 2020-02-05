@@ -121,6 +121,7 @@ INSTALLED_APPS = [
     'event_ethdenver2019',
     'inbox',
     'feeswapper',
+    'search',
     'oauth2_provider',
     'townsquare',
     'compliance',

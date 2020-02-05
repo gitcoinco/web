@@ -8,7 +8,7 @@ from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
-from dashboard.models import Activity, HackathonEvent, get_my_earnings_counter_profiles, get_my_grants
+from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, mention_email, new_action_request
 from ratelimit.decorators import ratelimit
@@ -47,17 +47,24 @@ def index(request):
 
     return town_square(request)
 
+def lazy_round_number(n):
+    if n>1000:
+        return f"{round(n/1000, 1)}k"
+    return n
+
 def town_square(request):
 
     # setup tabas
+    hours = 24 if not settings.DEBUG else 1000
+    posts_last_24_hours = lazy_round_number(Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     tabs = [{
-        'title': "Everywhere",
+        'title': f"Everywhere ({posts_last_24_hours})",
         'slug': 'everywhere',
-        'helper_text': 'Activity everywhere in the Gitcoin network',
+        'helper_text': f'The {posts_last_24_hours} activity feed items everywhere in the Gitcoin network',
     }]
     default_tab = 'everywhere'
     if request.user.is_authenticated:
-        num_business_relationships = len(set(get_my_earnings_counter_profiles(request.user.profile.pk)))
+        num_business_relationships = lazy_round_number(len(set(get_my_earnings_counter_profiles(request.user.profile.pk))))
         if num_business_relationships:
             new_tab = {
                 'title': f"Relationships ({num_business_relationships})",
@@ -66,7 +73,8 @@ def town_square(request):
             }
             tabs = [new_tab] + tabs
             default_tab = 'my_tribes'
-        num_grants_relationships = len(set(get_my_grants(request.user.profile)))
+        num_grants_relationships = lazy_round_number(len(set(get_my_grants(request.user.profile))))
+
         if num_grants_relationships:
             new_tab = {
                 'title': f'Grants ({num_grants_relationships})',
@@ -76,15 +84,25 @@ def town_square(request):
             tabs = [new_tab] + tabs
             default_tab = 'grants'
 
-    connect_last_24_hours = Activity.objects.filter(activity_type='status_update', created_on__gt=timezone.now() - timezone.timedelta(hours=24)).count()
+    hours = 24 if not settings.DEBUG else 1000
+    connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if connect_last_24_hours:
         default_tab = 'connect'
         connect = {
             'title': f"Connect ({connect_last_24_hours})",
             'slug': f'connect',
-            'helper_text': f'The {connect_last_24_hours} announcements, requests for help, jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
+            'helper_text': f'The {connect_last_24_hours} announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
         }
         tabs = [connect] + tabs
+
+    kudos_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['new_kudos', 'receive_kudos'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
+    if kudos_last_24_hours:
+        connect = {
+            'title': f"Kudos ({kudos_last_24_hours})",
+            'slug': f'kudos',
+            'helper_text': f'The {kudos_last_24_hours} Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
+        }
+        tabs = tabs + [connect]
 
     if request.user.is_authenticated:
         hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now(), end_date__gt=timezone.now())
@@ -119,17 +137,19 @@ def town_square(request):
     # get offers
     offer_pks = []
     offers_by_category = {}
-    for key in ['secret', 'random', 'daily', 'weekly', 'monthly']:
+    available_offers = Offer.objects.current()
+    if request.user.is_authenticated:
+        available_offers = available_offers.exclude(actions__profile=request.user.profile, actions__what__in=['click', 'decline', 'go'])
+    for key in ['top', 'secret', 'random', 'daily', 'weekly', 'monthly']:
         next_time_available = get_next_time_available(key)
-        offer = Offer.objects.current().filter(key=key).order_by('-pk').first()
-        if offer:
+        offers = available_offers.filter(key=key).order_by('-pk')
+        offer = offers.first()
+        for offer in offers:
             offer_pks.append(offer.pk)
-        if request.user.is_authenticated:
-            if request.user.profile.offeractions.filter(what='click', offer=offer):
-                offer = None
         offers_by_category[key] = {
             'offer': offer,
-            'time': next_time_available.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'offers': offers,
+            'time': next_time_available,
         }
     increment_offer_view_counts.delay(offer_pks)
 
@@ -141,26 +161,28 @@ def town_square(request):
             is_subscribed = email_subscriber.should_send_email_type_to('new_bounty_notifications')
 
     # announcements
-    announcements = Announcement.objects.current()
+    announcements = Announcement.objects.current().filter(key='townsquare')
 
     # title
     title = 'Home'
     desc = 'View the recent activity on the Gitcoin network'
     page_seo_text_insert = ''
     avatar_url = ''
+    admin_link = ''
     if "activity:" in tab:
         try:
             pk = int(tab.split(':')[1])
             activity = Activity.objects.get(pk=pk)
-            title = f"@{activity.profile.handle}'s comment on Gitcoin "
+            title = f"@{activity.profile.handle}'s post on Gitcoin "
             desc = f"{activity.text}"
             comments_count = activity.comments.count()
+            admin_link = activity.admin_url
             if comments_count:
                 title += f"(+ {comments_count} comments)"
             avatar_url = activity.profile.avatar_url
             page_seo_text_insert = desc
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
 
     # render page context
@@ -169,12 +191,15 @@ def town_square(request):
         'title': title,
         'card_desc': desc,
         'avatar_url': avatar_url,
+        'use_pic_card': True,
         'page_seo_text_insert': page_seo_text_insert,
         'nav': 'home',
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'admin_link': admin_link,
         'now': timezone.now(),
+        'is_townsquare': True,
         'trending_only': bool(trending_only),
         'search': search,
         'tags': [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ],
@@ -188,7 +213,7 @@ def town_square(request):
     return response
 
 
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def emailsettings(request):
 
     if not request.user.is_authenticated:
@@ -219,6 +244,17 @@ def api(request, activity_id):
 
     # setup response
     response = {}
+
+    # no perms needed responses go here
+    if request.GET.get('method') == 'comment':
+        comments = activity.comments.order_by('created_on')
+        response['comments'] = []
+        for comment in comments:
+            comment_dict = comment.to_standard_dict(properties=['profile_handle'])
+            comment_dict['tip_count_eth'] = comment.tip_count_eth
+            comment_dict['tip_able'] = comment.tip_able
+            response['comments'].append(comment_dict)
+        return JsonResponse(response)
 
     # check for permissions
     has_perms = request.user.is_authenticated
@@ -256,8 +292,6 @@ def api(request, activity_id):
     elif request.POST.get('method') == 'comment':
         comment = request.POST.get('comment')
         comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
-        to_emails = set(activity.comments.exclude(profile=request.user.profile).values_list('profile__email', flat=True))
-        comment_email(comment, to_emails)
 
         username_pattern = re.compile(r'@(\S+)')
         mentioned_usernames = re.findall(username_pattern, title)
@@ -266,10 +300,6 @@ def api(request, activity_id):
         deduped_emails = mentioned_emails.difference(to_emails)
         mention_email(comment, deduped_emails)
 
-    elif request.GET.get('method') == 'comment':
-        comments = activity.comments.order_by('created_on')
-        comments = [comment.to_standard_dict(properties=['profile_handle']) for comment in comments]
-        response['comments'] = comments
     return JsonResponse(response)
 
 
@@ -286,7 +316,7 @@ def offer_go(request, offer_id, offer_slug):
     try:
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
-        offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'go', True)
+        offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'go', False)
         return redirect(offer.url)
     except:
         raise Http404
@@ -298,7 +328,7 @@ def offer_decline(request, offer_id, offer_slug):
         offer = Offer.objects.current().get(pk=offer_id)
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
-        offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'decline', True)
+        offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'decline', False)
         return redirect('/')
     except:
         raise Http404
@@ -307,19 +337,24 @@ def offer_decline(request, offer_id, offer_slug):
 def offer_view(request, offer_id, offer_slug):
 
     try:
-        offer = Offer.objects.current().get(pk=offer_id)
+        is_debugging_offers = request.GET.get('preview', 0) and request.user.is_staff
+        offers = Offer.objects.all()
+        if not is_debugging_offers:
+            offers = offers.current()
+        offer = offers.get(pk=offer_id)
         if not request.user.is_authenticated:
             return redirect('/login/github?next=' + request.get_full_path())
-        is_debugging_offers = request.GET.get('preview', 0)
-        if request.user.profile.offeractions.filter(what='click', offer=offer) and not is_debugging_offers:
+        if request.user.profile.offeractions.filter(what='go', offer=offer) and not is_debugging_offers:
             raise Exception('already visited this offer')
-        OfferAction.objects.create(profile=request.user.profile, offer=offer, what='click')
+        if not is_debugging_offers:
+            OfferAction.objects.create(profile=request.user.profile, offer=offer, what='click')
         # render page context
         context = {
             'title': offer.title,
             'card_desc': offer.desc,
             'nav': 'home',
             'offer': offer,
+            'active': f'offer_view gitcoin-background {offer.style}',
         }
         return TemplateResponse(request, 'townsquare/offer.html', context)
     except:
@@ -336,9 +371,12 @@ def offer_new(request):
                 title=package.get('title'),
                 desc=package.get('description'),
                 url=package.get('action_url'),
+                from_name=package.get('from_name'),
+                from_link=package.get('from_link'),
                 persona=Token.objects.get(pk=package.get('persona')),
                 valid_from=timezone.now(),
                 valid_to=timezone.now(),
+                style=package.get('background'),
                 public=False,
                 created_by=request.user.profile,
                 )
@@ -352,6 +390,7 @@ def offer_new(request):
         'title': "New Action",
         'card_desc': "Create an Action for Devs on Gitcoin - Its FREE!",
         'package': package,
+        'backgrounds': [ele[0] for ele in Offer.STYLES],
         'nav': 'home',
     }
     return TemplateResponse(request, 'townsquare/new.html', context)
