@@ -17,15 +17,23 @@ $(document).ready(function() {
     for (var i = 0; i < document.td_ids.length; i += 1) {
       url += '&ids[]=' + document.td_ids[i];
     }
-    url += '&skinTone=' + document.skin_tone;
-    url += '&hairTone=' + document.hair_tone;
+    var st = document.skin_tone;
+    var ht = document.hair_tone;
+    if(typeof st=='undefined'){
+      st = ''
+    }
+    if(typeof ht=='undefined'){
+      ht = ''
+    }
+    url += '&skinTone=' + st;
+    url += '&hairTone=' + ht;
     var theme = getParam('theme');
 
     if (!theme) {
-      theme = '3d';
+      theme = 'unisex';
     }
     url += '&theme=' + theme;
-    console.log(theme);
+    console.log(url);
     return url;
   };
 
@@ -51,7 +59,15 @@ $(document).ready(function() {
   var update_all_options = function() {
     $('#tdavatartarget').attr('src', get_avatar_url());
     $('.tdselection').each(function() {
-      var new_url = $(this).data('src') + '&skinTone=' + document.skin_tone + '&hairTone=' + document.hair_tone;
+      var st = document.skin_tone;
+      var ht = document.hair_tone;
+      if(typeof st=='undefined'){
+        st = ''
+      }
+      if(typeof ht=='undefined'){
+        ht = ''
+      }
+      var new_url = $(this).data('src') + '&skinTone=' + st + '&hairTone=' + ht;
 
       $(this).data('altsrc', new_url);
       $(this).attr('src', '');

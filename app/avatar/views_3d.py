@@ -58,7 +58,7 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar_bufficorn.svg',
         },
-        '3d': {
+        'unisex': {
             'preview_viewbox': {
                 #section: x_pos y_pox x_size y_size
                 'background': '0 0 350 350',
@@ -103,6 +103,27 @@ def get_avatar_attrs(theme, key):
             ],
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar_female.svg',
+        },
+        'bot': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'body': '60 80 220 220',
+                'ears': '100 70 50 50',
+                'head': '80 10 170 170',
+                'mouth': '130 90 70 70',
+                'nose': '130 80 30 30',
+                'lips': '120 80 50 50',
+                'eyes': '110 40 70 70',
+                'hair': '90 0 110 110',
+                'accessories': '100 50 100 100',
+            },
+            'skin_tones': [
+            ],
+            'hair_tones': [
+            ],
+            'tone_maps': [''],
+            'path': 'assets/v2/images/avatar3d/bot_avatar.svg',
         },
     }
     return avatar_attrs.get(theme, {}).get(key, {})
@@ -157,7 +178,7 @@ def get_avatar_tone_map(tone='skin', skinTone=''):
 def avatar3d(request):
     """Serve an 3d avatar."""
 
-    theme = request.GET.get('theme', '3d')
+    theme = request.GET.get('theme', 'unisex')
     #get request
     accept_ids = request.GET.getlist('ids')
     if not accept_ids:
@@ -242,7 +263,7 @@ def avatar3dids_helper(theme):
 def avatar3dids(request):
     """Serve an 3d avatar id list."""
 
-    theme = request.GET.get('theme', '3d')
+    theme = request.GET.get('theme', 'unisex')
     response = JsonResponse(avatar3dids_helper(theme))
     return response
 
