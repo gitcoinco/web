@@ -17,8 +17,13 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark g-font-muli gitcoin-background">
-  <a class="navbar-brand pt-0 pb-0" href="/bounties/funder">
-    <img id="logo" src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="35" alt="Logo" />
+  <a class="d-none d-md-block mr-2 mb-1" href="{% url 'index' %}">
+    {% include 'shared/helmet-white-animated.html' %}
+  </a>
+  <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
+  <a class="navbar-brand brand-hover ml-2 pt-0 pb-0" href="/explorer">
+    <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" alt="Bounties" height="50">
+    <img class="mw-100 logo-animated" src="{% static "v2/images/top-bar/bounties_desktop_hearbeating.gif" %}" alt="Logo" height="50">
   </a>
   {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
     <!-- TODO: FIGURE HOW TO HANDLE FOR CROSS CHAIN -->
@@ -33,9 +38,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     {% if user.is_authenticated %}
-      {% if user.is_staff %}
-        {% include 'shared/chat_nav.html' %}
-      {% endif %}
+      {% include 'shared/chat_nav.html' %}
       {% include 'shared/notifications.html' %}
     {% endif %}
   </div>
@@ -46,19 +49,16 @@
         <span class="navbar__cta mr-2">{% trans "Want to get help on your repo? Easily get started!" %}</span>
       {% endif %}
 
-      <div class="nav-item dropdown interior">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownHow" role="button"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {% trans "Explore" %}
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" id="explore-tab" aria-labelledby="navbarDropdownHow">
-          <a class="dropdown-item{% if active == 'dashboard' %} selected{% endif %} interior" href="{% url "explorer" %}">{% trans "Bounties" %}</a>
-          <a class="dropdown-item{% if active == 'get_hackathons' %} selected{% endif %} interior" href="{% url "get_hackathons" %}">{% trans "Hackathons" %}</a>
-          <a class="dropdown-item{% if active == 'users_directory' %} selected{% endif %} interior" href="{% url "users_directory" %}">{% trans "Users" %}</a>
-          <a class="dropdown-item{% if active == 'leaderboard' %} selected{% endif %} interior" href="{% url "_leaderboard" %}">{% trans "Leaderboard" %}</a>
-          <a class="dropdown-item{% if active == 'activity' %} selected{% endif %} interior" href="{% url "activity" %}">{% trans "Activity Stream" %}</a>
-        </div>
-      </div>
+      <a class="nav-link {% if active == 'dashboard' %} selected{% endif %} interior" href="{% url 'explorer' %}">{% trans "Marketplace" %}</a>
+
+      <a href="/bounties/funder" class="nav-link {% if active == 'bounties_funder' %} selected{% endif %}">
+        {% trans "For Funders" %}
+      </a>
+      <a href="/bounties/contributor" class="nav-link {% if active == 'bounties_coder' %} selected{% endif %}">
+        {% trans "For Contributors" %}
+      </a>
+
+
 
       <div class="nav-item dropdown interior">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownHow" role="button"

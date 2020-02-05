@@ -347,8 +347,9 @@ body.funder-page {
 
 .navbar.following .nav-link,
 .navbar.following img,
-.navbar.following .nav-item {
-  display: none;
+.navbar.following .nav-item,
+.navbar.following i.fa-angle-right {
+  display: none !important;
 }
 
 #gc-tree {

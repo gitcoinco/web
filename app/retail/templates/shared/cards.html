@@ -46,7 +46,10 @@
   <meta property="og:video" content="{% static "v2/card/card.mp4" %}" />
   <meta property="og:video:secure_url" content="{% static "v2/card/card.mp4" %}" />
 {% endif %}
-{% if card_player_thumb_override %}
+{% if avatar_url %}
+  <meta property=og:image content="{{avatar_url}}">
+  <meta name="twitter:image" content="{{avatar_url}}" />
+{% elif card_player_thumb_override %}
   <meta property=og:image content="{{card_player_thumb_override}}">
   <meta name="twitter:image" content="{{card_player_thumb_override}}" />
 {% else %}

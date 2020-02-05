@@ -44,6 +44,12 @@ $(document).ready(function() {
     e.preventDefault();
   });
 
+  $('#adjust').click(function(e) {
+    $(this).remove();
+    $('.unhide_if_expanded').removeClass('hidden');
+    e.preventDefault();
+  });
+
   $('#frequency_unit, #js-token').on('select2:select', event => {
     updateSummary();
   });
@@ -92,7 +98,6 @@ $(document).ready(function() {
     $(event.currentTarget).removeClass('badge-inactive');
     $(event.currentTarget).addClass('badge-active');
   });
-
   $('.contribution_type select').change(function() {
     if ($('.contribution_type select').val() == 'once') {
       $('.frequency').addClass('hidden');
@@ -110,6 +115,7 @@ $(document).ready(function() {
       $('.hide_if_recurring').addClass('hidden');
     }
   });
+  $('.contribution_type select').trigger('change');
 
   $('#js-fundGrant').validate({
     rules: {
@@ -124,7 +130,6 @@ $(document).ready(function() {
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
-
 
       if (data.frequency) {
 
@@ -214,7 +219,7 @@ $(document).ready(function() {
             accounts[0]
           ).call().then(function(result) {
             if (result < realTokenAmount) {
-              _alert({ message: gettext('Your balance could not be verified')}, 'error');
+              _alert({ message: gettext('You do not have enough tokens to make this transaction.')}, 'error');
             } else {
               deployedToken.methods.approve(
                 approvalAddress,
@@ -398,6 +403,34 @@ const saveSubscription = (data, isOneTimePayment) => {
   });
 };
 
+const saveSplitTx = (data, splitTxID, confirmed) => {
+  if (splitTxID) {
+    data['split_tx_id'] = splitTxID;
+  }
+
+  if (confirmed) {
+    data['split_tx_confirmed'] = true;
+  }
+
+  $.ajax({
+    type: 'post',
+    url: '',
+    data: data,
+    success: json => {
+      console.log('successfully saved subscription');
+      if (json.url != undefined) {
+        redirectURL = json.url;
+        $('#wait').val('false');
+      }
+    },
+    error: (error) => {
+      console.log(error);
+      _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
+      redirectURL = window.location;
+    }
+  });
+};
+
 const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
   var data = {};
   var form = $('#js-fundGrant');
@@ -419,6 +452,14 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
     console.log('1', error);
     _alert({ message: gettext('Your payment transaction failed. Please try again.')}, 'error');
   }).on('transactionHash', function(transactionHash) {
+    data = {
+      'subscription_hash': 'onetime',
+      'signature': 'onetime',
+      'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+      'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val()
+    };
+    saveSplitTx(data, transactionHash, false);
+
     waitforData(() => {
       document.suppress_loading_leave_code = true;
       window.location = redirectURL;
@@ -441,6 +482,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
     };
     console.log('confirmed!');
     saveSubscription(data, true);
+    saveSplitTx(data, false, true);
   });
 };
 

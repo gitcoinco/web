@@ -1,8 +1,16 @@
-.grant_details .box {
+.grant_details span.box {
   width: 20px;
   height: 20px;
   margin-right: 10px;
   padding: 0px;
+}
+
+#section-nav-description .ql-toolbar {
+  display: none;
+}
+
+#section-nav-description .ql-container {
+  border-color: transparent;
 }
 
 @media (min-width: 1200px) {
@@ -27,7 +35,8 @@
   padding: 12px 15px !important;
 }
 
-.grant_details {
+.grant_details,
+#section-nav-description .ql-container {
   background-color: #F8FAFC;
 }
 

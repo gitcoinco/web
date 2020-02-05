@@ -93,7 +93,7 @@
                   <div class="row">
                     <div class="col-12 col-md-6">
                       <label class="font-body">{% trans "Monthly amount sought in DAI" %}</label>
-                      <input type="number" id="amount_goal" name="amount_goal" class="form__input form__input-lg" min="0.001" required />
+                      <input type="number" id="amount_goal" name="amount_goal" class="form__input form__input-lg" min="0.001" step=".001" required />
                     </div>
                     <div class="col-12 col-md-6">
                       <label class="font-body">{% trans "Required Token For Subscription" %}</label>
@@ -105,8 +105,10 @@
                 </div>
 
                 <div class="form__group-horizontal pb-3">
-                  <label class="font-body" for="input-admin_address">{% trans "Recipient Wallet Address" %}</label>
-                  <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required/>
+                  <label class="font-body" for="input-admin_address">{% trans "Funding Recipient Wallet Address" %}</label>
+                  <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required placeholder="0x00... or domain.eth"/>
+                  <label class="font-body" for="input-admin_address">{% trans "This is where funds from contributors to this grant will be sent." %}</label>
+                  <label class="font-body" for="input-admin_address">{% trans "IMPORTANT NOTE - Contributions to this grant will be sent directly via the Ethereum blockchain to *this address*.  Gitcoin does *not* escrow any funds. Gitcoin does *not* have the ability to reverse any transactions.  As a preventative measure, please confirm that someone working on the project has access to funds that are sent to this address!" %}</label>
                 </div>
 
 
@@ -128,6 +130,7 @@
                 </div>
 
                 <div class="form__footer text-center">
+                  <p class="font-caption mb-3 text-black-60">* Grant will appear on the grants search only after being reviewed by the Gitcoin Team</p>
                   <button class="button button--primary button--full" id="new_button">{% trans "Create Grant" %}</button>
                 </div>
 

@@ -340,7 +340,6 @@ $(function() {
   $('input[name=usd_amount]').on('focusout', function() {
     $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
     $('input[name=amount]').trigger('change');
-
   });
 
   $('input[name=usd_amount]').keyup(() => {

@@ -307,7 +307,8 @@
 }
 
 .grant-partners {
-  background: #0D0764;
+  background: linear-gradient(to right top, #0fce7c, #00a5a1, #0077b5, #0046a1, #0d0764);
+  animation: gradient 40s ease infinite;
   border-radius: 3px;
 }
 
@@ -331,6 +332,7 @@
   cursor: pointer;
 }
 
+.grant-partners .nav-link,
 .grant-partners .nav-link:hover {
   border: none;
 }
