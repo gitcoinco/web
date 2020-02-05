@@ -48,7 +48,7 @@ def generate_leaderboard(max_items=100):
     for contribution in Contribution.objects.all().select_related('subscription'):
         key = contribution.subscription.contributor_profile.handle
         users_to_results[key]['handle'] = key
-        amount = contribution.subscription.get_converted_amount()
+        amount = contribution.subscription.get_converted_amount(False)
         if amount:
             users_to_results[key]['no'] += 1
             users_to_results[key]['sum'] += round(amount)

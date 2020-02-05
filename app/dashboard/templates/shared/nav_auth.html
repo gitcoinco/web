@@ -17,13 +17,16 @@
 {% load i18n static %}
 {% load kudos_extras %}
 <input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
+{% if is_alpha_tester %}
+  <div id=search_container class=""></div>
+{% endif %}
 {% if user.is_authenticated %}
   <div class="nav-item dropdown interior">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       {{ user }}
     </a>
-    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+    <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdown">
       {% if source == 'authed' %}
         <a class="dropdown-item" href="{% url "dashboard" %}">
           <i class="fas fa-tachometer-alt"></i>
@@ -109,7 +112,4 @@
   <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
     <i class="fab fa-github"></i><span class="nav-link__text">{% trans "Log in" %}</span>
   </a>
-{% endif %}
-{% if is_staff %}
-  <div id=search_container></div>
 {% endif %}

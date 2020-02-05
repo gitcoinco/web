@@ -97,6 +97,15 @@
                 {% elif follower.leader %}
                   <span class="text-center text-uppercase font-weight-bold p-1 text-highlight-yellow">Tribe Leader</span>
                 {% endif %}
+
+                {% if follower.title %}
+                  <span class="tribe_title text-center p-1 text-highlight-green">{{ follower.title }}</span>
+                {% endif %}
+
+                {% if is_my_org %}
+                  <button class="btn btn-gc-blue btn-sm btm-block font-body" data-tribetitle="{{follower.pk}}">Set Title</button>
+                {% endif %}
+
                 {% if user.is_authenticated %}
                   <div class="d-flex justify-content-between mt-2">
                     {% if is_staff %}
