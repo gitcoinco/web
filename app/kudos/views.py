@@ -477,7 +477,6 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
     kwargs = {
         'activity_type': event_name,
         'kudos_transfer': kudos_transfer,
-        'kudos': kudos_transfer.kudos_token_cloned_from,
         'metadata': {
             'amount': str(kudos_transfer.amount),
             'token_name': kudos_transfer.tokenName,
@@ -513,8 +512,7 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
     github_handle = github_handle.replace('@', '')
     kwargs = {
         'activity_type': event_name,
-        'kudos_transfer': kudos_transfer,
-        'kudos': kudos_transfer.kudos_token_cloned_from,
+        'kudos': kudos_transfer,
         'metadata': {
             'amount': str(kudos_transfer.amount),
             'token_name': kudos_transfer.tokenName,
