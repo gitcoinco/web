@@ -2551,6 +2551,7 @@ class Profile(SuperModel):
     tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description describing tribe.'))
     automatic_backup = models.BooleanField(default=False, help_text=_('automatic backup profile to cloud storage such as 3Box if the flag is true'))
     as_representation = JSONField(default=dict, blank=True)
+    tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
     objects = ProfileQuerySet.as_manager()
 
     @property

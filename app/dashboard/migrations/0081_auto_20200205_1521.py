@@ -10,10 +10,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='profile',
-            name='tribe_priority',
-        ),
         migrations.AddField(
             model_name='profile',
             name='automatic_backup',
