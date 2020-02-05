@@ -860,7 +860,7 @@ def onboard(request, flow=None):
             profile.preferred_payout_address = eth_address
             profile.save()
         return JsonResponse({'OK': True})
-    
+
     theme = request.GET.get('theme', '3d')
     from avatar.views_3d import get_avatar_attrs
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
@@ -3591,7 +3591,7 @@ def hackathon(request, hackathon=''):
         }
         orgs.append(org)
 
-    orgs = list({v['org_name']:v for v in orgs}.values())
+    orgs = list({v['display_name']:v for v in orgs}.values())
 
     params = {
         'active': 'dashboard',

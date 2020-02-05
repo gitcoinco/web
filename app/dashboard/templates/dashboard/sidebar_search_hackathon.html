@@ -51,8 +51,6 @@
           <input name="org" id="any_org" type="radio" value="any" checked="">
           <label class="filter-label" for="any_org">All</label>
         </div>
-
-
         {% for org in orgs %}
           <div class="form__radio option {{org.org_name}}">
             <input name="org" id="{{org.org_name}}" type="radio" value="{{org.org_name}}" val-ui="Turing-Chain">
