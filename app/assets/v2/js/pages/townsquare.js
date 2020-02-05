@@ -26,6 +26,10 @@ $(document).ready(function() {
     return prefix + remaining;
   };
 
+  $('.top_offer').click(function(e) {
+    document.location = $(this).find('a.btn').attr('href');
+  });
+
   // effects when an offer is clicked upon
   $('.offer a').click(function(e) {
     var speed = 500;

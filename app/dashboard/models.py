@@ -2933,6 +2933,18 @@ class Profile(SuperModel):
         return self.user.groups.filter(name='Moderators').exists() if self.user else False
 
     @property
+    def is_alpha_tester(self):
+        """Determine whether or not the user is an alpha tester.
+
+        Returns:
+            bool: Whether or not the user is an alpha tester.
+
+        """
+        if self.user.is_staff:
+            return True
+        return self.user.groups.filter(name='Alpha_Testers').exists() if self.user else False
+
+    @property
     def is_staff(self):
         """Determine whether or not the user is a staff member.
 

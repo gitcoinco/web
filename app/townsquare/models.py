@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -61,6 +63,10 @@ class Comment(SuperModel):
         return self.profile.handle
 
     @property
+    def tip_able(self):
+        return self.activity.metadata.get("tip_able", False)
+
+    @property
     def url(self):
         return self.activity.url
 
@@ -73,6 +79,12 @@ class Comment(SuperModel):
 
     def get_absolute_url(self):
         return self.url
+
+
+@receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
+def postsave_comment(sender, instance, created, **kwargs):
+    from townsquare.tasks import send_comment_email
+    send_comment_email.delay(instance.pk)
 
 
 class OfferQuerySet(models.QuerySet):
@@ -94,6 +106,7 @@ class Offer(SuperModel):
         ('weekly', 'weekly'),
         ('monthly', 'monthly'),
         ('other', 'other'),
+        ('top', 'top'),
     ]
     STYLES = [
         ('red', 'red'),
@@ -115,6 +128,7 @@ class Offer(SuperModel):
         on_delete=models.CASCADE, related_name='offers_created', blank=True, null=True)
     public = models.BooleanField(help_text='Is this available publicly yet?', default=True)
     view_count = models.IntegerField(default=0, db_index=True)
+    amount = models.CharField(max_length=50, blank=True)
 
     # Bounty QuerySet Manager
     objects = OfferQuerySet.as_manager()

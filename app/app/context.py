@@ -156,6 +156,7 @@ def preprocess(request):
         'access_token': profile.access_token if profile else '',
         'is_staff': request.user.is_staff if user_is_authenticated else False,
         'is_moderator': profile.is_moderator if profile else False,
+        'is_alpha_tester': profile.is_alpha_tester if profile else False,
         'persona_is_funder': profile.persona_is_funder if profile else False,
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
         'profile_url': profile.url if profile else False,

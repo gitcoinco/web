@@ -203,7 +203,9 @@
 .random #circle:after{
   border:7px dashed #25e899;
 }
-
+.top{
+  display: none;
+}
 .secret #circle{
   background-image:radial-gradient(#15003e, #45407e 30%);
 }
@@ -641,6 +643,49 @@ body.green.offer_view .announce {
 .emoji-picker__tab {
   font-size: 32px;
 }
+
 .emoji-picker__emoji {
   font-size: 1.6rem;
+}
+
+.top_offers{
+  background-color: #fafafa;
+}
+.top_offer{
+  border: 1px solid #eee;
+  background-color: white;
+  text-align: left;
+  display: inline-block;
+  width: 330px;
+  height: 200px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+.top_offer .desc{
+  font-size: 14px;
+  max-height: 55px;
+}
+.top_offer:hover{
+  background-color: #fafafa;
+}
+.top_offer img{
+  float: left;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+}
+.top_offer p{
+  margin-left: 30px;
+}
+.top_offer .tag {
+  background: #E8F0FA;
+  padding: 4px;
+  border-radius: 2px;
+  font-size: 11px;
+  color: #6487AE;
+  display: inline-block;
+  margin-bottom: 2px;
+  margin-top: 2px;
 }

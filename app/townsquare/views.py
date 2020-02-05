@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from dashboard.models import Activity, HackathonEvent, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
-from marketing.mails import comment_email, new_action_request
+from marketing.mails import new_action_request
 from ratelimit.decorators import ratelimit
 
 from .models import Announcement, Comment, Flag, Like, Offer, OfferAction
@@ -134,16 +134,18 @@ def town_square(request):
     # get offers
     offer_pks = []
     offers_by_category = {}
-    for key in ['secret', 'random', 'daily', 'weekly', 'monthly']:
+    available_offers = Offer.objects.current()
+    if request.user.is_authenticated:
+        available_offers = available_offers.exclude(actions__profile=request.user.profile, actions__what__in=['click', 'decline', 'go'])
+    for key in ['top', 'secret', 'random', 'daily', 'weekly', 'monthly']:
         next_time_available = get_next_time_available(key)
-        offer = Offer.objects.current().filter(key=key).order_by('-pk').first()
-        if offer:
+        offers = available_offers.filter(key=key).order_by('-pk')
+        offer = offers.first()
+        for offer in offers:
             offer_pks.append(offer.pk)
-        if request.user.is_authenticated:
-            if request.user.profile.offeractions.filter(what='click', offer=offer):
-                offer = None
         offers_by_category[key] = {
             'offer': offer,
+            'offers': offers,
             'time': next_time_available,
         }
     increment_offer_view_counts.delay(offer_pks)
@@ -163,6 +165,7 @@ def town_square(request):
     desc = 'View the recent activity on the Gitcoin network'
     page_seo_text_insert = ''
     avatar_url = ''
+    admin_link = ''
     if "activity:" in tab:
         try:
             pk = int(tab.split(':')[1])
@@ -170,12 +173,13 @@ def town_square(request):
             title = f"@{activity.profile.handle}'s post on Gitcoin "
             desc = f"{activity.text}"
             comments_count = activity.comments.count()
+            admin_link = activity.admin_url
             if comments_count:
                 title += f"(+ {comments_count} comments)"
             avatar_url = activity.profile.avatar_url
             page_seo_text_insert = desc
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
 
     # render page context
@@ -190,6 +194,7 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'admin_link': admin_link,
         'now': timezone.now(),
         'is_townsquare': True,
         'trending_only': bool(trending_only),
@@ -205,7 +210,7 @@ def town_square(request):
     return response
 
 
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def emailsettings(request):
 
     if not request.user.is_authenticated:
@@ -244,6 +249,7 @@ def api(request, activity_id):
         for comment in comments:
             comment_dict = comment.to_standard_dict(properties=['profile_handle'])
             comment_dict['tip_count_eth'] = comment.tip_count_eth
+            comment_dict['tip_able'] = comment.tip_able
             response['comments'].append(comment_dict)
         return JsonResponse(response)
 
@@ -283,8 +289,6 @@ def api(request, activity_id):
     elif request.POST.get('method') == 'comment':
         comment = request.POST.get('comment')
         comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
-        to_emails = set(activity.comments.exclude(profile=request.user.profile).values_list('profile__email', flat=True))
-        comment_email(comment, to_emails)
 
     return JsonResponse(response)
 

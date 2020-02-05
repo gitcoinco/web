@@ -153,6 +153,7 @@ class Grant(SuperModel):
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for endContract.'),
+        blank=True,
     )
     contract_version = models.DecimalField(
         default=0,
@@ -441,6 +442,7 @@ class Subscription(SuperModel):
     active = models.BooleanField(default=True, help_text=_('Whether or not the Subscription is active.'))
     error = models.BooleanField(default=False, help_text=_('Whether or not the Subscription is erroring out.'))
     subminer_comments = models.TextField(default='', blank=True, help_text=_('Comments left by the subminer.'))
+    comments = models.TextField(default='', blank=True, help_text=_('Comments left by subscriber.'))
 
     split_tx_id = models.CharField(
         default='',
@@ -582,7 +584,7 @@ class Subscription(SuperModel):
         if self.last_contribution_date < timezone.now() - timezone.timedelta(days=10*365):
             active_details = "(NEVER BILLED)"
 
-        return f"id: {self.pk}; {self.status}, {round(self.amount_per_period,1)} {self.token_symbol} / {self.frequency} {self.frequency_unit}, {int(self.num_tx_approved)} times for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile.handle} {active_details}"
+        return f"id: {self.pk}; {self.status}, {round(self.amount_per_period,1)} {self.token_symbol} / {self.frequency} {self.frequency_unit}, {int(self.num_tx_approved)} times for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile} {active_details}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1

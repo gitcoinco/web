@@ -1221,6 +1221,9 @@ def invoice(request):
         if tip.value_in_usdt:
             params['total'] += Decimal(tip.value_in_usdt)
 
+    if bounty.fee_amount > 0:
+        params['fee_value_in_usdt'] = bounty.fee_amount * Decimal(bounty.get_value_in_usdt) / bounty.value_true
+        params['total'] = params['total'] + params['fee_value_in_usdt']
     return TemplateResponse(request, 'bounty/invoice.html', params)
 
 

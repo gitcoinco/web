@@ -87,3 +87,4 @@ python-magic
 django-oauth-toolkit
 mattermostdriver
 ddtrace
+redis==3.3.11
