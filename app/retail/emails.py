@@ -69,7 +69,8 @@ TRANSACTIONAL_EMAILS = [
 
 
 NOTIFICATION_EMAILS = [
-    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat'))
+    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat')),
+    ('mention', _('Mentions'), _('Only when other users mention you on posts')),
 ]
 
 ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
@@ -709,6 +710,19 @@ def render_comment(to_email, comment):
     return response_html, response_txt
 
 
+def render_mention(to_email, post):
+    params = {
+        'post': post,
+        'email_type': 'mention',
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/mention.html", params))
+    response_txt = render_to_string("emails/mention.txt", params)
+
+    return response_html, response_txt
+
+
 def render_grant_update(to_email, activity):
     params = {
         'activity': activity,
@@ -1249,6 +1263,13 @@ def new_bounty_rejection(request):
 def comment(request):
     from townsquare.models import Comment
     response_html, _ = render_comment(settings.CONTACT_EMAIL, Comment.objects.last())
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def mention(request):
+    from townsquare.models import Activity
+    response_html, _ = render_mention(settings.CONTACT_EMAIL, Activity.objects.last())
     return HttpResponse(response_html)
 
 
