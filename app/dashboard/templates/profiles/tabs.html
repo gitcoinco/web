@@ -6,7 +6,7 @@
         <button type="button" id="nav-description" href="{{profile.url}}/activity" class="text-center section-tab {% if tab == "activity" %} active {% endif %}">
           {% trans "ACTIVITY" %}
         </button>
-        {% if profile.tribe_members %}
+        {% if profile.is_org %}
           <button type="button" id="nav-description" href="{{profile.url}}/tribe" class="text-center section-tab {% if tab == "tribe" %} active {% endif %}">
             {% trans "TRIBE" %}{%if not profile.is_org %}S <span class="nav-badge">({{profile.tribe_members.count}})</span>{% endif %}
           </button>
