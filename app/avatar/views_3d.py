@@ -108,20 +108,18 @@ def get_avatar_attrs(theme, key):
             'preview_viewbox': {
                 #section: x_pos y_pox x_size y_size
                 'background': '0 0 350 350',
+                'arms': '50 50 300 300',
                 'body': '60 80 220 220',
                 'ears': '100 70 50 50',
                 'head': '80 10 170 170',
                 'mouth': '130 90 70 70',
                 'nose': '130 80 30 30',
                 'lips': '120 80 50 50',
-                'eyes': '110 40 70 70',
-                'hair': '90 0 110 110',
+                'eyes': '120 50 90 90',
                 'accessories': '100 50 100 100',
             },
-            'skin_tones': [
-            ],
-            'hair_tones': [
-            ],
+            'skin_tones': [],
+            'hair_tones': [],
             'tone_maps': [''],
             'path': 'assets/v2/images/avatar3d/bot_avatar.svg',
         },

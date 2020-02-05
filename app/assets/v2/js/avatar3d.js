@@ -19,11 +19,12 @@ $(document).ready(function() {
     }
     var st = document.skin_tone;
     var ht = document.hair_tone;
-    if(typeof st=='undefined'){
-      st = ''
+
+    if (typeof st == 'undefined') {
+      st = '';
     }
-    if(typeof ht=='undefined'){
-      ht = ''
+    if (typeof ht == 'undefined') {
+      ht = '';
     }
     url += '&skinTone=' + st;
     url += '&hairTone=' + ht;
@@ -61,11 +62,12 @@ $(document).ready(function() {
     $('.tdselection').each(function() {
       var st = document.skin_tone;
       var ht = document.hair_tone;
-      if(typeof st=='undefined'){
-        st = ''
+
+      if (typeof st == 'undefined') {
+        st = '';
       }
-      if(typeof ht=='undefined'){
-        ht = ''
+      if (typeof ht == 'undefined') {
+        ht = '';
       }
       var new_url = $(this).data('src') + '&skinTone=' + st + '&hairTone=' + ht;
 
@@ -114,6 +116,7 @@ $(document).ready(function() {
       }
     });
   });
+  $('.select_avatar_type:first').click(); // set default tab
 
   function save3DAvatar() {
     $(document).ajaxStart(function() {
