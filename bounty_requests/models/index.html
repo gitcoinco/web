@@ -2179,7 +2179,28 @@ Otherwise, returns the result of object.<strong>str</strong>() (if defined)
 or repr(object).
 encoding defaults to sys.getdefaultencoding().
 errors defaults to 'strict'.
-<h2 id="bounty_requests.models.BountyRequestMeta">BountyRequestMeta</h2></p>
+<h3 id="bounty_requests.models.BountyRequest.title">title</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="bounty_requests.models.BountyRequest.token_name">token_name</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="bounty_requests.models.BountyRequest.tribe">tribe</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="bounty_requests.models.BountyRequest.tribe_id">tribe_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="bounty_requests.models.BountyRequestMeta">BountyRequestMeta</h2>
+
 <pre><code class="python">BountyRequestMeta(self, *args, **kwargs)
 </code></pre>
 

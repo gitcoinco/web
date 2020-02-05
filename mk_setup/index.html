@@ -291,6 +291,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#special-instructions-for-windows-wsl-contributors" title="Special instructions for Windows WSL contributors" class="md-nav__link">
+    Special instructions for Windows WSL contributors
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#startup-server" title="Startup server" class="md-nav__link">
     Startup server
   </a>
@@ -2278,6 +2285,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#special-instructions-for-windows-wsl-contributors" title="Special instructions for Windows WSL contributors" class="md-nav__link">
+    Special instructions for Windows WSL contributors
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#startup-server" title="Startup server" class="md-nav__link">
     Startup server
   </a>
@@ -2497,6 +2511,57 @@
 <pre><code class="shell">git clone https://github.com/gitcoinco/web.git
 cd web
 cp app/app/local.env app/app/.env
+</code></pre>
+
+<h2 id="special-instructions-for-windows-wsl-contributors">Special instructions for Windows WSL contributors</h2>
+<p><em>If you are using Windows 10 Professional or Enterprise</em>
+Download Docker Desktop for Windows <a href="https://hub.docker.com/editions/community/docker-ce-desktop-windows">here</a>.</p>
+<p><em>If you are NOT using Windows 10 Professional or Enterprise</em>
+Docker Desktop for Windows is not available to your OS. Follow the steps below to install and configure Docker Toolbox:
+1. Follow the installation instructions on the <a href="https://docs.docker.com/toolbox/toolbox_install_windows/">manual for installing Docker Toolbox on Windows</a>.
+2. WSL by default mounts your C: drive on <code>/mnt/c</code>, but Docker Toolkit instead expects it to be mounted on <code>/c/</code>. To instruct WSL to mount it in the correct location, create a config file in <code>/etc/wsl.conf</code> using WSL and enter the following:</p>
+<pre><code>[automount]
+root = /
+options = &quot;metadata&quot;
+</code></pre>
+
+<ol>
+<li>Lastly, ensure that you are sharing the folders of your project directory to your VirtualBox VM, i.e. if your Gitcoin repository is located in <code>C:/Projects/web</code>, you will have to go to the VirtualBox UI, click on <code>Settings &gt; Shared Folders</code>, and ensure that there is an entry with a name of <code>c/Projects</code> and a path of <code>C:\Projects</code>.</li>
+</ol>
+<p>Once Docker is installed (either via Docker Desktop for Windows or Docker Toolkit), install the Docker packages on WSL as you normally would for Ubuntu:</p>
+<pre><code class="shell"># Update the apt package list.
+$ sudo apt-get update -y
+
+# Install Docker's package dependencies.
+$ sudo apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+
+# Download and add Docker's official public PGP key.
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+# Verify the fingerprint.
+$ sudo apt-key fingerprint 0EBFCD88
+
+# Add the `stable` channel's Docker upstream repository.
+#
+# If you want to live on the edge, you can change &quot;stable&quot; below to &quot;test&quot; or
+# &quot;nightly&quot;. I highly recommend sticking with stable!
+$ sudo add-apt-repository \
+   &quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable&quot;
+
+# Update the apt package list (for the new apt repo).
+$ sudo apt-get update -y
+
+# Install the latest version of Docker CE.
+$ sudo apt-get install -y docker-ce
+
+# Allow your user to access the Docker CLI without needing root access.
+$ sudo usermod -aG docker $USER
 </code></pre>
 
 <h2 id="startup-server">Startup server</h2>

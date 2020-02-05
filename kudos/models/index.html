@@ -2105,6 +2105,17 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     tags (str): Comma delimited tags.  TODO:  change to array
     token_id (int): the token_id on the blockchain.
     txid (str): The ethereum transaction id that generated this kudos.</p>
+<h3 id="kudos.models.Token.activities">activities</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="kudos.models.Token.artist">artist</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
