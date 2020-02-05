@@ -31,7 +31,7 @@
 </div>
 <!--- /Top Row Notification -->
 
-<div class="top-nav g-font-muli {{class}}">
+<div class="top-nav g-font-muli d-md-none {{class}}">
   <a class="link d-md-block d-none" href="{% url 'products' %}">Grow Open Source</a>
   <a class="{% if request.path|matches:'^\/((hackathon.*))$' %}selected{% endif %}" href="{% url 'get_hackathons' %}">
     <img src="{% static "v2/images/top-bar/hackathons-logo.svg" %}" height="23" width="125" alt="" class="d-md-block d-none" style="margin-top: 0px; margin-left: -10px;">

@@ -94,16 +94,6 @@ $(document).ready(function() {
     $('.header').css('overflow', 'visible');
   }
 
-  $('.nav-link.dropdown-toggle').on('click', function(e) {
-    e.preventDefault();
-    var parent = $(this).parents('.nav-item');
-
-    var parentSiblings = parent.siblings('.nav-item');
-
-    parent.find('.dropdown-menu').toggle().toggleClass('show');
-    parentSiblings.find('.dropdown-menu').hide();
-  });
-
   // get started modal
   $("a[href='/get']").on('click', function(e) {
     e.preventDefault();
@@ -393,7 +383,13 @@ const gitcoinUpdates = () => {
     $('#gitcoin_updates').remove();
     $('#gitcoin_updates').bootstrapModal('dispose');
   });
+
 };
+
+// carousel/collabs/... inside menu
+$(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
+  e.stopPropagation();
+});
 
 if (document.contxt.chat_unread_messages) {
   $('#chat-notification-dot').addClass('notification__dot__active');

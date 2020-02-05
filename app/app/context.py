@@ -17,10 +17,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import json
+import requests, json
 import logging
 
 from django.conf import settings
+from django.core.cache import cache
 from django.utils import timezone
 
 from app.utils import get_location_from_ip
@@ -36,6 +37,11 @@ RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
 
 logger = logging.getLogger(__name__)
 
+def fetchPost(qt='2'):
+    """Fetch last post from wordpress blog."""
+    url = f"https://gitcoin.co/blog/wp-json/wp/v2/posts?_fields=excerpt,title,link,jetpack_featured_media_url&per_page={qt}"
+    last_posts = requests.get(url=url).json()
+    return last_posts
 
 @cached_as(Announcement.objects.filter(key__in=['footer', 'header']), timeout=120)
 def get_sitewide_announcements():
@@ -163,6 +169,7 @@ def preprocess(request):
         'quests_live': settings.QUESTS_LIVE,
     }
     context['json_context'] = json.dumps(context)
+    context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)
 
     if context['github_handle']:
         context['unclaimed_tips'] = Tip.objects.filter(
