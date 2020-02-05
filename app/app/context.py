@@ -38,16 +38,9 @@ RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
 logger = logging.getLogger(__name__)
 
 def fetchPost(qt='2'):
-
+    """Fetch last post from wordpress blog."""
     url = f"https://gitcoin.co/blog/wp-json/wp/v2/posts?_fields=excerpt,title,link,jetpack_featured_media_url&per_page={qt}"
     last_posts = requests.get(url=url).json()
-    # cache.get_or_set('last_posts', last_posts, 100)
-    # posts = {
-    #     'last_posts': last_posts
-    # }
-
-    # posts['json_context'] = json.dumps(posts)
-    print(last_posts)
     return last_posts
 
 @cached_as(Announcement.objects.filter(key__in=['footer', 'header']), timeout=120)
