@@ -636,21 +636,15 @@ body.green.offer_view .announce {
   color: white;
   padding: 5px 10px;
 }
+
 .announce a.accept.btn:hover {
   background-color: #8E2ABE;
-}
-
-.emoji-picker__tab {
-  font-size: 32px;
-}
-
-.emoji-picker__emoji {
-  font-size: 1.6rem;
 }
 
 .top_offers{
   background-color: #fafafa;
 }
+
 .top_offer{
   border: 1px solid #eee;
   background-color: white;
@@ -663,22 +657,27 @@ body.green.offer_view .announce {
   border-radius: 5px;
   margin-right: 10px;
 }
+
 .top_offer .desc{
   font-size: 14px;
   max-height: 55px;
 }
+
 .top_offer:hover{
   background-color: #fafafa;
 }
+
 .top_offer img{
   float: left;
   width: 30px;
   height: 30px;
   border-radius: 15px;
 }
+
 .top_offer p{
   margin-left: 30px;
 }
+
 .top_offer .tag {
   background: #E8F0FA;
   padding: 4px;

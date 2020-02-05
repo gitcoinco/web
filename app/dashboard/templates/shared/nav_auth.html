@@ -95,14 +95,14 @@
     </div>
   </div>
   <a href="/profile/" id="nav_auth_profile" class="nav_avatar d-none d-md-block"
-   data-gtm="profile">
+   data-gtm="profile" style="background-image: url('{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}')">
   </a>
   <script>
-    setInterval(function(){
-      if($ && !$("#nav_auth_profile").attr('background-image')){
-        $("#nav_auth_profile").css('background-image', 'url("{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}")')
-      }
-    }, 1000)
+    // setInterval(function(){
+    //   if($ && !$("#nav_auth_profile").attr('background-image')){
+    //     $("#nav_auth_profile").css('background-image', 'url("{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}")')
+    //   }
+    // }, 1000)
   </script>
 
 {% else %}
