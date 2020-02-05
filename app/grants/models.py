@@ -584,7 +584,7 @@ class Subscription(SuperModel):
 
     @property
     def amount_per_period_minus_gas_price(self):
-        amount = self.amount_per_period - self.amount_per_period_to_gitcoin
+        amount = float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
         return amount
 
     @property
@@ -592,7 +592,7 @@ class Subscription(SuperModel):
         from dashboard.tokens import addr_to_token
         token = addr_to_token(self.token_address, self.network)
         decimals = token.get('decimals', 0)
-        return (self.gas_price / 10 ** decimals)
+        return (float(self.gas_price) / 10 ** decimals)
 
 
     def __str__(self):
