@@ -25,11 +25,10 @@ $(document).ready(function() {
 
       for (let i = 0; i < response.data.length; i++) {
         let item = response.data[i];
-        
-        let downsize = item.images.downsized.url;
-        let preview = item.images.fixed_width_downsampled.url;
+        let downsize = item.images.original.webp;
+        let preview = item.images.fixed_width_downsampled.webp;
 
-        $('.gif-grid').append('<img class="lazy pick-gif" src="' + preview + '" data-src="' + downsize + '" alt="' + item.slug + '">');
+        $('.gif-grid').append('<img class="pick-gif" src="' + preview + '" data-src="' + downsize + '" alt="' + item.slug + '">');
       }
       $('.pick-gif').on('click', selectGif);
     });
