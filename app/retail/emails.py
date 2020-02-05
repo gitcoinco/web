@@ -711,9 +711,11 @@ def render_comment(to_email, comment):
 
 
 def render_mention(to_email, post):
+    from dashboard.models import Activity
     params = {
         'post': post,
         'email_type': 'mention',
+        'is_activity': isinstance(post, Activity),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -1268,7 +1270,7 @@ def comment(request):
 
 @staff_member_required
 def mention(request):
-    from townsquare.models import Activity
+    from dashboard.models import Activity
     response_html, _ = render_mention(settings.CONTACT_EMAIL, Activity.objects.last())
     return HttpResponse(response_html)
 
