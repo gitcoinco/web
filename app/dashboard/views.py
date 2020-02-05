@@ -53,7 +53,7 @@ from django.views.decorators.http import require_GET, require_POST
 import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
-from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
+from avatar.views_3d import avatar3dids_helper
 from bleach import clean
 from cacheops import invalidate_obj
 from chat.tasks import add_to_channel
@@ -852,19 +852,32 @@ def onboard(request, flow=None):
 
     if request.POST.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
-        eth_address = request.POST.get('eth_address')
+        eth_address = request.GET.get('eth_address')
         valid_address = is_valid_eth_address(eth_address)
         if valid_address:
             profile.preferred_payout_address = eth_address
             profile.save()
-        return JsonResponse({'OK': valid_address})
+        return JsonResponse({'OK': True})
+    
+    theme = request.GET.get('theme', '3d')
+    from avatar.views_3d import get_avatar_attrs
+    skin_tones = get_avatar_attrs(theme, 'skin_tones')
+    hair_tones = get_avatar_attrs(theme, 'hair_tones')
+    avatar_options = [
+        ('classic', '/onboard/profile?steps=avatar&theme=classic'),
+        ('3d', '/onboard/profile?steps=avatar&theme=3d'),
+        ('bufficorn', '/onboard/profile?steps=avatar&theme=bufficorn'),
+        ('female', '/onboard/profile?steps=avatar&theme=female'),
+    ]
 
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
         'flow': flow,
         'profile': profile,
-        '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(),
+        'theme': theme,
+        'avatar_options': avatar_options,
+        '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(theme),
         'possible_skin_tones': skin_tones,
         'possible_hair_tones': hair_tones,
     }
