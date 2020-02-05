@@ -40,7 +40,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endif %}
 
 {% if offers_by_category.top.offers %}
-  <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
   <div class="row top_offers pb-2">
     <div class="container py-0 ">
       <div class="my-1">
@@ -115,7 +114,113 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% include 'shared/activity_container.html' %}
           </div>
         </div>
+
         <div class="col-12 col-md-4">
+            <div class="clr_container">
+              <hr>
+              <h4 class="pt-3">$200 Tip Matching - Round 4</h4>
+              
+              <div class="">
+                For the next <i class="fas fa-clock"></i> 3 days, 12 minutes, Gitcoin will be matching your newsfeed tips with <i class="fab fa-ethereum"></i>$200 in ETH.  Learn how <i class="fas fa-book"></i> <a href="#">it works</a> and <i class="fas fa-book"></i> <a href="#">how to earn & win</a>. 
+                <h5 class="pt-3">Matching Leaderboard</h5>
+                <table>
+                  <tr class="title">
+                    <td>
+                      Rank
+                    </td>
+                    <td>
+                      Who
+                    </td>
+                    <td>
+                      # Contribs
+                    </td>
+                    <td>
+                      Total
+                    </td>
+                    <td>
+                      Est. Match
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      1
+                    </td>
+                    <td>
+                      <a href="#">
+                        <img src='/dynamic/avatar/owocki'> @owocki
+                      </a>
+                    </td>
+                    <td>
+                      10
+                    </td>
+                    <td>
+                      $3
+                    </td>
+                    <td>
+                      $25
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      2
+                    </td>
+                    <td>
+                      <a href="#">
+                        <img src='/dynamic/avatar/vs77bb'> @vs77bb
+                      </a>
+                    </td>
+                    <td>
+                      1
+                    </td>
+                    <td>
+                      $30
+                    </td>
+                    <td>
+                      $20
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      3
+                    </td>
+                    <td>
+                      <a href="#">
+                        <img src='/dynamic/avatar/pixelantdesign'> @pixelantdesign
+                      </a>
+                    </td>
+                    <td>
+                      4
+                    </td>
+                    <td>
+                      $25
+                    </td>
+                    <td>
+                      $15
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      4
+                    </td>
+                    <td>
+                      <a href="#">
+                        <img src='/dynamic/avatar/danlipert'> @danlipert
+                      </a>
+                    </td>
+                    <td>
+                      1
+                    </td>
+                    <td>
+                      $5
+                    </td>
+                    <td>
+                      $3
+                    </td>
+                  </tr>
+                </table>
+              </div>
+          </div>
+
           {% for type, item in offers_by_category.items %}
             <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%}">
               <hr>

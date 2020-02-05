@@ -48,7 +48,7 @@ class OfferAdmin(admin.ModelAdmin):
     def schedule_preview(self, instance, size=400):
         import pytz
         html = "<table style='max-width:700px; overflow-x: scroll;'>"
-        for _type in ['monthly', 'weekly', 'daily', 'secret', 'random']:
+        for _type in ['monthly', 'weekly', 'daily', 'secret', 'random', 'top']:
             days = 1
             start = timezone.now() - timezone.timedelta(days=5)
             current = start
