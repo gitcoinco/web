@@ -105,7 +105,7 @@ onboard.watchMetamask = function() {
             'X-CSRFToken': csrftoken
           },
           data: {
-            eth_address :$('#eth_address').val()
+            eth_address: $('#eth_address').val()
           }
         });
       });

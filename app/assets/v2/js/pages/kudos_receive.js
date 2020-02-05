@@ -106,6 +106,7 @@ $(document).ready(function() {
           '<input type="text" name="forwarding_address" value="' + $('#forwarding_address').val() + '" />' +
           '<input type="text" name="save_addr" value="' + ($('#save_addr').is(':checked') ? '1' : '0') + '" />' +
           '</form>');
+
         $('body').append(form);
         form.submit();
       }
