@@ -212,7 +212,7 @@ def town_square(request):
     return response
 
 
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def emailsettings(request):
 
     if not request.user.is_authenticated:

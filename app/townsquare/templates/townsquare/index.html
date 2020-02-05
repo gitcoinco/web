@@ -31,7 +31,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="container py-0 ">
       <div class="my-1">
         <div class="row">
-          <i class="fas fa-info mr-3"></i> 
+          <i class="fas fa-info mr-3"></i>
           What is Gitcoin? - <a style="font-weight: bold;" href="/home">Learn More <i class="fas fa-share-square"></i> </a>
         </div>
       </div>
@@ -73,7 +73,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="container py-0 ">
       <div class="my-1">
         <div class="row">
-          <i class="fas fa-info mr-3"></i> 
+          <i class="fas fa-info mr-3"></i>
           <strong>
             {{announce.title}}
           </strong> ({{announce.valid_from | naturaltime}}) -
@@ -141,7 +141,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 Available <div class="{{type}} timer" data-time="{{item.time|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></div>
                 {% if type == 'daily' %}
                   <br>
-                  <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} > 
+                  <input type="checkbox" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} >
                   <label for="receive_daily_offers_in_inbox"> <i class="fas fa-envelope"></i> Email when available</label>
                 {% endif %}
                 </div>
@@ -165,6 +165,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% include 'shared/activity_scripts.html' %}
 <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
+<script src="{% static 'v2/js/lib/emoji-button.js' %}"></script>
 <script src="{% static "v2/js/status.js" %}"></script>
 <script src="{% static "v2/js/pages/townsquare.js" %}"></script>
 

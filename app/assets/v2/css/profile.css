@@ -44,7 +44,6 @@
 .profile-card {
   background: white;
   border-radius: 5px;
-  z-index: 1;
   position: relative;
   padding: 2rem;
 }
