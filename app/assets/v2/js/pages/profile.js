@@ -133,7 +133,7 @@ $(document).ready(function() {
       .y(function(d) {
         return y(d.close);
       });
-        
+
     // Adds the svg canvas
     var svg = d3.select('#earn_dataviz')
       .append('svg')
@@ -177,7 +177,6 @@ $(document).ready(function() {
     });
 
   }
-
 
   $(document).on('click', '.load-more', function() {
     var address = $('#preferred-address').prop('title');

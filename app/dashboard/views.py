@@ -34,6 +34,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Avg, Count, Prefetch, Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
@@ -85,6 +86,10 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
+from .export import (
+    ActivityExportSerializer, BountyExportSerializer, GrantExportSerializer, ProfileExportSerializer,
+    filtered_list_data,
+)
 from .helpers import (
     bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
 )
@@ -2369,6 +2374,76 @@ def profile_job_opportunity(request, handle):
     }
     return JsonResponse(response)
 
+@require_POST
+@login_required
+def profile_settings(request):
+    """ Toggle profile automatic backup flag.
+
+    Args:
+        handle (str): The profile handle.
+    """
+
+    handle = request.user.profile.handle
+
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
+        raise Http404
+
+    profile.automatic_backup = not profile.automatic_backup
+    profile.save()
+
+    response = {
+        'status': 200,
+        'message': 'Profile automatic backup flag toggled',
+        'automatic_backup': profile.automatic_backup
+    }
+
+    return JsonResponse(response, status=response.get('status', 200))
+
+@require_POST
+@login_required
+def profile_backup(request):
+    """ Read the profile backup data.
+
+    Args:
+        handle (str): The profile handle.
+    """
+
+    handle = request.user.profile.handle
+
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
+        raise Http404
+
+    # fetch the exported data for backup
+    data = ProfileExportSerializer(profile).data
+    data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
+    data["portfolio"] = BountyExportSerializer(profile.as_dict['portfolio'], many=True).data
+    data["active_work"] = BountyExportSerializer(profile.active_bounties, many=True).data
+    data["bounties"] = BountyExportSerializer(profile.bounties, many=True).data
+    data["activities"] = ActivityExportSerializer(profile.activities, many=True).data
+    # tips
+    data["tips"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=False)
+    data["_tips.private_fields"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=True)
+    # feedback
+    feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
+    data["feedbacks"] = filtered_list_data("feedback", feedbacks, private_items=False, private_fields=None)
+    data["_feedbacks.private_items"] = filtered_list_data("feedback", feedbacks, private_items=True, private_fields=None)
+
+    response = {
+        'status': 200,
+        'data': data
+    }
+
+    return JsonResponse(response, status=response.get('status', 200))
 
 def invalid_file_response(uploaded_file, supported):
     response = None

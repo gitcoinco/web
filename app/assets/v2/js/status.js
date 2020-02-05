@@ -153,17 +153,17 @@ $(document).ready(function() {
       .catch(err => console.log('Error ', err));
   }
 });
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('DOMContentLoaded', function() {
   var button = document.querySelector('#emoji-button');
   var picker = new EmojiButton({
     position: 'left-end'
   });
 
-  picker.on('emoji', function (emoji) {
+  picker.on('emoji', function(emoji) {
     document.querySelector('textarea').value += emoji;
   });
 
-  button.addEventListener('click', function () {
+  button.addEventListener('click', function() {
     picker.pickerVisible ? picker.hidePicker() : picker.showPicker(button);
   });
 });
