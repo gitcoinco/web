@@ -290,6 +290,7 @@ def api(request, activity_id):
     # comment request
     elif request.POST.get('method') == 'comment':
         comment = request.POST.get('comment')
+        title = request.POST.get('comment')
         comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
 
         username_pattern = re.compile(r'@(\S+)')
