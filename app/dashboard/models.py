@@ -2542,9 +2542,9 @@ class Profile(SuperModel):
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
-    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
+    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description describing tribe.'))
     as_representation = JSONField(default=dict, blank=True)
-
+    tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
     objects = ProfileQuerySet.as_manager()
 
     @property

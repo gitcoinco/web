@@ -2,7 +2,7 @@
 {% if not hidden %}
   <div id="tabs">
     <div class="container">
-      <div id="profile-tabs" class="tab-container font-body mt-5 mb-4">
+      <div id="profile-tabs" class="tab-container font-body mt-3 mb-4">
         <button type="button" id="nav-description" href="{{profile.url}}/activity" class="text-center section-tab {% if tab == "activity" %} active {% endif %}">
           {% trans "ACTIVITY" %}
         </button>
@@ -97,7 +97,7 @@
 <div class="tab-content profile-tab">
   <div class="tab-pane fade show active">
     <div class="container position-relative">
-      <div class="row mb-2 mt-0 bg-white rounded p-3">
+      <div class="row mb-2 mt-0 bg-white rounded px-3 py-2">
         <div class="col-12 px-lg-0">
           {% if tab == 'kudos' %}
             {% include 'profiles/tab_kudos.html' %}

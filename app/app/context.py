@@ -17,13 +17,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import requests, json
+import json
 import logging
 
 from django.conf import settings
 from django.core.cache import cache
 from django.utils import timezone
 
+import requests
 from app.utils import get_location_from_ip
 from cacheops import cached_as
 from dashboard.models import Activity, Tip, UserAction

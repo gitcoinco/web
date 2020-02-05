@@ -55,6 +55,7 @@ from app.utils import clean_str, ellipses, get_default_network
 from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper
 from bleach import clean
+from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
 from chat.tasks import add_to_channel
 from chat.utils import create_channel_if_not_exists, create_user_if_not_exists
@@ -75,6 +76,7 @@ from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
+    wall_post_email,
 )
 from marketing.models import EmailSubscriber, Keyword
 from oauth2_provider.decorators import protected_resource
@@ -97,9 +99,9 @@ from .notifications import (
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from .utils import (
-    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count, get_web3,
-    has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public,
-    web3_process_bounty,
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count,
+    get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
+    release_bounty_to_the_public, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -2697,8 +2699,7 @@ def profile(request, handle, tab=None):
     is_my_profile = request.user.is_authenticated and request.user.username.lower() == handle.lower()
     user_only_tabs = ['viewers', 'earnings', 'spent']
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
-    owned_kudos = None
-    sent_kudos = None
+
     context = {}
     # get this user
     try:
@@ -2738,6 +2739,12 @@ def profile(request, handle, tab=None):
 
     if not len(profile.tribe_members) and tab == 'tribe':
         tab = 'activity'
+
+    if tab == 'tribe':
+        context['tribe_priority'] = profile.tribe_priority
+        suggested_bounties = BountyRequest.objects.filter(tribe=profile, status='o').order_by('created_on')
+        if suggested_bounties:
+            context['suggested_bounties'] = suggested_bounties
 
     context['is_my_profile'] = is_my_profile
     context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
@@ -4248,7 +4255,6 @@ def choose_persona(request):
 
     if request.user.is_authenticated:
         profile = request.user.profile if hasattr(request.user, 'profile') else None
-        access_token = request.POST.get('access_token')
         persona = request.POST.get('persona')
         if persona == 'persona_is_funder':
             profile.persona_is_funder = True
@@ -4259,8 +4265,9 @@ def choose_persona(request):
         profile.save()
     else:
         return JsonResponse(
-            {'error': _('You must be authenticated')},
-        status=401)
+            { 'error': _('You must be authenticated') },
+            status=401
+        )
 
 
     return JsonResponse(
@@ -4268,7 +4275,8 @@ def choose_persona(request):
             'success': True,
             'persona': persona,
         },
-        status=200)
+        status=200
+    )
 
 
 def is_my_tribe_member(leader_profile, tribe_member):
@@ -4320,11 +4328,13 @@ def join_tribe(request, handle):
                     'success': True,
                     'is_member': True,
                 },
-                status=200)
+                status=200
+            )
     else:
         return JsonResponse(
-            {'error': _('You must be authenticated via github to use this feature!')},
-             status=401)
+            { 'error': _('You must be authenticated via github to use this feature!') },
+            status=401
+        )
 
 
 
@@ -4333,7 +4343,6 @@ def join_tribe(request, handle):
 @require_POST
 def tribe_leader(request):
     if request.user.is_authenticated:
-        profile = request.user.profile if hasattr(request.user, 'profile') else None
         member = request.POST.get('member')
         try:
             tribemember = TribeMember.objects.get(pk=member)
@@ -4343,66 +4352,118 @@ def tribe_leader(request):
                 tribemember.leader = True
                 tribemember.save()
                 return JsonResponse(
-                {
-                    'success': True,
-                    'is_leader': True,
-                },
-                status=200)
+                    {
+                        'success': True,
+                        'is_leader': True,
+                    },
+                    status=200
+                )
             else:
                 return JsonResponse(
-                {
-                    'success': False,
-                    'is_my_org': False,
-                },
-                status=401)
+                    {
+                        'success': False,
+                        'is_my_org': False,
+                    },
+                    status=401
+                )
 
-        except Exception as e:
+        except Exception:
 
             return JsonResponse(
                 {
                     'success': False,
                     'is_leader': False,
                 },
-                status=401)
+                status=401
+            )
 
 
 @csrf_exempt
 @require_POST
 def save_tribe(request,handle):
-    tribe_description = clean(
-        request.POST.get('tribe_description'),
-        tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'p', 'u', 'br', 'i', 'li', 'ol', 'strong', 'ul', 'img', 'h1', 'h2'],
-        attributes={'a': ['href', 'title'], 'abbr': ['title'], 'acronym': ['title'], 'img': ['src'], '*': ['class']},
-        styles=[],
-        protocols=['http', 'https', 'mailto'],
-        strip=True,
-        strip_comments=True
-    )
 
-    if request.user.is_authenticated:
-        profile = request.user.profile if hasattr(request.user, 'profile') else None
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {
+                'success': False,
+                'is_my_org': False,
+                'message': 'user needs to be authenticated to use this'
+            },
+            status=405
+        )
 
+    try:
         is_my_org = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
-        if is_my_org:
-            org = Profile.objects.filter(handle=handle).first()
-            org.tribe_description = tribe_description
-            org.save()
-
-            return JsonResponse(
-                {
-                    'success': True,
-                    'is_my_org': True,
-                },
-                status=200)
-
-        else:
+        if not is_my_org:
             return JsonResponse(
                 {
                     'success': False,
                     'is_my_org': False,
+                    'message': 'this operation is permitted to tribe owners only'
                 },
-                status=401)
+                status=405
+            )
 
+        if request.POST.get('tribe_description'):
+
+            tribe_description = clean(
+                request.POST.get('tribe_description'),
+                tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'p', 'u', 'br', 'i', 'li', 'ol', 'strong', 'ul', 'img', 'h1', 'h2'],
+                attributes={'a': ['href', 'title'], 'abbr': ['title'], 'acronym': ['title'], 'img': ['src'], '*': ['class']},
+                styles=[],
+                protocols=['http', 'https', 'mailto'],
+                strip=True,
+                strip_comments=True
+            )
+            tribe = Profile.objects.filter(handle=handle).first()
+            tribe.tribe_description = tribe_description
+            tribe.save()
+
+        if request.POST.get('tribe_priority'):
+
+            tribe_priority = clean(
+                request.POST.get('tribe_priority'),
+                tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'p', 'u', 'br', 'i', 'li', 'ol', 'strong', 'ul', 'img', 'h1', 'h2'],
+                attributes={'a': ['href', 'title'], 'abbr': ['title'], 'acronym': ['title'], 'img': ['src'], '*': ['class']},
+                styles=[],
+                protocols=['http', 'https', 'mailto'],
+                strip=True,
+                strip_comments=True
+            )
+            tribe = Profile.objects.filter(handle=handle).first()
+            tribe.tribe_priority = tribe_priority
+            tribe.save()
+
+            if request.POST.get('publish_to_ts'):
+                title = 'updated their priority to ' + request.POST.get('priority_html_text')
+                kwargs = {
+                    'profile': tribe,
+                    'activity_type': 'status_update',
+                    'metadata': {
+                        'title': title,
+                        'ask': '#announce'
+                    }
+                }
+                activity = Activity.objects.create(**kwargs)
+                wall_post_email(activity)
+
+        return JsonResponse(
+            {
+                'success': True,
+                'is_my_org': True,
+            },
+            status=200
+        )
+
+    except Exception:
+        return JsonResponse(
+            {
+                'success': False,
+                'is_leader': False,
+                'message': 'something went wrong'
+            },
+            status=500
+        )
 
 @csrf_exempt
 @require_POST

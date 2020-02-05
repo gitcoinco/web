@@ -437,6 +437,8 @@ urlpatterns = [
 
     # bounty requests
     re_path(r'^requests/?', bounty_requests.views.bounty_request, name='bounty_requests'),
+    url('^api/v1/bounty_request/create', bounty_requests.views.create_bounty_request_v1, name='create_bounty_request_v1'),
+    url('^api/v1/bounty_request/update', bounty_requests.views.update_bounty_request_v1, name='update_bounty_request_v1'),
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
