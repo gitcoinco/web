@@ -1,13 +1,16 @@
 {% load static %}
 <div class="container-fluid mt-2" id="status">
   {% csrf_token %}
-  <textarea
-    id="textarea"
-    class="form__input p-2"
-    placeholder="{% if placeholder %}{{placeholder}}{%else%}What are you thinking?{%endif%}"
-    style="resize: none"
-    data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
-  ></textarea>
+  <div class="position-relative">
+    <textarea
+      id="textarea"
+      class="form__input p-2"
+      placeholder="{% if placeholder %}{{placeholder}}{%else%}What are you thinking?{%endif%}"
+      style="resize: none"
+      data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
+    ></textarea>
+    <button id="emoji-button" class="btn btn-clean position-absolute" style="bottom: 0.2em; right: 0;"><i class="far fa-smile"></i></button>
+  </div>
   <input type="hidden" name="what" value="{{what}}:{{whatid}}">
   <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
     {% if tags %}

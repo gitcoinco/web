@@ -27,7 +27,7 @@ $(document).ready(function() {
 
     // enforce a max length
     var max_len = $(this).data('maxlen');
-    
+
     if ($(this).val().trim().length > max_len) {
       e.preventDefault();
       $(this).addClass('red');
@@ -95,4 +95,18 @@ $(document).ready(function() {
       })
       .catch(err => console.log('Error ', err));
   }
+});
+window.addEventListener('DOMContentLoaded', function () {
+  var button = document.querySelector('#emoji-button');
+  var picker = new EmojiButton({
+    position: 'left-end'
+  });
+
+  picker.on('emoji', function (emoji) {
+    document.querySelector('textarea').value += emoji;
+  });
+
+  button.addEventListener('click', function () {
+    picker.pickerVisible ? picker.hidePicker() : picker.showPicker(button);
+  });
 });

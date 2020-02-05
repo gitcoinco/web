@@ -1637,3 +1637,11 @@ div.busyOverlay {
 .card-shadow {
   box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, .1);
 }
+
+.emoji-picker__tab {
+  font-size: 32px!important;
+}
+
+.emoji-picker__emoji {
+  font-size: 1.6rem!important;
+}
