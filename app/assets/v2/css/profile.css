@@ -18,7 +18,7 @@
   background: #E8F0FA;
   padding: 4px;
   border-radius: 2px;
-  font-size: 12px;
+  font-size: 11px;
   color: #6487AE;
   display: inline-block;
   margin-bottom: 2px;
@@ -44,7 +44,6 @@
 .profile-card {
   background: white;
   border-radius: 5px;
-  z-index: 1;
   position: relative;
   padding: 2rem;
 }
@@ -150,8 +149,9 @@
   background-color: #f9f9f9;
 }
 
-.profile_details .nav-link {
+.profile_details .nav-tabs .nav-link {
   padding: 0.5rem;
+  padding-bottom: 0.2rem;
 }
 
 .is_editable{
@@ -215,8 +215,11 @@
     display: none;
   }
 
-}
+  .transaction-history.bounty_row .avatar {
+    max-width: 100% !important;
+  }
 
+}
 
 .profile-header__stats {
   border: none;
@@ -237,6 +240,19 @@
 
 .profile-header__stats .card-body {
   padding: 0.7rem;
+}
+
+
+.bounty_row {
+  border-bottom: 1px solid #EFEFEF;
+}
+
+.bounty_row:hover {
+  background: none;
+}
+
+#earn_dataviz {
+  max-width: 100%;
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {

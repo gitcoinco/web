@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -19,7 +19,11 @@
 <html lang="en">
 <head>
   {% include 'shared/head.html' %}
-  {% include 'shared/cards.html' %}
+  {% if use_pic_card %}
+    {% include 'shared/cards_pic.html' %}
+  {% else %}
+    {% include 'shared/cards.html' %}
+  {% endif %}
   <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
 </head>
 <body class="{{active}} g-font-muli">
@@ -37,7 +41,7 @@
       {% include 'shared/minihero.html' with h1=minihero %}
     {% endif %}
   </div>
-  <div class="row mt-5 pb-0">
+  <div class="row mt-1 pb-0">
     <div class="col text-center body">
       {% block body %}{% endblock %}
     </div>

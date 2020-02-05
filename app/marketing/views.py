@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the marketing views.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -40,7 +40,7 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from cacheops import cached_view
 from dashboard.models import Profile, TokenApproval
-from dashboard.utils import create_user_action, get_orgs_perms
+from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_feedback
@@ -153,6 +153,7 @@ def privacy_settings(request):
         if profile:
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
             profile = record_form_submission(request, profile, 'privacy')
             if profile.alumni and profile.alumni.exists():
                 alumni = profile.alumni.first()
@@ -558,7 +559,10 @@ def account_settings(request):
             profile.save()
 
         if 'preferred_payout_address' in request.POST.keys():
-            profile.preferred_payout_address = request.POST.get('preferred_payout_address', '')
+            eth_address = request.POST.get('preferred_payout_address', '')
+            if not is_valid_eth_address(eth_address):
+                eth_address = profile.preferred_payout_address
+            profile.preferred_payout_address = eth_address
             profile.save()
             msg = _('Updated your Address')
         elif request.POST.get('disconnect', False):
@@ -636,7 +640,10 @@ def job_settings(request):
     if request.POST:
 
         if 'preferred_payout_address' in request.POST.keys():
-            profile.preferred_payout_address = request.POST.get('preferred_payout_address', '')
+            eth_address = request.POST.get('preferred_payout_address', '')
+            if not is_valid_eth_address(eth_address):
+                eth_address = profile.preferred_payout_address
+            profile.preferred_payout_address = eth_address
             profile.save()
             msg = _('Updated your Address')
         elif request.POST.get('disconnect', False):

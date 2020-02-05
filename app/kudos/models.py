@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define models.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -392,6 +392,22 @@ class Token(SuperModel):
 @receiver(pre_save, sender=Token, dispatch_uid="psave_token")
 def psave_token(sender, instance, **kwargs):
     instance.num_clones_available_counting_indirect_send = instance._num_clones_available_counting_indirect_send
+
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    if instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='kudos', model='token'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.humanized_name,
+                "description":instance.description,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.img_url,
+            }
+            )
 
 
 class KudosTransfer(SendCryptoAsset):

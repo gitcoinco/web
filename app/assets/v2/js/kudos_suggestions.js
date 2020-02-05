@@ -64,7 +64,7 @@ function templateSuggestions(kudosGroup) {
   return `
     ${kudosGroup.map((kudos, index) => `
       <a class="scroll-carousel__item" id="kudos-${kudos.id}" onclick="fillKudos(${index}, this )">
-        <img class="scroll-carousel__img" src="${static_url + kudos.image}" />
+        <img class="scroll-carousel__img" src="${kudos.image}" />
         <div class="scroll-carousel__text">
           ${kudos.name_human}
           ${kudos.price_finney} ETH

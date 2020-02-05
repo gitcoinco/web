@@ -25,14 +25,13 @@
     <link rel="stylesheet" href={% static "v2/css/users.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
-    <link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
   </head>
 
   <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
+      {% include 'home/nav.html' %}
     </div>
     <div class="" id="gc-users-directory" v-cloak>
 
@@ -202,8 +201,9 @@
                     <b>[[ user.work_done ]]</b> bounties completed
                   </div>
                   <div class="text-center mt-2">
-                    <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-gc-blue" @click="openBounties(user)">Invite to Bounty</button>
-                    <a v-if="isFunder && !funderBounties.length" :href="`/funding/new?invite=${ user.id }`" target="_blank" class="btn btn-sm btn-gc-blue">Fund Bounty</a>
+                    <button v-if="!user.is_org && funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-gc-blue" @click="openBounties(user)">Invite to Bounty</button>
+                    <a v-if="!user.is_org && isFunder && !funderBounties.length" :href="`/funding/new?invite=${ user.id }`" target="_blank" class="btn btn-sm btn-gc-blue">Fund Bounty</a>
+                    <button v-if="user.is_org" class="btn btn-sm btn-gc-blue" @click="joinTribe(user, $event)">Join Tribe</button>
                   </div>
                 </div>
               </div>
@@ -312,6 +312,5 @@
     </script>
     <script src="{% static "v2/js/vue-components.js" %}"></script>
     <script src="{% static "v2/js/users.js" %}"></script>
-
   </body>
 </html>

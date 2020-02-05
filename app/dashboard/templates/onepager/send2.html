@@ -1,6 +1,6 @@
 {% extends 'onepager/base.html' %}
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -95,8 +95,14 @@
         {% endif %}
       </select>
     </div>
+    {% if is_staff %}
+    <div class="terms pb-1">
+      <input type="checkbox" id="secret_link" value="1" >
+      <label for="secret_link">{% blocktrans %}STAFF ONLY - No to user, just create a tip with a secret link..{% endblocktrans %}</label>
+    </div>
+    {% endif %}
     <div>
-      <label>{% trans "From Github Username" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/tip" onclick="dataLayer.push({'event': 'login'});">{% trans "Login" %}</a>) {%endif%}</label>
+      <label>{% trans "From Github Username" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/tip" onclick="dataLayer.push({'event': 'login'});">{% trans "Login" %}</a>) {% endif %}</label>
       <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" style="max-width: 400px; margin-left: auto; margin-right: auto; margin-bottom: 15px; background-color: #eee;" disabled="disabled"  >
     </div>
     <div>

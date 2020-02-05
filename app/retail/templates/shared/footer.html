@@ -45,8 +45,8 @@
           <a class="nav-link" href="{% url "reddit" %}">
             <img {{prefix}}src="{% static "v2/images/social/reddit.png" %}" alt="Reddit">
           </a>
-          <a class="nav-link" href="{% url "slack" %}">
-            <img {{prefix}}src="{% static "v2/images/social/slack.png" %}" alt="Slack">
+          <a class="nav-link" href="{% url "landing_chat" %}">
+            <img {{prefix}}src="{% static "v2/images/social/slack.png" %}" alt="Chat">
           </a>
           <a class="nav-link" href="{% url "btctalk" %}">
             <img {{prefix}}src="{% static "v2/images/bitcointalk.png" %}" alt="Bitcoin">
@@ -58,7 +58,7 @@
         <div class="d-flex flex-wrap">
           <div class="sitenav sitenav__product">
             <h5>{% trans "Product" %}</h5>
-            <a href="javascript: return false;" onClick="gitcoinUpdates(1);" >{% trans "Latest Updates" %}</a>
+            <a href="javascript: return false;" onClick="gitcoinUpdates();" >{% trans "Latest Updates" %}</a>
             <a href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
             <a href="{% url "kudos_main" %}">{% trans "Kudos" %}</a>
             <a href="{% url "grants:grants" %}">{% trans "Grants" %}</a>
@@ -76,8 +76,8 @@
           <div class="sitenav">
             <h5>{% trans "Community" %}</h5>
             <a href="{% url "blog" %}">{% trans "Blog" %}</a>
-            <a class="slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
-              Slack ({{num_slack}})
+            <a class="slack{% if active == 'slack' %} selected{% endif %}" href="{% url "landing_chat" %}">
+              Chat 
             </a>
             <a href="{% url "activity" %}">{% trans "Activity Feed" %}</a>
             <a href="{% url "help" %}">{% trans "Help" %}</a>
@@ -92,6 +92,7 @@
       </div>
     </div>
   </div>
+  <span id=csrf_container>{% csrf_token %}</span>
   <div class="row">
     <div class="d-flex w-100 footer__consensys">
       <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" style="margin: 10px auto;" target="_blank" rel="noopener noreferrer">

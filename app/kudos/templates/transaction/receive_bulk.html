@@ -1,6 +1,6 @@
 {% extends 'transaction/base.html' %}
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -24,7 +24,7 @@
 <!-- Main -->
 <section id="main" class="box-transaction">
   <header class="text-center">
-  <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
+  <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {% endif %}>
     <h1>{% trans "Congrats!" %} 🎉</h1>
     <p>You've received a "{{ coupon.token.humanized_name }}" Kudos 
       {% if kudos_transfer.receive_txid != 'pending_celery' %}
@@ -43,7 +43,7 @@
         Tweet It</a>
       </p>
       <form action="{% url 'profile' %}">
-        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "View Profile" %} 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{%endif%} >
+        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "View Profile" %} 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{% endif %} >
       </form>
     <hr>
 
@@ -91,13 +91,13 @@
     </div>
 
   </header>
-  <div id="receove_eth" {% if kudos_transfer.receive_txid %} style="display:none;" {%endif%} >
+  <div id="receove_eth" {% if kudos_transfer.receive_txid %} style="display:none;" {% endif %} >
     <form method="POST">
       {% csrf_token %}
       <div class="form-group">
         <hr>
         <h3 class="text-center" style="margin: 0px auto;">👇 Redeem It Here 👇</h3>
-        {% trans "Logged in as" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">{% trans "Login" %}</a>) {%endif%}
+        {% trans "Logged in as" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">{% trans "Login" %}</a>) {% endif %}
         <input type="text" placeholder="@username" id="user" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" disabled="disabled" class='form-control'  required >
         {% if not request.user.is_authenticated %}
         <p style="color:red;">{% trans "You must be logged in to receive this kudos." %}</p>
@@ -106,12 +106,12 @@
 
       <div class="form-group">
         <label for="">{% trans "Forward it to a permanent address" %}:</label>
-        <input type="text" name="forwarding_address" id="forwarding_address" class="form-control" placeholder="0x0" {% if disable_inputs %}disabled=disabled{%endif%}>
+        <input type="text" name="forwarding_address" id="forwarding_address" class="form-control" placeholder="0x0" {% if disable_inputs %}disabled=disabled{% endif %}>
         <input type="hidden" name="network" id="network" value="">
       </div>
 
       <div class="form-check">
-        <input type="checkbox" name="save_addr" id="save_addr" value="1" class="form-check-input" {% if disable_inputs %}disabled=disabled{%endif%} >
+        <input type="checkbox" name="save_addr" id="save_addr" value="1" class="form-check-input" {% if disable_inputs %}disabled=disabled{% endif %} >
         <label for=save_addr>{% trans "Save this address as my direct payment address" %}</label>
       </div>
 
@@ -122,7 +122,7 @@
 
 
       <div class="text-center">
-        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "Redeem" %} Kudos 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{%endif%} >
+        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "Redeem" %} Kudos 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{% endif %} >
         <br>
         <br>
         <a href="{% url 'kudos_about' %}">{% trans 'What is Kudos? ' %}🤔</a>

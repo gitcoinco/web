@@ -164,7 +164,6 @@ generate:
     - marketing.management.commands.funder_stale_email++
     - marketing.management.commands.gdpr_reconsent_eu++
     - marketing.management.commands.gdpr_update_email++
-    - marketing.management.commands.ingest_slack_users++
     - marketing.management.commands.new_bounties_email++
     - marketing.management.commands.pending_start_work_actions++
     - marketing.management.commands.process_email_events++

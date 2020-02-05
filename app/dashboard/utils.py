@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define Dashboard related utilities and miscellaneous logic.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -30,6 +30,7 @@ from django.utils import timezone
 import ipfshttpclient
 import requests
 from app.utils import sync_profile
+from compliance.models import Country, Entity
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
 from eth_utils import to_checksum_address
@@ -773,6 +774,8 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
 
     return profile
 
+def is_valid_eth_address(eth_address):
+    return (bool(re.match(r"^0x[a-zA-Z0-9]{40}$", eth_address)) or eth_address == "0x0")
 
 def get_tx_status(txid, network, created_on):
     from django.utils import timezone
@@ -822,7 +825,33 @@ def get_tx_status(txid, network, created_on):
 
 
 def is_blocked(handle):
-    return BlockedUser.objects.filter(handle__iexact=handle, active=True).exists()
+    # check admin block list
+    is_on_blocked_list = BlockedUser.objects.filter(handle__icontains=handle, active=True).exists()
+    if is_on_blocked_list:
+        return True
+
+    # check banned country list
+    profiles = Profile.objects.filter(handle__iexact=handle)
+    if profiles.exists():
+        profile = profiles.first()
+        last_login = profile.actions.filter(action='Login').order_by('pk').last()
+        if last_login:
+            last_login_country = last_login.location_data.get('country_name')
+            if last_login_country:
+                is_on_banned_countries = Country.objects.filter(name=last_login_country)
+                if is_on_banned_countries:
+                    return True
+
+        # check banned entity list
+        if profile.user:
+            first_name = profile.user.first_name
+            last_name = profile.user.last_name
+            full_name = '{first_name} {last_name}'
+            is_on_banned_user_list = Entity.objects.filter(fullName__icontains=full_name)
+            if is_on_banned_user_list:
+                return True
+
+    return False
 
 
 def get_nonce(network, address):

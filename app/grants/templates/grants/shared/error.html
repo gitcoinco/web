@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -30,15 +30,6 @@
         color: #9B9B9B;
       }
 
-      .grant-title {
-        background-color: #F2F6F9;
-      }
-
-      .grant-title a {
-          text-decoration: none;
-          color: #0D0764;
-      }
-
       .obiwan {
         animation : wiggle 500ms ease-in-out;
         animation-iteration-count: 1;
@@ -66,19 +57,20 @@
 
     <div class="container my-5">
       <div class="row">
-        <div class="col-12 my-5 mx-auto col-md-6">
+        <div class="col-12 mt-5 mb-4 mx-auto col-md-6">
           <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
-          <h1 class="font-title-xl mt-4 mb-2">{% trans "This isn’t the page you’re looking for." %}</h1>
-          <p class="font-title text">Oops! {{ text }}</p>
-          <p class="font-subheader mt-4 mb-0 font-weight-semibold grant-title py-3">
-            <a href="{% url 'grants:details' grant.id grant.slug %}">
-              {{grant.title}}
-            </a>
-          </p>
+          <h1 class="font-title-xl mt-4 mb-2">{{ text }}</h1>
+          <p class="font-title text"> {{ subtext|safe }}</p>
         </div>
-        <div class="col-12 mt-3">
+        <div class="col-12 mt-0">
           <a class="button-lg btn-gc btn-gc-blue py-3 px-5" href="{% url 'grants:details' grant.id grant.slug %}">
-            {% trans "Back to Grant" %}
+            {% if button_txt %}
+              {{ button_txt }}
+              <i class="fas fa-chevron-right ml-2"></i>
+            {% else %}
+              <i class="fas fa-chevron-left mr-2"></i>
+              {% trans "Back to Grant" %}
+            {% endif %}
           </a>
         </div>
       </div>

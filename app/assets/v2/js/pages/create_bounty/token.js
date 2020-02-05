@@ -51,16 +51,16 @@ createBounty = data => {
     'github_url': data.issueURL,
     'bounty_owner_email': metadata.notificationEmail,
     'bounty_owner_github_username': metadata.githubUsername,
-    'bounty_owner_name': metadata.fullName, // REMOVE ?
+    'bounty_owner_name': metadata.fullName, // ETC-TODO REMOVE ?
     'bounty_reserved_for': metadata.reservedFor,
     'release_to_public': metadata.releaseAfter,
     'expires_date': expiresDate,
     'metadata': JSON.stringify(metadata),
-    'raw_data': {}, // REMOVE ?
+    'raw_data': {}, // ETC-TODO REMOVE ?
     'network': network,
     'issue_description': metadata.issueDescription,
     'funding_organisation': metadata.fundingOrganisation,
-    'balance': data.amount * 10 ** token.decimals, // REMOVE ?
+    'balance': data.amount * 10 ** token.decimals, // ETC-TODO REMOVE ?
     'project_type': data.project_type,
     'permission_type': data.permission_type,
     'bounty_categories': metadata.bounty_categories,
@@ -70,7 +70,7 @@ createBounty = data => {
     'fee_amount': fee_amount,
     'fee_tx_id': fee_tx_id,
     'coupon_code': coupon_code,
-    'unsigned_nda': '',       // TODO
+    'unsigned_nda': '', // ETC-TODO
     'privacy_preferences': JSON.stringify(privacy_preferences),
     'attached_job_description': hiring.jobDescription,
     'eventTag': metadata.eventTag,
@@ -79,16 +79,9 @@ createBounty = data => {
   };
 
   const url  = '/api/v1/bounty/create';
-  console.log(data);
-  console.log(JSON.stringify(data));
-  
-  console.log(params);
-  console.log(JSON.stringify(params))
-  
 
   $.post(url, params, function(response) {    
-    if (200 <= response.status <= 204) {
-      // redirect to bounty page
+    if (200 <= response.status && response.status <= 204) {
       console.log('success', response);
       window.location.href = response.bounty_url;
     } else if (response.status == 304) {
