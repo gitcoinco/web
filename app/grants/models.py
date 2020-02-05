@@ -35,8 +35,11 @@ from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from grants.utils import get_upload_filename
+from grants.utils import get_upload_filename, decode_function_input
 from web3 import Web3
+
+from grants.abi import splitter_abi
+from dashboard.abi import erc20_abi
 
 logger = logging.getLogger(__name__)
 
@@ -842,6 +845,13 @@ next_valid_timestamp: {next_valid_timestamp}
         sc = self.subscription_contribution.first()
         sc.split_tx_id = self.split_tx_id
         sc.split_tx_confirmed = self.split_tx_confirmed
+
+        valid, reason = sc.verify_transactions()
+
+        if not valid:
+            logger.info(f'Marking contribution {sc.pk} as failed, reason: {reason}.')
+            sc.success = False
+
         sc.save()
 
     def successful_contribution(self, tx_id):
@@ -1062,6 +1072,61 @@ class Contribution(SuperModel):
         if self.split_tx_id and split_tx_status != 'pending':
             self.success = split_tx_status == 'success'
             self.split_tx_confirmed = True
+
+    def verify_transactions(self):
+        from dashboard.utils import get_web3
+
+        def same_address(a, b):
+            return a.lower() == b.lower()
+
+        web3 = get_web3(self.subscription.network)
+
+        approve_contract = web3.eth.contract(address=None, abi=erc20_abi)
+        splitter_contract = web3.eth.contract(address=settings.SPLITTER_CONTRACT_ADDRESS, abi=splitter_abi)
+
+        try:
+            approve_tx = web3.eth.getTransaction(self.tx_id)
+            splitter_tx = web3.eth.getTransaction(self.split_tx_id)
+        except:
+            return False, 'error getting transactions'
+
+        if approve_tx is None or splitter_tx is None:
+            return False, 'transactions not found'
+
+        try:
+            approve_call = decode_function_input(approve_contract, approve_tx.input)
+            split_call = decode_function_input(splitter_contract, splitter_tx.input)
+        except:
+            return False, 'cannot decode contract calls'
+
+        if not same_address(approve_tx['from'], splitter_tx['from']):
+            return False, 'approve and split transactions sent from different addresses'
+
+        if not same_address(approve_tx['to'], self.subscription.token_address):
+            return False, 'incorrect token approved'
+
+        if not same_address(splitter_tx['to'], settings.SPLITTER_CONTRACT_ADDRESS):
+            return False, 'incorrect splitter used'
+
+        if not same_address(approve_call[1]['_spender'], splitter_tx['to']):
+            return False, 'approval is not given to splitter'
+
+        if not same_address(split_call[1]['tokenAddress'], approve_tx['to']):
+            return False, 'splitter uses incorrect token'
+
+        if not same_address(split_call[1]['toFirst'], self.subscription.grant.admin_address):
+            return False, 'tokens not sent to grant admin'
+
+        if not same_address(split_call[1]['toSecond'], settings.GITCOIN_DONATION_ADDRESS):
+            return False, 'tokens not sent to gitcoin'
+
+        # amount sent can be less than amount approved by this value (to account for impreciseness)
+        DELTA = 0
+
+        if split_call[1]['valueFirst'] + split_call[1]['valueSecond'] + DELTA < approve_call[1]['_value']:
+            return False, 'amount sent is incorrect'
+
+        return True, ''
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
 def psave_contrib(sender, instance, **kwargs):

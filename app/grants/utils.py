@@ -81,3 +81,27 @@ def is_grant_team_member(grant, profile):
                 is_team_member = True
                 break
     return is_team_member
+
+
+# TODO: after web3.py is upgraded, use Contract.decode_function_input instead
+def decode_function_input(contract, data):
+    from hexbytes import HexBytes
+
+    from eth_abi import decode_abi
+
+    from web3.utils.abi import get_abi_input_names, get_abi_input_types, map_abi_data
+    from web3.utils.normalizers import BASE_RETURN_NORMALIZERS
+
+    data = HexBytes(data)
+
+    selector, params = data[:4], data[4:]
+
+    func = contract.get_function_by_selector(selector)
+
+    names = get_abi_input_names(func.abi)
+    types = get_abi_input_types(func.abi)
+
+    decoded = decode_abi(types, params)
+    normalized = map_abi_data(BASE_RETURN_NORMALIZERS, types, decoded)
+
+    return func, dict(zip(names, normalized))

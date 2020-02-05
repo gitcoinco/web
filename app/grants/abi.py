@@ -593,3 +593,28 @@ abi_v0 = [{
     "stateMutability": "nonpayable",
     "type": "function"
 }]
+
+splitter_abi = [{
+    "constant": False,
+    "inputs": [{
+        "name": "toFirst",
+        "type": "address"
+    }, {
+        "name": "toSecond",
+        "type": "address"
+    }, {
+        "name": "valueFirst",
+        "type": "uint256"
+    }, {
+        "name": "valueSecond",
+        "type": "uint256"
+    }, {
+        "name": "tokenAddress",
+        "type": "address"
+    }],
+    "name": "splitTransfer",
+    "outputs": [],
+    "payable": False,
+    "stateMutability": "nonpayable",
+    "type": "function",
+}]
