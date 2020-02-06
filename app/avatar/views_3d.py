@@ -95,7 +95,7 @@ def get_avatar_attrs(theme, key):
                 'accessories': '100 50 100 100',
             },
             'skin_tones': [
-                'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26',
+                'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26',
                 '392D16'
             ],
             'hair_tones': [
@@ -108,7 +108,7 @@ def get_avatar_attrs(theme, key):
     return avatar_attrs.get(theme, {}).get(key, {})
 
 
-def get_avatar_tone_map(tone='skin', skinTone=''):
+def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
     tones = {
         'D68876': 0,
         'BC8269': 0,
@@ -119,6 +119,8 @@ def get_avatar_tone_map(tone='skin', skinTone=''):
         'D7723B': 0,  #base
     }
     base_3d_tone = 'D7723B'
+    if theme == 'female':
+        base_3d_tone = 'FFCAA6'
     if tone == 'blonde_hair':
         tones = {'F495A8': 0, 'C6526D': 0, 'F4C495': 0, }
         base_3d_tone = 'CEA578'
@@ -215,7 +217,7 @@ def avatar3d(request):
             for _type in tone_maps:
                 base_tone = skinTone if 'hair' not in _type else hairTone
                 if base_tone:
-                    for _from, to in get_avatar_tone_map(_type, base_tone).items():
+                    for _from, to in get_avatar_tone_map(_type, base_tone, theme).items():
                         output = output.replace(_from, to)
             if request.method == 'POST':
                 return save_custom_avatar(request, output)

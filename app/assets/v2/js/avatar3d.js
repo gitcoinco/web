@@ -25,14 +25,19 @@ $(document).ready(function() {
       theme = '3d';
     }
     url += '&theme=' + theme;
-    console.log(theme);
     return url;
   };
 
   $('.tdselection').click(function(e) {
     e.preventDefault();
+    var sel = $(this).hasClass('selected');
+
     $(this).parents('.category').find('.selected').removeClass('selected');
-    $(this).addClass('selected');
+    if (sel) {
+      $(this).removeClass('selected');
+    } else {
+      $(this).addClass('selected');
+    }
     document.td_ids = [];
     $('.tdselection.selected').each(function() {
       document.td_ids.push($(this).data('id'));
