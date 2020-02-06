@@ -1,6 +1,6 @@
 site_name: "Gitcoin Developer Documentation"
 repo_name: 'gitcoinco/web'
-repo_url: 'https://github.com/gitcoinco/web'
+edit_uri: ''
 
 # This tells pydocmd which pages to generate from which Python modules,
 # functions and classes. At the first level is the page name, below that
@@ -164,7 +164,6 @@ generate:
     - marketing.management.commands.funder_stale_email++
     - marketing.management.commands.gdpr_reconsent_eu++
     - marketing.management.commands.gdpr_update_email++
-    - marketing.management.commands.ingest_slack_users++
     - marketing.management.commands.new_bounties_email++
     - marketing.management.commands.pending_start_work_actions++
     - marketing.management.commands.process_email_events++

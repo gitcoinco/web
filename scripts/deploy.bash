@@ -1,7 +1,7 @@
 #!/bin/bash
 
 : <<'END'
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -59,6 +59,8 @@ if [ "$UPDATE_CRONTAB" ] && [ "$JOBS_NODE" ]; then
     crontab scripts/crontab
 fi
 
+mkdir -p /home/ubuntu/gitcoin/coin/app/static/wallpapers
+
 cd app || echo "Cannot find app directory!"
 echo "- collect static"
 if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then
@@ -76,6 +78,7 @@ if [ "$CREATE_CACHE_TABLE" ] && [ "$JOBS_NODE" ]; then
     echo "- creating cache table"
     python3 manage.py createcachetable
 fi
+
 
 # let gunicorn know its ok to restart
 if ! [ "$JOBS_NODE" ]; then

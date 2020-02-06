@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define view for the inbox app.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -18,34 +18,48 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-
 from django.conf import settings
 from django.template.response import TemplateResponse
-from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.clickjacking import xframe_options_exempt
 
-import requests
+from marketing.models import Stat
+
+
+def chat(request):
+    """Render chat landing page response."""
+
+    try:
+        users_online_count = Stat.objects.get(key='chat_active_users')
+        users_total_count = Stat.objects.get(key='chat_total_users')
+
+    except Exception as e:
+        users_online_count = 'N/A'
+        users_total_count = 'N/A'
+    context = {
+        'users_online': users_online_count,
+        'users_count': users_total_count,
+        'title': "Chat",
+        'cards_desc': f"Gitcoin chat has {users_online_count} users online now!"
+    }
+
+    return TemplateResponse(request, 'chat.html', context)
 
 
 def embed(request):
     """Handle the chat embed view."""
 
-    is_staff = request.user.is_staff if request.user.is_authenticated else False
-
-    if not is_staff:
-        context = dict(active='error', code=404, title="Error {}".format(404))
-        return TemplateResponse(request, 'error.html', context, status=404)
-
+    chat_url = settings.CHAT_URL
+    if settings.CHAT_PORT not in [80, 443]:
+        chat_url = f'http://{settings.CHAT_URL}:{settings.CHAT_PORT}'
+    else:
+        chat_url = f'https://{chat_url}'
     context = {
         'is_outside': True,
         'active': 'chat',
         'title': 'Chat',
         'card_title': _('Community Chat'),
         'card_desc': _('Come chat with the community'),
-        'avatar_url': static('v2/images/helmet.png'),
-        'is_chat_user': False,
-        'chat_url': settings.CHAT_URL
+        'chat_url': chat_url
     }
 
     return TemplateResponse(request, 'embed.html', context)

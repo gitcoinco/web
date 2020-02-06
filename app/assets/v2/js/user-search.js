@@ -92,8 +92,20 @@ function userSearch(elem, showAddress, theme, initialData, allowClear, suppress_
       return selected;
     }
 
-    function formatUserSelectionWithAddress(user) {
+    function formatUserSelectionWithAddress(base_user) {
       let selected;
+      let existent_properties = {};
+
+      if (base_user.element) {
+        const attr = base_user.element.attributes;
+        const attr_length = attr.length;
+
+        for (let i = 0; i < attr_length; i++) {
+          existent_properties[attr[i].nodeName] = attr[i].nodeValue;
+        }
+      }
+
+      let user = $.extend({}, existent_properties, base_user);
 
       if (user.id) {
         selected = `

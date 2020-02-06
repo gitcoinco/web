@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 MARKETING_EMAILS = [
     ('welcome_mail', _('Welcome Emails'), _('First 3 days after you sign up')),
     ('roundup', _('Roundup Emails'), _('Weekly')),
-    ('new_bounty_notifications', _('New Bounty Notification Emails'), _('(up to) Daily')),
+    ('new_bounty_notifications', _('Daily Bounty Action Emails'), _('(up to) Daily')),
     ('important_product_updates', _('Product Update Emails'), _('Quarterly')),
 	('general', _('General Email Updates'), _('as it comes')),
 	('quarterly', _('Quarterly Email Updates'), _('Quarterly')),
@@ -61,10 +61,19 @@ TRANSACTIONAL_EMAILS = [
         'bounty_expiration', _('Bounty Expiration Warning Emails'),
         _('Only after you posted a bounty which is going to expire')
     ),
-    ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured'))
+    ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured')),
+    ('comment', _('Comment Emails'), _('Only when you are sent a comment')),
+    ('wall_post', _('Wall Post Emails'), _('Only when someone writes on your wall')),
+    ('grant_updates', _('Grant Update Emails'), _('Updates from Grant Owners about grants you\'ve funded.')),
 ]
 
-ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
+
+NOTIFICATION_EMAILS = [
+    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat')),
+    ('mention', _('Mentions'), _('Only when other users mention you on posts')),
+]
+
+ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
 
 
 def premailer_transform(html):
@@ -208,9 +217,8 @@ def thank_you_for_supporting(request):
 
 @staff_member_required
 def new_supporter(request):
-    grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_new_supporter_email(grant, subscription)
+    subscription = Subscription.objects.last()
+    response_html, __, __ = render_new_supporter_email(subscription.grant, subscription)
     return HttpResponse(response_html)
 
 
@@ -385,7 +393,7 @@ thanks for being a member of the community.
 
 alisa / frank (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         elif bounty.status == 'cancelled':
@@ -406,7 +414,7 @@ thanks again for being a member of the community.
 
 alisa / frank (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         else:
@@ -418,8 +426,8 @@ PS - we've got some new gitcoin schwag on order. send me your mailing address an
         'txt': txt,
 		'email_type': 'bounty_feedback'
     }
-    response_html = premailer_transform(render_to_string("emails/txt.html", params))
-    response_txt = txt
+    response_txt = premailer_transform(render_to_string("emails/txt.html", params))
+    response_html = f"<pre>{response_txt}</pre>"
 
     return response_html, response_txt
 
@@ -443,7 +451,7 @@ def render_admin_contact_funder(bounty, text, from_user):
     return response_html, response_txt
 
 
-def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+def render_funder_stale(github_username, days=60, time_as_str='a couple months'):
     """Render the stale funder email template.
 
     Args:
@@ -459,14 +467,15 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
     response_txt = f"""
 hi {github_username},
 
-alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}.
+in the spirit of making Gitcoin better + checking in:
 
-- has anything been slipping on your issue board which might be bounty worthy?
+- have any issues which might be bounty worthy or projects you're hoping to build?
 - do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
+- are you interested in joining one of <a href="https://gitcoin.co/hackathon-list/">our upcoming hackathons?</a> it's possible
+we could do so at a discount, as you're a current funder on the platform
 
-our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days.
-
-appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
+appreciate you being a part of the community + let us know if you'd like some Gitcoin schwag, we can send a link your way to order some :)
 
 ~ alisa / frank (gitcoin product team)
 
@@ -479,6 +488,7 @@ appreciate you being a part of the community and let me know if you'd like some 
 
 
 def render_new_bounty(to_email, bounties, old_bounties, offset=3):
+    from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
@@ -487,7 +497,9 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'subscriber': sub,
         'keywords': ",".join(sub.keywords) if sub and sub.keywords else '',
         'email_style': email_style,
-		'email_type': 'new_bounty_notifications'
+		'email_type': 'new_bounty_notifications',
+        'base_url': settings.BASE_URL,
+        'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -675,12 +687,65 @@ def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
 def render_new_bounty_rejection(to_email, bounty):
     params = {
         'bounty': bounty,
-		'email_type': 'bounty',
+        'email_type': 'bounty',
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_rejection.html", params))
     response_txt = render_to_string("emails/new_bounty_rejection.txt", params)
+
+    return response_html, response_txt
+
+
+def render_comment(to_email, comment):
+    params = {
+        'comment': comment,
+        'email_type': 'comment',
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/comment.html", params))
+    response_txt = render_to_string("emails/comment.txt", params)
+
+    return response_html, response_txt
+
+
+def render_mention(to_email, post):
+    params = {
+        'post': post,
+        'email_type': 'mention',
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/mention.html", params))
+    response_txt = render_to_string("emails/mention.txt", params)
+
+    return response_html, response_txt
+
+
+def render_grant_update(to_email, activity):
+    params = {
+        'activity': activity,
+        'email_type': 'grant_updates',
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/grant_update.html", params))
+    response_txt = render_to_string("emails/grant_update.txt", params)
+
+    return response_html, response_txt
+
+
+def render_wallpost(to_email, activity):
+    params = {
+        'activity': activity,
+        'email_type': 'wall_post',
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'what': activity.what,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/wall_post.html", params))
+    response_txt = render_to_string("emails/wall_post.txt", params)
 
     return response_html, response_txt
 
@@ -927,8 +992,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Growing Your Global Community"
-    new_kudos_pks = [2571, 7135, 2224]
+    subject = "We Need YOU to Sustain Web3!"
+    new_kudos_pks = [8179, 7511, 7503]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -938,90 +1003,81 @@ def render_new_bounty_roundup(to_email):
         email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
-<h3>Happy Kudos Friday!</h3>
+<h3>New Kudos This Month</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
     '''
+
     intro = f'''
 <p>
 Hey Gitcoiners,
 </p>
 <p>
-    At Gitcoin, we're interested in making it possible for everyone to grow a global community. We welcome each of you, wherever you are, to  <a href="https://hackathons.gitcoin.co/global-communities">join us for the Global Communities hack.</a>
-    Want to hack? There will be prizes. Want to learn? We'll have unique Quests on topics of interest in Web 3.
-    Want to meet other smart, great people? That's the easy part, and the fun part. <a href="https://hackathons.gitcoin.co/global-communities">Register and come together :)</a>
+The <a href="https://hackathons.gitcoin.co/sustain-web3">Sustain Web3</a> virtual hackathon is officially live with $17k in prizes up for grabs! You can now view all the bounties on the <a href="https://gitcoin.co/hackathon/sustain-web3">prize explorer</a>. The two week hackathon will run until February 12th at 23:59 UTC, right before <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a>. Sponsors include <a href="https://foam.space/">FOAM</a>, <a href="https://xpring.io/">Xpring</a>, <a href="https://www.dfuse.io/">dfuse</a>, <a href="https://www.bancor.network/">Bancor</a>, <a href="https://labs.consensys.net/">ConsenSys Labs</a>, and more.
 </p>
 <p>
-    Have something you want to build during the event, related to Ethereum? Write it up in a Github ticket (on <a href="https://github.com/gitcoinco/skunkworks/issues">our repo</a>, or
-    the related repo on Github). Then make <a href="https://gitcoin.co/requests">a Gitcoin Request.</a> Takes 5 minutes - you can help move Ethereum
-    forward and share with the community along the way!
+Gitcoin <a href="https://gitcoin.co/grants/">Grants Round 4</a> is closed and funds will be distributed shortly. Check out our newest <a href="https://gitcoin.co/blog/gitcoin-grants-round-4/">blog post</a> for the full results, and we also recommend reading <a href="https://vitalik.ca/general/2020/01/28/round4.html">Vitalik’s review</a> as well. Thank you to everyone who helped make this round the biggest success yet!
 </p>
 <p>
-    Not building, but want to learn about new topics in Web 3? Check out <a href="https://gitcoin.co/quests">Gitcoin Quests.</a>
-    Let us know if it helps. We want to make a body of knowledge for the Web 3 curious, leading towards ways to build it yourself. Come play :)
+ Join us this weekend (Feb 1st & 2nd) for Trust-Less 2020: A Proof-Of-Stake (PoS) Validator summit. Attendees will learn about Ethereum 2.0 Validator Economics with ConsenSys Codefi, get updates on the beacon chain with Prysmatic Labs, learn how to spin up their own ETH 2.0 Validator with RocketPool, and more. The conf is 100% free & virtual so you can tune in from anywhere in the world to learn. Claim your spot <a href="https://trust-less-2020.dystopialabs.com/">here</a>.
 </p>
-<p>
-    <img style="max-width: 90%" src="https://gitcoin-static.s3-us-west-2.amazonaws.com/gitcointurkey.png">
-</p>
+
 {kudos_friday}
 <h3>What else is new?</h3>
     <ul>
         <li>
-        No Gitcoin Livestream this week, but we'll be back next week for Global Communities. Join us <a href="https://gitcoin.co/livestream"> at 2PM ET this Friday!</a>
-        </li>
-        <li>
-        We're still updating our Youtube every day with past recordings of our livestreams. Check them out at <a href="https://youtube.com/gitcoinmedia"> our YouTube channel. </a>
+            Today's Livestream will feature Sustain Web3 hackathon sponsors to discuss their companies and prizes. <a href="https://gitcoin.co/livestream">Join us</a> 2pm ET to hear from FOAM, Xpring, ConsenSys Labs, and dfuse.
         </li>
     </ul>
 </p>
 <p>
-Back to shipping,
+Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'brentallsop',
+        'who': 'pengiundev',
         'who_link': True,
-        'what': 'Notes For Meeting 27',
-        'link': 'https://gitcoin.co/issue/ethereum/eth2.0-pm/97/3723',
+        'what': 'Adjusted "Hatching Period" In Bonding Curve Smart Contract',
+        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/10/3962',
         'link_copy': 'View more',
     }, {
-        'who': 'mul53',
+        'who': 'adrianhacker-pdx',
         'who_link': True,
-        'what': 'Key was being generated in wrong manner... now, its fixed!',
-        'link': 'https://gitcoin.co/issue/cybercongress/cyb/249/3733',
+        'what': 'Created an Explainer Page For Account Abstraction with EthHub',
+        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/422/3908',
         'link_copy': 'View more',
     }, {
-        'who': 'johguse',
+        'who': 'jmsofarelli',
         'who_link': True,
-        'what': 'Mined new addresses for CREATE2. Great work!',
-        'link': 'https://gitcoin.co/issue/status-im/status-react/9491/3718',
+        'what': 'Made a Dapp With a Frontend Hosted on IPFS With Infuras API.',
+        'link': 'https://gitcoin.co/issue/INFURA/hackathons/2/3868',
         'link_copy': 'View more',
     }, ]
 
     sponsor = {
-        'name': 'MythX',
-        'title': 'Keep Ethereum Secure',
-        'image_url': '',
-        'link': 'http://bit.ly/mythx-gitcoin-weekly',
-        'cta': 'Register Now',
-        'body': [
-            'Built by a team of security researchers and experts, MythX is the premier security analysis service for Ethereum smart contracts.',
-            'Scan for security vulnerabilities right away from tools such as Truffle and VS Code. Pro options available for complete peace of mind.'
-        ]
-    }
+    'name': 'CodeFund',
+    'title': 'Does your project need 🦄 developers?',
+    'image_url': '',
+    'link': 'http://bit.ly/codefund-gitcoin-weekly',
+    'cta': 'Learn More',
+    'body': [
+       'CodeFund is a privacy-focused ethical advertising network (by Gitcoin) that funds open source projects.',
+       'We specialize in helping companies connect with talented developers and potential customers on developer-centric sites that typically do not allow ads.'
+    ]
+}
 
     bounties_spec = [{
-        'url': 'https://github.com/notadamking/tensortrade/issues/119',
-        'primer': 'Feature Request: GANExchange Implementation Of SimulatedExchange',
+        'url': 'https://github.com/ryan-foamspace/Sustain-Web3-hackathon/issues/3',
+        'primer': 'Create a Mobile-Friendly Map Viewer with FOAM',
     }, {
-        'url': 'https://github.com/invisible-college/democracy/issues/31',
-        'primer': 'Design A Logo For Typed Transform Pipelines',
+        'url': 'https://github.com/ConsenSys/Relays/issues/2',
+        'primer': 'Growth Hacking For Established Projects - Drive Viral Growth to Your Startup',
     }, {
-        'url': 'https://github.com/crytic/evm_cfg_builder/issues/23',
-        'primer': 'Create Gidhra Plugin for the EVM',
-}, ]
+        'url': 'https://github.com/gitcoinco/web/issues/5914',
+        'primer': 'Allow Gitcoin.Co/Tips To Support Sablier Style Streams',
+    }]
 
 
     num_leadboard_items = 5
@@ -1200,6 +1256,34 @@ def new_work_submission(request):
 def new_bounty_rejection(request):
     from dashboard.models import Bounty
     response_html, _ = render_new_bounty_rejection(settings.CONTACT_EMAIL, Bounty.objects.last())
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def comment(request):
+    from townsquare.models import Comment
+    response_html, _ = render_comment(settings.CONTACT_EMAIL, Comment.objects.last())
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def mention(request):
+    from townsquare.models import Activity
+    response_html, _ = render_mention(settings.CONTACT_EMAIL, Activity.objects.last())
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def grant_update(request):
+    from dashboard.models import Activity
+    response_html, _ = render_grant_update(settings.CONTACT_EMAIL, Activity.objects.filter(activity_type='wall_post', grant__isnull=False).last())
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def wallpost(request):
+    from dashboard.models import Activity
+    response_html, _ = render_wallpost(settings.CONTACT_EMAIL, Activity.objects.filter(activity_type='wall_post').last())
     return HttpResponse(response_html)
 
 

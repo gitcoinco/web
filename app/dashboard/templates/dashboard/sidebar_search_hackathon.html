@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2018 Gitcoin Core
+    Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -33,6 +33,14 @@
   </p>
   <form>
     <div class="col">
+      {% if hackathon.logo_svg %}
+        <img class="d-none d-md-block mx-auto mb-1 mw-100" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
+      {% elif hackathon.logo %}
+        <img class="d-none d-md-block mx-auto mb-1 mw-100" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
+      {% endif %}
+
+    </div>
+    <div class="col">
       <div class="col-12 subheading">
         {% trans "Sponsors" %}
       </div>
@@ -43,8 +51,6 @@
           <input name="org" id="any_org" type="radio" value="any" checked="">
           <label class="filter-label" for="any_org">All</label>
         </div>
-
-
         {% for org in orgs %}
           <div class="form__radio option {{org.org_name}}">
             <input name="org" id="{{org.org_name}}" type="radio" value="{{org.org_name}}" val-ui="Turing-Chain">

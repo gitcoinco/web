@@ -21,7 +21,7 @@
     {% if is_staff %}
     <div class="alpha-warning font-caption mb-0">
       <span class="font-weight-bold">Staff only</span>
-      <a style="color:white;" href="{{kudos.admin_url}}">{% trans "kudos Admin" %}</a>
+      <a style="color:white;" href="{{kudos.admin_url}}">{% trans "Kudos Admin" %}</a>
     </div>
     {% endif %}
 
@@ -29,7 +29,7 @@
       <a href="{% url 'kudos_marketplace' %}">&lt; {% trans "Kudos Marketplace" %}</a>
     </div>
 
-  	<section class="container my-5 pb-5">
+  	<section class="container my-2 pb-2">
       <div class="row justify-content-around">
         <div class="col-md-6 col-lg-5 mb-5">
           <div class="kudos_msg">
@@ -50,7 +50,7 @@
           {% if kudos.quests_reward.count %}
             Reward for beating
             {% for quest in reward_for %}
-              <a href="{{quest.url}}">{{quest.title}} Quest</a> 
+              <a href="{{quest.url}}">{{quest.title}} Quest</a>
             {% endfor %}
           {% endif %}
           <div class="my-4 font-bigger-1 font-weight-300">
@@ -66,16 +66,42 @@
               {{ kudos.rarity }}
             </span>
             ({{ kudos.num_clones_in_wild_counting_indirect_send }} {% trans "out of" %} {{ kudos.num_gen0_clones_allowed }})
-            <i data-toggle="tooltip" title="" data-html="true" data-original-title="<span class='title-tooltip'>Kudos Rarity</span>
-              <table class='text-left'>
-                <tr><td>{% trans 'One of a Kind' %}:</td><td>1 clone</td></tr>
-                <tr><td>{% trans 'Legendary' %}:</td><td>2 - 5 clones</td></tr>
-                <tr><td>{% trans 'Ultra' %}:</td><td>6 - 15 clones</td></tr>
-                <tr><td>{% trans 'Very Rare' %}:</td><td>16 - 35 clones</td></tr>
-                <tr><td>{% trans 'Rare' %}:</td><td>36 - 100 clones</td></tr>
-                <tr><td>{% trans 'Special' %}:</td><td>101 - 200 clones</td></tr>
-                <tr><td>{% trans 'Common' %}:</td><td>201+</td></tr>
-              </table>" data-template='<div class="tooltip-kudos" role="tooltip"><div class="tooltip-inner"></div></div>' class="fas fa-question-circle text-color_blue">
+            <i data-toggle="tooltip" title="" data-html="true" data-original-title="
+              <span class='title-tooltip'>Kudos Rarity</span>
+              <div class='d-table w-100 text-left'>
+                <div class='d-table-row'>
+                  <span class='d-table-cell'>{% trans 'One of a Kind' %}:</span>
+                  <span class='d-table-cell'>1 clone</span>
+                </div>
+                <div class='d-table-row'>
+                  <span class='d-table-cell'>{% trans 'Legendary' %}:</span>
+                  <span class='d-table-cell'>2 - 5 clones</span>
+                </div>
+                <div class='d-table-row'>
+                  <span class='d-table-cell'>{% trans 'Ultra' %}:</span>
+                  <span class='d-table-cell'>6 - 15 clones</span>
+                </div>
+                <div class='d-table-row'>
+                  <span class='d-table-cell'>{% trans 'Very Rare' %}:</span>
+                  <span class='d-table-cell'>16 - 35 clones</span>
+                </div>
+                <div class='d-table-row'>
+                  <span class='d-table-cell'>{% trans 'Rare' %}:</span>
+                  <span class='d-table-cell'>36 - 100 clones</span>
+                </div>
+                <div class='d-table-row'>
+                  <span class='d-table-cell'>{% trans 'Special' %}:</span>
+                  <span class='d-table-cell'>101 - 200 clones</span>
+                </div>
+                <div class='d-table-row'>
+                  <span class='d-table-cell'>{% trans 'Common' %}:</span>
+                  <span class='d-table-cell'>201+</span>
+                </div>
+              </div>"
+              data-template='
+              <div class="tooltip-kudos" role="tooltip">
+                <div class="tooltip-inner"></div>
+              </div>' class="fas fa-question-circle text-color_blue">
             </i>
           </p>
 
@@ -90,7 +116,7 @@
                 <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
               {% if kudos.quests_reward %}
                 {% for quest in reward_for %}
-                  <a class="btn btn-gc-blue" href="{{quest.url}}">Play Quest + Win</a> 
+                  <a class="btn btn-gc-blue m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
                 {% endfor %}
               {% endif %}
               {% else %}
@@ -137,8 +163,12 @@
         </div>
       </div>
     </section>
-    <section class="container my-5 py-5">
-      {% include 'shared/disqus.html' with page_url=request.build_absolute_uri  %}
+    <section class="container my-1 py-1">
+      {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on wall" what="kudos" whatid=kudos.pk %}
+      <div id="activities" class="activity_stream container">
+      {% include 'shared/activity_container.html' %}
+      </div>
+
     </section>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
@@ -148,10 +178,10 @@
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/amounts.js" %}"></script>
     <script src="{% static "v2/js/eth-price.js" %}"></script>
-    <script>
-      $('[data-toggle="tooltip"]').bootstrapTooltip();
-    </script>
+    {% include 'shared/activity_scripts.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    <script src="{% static "v2/js/status.js" %}"></script>
     <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
-    
+
   </body>
 </html>
