@@ -31,7 +31,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.utils import get_web3
+from dashboard.utils import get_web3, is_valid_eth_address
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_github_primary_email
@@ -135,19 +135,22 @@ def receive_tip_v3(request, key, txid, network):
         messages.info(request, f'This tx {tip.txid}, failed.  Please contact the sender and ask them to send the tx again.')
     elif not_mined_yet:
         messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
-    elif request.GET.get('receive_txid') and is_redeemable:
-        params = request.GET
+    elif request.POST.get('receive_txid') and is_redeemable:
+        params = request.POST
 
         # db mutations
         try:
+            profile = get_profile(tip.username)
+            eth_address = params['forwarding_address']
+            if not is_valid_eth_address(eth_address):
+                eth_address = profile.preferred_payout_address
             if params['save_addr']:
-                profile = get_profile(tip.username)
                 if profile:
-                    profile.preferred_payout_address = params['forwarding_address']
+                    profile.preferred_payout_address = eth_address
                     profile.save()
             tip.receive_txid = params['receive_txid']
             tip.receive_tx_status = 'pending'
-            tip.receive_address = params['forwarding_address']
+            tip.receive_address = eth_address
             tip.received_on = timezone.now()
             num_redemptions = tip.metadata.get("num_redemptions", 0)
             # note to future self: to create a tip like this in the future set
@@ -155,7 +158,7 @@ def receive_tip_v3(request, key, txid, network):
             # tip.metadata.max_redemptions
             # tip.metadata.override_send_amount
             # tip.amount to the amount you want to send 
-            # ,"override_send_amount":1,"max_redemptions":10
+            # ,"override_send_amount":1,"max_redemptions":29
 
             num_redemptions += 1
             tip.metadata["num_redemptions"] = num_redemptions

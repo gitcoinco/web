@@ -44,7 +44,6 @@
 .profile-card {
   background: white;
   border-radius: 5px;
-  z-index: 1;
   position: relative;
   padding: 2rem;
 }
@@ -152,6 +151,7 @@
 
 .profile_details .nav-tabs .nav-link {
   padding: 0.5rem;
+  padding-bottom: 0.2rem;
 }
 
 .is_editable{
@@ -284,6 +284,23 @@
 
 .profile-header__stats--contributor .card-header {
   background-color: transparent;
+}
+
+.profile-header__sync {
+  margin-top: -140px;
+  position: relative;
+}
+
+.profile-header__sync.inactive {
+  display: none;
+}
+
+.profile-header__sync img {
+  width: 32px;
+}
+
+.profile-header__sync img.loading {
+  display: none;
 }
 
 .card-header::after {

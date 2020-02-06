@@ -774,6 +774,8 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
 
     return profile
 
+def is_valid_eth_address(eth_address):
+    return (bool(re.match(r"^0x[a-zA-Z0-9]{40}$", eth_address)) or eth_address == "0x0")
 
 def get_tx_status(txid, network, created_on):
     from django.utils import timezone
