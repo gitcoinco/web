@@ -1763,6 +1763,9 @@ def postsave_tip(sender, instance, created, **kwargs):
                 "value_usd":instance.value_in_usdt_then,
                 "url":'https://gitcoin.co/tips',
                 "network":instance.network,
+                "txid":instance.txid,
+                "token_name":instance.tokenName,
+                "token_value":instance.value_true,
             }
             )
     if created:
@@ -1855,6 +1858,9 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "value_usd":instance.bounty.value_in_usdt_then,
                 "url":instance.bounty.url,
                 "network":instance.bounty.network,
+                "txid":'',
+                "token_name":instance.bounty.token_name,
+                "token_value":instance.bounty.value_in_token,
             }
             )
 
@@ -4545,6 +4551,10 @@ class Earning(SuperModel):
     source = GenericForeignKey('source_type', 'source_id')
     network = models.CharField(max_length=50, default='')
     url = models.CharField(max_length=500, default='')
+    txid = models.CharField(max_length=255, default='')
+    token_name = models.CharField(max_length=255, default='')
+    token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
+    network = models.CharField(max_length=50, default='')
 
     def __str__(self):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"

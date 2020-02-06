@@ -574,10 +574,10 @@ def account_settings(request):
             response['Content-Disposition'] = f'attachment; filename="{name}.csv"'
 
             writer = csv.writer(response)
-            writer.writerow(['id', 'date', 'From', 'To', 'Type', 'Value In USD', 'url'])
+            writer.writerow(['id', 'date', 'From', 'To', 'Type', 'Value In USD', 'url', 'txid', 'token_name', 'token_value'])
             profile = request.user.profile
             earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
-            earnings = earnings.all().order_by('-created_on')
+            earnings = earnings.filter(network='mainnet').order_by('-created_on')
             for earning in earnings:
                 writer.writerow([earning.pk,
                     earning.created_on.strftime("%Y-%m-%dT%H:00:00"), 
@@ -585,7 +585,11 @@ def account_settings(request):
                     earning.to_profile.handle if earning.to_profile else '*',
                     earning.source_type.model_class(),
                     earning.value_usd,
-                    earning.url])
+                    earning.txid,
+                    earning.token_name,
+                    earning.token_value,
+                    earning.url,
+                    ])
 
             return response
         elif request.POST.get('disconnect', False):
