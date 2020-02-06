@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
-from marketing.mails import comment_email, mention_email, new_action_request
+from marketing.mails import comment_email, new_action_request
 from ratelimit.decorators import ratelimit
 
 from .models import Announcement, Comment, Flag, Like, Offer, OfferAction
@@ -290,14 +290,8 @@ def api(request, activity_id):
     # comment request
     elif request.POST.get('method') == 'comment':
         comment = request.POST.get('comment')
+        title = request.POST.get('comment')
         comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
-
-        username_pattern = re.compile(r'@(\S+)')
-        mentioned_usernames = re.findall(username_pattern, title)
-        mentioned_emails = set(Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True))
-        # Don't send emails again to users who already received a comment email
-        deduped_emails = mentioned_emails.difference(to_emails)
-        mention_email(comment, deduped_emails)
 
     return JsonResponse(response)
 

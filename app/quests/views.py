@@ -96,7 +96,7 @@ def editquest(request, pk=None):
         answers = package.getlist('answer[]',[])
         answer_correct = package.getlist('answer_correct[]',[])
         seconds_to_respond = package.getlist('seconds_to_respond[]',[])
-        points = abs(int(package.get('points')))
+        points = abs(int(float(package.get('points'))))
 
         # continue building questions object
         for i in range(0, len(seconds_to_respond)):
