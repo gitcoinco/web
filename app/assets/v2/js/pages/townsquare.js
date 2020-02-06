@@ -1,7 +1,7 @@
 $(document).ready(function() {
   // gets multi part (ex: 10 hours 2 minutes 5 seconds) time
   var time_difference_broken_down = function(difference) {
-    let remaining = ' now.. Refresh to view offer!';
+    let remaining = ' now <br>Refresh to view offer!';
     let prefix = ' in ';
 
     if (difference > 0) {

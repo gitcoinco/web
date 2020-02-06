@@ -18,6 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% block body %}
 {% load static %}
+<link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+
 <div class="townsquare_main bg-lightblue">
   {% if is_staff and admin_link %}
   <div class="alpha-warning font-caption mb-0">
@@ -52,7 +55,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% for nb in offers_by_category.top.offers|slice:3 %}
               <div class="top_offer">
                 <a class="decline float-right" href="{{nb.decline_url}}">X</a>
-                <img src=dynamic/avatar/{{nb.created_by.handle}}>
+                <img class="rounded-circle" src=dynamic/avatar/{{nb.created_by.handle}}>
                 <h5>{{nb.title}}</h5>
                 <p>{{nb.desc}}</p>
                 <div class="float-right">
@@ -159,11 +162,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 {% csrf_token %}
                 <div class="d-flex flex-row px-2 pt-4 pb-2">
                   <div class="status-avatar">
-                    <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>
+                    <img class="avatar rounded-circle" src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% endif %}{% endif %}"/>
                     {% if row.secondary_avatar_url %}
-                      <img class="avatar my-auto secondary_avatar" src="{{row.secondary_avatar_url}}" />
+                      <img class="avatar my-auto rounded-circle secondary_avatar" src="{{row.secondary_avatar_url}}" />
                     {% elif row.other_profile %}
-                      <img class="avatar my-auto secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
+                      <img class="avatar my-auto rounded-circle secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
                     {% endif %}
                   </div>
                   <textarea
@@ -186,7 +189,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       {% endfor %}
                     {% endif %}
                   </div>
-                  <button class="btn btn-gc-blue font-caption" id="btn_post" disabled="true">POST</button>
+                  <button class="btn btn-gc-blue font-smaller-7 font-weight-bold" id="btn_post" disabled="true">POST</button>
                 </div>
               
               </div>
@@ -203,10 +206,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% for type, item in offers_by_category.items %}
               <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%} mb-4">
                 <div class="d-flex align-items-center mb-2">
-                  <div class="offer_icon border mr-1">
+                  <div class="offer_icon border">
                       <i class="far fa-clock"></i>
                   </div>
-                  <h4 class="m-0 p-0 offer_container_type grey">{{type|title}} <br> Action</h4>
+                  <h4 class="my-0 ml-2 p-0 offer_container_type grey">{{type|title}} Action</h4>
                 </div>
                 <div class="font-caption text-left">
                   {% if item.offer %}
@@ -245,8 +248,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% block scripts %}
 
 {% include 'shared/activity_scripts.html' %}
-<link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
 <script src="{% static "v2/js/search.js" %}"></script>
 <script src="{% static "v2/js/status.js" %}"></script>
 <script src="{% static "v2/js/pages/townsquare.js" %}"></script>

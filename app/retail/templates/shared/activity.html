@@ -16,18 +16,20 @@
 
 {% endcomment %}
 {% load humanize i18n static %}
-<div class="box row d-block m-0 activity {{ row.activity_type }} infinite-item px-2 py-4 border-bottom" data-pk="{{row.pk}}">
+<div class="box row d-block m-0 activity {{ row.activity_type }} infinite-item px-3 py-4 border-bottom" data-pk="{{row.pk}}">
   <div class="activity_main d-flex justify-content-between">
     <div class="d-flex flex-column">
       <div class="activity-avatar">
         <a href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
-          <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>
+          <img class="avatar rounded-circle" src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% endif %}{% endif %}"/>
         </a>
-        {% if row.secondary_avatar_url %}
-          <img class="avatar my-auto secondary_avatar" src="{{row.secondary_avatar_url}}" />
-        {% elif row.other_profile %}
-          <img class="avatar my-auto secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
-        {% endif %}
+        <div class="position-relative">
+          {% if row.secondary_avatar_url %}
+            <img class="avatar rounded-circle my-auto secondary_avatar" src="{{row.secondary_avatar_url}}" />
+          {% elif row.other_profile %}
+            <img class="avatar rounded-circle my-auto secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
+          {% endif %}
+        </div>
       </div>
       <div class="pt-2">
         {% for org in row.profile.organizations %}
@@ -41,7 +43,7 @@
       <div class="">
        <b>{{ row.profile.handle }}</b> <span class="grey">@{{ row.profile.handle }}</span>
       </div>
-      <div class="activity_detail_content pb-2">
+      <div class="activity_detail_content font-body pb-2">
         {% if row.activity_type == 'new_tip' %}
           {% trans "tipped" %}
           <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
@@ -169,7 +171,7 @@
         {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
           {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name %}
             <div class="tag token">
-              <p>
+              <p class="font-smaller-6">
                 {% if row.value_in_token_disp %}
                   <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
                 {% elif row.metadata.value_in_eth %}
@@ -183,7 +185,7 @@
           {% endif %}
           {% if row.value_in_usdt_now %}
             <div class="tag usd">
-              <p>
+              <p class="font-smaller-6">
                 <span>{{ row.value_in_usdt_now }} USD</span>
               </p>
             </div>
@@ -198,7 +200,10 @@
         {% endif %}
         <span class="mx-0">
           {% if not hide_likes %}
-            <span class="mr-2"><i class="far fa-eye grey" data-toggle="tooltip" title="The number of views this post has gotten." ></i> <span class="grey">{{ row.view_count }}</span></span>
+            <span class="mr-2">
+              <i class="far fa-eye grey" data-toggle="tooltip" title="The number of views this post has gotten." ></i>
+              <span class="grey">{{ row.view_count }}</span>
+            </span>
           {% endif %}
 
           {% if not hide_likes %}
@@ -223,12 +228,12 @@
       </div>
     </div>
     <div class="d-flex flex-column">
-      <div class="activity_time">
+      <div class="activity_time font-smaller-4">
         {% if not hide_date %}
           {{ row.created_human_time }}
         {% endif %}
       </div>
-      <div class="mt-2">
+      <div class="mt-3 text-right pr-3">
         {% if row.profile.handle == github_handle %}
           <a href=# data-pk={{row.pk}} class="delete_activity" style="color:black; font-size: 10px;"><i class="fas fa-trash"></i></a>
         {% elif row.kudos %}
@@ -246,7 +251,7 @@
     </div>
   </div>
   <div class="activity_comments">
-    <div class="comment_container">
+    <div class="comment_container px-2">
       
     </div>
   </div>

@@ -753,7 +753,6 @@ body.green.offer_view .announce {
   height: 45px;
   width: 45px;
   max-width: 45px;
-  border-radius: 50%;
 }
 
 .townsquare_main .activity_comments .comment_container.filled
@@ -765,7 +764,6 @@ body.green.offer_view .announce {
 }
 
 .activity_time {
-  font-size: 0.75rem;
   color: #666666;
 }
 
@@ -774,10 +772,6 @@ body.green.offer_view .announce {
   font-size: 0.75rem;
 }
 
-.townsquare_main .activity_detail_content {
-  font-size: 1rem;
-  font-weight: 400 !important;
-}
 
 .townsquare_main .like_activity .action.open i,
 .townsquare_main .like_activity .action.open + .num {

@@ -334,8 +334,8 @@ $(document).ready(function() {
             <div class="mb-1">
               <b>${comment['profile_handle']}</b> 
               <span class="grey">@${comment['profile_handle']}</span>
-              ${show_tip ? 
-                `<a href="#" class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}">
+              ${show_tip ?
+    `<a href="#" class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}">
                   ( <i class="fab fa-ethereum"></i> <span class="amount">${Math.round(100 * comment['tip_count_eth']) / 100}</span>)
                 </a>
                 ` : ''}
@@ -344,7 +344,7 @@ $(document).ready(function() {
               ${comment['comment']}
             </div>
           </div>
-          <div class="grey">
+          <div class="grey font-smaller-4">
             ${timeAgo}
           </div>
         </div>

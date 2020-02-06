@@ -129,9 +129,13 @@ a .sup {
 }
 
 .activity .secondary_avatar {
-  top: 1rem;
-  right: 0.75rem;
+  top: -1rem;
+  right: -0.9rem;
   position: absolute;
+  width: 2rem !important;
+  height: 2rem !important;
+  max-width: 2rem;
+  min-height: 2rem;
 }
 
 .funder-avatar,
