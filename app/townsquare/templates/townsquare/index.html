@@ -109,16 +109,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div class="row mt-4">
           <div class="col-12 col-lg-3 d-none d-lg-block">
             <div class="townsquare_left-sidebar">
-              <div class="search font-caption mb-5">
+              <div class="search font-caption mb-5 text-left">
                 <div class="search-area col-12">
-                  <input type="search" class="form__input" id="keyword" name="keyword" placeholder="Search" value="{{search}}" style="width: 100px;">
-                  <a id="new_search" href="#">
-                    <i class="fas fa-search"></i>
-                  </a>
-                  <input type="checkbox" name="trending" id="trending" value="0" {% if trending_only %}checked=checked{%endif%} ><label for="trending">Trending Only</label>
+                  <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
                 </div>
-                <div class="mt-2 text-left">
-                  <div class="filter-tags"></div> <!-- Populate the filters -->
+                <div class="mt-2">
+                  <input type="checkbox" name="trending" id="trending" value="0" {% if trending_only %}checked=checked{%endif%} ><label for="trending">Trending Only</label>
                 </div>
               </div>
               <div class="townsquare_nav-list mb-5">
