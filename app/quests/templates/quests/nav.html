@@ -31,34 +31,7 @@
       <span id="current-network"></span>
     </div>
   {% endif %}
-  <div class="d-flex order-0 order-md-last">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    {% if user.is_authenticated %}
-      {% include 'shared/chat_nav.html' %}
-      {% include 'shared/notifications.html' %}
-    {% endif %}
-  </div>
-
-  <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
-
-    <nav class="navbar-nav ml-auto mr-3">
-      <a class="nav-link selected interior" href="{% url 'quests_index' %}">{% trans "Explorer" %}</a>
-      <a class="nav-link interior" href="{% url 'quests_index' %}#leaderboard_top">{% trans "Leaderboard" %}</a>
-      <a class="nav-link interior" href="{% url 'newquest' %}"><i class="fab fa-ethereum mr-1" role="aria-hidden"></i> {% trans "Create Quest" %}</a>
-
-      {% if not user.is_authenticated %}
-        <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="nav-link interior" onclick="dataLayer.push({'event': 'login'});">
-          <i class="fab fa-github mr-1" role="aria-hidden"></i>
-          {% trans "LOG IN" %}
-        </a>
-      {% else %}
-        {% include 'shared/nav_auth.html' with source='authed' %}
-      {% endif %}
-    </nav>
-  </div>
+  {% include 'shared/menu.html' %}
 </nav>
 {% if request.path|matches:"^\/((.*new)|(.*cancel)|(.*fund))$" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>

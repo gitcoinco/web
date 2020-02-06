@@ -22,22 +22,34 @@
   font-size: smaller;  
 }
 
+.activity_feed_kudos_image{
+  max-width: 70px;
+}
+
 .action i,
 a .sup {
   color: black;
 }
+
+.tip_activity,
 .action:hover {
   background-color: #fafafa;
 }
+
 .action.open {
   background-color: #eeeeee;
 }
 
-.comment_container.filled {
+.comment_container{
+  padding: 0px;
+}
+
+.comment_container.filled{
   text-align: left;
-  background-color: #f4f4f4;
-  padding: 5px 10px;
-  border-radius: 3px;
+  width: 300px;
+  background-color: #f2f2f2;
+  padding: 0px;
+  border-radius: 5px;
 }
 
 .comment_container img {
@@ -45,8 +57,18 @@ a .sup {
   max-width: 20px;
 }
 
-.comment_container li {
+.comment_container li{
+  text-align: left;
   list-style: none;
+  padding: 5px;
+}
+
+.comment_container li .comment{
+  padding-left: 25px;
+}
+
+.comment_container li:nth-child(even){
+  background-color: #fafafa;
 }
 
 .comment_container a {
@@ -74,10 +96,15 @@ a .sup {
   font-weight: bold;
 }
 
+.tip_activity{
+  color: black;
+}
+
+.tip_activity:hover,
 .like_activity:hover,
 .flag_activity:hover,
 .comment_activity:hover,
-.copy_activity:hover{
+.copy_activity:hover {
   text-decoration: none;
   font-weight: bolder;
 }
@@ -130,6 +157,9 @@ a .sup {
 }
 
 @media (min-width: 768px) {
+  .activity_feed_kudos_image{
+    max-width: 110px;
+  }
   .activity .secondary {
     position: relative;
     left: -10px;
@@ -141,10 +171,14 @@ a .sup {
     text-align: center;
     margin: 0px auto;
   }
+
   .activity-info {
     text-align: center;
   }
-
+  #activities .organizations{
+    text-align: center;
+    margin: 0px auto;
+  }
   .activity_stream .activity .avatar.secondary_avatar {
     position: unset;
     margin-left: -20px;

@@ -327,7 +327,8 @@ def handle_marketing_callback(_input, request):
     key = _input if not ':' in _input else _input.split(':')[0]
     callbacks = MarketingCallback.objects.filter(key=key)
     if callbacks.exists():
-        callback_reference = callbacks.first().val
+        obj = callbacks.first()
+        callback_reference = obj.val
         #set user referrer
         if key == 'ref':
             if request.user.is_authenticated:
@@ -346,8 +347,8 @@ def handle_marketing_callback(_input, request):
             if request.user.is_authenticated:
                 from django.contrib.auth.models import Group
                 group_name = callback_reference.split(':')[1]
-                messages.info(request, "You have redeemed your $5.00 Gitcoin Grants voucher. Browse grants on gitcoin.co/grants and click 'fund' to spend this voucher!")
-                group = Group.objects.get(name=group_name)
+                messages.info(request, obj.msg)
+                group, created = Group.objects.get_or_create(name=group_name)
                 group.user_set.add(request.user)
             else:
                 messages.info(request, "You have been selected to receive a $5.00 Gitcoin Grants voucher. Login to use it.")

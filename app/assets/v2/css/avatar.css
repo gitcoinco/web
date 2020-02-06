@@ -58,6 +58,15 @@
   margin: 0px auto;
   padding-left: 40px;
 }
+#tdavatartarget.3d{
+  width: 400px;
+  height: 400px;
+}
+#tdavatartarget.bufficorn{
+  width: 500px;
+  height: 500px;
+}
+
 .tdselection{
   height: 100px;
   width: 100px;
@@ -78,6 +87,9 @@
   padding: 5px;
   border-bottom: 1px solid #9a9a9a;
   margin: 0px auto;
+}
+.select_avatar_type.base{
+  display: none;
 }
 .select_avatar_type.frame{
   display: none;
