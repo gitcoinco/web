@@ -748,14 +748,14 @@ body.green.offer_view .announce {
   color: #666666 !important;
 }
 
-.townsquare_main .status-avatar img,
-.townsquare_main .activity-avatar img {
+.activity_stream .status-avatar img,
+.activity_stream .activity-avatar img {
   height: 45px;
   width: 45px;
   max-width: 45px;
 }
 
-.townsquare_main .activity_comments .comment_container.filled
+.activity_stream .activity_comments .comment_container.filled
 .activity-avatar img {
   height: 30px;
   width: 30px;
@@ -767,59 +767,11 @@ body.green.offer_view .announce {
   color: #666666;
 }
 
-.townsquare_main .activity_detail {
+.activity_stream .activity_detail {
   flex: 1;
   font-size: 0.75rem;
 }
 
-
-.townsquare_main .like_activity .action.open i,
-.townsquare_main .like_activity .action.open + .num {
-  color: var(--gc-pink) !important;
-}
-
-.townsquare_main .activity_comments {
-  font-size: 0.75rem;
-}
-
-.townsquare_main .activity_comments .activity_comments_main {
-  text-align: initial;
-  flex: 1;
-}
-
-.townsquare_main .activity_comments .activity_comments_main_comment {
-  font-size: 0.875rem;
-}
-
-.townsquare_main .activity_comments .comment_container.filled {
-  background-color: #EFF3F6;
-  width: 100%;
-  margin-top: 1rem;
-}
-
-.townsquare_main .action.open {
-  background-color: transparent;
-}
-
-.townsquare_main .offer_container .offer_container_type {
-  font-size: 1.2rem;
-}
-
-.townsquare_main .offer_container .offer_icon {
-  height: 65px;
-  width: 65px;
-  border-radius: 50%;
-  background-color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  color: var(--blue);
-}
-
-.townsquare_main .offer_container .fa-hourglass-end {
-  color: var(--purple);
-}
 
 .filter-tag {
   margin: 2px;
@@ -837,3 +789,52 @@ body.green.offer_view .announce {
   font-size: 9px;
 }
 
+
+.activity_stream .like_activity .action.open i,
+.activity_stream .like_activity .action.open + .num {
+  color: var(--gc-pink) !important;
+}
+
+.activity_stream .activity_comments {
+  font-size: 0.75rem;
+}
+
+.activity_stream .activity_comments .activity_comments_main {
+  text-align: initial;
+  flex: 1;
+}
+
+.activity_stream .activity_comments .activity_comments_main_comment {
+  font-size: 0.875rem;
+}
+
+.activity_stream .activity_comments .comment_container.filled {
+  background-color: #EFF3F6;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.activity_stream .action.open {
+  background-color: transparent;
+}
+
+.activity_stream .offer_container .offer_container_type {
+  font-size: 1.2rem;
+}
+
+.activity_stream .offer_container .offer_icon {
+  height: 65px;
+  width: 65px;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--blue);
+}
+
+
+.activity_stream .offer_container .fa-hourglass-end {
+  color: var(--purple);
+}
