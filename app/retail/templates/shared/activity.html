@@ -241,7 +241,7 @@
       <a href=# data-pk={{row.pk}} class="delete_activity" style="color:black; font-size: 10px;"><i class="fas fa-trash"></i></a>
     {% elif row.kudos %}
       <a href="{{row.kudos_data.url}}">
-        <img src="{% static row.kudos_data.image %}" alt="{% static row.kudos_data.name %}">
+        <img src="{% static row.kudos_data.image %}" alt="{% static row.kudos_data.name %}" style="max-width: 100px;">
       </a>
     {% elif row.activity_type == 'leaderboard_rank' %}
       <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100" style="max-width:100px;">
