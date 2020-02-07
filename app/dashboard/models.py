@@ -2600,6 +2600,7 @@ class Profile(SuperModel):
     last_chat_seen = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
+    gitcoin_chat_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     chat_id = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES, blank=True)
     slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
