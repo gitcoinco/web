@@ -1,0 +1,17 @@
+{
+    "symbol": "SOMT",
+    "address": "0x2AD63474Cfeaa0352988F0d71b301F58E7cBa98a",
+    "overview":{
+          "en": "SOMT chain is a fusion of gem and blockchain technology. It uses gems to anchor currency assets and relies on encrypted wallets to implement storage and transaction operations. It provides a cross-platform payment system and is widely used in shopping, games, entertainment and other applications Scenes.",
+          "zh": "SOMT宝石链是宝石与区块链技术的融合，以宝石锚定货币资产，依托加密钱包来实现储存和交易操作，提供跨平台的支付系统，广泛运用于购物、游戏、娱乐等各种运用支付场景。"
+    },
+    "email": "somtchain@gmail.com",
+    "website": "http://www.somt.vip/",
+    "whitepaper": "http://www.somt.vip/files/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-01-26",
+    "links": {
+        "telegram": "https://t.me/somtgroup",
+        "twitter": "https://twitter.com/somtchain"
+      }
+}
