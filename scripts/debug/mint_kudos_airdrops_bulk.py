@@ -1,5 +1,5 @@
 pk_start = 10731
-pk_end = 10771
+pk_end = 10775
 name_contains = 'devcon_quest_'
 
 ################
@@ -22,15 +22,16 @@ for kudos in plaque_kudos:
     if kudos.gen != 1:
         continue
     num_uses = kudos.num_clones_allowed
-    _key = get_random_string(key_len)
-    btc = BulkTransferCoupon.objects.create(
-        token=kudos,
-        num_uses_total=num_uses,
-        num_uses_remaining=num_uses,
-        current_uses=0,
-        secret=_key,
-        comments_to_put_in_kudos_transfer="Congrats on winning #ETHDenver2019!",
-        sender_profile=Profile.objects.get(handle='gitcoinbot')
-        )
-    i += 1
-    print(f"{i}, {kudos.humanized_name}, https://gitcon.co{btc.url}")
+    for j in range(0, num_uses):
+        _key = get_random_string(key_len)
+        btc = BulkTransferCoupon.objects.create(
+            token=kudos,
+            num_uses_total=1,
+            num_uses_remaining=1,
+            current_uses=0,
+            secret=_key,
+            comments_to_put_in_kudos_transfer="Congrats on winning #ETHDenver!",
+            sender_profile=Profile.objects.get(handle='gitcoinbot')
+            )
+        i += 1
+        print(f"{j}-{i}, {kudos.humanized_name}, https://gitcoin.co{btc.url}")
