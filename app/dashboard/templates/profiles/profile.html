@@ -61,7 +61,9 @@
           {% if not hidden %}
             <div class="col-12 col-lg-6 profile-header__main-infos">
               {% include 'profiles/header_avatar.html' %}
+              {% comment %}
               {% include 'profiles/header_sync_profile.html' %}
+              {% endcomment %}
               {% include 'profiles/header_details.html' %}
             </div>
             {% if profile.is_org %}

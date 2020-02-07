@@ -411,6 +411,18 @@ def comment_email(comment):
         finally:
             pass
     translation.activate(cur_language)
+    print(f"sent comment email to {len(to_emails)}")
+
+    import re
+    from dashboard.models import Profile
+    username_pattern = re.compile(r'@(\S+)')
+    mentioned_usernames = re.findall(username_pattern, comment.comment)
+    emails = Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True)
+    mentioned_emails = set(emails)
+    # Don't send emails again to users who already received a comment email
+    deduped_emails = mentioned_emails.difference(to_emails)
+    print(f"sent mention email to {len(deduped_emails)}")
+    mention_email(comment, deduped_emails)
 
 
 def mention_email(post, to_emails):

@@ -225,8 +225,6 @@
             
             <a href=# data-pk={{row.pk}} class="comment_activity" data-toggle="tooltip" title="Comment on this feed item." {% if row.comments %} data-open="true" {% endif %} ><span class="action"><i class="far fa-comments"></i></span><span class="sup">(<span class="num">{{row.comments}}</span>)</span></a></span>
 
-            <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}} class="flag_activity"><span class="action {% if row.flagged %}open{%endif%}"><i class="far fa-flag"></i></span></a> 
-
             <a class="action copy_activity" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}><i class="fas fa-link"></i></a> 
 
             <i class="fas fa-circle-notch fa-spin loading blue hidden"></i>
@@ -243,14 +241,14 @@
       <a href=# data-pk={{row.pk}} class="delete_activity" style="color:black; font-size: 10px;"><i class="fas fa-trash"></i></a>
     {% elif row.kudos %}
       <a href="{{row.kudos_data.url}}">
-        <img src="{% static row.kudos_data.image %}" alt="{% static row.kudos_data.name %}">
+        <img src="{% static row.kudos_data.image %}" alt="{% static row.kudos_data.name %}" style="max-width: 100px;">
       </a>
     {% elif row.activity_type == 'leaderboard_rank' %}
       <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100" style="max-width:100px;">
     {% elif row.metadata.quest_reward %}
       <img src="{{row.metadata.quest_reward}}" alt="" class="w-100" style="max-width:100px;">
     {% else %}
-      <i class="far {{ row.icon }} last-icon"></i>
+        <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}} class="flag_activity"><span class="action {% if row.flagged %}open{%endif%}"><i class="far fa-flag"></i></span></a> 
     {% endif %}
   </div>
 </div>
