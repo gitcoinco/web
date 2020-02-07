@@ -136,8 +136,9 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
         'D68876': 0,
         'FFDBC2': 0,
         'D7723B': 0,  #base
+        'F4B990': 0,
     }
-    base_3d_tone = 'D7723B'
+    base_3d_tone = 'F4B990'
     if theme == 'female':
         base_3d_tone = 'FFCAA6'
     if tone == 'blonde_hair':

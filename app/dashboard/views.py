@@ -875,8 +875,9 @@ def onboard(request, flow=None):
         ('unisex', '/onboard/profile?steps=avatar&theme=unisex'),
         ('female', '/onboard/profile?steps=avatar&theme=female'),
         ('bufficorn', '/onboard/profile?steps=avatar&theme=bufficorn'),
-        ('bot', '/onboard/profile?steps=avatar&theme=bot'),
     ]
+    if request.user.is_staff:
+        avatar_options.append(('bot', '/onboard/profile?steps=avatar&theme=bot'))
 
     params = {
         'title': _('Onboarding Flow'),
