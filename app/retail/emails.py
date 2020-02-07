@@ -1020,10 +1020,10 @@ Hey Gitcoiners,
 Have you sustained the web this month? Are you getting tired of our sustain talk? Don’t worry, one more week til the grand finale! There are 5 days left in the <a href="https://gitcoin.co/hackathon/sustain-web3">Sustain Web3 Virtual Hackathon</a>, and 6 days until the <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a> in Denver. Tons of <a href="https://gitcoin.co/hackathon/sustain-web3">prizes</a> are still up for grabs and we just announced the summit’s <a href="https://web3.sustainoss.org/schedule">schedule</a>! Join us virtually or in person and let’s get BUIDL Week in Denver off to a great start. If you’re attending ETHDenver, make sure to come say hi at our booth.
 </p>
 <p>
- Today we’ll be hosting a very special Livestream on ETH 1.X - Meet the protocol devs who are actively maintaining clients on the mainnet. I’ll be there with Piper Merriam, James Hancock, and more special guests planning to presenting. <a href=“https://gitcoin.co/livestream">Add the event to your calendar</a> and come with questions.
+ Today we’ll be hosting a very special Livestream on ETH 1.X - Meet the protocol devs who are actively maintaining clients on the mainnet. I’ll be there with Piper Merriam, James Hancock, and more special guests planning to present. <a href=“https://gitcoin.co/livestream">Add the event to your calendar</a> and come with questions.
 </p>
 <p>
-Finally, our most recent deploy added tons of new features for you to check out. You can now tip uses on Town Square, as well as comment with emojis. Ever want to export your earnings or spending history? Give it a try! The Bufficorn builder is live, the navigation is new. <a href=“https://gitcoin.co/townsquare">Take a look</a> and tell us what you think on <a href=“https://chat.gitcoin.co/gitcoin/channels/town-square">Chat</a>.
+Finally, our most recent deploy added tons of new features for you to check out. You can now tip users on Town Square, as well as comment with emojis. Ever want to export your earnings or spending history? Give it a try! The Bufficorn builder is live, the navigation is new. <a href=“https://gitcoin.co/townsquare">Take a look</a> and tell us what you think on <a href=“https://chat.gitcoin.co/gitcoin/channels/town-square">Chat</a>.
 </p>
 
 {kudos_friday}
