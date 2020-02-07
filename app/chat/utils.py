@@ -59,36 +59,54 @@ def update_chat_notifications(profile, notification_key, status):
     update_user.delay(query_opts=query_opts, update_opts={'notify_props': {notification_key: status}})
 
 
-def create_user_if_not_exists(profile):
+def associate_chat_to_profile(profile):
+    if profile.chat_id is not '':
+        return False, profile
+
+    chat_driver = get_driver()
     try:
-        chat_driver = get_driver()
 
         current_chat_user = chat_driver.users.get_user_by_username(profile.handle)
         profile.chat_id = current_chat_user['id']
         profile.save()
+
+        if profile.gitcoin_chat_access_token is not '':
+            profile_access_token = chat_driver.users.get_user_access_token(profile.gitcoin_chat_access_token)
+            profile.gitcoin_chat_access_token = profile_access_token['id']
         return False, current_chat_user
     except ResourceNotFound as RNF:
-        new_user_request = create_user.apply_async(args=[{
-            "email": profile.user.email,
-            "username": profile.handle,
-            "first_name": profile.user.first_name,
-            "last_name": profile.user.last_name,
-            "nickname": profile.handle,
-            "auth_data": f'{profile.user.id}',
-            "auth_service": "gitcoin",
-            "locale": "en",
-            "props": {},
-            "notify_props": {
-                "email": "false",
-                "push": "mention",
-                "desktop": "all",
-                "desktop_sound": "true",
-                "mention_keys": f'{profile.handle}, @{profile.handle}',
-                "channel": "true",
-                "first_name": "false"
-            },
-        }, {
-            "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
-        }])
+        if profile.chat_id is '':
+            new_user_request = create_user.apply_async(args=[{
+                "email": profile.user.email,
+                "username": profile.handle,
+                "first_name": profile.user.first_name,
+                "last_name": profile.user.last_name,
+                "nickname": profile.handle,
+                "auth_data": f'{profile.user.id}',
+                "auth_service": "gitcoin",
+                "locale": "en",
+                "props": {},
+                "notify_props": {
+                    "email": "false",
+                    "push": "mention",
+                    "desktop": "all",
+                    "desktop_sound": "true",
+                    "mention_keys": f'{profile.handle}, @{profile.handle}',
+                    "channel": "true",
+                    "first_name": "false"
+                },
+            }, {
+                "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
+            }])
+            response = new_user_request.get()
+            profile.chat_id = response['id']
+            profile.save()
+        else:
+            try:
+                profile_access_token = chat_driver.users.create_user_access_token(user_id=profile.chat_id, options={
+                    'description': "Grants Gitcoin access to modify your account"})
+                profile.gitcoin_chat_access_token = profile_access_token['id']
+            except Exception as e:
+                logger.error(str(e))
 
-        return True, new_user_request.get()
+        return True, profile
