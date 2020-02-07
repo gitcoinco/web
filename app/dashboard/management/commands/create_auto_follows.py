@@ -23,7 +23,7 @@ from dashboard.models import Earning
 
 class Command(BaseCommand):
 
-    help = 'creates earnings records for deploy of https://github.com/gitcoinco/web/pull/5093'
+    help = 'auto follows everyone who user has done economic relationship with'
 
     def handle(self, *args, **options):
         for obj in Earning.objects.all():
