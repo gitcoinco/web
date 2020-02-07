@@ -19,14 +19,13 @@
 
 .sup {
   vertical-align: super;
-  font-size: smaller;  
+  font-size: smaller;
 }
 
 .activity_feed_kudos_image{
   max-width: 70px;
 }
 
-.action i,
 a .sup {
   color: black;
 }
@@ -38,6 +37,11 @@ a .sup {
 
 .action.open {
   background-color: #eeeeee;
+}
+
+.activity_stream .activity_detail {
+  flex: 1;
+  font-size: 0.75rem;
 }
 
 .comment_container{
@@ -95,6 +99,31 @@ a .sup {
   color: black;
   font-weight: bold;
 }
+
+.activity_stream .like_activity .action.open i,
+.activity_stream .like_activity .action.open + .num {
+  color: var(--gc-pink) !important;
+}
+
+.activity_stream .activity_comments {
+  font-size: 0.75rem;
+}
+
+.activity_stream .activity_comments .activity_comments_main {
+  text-align: initial;
+  flex: 1;
+}
+
+.activity_stream .activity_comments .activity_comments_main_comment {
+  font-size: 0.875rem;
+}
+
+.activity_stream .activity_comments .comment_container.filled {
+  background-color: #EFF3F6;
+  width: 100%;
+  margin-top: 1rem;
+}
+
 
 .tip_activity{
   color: black;

@@ -701,7 +701,7 @@ body.green.offer_view .announce {
 .townsquare_main .search-area #new_search {
   position: absolute;
   right: 22px;
-  bottom: 11px; 
+  bottom: 11px;
 }
 
 .townsquare_nav-list {
@@ -713,12 +713,16 @@ body.green.offer_view .announce {
   color: black;
 }
 
-.townsquare_nav-list .nav-item .nav-link.active {
+.townsquare_nav-list .nav-link.active {
   font-weight: bold;
   color: var(--link-color);
 }
 
-.townsquare_nav-list .nav-item .nav-link.active span {
+.townsquare_nav-list .nav-link:hover {
+  color: var(--link-color);
+}
+
+.townsquare_nav-list .nav-link.active span {
   display: inline-block;
   padding-bottom: 2px;
   border-bottom: 3px solid;
@@ -748,8 +752,7 @@ body.green.offer_view .announce {
   color: #666666 !important;
 }
 
-.activity_stream .status-avatar img,
-.activity_stream .activity-avatar img {
+.status-avatar .avatar {
   height: 45px;
   width: 45px;
   max-width: 45px;
@@ -767,12 +770,6 @@ body.green.offer_view .announce {
   color: #666666;
 }
 
-.activity_stream .activity_detail {
-  flex: 1;
-  font-size: 0.75rem;
-}
-
-
 .filter-tag {
   margin: 2px;
   text-transform: lowercase;
@@ -789,30 +786,6 @@ body.green.offer_view .announce {
   font-size: 9px;
 }
 
-
-.activity_stream .like_activity .action.open i,
-.activity_stream .like_activity .action.open + .num {
-  color: var(--gc-pink) !important;
-}
-
-.activity_stream .activity_comments {
-  font-size: 0.75rem;
-}
-
-.activity_stream .activity_comments .activity_comments_main {
-  text-align: initial;
-  flex: 1;
-}
-
-.activity_stream .activity_comments .activity_comments_main_comment {
-  font-size: 0.875rem;
-}
-
-.activity_stream .activity_comments .comment_container.filled {
-  background-color: #EFF3F6;
-  width: 100%;
-  margin-top: 1rem;
-}
 
 .activity_stream .action.open {
   background-color: transparent;

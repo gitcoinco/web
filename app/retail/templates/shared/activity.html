@@ -17,8 +17,8 @@
 {% endcomment %}
 {% load humanize i18n static %}
 <div class="box row d-block m-0 activity {{ row.activity_type }} infinite-item px-3 py-4 border-bottom" data-pk="{{row.pk}}">
-  <div class="activity_main row">
-    <div class="col-2">
+  <div class="activity_main d-flex justify-content-between">
+    <div class="d-flex flex-column">
       <div class="activity-avatar">
         <a href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
           <img class="avatar rounded-circle" src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% endif %}{% endif %}"/>
@@ -39,9 +39,9 @@
         {% endfor %}
       </div>
     </div>
-    <div class="activity_detail col-7 pl-0">
+    <div class="activity_detail pl-3 pr-2">
       <div class="">
-       <b>{{ row.profile.handle }}</b> <span class="grey">@{{ row.profile.handle }}</span>
+       <b>{% firstof row.profile.data.name or row.profile.handle %}</b> <span class="grey">@{{ row.profile.handle }}</span>
       </div>
       <div class="activity_detail_content font-body pb-2">
         {% if row.activity_type == 'new_tip' %}
@@ -127,7 +127,7 @@
         {% elif row.activity_type == 'status_update' %}
           <span>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</span>
         {% elif row.activity_type == 'wall_post' %}
-          &gt; 
+          &gt;
         {% if row.grant %}
           <a href="{{ row.grant.url }}">
             {{ row.grant.title }}
@@ -141,7 +141,7 @@
             @{{ row.other_profile.handle }}
           </a>
         {% endif %}
-      : 
+      :
         <b>{{ row.metadata.title }}</b>
       {% elif row.activity_type == 'leaderboard_rank' %}
         <a href="{{ row.metadata.link }}">{{ row.metadata.title }}</a>
@@ -209,25 +209,30 @@
           {% if not hide_likes %}
           {% if is_alpha_tester or row.metadata.tip_able %}
             <a data-pk={{row.pk}} data-username={{row.profile.handle}} class="tip_activity" href="#"  data-toggle="tooltip" title="This activity feed has generated {{ row.tip_count_eth|floatformat:2 }} ETH (${{row.tip_count_usd|floatformat:2}}) in Tips.">
-              <i class="fab fa-ethereum" ></i> <span class="amount">{{ row.tip_count_eth|floatformat:2}}</span> | 
+              <i class="fab fa-ethereum" ></i> <span class="amount">{{ row.tip_count_eth|floatformat:2}}</span> |
             </a>
           {% endif %}
 
-            <a href=# data-action='like' data-toggle="tooltip" title="{{row.likes_title}}Click to {% if row.liked %}unlike{% else %}like{%endif%} feed item." data-affirmative=liked data-negative=unliked data-state="{% if row.liked %}liked{% else %}unliked{%endif%}" data-pk={{row.pk}} class="like_activity mr-2"><span class="action {% if row.liked %}open{%endif%}"><i class="far fa-heart grey"></i></span><span class="num grey">{{row.likes}}</span></a> 
-            
+            <a href=# data-action='like' data-toggle="tooltip" title="{{row.likes_title}}Click to {% if row.liked %}unlike{% else %}like{%endif%} feed item." data-affirmative=liked data-negative=unliked data-state="{% if row.liked %}liked{% else %}unliked{%endif%}" data-pk={{row.pk}} class="like_activity mr-2"><span class="action {% if row.liked %}open{%endif%}"><i class="far fa-heart grey"></i></span><span class="num grey">{{row.likes}}</span></a>
+
             <a href=# data-pk={{row.pk}} class="comment_activity mr-2" data-toggle="tooltip" title="Comment on this feed item." {% if row.comments %} data-open="true" {% endif %} ><span class="action"><i class="far fa-comment grey"></i></span><span class="num grey">{{row.comments}}</span></a></span>
 
-            <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}} class="flag_activity mr-2"><span class="action {% if row.flagged %}open{%endif%}"><i class="far fa-flag grey"></i></span></a> 
+            <button class="btn-clean" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+            <div class="dropdown-menu dropdown-menu-right shadow">
+              <a class="action copy_activity mr-2 dropdown-item" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}><i class="fas fa-link"></i> Copy Link</a>
+              <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}} class="flag_activity mr-2 dropdown-item"><span class="action {% if row.flagged %}open{%endif%}"><i class="far fa-flag"></i></span> Report</a>
+              {% if row.profile.handle == github_handle %}
+              <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity" ><i class="fas fa-trash"></i> Delete</a>
+              {% endif %}
+            </div>
 
-            <a class="action copy_activity mr-2" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}><i class="fas fa-link grey"></i></a> 
-            
             <i class="fas fa-circle-notch fa-spin loading blue hidden"></i>
             <i class="fas fa-exclamation-triangle error red hidden"></i>
           {% endif %}
 
       </div>
     </div>
-    <div class="col-3 pl-0">
+    <div class="d-flex flex-column">
       <div class="activity_time font-smaller-4 text-right">
         {% if not hide_date %}
           {{ row.created_human_time }}

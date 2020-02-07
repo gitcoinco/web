@@ -331,27 +331,30 @@ $(document).ready(function() {
               <img src="/dynamic/avatar/${comment['profile_handle']}">
           </div>
           <div class="activity_comments_main px-3">
-            <div class="mb-1">
-              <b>${comment['profile_handle']}</b> 
-              <span class="grey">@${comment['profile_handle']}</span>
-              ${show_tip ?
-    `<a href="#" class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}">
-                  ( <i class="fab fa-ethereum"></i> <span class="amount">${Math.round(100 * comment['tip_count_eth']) / 100}</span>)
+            <div class="mb-1 d-flex justify-content-between">
+              <span>
+                <b>${comment['profile_handle']}</b>
+                <span class="grey">@${comment['profile_handle']}</span>
+                ${show_tip ? `
+                <a href="#" class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> ( <i class="fab fa-ethereum"></i> <span class="amount">${Math.round(100 * comment['tip_count_eth']) / 100}</span>)
                 </a>
                 ` : ''}
+              </span>
+              <span class="grey font-smaller-4">
+                ${timeAgo}
+              </span>
             </div>
             <div class="activity_comments_main_comment">
               ${comment['comment']}
             </div>
           </div>
-          <div class="grey font-smaller-4">
-            ${timeAgo}
-          </div>
+
         </div>
         `;
 
         $target.append(html);
       }
+
       var post_comment_html = `
       <div class="d-flex py-2">
         <div class="activity-avatar mr-1">
@@ -359,6 +362,7 @@ $(document).ready(function() {
         </div>
         <div class="pl-3 flex-grow-1">
           <input type="text" class="form-control bg-lightblue font-caption" placeholder="Enter comment">
+          <a href=# class=post_comment>Post comment &gt;</a>
         </div>
       </div>
       `;
@@ -370,13 +374,7 @@ $(document).ready(function() {
   // post comment activity
   $(document).on('click', '.comment_activity', function(e) {
     e.preventDefault();
-    var num = $(this).find('span.num').html();
-
-    if (parseInt(num) == 0) {
-      post_comment($(this), true);
-    } else {
-      view_comments($(this), true);
-    }
+    view_comments($(this), true);
   });
 
   // post comment activity
@@ -405,7 +403,7 @@ $(document).ready(function() {
 
   // auto open new comment threads
   setInterval(function() {
-    
+
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').bootstrapTooltip();
 

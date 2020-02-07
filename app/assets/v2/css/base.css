@@ -32,10 +32,6 @@ a {
   background-size: cover;
 }
 
-.dropdown-menu {
-  z-index: 9999999999;
-}
-
 .navbar-dark .navbar-nav .nav-link {
   border-radius: 2px;
   color: white;
