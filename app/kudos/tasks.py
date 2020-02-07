@@ -55,6 +55,8 @@ def redeem_bulk_kudos(self, kt_id, signed_rawTransaction, retry=False):
                 obj.txid = w3.eth.sendRawTransaction(HexBytes(signed_rawTransaction)).hex()
                 obj.receive_txid = obj.txid
                 obj.save()
+                while not has_tx_mined(obj.txid, obj.network):
+                    time.sleep(1)
                 pass
             except Exception as e:
                 self.retry(30)
