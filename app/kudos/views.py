@@ -42,7 +42,7 @@ from django.views.decorators.csrf import csrf_exempt
 import boto3
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
-from dashboard.utils import get_nonce, get_web3
+from dashboard.utils import get_nonce, get_web3, is_valid_eth_address
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
@@ -477,6 +477,7 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
     kwargs = {
         'activity_type': event_name,
         'kudos_transfer': kudos_transfer,
+        'kudos': kudos_transfer.kudos_token_cloned_from,
         'metadata': {
             'amount': str(kudos_transfer.amount),
             'token_name': kudos_transfer.tokenName,
@@ -512,7 +513,8 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
     github_handle = github_handle.replace('@', '')
     kwargs = {
         'activity_type': event_name,
-        'kudos': kudos_transfer,
+        'kudos_transfer': kudos_transfer,
+        'kudos': kudos_transfer.kudos_token_cloned_from,
         'metadata': {
             'amount': str(kudos_transfer.amount),
             'token_name': kudos_transfer.tokenName,
@@ -593,21 +595,23 @@ def receive(request, key, txid, network):
             'Please wait a moment before submitting the receive form.'
         )
         messages.info(request, message)
-    elif request.GET.get('receive_txid') and not kudos_transfer.receive_txid:
-        params = request.GET
-
+    elif request.POST.get('receive_txid') and not kudos_transfer.receive_txid:
+        params = request.POST
         # db mutations
         try:
+            profile = get_profile(kudos_transfer.username.replace('@', ''))
+            eth_address = params['forwarding_address']
+            if not is_valid_eth_address(eth_address):
+                eth_address = profile.preferred_payout_address
             if params['save_addr']:
-                profile = get_profile(kudos_transfer.username.replace('@', ''))
                 if profile:
                     # TODO: Does this mean that the address the user enters in the receive form
                     # Will overwrite an already existing preferred_payout_address?  Should we
                     # ask the user to confirm this?
-                    profile.preferred_payout_address = params['forwarding_address']
+                    profile.preferred_payout_address = eth_address
                     profile.save()
             kudos_transfer.receive_txid = params['receive_txid']
-            kudos_transfer.receive_address = params['forwarding_address']
+            kudos_transfer.receive_address = eth_address
             kudos_transfer.received_on = timezone.now()
             if request.user.is_authenticated:
                 kudos_transfer.recipient_profile = request.user.profile
@@ -658,15 +662,17 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
     private_key = settings.KUDOS_PRIVATE_KEY if not coupon.sender_pk else coupon.sender_pk
     kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
     gas_price_confirmation_time = 1 if not coupon.sender_address else 60
+    gas_price_multiplier = 1.5 if not coupon.sender_address else 1
     kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
     kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
     w3 = get_web3(coupon.token.contract.network)
     contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
     nonce = w3.eth.getTransactionCount(kudos_owner_address)
+    gas_price = int(recommend_min_gas_price_to_confirm_in_time(gas_price_confirmation_time) * 10**9) * gas_price_multiplier
     tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
         'nonce': nonce,
         'gas': 500000,
-        'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(gas_price_confirmation_time) * 10**9),
+        'gasPrice': gas_price,
         'value': int(coupon.token.price_finney / 1000.0 * 10**18),
     })
 
@@ -744,7 +750,7 @@ def receive_bulk(request, secret):
     coupons = BulkTransferCoupon.objects.filter(secret=secret)
     if not coupons.exists():
         raise Http404
-    
+
     coupon = coupons.first()
     _class = request.GET.get('class', '')
     if coupon.num_uses_remaining <= 0:

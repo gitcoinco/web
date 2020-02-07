@@ -2043,8 +2043,14 @@ class Activity(SuperModel):
         blank=True,
         null=True
     )
-    kudos = models.ForeignKey(
+    kudos_transfer = models.ForeignKey(
         'kudos.KudosTransfer',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    kudos = models.ForeignKey(
+        'kudos.Token',
         related_name='activities',
         on_delete=models.CASCADE,
         blank=True, null=True
@@ -2196,7 +2202,7 @@ class Activity(SuperModel):
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
         activity['icon'] = icons.get(self.activity_type, 'fa-check-circle')
         if activity.get('kudos'):
-            activity['kudos_data'] = Token.objects.get(pk=self.kudos.kudos_token_cloned_from_id)
+            activity['kudos_data'] = self.kudos
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']
@@ -2547,9 +2553,10 @@ class Profile(SuperModel):
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
-    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
+    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description describing tribe.'))
+    automatic_backup = models.BooleanField(default=False, help_text=_('automatic backup profile to cloud storage such as 3Box if the flag is true'))
     as_representation = JSONField(default=dict, blank=True)
-
+    tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
     objects = ProfileQuerySet.as_manager()
 
     @property
@@ -2936,6 +2943,18 @@ class Profile(SuperModel):
 
         """
         return self.user.groups.filter(name='Moderators').exists() if self.user else False
+
+    @property
+    def is_alpha_tester(self):
+        """Determine whether or not the user is an alpha tester.
+
+        Returns:
+            bool: Whether or not the user is an alpha tester.
+
+        """
+        if self.user.is_staff:
+            return True
+        return self.user.groups.filter(name='Alpha_Testers').exists() if self.user else False
 
     @property
     def is_staff(self):
@@ -3935,6 +3954,7 @@ def psave_profile(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
+
     if instance.pk:
         SearchResult.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
@@ -3991,7 +4011,6 @@ class ProfileSerializer(serializers.BaseSerializer):
             instance.calculate_all()
             instance.save()
         return instance.as_representation
-
 
 @receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
 def normalize_tip_usernames(sender, instance, **kwargs):
@@ -4613,6 +4632,7 @@ class TribeMember(SuperModel):
     profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
     org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE)
     leader = models.BooleanField(default=False, help_text=_('tribe leader'))
+    title = models.CharField(max_length=255, blank=True, default='')
     status = models.CharField(
         max_length=20,
         choices=MEMBER_STATUS,

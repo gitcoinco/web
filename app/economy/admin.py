@@ -38,13 +38,14 @@ class TokenAdmin(admin.ModelAdmin):
         return format_html("<a href='{}' target='_blank'>{}</a>", obj.address, obj.address)
 
     def response_change(self, request, obj):
+        from django.shortcuts import redirect
         if "_approve_token" in request.POST:
             from marketing.mails import new_token_request_approved
             new_token_request_approved(obj)
             obj.approved = True
             obj.save()
             self.message_user(request, f"Token approved + requester emailed")
-        return super().response_change(request, obj)
+        return redirect(obj.admin_url)
 
 
 # Register your models here.
