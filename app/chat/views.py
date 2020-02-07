@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from django.conf import settings
+from chat.tasks import get_chat_url
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 
@@ -52,11 +52,8 @@ def chat(request):
 def embed(request):
     """Handle the chat embed view."""
 
-    chat_url = settings.CHAT_URL
-    if settings.CHAT_PORT not in [80, 443]:
-        chat_url = f'http://{settings.CHAT_URL}:{settings.CHAT_PORT}'
-    else:
-        chat_url = f'https://{chat_url}'
+    chat_url = get_chat_url()
+
     context = {
         'is_outside': True,
         'active': 'chat',

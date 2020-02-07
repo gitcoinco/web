@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import logging
 
+from chat.tasks import get_chat_url
 from django.conf import settings
 from django.utils import timezone
 
@@ -91,27 +92,16 @@ def preprocess(request):
         callback = request.GET.get('cb')
         handle_marketing_callback(callback, request)
 
-    chat_unread_messages = False
-
-    if profile and profile.chat_id:
-        try:
-            from chat.tasks import get_driver
-            chat_driver = get_driver()
-
-            chat_unreads_request = chat_driver.teams.get_team_unreads_for_user(profile.chat_id)
-
-            for teams in chat_unreads_request:
-                if teams['msg_count'] > 0 or teams['mention_count'] > 0:
-                    chat_unread_messages = True
-                    break
-        except Exception as e:
-            logger.error(str(e))
-
+    chat_url = get_chat_url()
+    chat_access_token = profile.gitcoin_chat_access_token
+    chat_id = profile.chat_id
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
         'num_slack': num_slack,
-        'chat_unread_messages': chat_unread_messages,
+        'chat_url': chat_url,
+        'chat_id': chat_id,
+        'chat_access_token': chat_access_token,
         'github_handle': request.user.username if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,

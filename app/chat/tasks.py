@@ -24,6 +24,15 @@ driver_opts = {
 chat_driver = Driver(driver_opts)
 
 
+def get_chat_url():
+    chat_url = settings.CHAT_URL
+    if settings.CHAT_PORT not in [80, 443]:
+        chat_url = f'http://{settings.CHAT_URL}:{settings.CHAT_PORT}'
+    else:
+        chat_url = f'https://{chat_url}'
+    return chat_url
+
+
 def get_driver():
     chat_driver.login()
     return chat_driver

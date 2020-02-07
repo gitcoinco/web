@@ -57,7 +57,7 @@ from avatar.views_3d import avatar3dids_helper, hair_tones, skin_tones
 from bleach import clean
 from cacheops import invalidate_obj
 from chat.tasks import add_to_channel
-from chat.utils import create_channel_if_not_exists, create_user_if_not_exists
+from chat.utils import create_channel_if_not_exists, associate_chat_to_profile
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -390,9 +390,7 @@ def new_interest(request, bounty_id):
                 if funder_profile:
                     if funder_profile.chat_id is '':
                         try:
-                            created, funder_details_response = create_user_if_not_exists(funder_profile)
-                            funder_profile.chat_id = funder_details_response['id']
-                            funder_profile.save()
+                            created, funder_profile = associate_chat_to_profile(funder_profile)
                         except Exception as e:
                             logger.error(str(e))
                             raise ValueError(e)
@@ -400,9 +398,8 @@ def new_interest(request, bounty_id):
                     if profile.chat_id is '':
 
                         try:
-                            created, profile_lookup_response = create_user_if_not_exists(profile)
-                            profile.chat_id = profile_lookup_response['id']
-                            profile.save()
+                            created, new_profile = associate_chat_to_profile(profile)
+                            profile = new_profile
                         except Exception as e:
                             logger.error(str(e))
                             raise ValueError(e)
