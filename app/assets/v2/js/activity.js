@@ -380,9 +380,9 @@ $(document).ready(function() {
         <div class="activity-avatar mr-1">
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
         </div>
-        <div class="pl-3 flex-grow-1">
+        <div class="pl-3 flex-grow-1 text-right">
           <input type="text" class="form-control bg-lightblue font-caption" placeholder="Enter comment">
-          <a href=# class=post_comment>Post comment &gt;</a>
+          <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-3 post_comment">Post comment</a>
         </div>
       </div>
       `;

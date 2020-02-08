@@ -239,9 +239,7 @@
         {% endif %}
       </div>
       <div class="mt-3 text-right pr-3">
-        {% if row.profile.handle == github_handle %}
-          <a href=# data-pk={{row.pk}} class="delete_activity" style="color:black; font-size: 10px;"><i class="fas fa-trash"></i></a>
-        {% elif row.kudos %}
+        {% if row.kudos %}
           <a href="{{row.kudos_data.url}}">
             <img src="{% static row.kudos_data.image %}" alt="{% static row.kudos_data.name %}" class="mw-100">
           </a>
@@ -253,7 +251,7 @@
         {% elif row.metadata.quest_reward %}
           <img src="{{row.metadata.quest_reward}}" alt="" class="w-100 mw-100">
         {% else %}
-          <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}} class="flag_activity"><span class="action {% if row.flagged %}open{%endif%}"><i class="far fa-flag"></i></span></a>
+          <i class="far {{ row.icon }} last-icon"></i>
         {% endif %}
       </div>
     </div>

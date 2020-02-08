@@ -791,11 +791,11 @@ body.green.offer_view .announce {
   background-color: transparent;
 }
 
-.activity_stream .offer_container .offer_container_type {
+.offer_container .offer_container_type {
   font-size: 1.2rem;
 }
 
-.activity_stream .offer_container .offer_icon {
+.offer_container .offer_icon {
   height: 65px;
   width: 65px;
   border-radius: 50%;
@@ -808,6 +808,6 @@ body.green.offer_view .announce {
 }
 
 
-.activity_stream .offer_container .fa-hourglass-end {
+.offer_container .fa-hourglass-end {
   color: var(--purple);
 }
