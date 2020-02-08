@@ -240,13 +240,14 @@ class FeedbackExportSerializer(serializers.ModelSerializer):
     bounty_url = serializers.SerializerMethodField()
     created_at = serializers.SerializerMethodField()
     sender = serializers.SerializerMethodField()
-    recipient = serializers.SerializerMethodField()
+    receiver = serializers.SerializerMethodField()
     feedback_type = serializers.CharField(source='feedbackType')
     comment = serializers.SerializerMethodField()
 
     class Meta:
         model = FeedbackEntry
-        fields = ('id', 'sender', 'recipient', 'bounty_url', 'rating', 'satisfaction_rating',
+        fields = ('id', 'sender', 'receiver', 'bounty_url', 'rating',
+                  'satisfaction_rating', 'created_at',
                   'communication_rating', 'speed_rating', 'code_quality_rating',
                   'recommendation_rating', 'feedback_type', 'comment')
 
@@ -263,8 +264,8 @@ class FeedbackExportSerializer(serializers.ModelSerializer):
     def get_sender(self, instance):
         return instance.sender_profile.handle
 
-    def get_recipient(self, instance):
-        return instance.recipient_profile.handle
+    def get_receiver(self, instance):
+        return instance.receiver_profile.handle
 
     def get_comment(self, instance):
         return instance.anonymized_comment
