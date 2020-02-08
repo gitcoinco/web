@@ -7,7 +7,6 @@
   },
   "email": "busd@binance.com",
   "website": "https://www.binance.com/en/busd",
-  "whitepaper": "N/A",
   "state": "NORMAL",
   "published_on": "2019-09-05",
   "initial_price": {
@@ -19,10 +18,6 @@
     "blog": "https://medium.com/consenlabs",
     "twitter": "https://twitter.com/binance",
     "telegram": "https://t.me/binanceexchange ",
-    "reddit": "N/A",
-    "github": "https://github.com/paxosglobal/busd-contract",
-    "facebook": "N/A",
-    "slack": "N/A",
-    "medium": "N/A"
+    "github": "https://github.com/paxosglobal/busd-contract"
   }
 }
