@@ -738,14 +738,14 @@ body.green.offer_view .announce {
   text-transform: uppercase;
 }
 
-.townsquare_main #status .btn-group-toggle .btn-radio {
+#status .btn-group-toggle .btn-radio {
   background-color: var(--badge-blue-bg);
   color: var(--badge-blue-text);
-  border: 0;
+  border: 1px solid transparent;
 }
 
-.btn-radio.active {
-  border: 1px solid var(--link-color) !important;
+#status .btn-group-toggle .btn-radio.active {
+  border: 1px solid var(--link-color);
 }
 
 .grey {

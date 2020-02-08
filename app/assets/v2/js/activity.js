@@ -259,7 +259,7 @@ $(document).ready(function() {
     }
 
     // user input
-    var comment = prompt('What is your comment?', '');
+    var comment = $parent.parents('.box').find('.comment_container input').val();
 
     // validation
     if (!comment) {

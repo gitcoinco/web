@@ -35,7 +35,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div class="container py-0 ">
         <div class="my-1">
           <div class="row">
-            <i class="fas fa-info mr-3"></i> 
+            <i class="fas fa-info mr-3"></i>
             What is Gitcoin? - <a style="font-weight: bold;" href="/home">Learn More <i class="fas fa-share-square"></i> </a>
           </div>
         </div>
@@ -70,13 +70,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
     <hr>
   {% endif %}
-  
+
   {% for announce in announcements %}
     <div class="row announce bg-{{announce.style}}">
       <div class="container py-0 ">
         <div class="my-1">
           <div class="row">
-            <i class="fas fa-info mr-3"></i> 
+            <i class="fas fa-info mr-3"></i>
             <strong>
               {{announce.title}}
             </strong> ({{announce.valid_from | naturaltime}}) -
@@ -95,7 +95,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div class="my-1 px-3">
         <div class="row">
           <div class="col-12">
-            <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">           
+            <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
                 <li class="nav-item">
                   <a data-toggle="tooltip" title="" class="nav-link nav-line active " href="#" data-slug="townsquare">
                     Town Square
@@ -160,7 +160,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="bg-white rounded border">
               <div id="status">
                 {% csrf_token %}
-                <div class="d-flex flex-row px-2 pt-4 pb-2">
+                <div class="position-relative d-flex flex-row px-2 pt-4 pb-2">
                   <div class="status-avatar">
                     <img class="avatar rounded-circle" src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% endif %}{% endif %}"/>
                     {% if row.secondary_avatar_url %}
@@ -176,6 +176,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     style="resize: none"
                     data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
                   ></textarea>
+                  <div id="textarea-dropdown" class="dropdown-menu" style="top: initial; left: initial;"></div>
+                  <button id="emoji-button" class="btn btn-clean position-absolute" style="bottom: 0.2em; right: 0;"><i class="far fa-smile"></i></button>
                 </div>
                 <input type="hidden" name="what" value="{{what}}:{{whatid}}">
                 <div class="bg-lightblue p-2 d-flex flex-column flex-sm-row justify-content-between">
@@ -191,7 +193,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                   <button class="btn btn-gc-blue font-smaller-7 font-weight-bold" id="btn_post" disabled="true">POST</button>
                 </div>
-              
+
               </div>
             </div>
             <div id="activities" class="activity_stream mt-4">
@@ -215,7 +217,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   {% if item.offer %}
                     <a href="{{item.offer.view_url}}">
                       <i class="fas fa-hourglass-end"></i>
-                      <span class="grey">Expires <span class="{{type}} timer m-0" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span></span>                 
+                      <span class="grey">Expires <span class="{{type}} timer m-0" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span></span>
                     </a>
                   {% else %}
                     <i class="fas fa-hourglass-end"></i>
@@ -224,12 +226,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </div>
                 {% if item.offer %}
                 <div class="{{type}} offers">
-                  
+
                 </div>
                 {% else %}
                 <div class="offer_coming {{type}} font-caption text-left d-flex align-items-center">
                   {% if type == 'daily' %}
-                    <input type="checkbox" class="mr-1" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} > 
+                    <input type="checkbox" class="mr-1" name="receive_daily_offers_in_inbox" id=receive_daily_offers_in_inbox value="1" {% if is_subscribed %} checked="checked" {% endif %} >
                     <label for="receive_daily_offers_in_inbox" class="m-0 grey"> <i class="fas fa-envelope"></i> Email when available</label>
                   {% endif %}
                 </div>
