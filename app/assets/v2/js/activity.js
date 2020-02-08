@@ -2,6 +2,22 @@
 
 $(document).ready(function() {
 
+  var linkify = function(new_text) {
+    new_text = new_text.replace(/ #(\S*)/g, ' <a href="/?tab=search-$1">#$1</a>');
+    new_text = new_text.replace(/ @(\S*)/g, ' <a href="/profile/$1">@$1</a>');
+    return new_text;
+  };
+  // inserts links into the text where there are URLS detected
+
+  function urlify(text) {
+    var urlRegex = /(https?:\/\/[^\s]+)/g;
+
+    return text.replace(urlRegex, function(url) {
+      return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
+    });
+  }
+
+
   document.base_title = $('title').text();
 
   $('#activity_subheader').remove();
@@ -323,6 +339,10 @@ $(document).ready(function() {
       $target.html('');
       for (var i = 0; i < response['comments'].length; i++) {
         var comment = sanitizeAPIResults(response['comments'])[i];
+        var the_comment = comment['comment'];
+
+        the_comment = urlify(the_comment);
+        the_comment = linkify(the_comment);
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         var show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
         var html = `
@@ -417,27 +437,23 @@ $(document).ready(function() {
     });
 
     $('.activity.wall_post .activity-status b, .activity.status_update .activity-status b').each(function() {
-      let new_text = $(this).text();
+      if (!$(this).hasClass('clean')) {
+        let new_text = $(this).text();
 
-      new_text = new_text.replace('&lt;', '_');
-      new_text = new_text.replace('&gt;', '_');
-      new_text = new_text.replace('>', '_');
-      new_text = new_text.replace('<', '_');
-      new_text = urlify(new_text);
-      new_text = new_text.replace(/#(\S*)/g, '<a href="/?tab=search-$1">#$1</a>');
-      new_text = new_text.replace(/@(\S*)/g, '<a href="/profile/$1">@$1</a>');
-      $(this).html(new_text);
+        new_text = new_text.replace('&lt;', '_');
+        new_text = new_text.replace('&gt;', '_');
+        new_text = new_text.replace('>', '_');
+        new_text = new_text.replace(/&gt</g, '_');
+        new_text = new_text.replace(/&lt</g, '_');
+        new_text = new_text.replace(/\</g, '_');
+        new_text = new_text.replace(/\>/g, '_');
+        new_text = new_text.replace(/\n/g, '<BR>');
+        new_text = urlify(new_text);
+        new_text = linkify(new_text);
+        $(this).html(new_text);
+        $(this).addClass('clean');
+      }
     });
-
-    // inserts links into the text where there are URLS detected
-    function urlify(text) {
-      var urlRegex = /(https?:\/\/[^\s]+)/g;
-
-      return text.replace(urlRegex, function(url) {
-        return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
-      });
-    }
-
   }, 1000);
 
 

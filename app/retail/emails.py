@@ -711,9 +711,11 @@ def render_comment(to_email, comment):
 
 
 def render_mention(to_email, post):
+    from dashboard.models import Activity
     params = {
         'post': post,
         'email_type': 'mention',
+        'is_activity': isinstance(post, Activity),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -992,8 +994,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "We Need YOU to Sustain Web3!"
-    new_kudos_pks = [8179, 7511, 7503]
+    subject = "BUIDL Week Greetings"
+    new_kudos_pks = [10677, 10230, 7511]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1015,44 +1017,39 @@ def render_new_bounty_roundup(to_email):
 Hey Gitcoiners,
 </p>
 <p>
-The <a href="https://hackathons.gitcoin.co/sustain-web3">Sustain Web3</a> virtual hackathon is officially live with $17k in prizes up for grabs! You can now view all the bounties on the <a href="https://gitcoin.co/hackathon/sustain-web3">prize explorer</a>. The two week hackathon will run until February 12th at 23:59 UTC, right before <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a>. Sponsors include <a href="https://foam.space/">FOAM</a>, <a href="https://xpring.io/">Xpring</a>, <a href="https://www.dfuse.io/">dfuse</a>, <a href="https://www.bancor.network/">Bancor</a>, <a href="https://labs.consensys.net/">ConsenSys Labs</a>, and more.
+Have you sustained the web this month? Are you getting tired of our sustain talk? Don’t worry, one more week til the grand finale! There are 5 days left in the <a href="https://gitcoin.co/hackathon/sustain-web3">Sustain Web3 Virtual Hackathon</a>, and 6 days until the <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a> in Denver. Tons of <a href="https://gitcoin.co/hackathon/sustain-web3">prizes</a> are still up for grabs and we just announced the summit’s <a href="https://web3.sustainoss.org/schedule">schedule</a>! Join us virtually or in person and let’s get BUIDL Week in Denver off to a great start. If you’re attending ETHDenver, make sure to come say hi at our booth.
 </p>
 <p>
-Gitcoin <a href="https://gitcoin.co/grants/">Grants Round 4</a> is closed and funds will be distributed shortly. Check out our newest <a href="https://gitcoin.co/blog/gitcoin-grants-round-4/">blog post</a> for the full results, and we also recommend reading <a href="https://vitalik.ca/general/2020/01/28/round4.html">Vitalik’s review</a> as well. Thank you to everyone who helped make this round the biggest success yet!
+ Today we’ll be hosting a very special Livestream on ETH 1.X - Meet the protocol devs who are actively maintaining clients on the mainnet. I’ll be there with Piper Merriam, James Hancock, and more special guests planning to present. <a href=“https://gitcoin.co/livestream">Add the event to your calendar</a> and come with questions.
 </p>
 <p>
- Join us this weekend (Feb 1st & 2nd) for Trust-Less 2020: A Proof-Of-Stake (PoS) Validator summit. Attendees will learn about Ethereum 2.0 Validator Economics with ConsenSys Codefi, get updates on the beacon chain with Prysmatic Labs, learn how to spin up their own ETH 2.0 Validator with RocketPool, and more. The conf is 100% free & virtual so you can tune in from anywhere in the world to learn. Claim your spot <a href="https://trust-less-2020.dystopialabs.com/">here</a>.
+Finally, our most recent deploy added tons of new features for you to check out. You can now tip users on Town Square, as well as comment with emojis. Ever want to export your earnings or spending history? Give it a try! The Bufficorn builder is live, the navigation is new. <a href=“https://gitcoin.co/townsquare">Take a look</a> and tell us what you think on <a href=“https://chat.gitcoin.co/gitcoin/channels/town-square">Chat</a>.
 </p>
 
 {kudos_friday}
-<h3>What else is new?</h3>
-    <ul>
-        <li>
-            Today's Livestream will feature Sustain Web3 hackathon sponsors to discuss their companies and prizes. <a href="https://gitcoin.co/livestream">Join us</a> 2pm ET to hear from FOAM, Xpring, ConsenSys Labs, and dfuse.
-        </li>
-    </ul>
+
 </p>
 <p>
 Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'pengiundev',
+        'who': 'vporton',
         'who_link': True,
-        'what': 'Adjusted "Hatching Period" In Bonding Curve Smart Contract',
-        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/10/3962',
+        'what': 'Built a Time Lock Smart Contract With Vesting Period',
+        'link': 'https://gitcoin.co/issue/jazzholicbae/timelock/1/3981',
         'link_copy': 'View more',
     }, {
-        'who': 'adrianhacker-pdx',
+        'who': 'KiChjang',
         'who_link': True,
-        'what': 'Created an Explainer Page For Account Abstraction with EthHub',
-        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/422/3908',
+        'what': 'Interest Rate Oracle Consumer Contracts',
+        'link': 'https://gitcoin.co/issue/ProofSuite/OrFeed/38/3940',
         'link_copy': 'View more',
     }, {
-        'who': 'jmsofarelli',
+        'who': 'wighawag',
         'who_link': True,
-        'what': 'Made a Dapp With a Frontend Hosted on IPFS With Infuras API.',
-        'link': 'https://gitcoin.co/issue/INFURA/hackathons/2/3868',
+        'what': 'Won MetaMasks Generalized MetaTransaction Contest',
+        'link': 'https://gitcoin.co/issue/MetaMask/Hackathons/2/3865',
         'link_copy': 'View more',
     }, ]
 
@@ -1069,14 +1066,14 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/ryan-foamspace/Sustain-Web3-hackathon/issues/3',
-        'primer': 'Create a Mobile-Friendly Map Viewer with FOAM',
+        'url': 'https://github.com/xpring-eng/challenges/issues/3',
+        'primer': '[$1000 XRP] Niflheim - Interledger Protocol Support For ERC-20 On Layer 2 Network',
     }, {
-        'url': 'https://github.com/ConsenSys/Relays/issues/2',
-        'primer': 'Growth Hacking For Established Projects - Drive Viral Growth to Your Startup',
+        'url': 'https://github.com/dfuse-io/hackathons/issues/3',
+        'primer': '$350 USDT - Most Innovative Integration Of Dfuse Lifecycle',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/5914',
-        'primer': 'Allow Gitcoin.Co/Tips To Support Sablier Style Streams',
+        'url': 'https://github.com/xpring-eng/challenges/issues/2',
+        'primer': '[$1000 XRP] Vanaheim - Interledger Protocol Support For ETH On Layer 2 Network',
     }]
 
 
@@ -1268,7 +1265,7 @@ def comment(request):
 
 @staff_member_required
 def mention(request):
-    from townsquare.models import Activity
+    from dashboard.models import Activity
     response_html, _ = render_mention(settings.CONTACT_EMAIL, Activity.objects.last())
     return HttpResponse(response_html)
 

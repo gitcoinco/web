@@ -242,15 +242,18 @@
         {% if row.profile.handle == github_handle %}
           <a href=# data-pk={{row.pk}} class="delete_activity" style="color:black; font-size: 10px;"><i class="fas fa-trash"></i></a>
         {% elif row.kudos %}
+          <a href="{{row.kudos_data.url}}">
+            <img src="{% static row.kudos_data.image %}" alt="{% static row.kudos_data.name %}" class="mw-100">
+          </a>
           <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
             <img class="activity_feed_kudos_image" src="{{row.kudos_data.preview_img_url }}" alt="">
           </a>
         {% elif row.activity_type == 'leaderboard_rank' %}
-          <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100" style="max-width:100px;">
+          <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100 mw-100">
         {% elif row.metadata.quest_reward %}
-          <img src="{{row.metadata.quest_reward}}" alt="" class="w-100" style="max-width:100px;">
+          <img src="{{row.metadata.quest_reward}}" alt="" class="w-100 mw-100">
         {% else %}
-          <i class="far {{ row.icon }} last-icon"></i>
+          <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}} class="flag_activity"><span class="action {% if row.flagged %}open{%endif%}"><i class="far fa-flag"></i></span></a>
         {% endif %}
       </div>
     </div>

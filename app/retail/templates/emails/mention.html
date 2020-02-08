@@ -26,7 +26,7 @@
 <a href="{{post.profile.url}}">@{{post.profile.handle}}</a> mentioned you in a post. This is what the post looks like:
 
 <pre>
-{% if isinstance(post, Activity) %}
+{% if is_activity %}
   {{post.metadata.title}}
 {% else %}
   - @{{post.profile.handle}} ({{post.created_on | naturaltime}}): {{post.comment}}
