@@ -93,6 +93,7 @@ class OfferAdmin(admin.ModelAdmin):
             obj.view_count = 0
             obj.valid_to, obj.valid_from = schedule_helper(obj)
             self.message_user(request, f"Copied Object")
+            obj.save()
         return redirect(obj.admin_url)
         if "_schedule_offer" in request.POST:
             obj.valid_to, obj.valid_from = schedule_helper(obj)

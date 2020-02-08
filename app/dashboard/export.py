@@ -103,23 +103,23 @@ class GrantExportSerializer(serializers.ModelSerializer):
                   'admin_address', 'contract_owner_address', 'amount_goal',
                   'monthly_amount_subscribed', 'amount_received', 'token_address',
                   'token_symbol', 'contract_address', 'network',
-                  'org', 'created_at', 'url', ''
+                  'org', 'created_at', 'url', 'contribution_count', 'contributor_count'
                   )
 
     def get_created_at(self, instance):
         return instance.created_on.isoformat()
 
     def get_org(self, instance):
-        return instance.org_name()
+        return instance.org_name
 
     def get_url(self, instance):
         return instance.get_absolute_url()
 
     def get_contributor_count(self, instance):
-        return instance.get_contributor_count()
+        return instance.get_contributor_count
 
     def get_contribution_count(self, instance):
-        return instance.get_contribution_count()
+        return instance.get_contribution_count
 
 
 class BountyExportSerializer(serializers.ModelSerializer):
@@ -316,6 +316,8 @@ def get_absolute_url(url):
         return url
 
 def filter_items(model, data, private):
+  if not (data and len(data) > 0):
+      return []
   private_keys = privacy_fields[model]
   if private:
     private_keys.append("id")

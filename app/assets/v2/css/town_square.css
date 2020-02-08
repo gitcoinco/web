@@ -167,7 +167,7 @@
 }
 
 .daily #circle{
-  background-image:radial-gradient(#6E00FF, #3E00FF 30%); 
+  background-image:radial-gradient(#6E00FF, #3E00FF 30%);
 }
 .daily .speech_label{
   background-color: #3E00FF;
@@ -186,7 +186,7 @@
 }
 
 .random #circle{
-  background-image:radial-gradient(#25e899, #45f8a9 30%); 
+  background-image:radial-gradient(#25e899, #45f8a9 30%);
 }
 .random .speech_label{
   background-color: #25e899;
@@ -207,7 +207,7 @@
   display: none;
 }
 .secret #circle{
-  background-image:radial-gradient(#15003e, #45407e 30%); 
+  background-image:radial-gradient(#15003e, #45407e 30%);
 }
 .secret .speech_label{
   background-color: #15003e;
@@ -226,7 +226,7 @@
 }
 
 .weekly #circle{
-  background-image:radial-gradient(#FFCEd8, #FFCE08 30%); 
+  background-image:radial-gradient(#FFCEd8, #FFCE08 30%);
 }
 .weekly .speech_label{
   background-color: #FFCE08;
@@ -244,7 +244,7 @@
   border:7px dashed #3E00FF;
 }
 .monthly #circle{
-  background-image:radial-gradient(#0fde9c, #0fce7c 30%); 
+  background-image:radial-gradient(#0fde9c, #0fce7c 30%);
 }
 .monthly .speech_label{
   background-color: #0fce7c;
@@ -262,13 +262,13 @@
   border:7px dashed #8E2ABE;
 }
 .weekly #circle:hover{
-  background-image:radial-gradient(#FFCEd8, #FFCE08 70%); 
+  background-image:radial-gradient(#FFCEd8, #FFCE08 70%);
 }
 .daily #circle:hover{
-  background-image:radial-gradient(#6E00FF, #3E00FF 70%); 
+  background-image:radial-gradient(#6E00FF, #3E00FF 70%);
 }
 .monthly #circle:hover{
-  background-image:radial-gradient(#0fde9c, #0fce7c 70%); 
+  background-image:radial-gradient(#0fde9c, #0fce7c 70%);
 }
 .offer_container.random.empty,
 .offer_container.secret.empty{
@@ -636,12 +636,15 @@ body.green.offer_view .announce {
   color: white;
   padding: 5px 10px;
 }
+
 .announce a.accept.btn:hover {
   background-color: #8E2ABE;
 }
+
 .top_offers{
   background-color: #fafafa;
 }
+
 .top_offer{
   border: 1px solid #eee;
   background-color: white;
@@ -654,22 +657,27 @@ body.green.offer_view .announce {
   border-radius: 5px;
   margin-right: 10px;
 }
+
 .top_offer .desc{
   font-size: 14px;
   max-height: 55px;
 }
+
 .top_offer:hover{
   background-color: #fafafa;
 }
+
 .top_offer img{
   float: left;
   width: 30px;
   height: 30px;
   border-radius: 15px;
 }
+
 .top_offer p{
   margin-left: 30px;
 }
+
 .top_offer .tag {
   background: #E8F0FA;
   padding: 4px;

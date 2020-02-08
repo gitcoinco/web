@@ -2043,8 +2043,14 @@ class Activity(SuperModel):
         blank=True,
         null=True
     )
-    kudos = models.ForeignKey(
+    kudos_transfer = models.ForeignKey(
         'kudos.KudosTransfer',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    kudos = models.ForeignKey(
+        'kudos.Token',
         related_name='activities',
         on_delete=models.CASCADE,
         blank=True, null=True
@@ -2196,7 +2202,7 @@ class Activity(SuperModel):
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
         activity['icon'] = icons.get(self.activity_type, 'fa-check-circle')
         if activity.get('kudos'):
-            activity['kudos_data'] = Token.objects.get(pk=self.kudos.kudos_token_cloned_from_id)
+            activity['kudos_data'] = self.kudos
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']
@@ -2542,11 +2548,10 @@ class Profile(SuperModel):
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
-    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
+    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description describing tribe.'))
     automatic_backup = models.BooleanField(default=False, help_text=_('automatic backup profile to cloud storage such as 3Box if the flag is true'))
-
     as_representation = JSONField(default=dict, blank=True)
-
+    tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
     objects = ProfileQuerySet.as_manager()
 
     @property

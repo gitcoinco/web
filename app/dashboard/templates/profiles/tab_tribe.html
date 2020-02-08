@@ -1,12 +1,21 @@
 {% load i18n static avatar_tags humanize %}
 {% if not hidden %}
+
+  {% include 'profiles/tribe/suggest_bounty.html' %}
+
   {% if profile.is_org %}
     <div class="d-flex justify-content-between my-4">
       <h5 class="font-weight-bold">About {{profile.name}}</h5>
       {% if is_my_org %}
-        <div class="">
-          <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
-          <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savetribe="{{profile.handle}}">Save</button>
+        <div>
+          <button class="btn btn-gc-blue btn-sm d-none font-caption px-3" id="save-description-btn" data-savetribe="{{profile.handle}}">
+            <i class="fas fa-save mr-1"></i>
+            SAVE
+          </button>
+          <button class="btn btn-gc-blue btn-sm font-caption px-3" id="edit-btn">
+            <i class="fas fa-edit mr-1"></i>
+            <span>EDIT</span>
+          </button>
         </div>
       {% endif %}
     </div>
@@ -15,8 +24,8 @@
       <div id="description-tribes" class="description-tribes">
         {{profile.tribe_description | safe}}
       </div>
-
     </div>
+
     <div class="my-5">
       <h5 class="font-weight-bold">
         Core Team <span class="badge badge-pill badge--bluelight">{{profile.team.count}}</span>
@@ -67,48 +76,47 @@
       <div class="tribe-members pt-4 mt-4">
         {% for follower in profile.tribe_members %}
           {% if not follower.status == 'rejected' %}
+            <div class="card border-0 card-shadow">
+              <div class="bg-lightblue text-center">
+                <img height="80" width="80" class="rounded-circle mt-n4 mx-auto mb-2 d-block" src="{% avatar_url follower.profile.handle %}" />
+                <span class="badge-tribe badge-tribe_leader {% if not follower.leader %}d-none{% endif %}"><i class="fas fa-star white"></i></span>
 
-              <div class="card border-0 card-shadow">
-                <div class="bg-lightblue text-center">
-                  <img height="80" width="80" class="rounded-circle mt-n4 mx-auto mb-2 d-block" src="{% avatar_url follower.profile.handle %}" />
-                  <span class="badge-tribe badge-tribe_leader {% if not follower.leader %}d-none{% endif %}"><i class="fas fa-star white"></i></span>
-
-                  <span class="d-block text-truncate">{{follower.profile.name}}</span>
-                  <a class="font-body" href="{% url 'profile' follower.profile %}">
-                    {{follower.profile}}
-                  </a>
-                </div>
-                <div class="p-2 card-body d-flex flex-column justify-content-end">
-                  <div class="tag-list mt-1 text-center mb-3">
-                    {% for keyword in follower.profile.keywords %}
-                      <small class="tag-list__item">{{keyword}}</small>
-                    {% endfor %}
-                  </div>
-                  {% if is_my_org and not follower.leader %}
-                    <button class="btn btn-gc-blue btn-sm btn-block" data-tribeleader="{{follower.pk}}">Promote to Tribe Leader</button>
-                  {% elif follower.leader %}
-                    <span class="text-center text-uppercase font-weight-bold p-1 text-highlight-yellow">Tribe Leader</span>
-                  {% endif %}
-                  {% if follower.title %}
-                    <span class="tribe_title text-center p-1 text-highlight-green">{{ follower.title }}</span>
-                  {% endif %}
-                  {% if is_my_org %}
-                    <button class="btn btn-gc-blue btn-sm btm-block" data-tribetitle="{{follower.pk}}">Set Title</button>
-                  {% endif %}
-
-                  {% if user.is_authenticated %}
-                    <div class="d-flex justify-content-between mt-2">
-                      {% if is_staff %}
-                        <button class="btn btn-outline-gc-blue btn-sm flex-grow-1" data-openchat="{{follower.profile}}"> <i class="fas fa-comment-dots"></i></button>
-                      {% endif %}
-                      <a href="{% url 'users_directory' %}?invite={{follower.profile}}" class="btn btn-outline-gc-blue btn-sm ml-2">Invite to Bounty</a>
-                    </div>
-                  {% endif %}
-                </div>
+                <span class="d-block text-truncate">{{follower.profile.name}}</span>
+                <a class="font-body" href="{% url 'profile' follower.profile %}">
+                  {{follower.profile}}
+                </a>
               </div>
+              <div class="p-2 card-body d-flex flex-column justify-content-end">
+                <div class="tag-list mt-1 text-center mb-3">
+                  {% for keyword in follower.profile.keywords %}
+                    <small class="tag-list__item">{{keyword}}</small>
+                  {% endfor %}
+                </div>
+                {% if is_my_org and not follower.leader %}
+                  <button class="btn btn-gc-blue btn-sm btn-block" data-tribeleader="{{follower.pk}}">Promote to Tribe Leader</button>
+                {% elif follower.leader %}
+                  <span class="text-center text-uppercase font-weight-bold p-1 text-highlight-yellow">Tribe Leader</span>
+                {% endif %}
 
+                {% if follower.title %}
+                  <span class="tribe_title text-center p-1 text-highlight-green">{{ follower.title }}</span>
+                {% endif %}
+
+                {% if is_my_org %}
+                  <button class="btn btn-gc-blue btn-sm btm-block font-body" data-tribetitle="{{follower.pk}}">Set Title</button>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                  <div class="d-flex justify-content-between mt-2">
+                    {% if is_staff %}
+                      <button class="btn btn-outline-gc-blue btn-sm flex-grow-1" data-openchat="{{follower.profile}}"> <i class="fas fa-comment-dots"></i></button>
+                    {% endif %}
+                    <a href="{% url 'users_directory' %}?invite={{follower.profile}}" class="btn btn-outline-gc-blue btn-sm ml-2">Invite to Bounty</a>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
           {% endif %}
-
         {% endfor %}
       </div>
     </div>
@@ -131,12 +139,7 @@
             {% endif %}
           </div>
         </div>
-
       {% endfor %}
     </div>
-
   {% endif %}
-
-
-
 {% endif %}
