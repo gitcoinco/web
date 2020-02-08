@@ -89,10 +89,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <div class="row">
             <div class="col pt-2">
               <div class="alert bs-alert alert-{{announce.style}} alert-dismissible " role="alert">
-                <i class="fas fa-info mr-3"></i>
-                <strong>
-                  {{announce.title}}
-                </strong> ({{announce.valid_from | naturaltime}}) -
+                <div>
+                  <strong>{{announce.title}}</strong> <small>{{announce.valid_from | naturaltime}}</small>
+                </div>
                 {{announce.desc | safe}}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
