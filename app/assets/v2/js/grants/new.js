@@ -201,6 +201,7 @@ const init = () => {
             formData.append('network', $('#network').val());
             formData.append('team_members[]', $('#input-team_members').val());
             formData.append('categories[]', $('#input-categories').val());
+            formData.append('grant_type', $('#input-grant_type').val());
             saveGrant(formData, false);
 
             document.issueURL = linkURL;

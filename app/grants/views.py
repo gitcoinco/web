@@ -154,15 +154,7 @@ def grants(request):
         network=network, hidden=False, grant_type='media'
     ).count()
 
-    categories = [category[0] for category in basic_grant_categories()]
-    if grant_type == 'media':
-        categories = [
-            'education',
-            'twitter',
-            'reddit',
-            'blog',
-            'notes',
-        ]
+    categories = [category[0] for category in basic_grant_categories(grant_type)]
 
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
@@ -214,16 +206,15 @@ def grants(request):
 
     return TemplateResponse(request, 'grants/index.html', params)
 
-def add_form_categories_to_grant(form_category_ids, grant):
+def add_form_categories_to_grant(form_category_ids, grant, grant_type):
     form_category_ids = [int(i) for i in form_category_ids if i != '']
 
-    model_categories = basic_grant_categories('tech')
+    model_categories = basic_grant_categories(grant_type)
     model_categories = [ category[0] for category in model_categories ]
     selected_categories = [model_categories[i] for i in form_category_ids]
 
-    '''todo:fix'''
     for category in selected_categories:
-        grant_category = GrantCategory.objects.get_or_create(category=category)
+        grant_category = GrantCategory.objects.get_or_create(category=category)[0]
         grant.categories.add(grant_category)
 
 @csrf_exempt
@@ -288,17 +279,16 @@ def grant_details(request, grant_id, grant_slug):
             team_members.append(str(grant.admin_profile.id))
             grant.team_members.set(team_members)
 
-            form_category_ids = request.POST.getlist('edit-categories[]')
-
-            '''Overwrite the existing categories'''
-            grant.categories.clear()
-
-            add_form_categories_to_grant(form_category_ids, grant)
-
             if 'edit-description' in request.POST:
                 grant.description = request.POST.get('edit-description')
                 grant.description_rich = request.POST.get('edit-description_rich')
             grant.save()
+
+            form_category_ids = request.POST.getlist('edit-categories[]')
+
+            '''Overwrite the existing categories and then add the new ones'''
+            grant.categories.clear()
+            add_form_categories_to_grant(form_category_ids, grant, grant.grant_type)
 
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
@@ -377,6 +367,7 @@ def grant_new(request):
             logo = request.FILES.get('input_image', None)
             receipt = json.loads(request.POST.get('receipt', '{}'))
             team_members = request.POST.getlist('team_members[]')
+            grant_type = request.POST.get('grant_type', 'tech')
 
             grant_kwargs = {
                 'title': request.POST.get('title', ''),
@@ -396,7 +387,7 @@ def grant_new(request):
                 'logo': logo,
                 'hidden': False,
                 'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
-
+                'grant_type': grant_type
             }
             grant = Grant.objects.create(**grant_kwargs)
             new_grant_admin(grant)
@@ -413,7 +404,8 @@ def grant_new(request):
             form_category_ids = request.POST.getlist('categories[]')
             form_category_ids = (form_category_ids[0].split(','))
             form_category_ids = list(set(form_category_ids))
-            add_form_categories_to_grant(form_category_ids, grant)
+
+            add_form_categories_to_grant(form_category_ids, grant, grant_type)
 
             return JsonResponse({
                 'success': True,
