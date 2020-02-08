@@ -243,9 +243,6 @@
           <a href="{{row.kudos_data.url}}">
             <img src="{% static row.kudos_data.image %}" alt="{% static row.kudos_data.name %}" class="mw-100">
           </a>
-          <a href="/kudos/{{row.kudos.kudos_token_cloned_from_id}}/{{row.kudos.kudos_token_cloned_from.name}}">
-            <img class="activity_feed_kudos_image" src="{{row.kudos_data.preview_img_url }}" alt="">
-          </a>
         {% elif row.activity_type == 'leaderboard_rank' %}
           <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100 mw-100">
         {% elif row.metadata.quest_reward %}

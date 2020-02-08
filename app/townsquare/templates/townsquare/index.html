@@ -162,7 +162,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     {% endfor %}
                   </ul>
                   <div class="townsquare_nav-list_footer">
-                    <a href="#">Explore Tribes...</a>
+                    <a href="{% url "users_directory" %}?persona=Organization">Explore Tribes...</a>
                   </div>
                 </div>
               </div>
@@ -220,7 +220,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%} mb-4">
                   <div class="d-flex align-items-center mb-2">
                     <div class="offer_icon border">
+                      {% if type == 'secret'%}
+                        <i class="fas fa-key"></i>
+                      {% elif type == 'daily'%}
                         <i class="far fa-clock"></i>
+                      {% elif type == 'weekly'%}
+                        <i class="far fa-calendar-check"></i>
+                      {% elif type == 'monthly'%}
+                        <i class="fas fa-check"></i>
+                      {% elif type == 'other'%}
+                        <i class="fas fa-parachute-box"></i>
+                      {% elif type == 'top'%}
+                        <i class="fas fa-fire-alt"></i>
+                      {% elif type == 'random'%}
+                        <i class="fa-random fas"></i>
+                      {% else %}
+                        <i class="far fa-clock"></i>
+                      {% endif %}
                     </div>
                     <h4 class="my-0 ml-2 p-0 offer_container_type grey">{{type|title}} Action</h4>
                   </div>
