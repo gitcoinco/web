@@ -1,6 +1,6 @@
 .announce{
   border-radius: 5px;
-  width: 80%;
+
   color: black;
   padding: 5px 10px;
   margin: 10px auto;
@@ -9,9 +9,7 @@
   color: black;
   font-weight: bold;
 }
-.announce .row{
-  width: 100%;
-}
+
 .announce .remove{
   position: absolute;
   right: 13%;
@@ -687,11 +685,6 @@ body.green.offer_view .announce {
   display: inline-block;
   margin-bottom: 2px;
   margin-top: 2px;
-}
-.townsquare_main {
-  margin-top: -1rem;
-  margin-bottom: -4rem;
-  padding: 1rem 0;
 }
 
 .townsquare_main .search-area {
