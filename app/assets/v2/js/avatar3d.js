@@ -142,6 +142,12 @@ $(document).ready(function() {
 
     save3DAvatar(() => {
       _alert({ message: gettext('The avatar has been saved to GitCoin profile. Now upload to 3Box...') }, 'success');
+      if (window.syncTo3Box) {
+        syncTo3Box({
+          onLoading,
+          model: 'custom avatar'
+        });
+      }
     });
 
     const onLoading = (loading) => {
@@ -151,13 +157,6 @@ $(document).ready(function() {
         unloading_button($('#save-3d-avatar'));
       }
     };
-
-    if (window.syncTo3Box) {
-      syncTo3Box({
-        onLoading,
-        model: 'custom avatar'
-      });
-    }
   }
   $('#upload-3d-avatar').click(function() {
     upload3DAvatars();

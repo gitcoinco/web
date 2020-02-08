@@ -447,6 +447,12 @@ function uploadAvatars() {
 
   saveAvatar(() => {
     _alert({ message: gettext('The avatar has been saved to GitCoin profile. Now upload to 3Box...') }, 'success');
+    if (window.syncTo3Box) {
+      syncTo3Box({
+        onLoading,
+        model: 'custom avatar'
+      });
+    }
   });
 
   const onLoading = (loading) => {
@@ -457,13 +463,6 @@ function uploadAvatars() {
       unloading_button($('#save-avatar'));
     }
   };
-
-  if (window.syncTo3Box) {
-    syncTo3Box({
-      onLoading,
-      model: 'custom avatar'
-    });
-  }
 }
 
 changeSection('Head');
