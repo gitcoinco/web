@@ -190,7 +190,7 @@ def index(request):
             'alt': 'gitcoin scope'
         },
         {
-            'link': 'https://medium.com/gitcoin/commit-reveal-scheme-on-ethereum-25d1d1a25428',
+            'link': 'https://gitcoin.co/blog/commit-reveal-scheme-on-ethereum/',
             'img': static("v2/images/medium/2.png"),
             'title': _('Commit Reveal Scheme on Ethereum'),
             'description': _('Hiding Actions and Generating Random Numbers'),
@@ -1545,7 +1545,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
 
     tutorials = [{
         'img': static('v2/images/help/firehose.jpg'),
-        'url': 'https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5',
+        'url': 'https://gitcoin.co/blog/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster/',
         'title': _('Leverage Gitcoin’s Firehose of Talent to Do More Faster'),
     }, {
         'img': static('v2/images/tools/api.jpg'),
