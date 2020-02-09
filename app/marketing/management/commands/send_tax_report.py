@@ -130,9 +130,9 @@ def create_csv_record(profiles_obj, wt_obj, worker_type, us_workers, value_usd, 
                 if counter_party_gh_username not in us_workers.keys():
                     us_workers[counter_party_gh_username] = 0
                 if worker_type == BOUNTY:
-                    us_workers[counter_party_gh_username] += wt_obj._val_usd_db
+                    us_workers[counter_party_gh_username] += value_usd
                 elif worker_type == TIP:
-                    us_workers[counter_party_gh_username] += wt_obj.value_in_usdt
+                    us_workers[counter_party_gh_username] += value_usd
                 elif worker_type == GRANT:
                     us_workers[counter_party_gh_username] += value_usd
         else:
@@ -259,75 +259,81 @@ class Command(BaseCommand):
                                             created_on__year=TAX_YEAR,
                                             value_usd__gt=0
                                             ).exclude(from_profile=F('to_profile'))
-        profiles = {}
+        funders = {}
         for e in total_earning:
-            if e.from_profile == None:
+            funder = e.from_profile
+            if funder == None:
                 print('from_profile not defined for earning:')
                 print(e)
+                print('skip it')
                 continue
-            user = e.from_profile.handle
-            if user not in profiles:
-                profiles[user] = {}
-                profiles[user]['csv_record'] = []
-                profiles[user]['us_workers'] = {}
-                profiles[user]['email'] = e.from_profile.email
-                profiles[user]['name'] = e.from_profile.name
-                profiles[user]['address'] = e.from_profile.address
-                profiles[user]['location'] = get_profile_location(e.from_profile)[0]
+            user = funder.handle
+            if user == None:
+                print('username not defined for this profile. skip this earning.')
+                continue
+            if user not in funders:
+                funders[user] = {}
+                funders[user]['csv_record'] = []
+                funders[user]['us_workers'] = {}
+                funders[user]['email'] = funder.email
+                funders[user]['name'] = funder.name
+                funders[user]['address'] = funder.address
+                funders[user]['location'] = get_profile_location(funder)[0]
             # Bounty
             if e.source_type_id==b_source_type.id:
                 try:
                     bf_obj = BountyFulfillment.objects.get(pk=e.source_id)
                 except BountyFulfillment.DoesNotExist:
-                    print("BountyFulfillment does not exist, skip this record.")
+                    print("BountyFulfillment does not exist, skip this earning.")
                     continue
                 try:
                     b_obj = Bounty.objects.get(pk=bf_obj.bounty_id)
                 except Bounty.DoesNotExist:
-                    print("Bounty does not exist, skip this record.")
+                    print("Bounty does not exist, skip this earning.")
                     continue
-                record, profiles[user]['us_workers'] = create_csv_record(
+                record, funders[user]['us_workers'] = create_csv_record(
                                                                         profiles_all, 
                                                                         b_obj, 
                                                                         BOUNTY, 
-                                                                        profiles[user]['us_workers'], 
+                                                                        funders[user]['us_workers'], 
                                                                         e.value_usd, 
                                                                         b_ff=bf_obj
                                                                         )
-                profiles[user]['csv_record'].append(record)
+                funders[user]['csv_record'].append(record)
             # Tips
             elif e.source_type_id==t_source_type.id:
                 try:
                     t_obj = Tip.objects.get(pk=e.source_id)
                 except Tip.DoesNotExist:
-                    print("Tip does not exist, skip this record.")
+                    print("Tip does not exist, skip this earning.")
                     continue
-                record, profiles[user]['us_workers'] = create_csv_record(
+                record, funders[user]['us_workers'] = create_csv_record(
                                                                         profiles_all, 
                                                                         t_obj, 
                                                                         TIP, 
-                                                                        profiles[user]['us_workers'], 
+                                                                        funders[user]['us_workers'], 
                                                                         e.value_usd
                                                                         )
-                profiles[user]['csv_record'].append(record)
+                funders[user]['csv_record'].append(record)
             # Grants
             elif e.source_type_id==g_source_type.id:
                 try:
                     g_obj = Grant.objects.get(pk=e.source_id)
                 except Grant.DoesNotExist:
-                    print("Grant does not exist, skip this record.")
+                    print("Grant does not exist, skip this earning.")
                     continue
-                record, profiles[user]['us_workers'] = create_csv_record(
+                record, funders[user]['us_workers'] = create_csv_record(
                                                                         profiles_all, 
                                                                         g_obj, 
                                                                         GRANT, 
-                                                                        profiles[user]['us_workers'], 
+                                                                        funders[user]['us_workers'], 
                                                                         e.value_usd
                                                                         )
-                profiles[user]['csv_record'].append(record)
+                funders[user]['csv_record'].append(record)
             else:
-                print('Source id not valid')
-        for username, info in profiles.items():
+                print('Source type id not valid')
+                print(e.source_type_id)
+        for username, info in funders.items():
             if len(info['csv_record']) > 0:
                 # check for create 1099
                 username_path = os.path.join(os.getcwd(), TAX_REPORT_PATH, username)
