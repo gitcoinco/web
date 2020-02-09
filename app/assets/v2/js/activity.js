@@ -340,7 +340,6 @@ $(document).ready(function() {
       for (var i = 0; i < response['comments'].length; i++) {
         var comment = sanitizeAPIResults(response['comments'])[i];
         var the_comment = comment['comment'];
-
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
@@ -353,7 +352,7 @@ $(document).ready(function() {
           <div class="activity_comments_main px-3">
             <div class="mb-1 d-flex justify-content-between">
               <span>
-                <b>${comment['profile_handle']}</b>
+                <b>${comment['name']}</b>
                 <span class="grey">@${comment['profile_handle']}</span>
                 ${show_tip ? `
                 <a href="#" class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> ( <i class="fab fa-ethereum"></i> <span class="amount">${Math.round(100 * comment['tip_count_eth']) / 100}</span>)
@@ -382,7 +381,7 @@ $(document).ready(function() {
         </div>
         <div class="pl-3 flex-grow-1 text-right">
           <input type="text" class="form-control bg-lightblue font-caption" placeholder="Enter comment">
-          <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-3 post_comment">Post comment</a>
+          <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
         </div>
       </div>
       `;

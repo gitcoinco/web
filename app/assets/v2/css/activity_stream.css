@@ -183,13 +183,13 @@ a .sup {
   .activity-info {
     text-align: center;
   }
+
   #activities .organizations{
     text-align: center;
     margin: 0px auto;
   }
-  .activity_stream .activity .avatar.secondary_avatar {
-    position: unset;
-    margin-left: -20px;
-    margin-top: 20px;
-  }
+}
+
+.activity_stream .dropdown-menu {
+  min-width: 7rem;
 }

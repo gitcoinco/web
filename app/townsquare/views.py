@@ -250,6 +250,7 @@ def api(request, activity_id):
         response['comments'] = []
         for comment in comments:
             comment_dict = comment.to_standard_dict(properties=['profile_handle'])
+            comment_dict['name'] = activity.profile.name
             comment_dict['tip_count_eth'] = comment.tip_count_eth
             comment_dict['tip_able'] = comment.tip_able
             response['comments'].append(comment_dict)

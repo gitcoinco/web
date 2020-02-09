@@ -751,6 +751,10 @@ body.green.offer_view .announce {
   max-width: 45px;
 }
 
+.activity_stream .activity-img img {
+  max-height: 4rem;
+}
+
 .activity_stream .activity_comments .comment_container.filled
 .activity-avatar img {
   height: 30px;

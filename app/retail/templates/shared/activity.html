@@ -21,7 +21,7 @@
     <div class="d-flex flex-column">
       <div class="activity-avatar">
         <a href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
-          <img class="avatar rounded-circle" src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% endif %}{% endif %}"/>
+          <img class="avatar rounded-circle" src="{% if row.profile.active_avatar %}{{ row.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{{row.profile.handle}}{% endif %}"/>
         </a>
         <div class="position-relative">
           {% if row.secondary_avatar_url %}
@@ -168,36 +168,6 @@
       {% endif %}
       </div>
       <div class="activity-tags activity-tag-first align-items-center">
-        {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
-          {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name %}
-            <div class="tag token">
-              <p class="font-smaller-6">
-                {% if row.value_in_token_disp %}
-                  <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
-                {% elif row.metadata.value_in_eth %}
-                  <span class="value_in_eth">{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
-                {% elif row.metadata.value_in_token and row.metadata.token_name %}
-                  <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
-                {% else %}
-                {% endif %}
-              </p>
-            </div>
-          {% endif %}
-          {% if row.value_in_usdt_now %}
-            <div class="tag usd">
-              <p class="font-smaller-6">
-                <span>{{ row.value_in_usdt_now }} USD</span>
-              </p>
-            </div>
-          {% endif %}
-        {% endif %}
-        {% if row.bounty.network and row.bounty.network != 'mainnet' %}
-          <div class="tag network_warning">
-            <p>
-              <span>{{ row.bounty.network }}</span>
-            </p>
-          </div>
-        {% endif %}
         <span class="mx-0">
           {% if not hide_likes %}
             <span class="mr-2">
@@ -207,38 +177,97 @@
           {% endif %}
 
           {% if not hide_likes %}
-          {% if is_alpha_tester or row.metadata.tip_able %}
-            <a data-pk={{row.pk}} data-username={{row.profile.handle}} class="tip_activity" href="#"  data-toggle="tooltip" title="This activity feed has generated {{ row.tip_count_eth|floatformat:2 }} ETH (${{row.tip_count_usd|floatformat:2}}) in Tips.">
-              <i class="fab fa-ethereum" ></i> <span class="amount">{{ row.tip_count_eth|floatformat:2}}</span> |
+            {% if is_alpha_tester or row.metadata.tip_able %}
+              <a data-pk={{row.pk}} data-username={{row.profile.handle}} class="tip_activity" href="#"
+              data-toggle="tooltip" title="This activity feed has generated {{ row.tip_count_eth|floatformat:2 }} ETH (${{row.tip_count_usd|floatformat:2}}) in Tips."
+              >
+                <i class="fab fa-ethereum" ></i>
+                <span class="amount">{{ row.tip_count_eth|floatformat:2}}</span> |
+              </a>
+            {% endif %}
+
+            <a href=# title="{{row.likes_title}}Click to {% if row.liked %}unlike{% else %}like{%endif%} feed item."
+              data-affirmative=liked data-negative=unliked data-state="{% if row.liked %}liked{% else %}unliked{%endif%}"
+              data-pk={{row.pk}} class="like_activity mr-2" data-action='like' data-toggle="tooltip"
+            >
+              <span class="action {% if row.liked %}open{%endif%}">
+                <i class="far fa-heart grey"></i>
+              </span>
+              <span class="num grey">{{row.likes}}</span>
             </a>
-          {% endif %}
 
-            <a href=# data-action='like' data-toggle="tooltip" title="{{row.likes_title}}Click to {% if row.liked %}unlike{% else %}like{%endif%} feed item." data-affirmative=liked data-negative=unliked data-state="{% if row.liked %}liked{% else %}unliked{%endif%}" data-pk={{row.pk}} class="like_activity mr-2"><span class="action {% if row.liked %}open{%endif%}"><i class="far fa-heart grey"></i></span><span class="num grey">{{row.likes}}</span></a>
+            <a href=# data-pk={{row.pk}} class="comment_activity mr-2" data-toggle="tooltip"
+              title="Comment on this feed item." {% if row.comments %} data-open="true" {% endif %} >
+              <span class="action"><i class="far fa-comment grey"></i></span>
+              <span class="num grey">{{row.comments}}</span>
+            </a>
+          </span>
 
-            <a href=# data-pk={{row.pk}} class="comment_activity mr-2" data-toggle="tooltip" title="Comment on this feed item." {% if row.comments %} data-open="true" {% endif %} ><span class="action"><i class="far fa-comment grey"></i></span><span class="num grey">{{row.comments}}</span></a></span>
+          <button class="btn-clean" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-ellipsis-h"></i>
+          </button>
 
-            <button class="btn-clean" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-            <div class="dropdown-menu dropdown-menu-right shadow">
-              <a class="action copy_activity mr-2 dropdown-item" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}><i class="fas fa-link"></i> Copy Link</a>
-              <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}} class="flag_activity mr-2 dropdown-item"><span class="action {% if row.flagged %}open{%endif%}"><i class="far fa-flag"></i></span> Report</a>
-              {% if row.profile.handle == github_handle %}
-              <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity" ><i class="fas fa-trash"></i> Delete</a>
-              {% endif %}
+
+          <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
+            <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
+              <i class="fas fa-link mr-2"></i> Copy Link
+            </a>
+            <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged
+              data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}}
+              class="flag_activity mr-2 dropdown-item px-3 font-smaller-5"
+            >
+              <span class="action px-0 {% if row.flagged %}open{%endif%}"><i class="far fa-flag mr-2"></i></span> Report
+            </a>
+            {% if row.profile.handle == github_handle %}
+            <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity px-3 font-smaller-5">
+              <i class="fas fa-trash mr-2"></i> Delete
+            </a>
+            {% endif %}
+          </div>
+
+          {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
+            {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name %}
+              <div class="tag token mr-2">
+                <p class="font-smaller-6 mb-0">
+                  {% if row.value_in_token_disp %}
+                    <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
+                  {% elif row.metadata.value_in_eth %}
+                    <span class="value_in_eth">{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
+                  {% elif row.metadata.value_in_token and row.metadata.token_name %}
+                    <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
+                  {% endif %}
+                </p>
+              </div>
+            {% endif %}
+          {% if row.value_in_usdt_now %}
+            <div class="tag usd mr-2">
+              <p class="font-smaller-6 mb-0">
+                <span>{{ row.value_in_usdt_now }} USD</span>
+              </p>
             </div>
-
-            <i class="fas fa-circle-notch fa-spin loading blue hidden"></i>
-            <i class="fas fa-exclamation-triangle error red hidden"></i>
           {% endif %}
+        {% endif %}
+        {% if row.bounty.network and row.bounty.network != 'mainnet' %}
+          <div class="tag network_warning mr-2">
+            <p class="mb-0 font-smaller-6">
+              <span>{{ row.bounty.network }}</span>
+            </p>
+          </div>
+        {% endif %}
+
+          <i class="fas fa-circle-notch fa-spin loading blue hidden"></i>
+          <i class="fas fa-exclamation-triangle error red hidden"></i>
+        {% endif %}
 
       </div>
     </div>
-    <div class="d-flex flex-column">
+    <div class="d-none d-sm-flex flex-column">
       <div class="activity_time font-smaller-4 text-right">
         {% if not hide_date %}
           {{ row.created_human_time }}
         {% endif %}
       </div>
-      <div class="mt-3 text-right pr-3">
+      <div class="mt-3 text-right pr-3 activity-img">
         {% if row.kudos %}
           <a href="{{row.kudos_data.url}}">
             <img src="{% static row.kudos_data.image %}" alt="{% static row.kudos_data.name %}" class="mw-100">
@@ -248,7 +277,7 @@
         {% elif row.metadata.quest_reward %}
           <img src="{{row.metadata.quest_reward}}" alt="" class="w-100 mw-100">
         {% else %}
-          <i class="far {{ row.icon }} last-icon"></i>
+          <i class="{{ row.icon }} last-icon"></i>
         {% endif %}
       </div>
     </div>
