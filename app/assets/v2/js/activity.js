@@ -340,6 +340,7 @@ $(document).ready(function() {
       for (var i = 0; i < response['comments'].length; i++) {
         var comment = sanitizeAPIResults(response['comments'])[i];
         var the_comment = comment['comment'];
+
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
