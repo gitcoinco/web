@@ -255,9 +255,10 @@ def api(request, activity_id):
         response['comments'] = []
         for comment in comments:
             comment_dict = comment.to_standard_dict(properties=['profile_handle'])
-            comment_dict['name'] = activity.profile.name or activity.profile.handle
+            comment_dict['handle'] = comment.profile.handle
             comment_dict['tip_count_eth'] = comment.tip_count_eth
             comment_dict['tip_able'] = comment.tip_able
+            comment_dict['name'] = comment.profile.data.get('name', activity.profile.handle)
             response['comments'].append(comment_dict)
         return JsonResponse(response)
 
