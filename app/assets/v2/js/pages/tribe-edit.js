@@ -204,16 +204,16 @@ $('[data-createbountyrequest]').on('click', function() {
         _alert('Bounty Request has been created');
         location.reload();
       } else {
-        _alert('Error creating bounty request. Try again later', 'error');
+        _alert(`Error creating bounty request as ${response.message}`, 'error');
         console.error(response.message);
       }
 
     }).fail(function(error) {
-      _alert('Error creating bounty request. Try again later', 'error');
+      _alert(`Error creating bounty request as ${error}`, 'error');
       console.error('error: unable to creating bounty request', error);
     });
   }).catch(error => {
-    _alert(`Error creating bounty request. Try again later. ${error}`, 'error');
+    _alert(`Error creating bounty request as ${error}`, 'error');
     console.error('error: unable to creating bounty request', error);
   });
 });
@@ -238,12 +238,12 @@ $('[data-cancelbountyrequest]').on('click', function() {
       _alert('Bounty Request has been rejected');
       $(`#${bounty_request_id}`).hide();
     } else {
-      _alert('Error rejecting bounty request. Try again later', 'error');
+      _alert(`Error rejecting bounty request as ${response.message}`, 'error');
       console.error(response.message);
     }
 
   }).fail(function(error) {
-    _alert('Error rejecting bounty request. Try again later', 'error');
+    _alert(`Error rejecting bounty request. ${error}`, 'error');
     console.error('error: unable to reject bounty request', error);
   });
 });

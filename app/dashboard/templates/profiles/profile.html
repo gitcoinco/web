@@ -17,6 +17,7 @@
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
     <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %} />
+    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
   </head>
   <body class="interior {{ active }} g-font-muli">
@@ -61,7 +62,9 @@
           {% if not hidden %}
             <div class="col-12 col-lg-6 profile-header__main-infos">
               {% include 'profiles/header_avatar.html' %}
+              {% comment %}
               {% include 'profiles/header_sync_profile.html' %}
+              {% endcomment %}
               {% include 'profiles/header_details.html' %}
             </div>
             {% if profile.is_org %}
@@ -97,11 +100,14 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
     {% include 'shared/current_profile.html' %}
-
+    {% if tab == 'activity' %}
+      {% include 'shared/tip_dependancies.html' %}
+    {% else %}
+      <script src="/dynamic/js/tokens_dynamic.js"></script>
+      <script src="{% static "v2/js/tokens.js" %}"></script>
+    {% endif %}
     <!-- jQuery -->
     <script src="{% static "v2/js/abi.js" %}"></script>
-    <script src="/dynamic/js/tokens_dynamic.js"></script>
-    <script src="{% static "v2/js/tokens.js" %}"></script>
     <script>
       $('[data-toggle="popover"]').popover()
       $('[data-toggle="tooltip"]').bootstrapTooltip();
@@ -120,7 +126,7 @@
       {% if profile.preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;
       {% endif %}
-      {% if profile.automatic_backup %}
+      {% if profile.automatic_backup and is_editable %}
         window.profile_automatic_backup = true;
       {% endif %}
     </script>

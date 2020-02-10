@@ -72,6 +72,8 @@ def is_grant_team_member(grant, profile):
         profile (dashboard.models.Profile): The current user's profile.
 
     """
+    if not profile:
+        return False
     is_team_member = False
     if grant.admin_profile == profile:
         is_team_member = True

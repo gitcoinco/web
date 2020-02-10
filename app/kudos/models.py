@@ -395,7 +395,7 @@ def psave_token(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
-    if instance.pk:
+    if instance.pk and instance.gen == 1 and not instance.hidden:
         SearchResult.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='kudos', model='token'),
             source_id=instance.pk,
@@ -655,7 +655,7 @@ class TokenRequest(SuperModel):
             'artwork_url': self.artwork_url,
         }
         kudos_contract = KudosContract(network=self.network)
-        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1)
+        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1) * 2
         tx_id = mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True, dont_wait_for_kudos_id_return_tx_hash_instead=True)
         self.processed = True
         self.approved = True
