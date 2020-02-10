@@ -110,7 +110,6 @@ a .sup {
 .comment_activity:hover,
 .copy_activity:hover {
   text-decoration: none;
-  font-weight: bolder;
 }
 
 .activity_stream .avatar {
