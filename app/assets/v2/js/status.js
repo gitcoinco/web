@@ -78,7 +78,7 @@ $(document).ready(function() {
   });
 
   if ($('#textarea').length) {
-    if($('#textarea').offset().top < 400){
+    if ($('#textarea').offset().top < 400) {
       $('#textarea').focus();
     }
   }
