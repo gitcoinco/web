@@ -444,15 +444,14 @@ $(document).ready(function() {
       }
     });
 
-    $('.activity.wall_post .activity-status b, .activity.status_update .activity-status b').each(function() {
+    $('.activity_detail_content span').each(function() {
       if (!$(this).hasClass('clean')) {
         let new_text = $(this).text();
 
-        new_text = new_text.replace('&lt;', '_');
-        new_text = new_text.replace('&gt;', '_');
-        new_text = new_text.replace('>', '_');
-        new_text = new_text.replace(/&gt</g, '_');
-        new_text = new_text.replace(/&lt</g, '_');
+        new_text = new_text.replace(/\</g, '_');
+        new_text = new_text.replace(/\>/g, '_');
+        new_text = new_text.replace(/&gt/g, '_');
+        new_text = new_text.replace(/&lt/g, '_');
         new_text = new_text.replace(/\</g, '_');
         new_text = new_text.replace(/\>/g, '_');
         new_text = new_text.replace(/\n/g, '<BR>');
