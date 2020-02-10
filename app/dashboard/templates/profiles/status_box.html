@@ -1,17 +1,18 @@
 {% load static %}
-<div class="container-fluid mt-2" id="status">
+<div class="container-fluid mt-4" id="status">
   {% csrf_token %}
   <div class="position-relative">
     <textarea
       id="textarea"
-      class="form__input p-2"
+      class="form__input p-2 font-body"
       placeholder="{% if placeholder %}{{placeholder}}{%else%}What are you thinking?{%endif%}"
       style="resize: none"
       data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
     ></textarea>
+    <input type="hidden" name="what" value="{{what}}:{{whatid}}">
+    <div id="textarea-dropdown" class="dropdown-menu" style="top: initial; left: initial;"></div>
     <button id="emoji-button" class="btn btn-clean position-absolute" style="bottom: 0.2em; right: 0;"><i class="far fa-smile"></i></button>
   </div>
-  <input type="hidden" name="what" value="{{what}}:{{whatid}}">
   <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
     {% if tags %}
       {% for tag in tags %}
@@ -22,9 +23,11 @@
         </label>
       {% endfor %}
     {% endif %}
-    <button class="btn btn-gc-blue font-smaller-7" id="btn_post" disabled="true">
-      SHARE <i class="fas fa-share"></i>
-    </button>
+    <div class="text-right mb-2">
+      <button class="btn btn-gc-blue font-smaller-7 font-weight-bold" id="btn_post" disabled="true">
+        POST
+      </button>
+    </div>
   </div>
-
 </div>
+<input type="hidden" name="what" value="{{what}}:{{whatid}}">

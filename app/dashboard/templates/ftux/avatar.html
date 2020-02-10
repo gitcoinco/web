@@ -183,6 +183,7 @@
         <button type="button" id="save-3d-avatar" class="button button--primary">
           Save Avatar
         </button>
+        {% if possible_skin_tones|length %}
         <div id=skin_tones class=tones>
           Skin:
           {% for st in possible_skin_tones %}
@@ -191,6 +192,8 @@
           </li>
           {% endfor %}
         </div>
+        {% endif %}
+        {% if possible_hair_tones|length %}
         <div id=hair_tones class=tones>
           Hair:
           {% for ht in possible_hair_tones %}
@@ -199,6 +202,7 @@
           </li>
           {% endfor %}
         </div>
+        {% endif %}
       <div class="action-buttons">
         {% for category, ids in 3d_avatar_params.by_category.items %}
           <a href="#" class="select_avatar_type {{category}}" data-target="{{category}}">{{category}}</a>

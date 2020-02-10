@@ -32,10 +32,6 @@ a {
   background-size: cover;
 }
 
-.dropdown-menu {
-  z-index: 9999999999;
-}
-
 .navbar-dark .navbar-nav .nav-link {
   border-radius: 2px;
   color: white;
@@ -548,7 +544,7 @@ input[type=text].loading {
 
 /* The alert message box */
 
-.alert {
+.alert:not(.bs-alert) {
   align-items: center;
   background-color: #3E00FF;
   border-radius: 0px;
@@ -585,7 +581,7 @@ input[type=text].loading {
   top: 1px;
 }
 
-.alert a {
+.alert:not('.bs-alert') a {
   color: white;
   text-decoration: underline;
 }

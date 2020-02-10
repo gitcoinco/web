@@ -2161,18 +2161,18 @@ class Activity(SuperModel):
     def view_props(self):
         from kudos.models import Token
         icons = {
-            'new_tip': 'fa-thumbs-up',
-            'start_work': 'fa-lightbulb',
-            'new_bounty': 'fa-money-bill-alt',
-            'work_done': 'fa-check-circle',
-            'status_update': 'fa-user',
-            'new_kudos': 'fa-thumbs-up',
-            'new_grant': 'fa-envelope',
-            'update_grant': 'fa-edit',
-            'killed_grant': 'fa-trash',
-            'new_grant_contribution': 'fa-coins',
-            'new_grant_subscription': 'fa-calendar-check',
-            'killed_grant_contribution': 'fa-calendar-times',
+            'new_tip': 'far fa-thumbs-up',
+            'start_work': 'far fa-lightbulb',
+            'new_bounty': 'far fa-money-bill-alt',
+            'work_done': 'far fa-check-circle',
+            'status_update': 'far fa-user',
+            'new_kudos': 'far fa-thumbs-up',
+            'new_grant': 'far fa-envelope',
+            'update_grant': 'far fa-edit',
+            'killed_grant': 'fas fa-trash',
+            'new_grant_contribution': 'fas fa-donate',
+            'new_grant_subscription': 'far fa-calendar-check',
+            'killed_grant_contribution': 'far fa-calendar-times',
         }
 
         # load up this data package with all of the information in the already existing objects
@@ -2200,7 +2200,7 @@ class Activity(SuperModel):
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
-        activity['icon'] = icons.get(self.activity_type, 'fa-check-circle')
+        activity['icon'] = icons.get(self.activity_type, 'far fa-check-circle')
         if activity.get('kudos'):
             activity['kudos_data'] = self.kudos
         obj = self.metadata

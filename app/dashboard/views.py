@@ -866,16 +866,18 @@ def onboard(request, flow=None):
             profile.save()
         return JsonResponse({'OK': True})
 
-    theme = request.GET.get('theme', '3d')
+    theme = request.GET.get('theme', 'unisex')
     from avatar.views_3d import get_avatar_attrs
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
     avatar_options = [
         ('classic', '/onboard/profile?steps=avatar&theme=classic'),
-        ('3d', '/onboard/profile?steps=avatar&theme=3d'),
-        ('bufficorn', '/onboard/profile?steps=avatar&theme=bufficorn'),
+        ('unisex', '/onboard/profile?steps=avatar&theme=unisex'),
         ('female', '/onboard/profile?steps=avatar&theme=female'),
+        ('bufficorn', '/onboard/profile?steps=avatar&theme=bufficorn'),
     ]
+    if request.user.is_staff:
+        avatar_options.append(('bot', '/onboard/profile?steps=avatar&theme=bot'))
 
     params = {
         'title': _('Onboarding Flow'),
