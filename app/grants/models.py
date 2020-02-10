@@ -591,8 +591,11 @@ class Subscription(SuperModel):
     def amount_per_period_to_gitcoin(self):
         from dashboard.tokens import addr_to_token
         token = addr_to_token(self.token_address, self.network)
-        decimals = token.get('decimals', 0)
-        return (float(self.gas_price) / 10 ** decimals)
+        try:
+            decimals = token.get('decimals', 0)
+            return (float(self.gas_price) / 10 ** decimals)
+        except:
+            return 0
 
 
     def __str__(self):
