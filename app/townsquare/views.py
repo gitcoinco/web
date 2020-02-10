@@ -258,7 +258,7 @@ def api(request, activity_id):
             comment_dict['handle'] = comment.profile.handle
             comment_dict['tip_count_eth'] = comment.tip_count_eth
             comment_dict['tip_able'] = comment.tip_able
-            comment_dict['name'] = comment.profile.data.get('name', activity.profile.handle)
+            comment_dict['name'] = comment.profile.data.get('name', None) or comment.profile.handle
             response['comments'].append(comment_dict)
         return JsonResponse(response)
 

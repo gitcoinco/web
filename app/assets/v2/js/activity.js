@@ -352,7 +352,7 @@ $(document).ready(function() {
         var html = `
         <div class="row p-2">
           <div class="col-1 activity-avatar">
-            <a href="/profie/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
+            <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
             </a>
           </div>
@@ -360,8 +360,8 @@ $(document).ready(function() {
             <div class="mb-1 d-flex justify-content-between">
               <span>
                 <b>${comment['name']}</b>
-                <span class="grey"><a class=grey href="/profie/${comment['profile_handle']}">
-                ${comment['profile_handle']}
+                <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
+                @${comment['profile_handle']}
                 </a></span>
                 ${show_tip ? `
                 <a href="#" class="tip_on_comment font-smaller-5 text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> ( <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(100 * comment['tip_count_eth']) / 100}</span>)
