@@ -375,16 +375,16 @@ $(document).ready(function() {
         $target.append(html);
       }
 
-      var post_comment_html = `
-      <div class="d-flex py-2">
-        <div class="activity-avatar mr-1">
+      const post_comment_html = `
+        <div class="row p-2">
+          <div class="col-1 activity-avatar">
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
+          </div>
+          <div class="col-11 text-right">
+            <input type="text" class="form-control bg-lightblue font-caption" placeholder="Enter comment">
+            <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
+          </div>
         </div>
-        <div class="pl-3 flex-grow-1 text-right">
-          <input type="text" class="form-control bg-lightblue font-caption" placeholder="Enter comment">
-          <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
-        </div>
-      </div>
       `;
 
       $target.append(post_comment_html);
