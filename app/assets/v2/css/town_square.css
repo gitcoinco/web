@@ -715,7 +715,7 @@ body.green.offer_view .announce {
   color: var(--link-color);
 }
 
-.townsquare_nav-list .nav-link.active span {
+.townsquare_nav-list .nav-link.active .nav-title {
   display: inline-block;
   padding-bottom: 2px;
   border-bottom: 3px solid;
@@ -807,4 +807,12 @@ body.green.offer_view .announce {
 
 .offer_container .fa-hourglass-end {
   color: var(--purple);
+}
+
+.nav-badge {
+  font-size: 9px;
+  color: rgba(62,0,255);
+  top: -8px;
+  position: relative;
+  font-weight: bold;
 }
