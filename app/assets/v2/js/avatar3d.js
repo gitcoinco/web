@@ -7,6 +7,7 @@ $(document).ready(function() {
 
   $('#skin_tones li:nth-child(1)').addClass('selected');
   $('#hair_tones li:nth-child(1)').addClass('selected');
+  $(".tdselection:first-child").addClass('selected');
   document.td_ids = [];
   document.skin_tone = $('#skin_tones li.selected').data('tone');
   document.hair_tone = $('#hair_tones li.selected').data('tone');
