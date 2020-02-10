@@ -668,7 +668,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
     w3 = get_web3(coupon.token.contract.network)
     contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
     nonce = w3.eth.getTransactionCount(kudos_owner_address)
-    gas_price = int(recommend_min_gas_price_to_confirm_in_time(gas_price_confirmation_time) * 10**9) * gas_price_multiplier
+    gas_price = int(int(recommend_min_gas_price_to_confirm_in_time(gas_price_confirmation_time) * 10**9) * gas_price_multiplier)
     tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
         'nonce': nonce,
         'gas': 500000,
