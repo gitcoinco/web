@@ -381,7 +381,7 @@ $(document).ready(function() {
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
           <div class="col-11 text-right">
-            <input type="text" class="form-control bg-lightblue font-caption" placeholder="Enter comment">
+            <input type="text" class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment">
             <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
         </div>
@@ -400,9 +400,17 @@ $(document).ready(function() {
   // post comment activity
   $(document).on('click', '.post_comment', function(e) {
     e.preventDefault();
-    var $target = $(this).parents('.row.box').find('.comment_activity');
+    const $target = $(this).parents('.row.box').find('.comment_activity');
 
     post_comment($target, false);
+  });
+
+  $(document).on('keypress', '.enter-activity-comment', function(e) {
+    if (e.which == 13) {
+      const $target = $(this).parents('.row.box').find('.comment_activity');
+
+      post_comment($target, false);
+    }
   });
 
   // post comment activity
