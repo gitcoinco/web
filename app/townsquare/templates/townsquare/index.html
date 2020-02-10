@@ -284,7 +284,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <div class="offer_coming {{type}} font-caption text-left ml-3 d-flex align-items-center">
                     {% if type == 'daily' %}
                       <div class="checkbox_container">
-                        <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" val-ui='Email when available' {% if is_subscribed %} checked="checked" {% endif %} />
+                        <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
                         <span class="checkbox"></span>
                         <div class="filter-label ml-1">
                           <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>

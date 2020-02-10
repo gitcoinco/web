@@ -544,7 +544,7 @@ input[type=text].loading {
 
 /* The alert message box */
 
-.alert:not('.bs-alert') {
+.alert:not(.bs-alert) {
   align-items: center;
   background-color: #3E00FF;
   border-radius: 0px;
