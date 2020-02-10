@@ -167,10 +167,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     Tribe
                   </div>
                   <ul class="nav d-inline-block font-body">
-                      {% for this_tab in tabs %}
+                    {% for this_tab in tabs %}
                       <li class="nav-item">
                         <a data-toggle="tooltip" title="{{this_tab.helper_text}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
-                          <span>{{this_tab.title}}</span>
+                          <span class="nav-title">{{this_tab.title}}</span>
+                          {% if this_tab.badge %}
+                            <span class="nav-badge">({{ this_tab.badge }})</span>
+                          {% endif %}
                         </a>
                       </li>
                     {% endfor %}
