@@ -2169,8 +2169,8 @@ class Activity(SuperModel):
             'new_kudos': 'far fa-thumbs-up',
             'new_grant': 'far fa-envelope',
             'update_grant': 'far fa-edit',
-            'killed_grant': 'far fa-trash',
-            'new_grant_contribution': 'far fa-donate',
+            'killed_grant': 'fas fa-trash',
+            'new_grant_contribution': 'fas fa-donate',
             'new_grant_subscription': 'far fa-calendar-check',
             'killed_grant_contribution': 'far fa-calendar-times',
         }

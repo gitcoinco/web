@@ -134,8 +134,7 @@ a .sup {
 }
 
 .activity .secondary_avatar {
-  top: -1rem;
-  right: -0.9rem;
+  top: -1.5rem;
   position: absolute;
   width: 2rem !important;
   height: 2rem !important;

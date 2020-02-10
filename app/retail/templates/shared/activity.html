@@ -41,7 +41,7 @@
     </div>
     <div class="activity_detail pl-3 pr-2">
       <div class="">
-       <b>{% firstof row.profile.data.name or row.profile.handle %}</b> 
+       <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
        <span class="grey"><a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a></span>
       </div>
       <div class="activity_detail_content font-body pb-2">
@@ -276,7 +276,7 @@
         {% elif row.activity_type == 'leaderboard_rank' %}
           <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100 mw-100">
         {% elif row.metadata.quest_reward %}
-          <img src="{{row.metadata.quest_reward}}" alt="" class="w-100 mw-100">
+          <img src="{{row.metadata.quest_reward}}" alt="" class="mw-100">
         {% else %}
           <i class="{{ row.icon }} last-icon"></i>
         {% endif %}
