@@ -395,7 +395,7 @@ def psave_token(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
-    if instance.pk:
+    if instance.pk and instance.gen == 1:
         SearchResult.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='kudos', model='token'),
             source_id=instance.pk,
