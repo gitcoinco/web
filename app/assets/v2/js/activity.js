@@ -299,7 +299,11 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 
     $.post(url, params, function(response) {
-      view_comments($parent, allow_close_comment_container);
+      var success_callback = function($parent) {
+        $parent.find('input').focus();
+      };
+
+      view_comments($parent, allow_close_comment_container, success_callback);
     }).done(function() {
       // pass
     })
@@ -311,7 +315,7 @@ $(document).ready(function() {
       });
   };
 
-  var view_comments = function($parent, allow_close_comment_container) {
+  var view_comments = function($parent, allow_close_comment_container, success_callback) {
 
     // remote post
     var params = {
@@ -392,13 +396,20 @@ $(document).ready(function() {
       `;
 
       $target.append(post_comment_html);
+      if (success_callback && typeof success_callback != 'undefined') {
+        success_callback($target);
+      }
     });
   };
 
   // post comment activity
   $(document).on('click', '.comment_activity', function(e) {
     e.preventDefault();
-    view_comments($(this), true);
+    var success_callback = function($parent) {
+      $parent.find('input').focus();
+    };
+
+    view_comments($(this), true, success_callback);
   });
 
   // post comment activity
@@ -444,7 +455,7 @@ $(document).ready(function() {
 
       if (open) {
         $(this).data('open', false);
-        $(this).click();
+        view_comments($(this), true);
       }
     });
 
