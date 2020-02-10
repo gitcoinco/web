@@ -77,10 +77,8 @@ $(document).ready(function() {
     }, 100);
   });
 
-  if ($('#textarea').length) {
-    if ($('#textarea').offset().top < 400) {
-      $('#textarea').focus();
-    }
+  if ($('#textarea').length && $('#textarea').offset().top < 400) {
+    $('#textarea').focus();
   }
 
   document.is_shift = false;
