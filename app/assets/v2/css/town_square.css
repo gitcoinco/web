@@ -744,7 +744,9 @@ body.green.offer_view .announce {
 .grey {
   color: #666666 !important;
 }
-
+.offer_container span{
+  display: inline;
+}
 .status-avatar .avatar {
   height: 45px;
   width: 45px;
