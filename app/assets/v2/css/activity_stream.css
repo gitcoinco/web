@@ -52,7 +52,7 @@ a .sup {
   text-align: left;
   width: 300px;
   background-color: #f2f2f2;
-  padding: 0px;
+  padding: .5rem;
   border-radius: 5px;
 }
 
