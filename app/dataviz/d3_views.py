@@ -745,13 +745,17 @@ def mesh_network_viz(request, ):
     year = int(request.GET.get('year', timezone.now().strftime("%Y")))
     month = int(request.GET.get('month', timezone.now().strftime("%m")))
     day = int(request.GET.get('day', 1))
+    to_year = int(request.GET.get('to_year', timezone.now().strftime("%Y")))
+    to_month = int(request.GET.get('to_month', timezone.now().strftime("%m")))
+    to_day = int(request.GET.get('to_day', timezone.now().strftime("%d")))
     start_date = timezone.datetime(year, month, day, 1, tzinfo=pytz.UTC)
+    end_date = timezone.datetime(to_year, to_month, to_day, 23, 59, tzinfo=pytz.UTC)
     _type = request.GET.get('type', 'all')
 
     since = f"{year}/{month}/{day}"
 
     from dashboard.models import Earning
-    earnings = Earning.objects.filter(created_on__gt=start_date)
+    earnings = Earning.objects.filter(created_on__gt=start_date, created_on__lt=end_date)
     if _type != 'all':
         from django.contrib.contenttypes.models import ContentType
         mapping = {
@@ -799,6 +803,9 @@ def mesh_network_viz(request, ):
         "year": year,
         "month": month,
         "day": day,
+        "to_year": to_year,
+        "to_month": to_month,
+        "to_day": to_day,
         "years": range(2017, 1 + int(timezone.now().strftime("%Y"))),
         "months": range(1, 12),
         "days": range(1, 31),

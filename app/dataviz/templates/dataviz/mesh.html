@@ -82,7 +82,7 @@
     </style>
   </head>
   <body onload="createDrawing()">
-    <div id="options">
+    <div id="options" class="p-2">
       <form>
         <p>
           <input type="checkbox" id="show_labels" onclick="drawing.show_labels = this.checked;">
@@ -386,7 +386,7 @@ Drawing.SimpleGraph = function(options) {
           <option {% if type == option %}selected=selected{%endif%}  >{{option}}</option>
         {% endfor %}
       </select>
-       Data since 
+       Data from
       <select name="year">
         {% for option in years %}
           <option {% if year == option %}selected=selected{%endif%}  >{{option}}</option>
@@ -402,6 +402,24 @@ Drawing.SimpleGraph = function(options) {
       <select name="day">
         {% for option in days %}
           <option {% if day == option %}selected=selected{%endif%}  >{{option}}</option>
+        {% endfor %}
+      </select>
+       to
+      <select name="to_year">
+        {% for option in years %}
+          <option {% if to_year == option %}selected=selected{%endif%}  >{{option}}</option>
+        {% endfor %}
+      </select>
+        /
+      <select name="to_month">
+        {% for option in months %}
+          <option {% if to_month == option %}selected=selected{%endif%}  >{{option}}</option>
+        {% endfor %}
+      </select>
+        /
+      <select name="to_day">
+        {% for option in days %}
+          <option {% if to_day == option %}selected=selected{%endif%}  >{{option}}</option>
         {% endfor %}
       </select>
         <input type="submit" name="submit" value="Go">
