@@ -100,11 +100,14 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
     {% include 'shared/current_profile.html' %}
-
+    {% if tab == 'activity' %}
+      {% include 'shared/tip_dependancies.html' %}
+    {% else %}
+      <script src="/dynamic/js/tokens_dynamic.js"></script>
+      <script src="{% static "v2/js/tokens.js" %}"></script>
+    {% endif %}
     <!-- jQuery -->
     <script src="{% static "v2/js/abi.js" %}"></script>
-    <script src="/dynamic/js/tokens_dynamic.js"></script>
-    <script src="{% static "v2/js/tokens.js" %}"></script>
     <script>
       $('[data-toggle="popover"]').popover()
       $('[data-toggle="tooltip"]').bootstrapTooltip();
