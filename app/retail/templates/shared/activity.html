@@ -289,22 +289,21 @@
     </div>
   </div>
   {% if row.metadata.resource.provider == 'youtube' %}
-  <div class="ml-md-5 col-md-10 col-sm-12">
-    <iframe class="col-sm-12" height="315" src="https://www.youtube.com/embed/{{ row.metadata.resource.id }}"
+    <div class="ml-md-5 col-md-10 col-sm-12">
+     <iframe class="col-sm-12" height="315" src="https://www.youtube.com/embed/{{ row.metadata.resource.id }}"
             frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen></iframe>
-  </div>
+    </div>
   {% elif row.metadata.resource.type == 'content' %}
-  <div class="mt-1 mb-2" style="top: initial; left: initial; background-color: #FAFAFA">
-    <div class="row" style="display: flex; justify-content: center; align-items: center; ">
-    <div class="col ml-1 col-sm-3 col-md-2"><img style="width: 130%;" src="{{ row.metadata.resource.image }}"></div>
-      <div class="col ml-2 text-left">
-        <p class="mt-2 mb-1" style="font-size: 1.2em; font-weight: bold">{{ row.metadata.resource.title }}</p>
-        <p class="small">{{ row.metadata.resource.description|truncatechars:200}}</p>
-        <p class="small" style="color: #0056b3">{{ row.metadata.resource.provider }}</p>
+    <div class="mt-1 mb-2" style="top: initial; left: initial; background-color: #FAFAFA">
+      <div class="row" style="display: flex; justify-content: center; align-items: center; ">
+        <div class="col ml-1 col-sm-3 col-md-2"><img style="width: 130%;" src="{{ row.metadata.resource.image }}"></div>
+        <div class="col ml-2 text-left">
+          <p class="mt-2 mb-1" style="font-size: 1.2em; font-weight: bold">{{ row.metadata.resource.title }}</p>
+          <p class="small">{{ row.metadata.resource.description|truncatechars:200}}</p>
+          <p class="small" style="color: #0056b3">{{ row.metadata.resource.provider }}</p>
+        </div>
       </div>
     </div>
-  </div>
   {% endif %}
 </div>
-
