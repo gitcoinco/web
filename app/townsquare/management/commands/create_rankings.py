@@ -16,14 +16,16 @@
 
 '''
 
+from django.conf import settings
 from django.core import management
 from django.core.management.base import BaseCommand
-from django.utils import timezone
-from townsquare.models import MatchRound, MatchRanking
 from django.db import transaction
-from dashboard.models import Earning, Profile
+from django.utils import timezone
+
 import townsquare.clr as clr
-from django.conf import settings
+from dashboard.models import Earning, Profile
+from townsquare.models import MatchRanking, MatchRound
+
 
 def get_eligible_input_data(mr):
     earnings = Earning.objects.filter(created_on__gt=mr.valid_from, created_on__lt=mr.valid_to)
@@ -66,4 +68,3 @@ class Command(BaseCommand):
                 mri.number = number
                 mri.save()
                 number += 1
-

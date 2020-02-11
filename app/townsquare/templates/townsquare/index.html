@@ -167,53 +167,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </div>
 
 
-            {% if current_match_round %}
-            <div class="clr_container">
-              <div class="townsquare_block-header text-leftmb-1">
-                Round {{current_match_round.number}} - ${{current_match_round.amount|floatformat:0}} Matching
-                <i data-toggle="tooltip" class="fas fa-info-circle mr-3" title="For the next 3 days, 12 minutes, Gitcoin will be matching your newsfeed tips with $200 in ETH
-                  The matching algorithm that Gitcoin uses (CLR), weights breadth of contributions (diversity in who you received from) greater than depth of contributions (total $$ received).  Learn how it works and how to earn & win here: https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4" ></i>
-              </div>              
-              <div class="grey">
-                <table>
-                  <tr class="title">
-                    <td>
-                      &nbsp;
-                    </td>
-                    <td data-toggle="tooltip" title="Who dat?!??">
-                      Who
-                    </td>
-                    <td data-toggle="tooltip" title="How much dat user earned via the CLR algorithm.">
-                      Haul
-                    </td>
-                  </tr>
-                  {% for mli in matching_leaderboard %}
-                    <tr>
-                      <td>
-                        {{mli.i}}
-                      </td>
-                      <td>
-                        <a href="/profile/{{mli.handle}}">
-                          <img src='/dynamic/avatar/{{mli.handle}}' data-toggle="tooltip" title="@{{mli.handle}}">
-                        </a>
-                      {% if mli.you %}
-                        <br>
-                        <span class="tag">
-                          it me
-                        </span>
-                      {% endif %}
-                      </td>
-                      <td data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contributions worth ${{mli.amount}} since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about ${{mli.match_amount}} in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})">
-                        {{mli.contributions}} x 
-                        ${{mli.amount}} = 
-                        ${{mli.match_amount}}
-                      </td>
-                    </tr>
-                  {% endfor %}
-                </table>
-              </div>
-          </div>
-          {% endif %}
 
                 <!--
                 <div class="townsquare_nav-list mb-5">
@@ -356,6 +309,55 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <i class="fa fa-plus-circle" aria-hidden="true"></i>
                   Create Action
                 </a>
+
+            {% if current_match_round %}
+            <div class="clr_container">
+              <div class="townsquare_block-header text-leftmb-1">
+                Round {{current_match_round.number}} - ${{current_match_round.amount|floatformat:0}} Matching
+                <i data-toggle="tooltip" class="fas fa-info-circle mr-3" title="For the next 3 days, 12 minutes, Gitcoin will be matching your newsfeed tips with $200 in ETH
+                  The matching algorithm that Gitcoin uses (CLR), weights breadth of contributions (diversity in who you received from) greater than depth of contributions (total $$ received).  Learn how it works and how to earn & win here: https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4" ></i>
+              </div>              
+              <div class="grey">
+                <table>
+                  <tr class="title">
+                    <td>
+                      &nbsp;
+                    </td>
+                    <td data-toggle="tooltip" title="Who dat?!??">
+                      Who
+                    </td>
+                    <td data-toggle="tooltip" title="How much dat user earned via the CLR algorithm.">
+                      Haul
+                    </td>
+                  </tr>
+                  {% for mli in matching_leaderboard %}
+                    <tr>
+                      <td>
+                        {{mli.i}}
+                      </td>
+                      <td>
+                        <a href="/profile/{{mli.handle}}">
+                          <img src='/dynamic/avatar/{{mli.handle}}' data-toggle="tooltip" title="@{{mli.handle}}">
+                        </a>
+                      {% if mli.you %}
+                        <br>
+                        <span class="tag">
+                          it me
+                        </span>
+                      {% endif %}
+                      </td>
+                      <td data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contributions worth ${{mli.amount}} since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about ${{mli.match_amount}} in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})">
+                        {{mli.contributions}} x 
+                        ${{mli.amount}} = 
+                        ${{mli.match_amount}}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </table>
+              </div>
+          </div>
+          {% endif %}
+
             </div>
           </div>
         </div>
