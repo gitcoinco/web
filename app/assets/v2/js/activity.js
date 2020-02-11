@@ -351,13 +351,13 @@ $(document).ready(function() {
         var show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
         var html = `
         <div class="row p-2">
-          <div class="col-1 activity-avatar">
+          <div class="col-1 activity-avatar mt-1">
             <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
             </a>
           </div>
-          <div class="col-11 activity_comments_main px-3">
-            <div class="mb-1 d-flex justify-content-between">
+          <div class="col-11 activity_comments_main pl-4 px-sm-3">
+            <div class="mb-1">
               <span>
                 <b>${comment['name']}</b>
                 <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
@@ -368,7 +368,7 @@ $(document).ready(function() {
                 </a>
                 ` : ''}
               </span>
-              <span class="grey font-smaller-4">
+              <span class="d-none d-sm-inline grey font-smaller-5 float-right">
                 ${timeAgo}
               </span>
             </div>
@@ -385,10 +385,10 @@ $(document).ready(function() {
 
       const post_comment_html = `
         <div class="row p-2">
-          <div class="col-1 activity-avatar">
+          <div class="col-sm-1 activity-avatar d-none d-sm-inline">
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
-          <div class="col-11 text-right">
+          <div class="col-12 col-sm-11 text-right">
             <input type="text" class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment">
             <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
