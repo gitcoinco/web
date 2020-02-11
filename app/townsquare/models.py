@@ -130,7 +130,7 @@ class Offer(SuperModel):
     view_count = models.IntegerField(default=0, db_index=True)
     amount = models.CharField(max_length=50, blank=True)
 
-    # Bounty QuerySet Manager
+    # Offer QuerySet Manager
     objects = OfferQuerySet.as_manager()
 
     def __str__(self):
@@ -207,3 +207,48 @@ class Announcement(SuperModel):
     objects = AnnounceQuerySet.as_manager()
     def __str__(self):
         return f"{self.created_on} => {self.title}"
+
+
+class MatchRoundQuerySet(models.QuerySet):
+    """Handle the manager queryset for MatchRanking."""
+
+    def current(self):
+        """Filter results down to current offers only."""
+        return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now())
+
+
+class MatchRound(SuperModel):
+
+    valid_from = models.DateTimeField(db_index=True)
+    valid_to = models.DateTimeField(db_index=True)
+    number = models.IntegerField(default=1)
+    amount = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+
+    # Offer QuerySet Manager
+    objects = MatchRoundQuerySet.as_manager()
+
+    def __str__(self):
+        return f"Round {self.number} from {self.valid_from} to {self.valid_to}"
+
+    @property
+    def url(self):
+        return self.activity.url
+
+    def get_absolute_url(self):
+        return self.activity.url
+
+
+class MatchRanking(SuperModel):
+
+    profile = models.ForeignKey('dashboard.Profile',
+        on_delete=models.CASCADE, related_name='match_rankings', blank=True)
+    round = models.ForeignKey('townsquare.MatchRound',
+        on_delete=models.CASCADE, related_name='ranking', blank=True, db_index=True)
+    number = models.IntegerField(default=1)
+    contributions = models.IntegerField(default=1)
+    contributions_total = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    match_total = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+
+    def __str__(self):
+        return f"Round {self.round.number}: {self.profile.handle} #{self.contributions} contributions worth ${self.contributions_total} for ${self.match_total}"
+

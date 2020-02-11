@@ -19,7 +19,65 @@ $(document).ready(function() {
     }
   });
 
-  if ($('#textarea').length) {
+  // dropdown for usernames when @ is detected in the post
+  $('#textarea').on('input', function(e) {
+    const lastWord = e.target.value.split(' ').pop();
+
+    if (lastWord.startsWith('@')) {
+      const usernameFilter = lastWord.slice(1);
+
+      if (usernameFilter.length > 2) {
+        const api = `/api/v0.1/users_fetch/?search=${usernameFilter}`;
+        let getUsers = fetchData(api, 'GET');
+
+        $.when(getUsers).then(function(response) {
+          let dropdown = $('#textarea-dropdown');
+
+          dropdown.empty();
+
+          if (response.data && response.data.length) {
+            for (profile of response.data) {
+              const { avatar_url, handle } = profile;
+              let userRow = $('<a class="dropdown-item" tabindex="0" href="#"></a>');
+
+              userRow.append(`<img class="rounded-circle mr-1" src="${avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/>`);
+              userRow.append(`<span>${handle}</span>`);
+
+              userRow.click(function(e) {
+                e.preventDefault();
+                let inputVal = $('#textarea').val();
+                let inputPos = inputVal.search(lastWord);
+
+                if (inputPos !== -1) {
+                  let newVal = inputVal.slice(0, inputPos) + '@' + handle + ' ';
+
+                  $('#textarea').val(newVal);
+                  $('#textarea').focus();
+                  $('#textarea-dropdown').removeClass('show');
+                }
+              });
+              dropdown.append(userRow);
+            }
+          } else {
+            dropdown.append(`No username matching '${usernameFilter}'`);
+          }
+
+          dropdown.addClass('show');
+        });
+      }
+      return;
+    }
+
+    $('#textarea-dropdown').removeClass('show');
+  });
+
+  $('#textarea').focusout(function(e) {
+    window.setTimeout(function() {
+      $('#textarea-dropdown').removeClass('show');
+    }, 100);
+  });
+
+  if ($('#textarea').length && $('#textarea').offset().top < 400) {
     $('#textarea').focus();
   }
 
@@ -103,5 +161,21 @@ $(document).ready(function() {
         }
       })
       .catch(err => console.log('Error ', err));
+  }
+});
+window.addEventListener('DOMContentLoaded', function() {
+  var button = document.querySelector('#emoji-button');
+  var picker = new EmojiButton({
+    position: 'left-end'
+  });
+
+  if (button && picker) {
+    picker.on('emoji', function(emoji) {
+      document.querySelector('textarea').value += emoji;
+    });
+
+    button.addEventListener('click', function() {
+      picker.pickerVisible ? picker.hidePicker() : picker.showPicker(button);
+    });
   }
 });

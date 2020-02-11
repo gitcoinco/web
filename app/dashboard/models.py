@@ -2043,8 +2043,14 @@ class Activity(SuperModel):
         blank=True,
         null=True
     )
-    kudos = models.ForeignKey(
+    kudos_transfer = models.ForeignKey(
         'kudos.KudosTransfer',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    kudos = models.ForeignKey(
+        'kudos.Token',
         related_name='activities',
         on_delete=models.CASCADE,
         blank=True, null=True
@@ -2155,18 +2161,18 @@ class Activity(SuperModel):
     def view_props(self):
         from kudos.models import Token
         icons = {
-            'new_tip': 'fa-thumbs-up',
-            'start_work': 'fa-lightbulb',
-            'new_bounty': 'fa-money-bill-alt',
-            'work_done': 'fa-check-circle',
-            'status_update': 'fa-user',
-            'new_kudos': 'fa-thumbs-up',
-            'new_grant': 'fa-envelope',
-            'update_grant': 'fa-edit',
-            'killed_grant': 'fa-trash',
-            'new_grant_contribution': 'fa-coins',
-            'new_grant_subscription': 'fa-calendar-check',
-            'killed_grant_contribution': 'fa-calendar-times',
+            'new_tip': 'far fa-thumbs-up',
+            'start_work': 'far fa-lightbulb',
+            'new_bounty': 'far fa-money-bill-alt',
+            'work_done': 'far fa-check-circle',
+            'status_update': 'far fa-user',
+            'new_kudos': 'far fa-thumbs-up',
+            'new_grant': 'far fa-envelope',
+            'update_grant': 'far fa-edit',
+            'killed_grant': 'fas fa-trash',
+            'new_grant_contribution': 'fas fa-donate',
+            'new_grant_subscription': 'far fa-calendar-check',
+            'killed_grant_contribution': 'far fa-calendar-times',
         }
 
         # load up this data package with all of the information in the already existing objects
@@ -2194,9 +2200,9 @@ class Activity(SuperModel):
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
-        activity['icon'] = icons.get(self.activity_type, 'fa-check-circle')
+        activity['icon'] = icons.get(self.activity_type, 'far fa-check-circle')
         if activity.get('kudos'):
-            activity['kudos_data'] = Token.objects.get(pk=self.kudos.kudos_token_cloned_from_id)
+            activity['kudos_data'] = self.kudos
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']
@@ -2542,9 +2548,10 @@ class Profile(SuperModel):
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
-    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
+    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description describing tribe.'))
+    automatic_backup = models.BooleanField(default=False, help_text=_('automatic backup profile to cloud storage such as 3Box if the flag is true'))
     as_representation = JSONField(default=dict, blank=True)
-
+    tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
     objects = ProfileQuerySet.as_manager()
 
     @property
@@ -3942,6 +3949,7 @@ def psave_profile(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
+
     if instance.pk:
         SearchResult.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
@@ -3998,7 +4006,6 @@ class ProfileSerializer(serializers.BaseSerializer):
             instance.calculate_all()
             instance.save()
         return instance.as_representation
-
 
 @receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
 def normalize_tip_usernames(sender, instance, **kwargs):
@@ -4598,6 +4605,7 @@ class TribeMember(SuperModel):
     profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
     org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE)
     leader = models.BooleanField(default=False, help_text=_('tribe leader'))
+    title = models.CharField(max_length=255, blank=True, default='')
     status = models.CharField(
         max_length=20,
         choices=MEMBER_STATUS,

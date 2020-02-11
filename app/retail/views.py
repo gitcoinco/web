@@ -17,6 +17,7 @@
 
 '''
 import logging
+import re
 import time
 from json import loads as json_parse
 from os import walk as walkdir
@@ -41,7 +42,9 @@ from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
-from marketing.mails import grant_update_email, new_funding_limit_increase_request, new_token_request, wall_post_email
+from marketing.mails import (
+    grant_update_email, mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email,
+)
 from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
@@ -1214,10 +1217,11 @@ def create_status_update(request):
     response = {}
     if request.POST:
         profile = request.user.profile
+        title = request.POST.get('data')
         kwargs = {
             'activity_type': 'status_update',
             'metadata': {
-                'title': request.POST.get('data'),
+                'title': title,
                 'ask': request.POST.get('ask'),
             }
         }
@@ -1234,6 +1238,11 @@ def create_status_update(request):
             activity = Activity.objects.create(**kwargs)
             response['status'] = 200
             response['message'] = 'Status updated!'
+
+            username_pattern = re.compile(r'@(\S+)')
+            mentioned_usernames = re.findall(username_pattern, title)
+            to_emails = set(Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True))
+            mention_email(profile, to_emails)
 
             if kwargs['activity_type'] == 'wall_post':
                 if 'Email Grant Funders' in activity.metadata.get('ask'):

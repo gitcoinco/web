@@ -94,16 +94,6 @@ $(document).ready(function() {
     $('.header').css('overflow', 'visible');
   }
 
-  $('.nav-link.dropdown-toggle').on('click', function(e) {
-    e.preventDefault();
-    var parent = $(this).parents('.nav-item');
-
-    var parentSiblings = parent.siblings('.nav-item');
-
-    parent.find('.dropdown-menu').toggle().toggleClass('show');
-    parentSiblings.find('.dropdown-menu').hide();
-  });
-
   // get started modal
   $("a[href='/get']").on('click', function(e) {
     e.preventDefault();
@@ -355,24 +345,12 @@ const sendPersonal = (persona) => {
 };
 
 
-const gitcoinUpdates = (force) => {
-  let urlUpdates = `https://api.github.com/repos/gitcoinco/web/issues/5057?access_token=${document.contxt.access_token}`;
-  let today = new Date();
-  let showedUpdates = JSON.parse(localStorage.getItem('showed_updates'));
-  let lastPromp = showedUpdates ? showedUpdates.last_promp : today;
-  let lastUpdated = showedUpdates ? showedUpdates.last_updated : 0;
+const gitcoinUpdates = () => {
+  const urlUpdates = `https://api.github.com/repos/gitcoinco/web/issues/5057?access_token=${document.contxt.access_token}`;
 
-  if (!force && showedUpdates && (moment(today).diff(moment(lastPromp), 'days') < 7)) {
-    return;
-  }
+  const getUpdates = fetchData (urlUpdates, 'GET');
 
-  let getUpdates = fetchData (urlUpdates, 'GET');
-
-  $.when(getUpdates).then(function(response) {
-
-    if (!force && (response.updated_at == lastUpdated)) {
-      return;
-    }
+  $.when(getUpdates).then(response => {
 
     const content = $.parseHTML(
       `<div id="gitcoin_updates" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -399,20 +377,19 @@ const gitcoinUpdates = (force) => {
 
     $(content).appendTo('body');
     $('#gitcoin_updates').bootstrapModal('show');
-    let newPrompt = {
-      'last_promp': new Date(),
-      'last_updated': response.updated_at
-    };
-
-    localStorage.setItem('showed_updates', JSON.stringify(newPrompt));
-
   });
 
   $(document, '#gitcoin_updates').on('hidden.bs.modal', function(e) {
     $('#gitcoin_updates').remove();
     $('#gitcoin_updates').bootstrapModal('dispose');
   });
+
 };
+
+// carousel/collabs/... inside menu
+$(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
+  e.stopPropagation();
+});
 
 if (document.contxt.chat_unread_messages) {
   $('#chat-notification-dot').addClass('notification__dot__active');

@@ -2,6 +2,22 @@
 
 $(document).ready(function() {
 
+  var linkify = function(new_text) {
+    new_text = new_text.replace(/ #(\S*)/g, ' <a href="/?tab=search-$1">#$1</a>');
+    new_text = new_text.replace(/ @(\S*)/g, ' <a href="/profile/$1">@$1</a>');
+    return new_text;
+  };
+  // inserts links into the text where there are URLS detected
+
+  function urlify(text) {
+    var urlRegex = /(https?:\/\/[^\s]+)/g;
+
+    return text.replace(urlRegex, function(url) {
+      return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
+    });
+  }
+
+
   document.base_title = $('title').text();
 
   $('#activity_subheader').remove();
@@ -259,7 +275,7 @@ $(document).ready(function() {
     }
 
     // user input
-    var comment = prompt('What is your comment?', '');
+    var comment = $parent.parents('.box').find('.comment_container input').val();
 
     // validation
     if (!comment) {
@@ -283,7 +299,11 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 
     $.post(url, params, function(response) {
-      view_comments($parent, allow_close_comment_container);
+      var success_callback = function($parent) {
+        $parent.find('input').focus();
+      };
+
+      view_comments($parent, allow_close_comment_container, success_callback);
     }).done(function() {
       // pass
     })
@@ -295,7 +315,7 @@ $(document).ready(function() {
       });
   };
 
-  var view_comments = function($parent, allow_close_comment_container) {
+  var view_comments = function($parent, allow_close_comment_container, success_callback) {
 
     // remote post
     var params = {
@@ -304,6 +324,10 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 
     var $target = $parent.parents('.row.box').find('.comment_container');
+
+    if (!$target.length) {
+      $target = $parent.parents('.box').find('.comment_container');
+    }
 
     if ($target.hasClass('filled') && allow_close_comment_container) {
       $target.html('');
@@ -319,42 +343,89 @@ $(document).ready(function() {
       $target.html('');
       for (var i = 0; i < response['comments'].length; i++) {
         var comment = sanitizeAPIResults(response['comments'])[i];
+        var the_comment = comment['comment'];
+
+        the_comment = urlify(the_comment);
+        the_comment = linkify(the_comment);
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         var show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
-        var html = '<li><a href=/profile/' + comment['profile_handle'] + '\
-          ' + '><img src=/dynamic/avatar/' + comment['profile_handle'] + '\
-          ' + '></a> <a href=/profile/' + comment['profile_handle'] + '>' + '\
-          ' + comment['profile_handle'] + '</a> ' + (show_tip ? ' \
-          <a href=# class="tip_on_comment" data-pk=' + comment['id'] + ' data-username=\
-          "' + comment['profile_handle'] + '"> ( <i class="fab fa-ethereum" >\
-          </i> <span class=amount>' + (Math.round(100 * comment['tip_count_eth']) / 100) + '</span> </a>) ' : '') + '\
-          ' + timeAgo + ':<br> ' + '\
-          <span class=comment>' + comment['comment'] + '</span></li>';
+        var html = `
+        <div class="row p-2">
+          <div class="col-1 activity-avatar">
+            <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
+              <img src="/dynamic/avatar/${comment['profile_handle']}">
+            </a>
+          </div>
+          <div class="col-11 activity_comments_main px-3">
+            <div class="mb-1 d-flex justify-content-between">
+              <span>
+                <b>${comment['name']}</b>
+                <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
+                @${comment['profile_handle']}
+                </a></span>
+                ${show_tip ? `
+                <a href="#" class="tip_on_comment font-smaller-5 text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> ( <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(100 * comment['tip_count_eth']) / 100}</span>)
+                </a>
+                ` : ''}
+              </span>
+              <span class="grey font-smaller-4">
+                ${timeAgo}
+              </span>
+            </div>
+            <div class="activity_comments_main_comment">
+              ${comment['comment']}
+            </div>
+          </div>
+
+        </div>
+        `;
 
         $target.append(html);
       }
-      $target.append('<a href=# class=post_comment>Post comment &gt;</a>');
+
+      const post_comment_html = `
+        <div class="row p-2">
+          <div class="col-1 activity-avatar">
+            <img src="/dynamic/avatar/${document.contxt.github_handle}">
+          </div>
+          <div class="col-11 text-right">
+            <input type="text" class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment">
+            <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
+          </div>
+        </div>
+      `;
+
+      $target.append(post_comment_html);
+      if (success_callback && typeof success_callback != 'undefined') {
+        success_callback($target);
+      }
     });
   };
 
   // post comment activity
   $(document).on('click', '.comment_activity', function(e) {
     e.preventDefault();
-    var num = $(this).find('span.num').html();
+    var success_callback = function($parent) {
+      $parent.find('input').focus();
+    };
 
-    if (parseInt(num) == 0) {
-      post_comment($(this), true);
-    } else {
-      view_comments($(this), true);
-    }
+    view_comments($(this), true, success_callback);
   });
 
   // post comment activity
   $(document).on('click', '.post_comment', function(e) {
     e.preventDefault();
-    var $target = $(this).parents('.row.box').find('.comment_activity');
+    const $target = $(this).parents('.row.box').find('.comment_activity');
 
     post_comment($target, false);
+  });
+
+  $(document).on('keypress', '.enter-activity-comment', function(e) {
+    if (e.which == 13) {
+      const $target = $(this).parents('.row.box').find('.comment_activity');
+
+      post_comment($target, false);
+    }
   });
 
   // post comment activity
@@ -375,7 +446,7 @@ $(document).ready(function() {
 
   // auto open new comment threads
   setInterval(function() {
-    
+
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').bootstrapTooltip();
 
@@ -384,35 +455,27 @@ $(document).ready(function() {
 
       if (open) {
         $(this).data('open', false);
-        $(this).click();
+        view_comments($(this), true);
       }
     });
 
-    $('.activity.wall_post .activity-status b, .activity.status_update .activity-status b').each(function() {
+    $('.activity_detail_content span').each(function() {
       if (!$(this).hasClass('clean')) {
         let new_text = $(this).text();
 
-        new_text = new_text.replace('&lt;', '_');
-        new_text = new_text.replace('&gt;', '_');
-        new_text = new_text.replace('>', '_');
-        new_text = new_text.replace('<', '_');
+        new_text = new_text.replace(/\</g, '_');
+        new_text = new_text.replace(/\>/g, '_');
+        new_text = new_text.replace(/&gt/g, '_');
+        new_text = new_text.replace(/&lt/g, '_');
+        new_text = new_text.replace(/\</g, '_');
+        new_text = new_text.replace(/\>/g, '_');
+        new_text = new_text.replace(/\n/g, '<BR>');
         new_text = urlify(new_text);
-        new_text = new_text.replace(/#(\S*)/g, '<a href="/?tab=search-$1">#$1</a>');
-        new_text = new_text.replace(/@(\S*)/g, '<a href="/profile/$1">@$1</a>');
+        new_text = linkify(new_text);
         $(this).html(new_text);
         $(this).addClass('clean');
       }
     });
-
-    // inserts links into the text where there are URLS detected
-    function urlify(text) {
-      var urlRegex = /(https?:\/\/[^\s]+)/g;
-
-      return text.replace(urlRegex, function(url) {
-        return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
-      });
-    }
-
   }, 1000);
 
 
