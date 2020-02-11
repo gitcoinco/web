@@ -123,6 +123,10 @@ $(document).ready(function() {
       return;
     }
 
+    if (!confirm('Are you sure you want to delete this?')) {
+      return;
+    }
+
     // update UI
     $(this).parents('.row.box').remove();
 
