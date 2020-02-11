@@ -37,7 +37,7 @@ $(document).ready(function() {
       if (embedded_resource !== youtube[0]) {
         var apiKey = 'AIzaSyDi-EFpC2ntx9PnM_-oiJHk5zCY53KdIf0'; // TODO: add youtube API key to query titles
 
-        let getVideoData = fetchData('https://www.googleapis.com/youtube/v3/videos?key=' + apiKey + '&fields=items(snippet(title))&part=snippet&id=' + videoId);
+        const getVideoData = fetchData('https://www.googleapis.com/youtube/v3/videos?key=' + apiKey + '&fields=items(snippet(title))&part=snippet&id=' + videoId);
 
         $.when(getVideoData).then(function(response) {
           if (response.items.length !== 0) {
@@ -54,9 +54,9 @@ $(document).ready(function() {
         });
       }
     } else if (site && site.length > 1 && no_lb) {
-      let url = site[0];
+      const url = site[0];
       
-      let getMetadata = fetchData('service/metadata/?url=' + url);
+      const getMetadata = fetchData('service/metadata/?url=' + url);
 
       $.when(getMetadata).then(function(response) {
         if (response) {
