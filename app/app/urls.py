@@ -439,8 +439,16 @@ urlpatterns = [
 
     # bounty requests
     re_path(r'^requests/?', bounty_requests.views.bounty_request, name='bounty_requests'),
-    url('^api/v1/bounty_request/create', bounty_requests.views.create_bounty_request_v1, name='create_bounty_request_v1'),
-    url('^api/v1/bounty_request/update', bounty_requests.views.update_bounty_request_v1, name='update_bounty_request_v1'),
+    url(
+        '^api/v1/bounty_request/create',
+        bounty_requests.views.create_bounty_request_v1,
+        name='create_bounty_request_v1'
+    ),
+    url(
+        '^api/v1/bounty_request/update',
+        bounty_requests.views.update_bounty_request_v1,
+        name='update_bounty_request_v1'
+    ),
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
@@ -591,6 +599,7 @@ urlpatterns = [
     re_path(r'^_administration/cohort/$', dataviz.views.cohort, name='cohort'),
     re_path(r'^_administration/funnel/$', dataviz.views.funnel, name='funnel'),
     re_path(r'^_administration/viz/?$', dataviz.d3_views.viz_index, name='viz_index'),
+    re_path(r'^_administration/mesh/?$', dataviz.d3_views.mesh_network_viz, name='mesh_network_viz'),
     re_path(r'^_administration/viz/sunburst/(.*)?$', dataviz.d3_views.viz_sunburst, name='viz_sunburst'),
     re_path(r'^_administration/viz/chord/(.*)?$', dataviz.d3_views.viz_chord, name='viz_chord'),
     re_path(r'^_administration/viz/steamgraph/(.*)?$', dataviz.d3_views.viz_steamgraph, name='viz_steamgraph'),

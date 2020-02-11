@@ -38,12 +38,13 @@ $(document).ready(function() {
           if (response.data && response.data.length) {
             for (profile of response.data) {
               const { avatar_url, handle } = profile;
-              let userRow = $('<a class="dropdown-item" href="#"></a>');
+              let userRow = $('<a class="dropdown-item" tabindex="0" href="#"></a>');
 
-              userRow.append(`<img class="rounded-circle" src="${avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/>`);
+              userRow.append(`<img class="rounded-circle mr-1" src="${avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/>`);
               userRow.append(`<span>${handle}</span>`);
 
               userRow.click(function(e) {
+                e.preventDefault();
                 let inputVal = $('#textarea').val();
                 let inputPos = inputVal.search(lastWord);
 
@@ -76,9 +77,23 @@ $(document).ready(function() {
     }, 100);
   });
 
-  if ($('#textarea').length) {
+  if ($('#textarea').length && $('#textarea').offset().top < 400) {
     $('#textarea').focus();
   }
+
+  document.is_shift = false;
+  // handle shift button
+  $('body').on('keyup', '#textarea', function(e) {
+    if (e.keyCode == 16) {
+      document.is_shift = false;
+    }
+  });
+  // handle shift button
+  $('body').on('keydown', '#textarea', function(e) {
+    if (e.keyCode == 16) {
+      document.is_shift = true;
+    }
+  });
 
   $('body').on('focus change paste keyup blur', '#textarea', function(e) {
 
@@ -88,19 +103,11 @@ $(document).ready(function() {
     if ($(this).val().trim().length > max_len) {
       e.preventDefault();
       $(this).addClass('red');
-      var old_val = $(this).val();
-
-      setTimeout(function() {
-        $('#textarea').val(old_val.slice(0, max_len));
-      }, 20);
-    } else {
-      $(this).removeClass('red');
-    }
-
-    // enable post via enter button
-    if ($(this).val().trim().length > 4) {
+      $('#btn_post').attr('disabled', true);
+    } else if ($(this).val().trim().length > 4) {
       $('#btn_post').attr('disabled', false);
-      if ($('#textarea').is(':focus') && (e.keyCode == 13)) {
+      $(this).removeClass('red');
+      if ($('#textarea').is(':focus') && !document.is_shift && (e.keyCode == 13)) {
         submitStatusUpdate();
         e.preventDefault();
       }
@@ -110,6 +117,9 @@ $(document).ready(function() {
   });
 
   function submitStatusUpdate() {
+    if ($('#btn_post').is(':disabled')) {
+      return;
+    }
     const data = new FormData();
     const message = $('#textarea');
     const ask = $('.activity_type_selector .active input').val();

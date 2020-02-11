@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
-from marketing.mails import comment_email, mention_email, new_action_request
+from marketing.mails import comment_email, new_action_request
 from ratelimit.decorators import ratelimit
 
 from .models import Announcement, Comment, Flag, Like, Offer, OfferAction
@@ -57,18 +57,20 @@ def town_square(request):
     hours = 24 if not settings.DEBUG else 1000
     posts_last_24_hours = lazy_round_number(Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     tabs = [{
-        'title': f"Everywhere ({posts_last_24_hours})",
+        'title': f"Everywhere",
         'slug': 'everywhere',
         'helper_text': f'The {posts_last_24_hours} activity feed items everywhere in the Gitcoin network',
+        'badge': posts_last_24_hours
     }]
     default_tab = 'everywhere'
     if request.user.is_authenticated:
         num_business_relationships = lazy_round_number(len(set(get_my_earnings_counter_profiles(request.user.profile.pk))))
         if num_business_relationships:
             new_tab = {
-                'title': f"Relationships ({num_business_relationships})",
+                'title': f"Relationships",
                 'slug': 'my_tribes',
                 'helper_text': f'Activity from the {num_business_relationships} users who you\'ve done business with Gitcoin',
+                'badge': num_business_relationships
             }
             tabs = [new_tab] + tabs
             default_tab = 'my_tribes'
@@ -76,9 +78,10 @@ def town_square(request):
 
         if num_grants_relationships:
             new_tab = {
-                'title': f'Grants ({num_grants_relationships})',
+                'title': f'Grants',
                 'slug': f'grants',
                 'helper_text': f'Activity on the {num_grants_relationships} Grants you\'ve created or funded.',
+                'badge': num_grants_relationships
             }
             tabs = [new_tab] + tabs
             default_tab = 'grants'
@@ -88,18 +91,20 @@ def town_square(request):
     if connect_last_24_hours:
         default_tab = 'connect'
         connect = {
-            'title': f"Connect ({connect_last_24_hours})",
+            'title': f"Connect",
             'slug': f'connect',
             'helper_text': f'The {connect_last_24_hours} announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
+            'badge': connect_last_24_hours
         }
         tabs = [connect] + tabs
 
     kudos_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['new_kudos', 'receive_kudos'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if kudos_last_24_hours:
         connect = {
-            'title': f"Kudos ({kudos_last_24_hours})",
+            'title': f"Kudos",
             'slug': f'kudos',
             'helper_text': f'The {kudos_last_24_hours} Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
+            'badge': kudos_last_24_hours
         }
         tabs = tabs + [connect]
 
@@ -250,8 +255,10 @@ def api(request, activity_id):
         response['comments'] = []
         for comment in comments:
             comment_dict = comment.to_standard_dict(properties=['profile_handle'])
+            comment_dict['handle'] = comment.profile.handle
             comment_dict['tip_count_eth'] = comment.tip_count_eth
             comment_dict['tip_able'] = comment.tip_able
+            comment_dict['name'] = comment.profile.data.get('name', None) or comment.profile.handle
             response['comments'].append(comment_dict)
         return JsonResponse(response)
 
@@ -290,14 +297,8 @@ def api(request, activity_id):
     # comment request
     elif request.POST.get('method') == 'comment':
         comment = request.POST.get('comment')
+        title = request.POST.get('comment')
         comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
-
-        username_pattern = re.compile(r'@(\S+)')
-        mentioned_usernames = re.findall(username_pattern, title)
-        mentioned_emails = set(Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True))
-        # Don't send emails again to users who already received a comment email
-        deduped_emails = mentioned_emails.difference(to_emails)
-        mention_email(comment, deduped_emails)
 
     return JsonResponse(response)
 
