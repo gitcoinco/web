@@ -12,7 +12,7 @@ from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
 from ratelimit.decorators import ratelimit
 
-from .models import Announcement, Comment, Flag, Like, Offer, OfferAction, MatchRanking, MatchRound
+from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
@@ -191,15 +191,16 @@ def town_square(request):
     # matching leaderboard
     current_match_round = MatchRound.objects.current().first()
     current_match_rankings = MatchRanking.objects.filter(round=current_match_round)
+    num_to_show = 10
     matching_leaderboard = [
         {
-            'i': i,
-            'handle': 'owocki',
-            'contributions': 10,
-            'amount': 100,
-            'match_amount': 10,
-            'you': True
-        } for i in range(0,5)
+            'i': obj.number,
+            'handle': obj.profile.handle,
+            'contributions': obj.contributions,
+            'amount': obj.contributions_total,
+            'match_amount': obj.match_total,
+            'you': obj.profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
+        } for obj in current_match_rankings[0:num_to_show]
     ]
 
     # render page context

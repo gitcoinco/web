@@ -250,5 +250,4 @@ class MatchRanking(SuperModel):
     match_total = models.DecimalField(default=0, decimal_places=2, max_digits=50)
 
     def __str__(self):
-        return f"Round {self.round.number}: {self.profile.handle} #{self.contributions} contributions worth ${self.contributions_total} for ${self.match_total}"
-
+        return f"Round {self.round.number}: Ranked {self.number}, {self.profile.handle} got {self.contributions} contributions worth ${self.contributions_total} for ${self.match_total} Matching"

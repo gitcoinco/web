@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils import timezone
 from django.utils.html import format_html
 
-from .models import Announcement, Comment, Flag, Like, Offer, OfferAction, MatchRanking, MatchRound
+from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction
 
 
 # Register your models here.
@@ -10,8 +10,14 @@ class GenericAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
     raw_id_fields = ['activity', 'profile']
 
+
 class ActuallyGenericAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
+
+
+class MatchRankingAdmin(admin.ModelAdmin):
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['profile', 'round']
 
 
 class OfferActionAdmin(admin.ModelAdmin):
@@ -134,5 +140,5 @@ admin.site.register(Comment, GenericAdmin)
 admin.site.register(Like, GenericAdmin)
 admin.site.register(Flag, GenericAdmin)
 admin.site.register(MatchRound, ActuallyGenericAdmin)
-admin.site.register(MatchRanking, ActuallyGenericAdmin)
+admin.site.register(MatchRanking, MatchRankingAdmin)
 admin.site.register(Announcement, AnnounceAdmin)

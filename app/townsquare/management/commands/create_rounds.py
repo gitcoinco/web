@@ -19,7 +19,9 @@
 from django.core import management
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+
 from townsquare.models import MatchRound
+
 
 class Command(BaseCommand):
 
@@ -53,6 +55,5 @@ class Command(BaseCommand):
                 valid_from = last_round.valid_to,
                 valid_to = last_round.valid_to + timezone.timedelta(days=options['days']),
                 amount = options['amount'],
-                number = last_round.number,
+                number = last_round.number + 1,
                 )
-
