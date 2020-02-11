@@ -197,7 +197,7 @@ def town_square(request):
             'i': obj.number,
             'handle': obj.profile.handle,
             'contributions': obj.contributions,
-            'amount': obj.contributions_total,
+            'amount': f"{int(obj.contributions_total/1000)}k" if obj.contributions_total > 1000 else round(obj.contributions_total, 2),
             'match_amount': obj.match_total,
             'you': obj.profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
         } for obj in current_match_rankings[0:num_to_show]

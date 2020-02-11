@@ -305,19 +305,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   {% endif %}
                 </div>
               {% endfor %}
-                <a href="/action/new" class="font-smaller-2">
+                <a href="/action/new" class="font-smaller-2 mb-2">
                   <i class="fa fa-plus-circle" aria-hidden="true"></i>
                   Create Action
                 </a>
 
+                <hr>
+
             {% if current_match_round %}
-            <div class="clr_container">
+            <div class="clr_container mt-2">
+              <img id='rainbow' src="/static/v2/images/rainbow.svg">
+              <p> Take the public goods challenge</p>
               <div class="townsquare_block-header text-leftmb-1">
                 Round {{current_match_round.number}} - ${{current_match_round.amount|floatformat:0}} Matching
                 <i data-toggle="tooltip" class="fas fa-info-circle mr-3" title="For the next 3 days, 12 minutes, Gitcoin will be matching your newsfeed tips with $200 in ETH
-                  The matching algorithm that Gitcoin uses (CLR), weights breadth of contributions (diversity in who you received from) greater than depth of contributions (total $$ received).  Learn how it works and how to earn & win here: https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4" ></i>
-              </div>              
+                  The matching algorithm that Gitcoin uses (CLR), weights breadth of contributions (diversity in who you received from) greater than depth of contributions (total $$ received).  How do you earn this way?  Well the TLDR is that 'the more value you add, the more people send you micro-tips, and we match users who receive micro-tips from the most different people..'  Want to learn more about how it works? Click here: https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4" ></i>
+              </div>
               <div class="grey">
+                </p>
                 <table>
                   <tr class="title">
                     <td>
@@ -356,6 +361,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </table>
               </div>
           </div>
+          <img id='rainbow' src="/static/v2/images/earnlearn.svg">
+          <p> You can earn matching contributions on Gitcoin by earning, learning, and/or networking.</p>
+
           {% endif %}
 
             </div>
