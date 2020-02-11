@@ -30,12 +30,12 @@ $(document).ready(function() {
     const site = e.target.value.match(url_re);
     const youtube = e.target.value.match(youtube_re);
     const no_lb = e.originalEvent.inputType !== 'insertLineBreak';
-    
+
     if (youtube !== null && youtube[1].length === 11 && no_lb) {
       let videoId = youtube[1];
-      
+
       if (embedded_resource !== youtube[0]) {
-        var apiKey = 'AIzaSyDi-EFpC2ntx9PnM_-oiJHk5zCY53KdIf0'; // TODO: add youtube API key to query titles
+        var apiKey = 'AIzaSyDP4QMWTCj7MHqRcoVBYQT-Is9wO0h9UIM'; // TODO: add youtube API key to query titles
 
         const getVideoData = fetchData('https://www.googleapis.com/youtube/v3/videos?key=' + apiKey + '&fields=items(snippet(title))&part=snippet&id=' + videoId);
 
@@ -55,7 +55,7 @@ $(document).ready(function() {
       }
     } else if (site && site.length > 1 && no_lb) {
       const url = site[0];
-      
+
       const getMetadata = fetchData('service/metadata/?url=' + url);
 
       $.when(getMetadata).then(function(response) {
@@ -197,7 +197,7 @@ $(document).ready(function() {
       const description = $('#thumbnail-desc').text();
       const image = $('#thumbnail-img').attr('src');
       const youtube = embedded_resource.match(youtube_re);
-      
+
       if (youtube !== null && youtube[1].length === 11) {
         data.append('resource', 'video');
         data.append('resourceProvider', 'youtube');
