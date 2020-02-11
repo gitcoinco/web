@@ -16,9 +16,9 @@
 
 {% endcomment %}
 {% load humanize i18n static %}
-<div class="box row d-block m-0 activity {{ row.activity_type }} infinite-item px-3 py-4 border-bottom" data-pk="{{row.pk}}">
-  <div class="activity_main d-flex justify-content-between">
-    <div class="d-flex flex-column">
+<div class="box row d-block m-0 activity {{ row.activity_type }} infinite-item px-sm-3 py-4 border-bottom" data-pk="{{row.pk}}">
+  <div class="activity_main row">
+    <div class="col-2">
       <div class="activity-avatar">
         <a href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
           <img class="avatar rounded-circle" src="{% if row.profile.active_avatar %}{{ row.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{{row.profile.handle}}{% endif %}"/>
@@ -39,8 +39,8 @@
         {% endfor %}
       </div>
     </div>
-    <div class="activity_detail pl-3 pr-2">
-      <div class="">
+    <div class="col-10 col-sm-8 pl-4 px-sm-0 activity_detail">
+      <div>
        <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
        <span class="grey"><a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a></span>
       </div>
@@ -262,8 +262,8 @@
 
       </div>
     </div>
-    <div class="d-none d-sm-flex flex-column">
-      <div class="activity_time font-smaller-4 text-right">
+    <div class="d-none d-sm-inline col-sm-2 pl-0">
+      <div class="activity_time font-smaller-5 text-right">
         {% if not hide_date %}
           {{ row.created_human_time }}
         {% endif %}

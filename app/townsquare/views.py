@@ -213,7 +213,8 @@ def town_square(request):
     }
     response = TemplateResponse(request, 'townsquare/index.html', context)
     if request.GET.get('tab'):
-        response.set_cookie('tab', request.GET.get('tab'))
+        if ":" not in request.GET.get('tab'):
+            response.set_cookie('tab', request.GET.get('tab'))
     return response
 
 
