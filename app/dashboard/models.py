@@ -2022,6 +2022,7 @@ class Activity(SuperModel):
         ('beat_quest', 'Beat Quest'),
         ('created_quest', 'Created Quest'),
         ('updated_avatar', 'Updated Avatar'),
+        ('mini_clr_payout', 'Mini CLR Payout'),
     ]
 
     profile = models.ForeignKey(

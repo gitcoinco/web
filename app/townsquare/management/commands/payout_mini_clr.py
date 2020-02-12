@@ -113,3 +113,30 @@ class Command(BaseCommand):
                 other_ranking.payout_tx_issued = ranking.payout_tx_issued
                 other_ranking.payout_tx_status = ranking.payout_tx_status
                 other_ranking.save()
+
+            # create earning object
+            from dashboard.models import Earning, Profile, Activity
+            from django.contrib.contenttypes.models import ContentType
+            from_profile = Profile.objects.get(handle='gitcoinbot')
+            Earning.objects.update_or_create(
+                source_type=ContentType.objects.get(app_label='townsquare', model='matchranking'),
+                source_id=ranking.pk,
+                defaults={
+                    "created_on":ranking.created_on,
+                    "org_profile":None,
+                    "from_profile":from_profile,
+                    "to_profile":ranking.profile,
+                    "value_usd":amount_owed,
+                    "url":'https://gitcoin.co/#clr',
+                    "network":network,
+                }
+                )
+
+            Activity.objects.create(
+                created_on=timezone.now(),
+                profile=ranking.profile,
+                activity_type='mini_clr_payout',
+                metadata={
+                    "amount":amount_owed,
+                })
+

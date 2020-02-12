@@ -56,6 +56,8 @@
           <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
             @{{ row.metadata.to_username }}
           </a>
+        {% elif row.activity_type == 'mini_clr_payout' %}
+          {% trans "got a distribution of" %} of <strong>${{row.metadata.amount|floatformat:2}}<strong>
         {% elif row.activity_type == 'new_kudos' %}
           {% trans "sent a" %}
           Kudos
