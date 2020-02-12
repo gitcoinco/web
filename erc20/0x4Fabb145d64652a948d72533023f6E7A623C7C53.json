@@ -1,0 +1,23 @@
+{
+  "symbol": "BUSD",
+  "address": "0x4Fabb145d64652a948d72533023f6E7A623C7C53",
+  "overview": {
+    "en": "BUSD is a 1:1 USD-backed stablecoin approved by the New York State Department of Financial Services (NYDFS), issued in partnership with Paxos. BUSD is supported on both ERC-20 and BEP-2; you can transfer your dollars anywhere in minutes, with low cost and on the blockchain.You can purchase and redeem BUSD with Zero Fees.",
+    "cn": "BUSD是由纽约州金融服务部（NYDFS）批准，由币安与Paxos合作发行的, 以1：1美元计价的稳定币。支持ERC-20 和BEP-2，方便储存和传输，购买和赎回零手续费。"
+  },
+  "email": "busd@binance.com",
+  "website": "https://www.binancezh.com/en/busd",
+  "state": "NORMAL",
+  "published_on": "2019-09-05",
+  "initial_price": {
+    "ETH": "00.004761905 ETH",
+    "USD": "1 USD",
+    "BTC": "0.00010333 BTC"
+  },
+  "links": {
+    "blog": "https://www.binancezh.com/en/blog",
+    "twitter": "https://twitter.com/binance",
+    "telegram": "https://t.me/binanceexchange ",
+    "github": "https://github.com/paxosglobal/busd-contract"
+  }
+}
