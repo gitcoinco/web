@@ -106,4 +106,42 @@ $(document).ready(function() {
   $('.announce .remove').click(function() {
     $(this).parents('.announce').remove();
   });
+
+  function onIntersection(imageEntites, observer) {
+    imageEntites.forEach(image => {
+      if (image.isIntersecting) {
+        observer.unobserve(image.target);
+        image.target.src = image.target.dataset.src;
+        image.target.onload = () => image.target.classList.add('loaded');
+      }
+    });
+  }
+  const interactSettings = {
+    root: document.querySelector('.loader-container'),
+    rootMargin: '0px 200px 200px 200px',
+    threshold: 0.01
+  };
+
+  function loadImages() {
+    if ('IntersectionObserver' in window) {
+      let images = [...document.querySelectorAll("img[loading='lazy']")];
+      let observer = new IntersectionObserver(onIntersection, interactSettings);
+
+      images.forEach(img => {
+        img.setAttribute('loading', '');
+        observer.observe(img);
+      });
+    } else {
+      const images = document.querySelectorAll("img[loading='lazy']");
+
+      images.forEach(img => {
+        img.src = img.dataset.src;
+        img.setAttribute('loading', '');
+      });
+    }
+
+    window.setTimeout(loadImages, 700);
+  }
+
+  loadImages();
 }(jQuery));
