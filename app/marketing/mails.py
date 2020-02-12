@@ -40,7 +40,7 @@ from retail.emails import (
     render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
     render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
     render_support_cancellation_email, render_thank_you_for_supporting_email, render_tip_email,
-    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
+    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap, render_match_distribution
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -808,6 +808,26 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
         return True
     else:
         return html
+
+
+def match_distribution(mr):
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    subject = f"Match Distribution of ${mr.amount} for @{mr.profile.handle}"
+    html, text = render_match_distribution(mr)
+    try:
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            text,
+            html,
+            from_name="Gitcoin",
+            categories=['marketing', func_name()],
+        )
+    except Exception as e:
+        logger.warning(e)
+        return False
+    return html
 
 
 def no_applicant_reminder(to_email, bounty):

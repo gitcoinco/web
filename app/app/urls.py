@@ -574,6 +574,11 @@ urlpatterns = [
         retail.emails.no_applicant_reminder,
         name='no_applicant_reminder'
     ),
+    re_path(
+        r'^_administration/email/match_distribution$',
+        retail.emails.match_distribution,
+        name='match_distribution'
+    ),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),

@@ -335,6 +335,15 @@ def render_funder_payout_reminder(**kwargs):
     return response_html, response_txt
 
 
+def render_match_distribution(mr):
+    params = {
+        'mr': mr,
+    }
+    response_html = premailer_transform(render_to_string("emails/match_distribution.html"))
+    response_txt = ''
+    return response_html, response_txt
+
+
 def render_no_applicant_reminder(bounty):
     params = {
         'bounty': bounty,
@@ -1333,6 +1342,16 @@ def no_applicant_reminder(request):
     ).first()
     response_html, _ = render_no_applicant_reminder(bounty=bounty)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def match_distribution(request):
+    from townsquare.models import MatchRanking
+    mr = MatchRanking.objects.last()
+    response_html, _ = render_match_distribution(mr)
+    return HttpResponse(response_html)
+
+
 
 
 @staff_member_required

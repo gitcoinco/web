@@ -140,3 +140,6 @@ class Command(BaseCommand):
                     "amount":amount_owed,
                 })
 
+            from marketing.mails import match_distribution
+            match_distribution(ranking)
+
