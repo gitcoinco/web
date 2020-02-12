@@ -289,7 +289,8 @@ def api(request, activity_id):
             flag_threshold_to_hide = 3 #hides comment after 3 flags
             is_hidden_by_users = activity.flags.count() > flag_threshold_to_hide
             is_hidden_by_staff = activity.flags.filter(profile__user__is_staff=True).count() > 0
-            is_hidden = is_hidden_by_users or is_hidden_by_staff
+            is_hidden_by_moderators = activity.flags.filter(profile__user__groups__name='Moderators').count() > 0
+            is_hidden = is_hidden_by_users or is_hidden_by_staff or is_hidden_by_moderators
             if is_hidden:
                 activity.hidden = True
                 activity.save()
