@@ -345,12 +345,6 @@ body.funder-page {
   -o-filter: grayscale(0%);
 }
 
-.navbar.following .nav-link,
-.navbar.following img,
-.navbar.following .nav-item {
-  display: none;
-}
-
 #gc-tree {
   text-align: center;
 }

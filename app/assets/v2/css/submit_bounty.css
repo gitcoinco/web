@@ -238,3 +238,15 @@ input:read-only {
   border: 1px solid red;
   padding: 5px;
 }
+
+.fulfill_bounty .rating-container {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.fulfill_bounty .rating-container .rating {
+  font-size: 12px;
+  display: inline-block;
+  top: 3px;
+  position: relative;
+}

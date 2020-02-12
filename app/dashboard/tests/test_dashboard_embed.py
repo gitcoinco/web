@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle dashboard embed related tests.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -44,7 +44,7 @@ class DashboardEmbedTest(TestCase):
         Bounty.objects.create(
             title='First',
             idx_status=0,
-            value_in_token=1,
+            value_in_token=1 * 10**6,
             token_name='USDT',
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
@@ -54,7 +54,7 @@ class DashboardEmbedTest(TestCase):
         Bounty.objects.create(
             title='Second',
             idx_status=1,
-            value_in_token=2,
+            value_in_token=2 * 10**6,
             token_name='USDT',
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
@@ -65,7 +65,7 @@ class DashboardEmbedTest(TestCase):
         Bounty.objects.create(
             title='Third',
             idx_status=1,
-            value_in_token=3,
+            value_in_token=3 * 10**6,
             token_name='USDT',
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),

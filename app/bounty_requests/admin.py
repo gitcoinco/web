@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define admin related functionality for Bounty Requests.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -28,12 +28,12 @@ class BountyRequestAdmin(admin.ModelAdmin):
     """Setup the BountyRequest admin results display."""
     ordering = ['-created_on']
     list_display = [
-        'created_on', 'status', 'github_url', 'amount', 'requested_by',
-        'comment_admin'
+        'created_on', 'status','github_url', 'tribe', 'amount', 'token_name',
+        'requested_by'
     ]
     search_fields = [
         'created_on', 'status', 'github_url', 'amount', 'requested_by__handle',
-        'eth_address', 'comment', 'comment_admin'
+        'comment',
     ]
     raw_id_fields = ['requested_by']
 

@@ -30,7 +30,7 @@ const tribeLeader = () => {
       $(elem).attr('disabled', true);
 
       const memberId = $(elem).data('tribeleader');
-      const url = 'tribe/leader/';
+      const url = '/tribe/leader/';
       const template = '<span class="text-center text-uppercase font-weight-bold p-1 text-highlight-yellow">Tribe Leader</span>';
 
       const sendLeader = fetchData (url, 'POST', {'member': memberId}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});

@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -33,18 +33,21 @@
       {% include 'home/nav.html' %}
     </div>
 
-    <div class="intro container-fluid py-5">
+    <div class="intro container-fluid py-5" style="background:  url('/static/v2/images/quests/backs/back{{back}}.jpeg'); background-size: cover;">
       <div class="row justify-content-center">
         <div class="d-flex flex-column align-items-center ">
-          <img class="img-fluid px-3 px-md-0 "
-            src="{% static 'v2/images/products/grow_open_source.png' %}" alt="Grow open source">
-          <span class="intro-header text-center">
-            {% trans "Grow Open Source" %}
-          </span>
-          <span class="intro-sub-header text-center">
-            {% trans "At Gitcoin, we build products that allow for better" %}<br>
-            {% trans "incentivized collaboration in the realm of open source software" %}
-          </span>
+          <img class="img-fluid px-3 px-md-0 mb-3 "
+            src="/static/v2/images/products/{{img}}" alt="Grow open source">
+          <div style="background-color: rgba(255, 255, 255, 0.3); padding: 10px; border-radius: 10px; width: 120%; text-align: center;">
+            <span class="intro-header">
+              {% trans "Grow Open Source" %}
+            </span>
+            <BR>
+            <span class="intro-sub-header">
+              {% trans "At Gitcoin, we build products that allow for better" %}<br>
+              {% trans "incentivized collaboration in the realm of open source software" %}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -60,12 +63,12 @@
               </span>
               <span class=" mb-2 product-heading">{{ product.heading }}</span>
               <span class="mb-4 product-desc">{{ product.description }}</span>
-              <span class="mb-4 tag">{{ product.service_level }}</span>
               {% if product.link %}
                 <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
                   {% trans "Get Started" %}
                 </a>
               {% endif %}
+              <span class="mb-4 mt-2 ml-1 product-traction"><i class="fas fa-chart-bar"></i> {{ product.traction }} | <a href="/results" class="white underline">See Results</a></span>
             </div>
             <div class="col-md-6 py-md-5 py-2 align-self-center">
               <img class="img-fluid float-right pl-3 pl-md-0" src="{{ product.img }}" alt="{{ product.name }}-image">
@@ -81,12 +84,12 @@
               </span>
               <span class="mb-2 product-heading">{{ product.heading }}</span>
               <span class="mb-4 product-desc">{{ product.description }}</span>
-              <span class="mb-4 tag">{{ product.service_level }}</span>
               {% if product.link %}
                 <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
                   {% trans "Get Started" %}
                 </a>
               {% endif %}
+              <span class="mb-4 mt-2 ml-1 product-traction"><i class="fas fa-chart-bar"></i> {{ product.traction }} | <a href="/results" class="white underline">See Results</a></span>
             </div>
           {% endif %}
         </div>

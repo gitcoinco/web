@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<div class="w-100 p-2">
+<div class="w-100 p-2 rating-container">
   <fieldset class="{% if class %}{{ class }}{% endif %}" id="{{ id }}-{{ bounty.id }}" >
     {% if label %}<label for="" class="form__label">{{ label }}</label> {% endif %}
     <div class="rating" {% if data %}data-open-rating={{ bounty.id }} data-open-username={% if username %} {{username}} {% else %} {{bounty.bounty_owner_github_username}} {% endif %}{% endif %}>

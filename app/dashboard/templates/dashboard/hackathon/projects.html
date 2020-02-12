@@ -128,7 +128,7 @@
               <select name="sponsor" id="sponsor" class="form-control">
                 <option value="">All</option>
                 {% for sponsor_item in sponsors_list %}
-                  <option value="{{sponsor_item.org_name}}" {% if sponsor_item.org_name == sponsor %}selected {%endif%}>{{sponsor_item.org_name}}</option>
+                  <option value="{{sponsor_item.org_name}}" {% if sponsor_item.org_name == sponsor %}selected {% endif %}>{{sponsor_item.org_name}}</option>
                 {% endfor%}
               </select>
             </div>
