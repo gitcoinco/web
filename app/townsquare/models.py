@@ -248,6 +248,11 @@ class MatchRanking(SuperModel):
     contributions = models.IntegerField(default=1)
     contributions_total = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     match_total = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    final = models.BooleanField(help_text='Is this match ranking final?', default=False)
+    paid = models.BooleanField(help_text='Is this match ranking paikd?', default=False)
+    payout_txid = models.CharField(max_length=255, default='', blank=True)
+    payout_tx_status = models.CharField(max_length=255, default='', blank=True)
+    payout_tx_issued = models.DateTimeField(db_index=True, null=True)
 
     def __str__(self):
         return f"Round {self.round.number}: Ranked {self.number}, {self.profile.handle} got {self.contributions} contributions worth ${self.contributions_total} for ${self.match_total} Matching"
