@@ -97,6 +97,11 @@
             <p>
                {% trans "This tip has been remitted automatically to the Ethereum address on file for your account (" %}<a href='https://etherscan.io/address/{{tip.receive_address}}'>{{tip.receive_address}}</a>{% trans ") via txid " %}<a href='https://etherscan.io/tx/{{tip.txid}}'>{{tip.txid}}</a>.
             </p>
+            {% if tip.stream %}
+              <p>
+                {% trans "Your Tip has been sent using Sablier Streaming. You can check it out" %}<a href="https://app.sablier.finance/">here</a>
+              </p>
+            {% endif %}
           {% elif show_expires %}
             <p>
             {% trans "The tip expires on" %} <strong>{{tip.expires_date}}, {% trans "in just" %} {{tip.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:" %}

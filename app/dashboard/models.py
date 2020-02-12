@@ -1659,6 +1659,11 @@ class Tip(SendCryptoAsset):
     """ Inherit from SendCryptoAsset base class, and extra fields that are needed for Tips. """
     expires_date = models.DateTimeField(null=True, blank=True)
     comments_priv = models.TextField(default='', blank=True)
+    stream = models.BooleanField(
+        default=False,
+        help_text=_('Streaming Tips on Sablier if True'),
+    )
+    streamid = models.PositiveIntegerField(blank=True, null=True)
     recipient_profile = models.ForeignKey(
         'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True, blank=True
     )

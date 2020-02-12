@@ -21,6 +21,7 @@ from __future__ import print_function, unicode_literals
 
 import json
 import logging
+import requests
 
 from django.conf import settings
 from django.contrib import messages
@@ -192,6 +193,53 @@ def receive_tip_v3(request, key, txid, network):
 
     return TemplateResponse(request, 'onepager/receive.html', params)
 
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def get_stream_id(request):
+    """Gets the Sablier Stream ID from thegraph
+
+    Returns:
+        JsonResponse: response with success state.
+
+    """
+
+    response = {
+        'status': 'OK',
+        'message': _('Stream Id Fetched'),
+    }
+
+    is_user_authenticated = request.user.is_authenticated
+    from_username = request.user.username if is_user_authenticated else ''
+    params = json.loads(request.body)
+    txid = params['transaction_id']
+    tip = Tip.objects.get(receive_txid=txid)
+
+    print(txid)
+    query = """query {
+        transaction(id: "%s") {
+          stream{
+              id
+          }
+      }
+    }"""% txid
+
+    transactionReceipt = get_web3(tip.network).eth.waitForTransactionReceipt(txid)
+    if transactionReceipt:
+        url = 'https://api.thegraph.com/subgraphs/name/sablierhq/sablier'
+        r = requests.post(url, json={'query': query})
+        print('r',r)
+        json_data = json.loads(r.text)
+        print('json_data',json_data)
+        if json_data['data']['transaction'] != None:
+            stream_id = json_data['data']['transaction']['stream']['id']
+            response['stream_id'] = stream_id
+            print(response)
+        else:
+            stream_id = None
+        tip.streamid = stream_id
+        tip.save()
+
+    return JsonResponse(response)
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
@@ -365,6 +413,7 @@ def send_tip_3(request):
         metadata=metadata,
         recipient_profile=get_profile(to_username),
         sender_profile=get_profile(from_username),
+        stream=params['stream']
     )
 
     is_over_tip_tx_limit = False

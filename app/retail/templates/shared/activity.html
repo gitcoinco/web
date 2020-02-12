@@ -67,6 +67,12 @@
           <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
             @{{ row.metadata.to_username }}
           </a>
+          {% if row.tip.stream %}
+            using 
+            <a href="https://app.sablier.finance/stream/{{ row.tip.streamid }}" >
+              Sablier
+            </a>
+          {% endif %}
         {% elif row.activity_type == 'mini_clr_payout' %}
           {% trans "got a distribution of" %} of <strong>${{row.metadata.amount|floatformat:2}}<strong>
         {% elif row.activity_type == 'new_kudos' %}

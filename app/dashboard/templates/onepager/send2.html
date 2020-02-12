@@ -85,6 +85,24 @@
       </select>
       <input name="amount" type="text" placeholder="1.1" id="amount" value="" style="width: 170px; display: inline;">
     </div>
+    <div class="terms pb-1">
+      <input type="checkbox" id="streamcheck" value="1" >
+      <label for="streamcheck">{% blocktrans %}Stream Tip{% endblocktrans %}</label>
+    </div>
+    <div id="sablier_time" style="display: none;">
+      <div>
+        <label for="stream_duration_days">{% blocktrans %}Stream Days{% endblocktrans %}</label>
+        <input type="number" min="0" id="stream_duration_days">
+      </div>
+      <div>
+        <label for="stream_duration_hours">{% blocktrans %}Stream Hours{% endblocktrans %}</label>
+        <input type="number" min="0" max="24" id="stream_duration_hours">
+      </div>
+      <div>
+        <label for="stream_duration_minutes">{% blocktrans %}Stream Minutes{% endblocktrans %}</label>
+        <input type="number" min="0" max="59" id="stream_duration_minutes">
+      </div>
+    </div>
     <div id="usd_amount"> &nbsp;</div>
     <div id="tooltip" class="ethinfo-hover">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></div><br>
     <div class="pb-1 to_name">
@@ -154,6 +172,8 @@
   <div id="send_eth_done" style="display:none;">
     <h1>{% trans "Woo hoo!" %}</h1>
     <h2>{% blocktrans %}Your <span id="tokenName">ETH</span> has been sent <a href="" target="_blank" rel="noopener noreferrer" id="trans_link">to the blockchain</a>.{% endblocktrans %}</h2>
+    <h2 id="stream_text" style="display: none;">Your Sablier Stream will start once the transaction is complete. You can wait for the details to be updated or you can find them later on the Dashboard</h2>
+    <h2 id="stream_id_confirmation" style="display: none;">{% blocktrans %}Your <span id="tokenName">ETH</span> has begun streaming <a href="" target="_blank" rel="noopener noreferrer" id="stream_link">via Sablier</a>.{% endblocktrans %}</h2>
     <p id="loading_trans">
       <a href="" target="_blank" rel="noopener noreferrer" id="trans_link2" >{% trans "The transaction is still pending." %}</a><br>{% trans "This page will auto-update when the transaction is confirmed" %} <br>({% trans "but you can close the browser window if you want" %}).
       <br>

@@ -29,14 +29,25 @@ def create_notification(sender, **kwargs):
     if activity.activity_type == 'new_tip':
         tip = activity.tip
         if tip.recipient_profile:
-            send_notification_to_user(
-                activity.profile.user,
-                tip.recipient_profile.user,
-                tip.receive_url,
-                'new_tip',
-                f'<b>New Tip</b> worth {tip.value_in_usdt_now} USD ' +
-                f'recieved from {tip.from_username}'
-            )
+            if tip.stream:
+                send_notification_to_user(
+                    activity.profile.user,
+                    tip.recipient_profile.user,
+                    tip.receive_url,
+                    'new_tip',
+                    f'<b>New Tip</b> worth {tip.value_in_usdt_now} USD ' +
+                    f'recieved from {tip.from_username} ' + 
+                    f'Using Sablier'
+                )
+            else:
+                send_notification_to_user(
+                    activity.profile.user,
+                    tip.recipient_profile.user,
+                    tip.receive_url,
+                    'new_tip',
+                    f'<b>New Tip</b> worth {tip.value_in_usdt_now} USD ' +
+                    f'recieved from {tip.from_username}'
+                )
 
     if activity.activity_type == 'worker_applied':
         bounty = activity.bounty

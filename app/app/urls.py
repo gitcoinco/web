@@ -300,6 +300,7 @@ urlpatterns = [
         name='receive_tip'
     ),
     url(r'^tip/address/(?P<handle>.*)', dashboard.tip_views.tipee_address, name='tipee_address'),
+    url(r'^tip/send/stream/?', dashboard.tip_views.get_stream_id, name='get_stream_id'),
     url(r'^tip/send/4/?', dashboard.tip_views.send_tip_4, name='send_tip_4'),
     url(r'^tip/send/3/?', dashboard.tip_views.send_tip_3, name='send_tip_3'),
     url(r'^tip/send/2/?', dashboard.tip_views.send_tip_2, name='send_tip_2'),

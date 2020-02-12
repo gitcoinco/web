@@ -14,6 +14,7 @@
 
 {% if already_redeemed %}
  {% trans "This tip has been remitted automatically to the Ethereum address on file for your account via txid " %}{{tip.txid}}
+ {% trans "Your Tip has been sent using Sablier Streaming. You can check it out at https://app.sablier.finance/" %}
 {% elif show_expires %}
 The tip expires on *{{tip.expires_date}}, in just {{tip.expires_date | naturaltime}}*.  No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
 {% else %}

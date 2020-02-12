@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-var get_gas_price = function() {
+var get_gas_price = function () {
   if ($('#gasPrice').length) {
     return $('#gasPrice').val() * Math.pow(10, 9);
   }
@@ -9,7 +9,7 @@ var get_gas_price = function() {
   return 5 * 10 ** 9;
 };
 
-var generate_or_get_private_key = function() {
+var generate_or_get_private_key = function () {
   if (typeof document.account != 'undefined') {
     return document.account;
   }
@@ -18,31 +18,31 @@ var generate_or_get_private_key = function() {
   return document.account;
 };
 
-var clear_metadata = function() {
+var clear_metadata = function () {
   document.account = undefined;
   document.hash1 = undefined;
 };
 
-$('#secret_link').click(function() {
+$('#secret_link').click(function () {
   let is_checked = $(this).is(':checked');
 
   $('.to_name').toggleClass('hidden');
 });
 
-var set_metadata = function(callback) {
+var set_metadata = function (callback) {
   var account = generate_or_get_private_key();
   var shares = account['shares'];
 
   ipfs.ipfsApi = IpfsApi(ipfsConfig);
   ipfs.setProvider(ipfsConfig);
-  ipfs.add(shares[1], function(err, hash1) {
+  ipfs.add(shares[1], function (err, hash1) {
     if (err)
       throw err;
     document.hash1 = hash1;
   });
 };
-var wait_for_metadata = function(callback) {
-  setTimeout(function() {
+var wait_for_metadata = function (callback) {
+  setTimeout(function () {
     if (typeof document.hash1 != 'undefined') {
       var account = generate_or_get_private_key();
 
@@ -59,11 +59,11 @@ var wait_for_metadata = function(callback) {
 
 };
 
-$(document).ready(function() {
+$(document).ready(function () {
 
   // upon keypress for the select2, gotta make sure it opens
-  setTimeout(function() {
-    $('.select2').keypress(function() {
+  setTimeout(function () {
+    $('.select2').keypress(function () {
       $(this).siblings('select').select2('open');
     });
   }, 100);
@@ -73,12 +73,20 @@ $(document).ready(function() {
   }
   set_metadata();
   // jquery bindings
-  $('#advanced_toggle').on('click', function() {
+  $('#advanced_toggle').on('click', function () {
     advancedToggle();
   });
   $('#amount').on('keyup blur change', updateEstimate);
   $('#token').on('change', updateEstimate);
-  $('#send').on('click', function(e) {
+  $("#streamcheck").on("click", function () {
+    var check = $("#streamcheck").is(":checked");
+    if (check) {
+      $("#sablier_time").css('display', 'flex');
+    } else {
+      $("#sablier_time").css('display', 'none');
+    }
+  });
+  $('#send').on('click', function (e) {
     e.preventDefault();
     if ($(this).hasClass('disabled'))
       return;
@@ -104,6 +112,15 @@ $(document).ready(function() {
     var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
     var tokenDetails = tokenAddressToDetails(tokenAddress);
     var tokenName = 'ETH';
+    var isStreaming = $("#streamcheck").is(":checked");
+    var stream_days = 0;
+    var stream_hours = 0;
+    var stream_minutes = 0;
+    if (isStreaming) {
+      stream_days = $('#stream_duration_days').val();
+      stream_hours = $('#stream_duration_hours').val();
+      stream_minutes = $('#stream_duration_minutes').val();
+    }
 
     if (!isSendingETH) {
       tokenName = tokenDetails.name;
@@ -114,18 +131,36 @@ $(document).ready(function() {
       return;
     }
 
-    var success_callback = function(txid) {
-
+    var success_callback = function (txid) {
       startConfetti();
       var url = 'https://' + etherscanDomain() + '/tx/' + txid;
-
+      
       $('#loading_trans').html('This transaction has been sent 👌');
       $('#send_eth').css('display', 'none');
       $('#send_eth_done').css('display', 'block');
       $('#tokenName').html(tokenName);
       $('#new_username').html(username);
       $('#trans_link').attr('href', url);
-      $('#trans_link2').attr('href', url);
+
+      var fetchStreamURL = '/tip/send/stream'
+      $('#stream_text').css('display','block')
+      if(isStreaming) {
+        fetch(fetchStreamURL, {
+          method: 'POST',
+          credentials: 'include',
+          body: JSON.stringify({
+            transaction_id: txid
+          })
+        }).then(function (response) {          
+          return response.json();
+        }).then(function (json) {
+          $('#stream_text').css('display','none');
+          var streamurl = 'https://app.sablier.finance/stream/' + json.stream_id;
+          $('#stream_link').attr('href', streamurl);
+          $('#stream_id_confirmation').css('display', 'block');
+        })
+      }
+
       unloading_button($(this));
       dataLayer.push({
         'event': 'sendtip',
@@ -133,16 +168,16 @@ $(document).ready(function() {
         'action': 'sendtip'
       });
     };
-    var failure_callback = function() {
+    var failure_callback = function () {
       unloading_button($('#send'));
     };
 
-    return sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
+    return sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false, isStreaming, stream_days, stream_hours, stream_minutes);
 
   });
 
-  waitforWeb3(function() {
-    tokens(document.web3network).forEach(function(ele) {
+  waitforWeb3(function () {
+    tokens(document.web3network).forEach(function (ele) {
       if (ele && ele.addr) {
         var html = '<option value=' + ele.addr + '>' + ele.name + '</option>';
 
@@ -171,7 +206,8 @@ function isNumeric(n) {
 }
 
 
-function sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller) {
+function sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller, isStreaming, stream_days, stream_hours, stream_minutes) {
+
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
     failure_callback();
@@ -179,6 +215,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
   }
   // setup
   var fromAccount = web3.eth.accounts[0];
+
 
   if (typeof fromAccount == 'undefined') {
     _alert({ message: gettext('You must unlock & enable Gitcoin via your web3 wallet to continue.') }, 'warning');
@@ -239,8 +276,13 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
     failure_callback();
     return;
   }
+  if (isStreaming && !(stream_days > 0 || stream_hours > 0 && stream_hours <=23 || stream_minutes > 0 && stream_minutes <= 59 )) {
+    _alert({ message: gettext('Enter correct time for Streaming') }, 'warning');
+    failure_callback();
+    return;
+  }
 
-  var got_metadata_callback = function(metadata) {
+  var got_metadata_callback = function (metadata) {
     const url = '/tip/send/3';
 
     metadata['creation_time'] = creation_time;
@@ -265,11 +307,12 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
         network: document.web3network,
         from_address: fromAccount,
         is_for_bounty_fulfiller: is_for_bounty_fulfiller,
-        metadata: metadata
+        metadata: metadata,
+        stream: isStreaming
       })
-    }).then(function(response) {
+    }).then(function (response) {
       return response.json();
-    }).then(function(json) {
+    }).then(function (json) {
       var is_success = json['status'] == 'OK';
       var _class = is_success ? 'info' : 'error';
 
@@ -279,7 +322,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
       } else {
         var is_direct_to_recipient = metadata['is_direct'];
         var destinationAccount = is_direct_to_recipient ? metadata['direct_address'] : metadata['address'];
-        var post_send_callback = function(errors, txid) {
+        var post_send_callback = function (errors, txid) {          
           indicateMetamaskPopup(true);
           if (errors) {
             _alert({ message: gettext('There was an error.') }, 'warning');
@@ -297,9 +340,9 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
                 creation_time: creation_time,
                 salt: salt
               })
-            }).then(function(response) {
+            }).then(function (response) {
               return response.json();
-            }).then(function(json) {
+            }).then(function (json) {
               var is_success = json['status'] == 'OK';
 
               if (!is_success) {
@@ -322,26 +365,50 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
             gasPrice: web3.toHex(get_gas_price())
           }, post_send_callback);
         } else {
-          var send_erc20 = function() {
-            var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+          if (isStreaming) {
+            var start_stream = function () {
+              var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
 
-            token_contract.transfer(destinationAccount, amountInDenom, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
-          };
-          var send_gas_money_and_erc20 = function() {
-            _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
-            web3.eth.sendTransaction({
-              to: destinationAccount,
-              value: gas_money,
-              gasPrice: web3.toHex(get_gas_price())
-            }, send_erc20);
-          };
-
-          if (is_direct_to_recipient) {
-            send_erc20();
+              token_contract.approve(payroll_address(), amountInDenom*10, function (errors, txid) {
+                if (errors) {
+                  _alert({ message: gettext('There was an error.') }, 'warning');
+                  failure_callback();
+                } else{
+                //var dai_address = '0x6b175474e89094c44da98b954eedeac495271d0f';
+                var payroll_contract = web3.eth.contract(payroll_abi).at(payroll_address());
+                var now = Math.round(new Date().getTime() / 1000); // get seconds since unix epoch
+                var startTime = now + 1800; // Half hour from now
+                var stopTime = now + (stream_days * 24 * 3600) + (stream_hours * 3600) + (stream_minutes * 60); // 30 days and 1 hour from now
+                var timeDelta = stopTime - startTime;
+                var convertedAmountInDenom = BigInt(amountInDenom.toLocaleString('fullwide', {useGrouping:false}))
+                var remainder = convertedAmountInDenom % BigInt(timeDelta.toString());
+                var adjustedAmountInDenom = convertedAmountInDenom - remainder;
+                payroll_contract.createSalary(destinationAccount, adjustedAmountInDenom, tokenAddress, startTime, stopTime, post_send_callback);
+                }
+              });
+            }
+            start_stream();
           } else {
-            send_gas_money_and_erc20();
-          }
+            var send_erc20 = function () {
+              var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
 
+              token_contract.transfer(destinationAccount, amountInDenom, { gasPrice: web3.toHex(get_gas_price()) }, post_send_callback);
+            };
+            var send_gas_money_and_erc20 = function () {
+              _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
+              web3.eth.sendTransaction({
+                to: destinationAccount,
+                value: gas_money,
+                gasPrice: web3.toHex(get_gas_price())
+              }, send_erc20);
+            };
+
+            if (is_direct_to_recipient) {
+              send_erc20();
+            } else {
+              send_gas_money_and_erc20();
+            }
+          }
         }
       }
     });
@@ -350,9 +417,9 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
   // send direct, or not?
   const url = '/tip/address/' + username;
 
-  fetch(url, {method: 'GET', credentials: 'include'}).then(function(response) {
+  fetch(url, { method: 'GET', credentials: 'include' }).then(function (response) {
     return response.json();
-  }).then(function(json) {
+  }).then(function (json) {
     if (json.addresses.length > 0) {
       // pay out directly
       got_metadata_callback({
@@ -368,11 +435,11 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
   });
 }
 
-var updateEstimate = function(e) {
+var updateEstimate = function (e) {
   var denomination = $('#token option:selected').text();
   var amount = $('#amount').val();
 
-  getUSDEstimate(amount, denomination, function(usdAmount) {
+  getUSDEstimate(amount, denomination, function (usdAmount) {
     if (usdAmount && usdAmount['full_text']) {
       $('#usd_amount').html(usdAmount['full_text']);
     } else {
@@ -381,7 +448,7 @@ var updateEstimate = function(e) {
   });
 };
 
-var etherscanDomain = function() {
+var etherscanDomain = function () {
   var etherscanDomain = 'etherscan.io';
 
   if (document.web3network == 'custom network') {
