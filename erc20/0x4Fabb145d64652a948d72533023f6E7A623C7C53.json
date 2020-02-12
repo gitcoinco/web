@@ -6,7 +6,7 @@
     "cn": "BUSD是由纽约州金融服务部（NYDFS）批准，由币安与Paxos合作发行的, 以1：1美元计价的稳定币。支持ERC-20 和BEP-2，方便储存和传输，购买和赎回零手续费。"
   },
   "email": "busd@binance.com",
-  "website": "https://www.binance.com/en/busd",
+  "website": "https://www.binancezh.com/en/busd",
   "state": "NORMAL",
   "published_on": "2019-09-05",
   "initial_price": {
@@ -15,7 +15,7 @@
     "BTC": "0.00010333 BTC"
   },
   "links": {
-    "blog": "https://www.binance.com/en/blog",
+    "blog": "https://www.binancezh.com/en/blog",
     "twitter": "https://twitter.com/binance",
     "telegram": "https://t.me/binanceexchange ",
     "github": "https://github.com/paxosglobal/busd-contract"
