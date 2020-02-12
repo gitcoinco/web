@@ -164,17 +164,7 @@ class ActivityExportSerializer(serializers.ModelSerializer):
         return instance.created.isoformat()
 
     def get_url(self, instance):
-        action = self.get_action(instance)
-        if action in ('bounty', ):
-            return instance.bounty.get_absolute_url()
-
-        if action in ('kudos', ):
-            return instance.kudos.kudos_token.get_absolute_url()
-
-        if action in ('profile', ):
-            return instance.profile.absolute_url
-
-        return ''
+        return instance.action_url
 
     def get_action(self, instance):
         action = ''
