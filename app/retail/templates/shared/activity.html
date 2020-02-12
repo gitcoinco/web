@@ -294,7 +294,7 @@
   {% if row.metadata.resource.type == 'gif' %}
   <div class="mt-1 mb-2" >
     <div class="row align-items-center bg-light">
-        <img class="lazy" style="max-width: 80%; max-height: 350px;" src="{{ row.metadata.resource.id }}">
+        <img class="lazy" style="width: 100%; object-fit: fill; max-height: 450px" src="{{ row.metadata.resource.id }}">
     </div>
   </div>
   {% elif row.metadata.resource.provider == 'youtube' %}

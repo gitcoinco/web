@@ -4,7 +4,7 @@ const giphy_re = /(?:https?:\/\/)?(?:media0\.)?(?:giphy\.com\/media\/)/;
 
 $(document).ready(function() {
   var embedded_resource = '';
-  const GIPHY_API_KEY = '1WfeOI2i4lJiBKvO2Q1W3yUqdjQ27UTy';
+  const GIPHY_API_KEY = document.contxt.giphy_key;
   
   let button = document.querySelector('#btn_post');
   
