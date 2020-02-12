@@ -66,18 +66,19 @@ $(document).ready(function() {
     const site = e.target.value.match(url_re);
     const youtube = e.target.value.match(youtube_re);
     const no_lb = e.originalEvent.inputType !== 'insertLineBreak';
-    
+
+    // GIF has priority, no other display info allowed
     if (typeof embedded_resource === 'string' && embedded_resource.match(giphy_re)) {
       return;
     }
-    
+
     if (youtube !== null && youtube[1].length === 11 && no_lb) {
       let videoId = youtube[1];
-      
-      if (embedded_resource !== youtube[0]) {
-        var apiKey = 'AIzaSyDi-EFpC2ntx9PnM_-oiJHk5zCY53KdIf0'; // TODO: add youtube API key to query titles
 
-        let getVideoData = fetchData('https://www.googleapis.com/youtube/v3/videos?key=' + apiKey + '&fields=items(snippet(title))&part=snippet&id=' + videoId);
+      if (embedded_resource !== youtube[0]) {
+        var apiKey = 'AIzaSyDP4QMWTCj7MHqRcoVBYQT-Is9wO0h9UIM'; // TODO: add youtube API key to query titles
+
+        const getVideoData = fetchData('https://www.googleapis.com/youtube/v3/videos?key=' + apiKey + '&fields=items(snippet(title))&part=snippet&id=' + videoId);
 
         $.when(getVideoData).then(function(response) {
           if (response.items.length !== 0) {
@@ -95,9 +96,9 @@ $(document).ready(function() {
         });
       }
     } else if (site && site.length > 1 && no_lb) {
-      let url = site[0];
-      
-      let getMetadata = fetchData('service/metadata/?url=' + url);
+      const url = site[0];
+
+      const getMetadata = fetchData('service/metadata/?url=' + url);
 
       $.when(getMetadata).then(function(response) {
         if (response) {
@@ -138,12 +139,13 @@ $(document).ready(function() {
           if (response.data && response.data.length) {
             for (profile of response.data) {
               const { avatar_url, handle } = profile;
-              let userRow = $('<a class="dropdown-item" href="#"></a>');
+              let userRow = $('<a class="dropdown-item" tabindex="0" href="#"></a>');
 
-              userRow.append(`<img class="rounded-circle" src="${avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/>`);
+              userRow.append(`<img class="rounded-circle mr-1" src="${avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/>`);
               userRow.append(`<span>${handle}</span>`);
 
               userRow.click(function(e) {
+                e.preventDefault();
                 let inputVal = $('#textarea').val();
                 let inputPos = inputVal.search(lastWord);
 
@@ -176,9 +178,23 @@ $(document).ready(function() {
     }, 100);
   });
 
-  if ($('#textarea').length) {
+  if ($('#textarea').length && $('#textarea').offset().top < 400) {
     $('#textarea').focus();
   }
+
+  document.is_shift = false;
+  // handle shift button
+  $('body').on('keyup', '#textarea', function(e) {
+    if (e.keyCode == 16) {
+      document.is_shift = false;
+    }
+  });
+  // handle shift button
+  $('body').on('keydown', '#textarea', function(e) {
+    if (e.keyCode == 16) {
+      document.is_shift = true;
+    }
+  });
 
   $('body').on('focus change paste keyup blur', '#textarea', function(e) {
 
@@ -188,19 +204,11 @@ $(document).ready(function() {
     if ($(this).val().trim().length > max_len) {
       e.preventDefault();
       $(this).addClass('red');
-      var old_val = $(this).val();
-
-      setTimeout(function() {
-        $('#textarea').val(old_val.slice(0, max_len));
-      }, 20);
-    } else {
-      $(this).removeClass('red');
-    }
-
-    // enable post via enter button
-    if ($(this).val().trim().length > 4) {
+      $('#btn_post').attr('disabled', true);
+    } else if ($(this).val().trim().length > 4) {
       $('#btn_post').attr('disabled', false);
-      if ($('#textarea').is(':focus') && (e.keyCode == 13)) {
+      $(this).removeClass('red');
+      if ($('#textarea').is(':focus') && !document.is_shift && (e.keyCode == 13)) {
         submitStatusUpdate();
         e.preventDefault();
       }
@@ -210,6 +218,9 @@ $(document).ready(function() {
   });
 
   function submitStatusUpdate() {
+    if ($('#btn_post').is(':disabled')) {
+      return;
+    }
     const data = new FormData();
     const message = $('#textarea');
     const ask = $('.activity_type_selector .active input').val();
@@ -229,7 +240,7 @@ $(document).ready(function() {
       const description = $('#thumbnail-desc').text();
       const image = $('#thumbnail-img').attr('src');
       const youtube = embedded_resource.match(youtube_re);
-      
+
       if (embedded_resource.match(giphy_re)) {
         data.append('resource', 'gif');
         data.append('resourceProvider', 'giphy');
@@ -249,7 +260,6 @@ $(document).ready(function() {
         data.append('description', description);
         data.append('image', image);
       }
-      
     }
 
     fetch('/api/v0.1/activity', {

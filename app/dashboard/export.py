@@ -1,8 +1,6 @@
-from grants.models import Grant
 from rest_framework import serializers
-
 from .models import Activity, Bounty, FeedbackEntry, Tip
-
+from grants.models import Grant
 
 class ProfileExportSerializer(serializers.BaseSerializer):
     """Handle serializing the exported Profile object."""
@@ -102,23 +100,23 @@ class GrantExportSerializer(serializers.ModelSerializer):
                   'admin_address', 'contract_owner_address', 'amount_goal',
                   'monthly_amount_subscribed', 'amount_received', 'token_address',
                   'token_symbol', 'contract_address', 'network',
-                  'org', 'created_at', 'url', ''
+                  'org', 'created_at', 'url', 'contribution_count', 'contributor_count'
                   )
 
     def get_created_at(self, instance):
         return instance.created_on.isoformat()
 
     def get_org(self, instance):
-        return instance.org_name()
+        return instance.org_name
 
     def get_url(self, instance):
         return instance.get_absolute_url()
 
     def get_contributor_count(self, instance):
-        return instance.get_contributor_count()
+        return instance.get_contributor_count
 
     def get_contribution_count(self, instance):
-        return instance.get_contribution_count()
+        return instance.get_contribution_count
 
 
 class BountyExportSerializer(serializers.ModelSerializer):
@@ -239,13 +237,14 @@ class FeedbackExportSerializer(serializers.ModelSerializer):
     bounty_url = serializers.SerializerMethodField()
     created_at = serializers.SerializerMethodField()
     sender = serializers.SerializerMethodField()
-    recipient = serializers.SerializerMethodField()
+    receiver = serializers.SerializerMethodField()
     feedback_type = serializers.CharField(source='feedbackType')
     comment = serializers.SerializerMethodField()
 
     class Meta:
         model = FeedbackEntry
-        fields = ('id', 'sender', 'recipient', 'bounty_url', 'rating', 'satisfaction_rating',
+        fields = ('id', 'sender', 'receiver', 'bounty_url', 'rating',
+                  'satisfaction_rating', 'created_at',
                   'communication_rating', 'speed_rating', 'code_quality_rating',
                   'recommendation_rating', 'feedback_type', 'comment')
 
@@ -262,8 +261,8 @@ class FeedbackExportSerializer(serializers.ModelSerializer):
     def get_sender(self, instance):
         return instance.sender_profile.handle
 
-    def get_recipient(self, instance):
-        return instance.recipient_profile.handle
+    def get_receiver(self, instance):
+        return instance.receiver_profile.handle
 
     def get_comment(self, instance):
         return instance.anonymized_comment
@@ -279,6 +278,8 @@ exporters = {
 }
 
 def filter_items(model, data, private):
+  if not (data and len(data) > 0):
+      return []
   private_keys = privacy_fields[model]
   if private:
     private_keys.append("id")

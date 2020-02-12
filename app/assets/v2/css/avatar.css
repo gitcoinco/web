@@ -58,9 +58,13 @@
   margin: 0px auto;
   padding-left: 40px;
 }
-#tdavatartarget.3d{
+#tdavatartarget.unisex{
   width: 400px;
   height: 400px;
+}
+#tdavatartarget.female{
+  width: 300px;
+  height: 300px;
 }
 #tdavatartarget.bufficorn{
   width: 500px;

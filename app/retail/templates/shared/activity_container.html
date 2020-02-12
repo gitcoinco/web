@@ -15,13 +15,13 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-<div style="background-color: white;">
-  <div class="container infinite-container activity_stream">
-      {% for row in activities %}
-        {% include 'shared/activity.html' %}
-      {% endfor %}
-      {% if not suppress_more_link %}
-        <a class="infinite-more-link" href="{% if target %}{{target}}{% else %}?what={{what}}&page={{next_page}}{% endif %}" style="display:none;">More</a>
-      {% endif %}
+<div class="border-top border-left border-right mt-2" style="background-color: white;">
+  <div class="infinite-container activity_stream">
+    {% for row in activities %}
+      {% include 'shared/activity.html' %}
+    {% endfor %}
+    {% if not suppress_more_link %}
+      <a class="infinite-more-link" href="{% if target %}{{target}}{% else %}?what={{what}}&page={{next_page}}{% endif %}" style="display:none;">More</a>
+    {% endif %}
   </div>
 </div>

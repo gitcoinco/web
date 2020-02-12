@@ -866,16 +866,18 @@ def onboard(request, flow=None):
             profile.save()
         return JsonResponse({'OK': True})
 
-    theme = request.GET.get('theme', '3d')
+    theme = request.GET.get('theme', 'unisex')
     from avatar.views_3d import get_avatar_attrs
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
     avatar_options = [
         ('classic', '/onboard/profile?steps=avatar&theme=classic'),
-        ('3d', '/onboard/profile?steps=avatar&theme=3d'),
-        ('bufficorn', '/onboard/profile?steps=avatar&theme=bufficorn'),
+        ('unisex', '/onboard/profile?steps=avatar&theme=unisex'),
         ('female', '/onboard/profile?steps=avatar&theme=female'),
+        ('bufficorn', '/onboard/profile?steps=avatar&theme=bufficorn'),
     ]
+    if request.user.is_staff:
+        avatar_options.append(('bot', '/onboard/profile?steps=avatar&theme=bot'))
 
     params = {
         'title': _('Onboarding Flow'),
@@ -2425,10 +2427,18 @@ def profile_backup(request):
 
     # fetch the exported data for backup
     data = ProfileExportSerializer(profile).data
+    # grants
     data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
-    data["portfolio"] = BountyExportSerializer(profile.as_dict['portfolio'], many=True).data
-    data["active_work"] = BountyExportSerializer(profile.active_bounties, many=True).data
+    # portfolio, active work, bounties
+    portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
+    active_work = Bounty.objects.none()
+    interests = profile.active_bounties
+    for interest in interests:
+        active_work = active_work | Bounty.objects.filter(interested=interest, current_bounty=True)
+    data["portfolio"] = BountyExportSerializer(portfolio_bounties, many=True).data
+    data["active_work"] = BountyExportSerializer(active_work, many=True).data
     data["bounties"] = BountyExportSerializer(profile.bounties, many=True).data
+    # activities
     data["activities"] = ActivityExportSerializer(profile.activities, many=True).data
     # tips
     data["tips"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=False)
