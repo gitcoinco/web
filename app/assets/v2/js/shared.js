@@ -77,14 +77,13 @@ var loading_button = function(button) {
 
 var cb_address;
 var reloadCbAddress = function() {
-
-  try {
-    // invoke infura synchronous call, if it fails metamask is locked
-    cb_address = web3.eth.coinbase;
-  } catch (error) {
-    // catch error so sentry doesn't alert on metamask call failure
-    console.log('web3.eth.coinbase could not be loaded');
-  }
+  web3.eth.getCoinbase(function(error, result) {
+    if (!error) {
+      cb_address = result;
+    } else {
+      console.log("web3.eth.coinbase could not be loaded: " + error);
+    }
+  });
 };
 
 reloadCbAddress();
@@ -865,7 +864,7 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'block');
       $('#over_balance_error').css('display', 'none');
       $('#faucet_form').addClass('hidden');
-    } else if (!web3.eth.coinbase) {
+    } else if (!cb_address) {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'block');
       $('#connect_metamask_error').css('display', 'none');
@@ -897,12 +896,12 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
     }
-    if (!web3.eth.coinbase) {
+    if (!cb_address) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
       return;
     }
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+    web3.eth.getBalance(cb_address, function(errors, result) {
       if (errors) {
         return;
       }
@@ -955,7 +954,7 @@ var listen_for_web3_changes = async function(no_ui_updates) {
     } else {
       is_metamask_unlocked = true;
 
-      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+      web3.eth.getBalance(cb_address, function(errors, result) {
         if (errors) {
           return;
         }
@@ -975,6 +974,36 @@ var listen_for_web3_changes = async function(no_ui_updates) {
         }
       });
     }
+  }
+
+  if (!window.web3connect) {
+    const Web3Connect = window.Web3Connect.default;
+    // Determine if we're on prod or not
+    const isProd = document.location.href.startsWith('https://gitcoin.co');
+    // FIXME: Use Fortmatic API key provided by Gitcoin
+    const formaticKey = isProd ? 'pk_live_99CEDFB950A446EC' : 'pk_test_A9E82CC253A9C8E4';
+    const providerOptions = {
+      authereum: {
+        package: Authereum,
+      },
+      fortmatic: {
+        package: Fortmatic,
+        options: {
+          key: formaticKey,
+        },
+      },
+    };
+    const network = isProd ? 'mainnet' : 'rinkeby';
+
+    window.web3connect = new Web3Connect.Core({
+      network,
+      cacheProvider: true,
+      providerOptions,
+    });
+
+    web3connect.connect().then(provider => {
+      window.web3 = new Web3(provider);
+    });
   }
 
   if (window.ethereum && !document.has_checked_for_ethereum_enable) {
@@ -1191,7 +1220,7 @@ const saveAttestationData = (result, cost_eth, to_address, type) => {
     'txid': txid,
     'amount': cost_eth,
     'network': document.web3network,
-    'from_address': web3.eth.coinbase,
+    'from_address': cb_address,
     'to_address': to_address,
     'type': type
   };
@@ -1535,7 +1564,7 @@ function check_balance_and_alert_user_if_not_enough(
   }
 
   let token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-  let from = web3.eth.coinbase;
+  let from = cb_address;
   let token_details = tokenAddressToDetails(tokenAddress);
   let token_decimals = token_details['decimals'];
   let token_name = token_details['name'];
