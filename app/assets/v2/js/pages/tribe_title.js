@@ -15,7 +15,7 @@ const tribeTitle = () => {
       );
 
       $.when(sendTitle).then(function(response) {
-        $(elem).closest('.card').find('.tribe_title').remove();
+        $(elem).closest('.card').find('.tribe_title').text(title);
         $(elem).before(template);
         $(elem).attr('disabled', false);
       }).fail(function(error) {

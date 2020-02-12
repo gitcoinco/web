@@ -82,20 +82,23 @@
               <div class="bg-lightblue text-center">
                 {% if is_my_org %}
                 <div class="dropdown">
-                  <i class="fas fa-ellipsis-v float-right mr-2 mt-2" style="color:grey"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                  <i class="fas fa-ellipsis-v float-right mr-2 mt-2" style="color:grey" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {% if not follower.leader %}
-                      <button class="dropdown-item" type="button" data-tribeleader="{{follower.pk}}">Promote to Tribe Leader</button>
+                      <button class="dropdown-item leader-promote" type="button" data-tribeleader="{{follower.pk}}">Promote to Tribe Leader</button>
+                      <button class="dropdown-item d-none leader-demote" type="button" data-tribeleader="{{follower.pk}}">Demote from Tribe Leader</button>
                     {% else %}
-                      <button class="dropdown-item" type="button" data-tribeleader="{{follower.pk}}">Demote from Tribe Leader TODO</button>
+                      <button class="dropdown-item d-none leader-promote" type="button" data-tribeleader="{{follower.pk}}">Promote to Tribe Leader</button>
+                      <button class="dropdown-item leader-demote" type="button" data-tribeleader="{{follower.pk}}">Demote from Tribe Leader</button>
                     {% endif %}
                     {% if not follower.is_admin %}
-                      <button class="dropdown-item" type="button" data-tribeleader="{{follower.pk}}">Promote to Tribe Admin TODO</button>
+                      <button class="dropdown-item admin-promote" type="button" data-tribeadmin="{{follower.pk}}">Promote to Tribe Admin</button>
+                      <button class="dropdown-item d-none admin-demote" type="button" data-tribeadmin="{{follower.pk}}">Demote from Tribe Admin</button>
                     {% else %}
-                      <button class="dropdown-item" type="button" data-tribeleader="{{follower.pk}}">Demote from Tribe Admin TODO</button>
+                      <button class="dropdown-item d-none admin-promote" type="button" data-tribeadmin="{{follower.pk}}">Promote to Tribe Admin</button>
+                      <button class="dropdown-item admin-demote" type="button" data-tribeadmin="{{follower.pk}}">Demote from Tribe Admin</button>
                     {% endif %}
                     <button class="dropdown-item" type="button" data-tribetitle="{{follower.pk}}">Set Title</button>
-                    <button class="dropdown-item" type="button">Something else here</button>
                   </div>
                 </div>
                 {% endif %}
@@ -106,6 +109,9 @@
                 <a class="font-body" href="{% url 'profile' follower.profile %}">
                   {{follower.profile}}
                 </a>
+                {% if follower.title %}
+                  <span class="tribe_title d-block text-center p-1 text-highlight-green">{{ follower.title }}</span>
+                {% endif %}
               </div>
               <div class="p-2 card-body d-flex flex-column justify-content-end">
                 <div class="tag-list mt-1 text-center mb-3">
@@ -113,19 +119,6 @@
                     <small class="tag-list__item">{{keyword}}</small>
                   {% endfor %}
                 </div>
-                {% if is_my_org and not follower.leader %}
-                  <button class="btn btn-gc-blue btn-sm btn-block" data-tribeleader="{{follower.pk}}">Promote to Tribe Leader</button>
-                {% elif follower.leader %}
-                  <span class="text-center text-uppercase font-weight-bold p-1 text-highlight-yellow">Tribe Leader</span>
-                {% endif %}
-
-                {% if follower.title %}
-                  <span class="tribe_title text-center p-1 text-highlight-green">{{ follower.title }}</span>
-                {% endif %}
-
-                {% if is_my_org %}
-                  <button class="btn btn-gc-blue btn-sm btm-block font-body" data-tribetitle="{{follower.pk}}">Set Title</button>
-                {% endif %}
 
                 {% if user.is_authenticated %}
                   <div class="d-flex justify-content-between mt-2">

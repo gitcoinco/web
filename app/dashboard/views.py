@@ -4425,12 +4425,15 @@ def tribe_leader(request):
             is_my_org = request.user.is_authenticated and any([tribemember.org.handle.lower() == org.lower() for org in request.user.profile.organizations ])
 
             if is_my_org:
-                tribemember.leader = True
+                if tribemember.leader == True:
+                    tribemember.leader = False
+                else:
+                    tribemember.leader = True
                 tribemember.save()
                 return JsonResponse(
                     {
                         'success': True,
-                        'is_leader': True,
+                        'is_leader': tribemember.leader,
                     },
                     status=200
                 )
@@ -4449,6 +4452,49 @@ def tribe_leader(request):
                 {
                     'success': False,
                     'is_leader': False,
+                },
+                status=401
+            )
+
+
+@csrf_exempt
+@require_POST
+def tribe_admin(request):
+    if request.user.is_authenticated:
+        member = request.POST.get('member')
+        try:
+            tribemember = TribeMember.objects.get(pk=member)
+            is_my_org = request.user.is_authenticated and any([tribemember.org.handle.lower() == org.lower() for org in request.user.profile.organizations ])
+            org = tribemember.org
+
+            if is_my_org:
+                if tribemember.profile in org.tribes_admins.all():
+                    org.tribes_admins.remove(tribemember.profile)
+                else:
+                    org.tribes_admins.add(tribemember.profile)
+                org.save()
+                return JsonResponse(
+                    {
+                        'success': True,
+                        'is_admin': tribemember.profile in org.tribes_admins.all(),
+                    },
+                    status=200
+                )
+            else:
+                return JsonResponse(
+                    {
+                        'success': False,
+                        'is_my_org': False,
+                    },
+                    status=401
+                )
+
+        except Exception:
+
+            return JsonResponse(
+                {
+                    'success': False,
+                    'is_admin': False,
                 },
                 status=401
             )

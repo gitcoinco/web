@@ -394,6 +394,7 @@ urlpatterns = [
     path('tribe/<str:handle>/save/', dashboard.views.save_tribe, name='save_tribe'),
     path('tribe/title/', dashboard.views.set_tribe_title, name='set_tribe_title'),
     path('tribe/leader/', dashboard.views.tribe_leader, name='tribe_leader'),
+    path('tribe/admin/', dashboard.views.tribe_admin, name='tribe_admin'),
 
     # basic redirect retail views
     re_path(r'^press/?', retail.views.presskit, name='press'),
