@@ -2447,6 +2447,23 @@ class HackathonRegistration(SuperModel):
         return f"Name: {self.name}; Hackathon: {self.hackathon}; Referer: {self.referer}; Registrant: {self.registrant}"
 
 
+class TribesSubscription(SuperModel):
+
+    plans = (
+		('LITE', 'Lite'),
+		('PRO', 'Pro'),
+		('LAUNCH', 'Launch'),
+	)
+
+    expires_on = models.DateTimeField(null=True, blank=True)
+    tribe = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='subscription')
+    plan_type = models.CharField(max_length=10, choices=plans)
+    hackathon_tokens = models.IntegerField(default=0)
+
+    def __str__(self):
+        return "{} subscription - {}".format(self.tribe.name, self.plan_type)
+
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
@@ -2467,6 +2484,7 @@ class Profile(SuperModel):
     ]
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    tribes_admins = models.ManyToManyField('dashboard.Profile', blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True, unique=True)
     last_sync_date = models.DateTimeField(null=True)
@@ -2553,6 +2571,14 @@ class Profile(SuperModel):
     as_representation = JSONField(default=dict, blank=True)
     tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
     objects = ProfileQuerySet.as_manager()
+
+    @property
+    def is_subscription_valid(self):
+        return self.tribes_subscription and self.tribes_subscription.expires_on > timezone.now()
+
+    @property
+    def has_pro_tools_access(self):
+        return self.is_subscription_valid and self.tribes_subscription.plan_type in {'PRO', 'LAUNCH'}
 
     @property
     def quest_level(self):
@@ -4611,3 +4637,10 @@ class TribeMember(SuperModel):
         choices=MEMBER_STATUS,
         blank=True
     )
+
+    @property
+    def is_admin(self):
+        if self.profile in self.org.tribes_admins.all():
+            return True
+        else:
+            return False

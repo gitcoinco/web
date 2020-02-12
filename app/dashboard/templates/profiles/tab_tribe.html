@@ -25,7 +25,9 @@
         {{profile.tribe_description | safe}}
       </div>
     </div>
-
+    {% if is_my_org %}
+      {% include 'profiles/tribe/tribes_admin.html' %}
+    {% endif %}
     <div class="my-5">
       <h5 class="font-weight-bold">
         Core Team <span class="badge badge-pill badge--bluelight">{{profile.team.count}}</span>
@@ -78,9 +80,28 @@
           {% if not follower.status == 'rejected' %}
             <div class="card border-0 card-shadow">
               <div class="bg-lightblue text-center">
+                {% if is_my_org %}
+                <div class="dropdown">
+                  <i class="fas fa-ellipsis-v float-right mr-2 mt-2" style="color:grey"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% if not follower.leader %}
+                      <button class="dropdown-item" type="button" data-tribeleader="{{follower.pk}}">Promote to Tribe Leader</button>
+                    {% else %}
+                      <button class="dropdown-item" type="button" data-tribeleader="{{follower.pk}}">Demote from Tribe Leader TODO</button>
+                    {% endif %}
+                    {% if not follower.is_admin %}
+                      <button class="dropdown-item" type="button" data-tribeleader="{{follower.pk}}">Promote to Tribe Admin TODO</button>
+                    {% else %}
+                      <button class="dropdown-item" type="button" data-tribeleader="{{follower.pk}}">Demote from Tribe Admin TODO</button>
+                    {% endif %}
+                    <button class="dropdown-item" type="button" data-tribetitle="{{follower.pk}}">Set Title</button>
+                    <button class="dropdown-item" type="button">Something else here</button>
+                  </div>
+                </div>
+                {% endif %}
                 <img height="80" width="80" class="rounded-circle mt-n4 mx-auto mb-2 d-block" src="{% avatar_url follower.profile.handle %}" />
                 <span class="badge-tribe badge-tribe_leader {% if not follower.leader %}d-none{% endif %}"><i class="fas fa-star white"></i></span>
-
+                <span class="badge-tribe badge-tribe_admin {% if not follower.is_admin %}d-none{% endif %}"><i class="fas fa-crown white"></i></span>
                 <span class="d-block text-truncate">{{follower.profile.name}}</span>
                 <a class="font-body" href="{% url 'profile' follower.profile %}">
                   {{follower.profile}}

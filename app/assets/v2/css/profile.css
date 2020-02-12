@@ -551,6 +551,11 @@ nav.navbar.navbar-dark{
   background: linear-gradient(180deg,rgb(222,165,91), rgb(243,203,82));
 }
 
+.badge-tribe_admin {
+  background: linear-gradient(180deg,rgb(91,165,222), rgb(82,203,243));
+  left: 20%;
+}
+
 .ql-picker-label svg {
   vertical-align: inherit;
 }

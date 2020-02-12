@@ -2817,6 +2817,7 @@ def profile(request, handle, tab=None):
 
     if tab == 'tribe':
         context['tribe_priority'] = profile.tribe_priority
+        context['tribe_plan'] = profile.subscription.filter(expires_on__gt=timezone.now()).first()
         suggested_bounties = BountyRequest.objects.filter(tribe=profile, status='o').order_by('created_on')
         if suggested_bounties:
             context['suggested_bounties'] = suggested_bounties
@@ -2826,7 +2827,7 @@ def profile(request, handle, tab=None):
     context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
-    context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+    context['is_my_org'] = request.user.is_authenticated and (any([handle.lower() == org.lower() for org in request.user.profile.organizations ]) or request.user.profile in profile.tribes_admins.all())
     context['is_on_tribe'] = request.user.is_authenticated and any([handle.lower() == tribe.org.handle.lower() for tribe in request.user.profile.tribe_members ])
     context['ratings'] = range(0,5)
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
