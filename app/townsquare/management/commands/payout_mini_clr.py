@@ -142,4 +142,3 @@ class Command(BaseCommand):
 
             from marketing.mails import match_distribution
             match_distribution(ranking)
-
