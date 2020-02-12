@@ -90,7 +90,7 @@
     <div class="pb-1 to_name">
       <label>{% trans "To Github Username" %}:</label> <br>
       <select id="username" class="username-search custom-select" style="max-width: 400px; margin-left: auto; margin-right: auto;">
-        {% if user_json %} {{user_json}}
+        {% if user_json %}
         <option value="{{ user_json.id }}" avatar_id="{{ user_json.avatar_id }}" avatar_url="{{ user_json.avatar_url }}"  preferred_payout_address="{{ user_json.preferred_payout_address }}">{{ user_json.text }}</option>
         {% endif %}
       </select>
