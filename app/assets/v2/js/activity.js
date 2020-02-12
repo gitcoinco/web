@@ -348,7 +348,7 @@ $(document).ready(function() {
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
-        var show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
+        var show_tip = true;
         var html = `
         <div class="row p-2">
           <div class="col-1 activity-avatar">
@@ -369,7 +369,7 @@ $(document).ready(function() {
                   $${comment['match_this_round']}
                 </span>
 
-                  `: ` `}
+                  ` : ' '}
               </span>
               <span class="grey font-smaller-4">
                 ${timeAgo}
@@ -418,10 +418,10 @@ $(document).ready(function() {
   // post comment activity
   $(document).on('click', '.comment_container .fa-heart', function(e) {
     e.preventDefault();
-    if($(this).hasClass('open')){
-      $(this).removeClass('open');      
+    if ($(this).hasClass('open')) {
+      $(this).removeClass('open');
     } else {
-      $(this).addClass('open');      
+      $(this).addClass('open');
     }
   });
 
