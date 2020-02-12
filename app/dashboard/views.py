@@ -2430,7 +2430,7 @@ def profile_backup(request):
     # grants
     data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
     # portfolio, active work, bounties
-    portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
+    portfolio_bounties = profile.get_fulfilled_bounties()
     active_work = Bounty.objects.none()
     interests = profile.active_bounties
     for interest in interests:
