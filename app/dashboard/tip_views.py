@@ -157,7 +157,7 @@ def receive_tip_v3(request, key, txid, network):
             # tip.username
             # tip.metadata.max_redemptions
             # tip.metadata.override_send_amount
-            # tip.amount to the amount you want to send 
+            # tip.amount to the amount you want to send
             # ,"override_send_amount":1,"max_redemptions":29
 
             num_redemptions += 1
@@ -418,10 +418,11 @@ def send_tip_2(request):
             profile = profiles.first()
             user['id'] = profile.id
             user['text'] = profile.handle
+            user['avatar_url'] = profile.avatar_url
 
             if profile.avatar_baseavatar_related.exists():
-                user['avatar_id'] = profile.avatar_baseavatar_related.first().pk
-                user['avatar_url'] = profile.avatar_baseavatar_related.first().avatar_url
+                user['avatar_id'] = profile.avatar_baseavatar_related.filter(active=True).first().pk
+                user['avatar_url'] = profile.avatar_baseavatar_related.filter(active=True).first().avatar_url
                 user['preferred_payout_address'] = profile.preferred_payout_address
 
     params = {
