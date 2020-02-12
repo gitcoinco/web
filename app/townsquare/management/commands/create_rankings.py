@@ -16,22 +16,10 @@
 
 '''
 
-from django.conf import settings
 from django.core import management
 from django.core.management.base import BaseCommand
-from django.db import transaction
-from django.utils import timezone
+from townsquare.models import MatchRound
 
-import townsquare.clr as clr
-from dashboard.models import Earning, Profile
-from townsquare.models import MatchRanking, MatchRound
-
-
-def get_eligible_input_data(mr):
-    earnings = Earning.objects.filter(created_on__gt=mr.valid_from, created_on__lt=mr.valid_to)
-    earnings = earnings.filter(to_profile__isnull=False, from_profile__isnull=False, value_usd__isnull=False)
-    earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
-    return [[ele[0], ele[1], float(ele[2])] for ele in earnings]
 
 class Command(BaseCommand):
 
@@ -39,32 +27,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         mr = MatchRound.objects.current().first()
-        with transaction.atomic():
-            mr.ranking.all().delete()
-            data = get_eligible_input_data(mr)
-            total_pot = mr.amount
-            print(mr, f"{len(data)} earnings to process")
-            results = clr.run_calc(data, total_pot)
-            for result in results:
-                try:
-                    profile = Profile.objects.get(pk=result['id'])
-                    contributions_by_this_user = [ele for ele in data if int(ele[0]) == profile.pk]
-                    contributions = len(contributions_by_this_user)
-                    contributions_total = sum([ele[2] for ele in contributions_by_this_user])
-                    MatchRanking.objects.create(
-                        profile=profile,
-                        round=mr,
-                        contributions=contributions,
-                        contributions_total=contributions_total,
-                        match_total=result['clr_amount'],
-                        )
-                except Exception as e:
-                    if settings.DEBUG:
-                        raise e
+        mr.process()
 
-            # update number rankings
-            number = 1
-            for mri in mr.ranking.order_by('-match_total'):
-                mri.number = number
-                mri.save()
-                number += 1

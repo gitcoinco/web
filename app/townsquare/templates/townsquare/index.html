@@ -315,9 +315,47 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% if current_match_round %}
             <div class="clr_container mt-2">
               <div class="townsquare_block-header text-leftmb-1">
-                Round {{current_match_round.number}} - ${{current_match_round.amount|floatformat:0}} Matching
-                <i data-toggle="tooltip" class="fas fa-info-circle mr-3" title="For the next 3 days, 12 minutes, Gitcoin will be matching your newsfeed tips with $200 in ETH
-                  The matching algorithm that Gitcoin uses (CLR), weights breadth of contributions (diversity in who you received from) greater than depth of contributions (total $$ received).  How do you earn this way?  Well the TLDR is that 'the more value you add, the more people send you micro-tips, and we match users who receive micro-tips from the most different people..'  Want to learn more about how it works? Click here: https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4" ></i>
+                 ${{current_match_round.amount|floatformat:0}} Distribution #{{current_match_round.number}}
+                <a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4" target="blank"><i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
+                  <strong>Gitcoin is reinvesting in it's community</strong>
+                   <br> 
+                   <br> 
+
+                  For the next {{current_match_round.valid_to|naturaltime}}, Gitcoin will be matching your newsfeed tips with ${{current_match_round.amount|floatformat:0}} in ETH.
+                   <br> 
+                   <br> 
+                  The matching algorithm that Gitcoin uses (CLR), weights breadth of contributions (diversity in who you received from) greater than depth of contributions (total $$ received).
+
+                   <br> 
+                   <br> 
+                   This rewards the most helpful community members.
+
+                   <br> 
+                   <br> 
+
+                  <strong>How do you earn this way?</strong>  Well the TLDR is 
+
+                  <br> 
+                  1. the more value you add, the more people send you micro-tips
+                  <br> 
+                  2. we match contributions most to users who receive micro-tips from the many different people
+                  <br> 
+                  3. this incentivizes healthy behaviour on Gitcoin.
+                  <br> 
+                  <br> 
+                  <strong>How do you get started?</strong>  
+
+                  <br> 
+                  1. If someone posts asking for help, do your best to be helpful.
+                  <br> 
+                  2. If someone is helpful to you, send them a micro-tip.
+                  <br> 
+                  3. The CLR matching algorithm will match 0.001 ETH contributions with up to 0.1 ETH in matching funds.
+                  <br> 
+                  <br> 
+
+                  <strong>Want to learn more about how it works?</strong> Click here. " ></i>
+                </a>
               </div>
               <div class="grey">
                 </p>
