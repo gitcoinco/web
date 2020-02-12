@@ -195,6 +195,7 @@ def town_square(request):
     matching_leaderboard = [
         {
             'i': obj.number,
+            'following': request.user.profile == obj.profile or request.user.profile.follower.filter(org=obj.profile) if request.user.is_authenticated else False,
             'handle': obj.profile.handle,
             'contributions': obj.contributions,
             'amount': f"{int(obj.contributions_total/1000)}k" if obj.contributions_total > 1000 else round(obj.contributions_total, 2),

@@ -1,3 +1,7 @@
+.follow_button[member=true]{
+  display: none;
+}
+
 .announce{
   border-radius: 5px;
 

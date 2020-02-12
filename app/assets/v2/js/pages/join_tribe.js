@@ -1,15 +1,16 @@
 const joinTribe = () => {
   $('[data-jointribe]').each(function(index, elem) {
 
-    $(elem).on('click', function() {
+    $(elem).on('click', function(e) {
       $(elem).attr('disabled', true);
-
+      e.preventDefault()
       const tribe = $(elem).data('jointribe');
       const url = `/tribe/${tribe}/join/`;
       const sendJoin = fetchData (url, 'POST', {}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
 
       $.when(sendJoin).then(function(response) {
         $(elem).attr('disabled', false);
+        $(elem).attr('member', response.is_member)
         response.is_member ? $(elem).text('Leave Tribe') : $(elem).text('Join Tribe');
 
       }).fail(function(error) {

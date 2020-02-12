@@ -314,8 +314,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
             {% if current_match_round %}
             <div class="clr_container mt-2">
-              <img id='rainbow' src="/static/v2/images/rainbow.svg">
-              <p> Take the public goods challenge</p>
               <div class="townsquare_block-header text-leftmb-1">
                 Round {{current_match_round.number}} - ${{current_match_round.amount|floatformat:0}} Matching
                 <i data-toggle="tooltip" class="fas fa-info-circle mr-3" title="For the next 3 days, 12 minutes, Gitcoin will be matching your newsfeed tips with $200 in ETH
@@ -351,19 +349,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         </span>
                       {% endif %}
                       </td>
-                      <td data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contributions worth ${{mli.amount}} since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about ${{mli.match_amount}} in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})">
+                      <td class="text-right" data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contributions worth ${{mli.amount}} since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about ${{mli.match_amount}} in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})">
                         {{mli.contributions}} x 
                         ${{mli.amount}} = 
                         ${{mli.match_amount}}
+                        <br>
+                        {% if not mli.following %}
+                          <a class="btn btn-gc-blue btn-sm follow_button mt-2" data-jointribe='{{mli.handle}}' href="#">Follow </a>
+                        {% endif %}
                       </td>
                     </tr>
                   {% endfor %}
                 </table>
               </div>
           </div>
-          <img id='rainbow' src="/static/v2/images/earnlearn.svg">
-          <p> You can earn matching contributions on Gitcoin by earning, learning, and/or networking.</p>
-
           {% endif %}
 
             </div>
@@ -378,5 +377,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <script src="{% static "v2/js/search.js" %}"></script>
     <script src="{% static "v2/js/status.js" %}"></script>
     <script src="{% static "v2/js/pages/townsquare.js" %}"></script>
+    <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
   </body>
 </html>
