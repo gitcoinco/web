@@ -643,15 +643,10 @@ body.green.offer_view .announce {
   background-color: #8E2ABE;
 }
 
-.top_offers{
-  background-color: #fafafa;
-}
-
 .top_offer{
   border: 1px solid #eee;
   background-color: white;
   text-align: left;
-  display: inline-block;
   width: 330px;
   height: 200px;
   padding: 10px;
@@ -669,15 +664,14 @@ body.green.offer_view .announce {
   background-color: #fafafa;
 }
 
-.top_offer img{
-  float: left;
+.top_offer img {
   width: 30px;
   height: 30px;
   border-radius: 15px;
 }
 
-.top_offer p{
-  margin-left: 30px;
+.top_offer .decline-container {
+  height: 0;
 }
 
 .top_offer .tag {
