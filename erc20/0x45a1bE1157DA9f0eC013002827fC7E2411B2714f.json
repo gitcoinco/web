@@ -1,0 +1,16 @@
+{
+    
+    "symbol": "CGX",
+    "address": "0x45a1bE1157DA9f0eC013002827fC7E2411B2714f",
+    "overview": {
+        "en": "Candy go x is a convenience store that can exchange digital currency for goods.",
+        "zh": "Candy Go X 支持以数字货币兑换的糖果便利店。"
+    },
+    "email": "service@candygo.org",
+    "website": "http://candygo.org/",
+    "whitepaper": "http://www.candygo.org/pdf/CGX_whitepaper.pdf",
+    "published_on": "2020-02-11",
+    "initial_price": {
+        "USD": "0.1436 USD"
+    }
+}
