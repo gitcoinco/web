@@ -36,7 +36,7 @@ const tribeLeader = () => {
 
       $.when(sendLeader).then(function(response) {
         console.log(response);
-        if(response['success'] && response['is_leader']) {
+        if (response['success'] && response['is_leader']) {
           $(elem).closest('.card').find('.badge-tribe_leader').removeClass('d-none');
           $(elem).closest('.card').find('.leader-promote').addClass('d-none');
           $(elem).closest('.card').find('.leader-demote').removeClass('d-none');
@@ -69,7 +69,7 @@ const tribeAdmin = () => {
 
       $.when(sendAdmin).then(function(response) {
         console.log(response);
-        if(response['success'] && response['is_admin']) {
+        if (response['success'] && response['is_admin']) {
           $(elem).closest('.card').find('.badge-tribe_admin').removeClass('d-none');
           $(elem).closest('.card').find('.admin-promote').addClass('d-none');
           $(elem).closest('.card').find('.admin-demote').removeClass('d-none');
