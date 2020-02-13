@@ -9,6 +9,18 @@
   }
 }
 
+#tribe-admin-actions {
+  background: #F2F6F9;
+  padding: 10px 0 10px;
+  left: 0;
+}
+
+#tribe-admin-actions span {
+  display: inline-block;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
 .tab-projects__item img {
   width: 50px;
   height: 50px;

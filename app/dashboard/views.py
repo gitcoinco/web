@@ -2817,11 +2817,11 @@ def profile(request, handle, tab=None):
 
     if tab == 'tribe':
         context['tribe_priority'] = profile.tribe_priority
-        context['tribe_plan'] = profile.subscription.filter(expires_on__gt=timezone.now()).first()
         suggested_bounties = BountyRequest.objects.filter(tribe=profile, status='o').order_by('created_on')
         if suggested_bounties:
             context['suggested_bounties'] = suggested_bounties
 
+    context['tribe_plan'] = profile.subscription.filter(expires_on__gt=timezone.now()).first()
     context['is_my_profile'] = is_my_profile
     context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
     context['is_editable'] = context['is_my_profile'] # or context['is_my_org']

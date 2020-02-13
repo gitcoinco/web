@@ -31,6 +31,9 @@
           <a style="color:white;" href="{{profile.admin_url}}">{% trans "Profile Admin" %}</a>
         </div>
       {% endif %}
+      {% if is_my_org %}
+        {% include 'profiles/tribe/tribes_admin.html' %}
+      {% endif %}
       {% if is_editable %}
         <div class="position-relative profile-banner">
           <div class="container mt-5">
