@@ -29,7 +29,7 @@ from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
-current_round_number = 3
+current_round_number = 4
 
 
 def next_quest(request):
@@ -338,7 +338,7 @@ def index(request):
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'rewards_schedule': rewards_schedule,
         'query': query,
-        'latest_round_winners': ['solexplorer', 'tomafrench', 'yablu'],
+        'latest_round_winners': ['walidmujahid', 'nazariyv', 'cpix18'],
         'selected_tab': selected_tab,
         'title': f' {query.capitalize()} Quests',
         'point_history': point_history,

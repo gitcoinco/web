@@ -783,7 +783,7 @@ def leaderboard(request, key=''):
     product = request.GET.get('product', 'all')
     keyword_search = request.GET.get('keyword', '')
     keyword_search = '' if keyword_search == 'all' else keyword_search
-    limit = request.GET.get('limit', 50)
+    limit = int(request.GET.get('limit', 50))
     cadence = request.GET.get('cadence', 'weekly')
 
     # backwards compatibility fix for old inbound links

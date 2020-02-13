@@ -569,7 +569,7 @@ div.button-pink {
 }
 
 .dropdown-menu .dropdown-item {
-  padding: 12px 25px !important;
+  padding: 12px 25px;
 }
 
 .dropdown-menu .dropdown-item:hover {
