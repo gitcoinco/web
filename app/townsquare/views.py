@@ -1,6 +1,5 @@
 import re
 
-import metadata_parser
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404, JsonResponse
@@ -8,6 +7,7 @@ from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
+import metadata_parser
 from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request

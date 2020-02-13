@@ -1,6 +1,8 @@
-from rest_framework import serializers
-from .models import Activity, Bounty, FeedbackEntry, Tip
 from grants.models import Grant
+from rest_framework import serializers
+
+from .models import Activity, Bounty, FeedbackEntry, Tip
+
 
 class ProfileExportSerializer(serializers.BaseSerializer):
     """Handle serializing the exported Profile object."""
