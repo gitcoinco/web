@@ -1,6 +1,9 @@
 .follow_button[member=true]{
   display: none;
 }
+.tooltip-inner {
+    max-width: 450px;
+}
 
 .announce{
   border-radius: 5px;
