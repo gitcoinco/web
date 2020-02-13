@@ -2455,7 +2455,7 @@ class TribesSubscription(SuperModel):
 		('LAUNCH', 'Launch'),
 	)
 
-    expires_on = models.DateTimeField(null=True, blank=True)
+    expires_on = models.DateTimeField(null=True, blank=True, default=timezone.now() + timezone.timedelta(days=365))
     tribe = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='subscription')
     plan_type = models.CharField(max_length=10, choices=plans)
     hackathon_tokens = models.IntegerField(default=0)

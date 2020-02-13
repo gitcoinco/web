@@ -2821,6 +2821,8 @@ def profile(request, handle, tab=None):
         if suggested_bounties:
             context['suggested_bounties'] = suggested_bounties
 
+    context['activate_subscription_url'] = reverse("admin:dashboard_tribessubscription_add")
+
     context['tribe_plan'] = profile.subscription.filter(expires_on__gt=timezone.now()).first()
     context['is_my_profile'] = is_my_profile
     context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
