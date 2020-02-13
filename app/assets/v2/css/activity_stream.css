@@ -193,3 +193,8 @@ a .sup {
 .activity_stream .dropdown-menu {
   min-width: 7rem;
 }
+
+.activity_stream .new_bounty {
+  border-top: 3px solid #3e00ff;
+  border-bottom: 3px solid #3e00ff;
+}

@@ -573,7 +573,7 @@ input[type=text].loading {
 }
 
 .alert .message::before {
-  font-family: 'Font Awesome\ 5 Free', sans-serif;
+  font-family: 'Font Awesome\ 5 Pro', sans-serif;
   content: "\f06a";
   margin-right: 10px;
   font-size: 1.25rem;
