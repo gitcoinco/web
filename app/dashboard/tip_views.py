@@ -225,6 +225,7 @@ def send_tip_4(request):
             metadata__address=destinationAccount,
             metadata__salt=params['salt'],
             )
+
     is_authenticated_for_this_via_login = (tip.from_username and tip.from_username == from_username)
     is_authenticated_for_this_via_ip = tip.ip == get_ip(request)
     is_authed = is_authenticated_for_this_via_ip or is_authenticated_for_this_via_login
@@ -248,6 +249,11 @@ def send_tip_4(request):
             tip=tip,
             )
     tip.save()
+
+    from townsquare.models import MatchRound
+    mr = MatchRound.objects.current().first()
+    mr.process()
+
 
     # notifications
     maybe_market_tip_to_github(tip)

@@ -1,3 +1,10 @@
+.follow_button[member=true]{
+  display: none;
+}
+.tooltip-inner {
+  max-width: 450px;
+}
+
 .announce{
   border-radius: 5px;
 
@@ -680,7 +687,25 @@ body.green.offer_view .announce {
   margin-bottom: 2px;
   margin-top: 2px;
 }
-
+.clr_container{
+  text-align: left;
+}
+.clr_container td{
+  font-size: 12px;
+  padding: 3px;
+}
+.clr_container tr.title{
+  background-color: #eee;
+  font-weight: bold;
+}
+.clr_container tr:nth-child(even){
+  background-color: #f5f5f5;
+}
+.clr_container tr img{
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+}
 .townsquare_main .search-area {
   padding-left: 0;
 }

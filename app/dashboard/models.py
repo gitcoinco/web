@@ -2022,6 +2022,7 @@ class Activity(SuperModel):
         ('beat_quest', 'Beat Quest'),
         ('created_quest', 'Created Quest'),
         ('updated_avatar', 'Updated Avatar'),
+        ('mini_clr_payout', 'Mini CLR Payout'),
     ]
 
     profile = models.ForeignKey(
@@ -2183,6 +2184,7 @@ class Activity(SuperModel):
             'created_human_time',
             'humanized_name',
             'url',
+            'match_this_round',
         ]
         activity = self.to_standard_dict(properties=properties)
         activity['pk'] = self.pk
@@ -2557,6 +2559,16 @@ class Profile(SuperModel):
     @property
     def quest_level(self):
         return self.quest_attempts.filter(success=True).distinct('quest').count() + 1
+
+    @property
+    def match_this_round(self):
+        from townsquare.models import MatchRound
+        mr = MatchRound.objects.current().first()
+        if mr:
+            mr = mr.ranking.filter(profile=self).first()
+            if mr:
+                return mr.match_total
+        return 0
 
     @property
     def quest_caste(self):
@@ -4602,8 +4614,10 @@ class TribeMember(SuperModel):
         ('pending', 'pending'),
         ('rejected', 'rejected'),
     ]
+    #from 
     profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
-    org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE)
+    # to
+    org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE, null=True, blank=True)
     leader = models.BooleanField(default=False, help_text=_('tribe leader'))
     title = models.CharField(max_length=255, blank=True, default='')
     status = models.CharField(

@@ -1,3 +1,9 @@
+.comment_container .fa-heart{
+  cursor: pointer;
+}
+.comment_container .fa-heart.open{
+  color: var(--gc-pink) !important;
+}
 #new_activity_notifier {
   text-align: center;
   background-color: #f5f5f9;

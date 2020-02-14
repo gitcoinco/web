@@ -348,7 +348,7 @@ $(document).ready(function() {
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
-        var show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
+        var show_tip = true;
         var html = `
         <div class="row p-2">
           <div class="col-1 activity-avatar mt-1">
@@ -363,10 +363,13 @@ $(document).ready(function() {
                 <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
                 @${comment['profile_handle']}
                 </a></span>
-                ${show_tip ? `
-                <a href="#" class="tip_on_comment font-smaller-5 text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> ( <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(100 * comment['tip_count_eth']) / 100}</span>)
-                </a>
-                ` : ''}
+                ${comment['match_this_round'] ? `
+                <span class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; cursor:pointer; padding: 2px; font-size: 10px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@${comment['profile_handle']} is estimated to be earning ${comment['match_this_round']} in this week's CLR Round.  <BR><BR><strong>Send a tip to @${comment['profile_handle']}</strong> to increase their take of the matching pool.   <br><br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard.">
+                  <i class="fab fa-ethereum mr-0" aria-hidden="true"></i>
+                  $${comment['match_this_round']}
+                </span>
+
+                  ` : ' '}
               </span>
               <span class="d-none d-sm-inline grey font-smaller-5 float-right">
                 ${timeAgo}
@@ -375,6 +378,15 @@ $(document).ready(function() {
             <div class="activity_comments_main_comment">
               ${comment['comment']}
             </div>
+              <span class="font-smaller-5 float-right">
+              ${show_tip ? `
+              <span class="action">
+                <i class="far fa-heart grey"></i>
+              </span> |
+              <a href="#" class="tip_on_comment text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(100 * comment['tip_count_eth']) / 100}</span>
+              </a>
+              ` : ''}
+              <span>
           </div>
 
         </div>
@@ -401,6 +413,18 @@ $(document).ready(function() {
       }
     });
   };
+
+
+  // post comment activity
+  $(document).on('click', '.comment_container .fa-heart', function(e) {
+    e.preventDefault();
+    if ($(this).hasClass('open')) {
+      $(this).removeClass('open');
+    } else {
+      $(this).addClass('open');
+    }
+  });
+
 
   // post comment activity
   $(document).on('click', '.comment_activity', function(e) {
