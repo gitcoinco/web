@@ -4403,7 +4403,8 @@ def join_tribe(request, handle):
         except TribeMember.DoesNotExist:
             kwargs = {
                 'org': Profile.objects.filter(handle=handle).first(),
-                'profile': profile
+                'profile': profile,
+                'why': 'api',
             }
             tribemember = TribeMember.objects.create(**kwargs)
             tribemember.save()
