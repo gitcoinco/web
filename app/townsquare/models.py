@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -55,6 +56,7 @@ class Comment(SuperModel):
     activity = models.ForeignKey('dashboard.Activity',
         on_delete=models.CASCADE, related_name='comments', blank=True, db_index=True)
     comment = models.TextField(default='', blank=True)
+    likes = ArrayField(models.IntegerField(), default=list, blank=True) #pks of users who like this post
 
     def __str__(self):
         return f"Comment of {self.activity.pk} by {self.profile.handle}: {self.comment}"

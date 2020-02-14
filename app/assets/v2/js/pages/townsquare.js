@@ -5,7 +5,7 @@ $(document).ready(function() {
     let prefix = ' in ';
 
     if (difference > 0) {
-      console.log(moment(difference).inspect())
+      console.log(moment(difference).inspect());
       const parts = {
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
@@ -70,7 +70,8 @@ $(document).ready(function() {
 
   const updateTimers = function() {
     let enterTime = moment();
-    $('[data-time]').filter(":visible").each(function() {
+
+    $('[data-time]').filter(':visible').each(function() {
       moment.locale('en');
       var time = $(this).data('time');
       var base_time = $(this).data('base_time');
@@ -89,23 +90,24 @@ $(document).ready(function() {
       // console.log(countdown, new Date(new Date(time).getTime() - (1000 * counter))- new Date(base_time), start_date.diff(enterTime,'min'))
 
 
-// console.log(moment(time).diff(enterTime,'min'), time)
-// console.log(timeUrl && moment(time).diff(enterTime,'min') > 0)
-//       if (timeUrl && ( moment(time).diff(enterTime,'min') > 0)) {
-//         let btn = `<a class="btn btn-block btn-gc-blue btn-sm mt-2" href="${timeUrl}">View Action</a>`;
-//         console.log(btn)
-//         return $(this).parent().next().html(btn);
-//       }
+      // console.log(moment(time).diff(enterTime,'min'), time)
+      // console.log(timeUrl && moment(time).diff(enterTime,'min') > 0)
+      //       if (timeUrl && ( moment(time).diff(enterTime,'min') > 0)) {
+      //         let btn = `<a class="btn btn-block btn-gc-blue btn-sm mt-2" href="${timeUrl}">View Action</a>`;
+      //         console.log(btn)
+      //         return $(this).parent().next().html(btn);
+      //       }
       // enterTime < time {
       //   fromNow() is future
       // }
       // $(this).html(time_difference_broken_down(countdown));
       // console.log(moment.utc(time).fromNow(), moment.utc(time).inspect(), moment.relativeTimeThreshold('s'))
-      var timeDiff = moment(time).diff(enterTime,'sec')
+      var timeDiff = moment(time).diff(enterTime, 'sec');
+
       if (timeFuture && (timeDiff < 0)) {
-        console.log(moment(time).diff(enterTime,'sec'),$(this))
-        $(this).html('now')
-        $(this).parents('.offer_container').addClass('animate')
+        console.log(moment(time).diff(enterTime, 'sec'), $(this));
+        $(this).html('now');
+        $(this).parents('.offer_container').addClass('animate');
         return $(this).parent().next().html('Refresh to view offer!');
       }
       $(this).html(moment.utc(time).fromNow());

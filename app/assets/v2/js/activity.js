@@ -350,7 +350,7 @@ $(document).ready(function() {
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         var show_tip = true;
         let html = `
-        <div class="row p-2"
+        <div class="row comment_row p-2" data-id=${comment['id']}>
           <div class="col-1 activity-avatar mt-1">
             <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
@@ -380,8 +380,8 @@ $(document).ready(function() {
             </div>
               <span class="font-smaller-5 float-right">
               ${show_tip ? `
-              <span class="action">
-                <i class="far fa-heart grey"></i>
+              <span class="action like ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
+                <i class="far fa-heart grey"></i> <span class=like_count>${comment['like_count']}</span>
               </span> |
               <a href="#" class="tip_on_comment text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(100 * comment['tip_count_eth']) / 100}</span>
               </a>
@@ -416,13 +416,35 @@ $(document).ready(function() {
 
 
   // post comment activity
-  $(document).on('click', '.comment_container .fa-heart', function(e) {
+  $(document).on('click', '.comment_container .action.like', function(e) {
     e.preventDefault();
+    var id = $(this).parents('.comment_row').data('id');
+
+    var params = {
+      'method': 'toggle_like_comment',
+      'comment': id,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+    var url = '/api/v0.1/activity/' + $(this).parents('.activity').data('pk');
+
+    $.post(url, params, function(response) {
+      console.log('toggle like');
+    });
+    var like_count = parseInt($(this).find('span.like_count').text());
+
     if ($(this).hasClass('open')) {
       $(this).removeClass('open');
+      like_count = like_count - 1;
     } else {
       $(this).addClass('open');
+      like_count = like_count + 1;
     }
+    let $ele = $(this).find('span.like_count');
+
+    $ele.fadeOut(function() {
+      $ele.text(like_count);
+      $ele.fadeIn();
+    });
   });
 
 

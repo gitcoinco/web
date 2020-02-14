@@ -277,6 +277,9 @@ def api(request, activity_id):
             comment_dict['handle'] = comment.profile.handle
             comment_dict['tip_count_eth'] = comment.tip_count_eth
             comment_dict['match_this_round'] = comment.profile.match_this_round
+            comment_dict['is_liked'] = request.user.is_authenticated and (request.user.profile.pk in comment.likes)
+            comment_dict['like_count'] = len(comment.likes)
+            comment_dict['likes'] = ", ".join(Profile.objects.filter(pk__in=comment.likes).values_list('handle', flat=True)) if len(comment.likes) else "no one. Want to be the first?"
             comment_dict['name'] = comment.profile.data.get('name', None) or comment.profile.handle
             response['comments'].append(comment_dict)
         return JsonResponse(response)
@@ -291,6 +294,19 @@ def api(request, activity_id):
     # deletion request
     if request.POST.get('method') == 'delete':
         activity.delete()
+
+    # toggle like comment
+    if request.POST.get('method') == 'toggle_like_comment':
+        comment = activity.comments.filter(pk=request.POST.get('comment'))
+        if comment.exists() and request.user.is_authenticated:
+            comment = comment.first()
+            profile_pk = request.user.profile.pk
+            already_likes = profile_pk in comment.likes
+            if not already_likes:
+                comment.likes.append(profile_pk)
+            else:
+                comment.likes = [ele for ele in comment.likes if ele != profile_pk]
+            comment.save()
 
     # like request
     elif request.POST.get('method') == 'like':
