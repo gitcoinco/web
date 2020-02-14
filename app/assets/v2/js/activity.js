@@ -30,7 +30,7 @@ $(document).ready(function() {
     if ($('#new_activity_notifier').length) {
       $('#new_activity_notifier').html(html);
     } else {
-      $(html).insertBefore($('#activities .row').first());
+      $(html).insertBefore($('#activities .box').first());
     }
     var prefix = '(' + document.buffered_rows.length + ') ';
 
@@ -52,7 +52,7 @@ $(document).ready(function() {
     }
     if ($('.infinite-more-link').length) {
       if (!max_pk) {
-        max_pk = $('#activities .row').first().data('pk');
+        max_pk = $('#activities .box').first().data('pk');
         if (!max_pk) {
           return;
         }
@@ -62,11 +62,11 @@ $(document).ready(function() {
 
       url += '&after-pk=' + max_pk;
       $.get(url, function(html) {
-        var new_row_number = $(html).find('.activity.row').first().data('pk');
+        var new_row_number = $(html).find('.activity.box').first().data('pk');
 
         if (new_row_number && new_row_number > max_pk) {
           max_pk = new_row_number;
-          $(html).find('.activity.row').each(function() {
+          $(html).find('.activity.box').each(function() {
             document.buffered_rows.push($(this)[0].outerHTML);
           });
           ping_activity_notifier();
@@ -87,7 +87,7 @@ $(document).ready(function() {
   // schedule long poller when first activity feed item shows up
   // by recursively waiting for the activity items to show up
   var schedule_long_poller = function() {
-    if ($('#activities .row').length) {
+    if ($('#activities .box').length) {
       run_longpoller(true);
     } else {
       setTimeout(function() {
@@ -124,7 +124,7 @@ $(document).ready(function() {
     }
 
     // update UI
-    $(this).parents('.row.box').remove();
+    $(this).parents('.activity.box').remove();
 
     // remote post
     var params = {
@@ -182,7 +182,7 @@ $(document).ready(function() {
 
       $amount.fadeOut().text(new_amount).fadeIn();
       setTimeout(function() {
-        var $target = $parent.parents('.row.box').find('.comment_activity');
+        var $target = $parent.parents('.activity.box').find('.comment_activity');
 
         view_comments($target, false);
       }, 1000);
@@ -255,7 +255,7 @@ $(document).ready(function() {
     };
     var url = '/api/v0.1/activity/' + $(this).data('pk');
 
-    var parent = $(this).parents('.row.box');
+    var parent = $(this).parents('.activity.box');
 
     parent.find('.loading').removeClass('hidden');
     $.post(url, params, function(response) {
@@ -282,7 +282,7 @@ $(document).ready(function() {
       return;
     }
 
-    $parent.parents('.row.box').find('.loading').removeClass('hidden');
+    $parent.parents('.activity.box').find('.loading').removeClass('hidden');
 
     // increment number
     var num = $parent.find('span.num').html();
@@ -308,10 +308,10 @@ $(document).ready(function() {
       // pass
     })
       .fail(function() {
-        $parent.parents('.row.box').find('.error').removeClass('hidden');
+        $parent.parents('.activity.box').find('.error').removeClass('hidden');
       })
       .always(function() {
-        $parent.parents('.row.box').find('.loading').addClass('hidden');
+        $parent.parents('.activity.box').find('.loading').addClass('hidden');
       });
   };
 
@@ -323,7 +323,7 @@ $(document).ready(function() {
     };
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 
-    var $target = $parent.parents('.row.box').find('.comment_container');
+    var $target = $parent.parents('.activity.box').find('.comment_container');
 
     if (!$target.length) {
       $target = $parent.parents('.box').find('.comment_container');
@@ -336,20 +336,20 @@ $(document).ready(function() {
       return;
     }
     $parent.find('.action').addClass('open');
-    $parent.parents('.row.box').find('.loading').removeClass('hidden');
+    $parent.parents('.activity.box').find('.loading').removeClass('hidden');
     $.get(url, params, function(response) {
-      $parent.parents('.row.box').find('.loading').addClass('hidden');
+      $parent.parents('.activity.box').find('.loading').addClass('hidden');
       $target.addClass('filled');
       $target.html('');
       for (var i = 0; i < response['comments'].length; i++) {
-        var comment = sanitizeAPIResults(response['comments'])[i];
-        var the_comment = comment['comment'];
+        let comment = sanitizeAPIResults(response['comments'])[i];
+        let the_comment = comment['comment'];
 
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
-        var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
-        var show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
-        var html = `
+        let timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
+        let show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
+        let html = `
         <div class="row p-2">
           <div class="col-1 activity-avatar mt-1">
             <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
@@ -373,7 +373,7 @@ $(document).ready(function() {
               </span>
             </div>
             <div class="activity_comments_main_comment">
-              ${comment['comment']}
+              ${the_comment}
             </div>
           </div>
 
@@ -415,14 +415,14 @@ $(document).ready(function() {
   // post comment activity
   $(document).on('click', '.post_comment', function(e) {
     e.preventDefault();
-    const $target = $(this).parents('.row.box').find('.comment_activity');
+    const $target = $(this).parents('.activity.box').find('.comment_activity');
 
     post_comment($target, false);
   });
 
   $(document).on('keypress', '.enter-activity-comment', function(e) {
     if (e.which == 13) {
-      const $target = $(this).parents('.row.box').find('.comment_activity');
+      const $target = $(this).parents('.activity.box').find('.comment_activity');
 
       post_comment($target, false);
     }

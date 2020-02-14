@@ -114,7 +114,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </div>
       {% endfor %}
 
-      <div class="container">
+      <div class="">
         <div class="my-1 px-sm-3">
           <div class="row">
             <div class="col-12 mb-2">
@@ -141,7 +141,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="col-12 col-lg-3 d-none d-lg-block">
               <div class="townsquare_left-sidebar">
                 <div class="search font-caption mb-4 text-left">
-                  <div class="search-area col-12">
+                  <div class="search-area">
                     <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
                   </div>
                   <div class="mt-2">
@@ -264,54 +264,67 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 Actions
               </div>
               {% for type, item in offers_by_category.items %}
-                <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%} mb-4">
-                  <div class="d-flex align-items-center mb-2">
-                    <h4 class="my-0 ml-2 p-0 offer_container_type grey">{{type|title}} Action</h4>
-                  </div>
-                  <div class="font-caption text-left ml-1">
-                    {% if item.offer %}
-                      <a href="{{item.offer.view_url}}">
-                        <div class="offer_icon border mr-1">
-                          {% if type == 'secret'%}
-                            <i class="fas fa-key"></i>
-                          {% elif type == 'daily'%}
-                            <i class="far fa-clock"></i>
-                          {% elif type == 'weekly'%}
-                            <i class="far fa-calendar-check"></i>
-                          {% elif type == 'monthly'%}
-                            <i class="fas fa-check"></i>
-                          {% elif type == 'other'%}
-                            <i class="fas fa-parachute-box"></i>
-                          {% elif type == 'top'%}
-                            <i class="fas fa-fire-alt"></i>
-                          {% elif type == 'random'%}
-                            <i class="fa-random fas"></i>
-                          {% else %}
-                            <i class="far fa-clock"></i>
-                          {% endif %}
-                        </div>
-                      </a>
-                      <a href="{{item.offer.view_url}}"> Available now
-                        <span class="grey">
-                          <i class="fas fa-hourglass-end mr-2"></i>
-                          Expires <span class="{{type}} timer m-0" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>
+                <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%} mb-4 align-items-center">
+                  <span class="prize-gift">
+                    <i class="fa-2x fa-gift fas"></i>
+                  </span>
+                  <div class="d-flex flex-column flex-fill ml-3">
+                    <h4 class="p-0 offer_container_type">{{type|title}} Action</h4>
+                    <div class="font-caption font-smaller-5 text-left">
+                      {% if item.offer %}
+                        <!-- <a href="{{item.offer.view_url}}"> -->
+                          <!-- <div class="offer_icon border mr-1"> -->
+                            <!-- {% if type == 'secret'%}
+                              <i class="fas fa-key"></i>
+                            {% elif type == 'daily'%}
+                              <i class="far fa-clock"></i>
+                            {% elif type == 'weekly'%}
+                              <i class="far fa-calendar-check"></i>
+                            {% elif type == 'monthly'%}
+                              <i class="fas fa-check"></i>
+                            {% elif type == 'other'%}
+                              <i class="fas fa-parachute-box"></i>
+                            {% elif type == 'top'%}
+                              <i class="fas fa-fire-alt"></i>
+                            {% elif type == 'random'%}
+                              <i class="fa-random fas"></i>
+                            {% else %}
+                              <i class="far fa-clock"></i>
+                            {% endif %} -->
+                          <!-- </div> -->
+                        <!-- </a> -->
+                        <span class="">
+                          <i class="fas fa-hourglass-end mr-1"></i>
+                          Expires <span class="{{type}} timer m-0" data-time="{{item.offer.valid_to|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}">in {{item.offer.valid_to|naturaltime}}</span>
                         </span>
-                      </a>
-                    {% else %}
-                      <span class="filter-label ml-1">
-                        <i class="fas fa-hourglass-end mr-2"></i>
-                        Available
-                        <span class="{{type}} timer m-0" data-time="{{item.time|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>
-                      </span>
-                    {% endif %}
+                        <a class="btn btn-block btn-gc-blue btn-sm mt-2" href="{{item.offer.view_url}}">View Action</a>
+                      {% else %}
+                        <span class="">
+                          <i class="fas fa-hourglass-end mr-1"></i>
+                          Available
+                          <span class="{{type}} timer m-0" data-time-future="true" data-time="{{item.time|date:'c'}}" data-base_time="{{now|date:'c'}}">{{item.time|naturaltime}}</span>
+                        </span>
+                        {% if type == 'daily' %}
+                          <div class="offer_coming {{type}} font-caption text-left ml-1 d-flex align-items-center">
+                            <div class="checkbox_container">
+                              <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
+                              <span class="checkbox"></span>
+                              <div class="filter-label ml-1">
+                                <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
+                              </div>
+                            </div>
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    </div>
                   </div>
-                  {% if item.offer %}
+                  <!-- {% if item.offer %}
                   <div class="{{type}} offers">
 
                   </div>
                   {% else %}
-                  <div class="offer_coming {{type}} font-caption text-left ml-1 d-flex align-items-center">
                     {% if type == 'daily' %}
+                    <div class="offer_coming {{type}} font-caption text-left ml-1 d-flex align-items-center">
                       <div class="checkbox_container">
                         <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
                         <span class="checkbox"></span>
@@ -319,9 +332,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                           <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
                         </div>
                       </div>
+                    </div>
                     {% endif %}
-                  </div>
-                  {% endif %}
+                  {% endif %} -->
                 </div>
               {% endfor %}
                 <a href="/action/new" class="font-smaller-2">
