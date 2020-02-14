@@ -16,7 +16,7 @@
 
 {% endcomment %}
 {% load humanize i18n static %}
-<div class="box row d-block m-0 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
+<div class="box bg-white d-block m-0 mb-3 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
   {% if row.activity_type == 'new_bounty' %}
     <div class="align-items-baseline d-flex font-weight-bold justify-content-between mb-2 mt-n3">
       <b>New Bounty</b>
