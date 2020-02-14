@@ -324,6 +324,7 @@ a.offer_container:hover {
 .offer_container.animate:hover .prize-gift::after {
   animation: pulse-white 4s linear infinite,  rotate 10s linear infinite;
 }
+
 @keyframes rotate {
   100% {
     transform: rotateZ(360deg);
@@ -331,17 +332,17 @@ a.offer_container:hover {
 }
 
 @keyframes pulse-white {
-	0% {
-		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-	}
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
 
-	70% {
-		box-shadow: 0 0 0 30px rgba(255, 255, 255, 0);
-	}
+  70% {
+    box-shadow: 0 0 0 30px rgba(255, 255, 255, 0);
+  }
 
-	100% {
-		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-	}
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
 }
 
 .daily .prize-gift {
