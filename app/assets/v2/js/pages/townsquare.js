@@ -67,14 +67,20 @@ $(document).ready(function() {
     }, 10);
   });
   // updates expiry timers with countdowns
-  const setDataFormat = function(data){
+  const setDataFormat = function(data) {
     let str = 'in ';
-    if(data.days() > 0) str += data.days() + "d "
-    if(data.hours() > 0) str += data.hours() + "h "
-    if(data.minutes() > 0) str += data.minutes() + "m "
-    if(data.seconds() > 0) str += data.seconds() + "s "
-    return str
-  }
+
+    if (data.days() > 0)
+      str += data.days() + 'd ';
+    if (data.hours() > 0)
+      str += data.hours() + 'h ';
+    if (data.minutes() > 0)
+      str += data.minutes() + 'm ';
+    if (data.seconds() > 0)
+      str += data.seconds() + 's ';
+
+    return str;
+  };
 
   const updateTimers = function() {
     let enterTime = moment();
@@ -83,17 +89,19 @@ $(document).ready(function() {
       moment.locale('en');
       var time = $(this).data('time');
       var timeFuture = $(this).data('time-future');
-      var timeDiff = moment(time).diff(enterTime,'sec')
+      var timeDiff = moment(time).diff(enterTime, 'sec');
 
       if (timeFuture && (timeDiff < 0)) {
-        $(this).html('now')
-        $(this).parents('.offer_container').addClass('animate')
+        $(this).html('now');
+        $(this).parents('.offer_container').addClass('animate').removeClass('empty');
+
         // let btn = `<a class="btn btn-block btn-gc-blue btn-sm mt-2" href="${timeUrl}">View Action</a>`;
         // return $(this).parent().next().html(btn);
         return $(this).parent().append('<div>Refresh to view offer!</div>');
       }
 
       const diffDuration = moment.duration(moment(time).diff(moment()));
+
       $(this).html(setDataFormat(diffDuration));
     });
   };
