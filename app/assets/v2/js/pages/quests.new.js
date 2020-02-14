@@ -1,5 +1,5 @@
 
-$(document).ready(function () {
+$(document).ready(function() {
   const QUESTIONS_LIMIT = 10;
   const ANSWERS_LIMIT = 5;
   const question_template = $('.form-group.question:last').clone();
@@ -35,6 +35,7 @@ $(document).ready(function () {
   `;
   const question_code_battle_template = question_template.clone();
   const seconds_to_respond_label = question_code_battle_template.find('label')[1];
+
   $(question_type_select_template).insertBefore(seconds_to_respond_label);
 
   /**
@@ -45,6 +46,7 @@ $(document).ready(function () {
     e.preventDefault();
     // creates a new question battle code clone
     const new_question_code_battle = question_code_battle_template.clone();
+
     // quiz type selected
     if (e.target.value === 'quiz_question') {
       // removes the current question and replace it with a fresh one
@@ -67,7 +69,7 @@ $(document).ready(function () {
     $(boss_fight_answer_template).insertAfter(new_question_code_battle.find('.form__input')[1]);
     new_question_code_battle.find('option[value=boss_fight_question]').attr('selected', 'selected');
     $(e.target.parentNode.parentNode).replaceWith(new_question_code_battle);
-  })
+  });
 
 
   $(document).on('form#newkudos', 'submit', function(e) {
@@ -80,7 +82,7 @@ $(document).ready(function () {
   /**
    * Controller for question style selection
    */
-  $(document).on('change', '#quest-style', function (e) {
+  $(document).on('change', '#quest-style', function(e) {
     e.preventDefault();
     // removes all questions that were previously created
     $(e.target.parentNode.parentNode).find('.form-group.question').remove();
@@ -123,13 +125,15 @@ $(document).ready(function () {
     }
     // happens when a new question is created in quiz style
     if ($('#quest-style')[0].value !== 'Code Battle') {
-      var last_question = $('.form-group.question:last');
-      last_question.after(question_template.clone());
+      let last_code_battle_question = $('.form-group.question:last');
+
+      last_code_battle_question.after(question_template.clone());
       $('[data-toggle="tooltip"]').bootstrapTooltip();
       return;
     }
     // happens when a new question is created in the code battle style
     var last_question = $('.form-group.question:last');
+
     last_question.after(question_code_battle_template.clone());
     $('[data-toggle="tooltip"]').bootstrapTooltip();
   });
