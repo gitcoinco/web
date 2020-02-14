@@ -2,7 +2,7 @@
 $(document).ready(function() {
   const QUESTIONS_LIMIT = 10;
   const ANSWERS_LIMIT = 5;
-  const question_template = $('.form-group.question:last').clone();
+  const question_template = $('.form-group.question:first').clone();
   const answer_template = question_template.children('span:last').clone();
 
   /**
@@ -11,6 +11,13 @@ $(document).ready(function() {
   const question_type_select_template = `
     <div class="question_type_select_container form-group">
       <label class="form__label" for="question_type">${gettext('Question Type')}</label>
+      <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="This is the meat & potatoes of the event so take care in writing this copy! Other tips:
+      <BR>
+      <BR>
+      - Make sure that each answer can be found in the reading material.
+      - There can be many correct answers, but not ZERO correct answers.
+      - Questions should be about key 'a-ha moments' about the decentralized internet and/or your product.
+      "></i>
       <select name="question_type" class="select2 question_type_select">
         <option value="quiz_question" selected="selected">Quiz</option>
         <option value="boss_fight_question">Boss Fight</option>
@@ -18,25 +25,27 @@ $(document).ready(function() {
     </div>
   `;
   const boss_fight_answer_template = `
+    <hr>
     <div class="boss_fight_language_select_container form-group">
-      <label class="form__label" for="boss_fight_language">${gettext('Boss Fight Code Language')}</label>
-      <select name="boss_fight_language" class="select2 boss_fight_language_select">
+      <label class="form__label" for="answer_language[]">${gettext('Boss Fight Code Language')}</label>
+      <select name="answer_language[]" class="select2 boss_fight_language_select">
         <option value="boss_fight_language_solidity" selected="selected">Solidity</option>
         <option value="boss_fight_language_javascript">Javascript</option>
       </select>
     </div>
     <span>
-      <hr>
       <label class="form__label" for="points">${gettext('Insert the code for the boss fight')}</label>
       <input type="hidden" name="answer_correct[]" class="form__input" value="YES">
       <textarea name="answer[]" class="form__input" cols="50" rows="10" required></textarea>
-      <hr>
     </span>
+    <hr>
   `;
   const question_code_battle_template = question_template.clone();
   const seconds_to_respond_label = question_code_battle_template.find('label')[1];
 
-  $(question_type_select_template).insertBefore(seconds_to_respond_label);
+  if (question_code_battle_template.find('.question_type_select').length === 0) {
+    $(question_type_select_template).insertBefore(seconds_to_respond_label);
+  }
 
   /**
    * Controllers fot questions and answers in code battle quest style
@@ -47,16 +56,20 @@ $(document).ready(function() {
     // creates a new question battle code clone
     const new_question_code_battle = question_code_battle_template.clone();
 
+    alert(e.target.value);
     // quiz type selected
     if (e.target.value === 'quiz_question') {
+      // set 'quiz question' to the question type
+      // new_question_code_battle.find('.form__input.question_type').val('quiz_question');
       // removes the current question and replace it with a fresh one
       $(e.target.parentNode.parentNode).replaceWith(new_question_code_battle);
-      return;
+      return false;
     }
     // boss fight selected
     // do nothing if the quest already contains a battle fight question
-    if ($('.boss_fight_question').length > 0) {
+    if ($('.form__input.question_type[value=boss_fight_question]').length > 0 && e.target.value === 'boss_fight_question') {
       alert(gettext('A Code Battle Quest can have only one Boss Fight question'));
+      $(e.target).val('quiz_question');
       return false;
     }
     // sets the class of the question to boss_fight_question
@@ -65,8 +78,10 @@ $(document).ready(function() {
     new_question_code_battle.find('span').remove();
     // removes the add answer button
     new_question_code_battle.find('.add_answer').remove();
+    // set 'boss fight' to the question type
+    new_question_code_battle.find('.form__input.question_type').val('boss_fight_question');
     // insert the text area for the boss fight code
-    $(boss_fight_answer_template).insertAfter(new_question_code_battle.find('.form__input')[1]);
+    $(boss_fight_answer_template).insertAfter(new_question_code_battle.find('.form__input')[2]);
     new_question_code_battle.find('option[value=boss_fight_question]').attr('selected', 'selected');
     $(e.target.parentNode.parentNode).replaceWith(new_question_code_battle);
   });
@@ -87,10 +102,12 @@ $(document).ready(function() {
     // removes all questions that were previously created
     $(e.target.parentNode.parentNode).find('.form-group.question').remove();
     if (e.target.value === 'Code Battle') {
-      $(question_code_battle_template).insertBefore($(e.target.parentNode.parentNode).find('.add_question')[0]);
+      $('.questions-container').append(question_code_battle_template);
+      // $(question_code_battle_template).insertBefore($(e.target.parentNode.parentNode).find('.add_question')[0]);
       return;
     }
-    $(question_template).insertBefore($(e.target.parentNode.parentNode).find('.add_question')[0]);
+    $('.questions-container').append(question_template);
+    // $(question_template).insertBefore($(e.target.parentNode.parentNode).find('.add_question')[0]);
   });
 
   $(document).on('click', '.add_answer', function(e) {
@@ -123,18 +140,17 @@ $(document).ready(function() {
       _alert(gettext('The number of questions are limited to ') + QUESTIONS_LIMIT);
       return;
     }
+    // gets the current question
+    const current_question = $(e.target.parentNode);
+
     // happens when a new question is created in quiz style
     if ($('#quest-style')[0].value !== 'Code Battle') {
-      let last_code_battle_question = $('.form-group.question:last');
-
-      last_code_battle_question.after(question_template.clone());
+      current_question.after(question_template.clone());
       $('[data-toggle="tooltip"]').bootstrapTooltip();
       return;
     }
     // happens when a new question is created in the code battle style
-    var last_question = $('.form-group.question:last');
-
-    last_question.after(question_code_battle_template.clone());
+    current_question.after(question_code_battle_template.clone());
     $('[data-toggle="tooltip"]').bootstrapTooltip();
   });
 
@@ -166,7 +182,7 @@ $(document).ready(function() {
       alert(gettext('you cannot have 0 questsions'));
       return;
     }
-    var ele = $(this).parents('div.question');
+    var ele = $(e.target.parentNode);
 
     ele.remove();
   });

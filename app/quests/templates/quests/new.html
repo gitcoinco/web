@@ -25,6 +25,9 @@
 .close_answer{
   font-size: 12px;
 }
+.add_question{
+  margin-left:-10px;
+}
 .kudos-module .kudos-comment,
 .kudos-module .msg-alert{
   display: none !important;
@@ -78,11 +81,14 @@
           {% csrf_token %}
           <div class="form-group">
             <label class="form__label" for="style">{% trans "Type" %}</label>
-            <select id="quest-style" name="style" class="select2">
+            <select id="quest-style" name="style" class="select2" {% if package %} disabled {% endif %}>
               <option value="Quiz" {% if package.style == 'Quiz' %}selected=selected{% endif %}>Quiz</option>
               <option value="Code Battle" {% if package.style == 'Code Battle' %}selected=selected{% endif %}>Code Battle</option>
               <option disabled="disabled">More options coming soon</option>
             </select>
+            {% if package %}
+            <input type="hidden" name="style" class="form__input" value="{{package.style}}" required>
+            {% endif %}
           </div>
           <div class="form-group">
             <label class="form__label" for="difficulty">{% trans "Difficulty" %}</label>
@@ -153,9 +159,11 @@
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="If someone fails the quest, how many minutes until they can try again?"></i>
             <input type="number" name="minutes" class="form__input" placeholder='3' value="{{package.minutes}}" min="0" required>
           </div>
+          <div class="questions-container">
           {% for question in questions %}
             <div class="form-group question pl-3">
               <a href="#" class="float-right close_question">X</a>
+              <input type="hidden" name="question_type[]" class="form__input question_type" value="{{question.question_type}}" required>
               <label class="form__label" for="points">{% trans "Question" %}</label>
               <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="This is the meat & potatoes of the event so take care in writing this copy! Other tips:
               <BR>
@@ -165,6 +173,23 @@
               - Questions should be about key 'a-ha moments' about the decentralized internet and/or your product.
               "></i>
               <br>
+              {% if package.style == 'Code Battle' %}
+              <div class="question_type_select_container form-group">
+                <label class="form__label" for="question_type">{% trans "Question Type" %}</label>
+                <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="
+                Select the question type:
+                  <BR>
+                  <BR>
+                  - a quiz question type is a classic multi-answer qustion
+                  <BR>
+                  - a boss fight question type is a question where players have to answer by typing code
+                  "></i>
+                <select name="question_type" class="select2 question_type_select">
+                  <option value="quiz_question" {% if question.question_type == 'quiz_question' %}selected=selected{% endif %}>Quiz</option>
+                  <option value="boss_fight_question" {% if question.question_type == 'boss_fight_question' %}selected=selected{% endif %}>Boss Fight</option>
+                </select>
+              </div>
+              {% endif %}
               <label class="form__label" for="seconds_to_respond[]">{% trans "Seconds to Respond" %}</label>
               <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="How many seconds will the user have to respond to this question? Recommending starting point: 30"></i>
               <input type="number" name="seconds_to_respond[]" class="form__input" placeholder='Seconds To Respond' value="{{question.seconds_to_respond}}" min="0" required>
@@ -173,22 +198,41 @@
               {% for response in question.responses %}
               <span>
                 <hr>
-                <label class="form__label" for="points">{% trans "Correct?" %}</label>
                 <a href="#" class="float-right close_answer">X</a>
-                <select type="checkbox" name="answer_correct[]">
-                  <option {% if response.correct %}selected=selected{% endif %} >YES</option>
-                  <option {% if not response.correct %}selected=selected{% endif %} >NO</option>
-                </select>
-                <input type="text" name="answer[]" class="form__input" placeholder='Yes' value="{{response.answer}}" required>
+                {% if question.question_type == 'quiz_question' %}
+                  <label class="form__label" for="points">{% trans "Correct?" %}</label>
+                  <select type="checkbox" name="answer_correct[]">
+                    <option {% if response.correct %}selected=selected{% endif %} >YES</option>
+                    <option {% if not response.correct %}selected=selected{% endif %} >NO</option>
+                  </select>
+                  <input type="text" name="answer[]" class="form__input" placeholder='Yes' value="{{response.answer}}" required>
+                  <input type="hidden" name="answer_language[]" class="form__input" value="text" required>
+                {% else %}
+                  <div class="boss_fight_language_select_container form-group">
+                    <label class="form__label" for="answer_language[]">{% trans "Boss Fight Code Language" %}</label>
+                    <select name="answer_language[]" class="select2 boss_fight_language_select">
+                      <option value="boss_fight_language_solidity" {% if response.language == 'boss_fight_language_solidity' %}selected=selected{% endif %}>Solidity</option>
+                      <option value="boss_fight_language_javascript" {% if response.language == 'boss_fight_language_javascript' %}selected=selected{% endif %}>Javascript</option>
+                    </select>
+                  </div>
+                  <span>
+                    <label class="form__label" for="points">{% trans "Insert the code for the boss fight" %}</label>
+                    <input type="hidden" name="answer_correct[]" class="form__input" value="YES">
+                    <textarea name="answer[]" class="form__input" cols="50" rows="10" required>{{response.answer}}</textarea>
+                  </span>
+                {% endif %}
                 <hr>
               </span>
               {% endfor %}
               <a href="#" class="add_answer">[Add Answer]</a>
               <input type="hidden" name="answer[]" value="_DELIMITER_">
               <input type="hidden" name="answer_correct[]" value="_DELIMITER_">
+              <input type="hidden" name="answer_language[]" value="_DELIMITER_">
+              <br>
+              <a href="#" class="add_question">[Add Question]</a>
             </div>
-            <a href="#" class="add_question">[Add Question]</a>
           {% endfor %}
+          </div>
 
 
           {% if the_quest %}

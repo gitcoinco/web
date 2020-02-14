@@ -77,6 +77,7 @@ def editquest(request, pk=None):
     answers = []
     questions = [{
         'question': '',
+        'question_type': 'quiz_question',
         'responses': ['','']
     }]
 
@@ -95,12 +96,17 @@ def editquest(request, pk=None):
 
         answers = package.getlist('answer[]',[])
         answer_correct = package.getlist('answer_correct[]',[])
-        seconds_to_respond = package.getlist('seconds_to_respond[]',[])
+        answer_language = package.getlist('answer_language[]',[])
+        seconds_to_respond = package.getlist('seconds_to_respond[]', [])
+        question_type = package.getlist('question_type[]', [])
         points = abs(int(float(package.get('points'))))
 
         # continue building questions object
         for i in range(0, len(seconds_to_respond)):
             questions[i]['seconds_to_respond'] = abs(int(seconds_to_respond[i]))
+
+        for i in range(0, len(question_type)):
+            questions[i]['question_type'] = question_type[i]
 
         for answer in answers:
             if answer == '_DELIMITER_':
@@ -109,6 +115,7 @@ def editquest(request, pk=None):
                 questions[answer_idx]['responses'].append({
                     'answer': answer,
                     'correct': bool(answer_correct[counter] == "YES"),
+                    'language': answer_language[counter]
                 })
             counter += 1
 
@@ -169,7 +176,6 @@ def editquest(request, pk=None):
                     creator=quest.creator if pk else request.user.profile,
                     edit_comments=edit_comments,
                     )
-                logger.critical(quest)
                 if type(quest) == int:
                     quest = Quest.objects.get(pk=pk)
                 new_quest_request(quest, is_edit=bool(pk))
@@ -393,7 +399,7 @@ def details(request, obj_id, name, allow_feedback=False):
         return JsonResponse({'status': 'ok'})
     if quest.style.lower() == 'quiz':
         return quiz_style(request, quest)
-    elif quest.style.lower() == 'code_battle':
+    elif quest.style.lower() == 'code battle':
         return quiz_style(request, quest)
     elif quest.style == 'Example for Demo':
         return example(request, quest)
