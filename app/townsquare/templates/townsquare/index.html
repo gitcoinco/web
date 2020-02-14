@@ -266,79 +266,49 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-4">
                 Actions
               </div>
+              <div class="offer_coming font-caption">
+                <div class="checkbox_container">
+                  <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
+                  <span class="checkbox"></span>
+                  <div class="filter-label ml-1">
+                    <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
+                  </div>
+                </div>
+              </div>
               {% for type, item in offers_by_category.items %}
-                <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%} mb-4 align-items-center">
-                  <span class="prize-gift">
-                    <i class="fa-2x fa-gift fas"></i>
-                  </span>
-                  <div class="d-flex flex-column flex-fill ml-3">
-                    <h4 class="p-0 offer_container_type">{{type|title}} Action</h4>
-                    <div class="font-caption font-smaller-5 text-left">
-                      {% if item.offer %}
-                        <!-- <a href="{{item.offer.view_url}}"> -->
-                          <!-- <div class="offer_icon border mr-1"> -->
-                            <!-- {% if type == 'secret'%}
-                              <i class="fas fa-key"></i>
-                            {% elif type == 'daily'%}
-                              <i class="far fa-clock"></i>
-                            {% elif type == 'weekly'%}
-                              <i class="far fa-calendar-check"></i>
-                            {% elif type == 'monthly'%}
-                              <i class="fas fa-check"></i>
-                            {% elif type == 'other'%}
-                              <i class="fas fa-parachute-box"></i>
-                            {% elif type == 'top'%}
-                              <i class="fas fa-fire-alt"></i>
-                            {% elif type == 'random'%}
-                              <i class="fa-random fas"></i>
-                            {% else %}
-                              <i class="far fa-clock"></i>
-                            {% endif %} -->
-                          <!-- </div> -->
-                        <!-- </a> -->
+                {% if item.offer %}
+                  <a class="offer_container {{type}} animate mb-4 align-items-center" href="{{item.offer.view_url}}">
+                    <span class="prize-gift">
+                      <i class="fa-2x fa-fw fa-gift fas"></i>
+                    </span>
+                    <div class="d-flex flex-column flex-fill ml-3">
+                      <h4 class="p-0 offer_container_type">{{type|title}} Action</h4>
+                      <div class="font-caption font-smaller-5 text-left">
                         <span class="">
                           <i class="fas fa-hourglass-end mr-1"></i>
                           Expires <span class="{{type}} timer m-0" data-time="{{item.offer.valid_to|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}">in {{item.offer.valid_to|naturaltime}}</span>
                         </span>
-                        <a class="btn btn-block btn-gc-blue btn-sm mt-2" href="{{item.offer.view_url}}">View Action</a>
-                      {% else %}
+                        <button class="btn btn-block btn-gc-blue btn-sm mt-2">View Action</button>
+                      </div>
+                    </div>
+                  </a>
+                {% else %}
+                  <div class="offer_container {{type}} empty mb-4 align-items-center">
+                    <span class="prize-gift">
+                      <i class="fa-2x fa-fw fa-gift fas"></i>
+                    </span>
+                    <div class="d-flex flex-column flex-fill ml-3">
+                      <h4 class="p-0 offer_container_type">{{type|title}} Action</h4>
+                      <div class="font-caption font-smaller-5 text-left">
                         <span class="">
                           <i class="fas fa-hourglass-end mr-1"></i>
                           Available
                           <span class="{{type}} timer m-0" data-time-future="true" data-time="{{item.time|date:'c'}}" data-base_time="{{now|date:'c'}}">{{item.time|naturaltime}}</span>
                         </span>
-                        {% if type == 'daily' %}
-                          <div class="offer_coming {{type}} font-caption text-left ml-1 d-flex align-items-center">
-                            <div class="checkbox_container">
-                              <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
-                              <span class="checkbox"></span>
-                              <div class="filter-label ml-1">
-                                <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
-                              </div>
-                            </div>
-                          </div>
-                        {% endif %}
-                      {% endif %}
-                    </div>
-                  </div>
-                  <!-- {% if item.offer %}
-                  <div class="{{type}} offers">
-
-                  </div>
-                  {% else %}
-                    {% if type == 'daily' %}
-                    <div class="offer_coming {{type}} font-caption text-left ml-1 d-flex align-items-center">
-                      <div class="checkbox_container">
-                        <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
-                        <span class="checkbox"></span>
-                        <div class="filter-label ml-1">
-                          <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
-                        </div>
                       </div>
                     </div>
-                    {% endif %}
-                  {% endif %} -->
-                </div>
+                  </div>
+                {% endif %}
               {% endfor %}
                 <a href="/action/new" class="font-smaller-2 mb-2">
                   <i class="fa fa-plus-circle" aria-hidden="true"></i>
@@ -353,41 +323,41 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                  ${{current_match_round.amount|floatformat:0}} Distribution #{{current_match_round.number}}
                 <a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4" target="blank"><i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
                   <strong>Gitcoin is reinvesting in it's community</strong>
-                   <br> 
-                   <br> 
+                   <br>
+                   <br>
 
                   For the next {{current_match_round.valid_to|naturaltime}}, Gitcoin will be matching your newsfeed tips with ${{current_match_round.amount|floatformat:0}} in ETH.
-                   <br> 
-                   <br> 
+                   <br>
+                   <br>
                   The matching algorithm that Gitcoin uses (CLR), weights breadth of contributions (diversity in who you received from) greater than depth of contributions (total $$ received).
 
-                   <br> 
-                   <br> 
+                   <br>
+                   <br>
                    This rewards the most helpful community members.
 
-                   <br> 
-                   <br> 
+                   <br>
+                   <br>
 
-                  <strong>How do you earn this way?</strong>  Well the TLDR is 
+                  <strong>How do you earn this way?</strong>  Well the TLDR is
 
-                  <br> 
+                  <br>
                   1. the more value you add, the more people send you micro-tips
-                  <br> 
+                  <br>
                   2. we match contributions most to users who receive micro-tips from the many different people
-                  <br> 
+                  <br>
                   3. this incentivizes healthy behaviour on Gitcoin.
-                  <br> 
-                  <br> 
-                  <strong>How do you get started?</strong>  
+                  <br>
+                  <br>
+                  <strong>How do you get started?</strong>
 
-                  <br> 
+                  <br>
                   1. If someone posts asking for help, do your best to be helpful.
-                  <br> 
+                  <br>
                   2. If someone is helpful to you, send them a micro-tip.
-                  <br> 
+                  <br>
                   3. The CLR matching algorithm will match 0.001 ETH contributions with up to 0.1 ETH in matching funds.
-                  <br> 
-                  <br> 
+                  <br>
+                  <br>
 
                   <strong>Want to learn more about how it works?</strong> Click here. " ></i>
                 </a>
@@ -423,8 +393,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       {% endif %}
                       </td>
                       <td class="text-right" data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contribution{{mli.contributions|pluralize}} worth ${{mli.amount}} since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about ${{mli.match_amount}} in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})">
-                        {{mli.contributions}} x 
-                        ${{mli.amount}} = 
+                        {{mli.contributions}} x
+                        ${{mli.amount}} =
                         ${{mli.match_amount}}
                         <br>
                         {% if not mli.following %}

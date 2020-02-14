@@ -67,6 +67,14 @@ $(document).ready(function() {
     }, 10);
   });
   // updates expiry timers with countdowns
+  const setDataFormat = function(data){
+    let str = 'in ';
+    if(data.days() > 0) str += data.days() + "d "
+    if(data.hours() > 0) str += data.hours() + "h "
+    if(data.minutes() > 0) str += data.minutes() + "m "
+    if(data.seconds() > 0) str += data.seconds() + "s "
+    return str
+  }
 
   const updateTimers = function() {
     let enterTime = moment();
@@ -74,43 +82,19 @@ $(document).ready(function() {
     $('[data-time]').filter(':visible').each(function() {
       moment.locale('en');
       var time = $(this).data('time');
-      var base_time = $(this).data('base_time');
       var timeFuture = $(this).data('time-future');
-      var counter = $(this).data('counter');
-
-      if (!counter) {
-        counter = 0;
-      }
-      counter += 1;
-      $(this).data('counter', counter);
-      // var start_date = new Date(new Date(time).getTime() - (1000 * counter));
-
-      // var countdown = start_date - new Date(base_time);
-
-      // console.log(countdown, new Date(new Date(time).getTime() - (1000 * counter))- new Date(base_time), start_date.diff(enterTime,'min'))
-
-
-      // console.log(moment(time).diff(enterTime,'min'), time)
-      // console.log(timeUrl && moment(time).diff(enterTime,'min') > 0)
-      //       if (timeUrl && ( moment(time).diff(enterTime,'min') > 0)) {
-      //         let btn = `<a class="btn btn-block btn-gc-blue btn-sm mt-2" href="${timeUrl}">View Action</a>`;
-      //         console.log(btn)
-      //         return $(this).parent().next().html(btn);
-      //       }
-      // enterTime < time {
-      //   fromNow() is future
-      // }
-      // $(this).html(time_difference_broken_down(countdown));
-      // console.log(moment.utc(time).fromNow(), moment.utc(time).inspect(), moment.relativeTimeThreshold('s'))
-      var timeDiff = moment(time).diff(enterTime, 'sec');
+      var timeDiff = moment(time).diff(enterTime,'sec')
 
       if (timeFuture && (timeDiff < 0)) {
-        console.log(moment(time).diff(enterTime, 'sec'), $(this));
-        $(this).html('now');
-        $(this).parents('.offer_container').addClass('animate');
-        return $(this).parent().next().html('Refresh to view offer!');
+        $(this).html('now')
+        $(this).parents('.offer_container').addClass('animate')
+        // let btn = `<a class="btn btn-block btn-gc-blue btn-sm mt-2" href="${timeUrl}">View Action</a>`;
+        // return $(this).parent().next().html(btn);
+        return $(this).parent().append('<div>Refresh to view offer!</div>');
       }
-      $(this).html(moment.utc(time).fromNow());
+
+      const diffDuration = moment.duration(moment(time).diff(moment()));
+      $(this).html(setDataFormat(diffDuration));
     });
   };
 
