@@ -59,7 +59,7 @@ class Quest(SuperModel):
 
     def __str__(self):
         """Return the string representation of this obj."""
-        return f'{self.pk}, {self.title} (visible: {self.visible})'
+        return f'(id: {self.pk}), (title: {self.title}) - (style: {self.style}) - (visible: {self.visible})'
 
     @property
     def url(self):

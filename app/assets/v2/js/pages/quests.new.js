@@ -84,7 +84,7 @@ $(document).ready(function () {
     e.preventDefault();
     // removes all questions that were previously created
     $(e.target.parentNode.parentNode).find('.form-group.question').remove();
-    if (e.target.value === 'code_battle') {
+    if (e.target.value === 'Code Battle') {
       $(question_code_battle_template).insertBefore($(e.target.parentNode.parentNode).find('.add_question')[0]);
       return;
     }
@@ -122,7 +122,7 @@ $(document).ready(function () {
       return;
     }
     // happens when a new question is created in quiz style
-    if ($('#quest-style')[0].value !== 'code_battle') {
+    if ($('#quest-style')[0].value !== 'Code Battle') {
       var last_question = $('.form-group.question:last');
       last_question.after(question_template.clone());
       $('[data-toggle="tooltip"]').bootstrapTooltip();

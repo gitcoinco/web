@@ -79,8 +79,8 @@
           <div class="form-group">
             <label class="form__label" for="style">{% trans "Type" %}</label>
             <select id="quest-style" name="style" class="select2">
-              <option value="quiz" {% if response.style == 'Quiz' %}selected=selected{% endif %}>Quiz</option>
-              <option value="code_battle" {% if response.style == 'Code Battle' %}selected=selected{% endif %}>Code Battle</option>
+              <option value="Quiz" {% if package.style == 'Quiz' %}selected=selected{% endif %}>Quiz</option>
+              <option value="Code Battle" {% if package.style == 'Code Battle' %}selected=selected{% endif %}>Code Battle</option>
               <option disabled="disabled">More options coming soon</option>
             </select>
           </div>

@@ -153,7 +153,6 @@ def editquest(request, pk=None):
                     visible = quest.visible
                 if package.get('comment'):
                     edit_comments += f"\n {timezone.now().strftime('%Y-%m-%dT%H:%M')}: {package['comment']} "
-
                 quest = funct(
                     title=package.get('title'),
                     description=package.get('description'),
@@ -170,6 +169,7 @@ def editquest(request, pk=None):
                     creator=quest.creator if pk else request.user.profile,
                     edit_comments=edit_comments,
                     )
+                logger.critical(quest)
                 if type(quest) == int:
                     quest = Quest.objects.get(pk=pk)
                 new_quest_request(quest, is_edit=bool(pk))
@@ -392,6 +392,8 @@ def details(request, obj_id, name, allow_feedback=False):
             send_user_feedback(quest, comment, request.user)
         return JsonResponse({'status': 'ok'})
     if quest.style.lower() == 'quiz':
+        return quiz_style(request, quest)
+    elif quest.style.lower() == 'code_battle':
         return quiz_style(request, quest)
     elif quest.style == 'Example for Demo':
         return example(request, quest)
