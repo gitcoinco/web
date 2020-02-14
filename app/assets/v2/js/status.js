@@ -153,7 +153,7 @@ $(document).ready(function() {
     }
   });
 
-  $('body').on('focus change paste keyup blur', '#textarea', function(e) {
+  $('body').on('focus change paste keydown keyup blur', '#textarea', function(e) {
 
     // enforce a max length
     var max_len = $(this).data('maxlen');
