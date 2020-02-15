@@ -94,6 +94,7 @@ $(document).ready(function() {
       if (timeFuture && (timeDiff < 0)) {
         $(this).html('now');
         $(this).parents('.offer_container').addClass('animate').removeClass('empty');
+        $(this).removeAttr('data-time');
 
         // let btn = `<a class="btn btn-block btn-gc-blue btn-sm mt-2" href="${timeUrl}">View Action</a>`;
         // return $(this).parent().next().html(btn);
