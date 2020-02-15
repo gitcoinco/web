@@ -191,8 +191,8 @@ def town_square(request):
 
     # matching leaderboard
     current_match_round = MatchRound.objects.current().first()
-    current_match_rankings = MatchRanking.objects.filter(round=current_match_round)
     num_to_show = 10
+    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1))
     matching_leaderboard = [
         {
             'i': obj.number,
