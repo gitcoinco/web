@@ -348,7 +348,7 @@ var winner = async function(prize_url) {
   }, 2000);
 };
 
-var start_quest = function () {
+var start_quest = function() {
   $('#gameboard #header').html('<h3>💻 💾 CODE BATTLE 💾 💻</h3>' + document.quest['title']);
   $('#header').css('background-color', '#13145d');
   document.quest_state = 0;
