@@ -321,7 +321,7 @@ a.offer_container:hover {
   text-decoration: none;
   background: var(--gc-purple-hover);
 }
-.offer_container.animate:hover .prize-gift::after {
+a.offer_container.animate:hover .prize-gift::after {
   animation: pulse-white 4s linear infinite,  rotate 10s linear infinite;
 }
 
@@ -371,10 +371,13 @@ a.offer_container:hover {
 }
 
 .empty .prize-gift {
-  border-color: grey;
+  color: grey;
   text-shadow: 0 2px 0px grey;
 }
 
+.empty .prize-gift i {
+  color: #c1c1c1;
+}
 
 .offer_container.random.empty,
 .offer_container.secret.empty{
