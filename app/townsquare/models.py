@@ -295,5 +295,6 @@ def get_eligible_input_data(mr):
     network = 'mainnet' if not settings.DEBUG else 'rinkeby'
     earnings = Earning.objects.filter(created_on__gt=mr.valid_from, created_on__lt=mr.valid_to)
     earnings = earnings.filter(to_profile__isnull=False, from_profile__isnull=False, value_usd__isnull=False, network=network)
+    earnings = earnings.exclude(to_profile__user__is_staff=True)
     earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
     return [[ele[0], ele[1], float(ele[2])] for ele in earnings]
