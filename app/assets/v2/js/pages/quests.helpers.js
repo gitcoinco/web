@@ -136,36 +136,40 @@ var orb_state = function(state) {
 
 $(document).ready(function() {
 
-  $('body').keyup(function(e) {
-    // 1-10
-    if (e.keyCode >= 49 && e.keyCode < 59 && document.quiz_started) {
-      var selected = e.keyCode - 48;
+  // don't allow space and enter key press when the quest is of type code battle
+  if (document.quest.style !== 'Code Battle') {
+    $('body').keyup(function(e) {
+      // 1-10
+      if (e.keyCode >= 49 && e.keyCode < 59 && document.quiz_started) {
+        var selected = e.keyCode - 48;
 
-      $('#desc .answer:nth-child(' + selected + ')').toggleClass('selected');
+        $('#desc .answer:nth-child(' + selected + ')').toggleClass('selected');
 
-    }
-    // space
-    // enter
-    if (e.keyCode == 32 || e.keyCode == 13) {
-      if (!document.quiz_started) {
-        advance_to_state(document.quest_state + 1);
-      } else {
-        $('#cta_button a').click();
       }
-      document.typewriter_speed = 40;
-      e.preventDefault();
-      
-    }
-  });
-  $('body').keydown(function(e) {
-    // space
-    // enter
-    if (e.keyCode == 32 || e.keyCode == 13) {
-      document.typewriter_speed = 5;
-      e.preventDefault();
-      
-    }
-  });
+      // space
+      // enter
+      if (e.keyCode == 32 || e.keyCode == 13) {
+        if (!document.quiz_started) {
+          advance_to_state(document.quest_state + 1);
+        } else {
+          $('#cta_button a').click();
+        }
+        document.typewriter_speed = 40;
+        e.preventDefault();
+
+      }
+    });
+    $('body').keydown(function(e) {
+      // space
+      // enter
+      if (e.keyCode == 32 || e.keyCode == 13) {
+        document.typewriter_speed = 5;
+        e.preventDefault();
+
+      }
+    });
+  }
+
 
   $('#cta_button a').on('click', function(e) {
     var target = $(this).attr('href');
@@ -207,7 +211,7 @@ $(document).ready(function() {
     e.preventDefault();
     var feedback = prompt('Any comments for the quest author? (optional)', 'Feedback: ');
     var polarity = $(this).data('direction');
-    
+
     var params = {
       'polarity': polarity,
       'feedback': feedback

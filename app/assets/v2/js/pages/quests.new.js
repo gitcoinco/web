@@ -56,7 +56,6 @@ $(document).ready(function() {
     // creates a new question battle code clone
     const new_question_code_battle = question_code_battle_template.clone();
 
-    alert(e.target.value);
     // quiz type selected
     if (e.target.value === 'quiz_question') {
       // set 'quiz question' to the question type
