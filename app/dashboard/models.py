@@ -4584,8 +4584,8 @@ class Earning(SuperModel):
                     count += 1
         return count
 
-@receiver(post_save, sender=Earning, dispatch_uid="post_save_tip")
-def postsave_tip(sender, instance, created, **kwargs):
+@receiver(post_save, sender=Earning, dispatch_uid="post_save_earning")
+def post_save_earning(sender, instance, created, **kwargs):
     if created:
         instance.create_auto_follow()
 

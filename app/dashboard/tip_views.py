@@ -254,7 +254,6 @@ def send_tip_4(request):
     mr = MatchRound.objects.current().first()
     mr.process()
 
-
     # notifications
     maybe_market_tip_to_github(tip)
     maybe_market_tip_to_slack(tip, 'New tip')
