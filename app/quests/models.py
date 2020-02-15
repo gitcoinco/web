@@ -232,6 +232,22 @@ class Quest(SuperModel):
         except:
             return None
 
+    def questions_safe_code_battle(self, idx):
+        # strips out all correctness repsonses so that the client may see the question
+        # without being able to see the answer
+        # if the question is a boss_fight_question in code_battle style, it removes the answers array entirely
+        try:
+            question = self.questions[idx]
+            num_responses = question['responses']
+            for i in range(0, len(num_responses)):
+                del question['responses'][i]['correct']
+            if question['question_type'] == 'boss_fight_question':
+                del question['responses']
+
+            return question
+        except:
+            return None
+
     def is_within_cooldown_period(self, user):
         if not user.is_authenticated:
             return False

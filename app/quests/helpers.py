@@ -274,6 +274,6 @@ def generate_leaderboard(max_entries=25, round_number=1):
         leaderboard_hero[0] = leaderboard_hero[1]
         leaderboard_hero[1] = tmp
         leaderboard_hero = leaderboard_hero[:3]
-        
+
     return_leaderboard = return_leaderboard[:max_entries]
     return return_leaderboard, leaderboard_hero

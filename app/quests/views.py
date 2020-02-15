@@ -25,6 +25,7 @@ from quests.helpers import (
 from quests.models import Quest, QuestAttempt, QuestPointAward
 from quests.quest_types.example import details as example
 from quests.quest_types.quiz_style import details as quiz_style
+from quests.quest_types.code_battle_style import details as code_battle_style
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
@@ -83,7 +84,6 @@ def editquest(request, pk=None):
 
     #handle submission
     if package:
-
         questions = [{
             'question': ele,
             'seconds_to_respond': 30,
@@ -112,6 +112,9 @@ def editquest(request, pk=None):
             if answer == '_DELIMITER_':
                 answer_idx += 1
             else:
+                # if answer_language[counter] == 'boss_fight_language_javascript' or answer_language[counter] == 'boss_fight_language_solidity':
+                #    answer = re.sub(r"[\n\t\s]*", "", answer)
+
                 questions[answer_idx]['responses'].append({
                     'answer': answer,
                     'correct': bool(answer_correct[counter] == "YES"),
@@ -400,7 +403,7 @@ def details(request, obj_id, name, allow_feedback=False):
     if quest.style.lower() == 'quiz':
         return quiz_style(request, quest)
     elif quest.style.lower() == 'code battle':
-        return quiz_style(request, quest)
+        return code_battle_style(request, quest)
     elif quest.style == 'Example for Demo':
         return example(request, quest)
     else:
