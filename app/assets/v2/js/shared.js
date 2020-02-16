@@ -691,6 +691,13 @@ const randomElement = array => {
   return array[randomIndex];
 };
 
+$('#change-wallet').click(function(_) {
+  web3connect.clearCachedProvider();
+  web3connect.connect().then(function(provider) {
+    window.web3 = new Web3(provider);
+  });
+});
+
 /* eslint-disable no-lonely-if */
 var currentNetwork = function(network, no_ui_updates) {
 
@@ -709,13 +716,23 @@ var currentNetwork = function(network, no_ui_updates) {
       $('.navbar-network i').removeClass('red');
       $('#navbar-network-banner').removeClass('network-banner--warning');
       $('#navbar-network-banner').addClass('hidden');
+
+      if (web3connect.cachedProvider === 'authereum') {
+        $('#go-to-wallet').removeClass('hidden');
+        $('#go-to-wallet').attr('href', 'https://authereum.com/account');
+      } else if (web3connect.cachedProvider === 'fortmatic') {
+        $('#go-to-wallet').removeClass('hidden');
+        $('#go-to-wallet').attr('href', 'https://app.zerion.io/' + cb_address + '/overview');
+      } else {
+        $('#go-to-wallet').addClass('hidden');
+      }
     } else {
       if (!network) {
         info = gettext('Web3 disabled. Please install ') +
           '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
-      } else if (network == 'locked') {
+      } else if (network == 'locked' && web3connect.cachedProvider === 'injected') {
         if (is_metamask_approved || !is_metamask_unlocked) {
           info = gettext('Web3 locked. Please unlock ') +
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
@@ -750,13 +767,24 @@ var currentNetwork = function(network, no_ui_updates) {
       $('.navbar-network i').removeClass('red');
       $('#navbar-network-banner').removeClass('network-banner--warning');
       $('#navbar-network-banner').addClass('hidden');
+
+      if (web3connect.cachedProvider === 'authereum') {
+        $('#go-to-wallet').removeClass('hidden');
+        $('#go-to-wallet').attr('href', 'https://rinkeby.authereum.com/account');
+      } else if (web3connect.cachedProvider === 'fortmatic') {
+        // FIXME: Change to rinkeby network URL for Zerion
+        $('#go-to-wallet').removeClass('hidden');
+        $('#go-to-wallet').attr('href', 'https://app.zerion.io/' + cb_address + '/overview');
+      } else {
+        $('#go-to-wallet').addClass('hidden');
+      }
     } else {
       if (!network) {
         info = gettext('Web3 disabled. Please install ') +
           '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
-      } else if (network == 'locked') {
+      } else if (network == 'locked' && web3connect.cachedProvider === 'injected') {
         if (is_metamask_approved || !is_metamask_unlocked) {
           info = gettext('Web3 locked. Please unlock ') +
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
@@ -976,37 +1004,7 @@ var listen_for_web3_changes = async function(no_ui_updates) {
     }
   }
 
-  if (!window.web3connect) {
-    const Web3Connect = window.Web3Connect.default;
-    // Determine if we're on prod or not
-    const isProd = document.location.href.startsWith('https://gitcoin.co');
-    // FIXME: Use Fortmatic API key provided by Gitcoin
-    const formaticKey = isProd ? 'pk_live_99CEDFB950A446EC' : 'pk_test_A9E82CC253A9C8E4';
-    const providerOptions = {
-      authereum: {
-        package: Authereum,
-      },
-      fortmatic: {
-        package: Fortmatic,
-        options: {
-          key: formaticKey,
-        },
-      },
-    };
-    const network = isProd ? 'mainnet' : 'rinkeby';
-
-    window.web3connect = new Web3Connect.Core({
-      network,
-      cacheProvider: true,
-      providerOptions,
-    });
-
-    web3connect.connect().then(provider => {
-      window.web3 = new Web3(provider);
-    });
-  }
-
-  if (window.ethereum && !document.has_checked_for_ethereum_enable) {
+  if (web3connect.cachedProvider === 'injected' && window.ethereum && !document.has_checked_for_ethereum_enable) {
     if (window.ethereum._metamask) {
       document.has_checked_for_ethereum_enable = true;
       is_metamask_approved = await window.ethereum._metamask.isApproved();
@@ -1056,6 +1054,36 @@ var actions_page_warn_if_not_on_same_network = function() {
 };
 
 attach_change_element_type();
+
+$(document).ready(function() {
+  const Web3Connect = window.Web3Connect.default;
+  // Determine if we're on prod or not
+  const isProd = document.location.href.startsWith('https://gitcoin.co');
+  // FIXME: Use Fortmatic API key provided by Gitcoin
+  const formaticKey = isProd ? 'pk_live_99CEDFB950A446EC' : 'pk_test_A9E82CC253A9C8E4';
+  const providerOptions = {
+    authereum: {
+      package: Authereum,
+    },
+    fortmatic: {
+      package: Fortmatic,
+      options: {
+        key: formaticKey,
+      },
+    },
+  };
+  const network = isProd ? 'mainnet' : 'rinkeby';
+
+  window.web3connect = new Web3Connect.Core({
+    network,
+    cacheProvider: true,
+    providerOptions,
+  });
+
+  web3connect.connect().then(function(provider) {
+    window.web3 = new Web3(provider);
+  });
+});
 
 var setUsdAmount = function() {
   const amount = $('input[name=amount]').val();
