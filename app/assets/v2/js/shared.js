@@ -1529,6 +1529,11 @@ const caseInsensitiveCompare = (val1, val2) => {
  * @param {*} closePopup [boolean]
  */
 const indicateMetamaskPopup = (closePopup) => {
+  // Don't show popup if user is not using Metamask
+  if (web3connect.cachedProvider !== 'injected') {
+    return;
+  }
+
   if (closePopup) {
     $('#indicate-popup').hide();
   } else if ($('#indicate-popup').length) {
