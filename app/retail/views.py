@@ -1184,7 +1184,7 @@ def activity(request):
     next_page = page + 1
     start_index = (page-1) * page_size
     end_index = page * page_size
-    
+
     #p = Paginator(activities, page_size)
     #page = p.get_page(page)
     page = activities[start_index:end_index]
@@ -1205,6 +1205,7 @@ def activity(request):
         'page': page,
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
+        'my_tribes': [membership.org.handle for membership in request.user.profile.tribe_members.all()],
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]
 

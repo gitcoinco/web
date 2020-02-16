@@ -43,6 +43,11 @@
             <img data-toggle="tooltip" title="Member of @{{org}}" src="/dynamic/avatar/{{ org }}" style="border-radius: 15px; width: 15px; height: 15px;" />
           </span>
         {% endfor %}
+        {% if row.profile.data.type == 'Organization'%}
+          {% if row.profile.handle not in my_tribes|join:"," %}
+            <div style="text-align:center"><a href=# class="align-middle btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>Join Tribe</a></div>
+          {% endif %}
+        {% endif %}
       </div>
     </div>
     <div class="col-10 col-sm-8 pl-4 px-sm-0 activity_detail">
@@ -184,6 +189,7 @@
       </div>
       <div class="activity-tags activity-tag-first align-items-center">
         <span class="mx-0">
+
           {% if not hide_likes %}
             <span class="mr-2">
               <i class="far fa-eye grey" data-toggle="tooltip" title="The number of views this post has gotten." ></i>
