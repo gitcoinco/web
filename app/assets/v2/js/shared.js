@@ -81,7 +81,7 @@ var reloadCbAddress = function() {
     if (!error) {
       cb_address = result;
     } else {
-      console.log("web3.eth.coinbase could not be loaded: " + error);
+      console.log('web3.eth.coinbase could not be loaded: ' + error);
     }
   });
 };
@@ -700,6 +700,7 @@ $('#change-wallet').click(function(_) {
 
 $('#copy-address').click(function(e) {
   var input = $('<input type="text" value="' + cb_address + '" />');
+
   input.appendTo('body');
   input.select();
   document.execCommand('copy');
@@ -1075,21 +1076,21 @@ $(document).ready(function() {
   const formaticKey = isProd ? 'pk_live_99CEDFB950A446EC' : 'pk_test_A9E82CC253A9C8E4';
   const providerOptions = {
     authereum: {
-      package: Authereum,
+      'package': Authereum
     },
     fortmatic: {
-      package: Fortmatic,
+      'package': Fortmatic,
       options: {
-        key: formaticKey,
-      },
-    },
+        key: formaticKey
+      }
+    }
   };
   const network = isProd ? 'mainnet' : 'rinkeby';
 
   window.web3connect = new Web3Connect.Core({
     network,
     cacheProvider: true,
-    providerOptions,
+    providerOptions
   });
 
   web3connect.connect().then(function(provider) {
