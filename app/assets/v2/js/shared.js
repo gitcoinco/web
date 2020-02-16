@@ -698,6 +698,14 @@ $('#change-wallet').click(function(_) {
   });
 });
 
+$('#copy-address').click(function(e) {
+  var input = $('<input type="text" value="' + cb_address + '" />');
+  input.appendTo('body');
+  input.select();
+  document.execCommand('copy');
+  input.remove();
+});
+
 /* eslint-disable no-lonely-if */
 var currentNetwork = function(network, no_ui_updates) {
 
