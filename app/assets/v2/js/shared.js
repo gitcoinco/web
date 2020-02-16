@@ -710,7 +710,6 @@ var currentNetwork = function(network, no_ui_updates) {
 
   if (document.location.href.startsWith('https://gitcoin.co')) { // Live
     if (network == 'mainnet') {
-      $('#current-network').text('Main Ethereum Network');
       $('.navbar-network').attr('title', '');
       $('.navbar-network i').addClass('green');
       $('.navbar-network i').removeClass('red');
@@ -718,12 +717,15 @@ var currentNetwork = function(network, no_ui_updates) {
       $('#navbar-network-banner').addClass('hidden');
 
       if (web3connect.cachedProvider === 'authereum') {
+        $('#current-network').text('Main Ethereum Network (Authereum)');
         $('#go-to-wallet').removeClass('hidden');
         $('#go-to-wallet').attr('href', 'https://authereum.com/account');
       } else if (web3connect.cachedProvider === 'fortmatic') {
+        $('#current-network').text('Main Ethereum Network (Fortmatic)');
         $('#go-to-wallet').removeClass('hidden');
         $('#go-to-wallet').attr('href', 'https://app.zerion.io/' + cb_address + '/overview');
       } else {
+        $('#current-network').text('Main Ethereum Network (Metamask)');
         $('#go-to-wallet').addClass('hidden');
       }
     } else {
@@ -761,7 +763,6 @@ var currentNetwork = function(network, no_ui_updates) {
     }
   } else { // Staging
     if (network == 'rinkeby') {
-      $('#current-network').text('Rinkeby Network');
       $('.navbar-network').attr('title', '');
       $('.navbar-network i').addClass('green');
       $('.navbar-network i').removeClass('red');
@@ -769,13 +770,16 @@ var currentNetwork = function(network, no_ui_updates) {
       $('#navbar-network-banner').addClass('hidden');
 
       if (web3connect.cachedProvider === 'authereum') {
+        $('#current-network').text('Rinkeby Network (Authereum)');
         $('#go-to-wallet').removeClass('hidden');
         $('#go-to-wallet').attr('href', 'https://rinkeby.authereum.com/account');
       } else if (web3connect.cachedProvider === 'fortmatic') {
+        $('#current-network').text('Rinkeby Network (Fortmatic)');
         // FIXME: Change to rinkeby network URL for Zerion
         $('#go-to-wallet').removeClass('hidden');
         $('#go-to-wallet').attr('href', 'https://app.zerion.io/' + cb_address + '/overview');
       } else {
+        $('#current-network').text('Rinkeby Network (Metamask)');
         $('#go-to-wallet').addClass('hidden');
       }
     } else {
