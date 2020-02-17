@@ -2619,8 +2619,8 @@ class Profile(SuperModel):
     @property
     def tribe_members(self):
         if not self.is_org:
-            return TribeMember.objects.filter(profile=self).exclude(status='rejected')
-        return TribeMember.objects.filter(org=self).exclude(status='rejected')
+            return TribeMember.objects.filter(profile=self).exclude(status='rejected').exclude(profile__user=None)
+        return TribeMember.objects.filter(org=self).exclude(status='rejected').exclude(profile__user=None)
 
     @property
     def ref_code(self):
@@ -4641,7 +4641,7 @@ class TribeMember(SuperModel):
         ('pending', 'pending'),
         ('rejected', 'rejected'),
     ]
-    #from 
+    #from
     profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
     # to
     org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE, null=True, blank=True)
