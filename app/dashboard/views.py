@@ -997,6 +997,9 @@ def users_fetch(request):
 
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
+
+    show_banner = None
+
     if persona:
         if persona == 'Funder':
             profile_list = profile_list.filter(dominant_persona='funder')
@@ -1107,6 +1110,7 @@ def users_fetch(request):
     params['count'] = all_pages.count
     params['num_pages'] = all_pages.num_pages
     params['show_banner'] = show_banner
+    params['persona'] = persona
 
     # log this search, it might be useful for matching purposes down the line
     try:

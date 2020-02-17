@@ -62,14 +62,13 @@
               </div>
             </div>
             <div class="pb-4 border-bottom form-group">
-              <label for="bounty-completed" class="font-weight-bold">Bounties Completed</label>
+              <label for="persona" class="font-weight-bold">Persona</label>
               <div class="form__select2">
-                <select2 v-model.trim="params.bounties_completed" data-tags="true" class="form-control">
+                <select2 v-model="params.persona" data-minimum-results-for-search="Infinity" class="form-control">
                   <option value="" selected="true">All</option>
-                  <option value="0,5">0,5</option>
-                  <option value="5,10">5,10</option>
-                  <option value="10,15">10,15</option>
-                  <option value="15,20">15,20</option>
+                  <option value="Funder">Funder</option>
+                  <option value="Organization">Organization</option>
+                  <option value="Coder">Coder</option>
                 </select2>
               </div>
             </div>
@@ -86,18 +85,19 @@
                 </select2>
               </div>
             </div>
-            <div class="pb-4 border-bottom form-group">
-              <label for="persona" class="font-weight-bold">Persona</label>
+            <div v-if="persona != 'tribe'" class="pb-4 border-bottom form-group">
+              <label for="bounty-completed" class="font-weight-bold">Bounties Completed</label>
               <div class="form__select2">
-                <select2 v-model="params.persona" data-minimum-results-for-search="Infinity" class="form-control">
+                <select2 v-model.trim="params.bounties_completed" data-tags="true" class="form-control">
                   <option value="" selected="true">All</option>
-                  <option value="Funder">Funder</option>
-                  <option value="Organization">Organization</option>
-                  <option value="Coder">Coder</option>
+                  <option value="0,5">0,5</option>
+                  <option value="5,10">5,10</option>
+                  <option value="10,15">10,15</option>
+                  <option value="15,20">15,20</option>
                 </select2>
               </div>
             </div>
-            <div class="pb-2 border-bottom form-group">
+            <div v-if="persona != 'tribe'" class="pb-2 border-bottom form-group">
               <div class="w-100 p-2">
                 <fieldset class="">
                   <label for="" class="font-weight-bold">Star Rating</label>
@@ -116,7 +116,7 @@
                 </fieldset>
               </div>
             </div>
-            <div class="g-multiselect pb-4 border-bottom form-group">
+            <div v-if="persona != 'tribe'" class="g-multiselect pb-4 border-bottom form-group">
               <label for="organisations" class="font-weight-bold">Organization</label>
               <div class="font-smaller">
                 <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">

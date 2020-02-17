@@ -24,6 +24,13 @@ Vue.mixin({
         delete vm.params['search'];
       }
 
+      if (vm.params.persona == 'Organization') {
+        // remove filters which do not apply for tribes directory
+        delete vm.params['rating'];
+        delete vm.params['organisation'];
+        delete vm.params['skills'];
+      }
+
       let searchParams = new URLSearchParams(vm.params);
 
       let apiUrlUsers = `/api/v0.1/users_fetch/?${searchParams.toString()}`;
@@ -40,6 +47,7 @@ Vue.mixin({
         vm.usersHasNext = response.has_next;
         vm.numUsers = response.count;
         vm.showBanner = response.show_banner;
+        vm.persona = response.persona;
 
         if (vm.usersHasNext) {
           vm.usersPage = ++vm.usersPage;
@@ -256,7 +264,8 @@ if (document.getElementById('gc-users-directory')) {
       gitcoinIssueUrl: '',
       issueDetails: undefined,
       errorIssueDetails: undefined,
-      show_banner: undefined
+      showBanner: undefined,
+      persona: undefined
     },
     mounted() {
       this.fetchUsers();
