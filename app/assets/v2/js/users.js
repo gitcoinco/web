@@ -39,6 +39,7 @@ Vue.mixin({
         vm.usersNumPages = response.num_pages;
         vm.usersHasNext = response.has_next;
         vm.numUsers = response.count;
+        vm.showBanner = response.show_banner;
 
         if (vm.usersHasNext) {
           vm.usersPage = ++vm.usersPage;
@@ -254,7 +255,8 @@ if (document.getElementById('gc-users-directory')) {
       isLoading: true,
       gitcoinIssueUrl: '',
       issueDetails: undefined,
-      errorIssueDetails: undefined
+      errorIssueDetails: undefined,
+      show_banner: undefined
     },
     mounted() {
       this.fetchUsers();

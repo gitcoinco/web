@@ -36,7 +36,8 @@
     <div class="" id="gc-users-directory" v-cloak>
 
       <div class="container-fluid">
-        <nav class="search-section p-5">
+        <nav class="search-section p-5 text-center">
+          <img v-if="showBanner" class="mb-5" :src="[[showBanner]]" />
           <div class="d-flex flex-grow-1" id="usersFilters">
             <form class="form-inline my-2 flex-fill justify-content-center">
               <div class="input-group w-50">

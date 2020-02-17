@@ -1004,6 +1004,7 @@ def users_fetch(request):
             profile_list = profile_list.filter(dominant_persona='hunter')
         if persona == 'Organization':
             profile_list = profile_list.filter(data__type='Organization')
+            show_banner = static('v2/images/tribes/logo-with-text.svg')
 
     profile_list = users_fetch_filters(
         profile_list,
@@ -1105,6 +1106,7 @@ def users_fetch(request):
     params['has_next'] = all_pages.page(page).has_next()
     params['count'] = all_pages.count
     params['num_pages'] = all_pages.num_pages
+    params['show_banner'] = show_banner
 
     # log this search, it might be useful for matching purposes down the line
     try:
