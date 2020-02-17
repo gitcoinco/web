@@ -223,8 +223,8 @@ Vue.mixin({
       $.when(sendJoin).then(function(response) {
         event.target.disabled = false;
         response.is_member ?
-          event.target.innerText = 'Leave Tribe' :
-          event.target.innerText = 'Join Tribe';
+          event.target.innerText = 'Unfollow' :
+          event.target.innerText = 'Follow';
 
         event.target.classList.toggle('btn-gc-pink');
         event.target.classList.toggle('btn-gc-green');
