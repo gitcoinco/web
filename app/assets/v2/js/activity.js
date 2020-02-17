@@ -3,7 +3,7 @@
 $(document).ready(function() {
 
   var linkify = function(new_text) {
-    new_text = new_text.replace(/(?<!\S)#(\w*)/g, ' <a href="/?tab=search-$1">#$1</a>');
+    new_text = new_text.replace(/(?:^|\s)#([a-zA-Z\d-]+)/g, ' <a href="/?tab=search-$1">#$1</a>');
     new_text = new_text.replace(/\B@(\w*)/g, ' <a href="/profile/$1">@$1</a>');
     return new_text;
   };
