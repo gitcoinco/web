@@ -1072,16 +1072,15 @@ def users_fetch(request):
         profile_json['verification'] = user.get_my_verified_check
         profile_json['avg_rating'] = user.get_average_star_rating()
 
+        followers = TribeMember.objects.filter(org=user)
+
+        is_following = True if followers.filter(profile=current_profile).count() else False
+        profile_json['is_following'] = is_following
+
+        follower_count = followers.count()
+        profile_json['follower_count'] = follower_count
+
         if user.is_org:
-
-            members = TribeMember.objects.filter(org=user)
-
-            is_tribe_member = True if members.filter(profile=current_profile).count() else False
-            profile_json['is_tribe_member'] = is_tribe_member
-
-            member_count = members.count()
-            profile_json['member_count'] = member_count
-
             profile_dict = user.__dict__
             profile_json['count_bounties_on_repo'] = profile_dict.get('as_dict').get('count_bounties_on_repo')
             profile_json['sum_eth_on_repos'] = profile_dict.get('as_dict').get('sum_eth_on_repos')

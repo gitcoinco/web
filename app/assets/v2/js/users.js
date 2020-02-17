@@ -222,9 +222,14 @@ Vue.mixin({
 
       $.when(sendJoin).then(function(response) {
         event.target.disabled = false;
-        response.is_member ?
-          event.target.innerText = 'Unfollow' :
+
+        if (response.is_member) {
+          event.target.innerText = 'Unfollow';
+          ++user.follower_count;
+        } else {
           event.target.innerText = 'Follow';
+          --user.follower_count;
+        }
 
         event.target.classList.toggle('btn-gc-pink');
         event.target.classList.toggle('btn-gc-green');
