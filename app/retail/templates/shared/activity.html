@@ -46,15 +46,20 @@
       </div>
     </div>
     <div class="col-10 col-sm-8 pl-4 px-sm-0 activity_detail">
-      <div class="">
-       <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
-       <span class="grey"><a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a></span>
-      {% if row.profile.match_this_round %}
-          <span style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; padding: 2px; font-size: 10px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@{{row.profile.handle}} is estimated to be earning ${{row.profile.match_this_round|floatformat:2}} in this week's CLR Round.  <br><br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard.">
+      <div>
+        <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
+        <span class="grey">
+         <a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
+        </span>
+        {% if row.profile.match_this_round %}
+          <span style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; padding: 2px; font-size: 10px;"
+            data-placement="bottom" data-toggle="tooltip" data-html="true"
+            title="@{{row.profile.handle}} is estimated to be earning ${{row.profile.match_this_round|floatformat:2}} in this week's CLR Round.  <br><br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard."
+          >
             <i class="fab fa-ethereum mr-0" aria-hidden="true"></i>
             ${{row.profile.match_this_round|floatformat:2}}
           </span>
-      {% endif %}
+        {% endif %}
       </div>
       <div class="activity_detail_content font-body pb-2">
         {% if row.activity_type == 'new_tip' %}
