@@ -25,7 +25,7 @@
         {{profile.tribe_description | safe}}
       </div>
     </div>
-    {% if is_my_org %}
+    {% if is_my_org and tribe_plan is not None %}
       {% include 'profiles/tribe/tribes_admin.html' %}
     {% endif %}
     <div class="my-5">
