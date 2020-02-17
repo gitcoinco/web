@@ -156,7 +156,7 @@ $(document).ready(function() {
     const github_url = '';
     const from_name = document.contxt['github_handle'];
     const username = $parent.data('username');
-    var amount_input = prompt('How much ETH do you want to send to ' + username + '?', '0.01');
+    var amount_input = prompt('How much ETH do you want to send to ' + username + '?', '0.001');
 
     if (!amount_input) {
       return;
