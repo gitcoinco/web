@@ -3,14 +3,14 @@
 $(document).ready(function() {
 
   var linkify = function(new_text) {
-    new_text = new_text.replace(/ #(\S*)/g, ' <a href="/?tab=search-$1">#$1</a>');
-    new_text = new_text.replace(/ @(\S*)/g, ' <a href="/profile/$1">@$1</a>');
+    new_text = new_text.replace(/(?<!\S)#(\w*)/g, ' <a href="/?tab=search-$1">#$1</a>');
+    new_text = new_text.replace(/\B@(\w*)/g, ' <a href="/profile/$1">@$1</a>');
     return new_text;
   };
   // inserts links into the text where there are URLS detected
 
   function urlify(text) {
-    var urlRegex = /(https?:\/\/[^\s]+)/g;
+    var urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
     return text.replace(urlRegex, function(url) {
       return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
