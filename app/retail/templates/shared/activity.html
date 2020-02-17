@@ -16,7 +16,7 @@
 
 {% endcomment %}
 {% load humanize i18n static %}
-<div class="box row d-block m-0 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
+<div class="box bg-white d-block m-0 mb-3 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
   {% if row.activity_type == 'new_bounty' %}
     <div class="align-items-baseline d-flex font-weight-bold justify-content-between mb-2 mt-n3">
       <b>New Bounty</b>
@@ -46,10 +46,20 @@
       </div>
     </div>
     <div class="col-10 col-sm-8 pl-4 px-sm-0 activity_detail">
-
       <div>
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
-        <span class="grey"><a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a></span>
+        <span class="grey">
+         <a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
+        </span>
+        {% if row.profile.match_this_round %}
+          <span style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; padding: 2px; font-size: 10px;"
+            data-placement="bottom" data-toggle="tooltip" data-html="true"
+            title="@{{row.profile.handle}} is estimated to be earning ${{row.profile.match_this_round|floatformat:2}} in this week's CLR Round.  <br><br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard."
+          >
+            <i class="fab fa-ethereum mr-0" aria-hidden="true"></i>
+            ${{row.profile.match_this_round|floatformat:2}}
+          </span>
+        {% endif %}
       </div>
       <div class="activity_detail_content font-body pb-2">
         {% if row.activity_type == 'new_tip' %}
@@ -57,6 +67,8 @@
           <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
             @{{ row.metadata.to_username }}
           </a>
+        {% elif row.activity_type == 'mini_clr_payout' %}
+          {% trans "got a distribution of" %} of <strong>${{row.metadata.amount|floatformat:2}}<strong>
         {% elif row.activity_type == 'new_kudos' %}
           {% trans "sent a" %}
           Kudos
@@ -185,14 +197,12 @@
           {% endif %}
 
           {% if not hide_likes %}
-            {% if is_alpha_tester or row.metadata.tip_able %}
               <a data-pk={{row.pk}} data-username={{row.profile.handle}} class="tip_activity" href="#"
               data-toggle="tooltip" title="This activity feed has generated {{ row.tip_count_eth|floatformat:2 }} ETH (${{row.tip_count_usd|floatformat:2}}) in Tips."
               >
                 <i class="fab fa-ethereum grey" ></i>
-                <span class="amount grey">{{ row.tip_count_eth|floatformat:2}}</span>
+                <span class="amount grey">{{ row.tip_count_eth|floatformat:3}}</span>
               </a>
-            {% endif %}
 
             <a href=# title="{{row.likes_title}}Click to {% if row.liked %}unlike{% else %}like{%endif%} feed item."
               data-affirmative=liked data-negative=unliked data-state="{% if row.liked %}liked{% else %}unliked{%endif%}"

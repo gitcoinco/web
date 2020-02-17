@@ -152,6 +152,7 @@ def privacy_settings(request):
     msg = ''
     if request.POST and request.POST.get('submit'):
         if profile:
+            profile.dont_autofollow_earnings = bool(request.POST.get('dont_autofollow_earnings', False))
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
             profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
