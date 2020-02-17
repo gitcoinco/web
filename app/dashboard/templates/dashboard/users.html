@@ -53,14 +53,6 @@
       <div class="sidebar-container flex-column flex-lg-row">
         <transition name="fade">
           <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
-            <div class="g-multiselect pb-4 border-bottom form-group">
-              <label for="skills" class="font-weight-bold">Skills</label>
-              <div class="form__select2">
-                <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
-                  <option disabled value="0">Select one</option>
-                </select2>
-              </div>
-            </div>
             <div class="pb-4 border-bottom form-group">
               <label for="persona" class="font-weight-bold">Persona</label>
               <div class="form__select2">
@@ -82,6 +74,14 @@
                   <option value="10,15">10,15</option>
                   <option value="15,20">15,20</option>
                   <option value="20,25">20,25</option>
+                </select2>
+              </div>
+            </div>
+            <div  v-if="persona != 'Organization'" class="g-multiselect pb-4 border-bottom form-group">
+              <label for="skills" class="font-weight-bold">Skills</label>
+              <div class="form__select2">
+                <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                  <option disabled value="0">Select one</option>
                 </select2>
               </div>
             </div>
@@ -122,9 +122,9 @@
                 <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
               </div>
             </div>
-            <button class="btn blue" @click="params = {};">Reset Filters</button>
+            <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
             {% if is_staff %}
-              <p class="font-body mx-2 mb-2 mt-4">
+              <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
                 <span class="font-weight-bold">[[ numUsers ]]</span> users found
               </p>
               <button v-if="persona != 'Organization'" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
@@ -181,10 +181,10 @@
                   <template v-if="user.is_org">
                     <div v-html="user.tribe_description" class="overflow-hidden mb-2 text-black-70" style="max-height: 4.5rem;">
                     </div>
-                    <div class="text-center">
+                    <div class="text-left">
                       <span v-if="user.rank_org > 0"><b>#[[ user.rank_org ]]</b> Tribe</span>
                     </div>
-                    <div class="text-center">
+                    <div class="text-left">
                       <p class="mb-0">
                         <i class="fas fa-user font-smaller-4 mr-1"></i>
                         <b>[[ user.follower_count ]]</b> followers
@@ -220,7 +220,7 @@
                         <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
                       </a>
                     </div>
-                    <div class="text-center">
+                    <div class="text-left">
                       <p class="mb-0">
                         <i class="fas fa-user font-smaller-4 mr-1"></i>
                         <b>[[ user.follower_count ]]</b> followers
@@ -246,11 +246,13 @@
                     <button v-if="user.is_following" @click="joinTribe(user, $event)"
                       class="btn btn-sm btn-gc-pink font-caption font-weight-semibold button--full"
                     >
+                      <i class="fas fa-user-minus mr-1"></i>
                       Unfollow
                     </button>
                     <button v-else @click="joinTribe(user, $event)"
-                      class="btn btn-sm btn-gc-green font-caption font-weight-semibold button--full"
+                      class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full"
                     >
+                      <i class="fas fa-user-plus mr-1"></i>
                       Follow
                     </button>
                   </div>

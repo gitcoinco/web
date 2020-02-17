@@ -224,15 +224,15 @@ Vue.mixin({
         event.target.disabled = false;
 
         if (response.is_member) {
-          event.target.innerText = 'Unfollow';
+          event.target.innerHTML = '<i class="fas fa-user-minus mr-1"></i> Unfollow';
           ++user.follower_count;
         } else {
-          event.target.innerText = 'Follow';
+          event.target.innerHTML = '<i class="fas fa-user-plus mr-1"></i> Follow';
           --user.follower_count;
         }
 
         event.target.classList.toggle('btn-gc-pink');
-        event.target.classList.toggle('btn-gc-green');
+        event.target.classList.toggle('btn-gc-blue');
       }).fail(function(error) {
         event.target.disabled = false;
       });
