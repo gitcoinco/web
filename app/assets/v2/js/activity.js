@@ -279,7 +279,7 @@ $(document).ready(function() {
     }
 
     // user input
-    var comment = $parent.parents('.box').find('.comment_container input').val();
+    var comment = $parent.parents('.box').find('.comment_container textarea').val();
 
     // validation
     if (!comment) {
@@ -304,7 +304,7 @@ $(document).ready(function() {
 
     $.post(url, params, function(response) {
       var success_callback = function($parent) {
-        $parent.find('input').focus();
+        $parent.find('textarea').focus();
       };
 
       view_comments($parent, allow_close_comment_container, success_callback);
@@ -351,6 +351,7 @@ $(document).ready(function() {
 
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
+        the_comment = the_comment.replace(/\r\n|\r|\n/g,"<br />")
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         var show_tip = true;
         let html = `
@@ -405,7 +406,7 @@ $(document).ready(function() {
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
           <div class="col-12 col-sm-11 text-right">
-            <input type="text" class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment">
+            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="5"></textarea>
             <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
         </div>
@@ -456,7 +457,7 @@ $(document).ready(function() {
   $(document).on('click', '.comment_activity', function(e) {
     e.preventDefault();
     var success_callback = function($parent) {
-      $parent.find('input').focus();
+      $parent.find('textarea').focus();
     };
 
     view_comments($(this), true, success_callback);
@@ -470,13 +471,37 @@ $(document).ready(function() {
     post_comment($target, false);
   });
 
-  $(document).on('keypress', '.enter-activity-comment', function(e) {
-    if (e.which == 13) {
-      const $target = $(this).parents('.activity.box').find('.comment_activity');
+  // https://stackoverflow.com/a/6015906/6784817
+  function pasteIntoInput(el, text) {
+      el.focus();
+      if (typeof el.selectionStart == "number"
+              && typeof el.selectionEnd == "number") {
+          var val = el.value;
+          var selStart = el.selectionStart;
+          el.value = val.slice(0, selStart) + text + val.slice(el.selectionEnd);
+          el.selectionEnd = el.selectionStart = selStart + text.length;
+      } else if (typeof document.selection != "undefined") {
+          var textRange = document.selection.createRange();
+          textRange.text = text;
+          textRange.collapse(false);
+          textRange.select();
+      }
+  }
 
-      post_comment($target, false);
+  function handleEnter(e) {
+    if (e.which == 13) {
+      if(e.keyCode == 13 && e.shiftKey){
+        pasteIntoInput(this, "\n");
+      } else {
+        const $target = $(this).parents('.activity.box').find('.comment_activity');
+
+        post_comment($target, false);
+      }
+      e.preventDefault();
     }
-  });
+  }
+
+  $(document).on('keypress', '.enter-activity-comment', handleEnter);
 
   // post comment activity
   $(document).on('click', '.copy_activity', function(e) {
