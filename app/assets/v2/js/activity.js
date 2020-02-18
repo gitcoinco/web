@@ -280,6 +280,7 @@ $(document).ready(function() {
 
     // user input
     var comment = $parent.parents('.box').find('.comment_container textarea').val();
+    
     $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
 
     // validation
