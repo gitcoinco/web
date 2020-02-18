@@ -211,7 +211,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <div id="status">
                   {% csrf_token %}
                   <div class="position-relative d-flex flex-row px-2 pt-4 pb-2">
-                    <div class="status-avatar">
+                    <div class="status-avatar px-3">
                       <img class="avatar rounded-circle" src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% endif %}{% endif %}"/>
                       {% if row.secondary_avatar_url %}
                         <img class="avatar my-auto rounded-circle secondary_avatar" src="{{row.secondary_avatar_url}}" />
