@@ -24,6 +24,10 @@ Vue.mixin({
         delete vm.params['search'];
       }
 
+      if (vm.hideFilterButton) {
+        vm.params.persona = 'tribe';
+      }
+
       if (vm.params.persona == 'tribe') {
         // remove filters which do not apply for tribes directory
         delete vm.params['rating'];
@@ -261,7 +265,7 @@ if (document.getElementById('gc-users-directory')) {
       bountySelected: null,
       userSelected: [],
       showModal: false,
-      showFilters: true,
+      showFilters: !document.getElementById('explore_tribes'),
       skills: document.keywords,
       selectedSkills: [],
       noResults: false,
@@ -270,7 +274,8 @@ if (document.getElementById('gc-users-directory')) {
       issueDetails: undefined,
       errorIssueDetails: undefined,
       showBanner: undefined,
-      persona: undefined
+      persona: undefined,
+      hideFilterButton: !!document.getElementById('explore_tribes')
     },
     mounted() {
       this.fetchUsers();
