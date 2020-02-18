@@ -349,7 +349,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
             return
 
         subject = bounty.github_url
-        __, text = render_bounty_feedback(bounty, persona, previous_bounties)
+        html, text = render_bounty_feedback(bounty, persona, previous_bounties)
         cc_emails = [from_email, 'team@gitcoin.co']
         if not should_suppress_notification_email(to_email, 'bounty_feedback'):
             send_mail(
@@ -357,6 +357,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
                 to_email,
                 subject,
                 text,
+                html,
                 cc_emails=cc_emails,
                 from_name="Alisa March (Gitcoin.co)",
                 categories=['transactional', func_name()],
@@ -389,11 +390,16 @@ def tip_email(tip, to_emails, is_new):
             translation.activate(cur_language)
 
 
-def comment_email(comment, to_emails):
+def comment_email(comment):
 
     subject = gettext("💬 New Comment")
 
     cur_language = translation.get_language()
+    to_emails = list(comment.activity.comments.values_list('profile__email', flat=True))
+    to_emails.append(comment.activity.profile.email)
+    if comment.activity.other_profile:
+        to_emails.append(comment.activity.other_profile.email)
+    to_emails = set([e for e in to_emails if e != comment.profile.email])
     for to_email in to_emails:
         try:
             setup_lang(to_email)
@@ -405,6 +411,18 @@ def comment_email(comment, to_emails):
         finally:
             pass
     translation.activate(cur_language)
+    print(f"sent comment email to {len(to_emails)}")
+
+    import re
+    from dashboard.models import Profile
+    username_pattern = re.compile(r'@(\S+)')
+    mentioned_usernames = re.findall(username_pattern, comment.comment)
+    emails = Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True)
+    mentioned_emails = set(emails)
+    # Don't send emails again to users who already received a comment email
+    deduped_emails = mentioned_emails.difference(to_emails)
+    print(f"sent mention email to {len(deduped_emails)}")
+    mention_email(comment, deduped_emails)
 
 
 def mention_email(post, to_emails):

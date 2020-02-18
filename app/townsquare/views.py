@@ -59,18 +59,20 @@ def town_square(request):
     hours = 24 if not settings.DEBUG else 1000
     posts_last_24_hours = lazy_round_number(Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     tabs = [{
-        'title': f"Everywhere ({posts_last_24_hours})",
+        'title': f"Everywhere",
         'slug': 'everywhere',
         'helper_text': f'The {posts_last_24_hours} activity feed items everywhere in the Gitcoin network',
+        'badge': posts_last_24_hours
     }]
     default_tab = 'everywhere'
     if request.user.is_authenticated:
         num_business_relationships = lazy_round_number(len(set(get_my_earnings_counter_profiles(request.user.profile.pk))))
         if num_business_relationships:
             new_tab = {
-                'title': f"Relationships ({num_business_relationships})",
+                'title': f"Relationships",
                 'slug': 'my_tribes',
                 'helper_text': f'Activity from the {num_business_relationships} users who you\'ve done business with Gitcoin',
+                'badge': num_business_relationships
             }
             tabs = [new_tab] + tabs
             default_tab = 'my_tribes'
@@ -78,9 +80,10 @@ def town_square(request):
 
         if num_grants_relationships:
             new_tab = {
-                'title': f'Grants ({num_grants_relationships})',
+                'title': f'Grants',
                 'slug': f'grants',
                 'helper_text': f'Activity on the {num_grants_relationships} Grants you\'ve created or funded.',
+                'badge': num_grants_relationships
             }
             tabs = [new_tab] + tabs
             default_tab = 'grants'
@@ -90,18 +93,20 @@ def town_square(request):
     if connect_last_24_hours:
         default_tab = 'connect'
         connect = {
-            'title': f"Connect ({connect_last_24_hours})",
+            'title': f"Connect",
             'slug': f'connect',
             'helper_text': f'The {connect_last_24_hours} announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
+            'badge': connect_last_24_hours
         }
         tabs = [connect] + tabs
 
     kudos_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['new_kudos', 'receive_kudos'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if kudos_last_24_hours:
         connect = {
-            'title': f"Kudos ({kudos_last_24_hours})",
+            'title': f"Kudos",
             'slug': f'kudos',
             'helper_text': f'The {kudos_last_24_hours} Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
+            'badge': kudos_last_24_hours
         }
         tabs = tabs + [connect]
 
@@ -138,17 +143,19 @@ def town_square(request):
     # get offers
     offer_pks = []
     offers_by_category = {}
-    for key in ['secret', 'random', 'daily', 'weekly', 'monthly']:
+    available_offers = Offer.objects.current()
+    if request.user.is_authenticated:
+        available_offers = available_offers.exclude(actions__profile=request.user.profile, actions__what__in=['click', 'decline', 'go'])
+    for key in ['top', 'secret', 'random', 'daily', 'weekly', 'monthly']:
         next_time_available = get_next_time_available(key)
-        offer = Offer.objects.current().filter(key=key).order_by('-pk').first()
-        if offer:
+        offers = available_offers.filter(key=key).order_by('-pk')
+        offer = offers.first()
+        for offer in offers:
             offer_pks.append(offer.pk)
-        if request.user.is_authenticated:
-            if request.user.profile.offeractions.filter(what='click', offer=offer):
-                offer = None
         offers_by_category[key] = {
             'offer': offer,
-            'time': next_time_available.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'offers': offers,
+            'time': next_time_available,
         }
     increment_offer_view_counts.delay(offer_pks)
 
@@ -160,13 +167,14 @@ def town_square(request):
             is_subscribed = email_subscriber.should_send_email_type_to('new_bounty_notifications')
 
     # announcements
-    announcements = Announcement.objects.current()
+    announcements = Announcement.objects.current().filter(key='townsquare')
 
     # title
     title = 'Home'
     desc = 'View the recent activity on the Gitcoin network'
     page_seo_text_insert = ''
     avatar_url = ''
+    admin_link = ''
     if "activity:" in tab:
         try:
             pk = int(tab.split(':')[1])
@@ -174,12 +182,13 @@ def town_square(request):
             title = f"@{activity.profile.handle}'s post on Gitcoin "
             desc = f"{activity.text}"
             comments_count = activity.comments.count()
+            admin_link = activity.admin_url
             if comments_count:
                 title += f"(+ {comments_count} comments)"
             avatar_url = activity.profile.avatar_url
             page_seo_text_insert = desc
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
 
     # render page context
@@ -194,6 +203,7 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'admin_link': admin_link,
         'now': timezone.now(),
         'is_townsquare': True,
         'trending_only': bool(trending_only),
@@ -206,11 +216,12 @@ def town_square(request):
     }
     response = TemplateResponse(request, 'townsquare/index.html', context)
     if request.GET.get('tab'):
-        response.set_cookie('tab', request.GET.get('tab'))
+        if ":" not in request.GET.get('tab'):
+            response.set_cookie('tab', request.GET.get('tab'))
     return response
 
 
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def emailsettings(request):
 
     if not request.user.is_authenticated:
@@ -242,12 +253,43 @@ def api(request, activity_id):
     # setup response
     response = {}
 
-    # check for permissions
-    has_perms = request.user.is_authenticated
-    if request.POST.get('method') == 'delete':
-        has_perms = activity.profile == request.user.profile
-    if not has_perms:
-        raise Http404
+    # no perms needed responses go here
+    if request.GET.get('method') == 'comment':
+        comments = activity.comments.order_by('created_on')
+        # check for permissions
+        has_perms = request.user.is_authenticated
+        if request.POST.get('method') == 'delete':
+            has_perms = activity.profile == request.user.profile
+        if not has_perms:
+            raise Http404
+        else:
+            profile = request.user.profile
+
+        comments = [{
+            'name': comment.profile.data.get('name', None) or comment.profile.handle,
+            'activity': comment.activity_id,
+            'comment': comment.comment,
+            'created_on': comment.created_on,
+            'id': comment.id,
+            'modified_on': comment.modified_on,
+            'profile': comment.profile_id,
+            'handle': comment.profile_handle,
+            'profile_handle': comment.profile_handle,
+            'redeem_link': comment.redeem_link if has_perms and comment.tip and comment.tip.recipient_profile_id == profile.id else '',
+            'tip': bool(comment.tip),
+            'tip_count_eth': comment.tip_count_eth,
+            'tip_able': comment.tip_able
+        } for comment in comments]
+
+        response['has_tip'] = False
+        if activity.tip:
+            is_redeemable = not activity.tip.recipient_profile
+            response['has_tip'] = True
+            response['tip_available'] = is_redeemable
+        response['author'] = activity.profile.handle
+        response['comments'] = comments
+
+        return JsonResponse(response)
 
     # deletion request
     if request.POST.get('method') == 'delete':
@@ -291,7 +333,7 @@ def api(request, activity_id):
         comment = request.POST.get('comment')
         comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
         to_emails = set(activity.comments.exclude(profile=request.user.profile).values_list('profile__email', flat=True))
-        comment_email(comment, to_emails)
+        comment_email(comment)
 
         username_pattern = re.compile(r'@(\S+)')
         mentioned_usernames = re.findall(username_pattern, comment.comment)
@@ -300,29 +342,6 @@ def api(request, activity_id):
         deduped_emails = mentioned_emails.difference(to_emails)
         mention_email(comment, deduped_emails)
 
-    elif request.GET.get('method') == 'comment':
-        comments = activity.comments.order_by('created_on')
-        if has_perms:
-            profile = request.user.profile
-
-        comments = [{
-            'activity': comment.activity_id,
-            'comment': comment.comment,
-            'created_on': comment.created_on,
-            'id': comment.id,
-            'modified_on': comment.modified_on,
-            'profile': comment.profile_id,
-            'profile_handle': comment.profile_handle,
-            'redeem_link': comment.redeem_link if has_perms and comment.tip and comment.tip.recipient_profile_id == profile.id else '',
-            'tip': bool(comment.tip)
-        } for comment in comments]
-        response['has_tip'] = False
-        if activity.tip:
-            is_redeemable = not activity.tip.recipient_profile
-            response['has_tip'] = True
-            response['tip_available'] = is_redeemable
-        response['author'] = activity.profile.handle
-        response['comments'] = comments
     return JsonResponse(response)
 
 

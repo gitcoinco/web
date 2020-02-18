@@ -1,8 +1,7 @@
 $(document).ready(function() {
-
   // gets multi part (ex: 10 hours 2 minutes 5 seconds) time
   var time_difference_broken_down = function(difference) {
-    let remaining = ' now.. Refresh to view offer!';
+    let remaining = ' now. Refresh to view offer!';
     let prefix = ' in ';
 
     if (difference > 0) {
@@ -25,6 +24,10 @@ $(document).ready(function() {
     }
     return prefix + remaining;
   };
+
+  $('.top_offer').click(function(e) {
+    document.location = $(this).find('a.btn').attr('href');
+  });
 
   // effects when an offer is clicked upon
   $('.offer a').click(function(e) {
@@ -104,4 +107,41 @@ $(document).ready(function() {
     $(this).parents('.announce').remove();
   });
 
+  function onIntersection(imageEntites, observer) {
+    imageEntites.forEach(image => {
+      if (image.isIntersecting) {
+        observer.unobserve(image.target);
+        image.target.src = image.target.dataset.src;
+        image.target.onload = () => image.target.classList.add('loaded');
+      }
+    });
+  }
+  const interactSettings = {
+    root: document.querySelector('.loader-container'),
+    rootMargin: '0px 200px 200px 200px',
+    threshold: 0.01
+  };
+
+  function loadImages() {
+    if ('IntersectionObserver' in window) {
+      let images = [...document.querySelectorAll("img[loading='lazy']")];
+      let observer = new IntersectionObserver(onIntersection, interactSettings);
+
+      images.forEach(img => {
+        img.setAttribute('loading', '');
+        observer.observe(img);
+      });
+    } else {
+      const images = document.querySelectorAll("img[loading='lazy']");
+
+      images.forEach(img => {
+        img.src = img.dataset.src;
+        img.setAttribute('loading', '');
+      });
+    }
+
+    window.setTimeout(loadImages, 700);
+  }
+
+  loadImages();
 }(jQuery));

@@ -1667,6 +1667,26 @@ class Tip(SendCryptoAsset):
     )
 
     @property
+    def is_programmatic_comment(self):
+        if 'activity:' in self.comments_priv:
+            return True
+        if 'comment:' in self.comments_priv:
+            return True
+
+    @property
+    def attached_object(self):
+        if 'activity:' in self.comments_priv:
+            pk = self.comments_priv.split(":")[1]
+            obj = Activity.objects.get(pk=pk)
+            return obj
+        if 'comment:' in self.comments_priv:
+            pk = self.comments_priv.split(":")[1]
+            from townsquare.models import Comment
+            obj = Comment.objects.get(pk=pk)
+            return obj
+
+
+    @property
     def receive_url(self):
         if self.web3_type == 'yge':
             return self.url
@@ -1729,7 +1749,7 @@ def psave_tip(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
-def postsave_tip(sender, instance, **kwargs):
+def postsave_tip(sender, instance, created, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
     if instance.pk and is_valid:
         Earning.objects.update_or_create(
@@ -1745,6 +1765,19 @@ def postsave_tip(sender, instance, **kwargs):
                 "network":instance.network,
             }
             )
+    if created:
+        if instance.network == 'mainnet' or settings.DEBUG:
+            from townsquare.models import Comment
+            if 'activity:' in instance.comments_priv:
+                activity=instance.attached_object
+                comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
+                comment = Comment.objects.create(profile=instance.sender_profile, activity=activity, comment=comment)
+            if 'comment:' in instance.comments_priv:
+                _comment=instance.attached_object
+                comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
+                comment = Comment.objects.create(profile=instance.sender_profile, activity=_comment.activity, comment=comment)
+
+
 
 
 # method for updating
@@ -2010,8 +2043,14 @@ class Activity(SuperModel):
         blank=True,
         null=True
     )
-    kudos = models.ForeignKey(
+    kudos_transfer = models.ForeignKey(
         'kudos.KudosTransfer',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    kudos = models.ForeignKey(
+        'kudos.Token',
         related_name='activities',
         on_delete=models.CASCADE,
         blank=True, null=True
@@ -2122,18 +2161,18 @@ class Activity(SuperModel):
     def view_props(self):
         from kudos.models import Token
         icons = {
-            'new_tip': 'fa-thumbs-up',
-            'start_work': 'fa-lightbulb',
-            'new_bounty': 'fa-money-bill-alt',
-            'work_done': 'fa-check-circle',
-            'status_update': 'fa-user',
-            'new_kudos': 'fa-thumbs-up',
-            'new_grant': 'fa-envelope',
-            'update_grant': 'fa-edit',
-            'killed_grant': 'fa-trash',
-            'new_grant_contribution': 'fa-coins',
-            'new_grant_subscription': 'fa-calendar-check',
-            'killed_grant_contribution': 'fa-calendar-times',
+            'new_tip': 'far fa-thumbs-up',
+            'start_work': 'far fa-lightbulb',
+            'new_bounty': 'far fa-money-bill-alt',
+            'work_done': 'far fa-check-circle',
+            'status_update': 'far fa-user',
+            'new_kudos': 'far fa-thumbs-up',
+            'new_grant': 'far fa-envelope',
+            'update_grant': 'far fa-edit',
+            'killed_grant': 'fas fa-trash',
+            'new_grant_contribution': 'fas fa-donate',
+            'new_grant_subscription': 'far fa-calendar-check',
+            'killed_grant_contribution': 'far fa-calendar-times',
         }
 
         # load up this data package with all of the information in the already existing objects
@@ -2161,9 +2200,9 @@ class Activity(SuperModel):
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
-        activity['icon'] = icons.get(self.activity_type, 'fa-check-circle')
+        activity['icon'] = icons.get(self.activity_type, 'far fa-check-circle')
         if activity.get('kudos'):
-            activity['kudos_data'] = Token.objects.get(pk=self.kudos.kudos_token_cloned_from_id)
+            activity['kudos_data'] = self.kudos
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']
@@ -2185,6 +2224,8 @@ class Activity(SuperModel):
                                                       10 ** activity['token']['decimals']) * 1000) / 1000
 
         activity['view_count'] = self.view_count
+        activity['tip_count_usd'] = self.tip_count_usd
+        activity['tip_count_eth'] = self.tip_count_eth
 
         # finally done!
 
@@ -2197,6 +2238,18 @@ class Activity(SuperModel):
             return vp
         vp['liked'] = self.likes.filter(profile=user.profile).exists()
         return vp
+
+    @property
+    def tip_count_usd(self):
+        network = 'rinkeby' if settings.DEBUG else 'mainnet'
+        tips = Tip.objects.filter(comments_priv=f"activity:{self.pk}", network=network)
+        return sum([tip.value_in_usdt for tip in tips])
+
+    @property
+    def tip_count_eth(self):
+        network = 'rinkeby' if settings.DEBUG else 'mainnet'
+        tips = Tip.objects.filter(comments_priv=f"activity:{self.pk}", network=network)
+        return sum([tip.value_in_eth for tip in tips])
 
     @property
     def secondary_avatar_url(self):
@@ -2495,9 +2548,10 @@ class Profile(SuperModel):
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
-    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
+    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description describing tribe.'))
+    automatic_backup = models.BooleanField(default=False, help_text=_('automatic backup profile to cloud storage such as 3Box if the flag is true'))
     as_representation = JSONField(default=dict, blank=True)
-
+    tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
     objects = ProfileQuerySet.as_manager()
 
     @property
@@ -2884,6 +2938,18 @@ class Profile(SuperModel):
 
         """
         return self.user.groups.filter(name='Moderators').exists() if self.user else False
+
+    @property
+    def is_alpha_tester(self):
+        """Determine whether or not the user is an alpha tester.
+
+        Returns:
+            bool: Whether or not the user is an alpha tester.
+
+        """
+        if self.user.is_staff:
+            return True
+        return self.user.groups.filter(name='Alpha_Testers').exists() if self.user else False
 
     @property
     def is_staff(self):
@@ -3941,7 +4007,6 @@ class ProfileSerializer(serializers.BaseSerializer):
             instance.save()
         return instance.as_representation
 
-
 @receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
 def normalize_tip_usernames(sender, instance, **kwargs):
     """Handle pre-save signals from Tips to normalize Github usernames."""
@@ -4291,7 +4356,7 @@ def psave_hackathonevent(sender, instance, **kwargs):
                 "created_on":instance.created_on,
                 "title":instance.name,
                 "description":instance.stats['range'],
-                "url":instance.url,
+                "url":instance.onboard_url,
                 "visible_to":None,
                 'img_url': instance.logo.url if instance.logo else None,
             }
@@ -4540,6 +4605,7 @@ class TribeMember(SuperModel):
     profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
     org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE)
     leader = models.BooleanField(default=False, help_text=_('tribe leader'))
+    title = models.CharField(max_length=255, blank=True, default='')
     status = models.CharField(
         max_length=20,
         choices=MEMBER_STATUS,

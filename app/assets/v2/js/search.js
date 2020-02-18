@@ -27,9 +27,11 @@ function search(elem) {
         },
         cache: true
       },
-      theme: 'search',
-      placeholder: '<i class="fas fa-search"></i>',
+      theme: 'gc-search',
+      placeholder: '<i class="fas fa-search fa-fw"></i>',
       allowClear: true,
+
+      // dropdownAutoWidth: true,
       minimumInputLength: 3,
       escapeMarkup: function(markup) {
         return markup;
@@ -52,14 +54,14 @@ function search(elem) {
       }
       var markup;
 
-      markup = `<div data-url="${element.url}" class="d-flex m-2 align-items-center element-search-result">
+      markup = `<div data-url="${element.url}" class="d-flex m-2 align-items-center element-search-result search-result">
                       <div style="min-width: 0;width: 100%;">
-                        <img src="${element.img_url}">
+                        <img class=search__avatar src="${element.img_url}">
                         <div class="d-flex justify-content-between">
-                          <div class="element-type">${element.source_type}</div>
-                          <div class="element-title">${element.title}</div>
+                          <div class="element-title search__title">${element.title}</div>
                         </div>
-                        <div class="text-truncate element-description">${element.description}</div>
+                        <div class="text-truncate element-description search-result__description">${element.description}</div>
+                        <div class="element-type tag float-right">View ${element.source_type}</div>
                       <div>
                     </div>`;
 
@@ -91,8 +93,54 @@ $('document').ready(function() {
     e.preventDefault();
   });
 
-  $(document).on ('click', '.element-search-result', function() {
+  $(document).on ('click', '.select2-container--gc-search .element-search-result', function() {
     document.location.href = $(this).data('url');
   });
+
+  $('.select2-nosearch').select2({
+    minimumResultsForSearch: 20
+  });
+
+  // $('.select2-search').select2({});
+
+  // listen for keyups in both input widget AND dropdown
+  $('body').on('keyup', '.select2-container--gc-search', function(e) {
+    var KEYS = { UP: 38, DOWN: 40, ENTER: 13 };
+    var $sel = $('.select2-container--gc-search.select2-container--open');
+
+    if ($sel.length) {
+      var target;
+
+      if (e.keyCode === KEYS.DOWN && !e.altKey) {
+        target = $('.select2-container--gc-search .select2-results__option.selected');
+        if (!target.length) {
+          target = $('.select2-container--gc-search .select2-results__option:first-child');
+        } else if (target.next().length) {
+          target.removeClass('selected');
+          target = target.next();
+        }
+        target.addClass('selected');
+      } else if (e.keyCode === KEYS.UP) {
+        target = $('.select2-container--gc-search .select2-results__option.selected');
+        if (!target.length) {
+          target = $('.select2-container--gc-search .select2-results__option:first-child');
+        } else if (target.prev().length) {
+          target.removeClass('selected');
+          target = target.prev();
+        }
+        target.addClass('selected');
+      } else if (e.keyCode === KEYS.ENTER) {
+        target = $('.select2-container--gc-search .select2-results__option.selected');
+        var url = target.find('.search-result').data('url');
+
+        if (target && url) {
+          document.location.href = url;
+        }
+      }
+    }
+
+  });
+
+
 });
 
