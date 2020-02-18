@@ -1733,7 +1733,7 @@ def feedback(request):
 
 
 def wallpaper(request):
-    return redirect('https://bits.owocki.com/items/kpumqWGv/download')
+    return redirect('https://gitcoincontent.s3-us-west-2.amazonaws.com/Wallpapers.zip')
 
 
 def help_dev(request):

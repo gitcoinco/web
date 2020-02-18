@@ -1,10 +1,12 @@
 from django.conf import settings
-from django.db import models
+from django.contrib.postgres.fields import ArrayField
+from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
 
+import townsquare.clr as clr
 from economy.models import SuperModel
 
 
@@ -61,6 +63,7 @@ class Comment(SuperModel):
         blank=True,
         null=True
     )
+    likes = ArrayField(models.IntegerField(), default=list, blank=True) #pks of users who like this post
 
     def __str__(self):
         return f"Comment of {self.activity.pk} by {self.profile.handle}: {self.comment}"
@@ -143,7 +146,7 @@ class Offer(SuperModel):
     view_count = models.IntegerField(default=0, db_index=True)
     amount = models.CharField(max_length=50, blank=True)
 
-    # Bounty QuerySet Manager
+    # Offer QuerySet Manager
     objects = OfferQuerySet.as_manager()
 
     def __str__(self):
@@ -220,3 +223,95 @@ class Announcement(SuperModel):
     objects = AnnounceQuerySet.as_manager()
     def __str__(self):
         return f"{self.created_on} => {self.title}"
+
+
+class MatchRoundQuerySet(models.QuerySet):
+    """Handle the manager queryset for MatchRanking."""
+
+    def current(self):
+        """Filter results down to current offers only."""
+        return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now())
+
+
+class MatchRound(SuperModel):
+
+    valid_from = models.DateTimeField(db_index=True)
+    valid_to = models.DateTimeField(db_index=True)
+    number = models.IntegerField(default=1)
+    amount = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+
+    # Offer QuerySet Manager
+    objects = MatchRoundQuerySet.as_manager()
+
+    def __str__(self):
+        return f"Round {self.number} from {self.valid_from} to {self.valid_to}"
+
+    @property
+    def url(self):
+        return self.activity.url
+
+    def get_absolute_url(self):
+        return self.activity.url
+    
+    def process(self):
+        from dashboard.models import Profile
+        mr = self
+        print("_")
+        with transaction.atomic():
+            mr.ranking.all().delete()
+            data = get_eligible_input_data(mr)
+            total_pot = mr.amount
+            print(mr, f"{len(data)} earnings to process")
+            results = clr.run_calc(data, total_pot)
+            for result in results:
+                try:
+                    profile = Profile.objects.get(pk=result['id'])
+                    contributions_by_this_user = [ele for ele in data if int(ele[0]) == profile.pk]
+                    contributions = len(contributions_by_this_user)
+                    contributions_total = sum([ele[2] for ele in contributions_by_this_user])
+                    MatchRanking.objects.create(
+                        profile=profile,
+                        round=mr,
+                        contributions=contributions,
+                        contributions_total=contributions_total,
+                        match_total=result['clr_amount'],
+                        )
+                except Exception as e:
+                    if settings.DEBUG:
+                        raise e
+
+            # update number rankings
+            number = 1
+            for mri in mr.ranking.order_by('-match_total'):
+                mri.number = number
+                mri.save()
+                number += 1
+
+class MatchRanking(SuperModel):
+
+    profile = models.ForeignKey('dashboard.Profile',
+        on_delete=models.CASCADE, related_name='match_rankings', blank=True)
+    round = models.ForeignKey('townsquare.MatchRound',
+        on_delete=models.CASCADE, related_name='ranking', blank=True, db_index=True)
+    number = models.IntegerField(default=1)
+    contributions = models.IntegerField(default=1)
+    contributions_total = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    match_total = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    final = models.BooleanField(help_text='Is this match ranking final?', default=False)
+    paid = models.BooleanField(help_text='Is this match ranking paikd?', default=False)
+    payout_txid = models.CharField(max_length=255, default='', blank=True)
+    payout_tx_status = models.CharField(max_length=255, default='', blank=True)
+    payout_tx_issued = models.DateTimeField(db_index=True, null=True)
+
+    def __str__(self):
+        return f"Round {self.round.number}: Ranked {self.number}, {self.profile.handle} got {self.contributions} contributions worth ${self.contributions_total} for ${self.match_total} Matching"
+
+
+def get_eligible_input_data(mr):
+    from dashboard.models import Earning, Profile
+    network = 'mainnet' if not settings.DEBUG else 'rinkeby'
+    earnings = Earning.objects.filter(created_on__gt=mr.valid_from, created_on__lt=mr.valid_to)
+    earnings = earnings.filter(to_profile__isnull=False, from_profile__isnull=False, value_usd__isnull=False, network=network)
+    earnings = earnings.exclude(to_profile__user__is_staff=True)
+    earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
+    return [[ele[0], ele[1], float(ele[2])] for ele in earnings]

@@ -1,6 +1,5 @@
 import re
 
-import metadata_parser
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404, JsonResponse
@@ -8,13 +7,13 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
-from app.utils import get_profile
 from dashboard.models import Activity, HackathonEvent, get_my_earnings_counter_profiles, get_my_grants, Profile
+import metadata_parser
 from kudos.models import Token
 from marketing.mails import comment_email, mention_email, new_action_request, tip_comment_awarded_email
 from ratelimit.decorators import ratelimit
 
-from .models import Announcement, Comment, Flag, Like, Offer, OfferAction
+from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
@@ -190,6 +189,21 @@ def town_square(request):
         except Exception as e:
             print(e)
 
+    # matching leaderboard
+    current_match_round = MatchRound.objects.current().first()
+    num_to_show = 10
+    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1))
+    matching_leaderboard = [
+        {
+            'i': obj.number,
+            'following': request.user.profile == obj.profile or request.user.profile.follower.filter(org=obj.profile) if request.user.is_authenticated else False,
+            'handle': obj.profile.handle,
+            'contributions': obj.contributions,
+            'amount': f"{int(obj.contributions_total/1000)}k" if obj.contributions_total > 1000 else round(obj.contributions_total, 2),
+            'match_amount': obj.match_total,
+            'you': obj.profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
+        } for obj in current_match_rankings[0:num_to_show]
+    ]
 
     # render page context
     trending_only = int(request.GET.get('trending', 0))
@@ -203,6 +217,8 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'matching_leaderboard': matching_leaderboard,
+        'current_match_round': current_match_round,
         'admin_link': admin_link,
         'now': timezone.now(),
         'is_townsquare': True,
@@ -278,7 +294,11 @@ def api(request, activity_id):
             'redeem_link': comment.redeem_link if has_perms and comment.tip and comment.tip.recipient_profile_id == profile.id else '',
             'tip': bool(comment.tip),
             'tip_count_eth': comment.tip_count_eth,
-            'tip_able': comment.tip_able
+            'tip_able': comment.tip_able,
+            'match_this_round': comment.profile.match_this_round,
+            'is_liked': request.user.is_authenticated and (request.user.profile.pk in comment.likes),
+            'like_count': len(comment.likes),
+            'likes': ", ".join(Profile.objects.filter(pk__in=comment.likes).values_list('handle', flat=True)) if len(comment.likes) else "no one. Want to be the first?"
         } for comment in comments]
 
         response['has_tip'] = False
@@ -294,6 +314,19 @@ def api(request, activity_id):
     # deletion request
     if request.POST.get('method') == 'delete':
         activity.delete()
+
+    # toggle like comment
+    if request.POST.get('method') == 'toggle_like_comment':
+        comment = activity.comments.filter(pk=request.POST.get('comment'))
+        if comment.exists() and request.user.is_authenticated:
+            comment = comment.first()
+            profile_pk = request.user.profile.pk
+            already_likes = profile_pk in comment.likes
+            if not already_likes:
+                comment.likes.append(profile_pk)
+            else:
+                comment.likes = [ele for ele in comment.likes if ele != profile_pk]
+            comment.save()
 
     # like request
     elif request.POST.get('method') == 'like':
@@ -321,7 +354,8 @@ def api(request, activity_id):
             flag_threshold_to_hide = 3 #hides comment after 3 flags
             is_hidden_by_users = activity.flags.count() > flag_threshold_to_hide
             is_hidden_by_staff = activity.flags.filter(profile__user__is_staff=True).count() > 0
-            is_hidden = is_hidden_by_users or is_hidden_by_staff
+            is_hidden_by_moderators = activity.flags.filter(profile__user__groups__name='Moderators').count() > 0
+            is_hidden = is_hidden_by_users or is_hidden_by_staff or is_hidden_by_moderators
             if is_hidden:
                 activity.hidden = True
                 activity.save()
