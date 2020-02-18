@@ -23,7 +23,6 @@ const ethCancelBounty = data => {
 
   const params = data.payload;
 
-  let account = web3.eth.accounts[0];
   const sendForm = fetchData('cancel_reason', 'POST', params);
 
   $.when(sendForm).then(function(payback) {
@@ -82,12 +81,14 @@ const ethCancelBounty = data => {
     const final_callback = function(error, result) {
       indicateMetamaskPopup(true);
       const next = function() {
-        // setup inter page state
-        localStorage[issueURL] = JSON.stringify({
-          timestamp: timestamp(),
-          dataHash: null,
-          issuer: account,
-          txid: result
+        web3.eth.getAccounts(function(_, accounts) {
+          // setup inter page state
+          localStorage[issueURL] = JSON.stringify({
+            timestamp: timestamp(),
+            dataHash: null,
+            issuer: accounts[0],
+            txid: result
+          });
         });
 
         _alert({ message: gettext('Cancel bounty submitted to web3.') }, 'info');
@@ -106,14 +107,16 @@ const ethCancelBounty = data => {
     };
 
     indicateMetamaskPopup();
-    bounty.killBounty(
-      bountyId,
-      {
-        from: web3.eth.accounts[0],
-        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-      },
-      final_callback
-    );
+    web3.eth.getAccounts(function(_, accounts) {
+      bounty.killBounty(
+        bountyId,
+        {
+          from: accounts[0],
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+        },
+        final_callback
+      );
+    });
 
   };
 

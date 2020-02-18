@@ -891,7 +891,9 @@ var trigger_faucet_form_web3_hooks = function() {
   if ($('#faucet_form').length) {
     var balance = document.balance;
 
-    $('#ethAddress').val(web3.eth.accounts[0]);
+    web3.eth.getAccounts(function(_, accounts) {
+      $('#ethAddress').val(accounts[0]);
+    });
     var faucet_amount = parseInt($('#currentFaucet').val() * (Math.pow(10, 18)));
 
     if (typeof web3 == 'undefined') {

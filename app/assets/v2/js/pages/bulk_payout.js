@@ -109,12 +109,14 @@ $(document).ready(function($) {
       var gas_dict = { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) };
 
       indicateMetamaskPopup();
-      bounty.killBounty(
-        $('#standard_bounties_id').val(),
-        gas_dict,
-        {from: web3.eth.accounts[0]},
-        callback
-      );
+      web3.eth.getAccounts(function(_, accounts) {
+        bounty.killBounty(
+          $('#standard_bounties_id').val(),
+          gas_dict,
+          {from: accounts[0]},
+          callback
+        );
+      });
 
     } else {
       const email = '';

@@ -34,7 +34,6 @@ window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
-    var account = web3.eth.accounts[0];
 
     if (getParam('source')) {
       $('#issueURL').html(getParam('source'));
@@ -232,12 +231,14 @@ window.onload = function() {
         var final_callback = function(error, result) {
           indicateMetamaskPopup();
           var next = function() {
-            // setup inter page state
-            localStorage[issueURL] = JSON.stringify({
-              'timestamp': timestamp(),
-              'dataHash': null,
-              'issuer': account,
-              'txid': result
+            web3.eth.getAccounts(function(_, accounts) {
+              // setup inter page state
+              localStorage[issueURL] = JSON.stringify({
+                'timestamp': timestamp(),
+                'dataHash': null,
+                'issuer': accounts[0],
+                'txid': result
+              });
             });
 
             _alert({ message: gettext('Submitted transaction to web3, saving comment(s)...') }, 'info');
@@ -262,7 +263,9 @@ window.onload = function() {
         };
         // just sent payout
         var send_payout = function() {
-          bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)), from: web3.eth.accounts[0]}, final_callback);
+          web3.eth.getAccounts(function(_, accounts) {
+            bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)), from: accounts[0]}, final_callback);
+          });
         };
 
         // send both tip and payout
