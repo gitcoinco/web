@@ -24,7 +24,7 @@ Vue.mixin({
         delete vm.params['search'];
       }
 
-      if (vm.params.persona == 'Organization') {
+      if (vm.params.persona == 'tribe') {
         // remove filters which do not apply for tribes directory
         delete vm.params['rating'];
         delete vm.params['organisation'];

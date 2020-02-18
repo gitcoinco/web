@@ -1001,11 +1001,11 @@ def users_fetch(request):
     show_banner = None
 
     if persona:
-        if persona == 'Funder':
+        if persona == 'funder':
             profile_list = profile_list.filter(dominant_persona='funder')
-        if persona == 'Coder':
+        if persona == 'coder':
             profile_list = profile_list.filter(dominant_persona='hunter')
-        if persona == 'Organization':
+        if persona == 'tribe':
             profile_list = profile_list.filter(data__type='Organization')
             show_banner = static('v2/images/tribes/logo-with-text.svg')
 
