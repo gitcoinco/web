@@ -1,11 +1,13 @@
 // stdbounties
 var issueURL = 'https://github.com/owocki/pytrader/issues/4';
 
-localStorage[issueURL] = JSON.stringify({
-  'timestamp': timestamp(),
-  'dataHash': null,
-  'issuer': web3.eth.coinbase,
-  'txid': '0xd2e45f7feea2e46d84e65ef3c1e5136ec7935252ba4b95dc4f170e067a9d9a75'
+web3.eth.getCoinbase(function(_, coinbase) {
+  localStorage[issueURL] = JSON.stringify({
+    'timestamp': timestamp(),
+    'dataHash': null,
+    'issuer': coinbase,
+    'txid': '0xd2e45f7feea2e46d84e65ef3c1e5136ec7935252ba4b95dc4f170e067a9d9a75'
+  });
 });
 document.location.href = document.location.href;
 
