@@ -351,7 +351,7 @@ $(document).ready(function() {
 
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
-        the_comment = the_comment.replace(/\r\n|\r|\n/g,"<br />")
+        the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         var show_tip = true;
         let html = `
@@ -473,25 +473,26 @@ $(document).ready(function() {
 
   // https://stackoverflow.com/a/6015906/6784817
   function pasteIntoInput(el, text) {
-      el.focus();
-      if (typeof el.selectionStart == "number"
-              && typeof el.selectionEnd == "number") {
-          var val = el.value;
-          var selStart = el.selectionStart;
-          el.value = val.slice(0, selStart) + text + val.slice(el.selectionEnd);
-          el.selectionEnd = el.selectionStart = selStart + text.length;
-      } else if (typeof document.selection != "undefined") {
-          var textRange = document.selection.createRange();
-          textRange.text = text;
-          textRange.collapse(false);
-          textRange.select();
-      }
+    el.focus();
+    if (typeof el.selectionStart == 'number' && typeof el.selectionEnd == 'number') {
+      var val = el.value;
+      var selStart = el.selectionStart;
+
+      el.value = val.slice(0, selStart) + text + val.slice(el.selectionEnd);
+      el.selectionEnd = el.selectionStart = selStart + text.length;
+    } else if (typeof document.selection != 'undefined') {
+      var textRange = document.selection.createRange();
+      
+      textRange.text = text;
+      textRange.collapse(false);
+      textRange.select();
+    }
   }
 
   function handleEnter(e) {
     if (e.which == 13) {
-      if(e.keyCode == 13 && e.shiftKey){
-        pasteIntoInput(this, "\n");
+      if (e.keyCode == 13 && e.shiftKey) {
+        pasteIntoInput(this, '\n');
       } else {
         const $target = $(this).parents('.activity.box').find('.comment_activity');
 
