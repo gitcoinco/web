@@ -358,7 +358,7 @@ def send_tip_3(request):
         from_email=params['from_email'],
         from_username=from_username,
         username=params['username'],
-        network=params['network'],
+        network=params.get('network', 'unknown'),
         tokenAddress=params['tokenAddress'],
         from_address=params['from_address'],
         is_for_bounty_fulfiller=params['is_for_bounty_fulfiller'],
