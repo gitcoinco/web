@@ -139,20 +139,6 @@ $(document).ready(function() {
     $('#textarea').focus();
   }
 
-  document.is_shift = false;
-  // handle shift button
-  $('body').on('keyup', '#textarea', function(e) {
-    if (e.keyCode == 16) {
-      document.is_shift = false;
-    }
-  });
-  // handle shift button
-  $('body').on('keydown', '#textarea', function(e) {
-    if (e.keyCode == 16) {
-      document.is_shift = true;
-    }
-  });
-
   $('body').on('focus change paste keydown keyup blur', '#textarea', function(e) {
 
     // enforce a max length
@@ -165,7 +151,7 @@ $(document).ready(function() {
     } else if ($(this).val().trim().length > 4) {
       $('#btn_post').attr('disabled', false);
       $(this).removeClass('red');
-      if ($('#textarea').is(':focus') && !document.is_shift && (e.keyCode == 13)) {
+      if ($('#textarea').is(':focus') && !e.shiftKey && e.keyCode == 13) {
         submitStatusUpdate();
         e.preventDefault();
       }

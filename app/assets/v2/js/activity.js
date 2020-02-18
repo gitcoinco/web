@@ -406,7 +406,7 @@ $(document).ready(function() {
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
           <div class="col-12 col-sm-11 text-right">
-            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="5"></textarea>
+            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3"></textarea>
             <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
         </div>
@@ -471,38 +471,14 @@ $(document).ready(function() {
     post_comment($target, false);
   });
 
-  // https://stackoverflow.com/a/6015906/6784817
-  function pasteIntoInput(el, text) {
-    el.focus();
-    if (typeof el.selectionStart == 'number' && typeof el.selectionEnd == 'number') {
-      var val = el.value;
-      var selStart = el.selectionStart;
 
-      el.value = val.slice(0, selStart) + text + val.slice(el.selectionEnd);
-      el.selectionEnd = el.selectionStart = selStart + text.length;
-    } else if (typeof document.selection != 'undefined') {
-      var textRange = document.selection.createRange();
-      
-      textRange.text = text;
-      textRange.collapse(false);
-      textRange.select();
+  $(document).on('keypress', '.enter-activity-comment', function(e) {
+    if (e.which == 13 && !e.shiftKey) {
+      const $target = $(this).parents('.activity.box').find('.comment_activity');
+
+      post_comment($target, false);
     }
-  }
-
-  function handleEnter(e) {
-    if (e.which == 13) {
-      if (e.keyCode == 13 && e.shiftKey) {
-        pasteIntoInput(this, '\n');
-      } else {
-        const $target = $(this).parents('.activity.box').find('.comment_activity');
-
-        post_comment($target, false);
-      }
-      e.preventDefault();
-    }
-  }
-
-  $(document).on('keypress', '.enter-activity-comment', handleEnter);
+  });
 
   // post comment activity
   $(document).on('click', '.copy_activity', function(e) {
