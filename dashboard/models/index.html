@@ -5168,6 +5168,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.dont_autofollow_earnings">dont_autofollow_earnings</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.earnings">earnings</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -5560,6 +5564,17 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.match_rankings">match_rankings</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.matchPledges">matchPledges</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -7808,7 +7823,7 @@ object the first time, the query is executed.</p>
 <pre><code class="python">TribeMember(self, *args, **kwargs)
 </code></pre>
 
-<p>TribeMember(id, created_on, modified_on, profile, org, leader, title, status)
+<p>TribeMember(id, created_on, modified_on, profile, org, leader, title, status, why)
 <h3 id="dashboard.models.TribeMember.get_next_by_created_on">_method</h3></p>
 <pre><code class="python">TribeMember._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
 </code></pre>
@@ -7876,6 +7891,10 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.TribeMember.title">title</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.TribeMember.why">why</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
