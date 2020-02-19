@@ -810,11 +810,12 @@ def leaderboard(request, key=''):
 
     title = titles[key]
     which_leaderboard = f"{cadence}_{key}"
-    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard, product=product)
+    all_ranks = LeaderboardRank.objects.filter(leaderboard=which_leaderboard, product=product)
     if keyword_search:
-        ranks = ranks.filter(tech_keywords__icontains=keyword_search)
+        all_ranks = ranks.filter(tech_keywords__icontains=keyword_search)
 
-    amount = ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
+    amount = all_ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
+    ranks = all_ranks.filter(active=True)
     items = ranks.order_by('-amount')
 
     top_earners = ''
@@ -835,12 +836,52 @@ def leaderboard(request, key=''):
     profile_keys = ['tokens', 'keywords', 'cities', 'countries', 'continents']
     is_linked_to_profile = any(sub in key for sub in profile_keys)
 
+    from chartit import PivotDataPool, PivotChart
+    from django.db.models import Avg
+    rankdata = \
+        PivotDataPool(
+           series=
+            [{'options': {
+               'source': all_ranks,
+                'legend_by': 'github_username',
+                'categories': ['created_on'],
+                'top_n_per_cat': 10,
+                },
+              'terms': {
+                'amount': Avg('amount'),
+                }}
+             ])
+
+    #Step 2: Create the Chart object
+    cht = PivotChart(
+            datasource = rankdata,
+            series_options =
+              [{'options':{
+                  'type': 'line',
+                  'stacking': False
+                  },
+                'terms': 
+                    ['amount']
+                
+            }],
+            chart_options =
+              {'title': {
+                   'text': 'Leaderboard'},
+               'xAxis': {
+                    'title': {
+                       'text': 'Time'}
+                    }
+                }
+            )
+
+
     cadence_ui = cadence if cadence != 'all' else 'All-Time'
     product_ui = product.capitalize() if product != 'all' else ''
     page_title = f'{cadence_ui.title()} {keyword_search.title()} {product_ui} Leaderboard: {title.title()}'
     context = {
         'items': items[0:limit],
         'nav': 'home',
+        'cht': cht,
         'titles': titles,
         'cadence': cadence,
         'product': product,
