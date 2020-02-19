@@ -448,8 +448,8 @@ def wall_post_email(activity):
     to_emails = []
     what = ''
     if activity.what == 'profile':
-        to_emails.append(activity.profile.other_profile.email)
-        what = f"@{activity.profile.other_profile.handle}"
+        to_emails.append(activity.other_profile.email)
+        what = f"@{activity.other_profile.handle}"
     if activity.what == 'kudos':
         what = activity.kudos.ui_name
         pass
