@@ -280,6 +280,8 @@ $(document).ready(function() {
 
     // user input
     var comment = $parent.parents('.box').find('.comment_container textarea').val();
+    
+    $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
 
     // validation
     if (!comment) {
@@ -316,6 +318,7 @@ $(document).ready(function() {
       })
       .always(function() {
         $parent.parents('.activity.box').find('.loading').addClass('hidden');
+        $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
       });
   };
 
