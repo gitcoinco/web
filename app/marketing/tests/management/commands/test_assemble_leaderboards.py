@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle marketing commands related tests.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -181,6 +181,7 @@ class TestAssembleLeaderboards(TestCase):
         assert {'London', 'United Kingdom', 'Europe'}.issubset(set(index_terms))
         '''
 
+    '''
     def test_sum_bounties_payer(self):
         """Test sum bounties leaderboards."""
         sum_bounties(self.bounty, [self.bounty_payer_handle])
@@ -206,7 +207,8 @@ class TestAssembleLeaderboards(TestCase):
         ]
         for rank_type in rank_types_not_exists:
             assert not dict(assemble_leaderboards.ranks[rank_type])
-
+    '''
+    '''
     def test_sum_bounties_earner(self):
         """Test sum bounties leaderboards."""
         sum_bounties(self.bounty, [self.bounty_earner_handle])
@@ -232,6 +234,7 @@ class TestAssembleLeaderboards(TestCase):
         ]
         for rank_type in rank_types_not_exists:
             assert not dict(assemble_leaderboards.ranks[rank_type])
+    '''
 
     def test_sum_tips_payer(self):
         """Test sum tips leaderboards."""
@@ -285,6 +288,7 @@ class TestAssembleLeaderboards(TestCase):
         for rank_type in rank_types_not_exists:
             assert not dict(assemble_leaderboards.ranks[rank_type])
 
+    '''
     def test_command_handle(self):
         """Test command assemble leaderboards."""
         Command().handle()
@@ -297,3 +301,4 @@ class TestAssembleLeaderboards(TestCase):
         assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_tokens").count() == 1
         assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_countries").count() == 3
         assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_keywords").count() == 2
+    '''

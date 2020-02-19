@@ -9620,11 +9620,11 @@ msgstr "Czy Gitcoin jest open source?"
 msgid ""
 "Yes, all of Gitcoin's core software systems are open source and available at "
 "<a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  "
-"Please see the liscense.txt file in each repo for more details."
+"Please see the license.txt file in each repo for more details."
 msgstr ""
 "Tak, wszystkie podstawowe systemy oprogramowania Gitcoin są otwarte i "
 "dostępne na stronie <a href=https://github.com/gitcoinco/> https://github."
-"com/gitcoinco/ </a>. Więcej informacji znajdziesz w pliku liscense.txt w "
+"com/gitcoinco/ </a>. Więcej informacji znajdziesz w pliku license.txt w "
 "każdym repozytorium."
 
 #: retail/views.py:572

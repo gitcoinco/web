@@ -39,7 +39,9 @@ services:
     restart: unless-stopped
     environment:
       - PYTHONUNBUFFERED=1
+      - PYTHONIOENCODING=utf8
       - PYTHONPATH=/code/app
+      - PYTHONPATH=/usr/bin/python3
     env_file:
       - app/app/.env
     build:

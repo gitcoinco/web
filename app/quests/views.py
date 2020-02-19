@@ -29,7 +29,7 @@ from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
-current_round_number = 3
+current_round_number = 4
 
 
 def next_quest(request):
@@ -96,7 +96,7 @@ def editquest(request, pk=None):
         answers = package.getlist('answer[]',[])
         answer_correct = package.getlist('answer_correct[]',[])
         seconds_to_respond = package.getlist('seconds_to_respond[]',[])
-        points = abs(int(package.get('points')))
+        points = abs(int(float(package.get('points'))))
 
         # continue building questions object
         for i in range(0, len(seconds_to_respond)):
@@ -226,8 +226,19 @@ def index(request):
     selected_tab = 'Search' if query else 'Beginner'
     show_quests = request.GET.get('show_quests', False)
     show_loading = not show_quests
+    focus_hackathon = request.GET.get('focus_hackathon', False)
 
     if show_quests:
+
+        # hackathon tab
+        if focus_hackathon:
+            quest_qs = Quest.objects.filter(visible=True).filter(unlocked_by_hackathon__slug=focus_hackathon)
+            quest_package = get_package_helper(quest_qs, request)
+            package = ('Hackathon Quests', quest_package)
+            quests.append(package)
+
+        print(f" phase1.0 at {round(time.time(),2)} ")
+
         # search tab
         if query:
             quest_qs = Quest.objects.filter(visible=True).filter(Q(title__icontains=query) | Q(description__icontains=query) | Q(questions__icontains=query) | Q(game_schema__icontains=query) | Q(game_metadata__icontains=query)).order_by('-ui_data__success_pct')
@@ -272,6 +283,10 @@ def index(request):
         popular = Quest.objects.filter(visible=True).order_by('-ui_data__attempts_count')[0:5]
         if popular.exists():
             quests.append(('Popular', get_package_helper(popular, request)))
+
+        # select focus
+        if focus_hackathon:
+            selected_tab = 'Hackathon Quests'
 
 
     print(f" phase2 at {round(time.time(),2)} ")
@@ -323,7 +338,7 @@ def index(request):
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'rewards_schedule': rewards_schedule,
         'query': query,
-        'latest_round_winners': ['solexplorer', 'tomafrench', 'yablu'],
+        'latest_round_winners': ['walidmujahid', 'nazariyv', 'cpix18'],
         'selected_tab': selected_tab,
         'title': f' {query.capitalize()} Quests',
         'point_history': point_history,
@@ -354,7 +369,8 @@ def details(request, obj_id, name, allow_feedback=False):
     try:
         quest = Quest.objects.get(pk=obj_id)
         if not quest.is_unlocked_for(request.user):
-            messages.info(request, 'This quest is locked. Try again after you have unlocked it')
+            unlock_how = f"Unlock this quest by registering for {quest.unlocked_by_hackathon.name} Hackathon" if quest.unlocked_by_hackathon else f"Unlock by beating the '{quest.self.unlocked_by_quest}' Quest"
+            messages.info(request, f'This quest is locked. Try again after you have unlocked it. ({unlock_how})')
             return redirect('/quests')
     except:
         raise Http404

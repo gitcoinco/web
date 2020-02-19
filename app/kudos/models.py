@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define models.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -393,6 +393,22 @@ class Token(SuperModel):
 def psave_token(sender, instance, **kwargs):
     instance.num_clones_available_counting_indirect_send = instance._num_clones_available_counting_indirect_send
 
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    if instance.pk and instance.gen == 1 and not instance.hidden:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='kudos', model='token'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.humanized_name,
+                "description":instance.description,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.img_url,
+            }
+            )
+
 
 class KudosTransfer(SendCryptoAsset):
     """Model that represents a request to clone a Kudos.
@@ -559,6 +575,9 @@ class BulkTransferCoupon(SuperModel):
         """Return the string representation of a model."""
         return f"Token: {self.token} num_uses_total: {self.num_uses_total}"
 
+    def get_absolute_url(self):
+        return settings.BASE_URL + f"kudos/redeem/{self.secret}"
+
     @property
     def url(self):
         return f"/kudos/redeem/{self.secret}"
@@ -636,7 +655,7 @@ class TokenRequest(SuperModel):
             'artwork_url': self.artwork_url,
         }
         kudos_contract = KudosContract(network=self.network)
-        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1)
+        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1) * 2
         tx_id = mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True, dont_wait_for_kudos_id_return_tx_hash_instead=True)
         self.processed = True
         self.approved = True

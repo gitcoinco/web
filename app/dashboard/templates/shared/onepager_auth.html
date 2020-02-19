@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -39,9 +39,7 @@
       {{ user }}
     </a>
     {% include 'shared/notifications.html' %}
-    {% if user.is_staff %}
-      {% include 'shared/chat_nav.html' %}
-    {% endif %}
+    {% include 'shared/chat_nav.html' %}
   </div>
   {% else %}
   <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">

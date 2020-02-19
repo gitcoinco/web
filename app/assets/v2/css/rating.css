@@ -54,7 +54,7 @@
 .rating > .rating-star:before {
   margin: 1px;
   font-size: 2.35em;
-  font-family: 'Font Awesome\ 5 Free', sans-serif;
+  font-family: 'Font Awesome\ 5 Pro', sans-serif;
   display: inline-block;
   content: "\f005";
 }

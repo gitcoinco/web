@@ -8,7 +8,6 @@ body {
 
 h4,
 .h4 {
-  text-align: center;
   padding-top: 40px;
 }
 
@@ -182,7 +181,7 @@ h4,
 }
 
 .gc-letter-spacing {
-  letter-spacing: 0.15em;
+  letter-spacing: 0.5rem;
 }
 
 div.button-pink {
@@ -404,7 +403,6 @@ div.button-pink {
   position: relative;
   font-size: 8px;
   font-weight: bold;
-  background-color: #ddd;
   border-radius: 10px;
   padding: 2px 5px;
   top: -10px
@@ -416,7 +414,6 @@ div.button-pink {
 
 .navbar-expand-md .navbar-nav .nav-link {
   color: #eff4ee;
-  text-transform: uppercase;
   text-decoration: none;
   padding-right: 1rem;
   padding-left: 1rem;
@@ -571,7 +568,7 @@ div.button-pink {
 }
 
 .dropdown-menu .dropdown-item {
-  padding: 12px 25px !important;
+  padding: 12px 25px;
 }
 
 .dropdown-menu .dropdown-item:hover {
@@ -680,12 +677,12 @@ div.button-pink {
 }
 
 .nav-tabs .nav-line {
-  color: #4A4A4A;
+  color: rgb(25, 15, 175);
   border-width: 0px 0px 3px 0;
 }
 .nav-tabs .nav-line.active {
-  color: #0D0764;
-  border-color: #0D0764;
+  color: rgb(25, 15, 175);
+  border-color: rgb(25, 15, 175);
   background-color: transparent;
 }
 

@@ -105,7 +105,7 @@ var start_music_midi = function(name) {
   if (!document.music_enabled) {
     return;
   }
-  if (!MIDIjs) {
+  if (typeof MIDIjs == 'undefined') {
     return;
   }
   try {
@@ -116,14 +116,14 @@ var start_music_midi = function(name) {
 };
 var resume_music_midi = function(name) {
   // get_audio('bossmusic.mid').play();
-  if (!MIDIjs) {
+  if (typeof MIDIjs == 'undefined') {
     return;
   }
   MIDIjs.resume();
 };
 var pause_music_midi = function(name) {
   // get_audio('bossmusic.mid').play();
-  if (!MIDIjs) {
+  if (typeof MIDIjs == 'undefined') {
     return;
   }
   MIDIjs.pause();
@@ -205,7 +205,7 @@ $(document).ready(function() {
 
   $('.give_feedback').on('click', async function(e) {
     e.preventDefault();
-    var feedback = prompt('Any comments for the quest author? (optional)', 'Is question #3 wrong? I tried everyhing!');
+    var feedback = prompt('Any comments for the quest author? (optional)', 'Feedback: ');
     var polarity = $(this).data('direction');
     
     var params = {

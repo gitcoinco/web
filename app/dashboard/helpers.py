@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle dashboard helpers and related logic.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -25,16 +25,17 @@ from enum import Enum
 
 from django.conf import settings
 from django.conf.urls.static import static
-from django.core.exceptions import ValidationError
+from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
 from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.utils import timezone
 
 from app.utils import get_semaphore, sync_profile
+from bounty_requests.models import BountyRequest
 from dashboard.models import (
-    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon,
-    HackathonEvent, UserAction,
+    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites,
+    BountySyncRequest, Coupon, HackathonEvent, UserAction,
 )
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord,
@@ -303,60 +304,91 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
 
     """
     from dashboard.utils import is_blocked
+
     for fulfillment in fulfillments:
-        kwargs = {}
-        accepted_on = None
-        github_username = fulfillment.get('data', {}).get(
-            'payload', {}).get('fulfiller', {}).get(
-                'githubUsername', '')
-        if github_username:
-            if is_blocked(github_username):
-                continue
-            try:
-                kwargs['profile_id'] = Profile.objects.get(handle__iexact=github_username).pk
-            except Profile.MultipleObjectsReturned:
-                kwargs['profile_id'] = Profile.objects.filter(handle__iexact=github_username).first().pk
-            except Profile.DoesNotExist:
-                pass
-        if fulfillment.get('accepted'):
-            kwargs['accepted'] = True
-            accepted_on = timezone.now()
+        fulfillment_id = fulfillment.get('id')
+        old_fulfillment = None
         try:
-            created_on = timezone.now()
-            modified_on = timezone.now()
-            if old_bounty:
-                old_fulfillments = old_bounty.fulfillments.filter(fulfillment_id=fulfillment.get('id')).nocache()
-                if old_fulfillments.exists():
-                    old_fulfillment = old_fulfillments.first()
-                    created_on = old_fulfillment.created_on
-                    modified_on = old_fulfillment.modified_on
-                    if old_fulfillment.accepted:
-                        accepted_on = old_fulfillment.accepted_on
-            hours_worked = fulfillment.get('data', {}).get(
+            old_fulfillment = BountyFulfillment.objects.get(bounty=old_bounty, fulfillment_id=fulfillment_id)
+
+        except MultipleObjectsReturned as error:
+            logger.warning(f'error: found duplicate fulfillments for bounty {old_bounty} {error}')
+            old_bounty_fulfillments = BountyFulfillment.objects.filter(fulfillment_id=fulfillment_id, bounty=old_bounty).nocache()
+            if old_bounty_fulfillments.exists():
+                old_fulfillment = old_bounty_fulfillments.first()
+
+        except BountyFulfillment.DoesNotExist as error:
+            logger.warning(f'info: bounty {old_bounty} has no fulfillments in db {error}')
+
+        if old_fulfillment:
+            if not old_fulfillment.accepted and fulfillment.get('accepted'):
+                # update fulfillment to accepted + reference to new bounty
+                now = timezone.now()
+                old_fulfillment.modified_on = now
+                old_fulfillment.accepted_on = now
+                old_fulfillment.accepted = True
+            old_fulfillment.bounty = new_bounty
+            old_fulfillment.save()
+        else:
+            # create new fulfillment object
+            kwargs = {}
+            accepted_on = None
+            github_username = fulfillment.get('data', {}).get(
+                'payload', {}).get('fulfiller', {}).get('githubUsername', '')
+            if github_username:
+                if is_blocked(github_username):
+                    continue
+                try:
+                    kwargs['profile_id'] = Profile.objects.get(handle__iexact=github_username).pk
+                except Profile.MultipleObjectsReturned:
+                    kwargs['profile_id'] = Profile.objects.filter(handle__iexact=github_username).first().pk
+                except Profile.DoesNotExist:
+                    pass
+            if fulfillment.get('accepted'):
+                kwargs['accepted'] = True
+                accepted_on = timezone.now()
+            try:
+                created_on = timezone.now()
+                modified_on = timezone.now()
+                fulfiller_email = fulfillment.get('data', {}).get(
+                    'payload', {}).get('fulfiller', {}).get('email', '')
+                fulfiller_name = fulfillment.get('data', {}).get(
+                    'payload', {}).get('fulfiller', {}).get('name', '')
+                fulfiller_github_url = fulfillment.get('data', {}).get(
+                    'payload', {}).get('fulfiller', {}).get('githubPRLink', '')
+                hours_worked = fulfillment.get('data', {}).get(
                     'payload', {}).get('fulfiller', {}).get('hoursWorked', None)
-            if not hours_worked or not hours_worked.isdigit():
-                hours_worked = None
-            new_bounty.fulfillments.create(
-                fulfiller_address=fulfillment.get(
+                fulfiller_address = fulfillment.get(
                     'fulfiller',
-                    '0x0000000000000000000000000000000000000000'),
-                fulfiller_email=fulfillment.get('data', {}).get(
-                    'payload', {}).get('fulfiller', {}).get('email', ''),
-                fulfiller_github_username=github_username,
-                fulfiller_name=fulfillment.get('data', {}).get(
-                    'payload', {}).get('fulfiller', {}).get('name', ''),
-                fulfiller_metadata=fulfillment,
-                fulfillment_id=fulfillment.get('id'),
-                fulfiller_github_url=fulfillment.get('data', {}).get(
-                    'payload', {}).get('fulfiller', {}).get('githubPRLink', ''),
-                fulfiller_hours_worked=hours_worked,
-                created_on=created_on,
-                modified_on=modified_on,
-                accepted_on=accepted_on,
-                **kwargs)
-        except Exception as e:
-            logger.error(f'{e} during new fulfillment creation for {new_bounty}')
-            continue
+                    '0x0000000000000000000000000000000000000000'
+                )
+                if not hours_worked.isdigit():
+                    hours_worked = None
+
+                new_bounty.fulfillments.create(
+                    fulfiller_address=fulfiller_address,
+                    fulfiller_email=fulfiller_email,
+                    fulfiller_github_username=github_username,
+                    fulfiller_name=fulfiller_name,
+                    fulfiller_metadata=fulfillment,
+                    fulfillment_id=fulfillment.get('id'),
+                    fulfiller_github_url=fulfiller_github_url,
+                    fulfiller_hours_worked=hours_worked,
+                    created_on=created_on,
+                    modified_on=modified_on,
+                    accepted_on=accepted_on,
+                    **kwargs
+                )
+            except Exception as e:
+                logger.error(f'{e} during new fulfillment creation for {new_bounty}')
+                continue
+
+    old_bounty_fulfillments = BountyFulfillment.objects.filter(bounty=old_bounty)
+    if old_bounty_fulfillments:
+        # fail safe to ensure all fulfillments are migrated over
+        for fulfillment in old_bounty_fulfillments:
+            fulfillment.bounty = new_bounty.id
+            fulfillment.save()
 
     if new_bounty:
         return new_bounty.fulfillments.all()
@@ -388,6 +420,13 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         url = normalize_url(url)
     else:
         raise UnsupportedSchemaException('No webReferenceURL found. Cannot continue!')
+
+    try:
+        bounty_request = BountyRequest.objects.get(github_url=url, status='o')
+        bounty_request.status = 'f'
+        bounty_request.save()
+    except BountyRequest.DoesNotExist:
+        pass
 
     # check conditions for private repos
     if metadata.get('repo_type', None) == 'private' and \
@@ -438,7 +477,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
         coupon_code = bounty_payload.get('coupon_code', None)
         if coupon_code:
-            coupon = Coupon.objects.get(code=coupon_code)
+            coupon = Coupon.objects.filter(code=coupon_code).first()
             if coupon:
                 bounty_kwargs.update({
                     'coupon_code': coupon
@@ -498,7 +537,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'fee_amount': bounty_payload.get('fee_amount', 0)
             })
         else:
-            print('latest old bounty found {}'.format(latest_old_bounty))
+            # print('latest old bounty found {}'.format(latest_old_bounty))
             latest_old_bounty_dict = latest_old_bounty.to_standard_dict(
                 fields=[
                     'web3_created', 'github_url', 'token_name', 'token_address', 'privacy_preferences', 'expires_date',
@@ -509,7 +548,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'snooze_warnings_for_days', 'admin_override_and_hide', 'admin_override_suspend_auto_approval',
                     'admin_mark_as_remarket_ready', 'funding_organisation', 'bounty_reserved_for_user', 'is_featured',
                     'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda', 'coupon_code',
-                    'admin_override_org_name', 'admin_override_org_logo'
+                    'admin_override_org_name', 'admin_override_org_logo', 'bounty_state'
                 ],
             )
             if latest_old_bounty_dict['bounty_reserved_for_user']:
@@ -524,12 +563,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 latest_old_bounty_dict['coupon_code'] = Coupon.objects.get(pk=latest_old_bounty_dict['coupon_code'])
 
             bounty_kwargs.update(latest_old_bounty_dict)
-
         try:
             print('new bounty with kwargs:{}'.format(bounty_kwargs))
             new_bounty = Bounty.objects.create(**bounty_kwargs)
             merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details)
-
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
             logger.error(f'{e} encountered during new bounty creation for: {url}')
@@ -551,7 +588,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         logger.error(e)
 
     if latest_old_bounty and latest_old_bounty.event:
-        new_bounty.event = latest_old_bounty.event;
+        new_bounty.event = latest_old_bounty.event
         new_bounty.save()
     else:
         event_tag = metadata.get('eventTag', '')
@@ -630,8 +667,6 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         new_bounty.canceled_on = canceled_on
         new_bounty.save()
 
-    # migrate fulfillments, and only take the ones from 
-    # fulfillments metadata will be empty when bounty is first created
     fulfillments = bounty_details.get('fulfillments', {})
     if fulfillments:
         handle_bounty_fulfillments(fulfillments, new_bounty, latest_old_bounty)
@@ -639,13 +674,14 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         for inactive in Bounty.objects.filter(
             current_bounty=False, github_url=url
         ).nocache().order_by('-created_on'):
+            # TODO: evalute if this can be removed
             BountyFulfillment.objects.filter(bounty_id=inactive.id).nocache().delete()
 
     # preserve featured status for bounties where it was set manually
     new_bounty.is_featured = True if latest_old_bounty and latest_old_bounty.is_featured is True else False
     if new_bounty.is_featured == True:
         new_bounty.save()
-    
+
     if latest_old_bounty:
         latest_old_bounty.current_bounty = False
         latest_old_bounty.save()
@@ -670,7 +706,6 @@ def process_bounty_details(bounty_details):
     """
     from dashboard.utils import get_bounty_semaphore_ns
     # See dashboard/utils.py:get_bounty from details on this data
-    print(bounty_details)
     bounty_id = bounty_details.get('id', {})
     bounty_data = bounty_details.get('data') or {}
     bounty_payload = bounty_data.get('payload', {})
@@ -753,6 +788,18 @@ def get_fulfillment_data_for_activity(fulfillment):
     return data
 
 
+bounty_activity_event_adapter = {
+    'worker_applied': 'express_interest',
+    'worker_approved': 'accept_worker',
+    'start_work': 'accept_worker',
+    'extend_expiration': 'extend_expiration',
+    'killed_bounty': 'cancel_bounty',
+    'work_submitted': 'submit_work',
+    'stop_work': 'stop_work',
+    'work_done': 'payout_bounty'
+}
+
+
 def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None, override_created=None):
     """Records activity based on bounty changes
 
@@ -792,6 +839,11 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
         logger.error(f'{e} during record_bounty_activity for {new_bounty}')
 
     if user_profile:
+        if event_name in bounty_activity_event_adapter:
+            event = BountyEvent.objects.create(bounty=new_bounty,
+                event_type=bounty_activity_event_adapter[event_name],
+                created_by=user_profile)
+            new_bounty.handle_event(event)
         return Activity.objects.create(
             created_on=timezone.now() if not override_created else override_created,
             profile=user_profile,
