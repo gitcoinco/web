@@ -8,7 +8,6 @@ body {
 
 h4,
 .h4 {
-  text-align: center;
   padding-top: 40px;
 }
 
@@ -569,7 +568,7 @@ div.button-pink {
 }
 
 .dropdown-menu .dropdown-item {
-  padding: 12px 25px !important;
+  padding: 12px 25px;
 }
 
 .dropdown-menu .dropdown-item:hover {

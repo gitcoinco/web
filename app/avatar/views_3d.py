@@ -58,7 +58,7 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar_bufficorn.svg',
         },
-        '3d': {
+        'unisex': {
             'preview_viewbox': {
                 #section: x_pos y_pox x_size y_size
                 'background': '0 0 350 350',
@@ -95,8 +95,8 @@ def get_avatar_attrs(theme, key):
                 'accessories': '100 50 100 100',
             },
             'skin_tones': [
-                'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26',
-                '392D16'
+                'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031',
+                '593D26', '392D16'
             ],
             'hair_tones': [
                 '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
@@ -104,11 +104,30 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar_female.svg',
         },
+        'bot': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'arms': '50 50 300 300',
+                'body': '60 80 220 220',
+                'ears': '100 70 50 50',
+                'head': '80 10 170 170',
+                'mouth': '130 90 70 70',
+                'nose': '130 80 30 30',
+                'lips': '120 80 50 50',
+                'eyes': '120 50 90 90',
+                'accessories': '100 50 100 100',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'tone_maps': [''],
+            'path': 'assets/v2/images/avatar3d/bot_avatar.svg',
+        },
     }
     return avatar_attrs.get(theme, {}).get(key, {})
 
 
-def get_avatar_tone_map(tone='skin', skinTone=''):
+def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
     tones = {
         'D68876': 0,
         'BC8269': 0,
@@ -117,8 +136,11 @@ def get_avatar_tone_map(tone='skin', skinTone=''):
         'D68876': 0,
         'FFDBC2': 0,
         'D7723B': 0,  #base
+        'F4B990': 0,
     }
-    base_3d_tone = 'D7723B'
+    base_3d_tone = 'F4B990'
+    if theme == 'female':
+        base_3d_tone = 'FFCAA6'
     if tone == 'blonde_hair':
         tones = {'F495A8': 0, 'C6526D': 0, 'F4C495': 0, }
         base_3d_tone = 'CEA578'
@@ -157,7 +179,7 @@ def get_avatar_tone_map(tone='skin', skinTone=''):
 def avatar3d(request):
     """Serve an 3d avatar."""
 
-    theme = request.GET.get('theme', '3d')
+    theme = request.GET.get('theme', 'unisex')
     #get request
     accept_ids = request.GET.getlist('ids')
     if not accept_ids:
@@ -215,7 +237,7 @@ def avatar3d(request):
             for _type in tone_maps:
                 base_tone = skinTone if 'hair' not in _type else hairTone
                 if base_tone:
-                    for _from, to in get_avatar_tone_map(_type, base_tone).items():
+                    for _from, to in get_avatar_tone_map(_type, base_tone, theme).items():
                         output = output.replace(_from, to)
             if request.method == 'POST':
                 return save_custom_avatar(request, output)
@@ -242,7 +264,7 @@ def avatar3dids_helper(theme):
 def avatar3dids(request):
     """Serve an 3d avatar id list."""
 
-    theme = request.GET.get('theme', '3d')
+    theme = request.GET.get('theme', 'unisex')
     response = JsonResponse(avatar3dids_helper(theme))
     return response
 

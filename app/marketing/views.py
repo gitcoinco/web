@@ -152,6 +152,7 @@ def privacy_settings(request):
     msg = ''
     if request.POST and request.POST.get('submit'):
         if profile:
+            profile.dont_autofollow_earnings = bool(request.POST.get('dont_autofollow_earnings', False))
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
             profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
@@ -782,7 +783,7 @@ def leaderboard(request, key=''):
     product = request.GET.get('product', 'all')
     keyword_search = request.GET.get('keyword', '')
     keyword_search = '' if keyword_search == 'all' else keyword_search
-    limit = request.GET.get('limit', 50)
+    limit = int(request.GET.get('limit', 50))
     cadence = request.GET.get('cadence', 'weekly')
 
     # backwards compatibility fix for old inbound links

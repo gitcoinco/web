@@ -190,7 +190,7 @@ def index(request):
             'alt': 'gitcoin scope'
         },
         {
-            'link': 'https://medium.com/gitcoin/commit-reveal-scheme-on-ethereum-25d1d1a25428',
+            'link': 'https://gitcoin.co/blog/commit-reveal-scheme-on-ethereum/',
             'img': static("v2/images/medium/2.png"),
             'title': _('Commit Reveal Scheme on Ethereum'),
             'description': _('Hiding Actions and Generating Random Numbers'),
@@ -1218,13 +1218,29 @@ def create_status_update(request):
     if request.POST:
         profile = request.user.profile
         title = request.POST.get('data')
+        resource = request.POST.get('resource', '')
+        provider = request.POST.get('resourceProvider', '')
+        resource_id = request.POST.get('resourceId', '')
+
         kwargs = {
             'activity_type': 'status_update',
             'metadata': {
                 'title': title,
                 'ask': request.POST.get('ask'),
+                'resource': {
+                    'type': resource,
+                    'provider': provider,
+                    'id': resource_id
+                }
             }
         }
+
+        if resource == 'content':
+            meta = kwargs['metadata']['resource']
+            meta['title'] = request.POST.get('title', '')
+            meta['description'] = request.POST.get('description', '')
+            meta['image'] = request.POST.get('image', '')
+
         kwargs['profile'] = profile
         if ':' in request.POST.get('what'):
             what = request.POST.get('what')
@@ -1242,7 +1258,7 @@ def create_status_update(request):
             username_pattern = re.compile(r'@(\S+)')
             mentioned_usernames = re.findall(username_pattern, title)
             to_emails = set(Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True))
-            mention_email(profile, to_emails)
+            mention_email(activity, to_emails)
 
             if kwargs['activity_type'] == 'wall_post':
                 if 'Email Grant Funders' in activity.metadata.get('ask'):
@@ -1254,6 +1270,7 @@ def create_status_update(request):
             response['status'] = 400
             response['message'] = 'Bad Request'
             logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
+            return JsonResponse(response, status=400)
     return JsonResponse(response)
 
 def help(request):
@@ -1545,7 +1562,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
 
     tutorials = [{
         'img': static('v2/images/help/firehose.jpg'),
-        'url': 'https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5',
+        'url': 'https://gitcoin.co/blog/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster/',
         'title': _('Leverage Gitcoin’s Firehose of Talent to Do More Faster'),
     }, {
         'img': static('v2/images/tools/api.jpg'),

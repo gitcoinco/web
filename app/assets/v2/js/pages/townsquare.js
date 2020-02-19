@@ -1,11 +1,11 @@
 $(document).ready(function() {
-
   // gets multi part (ex: 10 hours 2 minutes 5 seconds) time
   var time_difference_broken_down = function(difference) {
-    let remaining = ' now.. Refresh to view offer!';
+    let remaining = ' now. Refresh to view offer!';
     let prefix = ' in ';
 
     if (difference > 0) {
+      console.log(moment(difference).inspect());
       const parts = {
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
@@ -58,7 +58,7 @@ $(document).ready(function() {
       document.location.href = get_redir_location($('.nav-link.active').data('slug'));
     }, 10);
   });
-  $('body').on('click', '.container .nav-link', function(e) {
+  $('body').on('click', '.townsquare_nav-list .nav-link', function(e) {
     $('.nav-link').removeClass('active');
     $(this).addClass('active');
     e.preventDefault();
@@ -66,23 +66,44 @@ $(document).ready(function() {
       document.location.href = get_redir_location($('.nav-link.active').data('slug'));
     }, 10);
   });
-
   // updates expiry timers with countdowns
-  var updateTimers = function() {
-    $('.timer').each(function() {
+  const setDataFormat = function(data) {
+    let str = 'in ';
+
+    if (data.days() > 0)
+      str += data.days() + 'd ';
+    if (data.hours() > 0)
+      str += data.hours() + 'h ';
+    if (data.minutes() > 0)
+      str += data.minutes() + 'm ';
+    if (data.seconds() > 0)
+      str += data.seconds() + 's ';
+
+    return str;
+  };
+
+  const updateTimers = function() {
+    let enterTime = moment();
+
+    $('[data-time]').filter(':visible').each(function() {
+      moment.locale('en');
       var time = $(this).data('time');
-      var base_time = $(this).data('base_time');
-      var counter = $(this).data('counter');
+      var timeFuture = $(this).data('time-future');
+      var timeDiff = moment(time).diff(enterTime, 'sec');
 
-      if (!counter) {
-        counter = 0;
+      if (timeFuture && (timeDiff < 0)) {
+        $(this).html('now');
+        $(this).parents('.offer_container').addClass('animate').removeClass('empty');
+        $(this).removeAttr('data-time');
+
+        // let btn = `<a class="btn btn-block btn-gc-blue btn-sm mt-2" href="${timeUrl}">View Action</a>`;
+        // return $(this).parent().next().html(btn);
+        return $(this).parent().append('<div>Refresh to view offer!</div>');
       }
-      counter += 1;
-      $(this).data('counter', counter);
-      var start_date = new Date(new Date(time).getTime() - (1000 * counter));
-      var countdown = start_date - new Date(base_time);
 
-      $(this).html(time_difference_broken_down(countdown));
+      const diffDuration = moment.duration(moment(time).diff(moment()));
+
+      $(this).html(setDataFormat(diffDuration));
     });
   };
 
@@ -107,5 +128,4 @@ $(document).ready(function() {
   $('.announce .remove').click(function() {
     $(this).parents('.announce').remove();
   });
-
 }(jQuery));

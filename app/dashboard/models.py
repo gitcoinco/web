@@ -2022,6 +2022,7 @@ class Activity(SuperModel):
         ('beat_quest', 'Beat Quest'),
         ('created_quest', 'Created Quest'),
         ('updated_avatar', 'Updated Avatar'),
+        ('mini_clr_payout', 'Mini CLR Payout'),
     ]
 
     profile = models.ForeignKey(
@@ -2161,18 +2162,18 @@ class Activity(SuperModel):
     def view_props(self):
         from kudos.models import Token
         icons = {
-            'new_tip': 'fa-thumbs-up',
-            'start_work': 'fa-lightbulb',
-            'new_bounty': 'fa-money-bill-alt',
-            'work_done': 'fa-check-circle',
-            'status_update': 'fa-user',
-            'new_kudos': 'fa-thumbs-up',
-            'new_grant': 'fa-envelope',
-            'update_grant': 'fa-edit',
-            'killed_grant': 'fa-trash',
-            'new_grant_contribution': 'fa-coins',
-            'new_grant_subscription': 'fa-calendar-check',
-            'killed_grant_contribution': 'fa-calendar-times',
+            'new_tip': 'far fa-thumbs-up',
+            'start_work': 'far fa-lightbulb',
+            'new_bounty': 'far fa-money-bill-alt',
+            'work_done': 'far fa-check-circle',
+            'status_update': 'far fa-user',
+            'new_kudos': 'far fa-thumbs-up',
+            'new_grant': 'far fa-envelope',
+            'update_grant': 'far fa-edit',
+            'killed_grant': 'fas fa-trash',
+            'new_grant_contribution': 'fas fa-donate',
+            'new_grant_subscription': 'far fa-calendar-check',
+            'killed_grant_contribution': 'far fa-calendar-times',
         }
 
         # load up this data package with all of the information in the already existing objects
@@ -2183,6 +2184,7 @@ class Activity(SuperModel):
             'created_human_time',
             'humanized_name',
             'url',
+            'match_this_round',
         ]
         activity = self.to_standard_dict(properties=properties)
         activity['pk'] = self.pk
@@ -2200,7 +2202,7 @@ class Activity(SuperModel):
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
-        activity['icon'] = icons.get(self.activity_type, 'fa-check-circle')
+        activity['icon'] = icons.get(self.activity_type, 'far fa-check-circle')
         if activity.get('kudos'):
             activity['kudos_data'] = self.kudos
         obj = self.metadata
@@ -2516,6 +2518,11 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
+    dont_autofollow_earnings = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, Gitcoin will not auto-follow users you do business with',
+    )
+
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     profile_organizations = models.ManyToManyField(Organization, blank=True)
@@ -2585,6 +2592,16 @@ class Profile(SuperModel):
         return self.quest_attempts.filter(success=True).distinct('quest').count() + 1
 
     @property
+    def match_this_round(self):
+        from townsquare.models import MatchRound
+        mr = MatchRound.objects.current().first()
+        if mr:
+            mr = mr.ranking.filter(profile=self).first()
+            if mr:
+                return mr.match_total
+        return 0
+
+    @property
     def quest_caste(self):
         castes = [
             'Etherean',
@@ -2628,8 +2645,8 @@ class Profile(SuperModel):
     @property
     def tribe_members(self):
         if not self.is_org:
-            return TribeMember.objects.filter(profile=self).exclude(status='rejected')
-        return TribeMember.objects.filter(org=self).exclude(status='rejected')
+            return TribeMember.objects.filter(profile=self).exclude(status='rejected').exclude(profile__user=None)
+        return TribeMember.objects.filter(org=self).exclude(status='rejected').exclude(profile__user=None)
 
     @property
     def ref_code(self):
@@ -4575,6 +4592,28 @@ class Earning(SuperModel):
     def __str__(self):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
 
+    def create_auto_follow(self):
+        profiles = [self.to_profile, self.from_profile, self.org_profile]
+        count = 0
+        for p1 in profiles:
+            for p2 in profiles:
+                if not p1 or not p2:
+                    continue
+                if p1.pk == p2.pk:
+                    continue
+                if not p1.dont_autofollow_earnings:
+                    TribeMember.objects.update_or_create(
+                        profile=p1,
+                        org=p2,
+                        defaults={'why':'auto'}
+                        )
+                    count += 1
+        return count
+
+@receiver(post_save, sender=Earning, dispatch_uid="post_save_earning")
+def post_save_earning(sender, instance, created, **kwargs):
+    if created:
+        instance.create_auto_follow()
 
 def get_my_earnings_counter_profiles(profile_pk):
     # returns profiles that a user has done business with
@@ -4628,13 +4667,19 @@ class TribeMember(SuperModel):
         ('pending', 'pending'),
         ('rejected', 'rejected'),
     ]
+    #from
     profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
-    org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE)
+    # to
+    org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE, null=True, blank=True)
     leader = models.BooleanField(default=False, help_text=_('tribe leader'))
     title = models.CharField(max_length=255, blank=True, default='')
     status = models.CharField(
         max_length=20,
         choices=MEMBER_STATUS,
+        blank=True
+    )
+    why = models.CharField(
+        max_length=20,
         blank=True
     )
 

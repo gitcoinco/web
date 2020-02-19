@@ -88,4 +88,6 @@ python-magic
 django-oauth-toolkit
 mattermostdriver
 ddtrace
+metadata-parser==0.10.0
 redis==3.3.11
+pandas

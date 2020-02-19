@@ -7,12 +7,13 @@ from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
+import metadata_parser
 from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
 from ratelimit.decorators import ratelimit
 
-from .models import Announcement, Comment, Flag, Like, Offer, OfferAction
+from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
@@ -57,18 +58,20 @@ def town_square(request):
     hours = 24 if not settings.DEBUG else 1000
     posts_last_24_hours = lazy_round_number(Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     tabs = [{
-        'title': f"Everywhere ({posts_last_24_hours})",
+        'title': f"Everywhere",
         'slug': 'everywhere',
         'helper_text': f'The {posts_last_24_hours} activity feed items everywhere in the Gitcoin network',
+        'badge': posts_last_24_hours
     }]
     default_tab = 'everywhere'
     if request.user.is_authenticated:
         num_business_relationships = lazy_round_number(len(set(get_my_earnings_counter_profiles(request.user.profile.pk))))
         if num_business_relationships:
             new_tab = {
-                'title': f"Relationships ({num_business_relationships})",
+                'title': f"Relationships",
                 'slug': 'my_tribes',
                 'helper_text': f'Activity from the {num_business_relationships} users who you\'ve done business with Gitcoin',
+                'badge': num_business_relationships
             }
             tabs = [new_tab] + tabs
             default_tab = 'my_tribes'
@@ -76,9 +79,10 @@ def town_square(request):
 
         if num_grants_relationships:
             new_tab = {
-                'title': f'Grants ({num_grants_relationships})',
+                'title': f'Grants',
                 'slug': f'grants',
                 'helper_text': f'Activity on the {num_grants_relationships} Grants you\'ve created or funded.',
+                'badge': num_grants_relationships
             }
             tabs = [new_tab] + tabs
             default_tab = 'grants'
@@ -88,18 +92,20 @@ def town_square(request):
     if connect_last_24_hours:
         default_tab = 'connect'
         connect = {
-            'title': f"Connect ({connect_last_24_hours})",
+            'title': f"Connect",
             'slug': f'connect',
             'helper_text': f'The {connect_last_24_hours} announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
+            'badge': connect_last_24_hours
         }
         tabs = [connect] + tabs
 
     kudos_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['new_kudos', 'receive_kudos'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if kudos_last_24_hours:
         connect = {
-            'title': f"Kudos ({kudos_last_24_hours})",
+            'title': f"Kudos",
             'slug': f'kudos',
             'helper_text': f'The {kudos_last_24_hours} Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
+            'badge': kudos_last_24_hours
         }
         tabs = tabs + [connect]
 
@@ -183,6 +189,21 @@ def town_square(request):
         except Exception as e:
             print(e)
 
+    # matching leaderboard
+    current_match_round = MatchRound.objects.current().first()
+    num_to_show = 10
+    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1))
+    matching_leaderboard = [
+        {
+            'i': obj.number,
+            'following': request.user.profile == obj.profile or request.user.profile.follower.filter(org=obj.profile) if request.user.is_authenticated else False,
+            'handle': obj.profile.handle,
+            'contributions': obj.contributions,
+            'amount': f"{int(obj.contributions_total/1000)}k" if obj.contributions_total > 1000 else round(obj.contributions_total, 2),
+            'match_amount': obj.match_total,
+            'you': obj.profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
+        } for obj in current_match_rankings[0:num_to_show]
+    ]
 
     # render page context
     trending_only = int(request.GET.get('trending', 0))
@@ -196,6 +217,8 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'matching_leaderboard': matching_leaderboard,
+        'current_match_round': current_match_round,
         'admin_link': admin_link,
         'now': timezone.now(),
         'is_townsquare': True,
@@ -208,7 +231,8 @@ def town_square(request):
     }
     response = TemplateResponse(request, 'townsquare/index.html', context)
     if request.GET.get('tab'):
-        response.set_cookie('tab', request.GET.get('tab'))
+        if ":" not in request.GET.get('tab'):
+            response.set_cookie('tab', request.GET.get('tab'))
     return response
 
 
@@ -250,8 +274,13 @@ def api(request, activity_id):
         response['comments'] = []
         for comment in comments:
             comment_dict = comment.to_standard_dict(properties=['profile_handle'])
+            comment_dict['handle'] = comment.profile.handle
             comment_dict['tip_count_eth'] = comment.tip_count_eth
-            comment_dict['tip_able'] = comment.tip_able
+            comment_dict['match_this_round'] = comment.profile.match_this_round
+            comment_dict['is_liked'] = request.user.is_authenticated and (request.user.profile.pk in comment.likes)
+            comment_dict['like_count'] = len(comment.likes)
+            comment_dict['likes'] = ", ".join(Profile.objects.filter(pk__in=comment.likes).values_list('handle', flat=True)) if len(comment.likes) else "no one. Want to be the first?"
+            comment_dict['name'] = comment.profile.data.get('name', None) or comment.profile.handle
             response['comments'].append(comment_dict)
         return JsonResponse(response)
 
@@ -265,6 +294,19 @@ def api(request, activity_id):
     # deletion request
     if request.POST.get('method') == 'delete':
         activity.delete()
+
+    # toggle like comment
+    if request.POST.get('method') == 'toggle_like_comment':
+        comment = activity.comments.filter(pk=request.POST.get('comment'))
+        if comment.exists() and request.user.is_authenticated:
+            comment = comment.first()
+            profile_pk = request.user.profile.pk
+            already_likes = profile_pk in comment.likes
+            if not already_likes:
+                comment.likes.append(profile_pk)
+            else:
+                comment.likes = [ele for ele in comment.likes if ele != profile_pk]
+            comment.save()
 
     # like request
     elif request.POST.get('method') == 'like':
@@ -280,7 +322,8 @@ def api(request, activity_id):
             flag_threshold_to_hide = 3 #hides comment after 3 flags
             is_hidden_by_users = activity.flags.count() > flag_threshold_to_hide
             is_hidden_by_staff = activity.flags.filter(profile__user__is_staff=True).count() > 0
-            is_hidden = is_hidden_by_users or is_hidden_by_staff
+            is_hidden_by_moderators = activity.flags.filter(profile__user__groups__name='Moderators').count() > 0
+            is_hidden = is_hidden_by_users or is_hidden_by_staff or is_hidden_by_moderators
             if is_hidden:
                 activity.hidden = True
                 activity.save()
@@ -387,3 +430,29 @@ def offer_new(request):
         'nav': 'home',
     }
     return TemplateResponse(request, 'townsquare/new.html', context)
+
+
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def extract_metadata_page(request):
+    url = request.GET.get('url')
+
+    if url:
+        page = metadata_parser.MetadataParser(url=url, url_headers={
+            'User-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
+        })
+        meta = page.parsed_result.metadata
+        return JsonResponse({
+            'og': meta['og'],
+            'twitter': meta['twitter'],
+            'meta': meta['meta'],
+            'dc': meta['dc'],
+            'title': page.get_metadatas('title')[0],
+            'image': page.get_metadata_link('image'),
+            'description': page.get_metadata('description'),
+            'link': page.get_discrete_url()
+        })
+
+    return JsonResponse({
+        'status': 'error',
+        'message': 'no url was provided'
+    }, status=404)

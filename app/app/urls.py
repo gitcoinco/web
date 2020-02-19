@@ -378,6 +378,7 @@ urlpatterns = [
         name='townsquare_offer_decline'
     ),
     path('action/<int:offer_id>/<slug:offer_slug>', townsquare.views.offer_view, name='townsquare_offer_view'),
+    url(r'^service/metadata/$', townsquare.views.extract_metadata_page, name='meta-extractor'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
     url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),
@@ -575,6 +576,7 @@ urlpatterns = [
         retail.emails.no_applicant_reminder,
         name='no_applicant_reminder'
     ),
+    re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
@@ -600,6 +602,7 @@ urlpatterns = [
     re_path(r'^_administration/cohort/$', dataviz.views.cohort, name='cohort'),
     re_path(r'^_administration/funnel/$', dataviz.views.funnel, name='funnel'),
     re_path(r'^_administration/viz/?$', dataviz.d3_views.viz_index, name='viz_index'),
+    re_path(r'^_administration/mesh/?$', dataviz.d3_views.mesh_network_viz, name='mesh_network_viz'),
     re_path(r'^_administration/viz/sunburst/(.*)?$', dataviz.d3_views.viz_sunburst, name='viz_sunburst'),
     re_path(r'^_administration/viz/chord/(.*)?$', dataviz.d3_views.viz_chord, name='viz_chord'),
     re_path(r'^_administration/viz/steamgraph/(.*)?$', dataviz.d3_views.viz_steamgraph, name='viz_steamgraph'),

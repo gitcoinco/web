@@ -335,6 +335,15 @@ def render_funder_payout_reminder(**kwargs):
     return response_html, response_txt
 
 
+def render_match_distribution(mr):
+    params = {
+        'mr': mr,
+    }
+    response_html = premailer_transform(render_to_string("emails/match_distribution.html"))
+    response_txt = ''
+    return response_html, response_txt
+
+
 def render_no_applicant_reminder(bounty):
     params = {
         'bounty': bounty,
@@ -994,8 +1003,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "We Need YOU to Sustain Web3!"
-    new_kudos_pks = [8179, 7511, 7503]
+    subject = "Today’s The Day - Stream Sustain Web3 Summit Live!"
+    new_kudos_pks = [10727, 10864, 7503]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1014,31 +1023,32 @@ def render_new_bounty_roundup(to_email):
 
     intro = f'''
 <p>
-Hey Gitcoiners,
+Heya Gitcoiners,
 </p>
 <p>
-The <a href="https://hackathons.gitcoin.co/sustain-web3">Sustain Web3</a> virtual hackathon is officially live with $17k in prizes up for grabs! You can now view all the bounties on the <a href="https://gitcoin.co/hackathon/sustain-web3">prize explorer</a>. The two week hackathon will run until February 12th at 23:59 UTC, right before <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a>. Sponsors include <a href="https://foam.space/">FOAM</a>, <a href="https://xpring.io/">Xpring</a>, <a href="https://www.dfuse.io/">dfuse</a>, <a href="https://www.bancor.network/">Bancor</a>, <a href="https://labs.consensys.net/">ConsenSys Labs</a>, and more.
+We’re coming at you a day early with the Gitcoin Weekly for a special announcement. The big day has arrived! We’re hosting the <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a> today in Denver, and you can <a href="https://web3.sustainoss.org/livestream">Livestream</a> the event from the comfort of your own home!
 </p>
 <p>
-Gitcoin <a href="https://gitcoin.co/grants/">Grants Round 4</a> is closed and funds will be distributed shortly. Check out our newest <a href="https://gitcoin.co/blog/gitcoin-grants-round-4/">blog post</a> for the full results, and we also recommend reading <a href="https://vitalik.ca/general/2020/01/28/round4.html">Vitalik’s review</a> as well. Thank you to everyone who helped make this round the biggest success yet!
+ The <a href="https://web3.sustainoss.org/schedule">schedule is live</a> and the lineup is looking hotter than the ETH price ;). Karl Floersch, Hudson Jameson, Vitalik Buterin, Josh Cincinnati and many many more industry leaders are taking the stage as we speak. Check out the full agenda <a href="https://web3.sustainoss.org/schedule">here</a> to find which talks you won’t want to miss. Times are listed in MST (UTC - 7), so make sure you know when that is in your time zone - the event will run from 17:00 to 23:59 UTC today, Feb 13th.
 </p>
 <p>
- Join us this weekend (Feb 1st & 2nd) for Trust-Less 2020: A Proof-Of-Stake (PoS) Validator summit. Attendees will learn about Ethereum 2.0 Validator Economics with ConsenSys Codefi, get updates on the beacon chain with Prysmatic Labs, learn how to spin up their own ETH 2.0 Validator with RocketPool, and more. The conf is 100% free & virtual so you can tune in from anywhere in the world to learn. Claim your spot <a href="https://trust-less-2020.dystopialabs.com/">here</a>.
+Depending on when you are reading this, the event may be live now! You can stream on the <a href="https://web3.sustainoss.org/livestream">Livestream Page</a> or directly from our <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w">Youtube Channel</a>. Drop in and leave a like or comment if you’re so inclined! Many people have been working hard to put on a great free event and we can’t wait to share it with you. If you do miss the Livestream, expect the talks to go up on Youtube shortly after.
 </p>
 
 {kudos_friday}
-<h3>What else is new?</h3>
-    <ul>
-        <li>
-            Today's Livestream will feature Sustain Web3 hackathon sponsors to discuss their companies and prizes. <a href="https://gitcoin.co/livestream">Join us</a> 2pm ET to hear from FOAM, Xpring, ConsenSys Labs, and dfuse.
-        </li>
-    </ul>
+
 </p>
 <p>
 Back to BUIDLing,
 </p>
 '''
     highlights = [{
+        'who': 'mul1sh',
+        'who_link': True,
+        'what': 'Built OrFeed Judge Voting Contract For Prediction Market',
+        'link': 'https://gitcoin.co/issue/ProofSuite/OrFeed/52/3990',
+        'link_copy': 'View more',
+    }, {
         'who': 'pengiundev',
         'who_link': True,
         'what': 'Adjusted "Hatching Period" In Bonding Curve Smart Contract',
@@ -1047,14 +1057,8 @@ Back to BUIDLing,
     }, {
         'who': 'adrianhacker-pdx',
         'who_link': True,
-        'what': 'Created an Explainer Page For Account Abstraction with EthHub',
-        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/422/3908',
-        'link_copy': 'View more',
-    }, {
-        'who': 'jmsofarelli',
-        'who_link': True,
-        'what': 'Made a Dapp With a Frontend Hosted on IPFS With Infuras API.',
-        'link': 'https://gitcoin.co/issue/INFURA/hackathons/2/3868',
+        'what': 'Solved Challenge With A Memory-Efficient Algorithm',
+        'link': 'https://gitcoin.co/issue/chejazi/points-challenge/1/3945',
         'link_copy': 'View more',
     }, ]
 
@@ -1071,14 +1075,14 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/ryan-foamspace/Sustain-Web3-hackathon/issues/3',
-        'primer': 'Create a Mobile-Friendly Map Viewer with FOAM',
+        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/23',
+        'primer': 'Move Orion Peer Table To Memory And Implement Environment Variables For Configuration',
     }, {
-        'url': 'https://github.com/ConsenSys/Relays/issues/2',
-        'primer': 'Growth Hacking For Established Projects - Drive Viral Growth to Your Startup',
+        'url': 'https://github.com/ProofSuite/OrFeed/issues/57',
+        'primer': 'Arbitrage And Triangular Arbitrage Calculator',
     }, {
-        'url': 'https://github.com/gitcoinco/web/issues/5914',
-        'primer': 'Allow Gitcoin.Co/Tips To Support Sablier Style Streams',
+        'url': 'https://github.com/ArweaveTeam/Bounties/issues/23',
+        'primer': 'Record The Forks Permafeed',
     }]
 
 
@@ -1338,6 +1342,16 @@ def no_applicant_reminder(request):
     ).first()
     response_html, _ = render_no_applicant_reminder(bounty=bounty)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def match_distribution(request):
+    from townsquare.models import MatchRanking
+    mr = MatchRanking.objects.last()
+    response_html, _ = render_match_distribution(mr)
+    return HttpResponse(response_html)
+
+
 
 
 @staff_member_required
