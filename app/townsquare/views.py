@@ -339,6 +339,57 @@ def api(request, activity_id):
     return JsonResponse(response)
 
 
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def comment_v1(request, comment_id):
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request.'
+    }
+
+    if not comment_id:
+        return JsonResponse(response)
+
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        response['message'] = 'user needs to be authenticated to take action'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'no matching profile found'
+        return JsonResponse(response)
+
+    try:
+        comment = Comment.objects.get(pk=comment_id)
+    except:
+        response = {
+            'status': 404,
+            'message': 'unable to find comment'
+        }
+        return JsonResponse(response)
+
+    if comment.profile != profile:
+        response = {
+            'status': 401,
+            'message': 'user not authorized'
+        }
+        return JsonResponse(response)
+
+    method = request.POST.get('method')
+
+    if method == 'DELETE':
+        comment.delete()
+        response = {
+            'status': 204,
+            'message': 'comment successfully deleted'
+        }
+        return JsonResponse(response)
+
+    return JsonResponse(response)
+
+
 def get_offer_and_create_offer_action(profile, offer_id, what, do_not_allow_more_than_one_offeraction=False):
     offer = Offer.objects.current().get(pk=offer_id)
     if do_not_allow_more_than_one_offeraction and profile.offeractions.filter(what=what, offer=offer):

@@ -348,15 +348,17 @@ $(document).ready(function() {
       $parent.parents('.activity.box').find('.loading').addClass('hidden');
       $target.addClass('filled');
       $target.html('');
-      for (var i = 0; i < response['comments'].length; i++) {
+      for (let i = 0; i < response['comments'].length; i++) {
         let comment = sanitizeAPIResults(response['comments'])[i];
         let the_comment = comment['comment'];
 
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
         the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
-        var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
-        var show_tip = true;
+        const timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
+        const show_tip = true;
+        const is_comment_owner = document.contxt.github_handle == comment['profile_handle'];
+
         let html = `
         <div class="row comment_row p-2" data-id=${comment['id']}>
           <div class="col-1 activity-avatar mt-1">
@@ -387,8 +389,11 @@ $(document).ready(function() {
               ${the_comment}
             </div>
               <span class="font-smaller-5 float-right">
+              ${is_comment_owner ?
+    `<i data-pk=${comment['id']} class="delete_comment fas fa-trash font-smaller-7 position-relative text-black-70 mr-1 cursor-pointer" style="top:-1px; "></i>| `
+    : ''}
               ${show_tip ? `
-              <span class="action like ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
+              <span class="action like px-0 ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
                 <i class="far fa-heart grey"></i> <span class=like_count>${comment['like_count']}</span>
               </span> |
               <a href="#" class="tip_on_comment text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(100 * comment['tip_count_eth']) / 100}</span>
@@ -472,6 +477,32 @@ $(document).ready(function() {
     const $target = $(this).parents('.activity.box').find('.comment_activity');
 
     post_comment($target, false);
+  });
+
+  $(document).on('click', '.delete_comment', function(e) {
+    e.preventDefault();
+    const comment_id = $(this).data('pk');
+
+    const params = {
+      'method': 'DELETE',
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+
+    const url = '/api/v0.1/comment/' + comment_id;
+
+    $.post(url, params, function(response) {
+      if (response.status <= 204) {
+        _alert('comment successfully deleted.', 'success', 1000);
+        $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
+        console.log(response);
+      } else {
+        _alert(`Unable to delete commment: ${response.message}`, 'error');
+        console.log(`error deleting commment: ${response.message}`);
+      }
+    }).fail(function(error) {
+      _alert('Unable to delete comment', 'error');
+      console.log(`error deleting commment: ${error.message}`);
+    });
   });
 
 
