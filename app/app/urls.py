@@ -118,6 +118,7 @@ urlpatterns = [
     url(r'^api/v0.1/profile/settings', dashboard.views.profile_settings, name='profile_settings'),
     url(r'^api/v0.1/profile/backup', dashboard.views.profile_backup, name='profile_backup'),
     path('api/v0.1/activity/<int:activity_id>', townsquare.views.api, name='townsquare_api'),
+    path('api/v0.1/comment/<int:comment_id>', townsquare.views.comment_v1, name='comment_v1'),
     path('api/v0.1/emailsettings/', townsquare.views.emailsettings, name='townsquare_emailsettings'),
     url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
     url(
