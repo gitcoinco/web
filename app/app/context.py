@@ -153,6 +153,7 @@ def preprocess(request):
         'footer_msg': footer_msg,
         'INFURA_V3_PROJECT_ID': settings.INFURA_V3_PROJECT_ID,
         'email_key': email_key,
+        'giphy_key': settings.GIPHY_KEY,
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
         'hotjar': settings.HOTJAR_CONFIG,

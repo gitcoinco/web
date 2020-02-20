@@ -301,7 +301,14 @@
       </div>
     </div>
   </div>
-  {% if row.metadata.resource.provider == 'youtube' %}
+
+  {% if row.metadata.resource.type == 'gif' %}
+  <div class="mt-1 mb-2" >
+    <div class="row align-items-center bg-light">
+        <img loading="lazy" style="width: 100%; object-fit: fill; max-height: 450px" data-src="{{ row.metadata.resource.id }}">
+    </div>
+  </div>
+  {% elif row.metadata.resource.provider == 'youtube' %}
   <div class="embed-responsive embed-responsive-16by9 mt-2">
     <iframe class="embed-responsive-item" height="315" src="https://www.youtube.com/embed/{{ row.metadata.resource.id }}"
     frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
@@ -309,23 +316,23 @@
   </div>
   {% elif row.metadata.resource.type == 'content' %}
   <div class="mt-1 mb-2">
-      <div class="row align-items-center bg-light">
-        <div class="col-12 col-md-3 text-center">
-          {% if not row.metadata.resource.image or row.metadata.resource.image  == 'undefined' %}
-            <img class="py-2" style="max-height: 7rem;" src="{% static 'v2/images/team/gitcoinbot.png' %}">
-          {% else %}
-            <img class="mw-100" src="{{ row.metadata.resource.image }}">
-          {% endif %}
-        </div>
-        <div class="col-12 col-md-9 text-left">
-          <p class="mt-2 mb-1 font-weight-bold" style="font-size: 1.2em;">{{ row.metadata.resource.title }}</p>
-          <p class="small">{{ row.metadata.resource.description|truncatechars:200}}
-            <a href="{{ row.metadata.resource.provider }}" target="_blank" rel="nofollow" style="color: #0056b3" class="d-block">{{ row.metadata.resource.provider }}</a>
-          </p>
-        </div>
+    <div class="row align-items-center bg-light">
+      <div class="col-12 col-md-3 text-center">
+        {% if not row.metadata.resource.image or row.metadata.resource.image  == 'undefined' %}
+          <img class="py-2" style="max-height: 7rem;" src="{% static 'v2/images/team/gitcoinbot.png' %}">
+        {% else %}
+          <img class="mw-100" src="{{ row.metadata.resource.image }}">
+        {% endif %}
+      </div>
+      <div class="col-12 col-md-9 text-left">
+        <p class="mt-2 mb-1 font-weight-bold" style="font-size: 1.2em;">{{ row.metadata.resource.title }}</p>
+        <p class="small">{{ row.metadata.resource.description|truncatechars:200}}
+          <a href="{{ row.metadata.resource.provider }}" target="_blank" rel="nofollow" style="color: #0056b3" class="d-block">{{ row.metadata.resource.provider }}</a>
+        </p>
       </div>
     </div>
-    {% endif %}
+  </div>
+  {% endif %}
     <div class="activity_comments">
       <div class="comment_container">
 
