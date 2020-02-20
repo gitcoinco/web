@@ -5,17 +5,17 @@ const giphy_re = /(?:https?:\/\/)?(?:media0\.)?(?:giphy\.com\/media\/)/;
 $(document).ready(function() {
   var embedded_resource = '';
   const GIPHY_API_KEY = document.contxt.giphy_key;
-  
+
   let button = document.querySelector('#btn_post');
-  
+
   function selectGif(e) {
     embedded_resource = $(e.target).data('src');
     $('#preview-img').attr('src', embedded_resource);
     $('#preview').show();
     $('#thumbnail').hide();
   }
-  
-  
+
+
   function injectGiphy(query) {
     const endpoint = 'https://api.giphy.com/v1/gifs/search?limit=13&api_key=' + GIPHY_API_KEY + '&offset=0&rating=G&lang=en&q=' + query;
     const result = fetchData(endpoint);
@@ -33,11 +33,11 @@ $(document).ready(function() {
       $('.pick-gif').on('click', selectGif);
     });
   }
-  
+
   $('#search-gif').on('input', function(e) {
     e.preventDefault();
     const query = e.target.value;
-    
+
     injectGiphy(query);
   });
 
@@ -194,6 +194,7 @@ $(document).ready(function() {
 
     // enforce a max length
     var max_len = $(this).data('maxlen');
+
     if ($(this).val().trim().length > max_len) {
       $(this).addClass('red');
       $('#btn_post').attr('disabled', true);
@@ -293,7 +294,7 @@ $(document).ready(function() {
       })
       .catch(err => console.log('Error ', err));
   }
-  
+
   injectGiphy('latest');
 });
 window.addEventListener('DOMContentLoaded', function() {
