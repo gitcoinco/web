@@ -3,7 +3,6 @@
   "address": "0xF453Ac18fa17b9eC9a76fbF219Ba9fe4612eDd0a",
   "overview":{
         "en": "dMMM token",
-        "zh": "dMMM token"
   },
   "email": "ilovedmmm@gmail.com",
   "website": "https://dmmm.io",
@@ -14,13 +13,6 @@
         "USD":"0.1 USD",
   },
   "links": {
-    "blog": "",
-    "twitter": "",
-    "telegram": "",
     "github": "https://github.com/d-mmm",
-    "facebook": "",
-    "reddit": "",
-    "slack": "",
-    "medium": ""
   }
 }
