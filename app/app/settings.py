@@ -49,6 +49,8 @@ OVERRIDE_NETWORK = env('OVERRIDE_NETWORK', default=None)
 SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
 ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
 BASE_DIR = root()
+#social integrations
+GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
 
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
@@ -568,7 +570,6 @@ SOCIAL_AUTH_SANITIZE_REDIRECTS = True
 SOCIAL_AUTH_GH_CUSTOM_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GH_CUSTOM_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_GH_CUSTOM_SCOPE = ['read:org', 'public_repo']
-
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',
