@@ -43,7 +43,7 @@ from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
 from grants.models import (
-    Contribution, Grant, GrantCategory, MatchPledge, Milestone, PhantomFunding, Subscription, Update
+    Contribution, Grant, GrantCategory, MatchPledge, Milestone, PhantomFunding, Subscription, Update,
 )
 from grants.utils import get_leaderboard, is_grant_team_member
 from kudos.models import BulkTransferCoupon
