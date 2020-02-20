@@ -63,7 +63,15 @@ $(document).ready(function() {
           $('#thumbnail-title').text(response.title);
           $('#thumbnail-provider').text(response.link);
           $('#thumbnail-desc').text(response.description);
-          $('#thumbnail-img').attr('src', response.image);
+          if (response.image) {
+            $('#thumbnail-img').attr('src', response.image);
+            $('#thumbnail-img').removeClass('py-2 px-4');
+            $('#thumbnail-img').css('width', '130%');
+          } else {
+            $('#thumbnail-img').addClass('py-2 px-4');
+            $('#thumbnail-img').css('width', '8rem');
+            $('#thumbnail-img').attr('src', 'https://s.gitcoin.co/static/v2/images/team/gitcoinbot.c1e81ab42f13.png');
+          }
 
           embedded_resource = url;
           $('#thumbnail').show();

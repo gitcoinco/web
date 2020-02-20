@@ -1207,6 +1207,7 @@ def activity(request):
         'page': page,
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
+        'my_tribes': [membership.org.handle for membership in request.user.profile.tribe_members.all()],
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]
 

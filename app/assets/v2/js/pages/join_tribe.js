@@ -36,6 +36,29 @@ const joinTribe = () => {
 
 joinTribe();
 
+const joinTribeDirect = (elem) => {
+
+  if (!document.contxt.github_handle) {
+    //elem.preventDefault();
+    _alert('Please login first.', 'error');
+    return;
+  }
+
+  $(elem).attr('disabled', true);
+  //elem.preventDefault();
+  const tribe = $(elem).data('jointribe');
+  const url = `/tribe/${tribe}/join/`;
+  const sendJoin = fetchData (url, 'POST', {}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+
+  $.when(sendJoin).then(function(response) {
+    $(elem).attr('disabled', false);
+    $(elem).attr('member', response.is_member);
+    $(elem).attr('hidden', true);
+  }).fail(function(error) {
+    $(elem).attr('disabled', false);
+  });
+}
+
 
 const tribeLeader = () => {
   $('[data-tribeleader]').each(function(index, elem) {
