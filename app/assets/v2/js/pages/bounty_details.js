@@ -1558,7 +1558,7 @@ const process_activities = function(result, bounty_activities) {
 
     if (type === 'new_kudos') {
       to_username = meta.to_username.slice(1);
-      kudos = _activity.kudos.kudos_token_cloned_from.image;
+      kudos = _activity.kudos.image;
     } else if (type == 'new_tip') {
       tip = {
         amount: meta.amount,
