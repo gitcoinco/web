@@ -3,14 +3,14 @@
 $(document).ready(function() {
 
   var linkify = function(new_text) {
-    new_text = new_text.replace(/ #(\S*)/g, ' <a href="/?tab=search-$1">#$1</a>');
-    new_text = new_text.replace(/ @(\S*)/g, ' <a href="/profile/$1">@$1</a>');
+    new_text = new_text.replace(/(?:^|\s)#([a-zA-Z\d-]+)/g, ' <a href="/?tab=search-$1">#$1</a>');
+    new_text = new_text.replace(/\B@(\w*)/g, ' <a href="/profile/$1">@$1</a>');
     return new_text;
   };
   // inserts links into the text where there are URLS detected
 
   function urlify(text) {
-    var urlRegex = /(https?:\/\/[^\s]+)/g;
+    var urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
     return text.replace(urlRegex, function(url) {
       return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
@@ -30,7 +30,7 @@ $(document).ready(function() {
     if ($('#new_activity_notifier').length) {
       $('#new_activity_notifier').html(html);
     } else {
-      $(html).insertBefore($('#activities .row').first());
+      $(html).insertBefore($('#activities .box').first());
     }
     var prefix = '(' + document.buffered_rows.length + ') ';
 
@@ -52,7 +52,7 @@ $(document).ready(function() {
     }
     if ($('.infinite-more-link').length) {
       if (!max_pk) {
-        max_pk = $('#activities .row').first().data('pk');
+        max_pk = $('#activities .box').first().data('pk');
         if (!max_pk) {
           return;
         }
@@ -62,11 +62,11 @@ $(document).ready(function() {
 
       url += '&after-pk=' + max_pk;
       $.get(url, function(html) {
-        var new_row_number = $(html).find('.activity.row').first().data('pk');
+        var new_row_number = $(html).find('.activity.box').first().data('pk');
 
         if (new_row_number && new_row_number > max_pk) {
           max_pk = new_row_number;
-          $(html).find('.activity.row').each(function() {
+          $(html).find('.activity.box').each(function() {
             document.buffered_rows.push($(this)[0].outerHTML);
           });
           ping_activity_notifier();
@@ -87,7 +87,7 @@ $(document).ready(function() {
   // schedule long poller when first activity feed item shows up
   // by recursively waiting for the activity items to show up
   var schedule_long_poller = function() {
-    if ($('#activities .row').length) {
+    if ($('#activities .box').length) {
       run_longpoller(true);
     } else {
       setTimeout(function() {
@@ -124,7 +124,7 @@ $(document).ready(function() {
     }
 
     // update UI
-    $(this).parents('.row.box').remove();
+    $(this).parents('.activity.box').remove();
 
     // remote post
     var params = {
@@ -156,7 +156,7 @@ $(document).ready(function() {
     const github_url = '';
     const from_name = document.contxt['github_handle'];
     const username = $parent.data('username');
-    var amount_input = prompt('How much ETH do you want to send to ' + username + '?', '0.01');
+    var amount_input = prompt('How much ETH do you want to send to ' + username + '?', '0.001');
 
     if (!amount_input) {
       return;
@@ -182,7 +182,7 @@ $(document).ready(function() {
 
       $amount.fadeOut().text(new_amount).fadeIn();
       setTimeout(function() {
-        var $target = $parent.parents('.row.box').find('.comment_activity');
+        var $target = $parent.parents('.activity.box').find('.comment_activity');
 
         view_comments($target, false);
       }, 1000);
@@ -255,7 +255,7 @@ $(document).ready(function() {
     };
     var url = '/api/v0.1/activity/' + $(this).data('pk');
 
-    var parent = $(this).parents('.row.box');
+    var parent = $(this).parents('.activity.box');
 
     parent.find('.loading').removeClass('hidden');
     $.post(url, params, function(response) {
@@ -282,7 +282,7 @@ $(document).ready(function() {
       return;
     }
 
-    $parent.parents('.row.box').find('.loading').removeClass('hidden');
+    $parent.parents('.activity.box').find('.loading').removeClass('hidden');
 
     // increment number
     var num = $parent.find('span.num').html();
@@ -308,10 +308,10 @@ $(document).ready(function() {
       // pass
     })
       .fail(function() {
-        $parent.parents('.row.box').find('.error').removeClass('hidden');
+        $parent.parents('.activity.box').find('.error').removeClass('hidden');
       })
       .always(function() {
-        $parent.parents('.row.box').find('.loading').addClass('hidden');
+        $parent.parents('.activity.box').find('.loading').addClass('hidden');
       });
   };
 
@@ -323,7 +323,7 @@ $(document).ready(function() {
     };
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 
-    var $target = $parent.parents('.row.box').find('.comment_container');
+    var $target = $parent.parents('.activity.box').find('.comment_container');
 
     if (!$target.length) {
       $target = $parent.parents('.box').find('.comment_container');
@@ -336,21 +336,21 @@ $(document).ready(function() {
       return;
     }
     $parent.find('.action').addClass('open');
-    $parent.parents('.row.box').find('.loading').removeClass('hidden');
+    $parent.parents('.activity.box').find('.loading').removeClass('hidden');
     $.get(url, params, function(response) {
-      $parent.parents('.row.box').find('.loading').addClass('hidden');
+      $parent.parents('.activity.box').find('.loading').addClass('hidden');
       $target.addClass('filled');
       $target.html('');
       for (var i = 0; i < response['comments'].length; i++) {
-        var comment = sanitizeAPIResults(response['comments'])[i];
-        var the_comment = comment['comment'];
+        let comment = sanitizeAPIResults(response['comments'])[i];
+        let the_comment = comment['comment'];
 
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
         var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
-        var show_tip = document.contxt.is_alpha_tester || comment['tip_able'];
-        var html = `
-        <div class="row p-2">
+        var show_tip = true;
+        let html = `
+        <div class="row comment_row p-2" data-id=${comment['id']}>
           <div class="col-1 activity-avatar mt-1">
             <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
@@ -363,18 +363,30 @@ $(document).ready(function() {
                 <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
                 @${comment['profile_handle']}
                 </a></span>
-                ${show_tip ? `
-                <a href="#" class="tip_on_comment font-smaller-5 text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> ( <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(100 * comment['tip_count_eth']) / 100}</span>)
-                </a>
-                ` : ''}
+                ${comment['match_this_round'] ? `
+                <span class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; cursor:pointer; padding: 2px; font-size: 10px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@${comment['profile_handle']} is estimated to be earning ${comment['match_this_round']} in this week's CLR Round.  <BR><BR><strong>Send a tip to @${comment['profile_handle']}</strong> to increase their take of the matching pool.   <br><br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard.">
+                  <i class="fab fa-ethereum mr-0" aria-hidden="true"></i>
+                  $${comment['match_this_round']}
+                </span>
+
+                  ` : ' '}
               </span>
               <span class="d-none d-sm-inline grey font-smaller-5 float-right">
                 ${timeAgo}
               </span>
             </div>
             <div class="activity_comments_main_comment">
-              ${comment['comment']}
+              ${the_comment}
             </div>
+              <span class="font-smaller-5 float-right">
+              ${show_tip ? `
+              <span class="action like ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
+                <i class="far fa-heart grey"></i> <span class=like_count>${comment['like_count']}</span>
+              </span> |
+              <a href="#" class="tip_on_comment text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(100 * comment['tip_count_eth']) / 100}</span>
+              </a>
+              ` : ''}
+              <span>
           </div>
 
         </div>
@@ -402,6 +414,40 @@ $(document).ready(function() {
     });
   };
 
+
+  // post comment activity
+  $(document).on('click', '.comment_container .action.like', function(e) {
+    e.preventDefault();
+    var id = $(this).parents('.comment_row').data('id');
+
+    var params = {
+      'method': 'toggle_like_comment',
+      'comment': id,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+    var url = '/api/v0.1/activity/' + $(this).parents('.activity').data('pk');
+
+    $.post(url, params, function(response) {
+      console.log('toggle like');
+    });
+    var like_count = parseInt($(this).find('span.like_count').text());
+
+    if ($(this).hasClass('open')) {
+      $(this).removeClass('open');
+      like_count = like_count - 1;
+    } else {
+      $(this).addClass('open');
+      like_count = like_count + 1;
+    }
+    let $ele = $(this).find('span.like_count');
+
+    $ele.fadeOut(function() {
+      $ele.text(like_count);
+      $ele.fadeIn();
+    });
+  });
+
+
   // post comment activity
   $(document).on('click', '.comment_activity', function(e) {
     e.preventDefault();
@@ -415,14 +461,14 @@ $(document).ready(function() {
   // post comment activity
   $(document).on('click', '.post_comment', function(e) {
     e.preventDefault();
-    const $target = $(this).parents('.row.box').find('.comment_activity');
+    const $target = $(this).parents('.activity.box').find('.comment_activity');
 
     post_comment($target, false);
   });
 
   $(document).on('keypress', '.enter-activity-comment', function(e) {
     if (e.which == 13) {
-      const $target = $(this).parents('.row.box').find('.comment_activity');
+      const $target = $(this).parents('.activity.box').find('.comment_activity');
 
       post_comment($target, false);
     }

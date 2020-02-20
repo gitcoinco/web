@@ -1,5 +1,5 @@
-{% comment %}
-    Copyright (C) 2019 Gitcoin Core
+'''
+    Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -14,14 +14,18 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-{% endcomment %}
-<div class="mt-2">
-  <div class="infinite-container activity_stream">
-    {% for row in activities %}
-      {% include 'shared/activity.html' %}
-    {% endfor %}
-    {% if not suppress_more_link %}
-      <a class="infinite-more-link" href="{% if target %}{{target}}{% else %}?what={{what}}&page={{next_page}}{% endif %}" style="display:none;">More</a>
-    {% endif %}
-  </div>
-</div>
+'''
+
+from django.core.management.base import BaseCommand
+
+from dashboard.models import Earning
+
+
+class Command(BaseCommand):
+
+    help = 'auto follows everyone who user has done economic relationship with'
+
+    def handle(self, *args, **options):
+        for obj in Earning.objects.all():
+            success = obj.create_auto_follow()
+            print(obj.pk, success)
