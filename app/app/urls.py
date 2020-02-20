@@ -655,6 +655,11 @@ urlpatterns = [
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
+
+    # wiki
+    path('docs/notifications/', include('django_nyt.urls')),
+    path('docs/', include('wiki.urls')),
+
 ]
 
 if settings.ENABLE_SILK:
@@ -680,6 +685,8 @@ urlpatterns += [
     ),
     re_path(r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'),
 ]
+
+LOGIN_REDIRECT_URL = '/login'
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'
