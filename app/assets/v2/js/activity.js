@@ -4,7 +4,7 @@ $(document).ready(function() {
 
   var linkify = function(new_text) {
     new_text = new_text.replace(/(?:^|\s)#([a-zA-Z\d-]+)/g, ' <a href="/?tab=search-$1">#$1</a>');
-    new_text = new_text.replace(/\B@(\w*)/g, ' <a href="/profile/$1">@$1</a>');
+    new_text = new_text.replace(/\B@([a-zA-Z0-9_-]*)/g, ' <a href="/profile/$1">@$1</a>');
     return new_text;
   };
   // inserts links into the text where there are URLS detected
@@ -280,7 +280,7 @@ $(document).ready(function() {
 
     // user input
     var comment = $parent.parents('.box').find('.comment_container textarea').val();
-    
+
     $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
 
     // validation
