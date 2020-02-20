@@ -50,6 +50,8 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
+from avatar.models import SocialAvatar
+from avatar.utils import get_user_github_avatar_image
 from bleach import clean
 from bs4 import BeautifulSoup
 from dashboard.tokens import addr_to_token, token_by_name
@@ -3390,6 +3392,17 @@ class Profile(SuperModel):
             return self.admin_override_avatar.url
         if self.active_avatar:
             return self.active_avatar.avatar_url
+        else:
+            github_avatar_img = get_user_github_avatar_image(self.handle)
+            if github_avatar_img:
+                try:
+                    github_avatar = SocialAvatar.github_avatar(self, github_avatar_img)
+                    github_avatar.save()
+                    self.activate_avatar(github_avatar.pk)
+                    self.save()
+                    return self.active_avatar.avatar_url
+                except Exception as e:
+                    logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
 
     @property
