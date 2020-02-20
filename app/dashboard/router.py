@@ -68,6 +68,7 @@ class HackathonEventSerializer(serializers.ModelSerializer):
         fields = ('name', 'slug')
 
 
+# TODO : REMOVE KudosSerializer
 class KudosSerializer(serializers.ModelSerializer):
     """Handle serializing the Kudos object."""
 
@@ -86,6 +87,7 @@ class KudosTokenSerializer(serializers.ModelSerializer):
         """Define the kudos serializer metadata."""
 
         model = Token
+        depth = 1
         fields = ('price_finney', 'num_clones_allowed', 'num_clones_in_wild',
                   'num_clones_available_counting_indirect_send',
                   'cloned_from_id', 'popularity', 'popularity_week',
