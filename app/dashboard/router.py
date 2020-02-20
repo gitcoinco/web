@@ -86,7 +86,7 @@ class KudosTokenSerializer(serializers.ModelSerializer):
         """Define the kudos serializer metadata."""
 
         model = Token
-        fields = ('price_finney', 'num_clones_allowed', 'num_clones_in_wild'
+        fields = ('price_finney', 'num_clones_allowed', 'num_clones_in_wild',
                   'num_clones_available_counting_indirect_send',
                   'cloned_from_id', 'popularity', 'popularity_week',
                   'popularity_month', 'popularity_quarter', 'name',
@@ -95,7 +95,7 @@ class KudosTokenSerializer(serializers.ModelSerializer):
                   'external_url',  'background_color', 'owner_address',
                   'txid', 'token_id', 'hidden',
                   'send_enabled_for_non_gitcoin_admins',
-                  'preview_img_mode', 'suppress_sync')
+                  'preview_img_mode', 'suppress_sync', 'kudos_token_cloned_from')
 
 
 class ActivitySerializer(serializers.ModelSerializer):
