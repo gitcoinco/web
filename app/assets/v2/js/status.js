@@ -194,9 +194,7 @@ $(document).ready(function() {
 
     // enforce a max length
     var max_len = $(this).data('maxlen');
-
-    if ($(this).val().trim().length > max_len && (e.keyCode != 8)) {
-      e.preventDefault();
+    if ($(this).val().trim().length > max_len) {
       $(this).addClass('red');
       $('#btn_post').attr('disabled', true);
     } else if ($(this).val().trim().length > 4) {
