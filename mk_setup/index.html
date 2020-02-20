@@ -2514,12 +2514,18 @@ cp app/app/local.env app/app/.env
 </code></pre>
 
 <h2 id="special-instructions-for-windows-wsl-contributors">Special instructions for Windows WSL contributors</h2>
-<p><em>If you are using Windows 10 Professional or Enterprise</em>
-Download Docker Desktop for Windows <a href="https://hub.docker.com/editions/community/docker-ce-desktop-windows">here</a>.</p>
-<p><em>If you are NOT using Windows 10 Professional or Enterprise</em>
-Docker Desktop for Windows is not available to your OS. Follow the steps below to install and configure Docker Toolbox:
-1. Follow the installation instructions on the <a href="https://docs.docker.com/toolbox/toolbox_install_windows/">manual for installing Docker Toolbox on Windows</a>.
-2. WSL by default mounts your C: drive on <code>/mnt/c</code>, but Docker Toolkit instead expects it to be mounted on <code>/c/</code>. To instruct WSL to mount it in the correct location, create a config file in <code>/etc/wsl.conf</code> using WSL and enter the following:</p>
+<p><em>If you are using Windows 10 Professional or Enterprise</em></p>
+<p>Download Docker Desktop for Windows <a href="https://hub.docker.com/editions/community/docker-ce-desktop-windows">here</a>.</p>
+<p><em>If you are NOT using Windows 10 Professional or Enterprise</em></p>
+<p>Docker Desktop for Windows is not available to your OS. Follow the steps below to install and configure Docker Toolbox:</p>
+<ol>
+<li>
+<p>Follow the installation instructions on the <a href="https://docs.docker.com/toolbox/toolbox_install_windows/">manual for installing Docker Toolbox on Windows</a>.</p>
+</li>
+<li>
+<p>WSL by default mounts your C: drive on <code>/mnt/c</code>, but Docker Toolkit instead expects it to be mounted on <code>/c/</code>. To instruct WSL to mount it in the correct location, create a config file in <code>/etc/wsl.conf</code> using WSL and enter the following:</p>
+</li>
+</ol>
 <pre><code>[automount]
 root = /
 options = &quot;metadata&quot;
