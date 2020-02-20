@@ -396,7 +396,7 @@ $(document).ready(function() {
               <span class="action like px-0 ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
                 <i class="far fa-heart grey"></i> <span class=like_count>${comment['like_count']}</span>
               </span> |
-              <a href="#" class="tip_on_comment text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(100 * comment['tip_count_eth']) / 100}</span>
+              <a href="#" class="tip_on_comment text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(1000 * comment['tip_count_eth']) / 1000}</span>
               </a>
               ` : ''}
               <span>
