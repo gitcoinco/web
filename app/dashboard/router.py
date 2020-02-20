@@ -24,7 +24,7 @@ from datetime import datetime
 from django.db.models import Count, F
 
 import django_filters.rest_framework
-from kudos.models import KudosTransfer
+from kudos.models import KudosTransfer, Token
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
@@ -79,11 +79,30 @@ class KudosSerializer(serializers.ModelSerializer):
         fields = ('kudos_token_cloned_from', )
 
 
+class KudosTokenSerializer(serializers.ModelSerializer):
+    """Handle serializing the Kudos object."""
+
+    class Meta:
+        """Define the kudos serializer metadata."""
+
+        model = Token
+        fields = ('price_finney', 'num_clones_allowed', 'num_clones_in_wild',
+                  'num_clones_available_counting_indirect_send',
+                  'cloned_from_id', 'popularity', 'popularity_week',
+                  'popularity_month', 'popularity_quarter', 'name',
+                  'override_display_name', 'description',
+                  'image', 'rarity', 'tags', 'artist', 'platform',
+                  'external_url',  'background_color', 'owner_address',
+                  'txid', 'token_id', 'hidden',
+                  'send_enabled_for_non_gitcoin_admins',
+                  'preview_img_mode', 'suppress_sync', 'kudos_token_cloned_from')
+
+
 class ActivitySerializer(serializers.ModelSerializer):
     """Handle serializing the Activity object."""
 
     profile = ProfileSerializer()
-    kudos = KudosSerializer()
+    kudos = KudosTokenSerializer()
 
     class Meta:
         """Define the activity serializer metadata."""
