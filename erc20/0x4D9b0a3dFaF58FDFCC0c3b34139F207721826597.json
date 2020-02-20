@@ -8,9 +8,6 @@
   "email": "am51xiang@126.com",
   "website": "https://shanfu.io/",
   "whitepaper": "https://shanfu.io/img/flash.pdf",
-  "state": "NORMAL",
-  "initial_price":{
-  },
-  "links": {}
+  "state": "NORMAL"
 }
 
