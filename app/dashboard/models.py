@@ -3930,9 +3930,8 @@ class Profile(SuperModel):
 
         # lazily generate profile dict on the fly
         if not params.get('title') or self.frontend_calc_stale:
-            self.calculate_all()
-            self.save()
-            params = self.as_dict
+            from dashboard.tasks import profile_dict
+            profile_dict.delay(self.pk)
 
         if params.get('tips'):
             params['tips'] = Tip.objects.filter(pk__in=params['tips'])
