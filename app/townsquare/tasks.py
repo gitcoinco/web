@@ -5,6 +5,7 @@ from cacheops import invalidate_obj
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Activity
+from inbox.utils import comment_notification, mentioned_users_notification
 
 logger = get_task_logger(__name__)
 
@@ -69,3 +70,18 @@ def send_comment_email(self, pk, retry=False):
         instance = Comment.objects.get(pk=pk)
         comment_email(instance)
         print("SENT EMAIL")
+
+
+@app.shared_task(bind=True, max_retries=3)
+def send_comment_notification(self, pk, retry=False):
+    """
+    :param self:
+    :param pk:
+    :return:
+    """
+    with redis.lock("tasks:send_comment_notification", timeout=LOCK_TIMEOUT):
+        from townsquare.models import Comment
+        instance = Comment.objects.get(pk=pk)
+        comment_notification(instance)
+        mentioned_users_notification(instance)
+        print("SENT NOTIFICATION")
