@@ -218,7 +218,7 @@ def grants_clr_calculate (grant_contributions, total_pot, threshold=25.0, total_
     Returns:
         debug output: clr prediction curve
 '''
-def predict_clr(from_date=None, clr_type=None, network='mainnet', grant_id=86.0, live_user=99999999.0): 
+def predict_clr(from_date=None, clr_type=None, network='mainnet', grant_id=86.0, live_user=99999999.0, threshold=25.0, total_pot=125000.0): 
     # setup
     debug_output = []
 
@@ -239,7 +239,7 @@ def predict_clr(from_date=None, clr_type=None, network='mainnet', grant_id=86.0,
     # calculate the curve
     clr_curve = []
     for x, y in zip(aggregated_contributions_list, pair_totals_list):
-        res = calculate_new_clr(x, y)
+        res = calculate_new_clr(x, y, threshold=threshold, total_pot=total_pot)
         pred = list(filter(lambda x: x['id'] == grant_id, res))[0]['clr_amount']
         clr_curve.append(pred)
     # [grant_clr, additional CLR granted with 1, 10, 100, 1000 donations], 5 elements total
