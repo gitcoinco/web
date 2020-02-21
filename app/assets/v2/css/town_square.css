@@ -948,3 +948,6 @@ body.green.offer_view .announce {
   position: relative;
   font-weight: bold;
 }
+#payout_estimate{
+  font-size: 12px;
+}

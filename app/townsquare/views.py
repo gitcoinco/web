@@ -199,6 +199,7 @@ def town_square(request):
             'following': request.user.profile == obj.profile or request.user.profile.follower.filter(org=obj.profile) if request.user.is_authenticated else False,
             'handle': obj.profile.handle,
             'contributions': obj.contributions,
+            'contributors': obj.contributors,
             'amount': f"{int(obj.contributions_total/1000)}k" if obj.contributions_total > 1000 else round(obj.contributions_total, 2),
             'match_amount': obj.match_total,
             'you': obj.profile.pk == request.user.profile.pk if request.user.is_authenticated else False,

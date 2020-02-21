@@ -241,8 +241,9 @@ $(document).ready(function() {
       $(this).find('span.action').addClass('open');
       $(this).data('state', $(this).data('affirmative'));
 
-      var $icon = $(this).find(".fa-heart")
-      $icon.effect( "puff", function(){
+      var $icon = $(this).find('.fa-heart');
+
+      $icon.effect('puff', function() {
         $(this).fadeIn();
       });
 
@@ -456,6 +457,11 @@ $(document).ready(function() {
     } else {
       $(this).addClass('open');
       like_count = like_count + 1;
+      var $icon = $(this).find('.fa-heart');
+
+      $icon.effect('puff', function() {
+        $(this).fadeIn();
+      });
     }
     let $ele = $(this).find('span.like_count');
 

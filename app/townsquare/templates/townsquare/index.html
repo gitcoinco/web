@@ -385,6 +385,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </a>
                   </div>
                   <div class="grey">
+                    <div id=payout_estimate>
+                      (Payout <span class="clr_match_countdown_timer m-0" data-time="{{current_match_round.valid_to|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>)
+                    </div>
                     <table>
                       <tr class="title">
                         <td>
@@ -413,8 +416,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             </span>
                           {% endif %}
                           </td>
-                          <td class="text-right" data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contribution{{mli.contributions|pluralize}} worth ${{mli.amount}} since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about ${{mli.match_amount}} in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})">
-                            {{mli.contributions}} x
+                          <td class="text-right" data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contribution{{mli.contributions|pluralize}} from {{mli.contributors}} contributor{{mli.contributors|pluralize}} worth ${{mli.amount}} since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about ${{mli.match_amount}} in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})">
+                            {{mli.contributors}} x
                             ${{mli.amount}} =
                             ${{mli.match_amount}}
                             <br>
