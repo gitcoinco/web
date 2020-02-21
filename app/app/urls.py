@@ -316,7 +316,10 @@ urlpatterns = [
     re_path(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     re_path(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     re_path(r'^legal/?', dashboard.views.terms, name='legal'),
+
+    # User Directory
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
+    re_path(r'^tribes/explore', dashboard.views.users_directory, name='tribes_directory'),
 
     # Alpha functionality
     re_path(r'^profile/(.*)/(.*)?', dashboard.views.profile, name='profile_by_tab'),

@@ -235,7 +235,7 @@ class MatchRound(SuperModel):
 
     def get_absolute_url(self):
         return self.activity.url
-    
+
     def process(self):
         from dashboard.models import Profile
         mr = self
@@ -292,9 +292,11 @@ class MatchRanking(SuperModel):
 
 def get_eligible_input_data(mr):
     from dashboard.models import Earning, Profile
+    from django.contrib.contenttypes.models import ContentType
     network = 'mainnet' if not settings.DEBUG else 'rinkeby'
     earnings = Earning.objects.filter(created_on__gt=mr.valid_from, created_on__lt=mr.valid_to)
     earnings = earnings.filter(to_profile__isnull=False, from_profile__isnull=False, value_usd__isnull=False, network=network)
     earnings = earnings.exclude(to_profile__user__is_staff=True)
+    earnings = earnings.filter(source_type=ContentType.objects.get(app_label='dashboard', model='tip'))
     earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
     return [[ele[0], ele[1], float(ele[2])] for ele in earnings]
