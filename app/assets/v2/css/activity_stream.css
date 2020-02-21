@@ -204,3 +204,13 @@ a .sup {
   border-top: 3px solid #3e00ff;
   border-bottom: 3px solid #3e00ff;
 }
+
+
+textarea.enter-activity-comment {
+  height: 3em;
+  transition: .1s all linear;
+}
+
+.enter-activity-comment:focus {
+  height: 6em;
+}
