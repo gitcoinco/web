@@ -1003,8 +1003,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Today’s The Day - Stream Sustain Web3 Summit Live!"
-    new_kudos_pks = [10727, 10864, 7503]
+    subject = "Web3 Status: SUSTAINED!"
+    new_kudos_pks = [10864, 10852, 7502]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1023,42 +1023,51 @@ def render_new_bounty_roundup(to_email):
 
     intro = f'''
 <p>
-Heya Gitcoiners,
+Greetings Gitcoiners,
 </p>
 <p>
-We’re coming at you a day early with the Gitcoin Weekly for a special announcement. The big day has arrived! We’re hosting the <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a> today in Denver, and you can <a href="https://web3.sustainoss.org/livestream">Livestream</a> the event from the comfort of your own home!
+Happy Friday! If you were expecting an email from Mr. Owocki today, I have good news and bad news. The bad news is you’re stuck with me - sorry to disappoint. But the absolutely incredible good news is that in the early morning hours of a magical Sustain Web3 Summit, the blockchain gods blessed this earth with a healthy <a href="https://twitter.com/owocki/status/1227969021720424449">baby Owocki</a>. While this may have thrown a wrench in our event plans, we’re all extremely excited for Kevin and his wonderful family, and the show must (and did) go on.
 </p>
 <p>
- The <a href="https://web3.sustainoss.org/schedule">schedule is live</a> and the lineup is looking hotter than the ETH price ;). Karl Floersch, Hudson Jameson, Vitalik Buterin, Josh Cincinnati and many many more industry leaders are taking the stage as we speak. Check out the full agenda <a href="https://web3.sustainoss.org/schedule">here</a> to find which talks you won’t want to miss. Times are listed in MST (UTC - 7), so make sure you know when that is in your time zone - the event will run from 17:00 to 23:59 UTC today, Feb 13th.
+So let’s get into it! If you weren’t able to attend or stream Sustain Web3, the event was a blast and almost all the talks are already uploaded to our <a href="https://www.youtube.com/watch?v=wWXdi891b28&list=PLvTrX8LNPbPnJYe0v37HL4T8dsilPQWTE">Youtube</a> for your enjoyment. Furthermore, Xpring and Bancor have both decided to extend their bounties from the Sustain Web3 Virtual Hackathon, see the <a href="https://gitcoin.co/hackathon/sustain-web3">prize explorer</a> with $9,000 still up for grabs and 1 week left!
 </p>
 <p>
-Depending on when you are reading this, the event may be live now! You can stream on the <a href="https://web3.sustainoss.org/livestream">Livestream Page</a> or directly from our <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w">Youtube Channel</a>. Drop in and leave a like or comment if you’re so inclined! Many people have been working hard to put on a great free event and we can’t wait to share it with you. If you do miss the Livestream, expect the talks to go up on Youtube shortly after.
+Even as the Gitcoin team devolves into anarchy without Kevin, we still have plenty of hackathons in the pipeline for you. This week we kicked off the 6-week <a href="https://blockchainforsocialimpact.com/incubator/">Social Impact Incubator</a> with $30,000 in prizes, <a href="https://gitcoin.co/hackathon/onboard/decentralized-impact-incubator/">sign up</a> and form teams by next week. Next Friday we’re launching an <a href="https://gitcoin.co/hackathon/onboard/sia/">exclusive virtual hackathon</a> with <a href="https://siasky.net/">Sia</a>. Registration is also open for our DeFi hackathon <a href="https://gitcoin.co/hackathon/onboard/funding-the-future/">Funding The Future</a> in late March.
+</p>
+<p>
+Finally, a sleep deprived CEO and father of two still somehow managed to make it to his <a href="https://www.youtube.com/watch?v=eAMzAOhn1KY">ETHDenver talk</a> to make some special announcements. Titled “Cathedral & Bazaar in the web3 era” this talk explores concepts from the 90’s OSS classic "Cathedral & Bazaar" & revisits it in the web3-era. We’re excited to share that we’ve already got $600k in CLR matching funds for 2020, and will be running weekly mini CLR rounds on the Gitcoin <a href=“https://gitcoin.co/townsquare">Town Square</a>!
 </p>
 
 {kudos_friday}
 
+<h3>What else is new?</h3>
+    <ul>
+        <li>
+        Today's Gitcoin Livestream will be with Yorke Rhodes of Microsoft and Vanessa Grellet of ConsenSys, both part of the Blockchain for Social Impact Coalition. We'll be discussing the Social Impact Incubator (6-week hackathon) that kicked off this week, so <a href=“gitcoin.co/livestream”>join us</a> at 2pm ET and come with questions.
+        </li>
+    </ul>
 </p>
 <p>
-Back to BUIDLing,
+Back to Gittin' those Coins,
 </p>
 '''
     highlights = [{
-        'who': 'mul1sh',
+        'who': 'matkt',
         'who_link': True,
-        'what': 'Built OrFeed Judge Voting Contract For Prediction Market',
-        'link': 'https://gitcoin.co/issue/ProofSuite/OrFeed/52/3990',
+        'what': 'Added NAT Kubernetes Support for Besu',
+        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/4/4002',
         'link_copy': 'View more',
     }, {
-        'who': 'pengiundev',
+        'who': 'robsecord',
         'who_link': True,
-        'what': 'Adjusted "Hatching Period" In Bonding Curve Smart Contract',
-        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/10/3962',
+        'what': 'Created The Best User Experience In A Dapp Utilizing Dfuse (Sustain Web3 Hackathon)',
+        'link': 'https://gitcoin.co/issue/dfuse-io/hackathons/1/3954',
         'link_copy': 'View more',
     }, {
-        'who': 'adrianhacker-pdx',
+        'who': 'calchulus',
         'who_link': True,
-        'what': 'Solved Challenge With A Memory-Efficient Algorithm',
-        'link': 'https://gitcoin.co/issue/chejazi/points-challenge/1/3945',
+        'what': 'Created a New Logo Design for Charged Particles',
+        'link': 'https://gitcoin.co/issue/robsecord/ChargedParticlesWeb/1/4025',
         'link_copy': 'View more',
     }, ]
 
@@ -1075,14 +1084,14 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/23',
-        'primer': 'Move Orion Peer Table To Memory And Implement Environment Variables For Configuration',
+        'url': 'https://github.com/harmonylion/ideamarkets/issues/7',
+        'primer': 'Streamline Buying Tokens From Bonding Curve Using RDAI',
     }, {
-        'url': 'https://github.com/ProofSuite/OrFeed/issues/57',
-        'primer': 'Arbitrage And Triangular Arbitrage Calculator',
+        'url': 'https://github.com/unstoppabledomains/unstoppable-demo-browser/issues/4',
+        'primer': 'Support ENS (.Eth) + IPFS Resolution',
     }, {
-        'url': 'https://github.com/ArweaveTeam/Bounties/issues/23',
-        'primer': 'Record The Forks Permafeed',
+        'url': 'https://github.com/blockchainforsocialimpact/incubator/issues/3',
+        'primer': '[$10,000] - Plastics & Pollution (Social Impact Incubator)',
     }]
 
 
