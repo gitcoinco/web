@@ -120,6 +120,14 @@ h4,
   color: #ffffff;
 }
 
+.gc-text-blue {
+  color: #3E00FF;
+}
+
+.gc-text-green {
+  color: #0FCE7C;
+}
+
 .text-black-60 {
   color: rgba(0, 0, 0, 0.6)!important;
 }

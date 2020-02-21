@@ -465,8 +465,8 @@ def wall_post_email(activity):
     to_emails = []
     what = ''
     if activity.what == 'profile':
-        to_emails.append(activity.profile.other_profile.email)
-        what = f"@{activity.profile.other_profile.handle}"
+        to_emails.append(activity.other_profile.email)
+        what = f"@{activity.other_profile.handle}"
     if activity.what == 'kudos':
         what = activity.kudos.ui_name
         pass
@@ -561,9 +561,7 @@ def send_user_feedback(quest, feedback, user):
     try:
         setup_lang(to_email)
         subject = f"Your Gitcoin Quest \"{quest.title}\" has feedback from another user!"
-        body_str = f("Your quest: {quest.title} has feedback from user {user.profile.handle}:\n\n"
-                     "{feedback}\n\n"
-                     "to edit your quest, click <a href=\"{quest.edit_url}\">here</a>")
+        body_str = f"Your quest: {quest.title} has feedback from user {user.profile.handle}:\n\n{feedback}\n\nto edit your quest, click <a href=\"{quest.edit_url}\">here</a>"
         body = f"{body_str}"
         if not should_suppress_notification_email(to_email, 'quest'):
             send_mail(

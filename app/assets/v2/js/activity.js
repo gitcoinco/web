@@ -3,14 +3,14 @@
 $(document).ready(function() {
 
   var linkify = function(new_text) {
-    new_text = new_text.replace(/ #(\S*)/g, ' <a href="/?tab=search-$1">#$1</a>');
-    new_text = new_text.replace(/ @(\S*)/g, ' <a href="/profile/$1">@$1</a>');
+    new_text = new_text.replace(/(?:^|\s)#([a-zA-Z\d-]+)/g, ' <a href="/?tab=search-$1">#$1</a>');
+    new_text = new_text.replace(/\B@([a-zA-Z0-9_-]*)/g, ' <a href="/profile/$1">@$1</a>');
     return new_text;
   };
   // inserts links into the text where there are URLS detected
 
   function urlify(text) {
-    var urlRegex = /(https?:\/\/[^\s]+)/g;
+    var urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
     return text.replace(urlRegex, function(url) {
       return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
@@ -120,6 +120,10 @@ $(document).ready(function() {
     e.preventDefault();
     if (!document.contxt.github_handle) {
       _alert('Please login first.', 'error');
+      return;
+    }
+
+    if (!confirm('Are you sure you want to delete this?')) {
       return;
     }
 
@@ -307,7 +311,9 @@ $(document).ready(function() {
     }
 
     // user input
-    var comment = $parent.parents('.box').find('.comment_container input').val();
+    var comment = $parent.parents('.box').find('.comment_container textarea').val();
+
+    $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
 
     // validation
     if (!comment) {
@@ -332,7 +338,7 @@ $(document).ready(function() {
 
     $.post(url, params, function(response) {
       var success_callback = function($parent) {
-        $parent.find('input').focus();
+        $parent.find('textarea').focus();
       };
 
       view_comments($parent, allow_close_comment_container, success_callback);
@@ -344,6 +350,7 @@ $(document).ready(function() {
       })
       .always(function() {
         $parent.parents('.activity.box').find('.loading').addClass('hidden');
+        $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
       });
   };
 
@@ -373,14 +380,17 @@ $(document).ready(function() {
       $parent.parents('.activity.box').find('.loading').addClass('hidden');
       $target.addClass('filled');
       $target.html('');
-      for (var i = 0; i < response['comments'].length; i++) {
+      for (let i = 0; i < response['comments'].length; i++) {
         let comment = sanitizeAPIResults(response['comments'])[i];
         let the_comment = comment['comment'];
 
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
-        var timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
-        var show_tip = true;
+
+        the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
+        const timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
+        const show_tip = true;
+        const is_comment_owner = document.contxt.github_handle == comment['profile_handle'];
         const can_award = (
           response.author === document.contxt.github_handle &&
           response.has_tip == true &&
@@ -425,11 +435,14 @@ $(document).ready(function() {
             <a class="btn mt-1 mb-1 btn-radio font-smaller-5" href="${comment['redeem_link']}">Redeem tip</a>`}
 
               <span class="font-smaller-5 float-right">
+              ${is_comment_owner ?
+    `<i data-pk=${comment['id']} class="delete_comment fas fa-trash font-smaller-7 position-relative text-black-70 mr-1 cursor-pointer" style="top:-1px; "></i>| `
+    : ''}
               ${show_tip ? `
-              <span class="action like ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
+              <span class="action like px-0 ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
                 <i class="far fa-heart grey"></i> <span class=like_count>${comment['like_count']}</span>
               </span> |
-              <a href="#" class="tip_on_comment text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(100 * comment['tip_count_eth']) / 100}</span>
+              <a href="#" class="tip_on_comment text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(1000 * comment['tip_count_eth']) / 1000}</span>
               </a>
               ` : ''}
               <span>
@@ -447,7 +460,7 @@ $(document).ready(function() {
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
           <div class="col-12 col-sm-11 text-right">
-            <input type="text" class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment">
+            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3"></textarea>
             <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
         </div>
@@ -498,7 +511,7 @@ $(document).ready(function() {
   $(document).on('click', '.comment_activity', function(e) {
     e.preventDefault();
     var success_callback = function($parent) {
-      $parent.find('input').focus();
+      $parent.find('textarea').focus();
     };
 
     view_comments($(this), true, success_callback);
@@ -512,8 +525,35 @@ $(document).ready(function() {
     post_comment($target, false);
   });
 
+  $(document).on('click', '.delete_comment', function(e) {
+    e.preventDefault();
+    const comment_id = $(this).data('pk');
+
+    const params = {
+      'method': 'DELETE',
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+
+    const url = '/api/v0.1/comment/' + comment_id;
+
+    $.post(url, params, function(response) {
+      if (response.status <= 204) {
+        _alert('comment successfully deleted.', 'success', 1000);
+        $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
+        console.log(response);
+      } else {
+        _alert(`Unable to delete commment: ${response.message}`, 'error');
+        console.log(`error deleting commment: ${response.message}`);
+      }
+    }).fail(function(error) {
+      _alert('Unable to delete comment', 'error');
+      console.log(`error deleting commment: ${error.message}`);
+    });
+  });
+
+
   $(document).on('keypress', '.enter-activity-comment', function(e) {
-    if (e.which == 13) {
+    if (e.which == 13 && !e.shiftKey) {
       const $target = $(this).parents('.activity.box').find('.comment_activity');
 
       post_comment($target, false);

@@ -50,7 +50,7 @@ SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
 ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
 BASE_DIR = root()
 #social integrations
-GIPHY_KEY = env('GIPHY_KEY', default='')
+GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
 
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)

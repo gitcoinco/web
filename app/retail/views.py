@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 '''
     Copyright (C) 2020 Gitcoin Core
@@ -27,6 +28,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
+from django.db.models import Count
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -1184,7 +1186,7 @@ def activity(request):
     next_page = page + 1
     start_index = (page-1) * page_size
     end_index = page * page_size
-    
+
     #p = Paginator(activities, page_size)
     #page = p.get_page(page)
     page = activities[start_index:end_index]
@@ -1206,6 +1208,7 @@ def activity(request):
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
         'TOKENS': request.user.profile.token_approvals.all() if request.user.is_authenticated else [],
+        'my_tribes': [membership.org.handle for membership in request.user.profile.tribe_members.all()],
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]
 
@@ -1941,7 +1944,7 @@ def tribes(request):
     plans= [
         {
             'type': 'lite',
-            'img': '/v2/images/tribes/landing/tribe-one.svg',
+            'img': static('v2/images/tribes/landing/plan-lite.svg'),
             'price': '10k',
             'features': [
                 '1 Hackthon Credit'
@@ -1952,7 +1955,7 @@ def tribes(request):
         },
         {
             'type': 'pro',
-            'img': '/v2/images/tribes/landing/tribe-two.svg',
+            'img': static('v2/images/tribes/logo.svg'),
             'discount': '40%',
             'price': '6k',
             'features': [
@@ -1965,7 +1968,7 @@ def tribes(request):
         },
         {
             'type': 'launch',
-            'img': '/v2/images/tribes/logo.svg',
+            'img': static('v2/images/tribes/landing/plan-launch.svg'),
             'price': '4k',
             'features': [
                 {
@@ -1977,55 +1980,25 @@ def tribes(request):
         }
     ]
 
-    companies = [
-        {
-            'name': 'Bancor',
-            'img': static('v2/images/project_logos/bancor.svg')
-        },
-        {
-            'name': 'Consensys Labs',
-            'img': static('v2/images/project_logos/consensys_labs.png')
-        },
-        {
-            'name': 'Ethereum Foundation',
-            'img': static('v2/images/project_logos/eth_foundation.png')
-        },
-        {
-            'name': 'Algorand',
-            'img': static('v2/images/project_logos/algorand.png')
-        },
-        {
-            'name': 'Consensys Grants',
-            'img': static('v2/images/project_logos/consensys_grants.png')
-        },
-        {
-            'name': 'AirSwap',
-            'img': static('v2/images/project_logos/airswap.svg')
-        },
-        {
-            'name': 'Portis',
-            'img': static('v2/images/project_logos/portis_text.png')
-        },
-        {
-            'name': 'Status',
-            'img': static('v2/images/project_logos/status.svg')
-        },
-        {
-            'name': 'Matic',
-            'img': static('v2/images/project_logos/matic.svg')
-        },
-        {
-            'name': 'BZX',
-            'img': static('v2/images/project_logos/bzx.png')
+    _tribes = Profile.objects.filter(data__type='Organization').\
+        annotate(follower_count=Count('org')).order_by('-follower_count')[:8]
+
+    tribes = []
+
+    for _tribe in _tribes:
+        tribe = {
+            'name': _tribe.handle,
+            'img': _tribe.avatar_url,
+            'followers_count': _tribe.follower_count
         }
-    ]
+        tribes.append(tribe)
 
     testimonials = [
         {
             'text': 'I had a lot of fun (during Beyond Blockchain) meeting people and building tangible rapidly. Glad to have a winning submission!',
             'author': 'VirajA',
             'designation': 'Hacker',
-            'photo': 'https://c.gitcoin.co/avatars/58ef080697b34b1eab840bc60e2ee92b/viraja1.png'
+            'photo': static('v2/images/tribes/landing/viraj.png')
         },
         {
             'text': 'Gitcoin has a fantastic community that is our target audience -- Web 3 developers who want to build.',
@@ -2035,7 +2008,7 @@ def tribes(request):
             'org_photo': static('v2/images/project_logos/arweave.svg')
         },
         {
-            'text': '"Relationships with developers" is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.',
+            'text': 'Relationships with developers" is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.',
             'author': 'Scott Gralnick',
             'designation': 'Co-Founder, Portis',
             'photo': static('v2/images/tribes/landing/scott.png'),
@@ -2043,10 +2016,54 @@ def tribes(request):
         }
     ]
 
+    reasons = [
+        {
+            'title': 'Hackathon',
+            'img': static('/v2/images/tribes/landing/hackathon.svg'),
+            'info': 'See meaningful projects come to life on your dapp'
+        },
+        {
+            'title': 'Suggest Bounty',
+            'img': static('/v2/images/tribes/landing/suggest.svg'),
+            'info': 'Get bottoms up ideas from passionate contributors'
+        },
+        {
+            'title': 'Grow Tribe',
+            'img': static('/v2/images/tribes/landing/grow.svg'),
+            'info': 'Work seamlessly with your core contributors'
+        },
+        {
+            'title': 'Workshops',
+            'img': static('/v2/images/tribes/landing/workshop.svg'),
+            'info': 'Host workshops and learn together'
+        },
+        {
+            'title': 'Chat',
+            'img': static('/v2/images/tribes/landing/chat.svg'),
+            'info': 'Direct connection to your trusted tribe'
+        },
+        {
+            'title': 'Town Square',
+            'img': static('/v2/images/tribes/landing/townsquare.svg'),
+            'info': 'Broadcast your priorities and engagey our tribe'
+        },
+        {
+            'title': 'Payout/Fund',
+            'img': static('/v2/images/tribes/landing/payout.svg'),
+            'info': 'Easily co-manage hackathons with your team'
+        },
+        {
+            'title': 'Stats Report',
+            'img': static('/v2/images/tribes/landing/stats.svg'),
+            'info': 'See how your hackathons are performing'
+        }
+    ]
+
     context = {
         'plans': plans,
-        'companies': companies,
-        'testimonials': testimonials
+        'tribes': tribes,
+        'testimonials': testimonials,
+        'reasons': reasons
     }
 
     return TemplateResponse(request, 'tribes/landing.html', context)

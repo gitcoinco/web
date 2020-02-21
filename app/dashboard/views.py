@@ -909,6 +909,10 @@ def users_directory(request):
         'meta_description': "",
         'keywords': keywords
     }
+
+    if request.path == '/tribes/explore':
+        params['explore'] = 'explore_tribes'
+
     return TemplateResponse(request, 'dashboard/users.html', params)
 
 
@@ -980,7 +984,8 @@ def users_fetch(request):
     else:
         current_user = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
 
-    context = {}
+    current_profile = Profile.objects.get(user=current_user)
+
     if not settings.DEBUG:
         network = 'mainnet'
     else:
@@ -996,13 +1001,17 @@ def users_fetch(request):
 
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
+
+    show_banner = None
+
     if persona:
-        if persona == 'Funder':
+        if persona == 'funder':
             profile_list = profile_list.filter(dominant_persona='funder')
-        if persona == 'Coder':
+        if persona == 'coder':
             profile_list = profile_list.filter(dominant_persona='hunter')
-        if persona == 'Organization':
+        if persona == 'tribe':
             profile_list = profile_list.filter(data__type='Organization')
+            show_banner = static('v2/images/tribes/logo-with-text.svg')
 
     profile_list = users_fetch_filters(
         profile_list,
@@ -1051,7 +1060,6 @@ def users_fetch(request):
             average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
         ).order_by('-previous_worked_count')
     for user in this_page:
-        previously_worked_with = 0
         count_work_completed = user.get_fulfilled_bounties(network=network).count()
         profile_json = {
             k: getattr(user, k) for k in
@@ -1067,6 +1075,21 @@ def users_fetch(request):
         profile_json['work_done'] = count_work_completed
         profile_json['verification'] = user.get_my_verified_check
         profile_json['avg_rating'] = user.get_average_star_rating()
+
+        followers = TribeMember.objects.filter(org=user)
+
+        is_following = True if followers.filter(profile=current_profile).count() else False
+        profile_json['is_following'] = is_following
+
+        follower_count = followers.count()
+        profile_json['follower_count'] = follower_count
+
+        if user.is_org:
+            profile_dict = user.__dict__
+            profile_json['count_bounties_on_repo'] = profile_dict.get('as_dict').get('count_bounties_on_repo')
+            profile_json['sum_eth_on_repos'] = profile_dict.get('as_dict').get('sum_eth_on_repos')
+            profile_json['tribe_description'] = user.tribe_description
+            profile_json['rank_org'] = user.rank_org
 
         if not user.show_job_status:
             for key in ['job_salary', 'job_location', 'job_type',
@@ -1089,6 +1112,8 @@ def users_fetch(request):
     params['has_next'] = all_pages.page(page).has_next()
     params['count'] = all_pages.count
     params['num_pages'] = all_pages.num_pages
+    params['show_banner'] = show_banner
+    params['persona'] = persona
 
     # log this search, it might be useful for matching purposes down the line
     try:
@@ -2430,7 +2455,7 @@ def profile_backup(request):
     # grants
     data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
     # portfolio, active work, bounties
-    portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
+    portfolio_bounties = profile.get_fulfilled_bounties()
     active_work = Bounty.objects.none()
     interests = profile.active_bounties
     for interest in interests:

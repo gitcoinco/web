@@ -197,7 +197,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     {% endfor %}
                   </ul>
                   <div class="townsquare_nav-list_footer font-body font-weight-semibold">
-                    <a href="{% url "users_directory" %}?persona=Organization">
+                    <a href="{% url "users_directory" %}?persona=tribe">
                       Explore Tribes
                       <i class="ml-1 fab fa-wpexplorer font-weight-normal"></i>
                     </a>
@@ -211,7 +211,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <div id="status">
                   {% csrf_token %}
                   <div class="position-relative d-flex flex-row px-2 pt-4 pb-2">
-                    <div class="status-avatar">
+                    <div class="status-avatar px-3">
                       <img class="avatar rounded-circle" src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% endif %}{% endif %}"/>
                       {% if row.secondary_avatar_url %}
                         <img class="avatar my-auto rounded-circle secondary_avatar" src="{{row.secondary_avatar_url}}" />
@@ -287,7 +287,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                   <div id="thumbnail" class="mt-1 mb-2" style="display: none; top: initial; left: initial; background-color: #FAFAFA">
                     <div class="row" style="display: flex; justify-content: center; align-items: center; ">
-                      <div class="col ml-1 col-sm-3 col-md-2"><img id="thumbnail-img" style="width: 130%;" src=""></div>
+                      <div class="col ml-1 col-sm-3 col-md-2 text-center">
+                        <img id="thumbnail-img" style="width: 130%;" src="{% static 'v2/images/team/gitcoinbot.png' %}">
+                      </div>
                       <div class="col ml-2 text-left">
                         <p id="thumbnail-title" class="mt-2 mb-1" style="font-size: 1.2em; font-weight: bold"></p>
                         <p id="thumbnail-desc" class="small"></p>

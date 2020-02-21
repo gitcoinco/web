@@ -5,17 +5,17 @@ const giphy_re = /(?:https?:\/\/)?(?:media0\.)?(?:giphy\.com\/media\/)/;
 $(document).ready(function() {
   var embedded_resource = '';
   const GIPHY_API_KEY = document.contxt.giphy_key;
-  
+
   let button = document.querySelector('#btn_post');
-  
+
   function selectGif(e) {
     embedded_resource = $(e.target).data('src');
     $('#preview-img').attr('src', embedded_resource);
     $('#preview').show();
     $('#thumbnail').hide();
   }
-  
-  
+
+
   function injectGiphy(query) {
     const endpoint = 'https://api.giphy.com/v1/gifs/search?limit=13&api_key=' + GIPHY_API_KEY + '&offset=0&rating=G&lang=en&q=' + query;
     const result = fetchData(endpoint);
@@ -33,11 +33,11 @@ $(document).ready(function() {
       $('.pick-gif').on('click', selectGif);
     });
   }
-  
+
   $('#search-gif').on('input', function(e) {
     e.preventDefault();
     const query = e.target.value;
-    
+
     injectGiphy(query);
   });
 
@@ -104,7 +104,15 @@ $(document).ready(function() {
           $('#thumbnail-title').text(response.title);
           $('#thumbnail-provider').text(response.link);
           $('#thumbnail-desc').text(response.description);
-          $('#thumbnail-img').attr('src', response.image);
+          if (response.image) {
+            $('#thumbnail-img').attr('src', response.image);
+            $('#thumbnail-img').removeClass('py-2 px-4');
+            $('#thumbnail-img').css('width', '130%');
+          } else {
+            $('#thumbnail-img').addClass('py-2 px-4');
+            $('#thumbnail-img').css('width', '8rem');
+            $('#thumbnail-img').attr('src', 'https://s.gitcoin.co/static/v2/images/team/gitcoinbot.c1e81ab42f13.png');
+          }
 
           embedded_resource = url;
           $('#thumbnail').show();
@@ -181,33 +189,18 @@ $(document).ready(function() {
     $('#textarea').focus();
   }
 
-  document.is_shift = false;
-  // handle shift button
-  $('body').on('keyup', '#textarea', function(e) {
-    if (e.keyCode == 16) {
-      document.is_shift = false;
-    }
-  });
-  // handle shift button
-  $('body').on('keydown', '#textarea', function(e) {
-    if (e.keyCode == 16) {
-      document.is_shift = true;
-    }
-  });
-
   $('body').on('focus change paste keydown keyup blur', '#textarea', function(e) {
 
     // enforce a max length
     var max_len = $(this).data('maxlen');
 
-    if ($(this).val().trim().length > max_len && (e.keyCode != 8)) {
-      e.preventDefault();
+    if ($(this).val().trim().length > max_len) {
       $(this).addClass('red');
       $('#btn_post').attr('disabled', true);
     } else if ($(this).val().trim().length > 4) {
       $('#btn_post').attr('disabled', false);
       $(this).removeClass('red');
-      if ($('#textarea').is(':focus') && !document.is_shift && (e.keyCode == 13)) {
+      if ($('#textarea').is(':focus') && !e.shiftKey && e.keyCode == 13) {
         submitStatusUpdate();
         e.preventDefault();
       }
@@ -399,7 +392,7 @@ $(document).ready(function() {
       }).catch(err => console.log('Error ', err));
     }
   }
-  
+
   injectGiphy('latest');
 });
 window.addEventListener('DOMContentLoaded', function() {

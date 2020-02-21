@@ -365,18 +365,60 @@ def api(request, activity_id):
     # comment request
     elif request.POST.get('method') == 'comment':
         comment = request.POST.get('comment')
-        comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
-        to_emails = set(activity.comments.exclude(profile=request.user.profile).values_list('profile__email', flat=True))
-        comment_email(comment)
-
-        username_pattern = re.compile(r'@(\S+)')
-        mentioned_usernames = re.findall(username_pattern, comment.comment)
-        mentioned_emails = set(Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True))
-        # Don't send emails again to users who already received a comment email
-        deduped_emails = mentioned_emails.difference(to_emails)
-        mention_email(comment, deduped_emails)
+        title = request.POST.get('comment')
+        if 'Just sent a tip of' not in comment:
+            comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
 
     return JsonResponse(response)
+
+
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def comment_v1(request, comment_id):
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request.'
+    }
+
+    if not comment_id:
+        return JsonResponse(response)
+
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        response['message'] = 'user needs to be authenticated to take action'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'no matching profile found'
+        return JsonResponse(response)
+
+    try:
+        comment = Comment.objects.get(pk=comment_id)
+    except:
+        response = {
+            'status': 404,
+            'message': 'unable to find comment'
+        }
+        return JsonResponse(response)
+
+    if comment.profile != profile:
+        response = {
+            'status': 401,
+            'message': 'user not authorized'
+        }
+        return JsonResponse(response)
+
+    method = request.POST.get('method')
+
+    if method == 'DELETE':
+        comment.delete()
+        response = {
+            'status': 204,
+            'message': 'comment successfully deleted'
+        }
+        return JsonResponse(response)
 
 
 def get_offer_and_create_offer_action(profile, offer_id, what, do_not_allow_more_than_one_offeraction=False):

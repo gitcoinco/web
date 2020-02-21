@@ -294,7 +294,7 @@
   text-shadow: 0 2px 0px grey;
   position: relative;
 }
-.prize-gift i {
+.prize-gift .fas {
   color: white;
 }
 
@@ -375,7 +375,7 @@ a.offer_container.animate:hover .prize-gift::after {
   text-shadow: 0 2px 0px grey;
 }
 
-.empty .prize-gift i {
+.empty .prize-gift .fas {
   color: #c1c1c1;
 }
 
