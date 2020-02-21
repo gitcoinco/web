@@ -199,6 +199,8 @@ def town_square(request):
             'following': request.user.profile == obj.profile or request.user.profile.follower.filter(org=obj.profile) if request.user.is_authenticated else False,
             'handle': obj.profile.handle,
             'contributions': obj.contributions,
+            'default_match_estimate': obj.default_match_estimate,
+            'match_curve': obj.sorted_match_curve,
             'contributors': obj.contributors,
             'amount': f"{int(obj.contributions_total/1000)}k" if obj.contributions_total > 1000 else round(obj.contributions_total, 2),
             'match_amount': obj.match_total,
@@ -282,6 +284,8 @@ def api(request, activity_id):
             comment_dict['like_count'] = len(comment.likes)
             comment_dict['likes'] = ", ".join(Profile.objects.filter(pk__in=comment.likes).values_list('handle', flat=True)) if len(comment.likes) else "no one. Want to be the first?"
             comment_dict['name'] = comment.profile.data.get('name', None) or comment.profile.handle
+            comment_dict['default_match_round'] = comment.profile.matchranking_this_round.default_match_estimate if comment.profile.matchranking_this_round else None
+            comment_dict['sorted_match_curve'] = comment.profile.matchranking_this_round.sorted_match_curve if comment.profile.matchranking_this_round else None
             response['comments'].append(comment_dict)
         return JsonResponse(response)
 

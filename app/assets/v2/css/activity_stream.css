@@ -35,6 +35,7 @@ a .sup {
 .tip_activity,
 .action:hover {
   background-color: #fafafa;
+  cursor: pointer;
 }
 
 .action.open {

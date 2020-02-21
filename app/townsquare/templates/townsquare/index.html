@@ -416,7 +416,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             </span>
                           {% endif %}
                           </td>
-                          <td class="text-right" data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contribution{{mli.contributions|pluralize}} from {{mli.contributors}} contributor{{mli.contributors|pluralize}} worth ${{mli.amount}} since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about ${{mli.match_amount}} in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})">
+                          <td class="text-right" data-html="true" data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contribution{{mli.contributions|pluralize}} from <strong>{{mli.contributors}}</strong> contributor{{mli.contributors|pluralize}} worth <strong>${{mli.amount}}</strong> since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about <strong>${{mli.match_amount}}</strong> in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})
+                          <BR>
+                          <hr>
+
+                        Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round, a contribution of 0.001 ETH (about $0.30) could mean <strong>+${{mli.default_match_estimate|floatformat:2}}</strong> in matching.
+                        <br>
+                        <br>
+                        Other contribution levels will mean other matching amounts:
+
+                          Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round..
+                          <ul>
+                            {% for key, val in mli.match_curve.items %}
+                              {% if key %}
+                                <li>
+                                  Your contribution of ${{key}} could yield ${{val|floatformat:2}} in matching.
+                                </li>
+                              {% endif %}
+                            {% endfor %}
+                          </ul>
+                          ">
                             {{mli.contributors}} x
                             ${{mli.amount}} =
                             ${{mli.match_amount}}

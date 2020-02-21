@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -249,6 +249,7 @@ class MatchRound(SuperModel):
             for result in results:
                 try:
                     profile = Profile.objects.get(pk=result['id'])
+                    match_curve = clr.run_live_calc(data, result['id'], 999999, total_pot)
                     contributors = len(set([ele[1] for ele in data if int(ele[0]) == profile.pk]))
                     contributions_for_this_user = [ele for ele in data if int(ele[0]) == profile.pk]
                     contributions = len(contributions_for_this_user)
@@ -260,6 +261,7 @@ class MatchRound(SuperModel):
                         contributions=contributions,
                         contributions_total=contributions_total,
                         match_total=result['clr_amount'],
+                        match_curve=match_curve,
                         )
                 except Exception as e:
                     if settings.DEBUG:
@@ -289,10 +291,25 @@ class MatchRanking(SuperModel):
     payout_txid = models.CharField(max_length=255, default='', blank=True)
     payout_tx_status = models.CharField(max_length=255, default='', blank=True)
     payout_tx_issued = models.DateTimeField(db_index=True, null=True)
+    match_curve = JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"Round {self.round.number}: Ranked {self.number}, {self.profile.handle} got {self.contributions} contributions worth ${self.contributions_total} for ${self.match_total} Matching"
 
+    @property
+    def default_match_estimate(self):
+        # TODO: 0.3 is the defaul contribution amount, so we're pulling the match estimate
+        return self.match_curve["0.3"] - float(self.match_total)
+
+    @property
+    def sorted_match_curve(self):
+        # returns a dict of the amounts that new matching affect things
+        import collections
+        items = self.match_curve.items()
+        items = [[float(ele[0]), ele[1] - float(self.match_total)] for ele in items]
+        od = collections.OrderedDict(sorted(items))
+        return od
+    
 
 def get_eligible_input_data(mr):
     from dashboard.models import Tip
@@ -304,7 +321,8 @@ def get_eligible_input_data(mr):
     earnings = earnings.filter(to_profile__isnull=False, from_profile__isnull=False, value_usd__isnull=False, network=network)
     earnings = earnings.exclude(to_profile__user__is_staff=True)
     earnings = earnings.filter(source_type=ContentType.objects.get(app_label='dashboard', model='tip'))
-    tips = list(Tip.objects.filter(Q(comments_priv__contains='activity:') | Q(comments_priv__contains='comment:')).values_list('pk', flat=True))
+    # microtips only
+    tips = list(Tip.objects.filter(Q(comments_priv__contains='activity:') | Q(comments_priv__contains='comment:') | Q(tokenName='ETH', amount__lte=0.05)).values_list('pk', flat=True))
     earnings = earnings.filter(source_id__in=tips)
     earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
     return [[ele[0], ele[1], float(ele[2])] for ele in earnings]

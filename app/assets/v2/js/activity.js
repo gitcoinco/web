@@ -328,6 +328,23 @@ $(document).ready(function() {
       });
   };
 
+  // converts an object to a dict
+  function convert_to_dict(obj) {
+    return Object.keys(obj).map(key => ({
+      name: key,
+      value: obj[key],
+      type: 'foo'
+    }));
+  }
+
+  // loop iter for inside view_comments
+  // linter wants it outside of the method  ¯\_(ツ)_/¯
+  var loop_f = async function(ele) {
+    sorted_match_curve_html += '<li>';
+    sorted_match_curve_html += `Your contribution of ${ele.name} could yield $${Math.round(ele.value * 100) / 100} in matching.`;
+    sorted_match_curve_html += '</li>';
+  };
+
   var view_comments = function($parent, allow_close_comment_container, success_callback) {
 
     // remote post
@@ -364,7 +381,14 @@ $(document).ready(function() {
         const timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         const show_tip = true;
         const is_comment_owner = document.contxt.github_handle == comment['profile_handle'];
+        var sorted_match_curve_html = '';
 
+        if (comment['sorted_match_curve']) {
+
+          var match_curve = Array.from(convert_to_dict(comment['sorted_match_curve']).values());
+
+          match_curve.forEach(loop_f);
+        }
         let html = `
         <div class="row comment_row p-2" data-id=${comment['id']}>
           <div class="col-1 activity-avatar mt-1">
@@ -380,9 +404,21 @@ $(document).ready(function() {
                 @${comment['profile_handle']}
                 </a></span>
                 ${comment['match_this_round'] ? `
-                <span class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; cursor:pointer; padding: 2px; font-size: 10px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@${comment['profile_handle']} is estimated to be earning ${comment['match_this_round']} in this week's CLR Round.  <BR><BR><strong>Send a tip to @${comment['profile_handle']}</strong> to increase their take of the matching pool.   <br><br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard.">
+                <span class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; cursor:pointer; padding: 2px; font-size: 10px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@${comment['profile_handle']} is estimated to be earning <strong>$${comment['match_this_round']}</strong> in this week's CLR Round.  
+                <BR><BR>
+
+              Want to help @${comment['profile_handle']} move up the rankings?  Assuming you haven't contributed to @${comment['profile_handle']} yet this round, a contribution of 0.001 ETH (about $0.30) could mean +<strong>$${Math.round(100 * comment['default_match_round']) / 100}</strong> in matching.
+              <br>
+              <br>
+              Other contribution levels will mean other matching amounts:
+              <ul>
+              ${sorted_match_curve_html}
+              </ul>
+
+              <br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard.
+              ">
                   <i class="fab fa-ethereum mr-0" aria-hidden="true"></i>
-                  $${comment['match_this_round']}
+                  $${comment['match_this_round']} | +$${Math.round(100 * comment['default_match_round']) / 100}
                 </span>
 
                   ` : ' '}

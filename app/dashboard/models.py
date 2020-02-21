@@ -2187,6 +2187,7 @@ class Activity(SuperModel):
             'humanized_name',
             'url',
             'match_this_round',
+            'matchranking_this_round',
         ]
         activity = self.to_standard_dict(properties=properties)
         activity['pk'] = self.pk
@@ -2569,13 +2570,20 @@ class Profile(SuperModel):
 
     @property
     def match_this_round(self):
+        mr = self.matchranking_this_round
+        if mr:
+            return mr.match_total
+        return 0
+
+    @property
+    def matchranking_this_round(self):
         from townsquare.models import MatchRound
         mr = MatchRound.objects.current().first()
         if mr:
             mr = mr.ranking.filter(profile=self).first()
             if mr:
-                return mr.match_total
-        return 0
+                return mr
+        return None
 
     @property
     def quest_caste(self):
