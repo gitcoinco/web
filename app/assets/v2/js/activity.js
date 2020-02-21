@@ -241,6 +241,11 @@ $(document).ready(function() {
       $(this).find('span.action').addClass('open');
       $(this).data('state', $(this).data('affirmative'));
 
+      var $icon = $(this).find(".fa-heart")
+      $icon.effect( "puff", function(){
+        $(this).fadeIn();
+      });
+
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
     } else { // unlike
