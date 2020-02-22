@@ -226,7 +226,7 @@ def pricing(request):
     plans= [
         {
             'type': 'basic',
-            'img': '/v2/images/pricing/basic.svg',
+            'img': 'v2/images/pricing/basic.svg',
             'fee': 10,
             'features': [
                 '1 free <a href="/kudos">Kudos</a>',
@@ -242,7 +242,7 @@ def pricing(request):
         },
         {
             'type': 'pro',
-            'img': '/v2/images/pricing/pro.svg',
+            'img': 'v2/images/pricing/pro.svg',
             'price': 40,
             'features': [
                 '5 Free <a href="/kudos">Kudos</a> / mo',
@@ -258,7 +258,7 @@ def pricing(request):
         },
         {
             'type': 'max',
-            'img': '/v2/images/pricing/max.svg',
+            'img': 'v2/images/pricing/max.svg',
             'price': 99,
             'features': [
                 '5 Free <a href="/kudos">Kudos</a> / mo',
@@ -313,7 +313,7 @@ def subscribe(request):
 
     plan = {
         'type': 'pro',
-        'img': '/v2/images/pricing/sub_pro.svg',
+        'img': 'v2/images/pricing/sub_pro.svg',
         'price': 40
     }
 
@@ -321,7 +321,7 @@ def subscribe(request):
         if 'plan' in request.GET and request.GET['plan'] == 'max':
             plan = {
                 'type': 'max',
-                'img': '/v2/images/pricing/sub_max.svg',
+                'img': 'v2/images/pricing/sub_max.svg',
                 'price': 99
             }
         if 'pack' in request.GET and request.GET['pack'] == 'annual':
@@ -2005,42 +2005,42 @@ def tribes(request):
     reasons = [
         {
             'title': 'Hackathon',
-            'img': static('/v2/images/tribes/landing/hackathon.svg'),
+            'img': static('v2/images/tribes/landing/hackathon.svg'),
             'info': 'See meaningful projects come to life on your dapp'
         },
         {
             'title': 'Suggest Bounty',
-            'img': static('/v2/images/tribes/landing/suggest.svg'),
+            'img': static('v2/images/tribes/landing/suggest.svg'),
             'info': 'Get bottoms up ideas from passionate contributors'
         },
         {
             'title': 'Grow Tribe',
-            'img': static('/v2/images/tribes/landing/grow.svg'),
+            'img': static('v2/images/tribes/landing/grow.svg'),
             'info': 'Work seamlessly with your core contributors'
         },
         {
             'title': 'Workshops',
-            'img': static('/v2/images/tribes/landing/workshop.svg'),
+            'img': static('v2/images/tribes/landing/workshop.svg'),
             'info': 'Host workshops and learn together'
         },
         {
             'title': 'Chat',
-            'img': static('/v2/images/tribes/landing/chat.svg'),
+            'img': static('v2/images/tribes/landing/chat.svg'),
             'info': 'Direct connection to your trusted tribe'
         },
         {
             'title': 'Town Square',
-            'img': static('/v2/images/tribes/landing/townsquare.svg'),
+            'img': static('v2/images/tribes/landing/townsquare.svg'),
             'info': 'Broadcast your priorities and engagey our tribe'
         },
         {
             'title': 'Payout/Fund',
-            'img': static('/v2/images/tribes/landing/payout.svg'),
+            'img': static('v2/images/tribes/landing/payout.svg'),
             'info': 'Easily co-manage hackathons with your team'
         },
         {
             'title': 'Stats Report',
-            'img': static('/v2/images/tribes/landing/stats.svg'),
+            'img': static('v2/images/tribes/landing/stats.svg'),
             'info': 'See how your hackathons are performing'
         }
     ]

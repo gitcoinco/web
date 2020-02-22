@@ -201,12 +201,6 @@ a .sup {
   min-width: 7rem;
 }
 
-.activity_stream .new_bounty {
-  border-top: 3px solid #3e00ff;
-  border-bottom: 3px solid #3e00ff;
-}
-
-
 textarea.enter-activity-comment {
   height: 3em;
   transition: .1s all linear;
