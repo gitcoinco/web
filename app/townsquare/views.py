@@ -207,6 +207,7 @@ def town_square(request):
 
     # render page context
     trending_only = int(request.GET.get('trending', 0))
+    personal_only = int(request.GET.get('personal', 0))
     context = {
         'title': title,
         'card_desc': desc,
@@ -214,7 +215,7 @@ def town_square(request):
         'use_pic_card': True,
         'page_seo_text_insert': page_seo_text_insert,
         'nav': 'home',
-        'target': f'/activity?what={tab}&trending_only={trending_only}',
+        'target': f'/activity?what={tab}&trending_only={trending_only}&personal_only={personal_only}',
         'tab': tab,
         'tabs': tabs,
         'matching_leaderboard': matching_leaderboard,
@@ -223,6 +224,7 @@ def town_square(request):
         'now': timezone.now(),
         'is_townsquare': True,
         'trending_only': bool(trending_only),
+        'personal_only': bool(personal_only),
         'search': search,
         'tags': [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ],
         'announcements': announcements,

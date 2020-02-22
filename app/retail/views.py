@@ -1125,6 +1125,7 @@ def activity(request):
     page = int(request.GET.get('page', 1))
     what = request.GET.get('what', 'everywhere')
     trending_only = int(request.GET.get('trending_only', 0))
+    personal_only = int(request.GET.get('personal_only', 0))
 
     # create diff filters
     print(1, round(time.time(), 1))
@@ -1168,6 +1169,9 @@ def activity(request):
             activities = activities.filter(profile__in=relevant_profiles)
         if len(relevant_grants):
             activities = activities.filter(grant__in=relevant_grants)
+
+        if personal_only:
+            activities = activities.related_to(request.user.profile)
     if what == 'connect':
         activities = activities.filter(activity_type__in=['status_update', 'wall_post'])
     if what == 'kudos':

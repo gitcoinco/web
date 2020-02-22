@@ -1978,6 +1978,47 @@ class ActivityQuerySet(models.QuerySet):
             activity_type='bounty_abandonment_escalation_to_mods',
         )
 
+    def related_to(self, profile):
+        """Filter results to Activity objects which are related to a particular profile.
+
+        Activities related to a Profile can be defined as:
+            - Posts created by that user
+            - Posts that the user likes (even a comment)
+            - Posts tipped by that user (even a comment)
+            - Posts the user commented on
+        """
+        from townsquare.models import Like, Comment
+
+        # Posts created by that user
+        posts = self.filter(profile=profile)
+
+        # Posts that the user likes (even a comment)
+        likes = Like.objects.filter(profile=profile).all()
+        activity_pks = [_.activity.pk for _ in likes]
+        posts.union(self.filter(pk__in=activity_pks))
+
+        comments = Comment.objects.filter(likes__contains=[profile.pk]).all()
+        activity_pks = [_.activity.pk for _ in comments]
+        posts.union(self.filter(pk__in=activity_pks))
+
+        # Posts tipped by that user (even a comment)
+        tips = Tip.objects.filter(sender_profile=profile).all()
+        activity_pks = []
+        for tip in tips:
+            obj = tip.attached_object()
+            if 'activity:' in tip.comments_priv:
+                activity_pks.append(obj.pk)
+            if 'comment:' in tip.comments_priv:
+                activity_pks.append(obj.activity.pk)
+        posts.union(self.filter(pk__in=activity_pks))
+
+        # Posts the user commented on
+        comments = Comment.objects.filter(profile=profile).all()
+        activity_pks = [_.activity.pk for _ in comments]
+        posts.union(self.filter(pk__in=activity_pks))
+
+        return posts
+
 
 class Activity(SuperModel):
     """Represent Start work/Stop work event.
