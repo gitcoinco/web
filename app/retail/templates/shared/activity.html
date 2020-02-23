@@ -57,7 +57,7 @@
          <a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
         </span>
         {% if row.profile.match_this_round %}
-          <span class="tip_activity" data-pk="row.pk" data-username="{{row.profile.handle}}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; padding: 2px; font-size: 10px;"
+          <span class="tip_activity" data-pk="{{row.pk}}" data-username="{{row.profile.handle}}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; padding: 2px; font-size: 10px;"
             data-placement="bottom" data-toggle="tooltip" data-html="true"
             title="
                   {% include 'profiles/match_estimate_explainer.html' with profile=row.profile %}
