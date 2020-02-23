@@ -1,5 +1,23 @@
 /* stylelint-disable no-descending-specificity */
 
+img.weapon{
+  width: 200px;
+  height: 60px;
+  z-index: 9999;
+  -ms-transform: rotate(-25deg); /* IE 9 */
+  transform: rotate(-25deg);
+  position: absolute;
+  top: -20px;
+  left: 100px;
+
+  }
+
+.utilitybelt img{
+  width: 50px;
+  height: 50px;
+
+}
+
 @media (min-width: 1200px) {
   .leaderboard .earning {
     float: right;
