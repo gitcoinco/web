@@ -3907,6 +3907,78 @@ def hackathon_projects(request, hackathon=''):
 
     return TemplateResponse(request, 'dashboard/hackathon/projects.html', params)
 
+def user_projects(request, handle='', hackathon=''):
+    #get user id
+    profile = Profile.objects.get(handle=handle)
+
+    q = clean(request.GET.get('q', ''), strip=True)
+    order_by = clean(request.GET.get('order_by', '-created_on'), strip=True)
+    filters = clean(request.GET.get('filters', ''), strip=True)
+    sponsor = clean(request.GET.get('sponsor', ''), strip=True)
+    page = request.GET.get('page', 1)
+
+    try:
+        hackathon_events = HackathonEvent.objects.filter().latest('id')
+    except HackathonEvent.DoesNotExist:
+        hackathon_events = HackathonEvent.objects.last()
+
+    if order_by not in {'created_on', '-created_on'}:
+        order_by = '-created_on'
+
+    projects = HackathonProject.objects.filter(profiles=profile.id).exclude(status='invalid').prefetch_related('profiles').order_by(order_by).select_related('bounty')
+
+    sponsors_list = []
+    for project in projects:
+        sponsor_item = {
+            'avatar_url': project.bounty.avatar_url,
+            'org_name': project.bounty.org_name
+        }
+        sponsors_list.append(sponsor_item)
+
+    sponsors_list = list({v['org_name']:v for v in sponsors_list}.values())
+
+    if q:
+        projects = projects.filter(
+            Q(name__icontains=q) |
+            Q(summary__icontains=q) |
+            Q(profiles__handle__icontains=q)
+        )
+
+    if sponsor:
+        projects_sponsor=[]
+        for project in projects:
+            if sponsor == project.bounty.org_name:
+                projects_sponsor.append(project)
+        projects = projects_sponsor
+
+    if filters == 'winners':
+        projects = projects.filter(
+            Q(badge__isnull=False)
+        )
+
+    projects_paginator = Paginator(projects, 9)
+
+    try:
+        projects_paginated = projects_paginator.page(page)
+    except PageNotAnInteger:
+        projects_paginated = projects_paginator.page(1)
+    except EmptyPage:
+        projects_paginated = projects_paginator.page(projects_paginator.num_pages)
+
+    params = {
+        'active': 'hackathon_onboard',
+        'title': f'{profile.name} Projects',
+        'hackathon': hackathon_events,
+        'sponsors_list': sponsors_list,
+        'sponsor': sponsor,
+        'projects': projects_paginated,
+        'order_by': order_by,
+        'filters': filters,
+        'query': q.split
+    }
+
+    return TemplateResponse(request, 'dashboard/hackathon/user_projects.html', params)
+
 
 @csrf_exempt
 def hackathon_get_project(request, bounty_id, project_id=None):
