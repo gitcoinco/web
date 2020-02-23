@@ -1052,13 +1052,22 @@ def users_fetch(request):
     all_users = []
     this_page = all_pages.page(page)
 
-    this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
-        .order_by(order_by).annotate(
-        previous_worked_count=previous_worked()).annotate(
-            count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
-        ).annotate(
-            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).order_by('-previous_worked_count')
+    page_type = request.GET.get('type')
+    if page_type == 'explore_tribes':
+        this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
+            .annotate(
+                previous_worked_count=previous_worked()).annotate(
+                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
+            ).annotate(follower_count=Count('org')).order_by('-follower_count')
+    else:
+        this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
+            .order_by(order_by).annotate(
+            previous_worked_count=previous_worked()).annotate(
+                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
+            ).annotate(
+                average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+            ).order_by('-previous_worked_count')
+
     for user in this_page:
         count_work_completed = user.get_fulfilled_bounties(network=network).count()
         profile_json = {
