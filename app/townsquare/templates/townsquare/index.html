@@ -146,6 +146,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                   <div class="mt-2">
                     <div class="checkbox_container">
+                      <input name="tribe_only" id="tribe_only" type="checkbox" value="0" val-ui='Tribe' {% if tribe_only %}checked=checked{%endif%} />
+                      <span class="checkbox"></span>
+                      <div class="filter-label ml-1">
+                        <label for=beginner>{% trans "My Tribe Only" %}</label>
+                      </div>
+                    </div>
+                    <div class="checkbox_container">
+                      <input name="tribe_only" id="tribe_only" type="checkbox" value="0" val-ui='Tribe' {% if tribe_only %}checked=checked{%endif%} />
+                      <span class="checkbox"></span>
+                      <div class="filter-label ml-1">
+                        <label for=beginner>{% trans "My Threads Only" %}</label>
+                      </div>
+                    </div>
+                    <div class="checkbox_container">
                       <input name="trending" id="trending" type="checkbox" value="0" val-ui='Trending' {% if trending_only %}checked=checked{%endif%} />
                       <span class="checkbox"></span>
                       <div class="filter-label ml-1">
@@ -170,6 +184,38 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       </li>
                     {% endfor %}
                   </ul>
+                <div class="townsquare_nav-list mb-1 mt-3">
+                  <div class="townsquare_block-header">
+                    Explore
+                  </div>
+                  <ul class="nav d-inline-block font-body">
+                      <li class="nav-item">
+                        <a href="#" class="nav-link nav-line">
+                          <span class="nav-title">Developers</span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="#" class="nav-link nav-line">
+                          <span class="nav-title">Grants</span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="#" class="nav-link nav-line">
+                          <span class="nav-title">Kudos</span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="#" class="nav-link nav-line">
+                          <span class="nav-title">Bounties</span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="#" class="nav-link nav-line">
+                          <span class="nav-title">Quests</span>
+                        </a>
+                      </li>
+                  </ul>
+                </div>
                   <div class="townsquare_nav-list_footer font-body font-weight-semibold">
                 <!--
                     <a href="#">Explore Topics <i class="ml-1 fab fa-wpexplorer font-weight-normal"></i></a>

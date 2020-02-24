@@ -58,25 +58,14 @@ def town_square(request):
     hours = 24 if not settings.DEBUG else 1000
     posts_last_24_hours = lazy_round_number(Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     tabs = [{
-        'title': f"Everywhere",
+        'title': f"All",
         'slug': 'everywhere',
         'helper_text': f'The {posts_last_24_hours} activity feed items everywhere in the Gitcoin network',
         'badge': posts_last_24_hours
     }]
     default_tab = 'everywhere'
     if request.user.is_authenticated:
-        num_business_relationships = lazy_round_number(len(set(get_my_earnings_counter_profiles(request.user.profile.pk))))
-        if num_business_relationships:
-            new_tab = {
-                'title': f"Relationships",
-                'slug': 'my_tribes',
-                'helper_text': f'Activity from the {num_business_relationships} users who you\'ve done business with Gitcoin',
-                'badge': num_business_relationships
-            }
-            tabs = [new_tab] + tabs
-            default_tab = 'my_tribes'
         num_grants_relationships = lazy_round_number(len(set(get_my_grants(request.user.profile))))
-
         if num_grants_relationships:
             new_tab = {
                 'title': f'Grants',
@@ -84,56 +73,51 @@ def town_square(request):
                 'helper_text': f'Activity on the {num_grants_relationships} Grants you\'ve created or funded.',
                 'badge': num_grants_relationships
             }
-            tabs = [new_tab] + tabs
+            tabs = tabs + [new_tab]
+            default_tab = 'grants'
+
+            new_tab = {
+                'title': f'Bounties',
+                'slug': f'bounties',
+                'helper_text': f'Activity on the {num_grants_relationships} Bounties you\'ve created or funded.',
+                'badge': num_grants_relationships
+            }
+            tabs = tabs + [new_tab]
             default_tab = 'grants'
 
     hours = 24 if not settings.DEBUG else 1000
-    if request.user.is_authenticated:
-        threads_last_24_hours = lazy_round_number(
-            request.user.profile.subscribed_threads.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
-            )
-
-        threads = {
-            'title': f"My Threads",
-            'slug': f'my_threads',
-            'helper_text': f'The {threads_last_24_hours} Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
-            'badge': threads_last_24_hours
-        }
-        tabs = [threads] + tabs
 
     connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if connect_last_24_hours:
         default_tab = 'connect'
-        connect = {
+        new_tab = {
             'title': f"Connect",
             'slug': f'connect',
             'helper_text': f'The {connect_last_24_hours} announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
             'badge': connect_last_24_hours
         }
-        tabs = [connect] + tabs
+        tabs = tabs + [new_tab]
 
     kudos_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['new_kudos', 'receive_kudos'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if kudos_last_24_hours:
-        connect = {
+        new_tab = {
             'title': f"Kudos",
             'slug': f'kudos',
             'helper_text': f'The {kudos_last_24_hours} Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
             'badge': kudos_last_24_hours
         }
-        tabs = tabs + [connect]
+        tabs = tabs + [new_tab]
 
     if request.user.is_authenticated:
         hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now(), end_date__gt=timezone.now())
-        if hackathons.count():
-            user_registered_hackathon = request.user.profile.hackathon_registration.filter(registrant=request.user.profile, hackathon__in=hackathons).first()
-            if user_registered_hackathon:
-                default_tab = f'hackathon:{user_registered_hackathon.hackathon.pk}'
-                connect = {
-                    'title': user_registered_hackathon.hackathon.name,
-                    'slug': default_tab,
-                    'helper_text': f'Activity from the {user_registered_hackathon.hackathon.name} Hackathon.',
-                }
-                tabs = [connect] + tabs
+        for hackathon in hackathons:
+            default_tab = f'hackathon:{hackathon.pk}'
+            new_tab = {
+                'title': hackathon.name,
+                'slug': default_tab,
+                'helper_text': f'Activity from the {hackathon.name} Hackathon.',
+            }
+            tabs = tabs + [new_tab]
 
     # set tab
     if request.COOKIES.get('tab'):
