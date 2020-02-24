@@ -144,6 +144,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <div class="search-area">
                     <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
                   </div>
+                  <div class="bg-lightblue pt-1 d-flex flex-column flex-sm-row justify-content-between">
+                    <div class="btn-group-toggle text-left activity_type_selector" data-toggle="buttons">
+                      {% if tags %}
+                        {% for tag in tags %}
+                          <label class="btn btn-radio m-1 mb-md-0 frontend font-weight-semibold font-caption py-0 px-2 font-smaller-2 " >
+                            <input type="checkbox" name="activity_type" value="{{tag.0}}" autocomplete="off">
+                          {{tag.0}}
+                          </label>
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                  </div>
                   <div class="mt-2">
                     <div class="checkbox_container">
                       <input name="tribe_only" id="tribe_only" type="checkbox" value="0" val-ui='Tribe' {% if tribe_only %}checked=checked{%endif%} />
@@ -164,6 +176,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       <span class="checkbox"></span>
                       <div class="filter-label ml-1">
                         <label for=beginner>{% trans "Trending Only" %}</label>
+                      </div>
+                    </div>
+                    <div class="checkbox_container">
+                      <input name="trending" id="trending" type="checkbox" value="0" val-ui='Trending' {% if trending_only %}checked=checked{%endif%} />
+                      <span class="checkbox"></span>
+                      <div class="filter-label ml-1">
+                        <label for=beginner>{% trans "From New Users" %}</label>
+                      </div>
+                    </div>
+                    <div class="checkbox_container">
+                      <input name="trending" id="trending" type="checkbox" value="0" val-ui='Trending' {% if trending_only %}checked=checked{%endif%} />
+                      <span class="checkbox"></span>
+                      <div class="filter-label ml-1">
+                        <label for=beginner>{% trans "From Influencers" %}</label>
                       </div>
                     </div>
                   </div>

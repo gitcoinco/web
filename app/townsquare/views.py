@@ -77,7 +77,7 @@ def town_square(request):
             default_tab = 'grants'
 
             new_tab = {
-                'title': f'Bounties',
+                'title': f'Bounties/Tips',
                 'slug': f'bounties',
                 'helper_text': f'Activity on the {num_grants_relationships} Bounties you\'ve created or funded.',
                 'badge': num_grants_relationships
@@ -86,6 +86,8 @@ def town_square(request):
             default_tab = 'grants'
 
     hours = 24 if not settings.DEBUG else 1000
+
+    tags = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ('#meme','briefcase'), ]
 
     connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if connect_last_24_hours:
@@ -96,7 +98,7 @@ def town_square(request):
             'helper_text': f'The {connect_last_24_hours} announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
             'badge': connect_last_24_hours
         }
-        tabs = tabs + [new_tab]
+        tabs = [new_tab] + tabs
 
     kudos_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['new_kudos', 'receive_kudos'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if kudos_last_24_hours:
@@ -113,9 +115,10 @@ def town_square(request):
         for hackathon in hackathons:
             default_tab = f'hackathon:{hackathon.pk}'
             new_tab = {
-                'title': hackathon.name,
+                'title': f"{hackathon.name} Hackathon",
                 'slug': default_tab,
                 'helper_text': f'Activity from the {hackathon.name} Hackathon.',
+                'badge': kudos_last_24_hours
             }
             tabs = tabs + [new_tab]
 
@@ -225,7 +228,7 @@ def town_square(request):
         'is_townsquare': True,
         'trending_only': bool(trending_only),
         'search': search,
-        'tags': [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ],
+        'tags': tags,
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
