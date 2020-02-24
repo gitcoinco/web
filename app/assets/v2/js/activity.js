@@ -335,7 +335,9 @@ $(document).ready(function() {
 
     $.post(url, params, function(response) {
       var success_callback = function($parent) {
+        $parent.parents('.box').find('.comment_container textarea').val('');
         $parent.find('textarea').focus();
+
       };
       var override_hide_comments = !has_hidden_comments;
 
