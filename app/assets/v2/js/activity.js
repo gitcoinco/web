@@ -264,19 +264,14 @@ $(document).ready(function() {
     if (is_unliked) { // like
       $(this).find('span.action').addClass('open');
       $(this).data('state', $(this).data('affirmative'));
-
-      var $icon = $(this).find('.fa-heart');
-
-      $icon.effect('puff', function() {
-        $(this).fadeIn();
-      });
+      $(this).addClass('animate-sparkle');
 
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
     } else { // unlike
       $(this).find('span.action').removeClass('open');
       $(this).data('state', $(this).data('negative'));
-
+      $(this).removeClass('animate-sparkle');
       num = parseInt(num) - 1;
       $(this).find('span.num').html(num);
     }
@@ -447,7 +442,7 @@ $(document).ready(function() {
                 @${comment['profile_handle']}
                 </a></span>
                 ${comment['match_this_round'] ? `
-                <span class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; cursor:pointer; padding: 2px; font-size: 10px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@${comment['profile_handle']} is estimated to be earning <strong>$${comment['match_this_round']}</strong> in this week's CLR Round.  
+                <span class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; cursor:pointer; padding: 2px; font-size: 10px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@${comment['profile_handle']} is estimated to be earning <strong>$${comment['match_this_round']}</strong> in this week's CLR Round.
                 <BR><BR>
 
               Want to help @${comment['profile_handle']} move up the rankings?  Assuming you haven't contributed to @${comment['profile_handle']} yet this round, a contribution of 0.001 ETH (about $0.30) could mean +<strong>$${Math.round(100 * comment['default_match_round']) / 100}</strong> in matching.
@@ -534,15 +529,12 @@ $(document).ready(function() {
 
     if ($(this).hasClass('open')) {
       $(this).removeClass('open');
+      $(this).removeClass('animate-sparkle');
       like_count = like_count - 1;
     } else {
       $(this).addClass('open');
+      $(this).addClass('animate-sparkle');
       like_count = like_count + 1;
-      var $icon = $(this).find('.fa-heart');
-
-      $icon.effect('puff', function() {
-        $(this).fadeIn();
-      });
     }
     let $ele = $(this).find('span.like_count');
 
