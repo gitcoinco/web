@@ -59,13 +59,21 @@
 }
 #theme a.avatar_builder{
   display: inline-block;
-  width: 100px;
-  height: 100px;
+  width: 130px;
+  height: 160px;
   margin: 5px 10px;
   color: #9a9a9a;
+  padding: 20px;
+  border-radius: 10px;
+}
+#theme a.avatar_builder:hover,
+#theme a.avatar_builder.selected{
+  background-color: #fafafa;
+  text-decoration: none;
+  font-weight: bold;
 }
 #theme a.avatar_builder:hover{
-  background-color: #fafafa
+  border-bottom: 2px solid black !important;
 }
 #theme img{
   border-radius: 100px;
