@@ -83,10 +83,8 @@ class Comment(SuperModel):
 @receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
 def postsave_comment(sender, instance, created, **kwargs):
     from townsquare.tasks import send_comment_email
-    from townsquare.tasks import send_comment_notification
 
     send_comment_email.delay(instance.pk)
-    send_comment_notification(instance.pk)
 
 
 class OfferQuerySet(models.QuerySet):

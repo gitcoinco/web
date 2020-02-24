@@ -19,13 +19,9 @@ Vue.mixin({
       $.when(getNotifications).then(function(response) {
         newNotifications = newData(response.data, vm.notifications);
 
-        if (vm.notifications.length === 0) {
-          newNotifications.forEach(function(item) {
-            vm.notifications.push(item);
-          });
-        } else if (newNotifications.length > 0) {
-          vm.notifications = newNotifications.concat(vm.notifications);
-        }
+        newNotifications.forEach(function(item) {
+          vm.notifications.push(item);
+        });
 
         vm.numPages = response.num_pages;
         vm.hasNext = response.has_next;

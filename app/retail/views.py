@@ -44,8 +44,6 @@ from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
-from inbox.models import Notification
-from inbox.utils import send_mention_notification_to_users
 from marketing.mails import (
     grant_update_email, mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email,
 )
@@ -1263,7 +1261,6 @@ def create_status_update(request):
             mentioned_profiles = get_profiles_from_text(title).exclude(user__in=[request.user])
             to_emails = set(mentioned_profiles.values_list('email', flat=True))
             mention_email(activity, to_emails)
-            send_mention_notification_to_users(activity, mentioned_profiles)
 
             if kwargs['activity_type'] == 'wall_post':
                 if 'Email Grant Funders' in activity.metadata.get('ask'):

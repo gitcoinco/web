@@ -42,7 +42,7 @@ def send_mention_notification_to_users(activity, mentioned_profiles):
     for mentioned_profile in mentioned_profiles:
         send_notification_to_user(cta_url=activity.url,
                                   cta_text='new_mention',
-                                  msg_html=f'<b>💬 @{profile.handle} mentioned you</b> in post: "{preview_post}"',
+                                  msg_html=f'💬 <b>@{profile.handle} mentioned you</b> in post: "{preview_post}"',
                                   to_user=mentioned_profile.user, from_user=profile.user)
 
 
@@ -63,7 +63,7 @@ def mentioned_users_notification(comment):
     profile = comment.profile
     preview_post = truncatechars(comment.comment, 80)
 
-    mentioned_profiles = get_profiles_from_text(comment.comment)
+    mentioned_profiles = get_profiles_from_text(comment.comment).exclude(id__in=[activity.profile_id])
 
     for mentioned_profile in mentioned_profiles:
         send_notification_to_user(cta_url=activity.url,

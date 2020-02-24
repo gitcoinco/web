@@ -57,6 +57,7 @@ class Notification(SuperModel):
         ('new_kudos', 'New Kudos'),
         ('new_mention', 'New Mention'),
         ('new_post_comment', 'New comment'),
+        ('new_like', 'New Like'),
     )
     cta_url = models.URLField(max_length=500, blank=True)
     cta_text = models.CharField(
