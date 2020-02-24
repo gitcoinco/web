@@ -118,7 +118,10 @@
 
 {% if profile.match_this_round %}
   <div class="my-2" >
-    <span style="border-radius: 3px; border: 1px solid black; padding: 5px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@{{profile.handle}} is estimated to be earning ${{profile.match_this_round|floatformat:2}} in this week's CLR Round.  Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard.">
+    <span style="border-radius: 3px; border: 1px solid black; padding: 5px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="
+      {% include 'profiles/match_estimate_explainer.html' %}
+
+    ">
       <i class="fab fa-ethereum mr-2" aria-hidden="true"></i>
       ${{profile.match_this_round|floatformat:2}} in Matching Payout This Week.
     </span>
