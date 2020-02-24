@@ -20,7 +20,7 @@
   {% if row.activity_type == 'new_bounty' %}
     <div class="align-items-baseline d-flex font-weight-bold justify-content-between mb-2 mt-n3">
       <b>New Bounty</b>
-      <i class="fad fa-2x fa-sparkles" style="right: 0.2em; color: #3e00ff;"></i>
+      <i class="fad fa-sparkles" style="right: 0.2em; color: #3e00ff;"></i>
     </div>
   {% endif %}
   <div class="activity_main row">
@@ -57,12 +57,15 @@
          <a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
         </span>
         {% if row.profile.match_this_round %}
-          <span style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; padding: 2px; font-size: 10px;"
+          <span class="tip_activity" data-pk="{{row.pk}}" data-username="{{row.profile.handle}}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; padding: 2px; font-size: 10px;"
             data-placement="bottom" data-toggle="tooltip" data-html="true"
-            title="@{{row.profile.handle}} is estimated to be earning ${{row.profile.match_this_round|floatformat:2}} in this week's CLR Round.  <br><br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard."
+            title="
+                  {% include 'profiles/match_estimate_explainer.html' with profile=row.profile %}
+            "
           >
             <i class="fab fa-ethereum mr-0" aria-hidden="true"></i>
-            ${{row.profile.match_this_round|floatformat:2}}
+            ${{row.profile.match_this_round|floatformat:2}} | +${{row.profile.matchranking_this_round.default_match_estimate|floatformat:2}}
+
           </span>
         {% endif %}
       </div>
@@ -310,7 +313,7 @@
   {% if row.metadata.resource.type == 'gif' %}
   <div class="mt-1 mb-2" >
     <div class="row align-items-center bg-light">
-        <img loading="lazy" style="width: 100%; object-fit: cover; max-height: 450px" data-src="{{ row.metadata.resource.id }}">
+        <img class="attachment" loading="lazy" data-src="{{ row.metadata.resource.id }}">
     </div>
   </div>
   {% elif row.metadata.resource.provider == 'youtube' %}
@@ -321,7 +324,7 @@
   </div>
   {% elif row.metadata.resource.type == 'content' %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light">
+    <div class="row align-items-center bg-light content">
       <div class="col-12 col-md-3 text-center">
         {% if not row.metadata.resource.image or row.metadata.resource.image  == 'undefined' %}
           <img class="py-2" style="max-height: 7rem;" src="{% static 'v2/images/team/gitcoinbot.png' %}">

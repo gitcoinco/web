@@ -276,7 +276,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <BR>
         Your personal referral link:
         <br>
-        <input id=reflink type="text" value="{{REFER_LINK}}" class="w-100" readonly="readonly">
+        <input id=reflink type="text" value="{{REFER_LINK}}" class="w-100 copy_me" readonly="readonly">
         <br>
       {% else %}
       <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">Login</a> to get your personal reflink.
