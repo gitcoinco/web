@@ -90,7 +90,7 @@ def profile_dict(self, pk, retry: bool = True) -> None:
     :return:
     """
     with redis.lock("tasks:profile_dict:%s" % pk, timeout=LOCK_TIMEOUT):
-        profile = Profile.objects.get(handle=pk)
+        profile = Profile.objects.get(pk=pk)
         if profile.frontend_calc_stale:
             profile.calculate_all()
             profile.save()
