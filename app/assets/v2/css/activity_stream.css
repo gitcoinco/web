@@ -236,10 +236,12 @@ textarea.enter-activity-comment {
 .enter-activity-comment:focus {
   height: 6em;
 }
+
 .activity_stream .comment_row .activity_comments_main {
   border-top: 2px solid #e9ecf0;
   padding-top: 5px;
 }
+
 .activity_stream .comment_row:first-child .activity_comments_main {
   border-top: none;
 }

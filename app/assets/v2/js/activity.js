@@ -28,6 +28,7 @@ $(document).ready(function() {
       setTimeout(remove_loading_indicator, 50);
     }
   };
+
   remove_loading_indicator();
   $('#activity_subheader span').remove();
 
@@ -432,8 +433,8 @@ $(document).ready(function() {
         }
         let html = `
         ${show_more_box}
-        <div class="row comment_row p-0 ${is_hidden ? 'hidden' : ''}" data-id=${comment['id']}>
-          <div class="col-1 activity-avatar mt-1">
+        <div class="row comment_row p-0 mx-auto ${is_hidden ? 'hidden' : ''}" data-id=${comment['id']}>
+          <div class="col-1 activity-avatar my-auto">
             <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
             </a>
@@ -495,7 +496,7 @@ $(document).ready(function() {
       }
 
       const post_comment_html = `
-        <div class="row p-2">
+        <div class="row py-2 mx-auto">
           <div class="col-sm-1 activity-avatar d-none d-sm-inline">
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
