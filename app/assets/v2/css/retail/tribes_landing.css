@@ -129,3 +129,9 @@
 .tribes-section img {
   height: 5rem;
 }
+
+@media (min-width:1200px) and (max-width: 1500px) {
+  #plans-container {
+    min-width: 100% !important;
+  }
+}

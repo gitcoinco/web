@@ -32,6 +32,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
@@ -65,6 +66,7 @@ total_clr_pot = 200000
 clr_round = 4
 clr_active = False
 show_clr_card = True
+next_round_start = timezone.datetime(2020, 3, 16)
 
 if True:
     clr_matching_banners_style = 'results'
@@ -162,6 +164,8 @@ def grants(request):
         'network': network,
         'keyword': keyword,
         'type': grant_type,
+        'next_round_start': next_round_start,
+        'now': timezone.now(),
         'clr_matching_banners_style': clr_matching_banners_style,
         'categories': categories,
         'grant_types': grant_types,

@@ -66,48 +66,6 @@ $(document).ready(function() {
       document.location.href = get_redir_location($('.nav-link.active').data('slug'));
     }, 10);
   });
-  // updates expiry timers with countdowns
-  const setDataFormat = function(data) {
-    let str = 'in ';
-
-    if (data.days() > 0)
-      str += data.days() + 'd ';
-    if (data.hours() > 0)
-      str += data.hours() + 'h ';
-    if (data.minutes() > 0)
-      str += data.minutes() + 'm ';
-    if (data.seconds() > 0)
-      str += data.seconds() + 's ';
-
-    return str;
-  };
-
-  const updateTimers = function() {
-    let enterTime = moment();
-
-    $('[data-time]').filter(':visible').each(function() {
-      moment.locale('en');
-      var time = $(this).data('time');
-      var timeFuture = $(this).data('time-future');
-      var timeDiff = moment(time).diff(enterTime, 'sec');
-
-      if (timeFuture && (timeDiff < 0)) {
-        $(this).html('now');
-        $(this).parents('.offer_container').addClass('animate').removeClass('empty');
-        $(this).removeAttr('data-time');
-
-        // let btn = `<a class="btn btn-block btn-gc-blue btn-sm mt-2" href="${timeUrl}">View Action</a>`;
-        // return $(this).parent().next().html(btn);
-        return $(this).parent().append('<div>Refresh to view offer!</div>');
-      }
-
-      const diffDuration = moment.duration(moment(time).diff(moment()));
-
-      $(this).html(setDataFormat(diffDuration));
-    });
-  };
-
-  setInterval(updateTimers, 1000);
 
   // toggles the daily email sender
   $('#receive_daily_offers_in_inbox').on('change', function(e) {
