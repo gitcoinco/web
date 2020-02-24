@@ -17,6 +17,16 @@ $(document).ready(function() {
     });
   }
 
+  $('.copy_me').click(function() {
+    $(this).focus();
+    $(this).select();
+    document.execCommand('copy');
+    $(this).after('<div class=after_copy>Copied to clipboard</div>');
+    setTimeout(function() {
+      $('.after_copy').remove();
+    }, 500);
+  });
+
   function getParam(parameterName) {
     var result = null;
     var tmp = [];

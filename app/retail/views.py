@@ -1150,6 +1150,8 @@ def activity(request):
             relevant_profiles = get_my_earnings_counter_profiles(request.user.profile.pk)
         if what == 'grants':
             relevant_grants = get_my_grants(request.user.profile)
+        if what == 'my_threads' and request.user.is_authenticated:
+            activities = request.user.profile.subscribed_threads.all().order_by('-created')
         if 'keyword-' in what:
             keyword = what.split('-')[1]
             relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)

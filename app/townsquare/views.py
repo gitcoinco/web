@@ -88,6 +88,19 @@ def town_square(request):
             default_tab = 'grants'
 
     hours = 24 if not settings.DEBUG else 1000
+    if request.user.is_authenticated:
+        threads_last_24_hours = lazy_round_number(
+            request.user.profile.subscribed_threads.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
+            )
+
+        threads = {
+            'title': f"My Threads",
+            'slug': f'my_threads',
+            'helper_text': f'The {threads_last_24_hours} Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
+            'badge': threads_last_24_hours
+        }
+        tabs = [threads] + tabs
+
     connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if connect_last_24_hours:
         default_tab = 'connect'
@@ -220,6 +233,7 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'matching_leaderboard': matching_leaderboard,
         'current_match_round': current_match_round,
         'admin_link': admin_link,

@@ -1,3 +1,16 @@
+#reflink {
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px;
+  background-color: #ecf0f4;
+  border: 0px solid;
+}
+.after_copy{
+  font-size: 12px;
+}
+.activity_stream .content{
+  cursor: pointer;
+}
 #new_activity_notifier {
   text-align: center;
   background-color: #f5f5f9;
@@ -9,7 +22,18 @@
   font-size: 0.8rem;
   font-weight: bold;
 }
-
+#activities .row.show_more a{
+  margin: 0px auto;
+}
+#activities .row .attachment{
+  width: 100%;
+  object-fit: contain;
+  max-height: 200px;
+  cursor: pointer;
+}
+#activities .row .attachment.expanded{
+  max-height: 450px;
+}
 #activities {
   text-align: left;
 }
@@ -40,6 +64,9 @@ a .sup {
 
 .action.open {
   background-color: #eeeeee;
+}
+.comment_container .row{
+  max-width: 100%;
 }
 .comment_container .action{
   cursor: pointer;

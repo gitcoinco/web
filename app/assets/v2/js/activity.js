@@ -20,7 +20,16 @@ $(document).ready(function() {
 
   document.base_title = $('title').text();
 
-  $('#activity_subheader').remove();
+  // remove loading indicator
+  var remove_loading_indicator = function() {
+    if ($('.activity_stream .box').length) {
+      $('#activity_subheader').remove();
+    } else {
+      setTimeout(remove_loading_indicator, 50);
+    }
+  };
+  remove_loading_indicator();
+  $('#activity_subheader span').remove();
 
   // notifications of new activities
   var ping_activity_notifier = (function() {
@@ -102,6 +111,17 @@ $(document).ready(function() {
     }
   }, 1000);
 
+  $(document).on('click', '.activity_stream .content', function(e) {
+    window.open($(this).find('a.d-block').first().attr('href'));
+    e.preventDefault();
+  });
+
+  // expand attachments
+  $(document).on('click', '#activities .row .attachment', function(e) {
+    e.preventDefault();
+    $(this).toggleClass('expanded');
+  });
+
   // refresh new actviity feed items
   $(document).on('click', '#new_activity_notifier', function(e) {
     e.preventDefault();
@@ -155,6 +175,7 @@ $(document).ready(function() {
     }
 
     var $amount = $parent.find('.amount');
+    var has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
 
     const email = '';
     const github_url = '';
@@ -188,7 +209,9 @@ $(document).ready(function() {
       setTimeout(function() {
         var $target = $parent.parents('.activity.box').find('.comment_activity');
 
-        view_comments($target, false);
+        var override_hide_comments = !has_hidden_comments;
+
+        view_comments($target, false, undefined, true);
       }, 1000);
 
       _alert(msg, 'info', 1000);
@@ -295,7 +318,7 @@ $(document).ready(function() {
     }
 
     $parent.parents('.activity.box').find('.loading').removeClass('hidden');
-
+    var has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
     // increment number
     var num = $parent.find('span.num').html();
 
@@ -314,8 +337,9 @@ $(document).ready(function() {
       var success_callback = function($parent) {
         $parent.find('textarea').focus();
       };
+      var override_hide_comments = !has_hidden_comments;
 
-      view_comments($parent, allow_close_comment_container, success_callback);
+      view_comments($parent, allow_close_comment_container, success_callback, override_hide_comments);
     }).done(function() {
       // pass
     })
@@ -337,16 +361,8 @@ $(document).ready(function() {
     }));
   }
 
-  // loop iter for inside view_comments
-  // linter wants it outside of the method  ¯\_(ツ)_/¯
-  var loop_f = async function(ele) {
-    sorted_match_curve_html += '<li>';
-    sorted_match_curve_html += `Your contribution of ${ele.name} could yield $${Math.round(ele.value * 100) / 100} in matching.`;
-    sorted_match_curve_html += '</li>';
-  };
-
-  var view_comments = function($parent, allow_close_comment_container, success_callback) {
-
+  var view_comments = function($parent, allow_close_comment_container, success_callback, override_hide_comments) {
+    hide_after_n_comments = 3;
     // remote post
     var params = {
       'method': 'comment'
@@ -354,6 +370,8 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 
     var $target = $parent.parents('.activity.box').find('.comment_container');
+    var $existing_textarea = $target.find('textarea.enter-activity-comment');
+    var existing_text = $existing_textarea.length ? $existing_textarea.val() : '';
 
     if (!$target.length) {
       $target = $parent.parents('.box').find('.comment_container');
@@ -371,7 +389,9 @@ $(document).ready(function() {
       $parent.parents('.activity.box').find('.loading').addClass('hidden');
       $target.addClass('filled');
       $target.html('');
-      for (let i = 0; i < response['comments'].length; i++) {
+      let num_comments = response['comments'].length;
+
+      for (let i = 0; i < num_comments; i++) {
         let comment = sanitizeAPIResults(response['comments'])[i];
         let the_comment = comment['comment'];
 
@@ -387,17 +407,37 @@ $(document).ready(function() {
 
           var match_curve = Array.from(convert_to_dict(comment['sorted_match_curve']).values());
 
-          match_curve.forEach(loop_f);
+          for (let j = 0; j < match_curve.length; j++) {
+            let ele = match_curve[j];
+
+            sorted_match_curve_html += '<li>';
+            sorted_match_curve_html += `Your contribution of ${ele.name} could yield $${Math.round(ele.value * 100) / 100} in matching.`;
+            sorted_match_curve_html += '</li>';
+          }
+        }
+        var show_more_box = '';
+        var is_hidden = (num_comments - i) >= hide_after_n_comments && override_hide_comments != true;
+        var is_first_hidden = i == 0 && num_comments >= hide_after_n_comments && override_hide_comments != true;
+
+        if (is_first_hidden) {
+          show_more_box = `
+          <div class="row p-0 show_more">
+            <a href="#">
+              Show More
+            </a>
+          </div>
+          `;
         }
         let html = `
-        <div class="row comment_row p-2" data-id=${comment['id']}>
+        ${show_more_box}
+        <div class="row comment_row p-0 ${is_hidden ? 'hidden' : ''}" data-id=${comment['id']}>
           <div class="col-1 activity-avatar mt-1">
             <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
             </a>
           </div>
           <div class="col-11 activity_comments_main pl-4 px-sm-3">
-            <div class="mb-1">
+            <div class="mb-0">
               <span>
                 <b>${comment['name']}</b>
                 <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
@@ -423,25 +463,27 @@ $(document).ready(function() {
 
                   ` : ' '}
               </span>
-              <span class="d-none d-sm-inline grey font-smaller-5 float-right">
-                ${timeAgo}
-              </span>
-            </div>
-            <div class="activity_comments_main_comment">
-              ${the_comment}
-            </div>
-              <span class="font-smaller-5 float-right">
-              ${is_comment_owner ?
+              <span class='float-right'>
+                <span class="d-none d-sm-inline grey font-smaller-5 text-right">
+                  ${timeAgo}
+                </span>
+                <span class="font-smaller-5 mt-1" style="display: block; text-align: right;">
+                  ${is_comment_owner ?
     `<i data-pk=${comment['id']} class="delete_comment fas fa-trash font-smaller-7 position-relative text-black-70 mr-1 cursor-pointer" style="top:-1px; "></i>| `
     : ''}
-              ${show_tip ? `
-              <span class="action like px-0 ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
-                <i class="far fa-heart grey"></i> <span class=like_count>${comment['like_count']}</span>
-              </span> |
-              <a href="#" class="tip_on_comment text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(1000 * comment['tip_count_eth']) / 1000}</span>
-              </a>
-              ` : ''}
-              <span>
+                  ${show_tip ? `
+                  <span class="action like px-0 ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
+                    <i class="far fa-heart grey"></i> <span class=like_count>${comment['like_count']}</span>
+                  </span> |
+                  <a href="#" class="tip_on_comment text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(1000 * comment['tip_count_eth']) / 1000}</span>
+                  </a>
+                  ` : ''}
+                <span>
+              </span>
+            </div>
+            <div class="activity_comments_main_comment pt-1 pb-1">
+              ${the_comment}
+            </div>
           </div>
 
         </div>
@@ -456,7 +498,7 @@ $(document).ready(function() {
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
           <div class="col-12 col-sm-11 text-right">
-            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3"></textarea>
+            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3">${existing_text}</textarea>
             <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
         </div>
@@ -507,6 +549,22 @@ $(document).ready(function() {
     });
   });
 
+  var get_hidden_comments = function($this) {
+    return $this.parents('.activity_comments').find('.comment_row.hidden');
+  };
+
+  // post comment activity
+  $(document).on('click', '.show_more', function(e) {
+    e.preventDefault();
+    var num_to_unhide_at_once = 3;
+
+    for (var i = 0; i < num_to_unhide_at_once; i++) {
+      get_hidden_comments($(this)).last().removeClass('hidden');
+    }
+    if (get_hidden_comments($(this)).length == 0) {
+      $(this).remove();
+    }
+  });
 
   // post comment activity
   $(document).on('click', '.comment_activity', function(e) {
@@ -515,7 +573,7 @@ $(document).ready(function() {
       $parent.find('textarea').focus();
     };
 
-    view_comments($(this), true, success_callback);
+    view_comments($(this), true, success_callback, false);
   });
 
   // post comment activity
@@ -588,7 +646,7 @@ $(document).ready(function() {
 
       if (open) {
         $(this).data('open', false);
-        view_comments($(this), true);
+        view_comments($(this), true, undefined, false);
       }
     });
 
