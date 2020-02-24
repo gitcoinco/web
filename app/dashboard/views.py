@@ -871,11 +871,17 @@ def onboard(request, flow=None):
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
     avatar_options = [
-        ('classic', '/onboard/profile?steps=avatar&theme=classic'),
-        ('unisex', '/onboard/profile?steps=avatar&theme=unisex'),
-        ('female', '/onboard/profile?steps=avatar&theme=female'),
-        ('bufficorn', '/onboard/profile?steps=avatar&theme=bufficorn'),
+        'classic',
+        'unisex',
+        'female',
+        'bufficorn',
+        'orc',
+        'jedi',
+        'metacartel',
+        'spicyboi',
+        'factory',
     ]
+    avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}') for ele in avatar_options ]
     if request.user.is_staff:
         avatar_options.append(('bot', '/onboard/profile?steps=avatar&theme=bot'))
 
