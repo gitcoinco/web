@@ -1125,7 +1125,6 @@ def activity(request):
     page = int(request.GET.get('page', 1))
     what = request.GET.get('what', 'everywhere')
     trending_only = int(request.GET.get('trending_only', 0))
-    personal_only = int(request.GET.get('personal_only', 0))
 
     # create diff filters
     print(1, round(time.time(), 1))
@@ -1149,10 +1148,19 @@ def activity(request):
         relevant_grants = []
         if what == 'tribes':
             relevant_profiles = get_my_earnings_counter_profiles(request.user.profile.pk)
-        if what == 'grants':
+        elif what == 'grants':
             relevant_grants = get_my_grants(request.user.profile)
-        if what == 'my_threads' and request.user.is_authenticated:
+        elif what == 'my_threads':
             activities = request.user.profile.subscribed_threads.all().order_by('-created')
+        elif what == 'my_feed':
+            activities = activities.related_to(request.user.profile)
+        else:
+            try:
+                user = Profile.objects.get(handle__iexact=what)
+                activities = activities.related_to(user)
+            except Profile.DoesNotExist:
+                pass
+
         if 'keyword-' in what:
             keyword = what.split('-')[1]
             relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
@@ -1172,8 +1180,6 @@ def activity(request):
         if len(relevant_grants):
             activities = activities.filter(grant__in=relevant_grants)
 
-        if personal_only:
-            activities = activities.related_to(request.user.profile)
     if what == 'connect':
         activities = activities.filter(activity_type__in=['status_update', 'wall_post'])
     if what == 'kudos':

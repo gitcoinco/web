@@ -1677,6 +1677,8 @@ class Tip(SendCryptoAsset):
 
     @property
     def attached_object(self):
+        if not self.comments_priv:
+            return None
         if 'activity:' in self.comments_priv:
             pk = self.comments_priv.split(":")[1]
             obj = Activity.objects.get(pk=pk)
@@ -2005,12 +2007,14 @@ class ActivityQuerySet(models.QuerySet):
         tips = Tip.objects.filter(sender_profile=profile).all()
         activity_pks = []
         for tip in tips:
-            obj = tip.attached_object()
-            if 'activity:' in tip.comments_priv:
-                activity_pks.append(obj.pk)
-            if 'comment:' in tip.comments_priv:
-                activity_pks.append(obj.activity.pk)
+            if  tip.comments_priv:
+                obj = tip.attached_object()
+                if 'activity:' in tip.comments_priv:
+                    activity_pks.append(obj.pk)
+                if 'comment:' in tip.comments_priv:
+                    activity_pks.append(obj.activity.pk)
         posts.union(self.filter(pk__in=activity_pks))
+
 
         # Posts the user commented on
         comments = Comment.objects.filter(profile=profile).all()

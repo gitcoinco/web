@@ -96,8 +96,15 @@ def town_square(request):
         threads = {
             'title': f"My Threads",
             'slug': f'my_threads',
-            'helper_text': f'The {threads_last_24_hours} Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
+            'helper_text': f'The threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
             'badge': threads_last_24_hours
+        }
+        tabs = [threads] + tabs
+
+        threads = {
+            'title': f"My Feed",
+            'slug': f'my_feed',
+            'helper_text': f'The threads that you\'ve posted, liked, commented on, or sent a tip upon on Gitcoin.',
         }
         tabs = [threads] + tabs
 
@@ -107,7 +114,7 @@ def town_square(request):
         connect = {
             'title': f"Connect",
             'slug': f'connect',
-            'helper_text': f'The {connect_last_24_hours} announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
+            'helper_text': f'The announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
             'badge': connect_last_24_hours
         }
         tabs = [connect] + tabs
@@ -223,7 +230,6 @@ def town_square(request):
 
     # render page context
     trending_only = int(request.GET.get('trending', 0))
-    personal_only = int(request.GET.get('personal', 0))
     context = {
         'title': title,
         'card_desc': desc,
@@ -231,7 +237,7 @@ def town_square(request):
         'use_pic_card': True,
         'page_seo_text_insert': page_seo_text_insert,
         'nav': 'home',
-        'target': f'/activity?what={tab}&trending_only={trending_only}&personal_only={personal_only}',
+        'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
@@ -241,7 +247,6 @@ def town_square(request):
         'now': timezone.now(),
         'is_townsquare': True,
         'trending_only': bool(trending_only),
-        'personal_only': bool(personal_only),
         'search': search,
         'tags': [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ],
         'announcements': announcements,
