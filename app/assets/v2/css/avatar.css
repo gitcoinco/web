@@ -52,6 +52,29 @@
   display:flex;
   justify-content: flex-end;
 }
+#theme .selected{
+  border: none !important;
+  border-top: 2px solid black !important;
+  background-color: #fafafa
+}
+#theme a.avatar_builder{
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  margin: 5px 10px;
+  color: #9a9a9a;
+}
+#theme a.avatar_builder:hover{
+  background-color: #fafafa
+}
+#theme img{
+  border-radius: 100px;
+  width: 100px;
+  height: 100px;
+}
+#theme img.unisex{
+  size: 25%;
+}
 #tdavatartarget{
   width: 400px;
   height: 400px;
