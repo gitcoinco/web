@@ -1,0 +1,27 @@
+{
+  "symbol": "OGODS",
+  "address": "0x1051a014E4b3F2bD08E5A7e52522f0F71628162B",
+  "overview":{
+        "en": "GOTOGODS is the innovative platform that allows fans to book live meetings with STARS.",
+        "zh": ""
+  },
+  "email": "info@gotogods.io",
+  "website": "https://www.gotogods.io/",
+  "whitepaper": "https://github.com/gotogods/WHITE-PAPER/",
+  "state": "NORMAL",
+  "published_on": "2019-04-27",
+  "initial_price":{
+        "ETH":"0.00003681 ETH",
+        "USD":"0.01 USD",
+        "BTC":"0.00000102 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/gotogods",
+    "telegram": "https://t.me/gotogodsgroup",
+    "github": "https://github.com/gotogods/",
+    "facebook": "https://www.facebook.com/gotogodsofficial/",
+    "reddit": "https://www.reddit.com/user/gotogods",
+    "slack": "https://gotogods.slack.com",
+    "medium": "https://medium.com/@gotogods"
+  }
+}
