@@ -89,6 +89,8 @@ def profile_dict(self, pk, retry: bool = True) -> None:
     :param pk:
     :return:
     """
+    if isinstance(pk, list):
+        pk = pk[0]
     with redis.lock("tasks:profile_dict:%s" % pk, timeout=LOCK_TIMEOUT):
         profile = Profile.objects.get(pk=pk)
         if profile.frontend_calc_stale:
