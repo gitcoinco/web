@@ -79,6 +79,11 @@
   border-radius: 100px;
   width: 100px;
   height: 100px;
+  filter: grayscale(90%);
+}
+#theme a.avatar_builder:hover img,
+#theme a.avatar_builder.selected img{
+  filter: grayscale(0%);
 }
 #theme img.unisex{
   size: 25%;
