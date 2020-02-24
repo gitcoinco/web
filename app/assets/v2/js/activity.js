@@ -424,8 +424,8 @@ $(document).ready(function() {
 
         if (is_first_hidden) {
           show_more_box = `
-          <div class="row p-0 show_more">
-            <a href="#">
+          <div class="row mx-auto show_more d-block text-center">
+            <a href="#" class="text-black-60 font-smaller-5">
               Show More
             </a>
           </div>
@@ -433,7 +433,7 @@ $(document).ready(function() {
         }
         let html = `
         ${show_more_box}
-        <div class="row comment_row p-0 mx-auto ${is_hidden ? 'hidden' : ''}" data-id=${comment['id']}>
+        <div class="row comment_row mx-auto ${is_hidden ? 'hidden' : ''}" data-id=${comment['id']}>
           <div class="col-1 activity-avatar my-auto">
             <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
