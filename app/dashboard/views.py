@@ -1054,8 +1054,8 @@ def users_fetch(request):
 
     page_type = request.GET.get('type')
     if page_type == 'explore_tribes':
-        this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
-            .annotate(
+        this_page = Profile.objects.filter(data__type='Organization'
+            ).annotate(
                 previous_worked_count=previous_worked()).annotate(
                 count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
             ).annotate(follower_count=Count('org')).order_by('-follower_count')
