@@ -2208,6 +2208,8 @@ class Activity(SuperModel):
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']
+        if 'poll_choices' in self.metadata:
+            activity['poll'] = self.metadata['poll_choices']
         activity['title'] = clean(obj.get('title', ''), strip=True)
         if 'id' in obj:
             if 'category' not in obj or obj['category'] == 'bounty': # backwards-compatible for category-lacking metadata
@@ -2233,12 +2235,22 @@ class Activity(SuperModel):
 
         return activity
 
+    def has_voted(self, user):
+        vp = self.view_props
+        if vp.get('poll'):
+            if user.is_authenticated:
+                for ele in vp.get('poll'):
+                    if user.profile.pk in ele['answers']:
+                        return ele['i']
+        return False
+
     def view_props_for(self, user):
 
         vp = self.view_props
         if not user.is_authenticated:
             return vp
         vp['liked'] = self.likes.filter(profile=user.profile).exists()
+        vp['poll_answered'] = self.has_voted(user)
         return vp
 
     @property
