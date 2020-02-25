@@ -31,22 +31,24 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "Create channels for hackathons"
+    help = "Sync Active Hackathons"
 
     def handle(self, *args, **options):
         try:
-            tasks = []
 
-            hackathons_to_sync = HackathonEvent.objects.filter(end_date__gte=datetime.now())
+            today = datetime.now()
+            hackathons_to_sync = HackathonEvent.objects.filter(
+                start_date__gte=today,
+                end_date__lte=today
+            )
 
             for hackathon in hackathons_to_sync:
-                task = hackathon_chat_sync.si(hackathon.id)
-                tasks.append(task)
-            if len(tasks) > 0:
-                job = group(tasks)
-                result = job.apply_async()
-            else:
-                print("Nothing to Sync")
+                try:
+                    hackathon_chat_sync.delay(hackathon.id)
+                    logger.info(f'Queued Hackathon Chat Sync Job for ID: {hackathon.id}')
+                except Exception as e:
+                    logger.error(str(e))
+                    continue
 
         except Exception as e:
             logger.error(str(e))
