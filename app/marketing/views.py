@@ -29,7 +29,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
-from django.db.models import Max
+from django.db.models import Avg, Max
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -40,6 +40,7 @@ from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from cacheops import cached_view
+from chartit import PivotChart, PivotDataPool
 from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from enssubdomain.models import ENSSubdomainRegistration
@@ -810,11 +811,12 @@ def leaderboard(request, key=''):
 
     title = titles[key]
     which_leaderboard = f"{cadence}_{key}"
-    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard, product=product)
+    all_ranks = LeaderboardRank.objects.filter(leaderboard=which_leaderboard, product=product)
     if keyword_search:
-        ranks = ranks.filter(tech_keywords__icontains=keyword_search)
+        all_ranks = ranks.filter(tech_keywords__icontains=keyword_search)
 
-    amount = ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
+    amount = all_ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
+    ranks = all_ranks.filter(active=True)
     items = ranks.order_by('-amount')
 
     top_earners = ''
@@ -835,12 +837,50 @@ def leaderboard(request, key=''):
     profile_keys = ['tokens', 'keywords', 'cities', 'countries', 'continents']
     is_linked_to_profile = any(sub in key for sub in profile_keys)
 
+    rankdata = \
+        PivotDataPool(
+           series=
+            [{'options': {
+               'source': all_ranks,
+                'legend_by': 'github_username',
+                'categories': ['created_on'],
+                'top_n_per_cat': 10,
+                },
+              'terms': {
+                'amount': Avg('amount'),
+                }}
+             ])
+
+    #Step 2: Create the Chart object
+    cht = PivotChart(
+            datasource = rankdata,
+            series_options =
+              [{'options':{
+                  'type': 'line',
+                  'stacking': False
+                  },
+                'terms': 
+                    ['amount']
+                
+            }],
+            chart_options =
+              {'title': {
+                   'text': 'Leaderboard'},
+               'xAxis': {
+                    'title': {
+                       'text': 'Time'}
+                    }
+                }
+            )
+
+
     cadence_ui = cadence if cadence != 'all' else 'All-Time'
     product_ui = product.capitalize() if product != 'all' else ''
     page_title = f'{cadence_ui.title()} {keyword_search.title()} {product_ui} Leaderboard: {title.title()}'
     context = {
         'items': items[0:limit],
         'nav': 'home',
+        'cht': cht,
         'titles': titles,
         'cadence': cadence,
         'product': product,
