@@ -83,6 +83,7 @@ class Comment(SuperModel):
 @receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
 def postsave_comment(sender, instance, created, **kwargs):
     from townsquare.tasks import send_comment_email
+
     send_comment_email.delay(instance.pk)
 
 
