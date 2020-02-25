@@ -300,7 +300,20 @@
       </div>
     </div>
   </div>
-  {% if row.metadata.resource.provider == 'youtube' %}
+  {% if row.poll %}
+  <div class="poll_choices {% if row.poll_answered %}answered{%endif%}">
+    {% for ele in row.poll %}
+      <div data-vote="{{ forloop.counter0 }}" class="  {% if row.poll_answered == ele.i %}answer{%endif%}">
+        <p>
+          {{ele.question}} 
+        <span>
+          {{ele.answers|length}}
+        </span>
+        </p>
+      </div>
+    {% endfor %}
+  </div>
+  {% elif row.metadata.resource.provider == 'youtube' %}
   <div class="embed-responsive embed-responsive-16by9 mt-2">
     <iframe class="embed-responsive-item" height="315" src="https://www.youtube.com/embed/{{ row.metadata.resource.id }}"
     frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"

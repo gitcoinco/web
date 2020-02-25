@@ -1250,6 +1250,20 @@ def create_status_update(request):
                 key = f"{key}_id"
                 kwargs[key] = result
                 kwargs['activity_type'] = 'wall_post'
+        
+        if request.POST.get('option1'):
+            poll_choices = []
+            for i in range(1, 5):
+                key = "option" + str(i)
+                val = request.POST.get(key)
+                if val:
+                    poll_choices.append({
+                        'question': val,
+                        'answers': [],
+                        'i': i,
+                        })
+            kwargs['metadata']['poll_choices'] = poll_choices
+
         try:
             activity = Activity.objects.create(**kwargs)
             response['status'] = 200
