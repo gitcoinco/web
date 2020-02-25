@@ -829,7 +829,11 @@ body.green.offer_view .announce {
 }
 
 .clr_container td .amount {
-  top: 6px;
+  top: 5px;
+}
+
+.clr_container td .btn {
+  top: -10px;
 }
 
 .townsquare_main .search-area {
