@@ -107,6 +107,11 @@ Vue.mixin({
         }
       }
     }
+  },
+  computed: {
+    sortedItems: function() {
+      return this.notifications.sort((a, b) => new Date(b.created_on) - new Date(a.created_on))
+    }
   }
 
 });
