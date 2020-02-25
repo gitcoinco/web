@@ -90,7 +90,6 @@ def preprocess(request):
         if record_join:
             Activity.objects.create(profile=profile, activity_type='joined')
 
-        chat_url = get_chat_url()
         chat_access_token = profile.gitcoin_chat_access_token
         chat_id = profile.chat_id
     # handles marketing callbacks
