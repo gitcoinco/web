@@ -39,12 +39,12 @@ def create_channel_if_not_exists(channel_opts):
     except ResourceNotFound as RNF:
         try:
             result = create_channel.apply_async(args=[channel_opts])
-            bounty_channel_id_response = result.get()
+            channel_id_response = result.get()
 
-            if 'message' in bounty_channel_id_response:
-                raise ValueError(bounty_channel_id_response['message'])
+            if 'message' in channel_id_response:
+                raise ValueError(channel_id_response['message'])
 
-            return True, bounty_channel_id_response
+            return True, channel_id_response
         except Exception as e:
             logger.error(str(e))
 

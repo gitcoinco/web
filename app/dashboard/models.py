@@ -4481,7 +4481,7 @@ class HackathonEvent(SuperModel):
     show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
     description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
-
+    chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     def __str__(self):
         """String representation for HackathonEvent.
 
@@ -4582,6 +4582,7 @@ class HackathonSponsor(SuperModel):
         choices=SPONSOR_TYPES,
         default='G',
     )
+    chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
 
 
 class HackathonProject(SuperModel):
@@ -4627,6 +4628,7 @@ class HackathonProject(SuperModel):
         choices=PROJECT_STATUS,
         blank=True
     )
+    chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         ordering = ['-name']
