@@ -15,6 +15,23 @@ services:
           memory: 1024M
         reservations:
           memory: 128M
+  chat:
+    image: gitcoin/chat:latest
+    restart: unless-stopped
+    ports:
+      - "8065:8065"
+    volumes:
+      - chatdata:/mattermost
+    depends_on:
+      - db
+      - web
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 128M
 
   ipfs:
     image: ipfs/go-ipfs:release
@@ -113,12 +130,13 @@ services:
       - redis
     command: ["bash","./bin/celery/worker/run.sh"]
 
-  scheduler:
-    <<: *worker
-    command: ["bash","./bin/celery/scheduler/run.sh"]
+#  scheduler:
+#    <<: *worker
+#    command: ["bash","./bin/celery/scheduler/run.sh"]
 
 volumes:
   pgdata:
+  chatdata:
   ipfsdata:
   ipfsexport:
   redis:
