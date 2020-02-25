@@ -32,6 +32,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
@@ -42,7 +43,9 @@ from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.forms import MilestoneForm
-from grants.models import Contribution, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update
+from grants.models import (
+    Contribution, Grant, GrantCategory, MatchPledge, Milestone, PhantomFunding, Subscription, Update,
+)
 from grants.utils import get_leaderboard, is_grant_team_member
 from kudos.models import BulkTransferCoupon
 from marketing.mails import (
@@ -51,6 +54,7 @@ from marketing.mails import (
 )
 from marketing.models import Keyword, Stat
 from retail.helpers import get_ip
+from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
@@ -60,7 +64,9 @@ clr_matching_banners_style = 'pledging'
 matching_live = '($200K matching live now!) '
 total_clr_pot = 200000
 clr_round = 4
-clr_active = True
+clr_active = False
+show_clr_card = True
+next_round_start = timezone.datetime(2020, 3, 16)
 
 if True:
     clr_matching_banners_style = 'results'
@@ -69,6 +75,14 @@ if True:
 def get_keywords():
     """Get all Keywords."""
     return json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)])
+
+
+def lazy_round_number(n):
+    if n>1000000:
+        return f"{round(n/1000000, 1)}m"
+    if n>1000:
+        return f"{round(n/1000, 1)}k"
+    return n
 
 
 def grants(request):
@@ -80,6 +94,7 @@ def grants(request):
     keyword = request.GET.get('keyword', '')
     grant_type = request.GET.get('type', 'tech')
     state = request.GET.get('state', 'active')
+    category = request.GET.get('category', '')
     _grants = None
 
     show_past_clr = False
@@ -105,6 +120,9 @@ def grants(request):
         field_name = f'clr_prediction_curve__{sort_by_index}__2'
         _grants = _grants.order_by(f"-{field_name}")
 
+    if category:
+        _grants = _grants.filter(Q(categories__category__icontains = category))
+
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
     partners = MatchPledge.objects.filter(active=True, pledge_type=grant_type) if grant_type else MatchPledge.objects.filter(active=True)
@@ -123,7 +141,7 @@ def grants(request):
         key='grants',
         ).order_by('-pk')
     if grant_stats.exists():
-        grant_amount = grant_stats.first().val / 1000
+        grant_amount = lazy_round_number(grant_stats.first().val)
 
     tech_grants_count = Grant.objects.filter(
         network=network, hidden=False, grant_type='tech'
@@ -132,27 +150,7 @@ def grants(request):
         network=network, hidden=False, grant_type='media'
     ).count()
 
-    nav_options = [
-        {'label': 'All', 'keyword': ''},
-        {'label': 'Security', 'keyword': 'security'},
-        {'label': 'Scalability', 'keyword': 'scalability'},
-        {'label': 'UI/UX', 'keyword': 'UI'},
-        {'label': 'DeFI', 'keyword': 'defi'},
-        {'label': 'Education', 'keyword': 'education'},
-        {'label': 'Wallets', 'keyword': 'wallet'},
-        {'label': 'Community', 'keyword': 'community'},
-        {'label': 'ETH 2.0', 'keyword': 'ETH 2.0'},
-        {'label': 'ETH 1.x', 'keyword': 'ETH 1.x'},
-    ]
-    if grant_type == 'media':
-        nav_options = [
-            {'label': 'All', 'keyword': ''},
-            {'label': 'Education', 'keyword': 'education'},
-            {'label': 'Twitter', 'keyword': 'twitter'},
-            {'label': 'Reddit', 'keyword': 'reddit'},
-            {'label': 'Blogs', 'keyword': 'blog'},
-            {'label': 'Notes', 'keyword': 'notes'},
-        ]
+    categories = [category[0] for category in basic_grant_categories(grant_type)]
 
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
@@ -166,8 +164,10 @@ def grants(request):
         'network': network,
         'keyword': keyword,
         'type': grant_type,
+        'next_round_start': next_round_start,
+        'now': timezone.now(),
         'clr_matching_banners_style': clr_matching_banners_style,
-        'nav_options': nav_options,
+        'categories': categories,
         'grant_types': grant_types,
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
@@ -181,10 +181,12 @@ def grants(request):
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
         'clr_active': clr_active,
+        'show_clr_card': show_clr_card,
         'sort_by_index': sort_by_index,
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
-        'is_staff': request.user.is_staff
+        'is_staff': request.user.is_staff,
+        'selected_category': category
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -202,6 +204,16 @@ def grants(request):
 
     return TemplateResponse(request, 'grants/index.html', params)
 
+def add_form_categories_to_grant(form_category_ids, grant, grant_type):
+    form_category_ids = [int(i) for i in form_category_ids if i != '']
+
+    model_categories = basic_grant_categories(grant_type)
+    model_categories = [ category[0] for category in model_categories ]
+    selected_categories = [model_categories[i] for i in form_category_ids]
+
+    for category in selected_categories:
+        grant_category = GrantCategory.objects.get_or_create(category=category)[0]
+        grant.categories.add(grant_category)
 
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
@@ -264,10 +276,18 @@ def grant_details(request, grant_id, grant_slug):
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(grant.admin_profile.id))
             grant.team_members.set(team_members)
+
             if 'edit-description' in request.POST:
                 grant.description = request.POST.get('edit-description')
                 grant.description_rich = request.POST.get('edit-description_rich')
             grant.save()
+
+            form_category_ids = request.POST.getlist('edit-categories[]')
+
+            '''Overwrite the existing categories and then add the new ones'''
+            grant.categories.clear()
+            add_form_categories_to_grant(form_category_ids, grant, grant.grant_type)
+
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
@@ -308,6 +328,7 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
+        'show_clr_card': show_clr_card,
         'is_team_member': is_team_member,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
@@ -344,6 +365,7 @@ def grant_new(request):
             logo = request.FILES.get('input_image', None)
             receipt = json.loads(request.POST.get('receipt', '{}'))
             team_members = request.POST.getlist('team_members[]')
+            grant_type = request.POST.get('grant_type', 'tech')
 
             grant_kwargs = {
                 'title': request.POST.get('title', ''),
@@ -363,7 +385,7 @@ def grant_new(request):
                 'logo': logo,
                 'hidden': False,
                 'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
-
+                'grant_type': grant_type
             }
             grant = Grant.objects.create(**grant_kwargs)
             new_grant_admin(grant)
@@ -376,6 +398,12 @@ def grant_new(request):
 
             grant.team_members.add(*team_members)
             grant.save()
+
+            form_category_ids = request.POST.getlist('categories[]')
+            form_category_ids = (form_category_ids[0].split(','))
+            form_category_ids = list(set(form_category_ids))
+
+            add_form_categories_to_grant(form_category_ids, grant, grant_type)
 
             return JsonResponse({
                 'success': True,
@@ -634,17 +662,27 @@ def grant_fund(request, grant_id, grant_slug):
             subscription.network = request.POST.get('network', '')
             subscription.contributor_profile = profile
             subscription.grant = grant
+            subscription.comments = request.POST.get('comment', '')
             subscription.save()
 
             # one time payments
+            activity = None
             if int(subscription.num_tx_approved) == 1:
                 subscription.successful_contribution(subscription.new_approve_tx_id);
                 subscription.error = True #cancel subs so it doesnt try to bill again
                 subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
                 subscription.save()
-                record_subscription_activity_helper('new_grant_contribution', subscription, profile)
+                activity = record_subscription_activity_helper('new_grant_contribution', subscription, profile)
             else:
-                record_subscription_activity_helper('new_grant_subscription', subscription, profile)
+                activity = record_subscription_activity_helper('new_grant_subscription', subscription, profile)
+
+            if 'comment' in request.POST:
+                comment = request.POST.get('comment')
+                if comment and activity:
+                    comment = Comment.objects.create(
+                        profile=request.user.profile,
+                        activity=activity,
+                        comment=comment)
 
             # TODO - how do we attach the tweet modal WITH BULK TRANSFER COUPON next pageload??
             messages.info(
@@ -692,7 +730,7 @@ def grant_fund(request, grant_id, grant_slug):
     active_tab = 'normal'
     fund_reward = None
     round_number = 4
-    can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists()
+    can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists() and clr_active
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
@@ -742,8 +780,8 @@ def grant_fund(request, grant_id, grant_slug):
         'fund_reward': fund_reward,
         'phantom_funds': phantom_funds,
         'clr_round': clr_round,
+        'clr_active': clr_active,
         'total_clr_pot': total_clr_pot,
-        'clr_active': True
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
@@ -861,7 +899,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         'activity_type': activity_type,
         'metadata': metadata,
     }
-    Activity.objects.create(**kwargs)
+    return Activity.objects.create(**kwargs)
 
 def record_grant_activity_helper(activity_type, grant, profile):
     """Registers a new activity concerning a grant
@@ -964,3 +1002,26 @@ def invoice(request, contribution_pk):
     }
 
     return TemplateResponse(request, 'grants/invoice.html', params)
+
+def basic_grant_categories(grant_type):
+    categories = GrantCategory.all_categories()
+
+    if grant_type == 'tech':
+        categories = GrantCategory.tech_categories()
+    elif grant_type == 'media':
+        categories = GrantCategory.media_categories()
+
+    return [ (category,idx) for idx, category in enumerate(categories) ]
+
+@csrf_exempt
+def grant_categories(request):
+    grant_type = request.GET.get('type', 'tech')
+    categories = basic_grant_categories(grant_type)
+
+    search_term = request.GET.get('term', None)
+    if search_term is not None:
+        categories = [ category for category in categories if search_term in category[0] ]
+
+    return JsonResponse({
+        'categories': categories
+    })

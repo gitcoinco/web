@@ -50,6 +50,7 @@ import quests.views
 import retail.emails
 import retail.views
 import revenue.views
+import search.views
 import tdi.views
 import townsquare.views
 from avatar.router import router as avatar_router
@@ -114,7 +115,10 @@ urlpatterns = [
     url(r'^api/v0.1/profile/(.*)?/viewers.csv', dashboard.views.profile_viewers, name='profile_viewers'),
     url(r'^api/v0.1/profile/(.*)?/spent.csv', dashboard.views.profile_spent, name='profile_spent'),
     url(r'^api/v0.1/profile/banner', dashboard.views.change_user_profile_banner, name='change_user_profile_banner'),
+    url(r'^api/v0.1/profile/settings', dashboard.views.profile_settings, name='profile_settings'),
+    url(r'^api/v0.1/profile/backup', dashboard.views.profile_backup, name='profile_backup'),
     path('api/v0.1/activity/<int:activity_id>', townsquare.views.api, name='townsquare_api'),
+    path('api/v0.1/comment/<int:comment_id>', townsquare.views.comment_v1, name='comment_v1'),
     path('api/v0.1/emailsettings/', townsquare.views.emailsettings, name='townsquare_emailsettings'),
     url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
     url(
@@ -145,6 +149,7 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
+    url(r'^api/v0.1/search/', search.views.search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
     # chat
@@ -311,7 +316,10 @@ urlpatterns = [
     re_path(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     re_path(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     re_path(r'^legal/?', dashboard.views.terms, name='legal'),
+
+    # User Directory
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
+    re_path(r'^tribes/explore', dashboard.views.users_directory, name='tribes_directory'),
 
     # Alpha functionality
     re_path(r'^profile/(.*)/(.*)?', dashboard.views.profile, name='profile_by_tab'),
@@ -374,6 +382,7 @@ urlpatterns = [
         name='townsquare_offer_decline'
     ),
     path('action/<int:offer_id>/<slug:offer_slug>', townsquare.views.offer_view, name='townsquare_offer_view'),
+    url(r'^service/metadata/$', townsquare.views.extract_metadata_page, name='meta-extractor'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
     url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),
@@ -388,6 +397,7 @@ urlpatterns = [
     re_path(r'^tribes', retail.views.tribes, name='tribes'),
     path('tribe/<str:handle>/join/', dashboard.views.join_tribe, name='join_tribe'),
     path('tribe/<str:handle>/save/', dashboard.views.save_tribe, name='save_tribe'),
+    path('tribe/title/', dashboard.views.set_tribe_title, name='set_tribe_title'),
     path('tribe/leader/', dashboard.views.tribe_leader, name='tribe_leader'),
 
     # basic redirect retail views
@@ -408,6 +418,8 @@ urlpatterns = [
     re_path(r'^livestream/?', retail.views.livestream, name='livestream'),
     re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
     re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
+    re_path(r'^wallpaper/?', retail.views.wallpaper, name='wallpaper'),
+    re_path(r'^wallpapers/?', retail.views.wallpaper, name='wallpapers'),
     re_path(r'^gitter/?', retail.views.gitter, name='gitter'),
     re_path(r'^refer/?', retail.views.refer, name='refer'),
     re_path(r'^fb/?', retail.views.fb, name='fb'),
@@ -432,6 +444,16 @@ urlpatterns = [
 
     # bounty requests
     re_path(r'^requests/?', bounty_requests.views.bounty_request, name='bounty_requests'),
+    url(
+        '^api/v1/bounty_request/create',
+        bounty_requests.views.create_bounty_request_v1,
+        name='create_bounty_request_v1'
+    ),
+    url(
+        '^api/v1/bounty_request/update',
+        bounty_requests.views.update_bounty_request_v1,
+        name='update_bounty_request_v1'
+    ),
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
@@ -557,6 +579,7 @@ urlpatterns = [
         retail.emails.no_applicant_reminder,
         name='no_applicant_reminder'
     ),
+    re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
@@ -582,6 +605,7 @@ urlpatterns = [
     re_path(r'^_administration/cohort/$', dataviz.views.cohort, name='cohort'),
     re_path(r'^_administration/funnel/$', dataviz.views.funnel, name='funnel'),
     re_path(r'^_administration/viz/?$', dataviz.d3_views.viz_index, name='viz_index'),
+    re_path(r'^_administration/mesh/?$', dataviz.d3_views.mesh_network_viz, name='mesh_network_viz'),
     re_path(r'^_administration/viz/sunburst/(.*)?$', dataviz.d3_views.viz_sunburst, name='viz_sunburst'),
     re_path(r'^_administration/viz/chord/(.*)?$', dataviz.d3_views.viz_chord, name='viz_chord'),
     re_path(r'^_administration/viz/steamgraph/(.*)?$', dataviz.d3_views.viz_steamgraph, name='viz_steamgraph'),

@@ -59,6 +59,8 @@ if [ "$UPDATE_CRONTAB" ] && [ "$JOBS_NODE" ]; then
     crontab scripts/crontab
 fi
 
+mkdir -p /home/ubuntu/gitcoin/coin/app/static/wallpapers
+
 cd app || echo "Cannot find app directory!"
 echo "- collect static"
 if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then
@@ -77,14 +79,19 @@ if [ "$CREATE_CACHE_TABLE" ] && [ "$JOBS_NODE" ]; then
     python3 manage.py createcachetable
 fi
 
+
 # let gunicorn know its ok to restart
 if ! [ "$JOBS_NODE" ]; then
-    echo "- gunicorn"
-    for pid in $(pgrep -fl "gunicorn: worke" | awk '{print $1}'); do
-    sudo kill -1 $pid
-    sleep 0.5
-    done
-
+    if ! [ "$CELERY_NODE"  ]; then
+      echo "- gunicorn"
+      for pid in $(pgrep -fl "gunicorn: worke" | awk '{print $1}'); do
+      sudo kill -1 $pid
+      sleep 0.5
+      done
+    else
+      echo "- celery"
+      sudo systemctl restart celery.service
+    fi
 fi
 
 # invalidate cloudfront

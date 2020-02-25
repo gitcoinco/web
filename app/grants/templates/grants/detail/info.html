@@ -135,6 +135,19 @@
 
     </div>
 
+    <div id="edit-grant-category" class="my-2 mb-4">
+      <p class="sub-title mb-0">{% trans "Categories" %}</p>
+      <div>
+        <div class="form__select2">
+          <select id="grant-categories" class="form__input" name="grant-categories[]" multiple="multiple" disabled>
+            {% for category in grant.categories.all %}
+            <option value="{{ category.id }}" selected="selected">{{ category.category|title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+
     {% if grant_is_inactive %}
       <button type="button" class="button button--primary shadow-none font-weight-bold button--full py-3" disabled>
         {% trans "Grant Has Ended" %}
@@ -174,7 +187,7 @@
 
       <div class="row progress-container  {% if clr_active %} mb-2 {% endif %} {% if not is_team_member %} mt-4 {% endif %}">
         <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6 mb-xl-0 ">
-          {% if clr_active %}
+          {% if clr_active or show_clr_card %}
             {% include 'grants/card/clr_match.html' %}
           {% else %}
             <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">MONTHLY RECURRING</p>
@@ -196,7 +209,7 @@
 
       </div>
 
-      {% if clr_active %}
+      {% if clr_active or show_clr_card %}
         {% include 'grants/card/clr_estimate.html' %}
       {% endif %}
     </div>

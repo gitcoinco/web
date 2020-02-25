@@ -217,9 +217,8 @@ def thank_you_for_supporting(request):
 
 @staff_member_required
 def new_supporter(request):
-    grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_new_supporter_email(grant, subscription)
+    subscription = Subscription.objects.last()
+    response_html, __, __ = render_new_supporter_email(subscription.grant, subscription)
     return HttpResponse(response_html)
 
 
@@ -336,6 +335,15 @@ def render_funder_payout_reminder(**kwargs):
     return response_html, response_txt
 
 
+def render_match_distribution(mr):
+    params = {
+        'mr': mr,
+    }
+    response_html = premailer_transform(render_to_string("emails/match_distribution.html"))
+    response_txt = ''
+    return response_html, response_txt
+
+
 def render_no_applicant_reminder(bounty):
     params = {
         'bounty': bounty,
@@ -427,8 +435,8 @@ PS - we've got some new gitcoin schwag on order. if interested, let us know and 
         'txt': txt,
 		'email_type': 'bounty_feedback'
     }
-    response_html = premailer_transform(render_to_string("emails/txt.html", params))
-    response_txt = txt
+    response_txt = premailer_transform(render_to_string("emails/txt.html", params))
+    response_html = f"<pre>{response_txt}</pre>"
 
     return response_html, response_txt
 
@@ -712,9 +720,11 @@ def render_comment(to_email, comment):
 
 
 def render_mention(to_email, post):
+    from dashboard.models import Activity
     params = {
         'post': post,
         'email_type': 'mention',
+        'is_activity': isinstance(post, Activity),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -993,8 +1003,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Take Action in the Town Square"
-    new_kudos_pks = [7096, 7351, 7319]
+    subject = "Web3 Status: SUSTAINED!"
+    new_kudos_pks = [10864, 10852, 7502]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1013,47 +1023,51 @@ def render_new_bounty_roundup(to_email):
 
     intro = f'''
 <p>
-Hey Gitcoiners,
+Greetings Gitcoiners,
 </p>
 <p>
-We just rolled out a ton of new features! Welcome to the Gitcoin <a href="https://gitcoin.co/townsquare">Town Square</a>, a social newsfeed where you can like, comment on, flag, and link to any activity feed item. You’ll find a daily, weekly, and monthly action to complete with free goodies, invites, and more - you can also create your own action for the community. Finally, you can now send “status updates” to all your grant funders (with privacy options to opt out).
+Happy Friday! If you were expecting an email from Mr. Owocki today, I have good news and bad news. The bad news is you’re stuck with me - sorry to disappoint. But the absolutely incredible good news is that in the early morning hours of a magical Sustain Web3 Summit, the blockchain gods blessed this earth with a healthy <a href="https://twitter.com/owocki/status/1227969021720424449">baby Owocki</a>. While this may have thrown a wrench in our event plans, we’re all extremely excited for Kevin and his wonderful family, and the show must (and did) go on.
 </p>
 <p>
-On another note, <a href="https://gitcoin.co/grants/">Grants Round 4</a> and the <a href="https://gitcoin.co/hackathon/take-back-the-web?">Take Back The Web</a> hackathon both conclude next week. So far this grants round has seen 3,857 contributions from 853 unique community members, worth $74,023, in just over 10 days (4 more to go!). The hackathon already has 368 registrations, 175 work starts, and 46 submissions (with 6 more days to go). It’s never too late to make a donation or start work on a hackathon project!
+So let’s get into it! If you weren’t able to attend or stream Sustain Web3, the event was a blast and almost all the talks are already uploaded to our <a href="https://www.youtube.com/watch?v=wWXdi891b28&list=PLvTrX8LNPbPnJYe0v37HL4T8dsilPQWTE">Youtube</a> for your enjoyment. Furthermore, Xpring and Bancor have both decided to extend their bounties from the Sustain Web3 Virtual Hackathon, see the <a href="https://gitcoin.co/hackathon/sustain-web3">prize explorer</a> with $9,000 still up for grabs and 1 week left!
 </p>
 <p>
-Last but not least, we’re excited to share Vitalik Buterin will be the keynote speaker at <a href="https://web3.sustainoss.org/">Sustain Web3</a> the day before ETHDenver. <a href="https://web3.sustainoss.org/">Sign up</a> to attend the free event if you can make it, and if you’re feeling generous, any contribution to our <a href="https://gitcoin.co/grants/195/sustain-web3-sustainers">Grant</a> for the event will help us in supporting OSS.
+Even as the Gitcoin team devolves into anarchy without Kevin, we still have plenty of hackathons in the pipeline for you. This week we kicked off the 6-week <a href="https://blockchainforsocialimpact.com/incubator/">Social Impact Incubator</a> with $30,000 in prizes, <a href="https://gitcoin.co/hackathon/onboard/decentralized-impact-incubator/">sign up</a> and form teams by next week. Next Friday we’re launching an <a href="https://gitcoin.co/hackathon/onboard/sia/">exclusive virtual hackathon</a> with <a href="https://siasky.net/">Sia</a>. Registration is also open for our DeFi hackathon <a href="https://gitcoin.co/hackathon/onboard/funding-the-future/">Funding The Future</a> in late March.
+</p>
+<p>
+Finally, a sleep deprived CEO and father of two still somehow managed to make it to his <a href="https://www.youtube.com/watch?v=eAMzAOhn1KY">ETHDenver talk</a> to make some special announcements. Titled “Cathedral & Bazaar in the web3 era” this talk explores concepts from the 90’s OSS classic "Cathedral & Bazaar" & revisits it in the web3-era. We’re excited to share that we’ve already got $600k in CLR matching funds for 2020, and will be running weekly mini CLR rounds on the Gitcoin <a href=“https://gitcoin.co/townsquare">Town Square</a>!
 </p>
 
 {kudos_friday}
+
 <h3>What else is new?</h3>
-    <ul>
-        <li>
-            Today's special edition Livestream is on Gitcoin Grants Round 4. The kicker: You can only present a project you funded, not one you built. <a href="https://gitcoin.co/livestream">Join us</a> for a party celebrating the end of the biggest CLR Round yet at 2pm ET. 
+    <ul>
+        <li>
+        Today's Gitcoin Livestream will be with Yorke Rhodes of Microsoft and Vanessa Grellet of ConsenSys, both part of the Blockchain for Social Impact Coalition. We'll be discussing the Social Impact Incubator (6-week hackathon) that kicked off this week, so <a href=“gitcoin.co/livestream”>join us</a> at 2pm ET and come with questions.
         </li>
-    </ul>
+    </ul>
 </p>
 <p>
-Back to BUIDLing,
+Back to Gittin' those Coins,
 </p>
 '''
     highlights = [{
-        'who': 'TomAFrench',
-        'who_link': True,
-        'what': 'Created A Fork Of The Burner Wallet That Uses Liquidity Network L2 Solution Instead Of XDai',
-        'link': 'https://gitcoin.co/issue/liquidity-network/liquidity-burner/1/2972',
-        'link_copy': 'View more',
-    }, {
-        'who': 'aquiladev',
-        'who_link': True,
-        'what': 'Integrated WalletConnect as provider for Truffle smart contract deployment',
-        'link': 'https://gitcoin.co/issue/WalletConnect/walletconnect-monorepo/205/3766',
-        'link_copy': 'View more',
-    }, {
         'who': 'matkt',
         'who_link': True,
-        'what': 'Created a general internal API to support Network Address Translation (NAT) technologies in Besu',
-        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/2/2694',
+        'what': 'Added NAT Kubernetes Support for Besu',
+        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/4/4002',
+        'link_copy': 'View more',
+    }, {
+        'who': 'robsecord',
+        'who_link': True,
+        'what': 'Created The Best User Experience In A Dapp Utilizing Dfuse (Sustain Web3 Hackathon)',
+        'link': 'https://gitcoin.co/issue/dfuse-io/hackathons/1/3954',
+        'link_copy': 'View more',
+    }, {
+        'who': 'calchulus',
+        'who_link': True,
+        'what': 'Created a New Logo Design for Charged Particles',
+        'link': 'https://gitcoin.co/issue/robsecord/ChargedParticlesWeb/1/4025',
         'link_copy': 'View more',
     }, ]
 
@@ -1070,14 +1084,14 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/OneMillionDevs/bounties/issues/4',
-        'primer': '1 ETH For The Top 3 One Million Developers At Gitcoin Community Call',
+        'url': 'https://github.com/harmonylion/ideamarkets/issues/7',
+        'primer': 'Streamline Buying Tokens From Bonding Curve Using RDAI',
     }, {
-        'url': 'https://github.com/Minds/minds/issues/153',
-        'primer': 'Setting To Reduce Mobile Data Usage for Minds',
+        'url': 'https://github.com/unstoppabledomains/unstoppable-demo-browser/issues/4',
+        'primer': 'Support ENS (.Eth) + IPFS Resolution',
     }, {
-        'url': 'https://github.com/unlock-protocol/unlock/issues/5265',
-        'primer': 'Shopify plugin for Unlock Protocol',
+        'url': 'https://github.com/blockchainforsocialimpact/incubator/issues/3',
+        'primer': '[$10,000] - Plastics & Pollution (Social Impact Incubator)',
     }]
 
 
@@ -1269,7 +1283,7 @@ def comment(request):
 
 @staff_member_required
 def mention(request):
-    from townsquare.models import Activity
+    from dashboard.models import Activity
     response_html, _ = render_mention(settings.CONTACT_EMAIL, Activity.objects.last())
     return HttpResponse(response_html)
 
@@ -1337,6 +1351,16 @@ def no_applicant_reminder(request):
     ).first()
     response_html, _ = render_no_applicant_reminder(bounty=bounty)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def match_distribution(request):
+    from townsquare.models import MatchRanking
+    mr = MatchRanking.objects.last()
+    response_html, _ = render_match_distribution(mr)
+    return HttpResponse(response_html)
+
+
 
 
 @staff_member_required

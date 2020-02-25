@@ -44,7 +44,6 @@
 .profile-card {
   background: white;
   border-radius: 5px;
-  z-index: 1;
   position: relative;
   padding: 2rem;
 }
@@ -152,6 +151,7 @@
 
 .profile_details .nav-tabs .nav-link {
   padding: 0.5rem;
+  padding-bottom: 0.2rem;
 }
 
 .is_editable{
@@ -284,6 +284,23 @@
 
 .profile-header__stats--contributor .card-header {
   background-color: transparent;
+}
+
+.profile-header__sync {
+  margin-top: -140px;
+  position: relative;
+}
+
+.profile-header__sync.inactive {
+  display: none;
+}
+
+.profile-header__sync img {
+  width: 32px;
+}
+
+.profile-header__sync img.loading {
+  display: none;
 }
 
 .card-header::after {
@@ -432,6 +449,7 @@
   transform: scale(1.1);
 }
 
+#follow_header,
 #kudos_header {
   position: absolute;
   top: -95px;
@@ -439,6 +457,14 @@
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 5px;
   padding: 5px;
+}
+#follow_header{
+  top: -165px;
+  color: white;
+  font-size: 12px;
+}
+#follow_header.lower{
+  top: -75px;
 }
 #kudos_header img{
   box-shadow: none;

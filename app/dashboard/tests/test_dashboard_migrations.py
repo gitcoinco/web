@@ -6,6 +6,7 @@ from unittest import TestCase
 import pytest
 import pytest_django
 from dashboard.models import Activity, Profile
+from economy.models import Token
 from grants.models import Grant, Subscription
 from pytz import UTC
 
@@ -20,6 +21,7 @@ def start():
     Activity.objects.all().delete()
     yield
     Profile.objects.all().delete()
+    Token.objects.create(symbol="E18R", address='0xFc1079D41D56D78e9FA2a857991F41D777104c74', network="mainnet")
 
 def test_close_enough():
     base_date = datetime(2019, 5, 27, 11, 6, 45, tzinfo=UTC)
@@ -163,7 +165,8 @@ def new_subscription_with_activity(new_subscription, profile):
 def new_contribution(new_subscription):
     contribution = new_subscription
     contribution.num_tx_approved = 1
-    contribution.successful_contribution(contribution.new_approve_tx_id)
+    contribution.token_address = "0x0"
+    # contribution.successful_contribution(contribution.new_approve_tx_id)
     contribution.error = True
     contribution.subminer_comments = "skipping"
     contribution.save()

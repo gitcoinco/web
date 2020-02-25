@@ -1,7 +1,12 @@
-from django.db import models
+from django.conf import settings
+from django.contrib.postgres.fields import ArrayField, JSONField
+from django.db import models, transaction
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
 
+import townsquare.clr as clr
 from economy.models import SuperModel
 
 
@@ -51,6 +56,7 @@ class Comment(SuperModel):
     activity = models.ForeignKey('dashboard.Activity',
         on_delete=models.CASCADE, related_name='comments', blank=True, db_index=True)
     comment = models.TextField(default='', blank=True)
+    likes = ArrayField(models.IntegerField(), default=list, blank=True) #pks of users who like this post
 
     def __str__(self):
         return f"Comment of {self.activity.pk} by {self.profile.handle}: {self.comment}"
@@ -63,8 +69,21 @@ class Comment(SuperModel):
     def url(self):
         return self.activity.url
 
+    @property
+    def tip_count_eth(self):
+        from dashboard.models import Tip
+        network = 'rinkeby' if settings.DEBUG else 'mainnet'
+        tips = Tip.objects.filter(comments_priv=f"comment:{self.pk}", network=network)
+        return sum([tip.value_in_eth for tip in tips])
+
     def get_absolute_url(self):
         return self.url
+
+
+@receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
+def postsave_comment(sender, instance, created, **kwargs):
+    from townsquare.tasks import send_comment_email
+    send_comment_email.delay(instance.pk)
 
 
 class OfferQuerySet(models.QuerySet):
@@ -73,6 +92,8 @@ class OfferQuerySet(models.QuerySet):
     def current(self):
         """Filter results down to current offers only."""
         return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now(), public=True)
+
+num_backgrounds = 33
 
 
 class Offer(SuperModel):
@@ -84,16 +105,16 @@ class Offer(SuperModel):
         ('weekly', 'weekly'),
         ('monthly', 'monthly'),
         ('other', 'other'),
+        ('top', 'top'),
     ]
     STYLES = [
-        ('announce1', 'light-pink'),
-        ('announce2', 'blue'),
-        ('announce3', 'teal'),
-        ('announce4', 'yellow'),
-        ('announce5', 'lime-green'),
-        ('announce6', 'pink'),
-    ]
+        ('red', 'red'),
+        ('green', 'green'),
+        ('blue', 'blue'),
+    ] + [(f'back{i}', f'back{i}') for i in range(0, num_backgrounds + 1)]
 
+    from_name = models.CharField(max_length=50, blank=True)
+    from_link = models.URLField(blank=True)
     title = models.TextField(default='', blank=True)
     desc = models.TextField(default='', blank=True)
     url = models.URLField(db_index=True)
@@ -106,8 +127,9 @@ class Offer(SuperModel):
         on_delete=models.CASCADE, related_name='offers_created', blank=True, null=True)
     public = models.BooleanField(help_text='Is this available publicly yet?', default=True)
     view_count = models.IntegerField(default=0, db_index=True)
+    amount = models.CharField(max_length=50, blank=True)
 
-    # Bounty QuerySet Manager
+    # Offer QuerySet Manager
     objects = OfferQuerySet.as_manager()
 
     def __str__(self):
@@ -154,10 +176,17 @@ class AnnounceQuerySet(models.QuerySet):
 class Announcement(SuperModel):
     """An Announcement to the users to be displayed on town square."""
 
+    _TYPES = [
+        ('townsquare', 'townsquare'),
+        ('header', 'header'),
+        ('footer', 'footer'),
+    ]
+    key = models.CharField(max_length=50, db_index=True, choices=_TYPES)
     title = models.TextField(default='', blank=True)
     desc = models.TextField(default='', blank=True)
     valid_from = models.DateTimeField(db_index=True)
     valid_to = models.DateTimeField(db_index=True)
+    rank = models.IntegerField(default=0)
 
     STYLES = [
         ('primary', 'primary'),
@@ -177,3 +206,123 @@ class Announcement(SuperModel):
     objects = AnnounceQuerySet.as_manager()
     def __str__(self):
         return f"{self.created_on} => {self.title}"
+
+
+class MatchRoundQuerySet(models.QuerySet):
+    """Handle the manager queryset for MatchRanking."""
+
+    def current(self):
+        """Filter results down to current offers only."""
+        return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now())
+
+
+class MatchRound(SuperModel):
+
+    valid_from = models.DateTimeField(db_index=True)
+    valid_to = models.DateTimeField(db_index=True)
+    number = models.IntegerField(default=1)
+    amount = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+
+    # Offer QuerySet Manager
+    objects = MatchRoundQuerySet.as_manager()
+
+    def __str__(self):
+        return f"Round {self.number} from {self.valid_from} to {self.valid_to}"
+
+    @property
+    def url(self):
+        return self.activity.url
+
+    def get_absolute_url(self):
+        return self.activity.url
+
+    def process(self):
+        from dashboard.models import Profile
+        mr = self
+        print("_")
+        with transaction.atomic():
+            mr.ranking.all().delete()
+            data = get_eligible_input_data(mr)
+            total_pot = mr.amount
+            print(mr, f"{len(data)} earnings to process")
+            results = clr.run_calc(data, total_pot)
+            for result in results:
+                try:
+                    profile = Profile.objects.get(pk=result['id'])
+                    match_curve = clr.run_live_calc(data, result['id'], 999999, total_pot)
+                    contributors = len(set([ele[1] for ele in data if int(ele[0]) == profile.pk]))
+                    contributions_for_this_user = [ele for ele in data if int(ele[0]) == profile.pk]
+                    contributions = len(contributions_for_this_user)
+                    contributions_total = sum([ele[2] for ele in contributions_for_this_user])
+                    MatchRanking.objects.create(
+                        profile=profile,
+                        round=mr,
+                        contributors=contributors,
+                        contributions=contributions,
+                        contributions_total=contributions_total,
+                        match_total=result['clr_amount'],
+                        match_curve=match_curve,
+                        )
+                except Exception as e:
+                    if settings.DEBUG:
+                        raise e
+
+            # update number rankings
+            number = 1
+            for mri in mr.ranking.order_by('-match_total'):
+                mri.number = number
+                mri.save()
+                number += 1
+
+
+class MatchRanking(SuperModel):
+
+    profile = models.ForeignKey('dashboard.Profile',
+        on_delete=models.CASCADE, related_name='match_rankings', blank=True)
+    round = models.ForeignKey('townsquare.MatchRound',
+        on_delete=models.CASCADE, related_name='ranking', blank=True, db_index=True)
+    number = models.IntegerField(default=1)
+    contributors = models.IntegerField(default=1)
+    contributions = models.IntegerField(default=1)
+    contributions_total = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    match_total = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    final = models.BooleanField(help_text='Is this match ranking final?', default=False)
+    paid = models.BooleanField(help_text='Is this match ranking paikd?', default=False)
+    payout_txid = models.CharField(max_length=255, default='', blank=True)
+    payout_tx_status = models.CharField(max_length=255, default='', blank=True)
+    payout_tx_issued = models.DateTimeField(db_index=True, null=True)
+    match_curve = JSONField(default=dict, blank=True)
+
+    def __str__(self):
+        return f"Round {self.round.number}: Ranked {self.number}, {self.profile.handle} got {self.contributions} contributions worth ${self.contributions_total} for ${self.match_total} Matching"
+
+    @property
+    def default_match_estimate(self):
+        # TODO: 0.3 is the defaul contribution amount, so we're pulling the match estimate
+        return self.match_curve["0.3"] - float(self.match_total)
+
+    @property
+    def sorted_match_curve(self):
+        # returns a dict of the amounts that new matching affect things
+        import collections
+        items = self.match_curve.items()
+        items = [[float(ele[0]), ele[1] - float(self.match_total)] for ele in items]
+        od = collections.OrderedDict(sorted(items))
+        return od
+    
+
+def get_eligible_input_data(mr):
+    from dashboard.models import Tip
+    from django.db.models import Q
+    from dashboard.models import Earning, Profile
+    from django.contrib.contenttypes.models import ContentType
+    network = 'mainnet'
+    earnings = Earning.objects.filter(created_on__gt=mr.valid_from, created_on__lt=mr.valid_to)
+    earnings = earnings.filter(to_profile__isnull=False, from_profile__isnull=False, value_usd__isnull=False, network=network)
+    earnings = earnings.exclude(to_profile__user__is_staff=True)
+    earnings = earnings.filter(source_type=ContentType.objects.get(app_label='dashboard', model='tip'))
+    # microtips only
+    tips = list(Tip.objects.filter(Q(comments_priv__contains='activity:') | Q(comments_priv__contains='comment:') | Q(tokenName='ETH', amount__lte=0.05)).values_list('pk', flat=True))
+    earnings = earnings.filter(source_id__in=tips)
+    earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
+    return [[ele[0], ele[1], float(ele[2])] for ele in earnings]

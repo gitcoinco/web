@@ -29,6 +29,11 @@
 .kudos-module .msg-alert{
   display: none !important;
 }
+
+.new_quest_background.selected {
+  border: 2px solid #F9006C;
+}
+
 </style>
 <link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
 
@@ -78,8 +83,20 @@
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="This is the URL that the user will go to if they accept the action."></i>
             <input type="url" name="action_url" class="form__input" placeholder='https://gitcoin.co/quests/26/ether-wizard' value="{{package.action_url}}" required>
           </div>
+
           <div class="form-group">
-            <label class="form__label" for="persona">{% trans "Prompt Kudos" %}</label>
+            <label class="form__label" for="from_name">{% trans "From Name" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The 'name' of the prompt."></i>
+            <input type="text" name="from_name" class="form__input" placeholder='@owocki' value="{{package.from_name}}" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="from_link">{% trans "From URL" %}</label>
+            <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="This is the URL that will be presented to the user, linked from the 'From Name'"></i>
+            <input type="url" name="from_link" class="form__input" placeholder='https://gitcoin.co/owocki' value="{{package.from_link}}" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form__label" for="persona">{% trans "From Kudos" %}</label>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The kudos that will be displayed to present the action to the user"></i>
             {% if package.persona %}
               <BR>
@@ -93,6 +110,17 @@
               {% include 'shared/add_kudos.html' with name='persona' %}
             {% endif %}
           </div>
+
+            <div class="background_container pt-4">
+              <label class="form__label" for="reading_material_url">{% trans "Arena" %}</label>
+              <BR>
+              {% for bg in backgrounds %}
+                <div data-value="{{bg}}" class="new_quest_background {{bg}} {% if bg == package.background %}selected{% endif %}">&nbsp;</div>
+              {% endfor %}
+              <input type="hidden" name="background" id="background" value="{{package.background}}">
+            </div>
+
+
             <div class="terms_container pt-4">
               <div class="form__checkbox">
                 <input name='terms' id='terms' type="checkbox" value=1 required {% if package.terms%}checked=checked{% endif %} />

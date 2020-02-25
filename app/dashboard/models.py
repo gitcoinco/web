@@ -50,6 +50,8 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
+from avatar.models import SocialAvatar
+from avatar.utils import get_user_github_avatar_image
 from bleach import clean
 from bs4 import BeautifulSoup
 from dashboard.tokens import addr_to_token, token_by_name
@@ -836,7 +838,7 @@ class Bounty(SuperModel):
     def value_in_usdt_at_time(self, at_time):
         decimals = 10 ** 18
         if self.token_name == 'USDT':
-            return float(self.value_in_token)
+            return float(self.value_in_token / 10 ** 6)
         if self.token_name in settings.STABLE_COINS:
             return float(self.value_in_token / 10 ** 18)
         try:
@@ -1667,6 +1669,26 @@ class Tip(SendCryptoAsset):
     )
 
     @property
+    def is_programmatic_comment(self):
+        if 'activity:' in self.comments_priv:
+            return True
+        if 'comment:' in self.comments_priv:
+            return True
+
+    @property
+    def attached_object(self):
+        if 'activity:' in self.comments_priv:
+            pk = self.comments_priv.split(":")[1]
+            obj = Activity.objects.get(pk=pk)
+            return obj
+        if 'comment:' in self.comments_priv:
+            pk = self.comments_priv.split(":")[1]
+            from townsquare.models import Comment
+            obj = Comment.objects.get(pk=pk)
+            return obj
+
+
+    @property
     def receive_url(self):
         if self.web3_type == 'yge':
             return self.url
@@ -1729,9 +1751,9 @@ def psave_tip(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
-def postsave_tip(sender, instance, **kwargs):
+def postsave_tip(sender, instance, created, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
-    if is_valid:
+    if instance.pk and is_valid:
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
             source_id=instance.pk,
@@ -1745,6 +1767,19 @@ def postsave_tip(sender, instance, **kwargs):
                 "network":instance.network,
             }
             )
+    if created:
+        if instance.network == 'mainnet' or settings.DEBUG:
+            from townsquare.models import Comment
+            if 'activity:' in instance.comments_priv:
+                activity=instance.attached_object
+                comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
+                comment = Comment.objects.create(profile=instance.sender_profile, activity=activity, comment=comment)
+            if 'comment:' in instance.comments_priv:
+                _comment=instance.attached_object
+                comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
+                comment = Comment.objects.create(profile=instance.sender_profile, activity=_comment.activity, comment=comment)
+
+
 
 
 # method for updating
@@ -1786,10 +1821,31 @@ def psave_bounty(sender, instance, **kwargs):
             if profiles.exists():
                 instance.bounty_owner_profile = profiles.first()
 
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    ct = ContentType.objects.get(app_label='dashboard', model='bounty')
+    if instance.current_bounty and instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ct,
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.web3_created,
+                "title":instance.title,
+                "description":instance.issue_description,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.get_avatar_url(True),
+            }
+            )
+        # delete any old bounties
+        if instance.prev_bounty and instance.prev_bounty.pk:
+            for sr in SearchResult.objects.filter(source_type=ct, source_id=instance.prev_bounty.pk):
+                sr.delete()
+
 
 @receiver(post_save, sender=BountyFulfillment, dispatch_uid="psave_bounty_fulfill")
 def psave_bounty_fulfilll(sender, instance, **kwargs):
-    if instance.accepted:
+    if instance.pk and instance.accepted:
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='bountyfulfillment'),
             source_id=instance.pk,
@@ -1968,6 +2024,7 @@ class Activity(SuperModel):
         ('beat_quest', 'Beat Quest'),
         ('created_quest', 'Created Quest'),
         ('updated_avatar', 'Updated Avatar'),
+        ('mini_clr_payout', 'Mini CLR Payout'),
     ]
 
     profile = models.ForeignKey(
@@ -1989,8 +2046,14 @@ class Activity(SuperModel):
         blank=True,
         null=True
     )
-    kudos = models.ForeignKey(
+    kudos_transfer = models.ForeignKey(
         'kudos.KudosTransfer',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    kudos = models.ForeignKey(
+        'kudos.Token',
         related_name='activities',
         on_delete=models.CASCADE,
         blank=True, null=True
@@ -2101,18 +2164,18 @@ class Activity(SuperModel):
     def view_props(self):
         from kudos.models import Token
         icons = {
-            'new_tip': 'fa-thumbs-up',
-            'start_work': 'fa-lightbulb',
-            'new_bounty': 'fa-money-bill-alt',
-            'work_done': 'fa-check-circle',
-            'status_update': 'fa-user',
-            'new_kudos': 'fa-thumbs-up',
-            'new_grant': 'fa-envelope',
-            'update_grant': 'fa-edit',
-            'killed_grant': 'fa-trash',
-            'new_grant_contribution': 'fa-coins',
-            'new_grant_subscription': 'fa-calendar-check',
-            'killed_grant_contribution': 'fa-calendar-times',
+            'new_tip': 'far fa-thumbs-up',
+            'start_work': 'far fa-lightbulb',
+            'new_bounty': 'far fa-money-bill-alt',
+            'work_done': 'far fa-check-circle',
+            'status_update': 'far fa-user',
+            'new_kudos': 'far fa-thumbs-up',
+            'new_grant': 'far fa-envelope',
+            'update_grant': 'far fa-edit',
+            'killed_grant': 'fas fa-trash',
+            'new_grant_contribution': 'fas fa-donate',
+            'new_grant_subscription': 'far fa-calendar-check',
+            'killed_grant_contribution': 'far fa-calendar-times',
         }
 
         # load up this data package with all of the information in the already existing objects
@@ -2123,6 +2186,8 @@ class Activity(SuperModel):
             'created_human_time',
             'humanized_name',
             'url',
+            'match_this_round',
+            'matchranking_this_round',
         ]
         activity = self.to_standard_dict(properties=properties)
         activity['pk'] = self.pk
@@ -2140,9 +2205,9 @@ class Activity(SuperModel):
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
-        activity['icon'] = icons.get(self.activity_type, 'fa-check-circle')
+        activity['icon'] = icons.get(self.activity_type, 'far fa-check-circle')
         if activity.get('kudos'):
-            activity['kudos_data'] = Token.objects.get(pk=self.kudos.kudos_token_cloned_from_id)
+            activity['kudos_data'] = self.kudos
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']
@@ -2164,6 +2229,8 @@ class Activity(SuperModel):
                                                       10 ** activity['token']['decimals']) * 1000) / 1000
 
         activity['view_count'] = self.view_count
+        activity['tip_count_usd'] = self.tip_count_usd
+        activity['tip_count_eth'] = self.tip_count_eth
 
         # finally done!
 
@@ -2176,6 +2243,18 @@ class Activity(SuperModel):
             return vp
         vp['liked'] = self.likes.filter(profile=user.profile).exists()
         return vp
+
+    @property
+    def tip_count_usd(self):
+        network = 'rinkeby' if settings.DEBUG else 'mainnet'
+        tips = Tip.objects.filter(comments_priv=f"activity:{self.pk}", network=network)
+        return sum([tip.value_in_usdt for tip in tips])
+
+    @property
+    def tip_count_eth(self):
+        network = 'rinkeby' if settings.DEBUG else 'mainnet'
+        tips = Tip.objects.filter(comments_priv=f"activity:{self.pk}", network=network)
+        return sum([tip.value_in_eth for tip in tips])
 
     @property
     def secondary_avatar_url(self):
@@ -2424,6 +2503,11 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
+    dont_autofollow_earnings = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, Gitcoin will not auto-follow users you do business with',
+    )
+
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     profile_organizations = models.ManyToManyField(Organization, blank=True)
@@ -2474,14 +2558,40 @@ class Profile(SuperModel):
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
     referrer = models.ForeignKey('dashboard.Profile', related_name='referred', on_delete=models.CASCADE, null=True, db_index=True, blank=True)
-    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
+    tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description describing tribe.'))
+    automatic_backup = models.BooleanField(default=False, help_text=_('automatic backup profile to cloud storage such as 3Box if the flag is true'))
     as_representation = JSONField(default=dict, blank=True)
-
+    tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
     objects = ProfileQuerySet.as_manager()
+
+    @property
+    def subscribed_threads(self):
+        tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
+        tips = [tip.comments_priv.split(':')[1] for tip in tips]
+        tips = [ele for ele in tips if ele.isnumeric()]
+        activities = Activity.objects.filter(Q(pk__in=self.likes.all()) | Q(pk__in=self.comments.all()) | Q(pk__in=tips))
+        return activities
 
     @property
     def quest_level(self):
         return self.quest_attempts.filter(success=True).distinct('quest').count() + 1
+
+    @property
+    def match_this_round(self):
+        mr = self.matchranking_this_round
+        if mr:
+            return mr.match_total
+        return 0
+
+    @property
+    def matchranking_this_round(self):
+        from townsquare.models import MatchRound
+        mr = MatchRound.objects.current().first()
+        if mr:
+            mr = mr.ranking.filter(profile=self).first()
+            if mr:
+                return mr
+        return None
 
     @property
     def quest_caste(self):
@@ -2527,8 +2637,8 @@ class Profile(SuperModel):
     @property
     def tribe_members(self):
         if not self.is_org:
-            return TribeMember.objects.filter(profile=self).exclude(status='rejected')
-        return TribeMember.objects.filter(org=self).exclude(status='rejected')
+            return TribeMember.objects.filter(profile=self).exclude(status='rejected').exclude(profile__user=None)
+        return TribeMember.objects.filter(org=self).exclude(status='rejected').exclude(profile__user=None)
 
     @property
     def ref_code(self):
@@ -2863,6 +2973,18 @@ class Profile(SuperModel):
 
         """
         return self.user.groups.filter(name='Moderators').exists() if self.user else False
+
+    @property
+    def is_alpha_tester(self):
+        """Determine whether or not the user is an alpha tester.
+
+        Returns:
+            bool: Whether or not the user is an alpha tester.
+
+        """
+        if self.user.is_staff:
+            return True
+        return self.user.groups.filter(name='Alpha_Testers').exists() if self.user else False
 
     @property
     def is_staff(self):
@@ -3286,6 +3408,17 @@ class Profile(SuperModel):
             return self.admin_override_avatar.url
         if self.active_avatar:
             return self.active_avatar.avatar_url
+        else:
+            github_avatar_img = get_user_github_avatar_image(self.handle)
+            if github_avatar_img:
+                try:
+                    github_avatar = SocialAvatar.github_avatar(self, github_avatar_img)
+                    github_avatar.save()
+                    self.activate_avatar(github_avatar.pk)
+                    self.save()
+                    return self.active_avatar.avatar_url
+                except Exception as e:
+                    logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
 
     @property
@@ -3813,9 +3946,8 @@ class Profile(SuperModel):
 
         # lazily generate profile dict on the fly
         if not params.get('title') or self.frontend_calc_stale:
-            self.calculate_all()
-            self.save()
-            params = self.as_dict
+            from dashboard.tasks import profile_dict
+            profile_dict.delay(self.pk)
 
         if params.get('tips'):
             params['tips'] = Tip.objects.filter(pk__in=params['tips'])
@@ -3860,6 +3992,22 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
 
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+
+    if instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.handle,
+                "description":instance.desc,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.avatar_url,
+            }
+            )
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
@@ -3903,7 +4051,6 @@ class ProfileSerializer(serializers.BaseSerializer):
             instance.calculate_all()
             instance.save()
         return instance.as_representation
-
 
 @receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
 def normalize_tip_usernames(sender, instance, **kwargs):
@@ -4219,6 +4366,10 @@ class HackathonEvent(SuperModel):
         return Bounty.objects.filter(event=self, network='mainnet').current()
 
     @property
+    def url(self):
+        return settings.BASE_URL + self.slug
+
+    @property
     def stats(self):
         stats = {
             'range': f"{self.start_date.strftime('%m/%d/%Y')} to {self.end_date.strftime('%m/%d/%Y')}",
@@ -4236,6 +4387,25 @@ class HackathonEvent(SuperModel):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+# method for updating
+@receiver(pre_save, sender=HackathonEvent, dispatch_uid="psave_hackathonevent")
+def psave_hackathonevent(sender, instance, **kwargs):
+
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    if instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='dashboard', model='hackathonevent'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.name,
+                "description":instance.stats['range'],
+                "url":instance.onboard_url,
+                "visible_to":None,
+                'img_url': instance.logo.url if instance.logo else None,
+            }
+            )
 
 class HackathonSponsor(SuperModel):
     SPONSOR_TYPES = [
@@ -4424,6 +4594,28 @@ class Earning(SuperModel):
     def __str__(self):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
 
+    def create_auto_follow(self):
+        profiles = [self.to_profile, self.from_profile, self.org_profile]
+        count = 0
+        for p1 in profiles:
+            for p2 in profiles:
+                if not p1 or not p2:
+                    continue
+                if p1.pk == p2.pk:
+                    continue
+                if not p1.dont_autofollow_earnings:
+                    TribeMember.objects.update_or_create(
+                        profile=p1,
+                        org=p2,
+                        defaults={'why':'auto'}
+                        )
+                    count += 1
+        return count
+
+@receiver(post_save, sender=Earning, dispatch_uid="post_save_earning")
+def post_save_earning(sender, instance, created, **kwargs):
+    if created:
+        instance.create_auto_follow()
 
 def get_my_earnings_counter_profiles(profile_pk):
     # returns profiles that a user has done business with
@@ -4477,11 +4669,18 @@ class TribeMember(SuperModel):
         ('pending', 'pending'),
         ('rejected', 'rejected'),
     ]
+    #from
     profile = models.ForeignKey('dashboard.Profile', related_name='follower', on_delete=models.CASCADE)
-    org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE)
+    # to
+    org = models.ForeignKey('dashboard.Profile', related_name='org', on_delete=models.CASCADE, null=True, blank=True)
     leader = models.BooleanField(default=False, help_text=_('tribe leader'))
+    title = models.CharField(max_length=255, blank=True, default='')
     status = models.CharField(
         max_length=20,
         choices=MEMBER_STATUS,
+        blank=True
+    )
+    why = models.CharField(
+        max_length=20,
         blank=True
     )
