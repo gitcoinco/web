@@ -245,3 +245,52 @@ textarea.enter-activity-comment {
 .activity_stream .comment_row:first-child .activity_comments_main {
   border-top: none;
 }
+
+.animate-sparkle {
+  position:relative;
+  --r: 9px;
+}
+
+@keyframes sparkles {
+  0% {
+    transform: translate(calc(var(--r) * -2.7), calc(var(--r) * -1.5)) scale(0);
+    opacity:0;
+    background-size:0 0;
+  }
+  51% {
+    transform:translate(calc(var(--r) * -2.7), calc(var(--r) * -1.5)) scale(1.2);
+    opacity:1;
+    background-size:calc(var(--r) / 3) calc(var(--r) / 3);
+
+  }
+  100% {
+    transform:translate(calc(var(--r) * -2.7), calc(var(--r) * -1.5)) scale(0);
+    opacity:0;
+    background-size:0 0;
+  }
+}
+
+.animate-sparkle i::after{
+  content:"";
+  position:absolute;
+  width: calc(4 * var(--r));
+  height:calc(4 * var(--r));
+  --c1:radial-gradient(circle,red 50%   ,transparent 60%);
+  --c2:radial-gradient(circle,orange 50%,transparent 60%);
+  background:
+    var(--c1),var(--c1),var(--c1),var(--c1),
+    var(--c2),var(--c2),var(--c2),var(--c2);
+  background-size:calc(var(--r) / 3) calc(var(--r) / 3);
+  background-position:
+    calc(50% - var(--r)) calc(50% - var(--r)),
+    calc(50% + var(--r)) calc(50% - var(--r)),
+    calc(50% - var(--r)) calc(50% + var(--r)),
+    calc(50% + var(--r)) calc(50% + var(--r)),
+    calc(50% + 0px) calc(50% + var(--r) * 1.414),
+    calc(50% + var(--r) * 1.414) calc(50% + 0px),
+    calc(50% - var(--r) * 1.414) calc(50% + 0px),
+    calc(50% + 0px) calc(50% - var(--r) * 1.414);
+  background-repeat:no-repeat;
+  transform: translate(calc(var(--r) * -2.7), calc(var(--r) * -1.5)) scale(0);
+  animation: sparkles .8s forwards;
+}
