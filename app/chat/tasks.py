@@ -1,9 +1,12 @@
-from django.conf import settings
-
 from app.redis_service import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
-from dashboard.models import Bounty, Profile
+from chat.utils import create_channel_if_not_exists, associate_chat_to_profile
+from dashboard.models import HackathonEvent, HackathonRegistration, Bounty, Profile
+import datetime
+from django.conf import settings
+from django.utils.text import slugify
+
 from mattermostdriver import Driver
 from mattermostdriver.exceptions import ResourceNotFound
 
@@ -39,7 +42,7 @@ def get_driver():
 
 
 @app.shared_task(bind=True, max_retries=3)
-def create_channel(self, options, bounty_id = None, retry: bool = True) -> None:
+def create_channel(self, options, bounty_id=None, retry: bool = True) -> None:
     """
     :param options:
     :param retry:
@@ -80,6 +83,63 @@ def create_channel(self, options, bounty_id = None, retry: bool = True) -> None:
 
 
 @app.shared_task(bind=True, max_retries=3)
+def hackathon_chat_sync(self, hackathon_id, profile_handle = None, retry: bool = True) -> None:
+    tasks = []
+    try:
+        hackathon = HackathonEvent.objects.get(id=hackathon_id)
+        channels_to_connect = []
+        if not hackathon.chat_channel_id:
+            created, channel_details = create_channel_if_not_exists({
+                'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                'channel_display_name': f'general-{hackathon.slug}'[:60],
+                'channel_name': f'general-{hackathon.name}'[:60]
+            })
+            hackathon.chat_channel_id = channel_details['id']
+            hackathon.save()
+        channels_to_connect.append(hackathon.chat_channel_id)
+        regs_to_sync = HackathonRegistration.objects.filter(hackathon=hackathon)
+        profiles_to_connect = []
+        if profile_handle is None:
+
+            for reg in regs_to_sync:
+                if reg.registrant and not reg.registrant.chat_id:
+                    created, reg.registrant = associate_chat_to_profile(reg.registrant)
+                profiles_to_connect.append(reg.registrant.chat_id)
+        else:
+            profiles_to_connect = [profile_handle]
+
+        for hack_sponsor in hackathon.sponsors.all():
+            if not hack_sponsor.chat_channel_id:
+                created, channel_details = create_channel_if_not_exists({
+                    'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                    'channel_display_name': f'company-{slugify(hack_sponsor.sponsor.name)}'[:60],
+                    'channel_name': f'company-{hack_sponsor.sponsor.name}'[:60]
+                })
+                hack_sponsor.chat_channel_id = channel_details['id']
+                hack_sponsor.save()
+            channels_to_connect.append(hack_sponsor.chat_channel_id)
+
+        for channel_id in channels_to_connect:
+            # how can we better store this
+            current_channel_users = [member['id'] for member in
+                                     chat_driver.channels.get_channel_members(channel_id)]
+            profiles_to_connect = list(set(current_channel_users) | set(profiles_to_connect))
+            if len(profiles_to_connect) > 0:
+                task = add_to_channel.si({'id': channel_id}, profiles_to_connect)
+                tasks.append(task)
+
+        if len(tasks) > 0:
+            job = group(tasks)
+            result = job.apply_async()
+        else:
+            print("Nothing to Sync")
+
+    except Exception as e:
+        logger.info(f'No hackathon found for id: {hackathon_id}')
+        logger.error(str(e))
+
+
+@app.shared_task(bind=True, max_retries=3)
 def add_to_channel(self, channel_details, chat_user_ids, retry: bool = True) -> None:
     """
     :param channel_details:
@@ -88,10 +148,12 @@ def add_to_channel(self, channel_details, chat_user_ids, retry: bool = True) -> 
     """
     chat_driver.login()
     try:
-        for chat_id in chat_user_ids:
-            if chat_id:
+        current_channel_users = [member['id'] for member in
+                                 chat_driver.channels.get_channel_members(channel_details['id'])]
+        for chat_user_id in chat_user_ids:
+            if chat_user_id not in current_channel_users:
                 response = chat_driver.channels.add_user(channel_details['id'], options={
-                    'user_id': chat_id
+                    'user_id': chat_user_id
                 })
     except ConnectionError as exc:
         logger.info(str(exc))
