@@ -56,8 +56,3 @@ class Command(BaseCommand):
                 created_on__hour=1,
             ).delete()
         print(f'Stat: {result}')
-
-        result = LeaderboardRank.objects.filter(
-                created_on__lt=self.get_then(14),
-            ).exclude(created_on__week_day=2).delete()
-        print(f'LeaderboardRank: {result}')
