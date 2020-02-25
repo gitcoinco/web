@@ -50,6 +50,8 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
+from avatar.models import SocialAvatar
+from avatar.utils import get_user_github_avatar_image
 from bleach import clean
 from bs4 import BeautifulSoup
 from dashboard.tokens import addr_to_token, token_by_name
@@ -2185,6 +2187,7 @@ class Activity(SuperModel):
             'humanized_name',
             'url',
             'match_this_round',
+            'matchranking_this_round',
         ]
         activity = self.to_standard_dict(properties=properties)
         activity['pk'] = self.pk
@@ -2574,18 +2577,33 @@ class Profile(SuperModel):
     objects = ProfileQuerySet.as_manager()
 
     @property
+    def subscribed_threads(self):
+        tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
+        tips = [tip.comments_priv.split(':')[1] for tip in tips]
+        tips = [ele for ele in tips if ele.isnumeric()]
+        activities = Activity.objects.filter(Q(pk__in=self.likes.all()) | Q(pk__in=self.comments.all()) | Q(pk__in=tips))
+        return activities
+
+    @property
     def quest_level(self):
         return self.quest_attempts.filter(success=True).distinct('quest').count() + 1
 
     @property
     def match_this_round(self):
+        mr = self.matchranking_this_round
+        if mr:
+            return mr.match_total
+        return 0
+
+    @property
+    def matchranking_this_round(self):
         from townsquare.models import MatchRound
         mr = MatchRound.objects.current().first()
         if mr:
             mr = mr.ranking.filter(profile=self).first()
             if mr:
-                return mr.match_total
-        return 0
+                return mr
+        return None
 
     @property
     def quest_caste(self):
@@ -3402,6 +3420,17 @@ class Profile(SuperModel):
             return self.admin_override_avatar.url
         if self.active_avatar:
             return self.active_avatar.avatar_url
+        else:
+            github_avatar_img = get_user_github_avatar_image(self.handle)
+            if github_avatar_img:
+                try:
+                    github_avatar = SocialAvatar.github_avatar(self, github_avatar_img)
+                    github_avatar.save()
+                    self.activate_avatar(github_avatar.pk)
+                    self.save()
+                    return self.active_avatar.avatar_url
+                except Exception as e:
+                    logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
 
     @property
@@ -3929,9 +3958,8 @@ class Profile(SuperModel):
 
         # lazily generate profile dict on the fly
         if not params.get('title') or self.frontend_calc_stale:
-            self.calculate_all()
-            self.save()
-            params = self.as_dict
+            from dashboard.tasks import profile_dict
+            profile_dict.delay(self.pk)
 
         if params.get('tips'):
             params['tips'] = Tip.objects.filter(pk__in=params['tips'])

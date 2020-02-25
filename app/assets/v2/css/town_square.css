@@ -4,7 +4,9 @@
 .tooltip-inner {
   max-width: 450px;
 }
-
+#activity_subheader{
+  text-align: center;
+}
 .announce{
   border-radius: 5px;
 
@@ -383,8 +385,20 @@ a.offer_container.animate:hover .prize-gift::after {
 .offer_container.secret.empty{
   display: none;
 }
+.gif-grid {
+  display: flex;
+  width: 300px;
+  height: 450px;
+  flex-wrap: wrap;
+  overflow: scroll;
+  overflow-x: hidden;
 
-
+}
+.pick-gif {
+  max-width: 300px;
+  max-height: 250px;
+  flex-grow: 1;
+}
 div.back0,
 body.back0 {
   background: url('/static/v2/images/quests/backs/0.gif') repeat;
@@ -935,4 +949,7 @@ body.green.offer_view .announce {
   top: -8px;
   position: relative;
   font-weight: bold;
+}
+#payout_estimate{
+  font-size: 12px;
 }

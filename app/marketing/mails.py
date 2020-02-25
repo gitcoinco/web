@@ -544,9 +544,7 @@ def send_user_feedback(quest, feedback, user):
     try:
         setup_lang(to_email)
         subject = f"Your Gitcoin Quest \"{quest.title}\" has feedback from another user!"
-        body_str = f("Your quest: {quest.title} has feedback from user {user.profile.handle}:\n\n"
-                     "{feedback}\n\n"
-                     "to edit your quest, click <a href=\"{quest.edit_url}\">here</a>")
+        body_str = f"Your quest: {quest.title} has feedback from user {user.profile.handle}:\n\n{feedback}\n\nto edit your quest, click <a href=\"{quest.edit_url}\">here</a>"
         body = f"{body_str}"
         if not should_suppress_notification_email(to_email, 'quest'):
             send_mail(
@@ -953,7 +951,7 @@ def weekly_roundup(to_emails=None):
         try:
             setup_lang(to_email)
             html, text, subject = render_new_bounty_roundup(to_email)
-            from_email = settings.PERSONAL_CONTACT_EMAIL
+            from_email = settings.CONTACT_EMAIL
 
             if not html:
                 print("no content")
@@ -966,7 +964,7 @@ def weekly_roundup(to_emails=None):
                     subject,
                     text,
                     html,
-                    from_name="Kevin Owocki (Gitcoin.co)",
+                    from_name="Connor and the Gitcoin Team (Gitcoin.co)",
                     categories=['marketing', func_name()],
                 )
             else:

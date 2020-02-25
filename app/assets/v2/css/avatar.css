@@ -52,6 +52,42 @@
   display:flex;
   justify-content: flex-end;
 }
+#theme .selected{
+  border: none !important;
+  border-top: 2px solid black !important;
+  background-color: #fafafa
+}
+#theme a.avatar_builder{
+  display: inline-block;
+  width: 130px;
+  height: 160px;
+  margin: 5px 10px;
+  color: #9a9a9a;
+  padding: 20px;
+  border-radius: 10px;
+}
+#theme a.avatar_builder:hover,
+#theme a.avatar_builder.selected{
+  background-color: #fafafa;
+  text-decoration: none;
+  font-weight: bold;
+}
+#theme a.avatar_builder:hover{
+  border-bottom: 2px solid black !important;
+}
+#theme img{
+  border-radius: 100px;
+  width: 100px;
+  height: 100px;
+  filter: grayscale(90%);
+}
+#theme a.avatar_builder:hover img,
+#theme a.avatar_builder.selected img{
+  filter: grayscale(0%);
+}
+#theme img.unisex{
+  size: 25%;
+}
 #tdavatartarget{
   width: 400px;
   height: 400px;

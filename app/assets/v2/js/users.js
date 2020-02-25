@@ -24,9 +24,24 @@ Vue.mixin({
         delete vm.params['search'];
       }
 
+      if (vm.hideFilterButton) {
+        vm.params.persona = 'tribe';
+      }
+
+      if (vm.params.persona == 'tribe') {
+        // remove filters which do not apply for tribes directory
+        delete vm.params['rating'];
+        delete vm.params['organisation'];
+        delete vm.params['skills'];
+      }
+
       let searchParams = new URLSearchParams(vm.params);
 
       let apiUrlUsers = `/api/v0.1/users_fetch/?${searchParams.toString()}`;
+
+      if (vm.hideFilterButton) {
+        apiUrlUsers += '&type=explore_tribes';
+      }
 
       var getUsers = fetchData (apiUrlUsers, 'GET');
 
@@ -39,6 +54,8 @@ Vue.mixin({
         vm.usersNumPages = response.num_pages;
         vm.usersHasNext = response.has_next;
         vm.numUsers = response.count;
+        vm.showBanner = response.show_banner;
+        vm.persona = response.persona;
 
         if (vm.usersHasNext) {
           vm.usersPage = ++vm.usersPage;
@@ -213,7 +230,17 @@ Vue.mixin({
 
       $.when(sendJoin).then(function(response) {
         event.target.disabled = false;
-        response.is_member ? event.target.innerText = 'Leave Tribe' : event.target.innerText = 'Join Tribe';
+
+        if (response.is_member) {
+          event.target.innerHTML = '<i class="fas fa-user-minus mr-1"></i> Unfollow';
+          ++user.follower_count;
+        } else {
+          event.target.innerHTML = '<i class="fas fa-user-plus mr-1"></i> Follow';
+          --user.follower_count;
+        }
+
+        event.target.classList.toggle('btn-gc-pink');
+        event.target.classList.toggle('btn-gc-blue');
       }).fail(function(error) {
         event.target.disabled = false;
       });
@@ -242,14 +269,17 @@ if (document.getElementById('gc-users-directory')) {
       bountySelected: null,
       userSelected: [],
       showModal: false,
-      showFilters: true,
+      showFilters: !document.getElementById('explore_tribes'),
       skills: document.keywords,
       selectedSkills: [],
       noResults: false,
       isLoading: true,
       gitcoinIssueUrl: '',
       issueDetails: undefined,
-      errorIssueDetails: undefined
+      errorIssueDetails: undefined,
+      showBanner: undefined,
+      persona: undefined,
+      hideFilterButton: !!document.getElementById('explore_tribes')
     },
     mounted() {
       this.fetchUsers();
