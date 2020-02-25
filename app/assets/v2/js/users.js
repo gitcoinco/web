@@ -39,6 +39,10 @@ Vue.mixin({
 
       let apiUrlUsers = `/api/v0.1/users_fetch/?${searchParams.toString()}`;
 
+      if (vm.hideFilterButton) {
+        apiUrlUsers += '&type=explore_tribes';
+      }
+
       var getUsers = fetchData (apiUrlUsers, 'GET');
 
       $.when(getUsers).then(function(response) {

@@ -825,6 +825,20 @@ def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
 
+def get_preview_img(key):
+    if key == 'classic':
+        return 'https://c.gitcoin.co/avatars/d1a33d2bcb7bbfef50368bca73111fae/fryggr.png'
+    if key == 'bufficorn':
+        return 'https://c.gitcoin.co/avatars/94c30306a088d06163582da942a2e64e/dah0ld3r.png'
+    if key == 'female':
+        return 'https://c.gitcoin.co/avatars/b713fb593b3801700fd1f92e9cd18e79/aaliyahansari.png'
+    if key == 'unisex':
+        return 'https://c.gitcoin.co/avatars/cc8272136bcf9b9d830c0554a97082f3/joshegwuatu.png'
+    if key == 'bot':
+        return 'https://c.gitcoin.co/avatars/c9d82da31b7833bdae37861014c32ebc/owocki.png'
+
+    return f'/avatar/view3d?theme={key}&scale=20'
+
 def onboard(request, flow=None):
     """Handle displaying the first time user experience flow."""
     if flow not in ['funder', 'contributor', 'profile']:
@@ -871,13 +885,14 @@ def onboard(request, flow=None):
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
     avatar_options = [
-        ('classic', '/onboard/profile?steps=avatar&theme=classic'),
-        ('unisex', '/onboard/profile?steps=avatar&theme=unisex'),
-        ('female', '/onboard/profile?steps=avatar&theme=female'),
-        ('bufficorn', '/onboard/profile?steps=avatar&theme=bufficorn'),
+        'classic',
+        'unisex',
+        'female',
+        'bufficorn',
     ]
     if request.user.is_staff:
-        avatar_options.append(('bot', '/onboard/profile?steps=avatar&theme=bot'))
+        avatar_options.append('bot')
+    avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele)) for ele in avatar_options ]
 
     params = {
         'title': _('Onboarding Flow'),
@@ -1052,13 +1067,22 @@ def users_fetch(request):
     all_users = []
     this_page = all_pages.page(page)
 
-    this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
-        .order_by(order_by).annotate(
-        previous_worked_count=previous_worked()).annotate(
-            count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
-        ).annotate(
-            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).order_by('-previous_worked_count')
+    page_type = request.GET.get('type')
+    if page_type == 'explore_tribes':
+        this_page = Profile.objects.filter(data__type='Organization'
+            ).annotate(
+                previous_worked_count=previous_worked()).annotate(
+                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
+            ).annotate(follower_count=Count('org')).order_by('-follower_count')
+    else:
+        this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
+            .order_by(order_by).annotate(
+            previous_worked_count=previous_worked()).annotate(
+                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
+            ).annotate(
+                average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+            ).order_by('-previous_worked_count')
+
     for user in this_page:
         count_work_completed = user.get_fulfilled_bounties(network=network).count()
         profile_json = {

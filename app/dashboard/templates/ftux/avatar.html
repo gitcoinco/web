@@ -39,13 +39,7 @@
   <div class="tab-pane fade active show" id="avatars-builder-tab" role="tabpanel">
     <div class="row">
       <div class="col-12">
-        <h2>Build 
           {% include 'ftux/avatar_toggle.html' %}
-         Gitcoin Avatar
-          <button type="button" id="later-button" class="button button--primary-o" onclick="changeStep(1)">
-            {% trans "Do This Later" %}
-          </button>
-        </h2>
       </div>
       {% if not has_purchased_everything_package %}
         <div class="col-12">
@@ -145,6 +139,9 @@
       <!-- Button Row -->
       <div id="avatar-builder__actions">
         <p class="button button--primary-o button--controls" onclick="changeStep(-1)">{% trans "Previous" %}</p>
+          <button type="button" id="later-button" class="button button--primary-o" onclick="changeStep(1)">
+            {% trans "Do This Later" %}
+          </button>
         <button disabled type="button" id="save-button" class="button button--primary" onclick="saveAvatar()">
           {% trans "Save Avatar" %}
         </button>
@@ -169,11 +166,9 @@
   {% if theme != 'classic' %}
   <div class="tab-pane fade show active" id="avatars-builder-3d-tab" role="tabpanel">
     <div id="avatars-builder-3d">
-      <div class="text-muted text-cetner empty-avatars mb-2">Build
 
         {% include 'ftux/avatar_toggle.html' %}
 
-       Gitcoin Avatar</div>
       <div class="avatars-container">
         <img id=tdavatartarget class="{{theme}}" src="/avatar/view3d?theme={{theme}}">
       </div>

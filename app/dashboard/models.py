@@ -2187,6 +2187,7 @@ class Activity(SuperModel):
             'humanized_name',
             'url',
             'match_this_round',
+            'matchranking_this_round',
         ]
         activity = self.to_standard_dict(properties=properties)
         activity['pk'] = self.pk
@@ -2564,18 +2565,33 @@ class Profile(SuperModel):
     objects = ProfileQuerySet.as_manager()
 
     @property
+    def subscribed_threads(self):
+        tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
+        tips = [tip.comments_priv.split(':')[1] for tip in tips]
+        tips = [ele for ele in tips if ele.isnumeric()]
+        activities = Activity.objects.filter(Q(pk__in=self.likes.all()) | Q(pk__in=self.comments.all()) | Q(pk__in=tips))
+        return activities
+
+    @property
     def quest_level(self):
         return self.quest_attempts.filter(success=True).distinct('quest').count() + 1
 
     @property
     def match_this_round(self):
+        mr = self.matchranking_this_round
+        if mr:
+            return mr.match_total
+        return 0
+
+    @property
+    def matchranking_this_round(self):
         from townsquare.models import MatchRound
         mr = MatchRound.objects.current().first()
         if mr:
             mr = mr.ranking.filter(profile=self).first()
             if mr:
-                return mr.match_total
-        return 0
+                return mr
+        return None
 
     @property
     def quest_caste(self):

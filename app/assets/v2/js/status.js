@@ -101,9 +101,14 @@ $(document).ready(function() {
 
       $.when(getMetadata).then(function(response) {
         if (response) {
+          const desc = response.description && response.description.length > 200 ?
+
+            response.description.substr(0, 200) + '...' :
+            response.description;
+
           $('#thumbnail-title').text(response.title);
           $('#thumbnail-provider').text(response.link);
-          $('#thumbnail-desc').text(response.description);
+          $('#thumbnail-desc').text(desc);
           if (response.image) {
             $('#thumbnail-img').attr('src', response.image);
             $('#thumbnail-img').removeClass('py-2 px-4');
