@@ -228,6 +228,26 @@ def town_square(request):
         } for obj in current_match_rankings[0:num_to_show]
     ]
 
+    following_tribes = []
+    if request.user.is_authenticated:
+        tribe_relations = request.user.profile.tribe_members
+        for tribe_relation in tribe_relations:
+            followed_profile = tribe_relation.org
+            if followed_profile.is_org:
+                last_24_hours_activity = lazy_round_number(
+                    Activity.objects.filter(hidden=False, created_on__gt=timezone.now() - timezone.timedelta(hours=24)).related_to(followed_profile).count()
+                )
+                tribe = {
+                    'title': followed_profile.handle,
+                    'slug': followed_profile.handle,
+                    'helper_text': f'Activities from {followed_profile.handle} in the last 24 hours',
+                    'badge': last_24_hours_activity,
+                    'avatar_url': followed_profile.avatar_url
+                }
+                following_tribes = [tribe] + following_tribes
+
+
+
     # render page context
     trending_only = int(request.GET.get('trending', 0))
     context = {
@@ -252,6 +272,7 @@ def town_square(request):
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
+        'following_tribes': following_tribes
     }
     response = TemplateResponse(request, 'townsquare/index.html', context)
     if request.GET.get('tab'):

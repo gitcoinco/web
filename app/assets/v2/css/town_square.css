@@ -950,6 +950,13 @@ body.green.offer_view .announce {
   position: relative;
   font-weight: bold;
 }
-#payout_estimate{
+
+#payout_estimate {
   font-size: 12px;
+}
+
+.townsquare_nav-list.tribe .avatar {
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
 }

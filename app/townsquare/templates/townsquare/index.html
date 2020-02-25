@@ -116,27 +116,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
       <div class="">
         <div class="my-1 px-sm-3">
-          <div class="row">
-            <div class="col-12 mb-2">
-              <ul class="nav nav-tabs mt-3 font-smaller-2 font-weight-semibold d-none" id="myTab" role="tablist">
-                  <!-- TODO: FIGURE OUT WHAT TO PUT INSTEAD OF TRIBES -->
-                  <li class="nav-item">
-                    <a data-toggle="tooltip" class="nav-link nav-line {% if tab != 'tribes' %}active{% endif %}"
-                      href="#" data-slug="townsquare" title=""
-                    >
-                      Town Square
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a data-toggle="tooltip" class="nav-link nav-line {% if tab == 'tribes' %}active{% endif %}"
-                      href="#" data-slug="tribes" title=""
-                    >
-                      Tribes
-                    </a>
-                  </li>
-              </ul>
-            </div>
-          </div>
           <div class="row mt-4">
             <div class="col-12 col-lg-3 d-lg-block">
               <div class="townsquare_left-sidebar">
@@ -170,40 +149,33 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       </li>
                     {% endfor %}
                   </ul>
-                  <div class="townsquare_nav-list_footer font-body font-weight-semibold">
-                <!--
-                    <a href="#">Explore Topics <i class="ml-1 fab fa-wpexplorer font-weight-normal"></i></a>
-                -->
-                  </div>
                 </div>
 
-
-
-                <!--
-                <div class="townsquare_nav-list mb-5">
+                <div class="townsquare_nav-list my-3 tribe">
                   <div class="townsquare_block-header">
-                    Tribe
+                    Tribes
                   </div>
                   <ul class="nav d-inline-block font-body">
-                    {% for this_tab in tabs %}
+                    {% for tribe in following_tribes %}
                       <li class="nav-item">
-                        <a data-toggle="tooltip" title="{{this_tab.helper_text}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
-                          <span class="nav-title">{{this_tab.title}}</span>
-                          {% if this_tab.badge %}
-                            <span class="nav-badge">({{ this_tab.badge }})</span>
+                        <a data-toggle="tooltip" title="{{tribe.helper_text}}" class="nav-link nav-line {% if tab == tribe.slug %}active{% endif %} " href="#" data-slug="{{tribe.slug}}">
+                          <img src="{{tribe.avatar_url}}" class="rounded avatar">
+                          <span class="nav-title">{{tribe.title}}</span>
+                          {% if tribe.badge %}
+                            <span class="nav-badge">({{ tribe.badge }})</span>
                           {% endif %}
                         </a>
                       </li>
                     {% endfor %}
                   </ul>
                   <div class="townsquare_nav-list_footer font-body font-weight-semibold">
-                    <a href="{% url "users_directory" %}?persona=tribe">
+                  <a href="{% url "tribes_directory" %}">
                       Explore Tribes
                       <i class="ml-1 fab fa-wpexplorer font-weight-normal"></i>
                     </a>
                   </div>
                 </div>
-                -->
+
               </div>
             </div>
             <div class="col-12 col-md-8 col-lg-6 px-0 px-sm-3">
@@ -297,7 +269,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     Ref Link <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
                     <strong>
                       Gitcoin is better with friends!
-                    </strong> - 
+                    </strong> -
                     Do you have a coworker, classmate, or friend that would benefit from access to Gitcoin's products?  Send them this reflink to get them onboarded.
                     <BR>
                     How it works:
