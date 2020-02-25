@@ -83,7 +83,7 @@ def create_channel(self, options, bounty_id=None, retry: bool = True) -> None:
 
 
 @app.shared_task(bind=True, max_retries=3)
-def hackathon_chat_sync(self, hackathon_id, profile_handle = None, retry: bool = True) -> None:
+def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, retry: bool = True) -> None:
     tasks = []
     try:
         hackathon = HackathonEvent.objects.get(id=hackathon_id)
@@ -100,7 +100,6 @@ def hackathon_chat_sync(self, hackathon_id, profile_handle = None, retry: bool =
         regs_to_sync = HackathonRegistration.objects.filter(hackathon=hackathon)
         profiles_to_connect = []
         if profile_handle is None:
-
             for reg in regs_to_sync:
                 if reg.registrant and not reg.registrant.chat_id:
                     created, reg.registrant = associate_chat_to_profile(reg.registrant)
@@ -125,14 +124,7 @@ def hackathon_chat_sync(self, hackathon_id, profile_handle = None, retry: bool =
                                      chat_driver.channels.get_channel_members(channel_id)]
             profiles_to_connect = list(set(current_channel_users) | set(profiles_to_connect))
             if len(profiles_to_connect) > 0:
-                task = add_to_channel.si({'id': channel_id}, profiles_to_connect)
-                tasks.append(task)
-
-        if len(tasks) > 0:
-            job = group(tasks)
-            result = job.apply_async()
-        else:
-            print("Nothing to Sync")
+                add_to_channel.delay({'id': channel_id}, profiles_to_connect)
 
     except Exception as e:
         logger.info(f'No hackathon found for id: {hackathon_id}')
@@ -140,9 +132,10 @@ def hackathon_chat_sync(self, hackathon_id, profile_handle = None, retry: bool =
 
 
 @app.shared_task(bind=True, max_retries=3)
-def add_to_channel(self, channel_details, chat_user_ids, retry: bool = True) -> None:
+def add_to_channel(self, channel_details, chat_user_ids: list, retry: bool = True) -> None:
     """
     :param channel_details:
+    :param chat_user_ids:
     :param retry:
     :return:
     """
