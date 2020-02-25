@@ -27,7 +27,6 @@ from pyshorteners import Shortener
 from social_core.backends.github import GithubOAuth2
 from social_django.models import UserSocialAuth
 
-from chat.utils import associate_chat_to_profile
 
 logger = logging.getLogger(__name__)
 
@@ -463,6 +462,7 @@ def get_profile(request):
     if profile.chat_id is '' or profile.gitcoin_chat_access_token is '':
 
         try:
+            from chat.utils import associate_chat_to_profile
             created, profile = associate_chat_to_profile(profile)
 
         except Exception as e:

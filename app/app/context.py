@@ -51,6 +51,9 @@ def preprocess(request):
     if num_slack > 1000:
         num_slack = f'{str(round((num_slack) / 1000, 1))}k'
 
+    chat_url = get_chat_url()
+    chat_access_token = ''
+    chat_id = ''
     user_is_authenticated = request.user.is_authenticated
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
     email_subs = profile.email_subscriptions if profile else None
@@ -87,14 +90,14 @@ def preprocess(request):
         if record_join:
             Activity.objects.create(profile=profile, activity_type='joined')
 
+        chat_url = get_chat_url()
+        chat_access_token = profile.gitcoin_chat_access_token
+        chat_id = profile.chat_id
     # handles marketing callbacks
     if request.GET.get('cb'):
         callback = request.GET.get('cb')
         handle_marketing_callback(callback, request)
 
-    chat_url = get_chat_url()
-    chat_access_token = profile.gitcoin_chat_access_token
-    chat_id = profile.chat_id
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
