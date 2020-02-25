@@ -519,27 +519,14 @@ $(document).ready(function() {
             <div class="activity_comments_main_comment pt-1 pb-1">
               ${the_comment}
             </div>
-            ${can_award && `<br>
+            ${can_award && `
              <button data-comment=${comment['id']} data-user=${comment['profile_handle']} 
                      data-activity=${comment['activity']} 
                      class="award btn mt-1 mb-1 btn-radio font-smaller-5">
                      <i class="fas fa-gift mr-2"></i> award
-             </button>`}
-            ${comment['redeem_link'] && `<br>
+             </button>` || ''}
+            ${comment['redeem_link'] && `
             <a class="btn mt-1 mb-1 btn-radio font-smaller-5" href="${comment['redeem_link']}">Redeem tip</a>`}
-
-              <span class="font-smaller-5 float-right">
-              ${is_comment_owner ?
-    `<i data-pk=${comment['id']} class="delete_comment fas fa-trash font-smaller-7 position-relative text-black-70 mr-1 cursor-pointer" style="top:-1px; "></i>| `
-    : ''}
-              ${show_tip ? `
-              <span class="action like px-0 ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
-                <i class="far fa-heart grey"></i> <span class=like_count>${comment['like_count']}</span>
-              </span> |
-              <a href="#" class="tip_on_comment text-dark" data-pk="${comment['id']}" data-username="${comment['profile_handle']}"> <i class="fab fa-ethereum grey"></i> <span class="amount grey">${Math.round(1000 * comment['tip_count_eth']) / 1000}</span>
-              </a>
-              ` : ''}
-              <span>
           </div>
             
         </div>
