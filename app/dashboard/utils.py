@@ -482,7 +482,6 @@ def search_for_etc_bounty_payout(bounty, payeeAddress=None):
     funderAddress = bounty.bounty_owner_profile.etc_address
     blockscout_url = f'https://blockscout.com/etc/mainnet/api?module=account&action=txlist&address={funderAddress}'
     response = requests.get(blockscout_url).json()
-    didFindPayout = None
     if blockscout_response['message'] and blockscout_response['result']:
         for t in blockscout_response['result']:
             if (t['to'] == payeeAddress and t['amount'] >= bounty.value
