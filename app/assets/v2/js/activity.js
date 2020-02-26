@@ -456,7 +456,7 @@ $(document).ready(function() {
               <br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard.
               ">
                   <i class="fab fa-ethereum mr-0" aria-hidden="true"></i>
-                  $${comment['match_this_round']} | +$${Math.round(1000 * comment['default_match_round']) / 1000}
+                  $${comment['match_this_round']} | +$${Math.round(100 * comment['default_match_round']) / 100}
                 </span>
 
                   ` : ' '}
