@@ -11,6 +11,7 @@ import metadata_parser
 from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
+from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 
 from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction
@@ -56,7 +57,11 @@ def town_square(request):
 
     # setup tabas
     hours = 24 if not settings.DEBUG else 1000
-    posts_last_24_hours = lazy_round_number(Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
+    posts_last_24_hours = 0
+    post_data_cache = JSONStore.objects.filter(view='activity', key='24hcount')
+    if post_data_cache.exists():
+        posts_last_24_hours = post_data_cache.first().data
+
     tabs = [{
         'title': f"Everywhere",
         'slug': 'everywhere',
