@@ -196,7 +196,7 @@ class ActivitySitemap(Sitemap):
 sitemaps = {
     'grants': GrantsSitemap,
     'hackathons': HackathonEventSiteMap,
-    'hackathonprojects': HackathonProjectSiteMap,
+    'projects': HackathonProjectSiteMap,
     'profiles': ProfileSitemap,
     'posts': PostSitemap,
     'quests': QuestsSitemap,
