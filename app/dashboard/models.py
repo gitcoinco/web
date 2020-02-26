@@ -1770,13 +1770,17 @@ def postsave_tip(sender, instance, created, **kwargs):
     if created:
         if instance.network == 'mainnet' or settings.DEBUG:
             from townsquare.models import Comment
+            network = instance.network if instance.network != 'mainnet' else ''
             if 'activity:' in instance.comments_priv:
                 activity=instance.attached_object
-                comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
+                comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
                 comment = Comment.objects.create(profile=instance.sender_profile, activity=activity, comment=comment)
+                from townsquare.tasks import refresh_activities
+                refresh_activities.delay([activity.pk])
+
             if 'comment:' in instance.comments_priv:
                 _comment=instance.attached_object
-                comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
+                comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
                 comment = Comment.objects.create(profile=instance.sender_profile, activity=_comment.activity, comment=comment)
 
 
@@ -2252,7 +2256,13 @@ class Activity(SuperModel):
 
     def view_props_for(self, user):
 
+        # get view props
         vp = self.cached_view_props
+
+        # refresh view count
+        vp['view_count'] = self.view_count
+        vp['profile'] = self.profile
+
         # lazily create vp
         if not vp.get('pk'):
             vp = self.generate_view_props_cache()
@@ -2260,6 +2270,7 @@ class Activity(SuperModel):
         if not user.is_authenticated:
             return vp
         vp['liked'] = self.likes.filter(profile=user.profile).exists()
+
         return vp
 
     @property
@@ -2320,18 +2331,11 @@ class Activity(SuperModel):
         return model_to_dict(self, **kwargs)
 
 
-@receiver(pre_save, sender=Activity, dispatch_uid="pre_add_activity")
-def pre_add_activity(sender, instance, **kwargs):
-
-    vp = instance.cached_view_props
-    # lazily create vp
-    if not vp.get('pk'):
-        vp = instance.generate_view_props_cache()
-
-
 @receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
 def post_add_activity(sender, instance, created, **kwargs):
     if created:
+        instance.view_props = instance.generate_view_props_cache()
+
         # make sure duplicate activity feed items are removed
         dupes = Activity.objects.exclude(pk=instance.pk)
         dupes = dupes.filter(created_on__gte=(instance.created_on - timezone.timedelta(minutes=5)))

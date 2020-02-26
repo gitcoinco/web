@@ -207,9 +207,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </div>
             </div>
             <div class="col-12 col-md-8 col-lg-6 px-0 px-sm-3">
+            {% csrf_token %}
+            {% if not is_search %}
               <div class="bg-white rounded border">
                 <div id="status">
-                  {% csrf_token %}
                   <div class="position-relative d-flex flex-row px-2 pt-4 pb-2">
                     <div class="status-avatar px-3">
                       <img class="avatar rounded-circle" src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% endif %}{% endif %}"/>
@@ -280,7 +281,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                 </div>
               </div>
-              <div id="activities" class="activity_stream mt-4">
+            {% endif %}
+              <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
                 <span id=activity_subheader>
                   <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
                   <br>
