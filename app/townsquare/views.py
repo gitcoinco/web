@@ -96,8 +96,15 @@ def town_square(request):
         threads = {
             'title': f"My Threads",
             'slug': f'my_threads',
-            'helper_text': f'The {threads_last_24_hours} Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
+            'helper_text': f'The threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
             'badge': threads_last_24_hours
+        }
+        tabs = [threads] + tabs
+
+        threads = {
+            'title': f"My Feed",
+            'slug': f'my_feed',
+            'helper_text': f'The threads that you\'ve posted, liked, commented on, or sent a tip upon on Gitcoin.',
         }
         tabs = [threads] + tabs
 
@@ -107,7 +114,7 @@ def town_square(request):
         connect = {
             'title': f"Connect",
             'slug': f'connect',
-            'helper_text': f'The {connect_last_24_hours} announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
+            'helper_text': f'The announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
             'badge': connect_last_24_hours
         }
         tabs = [connect] + tabs
@@ -221,6 +228,26 @@ def town_square(request):
         } for obj in current_match_rankings[0:num_to_show]
     ]
 
+    following_tribes = []
+    if request.user.is_authenticated:
+        tribe_relations = request.user.profile.tribe_members
+        for tribe_relation in tribe_relations:
+            followed_profile = tribe_relation.org
+            if followed_profile.is_org:
+                last_24_hours_activity = lazy_round_number(
+                    Activity.objects.filter(hidden=False, created_on__gt=timezone.now() - timezone.timedelta(hours=24)).related_to(followed_profile).count()
+                )
+                tribe = {
+                    'title': followed_profile.handle,
+                    'slug': followed_profile.handle,
+                    'helper_text': f'Activities from {followed_profile.handle} in the last 24 hours',
+                    'badge': last_24_hours_activity,
+                    'avatar_url': followed_profile.avatar_url
+                }
+                following_tribes = [tribe] + following_tribes
+
+
+
     # render page context
     trending_only = int(request.GET.get('trending', 0))
     context = {
@@ -245,6 +272,7 @@ def town_square(request):
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
+        'following_tribes': following_tribes
     }
     response = TemplateResponse(request, 'townsquare/index.html', context)
     if request.GET.get('tab'):
