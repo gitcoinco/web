@@ -20,6 +20,8 @@
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Bounty
+from dashboard.utils import sync_etc_payout
+
 
 class Command(BaseCommand):
 
@@ -30,11 +32,4 @@ class Command(BaseCommand):
             payout_tx_id=None, bounty_state='done', token_name='ETC',
             network='ETC')
         for bounty in bounties_to_check.all():
-            t = search_for_etc_bounty_payout(bounty)
-            if t:
-                if not etc_txn_already_used(t):
-                    bounty.payout_tx_id = t['hash']
-                    bounty.save()
-                    if get_etc_txn_status.get('has_mined'):
-                        bounty.payout_confirmed = True
-                        bounty.save()
+            sync_etc_payout(bounty)

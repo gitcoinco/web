@@ -511,6 +511,17 @@ def get_etc_txn_status(txnid, network='mainnet'):
     return None
 
 
+def sync_etc_payout(bounty):
+    t = search_for_etc_bounty_payout(bounty)
+    if t:
+        if not etc_txn_already_used(t):
+            bounty.payout_tx_id = t['hash']
+            bounty.save()
+            if get_etc_txn_status.get('has_mined'):
+                bounty.payout_confirmed = True
+                bounty.save()
+
+
 def get_bounty_id(issue_url, network):
     issue_url = normalize_url(issue_url)
     bounty_id = get_bounty_id_from_db(issue_url, network)

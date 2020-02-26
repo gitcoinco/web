@@ -135,6 +135,18 @@ def org_perms(request):
     return JsonResponse({'orgs': response_data}, safe=False)
 
 
+@staff_member_required
+def manual_sync_etc_payout(request, bounty_id):
+    b = Bounty.objects.get(id=bounty_id)
+    if b.payout_confirmed:
+        return JsonResponse(
+            {'error': _('Bounty payout already confirmed'),
+             'success': False},
+            status=401)
+    sync_etc_payout(b)
+    return JsonResponse({'success': True}, status=200)
+
+
 def record_user_action(user, event_name, instance):
     instance_class = instance.__class__.__name__.lower()
     kwargs = {
