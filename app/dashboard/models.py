@@ -3894,6 +3894,15 @@ class Profile(SuperModel):
             active_bounties = Bounty.objects.none()
         params['active_bounties'] = list(active_bounties.values_list('pk', flat=True))
 
+        all_activities = self.get_various_activities()
+        params['activities'] = list(all_activities.values_list('pk', flat=True))
+        counts = {}
+        if not all_activities or all_activities.count() == 0:
+            context['none'] = True
+        else:
+            counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
+            counts = {ele['activity_type']: ele['the_count'] for ele in counts}
+        params['activities_counts'] = counts
 
         params['activities'] = list(self.get_various_activities().values_list('pk', flat=True))
         params['tips'] = list(self.tips.filter(**query_kwargs).send_happy_path().values_list('pk', flat=True))
