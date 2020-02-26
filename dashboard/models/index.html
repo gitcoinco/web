@@ -4301,7 +4301,18 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
 </code></pre>
 
 <p>Filter results to Activity objects to be reviewed by moderators.
-<h2 id="dashboard.models.Activity">Activity</h2></p>
+<h3 id="dashboard.models.ActivityQuerySet.related_to">related_to</h3></p>
+<pre><code class="python">ActivityQuerySet.related_to(self, profile)
+</code></pre>
+
+<p>Filter results to Activity objects which are related to a particular profile.</p>
+<p>Activities related to a Profile can be defined as:
+    - Posts created by that user
+    - Posts that the user likes (even a comment)
+    - Posts tipped by that user (even a comment)
+    - Posts the user commented on</p>
+<h2 id="dashboard.models.Activity">Activity</h2>
+
 <pre><code class="python">Activity(self, *args, **kwargs)
 </code></pre>
 
