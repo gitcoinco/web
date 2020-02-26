@@ -4533,6 +4533,13 @@ class HackathonProject(SuperModel):
     def __str__(self):
         return f"{self.name} - {self.bounty} on {self.created_on}"
 
+    def url(self):
+        slug = slugify(self.name)
+        return f'/hackathon/project/{self.hackathon.slug}/{slug}/'
+
+    def get_absolute_url(self):
+        return self.url()
+
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(

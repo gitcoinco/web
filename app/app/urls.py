@@ -205,6 +205,14 @@ urlpatterns = [
     path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
     path('hackathon/projects/<str:hackathon>/', dashboard.views.hackathon_projects, name='hackathon_projects'),
     path('hackathon/projects/<str:hackathon>', dashboard.views.hackathon_projects, name='hackathon_projects2'),
+    path(
+        'hackathon/projects/<str:hackathon>/<str:project>', dashboard.views.hackathon_project, name='hackathon_project'
+    ),
+    path(
+        'hackathon/projects/<str:hackathon>/<str:project>/',
+        dashboard.views.hackathon_project,
+        name='hackathon_project2'
+    ),
     path('modal/new_project/<int:bounty_id>/', dashboard.views.hackathon_get_project, name='hackathon_get_project'),
     path(
         'modal/new_project/<int:bounty_id>/<int:project_id>/',

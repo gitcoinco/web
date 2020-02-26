@@ -3851,7 +3851,11 @@ def save_hackathon(request, hackathon):
             status=401)
 
 
-def hackathon_projects(request, hackathon=''):
+def hackathon_project(request, hackathon='', project=''):
+    return hackathon_projects(request, hackathon, project)
+
+
+def hackathon_projects(request, hackathon='', specify_project=''):
     q = clean(request.GET.get('q', ''), strip=True)
     order_by = clean(request.GET.get('order_by', '-created_on'), strip=True)
     filters = clean(request.GET.get('filters', ''), strip=True)
@@ -3863,6 +3867,9 @@ def hackathon_projects(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
+    title = f'{hackathon_event.name.title()} Projects'
+    desc = f"{title} in the recent Gitcoin Virtual Hackathon"
+    avatar_url = hackathon_event.logo.url if hackathon_event.logo else ''
     if order_by not in {'created_on', '-created_on'}:
         order_by = '-created_on'
 
@@ -3896,6 +3903,15 @@ def hackathon_projects(request, hackathon=''):
         projects = projects.filter(
             Q(badge__isnull=False)
         )
+    if specify_project:
+        projects = projects.filter(name__iexact=specify_project.replace('-', ' '))
+        if projects.exists():
+            project = projects.first()
+            title = project.name
+            desc = f'This project was created in the Gitcoin {hackathon_event.name.title()} Virtual Hackathon'
+            if project.logo:
+                avatar_url = project.logo.url
+
 
     projects_paginator = Paginator(projects, 9)
 
@@ -3908,10 +3924,12 @@ def hackathon_projects(request, hackathon=''):
 
     params = {
         'active': 'hackathon_onboard',
-        'title': f'{hackathon_event.name.title()} Projects',
+        'title': title,
+        'card_desc': desc,
         'hackathon': hackathon_event,
         'sponsors_list': sponsors_list,
         'sponsor': sponsor,
+        'avatar_url': avatar_url,
         'projects': projects_paginated,
         'order_by': order_by,
         'filters': filters,
