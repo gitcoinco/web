@@ -28,7 +28,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -1118,14 +1118,7 @@ def results(request, keyword=None):
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
-
-def activity(request):
-    """Render the Activity response."""
-    page_size = 7
-    page = int(request.GET.get('page', 1))
-    what = request.GET.get('what', 'everywhere')
-    trending_only = int(request.GET.get('trending_only', 0))
-
+def get_activities(what, trending_only, user):
     # create diff filters
     activities = Activity.objects.filter(hidden=False).order_by('-created_on')
     view_count_threshold = 10
@@ -1142,7 +1135,7 @@ def activity(request):
         kwargs = {}
         kwargs[key] = pk
         activities = activities.filter(**kwargs)
-    if request.user.is_authenticated:
+    if user.is_authenticated:
         relevant_profiles = []
         relevant_grants = []
         if what == 'tribes':
@@ -1157,7 +1150,11 @@ def activity(request):
         if 'search-' in what:
             keyword = what.split('-')[1]
             view_count_threshold = 5
-            activities = activities.filter(metadata__icontains=keyword)
+            base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post'])
+            keyword_filter = Q(pk=0) #noop
+            if keyword == 'meme':
+                keyword_filter = Q(metadata__resource__icontains='http')
+            activities = activities.filter(keyword_filter | base_filter)
         if 'activity:' in what:
             view_count_threshold = 0
             pk = what.split(':')[1]
@@ -1181,6 +1178,17 @@ def activity(request):
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
+    return activities
+
+
+def activity(request):
+    """Render the Activity response."""
+    page_size = 7
+    page = int(request.GET.get('page', 1))
+    what = request.GET.get('what', 'everywhere')
+    trending_only = int(request.GET.get('trending_only', 0))
+
+    activities = get_activities(what, trending_only, request.user)
 
     # pagination
     next_page = page + 1

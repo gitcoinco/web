@@ -965,3 +965,8 @@ body.green.offer_view .announce {
 #payout_estimate{
   font-size: 12px;
 }
+@media (max-width: 700px) {
+  ._hj_feedback_container{
+    display:none !important;
+  }
+}
