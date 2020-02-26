@@ -469,7 +469,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                           ">
                             <span class="amount position-relative">
                               ${{mli.amount}} from
-                              {{mli.contributors}} contributor <br>
+                              {{mli.contributors}} contributor{{mli.contributors|pluralize}}  <br>
                               <span style="color:#17a2b8;">${{mli.match_amount}} matched</span>
                             </span>
                             {% if not mli.following %}
