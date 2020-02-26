@@ -229,7 +229,7 @@ $(document).ready(function() {
     message.val('');
     data.append(
       'csrfmiddlewaretoken',
-      $('#status input[name="csrfmiddlewaretoken"]').attr('value')
+      $('input[name="csrfmiddlewaretoken"]').attr('value')
     );
 
     if (embedded_resource) {
