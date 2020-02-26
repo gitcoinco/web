@@ -1,0 +1,17 @@
+{
+  "symbol": "cDAI",
+  "address": "0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643",
+  "overview":{
+        "en": "cDai is like an instant Dai savings account. By Compound.",
+        "zh": "cDAI 由 Compound 发行，类似于一个即时的 DAI 存储账户。 "
+  },
+  "website": "https://app.compound.finance/asset/cDAI",
+  "whitepaper": "https://compound.finance/documents/Compound.Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-07",
+  "links": {
+    "blog": "https://medium.com/compound-finance",
+    "twitter": "https://twitter.com/compoundfinance",
+    "github": "https://github.com/compound-finance/compound-protocol"
+  }
+}
