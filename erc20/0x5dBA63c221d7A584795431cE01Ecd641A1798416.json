@@ -1,0 +1,24 @@
+{
+  "symbol": "ORT",
+  "address": "0x5dBA63c221d7A584795431cE01Ecd641A1798416",
+  "overview":{
+        "en": "Oratium is a Platform which allows Vloggers sell access to their premium content, earn from the number of people who watch their videos and also receive donations from followers. Users get paid when they make reasonable comments on the platform and get upvoted",
+        "zh": ""
+  },
+  "email": "hello@oratium.io ",
+  "website": "https://www.oratium.io/",
+  "whitepaper": "http://oratium.io/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-21",
+  "initial_price":{
+        "ETH":"0.000019 ETH",
+        "USD":"0.005 USD",
+        "BTC":"0.00000051 BTC"
+  },
+  "links": {
+    "twitter": "htp://twitter.com/oratiumio",
+    "telegram": "http://t.me/oratiumio",
+    "github": "http://github.com/oratiumio",
+    "medium": "https://medium.com/@oratiumio"
+  }
+}
