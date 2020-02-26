@@ -70,7 +70,7 @@ def get_activities(tech_stack=None, num_activities=15):
     if tech_stack:
         activities = activities.filter(bounty__metadata__icontains=tech_stack)
     activities = activities[0:num_activities]
-    return [a.view_props for a in activities]
+    return [a.either_view_props for a in activities]
 
 
 def index(request):

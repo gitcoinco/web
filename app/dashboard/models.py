@@ -2237,6 +2237,13 @@ class Activity(SuperModel):
 
         return activity
 
+    @property
+    def either_view_props(self):
+        vp = self.cached_view_props
+        if not vp.get('pk'):
+            vp = self.view_props
+        return vp
+
     def generate_view_props_cache(self):
         self.cached_view_props = self.view_props
         self.cached_view_props = json.loads(json.dumps(self.cached_view_props, cls=EncodeAnything))
