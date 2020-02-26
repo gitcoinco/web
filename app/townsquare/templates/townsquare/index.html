@@ -397,9 +397,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
               {% if current_match_round %}
                 <div class="clr_container mt-2">
-                  <div class="townsquare_block-header text-leftmb-1">
-                    ${{current_match_round.amount|floatformat:0}} Distribution #{{current_match_round.number}}
-                    <a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4" target="blank"><i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
+                  <div class="townsquare_block-header text-left mb-1">
+                    <strong>#{{current_match_round.number}}</strong> MINI CLR Distribution <strong>${{current_match_round.amount|floatformat:0}}</strong>
+                    <a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4" target="blank">
+                      <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3 font-caption" title="
                       <strong>Gitcoin is reinvesting in it's community</strong>
                       <br>
                       <br>
@@ -440,14 +441,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       <strong>Want to learn more about how it works?</strong> Click here. " ></i>
                     </a>
                   </div>
-                  <div class="grey">
-                    <div id=payout_estimate>
-                      (Payout <span class="clr_match_countdown_timer m-0" data-time="{{current_match_round.valid_to|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>)
+                  <div>
+                    <div id="payout_estimate" class="font-italic mb-2 grey">
+                      Payout <span class="clr_match_countdown_timer m-0" data-time="{{current_match_round.valid_to|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>
                     </div>
-                    <table>
-                      <tr class="title">
+                    <table class="w-100 bg-white">
+                      <tr class="title font-weight-semibold font-body">
                         <td>
-                          &nbsp;
+                          #
                         </td>
                         <td data-toggle="tooltip" title="Who dat?!??">
                           Who
@@ -457,7 +458,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         </td>
                       </tr>
                       {% for mli in matching_leaderboard %}
-                        <tr>
+                        <tr class="font-caption mb-2">
                           <td>
                             {{mli.i}}
                           </td>
@@ -472,32 +473,40 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             </span>
                           {% endif %}
                           </td>
-                          <td class="text-right" data-html="true" data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contribution{{mli.contributions|pluralize}} from <strong>{{mli.contributors}}</strong> contributor{{mli.contributors|pluralize}} worth <strong>${{mli.amount}}</strong> since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about <strong>${{mli.match_amount}}</strong> in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})
-                          <BR>
-                          <hr>
-
-                        Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round, a contribution of 0.001 ETH (about $0.30) could mean <strong>+${{mli.default_match_estimate|floatformat:2}}</strong> in matching.
-                        <br>
-                        <br>
-                        Other contribution levels will mean other matching amounts:
-
-                          Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round..
-                          <ul>
-                            {% for key, val in mli.match_curve.items %}
-                              {% if key %}
-                                <li>
-                                  Your contribution of ${{key}} could yield ${{val|floatformat:2}} in matching.
-                                </li>
-                              {% endif %}
-                            {% endfor %}
-                          </ul>
-                          ">
-                            {{mli.contributors}} x
-                            ${{mli.amount}} =
-                            ${{mli.match_amount}}
+                          <td class="text-justify" data-html="true" data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contribution{{mli.contributions|pluralize}} from <strong>{{mli.contributors}}</strong> contributor{{mli.contributors|pluralize}} worth <strong>${{mli.amount}}</strong> since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about <strong>${{mli.match_amount}}</strong> in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})
                             <br>
+                            <hr>
+
+                            Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round, a contribution of 0.001 ETH (about $0.30) could mean <strong>+${{mli.default_match_estimate|floatformat:2}}</strong> in matching.
+                            <br>
+                            Other contribution levels will mean other matching amounts:
+
+                            Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round..
+                            <ul>
+                              {% for key, val in mli.match_curve.items %}
+                                {% if key %}
+                                  <li>
+                                    Your contribution of ${{key}} could yield ${{val|floatformat:2}} in matching.
+                                  </li>
+                                {% endif %}
+                              {% endfor %}
+                            </ul>
+                          ">
+                            <span class="amount position-relative">
+                              ${{mli.amount}} from
+                              {{mli.contributors}} contributor <br>
+                              <span style="color:#17a2b8;">${{mli.match_amount}} matched</span>
+                            </span>
                             {% if not mli.following %}
-                              <a class="btn btn-gc-blue btn-sm follow_button mt-2" data-jointribe='{{mli.handle}}' href="#">Follow </a>
+                              <a class="btn btn-gc-blue btn-sm follow_button float-right mr-2 font-smaller-6 font-weight-bold px-3 position-relative"
+                                data-jointribe='{{mli.handle}}' href="#"
+                              >
+                                Follow
+                              </a>
+                            {% else %}
+                              <div class="btn btn-outline-green mr-2 font-smaller-6 font-weight-bold float-right px-2 position-relative">
+                                Following
+                              </div>
                             {% endif %}
                           </td>
                         </tr>

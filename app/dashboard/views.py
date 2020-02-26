@@ -2590,15 +2590,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     context = profile.reassemble_profile_dict
 
     # all tabs
-    if profile.cascaded_persona == 'org':
-        active_bounties = profile.bounties.filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
-    elif profile.cascaded_persona == 'funder':
-        active_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
-    elif profile.cascaded_persona == 'hunter':
-        active_bounties = Bounty.objects.filter(pk__in=profile.active_bounties.filter(pending=False).values_list('bounty', flat=True)).filter(network='mainnet')
-    else:
-        active_bounties = Bounty.objects.none()
-    active_bounties = active_bounties.order_by('-web3_created')
+    active_bounties = context['active_bounties'].order_by('-web3_created')
     context['active_bounties_count'] = active_bounties.count()
     context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.count()
     context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).count()
@@ -2655,12 +2647,7 @@ def get_profile_tab(request, profile, tab, prev_context):
 
         all_activities = context.get('activities')
         tabs = []
-        counts = {}
-        if not all_activities or all_activities.count() == 0:
-            context['none'] = True
-        else:
-            counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
-            counts = {ele['activity_type']: ele['the_count'] for ele in counts}
+        counts = context.get('activities_counts', {'joined': 1})
         for name, actions in activity_tabs:
 
             # this functions as profile_filter_activities does
@@ -2886,7 +2873,9 @@ def profile(request, handle, tab=None):
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
-    context['is_on_tribe'] = request.user.is_authenticated and any([handle.lower() == tribe.org.handle.lower() for tribe in request.user.profile.tribe_members ])
+    context['is_on_tribe'] = False
+    if request.user.is_authenticated:
+        context['is_on_tribe'] = request.user.profile.tribe_members.filter(org__handle__iexact=handle.lower())
     context['ratings'] = range(0,5)
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]

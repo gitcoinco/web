@@ -339,7 +339,7 @@ def get_eligible_input_data(mr):
     earnings = earnings.exclude(to_profile__user__is_staff=True)
     earnings = earnings.filter(source_type=ContentType.objects.get(app_label='dashboard', model='tip'))
     # microtips only
-    tips = list(Tip.objects.filter(Q(comments_priv__contains='activity:') | Q(comments_priv__contains='comment:') | Q(tokenName='ETH', amount__lte=0.05)).values_list('pk', flat=True))
+    tips = list(Tip.objects.send_happy_path().filter(Q(comments_priv__contains='activity:') | Q(comments_priv__contains='comment:') | Q(tokenName='ETH', amount__lte=0.05)).values_list('pk', flat=True))
     earnings = earnings.filter(source_id__in=tips)
     earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
     return [[ele[0], ele[1], float(ele[2])] for ele in earnings]
