@@ -19,6 +19,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from dashboard.models import Activity
 from economy.models import ConversionRate
 from gas.models import GasGuzzler, GasProfile
 from marketing.models import LeaderboardRank, Stat
@@ -61,3 +62,11 @@ class Command(BaseCommand):
                 created_on__lt=self.get_then(14),
             ).exclude(created_on__week_day=2).delete()
         print(f'LeaderboardRank: {result}')
+
+        results = Activity.objects.filter(
+                modified_on__lt=self.get_then(14),
+            ).exclude(cached_view_props={})
+        for result in results:
+            result.cached_view_props = {}
+            result.save()
+        print(f'Activity: {result}')

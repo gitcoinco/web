@@ -1770,13 +1770,17 @@ def postsave_tip(sender, instance, created, **kwargs):
     if created:
         if instance.network == 'mainnet' or settings.DEBUG:
             from townsquare.models import Comment
+            network = instance.network if instance.network != 'mainnet' else ''
             if 'activity:' in instance.comments_priv:
                 activity=instance.attached_object
-                comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
+                comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
                 comment = Comment.objects.create(profile=instance.sender_profile, activity=activity, comment=comment)
+                from townsquare.tasks import refresh_activities
+                refresh_activities.delay([activity.pk])
+
             if 'comment:' in instance.comments_priv:
                 _comment=instance.attached_object
-                comment = f"Just sent a tip of {instance.amount} ETH to @{instance.username}"
+                comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
                 comment = Comment.objects.create(profile=instance.sender_profile, activity=_comment.activity, comment=comment)
 
 
@@ -2072,7 +2076,7 @@ class Activity(SuperModel):
     )
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
-    metadata = JSONField(default=dict)
+    metadata = JSONField(default=dict, blank=True)
     needs_review = models.BooleanField(default=False)
     view_count = models.IntegerField(default=0, db_index=True)
     other_profile = models.ForeignKey(
@@ -2083,6 +2087,7 @@ class Activity(SuperModel):
         blank=True
     )
     hidden = models.BooleanField(default=False, db_index=True)
+    cached_view_props = JSONField(default=dict, blank=True)
 
     # Activity QuerySet Manager
     objects = ActivityQuerySet.as_manager()
@@ -2240,12 +2245,36 @@ class Activity(SuperModel):
 
         return activity
 
+    @property
+    def either_view_props(self):
+        vp = self.cached_view_props
+        if not vp.get('pk'):
+            vp = self.view_props
+        return vp
+
+    def generate_view_props_cache(self):
+        self.cached_view_props = self.view_props
+        self.cached_view_props = json.loads(json.dumps(self.cached_view_props, cls=EncodeAnything))
+        self.save()
+        return self.cached_view_props
+
     def view_props_for(self, user):
 
-        vp = self.view_props
+        # get view props
+        vp = self.cached_view_props
+
+        # refresh view count
+        vp['view_count'] = self.view_count
+        vp['profile'] = self.profile
+
+        # lazily create vp
+        if not vp.get('pk'):
+            vp = self.generate_view_props_cache()
+
         if not user.is_authenticated:
             return vp
         vp['liked'] = self.likes.filter(profile=user.profile).exists()
+
         return vp
 
     @property
@@ -2309,6 +2338,8 @@ class Activity(SuperModel):
 @receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
 def post_add_activity(sender, instance, created, **kwargs):
     if created:
+        instance.cached_view_props = instance.generate_view_props_cache()
+
         # make sure duplicate activity feed items are removed
         dupes = Activity.objects.exclude(pk=instance.pk)
         dupes = dupes.filter(created_on__gte=(instance.created_on - timezone.timedelta(minutes=5)))

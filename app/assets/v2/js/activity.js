@@ -204,7 +204,7 @@ $(document).ready(function() {
       const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
 
       var old_amount = $amount.text();
-      var new_amount = Math.round(100 * (parseFloat(old_amount) + parseFloat(amountInEth))) / 100;
+      var new_amount = Math.round(1000 * (parseFloat(old_amount) + parseFloat(amountInEth))) / 1000;
 
       $amount.fadeOut().text(new_amount).fadeIn();
       setTimeout(function() {
@@ -409,7 +409,7 @@ $(document).ready(function() {
             let ele = match_curve[j];
 
             sorted_match_curve_html += '<li>';
-            sorted_match_curve_html += `Your contribution of ${ele.name} could yield $${Math.round(ele.value * 100) / 100} in matching.`;
+            sorted_match_curve_html += `Your contribution of ${ele.name} could yield $${Math.round(ele.value * 1000) / 1000} in matching.`;
             sorted_match_curve_html += '</li>';
           }
         }
@@ -445,7 +445,7 @@ $(document).ready(function() {
                 <span class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; cursor:pointer; padding: 2px; font-size: 10px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@${comment['profile_handle']} is estimated to be earning <strong>$${comment['match_this_round']}</strong> in this week's CLR Round.
                 <BR><BR>
 
-              Want to help @${comment['profile_handle']} move up the rankings?  Assuming you haven't contributed to @${comment['profile_handle']} yet this round, a contribution of 0.001 ETH (about $0.30) could mean +<strong>$${Math.round(100 * comment['default_match_round']) / 100}</strong> in matching.
+              Want to help @${comment['profile_handle']} move up the rankings?  Assuming you haven't contributed to @${comment['profile_handle']} yet this round, a contribution of 0.001 ETH (about $0.30) could mean +<strong>$${Math.round(1000 * comment['default_match_round']) / 1000}</strong> in matching.
               <br>
               <br>
               Other contribution levels will mean other matching amounts:
@@ -456,7 +456,7 @@ $(document).ready(function() {
               <br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard.
               ">
                   <i class="fab fa-ethereum mr-0" aria-hidden="true"></i>
-                  $${comment['match_this_round']} | +$${Math.round(100 * comment['default_match_round']) / 100}
+                  $${comment['match_this_round']} | +$${Math.round(1000 * comment['default_match_round']) / 1000}
                 </span>
 
                   ` : ' '}
