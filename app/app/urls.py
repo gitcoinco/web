@@ -20,8 +20,10 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.contrib.sitemaps.views import index as sitemap_index
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
+from django.views.decorators.cache import cache_page
 from django.views.i18n import JavaScriptCatalog
 
 import avatar.views
@@ -619,7 +621,8 @@ urlpatterns = [
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
-    url(r'^sitemap.xml/?', perftools.views.sitemap, name='django.contrib.sitemaps.views.sitemap'),
+    path('sitemap.xml', sitemap_index, {'sitemaps': sitemaps}),
+    path('sitemap-<section>.xml', cache_page(86400)(sitemap), {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     # Interests
     path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
