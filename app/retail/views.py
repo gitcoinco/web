@@ -1127,7 +1127,6 @@ def activity(request):
     trending_only = int(request.GET.get('trending_only', 0))
 
     # create diff filters
-    print(1, round(time.time(), 1))
     activities = Activity.objects.filter(hidden=False).order_by('-created_on')
     view_count_threshold = 10
 
@@ -1182,7 +1181,6 @@ def activity(request):
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
-    print(2, round(time.time(), 1))
 
     # pagination
     next_page = page + 1
@@ -1194,13 +1192,11 @@ def activity(request):
     page = activities[start_index:end_index]
     suppress_more_link = not len(page)
 
-    print(2.5, round(time.time(), 1))
     # increment view counts
     activities_pks = [obj.pk for obj in page]
     if len(activities_pks):
         increment_view_counts.delay(activities_pks)
 
-    print(3, round(time.time(), 1))
 
     context = {
         'suppress_more_link': suppress_more_link,
@@ -1209,11 +1205,10 @@ def activity(request):
         'page': page,
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
-        'my_tribes': [membership.org.handle for membership in request.user.profile.tribe_members.all()] if request.user.is_authenticated else [],
+        'my_tribes': list(request.user.profile.tribe_members.values_list('org__handle',flat=True)) if request.user.is_authenticated else [],
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]
 
-    print(4, round(time.time(), 1))
 
     return TemplateResponse(request, 'activity.html', context)
 
