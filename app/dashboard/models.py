@@ -3884,6 +3884,17 @@ class Profile(SuperModel):
             'bounties': list(bounties.values_list('pk', flat=True)),
         }
 
+        if self.cascaded_persona == 'org':
+            active_bounties = self.bounties.filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES, network='mainnet')
+        elif self.cascaded_persona == 'funder':
+            active_bounties = active_bounties = Bounty.objects.filter(bounty_owner_profile=self, idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES, network='mainnet', current_bounty=True)
+        elif self.cascaded_persona == 'hunter':
+            active_bounties = Bounty.objects.filter(pk__in=self.active_bounties.filter(pending=False).values_list('bounty', flat=True), network='mainnet')
+        else:
+            active_bounties = Bounty.objects.none()
+        params['active_bounties'] = list(active_bounties.values_list('pk', flat=True))
+
+
         params['activities'] = list(self.get_various_activities().values_list('pk', flat=True))
         params['tips'] = list(self.tips.filter(**query_kwargs).send_happy_path().values_list('pk', flat=True))
         params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
@@ -3949,6 +3960,7 @@ class Profile(SuperModel):
             from dashboard.tasks import profile_dict
             profile_dict.delay(self.pk)
 
+        params['active_bounties'] = Bounty.objects.filter(pk__in=params.get('active_bounties', []))
         if params.get('tips'):
             params['tips'] = Tip.objects.filter(pk__in=params['tips'])
         if params.get('activities'):
@@ -3956,6 +3968,8 @@ class Profile(SuperModel):
         params['profile'] = self
         params['portfolio'] = BountyFulfillment.objects.filter(pk__in=params.get('portfolio', []))
         return params
+
+
 
     @property
     def locations(self):

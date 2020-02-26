@@ -2590,15 +2590,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     context = profile.reassemble_profile_dict
 
     # all tabs
-    if profile.cascaded_persona == 'org':
-        active_bounties = profile.bounties.filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES, network='mainnet')
-    elif profile.cascaded_persona == 'funder':
-        active_bounties = Bounty.objects.filter(bounty_owner_profile=profile, idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES, network='mainnet', current_bounty=True)
-    elif profile.cascaded_persona == 'hunter':
-        active_bounties = Bounty.objects.filter(pk__in=profile.active_bounties.filter(pending=False).values_list('bounty', flat=True), network='mainnet')
-    else:
-        active_bounties = Bounty.objects.none()
-    active_bounties = active_bounties.order_by('-web3_created')
+    active_bounties = context['active_bounties'].order_by('-web3_created')
     context['active_bounties_count'] = active_bounties.count()
     context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.count()
     context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).count()
