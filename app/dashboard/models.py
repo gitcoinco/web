@@ -2334,7 +2334,7 @@ class Activity(SuperModel):
 @receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
 def post_add_activity(sender, instance, created, **kwargs):
     if created:
-        instance.view_props = instance.generate_view_props_cache()
+        instance.cached_view_props = instance.generate_view_props_cache()
 
         # make sure duplicate activity feed items are removed
         dupes = Activity.objects.exclude(pk=instance.pk)
