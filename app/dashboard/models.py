@@ -2072,7 +2072,7 @@ class Activity(SuperModel):
     )
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
-    metadata = JSONField(default=dict)
+    metadata = JSONField(default=dict, blank=True)
     needs_review = models.BooleanField(default=False)
     view_count = models.IntegerField(default=0, db_index=True)
     other_profile = models.ForeignKey(
@@ -2083,6 +2083,7 @@ class Activity(SuperModel):
         blank=True
     )
     hidden = models.BooleanField(default=False, db_index=True)
+    cached_view_props = JSONField(default=dict, blank=True)
 
     # Activity QuerySet Manager
     objects = ActivityQuerySet.as_manager()
@@ -2236,9 +2237,19 @@ class Activity(SuperModel):
 
         return activity
 
+    def generate_view_props_cache(self):
+        self.cached_view_props = self.view_props
+        self.cached_view_props = json.loads(json.dumps(self.cached_view_props, cls=EncodeAnything))
+        self.save()
+        return self.cached_view_props
+
     def view_props_for(self, user):
 
-        vp = self.view_props
+        vp = self.cached_view_props
+        # lazily create vp
+        if not vp.get('pk'):
+            vp = self.generate_view_props_cache()
+
         if not user.is_authenticated:
             return vp
         vp['liked'] = self.likes.filter(profile=user.profile).exists()
@@ -2300,6 +2311,15 @@ class Activity(SuperModel):
         if exclude:
             kwargs['exclude'] = exclude
         return model_to_dict(self, **kwargs)
+
+
+@receiver(pre_save, sender=Activity, dispatch_uid="pre_add_activity")
+def pre_add_activity(sender, instance, **kwargs):
+
+    vp = instance.cached_view_props
+    # lazily create vp
+    if not vp.get('pk'):
+        vp = instance.generate_view_props_cache()
 
 
 @receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
