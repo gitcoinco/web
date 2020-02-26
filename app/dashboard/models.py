@@ -4366,6 +4366,10 @@ class HackathonEvent(SuperModel):
     def url(self):
         return self.get_absolute_url()
 
+    @property
+    def relative_url(self):
+        return f'hackathon/{self.slug}'
+
     def get_absolute_url(self):
         """Get the absolute URL for the HackathonEvent.
 
@@ -4373,7 +4377,7 @@ class HackathonEvent(SuperModel):
             str: The absolute URL for the HackathonEvent.
 
         """
-        return settings.BASE_URL + f'hackathon/{self.slug}'
+        return settings.BASE_URL + self.relative_url
 
     @property
     def onboard_url(self):
