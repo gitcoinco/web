@@ -27,25 +27,27 @@
 
     <div class="container-fluid" id="gc-bounty-detail" v-cloak>
       <div class="row">
-        <div class="col-12 col-md-2 bg-lightblue">
+        <div class="col-12 col-lg-10 col-xl-9 mx-auto" v-show="bounty.created_on">
           {% if event_tag %}
-            <a href="/hackathon/{{ event_tag }}" class="btn btn-link font-body my-3"><i class="fas fa-chevron-left"></i> {% trans "Back to Hackathon Explorer" %}</a>
+            <a href="/hackathon/{{ event_tag }}" class="btn btn-link font-body mt-3">
+              <i class="fas fa-chevron-left font-caption"></i> {% trans "Back to Hackathon Explorer" %}
+            </a>
           {% else %}
-            <a href="{% url 'explorer' %}" class="btn btn-link font-body my-3"><i class="fas fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
+            <a href="{% url 'explorer' %}" class="btn btn-link font-body mt-3">
+              <i class="fas fa-chevron-left font-caption"></i> {% trans "Back to Issue Explorer" %}
+            </a>
           {% endif %}
-        </div>
-        <div class="col-12 col-md-10" v-show="bounty.created_on">
           <div class="row align-items-center mt-4 mb-3">
-            <div class="col-lg-2 col-xl-1">
+            <div class="col-md-2 col-xl-1 text-center mb-2 mb-md-0">
               <a :href="`/profile/${bounty.org_name}`" v-show="bounty.avatar_url"><img :class="`avatar avatar-big ${bounty.github_org_name}`" :src="[[bounty.avatar_url]]"></a>
             </div>
-            <div class="col-lg-10">
+            <div class="col-md-10">
               <div v-if="bounty.event" class="font-subheader hackathon-alt text-center text-lg-left" id="event_name">
                 Hackathon: [[bounty.event.name]]
               </div>
               <h4 id="title" class="font-title p-0 text-center text-lg-left">[[bounty.title]]</h4>
               <div class="text-center text-lg-left">
-                <div class="tags font-caption d-flex">
+                <div class="tags font-caption d-inline-flex d-md-flex">
                   <div class="tag token" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">${bounty.value_true} ${bounty.token_name} in funding from original funder.</div>`'>
                     <p class="inner-tooltip">
 
@@ -74,7 +76,8 @@
           </div>
           <div class="row">
             <div class="col-12" v-if="bounty.network !== 'mainnet'">
-              <span class="font-caption text-center" id="network">WARNING: this is a [[bounty.network]] network bounty, and is NOT real money.  To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.</span>
+              <span class="font-caption text-center" id="network">WARNING: this is a [[bounty.network]] network bounty, and is NOT real money.
+              To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.</span>
             </div>
             <div class="col-12 text-center text-lg-left my-3 my-lg-0">
               <div id="status" class="font-weight-semibold">[[ bounty.status ]]</div>
@@ -93,7 +96,7 @@
                 [[ bounty.web3_created | moment ]]
               </time>
             </div>
-            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+            <div v-if="bounty.bounty_type" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
               <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
               <span class="bounty-info-text pr-sm-3 pr-md-5" id="bounty_type">[[ bounty.bounty_type ]]</span>
             </div>
@@ -110,11 +113,11 @@
               </span>
             </div>
 
-            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.project_length">
+            <div v-if="bounty.project_length" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.project_length">
               <span class="bounty-info-heading">{% trans "Time Commitment" %}</span>
               <span class="bounty-info-text pr-sm-3 pr-md-5" id="project_length">[[ bounty.project_length ]]</span>
             </div>
-            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+            <div v-if="bounty.experience_level" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
               <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
               <span class="bounty-info-text pr-sm-3 pr-md-5" id="experience_level">[[ bounty.experience_level ]]</span>
             </div>
@@ -145,28 +148,28 @@
             </div>
           {% endif %}
           <div class="row">
-            <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1" v-if="bounty.action_urls">
+            <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1 text-center text-lg-left" v-if="bounty.action_urls">
 
               <div id="bounty_actions" class="d-inline-block">
-                <a :href="bounty.action_urls.payout" class="btn btn-gc-blue btn-sm mr-2 px-3" title="Payout the bounty to one or more submitters.">
+                <a :href="bounty.action_urls.payout" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Payout the bounty to one or more submitters.">
                   <i class="fab fa-ethereum mr-2"></i> {% trans "Payout Bounty" %}
                 </a>
-                <a :href="bounty.action_urls.increase" class="btn btn-outline-gc-blue btn-sm mr-2 px-3" title="Help by funding or promoting this issue">
+                <a :href="bounty.action_urls.increase" class="btn btn-outline-gc-blue btn-sm mr-2 px-3 font-caption" title="Help by funding or promoting this issue">
                   {% trans "Increase Funding" %}
                 </a>
 
               </div>
               <div id="github_actions" class="d-inline-block">
-                <a :href="bounty.github_url" class="btn btn-outline-gc-blue btn-sm mr-2 px-3" target="_blank">
+                <a :href="bounty.github_url" class="btn btn-outline-gc-blue btn-sm mr-2 px-3 font-caption" target="_blank">
                   <i class="fab fa-github mr-2"></i> {% trans "View On Github" %}
                 </a>
-                <a class="modal-link btn btn-outline-gc-blue btn-sm px-3" href="" data-toggle="modal" data-target=".share-modal">
+                <a class="modal-link btn btn-outline-gc-blue btn-sm px-3 font-caption" href="" data-toggle="modal" data-target=".share-modal">
                   <i class="fas fa-share-alt mr-2"></i>
                   <span>Share</span>
                 </a>
               </div>
               <div class="dropdown show float-right">
-                <a class="btn btn-link btn-sm blue dropdown-toggle" href="#" role="button"
+                <a class="btn btn-link btn-sm blue dropdown-toggle font-caption" href="#" role="button"
                   id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   {% trans "Bounty Options" %}
                 </a>
@@ -215,15 +218,29 @@
 
           <div class="row">
             <div class="col-12">
-              <div class="border my-5">
-                <h5 class="bounty-heading">{% trans "All Activity" %}</h5>
-                <div v-for="activity in bounty.activities" :key="activity.pk" class=" my-3">
-                  <a :href="`/profile/${activity.profile.handle}`" v-show="activity.profile.avatar_url"><img class="avatar" :src="[[activity.profile.avatar_url]]"></a>
-                  <a :href="`/profile/${activity.profile.handle}`" class="user-popover" :data-username="[[ activity.profile.handle ]]" data-html="true" data-toggle="popover" data-container="body">[[ activity.profile.handle ]]</a>
-                  [[ activity.activity_type | stringReplace ]]
-                  <time class="" :datetime="[[ activity.created ]]" :title="[[ activity.created ]]">
-                    [[ activity.created | moment ]]
-                  </time>
+              <div class="border my-5 px-4 pt-4">
+                <h5 class="font-body font-weight-semibold">{% trans "ALL  ACTIVITY" %}</h5>
+                <div v-for="activity in bounty.activities" :key="activity.pk" class="my-4 row">
+                  <div class="col-md-2 col-lg-1 text-center text-md-leftr">
+                    <a :href="`/profile/${activity.profile.handle}`" v-show="activity.profile.avatar_url">
+                      <img class="avatar" :src="[[activity.profile.avatar_url]]">
+                    </a>
+                  </div>
+                  <div class="col-md-3 col-md-2 my-auto text-center text-md-left">
+                    <a :href="`/profile/${activity.profile.handle}`" class="user-popover font-body" :data-username="[[ activity.profile.handle ]]"
+                      data-html="true" data-toggle="popover" data-container="body"
+                    >
+                      [[ activity.profile.handle ]]
+                    </a>
+                  </div>
+                  <div class="col-md-4 col-lg-3 my-auto font-body text-center text-md-left">
+                    [[ activity.activity_type | stringReplace ]]
+                  </div>
+                  <div class="col-md-3 my-auto text-center text-md-left">
+                    <time class="text-black-60 text-capitalize font-body" :datetime="[[ activity.created ]]" :title="[[ activity.created ]]">
+                      [[ activity.created | moment ]]
+                    </time>
+                  </div>
                 </div>
               </div>
             </div>
