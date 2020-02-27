@@ -59,6 +59,9 @@ $(document).ready(function() {
     }, 10);
   });
   $('body').on('click', '.townsquare_nav-list .nav-link', function(e) {
+    if ($(this).attr('href') != '#') {
+      return;
+    }
     $('.nav-link').removeClass('active');
     $(this).addClass('active');
     e.preventDefault();
