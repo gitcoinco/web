@@ -1154,7 +1154,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post'])
         keyword_filter = Q(pk=0) #noop
         if keyword == 'meme':
-            keyword_filter = Q(metadata__resource__icontains='http')
+            keyword_filter = Q(metadata__type='gif') | Q(metadata__type='png') | Q(metadata__type='jpg')
         activities = activities.filter(keyword_filter | base_filter)
     if 'activity:' in what:
         view_count_threshold = 0
