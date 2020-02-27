@@ -1923,15 +1923,6 @@ def bounty_invite_url(request, invitecode):
         raise Http404
 
 
-def bounty_details_v2(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
-    # try the /pulls url if it doesn't exist in /issues
-    try:
-        issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request_url
-        bounty = Bounty.objects.current().filter(github_url=issue_url)
-    except Exception:
-        issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request_url
-        bounty = Bounty.objects.current().filter(github_url=issue_url)
-
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
     """Display the bounty details.
 
@@ -1954,13 +1945,20 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         _access_token = request.user.profile.get_access_token()
     else:
         _access_token = request.session.get('access_token')
-    issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request_url
 
-    # try the /pulls url if it doesn't exist in /issues
     try:
-        assert Bounty.objects.current().filter(github_url=issue_url).exists()
+        if ghissue:
+            issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue
+            bounties = Bounty.objects.current().filter(github_url=issue_url)
+            if not bounties.exists():
+                issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue
+                bounties = Bounty.objects.current().filter(github_url=issue_url)
+        else:
+            issue_url = request_url
+            bounties = Bounty.objects.current().filter(github_url=issue_url)
+
     except Exception:
-        issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request_url
+        pass
 
     params = {
         'issueURL': issue_url,
@@ -1976,7 +1974,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     }
     if issue_url:
         try:
-            bounties = Bounty.objects.current().filter(github_url=issue_url)
             if stdbounties_id and stdbounties_id.isdigit():
                 stdbounties_id = clean_str(stdbounties_id)
                 bounties = bounties.filter(standard_bounties_id=stdbounties_id)
@@ -2009,7 +2006,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
                     params['prize_projects'] = HackathonProject.objects.filter(hackathon=bounty.event, bounty__standard_bounties_id=bounty.standard_bounties_id).exclude(status='invalid').prefetch_related('profiles')
-                    print(params['prize_projects'])
 
                 helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)
@@ -2025,7 +2021,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         except Exception as e:
             logger.error(e)
 
-    return TemplateResponse(request, 'bounty/details2.html', params)
+    return TemplateResponse(request, 'bounty/details.html', params)
 
 
 def funder_payout_reminder_modal(request, bounty_network, stdbounties_id):
