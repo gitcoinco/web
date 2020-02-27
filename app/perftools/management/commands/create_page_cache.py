@@ -32,37 +32,6 @@ from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
 
 
-def create_activity_cache():
-    from django.utils import timezone
-    from dashboard.models import Activity
-    hours = 24 if not settings.DEBUG else 1000
-
-    print('activity.1')
-    view = 'activity'
-    keyword = '24hcount'
-    data = Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
-    JSONStore.objects.filter(view=view, key=keyword).all().delete()
-    JSONStore.objects.create(
-        view=view,
-        key=keyword,
-        data=json.loads(json.dumps(data, cls=EncodeAnything)),
-        )
-
-    print('activity.2')
-    from retail.views import get_specific_activities
-    from townsquare.views import tags
-    for tag in tags:
-        keyword = tag[2]
-        data = get_specific_activities(keyword, False, None, None).filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
-        JSONStore.objects.filter(view=view, key=keyword).all().delete()
-        JSONStore.objects.create(
-            view=view,
-            key=keyword,
-            data=json.loads(json.dumps(data, cls=EncodeAnything)),
-            )
-
-
-
 def create_grants_cache():
     from grants.utils import generate_leaderboard
     print('grants')
@@ -144,9 +113,8 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_activity_cache()
+        create_results_cache()
         if not settings.DEBUG:
-            create_results_cache()
             create_quests_cache()
             create_grants_cache()
             create_contributor_landing_page_context()

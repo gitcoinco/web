@@ -6,6 +6,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from retail.views import get_specific_activities
 
 import metadata_parser
 from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
@@ -57,87 +58,90 @@ def index(request):
 
     return town_square(request)
 
-def lazy_round_number(n):
-    if n>1000:
-        return f"{round(n/1000, 1)}k"
-    return n
+
+def max_of_ten(n):
+    return "10+" if n >= 10 else n
+
+
+def get_amount_unread(key, request):
+    if key == request.GET.get('tab'):
+        return 0
+    if key == request.COOKIES.get('tab'):
+        return 0
+    posts_unread = 0
+    post_data_cache = JSONStore.objects.filter(view='activity', key=key)
+    if post_data_cache.exists():
+        elements = [ele for ele in post_data_cache.first().data if ele > request.session.get(key, 0)]
+        posts_unread = len(elements)
+    return max_of_ten(posts_unread)
+
 
 def town_square(request):
 
-    # setup tabas
-    hours = 24 if not settings.DEBUG else 1000
-    posts_last_24_hours = 0
-    post_data_cache = JSONStore.objects.filter(view='activity', key='24hcount')
-    if post_data_cache.exists():
-        posts_last_24_hours = post_data_cache.first().data
-
+    # setup tabs
+    hours = 24
     tabs = [{
         'title': f"Everywhere",
         'slug': 'everywhere',
-        'helper_text': f'The {posts_last_24_hours} activity feed items everywhere in the Gitcoin network',
-        'badge': posts_last_24_hours
+        'helper_text': f'The activity feed items everywhere in the Gitcoin network',
+        'badge': get_amount_unread('everywhere', request),
     }]
     default_tab = 'everywhere'
+
     if request.user.is_authenticated:
-        num_business_relationships = lazy_round_number(len(set(get_my_earnings_counter_profiles(request.user.profile.pk))))
+        num_business_relationships = len(set(get_my_earnings_counter_profiles(request.user.profile.pk)))
         if num_business_relationships:
+            key = 'my_tribes'
             new_tab = {
                 'title': f"Relationships",
-                'slug': 'my_tribes',
-                'helper_text': f'Activity from the {num_business_relationships} users who you\'ve done business with Gitcoin',
-                'badge': num_business_relationships
+                'slug': key,
+                'helper_text': f'Activity from the users who you\'ve done business with Gitcoin',
+                'badge': max_of_ten(get_specific_activities(key, False, request.user, request.session.get(key, 0)).count()) if request.GET.get('tab') != key else 0
             }
             tabs = [new_tab] + tabs
             default_tab = 'my_tribes'
-        num_grants_relationships = lazy_round_number(len(set(get_my_grants(request.user.profile))))
+        num_grants_relationships = (len(set(get_my_grants(request.user.profile))))
 
         if num_grants_relationships:
+            key = 'grants'
             new_tab = {
                 'title': f'Grants',
-                'slug': f'grants',
-                'helper_text': f'Activity on the {num_grants_relationships} Grants you\'ve created or funded.',
-                'badge': num_grants_relationships
+                'slug': key,
+                'helper_text': f'Activity on the Grants you\'ve created or funded.',
+                'badge': max_of_ten(get_specific_activities(key, False, request.user, request.session.get(key, 0)).count()) if request.GET.get('tab') != key else 0
             }
             tabs = [new_tab] + tabs
             default_tab = 'grants'
 
-    hours = 24 if not settings.DEBUG else 1000
-    if request.user.is_authenticated:
-        threads_last_24_hours = lazy_round_number(
-            request.user.profile.subscribed_threads.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
-            )
+        threads_last_24_hours = max_of_ten(request.user.profile.subscribed_threads.filter(pk__gt=request.session.get('my_threads', 0)).count())  if request.GET.get('tab') != 'my_threads' else 0
 
         threads = {
             'title': f"My Threads",
             'slug': f'my_threads',
-            'helper_text': f'The {threads_last_24_hours} Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
+            'helper_text': f'The Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
             'badge': threads_last_24_hours
         }
         tabs = [threads] + tabs
 
-    connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
-    if connect_last_24_hours:
-        default_tab = 'connect'
-        connect = {
-            'title': f"Connect",
-            'slug': f'connect',
-            'helper_text': f'The {connect_last_24_hours} announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
-            'badge': connect_last_24_hours
-        }
-        tabs = [connect] + tabs
+    default_tab = 'connect'
+    connect = {
+        'title': f"Connect",
+        'slug': f'connect',
+        'helper_text': f'The announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin.',
+        'badge': get_amount_unread('connect', request),
+    }
+    tabs = [connect] + tabs
 
-    kudos_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['new_kudos', 'receive_kudos'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
-    if kudos_last_24_hours:
-        connect = {
-            'title': f"Kudos",
-            'slug': f'kudos',
-            'helper_text': f'The {kudos_last_24_hours} Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
-            'badge': kudos_last_24_hours
-        }
-        tabs = tabs + [connect]
+    connect = {
+        'title': f"Kudos",
+        'slug': f'kudos',
+        'helper_text': f'The Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
+        'badge': get_amount_unread('kudos', request),
+    }
+    tabs = tabs + [connect]
 
     if request.user.is_authenticated:
-        hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now(), end_date__gt=timezone.now())
+        hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now() - timezone.timedelta(days=7), end_date__gt=timezone.now())
         if hackathons.count():
             user_registered_hackathon = request.user.profile.hackathon_registration.filter(registrant=request.user.profile, hackathon__in=hackathons).first()
             if user_registered_hackathon:
@@ -146,6 +150,7 @@ def town_square(request):
                     'title': user_registered_hackathon.hackathon.name,
                     'slug': default_tab,
                     'helper_text': f'Activity from the {user_registered_hackathon.hackathon.name} Hackathon.',
+                    'badge': max_of_ten(get_specific_activities(default_tab, False, request.user, request.session.get(default_tab, 0)).count()) if request.GET.get('tab') != default_tab else 0
                 }
                 tabs = [connect] + tabs
 
@@ -237,11 +242,10 @@ def town_square(request):
     ]
 
     # pull tag amounts
-    for i in range(0, len(tags)):
-        keyword = tags[i][2]
-        post_data_cache = JSONStore.objects.filter(view='activity', key=keyword)
-        if post_data_cache.exists():
-            tags[i] = tags[i] + [post_data_cache.first().data]
+    view_tags = tags.copy()
+    for i in range(0, len(view_tags)):
+        keyword = view_tags[i][2]
+        view_tags[i] = view_tags[i] + [get_amount_unread(keyword, request)]
 
     # render page context
     trending_only = int(request.GET.get('trending', 0))
@@ -265,7 +269,7 @@ def town_square(request):
         'is_townsquare': True,
         'trending_only': bool(trending_only),
         'search': search,
-        'tags': tags,
+        'tags': view_tags,
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
