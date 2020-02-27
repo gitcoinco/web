@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models, transaction
-from django.db.models.signals import post_save
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
@@ -27,6 +27,18 @@ class Like(SuperModel):
 
     def get_absolute_url(self):
         return self.activity.url
+
+
+@receiver(post_save, sender=Like, dispatch_uid="post_save_like")
+def postsave_like(sender, instance, created, **kwargs):
+    from townsquare.tasks import refresh_activities
+    refresh_activities.delay([instance.activity.pk])
+
+
+@receiver(post_delete, sender=Like, dispatch_uid="post_delete_like")
+def postdel_like(sender, instance, **kwargs):
+    from townsquare.tasks import refresh_activities
+    refresh_activities.delay([instance.activity.pk])
 
 
 class Flag(SuperModel):
@@ -99,8 +111,15 @@ class Comment(SuperModel):
 
 @receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
 def postsave_comment(sender, instance, created, **kwargs):
-    from townsquare.tasks import send_comment_email
+    from townsquare.tasks import send_comment_email, refresh_activities
+    refresh_activities.delay([instance.activity.pk])
     send_comment_email.delay(instance.pk)
+
+
+@receiver(post_delete, sender=Comment, dispatch_uid="post_delete_comment")
+def postdel_comment(sender, instance, **kwargs):
+    from townsquare.tasks import refresh_activities
+    refresh_activities.delay([instance.activity.pk])
 
 
 class OfferQuerySet(models.QuerySet):

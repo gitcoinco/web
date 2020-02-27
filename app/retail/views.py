@@ -28,7 +28,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -70,7 +70,7 @@ def get_activities(tech_stack=None, num_activities=15):
     if tech_stack:
         activities = activities.filter(bounty__metadata__icontains=tech_stack)
     activities = activities[0:num_activities]
-    return [a.view_props for a in activities]
+    return [a.either_view_props for a in activities]
 
 
 def index(request):
@@ -1118,18 +1118,12 @@ def results(request, keyword=None):
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
-
-def activity(request):
-    """Render the Activity response."""
-    page_size = 7
-    page = int(request.GET.get('page', 1))
-    what = request.GET.get('what', 'everywhere')
-    trending_only = int(request.GET.get('trending_only', 0))
-
+def get_specific_activities(what, trending_only, user, after_pk):
     # create diff filters
-    print(1, round(time.time(), 1))
     activities = Activity.objects.filter(hidden=False).order_by('-created_on')
     view_count_threshold = 10
+
+    is_auth = user and user.is_authenticated
 
     ## filtering
     if 'hackathon:' in what:
@@ -1143,46 +1137,59 @@ def activity(request):
         kwargs = {}
         kwargs[key] = pk
         activities = activities.filter(**kwargs)
-    if request.user.is_authenticated:
-        relevant_profiles = []
-        relevant_grants = []
-        if what == 'tribes':
-            relevant_profiles = get_my_earnings_counter_profiles(request.user.profile.pk)
-        if what == 'grants':
-            relevant_grants = get_my_grants(request.user.profile)
-        if what == 'my_threads' and request.user.is_authenticated:
-            activities = request.user.profile.subscribed_threads.all().order_by('-created')
-        if 'keyword-' in what:
-            keyword = what.split('-')[1]
-            relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
-        if 'search-' in what:
-            keyword = what.split('-')[1]
-            view_count_threshold = 5
-            activities = activities.filter(metadata__icontains=keyword)
-        if 'activity:' in what:
-            view_count_threshold = 0
-            pk = what.split(':')[1]
-            activities = Activity.objects.filter(pk=pk)
-            if page > 1:
-                activities = Activity.objects.none()
-        # filters
-        if len(relevant_profiles):
-            activities = activities.filter(profile__in=relevant_profiles)
-        if len(relevant_grants):
-            activities = activities.filter(grant__in=relevant_grants)
+    relevant_profiles = []
+    relevant_grants = []
+    if what == 'tribes':
+        relevant_profiles = get_my_earnings_counter_profiles(user.profile.pk) if is_auth else []
+    if what == 'grants':
+        relevant_grants = get_my_grants(user.profile) if is_auth else []
+    if what == 'my_threads' and is_auth:
+        activities = user.profile.subscribed_threads.all().order_by('-created') if is_auth else []
+    if 'keyword-' in what:
+        keyword = what.split('-')[1]
+        relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
+    if 'search-' in what:
+        keyword = what.split('-')[1]
+        view_count_threshold = 5
+        base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post'])
+        keyword_filter = Q(pk=0) #noop
+        if keyword == 'meme':
+            keyword_filter = Q(metadata__resource__icontains='http')
+        activities = activities.filter(keyword_filter | base_filter)
+    if 'activity:' in what:
+        view_count_threshold = 0
+        pk = what.split(':')[1]
+        activities = Activity.objects.filter(pk=pk)
+        if page > 1:
+            activities = Activity.objects.none()
+    # filters
+    if len(relevant_profiles):
+        activities = activities.filter(profile__in=relevant_profiles)
+    if len(relevant_grants):
+        activities = activities.filter(grant__in=relevant_grants)
     if what == 'connect':
         activities = activities.filter(activity_type__in=['status_update', 'wall_post'])
     if what == 'kudos':
         activities = activities.filter(activity_type__in=['new_kudos', 'receive_kudos'])
 
     # after-pk filters
-    if request.GET.get('after-pk'):
-        activities = activities.filter(pk__gt=request.GET.get('after-pk'))
+    if after_pk:
+        activities = activities.filter(pk__gt=after_pk)
     if trending_only:
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
-    print(2, round(time.time(), 1))
+    return activities
+
+
+def activity(request):
+    """Render the Activity response."""
+    page_size = 7
+    page = int(request.GET.get('page', 1))
+    what = request.GET.get('what', 'everywhere')
+    trending_only = int(request.GET.get('trending_only', 0))
+
+    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'))
 
     # pagination
     next_page = page + 1
@@ -1194,13 +1201,11 @@ def activity(request):
     page = activities[start_index:end_index]
     suppress_more_link = not len(page)
 
-    print(2.5, round(time.time(), 1))
     # increment view counts
     activities_pks = [obj.pk for obj in page]
     if len(activities_pks):
         increment_view_counts.delay(activities_pks)
 
-    print(3, round(time.time(), 1))
 
     context = {
         'suppress_more_link': suppress_more_link,
@@ -1210,11 +1215,10 @@ def activity(request):
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
         'TOKENS': request.user.profile.token_approvals.all() if request.user.is_authenticated else [],
-        'my_tribes': [membership.org.handle for membership in request.user.profile.tribe_members.all()] if request.user.is_authenticated else [],
+        'my_tribes': list(request.user.profile.tribe_members.values_list('org__handle',flat=True)) if request.user.is_authenticated else [],
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]
 
-    print(4, round(time.time(), 1))
 
     return TemplateResponse(request, 'activity.html', context)
 

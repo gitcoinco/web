@@ -20,6 +20,15 @@ from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound,
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
+tags = [
+    ['#announce','bullhorn','search-announce'],
+    ['#mentor','terminal','search-mentor'],
+    ['#jobs','code','search-jobs'],
+    ['#help','laptop-code','search-help'],
+    ['#meme','images','search-meme'],
+    ['#other','briefcase','search-other'],
+    ]
+
 
 def get_next_time_available(key):
     d = timezone.now()
@@ -194,7 +203,8 @@ def town_square(request):
     page_seo_text_insert = ''
     avatar_url = ''
     admin_link = ''
-    if "activity:" in tab:
+    is_direct_link = "activity:" in tab
+    if is_direct_link:
         try:
             pk = int(tab.split(':')[1])
             activity = Activity.objects.get(pk=pk)
@@ -228,6 +238,13 @@ def town_square(request):
         } for obj in current_match_rankings[0:num_to_show]
     ]
 
+    # pull tag amounts
+    for i in range(0, len(tags)):
+        keyword = tags[i][2]
+        post_data_cache = JSONStore.objects.filter(view='activity', key=keyword)
+        if post_data_cache.exists():
+            tags[i] = tags[i] + [post_data_cache.first().data]
+
     # render page context
     trending_only = int(request.GET.get('trending', 0))
     context = {
@@ -235,6 +252,8 @@ def town_square(request):
         'card_desc': desc,
         'avatar_url': avatar_url,
         'use_pic_card': True,
+        'is_search': is_search,
+        'is_direct_link': is_direct_link,
         'page_seo_text_insert': page_seo_text_insert,
         'nav': 'home',
         'target': f'/activity?what={tab}&trending_only={trending_only}',
@@ -248,7 +267,7 @@ def town_square(request):
         'is_townsquare': True,
         'trending_only': bool(trending_only),
         'search': search,
-        'tags': [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ],
+        'tags': tags,
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
