@@ -110,7 +110,7 @@ class ActivitySerializer(serializers.ModelSerializer):
         """Define the activity serializer metadata."""
 
         model = Activity
-        fields = ('activity_type', 'created', 'profile', 'metadata', 'bounty', 'tip', 'kudos')
+        fields = ('activity_type', 'pk', 'created', 'profile', 'metadata', 'bounty', 'tip', 'kudos')
 
 
 class InterestSerializer(serializers.ModelSerializer):
