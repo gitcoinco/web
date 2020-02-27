@@ -1118,7 +1118,7 @@ def results(request, keyword=None):
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
-def get_specific_activities(what, trending_only, user, after_pk):
+def get_specific_activities(what, trending_only, user, after_pk, request=None):
     # create diff filters
     activities = Activity.objects.filter(hidden=False).order_by('-created_on')
     view_count_threshold = 10
@@ -1160,8 +1160,10 @@ def get_specific_activities(what, trending_only, user, after_pk):
         view_count_threshold = 0
         pk = what.split(':')[1]
         activities = Activity.objects.filter(pk=pk)
-        if page > 1:
-            activities = Activity.objects.none()
+        if request:
+            page = int(request.GET.get('page', 1))
+            if page > 1:
+                activities = Activity.objects.none()
     # filters
     if len(relevant_profiles):
         activities = activities.filter(profile__in=relevant_profiles)
@@ -1189,7 +1191,7 @@ def activity(request):
     what = request.GET.get('what', 'everywhere')
     trending_only = int(request.GET.get('trending_only', 0))
 
-    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'))
+    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
 
     # pagination
     next_page = page + 1
