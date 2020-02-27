@@ -3933,7 +3933,7 @@ class Profile(SuperModel):
         params['activities'] = list(all_activities.values_list('pk', flat=True))
         counts = {}
         if not all_activities or all_activities.count() == 0:
-            context['none'] = True
+            params['none'] = True
         else:
             counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
             counts = {ele['activity_type']: ele['the_count'] for ele in counts}
