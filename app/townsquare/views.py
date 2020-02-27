@@ -18,6 +18,15 @@ from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound,
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
+tags = [
+    ('#announce','bullhorn','search-announce'),
+    ('#mentor','terminal','search-mentor'),
+    ('#jobs','code','search-jobs'),
+    ('#help','laptop-code','search-help'),
+    ('#meme','images','search-meme'),
+    ('#other','briefcase','search-other'),
+    ]
+
 
 def get_next_time_available(key):
     d = timezone.now()
@@ -207,15 +216,6 @@ def town_square(request):
             page_seo_text_insert = desc
         except Exception as e:
             print(e)
-
-    tags = [
-        ('#announce','bullhorn','search-announce'),
-        ('#mentor','terminal','search-mentor'),
-        ('#jobs','code','search-jobs'),
-        ('#help','laptop-code','search-help'),
-        ('#meme','images','search-meme'),
-        ('#other','briefcase','search-other'),
-        ]
 
     # matching leaderboard
     current_match_round = MatchRound.objects.current().first()

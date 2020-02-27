@@ -1118,10 +1118,12 @@ def results(request, keyword=None):
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
-def get_activities(what, trending_only, user):
+def get_specific_activities(what, trending_only, user, after_pk):
     # create diff filters
     activities = Activity.objects.filter(hidden=False).order_by('-created_on')
     view_count_threshold = 10
+
+    is_auth = user and user.is_authenticated
 
     ## filtering
     if 'hackathon:' in what:
@@ -1135,15 +1137,15 @@ def get_activities(what, trending_only, user):
         kwargs = {}
         kwargs[key] = pk
         activities = activities.filter(**kwargs)
-    if user.is_authenticated:
+    if is_auth:
         relevant_profiles = []
         relevant_grants = []
         if what == 'tribes':
-            relevant_profiles = get_my_earnings_counter_profiles(request.user.profile.pk)
+            relevant_profiles = get_my_earnings_counter_profiles(user.profile.pk) if is_auth else []
         if what == 'grants':
-            relevant_grants = get_my_grants(request.user.profile)
-        if what == 'my_threads' and request.user.is_authenticated:
-            activities = request.user.profile.subscribed_threads.all().order_by('-created')
+            relevant_grants = get_my_grants(user.profile) if is_auth else []
+        if what == 'my_threads' and is_auth:
+            activities = user.profile.subscribed_threads.all().order_by('-created') if is_auth else []
         if 'keyword-' in what:
             keyword = what.split('-')[1]
             relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
@@ -1172,8 +1174,8 @@ def get_activities(what, trending_only, user):
         activities = activities.filter(activity_type__in=['new_kudos', 'receive_kudos'])
 
     # after-pk filters
-    if request.GET.get('after-pk'):
-        activities = activities.filter(pk__gt=request.GET.get('after-pk'))
+    if after_pk:
+        activities = activities.filter(pk__gt=after_pk)
     if trending_only:
         if what == 'everywhere':
             view_count_threshold = 40
@@ -1188,7 +1190,7 @@ def activity(request):
     what = request.GET.get('what', 'everywhere')
     trending_only = int(request.GET.get('trending_only', 0))
 
-    activities = get_activities(what, trending_only, request.user)
+    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'))
 
     # pagination
     next_page = page + 1
