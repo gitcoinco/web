@@ -166,7 +166,8 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
             'additional_funding_summary', 'funding_organisation', 'paid', 'event',
             'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured',
-            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on', 'can_remarket', 'is_reserved'
+            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on', 'can_remarket', 'is_reserved',
+            'payout_confirmed', 'payout_tx_id'
         )
 
     def create(self, validated_data):
@@ -224,8 +225,8 @@ class BountySerializerCheckIn(BountySerializer):
         )
 
 
-class BountyViewSet(viewsets.ModelViewSet):
-    """Handle the Bounty view behavior."""
+class BountiesViewSet(viewsets.ModelViewSet):
+    """Handle Bounties view behavior."""
     queryset = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'activities', 'unsigned_nda', 'event') \
         .all().order_by('-web3_created')
     serializer_class = BountySerializer
@@ -450,17 +451,56 @@ class BountyViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class BountyViewSetSlim(BountyViewSet):
+class BountiesViewSetSlim(BountiesViewSet):
     queryset = Bounty.objects.all().order_by('-web3_created')
     serializer_class = BountySerializerSlim
 
-class BountyViewSetCheckIn(BountyViewSet):
+class BountiesViewSetCheckIn(BountiesViewSet):
     queryset = Bounty.objects.all().order_by('standard_bounties_id')
     serializer_class = BountySerializerCheckIn
 
+
+class BountyViewSet(viewsets.ModelViewSet):
+    """API response for an individual bounty by url"""
+
+    queryset = Bounty.objects.prefetch_related(
+        'fulfillments', 'interested', 'interested__profile', 'activities',
+        'unsigned_nda', 'event'
+    )
+    serializer_class = BountySerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+
+    def get_queryset(self):
+        """Constructs queryset for an individual bounty
+
+        Returns:
+            QuerySet: The Bounty queryset.
+
+        """
+
+        param_keys = self.request.query_params.keys()
+
+        queryset = Bounty.objects.prefetch_related(
+            'fulfillments', 'interested', 'interested__profile', 'activities',
+            'unsigned_nda', 'event'
+        )
+
+        queryset = queryset.current()
+
+        if 'github_url' in param_keys:
+            url = self.request.query_params.get('github_url')
+            queryset = queryset.filter(github_url=url)
+
+        queryset = queryset.order_by('-web3_created')
+        queryset = queryset.distinct()
+
+        return queryset
+
+
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register(r'bounties/slim', BountyViewSetSlim)
-router.register(r'bounties', BountyViewSet)
+router.register(r'bounties/slim', BountiesViewSetSlim)
+router.register(r'bounties', BountiesViewSet)
+router.register(r'checkin', BountiesViewSetCheckIn)
+
 router.register(r'bounty', BountyViewSet)
-router.register(r'checkin', BountyViewSetCheckIn)
