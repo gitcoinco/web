@@ -200,7 +200,7 @@
           <div class="row">
             <div class="col-12 mt-2">
               <h5 class="bounty-heading mt-0 pt-4" id="description">{% trans "Description" %}</h5>
-              <div class="issue_description" :inner-html.prop="bounty.issue_description | myfilter"></div>
+              <div class="issue_description" :inner-html.prop="bounty.issue_description | markdownit"></div>
             </div>
             <div class="col-12">
               <div id="issue_keywords">
@@ -215,7 +215,17 @@
 
           <div class="row">
             <div class="col-12">
-              <h5 class="bounty-heading">{% trans "Contributors" %}</h5>
+              <div class="border my-5">
+                <h5 class="bounty-heading">{% trans "All Activity" %}</h5>
+                <div v-for="activity in bounty.activities" :key="activity.pk" class=" my-3">
+                  <a :href="`/profile/${activity.profile.handle}`" v-show="activity.profile.avatar_url"><img class="avatar" :src="[[activity.profile.avatar_url]]"></a>
+                  <a :href="`/profile/${activity.profile.handle}`" class="user-popover" :data-username="[[ activity.profile.handle ]]" data-html="true" data-toggle="popover" data-container="body">[[ activity.profile.handle ]]</a>
+                  [[ activity.activity_type | stringReplace ]]
+                  <time class="" :datetime="[[ activity.created ]]" :title="[[ activity.created ]]">
+                    [[ activity.created | moment ]]
+                  </time>
+                </div>
+              </div>
             </div>
           </div>
         </div>
