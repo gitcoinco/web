@@ -2021,7 +2021,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         except Exception as e:
             logger.error(e)
 
-    return TemplateResponse(request, 'bounty/details.html', params)
+    return TemplateResponse(request, 'bounty/details2.html', params)
 
 
 def funder_payout_reminder_modal(request, bounty_network, stdbounties_id):
