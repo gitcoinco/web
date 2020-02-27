@@ -1,0 +1,17 @@
+{
+    "symbol": "GTG",
+    "address": "0x66B279a074Faa84E2a29b9A6997dc2957044C486",
+    "overview":{
+          "en": "Taking the blockchain as the core, GTG is a global high-quality blockchain game distribution platform which including: game development and agent, block chain game project incubation, live broadcast of game events, electronic competition event organization, game hardware, etc. ",
+          "zh": "GTG是以区块链为核心的优质区块链游戏分发平台。提供了包括：游戏的开发以及代理、区块链游戏项目孵化、游戏赛事直播、电竞赛事筹办、游戏硬件等。"
+    },
+    "email": "gametoken@gametoken.online",
+    "website": "http://www.gametoken.online/",
+    "whitepaper": "http://www.gametoken.online/whitebook.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-01-08",
+    "links": {
+        "telegram": "https://t.me/joinchat/Or2wsxZ7tqtnN10fLIjVrA",
+        "github": "https://github.com/gametoken-online/GameToken"
+      }
+}
