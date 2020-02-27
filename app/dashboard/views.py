@@ -3543,9 +3543,8 @@ def change_bounty(request, bounty_id):
 
         if not bounty.is_bounties_network:
             current_amount = float(bounty.value_true)
-            new_amount = float(params.get('amount'))
+            new_amount = float(params.get('amount')) if params.get('amount') else None
             if new_amount and current_amount != new_amount:
-                print("SHIT-2")
                 bounty.value_true = new_amount
                 value_in_token = params.get('value_in_token')
                 bounty.value_in_token = value_in_token
@@ -3560,7 +3559,7 @@ def change_bounty(request, bounty_id):
                     logger.debug(e)
 
             current_hours = int(bounty.estimated_hours)
-            new_hours = int(params.get('hours'))
+            new_hours = int(params.get('hours')) if params.get('hours') else None
             if new_hours and current_hours != new_hours:
                 bounty.estimated_hours = new_hours
                 bounty.metadata['estimatedHours'] = new_hours
