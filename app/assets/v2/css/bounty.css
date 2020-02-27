@@ -71,7 +71,7 @@ body {
   font-style: italic;
 }
 
-.bounty_details .avatar {
+.avatar {
   width: 50px;
   height: 50px;
   margin: 0px auto;
@@ -83,7 +83,7 @@ body {
   border-radius: 0px;
 }
 
-#avatar_url .avatar {
+.avatar-big {
   width: 80px;
   height: 80px;
 }
@@ -170,8 +170,9 @@ body {
   color: #3E00FF;
 }
 
-#issue_description {
+.issue_description {
   color: #000000;
+  font-size: 14px;
 }
 
 .bounty-subheading {
@@ -460,7 +461,7 @@ a.btn {
   top: -2px;
 }
 
-#bounty_details #issue_description img {
+.issue_description img {
   max-height: 30rem;
   max-width: 30rem;
   cursor: pointer;
@@ -469,12 +470,12 @@ a.btn {
   margin-bottom: 1rem;
 }
 
-#bounty_details #issue_description h1,
-#bounty_details #issue_description h2,
-#bounty_details #issue_description h3,
-#bounty_details #issue_description h4,
-#bounty_details #issue_description h5,
-#bounty_details #issue_description h6 {
+.issue_description h1,
+.issue_description h2,
+.issue_description h3,
+.issue_description h4,
+.issue_description h5,
+.issue_description h6 {
   letter-spacing: 1px;
   font-size: 16px;
   margin-top: 15px;

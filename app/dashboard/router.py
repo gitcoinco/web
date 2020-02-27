@@ -462,4 +462,5 @@ class BountyViewSetCheckIn(BountyViewSet):
 router = routers.DefaultRouter()
 router.register(r'bounties/slim', BountyViewSetSlim)
 router.register(r'bounties', BountyViewSet)
+router.register(r'bounty', BountyViewSet)
 router.register(r'checkin', BountyViewSetCheckIn)

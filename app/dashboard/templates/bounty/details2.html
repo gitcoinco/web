@@ -1,0 +1,324 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <meta name="title" content="{{ card_title }} Bug Bounty | Gitcoin">
+    <meta name="description" content="{{ card_desc | truncatechars:200 }}">
+    {% if canonical_url %}
+      <link rel="canonical" href="{{ canonical_url }}">
+    {% endif %}
+    <link rel="stylesheet" href="{% static "v2/css/lib/daterangepicker.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/lib/highlight_github.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+  </head>
+
+  <body class="interior {{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+
+    <div class="container-fluid" id="gc-bounty-detail" v-cloak>
+      <div class="row">
+        <div class="col-12 col-md-2 bg-lightblue">
+          {% if event_tag %}
+            <a href="/hackathon/{{ event_tag }}" class="btn btn-link font-body my-3"><i class="fas fa-chevron-left"></i> {% trans "Back to Hackathon Explorer" %}</a>
+          {% else %}
+            <a href="{% url 'explorer' %}" class="btn btn-link font-body my-3"><i class="fas fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
+          {% endif %}
+        </div>
+        <div class="col-12 col-md-10" v-show="bounty.created_on">
+          <div class="row align-items-center mt-4 mb-3">
+            <div class="col-lg-2 col-xl-1">
+              <a :href="`/profile/${bounty.org_name}`" v-show="bounty.avatar_url"><img :class="`avatar avatar-big ${bounty.github_org_name}`" :src="[[bounty.avatar_url]]"></a>
+            </div>
+            <div class="col-lg-10">
+              <div v-if="bounty.event" class="font-subheader hackathon-alt text-center text-lg-left" id="event_name">
+                Hackathon: [[bounty.event.name]]
+              </div>
+              <h4 id="title" class="font-title p-0 text-center text-lg-left">[[bounty.title]]</h4>
+              <div class="text-center text-lg-left">
+                <div class="tags font-caption d-flex">
+                  <div class="tag token" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">${bounty.value_true} ${bounty.token_name} in funding from original funder.</div>`'>
+                    <p class="inner-tooltip">
+
+                      <span id="value_in_token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
+                    </p>
+                  </div>
+                  <div id="value_in_usdt_wrapper" class="tag usd ml-3" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">The funding in this bounty adds up to $${bounty.value_in_usdt_now} USD </div>`'>
+                    <p class="inner-tooltip">
+                      <span id="value_in_usdt">[[bounty.value_in_usdt_now]]</span>
+                      <span>USD</span>
+                    </p>
+                  </div>
+                  <div class="d-inline-block font-subheader ml-3" id="bounty_categories">
+                    <template v-for="category in bounty.bounty_categories">
+                      <span class="badge badge-secondary mr-1" v-if="category === 'frontend'"><i class="fas fa-laptop-code"></i> Front End</span>
+                      <span class="badge badge-secondary mr-1" v-else-if="category === 'backend'"><i class="fas fa-code"></i> Back End</span>
+                      <span class="badge badge-secondary mr-1" v-else-if="category === 'design'"><i class="fas fa-pencil-ruler"></i> Design</span>
+                      <span class="badge badge-secondary mr-1" v-else-if="category === 'documentation'"><i class="fas fa-file-alt"></i> Documentation</span>
+                      <span class="badge badge-secondary mr-1" v-else="category === 'other'"><i class="fas fa-briefcase"></i> Other</span>
+                    </template>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12" v-if="bounty.network !== 'mainnet'">
+              <span class="font-caption text-center" id="network">WARNING: this is a [[bounty.network]] network bounty, and is NOT real money.  To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.</span>
+            </div>
+            <div class="col-12 text-center text-lg-left my-3 my-lg-0">
+              <div id="status" class="font-weight-semibold">[[ bounty.status ]]</div>
+            </div>
+          </div>
+          <div id="bounty-info-row" class="row font-body bounty-info">
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+              <span class="bounty-info-heading timeleft">{% trans "Time left" %} </span>
+              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]" id="expires_date">
+                [[ bounty.expires_date | moment ]]
+              </time>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+              <span class="bounty-info-heading">{% trans "Opened" %} </span>
+              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="[[ bounty.web3_created ]]" :title="[[ bounty.web3_created ]]" id="web3_created">
+                [[ bounty.web3_created | moment ]]
+              </time>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+              <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="bounty_type">[[ bounty.bounty_type ]]</span>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" id="auto_approve_workers_wrapper" v-if="bounty.permission_type === 'approval'">
+              <span class="bounty-info-heading">{% trans "Workers Auto Approve" %} </span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="admin_override_suspend_auto_approval">[[ bounty.admin_override_suspend_auto_approval ? 'Off' : 'On' ]]</span>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+              <span class="bounty-info-heading mr-1" data-toggle="tooltip" data-html="true" title='{% include "shared/project_type_tooltip.html" %}'>
+                {% trans "Project Type" %} <i class="fas fa-info-circle"></i>
+              </span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="project_type" data-toggle="tooltip" data-html="true" title='{% include "shared/project_type_tooltip.html" %}'>[[ bounty.project_type ]]
+              </span>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.project_length">
+              <span class="bounty-info-heading">{% trans "Time Commitment" %}</span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="project_length">[[ bounty.project_length ]]</span>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+              <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="experience_level">[[ bounty.experience_level ]]</span>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+              <span class="bounty-info-heading" data-toggle="tooltip" data-html="true" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %} <i class="fas fa-info-circle"></i></span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="permission_type" data-toggle="tooltip" data-html="true" title='{% include "shared/permissions_type_tooltip.html" %}'>[[ bounty.permission_type ]]</span>
+            </div>
+            <div id="fulfillment_accepted_on_wrapper" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.fulfillment_accepted_on">
+              <span class="bounty-info-heading">{% trans "Accepted" %} </span>
+              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="[[ bounty.fulfillment_accepted_on ]]" :title="[[ bounty.fulfillment_accepted_on ]]" id="fulfillment_accepted_on">
+                [[ bounty.fulfillment_accepted_on | moment ]]
+              </time>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.reserved_for_user_handle">
+              <span class="bounty-info-heading" id="bounty_reserved_for_label">{% trans "Reserved For" %} </span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="bounty_reserved_for">[[ bounty.reserved_for_user_handle ]]</span>
+            </div>
+          </div>
+
+          {% if is_bounties_network %}
+            <div class="row">
+              <div class="col-12 notif-info mt-4 font-caption" id="funder_notif_info" v-if="isOwner">
+                {% trans "Funder Address:" %} <span id="bounty_funded_by">[[ bounty.bounty_owner_address ]]</span>
+                <span class="bounty-notification ml-2">
+                  <i class="far fa-bell mr-2"></i> Ready to Pay? Set Your Metamask to this address! <img src="{% static 'v2/images/metamask.svg' %}"  class="ml-2">
+                </span>
+              </div>
+            </div>
+          {% endif %}
+          <div class="row">
+            <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1" v-if="bounty.action_urls">
+
+              <div id="bounty_actions" class="d-inline-block">
+                <a :href="bounty.action_urls.payout" class="btn btn-gc-blue btn-sm mr-2 px-3" title="Payout the bounty to one or more submitters.">
+                  <i class="fab fa-ethereum mr-2"></i> {% trans "Payout Bounty" %}
+                </a>
+                <a :href="bounty.action_urls.increase" class="btn btn-outline-gc-blue btn-sm mr-2 px-3" title="Help by funding or promoting this issue">
+                  {% trans "Increase Funding" %}
+                </a>
+
+              </div>
+              <div id="github_actions" class="d-inline-block">
+                <a :href="bounty.github_url" class="btn btn-outline-gc-blue btn-sm mr-2 px-3" target="_blank">
+                  <i class="fab fa-github mr-2"></i> {% trans "View On Github" %}
+                </a>
+                <a class="modal-link btn btn-outline-gc-blue btn-sm px-3" href="" data-toggle="modal" data-target=".share-modal">
+                  <i class="fas fa-share-alt mr-2"></i>
+                  <span>Share</span>
+                </a>
+              </div>
+              <div class="dropdown show float-right">
+                <a class="btn btn-link btn-sm blue dropdown-toggle" href="#" role="button"
+                  id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {% trans "Bounty Options" %}
+                </a>
+                <div id="bounty-options-link" class="dropdown-menu font-caption shadow-sm" aria-labelledby="bounty-options">
+                  <a class="dropdown-item p-2" @click="syncGhIssue()">
+                    <i class="fas fa-sync mr-2"></i>
+                    Sync Issue
+                  </a>
+                  <a class="dropdown-item p-2" :href="bounty.action_urls.invoice">
+                    <i class="fas fa-file-alt mr-2"></i>
+                    Show Invoice
+                  </a>
+                  <a class="dropdown-item p-2" href="/extend-deadlines">
+                    <i class="fas fa-calendar-plus mr-2"></i>
+                    Extend Deadline
+                  </a>
+                  <a class="dropdown-item p-2" :href="`${bounty.url}?trigger_remarket=1`" v-if="bounty.can_remarket">
+                    <i class="fas fa-bullhorn mr-2"></i>
+                    Remarket Issue
+                  </a>
+                  <a class="dropdown-item p-2" :href="bounty.action_urls.cancel">
+                    <i class="fas fa-times mr-2"></i>
+                    Cancel Bounty
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-12 mt-2">
+              <h5 class="bounty-heading mt-0 pt-4" id="description">{% trans "Description" %}</h5>
+              <div class="issue_description" :inner-html.prop="bounty.issue_description | myfilter"></div>
+            </div>
+            <div class="col-12">
+              <div id="issue_keywords">
+                <div v-if="bounty.keywords" class="">
+                  <template v-for="keyword in bounty.keywords.split(',')">
+                    <a class="tag keyword" :href="`/explorer/?q=${keyword.trim()}`">[[ keyword ]]</a>[[ ' ' ]]
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <h5 class="bounty-heading">{% trans "Contributors" %}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div id="modal" class="modal fade share-modal" tabindex="-1" role="dialog" aria-labelledby="shareModal" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+      </div>
+    </div>
+    <div id="modalInterest" class="modal fade interest-modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="row loading justify-content-center align-items-center loading_img">
+            <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ...">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="modalExtend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-dialog ">
+          <div class="modal-content py-3">
+            <div class="row loading justify-content-center align-items-center loading_img">
+              <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ...">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <noscript>
+      <h2>{{ noscript.title }}</h2>
+      <h3>{{ noscript.org_name }}</h3>
+      <h3>{{ noscript.keywords }}</h3>
+      <p>{{ noscript.issue_description_text }}</p>
+    </noscript>
+
+    <script>
+      const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
+      document.issueURL = '{{ issueURL }}';
+
+      // ETC-TODO: remove network + std bounties for ETC
+      document.issueNetwork = '{{ network }}';
+      document.issue_stdbounties_id = '{{ stdbounties_id }}';
+
+      {% if event_tag %}
+        document.eventTag = '{{ event_tag }}';
+      {% endif %}
+    </script>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/current_profile.html' %}
+
+    <script src="{% static "v2/js/lib/highlight.js" %}"></script>
+    <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
+
+    <script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/amounts.js" %}"></script>
+    <script src="{% static "v2/js/clipboard.js" %}"></script>
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+      $('[data-toggle="popover"]').popover()
+      $('body').on('mouseover', '[data-username]', function(e) {
+        openContributorPopOver($(this).data('username'), $(this));
+      });
+
+      $('body').on('mouseout', '[data-username]', function(e) {
+        $(this).popover('dispose');
+      });
+
+      $('body').on('show.bs.popover', '[data-username]', function () {
+        $('body [data-username]').not(this).popover('hide');
+      })
+
+    </script>
+    <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
+    <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
+    <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
+    <script src="{% static "v2/js/pages/bounty_details2.js" %}"></script>
+    <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
+    <script src="{% static "v2/js/user_popover.js" %}"></script>
+    <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+    <script src="{% static "v2/js/ipfs.js" %}"></script>
+    <script src="{% static "v2/js/user-search.js" %}"></script>
+    <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+    {% for message in messages %}
+      {% if message.tags == 'success'%}
+      <script>
+        var promptPrivateInstructions = true;
+      </script>
+      {% endif %}
+
+    {% endfor %}
+  </body>
+
+</html>

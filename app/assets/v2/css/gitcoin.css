@@ -11,6 +11,8 @@ h4,
   padding-top: 40px;
 }
 
+[v-cloak] > * { display:none!important;}
+
 #indicate-popup {
   position: fixed;
   top: 0.25rem;

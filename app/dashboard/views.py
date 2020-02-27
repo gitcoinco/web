@@ -1923,6 +1923,14 @@ def bounty_invite_url(request, invitecode):
         raise Http404
 
 
+def bounty_details_v2(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
+    # try the /pulls url if it doesn't exist in /issues
+    try:
+        issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request_url
+        bounty = Bounty.objects.current().filter(github_url=issue_url)
+    except Exception:
+        issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request_url
+        bounty = Bounty.objects.current().filter(github_url=issue_url)
 
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
     """Display the bounty details.
@@ -2017,7 +2025,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         except Exception as e:
             logger.error(e)
 
-    return TemplateResponse(request, 'bounty/details.html', params)
+    return TemplateResponse(request, 'bounty/details2.html', params)
 
 
 def funder_payout_reminder_modal(request, bounty_network, stdbounties_id):
