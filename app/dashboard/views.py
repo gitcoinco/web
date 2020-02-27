@@ -3610,7 +3610,7 @@ def get_users(request):
             profile_json['id'] = user.id
             profile_json['text'] = user.handle
             profile_json['avatar_url'] = user.avatar_url
-            if user.avatar_baseavatar_related.exists():
+            if user.avatar_baseavatar_related.filter(active=True).exists():
                 profile_json['avatar_id'] = user.avatar_baseavatar_related.filter(active=True).first().pk
                 profile_json['avatar_url'] = user.avatar_baseavatar_related.filter(active=True).first().avatar_url
             profile_json['preferred_payout_address'] = user.preferred_payout_address
