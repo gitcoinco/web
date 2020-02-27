@@ -2266,6 +2266,7 @@ class Activity(SuperModel):
         # refresh view count
         vp['view_count'] = self.view_count
         vp['profile'] = self.profile
+        vp['created_human_time'] = naturaltime(self.created_on)
 
         # lazily create vp
         if not vp.get('pk'):
