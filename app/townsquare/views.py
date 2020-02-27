@@ -6,7 +6,6 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
-from retail.views import get_specific_activities
 
 import metadata_parser
 from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
@@ -14,6 +13,7 @@ from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
+from retail.views import get_specific_activities
 
 from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction
 from .tasks import increment_offer_view_counts

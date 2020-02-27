@@ -17,9 +17,10 @@
 '''
 
 from django.core.management.base import BaseCommand
-from perftools.models import JSONStore
 from django.utils import timezone
+
 from dashboard.models import Activity, HackathonEvent
+from perftools.models import JSONStore
 
 
 def create_activity_cache():
