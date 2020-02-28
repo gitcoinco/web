@@ -975,6 +975,36 @@ def vision(request):
     return TemplateResponse(request, 'vision.html', context)
 
 
+def avatar(request):
+    """Render the avatar response."""
+    from dashboard.views import get_avatar_options
+
+    default_back = get_leaderboard_back(request)
+    back = request.GET.get('back', default_back[1])
+    img = request.GET.get('img', default_back[0])
+
+    context = {
+        'is_outside': True,
+        'active': 'avatar',
+        'title': 'Avatar',
+        'card_title': _("Free Avatar Builder"),
+        'card_desc': _('Gitcoin\'s Free Avatar Creator is an online tool to build a character for yourself.  It has dozens of options to show off your bad-self.  No strings attached, Always free.'),
+        'avatar_url': "https://c.gitcoin.co/avatars/d1a33d2bcb7bbfef50368bca73111fae/fryggr.png",
+        'back': back,
+        'img': img,
+        'avatar_options': get_avatar_options(),
+    }
+    return TemplateResponse(request, 'avatar_landing.html', context)
+
+def get_leaderboard_back(request):
+    default_back_safe = [['s10.png', i] for i in range(24, 33)]
+    default_back_crazy = [['s9.png', 3], ['s10.png', 10], ['s10.png', 25], ['s10.png', 33], ['s10.png', 4], ['s10.png', 8], ['s9.png', 14]]
+    default_back = default_back_safe
+
+    default_back_i = int(request.GET.get('i', int(timezone.now().strftime("%j")))) % len(default_back)
+    default_back = default_back[default_back_i]
+    return default_back
+
 def products(request):
     """Render the Products response."""
     products = [
@@ -1067,12 +1097,7 @@ def products(request):
             'traction': 'over 3000 plays/month',
         })
 
-    default_back_safe = [['s10.png', i] for i in range(24, 33)]
-    default_back_crazy = [['s9.png', 3], ['s10.png', 10], ['s10.png', 25], ['s10.png', 33], ['s10.png', 4], ['s10.png', 8], ['s9.png', 14]]
-    default_back = default_back_safe
-
-    default_back_i = int(request.GET.get('i', int(timezone.now().strftime("%j")))) % len(default_back)
-    default_back = default_back[default_back_i]
+    default_back = get_leaderboard_back(request)
     back = request.GET.get('back', default_back[1])
     img = request.GET.get('img', default_back[0])
 

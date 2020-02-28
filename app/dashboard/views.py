@@ -840,6 +840,44 @@ def get_artist_bio(key):
     return ''
 
 
+def get_avatar_info(key):
+    if key == 'classic':
+        return 'The classic avatar builder.  Built by & for Gitcoiners with bounties.'
+    if key == 'unisex' or key == 'female':
+        return 'A fun new avatar style that hit the streets in 2019'
+    if key == 'bufficorn':
+        return 'The Bufficorn is a magical fantastical animal that represents the collaborative spirit of #BUIDL. They live in communities atop Colorados 14er mountain peaks and strive to serve their communities above their own selfish interests. '
+    if key == 'bot':
+        return 'Bots are a Gitcoin favorite.  Beep Boop bop'
+    if key in ['flat', 'shiny', 'people', 'technology', 'landscape', 'space']:
+        return 'Liscensed under Creative Commons from our friends at <a target=new href="https://svgrepo.com">svgrepo.com</a>'
+    return ''
+
+def get_avatar_options():
+    avatar_options = [
+        'classic',
+        'unisex',
+        'female',
+        'bufficorn',
+        'bot',
+        'comic',
+        'flat',
+        'shiny',
+        'people',
+        'robot',
+        'technology',
+        'landscape',
+        'space',
+        'spring',
+        'metacartel',
+        'jedi',
+        'orc',
+        'joker',
+    ]
+    avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele), get_artist_bio(ele), get_avatar_info(ele)) for ele in avatar_options ]
+    return avatar_options
+
+
 def get_preview_img(key):
     if key == 'classic':
         return 'https://c.gitcoin.co/avatars/d1a33d2bcb7bbfef50368bca73111fae/fryggr.png'
@@ -899,28 +937,7 @@ def onboard(request, flow=None):
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
     background_tones = get_avatar_attrs(theme, 'background_tones')
-    avatar_options = [
-        'classic',
-        'unisex',
-        'female',
-        'bufficorn',
-        'bot',
-        'comic',
-        'flat',
-        'shiny',
-        'people',
-        'robot',
-        'technology',
-        'landscape',
-        'space',
-        'spring',
-        'metacartel',
-        'jedi',
-        'orc',
-        'joker',
-    ]
-    avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele), get_artist_bio(ele)) for ele in avatar_options ]
-
+    avatar_options = get_avatar_options()
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
