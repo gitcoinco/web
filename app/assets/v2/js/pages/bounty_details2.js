@@ -1,5 +1,6 @@
 let bounty = [];
 let url = location.href;
+document.result = bounty
 
 Vue.mixin({
   methods: {
@@ -21,7 +22,7 @@ Vue.mixin({
         return caseInsensitiveCompare(document.contxt['github_handle'], handle);
       }
       return false;
-      
+
     },
     syncGhIssue: function() {
       let vm = this;

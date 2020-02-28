@@ -25,8 +25,10 @@
       {% include 'shared/nav.html' %}
     </div>
 
-    <div class="container" id="gc-bounty-detail" v-cloak>
+    <div class="container min-vh-100" id="gc-bounty-detail" v-cloak>
+
       <div class="row">
+        <loading-screen v-show="!bounty.created_on"></loading-screen>
         <div class="col-12" v-show="bounty.created_on">
           {% if event_tag %}
             <a href="/hackathon/{{ event_tag }}" class="btn btn-link font-body mt-3">
@@ -150,7 +152,7 @@
           <div class="row">
             <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1 text-center text-lg-left" v-if="bounty.action_urls">
 
-              <div id="bounty_actions" class="d-inline-block" v-if="is_bounties_network">
+              <div id="bounty_actions" class="d-inline-block" v-if="is_bounties_network && isOwner">
                 <a :href="bounty.action_urls.payout" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Payout the bounty to one or more submitters.">
                   <i class="fab fa-ethereum mr-2"></i> {% trans "Payout Bounty" %}
                 </a>
@@ -170,7 +172,7 @@
               </div>
               <div class="dropdown show float-right">
                 <a class="btn btn-link btn-sm blue dropdown-toggle font-caption" href="#" role="button"
-                  id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-if="isOwner">
                   {% trans "Bounty Options" %}
                 </a>
                 <div id="bounty-options-link" class="dropdown-menu font-caption shadow-sm" aria-labelledby="bounty-options">
@@ -274,7 +276,9 @@
                           	<p>Payout [[ bounty.value_in_eth ]] [[ bounty.token_name ]] to [[ fulfillment.profile.handle ]] ([[ fulfillment.fulfiller_address | truncateHash ]])</p>
                           	<input type="number" v-model="inputAmount" name="" id=""> [[ bounty.value_in_eth - inputAmount ]] [[ bounty.token_name ]]
                           	<qrcode :string="`${fulfillment.fulfiller_address}?amount=${inputAmount}`"></qrcode>
-                          	<small class="d-block">Scan the QR code  above with your ETC Wallet to payout</small>
+                            <small class="d-block">Scan the QR code  above with your ETC Wallet to payout</small>
+                            <button>payout</button> or
+                            <button>payout and close</button>
                           </div>
                         </div>
                       </modal>
@@ -411,14 +415,14 @@
       </div>
 
     </div>
-
-    <!-- <div id="modal" class="modal fade share-modal" tabindex="-1" role="dialog" aria-labelledby="shareModal" aria-hidden="true">
+    <div id="modal" class="modal fade share-modal" tabindex="-1" role="dialog" aria-labelledby="shareModal" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
         </div>
       </div>
     </div>
-    <div id="modalInterest" class="modal fade interest-modal" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- <div id="modalInterest" class="modal fade interest-modal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="row loading justify-content-center align-items-center loading_img">
