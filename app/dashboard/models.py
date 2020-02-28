@@ -1382,6 +1382,10 @@ class BountyFulfillment(SuperModel):
             'email': self.fulfiller_email,
             'githubUsername': self.fulfiller_github_username,
             'name': self.fulfiller_name,
+            'payout_status': self.payout_status,
+            'payout_amount': self.payout_amount,
+            'token_name': self.token_name,
+            'payout_tx_id': self.payout_tx_id
         }
 
 

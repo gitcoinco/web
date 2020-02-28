@@ -45,7 +45,8 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
         model = BountyFulfillment
         fields = ('pk', 'fulfiller_address',
                   'fulfiller_github_username', 'fulfiller_name', 'fulfiller_metadata',
-                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url')
+                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url',
+                  'payout_tx_id', 'payout_amount', 'token_name', 'payout_status')
 
 
 class BountyDocumentsSerializer(serializers.ModelSerializer):
@@ -166,8 +167,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
             'additional_funding_summary', 'funding_organisation', 'paid', 'event',
             'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured',
-            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on', 'can_remarket', 'is_reserved',
-            'payout_confirmed', 'payout_tx_id'
+            'featuring_date', 'repo_type', 'unsigned_nda', 'funder_last_messaged_on', 'can_remarket', 'is_reserved'
         )
 
     def create(self, validated_data):
