@@ -165,6 +165,25 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['flat_skin', 'flat_hair', 'flat_background'],
             'path': 'assets/v2/images/avatar3d/flat.svg',
         },
+        'shiny': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'avatar': '0 0 350 350',
+            },
+            'skin_tones': [
+                'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031',
+                '593D26', '392D16'
+            ],
+            'hair_tones': [
+                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+            ],
+            'background_tones': [
+                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+            ],
+            'tone_maps': ['shiny_skin', 'shiny_hair', 'flat_background'],
+            'path': 'assets/v2/images/avatar3d/shiny.svg',
+        },
     }
     return avatar_attrs.get(theme, {}).get(key, {})
 
@@ -230,6 +249,24 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
             'F1C9A5':0,
             }
         base_3d_tone = 'EDCEAE'
+    if tone == 'shiny_skin':
+        tones = {'FFD3AE': 0, 
+            '333333': 0,
+            'FFD3AE':0,
+            'E8B974':0,
+            'EDCEAE':0,
+            }
+        base_3d_tone = 'FFD3AE'
+    if tone == 'shiny_hair':
+        tones = {
+            'D68D51': 0,
+            'F7774B': 0,
+            'E8B974': 0,
+            'F7B239': 0,
+            'D3923C': 0,
+            '666666': 0,
+        }
+        base_3d_tone = 'D68D51'
     if tone == 'flat_hair':
         tones = {
             '682234': 0,
