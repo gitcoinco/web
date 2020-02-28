@@ -7,4 +7,13 @@
           </a>
         {% endfor %}
        </div>
-      <h2 class="mt-2 mb-5">2. Build Avatar</h2>
+      <h2 class="mt-2 mb-2">2. Build Avatar</h2>
+      <div class="mb-2">
+        {% for option in avatar_options %}
+          {% if option.3 and theme == option.0 %}
+            <span>
+              ( <strong>About the artist</strong>: {{option.3|safe}} )
+            </span>
+          {% endif %}
+        {% endfor %}
+      </div>

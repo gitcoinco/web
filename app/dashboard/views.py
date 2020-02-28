@@ -824,6 +824,17 @@ def uninterested(request, bounty_id, profile_id):
 def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
+def get_artist_bio(key):
+    if key == 'metacartel':
+        return 'This piece was originally created by <a target="blank" href="https://twitter.com/frankynines">@frankynies</a>, an amazing artist of Mexican heritage who works at Dapper Labs.'
+    if key == 'comic':
+        return 'This piece was created by <a href="/TheDataDesigner">@TheDataDesigner</a>.'
+    if key == 'unisex' or key == 'female':
+        return 'This piece was created by <a href="/MladenPetronijevic">@MladenPetronijevic</a>.'
+    if key == 'bufficorn':
+        return 'The Bufficorn was created by <a target="blank" href="https://twitter.com/EthereumDenver">@EthereumDenver</a>.'
+    return ''
+
 
 def get_preview_img(key):
     if key == 'classic':
@@ -836,26 +847,7 @@ def get_preview_img(key):
         return 'https://c.gitcoin.co/avatars/cc8272136bcf9b9d830c0554a97082f3/joshegwuatu.png'
     if key == 'bot':
         return 'https://c.gitcoin.co/avatars/c9d82da31b7833bdae37861014c32ebc/owocki.png'
-    if key == 'comic':
-        return static(f'v2/images/avatar3d/{key}.png')
-    if key == 'flat':
-        return static(f'v2/images/avatar3d/{key}.png')
-    if key == 'shiny':
-        return static(f'v2/images/avatar3d/{key}.png')
-    if key == 'people':
-        return static(f'v2/images/avatar3d/{key}.png')
-    if key == 'robot':
-        return static(f'v2/images/avatar3d/{key}.png')
-    if key == 'technology':
-        return static(f'v2/images/avatar3d/{key}.png')
-    if key == 'landscape':
-        return static(f'v2/images/avatar3d/{key}.png')
-    if key == 'space':
-        return static(f'v2/images/avatar3d/{key}.png')
-    if key == 'spring':
-        return static(f'v2/images/avatar3d/{key}.png')
-
-    return f'/avatar/view3d?theme={key}&scale=20'
+    return static(f'v2/images/avatar3d/{key}.png')
 
 def onboard(request, flow=None):
     """Handle displaying the first time user experience flow."""
@@ -908,19 +900,19 @@ def onboard(request, flow=None):
         'unisex',
         'female',
         'bufficorn',
+        'bot',
+        'comic',
+        'flat',
+        'shiny',
+        'people',
+        'robot',
+        'technology',
+        'landscape',
+        'space',
+        'spring',
+        'metacartel',
     ]
-    if request.user.is_staff:
-        avatar_options.append('bot')
-        avatar_options.append('comic')
-        avatar_options.append('flat')
-        avatar_options.append('shiny')
-        avatar_options.append('people')
-        avatar_options.append('robot')
-        avatar_options.append('technology')
-        avatar_options.append('landscape')
-        avatar_options.append('space')
-        avatar_options.append('spring')
-    avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele)) for ele in avatar_options ]
+    avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele), get_artist_bio(ele)) for ele in avatar_options ]
 
     params = {
         'title': _('Onboarding Flow'),

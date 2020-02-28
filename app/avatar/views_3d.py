@@ -273,6 +273,25 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/spring.svg',
         },
+        'metacartel': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'tatoos': '150 170 100 100',
+                'eyes': '100 150 120 120',
+                'eyebrows': '110 130 100 100',
+                'mouth': '130 220 100 100',
+                'hat': '20 0 250 250',
+                'accessory': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [
+                'ED495F', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+            ],
+            'tone_maps': ['metacartel_skin'],
+            'path': 'assets/v2/images/avatar3d/metacartel.svg',
+        },
     }
     return avatar_attrs.get(theme, {}).get(key, {})
 
@@ -329,9 +348,13 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
     if tone == 'flat_background':
         tones = {'A6D9EA': 0}
         base_3d_tone = 'A6D9EA'
+
     if tone == 'flat_skin':
         tones = {'EDCEAE': 0, 'F3DBC4': 0, 'E4B692': 0, 'F3DBC4': 0, 'EDCEAE': 0, 'F1C9A5': 0, }
         base_3d_tone = 'EDCEAE'
+    if tone == 'metacartel_skin':
+        tones = {'ED495F': 0, }
+        base_3d_tone = 'ED495F'
     if tone == 'people_skin':
         tones = {'FFE1B2': 0, 'FFD7A3': 0, }
         base_3d_tone = 'FFE1B2'
