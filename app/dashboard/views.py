@@ -106,7 +106,7 @@ from .notifications import (
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count,
     get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
-    release_bounty_to_the_public, web3_process_bounty,
+    release_bounty_to_the_public, sync_etc_payout, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -154,14 +154,15 @@ def org_perms(request):
 
 
 @staff_member_required
-def manual_sync_etc_payout(request, bounty_id):
-    b = Bounty.objects.get(id=bounty_id)
-    if b.payout_confirmed:
+def manual_sync_etc_payout(request, fulfillment_id):
+    fulfillment = BountyFulfillment.objects.get(id=fulfillment_id)
+    if fulfillment.payout_confirmed:
         return JsonResponse(
             {'error': _('Bounty payout already confirmed'),
              'success': False},
             status=401)
-    sync_etc_payout(b)
+
+    sync_etc_payout(fulfillment)
     return JsonResponse({'success': True}, status=200)
 
 
@@ -3064,66 +3065,6 @@ def sync_web3(request):
     return JsonResponse(result, status=result['status'])
 
 
-# @require_POST
-# @csrf_exempt
-# @ratelimit(key='ip', rate='5/s', method=ratelimit.UNSAFE, block=True)
-@staff_member_required
-def sync_etc(request):
-    """Sync up ETC chain to find transction status.
-
-    Returns:
-        JsonResponse: The JSON response following the web3 sync.
-
-    """
-
-    response = {
-        'status': '400',
-        'message': 'bad request'
-    }
-
-    # TODO: make into POST
-    txnid = request.GET.get('txnid', None)
-    bounty_id = request.GET.get('id', None)
-    network =  request.GET.get('network', 'mainnet')
-
-    # TODO: REMOVE
-    txnid = '0x30060f38c0e9e255061d1daf079d3707c640bfb540e207dbc6fc0e6e6d52ecd1'
-    bounty_id = 1
-
-    if not txnid:
-        response['message'] = 'error: transaction not provided'
-    elif not bounty_id:
-        response['message'] = 'error: issue url not provided'
-    elif network != 'mainnet':
-        response['message'] = 'error: etc syncs only on mainnet'
-    else:
-        # TODO: CHECK IF BOUNTY EXSISTS
-        # bounty = Bounty.object.get(pk=bounty_id)
-        # if not bounty:
-        #     response['message'] = f'error: bounty with key {bounty_id} does not exist'
-        # else:
-        #     print('bounty found') # wrap whole section below within else
-
-        transaction = get_etc_txn_status(txnid, network)
-        if not transaction:
-            logging.error('blockscout failed')
-            response = {
-                'status': 500,
-                'message': 'blockscout API call failed'
-            }
-        else:
-            response = {
-                'status': 200,
-                'message': 'success',
-                'id': bounty_id,
-                'bounty_url': '<bounty_url>',
-                'blockNumber': transaction['blockNumber'],
-                'confirmations': transaction['confirmations'],
-                'is_mined': transaction['has_mined']
-            }
-
-    return JsonResponse(response, status=response['status'])
-
 # LEGAL
 @xframe_options_exempt
 def terms(request):
@@ -4956,6 +4897,104 @@ def fulfill_bounty_v1(request):
         'status': 204,
         'message': 'bounty successfully fulfilled',
         'bounty_url': bounty.url
+    }
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+@staff_member_required
+def payout_bounty_v1(request, fulfillment_id):
+    '''
+        ETC-TODO
+        - wire in email (invite + successful payout)
+        - invoke blockscout to check status
+        - add new bounty_state : pending verification
+        - handle multiple payouts
+
+        {
+            amount: <integer>,
+            bounty_owner_address : <char>,
+            close_bounty: <bool>,
+            token_name : <char>
+        }
+    '''
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to payout bounty'
+    }
+
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to fulfill bounty'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: fulfill bounty is a POST operation'
+        return JsonResponse(response)
+
+    if not fulfillment_id:
+        response['message'] = 'error: missing parameter fulfillment_id'
+        return JsonResponse(response)
+
+    try:
+       fulfillment = BountyFulfillment.objects.get(fulfillment_id)
+       bounty = fulfillment.bounty
+    except BountyFulfillment.DoesNotExist:
+        response['message'] = 'error: bounty fulfillment not found'
+        return JsonResponse(response)
+
+
+    if bounty.bounty_state in ['cancelled', 'done']:
+        response['message'] = 'error: bounty in ' + bounty.bounty_state + ' state cannot be paid out'
+        return JsonResponse(response)
+
+    is_funder = bounty.is_funder(user.username.lower()) if user else False
+
+    if not is_funder:
+        response['message'] = 'error: payout is bounty funder operation'
+        return JsonResponse(response)
+
+    if not bounty.bounty_owner_address:
+        bounty_owner_address = request.POST.get('bounty_owner_address')
+        if not bounty_owner_address:
+            response['message'] = 'error: missing parameter bounty_owner_address'
+            return JsonResponse(response)
+
+        bounty.bounty_owner_address = bounty_owner_address
+
+
+    amount = request.POST.get('amount')
+    if not amount:
+        response['message'] = 'error: missing parameter amount'
+        return JsonResponse(response)
+
+    token_name = request.POST.get('token_name')
+    if not token_name:
+        response['message'] = 'error: missing parameter token_name'
+        return JsonResponse(response)
+
+    fulfillment.payout_amount = amount
+    fulfillment.token_name = token_name
+    fulfillment.save()
+
+    if request.POST.get('close_bounty') == True:
+        bounty.bounty_state = 'done'
+
+    sync_etc_payout(fulfillment)
+
+    response = {
+        'status': 204,
+        'message': 'bounty payment recorded. verification pending',
+        'fulfillment_id': fulfillment_id
     }
 
     return JsonResponse(response)
