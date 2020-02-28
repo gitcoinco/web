@@ -857,3 +857,7 @@ a.btn {
   0% { transform: translateY(0); }
   100% { transform: translateY(-3rem); }
 }
+
+.qrcode {
+  display: inline-block;
+}

@@ -257,11 +257,15 @@
                       [[ fulfillment.fulfiller_metadata?.data?.payload?.fulfiller?.hoursWorked ]] hours
                       <modal id="payoutModal" ref="user-modal">
                         <div slot="body">
-                          Payout contributor
-                          Payout Xetc to [[ fulfillment.profile.handle ]] [[ fulfillment.fulfiller_address | truncateHash ]]
-                          <input type="number" v-model="inputAmount" name="" id="">
-                          <qrcode :string="`${fulfillment.fulfiller_address}?amount=${inputAmount}`"></qrcode>
-                          <small>Scan the QR code  above with your ETC Wallet to payout</small>
+                          <div class="text-center">
+                          	<h4>
+                              Payout contributor
+                            </h4>
+                          	<p>Payout [[ bounty.value_in_eth ]] [[ bounty.token_name ]] to [[ fulfillment.profile.handle ]] ([[ fulfillment.fulfiller_address | truncateHash ]])</p>
+                          	<input type="number" v-model="inputAmount" name="" id=""> [[ bounty.value_in_eth - inputAmount ]] [[ bounty.token_name ]]
+                          	<qrcode :string="`${fulfillment.fulfiller_address}?amount=${inputAmount}`"></qrcode>
+                          	<small class="d-block">Scan the QR code  above with your ETC Wallet to payout</small>
+                          </div>
                         </div>
                       </modal>
 

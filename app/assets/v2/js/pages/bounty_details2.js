@@ -79,7 +79,7 @@ if (document.getElementById('gc-bounty-detail')) {
         cb_address: cb_address,
         isOwner: false,
         is_bounties_network: is_bounties_network,
-        inputAmount: undefined
+        inputAmount: 0
       }
     },
     mounted() {
