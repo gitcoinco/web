@@ -6,9 +6,6 @@
             <g id="background_full" fill="#A6D9EA" fill-rule="nonzero">
                 <rect id="Rectangle" x="0" y="0" width="347" height="345"></rect>
             </g>
-            <g id="background_oval" transform="translate(8.000000, 0.000000)" fill="#A6D9EA" fill-rule="nonzero">
-                <ellipse id="Oval" cx="173.227186" cy="172.228759" rx="173.227186" ry="172.228759"></ellipse>
-            </g>
             <g id="avatar_1" transform="translate(68.000000, 33.000000)">
                 <g id="Group">
                     <g transform="translate(0.800562, 0.000000)">
