@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
-
     {% if use_pic_card %}
       {% include 'shared/cards_pic.html' %}
     {% else %}
@@ -118,20 +117,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div class="my-1 px-sm-3">
           <div class="row">
             <div class="col-12 mb-2">
-              <ul class="nav nav-tabs mt-3 font-smaller-2 font-weight-semibold d-none" id="myTab" role="tablist">
-                  <!-- TODO: FIGURE OUT WHAT TO PUT INSTEAD OF TRIBES -->
+              <ul id="mobile_nav_toggle" class="nav nav-tabs mt-3 font-smaller-2 font-weight-semibold d-none d-sm-block d-md-block d-md-none" id="myTab" role="tablist">
                   <li class="nav-item">
-                    <a data-toggle="tooltip" class="nav-link nav-line {% if tab != 'tribes' %}active{% endif %}"
-                      href="#" data-slug="townsquare" title=""
+                    <a data-toggle="tooltip" class="nav-link nav-line active "
+                      href="#" data-slug="feed" title=""
                     >
-                      Town Square
+                      Feed
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a data-toggle="tooltip" class="nav-link nav-line {% if tab == 'tribes' %}active{% endif %}"
-                      href="#" data-slug="tribes" title=""
+                    <a data-toggle="tooltip" class="nav-link nav-line"
+                      href="#" data-slug="actions" title=""
                     >
-                      Tribes
+                      Actions
                     </a>
                   </li>
               </ul>
@@ -139,7 +137,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </div>
           <div class="row mt-4 townsquare_header">
             <div class="col-12 col-lg-3 d-lg-block">
-              <div class="townsquare_left-sidebar">
+              <div class="townsquare_left-sidebar feed_container">
                 <div class="search font-caption mb-4 text-left">
                   <div class="search-area">
                     <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
@@ -226,7 +224,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 -->
               </div>
             </div>
-            <div class="col-12 col-md-8 col-lg-6 px-0 px-sm-3">
+            <div class="feed_container col-12 col-md-8 col-lg-6 px-0 px-sm-3">
             {% csrf_token %}
             {% if not is_direct_link %}
               <div class="bg-white rounded border">
@@ -314,7 +312,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 {% include 'shared/activity_container.html' %}
               </div>
             </div>
-            <div class="col-12 col-md-4 col-lg-3">
+            <div class="actions_container col-12 col-md-4 col-lg-3">
                 {% if REFER_LINK %}
                   <div class="townsquare_block-header text-left mb-1 mt-0">
                     Ref Link <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="

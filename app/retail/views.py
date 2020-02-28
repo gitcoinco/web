@@ -1155,6 +1155,8 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         keyword_filter = Q(pk=0) #noop
         if keyword == 'meme':
             keyword_filter = Q(metadata__type='gif') | Q(metadata__type='png') | Q(metadata__type='jpg')
+        if keyword == 'meme':
+            keyword_filter = Q(metadata__icontains='spotify') | Q(metadata__type='soundcloud') | Q(metadata__type='pandora')
         activities = activities.filter(keyword_filter | base_filter)
     if 'activity:' in what:
         view_count_threshold = 0

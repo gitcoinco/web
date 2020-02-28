@@ -966,7 +966,7 @@ body.green.offer_view .announce {
   font-size: 12px;
 }
 @media (max-width: 1024px) {
-  ._hj_feedback_container{
+  #_hj_feedback_container{
     display:none !important;
   }
   .townsquare_header li.nav-item{
