@@ -156,7 +156,7 @@ def org_perms(request):
 @staff_member_required
 def manual_sync_etc_payout(request, fulfillment_id):
     fulfillment = BountyFulfillment.objects.get(id=fulfillment_id)
-    if fulfillment.payout_confirmed:
+    if fulfillment.payout_status == 'done':
         return JsonResponse(
             {'error': _('Bounty payout already confirmed'),
              'success': False},
