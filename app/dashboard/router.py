@@ -38,13 +38,13 @@ logger = logging.getLogger(__name__)
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
     """Handle serializing the BountyFulfillment object."""
-
+    profile = ProfileSerializer()
     class Meta:
         """Define the bounty fulfillment serializer metadata."""
 
         model = BountyFulfillment
-        fields = ('fulfiller_address',
-                  'fulfiller_github_username', 'fulfiller_name',
+        fields = ('pk', 'fulfiller_address',
+                  'fulfiller_github_username', 'fulfiller_name', 'fulfiller_metadata',
                   'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url')
 
 
@@ -122,7 +122,7 @@ class InterestSerializer(serializers.ModelSerializer):
     class Meta:
         """Define the Interest serializer metadata."""
         model = Interest
-        fields = ('profile', 'created', 'pending', 'signed_nda', 'issue_message')
+        fields = ('pk', 'profile', 'created', 'pending', 'signed_nda', 'issue_message')
 
 
 # Serializers define the API representation.
@@ -464,7 +464,7 @@ class BountyViewSet(viewsets.ModelViewSet):
     """API response for an individual bounty by url"""
 
     queryset = Bounty.objects.prefetch_related(
-        'fulfillments', 'interested', 'interested__profile', 'activities',
+        'fulfillments', 'fulfillments__profile', 'interested', 'interested__profile', 'activities',
         'unsigned_nda', 'event'
     )
     serializer_class = BountySerializer

@@ -47,6 +47,17 @@ Vue.mixin({
       }).catch(function(response) {
         _alert({ message: response.responseJSON.error }, 'error');
       })
+    },
+    copyTextToClipboard: function(text) {
+      if (!navigator.clipboard) {
+        _alert('Could not copy text to clipboard', 'error', 5000)
+      } else {
+        navigator.clipboard.writeText(text).then(function() {
+          _alert('Text copied to clipboard', 'success', 5000)
+        }, function(err) {
+          _alert('Could not copy text to clipboard', 'error', 5000)
+        });
+      }
     }
   },
   computed: {
@@ -54,63 +65,21 @@ Vue.mixin({
   }
 });
 
-Vue.filter('markdownit', function(val) {
-  if (!val) return '';
-  const _markdown = new markdownit({
-    linkify: true,
-    highlight: function(str, lang) {
-      if (lang && hljs.getLanguage(lang)) {
-        try {
-          return `<pre class="hljs"><code>${hljs.highlight(lang, str, true).value}</code></pre>`;
-        } catch (__) {}
-      }
-      return `<pre class="hljs"><code>${sanitize(_markdown.utils.escapeHtml(str))}</code></pre>`;
-    }
-  });
 
-  _markdown.renderer.rules.table_open = function() {
-    return '<table class="table">';
-  };
-  ui_body = sanitize(_markdown.render(val));
-  return ui_body;
-});
-
-Vue.filter('stringReplace', function(activity_type) {
-  const activity_names = {
-    new_bounty: gettext('Bounty Created'),
-    start_work: gettext('Work Started'),
-    stop_work: gettext('Work Stopped'),
-    work_submitted: gettext('Work Submitted'),
-    work_done: gettext('Work Done'),
-    worker_approved: gettext('Approved'),
-    worker_rejected: gettext('Rejected Contributor'),
-    worker_applied: gettext('Contributor Applied'),
-    increased_bounty: gettext('Increased Funding'),
-    killed_bounty: gettext('Canceled Bounty'), // All other sections become empty ?
-    new_crowdfund: gettext('Added new Crowdfund Contribution'),
-    new_tip: gettext('Tip Sent'),
-    receive_tip: gettext('Tip Received'),
-    bounty_changed: gettext('Bounty Details Updated'),
-    extend_expiration: gettext('Extended Bounty Expiration'),
-    bounty_abandonment_escalation_to_mods: gettext('Escalated for Abandonment of Bounty'),
-    bounty_abandonment_warning: gettext('Warned for Abandonment of Bounty'),
-    bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
-    bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
-    bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
-  };
-  return activity_names[activity_type];
-})
 
 
 if (document.getElementById('gc-bounty-detail')) {
-  var app = new Vue({
+  var appBounty = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-bounty-detail',
-    data: {
-      bounty: bounty,
-      url: url,
-      cb_address: cb_address,
-      isOwner: false
+    data() {
+      return {
+        bounty: bounty,
+        url: url,
+        cb_address: cb_address,
+        isOwner: false,
+        is_bounties_network: is_bounties_network
+      }
     },
     mounted() {
       this.fetchBounty();

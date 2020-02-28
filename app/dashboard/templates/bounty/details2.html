@@ -25,9 +25,9 @@
       {% include 'shared/nav.html' %}
     </div>
 
-    <div class="container-fluid" id="gc-bounty-detail" v-cloak>
+    <div class="container" id="gc-bounty-detail" v-cloak>
       <div class="row">
-        <div class="col-12 col-lg-10 col-xl-9 mx-auto" v-show="bounty.created_on">
+        <div class="col-12" v-show="bounty.created_on">
           {% if event_tag %}
             <a href="/hackathon/{{ event_tag }}" class="btn btn-link font-body mt-3">
               <i class="fas fa-chevron-left font-caption"></i> {% trans "Back to Hackathon Explorer" %}
@@ -86,13 +86,13 @@
           <div id="bounty-info-row" class="row font-body bounty-info">
             <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
               <span class="bounty-info-heading timeleft">{% trans "Time left" %} </span>
-              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]" id="expires_date">
+              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.expires_date" :title="bounty.expires_date | momentFormat" id="expires_date">
                 [[ bounty.expires_date | moment ]]
               </time>
             </div>
             <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
               <span class="bounty-info-heading">{% trans "Opened" %} </span>
-              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="[[ bounty.web3_created ]]" :title="[[ bounty.web3_created ]]" id="web3_created">
+              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.web3_created" :title="bounty.web3_created | momentFormat" id="web3_created">
                 [[ bounty.web3_created | moment ]]
               </time>
             </div>
@@ -127,7 +127,7 @@
             </div>
             <div id="fulfillment_accepted_on_wrapper" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.fulfillment_accepted_on">
               <span class="bounty-info-heading">{% trans "Accepted" %} </span>
-              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="[[ bounty.fulfillment_accepted_on ]]" :title="[[ bounty.fulfillment_accepted_on ]]" id="fulfillment_accepted_on">
+              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.fulfillment_accepted_on" :title="bounty.fulfillment_accepted_on | momentFormat" id="fulfillment_accepted_on">
                 [[ bounty.fulfillment_accepted_on | moment ]]
               </time>
             </div>
@@ -178,6 +178,10 @@
                     <i class="fas fa-sync mr-2"></i>
                     Sync Issue
                   </a>
+                  <a class="dropdown-item p-2" :href="`/bounty/change/${bounty.pk}`" v-if="isOwner">
+                    <i class="fas fa-edit mr-2"></i>
+                    Update Details
+                  </a>
                   <a class="dropdown-item p-2" :href="bounty.action_urls.invoice">
                     <i class="fas fa-file-alt mr-2"></i>
                     Show Invoice
@@ -216,28 +220,121 @@
             </div>
           </div>
 
-          <div class="row">
+          <div class="row" v-if="bounty?.fulfillments?.length">
+            <div class="col-12">
+              <div class="border my-5 px-4 pt-4">
+                <h5 class="font-body font-weight-semibold">{% trans "SUBMISSIONS" %}</h5>
+                <div v-for="fulfillment in bounty.fulfillments" :key="fulfillment.pk" class="my-4 row font-body">
+                  <div class="col-md-2 col-lg-1 text-center text-md-leftr">
+                    <a :href="`/profile/${fulfillment.profile.handle}`" v-show="fulfillment.profile.avatar_url">
+                      <img class="avatar" :src="[[fulfillment.profile.avatar_url]]">
+                    </a>
+                  </div>
+                  <div class="col-md-4 my-auto text-center text-md-left">
+                    <a :href="`/profile/${fulfillment.profile.handle}`" class="user-popover" :data-username="[[ fulfillment.profile.handle ]]"
+                      data-html="true" data-toggle="popover" data-container="body"
+                    >
+                      [[ fulfillment.profile.handle ]]
+                    </a>
+                    <div class="" v-if="fulfillment.fulfiller_address">
+                      <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.fulfiller_address}` : `https://classic.etccoopexplorer.com/address/${fulfillment.fulfiller_address}` }`" target="_blank">[[ fulfillment.fulfiller_address | truncateHash ]]</a> <button class="btn btn-sm" @click="copyTextToClipboard(fulfillment.fulfiller_address)"><i class="far fa-clipboard-check"></i></button>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-4 my-auto text-center text-md-left">
+                    <time class="text-black-60 text-capitalize" :datetime="fulfillment.created_on" :title="fulfillment.created_on | momentFormat">
+                      [[ fulfillment.created_on | moment ]]
+                    </time>
+                  </div>
+                  <div class="col-md-3 col-lg-3 my-auto text-center">
+                    <button class="btn btn-sm btn-gc-blue">Payout Bounty</button>
+                  </div>
+                  <div class="col-12">
+                    <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
+                      <span class="font-weight-bold mb-2">PR:</span>
+                      <a :href="fulfillment.fulfiller_github_url" target="_blank">
+                        [[ fulfillment.fulfiller_github_url ]]
+                      </a>
+                      [[ fulfillment.fulfiller_metadata?.data?.payload?.fulfiller?.hoursWorked ]] hours
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" v-if="bounty?.interested?.length">
+            <div class="col-12">
+              <div class="border my-5 px-4 pt-4">
+                <h5 class="font-body font-weight-semibold">{% trans "APPLICANTS" %}</h5>
+                <div v-for="interest in bounty.interested" :key="interest.pk" class="my-4 row font-body">
+                  <div class="col-md-2 col-lg-1 text-center text-md-leftr">
+                    <a :href="`/profile/${interest.profile.handle}`" v-show="interest.profile.avatar_url">
+                      <img class="avatar" :src="[[interest.profile.avatar_url]]">
+                    </a>
+                  </div>
+                  <div class="col-md-4 my-auto text-center text-md-left">
+                    <a :href="`/profile/${interest.profile.handle}`" class="user-popover" :data-username="[[ interest.profile.handle ]]"
+                      data-html="true" data-toggle="popover" data-container="body"
+                    >
+                      [[ interest.profile.handle ]]
+                    </a>
+
+                  </div>
+                  <div class="col-md-3 col-lg-4 my-auto text-center text-md-left">
+                    <time class="text-black-60 text-capitalize" :datetime="interest.created" :title="interest.created | momentFormat">
+                      [[ interest.created | moment ]]
+                    </time>
+                  </div>
+                  <div class="col-md-3 col-lg-3 my-auto text-center">
+                    <template v-if="interest.pending">
+                      <a target="_blank" :href="`${bounty.url}?mutate_worker_action=approve&worker=${interest.profile.handle}`" title="Approve worker" class="btn btn-sm btn-gc-blue m-2"><i class="fas fa-check"></i> Accept</a>
+                      <a target="_blank" :href="`${bounty.url}?mutate_worker_action=reject&worker=${interest.profile.handle}`" title="Reject worker" class="btn btn-sm btn-outline-gc-blue m-2"><i class="fas fa-times"></i> Reject</a>
+                    </template>
+                    <template v-else>
+                      <button class="btn btn-sm btn-gc-blue">Stop Worker</button>
+                    </template>
+                  </div>
+                  <div class="col-md-12 my-auto text-center text-md-left">
+                    <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto" style="max-height: 8rem;">
+                      <p class="font-weight-bold mb-2">Work Plan</p>
+                      <p class="mb-0">
+                        [[ interest.issue_message]]
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" v-if="bounty?.activities?.length">
             <div class="col-12">
               <div class="border my-5 px-4 pt-4">
                 <h5 class="font-body font-weight-semibold">{% trans "ALL  ACTIVITY" %}</h5>
-                <div v-for="activity in bounty.activities" :key="activity.pk" class="my-4 row">
+                <div v-for="activity in bounty.activities" :key="activity.pk" class="my-4 row font-body">
                   <div class="col-md-2 col-lg-1 text-center text-md-leftr">
                     <a :href="`/profile/${activity.profile.handle}`" v-show="activity.profile.avatar_url">
                       <img class="avatar" :src="[[activity.profile.avatar_url]]">
                     </a>
                   </div>
-                  <div class="col-md-3 col-md-2 my-auto text-center text-md-left">
-                    <a :href="`/profile/${activity.profile.handle}`" class="user-popover font-body" :data-username="[[ activity.profile.handle ]]"
+                  <div class="col-lg-3 col-md-3 my-auto text-center text-md-left">
+                    <a :href="`/profile/${activity.profile.handle}`" class="user-popover" :data-username="[[ activity.profile.handle ]]"
                       data-html="true" data-toggle="popover" data-container="body"
                     >
                       [[ activity.profile.handle ]]
                     </a>
                   </div>
-                  <div class="col-md-4 col-lg-3 my-auto font-body text-center text-md-left">
+                  <div class="col-md-4 col-lg-3 my-auto text-center text-md-left">
                     [[ activity.activity_type | stringReplace ]]
+                    <div v-if="activity.activity_type === 'increased_bounty'">
+                      show value
+                    </div>
+                    <div v-if="activity.activity_type === 'new_kudos'">
+                      show value
+                    </div>
                   </div>
-                  <div class="col-md-3 my-auto text-center text-md-left">
-                    <time class="text-black-60 text-capitalize font-body" :datetime="[[ activity.created ]]" :title="[[ activity.created ]]">
+                  <div class="col-md-3 col-lg-5 my-auto text-center text-md-left">
+                    <time class="text-black-60 text-capitalize" :datetime="activity.created" :title="activity.created |momentFormat">
                       [[ activity.created | moment ]]
                     </time>
                   </div>
@@ -245,6 +342,9 @@
               </div>
             </div>
           </div>
+
+
+
         </div>
       </div>
     </div>
@@ -312,26 +412,27 @@
     <script src="{% static "v2/js/clipboard.js" %}"></script>
     <script>
       $('body').bootstrapTooltip({
-        selector: '[data-toggle="tooltip"]'
+        selector: '[data-toggle="tooltip"]',
+        template: '<div class="no-tooltip" role="tooltip"><div class="tooltip-inner"></div></div>'
       });
       $('[data-toggle="popover"]').popover()
       $('body').on('mouseover', '[data-username]', function(e) {
         openContributorPopOver($(this).data('username'), $(this));
       });
 
-      $('body').on('mouseout', '[data-username]', function(e) {
-        $(this).popover('dispose');
-      });
+      // $('body').on('mouseout', '[data-username]', function(e) {
+      //   $(this).popover('dispose');
+      // });
 
       $('body').on('show.bs.popover', '[data-username]', function () {
         $('body [data-username]').not(this).popover('hide');
       })
 
     </script>
+    <script src="{% static "v2/js/pages/bounty_details2.js" %}"></script>
     <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
     <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
     <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
-    <script src="{% static "v2/js/pages/bounty_details2.js" %}"></script>
     <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
     <script src="{% static "v2/js/user_popover.js" %}"></script>
     <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
