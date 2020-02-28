@@ -886,6 +886,7 @@ def onboard(request, flow=None):
     from avatar.views_3d import get_avatar_attrs
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
+    background_tones = get_avatar_attrs(theme, 'background_tones')
     avatar_options = [
         'classic',
         'unisex',
@@ -905,6 +906,7 @@ def onboard(request, flow=None):
         'theme': theme,
         'avatar_options': avatar_options,
         '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(theme),
+        'possible_background_tones': background_tones,
         'possible_skin_tones': skin_tones,
         'possible_hair_tones': hair_tones,
     }

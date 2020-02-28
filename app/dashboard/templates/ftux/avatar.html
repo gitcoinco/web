@@ -198,6 +198,16 @@
           {% endfor %}
         </div>
         {% endif %}
+        {% if possible_background_tones|length %}
+        <div id=background_tones class=tones>
+          Background:
+          {% for ht in possible_background_tones %}
+          <li data-tone='{{ht}}' style="background-color: #{{ht}}">
+            &nbsp;
+          </li>
+          {% endfor %}
+        </div>
+        {% endif %}
       <div class="action-buttons">
         {% for category, ids in 3d_avatar_params.by_category.items %}
           {% if ids|length > 1 %}

@@ -140,7 +140,10 @@ def get_avatar_attrs(theme, key):
             'hair_tones': [
                 '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
             ],
-            'tone_maps': ['comic', 'comic_hair'],
+            'background_tones': [
+                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+            ],
+            'tone_maps': ['comic', 'comic_hair', 'comic_background'],
             'path': 'assets/v2/images/avatar3d/comic.svg',
         },
     }
@@ -189,8 +192,11 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
         tones = {'7C6761': 0, '5E433D': 0, 'AA8B87': 0, }
         base_3d_tone = '7C6761'
     if tone == 'comic_hair':
-        tones = {'8C6239': 0 }
+        tones = {'8C6239': 0}
         base_3d_tone = '8C6239'
+    if tone == 'comic_background':
+        tones = {'9B9B9B': 0}
+        base_3d_tone = '9B9B9B'
 
     #mutate_tone
     for key in tones.keys():
@@ -212,6 +218,7 @@ def avatar3d(request):
         accept_ids = request.GET.getlist('ids[]')
     skinTone = request.GET.get('skinTone', '')
     hairTone = request.GET.get('hairTone', '')
+    backgroundTone = request.GET.get('backgroundTone', '')
     viewBox = request.GET.get('viewBox', '')
     height = request.GET.get('height', '')
     width = request.GET.get('width', '')
@@ -261,7 +268,11 @@ def avatar3d(request):
             output = prepend + "".join(elements) + postpend
             tone_maps = get_avatar_attrs(theme, 'tone_maps')
             for _type in tone_maps:
-                base_tone = skinTone if 'hair' not in _type else hairTone
+                base_tone = skinTone
+                if 'hair' in _type:
+                    base_tone = hairTone
+                if 'background' in _type:
+                    base_tone = backgroundTone
                 if base_tone:
                     for _from, to in get_avatar_tone_map(_type, base_tone, theme).items():
                         output = output.replace(_from, to)

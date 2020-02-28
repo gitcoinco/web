@@ -6,11 +6,13 @@ $(document).ready(function() {
   });
 
   $('#skin_tones li:nth-child(1)').addClass('selected');
+  $('#background_tones li:nth-child(1)').addClass('selected');
   $('#hair_tones li:nth-child(1)').addClass('selected');
   $('.tdselection:first-child').addClass('selected');
   document.td_ids = [];
   document.skin_tone = $('#skin_tones li.selected').data('tone');
   document.hair_tone = $('#hair_tones li.selected').data('tone');
+  document.background_tone = $('#background_tones li.selected').data('tone');
 
   var get_avatar_url = function() {
     var url = '/avatar/view3d?';
@@ -20,6 +22,7 @@ $(document).ready(function() {
     }
     var st = document.skin_tone;
     var ht = document.hair_tone;
+    var bt = document.background_tone;
 
     if (typeof st == 'undefined') {
       st = '';
@@ -27,8 +30,12 @@ $(document).ready(function() {
     if (typeof ht == 'undefined') {
       ht = '';
     }
+    if (typeof bt == 'undefined') {
+      bt = '';
+    }
     url += '&skinTone=' + st;
     url += '&hairTone=' + ht;
+    url += '&backgroundTone=' + bt;
     var theme = getParam('theme');
 
     if (!theme) {
@@ -94,6 +101,15 @@ $(document).ready(function() {
   });
 
 
+  $('#background_tones li').click(function(e) {
+    e.preventDefault();
+    $(this).parents('#background_tones').find('.selected').removeClass('selected');
+    $(this).addClass('selected');
+    document.background_tone = $(this).data('tone');
+    update_all_options();
+  });
+
+
   $('#random-3d-avatar-button').click(function(e) {
     e.preventDefault();
     $('.select_avatar_type').each(function() {
@@ -103,6 +119,7 @@ $(document).ready(function() {
     });
     $('#skin_tones li').random().click();
     $('#hair_tones li').random().click();
+    $('#background_tones li').random().click();
   });
 
 
