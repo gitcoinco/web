@@ -116,7 +116,27 @@ const getSuggestions = () => {
 
     $('#invite-contributors').select2().empty();
     $('#invite-contributors.js-select2').select2({
+      ajax: {
+        url: '/api/v0.1/users_search/?q=' + currentProfile,
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+
+          let query = {
+            term: params.term[0] === '@' ? params.term.slice(1) : params.term
+          };
+
+          return query;
+        },
+        processResults: function (data) {
+          return {
+            results: data
+          };
+        },
+        cache: true
+      },
       data: processedData,
+      minimumInputLength: 3,
       placeholder: 'Select contributors',
       escapeMarkup: function(markup) {
         return markup;

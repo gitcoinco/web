@@ -3423,10 +3423,42 @@ def new_bounty(request):
 
 @csrf_exempt
 def get_suggested_contributors(request):
+    add_non_gitcoin_users = not request.GET.get('suppress_non_gitcoiners', None)
     previously_worked_developers = []
     users_invite = []
     keywords = request.GET.get('keywords', '').split(',')
     invitees = [int(x) for x in request.GET.get('invite', '').split(',') if x]
+
+    
+    if request.is_ajax():
+        q = request.GET.get('term')
+        profiles = Profile.objects.filter(handle__icontains=q)
+        results = []
+        # try gitcoin
+        for user in profiles:
+            profile_json = {}
+            profile_json['id'] = user.id
+            profile_json['text'] = user.handle
+            profile_json['avatar_url'] = user.avatar_url
+            if user.avatar_baseavatar_related.exists():
+                profile_json['avatar_id'] = user.avatar_baseavatar_related.filter(active=True).first().pk
+                profile_json['avatar_url'] = user.avatar_baseavatar_related.filter(active=True).first().avatar_url
+            profile_json['preferred_payout_address'] = user.preferred_payout_address
+            results.append(profile_json)
+        # just take users word for it
+        if not len(results) and add_non_gitcoin_users:
+            profile_json = {}
+            profile_json['id'] = -1
+            profile_json['text'] = q
+            profile_json['email'] = None
+            profile_json['avatar_id'] = None
+            profile_json['preferred_payout_address'] = None
+            results.append(profile_json)
+        data = json.dumps(results)
+    else:
+        raise Http404
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
 
     if request.user.is_authenticated:
         previously_worked_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile')\
