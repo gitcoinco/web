@@ -1,0 +1,16 @@
+{
+  "symbol": "USDK",
+  "address": "0x1c48f86ae57291F7686349F12601910BD8D470bb",
+  "overview":{
+    "en": "USDK is an \"ERC-20\" digital asset issued by Prime Trust and operates on the Ethereum blockchain. The USDK is issued and redeemed by the Prime Trust for one dollar, and the assets held by the Prime Trust are guaranteed on a one-to-one basis.",
+    "zh": "USDK是由OKLink和Prime Trust联合推出的ERC-20数字货币,每一枚USDK都对应着美国监管特许信托公司Prime Trust账户中的1美元，确保准备金达到1:1的兑换标准。Prime Trust，LLC，一家在美国内华达州特许的信托公司（“Prime Trust”），根据为USDK持有人（此类信托资产，“信托资产”）的信托协议的信托协议，以受托人身份，以银行存款账户或美国国债的形式持有这些美元。每一位用户购买USDK的时候，会把USD充值到信托账户，信托和OKLink之间会同步相关数据，信托确认无误后，OKLink会通过区块链将USDK转给用户。"
+  },
+  "website": "https://www.oklink.com/pages/usdk/index.html",
+  "published_on": "2019-06-01",
+  "initial_price":{
+    "USD":"1.0 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/OKLink"
+  }
+}
