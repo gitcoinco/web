@@ -480,7 +480,7 @@ def etc_txn_already_used(t):
 
 
 def search_for_etc_bounty_payout(fulfillment, network='mainnet'):
-    if fulfillment.bounty.token_name != 'ETC':
+    if fulfillment.token_name != 'ETC':
         return
 
     funderAddress = fulfillment.bounty.bounty_owner_address
