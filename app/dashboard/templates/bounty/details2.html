@@ -150,7 +150,7 @@
           <div class="row">
             <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1 text-center text-lg-left" v-if="bounty.action_urls">
 
-              <div id="bounty_actions" class="d-inline-block">
+              <div id="bounty_actions" class="d-inline-block" v-if="is_bounties_network">
                 <a :href="bounty.action_urls.payout" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Payout the bounty to one or more submitters.">
                   <i class="fab fa-ethereum mr-2"></i> {% trans "Payout Bounty" %}
                 </a>
