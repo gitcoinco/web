@@ -123,6 +123,26 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [''],
             'path': 'assets/v2/images/avatar3d/bot_avatar.svg',
         },
+        'comic': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'back': '100 100 200 200',
+                'legs': '150 200 120 120',
+                'torso': '100 120 180 180',
+                'arm': '100 130 200 200',
+                'head': '20 20 250 250',
+            },
+            'skin_tones': [
+                'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031',
+                '593D26', '392D16'
+            ],
+            'hair_tones': [
+                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+            ],
+            'tone_maps': ['comic', 'comic_hair'],
+            'path': 'assets/v2/images/avatar3d/comic.svg',
+        },
     }
     return avatar_attrs.get(theme, {}).get(key, {})
 
@@ -137,10 +157,13 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
         'FFDBC2': 0,
         'D7723B': 0,  #base
         'F4B990': 0,
+        'CCB293': 0,  # base - comic
     }
     base_3d_tone = 'F4B990'
     if theme == 'female':
         base_3d_tone = 'FFCAA6'
+    if theme == 'comic':
+        base_3d_tone = 'CCB293'
     if tone == 'blonde_hair':
         tones = {'F495A8': 0, 'C6526D': 0, 'F4C495': 0, }
         base_3d_tone = 'CEA578'
@@ -165,6 +188,9 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
     if tone == 'grey_hair':
         tones = {'7C6761': 0, '5E433D': 0, 'AA8B87': 0, }
         base_3d_tone = '7C6761'
+    if tone == 'comic_hair':
+        tones = {'8C6239': 0 }
+        base_3d_tone = '8C6239'
 
     #mutate_tone
     for key in tones.keys():
