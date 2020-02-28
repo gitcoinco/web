@@ -343,6 +343,8 @@ def get_eligible_input_data(mr):
     earnings = earnings.exclude(to_profile__user__is_staff=True)
     # filter out self earnings
     earnings = earnings.exclude(to_profile__pk=F('from_profile__pk'))
+    # blacklisted users
+    earnings = earnings.exclude(to_profile__pk=68768)
     # microtips only
     earnings = earnings.filter(source_type=ContentType.objects.get(app_label='dashboard', model='tip'))
     tips = list(Tip.objects.send_happy_path().filter(Q(comments_priv__contains='activity:') | Q(comments_priv__contains='comment:') | Q(tokenName='ETH', amount__lte=0.05)).values_list('pk', flat=True))
