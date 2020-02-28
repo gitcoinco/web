@@ -828,9 +828,11 @@ def get_artist_bio(key):
     if key == 'metacartel':
         return 'This piece was originally created by <a target="blank" href="https://twitter.com/frankynines">@frankynies</a>, an amazing artist of Mexican heritage who works at Dapper Labs.'
     if key == 'comic':
-        return 'This piece was created by <a href="/TheDataDesigner">@TheDataDesigner</a>.'
+        return 'This piece was created by <a target=new href="/TheDataDesigner">@TheDataDesigner</a>.'
+    if key == 'jedi' or key == 'orc' or key == 'joker':
+        return 'This piece was created by <a target=new href="/KushMd">@KushMd </a>.'
     if key == 'unisex' or key == 'female':
-        return 'This piece was created by <a href="/MladenPetronijevic">@MladenPetronijevic</a>.'
+        return 'This piece was created by <a target=new href="/MladenPetronijevic">@MladenPetronijevic</a>.'
     if key == 'bufficorn':
         return 'The Bufficorn was created by <a target="blank" href="https://twitter.com/EthereumDenver">@EthereumDenver</a>.'
     return ''
@@ -911,6 +913,9 @@ def onboard(request, flow=None):
         'space',
         'spring',
         'metacartel',
+        'jedi',
+        'orc',
+        'joker',
     ]
     avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele), get_artist_bio(ele)) for ele in avatar_options ]
 

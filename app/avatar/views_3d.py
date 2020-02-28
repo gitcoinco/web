@@ -293,6 +293,50 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['metacartel_skin'],
             'path': 'assets/v2/images/avatar3d/metacartel.svg',
         },
+        'jedi': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+                'clothes': '0 0 350 350',
+                'facial': '100 80 100 100',
+                'hair': '0 0 150 150',
+                'eyebrows': '100 50 100 100',
+                'accessory': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/jedi.svg',
+        },
+        'orc': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+                'clothes': '0 0 350 350',
+                'facial': '100 80 100 100',
+                'hair': '0 0 250 250',
+                'eyebrows': '120 50 200 200',
+                'accessory': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/orc.svg',
+        },
+        'joker': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+                'clothes': '100 100 250 250',
+                'facial': '120 70 250 250',
+                'hair': '70 30 250 250',
+                'accessory': '10 0 250 250',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/joker.svg',
+        },
     }
     return avatar_attrs.get(theme, {}).get(key, {})
 
