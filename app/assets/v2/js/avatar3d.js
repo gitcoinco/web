@@ -75,6 +75,7 @@ $(document).ready(function() {
     $('.tdselection').each(function() {
       var st = document.skin_tone;
       var ht = document.hair_tone;
+      var bt = document.background_tone;
 
       if (typeof st == 'undefined') {
         st = '';
@@ -82,7 +83,10 @@ $(document).ready(function() {
       if (typeof ht == 'undefined') {
         ht = '';
       }
-      var new_url = $(this).data('src') + '&skinTone=' + st + '&hairTone=' + ht;
+      if (typeof bt == 'undefined') {
+        bt = '';
+      }
+      var new_url = $(this).data('src') + '&skinTone=' + st + '&hairTone=' + ht + '&backgroundTone=' + bt;
 
       $(this).data('altsrc', new_url);
       $(this).attr('src', '');

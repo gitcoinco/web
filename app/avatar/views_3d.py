@@ -317,10 +317,12 @@ def get_avatar_attrs(theme, key):
                 'eyebrows': '120 50 200 200',
                 'accessory': '0 0 350 350',
             },
-            'skin_tones': [],
+            'skin_tones': [
+                'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031',
+                '593D26', '392D16', 'FFFF99'
+            ],
             'hair_tones': [],
-            'skin_tones': [],
-            'tone_maps': [],
+            'tone_maps': ['orc_skin'],
             'path': 'assets/v2/images/avatar3d/orc.svg',
         },
         'joker': {
@@ -399,7 +401,9 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
         base_3d_tone = 'EDCEAE'
     if tone == 'metacartel_skin':
         tones = {'ED495F': 0, }
-        base_3d_tone = 'ED495F'
+    if tone == 'orc_skin':
+        tones = {'FFFF99': 0, }
+        base_3d_tone = 'FFFF99'
     if tone == 'people_skin':
         tones = {'FFE1B2': 0, 'FFD7A3': 0, }
         base_3d_tone = 'FFE1B2'
