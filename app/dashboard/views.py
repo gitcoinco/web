@@ -837,13 +837,23 @@ def get_preview_img(key):
     if key == 'bot':
         return 'https://c.gitcoin.co/avatars/c9d82da31b7833bdae37861014c32ebc/owocki.png'
     if key == 'comic':
-        return 'https://p200.p0.n0.cdn.getcloudapp.com/items/jkuKQdR2/Screen+Shot+2020-02-27+at+4.32.59+PM.png'
+        return static(f'v2/images/avatar3d/{key}.png')
     if key == 'flat':
-        return 'https://p200.p0.n0.cdn.getcloudapp.com/items/9ZuAjrx9/Image+2020-02-27+at+8.37.41+PM.png'
+        return static(f'v2/images/avatar3d/{key}.png')
     if key == 'shiny':
-        return 'https://p200.p0.n0.cdn.getcloudapp.com/items/Z4u5Yxgq/Image+2020-02-27+at+9.28.31+PM.png'
+        return static(f'v2/images/avatar3d/{key}.png')
     if key == 'people':
-        return 'https://p200.p0.n0.cdn.getcloudapp.com/items/12u1N6Dz/Image+2020-02-27+at+10.05.07+PM.png'
+        return static(f'v2/images/avatar3d/{key}.png')
+    if key == 'robot':
+        return static(f'v2/images/avatar3d/{key}.png')
+    if key == 'technology':
+        return static(f'v2/images/avatar3d/{key}.png')
+    if key == 'landscape':
+        return static(f'v2/images/avatar3d/{key}.png')
+    if key == 'space':
+        return static(f'v2/images/avatar3d/{key}.png')
+    if key == 'spring':
+        return static(f'v2/images/avatar3d/{key}.png')
 
     return f'/avatar/view3d?theme={key}&scale=20'
 
@@ -905,6 +915,11 @@ def onboard(request, flow=None):
         avatar_options.append('flat')
         avatar_options.append('shiny')
         avatar_options.append('people')
+        avatar_options.append('robot')
+        avatar_options.append('technology')
+        avatar_options.append('landscape')
+        avatar_options.append('space')
+        avatar_options.append('spring')
     avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele)) for ele in avatar_options ]
 
     params = {

@@ -203,6 +203,86 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['people_skin', 'people_hair', 'flat_background'],
             'path': 'assets/v2/images/avatar3d/people.svg',
         },
+        'robot': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'avatar': '0 0 350 350',
+            },
+            'skin_tones': [
+            ],
+            'hair_tones': [
+            ],
+            'background_tones': [
+                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+            ],
+            'tone_maps': ['flat_background'],
+            'path': 'assets/v2/images/avatar3d/robot.svg',
+        },
+        'technology': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'avatar': '0 0 350 350',
+            },
+            'skin_tones': [
+            ],
+            'hair_tones': [
+            ],
+            'background_tones': [
+                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+            ],
+            'tone_maps': ['flat_background'],
+            'path': 'assets/v2/images/avatar3d/tech.svg',
+        },
+        'landscape': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'avatar': '0 0 350 350',
+            },
+            'skin_tones': [
+            ],
+            'hair_tones': [
+            ],
+            'background_tones': [
+                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+            ],
+            'tone_maps': ['flat_background'],
+            'path': 'assets/v2/images/avatar3d/landscape.svg',
+        },
+        'space': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'avatar': '0 0 350 350',
+            },
+            'skin_tones': [
+            ],
+            'hair_tones': [
+            ],
+            'background_tones': [
+                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+            ],
+            'tone_maps': ['flat_background'],
+            'path': 'assets/v2/images/avatar3d/space.svg',
+        },
+        'spring': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'avatar': '0 0 350 350',
+            },
+            'skin_tones': [
+            ],
+            'hair_tones': [
+            ],
+            'background_tones': [
+                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+            ],
+            'tone_maps': ['flat_background'],
+            'path': 'assets/v2/images/avatar3d/spring.svg',
+        },
     }
     return avatar_attrs.get(theme, {}).get(key, {})
 
