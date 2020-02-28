@@ -29,7 +29,7 @@ $(document).ready(function() {
   $('#mobile_nav_toggle li a').click(function(e) {
     $('#mobile_nav_toggle li a').removeClass('active');
     $(this).addClass('active');
-    if($(this).data('slug') == 'feed'){
+    if ($(this).data('slug') == 'feed') {
       $('.feed_container').removeClass('hidden');
       $('.actions_container').addClass('hidden');
     } else {
