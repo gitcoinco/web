@@ -287,7 +287,8 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'hair_tones': [],
             'skin_tones': [
-                'ED495F', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                'ED495F', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C',
+                '000000'
             ],
             'tone_maps': ['metacartel_skin'],
             'path': 'assets/v2/images/avatar3d/metacartel.svg',
