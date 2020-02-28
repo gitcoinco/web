@@ -75,7 +75,7 @@ def get_avatar_attrs(theme, key):
                 '392D16'
             ],
             'hair_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar.svg',
@@ -99,7 +99,7 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar_female.svg',
@@ -138,10 +138,10 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'background_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'tone_maps': ['comic', 'comic_hair', 'comic_background'],
             'path': 'assets/v2/images/avatar3d/comic.svg',
@@ -157,10 +157,10 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'background_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'tone_maps': ['flat_skin', 'flat_hair', 'flat_background'],
             'path': 'assets/v2/images/avatar3d/flat.svg',
@@ -176,10 +176,10 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'background_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'tone_maps': ['shiny_skin', 'shiny_hair', 'flat_background'],
             'path': 'assets/v2/images/avatar3d/shiny.svg',
@@ -195,10 +195,10 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'background_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'tone_maps': ['people_skin', 'people_hair', 'flat_background'],
             'path': 'assets/v2/images/avatar3d/people.svg',
@@ -209,12 +209,10 @@ def get_avatar_attrs(theme, key):
                 'background': '0 0 350 350',
                 'avatar': '0 0 350 350',
             },
-            'skin_tones': [
-            ],
-            'hair_tones': [
-            ],
+            'skin_tones': [],
+            'hair_tones': [],
             'background_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/robot.svg',
@@ -225,12 +223,10 @@ def get_avatar_attrs(theme, key):
                 'background': '0 0 350 350',
                 'avatar': '0 0 350 350',
             },
-            'skin_tones': [
-            ],
-            'hair_tones': [
-            ],
+            'skin_tones': [],
+            'hair_tones': [],
             'background_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/tech.svg',
@@ -241,12 +237,10 @@ def get_avatar_attrs(theme, key):
                 'background': '0 0 350 350',
                 'avatar': '0 0 350 350',
             },
-            'skin_tones': [
-            ],
-            'hair_tones': [
-            ],
+            'skin_tones': [],
+            'hair_tones': [],
             'background_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/landscape.svg',
@@ -257,12 +251,10 @@ def get_avatar_attrs(theme, key):
                 'background': '0 0 350 350',
                 'avatar': '0 0 350 350',
             },
-            'skin_tones': [
-            ],
-            'hair_tones': [
-            ],
+            'skin_tones': [],
+            'hair_tones': [],
             'background_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/space.svg',
@@ -273,12 +265,10 @@ def get_avatar_attrs(theme, key):
                 'background': '0 0 350 350',
                 'avatar': '0 0 350 350',
             },
-            'skin_tones': [
-            ],
-            'hair_tones': [
-            ],
+            'skin_tones': [],
+            'hair_tones': [],
             'background_tones': [
-                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/spring.svg',
@@ -340,46 +330,19 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
         tones = {'A6D9EA': 0}
         base_3d_tone = 'A6D9EA'
     if tone == 'flat_skin':
-        tones = {'EDCEAE': 0, 
-            'F3DBC4': 0,
-            'E4B692':0,
-            'F3DBC4':0,
-            'EDCEAE':0,
-            'F1C9A5':0,
-            }
+        tones = {'EDCEAE': 0, 'F3DBC4': 0, 'E4B692': 0, 'F3DBC4': 0, 'EDCEAE': 0, 'F1C9A5': 0, }
         base_3d_tone = 'EDCEAE'
     if tone == 'people_skin':
-        tones = {'FFE1B2': 0, 
-            'FFD7A3': 0,
-            }
+        tones = {'FFE1B2': 0, 'FFD7A3': 0, }
         base_3d_tone = 'FFE1B2'
     if tone == 'people_hair':
-        tones = {'FFD248': 0, 
-        '414042': 0,
-        'A18369': 0,
-        'E7ECED': 0,
-        '8C6239': 0,
-        '9B8579': 0,
-        '8C6239': 0,
-            }
+        tones = {'FFD248': 0, '414042': 0, 'A18369': 0, 'E7ECED': 0, '8C6239': 0, '9B8579': 0, '8C6239': 0, }
         base_3d_tone = 'FFD248'
     if tone == 'shiny_skin':
-        tones = {'FFD3AE': 0, 
-            '333333': 0,
-            'FFD3AE':0,
-            'E8B974':0,
-            'EDCEAE':0,
-            }
+        tones = {'FFD3AE': 0, '333333': 0, 'FFD3AE': 0, 'E8B974': 0, 'EDCEAE': 0, }
         base_3d_tone = 'FFD3AE'
     if tone == 'shiny_hair':
-        tones = {
-            'D68D51': 0,
-            'F7774B': 0,
-            'E8B974': 0,
-            'F7B239': 0,
-            'D3923C': 0,
-            '666666': 0,
-        }
+        tones = {'D68D51': 0, 'F7774B': 0, 'E8B974': 0, 'F7B239': 0, 'D3923C': 0, '666666': 0, }
         base_3d_tone = 'D68D51'
     if tone == 'flat_hair':
         tones = {
