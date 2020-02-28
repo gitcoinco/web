@@ -55,6 +55,37 @@ $('.select2-clear_invites').on('click', function(e) {
   $('#invite-contributors.js-select2').val(null).trigger('change');
 });
 
+const getAllUsers = () => {
+  $('#invite-contributors.js-select2').select2({
+    ajax: {
+      url: '/api/v0.1/users_search/?q=' + currentProfile,
+      dataType: 'json',
+      delay: 250,
+      data: function(params) {
+
+        let query = {
+          term: params.term[0] === '@' ? params.term.slice(1) : params.term
+        };
+
+        return query;
+      },
+      processResults: function(data) {
+        return {
+          results: data
+        };
+      },
+      cache: true
+    },
+    data: processedData,
+    minimumInputLength: 3,
+    placeholder: 'Select contributors',
+    escapeMarkup: function(markup) {
+      return markup;
+    },
+    templateResult: formatUser,
+    templateSelection: formatUserSelection
+  });
+};
 
 const getSuggestions = () => {
   let queryParams = {};
@@ -120,7 +151,7 @@ const getSuggestions = () => {
         url: '/api/v0.1/users_search/?q=' + currentProfile,
         dataType: 'json',
         delay: 250,
-        data: function (params) {
+        data: function(params) {
 
           let query = {
             term: params.term[0] === '@' ? params.term.slice(1) : params.term
@@ -128,7 +159,7 @@ const getSuggestions = () => {
 
           return query;
         },
-        processResults: function (data) {
+        processResults: function(data) {
           return {
             results: data
           };
@@ -146,10 +177,12 @@ const getSuggestions = () => {
     });
 
   }).fail(function(error) {
+    getAllUsers();
     console.log('Could not fetch contributors', error);
   });
 };
 
+getAllUsers();
 getSuggestions();
 $('#keywords').on('change', getSuggestions);
 
