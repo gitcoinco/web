@@ -833,6 +833,8 @@ def get_artist_bio(key):
         return 'This piece was created by <a target=new href="/KushMd">@KushMd </a>.'
     if key == 'unisex' or key == 'female':
         return 'This piece was created by <a target=new href="/MladenPetronijevic">@MladenPetronijevic</a>.'
+    if key == 'bot':
+        return 'This piece was created by <a target=new href="/GuistF">@GuistF</a>.'
     if key == 'bufficorn':
         return 'The Bufficorn was created by <a target="blank" href="https://twitter.com/EthereumDenver">@EthereumDenver</a>.'
     return ''
