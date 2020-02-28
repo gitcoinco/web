@@ -237,7 +237,10 @@
                       [[ fulfillment.profile.handle ]]
                     </a>
                     <div class="" v-if="fulfillment.fulfiller_address">
-                      <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.fulfiller_address}` : `https://classic.etccoopexplorer.com/address/${fulfillment.fulfiller_address}` }`" target="_blank">[[ fulfillment.fulfiller_address | truncateHash ]]</a> <button class="btn btn-sm" @click="copyTextToClipboard(fulfillment.fulfiller_address)"><i class="far fa-clipboard-check"></i></button>
+                      <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.fulfiller_address}` : `https://classic.etccoopexplorer.com/address/${fulfillment.fulfiller_address}` }`" target="_blank">[[ fulfillment.fulfiller_address | truncateHash ]]</a>
+                      <button class="btn btn-sm my-0" @click="copyTextToClipboard(fulfillment.fulfiller_address)">
+                        <i class="far fa-clipboard-check font-caption"></i>
+                      </button>
                     </div>
                   </div>
                   <div class="col-md-3 col-lg-4 my-auto text-center text-md-left">
@@ -246,15 +249,22 @@
                     </time>
                   </div>
                   <div class="col-md-3 col-lg-3 my-auto text-center">
-                    <button data-toggle="modal" data-target="#payoutModal" class="btn btn-sm btn-gc-blue">Payout Bounty</button>
+                    <button data-toggle="modal" data-target="#payoutModal" class="btn btn-sm btn-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
+                      <i class="fas fa-money-check-alt mr-2 font-caption"></i>Payout Bounty
+                    </button>
                   </div>
                   <div class="col-12">
                     <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
+                      <i class="far fa-link mr-1"></i>
                       <span class="font-weight-bold mb-2">PR:</span>
                       <a :href="fulfillment.fulfiller_github_url" target="_blank">
                         [[ fulfillment.fulfiller_github_url ]]
                       </a>
-                      [[ fulfillment.fulfiller_metadata?.data?.payload?.fulfiller?.hoursWorked ]] hours
+                      <p class="mb-0" v-if="fulfillment.fulfiller_metadata.data?.payload?.fulfiller?.hoursWorked">
+                        <i class="far fa-clock font-caption mr-1"></i>
+                        <span class="font-weight-bold">Hours worked:</span>
+                        [[ fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked ]]
+                      </p>
                       <modal id="payoutModal" ref="user-modal">
                         <div slot="body">
                           <div class="text-center">
@@ -301,11 +311,17 @@
                   </div>
                   <div class="col-md-3 col-lg-3 my-auto text-center">
                     <template v-if="interest.pending">
-                      <a target="_blank" :href="`${bounty.url}?mutate_worker_action=approve&worker=${interest.profile.handle}`" title="Approve worker" class="btn btn-sm btn-gc-blue m-2"><i class="fas fa-check"></i> Accept</a>
-                      <a target="_blank" :href="`${bounty.url}?mutate_worker_action=reject&worker=${interest.profile.handle}`" title="Reject worker" class="btn btn-sm btn-outline-gc-blue m-2"><i class="fas fa-times"></i> Reject</a>
+                      <a target="_blank" :href="`${bounty.url}?mutate_worker_action=approve&worker=${interest.profile.handle}`" title="Approve worker" class="btn btn-sm btn-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
+                        <i class="fas fa-check mr-1 font-caption"></i> Approve
+                      </a>
+                      <a target="_blank" :href="`${bounty.url}?mutate_worker_action=reject&worker=${interest.profile.handle}`" title="Reject worker" class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
+                        <i class="fas fa-times mr-1 font-caption"></i> Reject
+                      </a>
                     </template>
                     <template v-else>
-                      <button class="btn btn-sm btn-gc-blue">Stop Worker</button>
+                      <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
+                        <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Worker
+                      </button>
                     </template>
                   </div>
                   <div class="col-md-12 my-auto text-center text-md-left">
@@ -326,7 +342,7 @@
               <div class="border my-5 px-4 pt-4">
                 <h5 class="font-body font-weight-semibold">{% trans "ALL  ACTIVITY" %}</h5>
                 <div v-for="activity in bounty.activities" :key="activity.pk" class="my-4 row font-body">
-                  <div class="col-md-2 col-lg-1 text-center text-md-leftr">
+                  <div class="col-md-2 col-lg-1 text-center text-md-left">
                     <a :href="`/profile/${activity.profile.handle}`" v-show="activity.profile.avatar_url">
                       <img class="avatar" :src="[[activity.profile.avatar_url]]">
                     </a>
@@ -357,6 +373,40 @@
             </div>
           </div>
 
+          <div class="row">
+            <div class="col-12">
+              <div class="border my-3 px-4 py-3">
+                <h5 class="bounty-heading mt-0 mb-3">{% trans "Funder" %}</h5>
+                <div class="row">
+                  <div class="col-md-2 col-lg-1 text-center text-md-left my-auto">
+                    <a :href="`/profile/${bounty.bounty_owner_github_username}`" v-show="bounty.bounty_owner_github_username">
+                      <img class="avatar" :src="'/dynamic/avatar/' + bounty.bounty_owner_github_username">
+                    </a>
+                  </div>
+                  <div class="col-md-10 col-lg-9 my-auto text-center text-md-left">
+                    <a :href="`/profile/${bounty.bounty_owner_github_username}`" class="user-popover" :data-username="[[ bounty.bounty_owner_github_username ]]"
+                      data-html="true" data-toggle="popover" data-container="body"
+                    >
+                      [[ bounty.bounty_owner_github_username ]]
+                    </a>
+
+                    <div class="font-caption text-black-70">
+                      <span class="font-weight-semibold">{% trans "Email" %} :</span>
+                      <span>[[ bounty.bounty_owner_email ]]</span>
+                    </div>
+
+                    <div v-if="is_bounties_network" class="font-caption text-black-70">
+                      <span>{% trans "Address" %} :</span>
+                      <span>[[ bounty.bounty_owner_address ]]</span>
+                      <button class="btn btn-sm my-0" @click="copyTextToClipboard(bounty.bounty_owner_address)">
+                        <i class="far fa-clipboard-check font-caption"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

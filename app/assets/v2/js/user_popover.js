@@ -103,7 +103,7 @@ function openContributorPopOver(contributor, element) {
           placement: 'auto',
           // container: element,
           trigger: 'manual',
-          delay: { "show": 200, "hide": 500 },
+          delay: { 'show': 200, 'hide': 500 },
           template: `
             <div class="popover popover-bounty" role="tooltip">
               <div class="arrow"></div>
@@ -112,17 +112,19 @@ function openContributorPopOver(contributor, element) {
             </div>`,
           content: renderPopOverData(response),
           html: true
-        }).on("mouseenter", function() {
+        }).on('mouseenter', function() {
           var _this = this;
-          $(this).popover("show");
-          $(".popover").on("mouseleave", function() {
+
+          $(this).popover('show');
+          $('.popover').on('mouseleave', function() {
             $(_this).popover('hide');
           });
-        }).on("mouseleave", function() {
+        }).on('mouseleave', function() {
           var _this = this;
+
           setTimeout(function() {
-            if (!$(".popover:hover").length) {
-              $(_this).popover("hide")
+            if (!$('.popover:hover').length) {
+              $(_this).popover('hide');
             }
           }, 100);
         });
@@ -136,7 +138,7 @@ function openContributorPopOver(contributor, element) {
       placement: 'auto',
       // container: element,
       trigger: 'manual',
-      delay: { "show": 200, "hide": 500 },
+      delay: { 'show': 200, 'hide': 500 },
       template: `
         <div class="popover popover-bounty" role="tooltip">
           <div class="arrow"></div>
@@ -147,17 +149,19 @@ function openContributorPopOver(contributor, element) {
         popoverData.filter(item => item[contributor])[0][contributor]
       ),
       html: true
-    }).on("mouseenter", function() {
+    }).on('mouseenter', function() {
       var _this = this;
-      $(this).popover("show");
-      $(".popover").on("mouseleave", function() {
+
+      $(this).popover('show');
+      $('.popover').on('mouseleave', function() {
         $(_this).popover('hide');
       });
-    }).on("mouseleave", function() {
+    }).on('mouseleave', function() {
       var _this = this;
+
       setTimeout(function() {
-        if (!$(".popover:hover").length) {
-          $(_this).popover("hide")
+        if (!$('.popover:hover').length) {
+          $(_this).popover('hide');
         }
       }, 100);
     });

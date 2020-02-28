@@ -28,12 +28,14 @@ Vue.filter('moment', function(date) {
 
 Vue.filter('momentFormat', function(date, format) {
   const _format = !format ? 'LLLL' : format;
-  return moment(date).format(_format)
+
+  return moment(date).format(_format);
 });
 
 
 Vue.filter('markdownit', function(val) {
-  if (!val) return '';
+  if (!val)
+    return '';
   const _markdown = new markdownit({
     linkify: true,
     highlight: function(str, lang) {
@@ -58,8 +60,7 @@ Vue.filter('truncateHash', function(elem, _number) {
   let content = elem.trim();
 
   return content.substr(0, number + 2) + '\u2026' + content.substr(-number);
-
-})
+});
 
 Vue.filter('stringReplace', function(activity_type) {
   const activity_names = {
@@ -83,8 +84,9 @@ Vue.filter('stringReplace', function(activity_type) {
     bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
     bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
     bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
-    new_kudos: gettext('New Kudos'),
+    new_kudos: gettext('New Kudos')
   };
+
   return activity_names[activity_type];
-})
+});
 

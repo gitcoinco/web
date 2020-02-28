@@ -10,17 +10,18 @@ Vue.mixin({
 
       $.when(getBounty).then(function(response) {
         vm.bounty = response[0];
-        vm.isOwner = vm.checkOwner(response[0].bounty_owner_github_username)
+        vm.isOwner = vm.checkOwner(response[0].bounty_owner_github_username);
         document.result = response[0];
-      })
+      });
     },
     checkOwner: function(handle) {
       let vm = this;
+
       if (document.contxt['github_handle']) {
         return caseInsensitiveCompare(document.contxt['github_handle'], handle);
-      } else {
-        return false;
       }
+      return false;
+      
     },
     syncGhIssue: function() {
       let vm = this;
@@ -28,8 +29,8 @@ Vue.mixin({
       const getIssueSync = fetchData(apiUrlIssueSync, 'GET');
 
       $.when(getIssueSync).then(function(response) {
-        vm.updateGhIssue(response)
-      })
+        vm.updateGhIssue(response);
+      });
     },
     updateGhIssue: function(response) {
       let vm = this;
@@ -46,16 +47,16 @@ Vue.mixin({
         _alert({ message: response.msg }, 'success');
       }).catch(function(response) {
         _alert({ message: response.responseJSON.error }, 'error');
-      })
+      });
     },
     copyTextToClipboard: function(text) {
       if (!navigator.clipboard) {
-        _alert('Could not copy text to clipboard', 'error', 5000)
+        _alert('Could not copy text to clipboard', 'error', 5000);
       } else {
         navigator.clipboard.writeText(text).then(function() {
-          _alert('Text copied to clipboard', 'success', 5000)
+          _alert('Text copied to clipboard', 'success', 5000);
         }, function(err) {
-          _alert('Could not copy text to clipboard', 'error', 5000)
+          _alert('Could not copy text to clipboard', 'error', 5000);
         });
       }
     }
@@ -64,8 +65,6 @@ Vue.mixin({
 
   }
 });
-
-
 
 
 if (document.getElementById('gc-bounty-detail')) {
@@ -80,7 +79,7 @@ if (document.getElementById('gc-bounty-detail')) {
         isOwner: false,
         is_bounties_network: is_bounties_network,
         inputAmount: 0
-      }
+      };
     },
     mounted() {
       this.fetchBounty();

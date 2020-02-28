@@ -83,8 +83,8 @@ Vue.component('loading-screen', {
 
 
 Vue.component('qrcode', {
-  props: [ 'string' ],
-  template: `<div class="qrcode"></div>`,
+  props: ['string'],
+  template: '<div class="qrcode"></div>',
   data() {
     return {
       jqEl: null,
@@ -96,7 +96,7 @@ Vue.component('qrcode', {
 
     vm.jqEl = $(this.$el);
     vm.qrcode = new QRCode(vm.jqEl[0], vm.string);
-    return vm.qrcode
+    return vm.qrcode;
 
     // document.getElementsByClassName("qrcode")[0].innerHTML = qr.createImgTag();
     // var qrcode = new QRCode(document.getElementById("qrcode"), {
@@ -123,4 +123,4 @@ Vue.component('qrcode', {
     //   // return this.size.trim().toLowerCase()
     // }
   }
-})
+});
