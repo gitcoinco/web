@@ -838,6 +838,8 @@ def get_preview_img(key):
         return 'https://c.gitcoin.co/avatars/c9d82da31b7833bdae37861014c32ebc/owocki.png'
     if key == 'comic':
         return 'https://p200.p0.n0.cdn.getcloudapp.com/items/jkuKQdR2/Screen+Shot+2020-02-27+at+4.32.59+PM.png'
+    if key == 'flat':
+        return 'https://p200.p0.n0.cdn.getcloudapp.com/items/9ZuAjrx9/Image+2020-02-27+at+8.37.41+PM.png'
 
     return f'/avatar/view3d?theme={key}&scale=20'
 
@@ -896,6 +898,7 @@ def onboard(request, flow=None):
     if request.user.is_staff:
         avatar_options.append('bot')
         avatar_options.append('comic')
+        avatar_options.append('flat')
     avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele)) for ele in avatar_options ]
 
     params = {

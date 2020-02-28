@@ -146,6 +146,25 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['comic', 'comic_hair', 'comic_background'],
             'path': 'assets/v2/images/avatar3d/comic.svg',
         },
+        'flat': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'avatar': '0 0 350 350',
+            },
+            'skin_tones': [
+                'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031',
+                '593D26', '392D16'
+            ],
+            'hair_tones': [
+                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+            ],
+            'background_tones': [
+                '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+            ],
+            'tone_maps': ['flat_skin', 'flat_hair', 'flat_background'],
+            'path': 'assets/v2/images/avatar3d/flat.svg',
+        },
     }
     return avatar_attrs.get(theme, {}).get(key, {})
 
@@ -161,6 +180,8 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
         'D7723B': 0,  #base
         'F4B990': 0,
         'CCB293': 0,  # base - comic
+        'EDCEAE': 0,  # base - flat
+        'F3DBC4': 0,  # base - flat
     }
     base_3d_tone = 'F4B990'
     if theme == 'female':
@@ -197,12 +218,50 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
     if tone == 'comic_background':
         tones = {'9B9B9B': 0}
         base_3d_tone = '9B9B9B'
+    if tone == 'flat_background':
+        tones = {'A6D9EA': 0}
+        base_3d_tone = 'A6D9EA'
+    if tone == 'flat_skin':
+        tones = {'EDCEAE': 0, 
+            'F3DBC4': 0,
+            'E4B692':0,
+            'F3DBC4':0,
+            'EDCEAE':0,
+            'F1C9A5':0,
+            }
+        base_3d_tone = 'EDCEAE'
+    if tone == 'flat_hair':
+        tones = {
+            '682234': 0,
+            '581A2B': 0,
+            '10303F': 0,
+            '303030': 0,
+            '265A68': 0,
+            '583A2F': 0,
+            'D1874A': 0,
+            'E1A98C': 0,
+            'D2987B': 0,
+            '3C2A20': 0,
+            'C64832': 0,
+            'B2332D': 0,
+            'A0756F': 0,
+            '8C6762': 0,
+            '471B18': 0,
+            '5A3017': 0,
+            'EC9A1C': 0,
+            '545465': 0,
+            '494857': 0,
+            '231F20': 0,
+            '0F303F': 0,
+        }
+        base_3d_tone = '8C6239'
 
     #mutate_tone
     for key in tones.keys():
         delta = sub_rgb_array(hex_to_rgb_array(key), hex_to_rgb_array(base_3d_tone), False)
         rgb_array = add_rgb_array(delta, hex_to_rgb_array(skinTone), True)
         tones[key] = rgb_array_to_hex(rgb_array)
+        print(tone, key, tones[key])
 
     return tones
 
