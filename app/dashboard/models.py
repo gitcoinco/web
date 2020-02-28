@@ -276,8 +276,6 @@ class Bounty(SuperModel):
     WORK_IN_PROGRESS_STATUSES = ['reserved', 'open', 'started', 'submitted']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
-    payout_confirmed = models.BooleanField(default=False, blank=True, null=True)
-    payout_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     bounty_state = models.CharField(max_length=50, choices=BOUNTY_STATES, default='open', db_index=True)
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=1000)
@@ -1325,6 +1323,11 @@ class BountyFulfillmentQuerySet(models.QuerySet):
 class BountyFulfillment(SuperModel):
     """The structure of a fulfillment on a Bounty."""
 
+    PAYOUT_STATUS = [
+        ('pending', 'pending'),
+        ('done', 'done'),
+    ]
+
     fulfiller_address = models.CharField(max_length=50)
     fulfiller_email = models.CharField(max_length=255, blank=True)
     fulfiller_github_username = models.CharField(max_length=255, blank=True)
@@ -1339,6 +1342,11 @@ class BountyFulfillment(SuperModel):
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
     profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True)
+
+    token_name = models.CharField(max_length=10, blank=True)
+    payout_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
+    payout_status = models.CharField(max_length=10, choices=PAYOUT_STATUS, blank=True)
+    payout_amount = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=10)
 
     def __str__(self):
         """Define the string representation of BountyFulfillment.

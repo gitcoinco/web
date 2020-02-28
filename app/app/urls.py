@@ -67,6 +67,7 @@ urlpatterns = [
     url('^api/v1/bounty/create', dashboard.views.create_bounty_v1, name='create_bounty_v1'),
     url('^api/v1/bounty/cancel', dashboard.views.cancel_bounty_v1, name='cancel_bounty_v1'),
     url('^api/v1/bounty/fulfill', dashboard.views.fulfill_bounty_v1, name='fulfill_bounty_v1'),
+    url('^api/v1/bounty/payout/<int:fulfillment_id>', dashboard.views.payout_bounty_v1, name='payout_bounty_v1'),
 
     # inbox
     re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
@@ -231,7 +232,7 @@ urlpatterns = [
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
-    url(r'^bounty/sync_payout/(?P<bounty_id>.*)?', dashboard.views.manual_sync_etc_payout, name='manual_sync_etc_payout'),
+    url(r'^bounty/sync_payout/(?P<fulfillment_id>.*)?', dashboard.views.manual_sync_etc_payout, name='manual_sync_etc_payout'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),  # TODO: Remove
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),  # TODO: Remove
     # TODO: Rename below to bounty/
@@ -352,7 +353,7 @@ urlpatterns = [
 
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
-    url(r'^sync/etc/?', dashboard.views.sync_etc, name='sync_etc'),
+    # url(r'^sync/etc/?', dashboard.views.sync_etc, name='sync_etc'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
     re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
 
