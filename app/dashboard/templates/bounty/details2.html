@@ -246,7 +246,7 @@
                     </time>
                   </div>
                   <div class="col-md-3 col-lg-3 my-auto text-center">
-                    <button class="btn btn-sm btn-gc-blue">Payout Bounty</button>
+                    <button data-toggle="modal" data-target="#payoutModal" class="btn btn-sm btn-gc-blue">Payout Bounty</button>
                   </div>
                   <div class="col-12">
                     <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
@@ -255,6 +255,16 @@
                         [[ fulfillment.fulfiller_github_url ]]
                       </a>
                       [[ fulfillment.fulfiller_metadata?.data?.payload?.fulfiller?.hoursWorked ]] hours
+                      <modal id="payoutModal" ref="user-modal">
+                        <div slot="body">
+                          Payout contributor
+                          Payout Xetc to [[ fulfillment.profile.handle ]] [[ fulfillment.fulfiller_address | truncateHash ]]
+                          <input type="number" v-model="inputAmount" name="" id="">
+                          <qrcode :string="`${fulfillment.fulfiller_address}?amount=${inputAmount}`"></qrcode>
+                          <small>Scan the QR code  above with your ETC Wallet to payout</small>
+                        </div>
+                      </modal>
+
                     </div>
                   </div>
                 </div>
@@ -343,10 +353,9 @@
             </div>
           </div>
 
-
-
         </div>
       </div>
+
     </div>
 
     <!-- <div id="modal" class="modal fade share-modal" tabindex="-1" role="dialog" aria-labelledby="shareModal" aria-hidden="true">
@@ -410,6 +419,9 @@
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/amounts.js" %}"></script>
     <script src="{% static "v2/js/clipboard.js" %}"></script>
+    <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
+    <script src="{% static "v2/js/vue-components.js" %}"></script>
+
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]',
