@@ -348,9 +348,25 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
   };
 
   // send direct, or not?
-  const url = '/tip/address/' + username;
+  //'/tip/address/' + username;
+  
+  const formTip = new FormData();
+  formTip.append('user', username);
 
-  fetch(url, {method: 'GET', credentials: 'include'}).then(function(response) {
+  const tipSend = {
+    url: '/api/v0.1/tipshipping' + username,
+    method: 'POST',
+    data: formTip,
+    processData: false,
+    dataType: 'json',
+    contentType: false
+  };
+
+  fetch(tipSend).done(function(response) {
+    if (response.status == 200) {
+      console.log('everything Ok');
+    }
+  }).then(function(response) { 
     return response.json();
   }).then(function(json) {
     if (json.addresses.length > 0) {

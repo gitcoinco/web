@@ -277,6 +277,20 @@ def get_profile(handle):
 
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def tipshipping(request, handle):
+    """Handle the first stage of sending a tip (the POST).
+       get default address by username
+
+    Returns:
+        JsonResponse: response with success state.
+
+    """
+    response = {
+        'status': 'OK',
+        'message': _('Tip Sending...'),
+    }
+        
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def tipee_address(request, handle):
     """Return the address, if any, that someone would like to be tipped directly at.
 
