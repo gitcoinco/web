@@ -163,6 +163,7 @@ class CustomAvatar(BaseAvatar):
 
         with NamedTemporaryFile(mode='w+', suffix='.svg') as tmp:
             tmp.write(svg)
+            tmp.flush()
             with open(tmp.name) as file:
                 svg_name = profile.handle if profile and profile.handle else token_hex(8)
                 avatar.svg.save(f"{svg_name}.svg", File(file), save=False)
