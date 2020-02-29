@@ -24,7 +24,7 @@ from django.db.models import Q
 from django.utils.text import slugify
 from celery import group
 from chat.tasks import hackathon_chat_sync
-from chat.utils import create_channel_if_not_exists, associate_chat_to_profile
+from chat.tasks import create_channel_if_not_exists, associate_chat_to_profile
 from dashboard.models import HackathonEvent, HackathonRegistration, Interest, Profile
 
 logger = logging.getLogger(__name__)
