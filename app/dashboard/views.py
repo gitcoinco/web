@@ -4946,8 +4946,9 @@ def payout_bounty_v1(request, fulfillment_id):
         return JsonResponse(response)
 
     try:
-       fulfillment = BountyFulfillment.objects.get(fulfillment_id)
-       bounty = fulfillment.bounty
+        fulfillment_id = str(fulfillment_id)
+        fulfillment = BountyFulfillment.objects.get(fulfillment_id)
+        bounty = fulfillment.bounty
     except BountyFulfillment.DoesNotExist:
         response['message'] = 'error: bounty fulfillment not found'
         return JsonResponse(response)
