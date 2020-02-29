@@ -829,6 +829,8 @@ def get_artist_bio(key):
         return 'This piece was originally created by <a target="blank" href="https://twitter.com/frankynines">@frankynies</a>, an amazing artist of Mexican heritage who works at Dapper Labs.'
     if key == 'comic':
         return 'This piece was created by <a target=new href="/TheDataDesigner">@TheDataDesigner</a>.'
+    if key == 'cartoon_jedi':
+        return 'This piece was created by <a target=new href="/Popeline5">@Popeline5</a>.'
     if key == 'jedi' or key == 'orc' or key == 'joker':
         return 'This piece was created by <a target=new href="/KushMd">@KushMd </a>.'
     if key == 'unisex' or key == 'female':
@@ -873,6 +875,8 @@ def get_avatar_options():
         'jedi',
         'orc',
         'joker',
+        'cartoon_jedi',
+
     ]
     avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele), get_artist_bio(ele), get_avatar_info(ele)) for ele in avatar_options ]
     return avatar_options

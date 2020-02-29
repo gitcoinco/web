@@ -308,6 +308,27 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/jedi.svg',
         },
+        'cartoon_jedi': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+                'face': '120 100 100 100',
+                'clothes': '50 150 200 200',
+                'hair': '100 50 200 201',
+                'helmet': '100 50 200 200',
+                'accessory': '0 50 200 200',
+                'legs': '120 250 100 100',
+            },
+            'skin_tones': [
+                'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031',
+                '593D26', '392D16', 'FFFF99'
+            ],
+            'hair_tones': [
+                'F495A8', '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC',
+                '0ECF7C'
+            ],
+            'tone_maps': ['cj_skin', 'cj_hair'],
+            'path': 'assets/v2/images/avatar3d/cartoon_jedi.svg',
+        },
         'orc': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
@@ -410,6 +431,12 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
     if tone == 'orc_hair':
         tones = {'010101': 0, }
         base_3d_tone = '010101'
+    if tone == 'cj_hair':
+        tones = {'CCA352': 0, }
+        base_3d_tone = 'CCA352'
+    if tone == 'cj_skin':
+        tones = {'D99678': 0, }
+        base_3d_tone = 'D99678'
     if tone == 'people_skin':
         tones = {'FFE1B2': 0, 'FFD7A3': 0, }
         base_3d_tone = 'FFE1B2'
