@@ -1,0 +1,16 @@
+{
+    "symbol": "GDT",
+    "address": "0x5DED09C17d24A5F995704821306423111cAaEc4c",
+    "overview":{
+          "en": "GDT aims to provide a low-cost, private, flexible, and secure decentralized intelligent blockchain for artificial intelligence products.",
+          "zh": "GDT旨在为人工智能产品提供一个低成本的、隐私的、弹性的、安全的去中心化物联智能区块链。"
+    },
+    "email": "thutetsbwwa@outlook.com",
+    "website": "http://www.gdtoken.xyz/",
+    "whitepaper": "http://www.gdtoken.xyz/GDT.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-02-26",
+    "links": {
+        "telegram": "https://t.me/gdtgroup"
+      }
+}
