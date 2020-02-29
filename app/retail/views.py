@@ -1274,6 +1274,9 @@ def create_status_update(request):
     return JsonResponse(response)
 
 def help(request):
+    if not request.user.is_staff:
+        return redirect('/wiki/help')
+        
     faq = {
         'Product': [
         {
