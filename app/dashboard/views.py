@@ -59,8 +59,8 @@ from avatar.views_3d import avatar3dids_helper
 from bleach import clean
 from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
-from chat.tasks import add_to_channel
-from chat.utils import create_channel_if_not_exists, associate_chat_to_profile
+from chat.tasks import add_to_channel, create_channel_if_not_exists, associate_chat_to_profile
+
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -391,6 +391,7 @@ def new_interest(request, bounty_id):
                 if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
                     try:
                         bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
+
                         created, channel_details = create_channel_if_not_exists({
                             'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
                             'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
@@ -429,7 +430,8 @@ def new_interest(request, bounty_id):
                         profile.chat_id
                     ]
                     add_to_channel.delay(
-                        {'id': bounty_channel_id}, profiles_to_connect
+                        bounty_channel_id,
+                        profiles_to_connect
                     )
 
             except Exception as e:
@@ -4001,18 +4003,39 @@ def hackathon_save_project(request):
     }
 
     if project_id:
-        try :
+        try:
+            project_channel_name = slugify(f'{kwargs["name"]}')
+            created, channel_details = create_channel_if_not_exists({
+                'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                'channel_purpose': kwargs["summary"][:255],
+                'channel_display_name': f'project-{project_channel_name}'[:60],
+                'channel_name': project_channel_name[:60],
+                'channel_type': 'P'
+            })
+
+            profiles_to_connect = []
+            for profile_id in profiles:
+                curr_profile = Profile.objects.get(id=profile_id)
+                if not curr_profile.chat_id:
+                    created, curr_profile = associate_chat_to_profile(curr_profile)
+                profiles_to_connect.append(curr_profile.chat_id)
+
+            add_to_channel.delay(channel_details['id'], profiles_to_connect)
+
             project = HackathonProject.objects.filter(id=project_id, profiles__id=profile.id)
 
             kwargs.update({
-                'logo': request.FILES.get('logo', project.first().logo)
+                'logo': request.FILES.get('logo', project.first().logo),
+                'chat_channel_id': channel_details['id']
             })
+
             project.update(**kwargs)
 
             profiles.append(str(profile.id))
             project.first().profiles.set(profiles)
 
             invalidate_obj(project.first())
+
 
         except Exception as e:
             logger.error(f"error in record_action: {e}")

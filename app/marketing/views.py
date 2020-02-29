@@ -23,7 +23,7 @@ import csv
 import json
 import logging
 
-from chat.utils import update_chat_notifications
+from chat.tasks import update_chat_notifications
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
