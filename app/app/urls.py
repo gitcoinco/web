@@ -62,7 +62,7 @@ from .sitemaps import sitemaps
 
 urlpatterns = [
 
-    path('docs/', include('wiki.urls')),
+    path('wiki/', include('wiki.urls')),
 
     # oauth2 provider
     url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
@@ -660,7 +660,7 @@ urlpatterns = [
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 
     # wiki
-    path('docs/notifications/', include('django_nyt.urls')),
+    path('wiki/notifications/', include('django_nyt.urls')),
 
 ]
 
@@ -681,11 +681,11 @@ if settings.DEBUG:
 
 urlpatterns += [
     re_path(
-        r'^(?!docs)([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
         dashboard.views.profile,
         name='profile_min'
     ),
-    re_path(r'^(?!docs)([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'),
+    re_path(r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'),
 ]
 
 LOGIN_REDIRECT_URL = '/login'
