@@ -1,6 +1,7 @@
 let bounty = [];
 let url = location.href;
-document.result = bounty
+
+document.result = bounty;
 
 Vue.mixin({
   methods: {
@@ -41,7 +42,8 @@ Vue.mixin({
       }
       // pending=false
       let result = vm.bounty.interested.filter(interest => caseInsensitiveCompare(interest.profile.handle, vm.contxt.github_handle));
-      return result ? !result.pending : false
+
+      return result ? !result.pending : false;
 
     },
     checkFulfilled: function() {
@@ -88,11 +90,37 @@ Vue.mixin({
           _alert('Could not copy text to clipboard', 'error', 5000);
         });
       }
+    },
+    fulfillmentComplete: function(fulfillment_id, amount, closeBounty, bounty_owner_address) {
+
+      let vm = this;
+      const owner_address = vm.bounty.bounty_owner_address ?
+        vm.bounty.bounty_owner_address :
+        bounty_owner_address;
+
+      const payload = {
+        amount: amount,
+        token_name: vm.bounty.token_name,
+        close_bounty: closeBounty,
+        bounty_owner_address: owner_address
+      };
+
+      const apiUrlBounty = `/api/v1/bounty/payout/${fulfillment_id}`;
+
+      fetchData(apiUrlBounty, 'POST', payload).then(response => {
+        if (200 <= response.status && response.status <= 204) {
+          console.log('success', response);
+        } else {
+          _alert('Unable to make payout bounty. Please try again later', 'error');
+          console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
+        }
+      });
+
     }
   },
   computed: {
     sortedActivity: function() {
-      return this.bounty.activities.sort((a, b) => new Date(b.created) - new Date(a.created))
+      return this.bounty.activities.sort((a, b) => new Date(b.created) - new Date(a.created));
     }
 
   }
@@ -111,6 +139,7 @@ if (document.getElementById('gc-bounty-detail')) {
         isOwner: false,
         is_bounties_network: is_bounties_network,
         inputAmount: 0,
+        inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt
       };
     },

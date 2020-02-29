@@ -4970,7 +4970,7 @@ def payout_bounty_v1(request, fulfillment_id):
             return JsonResponse(response)
 
         bounty.bounty_owner_address = bounty_owner_address
-
+        bounty.save()
 
     amount = request.POST.get('amount')
     if not amount:
@@ -4988,6 +4988,7 @@ def payout_bounty_v1(request, fulfillment_id):
 
     if request.POST.get('close_bounty') == True:
         bounty.bounty_state = 'done'
+        bounty.save()
 
     sync_etc_payout(fulfillment)
 

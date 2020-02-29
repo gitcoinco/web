@@ -1,6 +1,6 @@
 
 $('body').on('click', '.modal-link', function(e) {
-  console.log(e)
+  console.log(e);
   let modals = $('#modal');
   let modalBody = $('#modal .modal-content');
   let modalUrl = `/modal/social_contribution?pk=${document.result.pk}`;
