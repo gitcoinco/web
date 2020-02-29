@@ -116,7 +116,14 @@ Vue.mixin({
         }
       });
 
-    }
+    },
+    show_extend_deadline_modal: function() {
+      show_extend_deadline_modal();
+    },
+    show_interest_modal: function() {
+      show_interest_modal();
+    },
+
   },
   computed: {
     sortedActivity: function() {
@@ -148,3 +155,191 @@ if (document.getElementById('gc-bounty-detail')) {
     }
   });
 }
+
+
+var show_extend_deadline_modal = function() {
+  let modals = $('#modalExtend');
+  let modalBody = $('#modalExtend .modal-content');
+  const url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
+
+  moment.locale('en');
+  modals.on('show.bs.modal', function() {
+    modalBody.load(url, ()=> {
+      const currentExpires = moment.utc(document.result['expires_date']);
+
+      $('#modalExtend input[name="expirationTimeDelta"]').daterangepicker({
+        parentEl: '#extend_deadline',
+        singleDatePicker: true,
+        startDate: moment(currentExpires).add(1, 'month'),
+        minDate: moment().add(1, 'day'),
+        ranges: {
+          '1 week': [ moment(currentExpires).add(7, 'days'), moment(currentExpires).add(7, 'days') ],
+          '2 weeks': [ moment(currentExpires).add(14, 'days'), moment(currentExpires).add(14, 'days') ],
+          '1 month': [ moment(currentExpires).add(1, 'month'), moment(currentExpires).add(1, 'month') ],
+          '3 months': [ moment(currentExpires).add(3, 'month'), moment(currentExpires).add(3, 'month') ],
+          '1 year': [ moment(currentExpires).add(1, 'year'), moment(currentExpires).add(1, 'year') ]
+        },
+        'locale': {
+          'customRangeLabel': 'Custom'
+        }
+      }, function(start, end, label) {
+        set_extended_time_html(end);
+      });
+
+      set_extended_time_html($('#modalExtend input[name="expirationTimeDelta"]').data('daterangepicker').endDate);
+
+      $('#neverExpires').on('click', () => {
+        if ($('#neverExpires').is(':checked')) {
+          $('#expirationTimeDelta').attr('disabled', true);
+          $('#extended-expiration-date #extended-days').html('Never');
+          $('#extended-expiration-date #extended-date').html('-');
+        } else {
+          $('#expirationTimeDelta').attr('disabled', false);
+          set_extended_time_html($('#modalExtend input[name="expirationTimeDelta"]').data('daterangepicker').endDate);
+        }
+      });
+
+      modals.on('submit', function(event) {
+        event.preventDefault();
+
+        var extended_time = $('input[name=updatedExpires]').val();
+
+        extend_expiration(document.result['pk'], {
+          deadline: extended_time
+        });
+        // setTimeout(function() {
+        //   window.location.reload();
+        // }, 2000);
+      });
+    });
+  });
+  modals.bootstrapModal('show');
+  $(document, modals).on('hidden.bs.modal', function(e) {
+    $('#extend_deadline').remove();
+    $('.daterangepicker').remove();
+  });
+};
+
+var set_extended_time_html = function(extendedDuration) {
+  extendedDuration = extendedDuration.set({hour: 0, minute: 0, second: 0, millisecond: 0});
+  $('input[name=updatedExpires]').val(extendedDuration.utc().unix());
+  $('#extended-expiration-date #extended-date').html(extendedDuration.format('MM-DD-YYYY hh:mm A'));
+  $('#extended-expiration-date #extended-days').html(moment.utc(extendedDuration).fromNow());
+};
+
+var extend_expiration = function(bounty_pk, data) {
+  var request_url = '/actions/bounty/' + bounty_pk + '/extend_expiration/';
+  $.post(request_url, data, function(result) {
+
+    if (result.success) {
+      _alert({ message: result.msg }, 'success');
+      return appBounty.bounty.expires_date = moment.unix(data.deadline).utc().format();
+    }
+    return false;
+  }).fail(function(result) {
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  });
+};
+
+
+
+var show_interest_modal = function() {
+  var self = this;
+  var modals = $('#modalInterest');
+  let modalBody = $('#modalInterest .modal-content');
+  let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
+
+  modals.on('show.bs.modal', function() {
+    modalBody.load(modalUrl, ()=> {
+      if (document.result['repo_type'] === 'private') {
+        document.result.unsigned_nda ? $('.nda-download-link').attr('href', document.result.unsigned_nda.doc) : $('#nda-upload').hide();
+      }
+
+      let actionPlanForm = $('#action_plan');
+      let discord_username = $('#discord_username');
+      let issueMessage = $('#issue_message');
+
+      issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
+
+      actionPlanForm.on('submit', function(event) {
+        event.preventDefault();
+
+        let msg = issueMessage.val().trim();
+
+        if (!msg || msg.length < 30) {
+          _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
+          return false;
+        }
+
+        const issueNDA = document.result['repo_type'] === 'private' ? $('#issueNDA')[0].files : undefined;
+
+        if (issueNDA && typeof issueNDA[0] !== 'undefined') {
+
+          const formData = new FormData();
+
+          formData.append('docs', issueNDA[0]);
+          formData.append('doc_type', 'signed_nda');
+
+          const ndaSend = {
+            url: '/api/v0.1/bountydocument',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            dataType: 'json',
+            contentType: false
+          };
+
+          $.ajax(ndaSend).done(function(response) {
+            if (response.status == 200) {
+              _alert(response.message, 'info');
+              add_interest(document.result['pk'], {
+                issue_message: msg,
+                signed_nda: response.bounty_doc_id,
+                discord_username: $('#discord_username').length ? $('#discord_username').val() : null
+              }).then(success => {
+                if (success) {
+                  $(self).attr('href', '/uninterested');
+                  $(self).find('span').text(gettext('Stop Work'));
+                  $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+                  modals.bootstrapModal('hide');
+                }
+              }).catch((error) => {
+                if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+                  return;
+                throw error;
+              });
+            } else {
+              _alert(response.message, 'error');
+            }
+          }).fail(function(error) {
+            _alert(error, 'error');
+          });
+        } else {
+          add_interest(document.result['pk'], {
+            issue_message: msg,
+            discord_username: $('#discord_username').length ? $('#discord_username').val() : null
+          }).then(success => {
+            if (success) {
+              // $(self).attr('href', '/uninterested');
+              // $(self).find('span').text(gettext('Stop Work'));
+              // $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+              appBounty.fetchBounty();
+              modals.bootstrapModal('hide');
+
+              if (document.result.event) {
+                projectModal(document.result.pk);
+              }
+            }
+          }).catch((error) => {
+            if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+              return;
+            throw error;
+          });
+        }
+
+      });
+
+    });
+  });
+  modals.bootstrapModal('show');
+};
