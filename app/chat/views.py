@@ -32,8 +32,11 @@ def chat(request):
     """Render chat landing page response."""
 
     try:
-        users_online_count = Stat.objects.filter(key='chat_active_users').order_by('pk')
-        users_total_count = Stat.objects.filter(key='chat_total_users').order_by('pk')
+        users_online_count = Stat.objects.filter(key='chat_active_users').order_by('pk').first()
+        users_total_count = Stat.objects.filter(key='chat_total_users').order_by('pk').first()
+
+        users_online_count = users_online_count if users_online_count is not None else 'N/A'
+        users_total_count = users_total_count if users_total_count is not None else 'N/A'
 
     except Exception as e:
         logger.error(str(e))
