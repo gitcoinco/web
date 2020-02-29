@@ -161,6 +161,22 @@
                 </a>
 
               </div>
+              <template v-if="checkInterest()">
+                <a :href="bounty.action_urls.fulfill" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Submit work for the funder to review" v-if="checkApproved() && !checkFulfilled()">
+                  Submit Work
+                </a>
+                <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption">
+                  Stop Work
+                </button>
+              </template>
+              <template v-else-if="bounty.is_open">
+                <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" v-if="bounty.permission_type === 'approval'">
+                  Express Interest
+                </button>
+                <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" v-else>
+                  Start Work
+                </button>
+              </template>
               <div id="github_actions" class="d-inline-block">
                 <a :href="bounty.github_url" class="btn btn-outline-gc-blue btn-sm mr-2 px-3 font-caption" target="_blank">
                   <i class="fab fa-github mr-2"></i> {% trans "View On Github" %}
@@ -251,9 +267,12 @@
                     </time>
                   </div>
                   <div class="col-md-3 col-lg-3 my-auto text-center">
-                    <button data-toggle="modal" data-target="#payoutModal" class="btn btn-sm btn-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
+                    <button data-toggle="modal" data-target="#payoutModal" class="btn btn-sm btn-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" v-if="!fulfillment.accepted && isOwner">
                       <i class="fas fa-money-check-alt mr-2 font-caption"></i>Payout Bounty
                     </button>
+                    <div v-if="fulfillment.accepted">
+                      <i class="far fa-check-circle"></i>
+                    </div>
                   </div>
                   <div class="col-12">
                     <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
@@ -314,7 +333,7 @@
                     </time>
                   </div>
                   <div class="col-md-3 col-lg-3 my-auto text-center">
-                    <template v-if="interest.pending">
+                    <template v-if="interest.pending && isOwner">
                       <a target="_blank" :href="`${bounty.url}?mutate_worker_action=approve&worker=${interest.profile.handle}`" title="Approve worker" class="btn btn-sm btn-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
                         <i class="fas fa-check mr-1 font-caption"></i> Approve
                       </a>
@@ -322,9 +341,14 @@
                         <i class="fas fa-times mr-1 font-caption"></i> Reject
                       </a>
                     </template>
-                    <template v-else>
+                    <template v-else-if="isOwner">
                       <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
                         <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Worker
+                      </button>
+                    </template>
+                    <template v-if="interest.profile.handle === contxt.github_handle">
+                      <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
+                        <i class="far fa-hand-paper mr-1 font-caption"></i> Stop
                       </button>
                     </template>
                   </div>
@@ -345,7 +369,7 @@
             <div class="col-12">
               <div class="border my-5 px-4 pt-4">
                 <h5 class="font-body font-weight-semibold">{% trans "ALL  ACTIVITY" %}</h5>
-                <div v-for="activity in bounty.activities" :key="activity.pk" class="my-4 row font-body">
+                <div v-for="activity in sortedActivity" :key="activity.pk" class="my-4 row font-body">
                   <div class="col-md-2 col-lg-1 text-center text-md-left">
                     <a :href="`/profile/${activity.profile.handle}`" v-show="activity.profile.avatar_url">
                       <img class="avatar" :src="[[activity.profile.avatar_url]]">

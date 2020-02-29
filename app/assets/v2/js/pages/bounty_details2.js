@@ -18,11 +18,39 @@ Vue.mixin({
     checkOwner: function(handle) {
       let vm = this;
 
-      if (document.contxt['github_handle']) {
+      if (vm.contxt.github_handle) {
         return caseInsensitiveCompare(document.contxt['github_handle'], handle);
       }
       return false;
 
+    },
+    checkInterest: function() {
+      let vm = this;
+
+      if (!vm.contxt.github_handle) {
+        return false;
+      }
+      return !!(vm.bounty.interested || []).find(interest => caseInsensitiveCompare(interest.profile.handle, vm.contxt.github_handle));
+
+    },
+    checkApproved: function() {
+      let vm = this;
+
+      if (!vm.contxt.github_handle) {
+        return false;
+      }
+      // pending=false
+      let result = vm.bounty.interested.filter(interest => caseInsensitiveCompare(interest.profile.handle, vm.contxt.github_handle));
+      return result ? !result.pending : false
+
+    },
+    checkFulfilled: function() {
+      let vm = this;
+
+      if (!vm.contxt.github_handle) {
+        return false;
+      }
+      return !!(vm.bounty.fulfillments || []).find(fulfiller => caseInsensitiveCompare(fulfiller.fulfiller_github_username, vm.contxt.github_handle));
     },
     syncGhIssue: function() {
       let vm = this;
@@ -63,6 +91,9 @@ Vue.mixin({
     }
   },
   computed: {
+    sortedActivity: function() {
+      return this.bounty.activities.sort((a, b) => new Date(b.created) - new Date(a.created))
+    }
 
   }
 });
@@ -79,7 +110,8 @@ if (document.getElementById('gc-bounty-detail')) {
         cb_address: cb_address,
         isOwner: false,
         is_bounties_network: is_bounties_network,
-        inputAmount: 0
+        inputAmount: 0,
+        contxt: document.contxt
       };
     },
     mounted() {
