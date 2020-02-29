@@ -329,6 +329,17 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['cj_skin', 'cj_hair'],
             'path': 'assets/v2/images/avatar3d/cartoon_jedi.svg',
         },
+        'square_bot': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': ['C3996B','5F768F','ECC55F','E08156','F3A756','8EA950','62ADC9','60C19D','A07AB5','ED5599'],
+            'hair_tones': [
+            ],
+            'background_tones': ['C3996B','5F768F','ECC55F','E08156','F3A756','8EA950','62ADC9','60C19D','A07AB5','ED5599'],
+            'tone_maps': ['squarebot_skin', 'squarebot_background'],
+            'path': 'assets/v2/images/avatar3d/square_bot.svg',
+        },
         'orc': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
@@ -431,6 +442,13 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
     if tone == 'orc_hair':
         tones = {'010101': 0, }
         base_3d_tone = '010101'
+
+    if tone == 'squarebot_background':
+        tones = {'009345': 0, '29B474': 0 }
+        base_3d_tone = '29B474'
+    if tone == 'squarebot_skin':
+        tones = {'29B473': 0, }
+        base_3d_tone = '29B473'
     if tone == 'cj_hair':
         tones = {'CCA352': 0, }
         base_3d_tone = 'CCA352'
