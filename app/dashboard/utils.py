@@ -529,6 +529,8 @@ def sync_etc_payout(fulfillment):
         fulfillment.payout_tx_id = txn['hash']
         if get_etc_txn_status(fulfillment.payout_tx_id).get('has_mined'):
             fulfillment.payout_status = 'done'
+            fulfillment.accepted_on = timezone.now()
+            fulfillment.accepted = True
         fulfillment.save()
 
 

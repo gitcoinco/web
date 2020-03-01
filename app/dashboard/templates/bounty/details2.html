@@ -254,10 +254,10 @@
                     >
                       [[ fulfillment.profile.handle ]]
                     </a>
-                    <div class="" v-if="fulfillment.fulfiller_address">
+                    <div class="font-smaller-4" v-if="fulfillment.fulfiller_address">
                       <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.fulfiller_address}` : `https://classic.etccoopexplorer.com/address/${fulfillment.fulfiller_address}` }`" target="_blank">[[ fulfillment.fulfiller_address | truncateHash ]]</a>
-                      <button class="btn btn-sm my-0" @click="copyTextToClipboard(fulfillment.fulfiller_address)">
-                        <i class="far fa-clipboard-check font-caption"></i>
+                      <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.fulfiller_address)">
+                        <i class="far fa-clipboard-check"></i>
                       </button>
                     </div>
                   </div>
@@ -267,12 +267,61 @@
                     </time>
                   </div>
                   <div class="col-md-3 col-lg-3 my-auto text-center">
-                    <button data-toggle="modal" data-target="#payoutModal" class="btn btn-sm btn-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" v-if="!fulfillment.accepted && isOwner">
-                      <i class="fas fa-money-check-alt mr-2 font-caption"></i>Payout Bounty
-                    </button>
-                    <div v-if="fulfillment.accepted">
-                      <i class="far fa-check-circle"></i>
-                    </div>
+                    <template v-if="isOwner">
+                      <template v-if="fulfillment.payout_status == 'done'">
+                        <button class="btn btn-sm btn-gc-green my-auto px-3 font-smaller-2 font-weight-semibold">
+                          <i class="fas fa-check mr-2 font-caption"></i>Bounty Paid
+                        </button>
+                        <p class="font-smaller-4 my-0">
+                          ([[ fulfillment.payout_tx_id | truncateHash ]])
+                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                            <i class="far fa-clipboard-check"></i>
+                          </button>
+                        </p>
+                      </template>
+
+                      <template v-else-if="fulfillment.payout_status == 'pending'">
+                        <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
+                          <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
+                        </button>
+                        <p class="font-smaller-4 my-0">
+                          ([[ fulfillment.payout_tx_id | truncateHash ]])
+                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                            <i class="far fa-clipboard-check"></i>
+                          </button>
+                        </p>
+                      </template>
+
+                      <button v-else data-toggle="modal" data-target="#payoutModal" class="btn btn-sm btn-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
+                        <i class="fas fa-money-check-alt mr-2 font-caption"></i>Payout Bounty
+                      </button>
+                    </template>
+
+                    <tempalte v-else>
+                      <div v-if="fulfillment.payout_status == 'done'">
+                        <button class="btn btn-sm btn-gc-green my-auto px-3 font-smaller-2 font-weight-semibold">
+                          <i class="fas fa-check mr-2 font-caption"></i>Bounty Paid
+                        </button>
+                        <p class="font-smaller-4 my-0">
+                          ([[ fulfillment.payout_tx_id | truncateHash ]])
+                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                            <i class="far fa-clipboard-check"></i>
+                          </button>
+                        </p>
+                      </div>
+                      <div v-else-if="fulfillment.payout_status == 'pending'">
+                        <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
+                          <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
+                        </button>
+                        <p class="font-smaller-4 my-0">
+                          ([[ fulfillment.payout_tx_id | truncateHash ]])
+                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                            <i class="far fa-clipboard-check"></i>
+                          </button>
+                        </p>
+                      </div>
+                    </tempalte>
+
                   </div>
                   <div class="col-12">
                     <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
@@ -447,7 +496,7 @@
                     <div v-if="is_bounties_network" class="font-caption text-black-70">
                       <span>{% trans "Address" %} :</span>
                       <span>[[ bounty.bounty_owner_address ]]</span>
-                      <button class="btn btn-sm my-0" @click="copyTextToClipboard(bounty.bounty_owner_address)">
+                      <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(bounty.bounty_owner_address)">
                         <i class="far fa-clipboard-check font-caption"></i>
                       </button>
                     </div>
