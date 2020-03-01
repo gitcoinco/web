@@ -318,6 +318,16 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/mage.svg',
         },
+        'orc_gitcoin': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/orc_gitcoin.svg',
+        },
         'cartoon_jedi': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
@@ -366,10 +376,7 @@ def get_avatar_attrs(theme, key):
                 'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031',
                 '593D26', '392D16', 'FFFF99'
             ],
-            'hair_tones': [
-                'F495A8', '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC',
-                '0ECF7C'
-            ],
+            'hair_tones': [],
             'tone_maps': ['orc_skin', 'orc_hair'],
             'path': 'assets/v2/images/avatar3d/orc.svg',
         },
