@@ -977,7 +977,7 @@ def vision(request):
 
 def avatar(request):
     """Render the avatar response."""
-    from dashboard.views import get_avatar_options
+    from avatar.models import AvatarTheme
 
     default_back = get_leaderboard_back(request)
     back = request.GET.get('back', default_back[1])
@@ -986,13 +986,13 @@ def avatar(request):
     context = {
         'is_outside': True,
         'active': 'avatar',
-        'title': 'Avatar',
+        'title': 'Avatar Builder',
         'card_title': _("Free Avatar Builder"),
         'card_desc': _('Gitcoin\'s Free Avatar Creator is an online tool to build a character for yourself.  It has dozens of options to show off your bad-self.  No strings attached, Always free.'),
         'avatar_url': "https://c.gitcoin.co/avatars/d1a33d2bcb7bbfef50368bca73111fae/fryggr.png",
         'back': back,
         'img': img,
-        'avatar_options': get_avatar_options(),
+        'avatar_options': AvatarTheme.objects.filter(active=True).order_by('-popularity'),
     }
     return TemplateResponse(request, 'avatar_landing.html', context)
 

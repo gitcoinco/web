@@ -1,11 +1,11 @@
 .products{
   background-color: #fafafa; 
   padding: 30px;
-  height: 250px;
+  height: 330px;
   border-top: 1px solid #ddd;
 }
 .products.bufficorn {
-  height: 350px;
+  height: 430px;
 }
 .products:nth-child(even){
   background-color: #eee; 
@@ -40,14 +40,14 @@
 }
 @media (max-width: 800px) {
   .products {
-    height: 400px;
+    height: 450px;
   }
 }
 @media (max-width: 500px) {
   .products {
-    height: 350px;
+    height: 400px;
   }
   .products.bufficorn {
-    height: 500px;
+    height: 550px;
   }
 }

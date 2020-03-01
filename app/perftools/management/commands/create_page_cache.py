@@ -32,6 +32,15 @@ from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
 
 
+def create_avatar_cache():
+    from avatar.models import AvatarTheme, CustomAvatar
+    for at in AvatarTheme.objects.all():
+        at.popularity = CustomAvatar.objects.filter(config__theme=[at.name]).count()
+        if at.name == 'classic':
+            at.popularity = CustomAvatar.objects.filter(config__icontains='"Ears"').count()
+        at.save()
+
+
 def create_activity_cache():
     from django.utils import timezone
     from dashboard.models import Activity
@@ -144,8 +153,9 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_activity_cache()
+        create_avatar_cache()
         if not settings.DEBUG:
+            create_activity_cache()
             create_results_cache()
             create_quests_cache()
             create_grants_cache()

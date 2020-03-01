@@ -53,6 +53,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 import magic
 from app.utils import clean_str, ellipses, get_default_network
+from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper
 from bleach import clean
@@ -824,80 +825,6 @@ def uninterested(request, bounty_id, profile_id):
 def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
-def get_artist_bio(key):
-    if key == 'metacartel':
-        return 'This piece was originally created by <a target="blank" href="https://twitter.com/frankynines">@frankynies</a>, an amazing artist of Mexican heritage who works at Dapper Labs.'
-    if key == 'comic':
-        return 'This piece was created by <a target=new href="/TheDataDesigner">@TheDataDesigner</a>.'
-    if key == 'square_bot':
-        return 'This piece was created by <a target=new href="/octaviaan">@octaviaan</a>.'
-    if key == 'cartoon_jedi':
-        return 'This piece was created by <a target=new href="/Popeline5">@Popeline5</a>.'
-    if key == 'jedi' or key == 'orc' or key == 'joker':
-        return 'This piece was created by <a target=new href="/KushMd">@KushMd </a>.'
-    if key == 'unisex' or key == 'female':
-        return 'This piece was created by <a target=new href="/MladenPetronijevic">@MladenPetronijevic</a>.'
-    if key == 'bot':
-        return 'This piece was created by <a target=new href="/GuistF">@GuistF</a>.'
-    if key == 'bufficorn':
-        return 'The Bufficorn was created by <a target="blank" href="https://twitter.com/EthereumDenver">@EthereumDenver</a>.'
-    return ''
-
-
-def get_avatar_info(key):
-    if key == 'classic':
-        return 'The classic avatar builder.  Built by & for Gitcoiners with bounties.'
-    if key == 'unisex' or key == 'female':
-        return 'A fun new avatar style that hit the streets in 2019'
-    if key == 'bufficorn':
-        return 'The Bufficorn is a magical fantastical animal that represents the collaborative spirit of #BUIDL. They live in communities atop Colorados 14er mountain peaks and strive to serve their communities above their own selfish interests. '
-    if key == 'bot':
-        return 'Bots are a Gitcoin favorite.  Beep Boop bop'
-    if key in ['flat', 'shiny', 'people', 'technology', 'landscape', 'space']:
-        return 'Liscensed under Creative Commons from our friends at <a target=new href="https://svgrepo.com">svgrepo.com</a>'
-    return ''
-
-def get_avatar_options():
-    avatar_options = [
-        'classic',
-        'unisex',
-        'female',
-        'bufficorn',
-        'square_bot',
-        'bot',
-        'comic',
-        'flat',
-        'shiny',
-        'people',
-        'robot',
-        'technology',
-        'landscape',
-        'space',
-        'spring',
-        'metacartel',
-        'jedi',
-        'orc',
-        'joker',
-        'cartoon_jedi',
-
-    ]
-    avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele), get_artist_bio(ele), get_avatar_info(ele)) for ele in avatar_options ]
-    return avatar_options
-
-
-def get_preview_img(key):
-    if key == 'classic':
-        return 'https://c.gitcoin.co/avatars/d1a33d2bcb7bbfef50368bca73111fae/fryggr.png'
-    if key == 'bufficorn':
-        return 'https://c.gitcoin.co/avatars/94c30306a088d06163582da942a2e64e/dah0ld3r.png'
-    if key == 'female':
-        return 'https://c.gitcoin.co/avatars/b713fb593b3801700fd1f92e9cd18e79/aaliyahansari.png'
-    if key == 'unisex':
-        return 'https://c.gitcoin.co/avatars/cc8272136bcf9b9d830c0554a97082f3/joshegwuatu.png'
-    if key == 'bot':
-        return 'https://c.gitcoin.co/avatars/c9d82da31b7833bdae37861014c32ebc/owocki.png'
-    return static(f'v2/images/avatar3d/{key}.png')
-
 def onboard(request, flow=None):
     """Handle displaying the first time user experience flow."""
     if flow not in ['funder', 'contributor', 'profile']:
@@ -944,14 +871,14 @@ def onboard(request, flow=None):
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
     background_tones = get_avatar_attrs(theme, 'background_tones')
-    avatar_options = get_avatar_options()
+    
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
         'flow': flow,
         'profile': profile,
         'theme': theme,
-        'avatar_options': avatar_options,
+        'avatar_options': AvatarTheme.objects.filter(active=True).order_by('-popularity'),
         '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(theme),
         'possible_background_tones': background_tones,
         'possible_skin_tones': skin_tones,

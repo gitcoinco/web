@@ -15,7 +15,7 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static humanize %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -52,19 +52,22 @@
     </div>
 
     {% for product in avatar_options %}
-      <div class="{{ product.0 }} products container px-0 p-5">
-          <a href="{{product.1}}">
-            <img src="{{product.2}}">
+      <div class="{{ product.name }} products container px-0 p-5">
+          <a href="{{product.url}}">
+            <img src="{{product.img_url}}">
           </a>
-          <h3>{{product.0|title}}</h3>
-          {% if product.4 %}
-            <p>{{product.4|safe}}</p>
+          <h3>{{product.humanized_name}}</h3>
+          {% if product.description %}
+            <p>{{product.description|safe}}</p>
           {% endif %}
-          {% if product.3 %}
-            <p><strong>About the artist:</strong> {{product.3|safe}}</p>
+          {% if product.artist_bio %}
+            <p><strong>About the artist:</strong> {{product.artist_bio|safe}}</p>
           {% endif %}
+          <p>
+            Created {{product.created_on|naturaltime}} | {{product.popularity}} avatars created
+          </p>
           <br>
-          <a class="btn btn-gc-blue p-1 shadow-none font-weight-bold text-center mt-1 mb-1 p-2" href="{{product.1}}">Try Now</a>
+          <a class="btn btn-gc-blue p-1 shadow-none font-weight-bold text-center mt-1 mb-1 p-2" href="{{product.url}}">Try Now</a>
       </div>
     {% endfor %}
       <div class="Features products container px-0 p-5">
