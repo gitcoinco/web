@@ -38,6 +38,9 @@ def create_avatar_cache():
         at.popularity = CustomAvatar.objects.filter(config__theme=[at.name]).count()
         if at.name == 'classic':
             at.popularity = CustomAvatar.objects.filter(config__icontains='"Ears"').count()
+        if at.name == 'unisex':
+            at.popularity += CustomAvatar.objects.filter(config__theme=["3d"]).count()
+            at.popularity += CustomAvatar.objects.filter(config__icontains='hairTone').exclude(config__icontains="theme").count()
         at.save()
 
 
