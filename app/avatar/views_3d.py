@@ -80,6 +80,50 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar.svg',
         },
+        'mage_snowglobe': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'clothing': '60 80 260 300',
+                'ears': '100 70 50 50',
+                'head': '80 10 170 170',
+                'mouth': '130 90 70 70',
+                'nose': '140 80 50 50',
+                'eyes': '120 40 80 80',
+                'hair': '110 0 110 110',
+            },
+            'skin_tones': [
+                'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26',
+                '392D16'
+            ],
+            'hair_tones': [
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+            ],
+            'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair', 'mage_skin'],
+            'path': 'assets/v2/images/avatar3d/mage_snowglobe.svg',
+        },
+        'mage_snowglobe_female': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'clothing': '60 80 260 300',
+                'ears': '100 70 50 50',
+                'head': '80 10 170 170',
+                'mouth': '130 90 70 70',
+                'nose': '140 80 50 50',
+                'eyes': '120 40 80 80',
+                'hair': '110 0 110 110',
+            },
+            'skin_tones': [
+                'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26',
+                '392D16'
+            ],
+            'hair_tones': [
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+            ],
+            'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
+            'path': 'assets/v2/images/avatar3d/mage_snowglobe_female.svg',
+        },
         'female': {
             'preview_viewbox': {
                 #section: x_pos y_pox x_size y_size
@@ -318,6 +362,16 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/mage.svg',
         },
+        'orc_gitcoin': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/orc_gitcoin.svg',
+        },
         'cartoon_jedi': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
@@ -366,10 +420,7 @@ def get_avatar_attrs(theme, key):
                 'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031',
                 '593D26', '392D16', 'FFFF99'
             ],
-            'hair_tones': [
-                'F495A8', '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC',
-                '0ECF7C'
-            ],
+            'hair_tones': [],
             'tone_maps': ['orc_skin', 'orc_hair'],
             'path': 'assets/v2/images/avatar3d/orc.svg',
         },
@@ -449,6 +500,9 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
         base_3d_tone = 'EDCEAE'
     if tone == 'metacartel_skin':
         tones = {'ED495F': 0, }
+    if tone == 'mage_skin':
+        tones = {'FFEDD9': 0, }
+        base_3d_tone = 'FFEDD9'
     if tone == 'orc_skin':
         tones = {'FFFF99': 0, }
         base_3d_tone = 'FFFF99'

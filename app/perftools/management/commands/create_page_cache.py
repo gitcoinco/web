@@ -35,12 +35,14 @@ from retail.utils import build_stat_results, programming_languages
 def create_avatar_cache():
     from avatar.models import AvatarTheme, CustomAvatar
     for at in AvatarTheme.objects.all():
-        at.popularity = CustomAvatar.objects.filter(active=True, config__theme=[at.name]).count()
+        at.popularity = at.popularity_cheat_by
         if at.name == 'classic':
-            at.popularity = CustomAvatar.objects.filter(active=True, config__icontains='"Ears"').count()
-        if at.name == 'unisex':
+            at.popularity += CustomAvatar.objects.filter(active=True, config__icontains='"Ears"').count()
+        elif at.name == 'unisex':
             at.popularity += CustomAvatar.objects.filter(active=True, config__theme=["3d"]).count()
             at.popularity += CustomAvatar.objects.filter(active=True, config__icontains='hairTone').exclude(config__icontains="theme").count()
+        else:
+            at.popularity += CustomAvatar.objects.filter(active=True, config__theme=[at.name]).count()
         at.save()
 
 
