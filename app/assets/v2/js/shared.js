@@ -352,87 +352,87 @@ var uninterested = function(bounty_pk, profileId, slash) {
   });
 };
 
-var extend_expiration = function(bounty_pk, data) {
-  var request_url = '/actions/bounty/' + bounty_pk + '/extend_expiration/';
+// var extend_expiration = function(bounty_pk, data) {
+//   var request_url = '/actions/bounty/' + bounty_pk + '/extend_expiration/';
 
-  showBusyOverlay();
-  $.post(request_url, data, function(result) {
-    hideBusyOverlay();
+//   showBusyOverlay();
+//   $.post(request_url, data, function(result) {
+//     hideBusyOverlay();
 
-    result = sanitizeAPIResults(result);
-    if (result.success) {
-      _alert({ message: result.msg }, 'success');
-      pull_interest_list(bounty_pk);
-      return true;
-    }
-    return false;
-  }).fail(function(result) {
-    hideBusyOverlay();
-    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
-  });
-};
+//     result = sanitizeAPIResults(result);
+//     if (result.success) {
+//       _alert({ message: result.msg }, 'success');
+//       pull_interest_list(bounty_pk);
+//       return true;
+//     }
+//     return false;
+//   }).fail(function(result) {
+//     hideBusyOverlay();
+//     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+//   });
+// };
 
 
 /** Pulls the list of interested profiles from the server. */
-var pull_interest_list = function(bounty_pk, callback) {
-  document.interested = false;
-  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL + '&not_current=1';
-  var started = [];
+// var pull_interest_list = function(bounty_pk, callback) {
+//   document.interested = false;
+//   var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL + '&not_current=1';
+//   var started = [];
 
-  $.get(uri, function(results) {
-    results = sanitizeAPIResults(results);
-    const current = results.find(result => result.current_bounty);
+//   $.get(uri, function(results) {
+//     results = sanitizeAPIResults(results);
+//     const current = results.find(result => result.current_bounty);
 
-    render_activity(current, results);
-    if (current.interested) {
-      var interested = current.interested;
+//     render_activity(current, results);
+//     if (current.interested) {
+//       var interested = current.interested;
 
-      interested.forEach(function(_interested) {
-        started.push(
-          profileHtml(_interested.profile.handle)
-        );
-        if (_interested.profile.handle == document.contxt.github_handle) {
-          document.interested = true;
-        }
-      });
-    }
-    if (started.length == 0) {
-      started.push('<i class="fas fa-minus"></i>');
-    }
-    $('#started_owners_username').html(started);
-    if (typeof callback != 'undefined') {
-      callback(document.interested);
-    }
-  });
-};
+//       interested.forEach(function(_interested) {
+//         started.push(
+//           profileHtml(_interested.profile.handle)
+//         );
+//         if (_interested.profile.handle == document.contxt.github_handle) {
+//           document.interested = true;
+//         }
+//       });
+//     }
+//     if (started.length == 0) {
+//       started.push('<i class="fas fa-minus"></i>');
+//     }
+//     $('#started_owners_username').html(started);
+//     if (typeof callback != 'undefined') {
+//       callback(document.interested);
+//     }
+//   });
+// };
 
-var profileHtml = function(handle, name) {
-  return '<span><a href="/profile/' +
-    handle + '" target="_blank">' + (name ? name : handle) + '</span></a>';
-};
+// var profileHtml = function(handle, name) {
+//   return '<span><a href="/profile/' +
+//     handle + '" target="_blank">' + (name ? name : handle) + '</span></a>';
+// };
 
 // Update the list of bounty submitters.
-var update_fulfiller_list = function(bounty_pk) {
-  fulfillers = [];
-  $.getJSON('/api/v0.1/bounties/' + bounty_pk, function(data) {
-    data = sanitizeAPIResults(data);
-    var fulfillmentList = data.fulfillments;
+// var update_fulfiller_list = function(bounty_pk) {
+//   fulfillers = [];
+//   $.getJSON('/api/v0.1/bounties/' + bounty_pk, function(data) {
+//     data = sanitizeAPIResults(data);
+//     var fulfillmentList = data.fulfillments;
 
-    $.each(fulfillmentList, function(index, value) {
-      var fulfiller = value;
+//     $.each(fulfillmentList, function(index, value) {
+//       var fulfiller = value;
 
-      fulfillers.push(fulfiller);
-    });
-    var tmpl = $.templates('#submitters');
-    var html = tmpl.render(fulfillers);
+//       fulfillers.push(fulfiller);
+//     });
+//     var tmpl = $.templates('#submitters');
+//     var html = tmpl.render(fulfillers);
 
-    if (fulfillers.length == 0) {
-      html = 'No one has submitted work yet.';
-    }
-    $('#submitter_list').html(html);
-  });
-  return fulfillers;
-};
+//     if (fulfillers.length == 0) {
+//       html = 'No one has submitted work yet.';
+//     }
+//     $('#submitter_list').html(html);
+//   });
+//   return fulfillers;
+// };
 
 function validateEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -455,43 +455,43 @@ function getParam(parameterName) {
   return result;
 }
 
-if ($.views) {
-  $.views.converters({
-    timedifference: timedifferenceCvrt,
-    activitytext: activitytextCvrt
-  });
+// if ($.views) {
+//   $.views.converters({
+//     timedifference: timedifferenceCvrt,
+//     activitytext: activitytextCvrt
+//   });
 
-}
+// }
 
-function timedifferenceCvrt(date) {
-  return timeDifference(new Date(), new Date(date), false, 60 * 60);
-}
+// function timedifferenceCvrt(date) {
+//   return timeDifference(new Date(), new Date(date), false, 60 * 60);
+// }
 
-const activity_names = {
-  new_bounty: gettext('New bounty'),
-  start_work: gettext('Work started'),
-  stop_work: gettext('Work stopped'),
-  work_submitted: gettext('Work submitted'),
-  work_done: gettext('Work done'),
-  worker_approved: gettext('Worker approved'),
-  worker_rejected: gettext('Worker rejected'),
-  worker_applied: gettext('Worker applied'),
-  increased_bounty: gettext('Increased funding'),
-  killed_bounty: gettext('Canceled bounty'),
-  new_crowdfund: gettext('New crowdfund contribution'),
-  new_tip: gettext('New tip'),
-  receive_tip: gettext('Tip received'),
-  bounty_abandonment_escalation_to_mods: gettext('Escalated for abandonment of bounty'),
-  bounty_abandonment_warning: gettext('Warned for abandonment of bounty'),
-  bounty_removed_slashed_by_staff: gettext('Dinged and removed from bounty by staff'),
-  bounty_removed_by_staff: gettext('Removed from bounty by staff'),
-  bounty_removed_by_funder: gettext('Removed from bounty by funder'),
-  bounty_changed: gettext('Bounty details changed')
-};
+// const activity_names = {
+//   new_bounty: gettext('New bounty'),
+//   start_work: gettext('Work started'),
+//   stop_work: gettext('Work stopped'),
+//   work_submitted: gettext('Work submitted'),
+//   work_done: gettext('Work done'),
+//   worker_approved: gettext('Worker approved'),
+//   worker_rejected: gettext('Worker rejected'),
+//   worker_applied: gettext('Worker applied'),
+//   increased_bounty: gettext('Increased funding'),
+//   killed_bounty: gettext('Canceled bounty'),
+//   new_crowdfund: gettext('New crowdfund contribution'),
+//   new_tip: gettext('New tip'),
+//   receive_tip: gettext('Tip received'),
+//   bounty_abandonment_escalation_to_mods: gettext('Escalated for abandonment of bounty'),
+//   bounty_abandonment_warning: gettext('Warned for abandonment of bounty'),
+//   bounty_removed_slashed_by_staff: gettext('Dinged and removed from bounty by staff'),
+//   bounty_removed_by_staff: gettext('Removed from bounty by staff'),
+//   bounty_removed_by_funder: gettext('Removed from bounty by funder'),
+//   bounty_changed: gettext('Bounty details changed')
+// };
 
-function activitytextCvrt(activity_type) {
-  return activity_names[activity_type];
-}
+// function activitytextCvrt(activity_type) {
+//   return activity_names[activity_type];
+// }
 
 function timeDifference(current, previous, remaining, now_threshold_seconds) {
 

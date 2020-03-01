@@ -170,7 +170,7 @@
                 </button>
               </template>
               <template v-else-if="bounty.is_open && !isOwner">
-                <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" v-if="bounty.permission_type === 'approval'">
+                <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="show_interest_modal()" v-if="bounty.permission_type === 'approval'">
                   Express Interest
                 </button>
                 <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" v-else>
@@ -204,10 +204,10 @@
                     <i class="fas fa-file-alt mr-2"></i>
                     Show Invoice
                   </a>
-                  <a class="dropdown-item p-2" href="/extend-deadlines">
+                  <button class="dropdown-item p-2" @click="show_extend_deadline_modal()">
                     <i class="fas fa-calendar-plus mr-2"></i>
                     Extend Deadline
-                  </a>
+                  </button>
                   <a class="dropdown-item p-2" :href="`${bounty.url}?trigger_remarket=1`" v-if="bounty.can_remarket">
                     <i class="fas fa-bullhorn mr-2"></i>
                     Remarket Issue
@@ -467,7 +467,7 @@
       </div>
     </div>
 
-    <!-- <div id="modalInterest" class="modal fade interest-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div id="modalInterest" class="modal fade interest-modal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="row loading justify-content-center align-items-center loading_img">
@@ -486,7 +486,7 @@
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
 
     <noscript>
       <h2>{{ noscript.title }}</h2>
