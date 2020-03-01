@@ -70,11 +70,12 @@
 #theme a.avatar_builder{
   display: inline-block;
   width: 100px;
-  height: 130px;
+  height: 150px;
   margin: 10px 5px;
   color: #9a9a9a;
   padding: 5px;
   border-radius: 25px;
+  vertical-align: top;
 }
 #theme a.avatar_builder:hover,
 #theme a.avatar_builder.selected{

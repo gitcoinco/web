@@ -272,12 +272,14 @@ class AvatarTheme(SuperModel):
     popularity = models.IntegerField(default=0, db_index=True)
     tags = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     img_url = models.CharField(max_length=256)
-    popularity_cheat_by = models.IntegerField(default=0, db_index=True, help_text="Used by admin to rank avatar higher (or lower).")
+    popularity_cheat_by = models.IntegerField(
+        default=0, db_index=True, help_text="Used by admin to rank avatar higher (or lower)."
+    )
     override_name_ui = models.CharField(max_length=256, default='', blank=True)
 
     def __str__(self):
         """Return the str representing this avatar."""
-        return f"{self.name} : {self.popularity} avatars"
+        return f"{self.humanized_name}, Active {self.active} -- {self.popularity} created"
 
     @property
     def url(self):
