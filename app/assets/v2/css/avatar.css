@@ -120,7 +120,8 @@
   width: 400px;
   height: 400px;
 }
-#tdavatartarget.female{
+#tdavatartarget.female,
+#tdavatartarget.mage_snowglobe_female{
   width: 300px;
   height: 300px;
 }
