@@ -169,7 +169,7 @@
                   Stop Work
                 </button>
               </template>
-              <template v-else-if="bounty.is_open">
+              <template v-else-if="bounty.is_open && !isOwner">
                 <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" v-if="bounty.permission_type === 'approval'">
                   Express Interest
                 </button>

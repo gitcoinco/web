@@ -155,7 +155,7 @@ def org_perms(request):
 
 @staff_member_required
 def manual_sync_etc_payout(request, fulfillment_id):
-    fulfillment = BountyFulfillment.objects.get(id=fulfillment_id)
+    fulfillment = BountyFulfillment.objects.get(pk=str(fulfillment_id))
     if fulfillment.payout_status == 'done':
         return JsonResponse(
             {'error': _('Bounty payout already confirmed'),
@@ -3494,6 +3494,7 @@ def change_bounty(request, bounty_id):
                     if key == 'reserved_for_user_handle' and value:
                         new_reservation = True
 
+        bounty_increased = False
         if not bounty.is_bounties_network:
             current_amount = float(bounty.value_true)
             new_amount = float(params.get('amount')) if params.get('amount') else None
@@ -3507,7 +3508,7 @@ def change_bounty(request, bounty_id):
                     bounty.value_in_usdt = convert_amount(bounty.value_true, bounty.token_name, 'USDT')
                     bounty.value_in_usdt_now = bounty.value_in_usdt
                     bounty.value_in_eth = convert_amount(bounty.value_true, bounty.token_name, 'ETH')
-                    bounty_changed = True
+                    bounty_increased = True
                 except ConversionRateNotFoundError as e:
                     logger.debug(e)
 
@@ -3518,7 +3519,7 @@ def change_bounty(request, bounty_id):
                 bounty.metadata['estimatedHours'] = new_hours
                 bounty_changed = True
 
-        if not bounty_changed:
+        if not bounty_changed and not bounty_increased:
             return JsonResponse({
                 'success': True,
                 'msg': _('Bounty details are unchanged.'),
@@ -3526,13 +3527,19 @@ def change_bounty(request, bounty_id):
             })
 
         bounty.save()
-        record_bounty_activity(bounty, user, 'bounty_changed')
-        record_user_action(user, 'bounty_changed', bounty)
 
-        maybe_market_to_email(bounty, 'bounty_changed')
-        maybe_market_to_slack(bounty, 'bounty_changed')
-        maybe_market_to_user_slack(bounty, 'bounty_changed')
-        maybe_market_to_user_discord(bounty, 'bounty_changed')
+        if bounty_changed:
+            event = 'bounty_changed'
+            record_bounty_activity(bounty, user, event)
+            record_user_action(user, event, bounty)
+            maybe_market_to_email(bounty, event)
+        if bounty_increased:
+            event = 'increased_bounty'
+            record_bounty_activity(bounty, user, event)
+            record_user_action(user, event, bounty)
+            maybe_market_to_email(bounty, event)
+
+
 
         # notify a user that a bounty has been reserved for them
         if new_reservation and bounty.bounty_reserved_for_user:
@@ -4946,8 +4953,7 @@ def payout_bounty_v1(request, fulfillment_id):
         return JsonResponse(response)
 
     try:
-        fulfillment_id = str(fulfillment_id)
-        fulfillment = BountyFulfillment.objects.get(fulfillment_id)
+        fulfillment = BountyFulfillment.objects.get(pk=str(fulfillment_id))
         bounty = fulfillment.bounty
     except BountyFulfillment.DoesNotExist:
         response['message'] = 'error: bounty fulfillment not found'

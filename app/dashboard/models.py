@@ -1346,7 +1346,7 @@ class BountyFulfillment(SuperModel):
     token_name = models.CharField(max_length=10, blank=True)
     payout_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     payout_status = models.CharField(max_length=10, choices=PAYOUT_STATUS, blank=True)
-    payout_amount = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=10)
+    payout_amount = models.DecimalField(null=True, blank=True, decimal_places=4, max_digits=50)
 
     def __str__(self):
         """Define the string representation of BountyFulfillment.

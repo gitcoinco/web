@@ -481,7 +481,7 @@ def etc_txn_already_used(t):
 
 def search_for_etc_bounty_payout(fulfillment, network='mainnet'):
     if fulfillment.token_name != 'ETC':
-        return
+        return None
 
     funderAddress = fulfillment.bounty.bounty_owner_address
     amount = fulfillment.payout_amount
@@ -490,12 +490,13 @@ def search_for_etc_bounty_payout(fulfillment, network='mainnet'):
     blockscout_url = f'https://blockscout.com/etc/{network}/api?module=account&action=txlist&address={funderAddress}'
     blockscout_response = requests.get(blockscout_url).json()
     if blockscout_response['message'] and blockscout_response['result']:
-        for t in blockscout_response['result']:
+        for txn in blockscout_response['result']:
             if (
-                t['to'] == payeeAddress and t['amount'] >= amount and
-                not etc_txn_already_used(t)
+                txn['to'] == payeeAddress.lower() and
+                float(txn['value']) >= amount and
+                not etc_txn_already_used(txn)
             ):
-                return t
+                return txn
     return None
 
 
@@ -507,10 +508,12 @@ def get_etc_txn_status(txnid, network='mainnet'):
     blockscout_response = requests.get(blockscout_url).json()
 
     if blockscout_response['status'] and blockscout_response['result']:
+
         response = {
             'blockNumber': int(blockscout_response['result']['blockNumber']),
             'confirmations': int(blockscout_response['result']['confirmations'])
         }
+
         if response['confirmations'] > 0:
             response['has_mined'] = True
         else:
@@ -521,13 +524,12 @@ def get_etc_txn_status(txnid, network='mainnet'):
 
 
 def sync_etc_payout(fulfillment):
-    t = search_for_etc_bounty_payout(fulfillment)
-    if t:
-        if not etc_txn_already_used(t):
-            fulfillment.payout_tx_id = t['hash']
-            if get_etc_txn_status(fulfillment.payout_tx_id).get('has_mined'):
-                fulfillment.payout_status = 'done'
-            fulfillment.save()
+    txn = search_for_etc_bounty_payout(fulfillment)
+    if txn:
+        fulfillment.payout_tx_id = txn['hash']
+        if get_etc_txn_status(fulfillment.payout_tx_id).get('has_mined'):
+            fulfillment.payout_status = 'done'
+        fulfillment.save()
 
 
 def get_bounty_id(issue_url, network):

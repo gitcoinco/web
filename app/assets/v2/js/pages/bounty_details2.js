@@ -98,9 +98,12 @@ Vue.mixin({
         vm.bounty.bounty_owner_address :
         bounty_owner_address;
 
+      const token_name = vm.bounty.token_name;
+      const decimals = tokenNameToDetails('mainnet', token_name).decimals;
+
       const payload = {
-        amount: amount,
-        token_name: vm.bounty.token_name,
+        amount: amount * 10 ** decimals,
+        token_name: token_name,
         close_bounty: closeBounty,
         bounty_owner_address: owner_address
       };
