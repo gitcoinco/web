@@ -38,6 +38,7 @@ import dashboard.views
 import dataviz.d3_views
 import dataviz.views
 import enssubdomain.views
+import instant.views
 # event:ethdenver2019
 import event_ethdenver2019.views
 import faucet.views
@@ -690,6 +691,8 @@ if settings.DEBUG:
         re_path(r'^403/$', retail.views.handler403, name='403'),
         re_path(r'^404/$', retail.views.handler404, name='404'),
         re_path(r'^500/$', retail.views.handler500, name='500'),
+        path('channels', instant.views.index, name='index'),
+        path('channels/<str:room_name>/', instant.views.room, name='room'),
     ]
 
 urlpatterns += [

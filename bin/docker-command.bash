@@ -8,6 +8,7 @@ fi
 
 # Settings
 # Web
+
 GC_WEB_WORKER=${GC_WEB_WORKER_TYPE:-runserver_plus}
 
 # General / Overrides

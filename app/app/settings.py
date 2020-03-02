@@ -127,6 +127,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'townsquare',
     'compliance',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -159,7 +160,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates'],
+    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'instant/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -759,3 +760,19 @@ MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=6
 MINICLR_ADDRESS = env('MINICLR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 MINICLR_PRIVATE_KEY = env('MINICLR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 
+ASGI_APPLICATION = "routing.application"
+#'rediscache://redis:6379/0?client_class=django_redis.client.DefaultClient
+try:
+    REDIS_HOST = REDIS_URL.split('/')[2]
+    hosts = [(REDIS_HOST.split(':')[0], REDIS_HOST.split(':')[1])]
+    print(hosts)
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels_redis.core.RedisChannelLayer',
+            'CONFIG': {
+                "hosts": hosts,
+            },
+        },
+    }
+except:
+    pass
