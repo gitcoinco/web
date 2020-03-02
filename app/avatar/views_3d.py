@@ -308,6 +308,20 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/jedi.svg',
         },
+        'protoss': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+                'clothing': '0 120 200 200',
+                'mouth': '100 200 200 200',
+                'accessory': '100 0 200 200',
+                'eyes': '80 50 200 200',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/protoss.svg',
+        },
         'mage': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
