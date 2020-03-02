@@ -9,9 +9,9 @@ logger = logging.getLogger(__name__)
 from django.conf import settings
 from django.utils.text import slugify
 
+from marketing.utils import should_suppress_notification_email
 from mattermostdriver import Driver
 from mattermostdriver.exceptions import ResourceNotFound
-
 logger = get_task_logger(__name__)
 
 redis = RedisService().redis
@@ -89,7 +89,7 @@ def associate_chat_to_profile(profile):
                 "locale": "en",
                 "props": {},
                 "notify_props": {
-                    "email": "false",
+                    "email": "false" if should_suppress_notification_email(profile.user.email, 'chat') else "true",
                     "push": "mention",
                     "desktop": "all",
                     "desktop_sound": "true",
@@ -281,7 +281,7 @@ def update_user(self, query_opts, update_opts, retry: bool = True) -> None:
 
         try:
             chat_id = None
-            if query_opts['chat_id'] is None:
+            if query_opts['chat_id'] is None and query_opts['handle']:
                 try:
 
                     chat_user = chat_driver.users.get_user_by_username(query_opts['handle'])

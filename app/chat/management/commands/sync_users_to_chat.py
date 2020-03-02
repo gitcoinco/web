@@ -51,7 +51,7 @@ class Command(BaseCommand):
                     "locale": "en",
                     "props": {},
                     "notify_props": {
-                        "email": "false",
+                        "email": "false" if should_suppress_notification_email(profile.user.email, 'chat') else "true",
                         "push": "mention",
                         "desktop": "all",
                         "desktop_sound": "true",
