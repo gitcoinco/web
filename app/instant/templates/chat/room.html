@@ -18,12 +18,14 @@
         '/ws/chat/' + roomName + '/');
 
     chatSocket.onmessage = function(e) {
+        console.log(e);
         var data = JSON.parse(e.data);
         var message = data['message'];
         document.querySelector('#chat-log').value += (message + '\n');
     };
 
     chatSocket.onclose = function(e) {
+        console.log(e)
         console.error('Chat socket closed unexpectedly');
     };
 

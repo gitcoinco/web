@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     'townsquare',
     'compliance',
     'channels',
+    'instant',
 ]
 
 MIDDLEWARE = [
@@ -765,7 +766,6 @@ ASGI_APPLICATION = "routing.application"
 try:
     REDIS_HOST = REDIS_URL.split('/')[2]
     hosts = [(REDIS_HOST.split(':')[0], REDIS_HOST.split(':')[1])]
-    print(hosts)
     CHANNEL_LAYERS = {
         'default': {
             'BACKEND': 'channels_redis.core.RedisChannelLayer',
