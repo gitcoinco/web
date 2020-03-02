@@ -80,7 +80,7 @@ def get_avatar_options():
 
 
 def forwards(apps, schema_editor):
-    from avatar.models import AvatarTheme
+    AvatarTheme = apps.get_model('avatar', 'AvatarTheme')
     for ele in get_avatar_options():
         AvatarTheme.objects.create(
             active=True,
