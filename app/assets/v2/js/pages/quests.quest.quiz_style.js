@@ -11,6 +11,7 @@ var start_quiz = async function() {
     orb_state(Math.min(question_number + 1, 4));
     document.submitted_answer = false;
     var answers = [];
+    var question_count = document.num_questions;
 
     for (var d = 0; d < $('.answer.selected').length; d += 1) {
       answers[d] = $('.answer.selected a')[d].innerHTML;
@@ -52,8 +53,8 @@ var start_quiz = async function() {
     }
     
     var question_level_seconds_to_respond = response['question']['seconds_to_respond'];
-
-    var question = response['question']['question'];
+    var prefix = '(' + question_number + '/' + question_count + ') - ';
+    var question = prefix + response['question']['question'];
     var possible_answers = response['question']['responses'];
     var html = '';
 
@@ -161,6 +162,8 @@ var advance_to_state = async function(new_state) {
   // -- individual transitions callbacks --
 
   // 0 to 1
+  var new_html;
+
   if (old_state == 0 && new_state == 1) {
     await sleep(1000);
     await $('#header').html('Quest Intro');
@@ -172,17 +175,18 @@ var advance_to_state = async function(new_state) {
     document.typewriter_i = 0;
     document.typewriter_txt = document.quest.game_schema.intro;
     document.typewriter_speed = 30;
+
     typeWriter();
+    await wait_for_typewriter();
+
     var kudos_reward_html = " <BR><BR> If you're successful in this quest, you'll earn this limited edition <strong>" + document.kudos_reward['name'] + "</strong> Kudos: <BR> <BR> <img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>';
 
-    setTimeout(function() {
-      var new_html = $('#desc').html() + kudos_reward_html;
+    new_html = $('#desc').html() + kudos_reward_html;
 
-      $('#desc').html(new_html);
-    }, 4500);
+    $('#desc').html(new_html);
 
     await $('#desc').removeClass('hidden').fadeIn();
-    await sleep(4000);
+    await sleep(1000);
     await $('#cta_button a').html('Continue 🤟');
     await $('#cta_button').removeClass('hidden').fadeIn();
   }/* 1 to 2 */ else if (old_state == 1) {
@@ -200,7 +204,8 @@ var advance_to_state = async function(new_state) {
     document.typewriter_txt = document.quest.game_schema.rules;
     document.typewriter_speed = 50;
     typeWriter();
-    await sleep(1500);
+    await wait_for_typewriter();
+    await sleep(500);
     await $('#enemy').removeClass('hidden');
     await toggle_character_class($('#enemy'), [ 'heal', 'harm' ]);
     await $('#cta_button a').html('Got It 🤙');
@@ -223,19 +228,20 @@ var advance_to_state = async function(new_state) {
       html += '<li><a href=' + ele.url + ' target=new>' + ele.title + '</a></li>';
     }
     html += '<BR> Take a moment and read through them. You will have limited time to look things up when the quest starts.';
-    setTimeout(function() {
-      var new_html = $('#desc').html() + html;
-
-      $('#desc').html(new_html);
-    }, 5000);
 
     document.typewriter_id = 'desc';
     document.typewriter_i = 0;
     document.typewriter_txt = text;
     document.typewriter_speed = 50;
     typeWriter();
+
     await $('#desc').removeClass('hidden').fadeIn();
-    await sleep(1000);
+    await wait_for_typewriter();
+    new_html = $('#desc').html() + html;
+
+    $('#desc').html(new_html);
+
+    await sleep(100);
     await $('#cta_button a').html('Got It 🤙');
     await $('#cta_button').removeClass('hidden').fadeIn();
   }/* 3 to 4 */ else if (old_state == 3) {

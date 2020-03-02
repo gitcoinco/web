@@ -6,7 +6,7 @@ Hey there,
 
 You started work upon a funded issue {{ interest.created|naturaltime }}.  We haven't heard from you on the github thread{% if time_delta_days %} in {{ time_delta_days }} days{% endif %}.
 
-Since we have a responsibility to the community to keep the list of claimees for this issue current, Gitcoin removed you from the task.
+Since we have a responsibility to the community to keep the list of claimees for this issue current, Gitcoin has removed you from the task.
 
 Do you still want to work on this?  No big deal!  We can help with that:
 

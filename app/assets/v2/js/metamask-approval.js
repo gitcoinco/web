@@ -23,9 +23,9 @@ async function metamaskApproval() {
     } catch (error) {
       _alert('Permission to connect to metamask rejected. Allow gitcoin to connect to metamask.', 'warning');
     }
+    window.removeEventListener('load', metamaskApproval);
+    ask_metamask_connection();
   }
-  window.removeEventListener('load', metamaskApproval);
-  ask_metamask_connection();
 }
 
 window.addEventListener('load', metamaskApproval);

@@ -20,6 +20,10 @@ a {
   color: #3E00FF;
 }
 
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
 .nav_avatar {
   width: 40px;
   height: 40px;
@@ -28,22 +32,9 @@ a {
   background-size: cover;
 }
 
-#navbarDropdown {
-  text-transform: none;
-}
-
-.dropdown-menu {
-  z-index: 9999999999;
-}
-
 .navbar-dark .navbar-nav .nav-link {
   border-radius: 2px;
   color: white;
-}
-
-.navbar .interior, .navbar .interior a,
-.nav-link.interior, .nav-link.interior a {
-  color: white ;
 }
 
 .navbar .interior .dropdown-item {
@@ -249,7 +240,6 @@ a {
 
 p a {
   color: #3E00FF;
-  text-decoration: outline;
 }
 
 .modal a.close-modal {
@@ -502,7 +492,8 @@ input[type=text].loading {
 
 .submit_bounty #primary_form,
 .fulfill_bounty #primary_form,
-.increase_bounty #primary_form {
+.increase_bounty #primary_form,
+.payout_bounty #primary_form {
   max-width: none;
 }
 
@@ -547,27 +538,13 @@ input[type=text].loading {
   color: white;
 }
 
-.submit_bounty #network_status div {
-  display: inline;
-}
-
-#network_status div span {
-  color: #4aeba8;
-}
-
 .submit_bounty select[name=denomination] {
   text-align: left;
 }
 
-.admin-only {
-  background-color: #5495E1 !important;
-  color:white !important;
-  border: 1px solid white !important;
-}
-
 /* The alert message box */
 
-.alert {
+.alert:not(.bs-alert) {
   align-items: center;
   background-color: #3E00FF;
   border-radius: 0px;
@@ -596,7 +573,7 @@ input[type=text].loading {
 }
 
 .alert .message::before {
-  font-family: 'Font Awesome\ 5 Free', sans-serif;
+  font-family: 'Font Awesome\ 5 Pro', sans-serif;
   content: "\f06a";
   margin-right: 10px;
   font-size: 1.25rem;
@@ -604,7 +581,7 @@ input[type=text].loading {
   top: 1px;
 }
 
-.alert a {
+.alert:not('.bs-alert') a {
   color: white;
   text-decoration: underline;
 }
@@ -1413,13 +1390,8 @@ input.is-invalid {
   letter-spacing: 0;
 }
 
-.modal.delete_account,
-.modal.notify_policy_update {
+.modal.delete_account {
   max-width: 34rem;
-}
-
-.notify_policy_update .button {
-  padding: 0.25rem 1.25rem;
 }
 
 .box_1 {
@@ -1581,8 +1553,8 @@ div.busyOverlay {
 }
 
 .privaterepo-instructions {
-  background: #F8F8F8;
-  padding: 1rem;
+  color: grey;
+  padding-top: 1rem;
 }
 
 @media (min-width: 768px) {
@@ -1647,4 +1619,50 @@ div.busyOverlay {
 .only_visible_to_me {
   padding: 3px 5px;
   border-radius: 3px;
+}
+.card-shadow {
+  box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, .1);
+}
+
+/* Megamenu based on https://geedmo.github.io/yamm/ */
+.gc-megamenu .collapse,
+.gc-megamenu .dropup,
+.gc-megamenu .dropdown {
+  position: static;
+  overflow: auto;
+  max-height: 100vh;
+}
+
+.gc-megamenu .container {
+  position: relative;
+}
+
+.gc-megamenu .dropdown-menu {
+  left: auto;
+}
+
+.gc-megamenu .gc-megamenu-content {
+  padding: 1rem;
+}
+
+.gc-megamenu .dropdown.gc-megamenu-fw .dropdown-menu,
+.gc-megamenu .dropup.gc-megamenu-fw .dropdown-menu {
+  left: 0;
+  right: 0;
+}
+.dropdown-menu .gc-megamenu-content .dropdown-item-small {
+  padding: 0.4em 0.7em!important;
+}
+
+.gc-megamenu-active {
+  background: rgba(12, 3, 59, 0.1);
+  border-radius: 4px;
+}
+
+.emoji-picker__tab {
+  font-size: 32px!important;
+}
+
+.emoji-picker__emoji {
+  font-size: 1.6rem!important;
 }

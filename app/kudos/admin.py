@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define Admin views.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -37,19 +37,27 @@ class TokenRequestAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
     raw_id_fields = ['profile']
+    readonly_fields = ['preview']
 
     def response_change(self, request, obj):
+        from django.shortcuts import redirect
         if "_mint_kudos" in request.POST:
-            tx_id = obj.mint()
-            self.message_user(request, f"Mint submitted to chain: tx {tx_id}.  Once this tx clears pls 'sync kudos'.")
-        if "_sync_kudos" in request.POST:
-            from kudos.management.commands.mint_all_kudos import sync_latest
-            sync_latest(0)
-            sync_latest(1)
-            sync_latest(2)
-            sync_latest(3)
-            self.message_user(request, f"Synced latest 3 kudos from open sea.  If there is a new kudos on chain it will appear in the marketplace")
-        return super().response_change(request, obj)
+            from kudos.tasks import mint_token_request
+            try:
+                mint_token_request.delay(obj.id)
+                self.message_user(request, f"Mint/sync submitted to chain")
+            except Exception as e:
+                self.message_user(request, str(e))
+
+        if "_change_owner" in request.POST:
+            obj.to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'
+            obj.save()
+            self.message_user(request, f"Changed owner to gitcoin")
+        return redirect(obj.admin_url)
+
+    def preview(self, instance):
+        html = f"<img style='max-width: 400px;' src='{instance.artwork_url}'>"
+        return mark_safe(html)
 
 
 class TransferEnabledForAdmin(admin.ModelAdmin):

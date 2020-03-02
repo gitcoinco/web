@@ -35,13 +35,18 @@ $(document).ready(function() {
   $('#key').change(function() {
     const val = $(this).val();
 
-    document.location.href = `/leaderboard/${val}?cadence=` + $('#cadence').val() + '&keyword=' + $('#tech-keyword').val();
+    document.location.href = `/leaderboard/${val}?cadence=` + $('#cadence').val() + '&keyword=' + $('#tech-keyword').val() + '&product=' + $('#product').val();
   });
 
 
   $('#cadence').change(function() {
 
-    document.location.href = document.location.pathname + '?cadence=' + $('#cadence').val() + '&keyword=' + $('#tech-keyword').val();
+    document.location.href = document.location.pathname + '?cadence=' + $('#cadence').val() + '&keyword=' + $('#tech-keyword').val() + '&product=' + $('#product').val();
+  });
+
+  $('#product').change(function() {
+
+    document.location.href = document.location.pathname + '?cadence=' + $('#cadence').val() + '&keyword=' + $('#tech-keyword').val() + '&product=' + $('#product').val();
   });
 
 
@@ -49,7 +54,7 @@ $(document).ready(function() {
     const keyword = $(this).val();
 
     if (keyword === 'all') {
-      document.location.href = document.location.pathname + '?cadence=' + $('#cadence').val() + '&keyword=';
+      document.location.href = document.location.pathname + '?cadence=' + $('#cadence').val() + '&keyword=&product=' + $('#product').val();
 
       window.location.href = new_location;
     } else {
@@ -59,7 +64,7 @@ $(document).ready(function() {
         base_url = window.location.href.split('?')[0];
       }
 
-      document.location.href = document.location.pathname + '?cadence=' + $('#cadence').val() + '&keyword=' + $('#tech-keyword').val();
+      document.location.href = document.location.pathname + '?cadence=' + $('#cadence').val() + '&keyword=' + $('#tech-keyword').val() + '&product=' + $('#product').val();
     }
   });
 });

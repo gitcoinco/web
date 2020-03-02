@@ -8,6 +8,8 @@
 
 {% if is_my_profile %}
   {% include 'profiles/status_box.html' %}
+{% elif profile_id %}
+    {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on wall" what="other_profile" whatid=profile.pk %}
 {% endif %}
 
 <div class="row tab2">

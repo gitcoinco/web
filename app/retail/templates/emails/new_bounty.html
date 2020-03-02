@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -19,6 +19,21 @@
 
 {% block content %}
 
+{% if show_action %}
+
+<h1>1 New Daily Action</h1>
+
+<a href={{base_url}}>
+<img src={{base_url}}static/v2/images/offer.gif>
+</a> 
+<BR>
+<a href={{base_url}}>
+This action expires at end of day, so act soon!
+</a>
+
+<HR>
+{% endif %}
+
 <h1>{{ bounties|length }} {% trans "New Funded Issue" %}{% if bounties|length != 1 %}s{% endif %}</h1>
 <h3>{% trans "Matching your profile" %}</h3>
 
@@ -27,6 +42,8 @@
 {% endfor %}
 
 {% if old_bounties %}
+
+<HR>
 
 <h1>{{ old_bounties|length }} {% trans "Other Open Funded Issue" %}{% if old_bounties|length != 1 %}s{% endif %}</h1>
 <h3>{% trans "Matching your profile" %}</h3>

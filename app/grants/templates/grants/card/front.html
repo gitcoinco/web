@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2020 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -41,7 +41,7 @@
 
       <div class="row progress-container mb-2">
         <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
-          {% if clr_active %}
+          {% if show_clr_card %}
             {% include 'grants/card/clr_match.html' %}
           {% else %}
             <p class="sub-title font-weight-semibold font-caption mb-1 py-1">MONTHLY RECURRING</p>
@@ -90,6 +90,16 @@
             contributor{% if grant.contributor_count > 1 %}s{% endif %}
           </div>
         {% endif %}
+      </div>
+
+      <div class="mt-2 row">
+        <div class="col">
+          <div>
+            {% for category in grant.categories.all %}
+              <span class="badge badge-primary">{{category.category}}</span>
+            {% endfor %}
+          </div>
+        </div>
       </div>
     </div>
   </div>

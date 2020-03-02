@@ -159,7 +159,7 @@ $(document).ready(function() {
     function do_as_crowd() {
       // get form data
       var email = '';
-      var github_url = $('#issueURL').val();
+      var github_url = $('#issueURL').text();
       var from_name = document.contxt['github_handle'];
       var username = '';
       var amountInEth = amount / decimalDivisor;
@@ -200,7 +200,7 @@ $(document).ready(function() {
         {
           from: account,
           value: ethAmount,
-          gas: web3.toHex(65269),
+          gas: web3.toHex(652690),
           gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
         },
         web3Callback

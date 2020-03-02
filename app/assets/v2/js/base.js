@@ -2,12 +2,30 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 $(document).ready(function() {
+  $.fn.isInViewport = function() {
+    var elementTop = $(this).offset().top;
+    var elementBottom = elementTop + $(this).outerHeight();
+    var viewportTop = $(window).scrollTop();
+    var viewportBottom = viewportTop + $(window).height();
+
+    return elementBottom > viewportTop && elementTop < viewportBottom;
+  };
 
   if (typeof ($('body').tooltip) != 'undefined') {
     $('body').tooltip({
       items: ':not([data-toggle])'
     });
   }
+
+  $('.copy_me').click(function() {
+    $(this).focus();
+    $(this).select();
+    document.execCommand('copy');
+    $(this).after('<div class=after_copy>Copied to clipboard</div>');
+    setTimeout(function() {
+      $('.after_copy').remove();
+    }, 500);
+  });
 
   function getParam(parameterName) {
     var result = null;
@@ -86,16 +104,6 @@ $(document).ready(function() {
     $('.header').css('overflow', 'visible');
   }
 
-  $('.nav-link.dropdown-toggle').on('click', function(e) {
-    e.preventDefault();
-    var parent = $(this).parents('.nav-item');
-
-    var parentSiblings = parent.siblings('.nav-item');
-
-    parent.find('.dropdown-menu').toggle().toggleClass('show');
-    parentSiblings.find('.dropdown-menu').hide();
-  });
-
   // get started modal
   $("a[href='/get']").on('click', function(e) {
     e.preventDefault();
@@ -149,13 +157,16 @@ $(document).ready(function() {
     });
   }
 
-  var top_nav_salt = 5;
+  var top_nav_salt = document.nav_salt;
   var remove_top_row = function() {
     $('#top_nav_notification').parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
   };
 
   if (localStorage['top_nav_notification_remove_' + top_nav_salt]) {
+    remove_top_row();
+  }
+  if (top_nav_salt == 0) {
     remove_top_row();
   }
   $('#top_nav_notification').click(remove_top_row);
@@ -171,6 +182,49 @@ $(document).ready(function() {
 
     setTimeout(callback, 300);
   });
+
+  // updates expiry timers with countdowns
+  const setDataFormat = function(data) {
+    let str = 'in ';
+
+    if (data.days() > 0)
+      str += data.days() + 'd ';
+    if (data.hours() > 0)
+      str += data.hours() + 'h ';
+    if (data.minutes() > 0)
+      str += data.minutes() + 'm ';
+    if (data.seconds() > 0)
+      str += data.seconds() + 's ';
+
+    return str;
+  };
+
+  const updateTimers = function() {
+    let enterTime = moment();
+
+    $('[data-time]').filter(':visible').each(function() {
+      moment.locale('en');
+      var time = $(this).data('time');
+      var timeFuture = $(this).data('time-future');
+      var timeDiff = moment(time).diff(enterTime, 'sec');
+
+      if (timeFuture && (timeDiff < 0)) {
+        $(this).html('now');
+        $(this).parents('.offer_container').addClass('animate').removeClass('empty');
+        $(this).removeAttr('data-time');
+
+        // let btn = `<a class="btn btn-block btn-gc-blue btn-sm mt-2" href="${timeUrl}">View Action</a>`;
+        // return $(this).parent().next().html(btn);
+        return $(this).parent().append('<div>Refresh to view offer!</div>');
+      }
+
+      const diffDuration = moment.duration(moment(time).diff(moment()));
+
+      $(this).html(setDataFormat(diffDuration));
+    });
+  };
+
+  setInterval(updateTimers, 1000);
 
   $('.faq_item .question').on('click', (event) => {
     $(event.target).parents('.faq_parent').find('.answer').toggleClass('hidden');
@@ -222,7 +276,7 @@ const alertMessage = function(msg) {
   return html;
 };
 
-const _alert = function(msg, _class) {
+const _alert = function(msg, _class, remove_after_ms) {
   if (typeof msg == 'string') {
     msg = {
       'message': msg
@@ -230,10 +284,11 @@ const _alert = function(msg, _class) {
   }
   var numAlertsAlready = $('.alert:visible').length;
   var top = numAlertsAlready * 44;
+  var id = 'msg_' + parseInt(Math.random() * 10 ** 10);
 
   var html = function() {
     return (
-      `<div class="alert ${_class} g-font-muli" style="top: ${top}px">
+      `<div id="${id}" class="alert ${_class} g-font-muli" style="top: ${top}px">
         <div class="message">
           <div class="content">
             ${alertMessage(msg)}
@@ -245,39 +300,14 @@ const _alert = function(msg, _class) {
   };
 
   $('body').append(html);
+
+  if (typeof remove_after_ms != 'undefined') {
+    setTimeout(function() {
+      $('#' + id).remove();
+    }, remove_after_ms);
+  }
+
 };
-
-
-if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_update']) {
-  localStorage['notify_policy_update'] = true;
-
-  const content = $.parseHTML(
-    `<div id="notify_policy_update" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content px-4 py-3">
-          <div class="col-12">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-          </div>
-          <div class="col-12 pt-2 pb-2 text-center">
-            <h2 class="font-title">${gettext('We Care About Your Privacy')}</h2>
-          </div>
-          <div class="col-12 pt-2 pb-2 font-body">
-            <p>${gettext('As a Web 3.0 company, we think carefully about user data and privacy and how the internet is evolving. We hope Web 3.0 will bring more control of data to users. With this ethos in mind, we are always careful about how we use your information.')}</p>
-            <p>${gettext('We recently reviewed our Privacy Policy to comply with requirements of General Data Protection Regulation (GDPR), improving our Terms of Use, Privacy Policy and Cookie Policy. These changes are in effect and your continued use of the Gitcoin will be subjected to our updated Terms of Use and Privacy Policy.')}</p>
-          </div>
-          <div class="col-12 font-caption">
-            <a href="/legal/policy" target="_blank">${gettext('Read Our Updated Terms')}</a>
-          </div>
-          <div class="col-12 mt-4 mb-2 text-right font-caption">
-            <button type="button" class="button button--primary" data-dismiss="modal">ok</button>
-          </div>
-        </div>
-      </div>
-    </div>`);
-
-  $(content).appendTo('body');
-  $('#notify_policy_update').bootstrapModal('show');
-}
 
 var show_persona_modal = function(e) {
   const content = $.parseHTML(
@@ -294,11 +324,11 @@ var show_persona_modal = function(e) {
             <h2 class="font-title mt-4">${gettext('Are you a Funder or a Contributor?')}</h2>
           </div>
           <div class="col-12 pt-2 text-center">
-            <p>${gettext('Let us know so we could optimize the <br>best experience for you!')}</p>
+            <p class="mb-0">${gettext('Let us know so we could optimize the <br>best experience for you!')}</p>
           </div>
-          <div class="col-12 my-4 d-flex justify-content-around">
-            <button type="button" class="btn btn-gc-blue col-5" data-persona="persona_is_funder">I'm a Funder</button>
-            <button type="button" class="btn btn-gc-blue col-5" data-persona="persona_is_hunter">I'm a Contributor</button>
+          <div class="col-12 my-4 text-center">
+            <button type="button" class="btn btn-gc-blue px-5 mb-2 mx-2" data-persona="persona_is_funder">I'm a Funder</button>
+            <button type="button" class="btn btn-gc-blue px-5 mx-2" data-persona="persona_is_hunter">I'm a Contributor</button>
           </div>
         </div>
       </div>
@@ -368,24 +398,12 @@ const sendPersonal = (persona) => {
 };
 
 
-const gitcoinUpdates = (force) => {
-  let urlUpdates = `https://api.github.com/repos/gitcoinco/web/issues/5057?access_token=${document.contxt.access_token}`;
-  let today = new Date();
-  let showedUpdates = JSON.parse(localStorage.getItem('showed_updates'));
-  let lastPromp = showedUpdates ? showedUpdates.last_promp : today;
-  let lastUpdated = showedUpdates ? showedUpdates.last_updated : 0;
+const gitcoinUpdates = () => {
+  const urlUpdates = `https://api.github.com/repos/gitcoinco/web/issues/5057?access_token=${document.contxt.access_token}`;
 
-  if (!force && showedUpdates && (moment(today).diff(moment(lastPromp), 'days') < 7)) {
-    return;
-  }
+  const getUpdates = fetchData (urlUpdates, 'GET');
 
-  let getUpdates = fetchData (urlUpdates, 'GET');
-
-  $.when(getUpdates).then(function(response) {
-
-    if (!force && (response.updated_at == lastUpdated)) {
-      return;
-    }
+  $.when(getUpdates).then(response => {
 
     const content = $.parseHTML(
       `<div id="gitcoin_updates" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -412,21 +430,20 @@ const gitcoinUpdates = (force) => {
 
     $(content).appendTo('body');
     $('#gitcoin_updates').bootstrapModal('show');
-    let newPrompt = {
-      'last_promp': new Date(),
-      'last_updated': response.updated_at
-    };
-
-    localStorage.setItem('showed_updates', JSON.stringify(newPrompt));
-
   });
 
   $(document, '#gitcoin_updates').on('hidden.bs.modal', function(e) {
     $('#gitcoin_updates').remove();
     $('#gitcoin_updates').bootstrapModal('dispose');
   });
+
 };
 
-if (document.contxt.github_handle) {
-  gitcoinUpdates();
+// carousel/collabs/... inside menu
+$(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
+  e.stopPropagation();
+});
+
+if (document.contxt.chat_unread_messages) {
+  $('#chat-notification-dot').addClass('notification__dot__active');
 }

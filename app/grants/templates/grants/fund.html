@@ -1,5 +1,5 @@
 {% comment %}
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -94,9 +94,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </ol>
               </div>
 
-              <div class="col-12 form__footer pt-2 text-center">
+              <div class="col-12 form__footer pt-2 mt-2 text-center">
                 {% include './clr_estimate.html' with class='' %}
-                <img class="mb-4" src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
+                <img class="mb-4 pl-lg-5" src="{% static "v2/images/grants/signal.png" %}" style="max-width:40rem; height: 7rem">
                 <form method=POST>
                   {%csrf_token%}
                   <input type=hidden name=toggle_phantom_fund value=1 />
@@ -134,8 +134,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <div class="form__group-horizontal">
                     <div class="row">
                       <div class="col-6 col-sm-8">
-                        <label class="form__label" id="amount_label">{% trans "Amount Per Period" %}</label>
-                        <input type="number" min="0.001" id="amount" name="amount_per_period" class="form__input" value="5" required />
+                        <label class="form__label" id="amount_label">{% trans "Amount" %}</label>
+                        <input type="number" min="0.001" step=".001" id="amount" name="amount_per_period" class="form__input" value="5" required />
                       </div>
                       <div class="col-6 col-sm-4">
                         <label class="form__label" id="token_label">{% trans "Token" %}</label>
@@ -155,12 +155,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       <div class="col-12 col-sm-8 font-body">
                         <label class="form__label">{% trans "Contribution Type" %}</label>
                         <select name="recurring_or_not" id="recurring_or_not" class="js-select2" style="width: 100%">
-                          <option value="once">{% trans "One Time" %}</option>
-                          <option value="recurring" selected="selected">{% trans "Recurring" %}</option>
+                          <option value="once" selected="selected">{% trans "One Time" %}</option>
+                          <option value="recurring">{% trans "Recurring" %}</option>
                         </select>
                       </div>
 
-                      <div class="col-12 col-sm-4 font-body num_recurring">
+                      <div class="col-12 col-sm-4 font-body num_recurring hidden">
                         <label class="form__label">
                           {% trans "Number of Contribution Periods" %}
                         </label>
@@ -169,8 +169,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </div>
                   </div>
 
-
-                  <div class="form__group-horizontal frequency">
+                  <div class="form__group-horizontal frequency hidden">
                     <label class="form__label">{% trans "Payment Period" %}</label>
                     <div class="row">
                       <div class="col-6 col-sm-8 font-body">
@@ -189,17 +188,37 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </div>
                   </div>
 
-                  <div id="gitcoin-grant-section" class="form__group-horizontal my-5">
+
+                  <div class="form__group-horizontal contribution_type">
+                    <div class="row">
+                      <div class="col-12 col-sm-12 font-body">
+                        <label class="form__label">{% trans "Comment (Public)" %}</label>
+                        <br>
+                        <textarea name="comment" placeholder="You all are doing great work. Keep it up." class="w-100 p-2"></textarea>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="my-1 text-left">
+                    <input type="checkbox" name="hide_wallet_address" id="hide_wallet_address" {% if profile.hide_wallet_address %} checked="checked" {% endif %} >
+                    <label class="form__label" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
+                    <small id="hide_wallet_address_help" class="form__input-help">{% trans "If this option is chosen, your wallet address will be hidden" %}</small>
+                  </div>
+
+                  <div id="gitcoin-grant-section" class="form__group-horizontal mt-2 mb-2">
                     <div class="row">
                       <div class="col-12 mb-3">
-                        <h2 class="font-subheader font-weight-semibold">{% trans "Support Gitcoin" %}</h2>
+                        <h3 class="font-subheader ">{% trans "Support Gitcoin (optional)" %}</h3>
                         <p class="font-body">
                           {% trans "By using this service, you’ll also be contributing" %}
                           <span class="gitcoin-grant-percent">5</span>
-                          {% trans "% of your contribution to the system of this service." %}
+                          {% trans "% of your contribution to the" %} <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund">Gitcoin Sustainability Fund</a>. 
+                          <br>
+                          <a href="#" id="adjust">Adjust &gt;&gt;</a>
                         </p>
                       </div>
-                      <div class="col-12 col-xl-8 text-center text-xl-left fee-slider">
+                      <div class="col-12 col-xl-8 text-center text-xl-left fee-slider hidden unhide_if_expanded">
                         {% include './heart.html' %}
                         <div class="d-xl-inline ml-xl-3 mt-4 mt-xl-0">
                           <div class="badge badge-active font-title font-weight-normal" data-percent="5">5%</div>
@@ -207,7 +226,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                           <div class="badge badge-inactive font-title font-weight-normal ml-xl-2" data-percent="15">15%</div>
                         </div>
                       </div>
-                      <div class="col-12 col-xl-4 mt-4 my-xl-auto px-xl-0 font-weight-semibold text-center text-xl-left fee-slider-summary">
+                      <div class="col-12 col-xl-4 mt-4 my-xl-auto px-xl-0 font-weight-semibold text-center text-xl-left fee-slider-summary hidden unhide_if_expanded">
                         <div class="text-center custom d-inline-block">
                           <input type="number" min="0" max="99" id="gitcoin-grant-input-amount" name="gitcoin-grant-input-amount" class="form__input text-center inactive" value="5">
                           <p class="mb-0 text-center helper-text mx-0 font-caption">custom %</p>
@@ -252,14 +271,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         {{ grant.token_symbol }}
                       </span>
                       {% trans "to this grant" %}
-                      <span class="hide_if_onetime">
+                      <span class="hide_if_onetime hidden">
                         every
                         <span class="summary-period font-weight-bold">-</span>
                         <span class="summary-frequency-unit font-weight-bold">-</span>.
                       </span>
                     </p>
 
-                    <p id="summary-gitcoin-grant" class="hide_if_onetime">
+                    <p id="summary-gitcoin-grant" class="hide_if_onetime hidden">
                       <i class="fas fa-circle mr-2"></i>
                       {% trans "You are additionally contributing" %}
                       <span class="summary-gitcoin-amount font-weight-bold">-</span>
@@ -275,18 +294,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       <span class="summary-frequency-unit-gitcoin font-weight-bold">-</span>.
                     </p>
 
-                    <p class="hide_if_onetime">
+                    <p class="hide_if_onetime hidden">
                       <i class="fas fa-circle mr-2"></i>
                       {% trans "Your contribution will stop once this payment has happened" %}
                       <span class="summary-frequency font-weight-bold">-</span> times.
                     </p>
 
-                    <p class="hide_if_onetime">
+                    <p class="hide_if_onetime hidden">
                       <i class="fas fa-circle mr-2"></i>
                       {% trans "The first payment will happen within 5 minutes after you click Contribute to Grant." %}
                     </p>
 
-                    <p class="hide_if_recurring hidden">
+                    <p class="hide_if_recurring">
                       <i class="fas fa-circle mr-2"></i>
                       {% trans "You are additionally contributing" %}
                       <span class="summary-gitcoin-amount font-weight-bold">-</span>
@@ -294,7 +313,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       {% trans "to the gitcoin maintainer grant." %}
                     </p>
 
-                    <p class="hide_if_recurring hidden">
+                    <p class="hide_if_recurring">
                       <i class="fas fa-circle mr-2"></i>
                       {% trans "This payment will be made one time." %}
                     </p>
@@ -307,7 +326,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <div class="form__group-horizontal">
                     <div class="row">
-                      {% include './clr_estimate.html' with class='extraleft' %}
+                      {% if clr_active %}
+                        {% include './clr_estimate.html' with class='extraleft' %}
+                      {% endif %}
                       <div class="col-12 form__footer text-center">
                         <button class="button button--primary button--full" id='js-fundGrant-button'>{% trans "Contribute to Grant" %}</button>
                       </div>
@@ -349,7 +370,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
 

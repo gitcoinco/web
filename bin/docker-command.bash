@@ -30,7 +30,7 @@ fi
 GC_WEB_OPTS="${GC_WEB_WORKER} ${GC_WEB_INTERFACE:-0.0.0.0}:${GC_WEB_PORT:-8000}"
 
 if [ "$VSCODE_DEBUGGER_ENABLED" = "on" ]; then
-    pip install ptvsd
+    pip3 install ptvsd
     GC_WEB_OPTS="${GC_WEB_OPTS} --nothreading"
     echo "VSCode remote debugger enabled! This has disabled threading!"
 fi
@@ -43,26 +43,35 @@ fi
 if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
     echo "First run - Provisioning the local development environment..."
     if [ "$DISABLE_INITIAL_CACHETABLE" != "on" ]; then
-        python manage.py createcachetable
+        python3 manage.py createcachetable
     fi
 
     if [ "$DISABLE_INITIAL_COLLECTSTATIC" != "on" ]; then
-        python manage.py collectstatic --noinput -i other &
+        python3 manage.py collectstatic --noinput -i other &
     fi
 
     if [ "$DISABLE_INITIAL_MIGRATE" != "on" ]; then
-        python manage.py migrate
+        python3 manage.py migrate
     fi
 
     if [ "$DISABLE_INITIAL_LOADDATA" != "on" ]; then
-        python manage.py loaddata initial
+
+        python3 manage.py loaddata app/fixtures/users.json
+        python3 manage.py loaddata app/fixtures/economy.json
+        python3 manage.py loaddata app/fixtures/profiles.json
+        python3 manage.py loaddata app/fixtures/kudos.json
+        python3 manage.py loaddata app/fixtures/grants.json
+        python3 manage.py loaddata app/fixtures/dashboard.json
+        python3 manage.py loaddata app/fixtures/avatar.json
+        python3 manage.py loaddata app/fixtures/marketing.json
+
     fi
     date >> /provisioned
     echo "Provisioning completed!"
 fi
 
 if [ "$FORCE_GET_PRICES" = "on" ]; then
-    python manage.py get_prices
+    python3 manage.py get_prices
 fi
 
 if [ "$KUDOS_LOCAL_SYNC" = "on" ]; then
@@ -70,4 +79,4 @@ if [ "$KUDOS_LOCAL_SYNC" = "on" ]; then
     bash /code/scripts/sync_kudos_local.bash &
 fi
 
-exec python manage.py $GC_WEB_OPTS
+exec python3 manage.py $GC_WEB_OPTS

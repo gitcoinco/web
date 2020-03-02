@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the marketing views.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import unicode_literals
 
+import csv
 import json
 import logging
 
@@ -40,7 +41,7 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from cacheops import cached_view
 from dashboard.models import Profile, TokenApproval
-from dashboard.utils import create_user_action, get_orgs_perms
+from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_feedback
@@ -151,8 +152,10 @@ def privacy_settings(request):
     msg = ''
     if request.POST and request.POST.get('submit'):
         if profile:
+            profile.dont_autofollow_earnings = bool(request.POST.get('dont_autofollow_earnings', False))
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
             profile = record_form_submission(request, profile, 'privacy')
             if profile.alumni and profile.alumni.exists():
                 alumni = profile.alumni.first()
@@ -280,10 +283,34 @@ def email_settings(request, key):
     email = ''
     level = ''
     msg = ''
+    email_types = {}
+    from retail.emails import ALL_EMAILS
+    for em in ALL_EMAILS:
+        email_types[em[0]] = str(em[1])
+    email_type = request.GET.get('type')
+    if email_type in email_types:
+        email = es.email
+        if es:
+            key = get_or_save_email_subscriber(email, 'settings')
+            es.email = email
+            unsubscribed_email_type = {}
+            unsubscribed_email_type[email_type] = True
+            es.build_email_preferences(unsubscribed_email_type)
+            es = record_form_submission(request, es, 'email')
+            ip = get_ip(request)
+            if not es.metadata.get('ip', False):
+        	    es.metadata['ip'] = [ip]
+            else:
+                es.metadata['ip'].append(ip)
+            es.save()
+        context = {
+            'title': _('Email unsubscription successful'),
+            'type': email_types[email_type]
+        }
+        return TemplateResponse(request, 'email_unsubscribed.html', context)
     if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
-        preferred_language = request.POST.get('preferred_language')
         validation_passed = True
         try:
             email_in_use = User.objects.filter(email=email) | User.objects.filter(profile__email=email)
@@ -301,16 +328,7 @@ def email_settings(request, key):
             print(e)
             validation_passed = False
             msg = str(e)
-        if preferred_language:
-            if preferred_language not in [i[0] for i in settings.LANGUAGES]:
-                msg = _('Unknown language')
-                validation_passed = False
         if validation_passed:
-            if profile:
-                profile.pref_lang_code = preferred_language
-                profile.save()
-                request.session[LANGUAGE_SESSION_KEY] = preferred_language
-                translation.activate(preferred_language)
             if es:
                 key = get_or_save_email_subscriber(email, 'settings')
                 es.preferences['level'] = level
@@ -543,9 +561,34 @@ def account_settings(request):
             profile.save()
 
         if 'preferred_payout_address' in request.POST.keys():
-            profile.preferred_payout_address = request.POST.get('preferred_payout_address', '')
+            eth_address = request.POST.get('preferred_payout_address', '')
+            if not is_valid_eth_address(eth_address):
+                eth_address = profile.preferred_payout_address
+            profile.preferred_payout_address = eth_address
             profile.save()
             msg = _('Updated your Address')
+        elif request.POST.get('export', False):
+            export_type = request.POST.get('export_type', False)
+
+            response = HttpResponse(content_type='text/csv')
+            name = f"gitcoin_{export_type}_{timezone.now().strftime('%Y_%m_%dT%H_00_00')}"
+            response['Content-Disposition'] = f'attachment; filename="{name}.csv"'
+
+            writer = csv.writer(response)
+            writer.writerow(['id', 'date', 'From', 'To', 'Type', 'Value In USD', 'url'])
+            profile = request.user.profile
+            earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
+            earnings = earnings.all().order_by('-created_on')
+            for earning in earnings:
+                writer.writerow([earning.pk,
+                    earning.created_on.strftime("%Y-%m-%dT%H:00:00"), 
+                    earning.from_profile.handle if earning.from_profile else '*',
+                    earning.to_profile.handle if earning.to_profile else '*',
+                    earning.source_type.model_class(),
+                    earning.value_usd,
+                    earning.url])
+
+            return response
         elif request.POST.get('disconnect', False):
             profile.github_access_token = ''
             profile = record_form_submission(request, profile, 'account-disconnect')
@@ -621,7 +664,10 @@ def job_settings(request):
     if request.POST:
 
         if 'preferred_payout_address' in request.POST.keys():
-            profile.preferred_payout_address = request.POST.get('preferred_payout_address', '')
+            eth_address = request.POST.get('preferred_payout_address', '')
+            if not is_valid_eth_address(eth_address):
+                eth_address = profile.preferred_payout_address
+            profile.preferred_payout_address = eth_address
             profile.save()
             msg = _('Updated your Address')
         elif request.POST.get('disconnect', False):
@@ -683,11 +729,15 @@ def org_settings(request):
     """
     msg = ''
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
+    current_scopes = []
 
     if not user or not profile or not is_logged_in:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
+    social_auth = user.social_auth.first()
+    if social_auth and social_auth.extra_data:
+        current_scopes = social_auth.extra_data.get('scope').split(',')
     orgs = get_orgs_perms(profile)
     context = {
         'is_logged_in': is_logged_in,
@@ -699,6 +749,7 @@ def org_settings(request):
         'orgs': orgs,
         'profile': profile,
         'msg': msg,
+        'current_scopes': current_scopes,
     }
     return TemplateResponse(request, 'settings/organizations.html', context)
 
@@ -729,10 +780,11 @@ def leaderboard(request, key=''):
     cadences = ['all', 'weekly', 'monthly', 'quarterly', 'yearly']
 
 
+    product = request.GET.get('product', 'all')
     keyword_search = request.GET.get('keyword', '')
     keyword_search = '' if keyword_search == 'all' else keyword_search
-    limit = request.GET.get('limit', 50)
-    cadence = request.GET.get('cadence', 'quarterly')
+    limit = int(request.GET.get('limit', 50))
+    cadence = request.GET.get('cadence', 'weekly')
 
     # backwards compatibility fix for old inbound links
     for ele in cadences:
@@ -758,7 +810,7 @@ def leaderboard(request, key=''):
 
     title = titles[key]
     which_leaderboard = f"{cadence}_{key}"
-    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard)
+    ranks = LeaderboardRank.objects.filter(active=True, leaderboard=which_leaderboard, product=product)
     if keyword_search:
         ranks = ranks.filter(tech_keywords__icontains=keyword_search)
 
@@ -784,12 +836,15 @@ def leaderboard(request, key=''):
     is_linked_to_profile = any(sub in key for sub in profile_keys)
 
     cadence_ui = cadence if cadence != 'all' else 'All-Time'
-    page_title = f'{cadence_ui.title()} {keyword_search.title()} Leaderboard: {title.title()}'
+    product_ui = product.capitalize() if product != 'all' else ''
+    page_title = f'{cadence_ui.title()} {keyword_search.title()} {product_ui} Leaderboard: {title.title()}'
     context = {
         'items': items[0:limit],
         'nav': 'home',
         'titles': titles,
         'cadence': cadence,
+        'product': product,
+        'products': ['kudos', 'grants', 'bounties', 'tips', 'all'],
         'selected': title,
         'is_linked_to_profile': is_linked_to_profile,
         'title': page_title,

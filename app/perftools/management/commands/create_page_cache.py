@@ -44,6 +44,7 @@ def create_grants_cache():
         data=json.loads(json.dumps(data, cls=EncodeAnything)),
         )
 
+
 def create_quests_cache():
     from quests.helpers import generate_leaderboard
     from quests.views import current_round_number
@@ -57,6 +58,11 @@ def create_quests_cache():
             key=keyword,
             data=json.loads(json.dumps(data, cls=EncodeAnything)),
             )
+
+    from quests.models import Quest
+    for quest in Quest.objects.filter(visible=True):
+        quest.save()
+
 
 def create_results_cache():
     print('results')
@@ -107,7 +113,8 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_quests_cache()
-        create_grants_cache()
         create_results_cache()
-        create_contributor_landing_page_context()
+        if not settings.DEBUG:
+            create_quests_cache()
+            create_grants_cache()
+            create_contributor_landing_page_context()

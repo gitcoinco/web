@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define dashboard specific DRF API routes.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -24,7 +24,7 @@ from datetime import datetime
 from django.db.models import Count, F
 
 import django_filters.rest_framework
-from kudos.models import KudosTransfer
+from kudos.models import KudosTransfer, Token
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
@@ -43,21 +43,9 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
         """Define the bounty fulfillment serializer metadata."""
 
         model = BountyFulfillment
-        fields = ('fulfiller_address', 'fulfiller_email',
+        fields = ('fulfiller_address',
                   'fulfiller_github_username', 'fulfiller_name',
                   'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url')
-
-
-class ActivitySerializer(serializers.ModelSerializer):
-    """Handle serializing the Activity object."""
-
-    profile = ProfileSerializer()
-
-    class Meta:
-        """Define the activity serializer metadata."""
-
-        model = Activity
-        fields = ('activity_type', 'created', 'profile', 'metadata', 'bounty', 'tip')
 
 
 class BountyDocumentsSerializer(serializers.ModelSerializer):
@@ -80,6 +68,7 @@ class HackathonEventSerializer(serializers.ModelSerializer):
         fields = ('name', 'slug')
 
 
+# TODO : REMOVE KudosSerializer
 class KudosSerializer(serializers.ModelSerializer):
     """Handle serializing the Kudos object."""
 
@@ -91,11 +80,31 @@ class KudosSerializer(serializers.ModelSerializer):
         fields = ('kudos_token_cloned_from', )
 
 
+class KudosTokenSerializer(serializers.ModelSerializer):
+    """Handle serializing the Kudos object."""
+
+    class Meta:
+        """Define the kudos serializer metadata."""
+
+        model = Token
+        depth = 1
+        fields = ('price_finney', 'num_clones_allowed', 'num_clones_in_wild',
+                  'num_clones_available_counting_indirect_send',
+                  'cloned_from_id', 'popularity', 'popularity_week',
+                  'popularity_month', 'popularity_quarter', 'name',
+                  'override_display_name', 'description',
+                  'image', 'rarity', 'tags', 'artist', 'platform',
+                  'external_url',  'background_color', 'owner_address',
+                  'txid', 'token_id', 'hidden',
+                  'send_enabled_for_non_gitcoin_admins',
+                  'preview_img_mode', 'suppress_sync', 'kudos_token_cloned_from')
+
+
 class ActivitySerializer(serializers.ModelSerializer):
     """Handle serializing the Activity object."""
 
     profile = ProfileSerializer()
-    kudos = KudosSerializer()
+    kudos = KudosTokenSerializer()
 
     class Meta:
         """Define the activity serializer metadata."""
@@ -166,13 +175,13 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         bounty = Bounty.objects.create(**validated_data)
         for fulfillment_data in fulfillments_data:
             bounty_fulfillment = BountyFulfillment.objects.create(bounty=bounty, **fulfillment_data)
-            bounty_invitee = BountyInvites.objects.filter(
+            bounty_invite = BountyInvites.objects.filter(
                 bounty=bounty,
                 invitee=bounty_fulfillment.profile.user
             ).first()
             if bounty_invite:
-                bounty_invitee.status = 'completed'
-                bounty_invitee.save()
+                bounty_invite.status = 'completed'
+                bounty_invite.save()
         return bounty
 
     def update(self, validated_data):
@@ -181,13 +190,13 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         bounty = Bounty.objects.update(**validated_data)
         for fulfillment_data in fulfillments_data:
             bounty_fulfillment = BountyFulfillment.objects.create(bounty=bounty, **fulfillment_data)
-            bounty_invitee = BountyInvites.objects.filter(
+            bounty_invite = BountyInvites.objects.filter(
                 bounty=bounty,
                 invitee=bounty_fulfillment.profile.user
             ).first()
             if bounty_invite:
-                bounty_invitee.status = 'completed'
-                bounty_invitee.save()
+                bounty_invite.status = 'completed'
+                bounty_invite.save()
         return bounty
 
 
@@ -253,7 +262,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_categories',
                     'bounty_owner_address', 'idx_status', 'network', 'bounty_owner_github_username',
-                    'standard_bounties_id', 'permission_type', 'project_type']:
+                    'standard_bounties_id', 'permission_type', 'project_type', 'pk']:
             if key in param_keys:
                 # special hack just for looking up bounties posted by a certain person
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'

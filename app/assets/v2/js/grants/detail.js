@@ -3,20 +3,61 @@ const editableFields = [
   '#form--input__reference-url',
   '#contract_owner_address',
   '#grant-members',
-  '#amount_goal'
+  '#amount_goal',
+  '#grant-categories'
 ];
+
+function getCategoryIndex(categoryName, categories) {
+  const resultSet = categories.filter(category => {
+    const name = category[0];
+
+    return name === categoryName;
+  });
+
+  if (resultSet.length === 1) {
+    const matchingCategory = resultSet[0];
+
+    const index = matchingCategory[1];
+
+    return index.toString();
+  }
+
+  return '-1';
+}
+
+function updateValuesOfExistingCategories() {
+  $.get('/grants/categories', data => {
+    if (!data || !data.categories) {
+      return;
+    }
+
+    $('#grant-categories option:selected').each(function() {
+      const categoryName = $(this).text();
+
+      const categoryIndex = getCategoryIndex(categoryName.toLowerCase(), data.categories);
+
+      $(this).val(categoryIndex);
+    });
+  });
+}
+
+function initGrantCategoriesInput() {
+  grantCategoriesSelection('#grant-categories', '/grants/categories');
+  updateValuesOfExistingCategories();
+}
 
 $(document).ready(function() {
   showMore();
   addGrantLogo();
+  initGrantCategoriesInput();
 
   setInterval (() => {
     notifyOwnerAddressMismatch(
       $('#grant-admin').text(),
-      $('#grant_contract_owner_address').text(),
+      $('#contract_owner_address').text(),
       '#cancel_grant',
       'Looks like your grant has been created with ' +
-      $('#grant_contract_owner_address').text() + '. Switch to take action on your grant.'
+      $('#contract_owner_address').text() + '. Switch to take action on your grant.'
     );
 
     if ($('#cancel_grant').attr('disabled')) {
@@ -49,6 +90,9 @@ $(document).ready(function() {
     $('#edit-amount_goal').removeClass('hidden');
     $('.grant__progress').addClass('hidden');
 
+    $('#section-nav-description .ql-toolbar').css('display', 'inherit');
+    $('#section-nav-description .ql-container').css('border-color', '#ccc');
+
     copyDuplicateDetails();
 
     editableFields.forEach(field => {
@@ -63,16 +107,21 @@ $(document).ready(function() {
     $('#edit-amount_goal').addClass('hidden');
     $('.grant__progress').removeClass('hidden');
 
+    $('#section-nav-description .ql-toolbar').css('display', 'none');
+    $('#section-nav-description .ql-container').css('border-color', 'transparent');
+
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
     let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
+    let edit_categories = $('#grant-categories').val();
 
     let data = {
       'edit-title': edit_title,
       'edit-reference_url': edit_reference_url,
       'edit-amount_goal': edit_amount_goal,
-      'edit-grant_members[]': edit_grant_members
+      'edit-grant_members[]': edit_grant_members,
+      'edit-categories[]': edit_categories
     };
 
     if (grant_description !== undefined) {
@@ -110,6 +159,9 @@ $(document).ready(function() {
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
     $('.grant__progress').removeClass('hidden');
+
+    $('#section-nav-description .ql-toolbar').css('display', 'none');
+    $('#section-nav-description .ql-container').css('border-color', 'transparent');
 
     editableFields.forEach(field => disableEdit(field));
   });

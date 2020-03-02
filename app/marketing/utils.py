@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2018 Gitcoin Core
+    Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -219,8 +219,14 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
     if profile:
         defaults['profile'] = profile
 
+    created = False
     try:
-        es, created = EmailSubscriber.objects.update_or_create(email__iexact=email, defaults=defaults)
+        already_exists = EmailSubscriber.objects.filter(email__iexact=email)
+        if already_exists.exists():
+            es = already_exists.first()
+        else:
+            es = EmailSubscriber.objects.create(**defaults)
+            created = True
         print("EmailSubscriber:", es, "- created" if created else "- updated")
     except EmailSubscriber.MultipleObjectsReturned:
         email_subscriber_ids = EmailSubscriber.objects.filter(email__iexact=email) \
@@ -321,7 +327,8 @@ def handle_marketing_callback(_input, request):
     key = _input if not ':' in _input else _input.split(':')[0]
     callbacks = MarketingCallback.objects.filter(key=key)
     if callbacks.exists():
-        callback_reference = callbacks.first().val
+        obj = callbacks.first()
+        callback_reference = obj.val
         #set user referrer
         if key == 'ref':
             if request.user.is_authenticated:
@@ -340,8 +347,8 @@ def handle_marketing_callback(_input, request):
             if request.user.is_authenticated:
                 from django.contrib.auth.models import Group
                 group_name = callback_reference.split(':')[1]
-                messages.info(request, "You have redeemed your $5.00 Gitcoin Grants voucher. Browse grants on gitcoin.co/grants and click 'fund' to spend this voucher!")
-                group = Group.objects.get(name=group_name)
+                messages.info(request, obj.msg)
+                group, created = Group.objects.get_or_create(name=group_name)
                 group.user_set.add(request.user)
             else:
                 messages.info(request, "You have been selected to receive a $5.00 Gitcoin Grants voucher. Login to use it.")

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 : <<'END'
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -17,7 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 END
 
-apk --update add postgresql-client
+apt-get install postgresql-client -f
 
 if [ "$2" == "1" ]; then
     echo "DROP SCHEMA public CASCADE;

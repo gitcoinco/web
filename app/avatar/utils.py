@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Avatar utilities.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -31,7 +31,7 @@ from django.template import loader
 
 import pyvips
 import requests
-from git.utils import get_user
+from git.utils import get_organization, get_user
 from PIL import Image, ImageOps
 from pyvips.error import Error as VipsError
 from svgutils import transform
@@ -572,7 +572,10 @@ def get_user_github_avatar_image(handle):
     remote_user = get_user(handle)
     avatar_url = remote_user.get('avatar_url')
     if not avatar_url:
-        return None
+        remote_org = get_organization(handle)
+        avatar_url = remote_org.get('avatar_url')
+        if not avatar_url:
+            return None
     from .models import BaseAvatar
     temp_avatar = get_github_avatar_image(avatar_url, BaseAvatar.ICON_SIZE)
     if not temp_avatar:
@@ -670,7 +673,7 @@ def svg_to_png_inkscape(svg_content, width=333, height=384, index=100, extra_fla
         p = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
         if p.returncode:
-            print('Inkscape error: ' + (err or '?'))
+            print('Inkscape error: ' + (str(err) or '?'))
 
     with open(output_file, 'rb') as fin:
         return BytesIO(fin.read())

@@ -1,4 +1,8 @@
 $(document).ready(function() {
+  $('#profile-tabs button').on('click', function() {
+    document.location = $(this).attr('href');
+  });
+
   $('#kudos-section').on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a')) {
       e.stopPropagation();
@@ -33,14 +37,14 @@ $(document).ready(function() {
     const activityCount = activityContainer ? parseInt(activityContainer.getAttribute('count')) || 0 : 0;
     const loadingImg = document.querySelector('.loading_img');
 
-    if (activityContainer.children.length < activityCount) {
+    if (activityContainer && activityContainer.children.length < activityCount) {
       updateViewBtn.style['visibility'] = 'visible';
     } else {
       updateViewBtn.style['visibility'] = 'hidden';
       return;
     }
 
-    if (ignoreScrollOffset || window.scrollY >= tabSection.scrollHeight) {
+    if (activityContainer && (ignoreScrollOffset || window.scrollY >= tabSection.scrollHeight)) {
       const activityName = activityContainer.id;
       let page = parseInt(activityContainer.getAttribute('page')) || 0;
 
@@ -129,7 +133,7 @@ $(document).ready(function() {
       .y(function(d) {
         return y(d.close);
       });
-        
+
     // Adds the svg canvas
     var svg = d3.select('#earn_dataviz')
       .append('svg')
@@ -173,7 +177,6 @@ $(document).ready(function() {
     });
 
   }
-
 
   $(document).on('click', '.load-more', function() {
     var address = $('#preferred-address').prop('title');

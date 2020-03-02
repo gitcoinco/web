@@ -32,7 +32,7 @@ window.onload = function() {
     var account = web3.eth.accounts[0];
 
     if (getParam('source')) {
-      $('input[name=issueURL]').val(getParam('source'));
+      $('#issueURL').html(getParam('source'));
     }
 
     $('#tipPercent').change(function() {
@@ -64,7 +64,7 @@ window.onload = function() {
 
     };
 
-    var issueURL = $('input[name=issueURL]').val();
+    var issueURL = $('#issueURL').text();
 
     waitforWeb3(function() {
       var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
@@ -85,7 +85,7 @@ window.onload = function() {
       var pct = parseFloat($('#tipPercent').val()) * 0.01;
 
       var email = '';
-      var github_url = $('#issueURL').val();
+      var github_url = $('#issueURL').text();
       var from_name = document.contxt['github_handle'];
       var username = getSelectedFulfillment() && getSelectedFulfillment().getAttribute('username');
       var amountInEth = bounty_amount * pct;
@@ -117,7 +117,7 @@ window.onload = function() {
       // get form data
 
       var email = '';
-      var github_url = $('#issueURL').val();
+      var github_url = $('#issueURL').text();
       var from_name = document.contxt['github_handle'];
       var username = getSelectedFulfillment() && getSelectedFulfillment().getAttribute('username');
       var amountInEth = selected_kudos.price_finney / 1000.0;
@@ -157,7 +157,7 @@ window.onload = function() {
       }
 
       e.preventDefault();
-      var issueURL = $('input[name=issueURL]').val();
+      var issueURL = $('#issueURL').text();
       var fulfillmentId = getSelectedFulfillment() && getSelectedFulfillment().getAttribute('value');
 
       sessionStorage['bountyId'] = getURLParams('pk');
@@ -257,7 +257,7 @@ window.onload = function() {
         };
         // just sent payout
         var send_payout = function() {
-          bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
+          bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)), from: web3.eth.accounts[0]}, final_callback);
         };
 
         // send both tip and payout

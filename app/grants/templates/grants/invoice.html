@@ -1,0 +1,212 @@
+{% load i18n static %}
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+
+    <style>
+    .invoice-box {
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 30px;
+      border: 1px solid #eee;
+      box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+      font-size: 16px;
+      line-height: 24px;
+      color: #555;
+    }
+
+    a {
+      color: #555;
+      text-decoration: underline;
+    }
+
+    .invoice-box table {
+      width: 100%;
+      line-height: inherit;
+      text-align: left;
+    }
+
+    .invoice-box table td {
+      padding: 5px;
+      vertical-align: top;
+    }
+
+    .invoice-box table tr td:nth-child(2) {
+      text-align: right;
+    }
+
+    .invoice-box table tr.top table td {
+      padding-bottom: 20px;
+    }
+
+    .invoice-box table tr.top table td.title {
+      font-size: 45px;
+      line-height: 45px;
+      color: #333;
+    }
+
+    .invoice-box table tr.information table td {
+      padding-bottom: 40px;
+    }
+
+    .invoice-box table tr.heading td {
+      background: #eee;
+      border-bottom: 1px solid #ddd;
+      font-weight: bold;
+    }
+
+    .invoice-box table tr.details td {
+      padding-bottom: 20px;
+    }
+
+    .invoice-box table tr.item td{
+      border-bottom: 1px solid #eee;
+    }
+
+    .invoice-box table tr.item.last td {
+      border-bottom: none;
+    }
+
+    .invoice-box table tr.total td:nth-child(2) {
+      border-top: 2px solid #eee;
+      font-weight: bold;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .invoice-box table tr.top table td {
+        width: 100%;
+        display: block;
+        text-align: center;
+      }
+
+      .invoice-box table tr.information table td {
+        width: 100%;
+        display: block;
+        text-align: center;
+      }
+    }
+
+    /** RTL **/
+    .rtl {
+      direction: rtl
+    }
+
+    .rtl table {
+      text-align: right;
+    }
+
+    .rtl table tr td:nth-child(2) {
+      text-align: left;
+    }
+    </style>
+  </head>
+
+  <body class="g-font-muli">
+    <div class="invoice-box">
+      {% if grant.network != 'mainnet' %}
+        <div style="color:red; border: 1px red solid; padding: 5px;">
+          {% trans "Note: This is not a mainnet grant, it is a " %} {{grant.network}} {% trans "grant, and this invoice is only for demonstration purposes." %}
+        </div>
+      {% endif %}
+      <table cellpadding="0" cellspacing="0">
+        <tr class="top">
+          <td colspan="2">
+            <table>
+              <tr>
+                <td class="title">
+                  <img src="{% static "v2/images/presskit/GitcoinLogoText.svg" %}" style="width:100%; max-width:300px;">
+                </td>
+
+                <td>
+                  {% trans "Invoice" %} #: {{contribution.pk}}<br>
+                  {% trans "Created" %}: {{contribution.created_on}}<br>
+                  {% trans "Status" %}: {{subscription.status}}<br>
+                  {% trans "For" %}: <a href="{{subscription.grant.url}}">{% trans "Gitcoin Grant" %} {{subscription.grant.pk}}</a> <br>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr class="information">
+          <td colspan="2">
+            <table>
+              <tr>
+                <td>
+                  {% trans "Prepared by" %} <br>
+                  Gitcoin Core LLC<br>
+                  ConsenSys Inc. <br>
+                  49 Bogart Street Suite 22 <br>
+                  Brooklyn, NY 11206 <br>
+                </td>
+
+                <td>
+                  {% trans "Prepared for Funder" %}: <br>
+                  {{subscription.grant.admin_address}}<br>
+                  @{{subscription.grant.admin_profile.handle}}<br>
+                  {{subscription.grant.admin_profile.email}}<br>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr class="heading">
+          <td>
+            {% trans "Payment Method" %}
+          </td>
+
+          <td>
+            {% trans "Account" %} #
+          </td>
+        </tr>
+
+        <tr class="details">
+          <td>
+            {% trans "Directly to counterparties via Ethereum Blockchain" %}
+          </td>
+
+          <td>
+            {{subscription.grant.contract_address}}
+          </td>
+        </tr>
+
+        <tr class="heading">
+          <td>
+            Item
+          </td>
+
+          <td>
+            Price
+          </td>
+        </tr>
+
+          <tr class="item">
+            <td>
+              {% trans "Contribution from " %}{{subscription.contributor_profile.handle}} {{subscription.contributor_address}}<br>
+              {{subscription.num_tx_approved|floatformat:"0" }} {% trans "period of " %} {{subscription.frequency}} {{subscription.frequency_unit}} ({{subscription.subscription_contribution.count}} / {{subscription.num_tx_approved|floatformat:"0" }})
+            </td>
+
+            <td>
+              {{ subscription.amount_per_period}} {{subscription.token_symbol}} (${{amount_per_period|default:0.0|floatformat:2}} USD)
+              <br>
+            </td>
+          </tr>
+
+
+        <tr class="total">
+          <td>
+            {% if amount_per_period %}
+               {% trans "Total:" %} ${{amount_per_period|default:0.0|floatformat:'2'}} USD
+            {% else %}
+               {% trans "Total:" %} $0.00 USD
+            {% endif %}
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

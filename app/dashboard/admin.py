@@ -19,26 +19,47 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Activity, BlockedUser, Bounty, BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
-    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonRegistration, HackathonSponsor,
-    Interest, LabsResearch, PortfolioItem, Profile, ProfileView, RefundFeeRequest, SearchHistory, Sponsor, Tip,
-    TokenApproval, Tool, ToolVote, UserAction, UserVerificationModel,
+    Activity, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest,
+    CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject,
+    HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView,
+    RefundFeeRequest, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
+    UserVerificationModel,
 )
+
+
+class BountyEventAdmin(admin.ModelAdmin):
+    list_display = ['created_on', '__str__', 'event_type']
+    raw_id_fields = ['bounty', 'created_by']
 
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
-    search_fields = ['fulfiller_address', 'fulfiller_email', 'fulfiller_github_username',
-                     'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url']
+    list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url']
+    search_fields = [
+        'fulfiller_address', 'fulfiller_email', 'fulfiller_github_username',
+        'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url'
+    ]
     ordering = ['-id']
 
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
+    list_display = ['created_on', '__str__']
+
+
+class TipPayoutAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['profile', 'tip']
+
+class BlockedUserAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    raw_id_fields = ['user']
     list_display = ['created_on', '__str__']
 
 
@@ -69,8 +90,26 @@ class ToolAdmin(admin.ModelAdmin):
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription']
+    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile', 'kudos_transfer']
     search_fields = ['metadata', 'activity_type', 'profile__handle']
+
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        if "_make_nano_bounty" in request.POST:
+            from townsquare.models import Offer
+            obj = Offer.objects.create(
+                created_by=obj.profile,
+                title='Offer for x ETH',
+                desc=obj.metadata.get('title', ''),
+                key='top',
+                url=obj.url,
+                valid_from=timezone.now(),
+                valid_to=timezone.now() + timezone.timedelta(days=1),
+                public=False,
+                )
+            self.message_user(request, "Nano bounty made - You still need to make it public + edit amounts tho.")
+            return redirect(obj.admin_url)
+        return super().response_change(request, obj)
 
 
 class TokenApprovalAdmin(admin.ModelAdmin):
@@ -85,8 +124,22 @@ class ToolVoteAdmin(admin.ModelAdmin):
 
 
 class BountyInvitesAdmin(admin.ModelAdmin):
-    raw_id_fields = ['bounty']
+    raw_id_fields = ['bounty', 'inviter', 'invitee']
     ordering = ['-id']
+    readonly_fields = [ 'from_inviter', 'to_invitee']
+    list_display = [ 'id', 'from_inviter', 'to_invitee', 'bounty_url']
+
+    def bounty_url(self, obj):
+        bounty = obj.bounty.first()
+        return format_html("<a href={}>{}</a>", mark_safe(bounty.url), mark_safe(bounty.url))
+
+    def from_inviter(self, obj):
+        """Get the profile handle."""
+        return "\n".join([p.username for p in obj.inviter.all()])
+
+    def to_invitee(self, obj):
+        """Get the profile handle."""
+        return "\n".join([p.username for p in obj.invitee.all()])
 
 
 class InterestAdmin(admin.ModelAdmin):
@@ -131,13 +184,14 @@ class ProfileAdmin(admin.ModelAdmin):
         return html
 
     def response_change(self, request, obj):
+        from django.shortcuts import redirect
         if "_recalc_flontend" in request.POST:
             obj.calculate_all()
             obj.save()
             self.message_user(request, "Recalc done")
+            return redirect(obj.admin_url)
         if "_impersonate" in request.POST:
-            from django.shortcuts import redirect
-            return redirect(f"/impersonate/{obj.user.pk}")
+            return redirect(f"/impersonate/{obj.user.pk}/")
         return super().response_change(request, obj)
 
 class VerificationAdmin(admin.ModelAdmin):
@@ -152,6 +206,7 @@ class SearchHistoryAdmin(admin.ModelAdmin):
 
 
 class TipAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'created_on','sender_profile', 'recipient_profile', 'amount', 'tokenName', 'txid', 'receive_txid']
     raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
     readonly_fields = ['resend', 'claim']
@@ -187,7 +242,7 @@ class BountyAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
-    list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
+    list_display = ['pk', 'img', 'bounty_state', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
     readonly_fields = [
         'what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link',
         '_action_urls', 'coupon_link'
@@ -347,15 +402,50 @@ class HackathonRegistrationAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name', 'referer', 'registrant']
     raw_id_fields = ['registrant']
 
+
+class HackathonProjectAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon', 'usernames', 'status', 'sponsor']
+    raw_id_fields = ['profiles', 'bounty', 'hackathon']
+    search_fields = ['name', 'summary', 'status']
+
+    def img(self, instance):
+        """Returns a formatted HTML img node or 'n/a' if the HackathonProject has no logo.
+
+        Returns:
+            str: A formatted HTML img node or 'n/a' if the HackathonProject has no logo.
+        """
+        logo = instance.logo
+        if not logo:
+            return 'n/a'
+        img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(logo.url))
+        return img_html
+
+    def usernames(self, obj):
+        """Get the profile handle."""
+        return "\n".join([p.handle for p in obj.profiles.all()])
+
+    def sponsor(self, obj):
+        """Get the profile handle."""
+        return obj.bounty.org_name
+
+
+class TribeMemberAdmin(admin.ModelAdmin):
+    raw_id_fields = ['profile', 'org',]
+    list_display = ['pk', 'profile', 'org', 'leader', 'status']
+
+
+admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Earning, EarningAdmin)
-admin.site.register(BlockedUser, GeneralAdmin)
+admin.site.register(BlockedUser, BlockedUserAdmin)
 admin.site.register(PortfolioItem, PortfolioItemAdmin)
 admin.site.register(ProfileView, ProfileViewAdmin)
 admin.site.register(UserAction, UserActionAdmin)
 admin.site.register(Interest, InterestAdmin)
 admin.site.register(Profile, ProfileAdmin)
+admin.site.register(TipPayout, TipPayoutAdmin)
+admin.site.register(BlockedURLFilter, GeneralAdmin)
 admin.site.register(Bounty, BountyAdmin)
 admin.site.register(BountyFulfillment, BountyFulfillmentAdmin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
@@ -370,8 +460,10 @@ admin.site.register(Sponsor, SponsorAdmin)
 admin.site.register(HackathonEvent, HackathonEventAdmin)
 admin.site.register(HackathonSponsor, HackathonSponsorAdmin)
 admin.site.register(HackathonRegistration, HackathonRegistrationAdmin)
+admin.site.register(HackathonProject, HackathonProjectAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(RefundFeeRequest, RefundFeeRequestAdmin)
 admin.site.register(Coupon, CouponAdmin)
+admin.site.register(TribeMember, TribeMemberAdmin)

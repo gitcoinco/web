@@ -19,3 +19,9 @@ function signMsgAndCreateSubdomain(message, from) {
   });
 }
 
+$(document).ready(function() {
+  $('span.checkbox').click(function() {
+    $('#tos').click();
+  });
+});
+

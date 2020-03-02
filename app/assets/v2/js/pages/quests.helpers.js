@@ -73,6 +73,7 @@ var toggle_character_class = async function(sel, classes) {
 function typeWriter() {
   if (document.typewriter_i == 0) {
     document.typewriter_offset = 0;
+    document.is_typewriter = true;
   }
   if (document.typewriter_offset + document.typewriter_i < document.typewriter_txt.length) {
     var char = document.typewriter_txt.charAt(document.typewriter_i);
@@ -84,8 +85,16 @@ function typeWriter() {
     document.getElementById(document.typewriter_id).innerHTML += char;
     document.typewriter_i++;
     setTimeout(typeWriter, document.typewriter_speed);
+  } else {
+    document.is_typewriter = false;
   }
 }
+
+var wait_for_typewriter = async function() {
+  while (document.is_typewriter) {
+    await sleep(100);
+  }
+};
 
 var get_midi = function(name) {
   return '/static/v2/audio/' + name + '.mid';
@@ -96,7 +105,7 @@ var start_music_midi = function(name) {
   if (!document.music_enabled) {
     return;
   }
-  if (!MIDIjs) {
+  if (typeof MIDIjs == 'undefined') {
     return;
   }
   try {
@@ -107,14 +116,14 @@ var start_music_midi = function(name) {
 };
 var resume_music_midi = function(name) {
   // get_audio('bossmusic.mid').play();
-  if (!MIDIjs) {
+  if (typeof MIDIjs == 'undefined') {
     return;
   }
   MIDIjs.resume();
 };
 var pause_music_midi = function(name) {
   // get_audio('bossmusic.mid').play();
-  if (!MIDIjs) {
+  if (typeof MIDIjs == 'undefined') {
     return;
   }
   MIDIjs.pause();
@@ -191,6 +200,24 @@ $(document).ready(function() {
     }
     document.quest_state = 3;
     advance_to_state(document.quest_state + 1);
+  });
+
+
+  $('.give_feedback').on('click', async function(e) {
+    e.preventDefault();
+    var feedback = prompt('Any comments for the quest author? (optional)', 'Feedback: ');
+    var polarity = $(this).data('direction');
+    
+    var params = {
+      'polarity': polarity,
+      'feedback': feedback
+    };
+    var url = document.quest_feedback_url;
+
+    $.post(url, params, function(response) {
+      _alert('Thank you for your feedback on this quest.', 'success');
+      $('#vote_container').remove();
+    });
   });
 
 

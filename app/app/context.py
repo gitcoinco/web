@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define additional context data to be passed to any request.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -21,18 +21,43 @@ import json
 import logging
 
 from django.conf import settings
+from django.core.cache import cache
 from django.utils import timezone
 
+import requests
 from app.utils import get_location_from_ip
+from cacheops import cached_as
 from dashboard.models import Activity, Tip, UserAction
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
 from marketing.utils import handle_marketing_callback
 from retail.helpers import get_ip
+from townsquare.models import Announcement
 
 RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
 
 logger = logging.getLogger(__name__)
+
+
+def fetchPost(qt='2'):
+    """Fetch last post from wordpress blog."""
+    url = f"https://gitcoin.co/blog/wp-json/wp/v2/posts?_fields=excerpt,title,link,jetpack_featured_media_url&per_page={qt}"
+    last_posts = requests.get(url=url).json()
+    return last_posts
+
+
+@cached_as(Announcement.objects.filter(key__in=['footer', 'header']), timeout=120)
+def get_sitewide_announcements():
+    announcements = Announcement.objects.filter(key__in=['footer', 'header'])
+    announcement = announcements.filter(key='footer').first()
+    header_msg, footer_msg, nav_salt = '', '', 0
+    if announcement:
+        footer_msg = announcement.title + announcement.desc
+    announcement = announcements.filter(key='header').first()
+    if announcement:
+        header_msg = announcement.title + announcement.desc
+        nav_salt = announcement.rank
+    return header_msg, footer_msg, nav_salt
 
 
 def preprocess(request):
@@ -91,10 +116,31 @@ def preprocess(request):
         callback = request.GET.get('cb')
         handle_marketing_callback(callback, request)
 
+    chat_unread_messages = False
+
+    if profile and hasattr(profile, 'chat_id'):
+        try:
+            make_external_api_call = False
+            if make_external_api_call:
+                from chat.tasks import get_driver
+                chat_driver = get_driver()
+
+                chat_unreads_request = chat_driver.teams.get_team_unreads_for_user(profile.chat_id)
+
+                for teams in chat_unreads_request:
+                    if teams['msg_count'] > 0 or teams['mention_count'] > 0:
+                        chat_unread_messages = True
+                        break
+        except Exception as e:
+            logger.error(str(e))
+
+    header_msg, footer_msg, nav_salt = get_sitewide_announcements()
+
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
         'num_slack': num_slack,
+        'chat_unread_messages': chat_unread_messages,
         'github_handle': request.user.username if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
@@ -102,7 +148,12 @@ def preprocess(request):
         'raven_js_dsn': settings.SENTRY_JS_DSN,
         'release': settings.RELEASE,
         'env': settings.ENV,
+        'header_msg': header_msg,
+        'nav_salt': nav_salt,
+        'footer_msg': footer_msg,
+        'INFURA_V3_PROJECT_ID': settings.INFURA_V3_PROJECT_ID,
         'email_key': email_key,
+        'giphy_key': settings.GIPHY_KEY,
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
         'hotjar': settings.HOTJAR_CONFIG,
@@ -115,12 +166,14 @@ def preprocess(request):
         'access_token': profile.access_token if profile else '',
         'is_staff': request.user.is_staff if user_is_authenticated else False,
         'is_moderator': profile.is_moderator if profile else False,
+        'is_alpha_tester': profile.is_alpha_tester if profile else False,
         'persona_is_funder': profile.persona_is_funder if profile else False,
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
         'profile_url': profile.url if profile else False,
         'quests_live': settings.QUESTS_LIVE,
     }
     context['json_context'] = json.dumps(context)
+    context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)
 
     if context['github_handle']:
         context['unclaimed_tips'] = Tip.objects.filter(

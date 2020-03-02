@@ -14,10 +14,9 @@ Beyond simple datatypes like `string` or `integer` the API returns datatypes lik
 
 ### `bounties`
 
-The bounties endpoint provides a listing of bounties and their current status. There are two endpoints that access bounties:
+The bounties endpoint provides a listing of bounties and their current status. There is one endpoint that access bounties:
 
 - `https://gitcoin.co/api/v0.1/bounties/` - Returns a list of bounties
-- `https://gitcoin.co/api/v0.1/bounties/<bountyId>/` - Returns a single bounty by ID.
 
 #### Fields
 
@@ -72,7 +71,8 @@ The bounties endpoint provides a listing of bounties and their current status. T
 
 **Filters**
 
-You can filter the data returned from the API by providing these keys as URL parameters `experience_level`, `project_length`, `bounty_type`, `bounty_owner_address`, `is_open`, and `github_url`. `github_url` can take a comma-seperated list of GitHub urls
+You can filter the data returned from the API by providing these keys as URL parameters `experience_level`, `project_length`, `bounty_type`, `bounty_owner_address`, `is_open`, `github_url` and `pk`. `github_url` can take a comma-separated list of GitHub urls. `pk` takes an ID and returns a single bounty.
+
 
 **Order By**
 

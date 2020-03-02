@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define model for the inbox app.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -55,6 +55,9 @@ class Notification(SuperModel):
         ('new_milestone', 'New Milestone'),
         ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
+        ('new_mention', 'New Mention'),
+        ('new_post_comment', 'New comment'),
+        ('new_like', 'New Like'),
     )
     cta_url = models.URLField(max_length=500, blank=True)
     cta_text = models.CharField(

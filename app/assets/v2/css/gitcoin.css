@@ -8,7 +8,6 @@ body {
 
 h4,
 .h4 {
-  text-align: center;
   padding-top: 40px;
 }
 
@@ -121,6 +120,14 @@ h4,
   color: #ffffff;
 }
 
+.gc-text-blue {
+  color: #3E00FF;
+}
+
+.gc-text-green {
+  color: #0FCE7C;
+}
+
 .text-black-60 {
   color: rgba(0, 0, 0, 0.6)!important;
 }
@@ -182,7 +189,7 @@ h4,
 }
 
 .gc-letter-spacing {
-  letter-spacing: 0.15em;
+  letter-spacing: 0.5rem;
 }
 
 div.button-pink {
@@ -404,7 +411,6 @@ div.button-pink {
   position: relative;
   font-size: 8px;
   font-weight: bold;
-  background-color: #ddd;
   border-radius: 10px;
   padding: 2px 5px;
   top: -10px
@@ -416,7 +422,6 @@ div.button-pink {
 
 .navbar-expand-md .navbar-nav .nav-link {
   color: #eff4ee;
-  text-transform: uppercase;
   text-decoration: none;
   padding-right: 1rem;
   padding-left: 1rem;
@@ -575,8 +580,8 @@ div.button-pink {
 }
 
 .dropdown-menu .dropdown-item:hover {
-  background-color: #0D0764;
-  color: #FFFFFF;
+  background-color: #3E00FF;
+  color: #FFFFFF !important;
 }
 
 #why-gitcoin .dropdown-item {
@@ -680,12 +685,12 @@ div.button-pink {
 }
 
 .nav-tabs .nav-line {
-  color: #4A4A4A;
+  color: rgb(25, 15, 175);
   border-width: 0px 0px 3px 0;
 }
 .nav-tabs .nav-line.active {
-  color: #0D0764;
-  border-color: #0D0764;
+  color: rgb(25, 15, 175);
+  border-color: rgb(25, 15, 175);
   background-color: transparent;
 }
 
@@ -735,13 +740,6 @@ div.button-pink {
 #select2-username-container .rounded-circle {
   height: 1.8rem;
   width: auto;
-}
-
-#payout_table td div.input_amount,
-#payout_table td a.remove,
-#payout_table td div.amount {
-  position: relative;
-  top: 10px;
 }
 
 @media (min-width: 768px) {

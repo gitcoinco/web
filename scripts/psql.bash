@@ -1,7 +1,7 @@
 #!/bin/bash
 
 : <<'END'
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -27,6 +27,7 @@ PGUSER=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $1
 PGHOST=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $2}'  | awk -F '@' '{print $2}')
 PGPORT=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $3}'  | awk -F ':' '{print $1}' | awk -F '/' '{print $1}')
 PGPASS=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $2}' | awk -F '@' '{print $1}')
+PGDB=gitcoin
+PGDB=postgres
 
-
-psql gitcoin -p $PGPORT -h $PGHOST -U $PGUSER
+psql $PGDB -p $PGPORT -h $PGHOST -U $PGUSER

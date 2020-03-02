@@ -25,6 +25,8 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
+      <div class="col-12 text-center" id="moderator-admin-actions"></div>
+
       <div class="col-12 col-lg-2 left-rails text-center" style="background: #F2F6F9;">
         <div class="explorer font-body">
           {% if event_tag %}
@@ -47,7 +49,6 @@
           <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %}Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
         </div>
 
-        <div class="col-12" id="moderator-admin-actions"></div>
         <div class="col-12" id="bounty_details">
           <div class="row font-body align-items-center mt-4 mb-3">
             <div class="d-none d-lg-block col-lg-2 col-xl-1">
@@ -55,26 +56,25 @@
             </div>
             <div class="col-12 col-lg-10 col-xl-11 pl-xl-4">
               <div class="col-12">
-                <div class="d-inline-block font-subheader hackathon-alt" id="event_name"></div>
-                <h4 id="title" class="font-title p-0 text-left"></h4>
+                <div class="font-subheader hackathon-alt text-center text-lg-left" id="event_name"></div>
+                <h4 id="title" class="font-title p-0 text-center text-lg-left"></h4>
                 <div class="col-12 text-center text-lg-left">
-                  <div class="tags font-caption align-items-center">
+                  <div class="tags font-caption">
                     <div class="tag token">
                       <p class="inner-tooltip">
                         <span id="value_in_token"></span>
                       </p>
                     </div>
-                    <div id="value_in_usdt_wrapper" title="" class="tag usd ml-3">
+                    <div id="value_in_usdt_wrapper" class="tag usd ml-3">
                       <p class="inner-tooltip">
                         <span id="value_in_usdt"></span>
                         <span>USD</span>
                       </p>
                     </div>
-                    <div class="d-inline-block font-subheader" id="bounty_categories"></div>
+                    <div class="d-inline-block font-subheader ml-3" id="bounty_categories"></div>
                   </div>
 
                 </div>
-                <div class="notif-info mb-3 font-caption" id="funder_notif_info"></div>
               </div>
             </div>
           </div>
@@ -135,20 +135,37 @@
               </div>
             </div>
           </div>
+
+          {% if is_bounties_network %}
+            <div class="row">
+              <div class="notif-info mt-4 font-caption" id="funder_notif_info"></div>
+            </div>
+          {% endif %}
+
           <div class="row">
-            <div class="col-12 bounty-actions">
+            <div class="col-12 bounty-actions mt-4 pt-2 pb-1">
                 <div class="col-12">
                   <div id="right_actions">
-                    <button type="button" class="modal-link button button--primary float-right" data-toggle="modal" data-target=".share-modal">
-                      <span class="font-caption"><i class="fas fa-share-alt mr-2"></i> Share</span>
-                    </button>
+                    <div class="dropdown show float-right">
+                      <a class="font-caption font-weight-semibold dropdown-toggle" href="#" role="button"
+                        id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Bounty Options
+                      </a>
+                      <div id="bounty-options-link" class="dropdown-menu font-caption" aria-labelledby="bounty-options">
+                      </div>
+                    </div>
+
                     <div id="bounty_actions" class="d-inline-block"></div>
                     <div id="github_actions" class="d-inline-block"></div>
+                    <a class="modal-link button button--secondary font-caption" href="" data-toggle="modal" data-target=".share-modal">
+                      <i class="fas fa-share-alt font-caption mr-2"></i>
+                      <span>Share</span>
+                    </a>
                   </div>
                 </div>
             </div>
-            <div class="col-12">
-              <h5 class="bounty-heading" id="description">{% trans "Description" %}</h5>
+            <div class="col-12 mt-2">
+              <h5 class="bounty-heading mt-0 pt-4" id="description">{% trans "Description" %}</h5>
               <div class="bounty-text" id="issue_description"></div>
             </div>
             <div class="col-12">
@@ -178,6 +195,44 @@
               <h5 class="bounty-heading">{% trans "All Activity" %}</h5>
               <div id="activities" class="font-body"></div>
             </div>
+            {% if prize_projects %}
+              <div class="col-12">
+                <h5 class="bounty-heading">{% trans "Projects" %}</h5>
+                <div class="row">
+                  {% for project in prize_projects %}
+                    <div class="col-12 col-md-4">
+
+                      <div class="card m-3 p-1">
+                        {% for profile in project.profiles.all %}
+                          {% if profile_id == profile.id %}
+                            <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
+                          {% endif %}
+                        {% endfor %}
+                        {% if project.logo %}
+                          <img class="card-project-logo mx-auto mt-2 mw-100 rounded border" height="65" width="65" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
+                        {% else %}
+                          <img class="card-project-logo mx-auto mt-2 mw-100 rounded border" height="65" width="65" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
+                        {% endif %}
+
+                        <div class="text-center mt-2">
+                          <a href="{{project.work_url}}" target="_blank" class="font-weight-bold card-subtitle">{{project.name}}</a>
+                          <div class="mb-2">
+                            <b class="text-muted font-smaller-2">Team Members</b>
+                            <div class="mt-1">
+                              {% for profile in project.profiles.all %}
+                                <a href="{% url 'profile' profile %}" class="">
+                                  <img src="{{profile.avatar_url}}" alt="{{profile}}" title="@{{profile}}" width="30" height="30" class="rounded-circle">
+                                </a>
+                              {% endfor %}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
             <div class="col-12">
               <h5 class="bounty-heading">{% trans "Funder" %}</h5>
               <div class="row box">
@@ -186,10 +241,12 @@
                 </div>
                 <div class="col-12 col-md-11">
                   <div id="bounty_owner_github_username" class="font-subheader"></div>
-                  <div>
-                    <span class="bounty-subheading">{% trans "Funder" %} :</span>
-                    <span class="bounty-text" id="bounty_owner_address"></span>
-                  </div>
+                  {% if is_bounties_network %}
+                    <div>
+                      <span class="bounty-subheading">{% trans "Funder" %} :</span>
+                      <span class="bounty-text" id="bounty_owner_address"></span>
+                    </div>
+                  {% endif %}
                   <div>
                     <span class="bounty-subheading" id="bounty_owner_email_label">{% trans "Email" %} :</span>
                     <span class="bounty-text" id="bounty_owner_email"></span>
@@ -203,46 +260,16 @@
     </div>
 
     <script id="action" type="text/x-jsrender">
-      <span [[if id]] id="[[:id]]" [[if id == 'submit']] [[if !work_started]] class="none" [[/if]] [[/if]] [[/if]]
-        title='<div class="tooltip-info tooltip-sm">[[:title]]</div>'>
+      <span [[if id]] id="[[>id]]" [[if id == 'submit']] [[if !work_started]] class="none" [[/if]] [[/if]] [[/if]]
+        title='<div class="tooltip-info tooltip-sm">[[>title]]</div>'>
         [[if pending_acceptance]]
-          <a class="button button--primary accept [[if !enabled]]disabled[[/if]]" role="button" href="[[:href]]" target="[[:target]]">
-            <span class="font-caption">[[:text]] ( [[:pending_acceptance]] )</span>
-          </a>
-        [[else color == 'white']]
-          <a class="btn btn-small [[if !enabled]]disabled[[/if]] [[:buttonclass]]" id="btn-white" role="button" target="_blank" href="[[:href]]" target="[[:target]]">
-            [[if comments]]
-              <span class="font-caption d-inline-flex">
-                [[:text]]
-                <span class="comment">
-                  <img src={% static "v2/images/comment.svg" alt="Comment" %}>
-                  <span class="github-comment">
-                    [[:comments]]
-                  </span>
-                </span>
-              </span>
-            [[else]]
-              <span class="font-caption">[[:text]]</span>
-            [[/if]]
+          <a class="button button--primary accept [[if !enabled]]disabled[[/if]]" role="button" href="[[>href]]" target="[[>target]]">
+            <span class="font-caption">[[:text]] ( [[>pending_acceptance]] )</span>
           </a>
         [[else]]
-          [[if edit_dropdown]]
-              <div class="dropdown show" style="display: inline;">
-                <a class="button button--primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {% trans "Update Issue" %}
-                </a>
-
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                  <a class="dropdown-item" href="[[:edit_issue_href]]">{% trans "Edit Issue Details" %}</a>
-                  [[if show_extend_expiration]] <a class="dropdown-item" href="[[:extend_expiration_href]]">{% trans "Extend Expiration" %}</a> [[/if]]
-                  [[if show_remarket]] <a class="dropdown-item [[if !remarket_enabled]]disabled[[/if]]" href="[[:remarket_url]]">{% trans "Re-market Issue" %}</a> [[/if]]
-                </div>
-              </div>
-          [[else]]
-            <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
-              <span class="font-caption">[[:text]]</span>
-            </a>
-          [[/if]]
+          <a class="button [[if primary]]button--primary[[else]]button--secondary[[/if]] mr-2 font-caption [[if !enabled]]disabled[[/if]] [[>buttonclass]]" role="button" href="[[>href]]" target="[[>target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
+            <span class="font-caption">[[:text]]</span>
+          </a>
         [[/if]]
       </span>
     </script>
@@ -251,172 +278,192 @@
       [[if activity_type != 'unknown_event']]
         <div class="row box activity">
           <div class="col-12 col-md-1">
-            <div class="activity-avatar bounty_row user-popover" data-username="[[:name]]" data-html="true" data-toggle="popover" data-container="body">
-              <img class="avatar" src="/dynamic/avatar/[[:name]]" alt="Avatar"/>
+            <div class="activity-avatar bounty_row user-popover" data-username="[[>name]]" data-html="true" data-toggle="popover" data-container="body">
+              <img class="avatar" src="/dynamic/avatar/[[>name]]" alt="Avatar"/>
             </div>
           </div>
           <div class="col-12 col-md-2">
-            <div class="activity-name">
-              <a href="/profile/[[:name]]" target="_blank" data-username="[[:name]]" data-html="true" data-toggle="popover" data-container="body">
-                [[:name]]
+            <div class="activity-name text-center text-md-left">
+              <a href="/profile/[[>name]]" target="_blank" data-username="[[>name]]" data-html="true" data-toggle="popover" data-container="body">
+                [[>name]]
               </a>
             </div>
           </div>
-          [[if activity_type == 'work_done']]
-            <div class="col-12 col-md-7 fulfilled">
+
+          [[if activity_type == 'new_tip']]
+
+           <div class="col-12 col-md-7">
+              <div class="activity-tags activity-tag-first align-items-center text-center text-md-left">
+                [[>text]]
+                ( <div class="tag token">
+                  <p>
+                    <span>[[>tip.amount]] [[>tip.token]]</span>
+                  </p>
+                </div> )
+                to
+                <a href="/profile/[[>tip.to]]">[[>tip.to]]</a>
+              </div>
+            </div>
+
+          [[else activity_type == 'work_done']]
+            <div class="col-12 col-md-7 fulfilled text-center text-md-left">
               <div class="activity-status">
-                [[:text]]
+                [[>text]]
                 <i class="far fa-check-circle"></i>
               </div>
               [[if fulfiller_address]]
                 <div>
                   <span class="bounty-subheading">{% trans "ETH Address" %} :</span>
                   <span class="bounty-text">
-                    <a href="https://etherscan.io/address/[[:fulfiller_address]]" target="_blank" rel="noopener noreferrer">[[:fulfiller_address]]</a>
-                  </span>
-                </div>
-              [[/if]]
-              [[if fulfiller_email]]
-                <div>
-                  <span class="bounty-subheading">{% trans "Email" %} :</span>
-                  <span class="bounty-text">
-                    <a href="mailto:[[:fulfiller_email]]">[[:fulfiller_email]]</a>
+                    <a href="https://etherscan.io/address/[[>fulfiller_address]]" target="_blank" rel="noopener noreferrer">[[>fulfiller_address]]</a>
                   </span>
                 </div>
               [[/if]]
               [[if fulfillment_id]]
                 <div>
                   <span class="bounty-subheading">{% trans "Submission Id" %} :</span>
-                  <span class="bounty-text">[[:fulfillment_id]]</span>
+                  <span class="bounty-text">[[>fulfillment_id]]</span>
                 </div>
               [[/if]]
             </div>
           [[else activity_type == 'start_work' || activity_type == 'worker_approved' || activity_type == 'bounty_abandonment_warning' || activity_type == 'worker_applied']]
-            <div class="col-12 col-md-7 started-status-column d-flex">
+            <div class="col-12 col-md-7 text-center text-md-left">
               <div class="activity-status">
-                [[:text]]
+                [[>text]]
+                [[if activity_type == 'worker_approved']]
+                  <a href="/profile/[[>worker_handle]]" target="_blank">
+                    [[>worker_handle]]
+                  </a> to work on the bounty
+                [[/if]]
                 [[if signed_nda]]
-                  <a href="[[:signed_nda.signed_nda.doc]]" download class="d-flex">View signed NDA</a>
+                  <a href="[[>signed_nda.signed_nda.doc]]" download class="d-flex">View signed NDA</a>
                 [[/if]]
               </div>
               [[if can_approve_worker ]]
-                <div class="stop-work">
-                  <span title="<div class='tooltip-info tooltip-sm'>Reject worker</div>">
-                    <a class="button button--primary" href="[[:reject_worker_url]]">
-                      <span class="font-smaller-4">{% trans "Reject worker" %}</span>
-                    </a>
-                  </span>
-                </div>
-                <div class="stop-work">
-                  <span title="<div class='tooltip-info tooltip-sm'>Approve worker</div>">
-                    <a class="button button--primary" href="[[:approve_worker_url]]">
-                      <span class="font-smaller-4">{% trans "Approve worker" %}</span>
-                    </a>
-                  </span>
+                <div class="stop-work-container">
+                  <div class="stop-work">
+                    <span title="<div class='tooltip-info tooltip-sm'>Reject worker</div>">
+                      <a class="button button--primary" href="[[>reject_worker_url]]">
+                        <span class="font-smaller-4">{% trans "Reject worker" %}</span>
+                      </a>
+                    </span>
+                  </div>
+                  <div class="stop-work">
+                    <span title="<div class='tooltip-info tooltip-sm'>Approve worker</div>">
+                      <a class="button button--primary" href="[[>approve_worker_url]]">
+                        <span class="font-smaller-4">{% trans "Approve worker" %}</span>
+                      </a>
+                    </span>
+                  </div>
                 </div>
               [[else uninterest_possible]]
-                <div class="stop-work">
-                  <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
-                    <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
-                      <span class="font-smaller-4">{% trans "Stop work" %}</span>
-                    </a>
-                  </span>
+                <div class="stop-work-container">
+                  <div class="stop-work">
+                    <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
+                      <a id="remove-[[>name]]" class="button button--primary" role="button" href="remove-handle">
+                        <span class="font-smaller-4">{% trans "Stop work" %}</span>
+                      </a>
+                    </span>
+                  </div>
+                  [[if slash_possible]]
+                    <div class="stop-work">
+                      <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty and ding rep</div>">
+                        <a id="remove-slash-[[>name]]" class="button button--primary admin-only" role="button" href="remove-handle">
+                          <span class="font-smaller-4">{% trans "Stop work + Ding Rep" %}</span>
+                        </a>
+                      </span>
+                    </div>
+                  [[/if]]
                 </div>
-                [[if slash_possible]]
+              [[/if]]
+            </div>
+          [[else activity_type == 'worker_rejected']]
+            <div class="col-12 col-md-7 text-center text-md-left">
+              <div class="activity-status">
+                [[>text]]
+                <a href="/profile/[[>worker_handle]]" target="_blank">
+                  [[>worker_handle]]
+                </a>
+              </div>
+            </div>
+          [[else activity_type == 'work_submitted']]
+            <div class="col-12 col-md-7 text-center text-md-left">
+              <div class="activity-status">
+                [[>text]]
+                [[if fulfiller_github_url]]
+                <a target="_blank" href="[[>fulfiller_github_url]]">[{% trans "View Work" %}]</a>
+                [[/if]]
+              </div>
+              [[if slash_possible]]
+                <div class="stop-work-container">
+                  <div class="stop-work">
+                    <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
+                      <a id="remove-[[>name]]" class="button button--primary" role="button" href="remove-handle">
+                        <span class="font-smaller-4">{% trans "Stop work" %}</span>
+                      </a>
+                    </span>
+                  </div>
                   <div class="stop-work">
                     <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty and ding rep</div>">
-                      <a id="remove-slash-[[:name]]" class="button button--primary admin-only" role="button" href="remove-handle">
+                      <a id="remove-slash-[[>name]]" class="button button--primary admin-only" role="button" href="remove-handle">
                         <span class="font-smaller-4">{% trans "Stop work + Ding Rep" %}</span>
                       </a>
                     </span>
                   </div>
-                [[/if]]
-              [[/if]]
-            </div>
-          [[else activity_type == 'worker_approved' ]]
-            <div class="col-12 col-md-7 started-status-column">
-              <div class="activity-status">
-                Worker
-                <a href="/profile/[[:worker_handle]]" target="_blank">
-                  [[:worker_handle]]
-                </a>
-                Approved
-              </div>
-            </div>
-          [[else activity_type == 'worker_rejected']]
-            <div class="col-12 col-md-7 started-status-column">
-              <div class="activity-status">
-                Worker
-                <a href="/profile/[[:worker_handle]]" target="_blank">
-                  [[:worker_handle]]
-                </a>
-                Rejected
-              </div>
-            </div>
-          [[else activity_type == 'work_submitted']]
-            <div class="col-12 col-md-7 started-status-column">
-              <div class="activity-status">
-                [[:text]]
-                [[if fulfiller_github_url]]
-                <a target="_blank" href="[[:fulfiller_github_url]]">[{% trans "View Work" %}]</a>
-                [[/if]]
-              </div>
-              [[if slash_possible]]
-                <div class="stop-work">
-                  <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
-                    <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
-                      <span class="font-smaller-4">{% trans "Stop work" %}</span>
-                    </a>
-                  </span>
-                </div>
-                <div class="stop-work">
-                  <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty and ding rep</div>">
-                    <a id="remove-slash-[[:name]]" class="button button--primary admin-only" role="button" href="remove-handle">
-                      <span class="font-smaller-4">{% trans "Stop work + Ding Rep" %}</span>
-                    </a>
-                  </span>
                 </div>
               [[/if]]
             </div>
           [[else activity_type == 'increased_bounty']]
-            <div class="col-12 col-md-7">
+            <div class="col-12 col-md-7 text-center text-md-left">
               <div class="activity-tags activity-tag-first align-items-center">
-                [[:text]]
+                [[>text]]
                 from
                 <div class="tag token">
                   <p>
-                    <span>[[:value_in_token_old]] [[:token_name]]</span>
+                    <span>[[>value_in_token_old]] [[>token_name]]</span>
                   </p>
                 </div>
-              </div>
-              <div class="activity-tags align-items-center">
                 to
                 <div class="tag token">
                   <p>
-                    <span>[[:value_in_token_new]] [[:token_name]]</span>
+                    <span>[[>value_in_token_new]] [[>token_name]]</span>
                   </p>
                 </div>
               </div>
             </div>
+          [[else activity_type == 'new_crowdfund']]
+            <div class="col-12 col-md-7 text-center text-md-left">
+              <div class="activity-tags activity-tag-first align-items-center">
+                [[>text]]
+                ( <div class="tag token">
+                  <p>
+                    <span>[[>crowdfund.amount]] [[>crowdfund.token]]</span>
+                  </p>
+                </div> )
+              </div>
+            </div>
           [[else activity_type == 'new_kudos']]
-            <div class="col-12 col-md-7">
+            <div class="col-12 col-md-7 text-center text-md-left">
               <div class="activity-status activity-tag-first align-items-center d-flex justify-content-between">
-                <span>New Kudos sent to <a href="/profile/[[:to_username]]">[[:to_username]]</a></span>
-                <img width="60px" height="60px" class="activity-kudos started-status-column" src="/static/[[:kudos]]" alt="Kudos">
+                <span>New Kudos sent to <a href="/profile/[[>to_username]]">[[>to_username]]</a></span>
+                <img width="60px" height="60px" class="activity-kudos text-center text-md-left" src="[[>kudos]]" alt="Kudos">
               </div>
             </div>
           [[else]]
-            <div class="col-12 col-md-7 d-flex started-status-column">
+            <div class="col-12 col-md-7 text-center text-md-left">
               <div class="activity-status">
-                [[:text]]
+                [[>text]]
               </div>
             </div>
           [[/if]]
-          <div class="col-12 col-md-2">
-            <div class="activity-time">[[:age]]</div>
+          <div class="col-12 col-md-2 text-center text-md-left">
+            <div class="activity-time">[[>age]]</div>
           </div>
           [[if issue_message && activity_type == 'worker_applied' || issue_message && permission_type == 'permissionless' && activity_type == 'start_work' ]]
-            <p class="bg-lightblue p-2 rounded mt-3 mb-0 w-100 overflow-auto" style="resize: vertical;height: 50px;word-break: break-word;white-space: pre-wrap;"><b>Work Plan:</b> [[:issue_message.issue_message]]</p>
+            <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto" style="max-height: 8rem;">
+              <p class="font-weight-bold mb-2">Work Plan</p>
+              <p class="mb-0">[[>issue_message.issue_message]]</p>
+            </div>
           [[/if]]
         </div>
       [[/if]]
@@ -449,11 +496,24 @@
     </div>
 
     <noscript>
-        <h2>{{ noscript.title }}</h2>
-        <h3>{{ noscript.org_name }}</h3>
-        <h3>{{ noscript.keywords }}</h3>
-        <p>{{ noscript.issue_description_text }}</p>
+      <h2>{{ noscript.title }}</h2>
+      <h3>{{ noscript.org_name }}</h3>
+      <h3>{{ noscript.keywords }}</h3>
+      <p>{{ noscript.issue_description_text }}</p>
     </noscript>
+
+    <script>
+      const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
+      document.issueURL = '{{ issueURL }}';
+                                                                                                
+      // ETC-TODO: remove network + std bounties for ETC                                                                                                     
+      document.issueNetwork = '{{ network }}';
+      document.issue_stdbounties_id = '{{ stdbounties_id }}';
+
+      {% if event_tag %}
+        document.eventTag = '{{ event_tag }}';
+      {% endif %}
+    </script>
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
@@ -462,15 +522,6 @@
   </body>
 
   {% include 'shared/current_profile.html' %}
-
-  <script>
-    document.issueURL = '{{ issueURL }}';
-    document.issueNetwork = '{{ network }}';
-    document.issue_stdbounties_id = '{{ stdbounties_id }}';
-    {% if event_tag %}
-      document.eventTag = '{{ event_tag }}';
-    {% endif %}
-  </script>
 
   <script src="{% static "v2/js/lib/highlight.js" %}"></script>
   <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
@@ -484,17 +535,22 @@
     $('[data-toggle="popover"]').popover()
     $('body').on('mouseover', '[data-username]', function(e) {
       openContributorPopOver($(this).data('username'), $(this));
-      $('[data-username]').not(this).popover('hide');
     });
+
     $('body').on('mouseout', '[data-username]', function(e) {
       $(this).popover('dispose');
     });
+
+    $('body').on('show.bs.popover', '[data-username]', function () {
+      $('body [data-username]').not(this).popover('hide');
+    })
 
   </script>
   <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
+  <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
   <script src="{% static "v2/js/user_popover.js" %}"></script>
   <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>

@@ -8,6 +8,7 @@ app/assets/v2/js/lib/markdown-it.js
 app/assets/v2/js/lib/highlight.js
 app/assets/v2/js/lib/tooltip.js
 app/assets/v2/js/lib/tweenlite.js
+app/assets/v2/js/lib/web3.0.20.7.js
 app/assets/v2/js/abi.js
 
 app/assets/onepager/js/confetti.js
@@ -16,3 +17,5 @@ app/assets/v2/js/dataviz/*
 app/assets/v2/js/ethereumjs-accounts.js
 app/assets/onepager/js/tx.js
 app/assets/onepager/js/bignumber.js
+
+app/assets/v2/js/lib/emoji-button.js

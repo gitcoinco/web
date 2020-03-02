@@ -77,7 +77,7 @@ When you [open an issue](https://github.com/gitcoinco/web), you'll notice four t
 ## Discussions And General Help
 
 As Gitcoin is still at its early stages, drop by
-[gitcoin.co/slack](gitcoin.co/slack) and say hi to know what's next / to get
+[gitcoin.co/slack](https://gitcoin.co/slack) and say hi to know what's next / to get
 your answers cleared up.
 
 ## Pull Requests
@@ -230,7 +230,7 @@ def foo(bar='bar'):
       bar (str): The foo suffix. Defaults to: bar.
 
     Attributes:
-      foobar (str): The foo string concatentated with the provided bar variable.
+      foobar (str): The foo string concatenated with the provided bar variable.
 
     Returns:
       str: The concatenated string.
@@ -376,5 +376,5 @@ Run: `make collect-static` if using Docker or `cd app; python3 manage.py collect
 
 Additionally, you can check out the [Django Managing Static Files Documentation](https://docs.djangoproject.com/en/2.0/howto/static-files/)
 
-<img src='https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png'/>
+<img src='https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png' width="185" height="185" alt="Gitcoin logo">
 Welcome to the gitcoin community. Lets Grow Open Source Software.

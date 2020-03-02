@@ -1,0 +1,291 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load i18n static matches %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static 'v2/css/lib/quill-snow.css' %}">
+
+    <style>
+      .container {
+        counter-reset: section;
+      }
+      .counter::before {
+        counter-increment: section;
+        content: counter(section) '. ';
+      }
+      .sponsors img {
+        max-width: 150px;
+        height: auto;
+        width: 100%;
+      }
+      .onboard-banner {
+        background: {% firstof hackathon.background_color or 'white' %};
+        color: {% firstof hackathon.text_color or 'black' %};
+      }
+    </style>
+  </head>
+  <body class="interior {{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav_hackathons.html' %}
+      <div class="onboard-banner text-center p-4 pb-5">
+        {% firstof hackathon.logo_svg or hackathon.logo as logo %}
+        {% if logo %}
+          <img class="my-5 mw-100" height="250" src="{{MEDIA_URL}}{{logo}}"/>
+        {% else %}
+          <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center my-5">
+            {{ hackathon.name }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="container-fluid bg-lightblue pb-5">
+      <div class="container mt-md-n5 bg-white position-relative rounded">
+        <div class="row p-5">
+          <div class="col-12">
+              <span>Gitcoin Virtual Hackathon</span>
+              <h1 class="text-uppercase gc-letter-spacing">
+                {{ hackathon.name }}
+              </h1>
+              <p>
+                {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+              </p>
+              {% if hackathon.end_date|timesince >= "1 min" %}
+                <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
+              {% endif %}
+              {% if not github_handle %}
+                <div class="text-center">
+                  <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+                    onclick="dataLayer.push({'event': 'login'});">
+                    <i class="fab fa-github"></i>
+                    <span>{% trans "Register with GitHub for Hackathon" %}</span>
+                  </a>
+                  <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                </div>
+              {% else %}
+                {% if not is_registered %}
+                  <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                  <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
+                {% elif is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
+                  <p>Explore Web3 and be prepared via sponsors Quests</p>
+                  <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
+                {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
+                  <a class="btn btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
+                {% else %}
+                  <p>Explore Web3 via Gitcoin Quests to prepare</p>
+                  <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+
+      </div>
+
+      <div class="container bg-white mt-4 rounded">
+        <div class="row p-5">
+          <div class="col-12">
+            {% if is_staff %}
+              <div class="">
+                <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
+                <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savehackathon="{{hackathon.slug}}">save</button>
+              </div>
+            {% endif %}
+            <div class="editor-container ">
+              <div id="description-hackathon" class="gc-editor description-hackathon">{{hackathon.description | safe}}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row px-5">
+          <div class="col-12">
+            <h4 class="text-uppercase font-weight-bolder text-left">How does the Hackathon work?</h4>
+          </div>
+        </div>
+
+        <div class="row px-5 my-5">
+          <div class="col-12 col-md-5">
+              <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
+          </div>
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+              <b class="counter">{% trans "Check out the Prizes" %}</b>
+              {% blocktrans %}
+                <p class="">
+                  Visit the <a target="_blank" href="{{ hackathon_url }}#bounties">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
+                </p>
+              {% endblocktrans %}
+          </div>
+        </div>
+        <div class="row px-5 my-5">
+          <div class="col-12 col-md-5">
+              <img src="{% static "v2/images/how-it-works/hackathon/pic2.jpg" %}" class="mw-100" alt="express interest" />
+          </div>
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+              <b class="counter">{% trans " Join the Hackathons Chat Workspace" %}</b>
+              {% blocktrans %}
+                <p class="">
+                  Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time. <a target="_blank" href="https://chat.gitcoin.co/hackathons">Click here to join the party!</a>.
+                </p>
+              {% endblocktrans %}
+          </div>
+        </div>
+        <div class="row px-5 my-5">
+          <div class="col-12 col-md-5">
+              <img src="{% static "v2/images/how-it-works/hackathon/pic3.jpg" %}" class="mw-100" alt="bounty explorer" />
+          </div>
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+              <b class="counter">{% trans "Start Work via Gitcoin" %}</b>
+              {% blocktrans %}
+                <p class="">
+                  When your team is formed please have one of your teammates navigate to each prize page you plan to compete for and click the “Start Work” button.
+                </p>
+              {% endblocktrans %}
+          </div>
+        </div>
+        <div class="row px-5 my-5">
+          <div class="col-12 col-md-5">
+              <img src="{% static "v2/images/how-it-works/hackathon/pic4.jpg" %}" class="mw-100" alt="express interest" />
+          </div>
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+              <b class="counter">{% trans "BUIDL!" %}</b>
+              {% blocktrans %}
+                <p class="">
+                  Build your cool ideas and make your vision come true with your team!
+                </p>
+              {% endblocktrans %}
+          </div>
+        </div>
+        <div class="row my-4 px-5">
+          <div class="col-12 col-md-5">
+            <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
+          </div>
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+              <b class="counter">{% trans "Submit Work via Gitcoin" %}</b>
+              {% blocktrans %}
+                <p class="">
+                  When your project is completed, submit your work by clicking the “Submit Work” button on the prize page/
+                </p>
+              {% endblocktrans %}
+          </div>
+        </div>
+
+        <div class="row px-5 pb-5">
+          <div class="col-12">
+            <p class="font-weight-bolder text-uppercase h4 text-left mb-4">
+              JOIN THE HACKATHON
+            </p>
+            {% if not github_handle %}
+              <div class="text-center">
+                <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+                  onclick="dataLayer.push({'event': 'login'});">
+                  <i class="fab fa-github"></i>
+                  <span>{% trans "Register with GitHub for Hackathon" %}</span>
+                </a>
+                <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+              </div>
+            {% else %}
+              {% if not is_registered %}
+                <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
+              {% elif is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
+                <p>Explore Web3 and be prepared via sponsors Quests</p>
+                <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
+              {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
+                <a class="btn btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
+              {% else %}
+                <p>Explore Web3 via Gitcoin Quests to prepare</p>
+                <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      {% if sponsors %}
+        <div class="container bg-white my-4 py-2 rounded">
+            <div class="row px-5">
+              <div class="col-12 sponsors mt-5 mb-3">
+                <p class="font-weight-bolder h4 text-left mb-4">SUPPORTED BY</p>
+                {% if sponsors.sponsors_gold %}
+                  <div class="d-flex flex-wrap mb-4">
+                    {% for sponsor in sponsors.sponsors_gold %}
+                      <div class="sponsors-gold my-auto mx-2">
+                        <img src="{{sponsor.logo}}" height="50" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                {% if sponsors.sponsors_silver %}
+                  <div class="d-flex flex-wrap mb-4">
+                    {% for sponsor in sponsors.sponsors_silver %}
+                      <div class="sponsors-silver my-auto mx-2">
+                        <img src="{{sponsor.logo}}" height="50" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+
+    </div>
+    {% csrf_token %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+
+    <script>
+      // Send registration
+      const is_registered = {{ is_registered|yesno:"true,false" }};
+      const hackathon_slug = '{{ hackathon.slug|safe }}';
+      const csrftoken = $('[name=csrfmiddlewaretoken]').val();
+      const register = (name, referer) => {
+        if (is_registered) {
+          return;
+        }
+        const url = '/register_hackathon/'
+        const data = { 'name': name, 'referer': referer}
+        const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
+        _alert('You have now registered for this hackathon.', 'success');
+        $.when(sendRegister).then((response) => {
+          console.log(response)
+            document.location.href = response.redirect;
+        });
+      }
+      const params = new URLSearchParams(window.location.search);
+
+      if (params.get('referer')) {
+        register(hackathon_slug, params.get('referer'))
+      }
+      $('[data-registration]').on('click', function(e) {
+        e.preventDefault();
+        let name = $(this).data('registration');
+        let referer = $(this).data('referer');
+        register(name, referer)
+      });
+    </script>
+    <script src="{% static 'v2/js/pages/hackathon-onboard.js' %}"></script>
+
+  </body>

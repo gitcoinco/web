@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define models.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -27,7 +27,7 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.files import File
 from django.db import models
 from django.db.models import Q
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.templatetags.static import static
 from django.utils import timezone
@@ -100,11 +100,14 @@ class Token(SuperModel):
 
         verbose_name_plural = 'Kudos'
         index_together = [['name', 'description', 'tags'], ]
+        unique_together = ('token_id', 'contract',)
 
     # Kudos Struct (also in contract)
     price_finney = models.IntegerField()
     num_clones_allowed = models.IntegerField(null=True, blank=True)
     num_clones_in_wild = models.IntegerField(null=True, blank=True)
+    num_clones_available_counting_indirect_send = models.IntegerField(blank=True, default=0)
+
     cloned_from_id = models.IntegerField()
     popularity = models.IntegerField(default=0)
     popularity_week = models.IntegerField(default=0)
@@ -274,7 +277,7 @@ class Token(SuperModel):
         return related_kudos_transfers.values_list('recipient_profile__handle', flat=True)
 
     @property
-    def num_clones_available_counting_indirect_send(self):
+    def _num_clones_available_counting_indirect_send(self):
         return self.num_clones_allowed - self.num_clones_in_wild_counting_indirect_send
 
     @property
@@ -319,10 +322,11 @@ class Token(SuperModel):
         file_path = root('assets') + '/' + self.image
 
         # download it if file is remote
-        if settings.AWS_STORAGE_BUCKET_NAME in self.image:
+        if settings.AWS_STORAGE_BUCKET_NAME and settings.AWS_STORAGE_BUCKET_NAME in self.image:
             file_path = f'cache/{self.pk}.png'
             if not path.exists(file_path):
-                filedata = urllib.request.urlopen(self.image)
+                safe_url = self.image.replace(' ', '%20')
+                filedata = urllib.request.urlopen(safe_url)
                 datatowrite = filedata.read()
                 with open(file_path, 'wb') as f:
                     f.write(datatowrite)
@@ -383,6 +387,27 @@ class Token(SuperModel):
         is_enabled_for_this_user = hasattr(user, 'profile') and TransferEnabledFor.objects.filter(profile=user.profile, token=self).exists()
         is_enabled_because_staff = user.is_authenticated and user.is_staff
         return is_enabled_for_this_user or is_enabled_for_user_in_general or is_enabled_because_staff
+
+
+@receiver(pre_save, sender=Token, dispatch_uid="psave_token")
+def psave_token(sender, instance, **kwargs):
+    instance.num_clones_available_counting_indirect_send = instance._num_clones_available_counting_indirect_send
+
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    if instance.pk and instance.gen == 1 and not instance.hidden:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='kudos', model='token'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.humanized_name,
+                "description":instance.description,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.img_url,
+            }
+            )
 
 
 class KudosTransfer(SendCryptoAsset):
@@ -550,9 +575,22 @@ class BulkTransferCoupon(SuperModel):
         """Return the string representation of a model."""
         return f"Token: {self.token} num_uses_total: {self.num_uses_total}"
 
+    def get_absolute_url(self):
+        return settings.BASE_URL + f"kudos/redeem/{self.secret}"
+
     @property
     def url(self):
         return f"/kudos/redeem/{self.secret}"
+
+
+@receiver(pre_save, sender=BulkTransferCoupon, dispatch_uid="psave_BulkTransferCoupon")
+def psave_BulkTransferCoupon(sender, instance, **kwargs):
+    is_owned_by_gitcoin = instance.token.owner_address.lower() == "0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F".lower()
+    is_kudos_token_deployed_to_gitcoin = not bool(instance.sender_pk)
+
+    if not is_owned_by_gitcoin and is_kudos_token_deployed_to_gitcoin:
+        raise Exception("This bulk transfer kudos has been created to airdrop a kudos.. But the kudos is not owned by Gitcoin... If this kudos goes live, people will redeem it and it will deplete the ETH in the kudos airdropper; which is bad!  Please correct the kudos to either be one that is owned by Gitcoin, or one that has a seperate source of ETH (by sending sender_pk).  Thank you and have a nice day -- Kevin Owocki, protector of Gitcoin's ETH")
+
 
 class BulkTransferRedemption(SuperModel):
 
@@ -617,12 +655,12 @@ class TokenRequest(SuperModel):
             'artwork_url': self.artwork_url,
         }
         kudos_contract = KudosContract(network=self.network)
-        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1)
+        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1) * 2
         tx_id = mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True, dont_wait_for_kudos_id_return_tx_hash_instead=True)
         self.processed = True
         self.approved = True
         self.save()
-        return tx_id 
+        return tx_id
 
 class TransferEnabledFor(SuperModel):
     """Model that represents the ability to send a Kudos, i
