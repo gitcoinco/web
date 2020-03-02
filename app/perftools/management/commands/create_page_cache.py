@@ -32,6 +32,27 @@ from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
 
 
+def fetchPost(qt='2'):
+    import requests
+    """Fetch last post from wordpress blog."""
+    url = f"https://gitcoin.co/blog/wp-json/wp/v2/posts?_fields=excerpt,title,link,jetpack_featured_media_url&per_page={qt}"
+    last_posts = requests.get(url=url).json()
+    return last_posts
+
+
+def create_post_cache():
+    data = fetchPost()
+    view = 'posts'
+    keyword = 'posts'
+    JSONStore.objects.filter(view=view, key=keyword).all().delete()
+    data = json.loads(json.dumps(data, cls=EncodeAnything))
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=data,
+        )
+
+
 def create_avatar_cache():
     from avatar.models import AvatarTheme, CustomAvatar
     for at in AvatarTheme.objects.all():
@@ -158,8 +179,9 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_avatar_cache()
+        create_post_cache()
         if not settings.DEBUG:
+            create_avatar_cache()
             create_activity_cache()
             create_results_cache()
             create_quests_cache()
