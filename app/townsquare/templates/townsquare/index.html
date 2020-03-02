@@ -431,7 +431,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round..
                             <ul>
                               {% for key, val in mli.match_curve.items %}
-                                {% if key %}
+                                {% if key and val > 0.00 %}
                                   <li>
                                     Your contribution of ${{key}} could yield ${{val|floatformat:2}} in matching.
                                   </li>
