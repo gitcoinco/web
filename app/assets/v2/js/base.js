@@ -402,9 +402,12 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
       },
       url: `${document.contxt.chat_url}/api/v4/users/${document.contxt.chat_id}/teams/unread`
     }).responseJSON(JSONUnread => {
+      let notified = false;
+
       _.forEach(JSONUnread, (team) => {
-        if (team.msg_count > 0) {
+        if (team.msg_count > 0 && !notified) {
           $('#chat-notification-dot').addClass('notification__dot_active');
+          notified = true;
         }
       });
     });
