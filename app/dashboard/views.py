@@ -53,6 +53,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 import magic
 from app.utils import clean_str, ellipses, get_default_network
+from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper
 from bleach import clean
@@ -824,21 +825,6 @@ def uninterested(request, bounty_id, profile_id):
 def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
-
-def get_preview_img(key):
-    if key == 'classic':
-        return 'https://c.gitcoin.co/avatars/d1a33d2bcb7bbfef50368bca73111fae/fryggr.png'
-    if key == 'bufficorn':
-        return 'https://c.gitcoin.co/avatars/94c30306a088d06163582da942a2e64e/dah0ld3r.png'
-    if key == 'female':
-        return 'https://c.gitcoin.co/avatars/b713fb593b3801700fd1f92e9cd18e79/aaliyahansari.png'
-    if key == 'unisex':
-        return 'https://c.gitcoin.co/avatars/cc8272136bcf9b9d830c0554a97082f3/joshegwuatu.png'
-    if key == 'bot':
-        return 'https://c.gitcoin.co/avatars/c9d82da31b7833bdae37861014c32ebc/owocki.png'
-
-    return f'/avatar/view3d?theme={key}&scale=20'
-
 def onboard(request, flow=None):
     """Handle displaying the first time user experience flow."""
     if flow not in ['funder', 'contributor', 'profile']:
@@ -884,24 +870,17 @@ def onboard(request, flow=None):
     from avatar.views_3d import get_avatar_attrs
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
-    avatar_options = [
-        'classic',
-        'unisex',
-        'female',
-        'bufficorn',
-    ]
-    if request.user.is_staff:
-        avatar_options.append('bot')
-    avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele)) for ele in avatar_options ]
-
+    background_tones = get_avatar_attrs(theme, 'background_tones')
+    
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
         'flow': flow,
         'profile': profile,
         'theme': theme,
-        'avatar_options': avatar_options,
+        'avatar_options': AvatarTheme.objects.filter(active=True).order_by('-popularity'),
         '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(theme),
+        'possible_background_tones': background_tones,
         'possible_skin_tones': skin_tones,
         'possible_hair_tones': hair_tones,
     }
@@ -3610,7 +3589,7 @@ def get_users(request):
             profile_json['id'] = user.id
             profile_json['text'] = user.handle
             profile_json['avatar_url'] = user.avatar_url
-            if user.avatar_baseavatar_related.exists():
+            if user.avatar_baseavatar_related.filter(active=True).exists():
                 profile_json['avatar_id'] = user.avatar_baseavatar_related.filter(active=True).first().pk
                 profile_json['avatar_url'] = user.avatar_baseavatar_related.filter(active=True).first().avatar_url
             profile_json['preferred_payout_address'] = user.preferred_payout_address

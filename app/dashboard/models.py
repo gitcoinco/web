@@ -2266,6 +2266,7 @@ class Activity(SuperModel):
         # refresh view count
         vp['view_count'] = self.view_count
         vp['profile'] = self.profile
+        vp['created_human_time'] = naturaltime(self.created_on)
 
         # lazily create vp
         if not vp.get('pk'):
@@ -3933,7 +3934,7 @@ class Profile(SuperModel):
         params['activities'] = list(all_activities.values_list('pk', flat=True))
         counts = {}
         if not all_activities or all_activities.count() == 0:
-            context['none'] = True
+            params['none'] = True
         else:
             counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
             counts = {ele['activity_type']: ele['the_count'] for ele in counts}

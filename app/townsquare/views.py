@@ -25,6 +25,7 @@ tags = [
     ['#jobs','code','search-jobs'],
     ['#help','laptop-code','search-help'],
     ['#meme','images','search-meme'],
+    ['#music','music','search-music'],
     ['#other','briefcase','search-other'],
     ]
 

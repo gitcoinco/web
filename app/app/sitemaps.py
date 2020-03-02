@@ -18,7 +18,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
             'dashboard', 'new_funding', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
             'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'faucet', 'mission', 'slack', 'labs', 'results',
             'activity', 'kudos_main', 'kudos_marketplace', 'grants', 'funder_bounties', 'quests_index', 'newquest',
-            'products', 'chat'
+            'products', 'chat', 'avatar_landing'
         ]
 
     def location(self, item):

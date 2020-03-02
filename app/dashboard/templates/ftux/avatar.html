@@ -198,21 +198,35 @@
           {% endfor %}
         </div>
         {% endif %}
+        {% if possible_background_tones|length %}
+        <div id=background_tones class=tones>
+          Background:
+          {% for ht in possible_background_tones %}
+          <li data-tone='{{ht}}' style="background-color: #{{ht}}">
+            &nbsp;
+          </li>
+          {% endfor %}
+        </div>
+        {% endif %}
       <div class="action-buttons">
         {% for category, ids in 3d_avatar_params.by_category.items %}
-          <a href="#" class="select_avatar_type {{category}}" data-target="{{category}}">{{category}}</a>
+          {% if ids|length > 1 %}
+            <a href="#" class="select_avatar_type {{category}}" data-target="{{category}}">{{category}}</a>
+          {% endif %}
         {% endfor %}
       </div>
       <div class="targets">
         {% for category, ids in 3d_avatar_params.by_category.items %}
-          <div class="category {{category}} {% if category != 'background' %}hidden{% endif %}">
-            {% for id in ids %}
-              <img class=tdselection data-id="{{id}}" 
-              data-src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" 
-              data-altsrc="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" 
-              {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}"{%endif%}>            
-            {% endfor %}
-          </div>
+          {% if ids|length > 1 %}
+            <div class="category {{category}} {% if category != 'background' %}hidden{% endif %}">
+              {% for id in ids %}
+                <img class=tdselection data-id="{{id}}" 
+                data-src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" 
+                data-altsrc="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" 
+                {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}"{%endif%}>            
+              {% endfor %}
+            </div>
+          {% endif %}
         {% endfor %}
       </div>
     </div>

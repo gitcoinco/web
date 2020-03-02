@@ -975,6 +975,36 @@ def vision(request):
     return TemplateResponse(request, 'vision.html', context)
 
 
+def avatar(request):
+    """Render the avatar response."""
+    from avatar.models import AvatarTheme
+
+    default_back = get_leaderboard_back(request)
+    back = request.GET.get('back', default_back[1])
+    img = request.GET.get('img', default_back[0])
+
+    context = {
+        'is_outside': True,
+        'active': 'avatar',
+        'title': 'Avatar Builder',
+        'card_title': _("Free Avatar Builder"),
+        'card_desc': _('Gitcoin\'s Free Avatar Creator is an online tool to build a character for yourself.  It has dozens of options to show off your bad-self.  No strings attached, Always free.'),
+        'avatar_url': "https://c.gitcoin.co/avatars/d1a33d2bcb7bbfef50368bca73111fae/fryggr.png",
+        'back': back,
+        'img': img,
+        'avatar_options': AvatarTheme.objects.filter(active=True).order_by('-popularity'),
+    }
+    return TemplateResponse(request, 'avatar_landing.html', context)
+
+def get_leaderboard_back(request):
+    default_back_safe = [['s10.png', i] for i in range(24, 33)]
+    default_back_crazy = [['s9.png', 3], ['s10.png', 10], ['s10.png', 25], ['s10.png', 33], ['s10.png', 4], ['s10.png', 8], ['s9.png', 14]]
+    default_back = default_back_safe
+
+    default_back_i = int(request.GET.get('i', int(timezone.now().strftime("%j")))) % len(default_back)
+    default_back = default_back[default_back_i]
+    return default_back
+
 def products(request):
     """Render the Products response."""
     products = [
@@ -1067,12 +1097,7 @@ def products(request):
             'traction': 'over 3000 plays/month',
         })
 
-    default_back_safe = [['s10.png', i] for i in range(24, 33)]
-    default_back_crazy = [['s9.png', 3], ['s10.png', 10], ['s10.png', 25], ['s10.png', 33], ['s10.png', 4], ['s10.png', 8], ['s9.png', 14]]
-    default_back = default_back_safe
-
-    default_back_i = int(request.GET.get('i', int(timezone.now().strftime("%j")))) % len(default_back)
-    default_back = default_back[default_back_i]
+    default_back = get_leaderboard_back(request)
     back = request.GET.get('back', default_back[1])
     img = request.GET.get('img', default_back[0])
 
@@ -1118,7 +1143,7 @@ def results(request, keyword=None):
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
-def get_specific_activities(what, trending_only, user, after_pk):
+def get_specific_activities(what, trending_only, user, after_pk, request=None):
     # create diff filters
     activities = Activity.objects.filter(hidden=False).order_by('-created_on')
     view_count_threshold = 10
@@ -1154,14 +1179,18 @@ def get_specific_activities(what, trending_only, user, after_pk):
         base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post'])
         keyword_filter = Q(pk=0) #noop
         if keyword == 'meme':
-            keyword_filter = Q(metadata__resource__icontains='http')
+            keyword_filter = Q(metadata__type='gif') | Q(metadata__type='png') | Q(metadata__type='jpg')
+        if keyword == 'meme':
+            keyword_filter = Q(metadata__icontains='spotify') | Q(metadata__type='soundcloud') | Q(metadata__type='pandora')
         activities = activities.filter(keyword_filter | base_filter)
     if 'activity:' in what:
         view_count_threshold = 0
         pk = what.split(':')[1]
         activities = Activity.objects.filter(pk=pk)
-        if page > 1:
-            activities = Activity.objects.none()
+        if request:
+            page = int(request.GET.get('page', 1))
+            if page > 1:
+                activities = Activity.objects.none()
     # filters
     if len(relevant_profiles):
         activities = activities.filter(profile__in=relevant_profiles)
@@ -1189,7 +1218,7 @@ def activity(request):
     what = request.GET.get('what', 'everywhere')
     trending_only = int(request.GET.get('trending_only', 0))
 
-    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'))
+    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
 
     # store last seen
     if activities.exists():
