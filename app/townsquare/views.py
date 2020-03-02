@@ -355,7 +355,9 @@ def api(request, activity_id):
     # like request
     elif request.POST.get('method') == 'like':
         if request.POST['direction'] == 'liked':
-            Like.objects.create(profile=request.user.profile, activity=activity)
+            already_likes = request.user.profile.likes.filter(activity=activity).exists()
+            if not already_likes:
+                Like.objects.create(profile=request.user.profile, activity=activity)
         if request.POST['direction'] == 'unliked':
             activity.likes.filter(profile=request.user.profile).delete()
 
