@@ -493,7 +493,7 @@ def search_for_etc_bounty_payout(fulfillment, network='mainnet'):
         for txn in blockscout_response['result']:
             if (
                 txn['to'] == payeeAddress.lower() and
-                float(txn['value']) >= amount and
+                float(txn['value']) >= float(amount) and
                 not etc_txn_already_used(txn)
             ):
                 return txn
