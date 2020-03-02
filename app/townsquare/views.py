@@ -72,13 +72,15 @@ def get_amount_unread(key, request):
     posts_unread = 0
     post_data_cache = JSONStore.objects.filter(view='activity', key=key)
     if post_data_cache.exists():
-        elements = [ele for ele in post_data_cache.first().data if ele > request.session.get(key, 0)]
+        data = post_data_cache.first().data
+        elements = []
+        if isinstance(data, list):
+            elements = [ele for ele in data if ele > request.session.get(key, 0)]
         posts_unread = len(elements)
     return max_of_ten(posts_unread)
 
 
-def town_square(request):
-
+def get_sidebar_tabs(request):
     # setup tabs
     hours = 24
     tabs = [{
@@ -172,6 +174,9 @@ def town_square(request):
     if "search-" in tab:
         search = tab.split('-')[1]
 
+    return tabs, tab, is_search, search
+
+def get_offers(request):
     # get offers
     offer_pks = []
     offers_by_category = {}
@@ -190,16 +195,49 @@ def town_square(request):
             'time': next_time_available,
         }
     increment_offer_view_counts.delay(offer_pks)
+    return offers_by_category
 
+def get_miniclr_info(request):
+    # matching leaderboard
+    current_match_round = MatchRound.objects.current().first()
+    num_to_show = 10
+    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1))
+    matching_leaderboard = [
+        {
+            'i': obj.number,
+            'following': request.user.profile == obj.profile or request.user.profile.follower.filter(org=obj.profile) if request.user.is_authenticated else False,
+            'handle': obj.profile.handle,
+            'contributions': obj.contributions,
+            'default_match_estimate': obj.default_match_estimate,
+            'match_curve': obj.sorted_match_curve,
+            'contributors': obj.contributors,
+            'amount': f"{int(obj.contributions_total/1000)}k" if obj.contributions_total > 1000 else round(obj.contributions_total, 2),
+            'match_amount': obj.match_total,
+            'you': obj.profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
+        } for obj in current_match_rankings[0:num_to_show]
+    ]
+
+    return matching_leaderboard, current_match_round
+
+def get_subscription_info(request):
     # subscriber info
     is_subscribed = False
     if request.user.is_authenticated:
         email_subscriber = request.user.profile.email_subscriptions.first()
         if email_subscriber:
             is_subscribed = email_subscriber.should_send_email_type_to('new_bounty_notifications')
+    return is_subscribed
 
-    # announcements
-    announcements = Announcement.objects.current().filter(key='townsquare')
+def get_tags(request):
+
+    # pull tag amounts
+    view_tags = tags.copy()
+    for i in range(0, len(view_tags)):
+        keyword = view_tags[i][2]
+        view_tags[i] = view_tags[i] + [get_amount_unread(keyword, request)]
+    return view_tags
+
+def get_param_metadata(request, tab):
 
     # title
     title = 'Home'
@@ -222,31 +260,17 @@ def town_square(request):
             page_seo_text_insert = desc
         except Exception as e:
             print(e)
+    return title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link
 
-    # matching leaderboard
-    current_match_round = MatchRound.objects.current().first()
-    num_to_show = 10
-    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1))
-    matching_leaderboard = [
-        {
-            'i': obj.number,
-            'following': request.user.profile == obj.profile or request.user.profile.follower.filter(org=obj.profile) if request.user.is_authenticated else False,
-            'handle': obj.profile.handle,
-            'contributions': obj.contributions,
-            'default_match_estimate': obj.default_match_estimate,
-            'match_curve': obj.sorted_match_curve,
-            'contributors': obj.contributors,
-            'amount': f"{int(obj.contributions_total/1000)}k" if obj.contributions_total > 1000 else round(obj.contributions_total, 2),
-            'match_amount': obj.match_total,
-            'you': obj.profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
-        } for obj in current_match_rankings[0:num_to_show]
-    ]
+def town_square(request):
 
-    # pull tag amounts
-    view_tags = tags.copy()
-    for i in range(0, len(view_tags)):
-        keyword = view_tags[i][2]
-        view_tags[i] = view_tags[i] + [get_amount_unread(keyword, request)]
+    tabs, tab, is_search, search = get_sidebar_tabs(request)
+    offers_by_category = get_offers(request)
+    matching_leaderboard, current_match_round = get_miniclr_info(request)
+    is_subscribed = get_subscription_info(request)
+    announcements = Announcement.objects.current().filter(key='townsquare')
+    view_tags = get_tags(request)
+    title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
 
     # render page context
     trending_only = int(request.GET.get('trending', 0))
