@@ -456,5 +456,5 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
         }
       });
     });
-  }, 1000);
+  }, 30000);
 }
