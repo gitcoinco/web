@@ -82,9 +82,27 @@
                 </div>
 
                 <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-grant_type">{% trans "Grant Type" %}</label>
+                  <div>
+                    <select id="input-grant_type" class="form__input form__input-lg">
+                      <option value="tech">{% trans "Technology" %}</option>
+                      <option value="media">{% trans "Media" %}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-team_members">{% trans "Team members" %}</label>
                   <div class="form__select2 g-multiselect">
                     <select id="input-team_members" class="form__input form__input-lg  team_members" name="team_members[]" multiple="multiple">
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body">{% trans "Grant Categories" %}</label>
+                  <div class="form__select2 g-multiselect">
+                    <select id="input-categories" class="form__input form__input-lg categories" name="categories[]" multiple="multiple">
                     </select>
                   </div>
                 </div>
@@ -105,8 +123,10 @@
                 </div>
 
                 <div class="form__group-horizontal pb-3">
-                  <label class="font-body" for="input-admin_address">{% trans "Recipient Wallet Address" %}</label>
+                  <label class="font-body" for="input-admin_address">{% trans "Funding Recipient Wallet Address" %}</label>
                   <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required placeholder="0x00... or domain.eth"/>
+                  <label class="font-body" for="input-admin_address">{% trans "This is where funds from contributors to this grant will be sent." %}</label>
+                  <label class="font-body" for="input-admin_address">{% trans "IMPORTANT NOTE - Contributions to this grant will be sent directly via the Ethereum blockchain to *this address*.  Gitcoin does *not* escrow any funds. Gitcoin does *not* have the ability to reverse any transactions.  As a preventative measure, please confirm that someone working on the project has access to funds that are sent to this address!" %}</label>
                 </div>
 
 
@@ -114,7 +134,7 @@
                   <label class="font-body">{% trans "Project Logo" %}</label>
                   <div class="form__drop" id="js-drop">
                     <input id="img-project" type="file" name="input_image" accept="image/*">
-                    <span>{% trans "Drag & Drop or Browse" %} </span> 
+                    <span>{% trans "Drag & Drop or Browse" %} </span>
                     <span> | {% trans "Square or 16:9; above 400x400 preferred" %}</span>
                     <img id="preview"/>
                   </div>
@@ -139,6 +159,7 @@
                   <input type="hidden" id="contract_version" name="contract_version" value="1">
                   <input type="hidden" id="token_address" name="token_address" value="">
                   <input type="hidden" id="token_symbol" name="token_symbol" value="">
+                  <input type="hidden" id="category" name="category" value="">
                   <input type="hidden" id="network" name="network">
                   <input type="hidden" id="trusted_relayer" name="trusted_relayer" value="{{ trusted_relayer }}">
                 </div>

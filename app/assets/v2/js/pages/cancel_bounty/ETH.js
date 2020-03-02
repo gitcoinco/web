@@ -103,7 +103,10 @@ const ethCancelBounty = data => {
     indicateMetamaskPopup();
     bounty.killBounty(
       bountyId,
-      { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) },
+      {
+        from: web3.eth.accounts[0],
+        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+      },
       final_callback
     );
 
@@ -112,6 +115,6 @@ const ethCancelBounty = data => {
   const uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + 
     issueURL + '&network=' + $('input[name=network]').val() + 
     '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
-  
+
   $.get(uri, apiCallback);
 }

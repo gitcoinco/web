@@ -31,7 +31,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.utils import get_web3
+from dashboard.utils import get_web3, is_valid_eth_address
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_github_primary_email
@@ -135,27 +135,30 @@ def receive_tip_v3(request, key, txid, network):
         messages.info(request, f'This tx {tip.txid}, failed.  Please contact the sender and ask them to send the tx again.')
     elif not_mined_yet:
         messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
-    elif request.GET.get('receive_txid') and is_redeemable:
-        params = request.GET
+    elif request.POST.get('receive_txid') and is_redeemable:
+        params = request.POST
 
         # db mutations
         try:
+            profile = get_profile(tip.username)
+            eth_address = params['forwarding_address']
+            if not is_valid_eth_address(eth_address):
+                eth_address = profile.preferred_payout_address
             if params['save_addr']:
-                profile = get_profile(tip.username)
                 if profile:
-                    profile.preferred_payout_address = params['forwarding_address']
+                    profile.preferred_payout_address = eth_address
                     profile.save()
             tip.receive_txid = params['receive_txid']
             tip.receive_tx_status = 'pending'
-            tip.receive_address = params['forwarding_address']
+            tip.receive_address = eth_address
             tip.received_on = timezone.now()
             num_redemptions = tip.metadata.get("num_redemptions", 0)
             # note to future self: to create a tip like this in the future set
             # tip.username
             # tip.metadata.max_redemptions
             # tip.metadata.override_send_amount
-            # tip.amount to the amount you want to send 
-            # ,"override_send_amount":1,"max_redemptions":10
+            # tip.amount to the amount you want to send
+            # ,"override_send_amount":1,"max_redemptions":29
 
             num_redemptions += 1
             tip.metadata["num_redemptions"] = num_redemptions
@@ -222,6 +225,7 @@ def send_tip_4(request):
             metadata__address=destinationAccount,
             metadata__salt=params['salt'],
             )
+
     is_authenticated_for_this_via_login = (tip.from_username and tip.from_username == from_username)
     is_authenticated_for_this_via_ip = tip.ip == get_ip(request)
     is_authed = is_authenticated_for_this_via_ip or is_authenticated_for_this_via_login
@@ -350,7 +354,7 @@ def send_tip_3(request):
         from_email=params['from_email'],
         from_username=from_username,
         username=params['username'],
-        network=params['network'],
+        network=params.get('network', 'unknown'),
         tokenAddress=params['tokenAddress'],
         from_address=params['from_address'],
         is_for_bounty_fulfiller=params['is_for_bounty_fulfiller'],
@@ -415,10 +419,11 @@ def send_tip_2(request):
             profile = profiles.first()
             user['id'] = profile.id
             user['text'] = profile.handle
+            user['avatar_url'] = profile.avatar_url
 
             if profile.avatar_baseavatar_related.exists():
-                user['avatar_id'] = profile.avatar_baseavatar_related.first().pk
-                user['avatar_url'] = profile.avatar_baseavatar_related.first().avatar_url
+                user['avatar_id'] = profile.avatar_baseavatar_related.filter(active=True).first().pk
+                user['avatar_url'] = profile.avatar_baseavatar_related.filter(active=True).first().avatar_url
                 user['preferred_payout_address'] = profile.preferred_payout_address
 
     params = {

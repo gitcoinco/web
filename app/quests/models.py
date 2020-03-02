@@ -63,7 +63,11 @@ class Quest(SuperModel):
     @property
     def url(self):
         from django.conf import settings
-        return settings.BASE_URL + f"quests/{self.pk}/{slugify(self.title)}"
+        return settings.BASE_URL + self.relative_url
+
+    @property
+    def relative_url(self):
+        return f"quests/{self.pk}/{slugify(self.title)}"
 
     @property
     def edit_url(self):
@@ -258,6 +262,23 @@ def psave_quest(sender, instance, **kwargs):
         'url': instance.creator.url,
         'handle': instance.creator.handle,
     }
+
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    if instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='quests', model='quest'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.title,
+                "description":instance.description,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.enemy_img_url,
+            }
+            )
+
 
 
 class QuestAttempt(SuperModel):

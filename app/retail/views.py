@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 '''
     Copyright (C) 2020 Gitcoin Core
@@ -17,6 +18,7 @@
 
 '''
 import logging
+import re
 import time
 from json import loads as json_parse
 from os import walk as walkdir
@@ -26,11 +28,13 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
+from django.db.models import Count, Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
@@ -40,7 +44,9 @@ from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
-from marketing.mails import grant_update_email, new_funding_limit_increase_request, new_token_request, wall_post_email
+from marketing.mails import (
+    grant_update_email, mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email,
+)
 from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
@@ -64,7 +70,7 @@ def get_activities(tech_stack=None, num_activities=15):
     if tech_stack:
         activities = activities.filter(bounty__metadata__icontains=tech_stack)
     activities = activities[0:num_activities]
-    return [a.view_props for a in activities]
+    return [a.either_view_props for a in activities]
 
 
 def index(request):
@@ -186,7 +192,7 @@ def index(request):
             'alt': 'gitcoin scope'
         },
         {
-            'link': 'https://medium.com/gitcoin/commit-reveal-scheme-on-ethereum-25d1d1a25428',
+            'link': 'https://gitcoin.co/blog/commit-reveal-scheme-on-ethereum/',
             'img': static("v2/images/medium/2.png"),
             'title': _('Commit Reveal Scheme on Ethereum'),
             'description': _('Hiding Actions and Generating Random Numbers'),
@@ -220,7 +226,7 @@ def pricing(request):
     plans= [
         {
             'type': 'basic',
-            'img': '/v2/images/pricing/basic.svg',
+            'img': 'v2/images/pricing/basic.svg',
             'fee': 10,
             'features': [
                 '1 free <a href="/kudos">Kudos</a>',
@@ -236,7 +242,7 @@ def pricing(request):
         },
         {
             'type': 'pro',
-            'img': '/v2/images/pricing/pro.svg',
+            'img': 'v2/images/pricing/pro.svg',
             'price': 40,
             'features': [
                 '5 Free <a href="/kudos">Kudos</a> / mo',
@@ -252,7 +258,7 @@ def pricing(request):
         },
         {
             'type': 'max',
-            'img': '/v2/images/pricing/max.svg',
+            'img': 'v2/images/pricing/max.svg',
             'price': 99,
             'features': [
                 '5 Free <a href="/kudos">Kudos</a> / mo',
@@ -307,7 +313,7 @@ def subscribe(request):
 
     plan = {
         'type': 'pro',
-        'img': '/v2/images/pricing/sub_pro.svg',
+        'img': 'v2/images/pricing/sub_pro.svg',
         'price': 40
     }
 
@@ -315,7 +321,7 @@ def subscribe(request):
         if 'plan' in request.GET and request.GET['plan'] == 'max':
             plan = {
                 'type': 'max',
-                'img': '/v2/images/pricing/sub_max.svg',
+                'img': 'v2/images/pricing/sub_max.svg',
                 'price': 99
             }
         if 'pack' in request.GET and request.GET['pack'] == 'annual':
@@ -399,7 +405,7 @@ def funder_bounties(request):
         'is_outside': True,
         'slides': slides,
         'slideDurationInMs': 6000,
-        'active': 'home',
+        'active': 'bounties_funder',
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
@@ -548,7 +554,7 @@ def contributor_bounties(request, tech_stack):
         'onboard_slides': onboard_slides,
         'slides': slides,
         'slideDurationInMs': 6000,
-        'active': 'home',
+        'active': 'bounties_coder',
         'newsletter_headline': _("Be the first to find out about newly posted freelance jobs."),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
@@ -969,18 +975,39 @@ def vision(request):
     return TemplateResponse(request, 'vision.html', context)
 
 
+def avatar(request):
+    """Render the avatar response."""
+    from avatar.models import AvatarTheme
+
+    default_back = get_leaderboard_back(request)
+    back = request.GET.get('back', default_back[1])
+    img = request.GET.get('img', default_back[0])
+
+    context = {
+        'is_outside': True,
+        'active': 'avatar',
+        'title': 'Avatar Builder',
+        'card_title': _("Free Avatar Builder"),
+        'card_desc': _('Gitcoin\'s Free Avatar Creator is an online tool to build a character for yourself.  It has dozens of options to show off your bad-self.  No strings attached, Always free.'),
+        'avatar_url': "https://c.gitcoin.co/avatars/d1a33d2bcb7bbfef50368bca73111fae/fryggr.png",
+        'back': back,
+        'img': img,
+        'avatar_options': AvatarTheme.objects.filter(active=True).order_by('-popularity'),
+    }
+    return TemplateResponse(request, 'avatar_landing.html', context)
+
+def get_leaderboard_back(request):
+    default_back_safe = [['s10.png', i] for i in range(24, 33)]
+    default_back_crazy = [['s9.png', 3], ['s10.png', 10], ['s10.png', 25], ['s10.png', 33], ['s10.png', 4], ['s10.png', 8], ['s9.png', 14]]
+    default_back = default_back_safe
+
+    default_back_i = int(request.GET.get('i', int(timezone.now().strftime("%j")))) % len(default_back)
+    default_back = default_back[default_back_i]
+    return default_back
+
 def products(request):
     """Render the Products response."""
     products = [
-        {
-            'name': 'matching engine',
-            'heading': _("Find the Right Dev. Every Time."),
-            'description': _("It's not about finding *a* developer.  It's about finding *the right developer for your needs*. Our matching engine powers each of our products, and can target the right community members for you."),
-            'link': '/users',
-            'img': static('v2/images/products/engine.svg'),
-            'logo': static('v2/images/products/engine-logo.png'),
-            'service_level': 'Integrated',
-        },
         {
             'name': 'hackathons',
             'heading': _("Hack with the best companies in web3."),
@@ -989,16 +1016,18 @@ def products(request):
             'img': static('v2/images/products/graphics-hackathons.png'),
             'logo': static('v2/images/products/hackathons-logo.svg'),
             'service_level': 'Full Service',
+            'traction': '1-3 hacks/month worth $40k/mo',
         },
         {
-            'name': 'bounties',
-            'heading': _("Solve bounties. Get paid. Contribute to open source"),
-            'description': _("Collaborate and monetize your skills while working on Open Source projects \
-                            through bounties."),
-            'link': '/explorer',
-            'img': static('v2/images/products/graphics-Bounties.png'),
-            'logo': static('v2/images/products/gitcoin-logo.svg'),
+            'name': 'grants',
+            'heading': _("Sustainable funding for open source"),
+            'description': _("Gitcoin Grants are a fast, easy & secure way to provide recurring token \
+                            contributions to your favorite OSS maintainers. Plus, with our NEW quarterly $100k+ matching funds it's now even easier to fund your OSS work! "),
+            'link': '/grants',
+            'img': static('v2/images/products/graphics-Grants.png'),
+            'logo': static('v2/images/products/grants-logo.svg'),
             'service_level': 'Self Service',
+            'traction': 'over $1mm in GMV',
         },
         {
             'name': 'kudos',
@@ -1009,16 +1038,18 @@ def products(request):
             'img': static('v2/images/products/graphics-Kudos.png'),
             'logo': static('v2/images/products/kudos-logo.svg'),
             'service_level': 'Self Service',
+            'traction': '1200+ kudos sent/month',
         },
         {
-            'name': 'grants',
-            'heading': _("Sustainable funding for open source"),
-            'description': _("Gitcoin Grants are a fast, easy & secure way to provide recurring token \
-                            contributions to your favorite OSS maintainers. Powered by EIP1337."),
-            'link': '/grants',
-            'img': static('v2/images/products/graphics-Grants.png'),
-            'logo': static('v2/images/products/grants-logo.svg'),
+            'name': 'bounties',
+            'heading': _("Solve bounties. Get paid. Contribute to open source"),
+            'description': _("Collaborate and monetize your skills while working on Open Source projects \
+                            through bounties."),
+            'link': '/explorer',
+            'img': static('v2/images/products/graphics-Bounties.png'),
+            'logo': static('v2/images/products/gitcoin-logo.svg'),
             'service_level': 'Self Service',
+            'traction': '$25k/mo',
         },
         {
             'name': 'codefund',
@@ -1029,6 +1060,17 @@ def products(request):
             'img': static('v2/images/products/graphics-Codefund.svg'),
             'logo': static('v2/images/products/codefund-logo.svg'),
             'service_level': 'Self Service or Full Service',
+            'traction': 'over 300mm impressions',
+        },
+        {
+            'name': 'matching engine',
+            'heading': _("Find the Right Dev. Every Time."),
+            'description': _("It's not about finding *a* developer.  It's about finding *the right developer for your needs*. Our matching engine powers each of our products, and can target the right community members for you."),
+            'link': '/users',
+            'img': static('v2/images/products/engine.svg'),
+            'logo': static('v2/images/products/engine-logo.png'),
+            'service_level': 'Integrated',
+            'traction': 'Matching 20k devs/mo',
         },
         {
             'name': 'labs',
@@ -1039,6 +1081,7 @@ def products(request):
             'img': static('v2/images/products/graphics-Labs.png'),
             'logo': static('v2/images/products/labs-logo.svg'),
             'service_level': 'Self Service',
+            'traction': '12 Articles Shipped',
         }
     ]
 
@@ -1051,7 +1094,12 @@ def products(request):
             'img': static('v2/images/products/graphics-Quests.png'),
             'logo': static('v2/images/products/quests-symbol.svg'),
             'service_level': 'Self Service',
+            'traction': 'over 3000 plays/month',
         })
+
+    default_back = get_leaderboard_back(request)
+    back = request.GET.get('back', default_back[1])
+    img = request.GET.get('img', default_back[0])
 
     context = {
         'is_outside': True,
@@ -1060,7 +1108,9 @@ def products(request):
         'card_title': _("Gitcoin's Products."),
         'card_desc': _('At Gitcoin, we build products that allow for better incentivized collaboration \
                         in the realm of open source software'),
-        'avatar_url': static('v2/images/grow_open_source.png'),
+        'avatar_url': f"/static/v2/images/quests/backs/back{back}.jpeg",
+        'back': back,
+        'img': img,
         'products': products,
     }
     return TemplateResponse(request, 'products.html', context)
@@ -1093,18 +1143,12 @@ def results(request, keyword=None):
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
-
-def activity(request):
-    """Render the Activity response."""
-    page_size = 7
-    page = int(request.GET.get('page', 1))
-    what = request.GET.get('what', 'everywhere')
-    trending_only = int(request.GET.get('trending_only', 0))
-
+def get_specific_activities(what, trending_only, user, after_pk, request=None):
     # create diff filters
-    print(1, round(time.time(), 1))
     activities = Activity.objects.filter(hidden=False).order_by('-created_on')
     view_count_threshold = 10
+
+    is_auth = user and user.is_authenticated
 
     ## filtering
     if 'hackathon:' in what:
@@ -1118,60 +1162,79 @@ def activity(request):
         kwargs = {}
         kwargs[key] = pk
         activities = activities.filter(**kwargs)
-    if request.user.is_authenticated:
-        relevant_profiles = []
-        relevant_grants = []
-        if what == 'tribes':
-            relevant_profiles = get_my_earnings_counter_profiles(request.user.profile.pk)
-        if what == 'grants':
-            relevant_grants = get_my_grants(request.user.profile)
-        if 'keyword-' in what:
-            keyword = what.split('-')[1]
-            relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
-        if 'search-' in what:
-            keyword = what.split('-')[1]
-            view_count_threshold = 5
-            activities = activities.filter(metadata__icontains=keyword)
-        if 'activity:' in what:
-            view_count_threshold = 0
-            pk = what.split(':')[1]
-            activities = activities.filter(pk=pk)
+    relevant_profiles = []
+    relevant_grants = []
+    if what == 'tribes':
+        relevant_profiles = get_my_earnings_counter_profiles(user.profile.pk) if is_auth else []
+    if what == 'grants':
+        relevant_grants = get_my_grants(user.profile) if is_auth else []
+    if what == 'my_threads' and is_auth:
+        activities = user.profile.subscribed_threads.all().order_by('-created') if is_auth else []
+    if 'keyword-' in what:
+        keyword = what.split('-')[1]
+        relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
+    if 'search-' in what:
+        keyword = what.split('-')[1]
+        view_count_threshold = 5
+        base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post'])
+        keyword_filter = Q(pk=0) #noop
+        if keyword == 'meme':
+            keyword_filter = Q(metadata__type='gif') | Q(metadata__type='png') | Q(metadata__type='jpg')
+        if keyword == 'meme':
+            keyword_filter = Q(metadata__icontains='spotify') | Q(metadata__type='soundcloud') | Q(metadata__type='pandora')
+        activities = activities.filter(keyword_filter | base_filter)
+    if 'activity:' in what:
+        view_count_threshold = 0
+        pk = what.split(':')[1]
+        activities = Activity.objects.filter(pk=pk)
+        if request:
+            page = int(request.GET.get('page', 1))
             if page > 1:
                 activities = Activity.objects.none()
-        # filters
-        if len(relevant_profiles):
-            activities = activities.filter(profile__in=relevant_profiles)
-        if len(relevant_grants):
-            activities = activities.filter(grant__in=relevant_grants)
+    # filters
+    if len(relevant_profiles):
+        activities = activities.filter(profile__in=relevant_profiles)
+    if len(relevant_grants):
+        activities = activities.filter(grant__in=relevant_grants)
     if what == 'connect':
-        activities = activities.filter(activity_type='status_update')
+        activities = activities.filter(activity_type__in=['status_update', 'wall_post'])
+    if what == 'kudos':
+        activities = activities.filter(activity_type__in=['new_kudos', 'receive_kudos'])
 
     # after-pk filters
-    if request.GET.get('after-pk'):
-        activities = activities.filter(pk__gt=request.GET.get('after-pk'))
+    if after_pk:
+        activities = activities.filter(pk__gt=after_pk)
     if trending_only:
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
-    print(2, round(time.time(), 1))
+    return activities
+
+
+def activity(request):
+    """Render the Activity response."""
+    page_size = 7
+    page = int(request.GET.get('page', 1))
+    what = request.GET.get('what', 'everywhere')
+    trending_only = int(request.GET.get('trending_only', 0))
+
+    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
 
     # pagination
     next_page = page + 1
     start_index = (page-1) * page_size
     end_index = page * page_size
-    print(activities.query)
+
     #p = Paginator(activities, page_size)
     #page = p.get_page(page)
     page = activities[start_index:end_index]
     suppress_more_link = not len(page)
 
-    print(2.5, round(time.time(), 1))
     # increment view counts
     activities_pks = [obj.pk for obj in page]
     if len(activities_pks):
         increment_view_counts.delay(activities_pks)
 
-    print(3, round(time.time(), 1))
 
     context = {
         'suppress_more_link': suppress_more_link,
@@ -1180,10 +1243,10 @@ def activity(request):
         'page': page,
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
+        'my_tribes': list(request.user.profile.tribe_members.values_list('org__handle',flat=True)) if request.user.is_authenticated else [],
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]
 
-    print(4, round(time.time(), 1))
 
     return TemplateResponse(request, 'activity.html', context)
 
@@ -1192,13 +1255,30 @@ def create_status_update(request):
     response = {}
     if request.POST:
         profile = request.user.profile
+        title = request.POST.get('data')
+        resource = request.POST.get('resource', '')
+        provider = request.POST.get('resourceProvider', '')
+        resource_id = request.POST.get('resourceId', '')
+
         kwargs = {
             'activity_type': 'status_update',
             'metadata': {
-                'title': request.POST.get('data'),
+                'title': title,
                 'ask': request.POST.get('ask'),
+                'resource': {
+                    'type': resource,
+                    'provider': provider,
+                    'id': resource_id
+                }
             }
         }
+
+        if resource == 'content':
+            meta = kwargs['metadata']['resource']
+            meta['title'] = request.POST.get('title', '')
+            meta['description'] = request.POST.get('description', '')
+            meta['image'] = request.POST.get('image', '')
+
         kwargs['profile'] = profile
         if ':' in request.POST.get('what'):
             what = request.POST.get('what')
@@ -1213,6 +1293,11 @@ def create_status_update(request):
             response['status'] = 200
             response['message'] = 'Status updated!'
 
+            username_pattern = re.compile(r'@(\S+)')
+            mentioned_usernames = re.findall(username_pattern, title)
+            to_emails = set(Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True))
+            mention_email(activity, to_emails)
+
             if kwargs['activity_type'] == 'wall_post':
                 if 'Email Grant Funders' in activity.metadata.get('ask'):
                     grant_update_email(activity)
@@ -1223,6 +1308,7 @@ def create_status_update(request):
             response['status'] = 400
             response['message'] = 'Bad Request'
             logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
+            return JsonResponse(response, status=400)
     return JsonResponse(response)
 
 def help(request):
@@ -1514,7 +1600,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
 
     tutorials = [{
         'img': static('v2/images/help/firehose.jpg'),
-        'url': 'https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5',
+        'url': 'https://gitcoin.co/blog/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster/',
         'title': _('Leverage Gitcoin’s Firehose of Talent to Do More Faster'),
     }, {
         'img': static('v2/images/tools/api.jpg'),
@@ -1668,6 +1754,10 @@ def podcast(request):
 
 def feedback(request):
     return redirect('https://goo.gl/forms/9rs9pNKJDnUDYEeA3')
+
+
+def wallpaper(request):
+    return redirect('https://gitcoincontent.s3-us-west-2.amazonaws.com/Wallpapers.zip')
 
 
 def help_dev(request):
@@ -1875,7 +1965,7 @@ def tribes(request):
     plans= [
         {
             'type': 'lite',
-            'img': '/v2/images/tribes/landing/tribe-one.svg',
+            'img': static('v2/images/tribes/landing/plan-lite.svg'),
             'price': '10k',
             'features': [
                 '1 Hackthon Credit'
@@ -1886,7 +1976,7 @@ def tribes(request):
         },
         {
             'type': 'pro',
-            'img': '/v2/images/tribes/landing/tribe-two.svg',
+            'img': static('v2/images/tribes/logo.svg'),
             'discount': '40%',
             'price': '6k',
             'features': [
@@ -1899,7 +1989,7 @@ def tribes(request):
         },
         {
             'type': 'launch',
-            'img': '/v2/images/tribes/logo.svg',
+            'img': static('v2/images/tribes/landing/plan-launch.svg'),
             'price': '4k',
             'features': [
                 {
@@ -1911,55 +2001,25 @@ def tribes(request):
         }
     ]
 
-    companies = [
-        {
-            'name': 'Bancor',
-            'img': static('v2/images/project_logos/bancor.svg')
-        },
-        {
-            'name': 'Consensys Labs',
-            'img': static('v2/images/project_logos/consensys_labs.png')
-        },
-        {
-            'name': 'Ethereum Foundation',
-            'img': static('v2/images/project_logos/eth_foundation.png')
-        },
-        {
-            'name': 'Algorand',
-            'img': static('v2/images/project_logos/algorand.png')
-        },
-        {
-            'name': 'Consensys Grants',
-            'img': static('v2/images/project_logos/consensys_grants.png')
-        },
-        {
-            'name': 'AirSwap',
-            'img': static('v2/images/project_logos/airswap.svg')
-        },
-        {
-            'name': 'Portis',
-            'img': static('v2/images/project_logos/portis_text.png')
-        },
-        {
-            'name': 'Status',
-            'img': static('v2/images/project_logos/status.svg')
-        },
-        {
-            'name': 'Matic',
-            'img': static('v2/images/project_logos/matic.svg')
-        },
-        {
-            'name': 'BZX',
-            'img': static('v2/images/project_logos/bzx.png')
+    _tribes = Profile.objects.filter(data__type='Organization').\
+        annotate(follower_count=Count('org')).order_by('-follower_count')[:8]
+
+    tribes = []
+
+    for _tribe in _tribes:
+        tribe = {
+            'name': _tribe.handle,
+            'img': _tribe.avatar_url,
+            'followers_count': _tribe.follower_count
         }
-    ]
+        tribes.append(tribe)
 
     testimonials = [
         {
             'text': 'I had a lot of fun (during Beyond Blockchain) meeting people and building tangible rapidly. Glad to have a winning submission!',
             'author': 'VirajA',
             'designation': 'Hacker',
-            'photo': 'https://c.gitcoin.co/avatars/58ef080697b34b1eab840bc60e2ee92b/viraja1.png'
+            'photo': static('v2/images/tribes/landing/viraj.png')
         },
         {
             'text': 'Gitcoin has a fantastic community that is our target audience -- Web 3 developers who want to build.',
@@ -1969,7 +2029,7 @@ def tribes(request):
             'org_photo': static('v2/images/project_logos/arweave.svg')
         },
         {
-            'text': '"Relationships with developers" is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.',
+            'text': 'Relationships with developers" is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.',
             'author': 'Scott Gralnick',
             'designation': 'Co-Founder, Portis',
             'photo': static('v2/images/tribes/landing/scott.png'),
@@ -1977,10 +2037,54 @@ def tribes(request):
         }
     ]
 
+    reasons = [
+        {
+            'title': 'Hackathon',
+            'img': static('v2/images/tribes/landing/hackathon.svg'),
+            'info': 'See meaningful projects come to life on your dapp'
+        },
+        {
+            'title': 'Suggest Bounty',
+            'img': static('v2/images/tribes/landing/suggest.svg'),
+            'info': 'Get bottoms up ideas from passionate contributors'
+        },
+        {
+            'title': 'Grow Tribe',
+            'img': static('v2/images/tribes/landing/grow.svg'),
+            'info': 'Work seamlessly with your core contributors'
+        },
+        {
+            'title': 'Workshops',
+            'img': static('v2/images/tribes/landing/workshop.svg'),
+            'info': 'Host workshops and learn together'
+        },
+        {
+            'title': 'Chat',
+            'img': static('v2/images/tribes/landing/chat.svg'),
+            'info': 'Direct connection to your trusted tribe'
+        },
+        {
+            'title': 'Town Square',
+            'img': static('v2/images/tribes/landing/townsquare.svg'),
+            'info': 'Broadcast your priorities and engagey our tribe'
+        },
+        {
+            'title': 'Payout/Fund',
+            'img': static('v2/images/tribes/landing/payout.svg'),
+            'info': 'Easily co-manage hackathons with your team'
+        },
+        {
+            'title': 'Stats Report',
+            'img': static('v2/images/tribes/landing/stats.svg'),
+            'info': 'See how your hackathons are performing'
+        }
+    ]
+
     context = {
         'plans': plans,
-        'companies': companies,
-        'testimonials': testimonials
+        'tribes': tribes,
+        'testimonials': testimonials,
+        'reasons': reasons
     }
 
     return TemplateResponse(request, 'tribes/landing.html', context)

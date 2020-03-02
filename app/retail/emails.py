@@ -69,7 +69,8 @@ TRANSACTIONAL_EMAILS = [
 
 
 NOTIFICATION_EMAILS = [
-    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat'))
+    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat')),
+    ('mention', _('Mentions'), _('Only when other users mention you on posts')),
 ]
 
 ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
@@ -216,9 +217,8 @@ def thank_you_for_supporting(request):
 
 @staff_member_required
 def new_supporter(request):
-    grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_new_supporter_email(grant, subscription)
+    subscription = Subscription.objects.last()
+    response_html, __, __ = render_new_supporter_email(subscription.grant, subscription)
     return HttpResponse(response_html)
 
 
@@ -335,6 +335,15 @@ def render_funder_payout_reminder(**kwargs):
     return response_html, response_txt
 
 
+def render_match_distribution(mr):
+    params = {
+        'mr': mr,
+    }
+    response_html = premailer_transform(render_to_string("emails/match_distribution.html"))
+    response_txt = ''
+    return response_html, response_txt
+
+
 def render_no_applicant_reminder(bounty):
     params = {
         'bounty': bounty,
@@ -426,8 +435,8 @@ PS - we've got some new gitcoin schwag on order. if interested, let us know and 
         'txt': txt,
 		'email_type': 'bounty_feedback'
     }
-    response_html = premailer_transform(render_to_string("emails/txt.html", params))
-    response_txt = txt
+    response_txt = premailer_transform(render_to_string("emails/txt.html", params))
+    response_html = f"<pre>{response_txt}</pre>"
 
     return response_html, response_txt
 
@@ -710,6 +719,21 @@ def render_comment(to_email, comment):
     return response_html, response_txt
 
 
+def render_mention(to_email, post):
+    from dashboard.models import Activity
+    params = {
+        'post': post,
+        'email_type': 'mention',
+        'is_activity': isinstance(post, Activity),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/mention.html", params))
+    response_txt = render_to_string("emails/mention.txt", params)
+
+    return response_html, response_txt
+
+
 def render_grant_update(to_email, activity):
     params = {
         'activity': activity,
@@ -979,8 +1003,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Take Action in the Town Square"
-    new_kudos_pks = [7096, 7351, 7319]
+    subject = "Have We Mentioned The Future Of Work Is Remote?"
+    new_kudos_pks = [11602, 7496, 1838]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -999,47 +1023,51 @@ def render_new_bounty_roundup(to_email):
 
     intro = f'''
 <p>
-Hey Gitcoiners,
+Good day Gitcoiners,
 </p>
 <p>
-We just rolled out a ton of new features! Welcome to the Gitcoin <a href="https://gitcoin.co/townsquare">Town Square</a>, a social newsfeed where you can like, comment on, flag, and link to any activity feed item. You’ll find a daily, weekly, and monthly action to complete with free goodies, invites, and more - you can also create your own action for the community. Finally, you can now send “status updates” to all your grant funders (with privacy options to opt out).
+Well that was quick - February has been a fast and crazy month. Watching the spread of the SARS-CoV-2 virus and economic uncertainty that follows, we hope everyone in our global community is staying safe and healthy. Now more than ever it’s obvious the future of work will have to be flexible and remote. If you’re feeling isolated, come hang out in the <a href="https://gitcoin.co/townsquare">Town Square</a>, we promise it’s virus free.
 </p>
 <p>
-On another note, <a href="https://gitcoin.co/grants/">Grants Round 4</a> and the <a href="https://gitcoin.co/hackathon/take-back-the-web?">Take Back The Web</a> hackathon both conclude next week. So far this grants round has seen 3,857 contributions from 853 unique community members, worth $74,023, in just over 10 days (4 more to go!). The hackathon already has 368 registrations, 175 work starts, and 46 submissions (with 6 more days to go). It’s never too late to make a donation or start work on a hackathon project!
+As we leap Into March, there are plenty of new opportunities for you to earn crypto working for the open internet. First off, the <a href="https://blockchainforsocialimpact.com/incubator/">Social Impact Incubator</a> is in full swing. Today is the last day to <a href="https://gitcoin.co/hackathon/onboard/decentralized-impact-incubator/">sign up</a> and find a team, now with <a href="https://gitcoin.co/hackathon/decentralized-impact-incubator">$40,000</a> up for grabs.
 </p>
 <p>
-Last but not least, we’re excited to share Vitalik Buterin will be the keynote speaker at <a href="https://web3.sustainoss.org/">Sustain Web3</a> the day before ETHDenver. <a href="https://web3.sustainoss.org/">Sign up</a> to attend the free event if you can make it, and if you’re feeling generous, any contribution to our <a href="https://gitcoin.co/grants/195/sustain-web3-sustainers">Grant</a> for the event will help us in supporting OSS.
+Next, the <a href=“https://gitcoin.co/hackathon/skynet”>Skynet Virtual Hackathon</a> by <a href=“https://siasky.net/">Sia</a> goes live today! Check out our <a href="https://gitcoin.co/blog/sia-virtual-hackathon-launching-on-gitcoin-2-28/">blog post</a> to learn more about Skynet and the 1,750,000 SC (~$5k) in prizes. There is even a 25,000 SC consolation prize for all submissions. Join the event  <a href="https://gitcoin.co/hackathon/onboard/skynet/">here</a>. If you need some hackathon inspiration, our Global Communities retro post is also live - <a href="https://gitcoin.co/blog/global-communities-hackathon-retro/">take a gander here</a>.
+</p>
+<p>
+Finally, March 16th will kick off both the <a href="https://gitcoin.co/hackathon/onboard/funding-the-future/">Funding The Future</a> Virtual Hackathon, alongside <a href=“https://gitcoin.co/grants/">Gitcoin Grants</a> Round 5. More to come on those soon.
 </p>
 
 {kudos_friday}
+
 <h3>What else is new?</h3>
-    <ul>
-        <li>
-            Today's special edition Livestream is on Gitcoin Grants Round 4. The kicker: You can only present a project you funded, not one you built. <a href="https://gitcoin.co/livestream">Join us</a> for a party celebrating the end of the biggest CLR Round yet at 2pm ET. 
+    <ul>
+        <li>
+        <a href=“gitcoin.co/livestream”>Join us</a> for the Livestream today as David Vorick, Co-Founder of Sia, speaks to us about the launch of Skynet and the Skynet Hackathon. We’ll start at 2pm ET, so join the conversation and come with questions.
         </li>
-    </ul>
+    </ul>
 </p>
 <p>
-Back to BUIDLing,
+Back to Chillin and Shillin,
 </p>
 '''
     highlights = [{
-        'who': 'TomAFrench',
+        'who': 'kfichter',
         'who_link': True,
-        'what': 'Created A Fork Of The Burner Wallet That Uses Liquidity Network L2 Solution Instead Of XDai',
-        'link': 'https://gitcoin.co/issue/liquidity-network/liquidity-burner/1/2972',
+        'what': 'Restructured And Wrote Further Content In Eth2 Book',
+        'link': 'https://gitcoin.co/issue/quilt/pm/7/4032',
         'link_copy': 'View more',
     }, {
-        'who': 'aquiladev',
+        'who': 'bobface',
         'who_link': True,
-        'what': 'Integrated WalletConnect as provider for Truffle smart contract deployment',
-        'link': 'https://gitcoin.co/issue/WalletConnect/walletconnect-monorepo/205/3766',
+        'what': 'Streamlined Buying Tokens From Bonding Curve Using RDAI',
+        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/7/4031',
         'link_copy': 'View more',
     }, {
-        'who': 'matkt',
+        'who': 'vbstreetz',
         'who_link': True,
-        'what': 'Created a general internal API to support Network Address Translation (NAT) technologies in Besu',
-        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/2/2694',
+        'what': 'Built a Mobile-Friendly Map Viewer With FOAM (Sustain Web3 Hackathon)',
+        'link': 'https://gitcoin.co/issue/ryan-foamspace/Sustain-Web3-hackathon/3/3960',
         'link_copy': 'View more',
     }, ]
 
@@ -1056,14 +1084,14 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/OneMillionDevs/bounties/issues/4',
-        'primer': '1 ETH For The Top 3 One Million Developers At Gitcoin Community Call',
+        'url': 'https://github.com/NebulousLabs/Skynet-Hive/issues/1',
+        'primer': '(1,750,000 SC) - Gitcoin Skynet Hackathon Challenge',
     }, {
-        'url': 'https://github.com/Minds/minds/issues/153',
-        'primer': 'Setting To Reduce Mobile Data Usage for Minds',
+        'url': 'https://github.com/blockchainforsocialimpact/incubator/issues/7',
+        'primer': '[$10,000] - Celo Peace & Prosperity Challenge',
     }, {
-        'url': 'https://github.com/unlock-protocol/unlock/issues/5265',
-        'primer': 'Shopify plugin for Unlock Protocol',
+        'url': 'https://github.com/xpring-eng/challenges/issues/1',
+        'primer': '[$1000 XRP] Bifrost - XRP, ETH & ERC-20 Bridge Over Interledger Protocol',
     }]
 
 
@@ -1254,6 +1282,13 @@ def comment(request):
 
 
 @staff_member_required
+def mention(request):
+    from dashboard.models import Activity
+    response_html, _ = render_mention(settings.CONTACT_EMAIL, Activity.objects.last())
+    return HttpResponse(response_html)
+
+
+@staff_member_required
 def grant_update(request):
     from dashboard.models import Activity
     response_html, _ = render_grant_update(settings.CONTACT_EMAIL, Activity.objects.filter(activity_type='wall_post', grant__isnull=False).last())
@@ -1316,6 +1351,16 @@ def no_applicant_reminder(request):
     ).first()
     response_html, _ = render_no_applicant_reminder(bounty=bounty)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def match_distribution(request):
+    from townsquare.models import MatchRanking
+    mr = MatchRanking.objects.last()
+    response_html, _ = render_match_distribution(mr)
+    return HttpResponse(response_html)
+
+
 
 
 @staff_member_required

@@ -24,7 +24,7 @@
                   </a>
                 </div>
                 <div class="info font-caption">
-                  {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} 
+                  {{ subscription.amount_per_period_minus_gas_price|floatformat:4|intcomma }} {{ subscription.token_symbol }} 
                   {% if subscription.num_tx_approved > 1 %}
                     / {{ subscription.frequency }} {{ subscription.frequency_unit }},
                   {% endif %}
@@ -43,7 +43,7 @@
               <div class="offset-lg-1 col-4 col-md-2 my-auto tags font-caption">
                 <div class="tag tag-lg token">
                   <p>
-                    {{ subscription.amount_per_period|floatformat:4|intcomma }}
+                    {{ subscription.amount_per_period_minus_gas_price|floatformat:4|intcomma }}
                     <span>{{ subscription.token_symbol }}</span>
                   </p>
                 </div>
@@ -97,7 +97,7 @@
                 </a>
               </div>
               <div class="info font-caption">
-                {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} 
+                {{ subscription.amount_per_period_minus_gas_price|floatformat:4|intcomma }} {{ subscription.token_symbol }} 
                 {% if subscription.num_tx_approved > 1 %}
                   / {{ subscription.frequency }} {{ subscription.frequency_unit }},
                 {% endif %}
@@ -126,7 +126,7 @@
             <div class="col-4 col-md-2 offset-lg-1 my-auto tags font-caption">
               <div class="tag tag-lg token">
                 <p>
-                  {{ subscription.amount_per_period|floatformat:4|intcomma }}
+                  {{ subscription.amount_per_period_minus_gas_price|floatformat:4|intcomma }}
                   <span>{{ subscription.token_symbol }}</span>
                 </p>
               </div>

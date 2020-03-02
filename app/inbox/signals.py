@@ -124,8 +124,8 @@ def create_notification(sender, **kwargs):
     if activity.activity_type == 'new_kudos':
         send_notification_to_user(
             activity.profile.user,
-            activity.kudos.recipient_profile.user,
-            activity.kudos.receive_url_for_recipient,
+            activity.kudos_transfer.recipient_profile.user,
+            activity.kudos_transfer.receive_url_for_recipient,
             'new_kudos',
             f'You received a <b>new kudos from {activity.profile.user}</b>'
         )

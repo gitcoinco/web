@@ -68,6 +68,42 @@ class GrantQuerySet(models.QuerySet):
             Q(reference_url__icontains=keyword)
         )
 
+class GrantCategory(SuperModel):
+    @staticmethod
+    def all_categories():
+        all_tech_categories = GrantCategory.tech_categories()
+        filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
+        return all_tech_categories + filtered_media_categories
+
+    @staticmethod
+    def tech_categories():
+        return [
+            'security',
+            'scalability',
+            'defi',
+            'education',
+            'wallets',
+            'community',
+            'eth2.0',
+            'eth1.x',
+        ]
+
+    @staticmethod
+    def media_categories():
+        return [
+            'education',
+            'twitter',
+            'reddit',
+            'blog',
+            'notes',
+        ]
+
+    category = models.CharField(
+        max_length=50,
+        blank=False,
+        null=False,
+        help_text=_('Grant Category'),
+    )
 
 class Grant(SuperModel):
     """Define the structure of a Grant."""
@@ -89,6 +125,12 @@ class Grant(SuperModel):
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
     description_rich = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
+    link_to_new_grant = models.ForeignKey(
+        'grants.Grant',
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text=_('Link to new grant if migrated')
+    )
     logo = models.ImageField(
         upload_to=get_upload_filename,
         null=True,
@@ -153,6 +195,7 @@ class Grant(SuperModel):
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for endContract.'),
+        blank=True,
     )
     contract_version = models.DecimalField(
         default=0,
@@ -222,6 +265,7 @@ class Grant(SuperModel):
         null=True,
         blank=True,
     )
+    categories = models.ManyToManyField(GrantCategory)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -229,7 +273,6 @@ class Grant(SuperModel):
     def __str__(self):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
-
 
     def percentage_done(self):
         """Return the percentage of token received based on the token goal."""
@@ -441,6 +484,7 @@ class Subscription(SuperModel):
     active = models.BooleanField(default=True, help_text=_('Whether or not the Subscription is active.'))
     error = models.BooleanField(default=False, help_text=_('Whether or not the Subscription is erroring out.'))
     subminer_comments = models.TextField(default='', blank=True, help_text=_('Comments left by the subminer.'))
+    comments = models.TextField(default='', blank=True, help_text=_('Comments left by subscriber.'))
 
     split_tx_id = models.CharField(
         default='',
@@ -575,6 +619,22 @@ class Subscription(SuperModel):
         return "CURRENT"
 
 
+    @property
+    def amount_per_period_minus_gas_price(self):
+        amount = float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
+        return amount
+
+    @property
+    def amount_per_period_to_gitcoin(self):
+        from dashboard.tokens import addr_to_token
+        token = addr_to_token(self.token_address, self.network)
+        try:
+            decimals = token.get('decimals', 0)
+            return (float(self.gas_price) / 10 ** decimals)
+        except:
+            return 0
+
+
     def __str__(self):
         """Return the string representation of a Subscription."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
@@ -582,7 +642,7 @@ class Subscription(SuperModel):
         if self.last_contribution_date < timezone.now() - timezone.timedelta(days=10*365):
             active_details = "(NEVER BILLED)"
 
-        return f"id: {self.pk}; {self.status}, {round(self.amount_per_period,1)} {self.token_symbol} / {self.frequency} {self.frequency_unit}, {int(self.num_tx_approved)} times for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile.handle} {active_details}"
+        return f"id: {self.pk}; {self.status}, {round(self.amount_per_period,1)} {self.token_symbol} / {self.frequency} {self.frequency_unit}, {int(self.num_tx_approved)} times for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile} {active_details}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
@@ -779,13 +839,14 @@ next_valid_timestamp: {next_valid_timestamp}
             args['nonce'],
             ).call()
 
-    def get_converted_amount(self):
+    def get_converted_amount(self, ignore_gitcoin_fee=False):
+        amount = self.amount_per_period if ignore_gitcoin_fee else self.amount_per_period_minus_gas_price
         try:
             if self.token_symbol == "ETH" or self.token_symbol == "WETH":
-                return Decimal(float(self.amount_per_period) * float(eth_usd_conv_rate()))
+                return Decimal(float(amount) * float(eth_usd_conv_rate()))
             else:
                 value_token_to_eth = Decimal(convert_amount(
-                    self.amount_per_period,
+                    amount,
                     self.token_symbol,
                     "ETH")
                 )
@@ -797,15 +858,15 @@ next_valid_timestamp: {next_valid_timestamp}
         except ConversionRateNotFoundError as e:
             try:
                 return Decimal(convert_amount(
-                    self.amount_per_period,
+                    amount,
                     self.token_symbol,
                     "USDT"))
             except ConversionRateNotFoundError as no_conversion_e:
                 logger.info(no_conversion_e)
                 return None
 
-    def get_converted_monthly_amount(self):
-        converted_amount = self.get_converted_amount() or 0
+    def get_converted_monthly_amount(self, ignore_gitcoin_fee=False):
+        converted_amount = self.get_converted_amount(ignore_gitcoin_fee=ignore_gitcoin_fee) or 0
 
         total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
 
@@ -838,7 +899,7 @@ next_valid_timestamp: {next_valid_timestamp}
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
 
-        value_usdt = self.get_converted_amount()
+        value_usdt = self.get_converted_amount(False)
         if value_usdt:
             self.amount_per_period_usdt = value_usdt
             grant.amount_received += Decimal(value_usdt)
@@ -862,7 +923,7 @@ def psave_grant(sender, instance, **kwargs):
     instance.monthly_amount_subscribed = 0
     #print(instance.id)
     for subscription in instance.subscriptions.all():
-        value_usdt = subscription.get_converted_amount()
+        value_usdt = subscription.get_converted_amount(False)
         for contrib in subscription.subscription_contribution.filter(success=True):
             if value_usdt:
                 #print(f"adding contribution of {round(subscription.amount_per_period,2)} {subscription.token_symbol}, pk: {contrib.pk}, worth ${round(value_usdt,2)} to make total ${round(instance.amount_received,2)}. (txid: {contrib.tx_id} tx_cleared:{contrib.tx_cleared} )")
@@ -873,6 +934,21 @@ def psave_grant(sender, instance, **kwargs):
                 instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
         #print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
 
+    from django.contrib.contenttypes.models import ContentType
+    from search.models import SearchResult
+    if instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='grants', model='grant'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.title,
+                "description":instance.description,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.logo.url if instance.logo else None,
+            }
+            )
 
 class DonationQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""
@@ -1040,11 +1116,11 @@ def psave_contrib(sender, instance, **kwargs):
             "from_profile":instance.subscription.contributor_profile,
             "org_profile":instance.subscription.grant.org_profile,
             "to_profile":instance.subscription.grant.admin_profile,
-            "value_usd":instance.subscription.get_converted_amount(),
+            "value_usd":instance.subscription.get_converted_amount(False),
             "url":instance.subscription.grant.url,
             "network":instance.subscription.grant.network,
         }
-        )
+    )
 
 @receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
 def presave_contrib(sender, instance, **kwargs):
@@ -1065,7 +1141,7 @@ def presave_contrib(sender, instance, **kwargs):
         'amount_per_period_usdt': float(sub.amount_per_period_usdt),
         'amount_per_period': float(sub.amount_per_period),
         'tx_id': ele.tx_id,
-        }
+    }
 
 
 def next_month():

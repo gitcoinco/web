@@ -1,0 +1,6 @@
+💬 @{{post.profile.handle}} mentioned you in a post 💬
+
+@{{post.profile.handle}} mentioned you in a post
+
+To view the post click here: {{post.url}}
+

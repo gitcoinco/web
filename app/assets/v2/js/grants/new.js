@@ -5,6 +5,9 @@ let description = new Quill('#input-description', {
 });
 
 $(document).ready(function() {
+
+  _alert({ message: gettext('Note: Brave users seem to have issues while contributing to Grants while using both Brave Wallet and MetaMask. We recommend disabling one. For more info, see this <a target="_blank" href="https://github.com/brave/brave-browser/issues/6053">issue</a>') }, 'warning');
+
   if (web3 && web3.eth) {
     web3.eth.net.isListening((error, connectionStatus) => {
       if (connectionStatus)
@@ -56,6 +59,10 @@ const processReceipt = receipt => {
   saveGrant(formData, true);
 };
 
+const setupGrantCategoriesInput = (grantType) => {
+  grantCategoriesSelection('.categories', `/grants/categories?type=${grantType}`);
+};
+
 const init = () => {
   if (localStorage['grants_quickstart_disable'] !== 'true') {
     window.location = document.location.origin + '/grants/quickstart';
@@ -99,6 +106,13 @@ const init = () => {
   }).validate({
     submitHandler: function(form) {
       let data = {};
+
+      var recipient_addr = $('#input-admin_address').val();
+      var msg = 'You have specified ' + recipient_addr + ' as the grant funding recipient address. Please TRIPLE CHECK that this is the correct address to receive funds for contributions to this grant.  If access to this address is lost, you will not be able to access funds from contributors to this grant.';
+
+      if (!confirm(msg)) {
+        return;
+      }
 
       $(form).find(':input:disabled').removeAttr('disabled');
 
@@ -189,6 +203,8 @@ const init = () => {
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('network', $('#network').val());
             formData.append('team_members[]', $('#input-team_members').val());
+            formData.append('categories[]', $('#input-categories').val());
+            formData.append('grant_type', $('#input-grant_type').val());
             saveGrant(formData, false);
 
             document.issueURL = linkURL;
@@ -282,6 +298,14 @@ const init = () => {
     $('#js-token').append("<option value='0x0000000000000000000000000000000000000000' selected='selected'>Any Token");
     $('.select2-selection__rendered').hover(function() {
       $(this).removeAttr('title');
+    });
+
+
+    setupGrantCategoriesInput('tech');
+
+    $('#input-grant_type').on('change', function() {
+      $('.categories').val(null).trigger('change');
+      setupGrantCategoriesInput(this.value);
     });
   });
 };

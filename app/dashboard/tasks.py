@@ -80,3 +80,19 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
             self.retry(30)
         except Exception as e:
             logger.error(str(e))
+
+
+@app.shared_task(bind=True, max_retries=3)
+def profile_dict(self, pk, retry: bool = True) -> None:
+    """
+    :param self:
+    :param pk:
+    :return:
+    """
+    if isinstance(pk, list):
+        pk = pk[0]
+    with redis.lock("tasks:profile_dict:%s" % pk, timeout=LOCK_TIMEOUT):
+        profile = Profile.objects.get(pk=pk)
+        if profile.frontend_calc_stale:
+            profile.calculate_all()
+            profile.save()
