@@ -453,7 +453,7 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
     $.ajax({
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer: ${document.context.chat_access_token}`
+        'Authorization': `Bearer: ${document.contxt.chat_access_token}`
       },
       url: `${document.contxt.chat_url}/api/v4/users/${document.contxt.chat_id}/teams/unread`
     }).responseJSON(JSONUnread => {
