@@ -131,7 +131,7 @@ def oauth_connect(request, *args, **kwargs):
         "auth_data": f'{active_user_profile.user.id}',
         "auth_service": "gitcoin",
         "notify_props": {
-            "email": "false",
+            "email": "false" if should_suppress_notification_email(active_user_profile.user.email, 'chat') else "true",
             "push": "mention",
             "desktop": "all",
             "desktop_sound": "true",
