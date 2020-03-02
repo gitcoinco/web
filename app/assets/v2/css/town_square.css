@@ -810,6 +810,10 @@ body.green.offer_view .announce {
   text-align: left;
 }
 
+.clr_container .font-caption {
+  font-size: 0.65rem;
+}
+
 .clr_container td {
   padding: 6px;
 }
