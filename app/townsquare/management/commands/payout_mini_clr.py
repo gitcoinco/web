@@ -36,6 +36,8 @@ class Command(BaseCommand):
     help = 'creates round rankings'
 
     def handle(self, *args, **options):
+
+        return
         # setup
         minutes_ago = 10 if not settings.DEBUG else 40
         payment_threshold_usd = 1
