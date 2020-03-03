@@ -1,6 +1,6 @@
 {
     "ServiceSettings": {
-        "SiteURL": "",
+        "SiteURL": "http://localhost:8065",
         "WebsocketURL": "",
         "LicenseFileLocation": "",
         "ListenAddress": ":8065",
@@ -39,7 +39,7 @@
         "EnableMultifactorAuthentication": false,
         "EnforceMultifactorAuthentication": false,
         "EnableUserAccessTokens": true,
-        "AllowCorsFrom": "https://dapp.ngrok.io",
+        "AllowCorsFrom": "http://localhost:8000 http://localhost:8065",
         "CorsExposedHeaders": "",
         "CorsAllowCredentials": true,
         "CorsDebug": true,
@@ -260,12 +260,12 @@
     },
     "GitCoinSettings": {
         "Enable": true,
-        "Secret": "xhLXNqXnOlkUiGCDFJLxQJjPb3CltLZNFZtzOsLgFfvwbYY60kYWRRBmqyjzfrnNyT6WWdIbfQEPpU854K2UiofmXtybFD1QkfIR9VVQyK3ttJpET7GormIBjK9CQRap",
-        "Id": "VkHFfFlxnVCMYtYCWRxphbvPQUJjmER4cWtwqe7Q",
+        "Secret": "",
+        "Id": "",
         "Scope": "read",
-        "AuthEndpoint": "https://dapp.ngrok.io/login/github/?next=",
-        "TokenEndpoint": "https://dapp.ngrok.io/o/token/",
-        "UserApiEndpoint": "https://dapp.ngrok.io/api/user/me"
+        "AuthEndpoint": "http://localhost:8000/login/github/?next=",
+        "TokenEndpoint": "http://localhost:8000/o/token/",
+        "UserApiEndpoint": "http://localhost:8000/api/user/me"
     },
     "GitLabSettings": {
         "Enable": true,
@@ -504,18 +504,18 @@
             },
             "github": {
                 "enableprivaterepo": false,
-                "encryptionkey": "DDGoIpfhq3Hax8DSkCM-I3vAaXxD4tdp",
+                "encryptionkey": "-I3vAaXxD4tdp",
                 "enterprisebaseurl": null,
                 "enterpriseuploadurl": null,
-                "githuboauthclientid": "81fb8e9da08de85c763b",
-                "githuboauthclientsecret": "1646c83909c3b9d7a7e2c9ea7967de67bbfcb9ad",
+                "githuboauthclientid": "",
+                "githuboauthclientsecret": "",
                 "githuborg": "",
-                "webhooksecret": "YuTO7XIE23d69JEDlGPfYQ6pyt0Jgbg8"
+                "webhooksecret": ""
             },
             "zoom": {
-                "apikey": "MEqyOY_jQVOGiAcMFrrvhw",
-                "apisecret": "TXYnluZmJpcVdpzIrE7jEwW0gPbmcD4v8UUt",
-                "webhooksecret": "pqR_-aN207k9bo5P//hIoaY8psaKeIVn",
+                "apikey": "",
+                "apisecret": "",
+                "webhooksecret": "",
                 "zoomapiurl": null,
                 "zoomurl": null
             }
@@ -528,13 +528,13 @@
                 "Enable": true
             },
             "com.mattermost.welcomebot": {
-                "Enable": true
+                "Enable": false
             },
             "github": {
                 "Enable": true
             },
             "zoom": {
-                "Enable": true
+                "Enable": false
             }
         },
         "EnableMarketplace": true,
