@@ -116,7 +116,7 @@ def town_square(request):
         }
         tabs = [threads] + tabs
 
-    connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
+    connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post', 'mini_clr_payout'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if connect_last_24_hours:
         default_tab = 'connect'
         connect = {
@@ -223,7 +223,7 @@ def town_square(request):
     if request.GET.get('round'):
         current_match_round = MatchRound.objects.get(number=request.GET.get('round'))
     num_to_show = 10
-    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1))
+    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1)).order_by('number')
     matching_leaderboard = [
         {
             'i': obj.number,

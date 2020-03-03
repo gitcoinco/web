@@ -172,4 +172,4 @@ class Command(BaseCommand):
                 match_distribution(ranking)
 
                 print("paid ", ranking)
-                time.sleep(5)
+                time.sleep(30)
