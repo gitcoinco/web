@@ -1197,7 +1197,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     if len(relevant_grants):
         activities = activities.filter(grant__in=relevant_grants)
     if what == 'connect':
-        activities = activities.filter(activity_type__in=['status_update', 'wall_post'])
+        activities = activities.filter(activity_type__in=['status_update', 'wall_post', 'mini_clr_payout'])
     if what == 'kudos':
         activities = activities.filter(activity_type__in=['new_kudos', 'receive_kudos'])
 
