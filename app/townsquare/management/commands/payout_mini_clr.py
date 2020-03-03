@@ -76,7 +76,7 @@ class Command(BaseCommand):
 
         # finalize rankings
         if options['what'] == 'finalize':
-            rankings = mr.ranking.filter(final=False, paid=False).order_by('number')
+            rankings = mr.ranking.filter(final=False, paid=False).order_by('-match_total')
             print(rankings.count(), "to finalize")
             for ranking in rankings:
                 ranking.final = True
@@ -85,16 +85,16 @@ class Command(BaseCommand):
 
         # payout rankings
         if options['what'] == 'payout':
-            rankings = mr.ranking.filter(final=True, paid=False).order_by('number')
+            rankings = mr.ranking.filter(final=True, paid=False).order_by('-match_total')
             print(rankings.count(), " to pay")
             w3 = Web3(HTTPProvider(provider))
             for ranking in rankings:
-                print("paying ", ranking)
 
                 # figure out amount_owed
                 profile = ranking.profile
                 owed_rankings = profile.match_rankings.filter(final=True, paid=False)
                 amount_owed = sum(owed_rankings.values_list('match_total', flat=True))
+                print(f"paying {ranking.profile.handle} who is owed {amount_owed} ({ranking.match_total} from this round)")
 
                 # validate
                 error = None
