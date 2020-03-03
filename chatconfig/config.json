@@ -264,8 +264,8 @@
         "Id": "VkHFfFlxnVCMYtYCWRxphbvPQUJjmER4cWtwqe7Q",
         "Scope": "read",
         "AuthEndpoint": "http://localhost:8000/login/github/?next=",
-        "TokenEndpoint": "http://localhost:8000/o/token/",
-        "UserApiEndpoint": "http://localhost:8000/api/user/me"
+        "TokenEndpoint": "http://web:8000/o/token/",
+        "UserApiEndpoint": "http://web:8000/api/user/me"
     },
     "GitLabSettings": {
         "Enable": true,
