@@ -14,7 +14,7 @@ from marketing.mails import comment_email, new_action_request
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 
-from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction
+from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
@@ -268,6 +268,7 @@ def town_square(request):
         'trending_only': bool(trending_only),
         'search': search,
         'tags': tags,
+        'suggested_actions': SuggestedAction.objects.filter(active=True).order_by('-rank'),
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
