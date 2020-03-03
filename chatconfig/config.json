@@ -260,8 +260,8 @@
     },
     "GitCoinSettings": {
         "Enable": true,
-        "Secret": "",
-        "Id": "",
+        "Secret": "xhLXNqXnOlkUiGCDFJLxQJjPb3CltLZNFZtzOsLgFfvwbYY60kYWRRBmqyjzfrnNyT6WWdIbfQEPpU854K2UiofmXtybFD1QkfIR9VVQyK3ttJpET7GormIBjK9CQRap",
+        "Id": "VkHFfFlxnVCMYtYCWRxphbvPQUJjmER4cWtwqe7Q",
         "Scope": "read",
         "AuthEndpoint": "http://localhost:8000/login/github/?next=",
         "TokenEndpoint": "http://localhost:8000/o/token/",
