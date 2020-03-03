@@ -1806,6 +1806,7 @@ def postsave_tip(sender, instance, created, **kwargs):
             }
             )
 
+
 # method for updating
 @receiver(pre_save, sender=Bounty, dispatch_uid="psave_bounty")
 def psave_bounty(sender, instance, **kwargs):

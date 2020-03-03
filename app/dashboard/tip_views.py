@@ -269,6 +269,95 @@ def send_tip_4(request):
     return JsonResponse(response)
 
 
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def send_tip_townsquare_4(request):
+    """Handle the fourth stage of sending a tip (the POST).
+
+    Returns:
+        JsonResponse: response with success state.
+
+    """
+    response = {
+        'status': 'OK',
+        'message': _('Tip Sent'),
+    }
+
+    is_user_authenticated = request.user.is_authenticated
+    from_username = request.user.username if is_user_authenticated else ''
+
+    params = json.loads(request.body)
+    txid = params['txid']
+    destinationAccount = params['destinationAccount']
+    is_direct_to_recipient = params.get('is_direct_to_recipient', False)
+    if is_direct_to_recipient:
+        tip = Tip.objects.get(
+            metadata__direct_address=destinationAccount,
+            metadata__creation_time=params['creation_time'],
+            metadata__salt=params['salt'],
+            )
+    else:
+        tip = Tip.objects.get(
+            metadata__address=destinationAccount,
+            metadata__salt=params['salt'],
+            )
+
+    is_authenticated_for_this_via_login = (tip.from_username and tip.from_username == from_username)
+    is_authenticated_for_this_via_ip = tip.ip == get_ip(request)
+    is_authed = is_authenticated_for_this_via_ip or is_authenticated_for_this_via_login
+    if not is_authed:
+        response = {
+            'status': 'error',
+            'message': _('Permission Denied'),
+        }
+        return JsonResponse(response)
+
+    # db mutations
+    tip.txid = txid
+    tip.tx_status = 'pending'
+    if is_direct_to_recipient:
+        tip.receive_txid = txid
+        tip.receive_tx_status = 'pending'
+        tip.receive_address = destinationAccount
+        # tip.confirmed = True
+        TipPayout.objects.create(
+            txid=txid,
+            profile=get_profile(tip.username),
+            tip=tip,
+            )
+    tip.save()
+
+    if tip.network == 'mainnet' or settings.DEBUG:
+        from townsquare.models import Comment
+        network = tip.network if tip.network != 'mainnet' else ''
+        if 'activity:' in tip.comments_priv:
+            activity=tip.attached_object
+            comment = f"Just sent a tip of {tip.amount} {network} ETH to @{tip.username}"
+            comment = Comment.objects.create(profile=tip.sender_profile, activity=activity, comment=comment)
+            from townsquare.tasks import refresh_activities
+            refresh_activities.delay([activity.pk])
+
+        if 'comment:' in tip.comments_priv:
+            _comment=tip.attached_object
+            comment = f"Just sent a tip of {tip.amount} {network} ETH to @{tip.username}"
+            comment = Comment.objects.create(profile=tip.sender_profile, activity=_comment.activity, comment=comment)
+
+    from townsquare.models import MatchRound
+    mr = MatchRound.objects.current().first()
+    if mr:
+        mr.process()
+
+    # notifications
+    maybe_market_tip_to_github(tip)
+    maybe_market_tip_to_slack(tip, 'New tip')
+    if tip.primary_email:
+        maybe_market_tip_to_email(tip, [tip.primary_email])
+    record_user_action(tip.from_username, 'send_tip', tip)
+    record_tip_activity(tip, tip.from_username, 'new_tip' if tip.username else 'new_crowdfund', False, tip.username)
+
+    return JsonResponse(response)
+
+
 def get_profile(handle):
     try:
         to_profile = Profile.objects.get(handle=handle.lower())
@@ -299,6 +388,111 @@ def tipee_address(request, handle):
 @csrf_exempt
 @ratelimit(key='ip', rate='15/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_3(request):
+    """Handle the third stage of sending a tip (the POST).
+
+    Returns:
+        JsonResponse: response with success state.
+
+    """
+    response = {
+        'status': 'OK',
+        'message': _('Tip Created'),
+    }
+
+    is_user_authenticated = request.user.is_authenticated
+    from_username = request.user.username if is_user_authenticated else ''
+    primary_from_email = request.user.email if is_user_authenticated else ''
+    access_token = request.user.profile.get_access_token() if is_user_authenticated and request.user.profile else ''
+
+    params = json.loads(request.body)
+
+    to_username = params['username'].lstrip('@')
+    to_emails = get_emails_by_category(to_username)
+    primary_email = ''
+
+    if params.get('email'):
+        primary_email = params['email']
+    elif to_emails.get('primary', None):
+        primary_email = to_emails['primary']
+    elif to_emails.get('github_profile', None):
+        primary_email = to_emails['github_profile']
+    else:
+        if len(to_emails.get('events', None)):
+            primary_email = to_emails['events'][0]
+        else:
+            print("TODO: no email found.  in the future, we should handle this case better because it's GOING to end up as a support request")
+    if primary_email and isinstance(primary_email, list):
+        primary_email = primary_email[0]
+
+    # If no primary email in session, try the POST data. If none, fetch from GH.
+    if params.get('fromEmail'):
+        primary_from_email = params['fromEmail']
+    elif access_token and not primary_from_email:
+        primary_from_email = get_github_primary_email(access_token)
+
+    expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
+
+    # metadata
+    metadata = params['metadata']
+    metadata['user_agent'] = request.META.get('HTTP_USER_AGENT', '')
+
+    # db mutations
+    tip = Tip.objects.create(
+        primary_email=primary_email,
+        emails=to_emails,
+        tokenName=params['tokenName'],
+        amount=params['amount'],
+        comments_priv=params['comments_priv'],
+        comments_public=params['comments_public'],
+        ip=get_ip(request),
+        expires_date=expires_date,
+        github_url=params['github_url'],
+        from_name=params['from_name'] if params['from_name'] != 'False' else '',
+        from_email=params['from_email'],
+        from_username=from_username,
+        username=params['username'],
+        network=params.get('network', 'unknown'),
+        tokenAddress=params['tokenAddress'],
+        from_address=params['from_address'],
+        is_for_bounty_fulfiller=params['is_for_bounty_fulfiller'],
+        metadata=metadata,
+        recipient_profile=get_profile(to_username),
+        sender_profile=get_profile(from_username),
+    )
+
+    is_over_tip_tx_limit = False
+    is_over_tip_weekly_limit = False
+    max_per_tip = request.user.profile.max_tip_amount_usdt_per_tx if request.user.is_authenticated and request.user.profile else 500
+    if tip.value_in_usdt_now:
+        is_over_tip_tx_limit = tip.value_in_usdt_now > max_per_tip
+        if request.user.is_authenticated and request.user.profile:
+            tips_last_week_value = tip.value_in_usdt_now
+            tips_last_week = Tip.objects.send_happy_path().filter(sender_profile=get_profile(from_username), created_on__gt=timezone.now() - timezone.timedelta(days=7))
+            for this_tip in tips_last_week:
+                if this_tip.value_in_usdt_now:
+                    tips_last_week_value += this_tip.value_in_usdt_now
+            is_over_tip_weekly_limit = tips_last_week_value > request.user.profile.max_tip_amount_usdt_per_week
+
+    increase_funding_form_title = _('Request a Funding Limit Increasement')
+    increase_funding_form = f'<a target="_blank" href="{settings.BASE_URL}'\
+                            f'requestincrease">{increase_funding_form_title}</a>'
+
+    if is_over_tip_tx_limit:
+        response['status'] = 'error'
+        response['message'] = _('This tip is over the per-transaction limit of $') +\
+            str(max_per_tip) + '. ' + increase_funding_form
+    elif is_over_tip_weekly_limit:
+        response['status'] = 'error'
+        response['message'] = _('You are over the weekly tip send limit of $') +\
+            str(request.user.profile.max_tip_amount_usdt_per_week) +\
+            '. ' + increase_funding_form
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def send_tip_townsquare_3(request):
     """Handle the third stage of sending a tip (the POST).
 
     Returns:
