@@ -116,7 +116,7 @@ class Command(BaseCommand):
                 tx = contract.functions.transfer(address, amount).buildTransaction({
                     'nonce': w3.eth.getTransactionCount(from_address),
                     'gas': 100000,
-                    'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(1) * 10**9 * 1.4)
+                    'gasPrice': int(float(recommend_min_gas_price_to_confirm_in_time(1)) * 10**9 * 1.4)
                 })
 
                 signed = w3.eth.account.signTransaction(tx, from_pk)
