@@ -1,0 +1,20 @@
+{
+  "symbol": "JUS",
+  "address": "0x14cA41Eecd7D81D5D13098586C0d2314EBa285bE",
+  "overview": {
+    "en": "JUST Network is the next generation fully-scalable decentralized social network.  It’s mission is to create a new user-centric decentrailzied social network through cutting edge blockchain technology.  Its first IM application, JUSTALK, has reached 100,000 registered users within 30 days of launch, with over 20,000 daily active users.  Users can send secure messages, utilize group chat, voice and video chat functions within the decentralized application.  JUSTALK also provides encrypted point-to-point communicaiton for users requiring higher secruity levels.  Its in-app digital wallet, JUST WALLET, support storing and withdrawal of ERC20-compliant tokens.",
+    "zh": "JUST NETWORK是下一代可扩展的去中心化社交网络，旨在通过区块链技术赋能社交，颠覆现有的中心化社交平台，构建全新的以用户价值为中心的社交生态体系。目前平台已上线IM应用Justalk，30天用户人数突破10万，日活跃用户突破2万，通过JUSTALK用户能够发送信息、群聊、视频及语音通话，和安全性能更高的点对点加密通讯服务。应用内嵌数字钱包，可以实现ERC20部分代币的充值与提现功能。"
+  },
+  "email": "contact@justalk.io",
+  "website": "https://www.justalk.io/",
+  "whitepaper": "https://just-network.oss-ap-southeast-1.aliyuncs.com/whitepaper_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-03-03",
+  "initial_price": {
+    "USD": "0.025 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Justalk2019",
+    "telegram": "https://t.me/JustalkOfficial"
+  }
+}
