@@ -138,12 +138,12 @@ def town_square(request):
         }
         tabs = tabs + [connect]
 
-    hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now() - timezone.timedelta(days=10), end_date__gt=timezone.now())
+    hackathons = HackathonEvent.objects.filter(start_date__gt=timezone.now() - timezone.timedelta(days=10), end_date__gt=timezone.now())
     if hackathons.count():
         for hackathon in hackathons:
             connect = {
                 'title': hackathon.name,
-                'slug': default_tab,
+                'slug': f'hackathon:{hackathon.pk}',
                 'helper_text': f'Activity from the {hackathon.name} Hackathon.',
             }
             hackathon_tabs = [connect] + hackathon_tabs
