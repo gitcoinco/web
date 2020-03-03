@@ -163,8 +163,8 @@ class Command(BaseCommand):
                     activity_type='mini_clr_payout',
                     metadata={
                         "amount":float(amount_owed),
-                        "number":mr.number,
-                        "mr_pk":mr.pk,
+                        "number":int(mr.number),
+                        "mr_pk":int(mr.pk),
                         "round_description": f"Mini CLR Round {mr.number}"
                     })
 
