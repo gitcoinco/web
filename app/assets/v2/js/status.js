@@ -59,6 +59,14 @@ $(document).ready(function() {
     }
   });
 
+  // cache activity/status for if u leave page
+  var lskey = 'activity_' + document.location.href;
+  var current_ls_activity = localStorage.getItem(lskey);
+
+  if (current_ls_activity) {
+    $('#textarea').val(current_ls_activity);
+  }
+
   // dropdown for usernames when @ is detected in the post
   $('#textarea').on('input', function(e) {
     e.preventDefault();
@@ -200,6 +208,7 @@ $(document).ready(function() {
     // enforce a max length
     var max_len = $(this).data('maxlen');
 
+    localStorage.setItem(lskey, $(this).val());
     if ($(this).val().trim().length > max_len) {
       $(this).addClass('red');
       $('#btn_post').attr('disabled', true);
@@ -221,15 +230,17 @@ $(document).ready(function() {
     }
     const data = new FormData();
     const message = $('#textarea');
+    const the_message = message.val().trim();
     const ask = $('.activity_type_selector .active input').val();
 
     data.append('ask', ask);
-    data.append('data', message.val().trim());
+    data.append('data', the_message);
     data.append('what', $('#status [name=what]').val());
     message.val('');
+    localStorage.setItem(lskey, '');
     data.append(
       'csrfmiddlewaretoken',
-      $('#status input[name="csrfmiddlewaretoken"]').attr('value')
+      $('input[name="csrfmiddlewaretoken"]').attr('value')
     );
 
     if (embedded_resource) {
@@ -259,6 +270,15 @@ $(document).ready(function() {
         data.append('image', image);
       }
     }
+
+    var fail_callback = function() {
+      message.val(the_message);
+      localStorage.setItem(lskey, the_message);
+      _alert(
+        { message: gettext('An error occurred. Please try again.') },
+        'error'
+      );
+    };
 
     fetch('/api/v0.1/activity', {
       method: 'post',
@@ -291,13 +311,10 @@ $(document).ready(function() {
           $('.tab-section.active .activities').html('');
           message.val('');
         } else {
-          _alert(
-            { message: gettext('An error occurred. Please try again.') },
-            'error'
-          );
+          fail_callback();
         }
       })
-      .catch(err => console.log('Error ', err));
+      .catch(err => fail_callback());
   }
 
   injectGiphy('latest');

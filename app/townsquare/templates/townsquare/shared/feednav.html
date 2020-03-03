@@ -1,0 +1,87 @@
+                <div class="townsquare_nav-list mb-1">
+                  <div class="townsquare_block-header">
+                    Feeds
+                  </div>
+                  <ul class="nav d-inline-block font-body">
+                    {% for this_tab in tabs %}
+                      {% include 'townsquare/shared/thistab.html' %}
+                    {% endfor %}
+                  </ul>
+                  {% if hackathon_tabs|length %}
+                  <div class="townsquare_block-header mt-4">
+                    Hackathons
+                  </div>
+                  <ul class="nav d-inline-block font-body">
+                    {% for this_tab in hackathon_tabs %}
+                      {% include 'townsquare/shared/thistab.html' %}
+                    {% endfor %}
+                  </ul>
+                  {% endif %}
+                  <div class="townsquare_nav-list mb-1 mt-4">
+                    <div class="townsquare_block-header">
+                      Filter
+                    </div>
+                    <ul class="nav d-inline-block font-body">
+                        {% for tag in tags %}
+                          {% include 'townsquare/shared/tag.html' %}
+                        {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div class="townsquare_nav-list my-3 tribe">
+                    <div class="townsquare_block-header">
+                      Tribes
+                    </div>
+                    <ul class="nav d-inline-block font-body">
+                      {% for tribe in following_tribes %}
+                        <li class="nav-item">
+                          <a data-toggle="tooltip" title="{{tribe.helper_text}}" class="nav-link nav-line {% if tab == tribe.slug %}active{% endif %} " href="#" data-slug="{{tribe.slug}}">
+                            <img src="{{tribe.avatar_url}}" class="rounded avatar">
+                            <span class="nav-title">{{tribe.title}}</span>
+                            {% if tribe.badge %}
+                              <span class="nav-badge">({{ tribe.badge }})</span>
+                            {% endif %}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                    <div class="townsquare_nav-list_footer font-body font-weight-semibold">
+                    <a href="{% url "tribes_directory" %}">
+                        Explore Tribes
+                        <i class="ml-1 fab fa-wpexplorer font-weight-normal"></i>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="townsquare_nav-list_footer font-body font-weight-semibold">
+                <!--
+                    <a href="#">Explore Topics <i class="ml-1 fab fa-wpexplorer font-weight-normal"></i></a>
+                -->
+                  </div>
+                </div>
+
+                  <!--
+                <div class="townsquare_nav-list mb-5">
+                  <div class="townsquare_block-header">
+                    Tribe
+                  </div>
+                  <ul class="nav d-inline-block font-body">
+                    {% for this_tab in tabs %}
+                      <li class="nav-item">
+                        <a data-toggle="tooltip" title="{{this_tab.helper_text}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
+                          <span class="nav-title">{{this_tab.title}}</span>
+                          {% if this_tab.badge %}
+                            <span class="nav-badge">({{ this_tab.badge }})</span>
+                          {% endif %}
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                  <div class="townsquare_nav-list_footer font-body font-weight-semibold">
+                    <a href="{% url "users_directory" %}?persona=tribe">
+                      Explore Tribes
+                      <i class="ml-1 fab fa-wpexplorer font-weight-normal"></i>
+                    </a>
+                  </div>
+                </div>
+                -->
