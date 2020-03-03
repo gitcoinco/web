@@ -162,9 +162,10 @@ class Command(BaseCommand):
                     profile=ranking.profile,
                     activity_type='mini_clr_payout',
                     metadata={
-                        "amount":amount_owed,
+                        "amount":float(amount_owed),
                         "number":mr.number,
                         "mr_pk":mr.pk,
+                        "round_description": f"Mini CLR Round {mr.number}"
                     })
 
                 from marketing.mails import match_distribution
