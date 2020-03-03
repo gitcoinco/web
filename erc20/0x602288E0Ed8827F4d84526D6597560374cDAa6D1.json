@@ -1,0 +1,16 @@
+{
+    "symbol": "ETHD",
+    "address": "0x602288E0Ed8827F4d84526D6597560374cDAa6D1",
+    "overview":{
+          "en": "ETHD is a decentralized open platform built on the Ethereum network, which aims to solve the current bottleneck of public chain performance and become a new generation of blockchain application operating systems. The core of ETHD's network is a uniquely designed open blockchain system, which was created to solve the problem of Ethereum's ridiculous scalability and inefficiency. It has smart contracts, high transaction applications, and distributed ledger And other functions.",
+          "zh": "ETHD是一个建立在以太坊网络上的去中心化开放式平台，旨在解决目前公链性能瓶颈，成为新一代的区块链应用操作系统。ETHD的网络核心是一个独特设计的公开的区块链系统，是为了解决以太坊令人诟病的可拓展性不足以及效率低下的问题而生的，拥有智能合约，高交易应用程序，分布式账本等功能。"
+    },
+    "email": "ETHDdapp@gmail.com",
+    "website": "http://ethd.petbaby77.com/",
+    "whitepaper": "http://ethd.petbaby77.com/public/uploads/files/article/20200219/01ae38ab8aa4c5ed63157146d5918efa.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-02-10",
+    "links": {
+        "telegram": "https://t.me/ETHDdapp"
+      }
+}
