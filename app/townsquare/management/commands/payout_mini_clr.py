@@ -61,7 +61,6 @@ class Command(BaseCommand):
         from_address = settings.MINICLR_ADDRESS
         from_pk = settings.MINICLR_PRIVATE_KEY
         DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x8f2e097e79b1c51be9cba42658862f0192c3e487'
-        provider = settings.WEB3_HTTP_PROVIDER if network == 'mainnet' else "https://rinkeby.infura.io/"
 
         # find a round that has recently expired
         minutes_ago = options['minutes_ago']
@@ -87,7 +86,7 @@ class Command(BaseCommand):
         if options['what'] == 'payout':
             rankings = mr.ranking.filter(final=True, paid=False).order_by('-match_total')
             print(rankings.count(), " to pay")
-            w3 = Web3(HTTPProvider(provider))
+            w3 = get_web3(network)
             for ranking in rankings:
 
                 # figure out amount_owed
