@@ -100,54 +100,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </div>
                   </div>
                 </div>
-<<<<<<< HEAD
-                <div class="townsquare_nav-list mb-1">
-                  <div class="townsquare_block-header">
-                    Feed
-                  </div>
-                  <ul class="nav d-inline-block font-body">
-                    {% for this_tab in tabs %}
-                      <li class="nav-item">
-                        <a data-toggle="tooltip" title="{{this_tab.helper_text}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
-                          <span class="nav-title">{{this_tab.title}}</span>
-                          {% if this_tab.badge %}
-                            <span class="nav-badge">({{ this_tab.badge }})</span>
-                          {% endif %}
-                        </a>
-                      </li>
-                    {% endfor %}
-                  </ul>
-                </div>
-
-                <div class="townsquare_nav-list my-3 tribe">
-                  <div class="townsquare_block-header">
-                    Tribes
-                  </div>
-                  <ul class="nav d-inline-block font-body">
-                    {% for tribe in following_tribes %}
-                      <li class="nav-item">
-                        <a data-toggle="tooltip" title="{{tribe.helper_text}}" class="nav-link nav-line {% if tab == tribe.slug %}active{% endif %} " href="#" data-slug="{{tribe.slug}}">
-                          <img src="{{tribe.avatar_url}}" class="rounded avatar">
-                          <span class="nav-title">{{tribe.title}}</span>
-                          {% if tribe.badge %}
-                            <span class="nav-badge">({{ tribe.badge }})</span>
-                          {% endif %}
-                        </a>
-                      </li>
-                    {% endfor %}
-                  </ul>
-                  <div class="townsquare_nav-list_footer font-body font-weight-semibold">
-                  <a href="{% url "tribes_directory" %}">
-                      Explore Tribes
-                      <i class="ml-1 fab fa-wpexplorer font-weight-normal"></i>
-                    </a>
-                  </div>
-                </div>
-=======
 
 
               {% include 'townsquare/shared/feednav.html' %}
->>>>>>> stable
 
               </div>
             </div>
@@ -166,33 +121,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 {% include 'shared/activity_container.html' %}
               </div>
             </div>
-<<<<<<< HEAD
-            <div class="col-12 col-md-4 col-lg-3">
-                {% if REFER_LINK %}
-                  <div class="townsquare_block-header text-left mb-1 mt-0">
-                    Ref Link <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
-                    <strong>
-                      Gitcoin is better with friends!
-                    </strong> -
-                    Do you have a coworker, classmate, or friend that would benefit from access to Gitcoin's products?  Send them this reflink to get them onboarded.
-                    <BR>
-                    How it works:
-                    <BR>
-                    1. Click below to copy your personal Gitcoin referral link.
-                    <BR>
-                    2. If your friends sign up to Gitcoin using your reflink, their account will be attached to yours.
-                    <BR>
-                    3. You will earn credit for their Quests, and access to special limited edition goodies - like exclusive Gitcoin Actions, Gitcoin Kudos, or other unannounced (but exciting) rewards.
-                    "></i>
-                    <input id=reflink type="text" value="{{REFER_LINK}}" class="w-100 copy_me" readonly="readonly">
-                    <hr>
-                  </div>
-                {% endif %}
-=======
             <div class="actions_container col-12 col-md-4 col-lg-3">
                 {% include 'townsquare/shared/reflink.html' %}
 
->>>>>>> stable
               <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2">
                 Actions <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
                     <strong>Gitcoin Actions</strong> are a way to introduce entropy into your learning routine.  Gitcoin will select the best educational, networking, or (sometimes)monetary or reputational opportunities and put them in front of you on a daily, weekly, monthly, and (sometimes) secret basis!
@@ -222,95 +153,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
               {% include 'townsquare/shared/matchround.html' %}
 
-<<<<<<< HEAD
-                      <br>
-                      1. If someone posts asking for help, do your best to be helpful.
-                      <br>
-                      2. If someone is helpful to you, send them a micro-tip.
-                      <br>
-                      3. The CLR matching algorithm will match 0.001 ETH contributions with up to 0.1 ETH in matching funds.
-                      <br>
-                      <br>
-
-                      <strong>Want to learn more about how it works?</strong> Click here. " ></i>
-                    </a>
-                  </div>
-                  <div>
-                    <div id="payout_estimate" class="font-italic mb-2 grey">
-                      Payout <span class="clr_match_countdown_timer m-0" data-time="{{current_match_round.valid_to|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>
-                    </div>
-                    <table class="w-100 bg-white">
-                      <tr class="title font-weight-semibold font-body">
-                        <td>
-                          #
-                        </td>
-                        <td data-toggle="tooltip" title="Who dat?!??">
-                          Who
-                        </td>
-                        <td data-toggle="tooltip" title="How much dat user earned via the CLR algorithm.">
-                          Haul
-                        </td>
-                      </tr>
-                      {% for mli in matching_leaderboard %}
-                        <tr class="font-caption mb-2">
-                          <td>
-                            {{mli.i}}
-                          </td>
-                          <td>
-                            <a href="/profile/{{mli.handle}}">
-                              <img src='/dynamic/avatar/{{mli.handle}}' data-toggle="tooltip" title="@{{mli.handle}}">
-                            </a>
-                          {% if mli.you %}
-                            <br>
-                            <span class="tag">
-                              it me
-                            </span>
-                          {% endif %}
-                          </td>
-                          <td class="text-justify" data-html="true" data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contribution{{mli.contributions|pluralize}} from <strong>{{mli.contributors}}</strong> contributor{{mli.contributors|pluralize}} worth <strong>${{mli.amount}}</strong> since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about <strong>${{mli.match_amount}}</strong> in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})
-                            <br>
-                            <hr>
-
-                            Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round, a contribution of 0.001 ETH (about $0.30) could mean <strong>+${{mli.default_match_estimate|floatformat:2}}</strong> in matching.
-                            <br>
-                            Other contribution levels will mean other matching amounts:
-
-                            Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round..
-                            <ul>
-                              {% for key, val in mli.match_curve.items %}
-                                {% if key and val > 0.00 %}
-                                  <li>
-                                    Your contribution of ${{key}} could yield ${{val|floatformat:2}} in matching.
-                                  </li>
-                                {% endif %}
-                              {% endfor %}
-                            </ul>
-                          ">
-                            <span class="amount position-relative">
-                              ${{mli.amount}} from
-                              {{mli.contributors}} contributor <br>
-                              <span style="color:#17a2b8;">${{mli.match_amount}} matched</span>
-                            </span>
-                            {% if not mli.following %}
-                              <a class="btn btn-gc-blue btn-sm follow_button float-right mr-2 font-smaller-6 font-weight-bold px-3 position-relative"
-                                data-jointribe='{{mli.handle}}' href="#"
-                              >
-                                Follow
-                              </a>
-                            {% else %}
-                              <div class="btn btn-outline-green mr-2 font-smaller-6 font-weight-bold float-right px-2 position-relative">
-                                Following
-                              </div>
-                            {% endif %}
-                          </td>
-                        </tr>
-                      {% endfor %}
-                    </table>
-                  </div>
-                </div>
-              {% endif %}
-=======
->>>>>>> stable
 
             </div>
           </div>
