@@ -53,6 +53,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 import magic
 from app.utils import clean_str, ellipses, get_default_network
+from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper
 from bleach import clean
@@ -485,8 +486,10 @@ def post_comment(request):
 
     bounty_id = request.POST.get('bounty_id')
     bountyObj = Bounty.objects.get(pk=bounty_id)
+    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     fbAmount = FeedbackEntry.objects.filter(
         sender_profile=profile_id,
+        receiver_profile=receiver_profile,
         bounty=bountyObj
     ).count()
     if fbAmount > 0:
@@ -495,7 +498,6 @@ def post_comment(request):
             'msg': 'There is already a approval comment',
         })
 
-    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     kwargs = {
         'bounty': bountyObj,
         'sender_profile': profile_id,
@@ -836,21 +838,6 @@ def uninterested(request, bounty_id, profile_id):
 def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
-
-def get_preview_img(key):
-    if key == 'classic':
-        return 'https://c.gitcoin.co/avatars/d1a33d2bcb7bbfef50368bca73111fae/fryggr.png'
-    if key == 'bufficorn':
-        return 'https://c.gitcoin.co/avatars/94c30306a088d06163582da942a2e64e/dah0ld3r.png'
-    if key == 'female':
-        return 'https://c.gitcoin.co/avatars/b713fb593b3801700fd1f92e9cd18e79/aaliyahansari.png'
-    if key == 'unisex':
-        return 'https://c.gitcoin.co/avatars/cc8272136bcf9b9d830c0554a97082f3/joshegwuatu.png'
-    if key == 'bot':
-        return 'https://c.gitcoin.co/avatars/c9d82da31b7833bdae37861014c32ebc/owocki.png'
-
-    return f'/avatar/view3d?theme={key}&scale=20'
-
 def onboard(request, flow=None):
     """Handle displaying the first time user experience flow."""
     if flow not in ['funder', 'contributor', 'profile']:
@@ -896,24 +883,17 @@ def onboard(request, flow=None):
     from avatar.views_3d import get_avatar_attrs
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
-    avatar_options = [
-        'classic',
-        'unisex',
-        'female',
-        'bufficorn',
-    ]
-    if request.user.is_staff:
-        avatar_options.append('bot')
-    avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele)) for ele in avatar_options ]
-
+    background_tones = get_avatar_attrs(theme, 'background_tones')
+    
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
         'flow': flow,
         'profile': profile,
         'theme': theme,
-        'avatar_options': avatar_options,
+        'avatar_options': AvatarTheme.objects.filter(active=True).order_by('-popularity'),
         '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(theme),
+        'possible_background_tones': background_tones,
         'possible_skin_tones': skin_tones,
         'possible_hair_tones': hair_tones,
     }
@@ -2090,7 +2070,7 @@ def quickstart(request):
 
     activities = Activity.objects.filter(activity_type='new_bounty').order_by('-created')[:5]
     context = deepcopy(qs.quickstart)
-    context["activities"] = [a.view_props for a in activities]
+    context["activities"] = [a.either_view_props for a in activities]
     return TemplateResponse(request, 'quickstart.html', context)
 
 
@@ -2602,15 +2582,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     context = profile.reassemble_profile_dict
 
     # all tabs
-    if profile.cascaded_persona == 'org':
-        active_bounties = profile.bounties.filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
-    elif profile.cascaded_persona == 'funder':
-        active_bounties = Bounty.objects.current().filter(bounty_owner_github_username__iexact=profile.handle).filter(idx_status__in=Bounty.WORK_IN_PROGRESS_STATUSES).filter(network='mainnet')
-    elif profile.cascaded_persona == 'hunter':
-        active_bounties = Bounty.objects.filter(pk__in=profile.active_bounties.filter(pending=False).values_list('bounty', flat=True)).filter(network='mainnet')
-    else:
-        active_bounties = Bounty.objects.none()
-    active_bounties = active_bounties.order_by('-web3_created')
+    active_bounties = context['active_bounties'].order_by('-web3_created')
     context['active_bounties_count'] = active_bounties.count()
     context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.count()
     context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).count()
@@ -2660,19 +2632,14 @@ def get_profile_tab(request, profile, tab, prev_context):
                     return HttpResponse(status=204)
 
                 context = {}
-                context['activities'] = [ele.view_props for ele in paginator.get_page(page)]
+                context['activities'] = [ele.either_view_props for ele in paginator.get_page(page)]
 
                 return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
 
         all_activities = context.get('activities')
         tabs = []
-        counts = {}
-        if not all_activities or all_activities.count() == 0:
-            context['none'] = True
-        else:
-            counts = all_activities.values('activity_type').order_by('activity_type').annotate(the_count=Count('activity_type'))
-            counts = {ele['activity_type']: ele['the_count'] for ele in counts}
+        counts = context.get('activities_counts', {'joined': 1})
         for name, actions in activity_tabs:
 
             # this functions as profile_filter_activities does
@@ -2898,7 +2865,9 @@ def profile(request, handle, tab=None):
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
-    context['is_on_tribe'] = request.user.is_authenticated and any([handle.lower() == tribe.org.handle.lower() for tribe in request.user.profile.tribe_members ])
+    context['is_on_tribe'] = False
+    if request.user.is_authenticated:
+        context['is_on_tribe'] = request.user.profile.tribe_members.filter(org__handle__iexact=handle.lower())
     context['ratings'] = range(0,5)
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
@@ -3633,7 +3602,7 @@ def get_users(request):
             profile_json['id'] = user.id
             profile_json['text'] = user.handle
             profile_json['avatar_url'] = user.avatar_url
-            if user.avatar_baseavatar_related.exists():
+            if user.avatar_baseavatar_related.filter(active=True).exists():
                 profile_json['avatar_id'] = user.avatar_baseavatar_related.filter(active=True).first().pk
                 profile_json['avatar_url'] = user.avatar_baseavatar_related.filter(active=True).first().avatar_url
             profile_json['preferred_payout_address'] = user.preferred_payout_address
@@ -3874,7 +3843,11 @@ def save_hackathon(request, hackathon):
             status=401)
 
 
-def hackathon_projects(request, hackathon=''):
+def hackathon_project(request, hackathon='', project=''):
+    return hackathon_projects(request, hackathon, project)
+
+
+def hackathon_projects(request, hackathon='', specify_project=''):
     q = clean(request.GET.get('q', ''), strip=True)
     order_by = clean(request.GET.get('order_by', '-created_on'), strip=True)
     filters = clean(request.GET.get('filters', ''), strip=True)
@@ -3886,6 +3859,9 @@ def hackathon_projects(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
+    title = f'{hackathon_event.name.title()} Projects'
+    desc = f"{title} in the recent Gitcoin Virtual Hackathon"
+    avatar_url = hackathon_event.logo.url if hackathon_event.logo else ''
     if order_by not in {'created_on', '-created_on'}:
         order_by = '-created_on'
 
@@ -3919,6 +3895,15 @@ def hackathon_projects(request, hackathon=''):
         projects = projects.filter(
             Q(badge__isnull=False)
         )
+    if specify_project:
+        projects = projects.filter(name__iexact=specify_project.replace('-', ' '))
+        if projects.exists():
+            project = projects.first()
+            title = project.name
+            desc = f'This project was created in the Gitcoin {hackathon_event.name.title()} Virtual Hackathon'
+            if project.logo:
+                avatar_url = project.logo.url
+
 
     projects_paginator = Paginator(projects, 9)
 
@@ -3931,10 +3916,12 @@ def hackathon_projects(request, hackathon=''):
 
     params = {
         'active': 'hackathon_onboard',
-        'title': f'{hackathon_event.name.title()} Projects',
+        'title': title,
+        'card_desc': desc,
         'hackathon': hackathon_event,
         'sponsors_list': sponsors_list,
         'sponsor': sponsor,
+        'avatar_url': avatar_url,
         'projects': projects_paginated,
         'order_by': order_by,
         'filters': filters,

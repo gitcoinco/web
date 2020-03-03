@@ -194,6 +194,7 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
                     return HttpResponse(avatar_file, content_type=content_type)
         except Exception as e:
             logger.error('Handle Avatar - Exception: (%s) - Handle: (%s)', str(e), _org_name)
+            logger.exception(e)
 
     # default response
     # params
@@ -226,4 +227,5 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
         return response
     except (AttributeError, IOError, SyntaxError) as e:
         logger.error('Handle Avatar - Response error: (%s) - Handle: (%s)', str(e), _org_name)
+        logger.exception(e)
         return get_err_response(request, blank_img=(_org_name == 'Self'))

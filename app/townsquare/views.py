@@ -11,11 +11,22 @@ import metadata_parser
 from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
+from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 
-from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction
+from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
+
+tags = [
+    ['#announce','bullhorn','search-announce'],
+    ['#mentor','terminal','search-mentor'],
+    ['#jobs','code','search-jobs'],
+    ['#help','laptop-code','search-help'],
+    ['#meme','images','search-meme'],
+    ['#music','music','search-music'],
+    ['#other','briefcase','search-other'],
+    ]
 
 
 def get_next_time_available(key):
@@ -56,7 +67,12 @@ def town_square(request):
 
     # setup tabas
     hours = 24 if not settings.DEBUG else 1000
-    posts_last_24_hours = lazy_round_number(Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
+    posts_last_24_hours = 0
+    post_data_cache = JSONStore.objects.filter(view='activity', key='24hcount')
+    if post_data_cache.exists():
+        posts_last_24_hours = post_data_cache.first().data
+
+    hackathon_tabs = []
     tabs = [{
         'title': f"Everywhere",
         'slug': 'everywhere',
@@ -101,14 +117,7 @@ def town_square(request):
         }
         tabs = [threads] + tabs
 
-        threads = {
-            'title': f"My Feed",
-            'slug': f'my_feed',
-            'helper_text': f'The threads that you\'ve posted, liked, commented on, or sent a tip upon on Gitcoin.',
-        }
-        tabs = [threads] + tabs
-
-    connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
+    connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post', 'mini_clr_payout'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if connect_last_24_hours:
         default_tab = 'connect'
         connect = {
@@ -129,18 +138,15 @@ def town_square(request):
         }
         tabs = tabs + [connect]
 
-    if request.user.is_authenticated:
-        hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now(), end_date__gt=timezone.now())
-        if hackathons.count():
-            user_registered_hackathon = request.user.profile.hackathon_registration.filter(registrant=request.user.profile, hackathon__in=hackathons).first()
-            if user_registered_hackathon:
-                default_tab = f'hackathon:{user_registered_hackathon.hackathon.pk}'
-                connect = {
-                    'title': user_registered_hackathon.hackathon.name,
-                    'slug': default_tab,
-                    'helper_text': f'Activity from the {user_registered_hackathon.hackathon.name} Hackathon.',
-                }
-                tabs = [connect] + tabs
+    hackathons = HackathonEvent.objects.filter(start_date__gt=timezone.now() - timezone.timedelta(days=10), end_date__gt=timezone.now())
+    if hackathons.count():
+        for hackathon in hackathons:
+            connect = {
+                'title': hackathon.name,
+                'slug': f'hackathon:{hackathon.pk}',
+                'helper_text': f'Activity from the {hackathon.name} Hackathon.',
+            }
+            hackathon_tabs = [connect] + hackathon_tabs
 
     # set tab
     if request.COOKIES.get('tab'):
@@ -194,7 +200,8 @@ def town_square(request):
     page_seo_text_insert = ''
     avatar_url = ''
     admin_link = ''
-    if "activity:" in tab:
+    is_direct_link = "activity:" in tab
+    if is_direct_link:
         try:
             pk = int(tab.split(':')[1])
             activity = Activity.objects.get(pk=pk)
@@ -211,8 +218,10 @@ def town_square(request):
 
     # matching leaderboard
     current_match_round = MatchRound.objects.current().first()
+    if request.GET.get('round'):
+        current_match_round = MatchRound.objects.get(number=request.GET.get('round'))
     num_to_show = 10
-    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1))
+    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1)).order_by('number')
     matching_leaderboard = [
         {
             'i': obj.number,
@@ -247,6 +256,12 @@ def town_square(request):
                 following_tribes = [tribe] + following_tribes
 
 
+    # pull tag amounts
+    for i in range(0, len(tags)):
+        keyword = tags[i][2]
+        post_data_cache = JSONStore.objects.filter(view='activity', key=keyword)
+        if post_data_cache.exists():
+            tags[i] = tags[i] + [post_data_cache.first().data]
 
     # render page context
     trending_only = int(request.GET.get('trending', 0))
@@ -255,11 +270,14 @@ def town_square(request):
         'card_desc': desc,
         'avatar_url': avatar_url,
         'use_pic_card': True,
+        'is_search': is_search,
+        'is_direct_link': is_direct_link,
         'page_seo_text_insert': page_seo_text_insert,
         'nav': 'home',
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'matching_leaderboard': matching_leaderboard,
         'current_match_round': current_match_round,
@@ -268,7 +286,8 @@ def town_square(request):
         'is_townsquare': True,
         'trending_only': bool(trending_only),
         'search': search,
-        'tags': [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ],
+        'tags': tags,
+        'suggested_actions': SuggestedAction.objects.filter(active=True).order_by('-rank'),
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
@@ -358,7 +377,9 @@ def api(request, activity_id):
     # like request
     elif request.POST.get('method') == 'like':
         if request.POST['direction'] == 'liked':
-            Like.objects.create(profile=request.user.profile, activity=activity)
+            already_likes = request.user.profile.likes.filter(activity=activity).exists()
+            if not already_likes:
+                Like.objects.create(profile=request.user.profile, activity=activity)
         if request.POST['direction'] == 'unliked':
             activity.likes.filter(profile=request.user.profile).delete()
 

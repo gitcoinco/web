@@ -35,11 +35,6 @@
       {% trans "STATS" %}
     </button>
 
-    <button type="button" id="nav-summary" href="{{grant.url}}?tab=updates" class="section-tab {% if tab == "updates" %} active {% endif %}">
-      {% trans "UPDATES" %}
-      <span class="nav-badge">({{ updates|length }})</span>
-    </button>
-
     <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">
       {% trans "CONTRIBUTORS" %}
       <span class="nav-badge">({{ grant.contributor_count }})</span>
