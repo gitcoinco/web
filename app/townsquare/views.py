@@ -72,6 +72,7 @@ def town_square(request):
     if post_data_cache.exists():
         posts_last_24_hours = post_data_cache.first().data
 
+    hackathon_tabs = []
     tabs = [{
         'title': f"Everywhere",
         'slug': 'everywhere',
@@ -137,18 +138,15 @@ def town_square(request):
         }
         tabs = tabs + [connect]
 
-    if request.user.is_authenticated:
-        hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now(), end_date__gt=timezone.now())
-        if hackathons.count():
-            user_registered_hackathon = request.user.profile.hackathon_registration.filter(registrant=request.user.profile, hackathon__in=hackathons).first()
-            if user_registered_hackathon:
-                default_tab = f'hackathon:{user_registered_hackathon.hackathon.pk}'
-                connect = {
-                    'title': user_registered_hackathon.hackathon.name,
-                    'slug': default_tab,
-                    'helper_text': f'Activity from the {user_registered_hackathon.hackathon.name} Hackathon.',
-                }
-                tabs = [connect] + tabs
+    hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now() - timezone.timedelta(days=10), end_date__gt=timezone.now())
+    if hackathons.count():
+        for hackathon in hackathons:
+            connect = {
+                'title': hackathon.name,
+                'slug': default_tab,
+                'helper_text': f'Activity from the {hackathon.name} Hackathon.',
+            }
+            hackathon_tabs = [connect] + hackathon_tabs
 
     # set tab
     if request.COOKIES.get('tab'):
@@ -260,6 +258,7 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'matching_leaderboard': matching_leaderboard,
         'current_match_round': current_match_round,
