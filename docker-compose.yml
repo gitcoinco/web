@@ -21,10 +21,9 @@ services:
     ports:
       - "8065:8065"
     volumes:
-      - chatdata:/mattermost
+      - ./chatconfig:/mattermost/config/
     depends_on:
       - db
-      - web
     deploy:
       replicas: 1
       resources:
@@ -136,7 +135,6 @@ services:
 
 volumes:
   pgdata:
-  chatdata:
   ipfsdata:
   ipfsexport:
   redis:
