@@ -93,8 +93,8 @@ def preprocess(request):
             ip_address = get_ip(request)
             profile.last_visit = timezone.now()
             try:
-                profile.as_dict = json.loads(json.dumps(profile.to_dict()))
-                profile.save()
+                from dashboard.tasks import profile_dict
+                profile_dict.delay(profile.pk)
             except Exception as e:
                 logger.exception(e)
             metadata = {

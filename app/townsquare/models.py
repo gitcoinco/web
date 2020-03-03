@@ -353,3 +353,15 @@ def get_eligible_input_data(mr):
     # output
     earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
     return [[ele[0], ele[1], float(ele[2])] for ele in earnings]
+
+class SuggestedAction(SuperModel):
+
+    title = models.CharField(max_length=50, blank=True)
+    desc = models.TextField(default='', blank=True)
+    suggested_donation = models.CharField(max_length=50, blank=True)
+    matchpotential = models.CharField(max_length=50, blank=True)
+    active = models.BooleanField(help_text='Is this suggestion active?', default=True)
+    rank = models.IntegerField(default=0, db_index=True)
+
+    def __str__(self):
+        return f"{self.title} / {self.suggested_donation}"

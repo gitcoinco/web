@@ -810,7 +810,8 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
 
 def match_distribution(mr):
     from_email = settings.PERSONAL_CONTACT_EMAIL
-    subject = f"Match Distribution of ${mr.amount} for @{mr.profile.handle}"
+    to_email = mr.profile.email
+    subject = f"Match Distribution of ${mr.match_total} for @{mr.profile.handle}"
     html, text = render_match_distribution(mr)
     try:
         send_mail(

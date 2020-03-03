@@ -250,6 +250,9 @@ def send_tip_4(request):
             )
     tip.save()
 
+    from townsquare.tasks import calculate_clr_match
+    calculate_clr_match.delay()
+
     # notifications
     maybe_market_tip_to_github(tip)
     maybe_market_tip_to_slack(tip, 'New tip')
