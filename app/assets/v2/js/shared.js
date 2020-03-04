@@ -1070,6 +1070,10 @@ var actions_page_warn_if_not_on_same_network = function() {
 attach_change_element_type();
 
 $(document).ready(function() {
+  // Don't prompt user if they are not logged in
+  if (!document.contxt.github_handle) {
+    return;
+  }
   const Web3Connect = window.Web3Connect.default;
   // Determine if we're on prod or not
   const isProd = document.location.href.startsWith('https://gitcoin.co');
