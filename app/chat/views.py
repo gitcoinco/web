@@ -55,7 +55,7 @@ def chat(request):
 def embed(request):
     """Handle the chat embed view."""
 
-    chat_url = get_chat_url()
+    chat_url = get_chat_url(front_end=True)
 
     context = {
         'is_outside': True,
