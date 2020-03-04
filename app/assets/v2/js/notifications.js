@@ -18,6 +18,7 @@ Vue.mixin({
 
       $.when(getNotifications).then(function(response) {
         newNotifications = newData(response.data, vm.notifications);
+
         newNotifications.forEach(function(item) {
           vm.notifications.push(item);
         });

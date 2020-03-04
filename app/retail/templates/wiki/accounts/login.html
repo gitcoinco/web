@@ -1,0 +1,9 @@
+{% load i18n wiki_tags sekizai_tags %}
+{% block wiki_pagetitle %}{% trans "" %}{% endblock %}
+
+{% block wiki_contents %}
+<script type="text/javascript">
+  document.location.href = '{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}';
+
+</script>
+{% endblock %}
