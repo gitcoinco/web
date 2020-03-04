@@ -374,56 +374,6 @@ def new_interest(request, bounty_id):
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
-        if bounty.event:
-            try:
-                if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
-                    try:
-                        bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
-
-                        created, channel_details = create_channel_if_not_exists({
-                            'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                            'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
-                            'channel_name': bounty_channel_name[:60]
-                        })
-                        bounty_channel_id = channel_details['id']
-                        bounty.chat_channel_id = bounty_channel_id
-                        bounty.save()
-                    except Exception as e:
-                        logger.error(str(e))
-                        raise ValueError(e)
-                else:
-                    bounty_channel_id = bounty.chat_channel_id
-
-                funder_profile = Profile.objects.get(handle__iexact=bounty.bounty_owner_github_username)
-
-                if funder_profile:
-                    if funder_profile.chat_id is '':
-                        try:
-                            created, funder_profile = associate_chat_to_profile(funder_profile)
-                        except Exception as e:
-                            logger.error(str(e))
-                            raise ValueError(e)
-
-                    if profile.chat_id is '':
-
-                        try:
-                            created, new_profile = associate_chat_to_profile(profile)
-                            profile = new_profile
-                        except Exception as e:
-                            logger.error(str(e))
-                            raise ValueError(e)
-
-                    profiles_to_connect = [
-                        funder_profile.chat_id,
-                        profile.chat_id
-                    ]
-                    add_to_channel.delay(
-                        {'id': bounty_channel_id},
-                        profiles_to_connect
-                    )
-
-            except Exception as e:
-                print(str(e))
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
