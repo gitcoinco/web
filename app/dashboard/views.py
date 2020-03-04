@@ -3951,7 +3951,16 @@ def hackathon_save_project(request):
             })
 
             project.update(**kwargs)
-            profiles_to_connect = [project.bounty.bounty_owner_github_username]
+            profiles_to_connect = []
+            try:
+                bounty_profile = Profile.objects.get(handle=project.bounty.bounty_owner_github_username)
+                if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
+                    created, bounty_profile = associate_chat_to_profile(bounty_profile)
+
+                profiles_to_connect.append(bounty_profile.chat_id)
+            except Exception as e:
+                logger.info("Bounty Profile owner not apart of gitcoin")
+
             for profile_id in profiles:
                 curr_profile = Profile.objects.get(id=profile_id)
                 if not curr_profile.chat_id:
@@ -3981,7 +3990,16 @@ def hackathon_save_project(request):
                 'channel_name': project_channel_name[:60],
                 'channel_type': 'P'
             })
-            profiles_to_connect = [bounty_obj.bounty_owner_github_username]
+            profiles_to_connect = []
+            try:
+                bounty_profile = Profile.objects.get(handle=bounty_obj.bounty_owner_github_username)
+                if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
+                    created, bounty_profile = associate_chat_to_profile(bounty_profile)
+
+                profiles_to_connect.append(bounty_profile.chat_id)
+            except Exception as e:
+                logger.info("Bounty Profile owner not apart of gitcoin")
+
             for profile_id in profiles:
                 curr_profile = Profile.objects.get(id=profile_id)
                 if not curr_profile.chat_id:
