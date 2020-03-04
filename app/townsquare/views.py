@@ -264,19 +264,17 @@ def get_param_metadata(request, tab):
 def get_following_tribes(request):
     following_tribes = []
     if request.user.is_authenticated:
-        tribe_relations = request.user.profile.tribe_members
-        for tribe_relation in tribe_relations:
-            followed_profile = tribe_relation.org
-            if followed_profile.is_org:
-                last_24_hours_activity = 0 # TODO: integrate this with get_amount_unread
-                tribe = {
-                    'title': followed_profile.handle,
-                    'slug': followed_profile.handle,
-                    'helper_text': f'Activities from {followed_profile.handle} in the last 24 hours',
-                    'badge': last_24_hours_activity,
-                    'avatar_url': followed_profile.avatar_url
-                }
-                following_tribes = [tribe] + following_tribes
+        handles = request.user.profile.tribe_members.filter(org__data__type='Organization').values_list('org__handle', flat=True)
+        for handle in handles:
+            last_24_hours_activity = 0 # TODO: integrate this with get_amount_unread
+            tribe = {
+                'title': handle,
+                'slug': handle,
+                'helper_text': f'Activities from @{handle} in the last 24 hours',
+                'badge': last_24_hours_activity,
+                'avatar_url': f'/dynamic/avatar/{handle}'
+            }
+            following_tribes = [tribe] + following_tribes
     return following_tribes
 
 
