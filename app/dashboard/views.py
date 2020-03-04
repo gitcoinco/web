@@ -415,8 +415,10 @@ def post_comment(request):
 
     bounty_id = request.POST.get('bounty_id')
     bountyObj = Bounty.objects.get(pk=bounty_id)
+    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     fbAmount = FeedbackEntry.objects.filter(
         sender_profile=profile_id,
+        receiver_profile=receiver_profile,
         bounty=bountyObj
     ).count()
     if fbAmount > 0:
@@ -425,7 +427,6 @@ def post_comment(request):
             'msg': 'There is already a approval comment',
         })
 
-    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     kwargs = {
         'bounty': bountyObj,
         'sender_profile': profile_id,
