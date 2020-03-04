@@ -592,19 +592,21 @@ $(document).ready(function() {
 
     const url = '/api/v0.1/comment/' + comment_id;
 
-    $.post(url, params, function(response) {
-      if (response.status <= 204) {
-        _alert('comment successfully deleted.', 'success', 1000);
-        $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
-        console.log(response);
-      } else {
-        _alert(`Unable to delete commment: ${response.message}`, 'error');
-        console.log(`error deleting commment: ${response.message}`);
-      }
-    }).fail(function(error) {
-      _alert('Unable to delete comment', 'error');
-      console.log(`error deleting commment: ${error.message}`);
-    });
+    if (confirm('Do you want to delete this comment?')) {
+      $.post(url, params, function(response) {
+        if (response.status <= 204) {
+          _alert('comment successfully deleted.', 'success', 1000);
+          $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
+          console.log(response);
+        } else {
+          _alert(`Unable to delete commment: ${response.message}`, 'error');
+          console.log(`error deleting commment: ${response.message}`);
+        }
+      }).fail(function(error) {
+        _alert('Unable to delete comment', 'error');
+        console.log(`error deleting commment: ${error.message}`);
+      });
+    }
   });
 
 
