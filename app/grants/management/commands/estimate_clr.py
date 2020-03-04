@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant subminer management command.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -36,17 +36,20 @@ class Command(BaseCommand):
 
         parser.add_argument('clr_type', type=str, default='all', choices=['tech', 'media', 'all'])
         parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
+        parser.add_argument('clr_amount', type=float, default=0.0)
 
     def handle(self, *args, **options):
         clr_type = options['clr_type']
         network = options['network']
+        clr_amount = options['clr_amount']
 
         clr_prediction_curves = predict_clr(
             random_data=False,
             save_to_db=True,
             from_date=timezone.now(),
             clr_type=clr_type,
-            network=network
+            network=network,
+            clr_amount=clr_amount
         )
 
         # Uncomment these for debugging and sanity checking

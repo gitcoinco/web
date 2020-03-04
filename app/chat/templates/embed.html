@@ -52,11 +52,9 @@
       }
     </style>
     <div class="chatWrapper">
-          <iframe frameborder="0" src="{{ chat_url }}" allowfullscreen></iframe>
+      <iframe frameborder="0" src="{{ chat_url }}" allowfullscreen></iframe>
     </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
-    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
   </body>
 </html>

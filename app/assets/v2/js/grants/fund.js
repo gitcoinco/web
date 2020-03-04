@@ -12,6 +12,8 @@ document.suppress_faucet_solicitation = 1;
 
 $(document).ready(function() {
 
+  _alert({ message: gettext('Note: Brave users seem to have issues while contributing to Grants while using both Brave Wallet and MetaMask. We recommend disabling one. For more info, see this <a target="_blank" href="https://github.com/brave/brave-browser/issues/6053">issue</a>') }, 'warning');
+
   predictPhantomCLRMatch();
   predictCLRMatch();
 
@@ -41,6 +43,12 @@ $(document).ready(function() {
     $('.tab_target').addClass('hidden');
     target.removeClass('hidden');
 
+    e.preventDefault();
+  });
+
+  $('#adjust').click(function(e) {
+    $(this).remove();
+    $('.unhide_if_expanded').removeClass('hidden');
     e.preventDefault();
   });
 
@@ -92,7 +100,6 @@ $(document).ready(function() {
     $(event.currentTarget).removeClass('badge-inactive');
     $(event.currentTarget).addClass('badge-active');
   });
-
   $('.contribution_type select').change(function() {
     if ($('.contribution_type select').val() == 'once') {
       $('.frequency').addClass('hidden');
@@ -110,6 +117,7 @@ $(document).ready(function() {
       $('.hide_if_recurring').addClass('hidden');
     }
   });
+  $('.contribution_type select').trigger('change');
 
   $('#js-fundGrant').validate({
     rules: {
@@ -124,7 +132,6 @@ $(document).ready(function() {
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
-
 
       if (data.frequency) {
 
@@ -210,34 +217,42 @@ $(document).ready(function() {
             approvalAddress = data.contract_address;
           }
 
-          deployedToken.methods.approve(
-            approvalAddress,
-            web3.utils.toTwosComplement(approvalSTR)
-          ).send({
-            from: accounts[0],
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
-            gas: web3.utils.toHex(gas_amount(document.location.href)),
-            gasLimit: web3.utils.toHex(gas_amount(document.location.href))
-          }).on('error', function(error) {
-            console.log('1', error);
-            _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
-          }).on('transactionHash', function(transactionHash) {
-            $('#sub_new_approve_tx_id').val(transactionHash);
-            if (data.num_periods == 1) {
-              // call splitter after approval
-              splitPayment(accounts[0], data.admin_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
+          deployedToken.methods.balanceOf(
+            accounts[0]
+          ).call().then(function(result) {
+            if (result < realTokenAmount) {
+              _alert({ message: gettext('You do not have enough tokens to make this transaction.')}, 'error');
             } else {
-              if (data.contract_version == 0 && gitcoin_grant_amount > 0) {
-                donationPayment(deployedToken, accounts[0], Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
-              }
-              subscribeToGrant(transactionHash);
-            }
-          }).on('confirmation', function(confirmationNumber, receipt) {
-            waitforData(() => {
-              document.suppress_loading_leave_code = true;
-              window.location = redirectURL;
-            }); // waitforData
-          }); // approve on confirmation
+              deployedToken.methods.approve(
+                approvalAddress,
+                web3.utils.toTwosComplement(approvalSTR)
+              ).send({
+                from: accounts[0],
+                gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+                gas: web3.utils.toHex(gas_amount(document.location.href)),
+                gasLimit: web3.utils.toHex(gas_amount(document.location.href))
+              }).on('error', function(error) {
+                console.log('1', error);
+                _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
+              }).on('transactionHash', function(transactionHash) {
+                $('#sub_new_approve_tx_id').val(transactionHash);
+                if (data.num_periods == 1) {
+                  // call splitter after approval
+                  splitPayment(accounts[0], data.admin_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
+                } else {
+                  if (data.contract_version == 0 && gitcoin_grant_amount > 0) {
+                    donationPayment(deployedToken, accounts[0], Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
+                  }
+                  subscribeToGrant(transactionHash);
+                }
+              }).on('confirmation', function(confirmationNumber, receipt) {
+                waitforData(() => {
+                  document.suppress_loading_leave_code = true;
+                  window.location = redirectURL;
+                }); // waitforData
+              }); // approve on confirmation
+            } // if (result < realTokenAmount)
+          }); // check token balance
         }); // getAccounts
       }); // decimals
     } // submitHandler
@@ -390,6 +405,34 @@ const saveSubscription = (data, isOneTimePayment) => {
   });
 };
 
+const saveSplitTx = (data, splitTxID, confirmed) => {
+  if (splitTxID) {
+    data['split_tx_id'] = splitTxID;
+  }
+
+  if (confirmed) {
+    data['split_tx_confirmed'] = true;
+  }
+
+  $.ajax({
+    type: 'post',
+    url: '',
+    data: data,
+    success: json => {
+      console.log('successfully saved subscription');
+      if (json.url != undefined) {
+        redirectURL = json.url;
+        $('#wait').val('false');
+      }
+    },
+    error: (error) => {
+      console.log(error);
+      _alert({ message: gettext('Your subscription failed to save. Please try again.') }, 'error');
+      redirectURL = window.location;
+    }
+  });
+};
+
 const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
   var data = {};
   var form = $('#js-fundGrant');
@@ -411,6 +454,14 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
     console.log('1', error);
     _alert({ message: gettext('Your payment transaction failed. Please try again.')}, 'error');
   }).on('transactionHash', function(transactionHash) {
+    data = {
+      'subscription_hash': 'onetime',
+      'signature': 'onetime',
+      'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+      'sub_new_approve_tx_id': $('#sub_new_approve_tx_id').val()
+    };
+    saveSplitTx(data, transactionHash, false);
+
     waitforData(() => {
       document.suppress_loading_leave_code = true;
       window.location = redirectURL;
@@ -433,6 +484,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
     };
     console.log('confirmed!');
     saveSubscription(data, true);
+    saveSplitTx(data, false, true);
   });
 };
 

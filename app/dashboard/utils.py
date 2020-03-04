@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define Dashboard related utilities and miscellaneous logic.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -30,8 +30,10 @@ from django.utils import timezone
 import ipfshttpclient
 import requests
 from app.utils import sync_profile
+from compliance.models import Country, Entity
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
+from avatar.models import CustomAvatar
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
@@ -471,11 +473,30 @@ def has_tx_mined(txid, network):
         return False
 
 
+def etc_txn_already_used(t):
+    b = Bounty.objects.filter(token_name='ETC',
+                              network='ETC',
+                              payout_tx_id=t['hash']).first()
+    return True if b else False
+
+
+def search_for_etc_bounty_payout(bounty, payeeAddress=None, network='mainnet'):
+    funderAddress = bounty.bounty_owner_profile.etc_address
+    blockscout_url = f'https://blockscout.com/etc/{network}/api?module=account&action=txlist&address={funderAddress}'
+    response = requests.get(blockscout_url).json()
+    if blockscout_response['message'] and blockscout_response['result']:
+        for t in blockscout_response['result']:
+            if (t['to'] == payeeAddress and t['amount'] >= bounty.value
+                and etc_txn_not_already_used(t)):
+                return t
+    return None
+
+
 def get_etc_txn_status(txnid, network='mainnet'):
     if not txnid:
-        return False
+        return None
 
-    blockscout_url = f'https://blockscout.com/etc/mainnet/api?module=transaction&action=gettxinfo&txhash={txnid}'
+    blockscout_url = f'https://blockscout.com/etc/{network}/api?module=transaction&action=gettxinfo&txhash={txnid}'
     blockscout_response = requests.get(blockscout_url).json()
 
     if blockscout_response['status'] and blockscout_response['result']:
@@ -489,7 +510,18 @@ def get_etc_txn_status(txnid, network='mainnet'):
             response['has_mined'] = False
         return response
 
-    return False
+    return None
+
+
+def sync_etc_payout(bounty):
+    t = search_for_etc_bounty_payout(bounty)
+    if t:
+        if not etc_txn_already_used(t):
+            bounty.payout_tx_id = t['hash']
+            bounty.save()
+            if get_etc_txn_status.get('has_mined'):
+                bounty.payout_confirmed = True
+                bounty.save()
 
 
 def get_bounty_id(issue_url, network):
@@ -773,6 +805,8 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
 
     return profile
 
+def is_valid_eth_address(eth_address):
+    return (bool(re.match(r"^0x[a-zA-Z0-9]{40}$", eth_address)) or eth_address == "0x0")
 
 def get_tx_status(txid, network, created_on):
     from django.utils import timezone
@@ -822,7 +856,33 @@ def get_tx_status(txid, network, created_on):
 
 
 def is_blocked(handle):
-    return BlockedUser.objects.filter(handle__iexact=handle, active=True).exists()
+    # check admin block list
+    is_on_blocked_list = BlockedUser.objects.filter(handle__icontains=handle, active=True).exists()
+    if is_on_blocked_list:
+        return True
+
+    # check banned country list
+    profiles = Profile.objects.filter(handle__iexact=handle)
+    if profiles.exists():
+        profile = profiles.first()
+        last_login = profile.actions.filter(action='Login').order_by('pk').last()
+        if last_login:
+            last_login_country = last_login.location_data.get('country_name')
+            if last_login_country:
+                is_on_banned_countries = Country.objects.filter(name=last_login_country)
+                if is_on_banned_countries:
+                    return True
+
+        # check banned entity list
+        if profile.user:
+            first_name = profile.user.first_name
+            last_name = profile.user.last_name
+            full_name = '{first_name} {last_name}'
+            is_on_banned_user_list = Entity.objects.filter(fullName__icontains=full_name)
+            if is_on_banned_user_list:
+                return True
+
+    return False
 
 
 def get_nonce(network, address):
@@ -967,3 +1027,6 @@ def get_url_first_indexes():
         urls.append(url)
 
     return set(urls)
+
+def get_custom_avatars(profile):
+    return CustomAvatar.objects.filter(profile=profile).order_by('-id')

@@ -1,0 +1,10 @@
+      <h2 class="mb-4">1. Choose Avatar Mode</h2>
+       <div id="theme">
+        {% for option in avatar_options %}
+          <a class="avatar_builder {% if option.0 == theme %}selected {% endif %}" href='{{option.1}}'>
+            <img src='{{option.2}}'>
+            <span>{{option.0|title}}</span>
+          </a>
+        {% endfor %}
+       </div>
+      <h2 class="mt-2 mb-5">2. Build Avatar</h2>

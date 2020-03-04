@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle notification related signals.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -20,8 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 
+from app.utils import get_profiles_from_text
 from dashboard.models import Activity
-from inbox.utils import send_notification_to_user
+from inbox.utils import (
+    comment_notification, mentioned_users_notification, send_mention_notification_to_users, send_notification_to_user,
+)
+from townsquare.models import Comment, Like
 
 
 def create_notification(sender, **kwargs):
@@ -124,11 +128,16 @@ def create_notification(sender, **kwargs):
     if activity.activity_type == 'new_kudos':
         send_notification_to_user(
             activity.profile.user,
-            activity.kudos.recipient_profile.user,
-            activity.kudos.receive_url_for_recipient,
+            activity.kudos_transfer.recipient_profile.user,
+            activity.kudos_transfer.receive_url_for_recipient,
             'new_kudos',
             f'You received a <b>new kudos from {activity.profile.user}</b>'
         )
+
+    if activity.activity_type == 'status_update':
+        text = activity.metadata['title']
+        mentioned_profiles = get_profiles_from_text(text).exclude(id__in=[activity.profile_id])
+        send_mention_notification_to_users(activity, mentioned_profiles)
 
     # TODO
     # For Funder
@@ -143,4 +152,29 @@ def create_notification(sender, **kwargs):
     # Funding has increased on a bounty that you’re working on.
 
 
+# Added due comments and likes aren't direct members of activity.
+# So new likes and comments doesn't trigger the Activity post_save
+def create_comment_notification(sender, **kwargs):
+    comment = kwargs['instance']
+    comment_notification(comment)
+    mentioned_users_notification(comment)
+
+
+def create_like_notification(sender, **kwargs):
+    like = kwargs['instance']
+    activity = like.activity
+    if activity.profile_id == like.profile_id:
+        return
+
+    send_notification_to_user(
+        like.profile.user,
+        activity.profile.user,
+        activity.url,
+        'new_like',
+        f'❤️ <b>{like.profile.user} liked your comment</b>: {activity.metadata["title"]}'
+    )
+
+
 post_save.connect(create_notification, sender=Activity)
+post_save.connect(create_comment_notification, sender=Comment)
+post_save.connect(create_like_notification, sender=Like)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the management command to assemble leaderboard rankings.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -200,6 +200,8 @@ def tip_index_terms(tip):
 
 def grant_index_terms(gc):
     index_terms = []
+    if not gc.subscription:
+        return index_terms
     if not should_suppress_leaderboard(gc.subscription.contributor_profile.handle):
         index_terms.append(gc.subscription.contributor_profile.handle.lower())
     if not should_suppress_leaderboard(gc.subscription.grant.admin_profile.handle):
@@ -446,6 +448,7 @@ def do_leaderboard():
                 sum_kudos(kt)
 
         # set old LR as inactive
+        created_on = timezone.now()
         with transaction.atomic():
             lrs = LeaderboardRank.objects.active().filter(product=product)
             lrs.update(active=False)
@@ -463,6 +466,7 @@ def do_leaderboard():
                         'leaderboard': key,
                         'github_username': index_term,
                         'product': product,
+                        'created_on': created_on,
                     }
 
                     try:

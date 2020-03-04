@@ -695,7 +695,6 @@ const randomElement = array => {
 var currentNetwork = function(network) {
 
   $('.navbar-network').removeClass('hidden');
-  let tooltip_info;
 
   document.web3network = network;
   if (document.location.href.startsWith('https://gitcoin.co')) { // Live
@@ -1024,14 +1023,17 @@ var actions_page_warn_if_not_on_same_network = function() {
 
 attach_change_element_type();
 
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 1000);
-});
+if (typeof is_bounties_network == 'undefined' || is_bounties_network) {
+  window.addEventListener('load', function() {
+    setInterval(listen_for_web3_changes, 1000);
+  });
+}
 
-var setUsdAmount = function(event) {
-  var amount = $('input[name=amount]').val();
-  var denomination = $('#token option:selected').text();
-  var estimate = getUSDEstimate(amount, denomination, function(estimate) {
+var setUsdAmount = function() {
+  const amount = $('input[name=amount]').val();
+  const denomination = $('#token option:selected').text();
+
+  getUSDEstimate(amount, denomination, function(estimate) {
     if (estimate['value']) {
       $('#usd-amount-wrapper').css('visibility', 'visible');
       $('#usd_amount_text').css('visibility', 'visible');
@@ -1077,8 +1079,6 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     if (relatedTokenDetails && relatedTokenDetails.decimals) {
       decimals = relatedTokenDetails.decimals;
     }
-
-    const divisor = Math.pow(10, decimals);
 
     result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
@@ -1471,9 +1471,25 @@ const indicateMetamaskPopup = (closePopup) => {
   }
 };
 
+(function($) {
+  $.fn.visible = function(partial) {
+    let $t = $(this);
+    let $w = $(window);
+    let viewTop = $w.scrollTop();
+    let viewBottom = viewTop + $w.height();
+    let _top = $t.offset().top;
+    let _bottom = _top + $t.height();
+    let compareTop = partial === true ? _bottom : _top;
+    let compareBottom = partial === true ? _top : _bottom;
+
+    return ((compareBottom <= viewBottom) && (compareTop >= viewTop));
+  };
+})(jQuery);
+
+
 $(document).ready(function() {
   $(window).scroll(function() {
-    $('.g-fadein').each(function(i) {
+    $('.g-fadein').each(function(index, element) {
       let duration = $(this).attr('data-fade-duration') ? $(this).attr('data-fade-duration') : 1500;
       let direction = $(this).attr('data-fade-direction') ? $(this).attr('data-fade-direction') : 'mid';
       let animateProps;
@@ -1489,14 +1505,23 @@ $(document).ready(function() {
           animateProps = { 'opacity': '1', 'bottom': '0' };
       }
 
-      let bottom_of_object = $(this).position().top + $(this).outerHeight() / 2;
-      let bottom_of_window = $(window).scrollTop() + $(window).height();
-
-      if (bottom_of_window > bottom_of_object)
+      if ($(element).visible(true)) {
         $(this).animate(animateProps, duration);
+      }
+
     });
   });
 });
+
+const copyToClipboard = str => {
+  const el = document.createElement('textarea');
+
+  el.value = str;
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+};
 
 function check_balance_and_alert_user_if_not_enough(
   tokenAddress,
@@ -1527,3 +1552,31 @@ function check_balance_and_alert_user_if_not_enough(
   });
 
 }
+
+/**
+ * fetches github issue details of the issue_url
+ * @param {string} issue_url
+ */
+const fetchIssueDetailsFromGithub = issue_url => {
+  return new Promise((resolve, reject) => {
+    if (!issue_url || issue_url.length < 5 || issue_url.indexOf('github') == -1) {
+      reject('error: issue_url needs to be a valid github URL');
+    }
+
+    const github_token = currentProfile.githubToken;
+
+    if (!github_token) {
+      reject('error: API calls needs user to be logged in');
+    }
+
+    const request_url = '/sync/get_issue_details?url=' + encodeURIComponent(issue_url) + '&token=' + github_token;
+
+    $.get(request_url, function(result) {
+      result = sanitizeAPIResults(result);
+      resolve(result);
+    }).fail(err => {
+      console.log(err);
+      reject(error);
+    });
+  });
+};

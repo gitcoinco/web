@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Gitcoin project settings.
 
-Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -49,6 +49,8 @@ OVERRIDE_NETWORK = env('OVERRIDE_NETWORK', default=None)
 SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
 ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
 BASE_DIR = root()
+#social integrations
+GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
 
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
@@ -91,6 +93,7 @@ INSTALLED_APPS = [
     'health_check.contrib.s3boto3_storage',
     'app',
     'avatar',
+    'chat',
     'retail',
     'rest_framework',
     'marketing',
@@ -120,7 +123,19 @@ INSTALLED_APPS = [
     'event_ethdenver2019',
     'inbox',
     'feeswapper',
-    'oauth2_provider'
+    'search',
+    'oauth2_provider',
+    'townsquare',
+    'compliance',
+    'django_nyt.apps.DjangoNytConfig',
+    'mptt',
+    'sekizai',
+    'sorl.thumbnail',
+    'wiki.apps.WikiConfig',
+    'wiki.plugins.attachments.apps.AttachmentsConfig',
+    'wiki.plugins.notifications.apps.NotificationsConfig',
+    'wiki.plugins.images.apps.ImagesConfig',
+    'wiki.plugins.macros.apps.MacrosConfig',
 ]
 
 MIDDLEWARE = [
@@ -153,7 +168,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates'],
+    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -161,6 +176,7 @@ TEMPLATES = [{
             'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
             'app.context.preprocess', 'social_django.context_processors.backends',
             'social_django.context_processors.login_redirect',
+            "sekizai.context_processors.sekizai",
         ],
     },
 }]
@@ -467,6 +483,8 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_serializer
 CELERY_RESULT_SERIALIZER = 'json'
+# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_backend
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default=CACHEOPS_REDIS)
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
@@ -540,20 +558,24 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
-# Chat
-CHAT_URL = env('CHAT_DRIVER_USER', default='')  # location of where mattermost is hosted
-
 # Etherscan API
 ETHERSCAN_API_KEY = env('ETHERSCAN_API_KEY', default='')
 
 # Kudos revenue account
 KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xdb282cee382244e05dd226c8809d2405b76fbdc9')
 
+# Chat
+CHAT_PORT = env('CHAT_PORT', default=8065)  # port of where mattermost is hosted
+CHAT_URL = env('CHAT_URL', default='localhost')  # location of where mattermost is hosted
+CHAT_DRIVER_TOKEN = env('CHAT_DRIVER_TOKEN', default='')  # driver token
+GITCOIN_HACK_CHAT_TEAM_ID = env('GITCOIN_HACK_CHAT_TEAM_ID', default='')
+GITCOIN_CHAT_TEAM_ID = env('GITCOIN_CHAT_TEAM_ID', default='')
+
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = 'explorer'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'explorer'
+LOGIN_REDIRECT_URL = 'index'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'index'
 SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
@@ -565,7 +587,6 @@ SOCIAL_AUTH_SANITIZE_REDIRECTS = True
 SOCIAL_AUTH_GH_CUSTOM_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GH_CUSTOM_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_GH_CUSTOM_SCOPE = ['read:org', 'public_repo']
-
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',
@@ -734,6 +755,15 @@ if ENABLE_SILK:
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
 
+# Datadog Monitoring
+ENABLE_DDTRACE = env.bool('ENABLE_DDTRACE', default=False)
+if ENABLE_DDTRACE:
+    INSTALLED_APPS += ['ddtrace.contrib.django']
+
+WIKI_ACCOUNT_HANDLING = True
+WIKI_ACCOUNT_SIGNUP_ALLOWED = True
+
+
 # Sending an email when a bounty is funded below a threshold
 LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)
 
@@ -746,4 +776,7 @@ UNISWAP_TRADE_DEADLINE = env.int('UNISWAP_TRADE_DEADLINE', default=300)
 
 RE_MARKET_LIMIT = env.int('RE_MARKET_LIMIT', default=2)
 MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=60)
+
+MINICLR_ADDRESS = env('MINICLR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+MINICLR_PRIVATE_KEY = env('MINICLR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 

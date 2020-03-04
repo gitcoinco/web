@@ -6,6 +6,64 @@ cd web
 cp app/app/local.env app/app/.env
 ```
 
+## Special instructions for Windows WSL contributors
+*If you are using Windows 10 Professional or Enterprise*
+
+Download Docker Desktop for Windows [here](https://hub.docker.com/editions/community/docker-ce-desktop-windows).
+
+*If you are NOT using Windows 10 Professional or Enterprise*
+
+Docker Desktop for Windows is not available to your OS. Follow the steps below to install and configure Docker Toolbox:
+
+1. Follow the installation instructions on the [manual for installing Docker Toolbox on Windows](https://docs.docker.com/toolbox/toolbox_install_windows/).
+
+2. WSL by default mounts your C: drive on `/mnt/c`, but Docker Toolkit instead expects it to be mounted on `/c/`. To instruct WSL to mount it in the correct location, create a config file in `/etc/wsl.conf` using WSL and enter the following:
+```
+[automount]
+root = /
+options = "metadata"
+```
+
+3. Lastly, ensure that you are sharing the folders of your project directory to your VirtualBox VM, i.e. if your Gitcoin repository is located in `C:/Projects/web`, you will have to go to the VirtualBox UI, click on `Settings > Shared Folders`, and ensure that there is an entry with a name of `c/Projects` and a path of `C:\Projects`.
+
+Once Docker is installed (either via Docker Desktop for Windows or Docker Toolkit), install the Docker packages on WSL as you normally would for Ubuntu:
+
+```shell
+# Update the apt package list.
+$ sudo apt-get update -y
+
+# Install Docker's package dependencies.
+$ sudo apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+
+# Download and add Docker's official public PGP key.
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+# Verify the fingerprint.
+$ sudo apt-key fingerprint 0EBFCD88
+
+# Add the `stable` channel's Docker upstream repository.
+#
+# If you want to live on the edge, you can change "stable" below to "test" or
+# "nightly". I highly recommend sticking with stable!
+$ sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+
+# Update the apt package list (for the new apt repo).
+$ sudo apt-get update -y
+
+# Install the latest version of Docker CE.
+$ sudo apt-get install -y docker-ce
+
+# Allow your user to access the Docker CLI without needing root access.
+$ sudo usermod -aG docker $USER
+```
+
 ## Startup server
 
 *Check that you have Docker and Docker-compose properly installed*
@@ -98,6 +156,21 @@ docker-compose exec web python3 app/manage.py createsuperuser
 7. Congratulations, your local environment now supports your custom token!
 8. You may continue administering your token over at [http://tokenfactory.surge.sh](http://tokenfactory.surge.sh).  Hint:  Maybe you should mint some? 🤔
 
+
+## Initial test data
+
+The development server is conditioned with a representative sampling of test data fixtures outlined below:
+* 20ish users doing a variety things
+* Bounties in various statuses - so you can get to work!
+* Grants - ask some friends to support your work on Gitcoin
+* A variety of Kudos for you to send to everybody hahrd at work on bounties
+* A default superuser - usage below
+    1. Go to [http://localhost:8000/_administrationeconomy/](http://localhost:8000/_administration) 
+    2. Login with - username - root - password - gitcoinco 
+    3. Poke around the database tables.
+    4. Click the "Impersonate User" link,  pick any user and poke around the site.
+
+Note, using the sync_geth command described below can potentially break some of the fixtures outlined above.
 
 ## Optional: Import bounty data from web3 to your database
 
