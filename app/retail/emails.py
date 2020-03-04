@@ -502,7 +502,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, trending_quest
         'base_url': settings.BASE_URL,
         'show_action': True,
         'trending_quests': trending_quests,
-        # 'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
+        'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
