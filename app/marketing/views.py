@@ -925,4 +925,3 @@ def new_bounty_daily_preview(request):
     quests = trending_quests()
     response_html, _ = render_new_bounty('foo@bar.com', new_bounties, all_bounties, offset=3, trending_quests=quests)
     return HttpResponse(response_html)
-

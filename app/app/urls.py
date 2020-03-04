@@ -63,7 +63,6 @@ from kudos.router import router as kdrouter
 from .sitemaps import sitemaps
 
 urlpatterns = [
-
     path('wiki/', include('wiki.urls')),
 
     # oauth2 provider
@@ -244,7 +243,11 @@ urlpatterns = [
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
-    url(r'^bounty/sync_payout/(?P<bounty_id>.*)?', dashboard.views.manual_sync_etc_payout, name='manual_sync_etc_payout'),
+    url(
+        r'^bounty/sync_payout/(?P<bounty_id>.*)?',
+        dashboard.views.manual_sync_etc_payout,
+        name='manual_sync_etc_payout'
+    ),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),  # TODO: Remove
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),  # TODO: Remove
     # TODO: Rename below to bounty/
@@ -472,7 +475,11 @@ urlpatterns = [
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
-    path('_administration/email/new_bounty_daily', marketing.views.new_bounty_daily_preview, name='admin_new_bounty_daily'),
+    path(
+        '_administration/email/new_bounty_daily',
+        marketing.views.new_bounty_daily_preview,
+        name='admin_new_bounty_daily'
+    ),
     path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
     path(
         '_administration/email/featured_funded_bounty',
@@ -683,7 +690,6 @@ urlpatterns = [
 
     # wiki
     path('wiki/notifications/', include('django_nyt.urls')),
-
 ]
 
 if settings.ENABLE_SILK:
@@ -707,7 +713,9 @@ urlpatterns += [
         dashboard.views.profile,
         name='profile_min'
     ),
-    re_path(r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'),
+    re_path(
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'
+    ),
 ]
 
 LOGIN_REDIRECT_URL = '/login'

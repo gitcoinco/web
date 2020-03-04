@@ -87,6 +87,10 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
+from .export import (
+    ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
+    ProfileExportSerializer, filtered_list_data,
+)
 from .helpers import (
     bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
 )
@@ -101,13 +105,9 @@ from .notifications import (
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from .utils import (
-    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count,
-    get_web3, has_tx_mined, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public,
-    web3_process_bounty, get_custom_avatars, is_valid_eth_address
-)
-from .export import (
-    ProfileExportSerializer, GrantExportSerializer, BountyExportSerializer,
-    ActivityExportSerializer, CustomAvatarExportSerializer, filtered_list_data
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_etc_txn_status,
+    get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty,
+    record_user_action_on_interest, release_bounty_to_the_public, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)

@@ -1,9 +1,13 @@
 import json
+
 from django.conf import settings
+
+from avatar.models import CustomAvatar
+from grants.models import Grant
 from rest_framework import serializers
-from .models import (Activity, Bounty, Tip, FeedbackEntry)
-from grants.models import (Grant)
-from avatar.models import (CustomAvatar)
+
+from .models import Activity, Bounty, FeedbackEntry, Tip
+
 
 class ProfileExportSerializer(serializers.BaseSerializer):
     """Handle serializing the exported Profile object."""

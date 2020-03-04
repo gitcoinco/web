@@ -2307,6 +2307,10 @@ class Activity(SuperModel):
         self.save()
         return self.cached_view_props
 
+    def generate_view_props_cache_as_task(self):
+        from dashboard.tasks import refresh_activity_views
+        refresh_activity_views.delay(self.pk)
+
     def has_voted(self, user):
         vp = self.view_props
         if vp.get('poll'):
@@ -2396,7 +2400,7 @@ class Activity(SuperModel):
 @receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
 def post_add_activity(sender, instance, created, **kwargs):
     if created:
-        instance.cached_view_props = instance.generate_view_props_cache()
+        instance.cached_view_props = instance.generate_view_props_cache_as_task()
 
         # make sure duplicate activity feed items are removed
         dupes = Activity.objects.exclude(pk=instance.pk)
