@@ -136,6 +136,80 @@ $(document).ready(function() {
     $('title').text(document.base_title);
   });
 
+  // show percentages and votes
+  var update_and_reveal = function($this, total) {
+
+    // calc total
+    var answers = $this.parents('.poll_choices').find('span');
+
+    console.log(answers.length);
+    for (var i = 0; i < answers.length; i++) {
+      total += parseInt(($(answers[i]).text()));
+    }
+
+    // update all htmls
+    for (var j = 0; j < answers.length; j++) {
+      var $answer = $(answers[j]);
+      var answer = parseInt(($answer.text()));
+      var new_answer = answer;
+
+      if (isNaN(new_answer)) {
+        new_answer = 0;
+      }
+      var pct = Math.round((new_answer / total) * 100);
+
+      if (isNaN(pct)) {
+        pct = 0;
+      }
+      var html = '- ' + new_answer + ' ( ' + pct + '% )';
+
+      $answer.html(html);
+    }
+    return total;
+  };
+
+  $('.poll_choices.answered').each(function() {
+    update_and_reveal($(this).find('div'), 0);
+  });
+
+  // vote on a poll
+  $(document).on('click', '.poll_choices div', function(e) {
+    e.preventDefault();
+
+    // no answering twice
+    if ($(this).parents('.poll_choices').hasClass('answered')) {
+      return;
+    }
+
+    // setup
+    $(this).addClass('answer');
+    $(this).parents('.poll_choices').addClass('answered');
+
+    // update this error count
+    var $answer = $(this).find('span');
+    var answer = parseInt(($answer.text()));
+    var new_answer = answer + 1;
+
+    $answer.html(new_answer);
+
+    update_and_reveal($(this), 0);
+
+    // remote post
+    var $parent = $(this).parents('.activity.box');
+    var vote = $(this).data('vote');
+    var params = {
+      'method': 'vote',
+      'vote': vote,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+    var url = '/api/v0.1/activity/' + $parent.data('pk');
+
+    $.post(url, params, function(response) {
+      console.log(response);
+    });
+
+  });
+
   // delete activity
   $(document).on('click', '.delete_activity', function(e) {
     e.preventDefault();
@@ -594,19 +668,21 @@ $(document).ready(function() {
 
     const url = '/api/v0.1/comment/' + comment_id;
 
-    $.post(url, params, function(response) {
-      if (response.status <= 204) {
-        _alert('comment successfully deleted.', 'success', 1000);
-        $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
-        console.log(response);
-      } else {
-        _alert(`Unable to delete commment: ${response.message}`, 'error');
-        console.log(`error deleting commment: ${response.message}`);
-      }
-    }).fail(function(error) {
-      _alert('Unable to delete comment', 'error');
-      console.log(`error deleting commment: ${error.message}`);
-    });
+    if (confirm('Do you want to delete this comment?')) {
+      $.post(url, params, function(response) {
+        if (response.status <= 204) {
+          _alert('comment successfully deleted.', 'success', 1000);
+          $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
+          console.log(response);
+        } else {
+          _alert(`Unable to delete commment: ${response.message}`, 'error');
+          console.log(`error deleting commment: ${response.message}`);
+        }
+      }).fail(function(error) {
+        _alert('Unable to delete comment', 'error');
+        console.log(`error deleting commment: ${error.message}`);
+      });
+    }
   });
 
 

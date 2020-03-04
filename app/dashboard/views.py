@@ -87,10 +87,6 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
-from .export import (
-    ActivityExportSerializer, BountyExportSerializer, GrantExportSerializer, ProfileExportSerializer,
-    filtered_list_data,
-)
 from .helpers import (
     bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
 )
@@ -106,8 +102,12 @@ from .notifications import (
 )
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count,
-    get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
-    release_bounty_to_the_public, web3_process_bounty,
+    get_web3, has_tx_mined, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public,
+    web3_process_bounty, get_custom_avatars, is_valid_eth_address
+)
+from .export import (
+    ProfileExportSerializer, GrantExportSerializer, BountyExportSerializer,
+    ActivityExportSerializer, CustomAvatarExportSerializer, filtered_list_data
 )
 
 logger = logging.getLogger(__name__)
@@ -2466,32 +2466,45 @@ def profile_backup(request):
     if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
         raise Http404
 
-    # fetch the exported data for backup
-    data = ProfileExportSerializer(profile).data
-    # grants
-    data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
-    # portfolio, active work, bounties
-    portfolio_bounties = profile.get_fulfilled_bounties()
-    active_work = Bounty.objects.none()
-    interests = profile.active_bounties
-    for interest in interests:
-        active_work = active_work | Bounty.objects.filter(interested=interest, current_bounty=True)
-    data["portfolio"] = BountyExportSerializer(portfolio_bounties, many=True).data
-    data["active_work"] = BountyExportSerializer(active_work, many=True).data
-    data["bounties"] = BountyExportSerializer(profile.bounties, many=True).data
-    # activities
-    data["activities"] = ActivityExportSerializer(profile.activities, many=True).data
-    # tips
-    data["tips"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=False)
-    data["_tips.private_fields"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=True)
-    # feedback
-    feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
-    data["feedbacks"] = filtered_list_data("feedback", feedbacks, private_items=False, private_fields=None)
-    data["_feedbacks.private_items"] = filtered_list_data("feedback", feedbacks, private_items=True, private_fields=None)
+    model = request.POST.get('model', None)
+    # prepare the exported data for backup
+    profile_data = ProfileExportSerializer(profile).data
+    data = {}
+    keys = ['grants', 'portfolio', 'active_work', 'bounties', 'activities',
+        'tips', '_tips.private_fields', 'feedbacks', '_feedbacks.private_items',
+        'custom_avatars'] + list(profile_data.keys())
+
+    if model == 'custom avatar':
+        # custom avatar
+        custom_avatars = get_custom_avatars(profile)
+        data['custom_avatars'] = CustomAvatarExportSerializer(custom_avatars, many=True).data
+    else:
+        data = profile_data
+        # grants
+        data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
+        # portfolio, active work, bounties
+        portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
+        active_work = Bounty.objects.none()
+        interests = profile.active_bounties
+        for interest in interests:
+            active_work = active_work | Bounty.objects.filter(interested=interest, current_bounty=True)
+        data["portfolio"] = BountyExportSerializer(portfolio_bounties, many=True).data
+        data["active_work"] = BountyExportSerializer(active_work, many=True).data
+        data["bounties"] = BountyExportSerializer(profile.bounties, many=True).data
+        # activities
+        data["activities"] = ActivityExportSerializer(profile.activities, many=True).data
+        # tips
+        data['tips'] = filtered_list_data('tip', profile.tips, private_items=None, private_fields=False)
+        data['_tips.private_fields'] = filtered_list_data('tip', profile.tips, private_items=None, private_fields=True)
+        # feedback
+        feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
+        data['feedbacks'] = filtered_list_data('feedback', feedbacks, private_items=False, private_fields=None)
+        data['_feedbacks.private_items'] = filtered_list_data('feedback', feedbacks, private_items=True, private_fields=None)
 
     response = {
         'status': 200,
-        'data': data
+        'data': data,
+        'keys': keys
     }
 
     return JsonResponse(response, status=response.get('status', 200))

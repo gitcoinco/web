@@ -448,6 +448,7 @@ def do_leaderboard():
                 sum_kudos(kt)
 
         # set old LR as inactive
+        created_on = timezone.now()
         with transaction.atomic():
             lrs = LeaderboardRank.objects.active().filter(product=product)
             lrs.update(active=False)
@@ -465,6 +466,7 @@ def do_leaderboard():
                         'leaderboard': key,
                         'github_username': index_term,
                         'product': product,
+                        'created_on': created_on,
                     }
 
                     try:

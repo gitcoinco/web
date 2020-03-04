@@ -361,6 +361,14 @@ def api(request, activity_id):
     if request.POST.get('method') == 'delete':
         activity.delete()
 
+    # deletion request
+    if request.POST.get('method') == 'vote':
+        vote = int(request.POST.get('vote'))
+        index = vote
+        if not activity.has_voted(request.user):
+            activity.metadata['poll_choices'][index]['answers'].append(request.user.profile.pk)
+            activity.save()
+
     # toggle like comment
     if request.POST.get('method') == 'toggle_like_comment':
         comment = activity.comments.filter(pk=request.POST.get('comment'))
