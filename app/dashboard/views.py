@@ -430,7 +430,7 @@ def new_interest(request, bounty_id):
                         profile.chat_id
                     ]
                     add_to_channel.delay(
-                        bounty_channel_id,
+                        {'id': bounty_channel_id},
                         profiles_to_connect
                     )
 
@@ -4017,7 +4017,7 @@ def hackathon_save_project(request):
                     created, curr_profile = associate_chat_to_profile(curr_profile)
                 profiles_to_connect.append(curr_profile.chat_id)
 
-            add_to_channel.delay(channel_details['id'], profiles_to_connect)
+            add_to_channel.delay(channel_details, profiles_to_connect)
 
             project = HackathonProject.objects.filter(id=project_id, profiles__id=profile.id)
 
@@ -4067,10 +4067,15 @@ def hackathon_registration(request):
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
         HackathonRegistration.objects.create(
             name=hackathon,
-            hackathon= hackathon_event,
+            hackathon=hackathon_event,
             referer=referer,
             registrant=profile
         )
+        try:
+            from chat.tasks import hackathon_chat_sync
+            hackathon_chat_sync.delay(hackathon_event.id, profile.handle)
+        except Exception as e:
+            logger.error('Error while adding to chat', e)
 
     except Exception as e:
         logger.error('Error while saving registration', e)

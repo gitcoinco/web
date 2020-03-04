@@ -15,16 +15,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import logging
-import datetime
+import loggin
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.db.models import Q
-from django.utils.text import slugify
-from celery import group
+from django.utils import timezone
 from chat.tasks import hackathon_chat_sync
-from chat.tasks import create_channel_if_not_exists, associate_chat_to_profile
 from dashboard.models import HackathonEvent, HackathonRegistration, Interest, Profile
 
 logger = logging.getLogger(__name__)
@@ -36,10 +31,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
 
-            today = datetime.now()
+            today = timezone.now()
+
             hackathons_to_sync = HackathonEvent.objects.filter(
-                start_date__gte=today,
-                end_date__lte=today
+                start_date__lte=today,
+                end_date__gte=today
             )
 
             for hackathon in hackathons_to_sync:
