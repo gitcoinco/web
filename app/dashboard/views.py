@@ -3981,7 +3981,7 @@ def hackathon_save_project(request):
 
         project_channel_name = slugify(f'{kwargs["name"]}')
 
-        created, channel_details = create_channel_if_not_exists({q
+        created, channel_details = create_channel_if_not_exists({
             'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
             'channel_purpose': kwargs["summary"][:255],
             'channel_display_name': f'project-{project_channel_name}'[:60],
