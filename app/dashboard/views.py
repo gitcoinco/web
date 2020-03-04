@@ -872,7 +872,7 @@ def onboard(request, flow=None):
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
     background_tones = get_avatar_attrs(theme, 'background_tones')
-    
+
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
@@ -1036,35 +1036,37 @@ def users_fetch(request):
             )
         )
 
-    profile_list = Profile.objects.filter(pk__in=profile_list).annotate(
-            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).annotate(previous_worked=previous_worked()).order_by(
-        order_by, '-previous_worked'
-    )
-    profile_list = profile_list.values_list('pk', flat=True)
-    params = dict()
-    all_pages = Paginator(profile_list, limit)
-    all_users = []
-    this_page = all_pages.page(page)
+    if request.GET.get('type') == 'explore_tribes':
+        profile_list = Profile.objects.filter(data__type='Organization'
+            ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
 
-    page_type = request.GET.get('type')
-    if page_type == 'explore_tribes':
-        this_page = Profile.objects.filter(data__type='Organization'
-            ).annotate(
-                previous_worked_count=previous_worked()).annotate(
-                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
-            ).annotate(follower_count=Count('org')).order_by('-follower_count')
+        all_pages = Paginator(profile_list, limit)
+        this_page = all_pages.page(page)
     else:
-        this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
-            .order_by(order_by).annotate(
+        profile_list = Profile.objects.filter(pk__in=profile_list
+            ).annotate(average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))).annotate(previous_worked=previous_worked()).order_by(order_by, '-previous_worked', 'id')
+        profile_list = profile_list.values_list('pk', flat=True)
+
+        all_pages = Paginator(profile_list, limit)
+        this_page = all_pages.page(page)
+
+        profile_list = Profile.objects.filter(pk__in=[ele for ele in this_page])\
+            .order_by(order_by, 'id').annotate(
             previous_worked_count=previous_worked()).annotate(
                 count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
             ).annotate(
                 average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-            ).order_by('-previous_worked_count')
+            ).order_by('-previous_worked_count', 'id')
+
+        this_page = profile_list
+
+    all_users = []
+    params = dict()
 
     for user in this_page:
-        count_work_completed = user.get_fulfilled_bounties(network=network).count()
+        followers = TribeMember.objects.filter(org=user)
+
+        is_following = True if followers.filter(profile=current_profile).count() else False
         profile_json = {
             k: getattr(user, k) for k in
             ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
@@ -1072,17 +1074,6 @@ def users_fetch(request):
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
             'organizations', 'is_org']}
 
-        profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
-        profile_json['previously_worked'] = user.previous_worked_count > 0
-        profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
-        profile_json['position_funder'] = user.get_funder_leaderboard_index()
-        profile_json['work_done'] = count_work_completed
-        profile_json['verification'] = user.get_my_verified_check
-        profile_json['avg_rating'] = user.get_average_star_rating()
-
-        followers = TribeMember.objects.filter(org=user)
-
-        is_following = True if followers.filter(profile=current_profile).count() else False
         profile_json['is_following'] = is_following
 
         follower_count = followers.count()
@@ -1094,12 +1085,22 @@ def users_fetch(request):
             profile_json['sum_eth_on_repos'] = profile_dict.get('as_dict').get('sum_eth_on_repos')
             profile_json['tribe_description'] = user.tribe_description
             profile_json['rank_org'] = user.rank_org
+        else:
+            count_work_completed = user.get_fulfilled_bounties(network=network).count()
 
-        if not user.show_job_status:
-            for key in ['job_salary', 'job_location', 'job_type',
-                        'linkedin_url', 'resume', 'job_search_status',
-                        'remote', 'job_status']:
-                del profile_json[key]
+            profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
+            profile_json['previously_worked'] = user.previous_worked_count > 0
+            profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
+            profile_json['position_funder'] = user.get_funder_leaderboard_index()
+            profile_json['work_done'] = count_work_completed
+            profile_json['verification'] = user.get_my_verified_check
+            profile_json['avg_rating'] = user.get_average_star_rating()
+
+            if not user.show_job_status:
+                for key in ['job_salary', 'job_location', 'job_type',
+                            'linkedin_url', 'resume', 'job_search_status',
+                            'remote', 'job_status']:
+                    del profile_json[key]
 
         if user.avatar_baseavatar_related.exists():
             user_avatar = user.avatar_baseavatar_related.first()
