@@ -4732,3 +4732,57 @@ class TribeMember(SuperModel):
         max_length=20,
         blank=True
     )
+
+
+class Poll(SuperModel):
+    POLL_TYPE = (
+        ('HACKATHON', 'Hackathon'),
+    )
+
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    poll_type = models.CharField(max_length=50, choices=POLL_TYPE, blank=False, null=True)
+    title = models.CharField(max_length=350, blank=True, null=True)
+    active = models.BooleanField(default=False)
+    hackathon = models.ForeignKey(HackathonEvent, on_delete=models.SET_NULL, null=True, blank=True)
+    created_on = models.DateField(auto_now=True)
+    updated_at = models.DateField(auto_now_add=True)
+
+
+class Question(SuperModel):
+    TYPE_QUESTIONS = (
+        ('SINGLE_CHOICE', 'Single Choice'),
+        ('MUTIPLE_CHOICE', 'Multiple Choices'),
+        ('OPEN', 'Open'),
+    )
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE, null=True, blank=True)
+    question_type = models.CharField(choices=TYPE_QUESTIONS, max_length=50, blank=False, null=False)
+    text = models.CharField(max_length=350, blank=True, null=True)
+    created_on = models.DateField(auto_now=True)
+    updated_at = models.DateField(auto_now_add=True)
+
+
+class Option(SuperModel):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, blank=True, null=True)
+    text = models.CharField(max_length=350, blank=True, null=True)
+    created_on = models.DateField(auto_now=True)
+    updated_at = models.DateField(auto_now_add=True)
+
+
+class Answer(SuperModel):
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, unique=False)
+    question = models.ForeignKey(Question, on_delete=models.SET_NULL, null=True, blank=True)
+    open_response = models.CharField(max_length=350, blank=True, null=True)
+    choice = models.ForeignKey(Option, on_delete=models.CASCADE, null=True, blank=True)
+    created_on = models.DateField(auto_now=True)
+    updated_at = models.DateField(auto_now_add=True)
+
+
+class HackathonOnboarding(SuperModel):
+    hackathon = models.ForeignKey(HackathonEvent, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    townsquare_publication = models.ForeignKey(Activity, on_delete=models.SET_NULL, null=True)
+    checkout_sponsor_date = models.DateField(null=True)
+    invite_friends_date = models.DateField(null=True)
+    created_on = models.DateField(auto_now=True)
+    updated_at = models.DateField(auto_now_add=True)
