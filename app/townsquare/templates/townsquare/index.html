@@ -91,12 +91,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
                   </div>
                   <div class="mt-2">
+
                     <div class="checkbox_container">
-                      <input name="trending" id="trending" type="checkbox" value="0" val-ui='Trending' {% if trending_only %}checked=checked{%endif%} />
-                      <span class="checkbox"></span>
-                      <div class="filter-label ml-1">
-                        <label for=beginner>{% trans "Trending Only" %}</label>
-                      </div>
+                      <input name="trending" id="trending" type="checkbox" value="0" {% if trending_only %}checked=checked{%endif%} />
+                      <!-- <span class="checkbox"></span> -->
+                      <label for=trending>{% trans "Trending Only" %}</label>
                     </div>
                   </div>
                 </div>
