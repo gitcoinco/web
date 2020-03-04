@@ -2059,8 +2059,30 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.</p>
 <p>You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
-<h2 id="avatar.admin.GeneralAdmin">GeneralAdmin</h2>
+<h2 id="avatar.admin.AvatarThemeAdmin">AvatarThemeAdmin</h2>
 
+<pre><code class="python">AvatarThemeAdmin(self, model, admin_site)
+</code></pre>
+
+<p>Define the AvatarThemeAdmin administration layout.
+<h3 id="avatar.admin.AvatarThemeAdmin.list_display">list_display</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="avatar.admin.AvatarThemeAdmin.ordering">ordering</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="avatar.admin.AvatarThemeAdmin.readonly_fields">readonly_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="avatar.admin.AvatarThemeAdmin.png_asset">png_asset</h3></p>
+<pre><code class="python">AvatarThemeAdmin.png_asset(self, instance)
+</code></pre>
+
+<p>Define the avatar PNG tag to be displayed in the admin.
+<h2 id="avatar.admin.GeneralAdmin">GeneralAdmin</h2></p>
 <pre><code class="python">GeneralAdmin(self, model, admin_site)
 </code></pre>
 
