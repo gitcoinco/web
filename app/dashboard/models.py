@@ -2317,7 +2317,6 @@ class Activity(SuperModel):
         return False
 
     def view_props_for(self, user):
-
         # get view props
         vp = self.cached_view_props
 

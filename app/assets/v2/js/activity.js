@@ -380,15 +380,13 @@ $(document).ready(function() {
     // user input
     var comment = $parent.parents('.box').find('.comment_container textarea').val().trim();
 
-    $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
-    $('.post_comment').prop('disabled', true);
-
     // validation
     if (!comment) {
       return;
     }
 
     $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
+    $('.post_comment').prop('disabled', true);
 
     $parent.parents('.activity.box').find('.loading').removeClass('hidden');
     var has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;

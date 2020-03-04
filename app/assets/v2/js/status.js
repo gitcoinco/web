@@ -317,8 +317,8 @@ $(document).ready(function() {
       );
     };
 
-    for (var i = 0; i < 5; i++) {
-      var val = $('#poll_container input[name=option' + i + ']').val();
+    for (let i = 0; i < 5; i++) {
+      const val = $('#poll_container input[name=option' + i + ']').val();
 
       if (val) {
         data.append('option' + i, val);

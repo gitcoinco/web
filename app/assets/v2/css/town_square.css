@@ -975,6 +975,7 @@ body.green.offer_view .announce {
   height: 20px;
   margin-right: 4px;
 }
+
 @media (max-width: 768px) {
   #mobile_nav_toggle{
     display: block !important;
