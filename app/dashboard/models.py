@@ -2294,7 +2294,6 @@ class Activity(SuperModel):
 
         return activity
 
-<<<<<<< HEAD
     @property
     def either_view_props(self):
         vp = self.cached_view_props
