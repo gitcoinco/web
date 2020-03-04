@@ -3,7 +3,6 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import HackathonEvent, HackathonRegistration, HackathonSponsor, Bounty, Profile
 
-
 from django.conf import settings
 from django.utils.text import slugify
 import logging
@@ -63,20 +62,28 @@ def update_chat_notifications(profile, notification_key, status):
 
 
 def associate_chat_to_profile(profile):
-    if profile.chat_id is not '':
-        return False, profile
-
     chat_driver.login()
     try:
 
         current_chat_user = chat_driver.users.get_user_by_username(profile.handle)
         profile.chat_id = current_chat_user['id']
+        profile_access_token = {'token': ''}
+        if profile.gitcoin_chat_access_token is '' or profile.gitcoin_chat_access_token is None:
+            try:
+                profile_access_tokens = chat_driver.users.get_user_access_token(profile.chat_id)
+                for pat in profile_access_tokens:
+                    if pat.is_active:
+                        profile_access_token = pat
+                        break
+            except Exception as e:
+                logger.error(str(e))
+                profile_access_token = chat_driver.users.create_user_access_token(user_id=profile.chat_id, options={
+                    'description': "Grants Gitcoin access to modify your account"})
 
-        if profile.gitcoin_chat_access_token is not '':
-            profile_access_token = chat_driver.users.get_user_access_token(profile.gitcoin_chat_access_token)
-            profile.gitcoin_chat_access_token = profile_access_token['id']
+            profile.gitcoin_chat_access_token = profile_access_token['token']
 
         profile.save()
+
         return False, profile
     except ResourceNotFound as RNF:
         if not profile.chat_id:
@@ -105,8 +112,19 @@ def associate_chat_to_profile(profile):
                     "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
                 })
             profile.chat_id = create_user_response['id']
-            profile_access_token = chat_driver.users.get_user_access_token(profile.gitcoin_chat_access_token)
-            profile.gitcoin_chat_access_token = profile_access_token['id']
+            try:
+                profile_access_tokens = chat_driver.users.get_user_access_token(profile.chat_id)
+                for pat in profile_access_tokens:
+                    if pat.is_active:
+                        profile_access_token = pat
+                        break
+
+            except Exception as e:
+                logger.error(str(e))
+                profile_access_token = chat_driver.users.create_user_access_token(user_id=profile.chat_id, options={
+                    'description': "Grants Gitcoin access to modify your account"})
+
+            profile.gitcoin_chat_access_token = profile_access_token['token']
 
             profile.save()
 
