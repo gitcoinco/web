@@ -37,9 +37,10 @@
       </button>
       <div class="dropdown-menu">
         <form class="px-4 py-3">
-          <div class="form-group">
-            <label for="search-gif">Search GIF</label>
-            <input type="text" class="form-control" id="search-gif" placeholder="Search">
+          <div class="form-group mb-0">
+            <label for="search-gif" class="sr-only">Search GIF</label>
+            <input type="text" class="form-control" id="search-gif" placeholder="Search GIF">
+            <img src="{% static 'v2/images/Poweredby_640px-White_HorizText.png' %}" alt="Powered By GIPHY" height="10" class="mw-100">
           </div>
         </form>
         <div id="list-gif" class="gif-grid"></div>

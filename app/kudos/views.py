@@ -96,7 +96,7 @@ def about(request):
     context = {
         'is_outside': True,
         'active': 'about',
-        'activities': [a.view_props for a in activities],
+        'activities': [a.either_view_props for a in activities],
         'title': 'Kudos',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),

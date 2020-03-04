@@ -96,6 +96,9 @@ a .sup {
   border-radius: 20px;
   max-width: 20px;
 }
+.activity_stream .content img{
+  max-height: 100px;
+}
 
 .comment_container li{
   text-align: left;
