@@ -88,6 +88,7 @@ def preprocess(request):
         if record_visit:
             ip_address = get_ip(request)
             profile.last_visit = timezone.now()
+            profile.save()
             try:
                 from dashboard.tasks import profile_dict
                 profile_dict.delay(profile.pk)
