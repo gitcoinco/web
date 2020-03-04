@@ -86,10 +86,6 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
-from .export import (
-    ActivityExportSerializer, BountyExportSerializer, GrantExportSerializer, ProfileExportSerializer,
-    filtered_list_data,
-)
 from .helpers import (
     bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
 )
@@ -105,8 +101,12 @@ from .notifications import (
 )
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count,
-    get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
-    release_bounty_to_the_public, web3_process_bounty,
+    get_web3, has_tx_mined, re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public,
+    web3_process_bounty, get_custom_avatars, is_valid_eth_address
+)
+from .export import (
+    ProfileExportSerializer, GrantExportSerializer, BountyExportSerializer,
+    ActivityExportSerializer, CustomAvatarExportSerializer, filtered_list_data
 )
 
 logger = logging.getLogger(__name__)
@@ -151,6 +151,18 @@ def org_perms(request):
             {'error': _('You must be authenticated via github to use this feature!')},
              status=401)
     return JsonResponse({'orgs': response_data}, safe=False)
+
+
+@staff_member_required
+def manual_sync_etc_payout(request, bounty_id):
+    b = Bounty.objects.get(id=bounty_id)
+    if b.payout_confirmed:
+        return JsonResponse(
+            {'error': _('Bounty payout already confirmed'),
+             'success': False},
+            status=401)
+    sync_etc_payout(b)
+    return JsonResponse({'success': True}, status=200)
 
 
 def record_user_action(user, event_name, instance):
@@ -825,6 +837,20 @@ def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
 
+def get_preview_img(key):
+    if key == 'classic':
+        return 'https://c.gitcoin.co/avatars/d1a33d2bcb7bbfef50368bca73111fae/fryggr.png'
+    if key == 'bufficorn':
+        return 'https://c.gitcoin.co/avatars/94c30306a088d06163582da942a2e64e/dah0ld3r.png'
+    if key == 'female':
+        return 'https://c.gitcoin.co/avatars/b713fb593b3801700fd1f92e9cd18e79/aaliyahansari.png'
+    if key == 'unisex':
+        return 'https://c.gitcoin.co/avatars/cc8272136bcf9b9d830c0554a97082f3/joshegwuatu.png'
+    if key == 'bot':
+        return 'https://c.gitcoin.co/avatars/c9d82da31b7833bdae37861014c32ebc/owocki.png'
+
+    return f'/avatar/view3d?theme={key}&scale=20'
+
 def onboard(request, flow=None):
     """Handle displaying the first time user experience flow."""
     if flow not in ['funder', 'contributor', 'profile']:
@@ -871,13 +897,14 @@ def onboard(request, flow=None):
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
     avatar_options = [
-        ('classic', '/onboard/profile?steps=avatar&theme=classic'),
-        ('unisex', '/onboard/profile?steps=avatar&theme=unisex'),
-        ('female', '/onboard/profile?steps=avatar&theme=female'),
-        ('bufficorn', '/onboard/profile?steps=avatar&theme=bufficorn'),
+        'classic',
+        'unisex',
+        'female',
+        'bufficorn',
     ]
     if request.user.is_staff:
-        avatar_options.append(('bot', '/onboard/profile?steps=avatar&theme=bot'))
+        avatar_options.append('bot')
+    avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele)) for ele in avatar_options ]
 
     params = {
         'title': _('Onboarding Flow'),
@@ -909,6 +936,10 @@ def users_directory(request):
         'meta_description': "",
         'keywords': keywords
     }
+
+    if request.path == '/tribes/explore':
+        params['explore'] = 'explore_tribes'
+
     return TemplateResponse(request, 'dashboard/users.html', params)
 
 
@@ -980,7 +1011,8 @@ def users_fetch(request):
     else:
         current_user = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
 
-    context = {}
+    current_profile = Profile.objects.get(user=current_user)
+
     if not settings.DEBUG:
         network = 'mainnet'
     else:
@@ -996,13 +1028,17 @@ def users_fetch(request):
 
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
+
+    show_banner = None
+
     if persona:
-        if persona == 'Funder':
+        if persona == 'funder':
             profile_list = profile_list.filter(dominant_persona='funder')
-        if persona == 'Coder':
+        if persona == 'coder':
             profile_list = profile_list.filter(dominant_persona='hunter')
-        if persona == 'Organization':
+        if persona == 'tribe':
             profile_list = profile_list.filter(data__type='Organization')
+            show_banner = static('v2/images/tribes/logo-with-text.svg')
 
     profile_list = users_fetch_filters(
         profile_list,
@@ -1043,15 +1079,23 @@ def users_fetch(request):
     all_users = []
     this_page = all_pages.page(page)
 
-    this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
-        .order_by(order_by).annotate(
-        previous_worked_count=previous_worked()).annotate(
-            count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
-        ).annotate(
-            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).order_by('-previous_worked_count')
+    page_type = request.GET.get('type')
+    if page_type == 'explore_tribes':
+        this_page = Profile.objects.filter(data__type='Organization'
+            ).annotate(
+                previous_worked_count=previous_worked()).annotate(
+                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
+            ).annotate(follower_count=Count('org')).order_by('-follower_count')
+    else:
+        this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
+            .order_by(order_by).annotate(
+            previous_worked_count=previous_worked()).annotate(
+                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
+            ).annotate(
+                average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+            ).order_by('-previous_worked_count')
+
     for user in this_page:
-        previously_worked_with = 0
         count_work_completed = user.get_fulfilled_bounties(network=network).count()
         profile_json = {
             k: getattr(user, k) for k in
@@ -1067,6 +1111,21 @@ def users_fetch(request):
         profile_json['work_done'] = count_work_completed
         profile_json['verification'] = user.get_my_verified_check
         profile_json['avg_rating'] = user.get_average_star_rating()
+
+        followers = TribeMember.objects.filter(org=user)
+
+        is_following = True if followers.filter(profile=current_profile).count() else False
+        profile_json['is_following'] = is_following
+
+        follower_count = followers.count()
+        profile_json['follower_count'] = follower_count
+
+        if user.is_org:
+            profile_dict = user.__dict__
+            profile_json['count_bounties_on_repo'] = profile_dict.get('as_dict').get('count_bounties_on_repo')
+            profile_json['sum_eth_on_repos'] = profile_dict.get('as_dict').get('sum_eth_on_repos')
+            profile_json['tribe_description'] = user.tribe_description
+            profile_json['rank_org'] = user.rank_org
 
         if not user.show_job_status:
             for key in ['job_salary', 'job_location', 'job_type',
@@ -1089,6 +1148,8 @@ def users_fetch(request):
     params['has_next'] = all_pages.page(page).has_next()
     params['count'] = all_pages.count
     params['num_pages'] = all_pages.num_pages
+    params['show_banner'] = show_banner
+    params['persona'] = persona
 
     # log this search, it might be useful for matching purposes down the line
     try:
@@ -2425,32 +2486,45 @@ def profile_backup(request):
     if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
         raise Http404
 
-    # fetch the exported data for backup
-    data = ProfileExportSerializer(profile).data
-    # grants
-    data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
-    # portfolio, active work, bounties
-    portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
-    active_work = Bounty.objects.none()
-    interests = profile.active_bounties
-    for interest in interests:
-        active_work = active_work | Bounty.objects.filter(interested=interest, current_bounty=True)
-    data["portfolio"] = BountyExportSerializer(portfolio_bounties, many=True).data
-    data["active_work"] = BountyExportSerializer(active_work, many=True).data
-    data["bounties"] = BountyExportSerializer(profile.bounties, many=True).data
-    # activities
-    data["activities"] = ActivityExportSerializer(profile.activities, many=True).data
-    # tips
-    data["tips"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=False)
-    data["_tips.private_fields"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=True)
-    # feedback
-    feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
-    data["feedbacks"] = filtered_list_data("feedback", feedbacks, private_items=False, private_fields=None)
-    data["_feedbacks.private_items"] = filtered_list_data("feedback", feedbacks, private_items=True, private_fields=None)
+    model = request.POST.get('model', None)
+    # prepare the exported data for backup
+    profile_data = ProfileExportSerializer(profile).data
+    data = {}
+    keys = ['grants', 'portfolio', 'active_work', 'bounties', 'activities',
+        'tips', '_tips.private_fields', 'feedbacks', '_feedbacks.private_items',
+        'custom_avatars'] + list(profile_data.keys())
+
+    if model == 'custom avatar':
+        # custom avatar
+        custom_avatars = get_custom_avatars(profile)
+        data['custom_avatars'] = CustomAvatarExportSerializer(custom_avatars, many=True).data
+    else:
+        data = profile_data
+        # grants
+        data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
+        # portfolio, active work, bounties
+        portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
+        active_work = Bounty.objects.none()
+        interests = profile.active_bounties
+        for interest in interests:
+            active_work = active_work | Bounty.objects.filter(interested=interest, current_bounty=True)
+        data["portfolio"] = BountyExportSerializer(portfolio_bounties, many=True).data
+        data["active_work"] = BountyExportSerializer(active_work, many=True).data
+        data["bounties"] = BountyExportSerializer(profile.bounties, many=True).data
+        # activities
+        data["activities"] = ActivityExportSerializer(profile.activities, many=True).data
+        # tips
+        data['tips'] = filtered_list_data('tip', profile.tips, private_items=None, private_fields=False)
+        data['_tips.private_fields'] = filtered_list_data('tip', profile.tips, private_items=None, private_fields=True)
+        # feedback
+        feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
+        data['feedbacks'] = filtered_list_data('feedback', feedbacks, private_items=False, private_fields=None)
+        data['_feedbacks.private_items'] = filtered_list_data('feedback', feedbacks, private_items=True, private_fields=None)
 
     response = {
         'status': 200,
-        'data': data
+        'data': data,
+        'keys': keys
     }
 
     return JsonResponse(response, status=response.get('status', 200))
@@ -4794,7 +4868,6 @@ def fulfill_bounty_v1(request):
     '''
         ETC-TODO
         - wire in email (invite + successful fulfillment)
-        - create activty entry
         - evalute BountyFulfillment unused fields
     '''
     response = {
@@ -4832,6 +4905,26 @@ def fulfill_bounty_v1(request):
         response['message'] = 'error: user can submit once per bounty'
         return JsonResponse(response)
 
+    fulfiller_address = request.POST.get('fulfiller_address')
+    if not fulfiller_address:
+        response['message'] = 'error: missing fulfiller_address'
+        return JsonResponse(response)
+
+    fulfiller_email = request.POST.get('email')
+    if not fulfiller_email:
+        response['message'] = 'error: missing email'
+        return JsonResponse(response)
+
+    hours_worked = request.POST.get('hoursWorked')
+    if not hours_worked or not hours_worked.isdigit():
+        response['message'] = 'error: missing hoursWorked'
+        return JsonResponse(response)
+
+    fulfiller_github_url = request.POST.get('githubPRLink')
+    if not fulfiller_github_url:
+        response['message'] = 'error: missing githubPRLink'
+        return JsonResponse(response)
+
     event_name = 'work_submitted'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
@@ -4859,28 +4952,9 @@ def fulfill_bounty_v1(request):
     # fulfillment.fulfiller_name    ETC-TODO: REMOVE ?
     # fulfillment.fulfillment_id    ETC-TODO: REMOVE ?
 
-    fulfiller_address = request.POST.get('fulfiller_address')
-    if not fulfiller_address:
-        response['message'] = 'error: missing fulfiller_address'
-        return JsonResponse(response)
     fulfillment.fulfiller_address = fulfiller_address
-
-    fulfiller_email = request.POST.get('email')
-    if not fulfiller_email:
-        response['message'] = 'error: missing email'
-        return JsonResponse(response)
     fulfillment.fulfiller_email = fulfiller_email
-
-    hours_worked = request.POST.get('hoursWorked')
-    if not hours_worked or not hours_worked.isdigit():
-        response['message'] = 'error: missing hoursWorked'
-        return JsonResponse(response)
     fulfillment.fulfiller_hours_worked = hours_worked
-
-    fulfiller_github_url = request.POST.get('githubPRLink')
-    if not fulfiller_github_url:
-        response['message'] = 'error: missing githubPRLink'
-        return JsonResponse(response)
     fulfillment.fulfiller_github_url = fulfiller_github_url
 
     fulfiller_metadata = request.POST.get('metadata', {})

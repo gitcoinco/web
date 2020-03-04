@@ -50,6 +50,8 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from app.utils import get_upload_filename
+from avatar.models import SocialAvatar
+from avatar.utils import get_user_github_avatar_image
 from bleach import clean
 from bs4 import BeautifulSoup
 from dashboard.tokens import addr_to_token, token_by_name
@@ -274,6 +276,8 @@ class Bounty(SuperModel):
     WORK_IN_PROGRESS_STATUSES = ['reserved', 'open', 'started', 'submitted']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
+    payout_confirmed = models.BooleanField(default=False, blank=True, null=True)
+    payout_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     bounty_state = models.CharField(max_length=50, choices=BOUNTY_STATES, default='open', db_index=True)
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=1000)
@@ -1675,6 +1679,8 @@ class Tip(SendCryptoAsset):
 
     @property
     def attached_object(self):
+        if not self.comments_priv:
+            return None
         if 'activity:' in self.comments_priv:
             pk = self.comments_priv.split(":")[1]
             obj = Activity.objects.get(pk=pk)
@@ -1976,6 +1982,49 @@ class ActivityQuerySet(models.QuerySet):
             activity_type='bounty_abandonment_escalation_to_mods',
         )
 
+    def related_to(self, profile):
+        """Filter results to Activity objects which are related to a particular profile.
+
+        Activities related to a Profile can be defined as:
+            - Posts created by that user
+            - Posts that the user likes (even a comment)
+            - Posts tipped by that user (even a comment)
+            - Posts the user commented on
+        """
+        from townsquare.models import Like, Comment
+
+        # Posts created by that user
+        posts = self.filter(profile=profile)
+
+        # Posts that the user likes (even a comment)
+        likes = Like.objects.filter(profile=profile).all()
+        activity_pks = [_.activity.pk for _ in likes]
+        posts.union(self.filter(pk__in=activity_pks))
+
+        comments = Comment.objects.filter(likes__contains=[profile.pk]).all()
+        activity_pks = [_.activity.pk for _ in comments]
+        posts.union(self.filter(pk__in=activity_pks))
+
+        # Posts tipped by that user (even a comment)
+        tips = Tip.objects.filter(sender_profile=profile).all()
+        activity_pks = []
+        for tip in tips:
+            if  tip.comments_priv:
+                obj = tip.attached_object()
+                if 'activity:' in tip.comments_priv:
+                    activity_pks.append(obj.pk)
+                if 'comment:' in tip.comments_priv:
+                    activity_pks.append(obj.activity.pk)
+        posts.union(self.filter(pk__in=activity_pks))
+
+
+        # Posts the user commented on
+        comments = Comment.objects.filter(profile=profile).all()
+        activity_pks = [_.activity.pk for _ in comments]
+        posts.union(self.filter(pk__in=activity_pks))
+
+        return posts
+
 
 class Activity(SuperModel):
     """Represent Start work/Stop work event.
@@ -2185,6 +2234,7 @@ class Activity(SuperModel):
             'humanized_name',
             'url',
             'match_this_round',
+            'matchranking_this_round',
         ]
         activity = self.to_standard_dict(properties=properties)
         activity['pk'] = self.pk
@@ -2208,6 +2258,8 @@ class Activity(SuperModel):
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']
+        if 'poll_choices' in self.metadata:
+            activity['poll'] = self.metadata['poll_choices']
         activity['title'] = clean(obj.get('title', ''), strip=True)
         if 'id' in obj:
             if 'category' not in obj or obj['category'] == 'bounty': # backwards-compatible for category-lacking metadata
@@ -2233,12 +2285,22 @@ class Activity(SuperModel):
 
         return activity
 
+    def has_voted(self, user):
+        vp = self.view_props
+        if vp.get('poll'):
+            if user.is_authenticated:
+                for ele in vp.get('poll'):
+                    if user.profile.pk in ele['answers']:
+                        return ele['i']
+        return False
+
     def view_props_for(self, user):
 
         vp = self.view_props
         if not user.is_authenticated:
             return vp
         vp['liked'] = self.likes.filter(profile=user.profile).exists()
+        vp['poll_answered'] = self.has_voted(user)
         return vp
 
     @property
@@ -2511,6 +2573,7 @@ class Profile(SuperModel):
     repos = models.ManyToManyField(Repo, blank=True)
     form_submission_records = JSONField(default=list, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
+    etc_address = models.CharField(max_length=255, default='', blank=True)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=2500, decimal_places=2, max_digits=50)
@@ -2562,18 +2625,33 @@ class Profile(SuperModel):
     objects = ProfileQuerySet.as_manager()
 
     @property
+    def subscribed_threads(self):
+        tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
+        tips = [tip.comments_priv.split(':')[1] for tip in tips]
+        tips = [ele for ele in tips if ele.isnumeric()]
+        activities = Activity.objects.filter(Q(pk__in=self.likes.all()) | Q(pk__in=self.comments.all()) | Q(pk__in=tips))
+        return activities
+
+    @property
     def quest_level(self):
         return self.quest_attempts.filter(success=True).distinct('quest').count() + 1
 
     @property
     def match_this_round(self):
+        mr = self.matchranking_this_round
+        if mr:
+            return mr.match_total
+        return 0
+
+    @property
+    def matchranking_this_round(self):
         from townsquare.models import MatchRound
         mr = MatchRound.objects.current().first()
         if mr:
             mr = mr.ranking.filter(profile=self).first()
             if mr:
-                return mr.match_total
-        return 0
+                return mr
+        return None
 
     @property
     def quest_caste(self):
@@ -3390,6 +3468,17 @@ class Profile(SuperModel):
             return self.admin_override_avatar.url
         if self.active_avatar:
             return self.active_avatar.avatar_url
+        else:
+            github_avatar_img = get_user_github_avatar_image(self.handle)
+            if github_avatar_img:
+                try:
+                    github_avatar = SocialAvatar.github_avatar(self, github_avatar_img)
+                    github_avatar.save()
+                    self.activate_avatar(github_avatar.pk)
+                    self.save()
+                    return self.active_avatar.avatar_url
+                except Exception as e:
+                    logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
 
     @property
@@ -3917,9 +4006,8 @@ class Profile(SuperModel):
 
         # lazily generate profile dict on the fly
         if not params.get('title') or self.frontend_calc_stale:
-            self.calculate_all()
-            self.save()
-            params = self.as_dict
+            from dashboard.tasks import profile_dict
+            profile_dict.delay(self.pk)
 
         if params.get('tips'):
             params['tips'] = Tip.objects.filter(pk__in=params['tips'])

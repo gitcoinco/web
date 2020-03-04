@@ -88,13 +88,33 @@ def town_square(request):
             default_tab = 'grants'
 
     hours = 24 if not settings.DEBUG else 1000
+    if request.user.is_authenticated:
+        threads_last_24_hours = lazy_round_number(
+            request.user.profile.subscribed_threads.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
+            )
+
+        threads = {
+            'title': f"My Threads",
+            'slug': f'my_threads',
+            'helper_text': f'The threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
+            'badge': threads_last_24_hours
+        }
+        tabs = [threads] + tabs
+
+        threads = {
+            'title': f"My Feed",
+            'slug': f'my_feed',
+            'helper_text': f'The threads that you\'ve posted, liked, commented on, or sent a tip upon on Gitcoin.',
+        }
+        tabs = [threads] + tabs
+
     connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if connect_last_24_hours:
         default_tab = 'connect'
         connect = {
             'title': f"Connect",
             'slug': f'connect',
-            'helper_text': f'The {connect_last_24_hours} announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
+            'helper_text': f'The announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
             'badge': connect_last_24_hours
         }
         tabs = [connect] + tabs
@@ -199,11 +219,34 @@ def town_square(request):
             'following': request.user.profile == obj.profile or request.user.profile.follower.filter(org=obj.profile) if request.user.is_authenticated else False,
             'handle': obj.profile.handle,
             'contributions': obj.contributions,
+            'default_match_estimate': obj.default_match_estimate,
+            'match_curve': obj.sorted_match_curve,
+            'contributors': obj.contributors,
             'amount': f"{int(obj.contributions_total/1000)}k" if obj.contributions_total > 1000 else round(obj.contributions_total, 2),
             'match_amount': obj.match_total,
             'you': obj.profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
         } for obj in current_match_rankings[0:num_to_show]
     ]
+
+    following_tribes = []
+    if request.user.is_authenticated:
+        tribe_relations = request.user.profile.tribe_members
+        for tribe_relation in tribe_relations:
+            followed_profile = tribe_relation.org
+            if followed_profile.is_org:
+                last_24_hours_activity = lazy_round_number(
+                    Activity.objects.filter(hidden=False, created_on__gt=timezone.now() - timezone.timedelta(hours=24)).related_to(followed_profile).count()
+                )
+                tribe = {
+                    'title': followed_profile.handle,
+                    'slug': followed_profile.handle,
+                    'helper_text': f'Activities from {followed_profile.handle} in the last 24 hours',
+                    'badge': last_24_hours_activity,
+                    'avatar_url': followed_profile.avatar_url
+                }
+                following_tribes = [tribe] + following_tribes
+
+
 
     # render page context
     trending_only = int(request.GET.get('trending', 0))
@@ -217,6 +260,7 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'matching_leaderboard': matching_leaderboard,
         'current_match_round': current_match_round,
         'admin_link': admin_link,
@@ -228,6 +272,7 @@ def town_square(request):
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
+        'following_tribes': following_tribes
     }
     response = TemplateResponse(request, 'townsquare/index.html', context)
     if request.GET.get('tab'):
@@ -281,6 +326,8 @@ def api(request, activity_id):
             comment_dict['like_count'] = len(comment.likes)
             comment_dict['likes'] = ", ".join(Profile.objects.filter(pk__in=comment.likes).values_list('handle', flat=True)) if len(comment.likes) else "no one. Want to be the first?"
             comment_dict['name'] = comment.profile.data.get('name', None) or comment.profile.handle
+            comment_dict['default_match_round'] = comment.profile.matchranking_this_round.default_match_estimate if comment.profile.matchranking_this_round else None
+            comment_dict['sorted_match_curve'] = comment.profile.matchranking_this_round.sorted_match_curve if comment.profile.matchranking_this_round else None
             response['comments'].append(comment_dict)
         return JsonResponse(response)
 
@@ -294,6 +341,14 @@ def api(request, activity_id):
     # deletion request
     if request.POST.get('method') == 'delete':
         activity.delete()
+
+    # deletion request
+    if request.POST.get('method') == 'vote':
+        vote = int(request.POST.get('vote'))
+        index = vote
+        if not activity.has_voted(request.user):
+            activity.metadata['poll_choices'][index]['answers'].append(request.user.profile.pk)
+            activity.save()
 
     # toggle like comment
     if request.POST.get('method') == 'toggle_like_comment':
@@ -334,7 +389,8 @@ def api(request, activity_id):
     elif request.POST.get('method') == 'comment':
         comment = request.POST.get('comment')
         title = request.POST.get('comment')
-        comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
+        if 'Just sent a tip of' not in comment:
+            comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
 
     return JsonResponse(response)
 

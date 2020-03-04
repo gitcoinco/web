@@ -1,9 +1,45 @@
 const url_re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
+const giphy_re = /(?:https?:\/\/)?(?:media0\.)?(?:giphy\.com\/media\/)/;
 
 $(document).ready(function() {
-  embedded_resource = '';
+  var embedded_resource = '';
+  const GIPHY_API_KEY = document.contxt.giphy_key;
+
   let button = document.querySelector('#btn_post');
+
+  function selectGif(e) {
+    embedded_resource = $(e.target).data('src');
+    $('#preview-img').attr('src', embedded_resource);
+    $('#preview').show();
+    $('#thumbnail').hide();
+  }
+
+
+  function injectGiphy(query) {
+    const endpoint = 'https://api.giphy.com/v1/gifs/search?limit=13&api_key=' + GIPHY_API_KEY + '&offset=0&rating=G&lang=en&q=' + query;
+    const result = fetchData(endpoint);
+
+    $.when(result).then(function(response) {
+      $('.pick-gif').remove();
+
+      for (let i = 0; i < response.data.length; i++) {
+        let item = response.data[i];
+        let downsize = item.images.original.webp;
+        let preview = item.images.fixed_width_downsampled.webp;
+
+        $('.gif-grid').append('<img class="pick-gif" src="' + preview + '" data-src="' + downsize + '" alt="' + item.slug + '">');
+      }
+      $('.pick-gif').on('click', selectGif);
+    });
+  }
+
+  $('#search-gif').on('input', function(e) {
+    e.preventDefault();
+    const query = e.target.value;
+
+    injectGiphy(query);
+  });
 
   if (button) {
     button.addEventListener(
@@ -31,6 +67,11 @@ $(document).ready(function() {
     const youtube = e.target.value.match(youtube_re);
     const no_lb = e.originalEvent.inputType !== 'insertLineBreak';
 
+    // GIF has priority, no other display info allowed
+    if (typeof embedded_resource === 'string' && embedded_resource.match(giphy_re)) {
+      return;
+    }
+
     if (youtube !== null && youtube[1].length === 11 && no_lb) {
       let videoId = youtube[1];
 
@@ -46,6 +87,7 @@ $(document).ready(function() {
             $('#thumbnail-img').attr('src', 'https://img.youtube.com/vi/' + videoId + '/default.jpg');
             embedded_resource = youtube[0];
             $('#thumbnail').show();
+            $('#preview').hide();
           } else {
             $('#thumbnail').hide();
             $('#thumbnail-desc').text('');
@@ -60,13 +102,27 @@ $(document).ready(function() {
 
       $.when(getMetadata).then(function(response) {
         if (response) {
+          const desc = response.description && response.description.length > 200 ?
+
+            response.description.substr(0, 200) + '...' :
+            response.description;
+
           $('#thumbnail-title').text(response.title);
           $('#thumbnail-provider').text(response.link);
-          $('#thumbnail-desc').text(response.description);
-          $('#thumbnail-img').attr('src', response.image);
+          $('#thumbnail-desc').text(desc);
+          if (response.image) {
+            $('#thumbnail-img').attr('src', response.image);
+            $('#thumbnail-img').removeClass('py-2 px-4');
+            $('#thumbnail-img').css('width', '130%');
+          } else {
+            $('#thumbnail-img').addClass('py-2 px-4');
+            $('#thumbnail-img').css('width', '8rem');
+            $('#thumbnail-img').attr('src', 'https://s.gitcoin.co/static/v2/images/team/gitcoinbot.c1e81ab42f13.png');
+          }
 
           embedded_resource = url;
           $('#thumbnail').show();
+          $('#preview').hide();
         } else {
           $('#thumbnail').hide();
           $('#thumbnail-desc').text('');
@@ -139,13 +195,49 @@ $(document).ready(function() {
     $('#textarea').focus();
   }
 
+  document.is_shift = false;
+  // handle shift button
+  $('body').on('keyup', '#textarea', function(e) {
+    if (e.keyCode == 16) {
+      document.is_shift = false;
+    }
+  });
+  // handle shift button
+  $('body').on('click', '#poll-button', function(e) {
+    e.preventDefault();
+    $(this).toggleClass('selected');
+    var is_selected = $(this).hasClass('selected');
+
+    if (is_selected) {
+      let html = `
+      <div id=poll_container class="bg-lightblue ">
+      <hr class=m-0 >
+      <input name=option1 placeholder="Choice 1">
+      <input name=option2 placeholder="Choice 2">
+      <input name=option3 placeholder="Choice 3">
+      <input name=option4 placeholder="Choice 4">
+      </div>
+      `;
+
+      $(html).insertAfter('#status');
+      $('#poll_container input[name=option1]').focus();
+    } else {
+      $('#poll_container').remove();
+    }
+
+  });
+  $('body').on('keydown', '#textarea', function(e) {
+    if (e.keyCode == 16) {
+      document.is_shift = true;
+    }
+  });
+
   $('body').on('focus change paste keydown keyup blur', '#textarea', function(e) {
 
     // enforce a max length
     var max_len = $(this).data('maxlen');
 
-    if ($(this).val().trim().length > max_len && (e.keyCode != 8)) {
-      e.preventDefault();
+    if ($(this).val().trim().length > max_len) {
       $(this).addClass('red');
       $('#btn_post').attr('disabled', true);
     } else if ($(this).val().trim().length > 4) {
@@ -184,20 +276,36 @@ $(document).ready(function() {
       const image = $('#thumbnail-img').attr('src');
       const youtube = embedded_resource.match(youtube_re);
 
-      if (youtube !== null && youtube[1].length === 11) {
+      if (embedded_resource.match(giphy_re)) {
+        data.append('resource', 'gif');
+        data.append('resourceProvider', 'giphy');
+        data.append('resourceId', embedded_resource);
+      } else if (youtube !== null && youtube[1].length === 11) {
         data.append('resource', 'video');
         data.append('resourceProvider', 'youtube');
         data.append('resourceId', youtube[1]);
+        data.append('title', title);
+        data.append('description', description);
+        data.append('image', image);
       } else {
         data.append('resource', 'content');
         data.append('resourceProvider', link);
         data.append('resourceId', embedded_resource);
+        data.append('title', title);
+        data.append('description', description);
+        data.append('image', image);
       }
-      data.append('title', title);
-      data.append('description', description);
-      data.append('image', image);
     }
 
+    for (var i = 0; i < 5; i++) {
+      var val = $('#poll_container input[name=option' + i + ']').val();
+
+      if (val) {
+        data.append('option' + i, val);
+      }
+    }
+    $('#poll_container').remove();
+  
     fetch('/api/v0.1/activity', {
       method: 'post',
       body: data
@@ -208,7 +316,9 @@ $(document).ready(function() {
           $('#thumbnail-title').text('');
           $('#thumbnail-provider').text('');
           $('#thumbnail-desc').text('');
-          $('#thumbnail-img').attr('');
+          $('#thumbnail-img').attr('src', '');
+          $('#preview').hide();
+          $('#preview-img').attr('src', '');
           embedded_resource = '';
 
           _alert(
@@ -235,6 +345,8 @@ $(document).ready(function() {
       })
       .catch(err => console.log('Error ', err));
   }
+
+  injectGiphy('latest');
 });
 window.addEventListener('DOMContentLoaded', function() {
   var button = document.querySelector('#emoji-button');

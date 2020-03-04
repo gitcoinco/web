@@ -29,7 +29,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
-from django.db.models import Avg, Max
+from django.db.models import Avg, Count, Max, Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -46,11 +46,13 @@ from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_add
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_feedback
+from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
 from marketing.utils import (
     delete_user_from_mailchimp, get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration,
 )
-from retail.emails import ALL_EMAILS, render_nth_day_email_campaign
+from quests.models import Quest
+from retail.emails import ALL_EMAILS, render_new_bounty, render_nth_day_email_campaign
 from retail.helpers import get_ip
 
 logger = logging.getLogger(__name__)
@@ -873,7 +875,6 @@ def leaderboard(request, key=''):
                 }
             )
 
-
     cadence_ui = cadence if cadence != 'all' else 'All-Time'
     product_ui = product.capitalize() if product != 'all' else ''
     page_title = f'{cadence_ui.title()} {keyword_search.title()} {product_ui} Leaderboard: {title.title()}'
@@ -907,3 +908,21 @@ def day_email_campaign(request, day):
         raise Http404
     response_html, _, _, = render_nth_day_email_campaign('foo@bar.com', day, 'staff member')
     return HttpResponse(response_html)
+
+def trending_quests():
+    cutoff_date = timezone.now() - timezone.timedelta(days=7)
+    quests = Quest.objects.annotate(recent_attempts=Count('attempts', filter=Q(
+        created_on__gte=cutoff_date))
+        ).order_by('-recent_attempts').all()[0:10]
+    return quests
+
+@staff_member_required
+def new_bounty_daily_preview(request):
+    profile = request.user.profile
+    keywords = profile.keywords
+    hours_back = 2000
+    new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
+    quests = trending_quests()
+    response_html, _ = render_new_bounty('foo@bar.com', new_bounties, all_bounties, offset=3, trending_quests=quests)
+    return HttpResponse(response_html)
+

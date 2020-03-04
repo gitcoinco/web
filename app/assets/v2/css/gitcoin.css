@@ -18,6 +18,12 @@ h4,
   z-index: 9999999999999;
 }
 
+.sticky-top {
+  position: sticky!important;
+  top: 0;
+  z-index: 1;
+}
+
 .lighter {
   font-weight: lighter;
 }
@@ -118,6 +124,14 @@ h4,
 
 .text-white {
   color: #ffffff;
+}
+
+.gc-text-blue {
+  color: #3E00FF;
+}
+
+.gc-text-green {
+  color: #0FCE7C;
 }
 
 .text-black-60 {

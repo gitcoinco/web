@@ -26,6 +26,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 import sendgrid
+from app.utils import get_profiles_from_text
 from marketing.utils import func_name, get_or_save_email_subscriber, should_suppress_notification_email
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
@@ -413,11 +414,7 @@ def comment_email(comment):
     translation.activate(cur_language)
     print(f"sent comment email to {len(to_emails)}")
 
-    import re
-    from dashboard.models import Profile
-    username_pattern = re.compile(r'@(\S+)')
-    mentioned_usernames = re.findall(username_pattern, comment.comment)
-    emails = Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True)
+    emails = get_profiles_from_text(comment.comment).values_list('email', flat=True)
     mentioned_emails = set(emails)
     # Don't send emails again to users who already received a comment email
     deduped_emails = mentioned_emails.difference(to_emails)
@@ -544,9 +541,7 @@ def send_user_feedback(quest, feedback, user):
     try:
         setup_lang(to_email)
         subject = f"Your Gitcoin Quest \"{quest.title}\" has feedback from another user!"
-        body_str = f("Your quest: {quest.title} has feedback from user {user.profile.handle}:\n\n"
-                     "{feedback}\n\n"
-                     "to edit your quest, click <a href=\"{quest.edit_url}\">here</a>")
+        body_str = f"Your quest: {quest.title} has feedback from user {user.profile.handle}:\n\n{feedback}\n\nto edit your quest, click <a href=\"{quest.edit_url}\">here</a>"
         body = f"{body_str}"
         if not should_suppress_notification_email(to_email, 'quest'):
             send_mail(
@@ -953,7 +948,7 @@ def weekly_roundup(to_emails=None):
         try:
             setup_lang(to_email)
             html, text, subject = render_new_bounty_roundup(to_email)
-            from_email = settings.PERSONAL_CONTACT_EMAIL
+            from_email = settings.CONTACT_EMAIL
 
             if not html:
                 print("no content")
@@ -966,7 +961,7 @@ def weekly_roundup(to_emails=None):
                     subject,
                     text,
                     html,
-                    from_name="Kevin Owocki (Gitcoin.co)",
+                    from_name="Connor and the Gitcoin Team (Gitcoin.co)",
                     categories=['marketing', func_name()],
                 )
             else:

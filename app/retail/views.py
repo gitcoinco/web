@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 '''
     Copyright (C) 2020 Gitcoin Core
@@ -27,6 +28,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
+from django.db.models import Count
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -37,7 +39,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from app.utils import get_default_network
+from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants
 from dashboard.notifications import amount_usdt_open_work, open_bounties
@@ -224,7 +226,7 @@ def pricing(request):
     plans= [
         {
             'type': 'basic',
-            'img': '/v2/images/pricing/basic.svg',
+            'img': 'v2/images/pricing/basic.svg',
             'fee': 10,
             'features': [
                 '1 free <a href="/kudos">Kudos</a>',
@@ -240,7 +242,7 @@ def pricing(request):
         },
         {
             'type': 'pro',
-            'img': '/v2/images/pricing/pro.svg',
+            'img': 'v2/images/pricing/pro.svg',
             'price': 40,
             'features': [
                 '5 Free <a href="/kudos">Kudos</a> / mo',
@@ -256,7 +258,7 @@ def pricing(request):
         },
         {
             'type': 'max',
-            'img': '/v2/images/pricing/max.svg',
+            'img': 'v2/images/pricing/max.svg',
             'price': 99,
             'features': [
                 '5 Free <a href="/kudos">Kudos</a> / mo',
@@ -311,7 +313,7 @@ def subscribe(request):
 
     plan = {
         'type': 'pro',
-        'img': '/v2/images/pricing/sub_pro.svg',
+        'img': 'v2/images/pricing/sub_pro.svg',
         'price': 40
     }
 
@@ -319,7 +321,7 @@ def subscribe(request):
         if 'plan' in request.GET and request.GET['plan'] == 'max':
             plan = {
                 'type': 'max',
-                'img': '/v2/images/pricing/sub_max.svg',
+                'img': 'v2/images/pricing/sub_max.svg',
                 'price': 99
             }
         if 'pack' in request.GET and request.GET['pack'] == 'annual':
@@ -1146,8 +1148,19 @@ def activity(request):
         relevant_grants = []
         if what == 'tribes':
             relevant_profiles = get_my_earnings_counter_profiles(request.user.profile.pk)
-        if what == 'grants':
+        elif what == 'grants':
             relevant_grants = get_my_grants(request.user.profile)
+        elif what == 'my_threads':
+            activities = request.user.profile.subscribed_threads.all().order_by('-created')
+        elif what == 'my_feed':
+            activities = activities.related_to(request.user.profile)
+        else:
+            try:
+                user = Profile.objects.get(handle__iexact=what)
+                activities = activities.related_to(user)
+            except Profile.DoesNotExist:
+                pass
+
         if 'keyword-' in what:
             keyword = what.split('-')[1]
             relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
@@ -1166,6 +1179,7 @@ def activity(request):
             activities = activities.filter(profile__in=relevant_profiles)
         if len(relevant_grants):
             activities = activities.filter(grant__in=relevant_grants)
+
     if what == 'connect':
         activities = activities.filter(activity_type__in=['status_update', 'wall_post'])
     if what == 'kudos':
@@ -1184,7 +1198,7 @@ def activity(request):
     next_page = page + 1
     start_index = (page-1) * page_size
     end_index = page * page_size
-    
+
     #p = Paginator(activities, page_size)
     #page = p.get_page(page)
     page = activities[start_index:end_index]
@@ -1205,6 +1219,7 @@ def activity(request):
         'page': page,
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
+        'my_tribes': [membership.org.handle for membership in request.user.profile.tribe_members.all()] if request.user.is_authenticated else [],
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]
 
@@ -1250,14 +1265,27 @@ def create_status_update(request):
                 key = f"{key}_id"
                 kwargs[key] = result
                 kwargs['activity_type'] = 'wall_post'
+        
+        if request.POST.get('option1'):
+            poll_choices = []
+            for i in range(1, 5):
+                key = "option" + str(i)
+                val = request.POST.get(key)
+                if val:
+                    poll_choices.append({
+                        'question': val,
+                        'answers': [],
+                        'i': i,
+                        })
+            kwargs['metadata']['poll_choices'] = poll_choices
+
         try:
             activity = Activity.objects.create(**kwargs)
             response['status'] = 200
             response['message'] = 'Status updated!'
 
-            username_pattern = re.compile(r'@(\S+)')
-            mentioned_usernames = re.findall(username_pattern, title)
-            to_emails = set(Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True))
+            mentioned_profiles = get_profiles_from_text(title).exclude(user__in=[request.user])
+            to_emails = set(mentioned_profiles.values_list('email', flat=True))
             mention_email(activity, to_emails)
 
             if kwargs['activity_type'] == 'wall_post':
@@ -1274,6 +1302,9 @@ def create_status_update(request):
     return JsonResponse(response)
 
 def help(request):
+    if not request.user.is_staff:
+        return redirect('/wiki/help')
+        
     faq = {
         'Product': [
         {
@@ -1927,7 +1958,7 @@ def tribes(request):
     plans= [
         {
             'type': 'lite',
-            'img': '/v2/images/tribes/landing/tribe-one.svg',
+            'img': static('v2/images/tribes/landing/plan-lite.svg'),
             'price': '10k',
             'features': [
                 '1 Hackthon Credit'
@@ -1938,7 +1969,7 @@ def tribes(request):
         },
         {
             'type': 'pro',
-            'img': '/v2/images/tribes/landing/tribe-two.svg',
+            'img': static('v2/images/tribes/logo.svg'),
             'discount': '40%',
             'price': '6k',
             'features': [
@@ -1951,7 +1982,7 @@ def tribes(request):
         },
         {
             'type': 'launch',
-            'img': '/v2/images/tribes/logo.svg',
+            'img': static('v2/images/tribes/landing/plan-launch.svg'),
             'price': '4k',
             'features': [
                 {
@@ -1963,55 +1994,25 @@ def tribes(request):
         }
     ]
 
-    companies = [
-        {
-            'name': 'Bancor',
-            'img': static('v2/images/project_logos/bancor.svg')
-        },
-        {
-            'name': 'Consensys Labs',
-            'img': static('v2/images/project_logos/consensys_labs.png')
-        },
-        {
-            'name': 'Ethereum Foundation',
-            'img': static('v2/images/project_logos/eth_foundation.png')
-        },
-        {
-            'name': 'Algorand',
-            'img': static('v2/images/project_logos/algorand.png')
-        },
-        {
-            'name': 'Consensys Grants',
-            'img': static('v2/images/project_logos/consensys_grants.png')
-        },
-        {
-            'name': 'AirSwap',
-            'img': static('v2/images/project_logos/airswap.svg')
-        },
-        {
-            'name': 'Portis',
-            'img': static('v2/images/project_logos/portis_text.png')
-        },
-        {
-            'name': 'Status',
-            'img': static('v2/images/project_logos/status.svg')
-        },
-        {
-            'name': 'Matic',
-            'img': static('v2/images/project_logos/matic.svg')
-        },
-        {
-            'name': 'BZX',
-            'img': static('v2/images/project_logos/bzx.png')
+    _tribes = Profile.objects.filter(data__type='Organization').\
+        annotate(follower_count=Count('org')).order_by('-follower_count')[:8]
+
+    tribes = []
+
+    for _tribe in _tribes:
+        tribe = {
+            'name': _tribe.handle,
+            'img': _tribe.avatar_url,
+            'followers_count': _tribe.follower_count
         }
-    ]
+        tribes.append(tribe)
 
     testimonials = [
         {
             'text': 'I had a lot of fun (during Beyond Blockchain) meeting people and building tangible rapidly. Glad to have a winning submission!',
             'author': 'VirajA',
             'designation': 'Hacker',
-            'photo': 'https://c.gitcoin.co/avatars/58ef080697b34b1eab840bc60e2ee92b/viraja1.png'
+            'photo': static('v2/images/tribes/landing/viraj.png')
         },
         {
             'text': 'Gitcoin has a fantastic community that is our target audience -- Web 3 developers who want to build.',
@@ -2021,7 +2022,7 @@ def tribes(request):
             'org_photo': static('v2/images/project_logos/arweave.svg')
         },
         {
-            'text': '"Relationships with developers" is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.',
+            'text': 'Relationships with developers" is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.',
             'author': 'Scott Gralnick',
             'designation': 'Co-Founder, Portis',
             'photo': static('v2/images/tribes/landing/scott.png'),
@@ -2029,10 +2030,54 @@ def tribes(request):
         }
     ]
 
+    reasons = [
+        {
+            'title': 'Hackathon',
+            'img': static('v2/images/tribes/landing/hackathon.svg'),
+            'info': 'See meaningful projects come to life on your dapp'
+        },
+        {
+            'title': 'Suggest Bounty',
+            'img': static('v2/images/tribes/landing/suggest.svg'),
+            'info': 'Get bottoms up ideas from passionate contributors'
+        },
+        {
+            'title': 'Grow Tribe',
+            'img': static('v2/images/tribes/landing/grow.svg'),
+            'info': 'Work seamlessly with your core contributors'
+        },
+        {
+            'title': 'Workshops',
+            'img': static('v2/images/tribes/landing/workshop.svg'),
+            'info': 'Host workshops and learn together'
+        },
+        {
+            'title': 'Chat',
+            'img': static('v2/images/tribes/landing/chat.svg'),
+            'info': 'Direct connection to your trusted tribe'
+        },
+        {
+            'title': 'Town Square',
+            'img': static('v2/images/tribes/landing/townsquare.svg'),
+            'info': 'Broadcast your priorities and engagey our tribe'
+        },
+        {
+            'title': 'Payout/Fund',
+            'img': static('v2/images/tribes/landing/payout.svg'),
+            'info': 'Easily co-manage hackathons with your team'
+        },
+        {
+            'title': 'Stats Report',
+            'img': static('v2/images/tribes/landing/stats.svg'),
+            'info': 'See how your hackathons are performing'
+        }
+    ]
+
     context = {
         'plans': plans,
-        'companies': companies,
-        'testimonials': testimonials
+        'tribes': tribes,
+        'testimonials': testimonials,
+        'reasons': reasons
     }
 
     return TemplateResponse(request, 'tribes/landing.html', context)

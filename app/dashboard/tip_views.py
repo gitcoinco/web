@@ -252,7 +252,8 @@ def send_tip_4(request):
 
     from townsquare.models import MatchRound
     mr = MatchRound.objects.current().first()
-    mr.process()
+    if mr:
+        mr.process()
 
     # notifications
     maybe_market_tip_to_github(tip)

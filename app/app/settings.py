@@ -49,6 +49,8 @@ OVERRIDE_NETWORK = env('OVERRIDE_NETWORK', default=None)
 SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
 ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
 BASE_DIR = root()
+#social integrations
+GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
 
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
@@ -125,6 +127,15 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'townsquare',
     'compliance',
+    'django_nyt.apps.DjangoNytConfig',
+    'mptt',
+    'sekizai',
+    'sorl.thumbnail',
+    'wiki.apps.WikiConfig',
+    'wiki.plugins.attachments.apps.AttachmentsConfig',
+    'wiki.plugins.notifications.apps.NotificationsConfig',
+    'wiki.plugins.images.apps.ImagesConfig',
+    'wiki.plugins.macros.apps.MacrosConfig',
 ]
 
 MIDDLEWARE = [
@@ -165,6 +176,7 @@ TEMPLATES = [{
             'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
             'app.context.preprocess', 'social_django.context_processors.backends',
             'social_django.context_processors.login_redirect',
+            "sekizai.context_processors.sekizai",
         ],
     },
 }]
@@ -569,7 +581,6 @@ SOCIAL_AUTH_GH_CUSTOM_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GH_CUSTOM_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_GH_CUSTOM_SCOPE = ['read:org', 'public_repo']
 
-
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',
     'social_core.pipeline.social_auth.auth_allowed', 'social_core.pipeline.social_auth.social_user',
@@ -741,6 +752,10 @@ if ENABLE_SILK:
 ENABLE_DDTRACE = env.bool('ENABLE_DDTRACE', default=False)
 if ENABLE_DDTRACE:
     INSTALLED_APPS += ['ddtrace.contrib.django']
+
+WIKI_ACCOUNT_HANDLING = True
+WIKI_ACCOUNT_SIGNUP_ALLOWED = True
+
 
 # Sending an email when a bounty is funded below a threshold
 LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)

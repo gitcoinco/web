@@ -1,0 +1,19 @@
+@{{profile.handle}} is estimated to be earning <strong>${{profile.match_this_round|floatformat:2}}</strong> in this week's CLR Round.
+
+<br>
+<br>
+Want to help @{{profile.handle}} move up the rankings?  Assuming you haven't contributed to @{{profile.handle}} yet this round, a contribution of 0.001 ETH (about $0.30) could mean <strong>+${{profile.matchranking_this_round.default_match_estimate|floatformat:2}}</strong> in matching.
+<br>
+<br>
+Other contribution levels will mean other matching amounts:
+<ul>
+  {% for key, val in profile.matchranking_this_round.sorted_match_curve.items %}
+    {% if key %}
+      <li>
+        Your contribution of ${{key}} could yield ${{val|floatformat:2}} in matching.
+      </li>
+    {% endif %}
+  {% endfor %}
+</ul>
+
+<br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard.

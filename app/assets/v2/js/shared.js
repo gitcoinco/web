@@ -1471,9 +1471,25 @@ const indicateMetamaskPopup = (closePopup) => {
   }
 };
 
+(function($) {
+  $.fn.visible = function(partial) {
+    let $t = $(this);
+    let $w = $(window);
+    let viewTop = $w.scrollTop();
+    let viewBottom = viewTop + $w.height();
+    let _top = $t.offset().top;
+    let _bottom = _top + $t.height();
+    let compareTop = partial === true ? _bottom : _top;
+    let compareBottom = partial === true ? _top : _bottom;
+
+    return ((compareBottom <= viewBottom) && (compareTop >= viewTop));
+  };
+})(jQuery);
+
+
 $(document).ready(function() {
   $(window).scroll(function() {
-    $('.g-fadein').each(function(i) {
+    $('.g-fadein').each(function(index, element) {
       let duration = $(this).attr('data-fade-duration') ? $(this).attr('data-fade-duration') : 1500;
       let direction = $(this).attr('data-fade-direction') ? $(this).attr('data-fade-direction') : 'mid';
       let animateProps;
@@ -1489,11 +1505,10 @@ $(document).ready(function() {
           animateProps = { 'opacity': '1', 'bottom': '0' };
       }
 
-      let bottom_of_object = $(this).position().top + $(this).outerHeight() / 2;
-      let bottom_of_window = $(window).scrollTop() + $(window).height();
-
-      if (bottom_of_window > bottom_of_object)
+      if ($(element).visible(true)) {
         $(this).animate(animateProps, duration);
+      }
+
     });
   });
 });
