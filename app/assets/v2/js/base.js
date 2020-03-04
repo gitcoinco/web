@@ -443,23 +443,28 @@ const gitcoinUpdates = () => {
 if (document.contxt.chat_access_token && document.contxt.chat_id) {
   // setup polling check for any updated data
   // scope our polling function so any potential js crashes won't affect it.
-  (function($) {
+  (($) => {
     setInterval(() => {
       $.ajax({
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer: ${document.contxt.chat_access_token}`
+        beforeSend: function(request) {
+          request.setRequestHeader('Authorization', `Bearer ${document.contxt.chat_access_token}`);
         },
-        url: `${document.contxt.chat_url}/api/v4/users/${document.contxt.chat_id}/teams/unread`
-      }).responseJSON(JSONUnread => {
-        let notified = false;
+        url: `${document.contxt.chat_url}/api/v4/users/me/teams/unread`,
+        dataType: 'json',
+        success: (JSONUnread) => {
+          let notified = false;
 
-        _.forEach(JSONUnread, (team) => {
-          if (team.msg_count > 0 && !notified) {
-            $('#chat-notification-dot').addClass('notification__dot_active');
-            notified = true;
-          }
-        });
+          JSONUnread.forEach((team) => {
+            if ((team.msg_count || team.mention_count) && !notified) {
+              $('#chat-notification-dot').addClass('notification__dot_active');
+              notified = true;
+            }
+          });
+
+        },
+        error: (error => {
+          console.log(error);
+        })
       });
     }, 30000);
   })(jQuery);
