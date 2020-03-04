@@ -15,7 +15,7 @@ from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.views import get_specific_activities
 
-from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction
+from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
@@ -83,6 +83,7 @@ def get_amount_unread(key, request):
 def get_sidebar_tabs(request):
     # setup tabs
     hours = 24
+    hackathon_tabs = []
     tabs = [{
         'title': f"Everywhere",
         'slug': 'everywhere',
@@ -143,19 +144,16 @@ def get_sidebar_tabs(request):
     }
     tabs = tabs + [connect]
 
-    if request.user.is_authenticated:
-        hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now() - timezone.timedelta(days=7), end_date__gt=timezone.now())
-        if hackathons.count():
-            user_registered_hackathon = request.user.profile.hackathon_registration.filter(registrant=request.user.profile, hackathon__in=hackathons).first()
-            if user_registered_hackathon:
-                default_tab = f'hackathon:{user_registered_hackathon.hackathon.pk}'
-                connect = {
-                    'title': user_registered_hackathon.hackathon.name,
-                    'slug': default_tab,
-                    'helper_text': f'Activity from the {user_registered_hackathon.hackathon.name} Hackathon.',
-                    'badge': max_of_ten(get_specific_activities(default_tab, False, request.user, request.session.get(default_tab, 0)).count()) if request.GET.get('tab') != default_tab else 0
-                }
-                tabs = [connect] + tabs
+    hackathons = HackathonEvent.objects.filter(start_date__gt=timezone.now() - timezone.timedelta(days=10), end_date__gt=timezone.now())
+    if hackathons.count():
+        for hackathon in hackathons:
+            connect = {
+                'title': hackathon.name,
+                'slug': f'hackathon:{hackathon.pk}',
+                'helper_text': f'Activity from the {hackathon.name} Hackathon.',
+            }
+            hackathon_tabs = [connect] + hackathon_tabs
+
 
     # set tab
     if request.COOKIES.get('tab'):
@@ -174,7 +172,7 @@ def get_sidebar_tabs(request):
     if "search-" in tab:
         search = tab.split('-')[1]
 
-    return tabs, tab, is_search, search
+    return tabs, tab, is_search, search, hackathon_tabs
 
 def get_offers(request):
     # get offers
@@ -235,6 +233,7 @@ def get_tags(request):
     for i in range(0, len(view_tags)):
         keyword = view_tags[i][2]
         view_tags[i] = view_tags[i] + [get_amount_unread(keyword, request)]
+
     return view_tags
 
 def get_param_metadata(request, tab):
@@ -262,15 +261,35 @@ def get_param_metadata(request, tab):
             print(e)
     return title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link
 
+def get_following_tribes(request):
+    following_tribes = []
+    if request.user.is_authenticated:
+        tribe_relations = request.user.profile.tribe_members
+        for tribe_relation in tribe_relations:
+            followed_profile = tribe_relation.org
+            if followed_profile.is_org:
+                last_24_hours_activity = 0 # TODO: integrate this with get_amount_unread
+                tribe = {
+                    'title': followed_profile.handle,
+                    'slug': followed_profile.handle,
+                    'helper_text': f'Activities from {followed_profile.handle} in the last 24 hours',
+                    'badge': last_24_hours_activity,
+                    'avatar_url': followed_profile.avatar_url
+                }
+                following_tribes = [tribe] + following_tribes
+    return following_tribes
+
+
 def town_square(request):
 
-    tabs, tab, is_search, search = get_sidebar_tabs(request)
+    tabs, tab, is_search, search, hackathon_tabs = get_sidebar_tabs(request)
     offers_by_category = get_offers(request)
     matching_leaderboard, current_match_round = get_miniclr_info(request)
     is_subscribed = get_subscription_info(request)
     announcements = Announcement.objects.current().filter(key='townsquare')
     view_tags = get_tags(request)
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
+    following_tribes = get_following_tribes(request)
 
     # render page context
     trending_only = int(request.GET.get('trending', 0))
@@ -286,6 +305,7 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'matching_leaderboard': matching_leaderboard,
         'current_match_round': current_match_round,
@@ -295,9 +315,11 @@ def town_square(request):
         'trending_only': bool(trending_only),
         'search': search,
         'tags': view_tags,
+        'suggested_actions': SuggestedAction.objects.filter(active=True).order_by('-rank'),
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
+        'following_tribes': following_tribes
     }
     response = TemplateResponse(request, 'townsquare/index.html', context)
     if request.GET.get('tab'):
@@ -367,6 +389,14 @@ def api(request, activity_id):
     if request.POST.get('method') == 'delete':
         activity.delete()
 
+    # deletion request
+    if request.POST.get('method') == 'vote':
+        vote = int(request.POST.get('vote'))
+        index = vote
+        if not activity.has_voted(request.user):
+            activity.metadata['poll_choices'][index]['answers'].append(request.user.profile.pk)
+            activity.save()
+
     # toggle like comment
     if request.POST.get('method') == 'toggle_like_comment':
         comment = activity.comments.filter(pk=request.POST.get('comment'))
@@ -383,7 +413,9 @@ def api(request, activity_id):
     # like request
     elif request.POST.get('method') == 'like':
         if request.POST['direction'] == 'liked':
-            Like.objects.create(profile=request.user.profile, activity=activity)
+            already_likes = request.user.profile.likes.filter(activity=activity).exists()
+            if not already_likes:
+                Like.objects.create(profile=request.user.profile, activity=activity)
         if request.POST['direction'] == 'unliked':
             activity.likes.filter(profile=request.user.profile).delete()
 
