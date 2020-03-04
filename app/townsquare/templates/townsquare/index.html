@@ -106,50 +106,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
               </div>
             </div>
-<<<<<<< HEAD
             <div class="feed_container col-12 col-md-8 col-lg-6 px-0 px-sm-3">
             {% csrf_token %}
             {% include 'townsquare/shared/shareactivity.html' %}
-=======
-            <div class="col-12 col-md-8 col-lg-6 px-0 px-sm-3">
-              <div class="bg-white rounded border">
-                <div id="status">
-                  {% csrf_token %}
-                  <div class="position-relative d-flex flex-row px-2 pt-4 pb-2">
-                    <div class="status-avatar px-3">
-                      <img class="avatar rounded-circle" src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% endif %}{% endif %}"/>
-                      {% if row.secondary_avatar_url %}
-                        <img class="avatar my-auto rounded-circle secondary_avatar" src="{{row.secondary_avatar_url}}" />
-                      {% elif row.other_profile %}
-                        <img class="avatar my-auto rounded-circle secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
-                      {% endif %}
-                    </div>
-                    <textarea
-                      id="textarea"
-                      class="form__input border-0 pl-2"
-                      placeholder="{% if placeholder %}{{placeholder}}{%else%}What are you thinking?{%endif%}"
-                      style="resize: none"
-                      data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
-                    ></textarea>
-                    <div id="textarea-dropdown" class="dropdown-menu" style="left: initial;"></div>
-                    <button id="poll-button" class="btn btn-clean position-absolute" style="bottom: 2em; right: 0em;"><i class="fas fa-chart-bar"></i></i></button>
-                    <button id="emoji-button" class="btn btn-clean position-absolute" style="bottom: 0.2em; right: 0;"><i class="far fa-smile"></i></button>
-                  </div>
-                  <input type="hidden" name="what" value="{{what}}:{{whatid}}">
-                  <div class="bg-lightblue p-2 d-flex flex-column flex-sm-row justify-content-between">
-                    <div class="btn-group-toggle text-left activity_type_selector" data-toggle="buttons">
-                      {% if tags %}
-                        {% for tag in tags %}
-                          <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" >
-                            <input type="checkbox" name="activity_type" value="{{tag.0}}" autocomplete="off">
-                          {{tag.0}}
-                          </label>
-                        {% endfor %}
-                      {% endif %}
-                    </div>
-                    <button class="btn btn-gc-blue font-smaller-7 font-weight-bold h-100" id="btn_post" disabled="true">POST</button>
-                  </div>
->>>>>>> master
 
               <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
                 <span id=activity_subheader>
