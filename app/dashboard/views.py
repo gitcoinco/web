@@ -872,7 +872,7 @@ def onboard(request, flow=None):
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
     background_tones = get_avatar_attrs(theme, 'background_tones')
-    
+
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
@@ -1036,32 +1036,35 @@ def users_fetch(request):
             )
         )
 
-    profile_list = Profile.objects.filter(pk__in=profile_list).annotate(
-            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).annotate(previous_worked=previous_worked()).order_by(
-        order_by, '-previous_worked'
-    )
-    profile_list = profile_list.values_list('pk', flat=True)
-    params = dict()
-    all_pages = Paginator(profile_list, limit)
-    all_users = []
-    this_page = all_pages.page(page)
-
-    page_type = request.GET.get('type')
-    if page_type == 'explore_tribes':
-        this_page = Profile.objects.filter(data__type='Organization'
+    if request.GET.get('type') == 'explore_tribes':
+        profile_list = Profile.objects.filter(data__type='Organization'
             ).annotate(
                 previous_worked_count=previous_worked()).annotate(
                 count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
             ).annotate(follower_count=Count('org')).order_by('-follower_count')
+
+        all_pages = Paginator(profile_list, limit)
+        this_page = all_pages.page(page)
     else:
-        this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
+        profile_list = Profile.objects.filter(pk__in=profile_list
+            ).annotate(average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))).annotate(previous_worked=previous_worked()).order_by(order_by, '-previous_worked')
+        profile_list = profile_list.values_list('pk', flat=True)
+
+        all_pages = Paginator(profile_list, limit)
+        this_page = all_pages.page(page)
+
+        profile_list = Profile.objects.filter(pk__in=[ele for ele in this_page])\
             .order_by(order_by).annotate(
             previous_worked_count=previous_worked()).annotate(
                 count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
             ).annotate(
                 average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
             ).order_by('-previous_worked_count')
+
+        this_page = profile_list
+
+    all_users = []
+    params = dict()
 
     for user in this_page:
         count_work_completed = user.get_fulfilled_bounties(network=network).count()
