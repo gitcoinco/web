@@ -2302,8 +2302,12 @@ class Activity(SuperModel):
         return vp
 
     def generate_view_props_cache(self):
-        self.cached_view_props = self.view_props
-        self.cached_view_props = json.loads(json.dumps(self.cached_view_props, cls=EncodeAnything))
+        vp = self.view_props
+        try:
+            self.cached_view_props = json.loads(json.dumps(vp, cls=EncodeAnything))
+        except ValueError as e: #ValueError
+            logger.exception(e)
+            return vp
         self.save()
         return self.cached_view_props
 
