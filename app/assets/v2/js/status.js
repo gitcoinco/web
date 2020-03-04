@@ -218,12 +218,11 @@ $(document).ready(function() {
 
     if (is_selected) {
       let html = `
-      <div id=poll_container class="bg-lightblue ">
-      <hr class=m-0 >
-      <input name=option1 class=m-1 placeholder="Choice 1">
-      <input name=option2 class=m-1 placeholder="Choice 2">
-      <input name=option3 class=m-1 placeholder="Choice 3">
-      <input name=option4 class=m-1 placeholder="Choice 4">
+      <div id=poll_container class="bg-lightblue p-2">
+      <input name=option1 placeholder="Option 1" class="form-control form-control-sm my-2">
+      <input name=option2 placeholder="Option 2" class="form-control form-control-sm my-2">
+      <input name=option3 placeholder="Option 3" class="form-control form-control-sm my-2">
+      <input name=option4 placeholder="Option 4" class="form-control form-control-sm my-2">
       </div>
       `;
 
@@ -325,7 +324,7 @@ $(document).ready(function() {
       }
     }
     $('#poll_container').remove();
-  
+
     fetch('/api/v0.1/activity', {
       method: 'post',
       body: data
