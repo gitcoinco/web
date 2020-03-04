@@ -1,10 +1,7 @@
 /* Using checkbox
 	<div class="checkbox_container">
 		<input name="network" id="foobar" type="checkbox" />
-		<span class="checkbox"></span>
-		<div class="filter-label">
-			<label for=foobar>gitcoin</label>
-		</div>
+		<label for=foobar>gitcoin</label>
 	</div>
 */
 
@@ -16,8 +13,6 @@
 .checkbox_container label::after {
   content: '';
   position: absolute;
-  /* left: 4px; */
-  /* top: 0px; */
   width: 0.5em;
   height: 0.9em;
   border: solid white;
@@ -28,11 +23,6 @@
 }
 
 .checkbox_container input {
-  /* position: absolute;
-  opacity: 0;
-  height: 20px;
-  width: 100%;
-  z-index: 1; */
   position: absolute;
   clip: rect(1px, 1px, 1px, 1px);
   padding: 0;
@@ -44,7 +34,6 @@
 
 .checkbox_container label::before {
   content: '';
-
   position: relative;
   display: inline-block !important;
   left: 0px;
