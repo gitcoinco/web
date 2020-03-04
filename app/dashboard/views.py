@@ -3924,15 +3924,14 @@ def hackathon_save_project(request):
 
     if project_id:
         try:
-            project_channel_name = slugify(f'{kwargs["name"]}')
-            created, channel_details = create_channel_if_not_exists({
-                'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                'channel_purpose': kwargs["summary"][:255],
-                'channel_display_name': f'project-{project_channel_name}'[:60],
-                'channel_name': project_channel_name[:60],
-                'channel_type': 'P'
+
+            project = HackathonProject.objects.filter(id=project_id, profiles__id=profile.id)
+
+            kwargs.update({
+                'logo': request.FILES.get('logo', project.first().logo)
             })
 
+            project.update(**kwargs)
             profiles_to_connect = []
             for profile_id in profiles:
                 curr_profile = Profile.objects.get(id=profile_id)
@@ -3940,28 +3939,41 @@ def hackathon_save_project(request):
                     created, curr_profile = associate_chat_to_profile(curr_profile)
                 profiles_to_connect.append(curr_profile.chat_id)
 
-            add_to_channel.delay(channel_details, profiles_to_connect)
-
-            project = HackathonProject.objects.filter(id=project_id, profiles__id=profile.id)
-
-            kwargs.update({
-                'logo': request.FILES.get('logo', project.first().logo),
-                'chat_channel_id': channel_details['id']
-            })
-
-            project.update(**kwargs)
+            add_to_channel.delay(project.chat_channel_id, profiles_to_connect)
 
             profiles.append(str(profile.id))
             project.first().profiles.set(profiles)
 
             invalidate_obj(project.first())
 
-
         except Exception as e:
             logger.error(f"error in record_action: {e}")
             return JsonResponse({'error': _('Error trying to save project')},
             status=401)
     else:
+
+        project_channel_name = slugify(f'{kwargs["name"]}')
+
+        created, channel_details = create_channel_if_not_exists({q
+            'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+            'channel_purpose': kwargs["summary"][:255],
+            'channel_display_name': f'project-{project_channel_name}'[:60],
+            'channel_name': project_channel_name[:60],
+            'channel_type': 'P'
+        })
+
+        profiles_to_connect = []
+        for profile_id in profiles:
+            curr_profile = Profile.objects.get(id=profile_id)
+            if not curr_profile.chat_id:
+                created, curr_profile = associate_chat_to_profile(curr_profile)
+            profiles_to_connect.append(curr_profile.chat_id)
+
+        add_to_channel.delay(channel_details, profiles_to_connect)
+
+        kwargs.update({
+            'chat_channel_id': channel_details['id']
+        })
         project = HackathonProject.objects.create(**kwargs)
         project.save()
         profiles.append(str(profile.id))
