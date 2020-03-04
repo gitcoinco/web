@@ -13,6 +13,7 @@ from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
+from retail.views import get_specific_activities
 
 from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction
 from .tasks import increment_offer_view_counts
@@ -58,85 +59,90 @@ def index(request):
 
     return town_square(request)
 
-def lazy_round_number(n):
-    if n>1000:
-        return f"{round(n/1000, 1)}k"
-    return n
 
-def town_square(request):
+def max_of_ten(n):
+    return "10+" if n >= 10 else n
 
-    # setup tabas
-    hours = 24 if not settings.DEBUG else 1000
-    posts_last_24_hours = 0
-    post_data_cache = JSONStore.objects.filter(view='activity', key='24hcount')
+
+def get_amount_unread(key, request):
+    if key == request.GET.get('tab'):
+        return 0
+    if key == request.COOKIES.get('tab'):
+        return 0
+    posts_unread = 0
+    post_data_cache = JSONStore.objects.filter(view='activity', key=key)
     if post_data_cache.exists():
-        posts_last_24_hours = post_data_cache.first().data
+        data = post_data_cache.first().data
+        elements = []
+        if isinstance(data, list):
+            elements = [ele for ele in data if ele > request.session.get(key, 0)]
+        posts_unread = len(elements)
+    return max_of_ten(posts_unread)
 
+
+def get_sidebar_tabs(request):
+    # setup tabs
+    hours = 24
     hackathon_tabs = []
     tabs = [{
         'title': f"Everywhere",
         'slug': 'everywhere',
-        'helper_text': f'The {posts_last_24_hours} activity feed items everywhere in the Gitcoin network',
-        'badge': posts_last_24_hours
+        'helper_text': f'The activity feed items everywhere in the Gitcoin network',
+        'badge': get_amount_unread('everywhere', request),
     }]
     default_tab = 'everywhere'
+
     if request.user.is_authenticated:
-        num_business_relationships = lazy_round_number(len(set(get_my_earnings_counter_profiles(request.user.profile.pk))))
+        num_business_relationships = len(set(get_my_earnings_counter_profiles(request.user.profile.pk)))
         if num_business_relationships:
+            key = 'my_tribes'
             new_tab = {
                 'title': f"Relationships",
-                'slug': 'my_tribes',
-                'helper_text': f'Activity from the {num_business_relationships} users who you\'ve done business with Gitcoin',
-                'badge': num_business_relationships
+                'slug': key,
+                'helper_text': f'Activity from the users who you\'ve done business with Gitcoin',
+                'badge': max_of_ten(get_specific_activities(key, False, request.user, request.session.get(key, 0)).count()) if request.GET.get('tab') != key else 0
             }
             tabs = [new_tab] + tabs
             default_tab = 'my_tribes'
-        num_grants_relationships = lazy_round_number(len(set(get_my_grants(request.user.profile))))
+        num_grants_relationships = (len(set(get_my_grants(request.user.profile))))
 
         if num_grants_relationships:
+            key = 'grants'
             new_tab = {
                 'title': f'Grants',
-                'slug': f'grants',
-                'helper_text': f'Activity on the {num_grants_relationships} Grants you\'ve created or funded.',
-                'badge': num_grants_relationships
+                'slug': key,
+                'helper_text': f'Activity on the Grants you\'ve created or funded.',
+                'badge': max_of_ten(get_specific_activities(key, False, request.user, request.session.get(key, 0)).count()) if request.GET.get('tab') != key else 0
             }
             tabs = [new_tab] + tabs
             default_tab = 'grants'
 
-    hours = 24 if not settings.DEBUG else 1000
-    if request.user.is_authenticated:
-        threads_last_24_hours = lazy_round_number(
-            request.user.profile.subscribed_threads.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
-            )
+        threads_last_24_hours = max_of_ten(request.user.profile.subscribed_threads.filter(pk__gt=request.session.get('my_threads', 0)).count())  if request.GET.get('tab') != 'my_threads' else 0
 
         threads = {
             'title': f"My Threads",
             'slug': f'my_threads',
-            'helper_text': f'The threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
+            'helper_text': f'The Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
             'badge': threads_last_24_hours
         }
         tabs = [threads] + tabs
 
-    connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post', 'mini_clr_payout'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
-    if connect_last_24_hours:
-        default_tab = 'connect'
-        connect = {
-            'title': f"Connect",
-            'slug': f'connect',
-            'helper_text': f'The announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin in the last 24 hours.',
-            'badge': connect_last_24_hours
-        }
-        tabs = [connect] + tabs
+    default_tab = 'connect'
+    connect = {
+        'title': f"Connect",
+        'slug': f'connect',
+        'helper_text': f'The announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin.',
+        'badge': get_amount_unread('connect', request),
+    }
+    tabs = [connect] + tabs
 
-    kudos_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['new_kudos', 'receive_kudos'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
-    if kudos_last_24_hours:
-        connect = {
-            'title': f"Kudos",
-            'slug': f'kudos',
-            'helper_text': f'The {kudos_last_24_hours} Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
-            'badge': kudos_last_24_hours
-        }
-        tabs = tabs + [connect]
+    connect = {
+        'title': f"Kudos",
+        'slug': f'kudos',
+        'helper_text': f'The Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
+        'badge': get_amount_unread('kudos', request),
+    }
+    tabs = tabs + [connect]
 
     hackathons = HackathonEvent.objects.filter(start_date__gt=timezone.now() - timezone.timedelta(days=10), end_date__gt=timezone.now())
     if hackathons.count():
@@ -147,6 +153,7 @@ def town_square(request):
                 'helper_text': f'Activity from the {hackathon.name} Hackathon.',
             }
             hackathon_tabs = [connect] + hackathon_tabs
+
 
     # set tab
     if request.COOKIES.get('tab'):
@@ -165,6 +172,9 @@ def town_square(request):
     if "search-" in tab:
         search = tab.split('-')[1]
 
+    return tabs, tab, is_search, search, hackathon_tabs
+
+def get_offers(request):
     # get offers
     offer_pks = []
     offers_by_category = {}
@@ -183,16 +193,50 @@ def town_square(request):
             'time': next_time_available,
         }
     increment_offer_view_counts.delay(offer_pks)
+    return offers_by_category
 
+def get_miniclr_info(request):
+    # matching leaderboard
+    current_match_round = MatchRound.objects.current().first()
+    num_to_show = 10
+    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1))
+    matching_leaderboard = [
+        {
+            'i': obj.number,
+            'following': request.user.profile == obj.profile or request.user.profile.follower.filter(org=obj.profile) if request.user.is_authenticated else False,
+            'handle': obj.profile.handle,
+            'contributions': obj.contributions,
+            'default_match_estimate': obj.default_match_estimate,
+            'match_curve': obj.sorted_match_curve,
+            'contributors': obj.contributors,
+            'amount': f"{int(obj.contributions_total/1000)}k" if obj.contributions_total > 1000 else round(obj.contributions_total, 2),
+            'match_amount': obj.match_total,
+            'you': obj.profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
+        } for obj in current_match_rankings[0:num_to_show]
+    ]
+
+    return matching_leaderboard, current_match_round
+
+def get_subscription_info(request):
     # subscriber info
     is_subscribed = False
     if request.user.is_authenticated:
         email_subscriber = request.user.profile.email_subscriptions.first()
         if email_subscriber:
             is_subscribed = email_subscriber.should_send_email_type_to('new_bounty_notifications')
+    return is_subscribed
 
-    # announcements
-    announcements = Announcement.objects.current().filter(key='townsquare')
+def get_tags(request):
+
+    # pull tag amounts
+    view_tags = tags.copy()
+    for i in range(0, len(view_tags)):
+        keyword = view_tags[i][2]
+        view_tags[i] = view_tags[i] + [get_amount_unread(keyword, request)]
+
+    return view_tags
+
+def get_param_metadata(request, tab):
 
     # title
     title = 'Home'
@@ -215,37 +259,16 @@ def town_square(request):
             page_seo_text_insert = desc
         except Exception as e:
             print(e)
+    return title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link
 
-    # matching leaderboard
-    current_match_round = MatchRound.objects.current().first()
-    if request.GET.get('round'):
-        current_match_round = MatchRound.objects.get(number=request.GET.get('round'))
-    num_to_show = 10
-    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1)).order_by('number')
-    matching_leaderboard = [
-        {
-            'i': obj.number,
-            'following': request.user.profile == obj.profile or request.user.profile.follower.filter(org=obj.profile) if request.user.is_authenticated else False,
-            'handle': obj.profile.handle,
-            'contributions': obj.contributions,
-            'default_match_estimate': obj.default_match_estimate,
-            'match_curve': obj.sorted_match_curve,
-            'contributors': obj.contributors,
-            'amount': f"{int(obj.contributions_total/1000)}k" if obj.contributions_total > 1000 else round(obj.contributions_total, 2),
-            'match_amount': obj.match_total,
-            'you': obj.profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
-        } for obj in current_match_rankings[0:num_to_show]
-    ]
-
+def get_following_tribes(request):
     following_tribes = []
     if request.user.is_authenticated:
         tribe_relations = request.user.profile.tribe_members
         for tribe_relation in tribe_relations:
             followed_profile = tribe_relation.org
             if followed_profile.is_org:
-                last_24_hours_activity = lazy_round_number(
-                    Activity.objects.filter(hidden=False, created_on__gt=timezone.now() - timezone.timedelta(hours=24)).related_to(followed_profile).count()
-                )
+                last_24_hours_activity = 0 # TODO: integrate this with get_amount_unread
                 tribe = {
                     'title': followed_profile.handle,
                     'slug': followed_profile.handle,
@@ -254,13 +277,19 @@ def town_square(request):
                     'avatar_url': followed_profile.avatar_url
                 }
                 following_tribes = [tribe] + following_tribes
+    return following_tribes
 
-    # pull tag amounts
-    for i in range(0, len(tags)):
-        keyword = tags[i][2]
-        post_data_cache = JSONStore.objects.filter(view='activity', key=keyword)
-        if post_data_cache.exists():
-            tags[i] = tags[i] + [post_data_cache.first().data]
+
+def town_square(request):
+
+    tabs, tab, is_search, search, hackathon_tabs = get_sidebar_tabs(request)
+    offers_by_category = get_offers(request)
+    matching_leaderboard, current_match_round = get_miniclr_info(request)
+    is_subscribed = get_subscription_info(request)
+    announcements = Announcement.objects.current().filter(key='townsquare')
+    view_tags = get_tags(request)
+    title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
+    following_tribes = get_following_tribes(request)
 
     # render page context
     trending_only = int(request.GET.get('trending', 0))
@@ -285,7 +314,7 @@ def town_square(request):
         'is_townsquare': True,
         'trending_only': bool(trending_only),
         'search': search,
-        'tags': tags,
+        'tags': view_tags,
         'suggested_actions': SuggestedAction.objects.filter(active=True).order_by('-rank'),
         'announcements': announcements,
         'is_subscribed': is_subscribed,

@@ -96,8 +96,6 @@ def create_activity_cache():
             data=json.loads(json.dumps(data, cls=EncodeAnything)),
             )
 
-
-
 def create_grants_cache():
     from grants.utils import generate_leaderboard
     print('grants')
@@ -179,11 +177,11 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_post_cache()
+        create_activity_cache()
         if not settings.DEBUG:
-            create_avatar_cache()
-            create_activity_cache()
+            create_post_cache()
             create_results_cache()
+            create_avatar_cache()
             create_quests_cache()
             create_grants_cache()
             create_contributor_landing_page_context()

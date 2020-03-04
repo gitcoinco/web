@@ -117,7 +117,7 @@ def index(request):
         }
     ]
 
-    know_us  = [
+    know_us = [
         {
             'text': 'Our Vision',
             'link': '/vision'
@@ -1221,6 +1221,12 @@ def activity(request):
 
     activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
 
+    # store last seen
+    if activities.exists():
+        last_pk = activities.first().pk
+        current_pk = request.session.get(what)
+        next_pk = last_pk if (not current_pk or current_pk < last_pk) else current_pk
+        request.session[what] = next_pk
     # pagination
     next_page = page + 1
     start_index = (page-1) * page_size
