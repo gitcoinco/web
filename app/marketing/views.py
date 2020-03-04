@@ -344,7 +344,7 @@ def email_settings(request, key):
                         form[key] = False
 
                 if form['chat']:
-                    update_chat_notifications(profile, 'email', True)
+                    update_chat_notifications(profile, 'email', False)
 
                 es.build_email_preferences(form)
                 es = record_form_submission(request, es, 'email')

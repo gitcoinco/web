@@ -21,7 +21,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from celery import group
-from chat.tasks import create_user
+from chat.tasks import create_user, chat_notify_default_props
 from dashboard.models import Profile
 from marketing.utils import should_suppress_notification_email
 
@@ -50,15 +50,7 @@ class Command(BaseCommand):
                     "auth_service": "gitcoin",
                     "locale": "en",
                     "props": {},
-                    "notify_props": {
-                        "email": "false" if should_suppress_notification_email(profile.user.email, 'chat') else "true",
-                        "push": "mention",
-                        "desktop": "all",
-                        "desktop_sound": "true",
-                        "mention_keys": f'{profile.handle}, @{profile.handle}',
-                        "channel": "true",
-                        "first_name": "false"
-                    },
+                    "notify_props": chat_notify_default_props(profile),
                 }, params={
                     "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
                 }))

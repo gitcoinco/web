@@ -55,10 +55,28 @@ def update_chat_notifications(profile, notification_key, status):
     query_opts = {}
     if profile.chat_id is not '' or profile.chat_id is not None:
         query_opts['chat_id'] = profile.chat_id
-    else:
-        query_opts['handle'] = profile.handle
 
-    update_user.delay(query_opts=query_opts, update_opts={'notify_props': {notification_key: status}})
+    query_opts['handle'] = profile.handle
+    # TODO: set this to retreive current chat notification propers and then just patch whats diff
+    notify_props = chat_notify_default_props(profile)
+
+    notify_props[notification_key] = "true" if status else "false"
+
+    patch_chat_user.delay(query_opts=query_opts, update_opts={'notify_props': notify_props})
+
+
+def chat_notify_default_props(profile):
+    return {
+        "email": "false" if should_suppress_notification_email(profile.user.email, 'chat') else "true",
+        "push": "mention",
+        "comments": "never",
+        "desktop": "all",
+        "desktop_sound": "true",
+        "mention_keys": f'{profile.handle}, @{profile.handle}',
+        "channel": "true",
+        "first_name": "false",
+        "push_status": "away"
+    }
 
 
 def associate_chat_to_profile(profile):
@@ -98,15 +116,7 @@ def associate_chat_to_profile(profile):
                     "auth_service": "gitcoin",
                     "locale": "en",
                     "props": {},
-                    "notify_props": {
-                        "email": "false" if should_suppress_notification_email(profile.user.email, 'chat') else "true",
-                        "push": "mention",
-                        "desktop": "all",
-                        "desktop_sound": "true",
-                        "mention_keys": f'{profile.handle}, @{profile.handle}',
-                        "channel": "true",
-                        "first_name": "false"
-                    },
+                    "notify_props": chat_notify_default_props(profile),
                 },
                 params={
                     "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
@@ -322,7 +332,7 @@ def create_user(self, options, params, profile_handle='', retry: bool = True):
 
 
 @app.shared_task(bind=True, max_retries=3)
-def update_user(self, query_opts, update_opts, retry: bool = True) -> None:
+def patch_chat_user(self, query_opts, update_opts, retry: bool = True) -> None:
     """
     :param self:
     :param query_opts:
@@ -350,9 +360,9 @@ def update_user(self, query_opts, update_opts, retry: bool = True) -> None:
                     logger.info(f"Unable to find chat user for {query_opts['handle']}")
             else:
                 chat_id = query_opts['chat_id']
-
-            chat_driver.users.update_user(chat_id, options=update_opts)
+            chat_driver.users.patch_user(chat_id, options=update_opts)
         except ConnectionError as exc:
+
             logger.info(str(exc))
             logger.info("Retrying connection")
             self.retry(30)

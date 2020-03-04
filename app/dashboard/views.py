@@ -59,7 +59,7 @@ from avatar.views_3d import avatar3dids_helper
 from bleach import clean
 from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
-from chat.tasks import add_to_channel, create_channel_if_not_exists, associate_chat_to_profile
+from chat.tasks import add_to_channel, create_channel_if_not_exists, associate_chat_to_profile, chat_notify_default_props
 
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
@@ -130,15 +130,7 @@ def oauth_connect(request, *args, **kwargs):
         "id": f'{active_user_profile.user.id}',
         "auth_data": f'{active_user_profile.user.id}',
         "auth_service": "gitcoin",
-        "notify_props": {
-            "email": "false" if should_suppress_notification_email(active_user_profile.user.email, 'chat') else "true",
-            "push": "mention",
-            "desktop": "all",
-            "desktop_sound": "true",
-            "mention_keys": f'{active_user_profile.handle}, @{active_user_profile.handle}',
-            "channel": "true",
-            "first_name": "false"
-        }
+        "notify_props": chat_notify_default_props(active_user_profile)
     }
     return JsonResponse(user_profile, status=200, safe=False)
 
