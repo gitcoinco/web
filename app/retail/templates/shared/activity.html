@@ -302,7 +302,9 @@
         {% elif row.activity_type == 'leaderboard_rank' %}
           <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100 mw-100">
         {% elif row.metadata.quest_reward %}
-          <img src="{{row.metadata.quest_reward}}" alt="" class="mw-100">
+          <a href="{{row.metadata.quest_url}}">
+            <img src="{{row.metadata.quest_reward}}" alt="" class="mw-100">
+          </a>
         {% else %}
           <i class="{{ row.icon }} last-icon"></i>
         {% endif %}
