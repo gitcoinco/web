@@ -61,6 +61,9 @@ from kudos.router import router as kdrouter
 from .sitemaps import sitemaps
 
 urlpatterns = [
+
+    path('wiki/', include('wiki.urls')),
+
     # oauth2 provider
     url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
@@ -118,6 +121,7 @@ urlpatterns = [
     url(r'^api/v0.1/profile/settings', dashboard.views.profile_settings, name='profile_settings'),
     url(r'^api/v0.1/profile/backup', dashboard.views.profile_backup, name='profile_backup'),
     path('api/v0.1/activity/<int:activity_id>', townsquare.views.api, name='townsquare_api'),
+    path('api/v0.1/comment/<int:comment_id>', townsquare.views.comment_v1, name='comment_v1'),
     path('api/v0.1/emailsettings/', townsquare.views.emailsettings, name='townsquare_emailsettings'),
     url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
     url(
@@ -230,6 +234,7 @@ urlpatterns = [
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
+    url(r'^bounty/sync_payout/(?P<bounty_id>.*)?', dashboard.views.manual_sync_etc_payout, name='manual_sync_etc_payout'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),  # TODO: Remove
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),  # TODO: Remove
     # TODO: Rename below to bounty/
@@ -315,7 +320,10 @@ urlpatterns = [
     re_path(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     re_path(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     re_path(r'^legal/?', dashboard.views.terms, name='legal'),
+
+    # User Directory
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
+    re_path(r'^tribes/explore', dashboard.views.users_directory, name='tribes_directory'),
 
     # Alpha functionality
     re_path(r'^profile/(.*)/(.*)?', dashboard.views.profile, name='profile_by_tab'),
@@ -378,6 +386,7 @@ urlpatterns = [
         name='townsquare_offer_decline'
     ),
     path('action/<int:offer_id>/<slug:offer_slug>', townsquare.views.offer_view, name='townsquare_offer_view'),
+    url(r'^service/metadata/$', townsquare.views.extract_metadata_page, name='meta-extractor'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
     url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),
@@ -452,6 +461,7 @@ urlpatterns = [
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
+    path('_administration/email/new_bounty_daily', marketing.views.new_bounty_daily_preview, name='admin_new_bounty_daily'),
     path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
     path(
         '_administration/email/featured_funded_bounty',
@@ -574,6 +584,7 @@ urlpatterns = [
         retail.emails.no_applicant_reminder,
         name='no_applicant_reminder'
     ),
+    re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
@@ -653,6 +664,10 @@ urlpatterns = [
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
+
+    # wiki
+    path('wiki/notifications/', include('django_nyt.urls')),
+
 ]
 
 if settings.ENABLE_SILK:
@@ -672,12 +687,14 @@ if settings.DEBUG:
 
 urlpatterns += [
     re_path(
-        r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
         dashboard.views.profile,
         name='profile_min'
     ),
-    re_path(r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'),
+    re_path(r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'),
 ]
+
+LOGIN_REDIRECT_URL = '/login'
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'

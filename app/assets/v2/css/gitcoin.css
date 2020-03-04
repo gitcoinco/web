@@ -8,7 +8,6 @@ body {
 
 h4,
 .h4 {
-  text-align: center;
   padding-top: 40px;
 }
 
@@ -17,6 +16,12 @@ h4,
   top: 0.25rem;
   right: 2rem;
   z-index: 9999999999999;
+}
+
+.sticky-top {
+  position: sticky!important;
+  top: 0;
+  z-index: 1;
 }
 
 .lighter {
@@ -119,6 +124,14 @@ h4,
 
 .text-white {
   color: #ffffff;
+}
+
+.gc-text-blue {
+  color: #3E00FF;
+}
+
+.gc-text-green {
+  color: #0FCE7C;
 }
 
 .text-black-60 {

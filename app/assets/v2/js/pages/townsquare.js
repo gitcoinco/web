@@ -5,6 +5,7 @@ $(document).ready(function() {
     let prefix = ' in ';
 
     if (difference > 0) {
+      console.log(moment(difference).inspect());
       const parts = {
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
@@ -41,8 +42,9 @@ $(document).ready(function() {
 
   var get_redir_location = function(tab) {
     let trending = $('#trending').is(':checked') ? 1 : 0;
+    let personal = $('#personal').is(':checked') ? 1 : 0;
 
-    return '/?tab=' + tab + '&trending=' + trending;
+    return '/?tab=' + tab + '&trending=' + trending + '&personal=' + personal;
   };
 
   $('body').on('focus change paste keyup blur', '#keyword', function(e) {
@@ -57,7 +59,12 @@ $(document).ready(function() {
       document.location.href = get_redir_location($('.nav-link.active').data('slug'));
     }, 10);
   });
-  $('body').on('click', '.container .nav-link', function(e) {
+  $('body').on('click', '#personal', function(e) {
+    setTimeout(function() {
+      document.location.href = get_redir_location($('.nav-link.active').data('slug'));
+    }, 10);
+  });
+  $('body').on('click', '.townsquare_nav-list .nav-link', function(e) {
     $('.nav-link').removeClass('active');
     $(this).addClass('active');
     e.preventDefault();
@@ -65,27 +72,6 @@ $(document).ready(function() {
       document.location.href = get_redir_location($('.nav-link.active').data('slug'));
     }, 10);
   });
-
-  // updates expiry timers with countdowns
-  var updateTimers = function() {
-    $('.timer').each(function() {
-      var time = $(this).data('time');
-      var base_time = $(this).data('base_time');
-      var counter = $(this).data('counter');
-
-      if (!counter) {
-        counter = 0;
-      }
-      counter += 1;
-      $(this).data('counter', counter);
-      var start_date = new Date(new Date(time).getTime() - (1000 * counter));
-      var countdown = start_date - new Date(base_time);
-
-      $(this).html(time_difference_broken_down(countdown));
-    });
-  };
-
-  setInterval(updateTimers, 1000);
 
   // toggles the daily email sender
   $('#receive_daily_offers_in_inbox').on('change', function(e) {
@@ -106,4 +92,42 @@ $(document).ready(function() {
   $('.announce .remove').click(function() {
     $(this).parents('.announce').remove();
   });
+
+  function onIntersection(imageEntites, observer) {
+    imageEntites.forEach(image => {
+      if (image.isIntersecting) {
+        observer.unobserve(image.target);
+        image.target.src = image.target.dataset.src;
+        image.target.onload = () => image.target.classList.add('loaded');
+      }
+    });
+  }
+  const interactSettings = {
+    root: document.querySelector('.loader-container'),
+    rootMargin: '0px 200px 200px 200px',
+    threshold: 0.01
+  };
+
+  function loadImages() {
+    if ('IntersectionObserver' in window) {
+      let images = [...document.querySelectorAll("img[loading='lazy']")];
+      let observer = new IntersectionObserver(onIntersection, interactSettings);
+
+      images.forEach(img => {
+        img.setAttribute('loading', '');
+        observer.observe(img);
+      });
+    } else {
+      const images = document.querySelectorAll("img[loading='lazy']");
+
+      images.forEach(img => {
+        img.src = img.dataset.src;
+        img.setAttribute('loading', '');
+      });
+    }
+
+    window.setTimeout(loadImages, 700);
+  }
+
+  loadImages();
 }(jQuery));
