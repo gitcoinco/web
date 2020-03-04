@@ -76,7 +76,7 @@ def preprocess(request):
     if num_slack > 1000:
         num_slack = f'{str(round((num_slack) / 1000, 1))}k'
 
-    chat_url = get_chat_url()
+    chat_url = get_chat_url(front_end=True)
     chat_access_token = ''
     chat_id = ''
     user_is_authenticated = request.user.is_authenticated
