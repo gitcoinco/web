@@ -322,12 +322,12 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
             gasPrice: web3.toHex(get_gas_price())
           }, post_send_callback);
         } else {
-          var send_erc20 = function() {
+          var send_erc20 = function () {
             var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
 
-            token_contract.transfer(destinationAccount, amountInDenom, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
+            token_contract.transfer(destinationAccount, amountInDenom, { gasPrice: web3.toHex(get_gas_price()) }, post_send_callback);
           };
-          var send_gas_money_and_erc20 = function() {
+          var send_gas_money_and_erc20 = function () {
             _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
             web3.eth.sendTransaction({
               to: destinationAccount,
@@ -348,26 +348,11 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
   };
 
   // send direct, or not?
-  //'/tip/address/' + username;
-  
-  const formTip = new FormData();
-  formTip.append('user', username);
+  const url = '/tip/address/' + username;
+  const aesCbc = new aesjs.ModeOfOperation.cbc(key, iv);
 
-  const tipSend = {
-    url: '/api/v0.1/tipshipping' + username,
-    method: 'POST',
-    data: formTip,
-    processData: false,
-    dataType: 'json',
-    contentType: false
-  };
-
-  fetch(tipSend).done(function(response) {
-    if (response.status == 200) {
-      console.log('everything Ok');
-    }
-  }).then(function(response) { 
-    return response.json();
+  fetch(url, { method: 'GET', credentials: 'include' }).then(function(response) {
+    return aesCbc.decrypt(response.json());
   }).then(function(json) {
     if (json.addresses.length > 0) {
       // pay out directly

@@ -21,6 +21,7 @@ from __future__ import print_function, unicode_literals
 
 import json
 import logging
+import objcrypt
 
 from django.conf import settings
 from django.contrib import messages
@@ -48,6 +49,7 @@ confirm_time_minutes_target = 4
 
 logger = logging.getLogger(__name__)
 
+crypter = objecrypt.Crypter('key', 'cbc')
 
 def send_tip(request):
     """Handle the first stage of sending a tip."""
@@ -303,7 +305,8 @@ def tipee_address(request, handle):
     }
     profile = get_profile(str(handle).replace('@', ''))
     if profile and profile.preferred_payout_address:
-        response['addresses'].append(profile.preferred_payout_address)
+        payout_address = crypter.encrypt_object(profile.preferred_payout_address)
+        response['addresses'].append(payout_address)
     return JsonResponse(response)
 
 
