@@ -11,6 +11,7 @@
     ></textarea>
     <input type="hidden" name="what" value="{{what}}:{{whatid}}">
     <div id="textarea-dropdown" class="dropdown-menu" style="top: initial; left: initial;"></div>
+    <button id="poll-button" class="btn btn-clean position-absolute" style="bottom: 2em; right: 0em;"><i class="fas fa-chart-bar"></i></i></button>
     <button id="emoji-button" class="btn btn-clean position-absolute" style="bottom: 0.2em; right: 0;"><i class="far fa-smile"></i></button>
   </div>
   <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
@@ -36,9 +37,10 @@
       </button>
       <div class="dropdown-menu">
         <form class="px-4 py-3">
-          <div class="form-group">
-            <label for="search-gif">Search GIF</label>
-            <input type="text" class="form-control" id="search-gif" placeholder="Search">
+          <div class="form-group mb-0">
+            <label for="search-gif" class="sr-only">Search GIF</label>
+            <input type="text" class="form-control" id="search-gif" placeholder="Search GIF">
+            <img src="{% static 'v2/images/Poweredby_640px-White_HorizText.png' %}" alt="Powered By GIPHY" height="10" class="mw-100">
           </div>
         </form>
         <div id="list-gif" class="gif-grid"></div>

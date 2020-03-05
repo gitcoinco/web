@@ -1,10 +1,7 @@
 /* Using checkbox
 	<div class="checkbox_container">
 		<input name="network" id="foobar" type="checkbox" />
-		<span class="checkbox"></span>
-		<div class="filter-label">
-			<label for=foobar>gitcoin</label>
-		</div>
+		<label for=foobar>gitcoin</label>
 	</div>
 */
 
@@ -13,51 +10,61 @@
   margin-left: 10px;
 }
 
-.checkbox_container .checkbox:after {
-  left: 4px;
-  top: 0px;
-  width: 5px;
-  height: 11px;
+.checkbox_container label::after {
+  content: '';
+  position: absolute;
+  width: 0.5em;
+  height: 0.9em;
   border: solid white;
-  border-width: 0 2px 2px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
+  border-width: 0 0.15em 0.15em 0;
+  -webkit-transform: rotate(45deg) translate(-0.7em, -1.25em);
+  -ms-transform: rotate(45deg) translate(-0.7em, -1.25em);
+  transform: rotate(45deg) translate(-0.7em, -1.25em);
 }
 
 .checkbox_container input {
   position: absolute;
-  opacity: 0;
-  height: 20px;
-  width: 100%;
-  z-index: 1;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 0;
+  border: 0;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
 }
 
-.checkbox {
+.checkbox_container label::before {
+  content: '';
   position: relative;
   display: inline-block !important;
   left: 0px;
   top: 3px;
-  height: 15px;
-  width: 15px;
+  height: 1.25em;
+  width: 1.25em;
   background-color: #FFF;
   border: 1px solid #D3D3D3;
   border-radius: 2px;
+  margin-right: 0.5em;
 }
 
-.checkbox::after {
-  content: '';
-  position: absolute;
+.checkbox_container label::after {
   display: none;
 }
 
-.checkbox_container input:checked ~ .checkbox {
+.checkbox_container input:checked ~ label::before,
+.checkbox_container input:checked ~ * label::before {
   background-color:#3E00FF;
   border: 1px solid #3E00FF;
+  display: block;
 }
 
-.checkbox_container input:checked ~ .checkbox:after {
+.checkbox_container input:checked ~ label::after,
+.checkbox_container input:checked ~ * label::after {
   display: block;
+}
+.checkbox_container input:focus + label::before,
+.checkbox_container input:focus ~ * label::before {
+  outline: auto;
+  outline-color: #619cf6;
 }
 
 /* Below needs refactoring */

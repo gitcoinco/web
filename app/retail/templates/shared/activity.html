@@ -76,7 +76,7 @@
             @{{ row.metadata.to_username }}
           </a>
         {% elif row.activity_type == 'mini_clr_payout' %}
-          {% trans "got a distribution of" %} of <strong>${{row.metadata.amount|floatformat:2}}<strong>
+          {% trans "got a distribution of" %} of <strong>{{row.metadata.amount|floatformat:2}} DAI<strong> in {{row.metadata.round_description}}
         {% elif row.activity_type == 'new_kudos' %}
           {% trans "sent a" %}
           Kudos
@@ -259,7 +259,7 @@
                   {% if row.value_in_token_disp %}
                     <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
                   {% elif row.metadata.value_in_eth %}
-                    <span class="value_in_eth">{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
+                    <span class="value_in_eth">{{ row.metadata.value_in_eth }} ETH</span>
                   {% elif row.metadata.value_in_token and row.metadata.token_name %}
                     <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
                   {% endif %}
@@ -302,15 +302,29 @@
         {% elif row.activity_type == 'leaderboard_rank' %}
           <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100 mw-100">
         {% elif row.metadata.quest_reward %}
-          <img src="{{row.metadata.quest_reward}}" alt="" class="mw-100">
+          <a href="{{row.metadata.quest_url}}">
+            <img src="{{row.metadata.quest_reward}}" alt="" class="mw-100">
+          </a>
         {% else %}
           <i class="{{ row.icon }} last-icon"></i>
         {% endif %}
       </div>
     </div>
   </div>
-
-  {% if row.metadata.resource.type == 'gif' %}
+  {% if row.poll %}
+  <div class="poll_choices {% if row.poll_answered %}answered{%endif%}">
+    {% for ele in row.poll %}
+      <div data-vote="{{ forloop.counter0 }}" class=" vote {% if row.poll_answered == ele.i %}answer{%endif%}">
+        <p>
+          {{ele.question}}
+        <span>
+          {{ele.answers|length}}
+        </span>
+        </p>
+      </div>
+    {% endfor %}
+  </div>
+  {% elif row.metadata.resource.type == 'gif' %}
   <div class="mt-1 mb-2" >
     <div class="row align-items-center bg-light">
         <img class="attachment" loading="lazy" data-src="{{ row.metadata.resource.id }}">

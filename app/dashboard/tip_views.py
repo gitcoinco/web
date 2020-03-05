@@ -49,7 +49,7 @@ confirm_time_minutes_target = 4
 
 logger = logging.getLogger(__name__)
 
-crypter = objecrypt.Crypter('key', 'cbc')
+crypter = objcrypt.Crypter('key', 'cbc')
 
 def send_tip(request):
     """Handle the first stage of sending a tip."""
@@ -252,10 +252,8 @@ def send_tip_4(request):
             )
     tip.save()
 
-    from townsquare.models import MatchRound
-    mr = MatchRound.objects.current().first()
-    if mr:
-        mr.process()
+    from townsquare.tasks import calculate_clr_match
+    calculate_clr_match.delay()
 
     # notifications
     maybe_market_tip_to_github(tip)
