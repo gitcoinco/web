@@ -203,6 +203,42 @@ $(document).ready(function() {
     $('#textarea').focus();
   }
 
+  document.is_shift = false;
+  // handle shift button
+  $('body').on('keyup', '#textarea', function(e) {
+    if (e.keyCode == 16) {
+      document.is_shift = false;
+    }
+  });
+  // handle shift button
+  $('body').on('click', '#poll-button', function(e) {
+    e.preventDefault();
+    $(this).toggleClass('selected');
+    var is_selected = $(this).hasClass('selected');
+
+    if (is_selected) {
+      let html = `
+      <div id=poll_container class="bg-lightblue p-2">
+      <input name=option1 placeholder="Option 1" class="form-control form-control-sm my-2">
+      <input name=option2 placeholder="Option 2" class="form-control form-control-sm my-2">
+      <input name=option3 placeholder="Option 3" class="form-control form-control-sm my-2">
+      <input name=option4 placeholder="Option 4" class="form-control form-control-sm my-2">
+      </div>
+      `;
+
+      $(html).insertAfter('#status');
+      $('#poll_container input[name=option1]').focus();
+    } else {
+      $('#poll_container').remove();
+    }
+
+  });
+  $('body').on('keydown', '#textarea', function(e) {
+    if (e.keyCode == 16) {
+      document.is_shift = true;
+    }
+  });
+
   $('body').on('focus change paste keydown keyup blur', '#textarea', function(e) {
 
     // enforce a max length
@@ -379,6 +415,15 @@ $(document).ready(function() {
       );
       
     } else {
+      for (let i = 0; i < 5; i++) {
+        const val = $('#poll_container input[name=option' + i + ']').val();
+
+        if (val) {
+          data.append('option' + i, val);
+        }
+      }
+      $('#poll_container').remove();
+
       fetch('/api/v0.1/activity', {
         method: 'post',
         body: data

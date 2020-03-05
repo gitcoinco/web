@@ -26,6 +26,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 import sendgrid
+from app.utils import get_profiles_from_text
 from marketing.utils import func_name, get_or_save_email_subscriber, should_suppress_notification_email
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
@@ -413,11 +414,7 @@ def comment_email(comment):
     translation.activate(cur_language)
     print(f"sent comment email to {len(to_emails)}")
 
-    import re
-    from dashboard.models import Profile
-    username_pattern = re.compile(r'@(\S+)')
-    mentioned_usernames = re.findall(username_pattern, comment.comment)
-    emails = Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True)
+    emails = get_profiles_from_text(comment.comment).values_list('email', flat=True)
     mentioned_emails = set(emails)
     # Don't send emails again to users who already received a comment email
     deduped_emails = mentioned_emails.difference(to_emails)

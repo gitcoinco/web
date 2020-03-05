@@ -54,8 +54,9 @@ $(document).ready(function() {
 
   var get_redir_location = function(tab) {
     let trending = $('#trending').is(':checked') ? 1 : 0;
+    let personal = $('#personal').is(':checked') ? 1 : 0;
 
-    return '/?tab=' + tab + '&trending=' + trending;
+    return '/?tab=' + tab + '&trending=' + trending + '&personal=' + personal;
   };
 
   $('body').on('focus change paste keyup blur', '#keyword', function(e) {
@@ -66,6 +67,11 @@ $(document).ready(function() {
   });
 
   $('body').on('click', '#trending', function(e) {
+    setTimeout(function() {
+      document.location.href = get_redir_location($('.nav-link.active').data('slug'));
+    }, 10);
+  });
+  $('body').on('click', '#personal', function(e) {
     setTimeout(function() {
       document.location.href = get_redir_location($('.nav-link.active').data('slug'));
     }, 10);

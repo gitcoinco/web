@@ -88,8 +88,8 @@ from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
 from .export import (
-    ActivityExportSerializer, BountyExportSerializer, GrantExportSerializer, ProfileExportSerializer,
-    filtered_list_data,
+    ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
+    ProfileExportSerializer, filtered_list_data,
 )
 from .helpers import (
     bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
@@ -105,9 +105,9 @@ from .notifications import (
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from .utils import (
-    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_etc_txn_status, get_unrated_bounties_count,
-    get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
-    release_bounty_to_the_public, web3_process_bounty,
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_etc_txn_status,
+    get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty,
+    record_user_action_on_interest, release_bounty_to_the_public, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -152,6 +152,18 @@ def org_perms(request):
             {'error': _('You must be authenticated via github to use this feature!')},
              status=401)
     return JsonResponse({'orgs': response_data}, safe=False)
+
+
+@staff_member_required
+def manual_sync_etc_payout(request, bounty_id):
+    b = Bounty.objects.get(id=bounty_id)
+    if b.payout_confirmed:
+        return JsonResponse(
+            {'error': _('Bounty payout already confirmed'),
+             'success': False},
+            status=401)
+    sync_etc_payout(b)
+    return JsonResponse({'success': True}, status=200)
 
 
 def record_user_action(user, event_name, instance):
@@ -2455,32 +2467,45 @@ def profile_backup(request):
     if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
         raise Http404
 
-    # fetch the exported data for backup
-    data = ProfileExportSerializer(profile).data
-    # grants
-    data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
-    # portfolio, active work, bounties
-    portfolio_bounties = profile.get_fulfilled_bounties()
-    active_work = Bounty.objects.none()
-    interests = profile.active_bounties
-    for interest in interests:
-        active_work = active_work | Bounty.objects.filter(interested=interest, current_bounty=True)
-    data["portfolio"] = BountyExportSerializer(portfolio_bounties, many=True).data
-    data["active_work"] = BountyExportSerializer(active_work, many=True).data
-    data["bounties"] = BountyExportSerializer(profile.bounties, many=True).data
-    # activities
-    data["activities"] = ActivityExportSerializer(profile.activities, many=True).data
-    # tips
-    data["tips"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=False)
-    data["_tips.private_fields"] = filtered_list_data("tip", profile.tips, private_items=None, private_fields=True)
-    # feedback
-    feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
-    data["feedbacks"] = filtered_list_data("feedback", feedbacks, private_items=False, private_fields=None)
-    data["_feedbacks.private_items"] = filtered_list_data("feedback", feedbacks, private_items=True, private_fields=None)
+    model = request.POST.get('model', None)
+    # prepare the exported data for backup
+    profile_data = ProfileExportSerializer(profile).data
+    data = {}
+    keys = ['grants', 'portfolio', 'active_work', 'bounties', 'activities',
+        'tips', '_tips.private_fields', 'feedbacks', '_feedbacks.private_items',
+        'custom_avatars'] + list(profile_data.keys())
+
+    if model == 'custom avatar':
+        # custom avatar
+        custom_avatars = get_custom_avatars(profile)
+        data['custom_avatars'] = CustomAvatarExportSerializer(custom_avatars, many=True).data
+    else:
+        data = profile_data
+        # grants
+        data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
+        # portfolio, active work, bounties
+        portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
+        active_work = Bounty.objects.none()
+        interests = profile.active_bounties
+        for interest in interests:
+            active_work = active_work | Bounty.objects.filter(interested=interest, current_bounty=True)
+        data["portfolio"] = BountyExportSerializer(portfolio_bounties, many=True).data
+        data["active_work"] = BountyExportSerializer(active_work, many=True).data
+        data["bounties"] = BountyExportSerializer(profile.bounties, many=True).data
+        # activities
+        data["activities"] = ActivityExportSerializer(profile.activities, many=True).data
+        # tips
+        data['tips'] = filtered_list_data('tip', profile.tips, private_items=None, private_fields=False)
+        data['_tips.private_fields'] = filtered_list_data('tip', profile.tips, private_items=None, private_fields=True)
+        # feedback
+        feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
+        data['feedbacks'] = filtered_list_data('feedback', feedbacks, private_items=False, private_fields=None)
+        data['_feedbacks.private_items'] = filtered_list_data('feedback', feedbacks, private_items=True, private_fields=None)
 
     response = {
         'status': 200,
-        'data': data
+        'data': data,
+        'keys': keys
     }
 
     return JsonResponse(response, status=response.get('status', 200))
@@ -2621,7 +2646,7 @@ def get_profile_tab(request, profile, tab, prev_context):
                     return HttpResponse(status=204)
 
                 context = {}
-                context['activities'] = [ele.either_view_props for ele in paginator.get_page(page)]
+                context['activities'] = [ele.view_props_for(request.user) for ele in paginator.get_page(page)]
 
                 return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
@@ -4831,7 +4856,6 @@ def fulfill_bounty_v1(request):
     '''
         ETC-TODO
         - wire in email (invite + successful fulfillment)
-        - create activty entry
         - evalute BountyFulfillment unused fields
     '''
     response = {
@@ -4869,6 +4893,26 @@ def fulfill_bounty_v1(request):
         response['message'] = 'error: user can submit once per bounty'
         return JsonResponse(response)
 
+    fulfiller_address = request.POST.get('fulfiller_address')
+    if not fulfiller_address:
+        response['message'] = 'error: missing fulfiller_address'
+        return JsonResponse(response)
+
+    fulfiller_email = request.POST.get('email')
+    if not fulfiller_email:
+        response['message'] = 'error: missing email'
+        return JsonResponse(response)
+
+    hours_worked = request.POST.get('hoursWorked')
+    if not hours_worked or not hours_worked.isdigit():
+        response['message'] = 'error: missing hoursWorked'
+        return JsonResponse(response)
+
+    fulfiller_github_url = request.POST.get('githubPRLink')
+    if not fulfiller_github_url:
+        response['message'] = 'error: missing githubPRLink'
+        return JsonResponse(response)
+
     event_name = 'work_submitted'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
@@ -4896,28 +4940,9 @@ def fulfill_bounty_v1(request):
     # fulfillment.fulfiller_name    ETC-TODO: REMOVE ?
     # fulfillment.fulfillment_id    ETC-TODO: REMOVE ?
 
-    fulfiller_address = request.POST.get('fulfiller_address')
-    if not fulfiller_address:
-        response['message'] = 'error: missing fulfiller_address'
-        return JsonResponse(response)
     fulfillment.fulfiller_address = fulfiller_address
-
-    fulfiller_email = request.POST.get('email')
-    if not fulfiller_email:
-        response['message'] = 'error: missing email'
-        return JsonResponse(response)
     fulfillment.fulfiller_email = fulfiller_email
-
-    hours_worked = request.POST.get('hoursWorked')
-    if not hours_worked or not hours_worked.isdigit():
-        response['message'] = 'error: missing hoursWorked'
-        return JsonResponse(response)
     fulfillment.fulfiller_hours_worked = hours_worked
-
-    fulfiller_github_url = request.POST.get('githubPRLink')
-    if not fulfiller_github_url:
-        response['message'] = 'error: missing githubPRLink'
-        return JsonResponse(response)
     fulfillment.fulfiller_github_url = fulfiller_github_url
 
     fulfiller_metadata = request.POST.get('metadata', {})

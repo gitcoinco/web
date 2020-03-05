@@ -39,7 +39,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from app.utils import get_default_network
+from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants, Tip
 from dashboard.notifications import amount_usdt_open_work, open_bounties
@@ -117,7 +117,7 @@ def index(request):
         }
     ]
 
-    know_us  = [
+    know_us = [
         {
             'text': 'Our Vision',
             'link': '/vision'
@@ -1162,6 +1162,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         kwargs = {}
         kwargs[key] = pk
         activities = activities.filter(**kwargs)
+
     relevant_profiles = []
     relevant_grants = []
     if what == 'tribes':
@@ -1220,6 +1221,12 @@ def activity(request):
 
     activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
 
+    # store last seen
+    if activities.exists():
+        last_pk = activities.first().pk
+        current_pk = request.session.get(what)
+        next_pk = last_pk if (not current_pk or current_pk < last_pk) else current_pk
+        request.session[what] = next_pk
     # pagination
     next_page = page + 1
     start_index = (page-1) * page_size
@@ -1302,14 +1309,27 @@ def create_status_update(request):
                 key = f"{key}_id"
                 kwargs[key] = result
                 kwargs['activity_type'] = 'wall_post'
+        
+        if request.POST.get('option1'):
+            poll_choices = []
+            for i in range(1, 5):
+                key = "option" + str(i)
+                val = request.POST.get(key)
+                if val:
+                    poll_choices.append({
+                        'question': val,
+                        'answers': [],
+                        'i': i,
+                        })
+            kwargs['metadata']['poll_choices'] = poll_choices
+
         try:
             activity = Activity.objects.create(**kwargs)
             response['status'] = 200
             response['message'] = 'Status updated!'
 
-            username_pattern = re.compile(r'@(\S+)')
-            mentioned_usernames = re.findall(username_pattern, title)
-            to_emails = set(Profile.objects.filter(handle__in=mentioned_usernames).values_list('email', flat=True))
+            mentioned_profiles = get_profiles_from_text(title).exclude(user__in=[request.user])
+            to_emails = set(mentioned_profiles.values_list('email', flat=True))
             mention_email(activity, to_emails)
 
             if kwargs['activity_type'] == 'wall_post':
@@ -1326,6 +1346,9 @@ def create_status_update(request):
     return JsonResponse(response)
 
 def help(request):
+    if not request.user.is_staff:
+        return redirect('/wiki/help')
+        
     faq = {
         'Product': [
         {

@@ -276,6 +276,8 @@ class Bounty(SuperModel):
     WORK_IN_PROGRESS_STATUSES = ['reserved', 'open', 'started', 'submitted']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
+    payout_confirmed = models.BooleanField(default=False, blank=True, null=True)
+    payout_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     bounty_state = models.CharField(max_length=50, choices=BOUNTY_STATES, default='open', db_index=True)
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=1000)
@@ -1677,6 +1679,8 @@ class Tip(SendCryptoAsset):
 
     @property
     def attached_object(self):
+        if not self.comments_priv:
+            return None
         if 'activity:' in self.comments_priv:
             pk = self.comments_priv.split(":")[1]
             obj = Activity.objects.get(pk=pk)
@@ -1982,6 +1986,49 @@ class ActivityQuerySet(models.QuerySet):
             activity_type='bounty_abandonment_escalation_to_mods',
         )
 
+    def related_to(self, profile):
+        """Filter results to Activity objects which are related to a particular profile.
+
+        Activities related to a Profile can be defined as:
+            - Posts created by that user
+            - Posts that the user likes (even a comment)
+            - Posts tipped by that user (even a comment)
+            - Posts the user commented on
+        """
+        from townsquare.models import Like, Comment
+
+        # Posts created by that user
+        posts = self.filter(profile=profile)
+
+        # Posts that the user likes (even a comment)
+        likes = Like.objects.filter(profile=profile).all()
+        activity_pks = [_.activity.pk for _ in likes]
+        posts.union(self.filter(pk__in=activity_pks))
+
+        comments = Comment.objects.filter(likes__contains=[profile.pk]).all()
+        activity_pks = [_.activity.pk for _ in comments]
+        posts.union(self.filter(pk__in=activity_pks))
+
+        # Posts tipped by that user (even a comment)
+        tips = Tip.objects.filter(sender_profile=profile).all()
+        activity_pks = []
+        for tip in tips:
+            if  tip.comments_priv:
+                obj = tip.attached_object()
+                if 'activity:' in tip.comments_priv:
+                    activity_pks.append(obj.pk)
+                if 'comment:' in tip.comments_priv:
+                    activity_pks.append(obj.activity.pk)
+        posts.union(self.filter(pk__in=activity_pks))
+
+
+        # Posts the user commented on
+        comments = Comment.objects.filter(profile=profile).all()
+        activity_pks = [_.activity.pk for _ in comments]
+        posts.union(self.filter(pk__in=activity_pks))
+
+        return posts
+
 
 class Activity(SuperModel):
     """Represent Start work/Stop work event.
@@ -2220,6 +2267,8 @@ class Activity(SuperModel):
         obj = self.metadata
         if 'new_bounty' in self.metadata:
             obj = self.metadata['new_bounty']
+        if 'poll_choices' in self.metadata:
+            activity['poll'] = self.metadata['poll_choices']
         activity['title'] = clean(obj.get('title', ''), strip=True)
         if 'id' in obj:
             if 'category' not in obj or obj['category'] == 'bounty': # backwards-compatible for category-lacking metadata
@@ -2253,13 +2302,29 @@ class Activity(SuperModel):
         return vp
 
     def generate_view_props_cache(self):
-        self.cached_view_props = self.view_props
-        self.cached_view_props = json.loads(json.dumps(self.cached_view_props, cls=EncodeAnything))
+        vp = self.view_props
+        try:
+            self.cached_view_props = json.loads(json.dumps(vp, cls=EncodeAnything))
+        except ValueError as e: #ValueError
+            logger.exception(e)
+            return vp
         self.save()
         return self.cached_view_props
 
-    def view_props_for(self, user):
+    def generate_view_props_cache_as_task(self):
+        from dashboard.tasks import refresh_activity_views
+        refresh_activity_views.delay(self.pk)
 
+    def has_voted(self, user):
+        vp = self.view_props
+        if vp.get('poll'):
+            if user.is_authenticated:
+                for ele in vp.get('poll'):
+                    if user.profile.pk in ele['answers']:
+                        return ele['i']
+        return False
+
+    def view_props_for(self, user):
         # get view props
         vp = self.cached_view_props
 
@@ -2275,7 +2340,7 @@ class Activity(SuperModel):
         if not user.is_authenticated:
             return vp
         vp['liked'] = self.likes.filter(profile=user.profile).exists()
-
+        vp['poll_answered'] = self.has_voted(user)
         return vp
 
     @property
@@ -2339,7 +2404,7 @@ class Activity(SuperModel):
 @receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
 def post_add_activity(sender, instance, created, **kwargs):
     if created:
-        instance.cached_view_props = instance.generate_view_props_cache()
+        instance.cached_view_props = instance.generate_view_props_cache_as_task()
 
         # make sure duplicate activity feed items are removed
         dupes = Activity.objects.exclude(pk=instance.pk)
@@ -2550,6 +2615,7 @@ class Profile(SuperModel):
     repos = models.ManyToManyField(Repo, blank=True)
     form_submission_records = JSONField(default=list, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
+    etc_address = models.CharField(max_length=255, default='', blank=True)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=2500, decimal_places=2, max_digits=50)

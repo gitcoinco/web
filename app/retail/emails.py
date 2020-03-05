@@ -496,7 +496,7 @@ appreciate you being a part of the community + let us know if you'd like some Gi
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, trending_quests=[]):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -508,6 +508,8 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'email_style': email_style,
 		'email_type': 'new_bounty_notifications',
         'base_url': settings.BASE_URL,
+        'show_action': True,
+        'trending_quests': trending_quests,
         'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 

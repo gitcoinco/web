@@ -471,3 +471,11 @@ class CustomGithubOAuth2(GithubOAuth2):
             from dashboard.management.commands.sync_orgs_repos import Command
             Command().handle()
         return scope
+
+
+def get_profiles_from_text(text):
+    from dashboard.models import Profile
+
+    username_pattern = re.compile(r'@(\S+)')
+    mentioned_usernames = re.findall(username_pattern, text)
+    return Profile.objects.filter(handle__in=mentioned_usernames).distinct()
