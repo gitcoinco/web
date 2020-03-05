@@ -94,7 +94,7 @@ a .sup {
 
 .comment_container img {
   border-radius: 20px;
-  max-width: 20px;
+  max-width: 40px;
 }
 .activity_stream .content img{
   max-height: 100px;
@@ -150,7 +150,10 @@ a .sup {
 .copy_activity:hover {
   text-decoration: none;
 }
-
+.funder-avatar,
+.activity-avatar {
+  text-align: center;
+}
 .activity_stream .activity-avatar{
   margin-top: -10px;
 }
@@ -180,11 +183,6 @@ a .sup {
   height: 2rem !important;
   max-width: 2rem;
   min-height: 2rem;
-}
-
-.funder-avatar,
-.activity-avatar {
-  text-align: center;
 }
 
 .last-icon {
