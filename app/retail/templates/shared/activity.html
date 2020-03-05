@@ -340,6 +340,9 @@
   <div class="mt-1 mb-2">
     <div class="row align-items-center bg-light content">
       <div class="col-12 col-md-3 text-center">
+        {% if now.metadata.resource.url %}
+          s.gitio.short(now.metadata.resource.url)
+        {% endif %}
         {% if not row.metadata.resource.image or row.metadata.resource.image  == 'undefined' %}
           <img class="py-2" style="max-height: 7rem;" src="{% static 'v2/images/team/gitcoinbot.png' %}">
         {% else %}

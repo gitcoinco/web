@@ -1,4 +1,5 @@
 import re
+import pyshorteners
 
 from django.conf import settings
 from django.contrib import messages
@@ -14,6 +15,7 @@ from marketing.mails import comment_email, new_action_request
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.views import get_specific_activities
+
 
 from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction
 from .tasks import increment_offer_view_counts
@@ -51,7 +53,8 @@ def get_next_time_available(key):
 
 
 def index(request):
-
+    random_codes = random()
+    s = pyshorteners.Shortener(code=random_codes)
     # TODO: temporary until town square is approved for non-staff use
     if not is_user_townsquare_enabled(request.user):
         from retail.views import index as regular_homepage
