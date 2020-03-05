@@ -916,7 +916,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         if has_offer:
             offers = f"💰 1 New Action"
         if not has_offer:
-           return None
+           return
 
         new_bounties = ""
         if bounties.count():
