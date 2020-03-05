@@ -512,7 +512,7 @@ $(document).ready(function() {
           response.author === document.contxt.github_handle &&
           response.has_tip == true &&
           response.tip_available == true);
-        const can_redeem = response.can_redeem
+        const can_redeem = response.can_redeem;
         var sorted_match_curve_html = '';
 
         if (comment['sorted_match_curve']) {
