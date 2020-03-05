@@ -91,3 +91,4 @@ ddtrace
 metadata-parser==0.10.0
 redis==3.3.11
 pandas
+objcrypt==0.6
