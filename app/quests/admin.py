@@ -29,6 +29,7 @@ class QuestAdmin(admin.ModelAdmin):
                     self.message_user(request, f"Cannot approve quest. The quest has a dead end question in it!")
                     return super().response_change(request, obj)
                 quest = obj
+                obj.value = 1
                 qa = QuestAttempt.objects.create(
                     quest=obj,
                     success=True,
@@ -36,7 +37,6 @@ class QuestAdmin(admin.ModelAdmin):
                     )
                 record_award_helper(qa, quest.creator, 1, 'Created', 3)
                 record_quest_activity(quest, quest.creator, "created_quest")
-                obj.value = 1
                 obj.visible = True
                 obj.save()
                 new_quest_approved(obj)
