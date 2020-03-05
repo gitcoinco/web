@@ -353,8 +353,8 @@ def get_avatar_attrs(theme, key):
                 'Mouth': '90 140 130 130',
             },
             'skin_tones': [
-                'AE7343', 'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031',
-                '593D26', '392D16', 'FFFF99'
+                'AE7343', 'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B',
+                '715031', '593D26', '392D16', 'FFFF99'
             ],
             'hair_tones': [],
             'tone_maps': ['wookie_skin'],
@@ -370,11 +370,11 @@ def get_avatar_attrs(theme, key):
                 'Clothing': '0 150 250 250',
             },
             'skin_tones': [
-                'ECE3C1', 'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031',
-                '593D26', '392D16', 'FFFF99'
+                'ECE3C1', 'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B',
+                '715031', '593D26', '392D16', 'FFFF99'
             ],
             'hair_tones': [],
-            'tone_maps': [ 'wolverine_skin'],
+            'tone_maps': ['wolverine_skin'],
             'path': 'assets/v2/images/avatar3d/wolverine.svg',
         },
         'cartoon_jedi': {
