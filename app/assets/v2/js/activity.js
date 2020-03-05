@@ -443,7 +443,7 @@ $(document).ready(function() {
       $.noop(); // do nothing
     };
 
-    return sendTipTownsquare(
+    return sendTip(
       email,
       github_url,
       from_name,
