@@ -84,7 +84,7 @@ $(document).ready(function() {
       let videoId = youtube[1];
 
       if (embedded_resource !== youtube[0]) {
-        var apiKey = 'AIzaSyDP4QMWTCj7MHqRcoVBYQT-Is9wO0h9UIM'; // TODO: add youtube API key to query titles
+        var apiKey = document.contxt.youtube_key; // TODO: add youtube API key to query titles
 
         const getVideoData = fetchData('https://www.googleapis.com/youtube/v3/videos?key=' + apiKey + '&fields=items(snippet(title))&part=snippet&id=' + videoId);
 

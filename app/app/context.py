@@ -155,6 +155,7 @@ def preprocess(request):
         'INFURA_V3_PROJECT_ID': settings.INFURA_V3_PROJECT_ID,
         'email_key': email_key,
         'giphy_key': settings.GIPHY_KEY,
+        'youtube_key': settings.YOUTUBE_API_KEY,
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
         'hotjar': settings.HOTJAR_CONFIG,
