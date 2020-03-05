@@ -2270,7 +2270,7 @@ class Activity(SuperModel):
 
         # lazily create vp
         if not vp.get('pk'):
-            vp = self.generate_view_props_cache()
+            vp = self.view_props #generate, but dont save the view props.. to test saving disk IOPS - KO 3/5/2020 https://gitcoincore.slack.com/archives/CAXFMVDGD/p1583366693026800
 
         if not user.is_authenticated:
             return vp
