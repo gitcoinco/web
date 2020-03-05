@@ -167,6 +167,11 @@ $(document).ready(function() {
     }
   });
 
+  // design solution for #cta_button
+  if ($('#desc li:nth-child(3)').lenght) {
+    $('body.stage_3 #cta_button').css('margin-top', '20%');
+  }
+
   $('#cta_button a').on('click', function(e) {
     var target = $(this).attr('href');
 
