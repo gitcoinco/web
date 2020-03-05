@@ -58,11 +58,6 @@ class Command(BaseCommand):
             ).delete()
         print(f'Stat: {result}')
 
-        result = LeaderboardRank.objects.filter(
-                created_on__lt=self.get_then(14),
-            ).exclude(created_on__week_day=2).delete()
-        print(f'LeaderboardRank: {result}')
-
         results = Activity.objects.filter(
                 modified_on__lt=self.get_then(14),
             ).exclude(cached_view_props={})

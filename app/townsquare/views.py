@@ -16,7 +16,7 @@ from perftools.models import JSONStore
 
 from ratelimit.decorators import ratelimit
 
-from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction
+from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
@@ -26,6 +26,7 @@ tags = [
     ['#jobs','code','search-jobs'],
     ['#help','laptop-code','search-help'],
     ['#meme','images','search-meme'],
+    ['#music','music','search-music'],
     ['#other','briefcase','search-other'],
     ]
 
@@ -73,6 +74,7 @@ def town_square(request):
     if post_data_cache.exists():
         posts_last_24_hours = post_data_cache.first().data
 
+    hackathon_tabs = []
     tabs = [{
         'title': f"Everywhere",
         'slug': 'everywhere',
@@ -117,7 +119,7 @@ def town_square(request):
         }
         tabs = [threads] + tabs
 
-    connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
+    connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post', 'mini_clr_payout'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if connect_last_24_hours:
         default_tab = 'connect'
         connect = {
@@ -138,18 +140,15 @@ def town_square(request):
         }
         tabs = tabs + [connect]
 
-    if request.user.is_authenticated:
-        hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now(), end_date__gt=timezone.now())
-        if hackathons.count():
-            user_registered_hackathon = request.user.profile.hackathon_registration.filter(registrant=request.user.profile, hackathon__in=hackathons).first()
-            if user_registered_hackathon:
-                default_tab = f'hackathon:{user_registered_hackathon.hackathon.pk}'
-                connect = {
-                    'title': user_registered_hackathon.hackathon.name,
-                    'slug': default_tab,
-                    'helper_text': f'Activity from the {user_registered_hackathon.hackathon.name} Hackathon.',
-                }
-                tabs = [connect] + tabs
+    hackathons = HackathonEvent.objects.filter(start_date__gt=timezone.now() - timezone.timedelta(days=10), end_date__gt=timezone.now())
+    if hackathons.count():
+        for hackathon in hackathons:
+            connect = {
+                'title': hackathon.name,
+                'slug': f'hackathon:{hackathon.pk}',
+                'helper_text': f'Activity from the {hackathon.name} Hackathon.',
+            }
+            hackathon_tabs = [connect] + hackathon_tabs
 
     # set tab
     if request.COOKIES.get('tab'):
@@ -221,8 +220,10 @@ def town_square(request):
 
     # matching leaderboard
     current_match_round = MatchRound.objects.current().first()
+    if request.GET.get('round'):
+        current_match_round = MatchRound.objects.get(number=request.GET.get('round'))
     num_to_show = 10
-    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1))
+    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1)).order_by('number')
     matching_leaderboard = [
         {
             'i': obj.number,
@@ -259,6 +260,7 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'matching_leaderboard': matching_leaderboard,
         'current_match_round': current_match_round,
@@ -268,6 +270,7 @@ def town_square(request):
         'trending_only': bool(trending_only),
         'search': search,
         'tags': tags,
+        'suggested_actions': SuggestedAction.objects.filter(active=True).order_by('-rank'),
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
@@ -376,7 +379,9 @@ def api(request, activity_id):
     # like request
     elif request.POST.get('method') == 'like':
         if request.POST['direction'] == 'liked':
-            Like.objects.create(profile=request.user.profile, activity=activity)
+            already_likes = request.user.profile.likes.filter(activity=activity).exists()
+            if not already_likes:
+                Like.objects.create(profile=request.user.profile, activity=activity)
         if request.POST['direction'] == 'unliked':
             activity.likes.filter(profile=request.user.profile).delete()
 

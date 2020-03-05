@@ -53,6 +53,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 import magic
 from app.utils import clean_str, ellipses, get_default_network
+from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper
 from bleach import clean
@@ -473,8 +474,10 @@ def post_comment(request):
 
     bounty_id = request.POST.get('bounty_id')
     bountyObj = Bounty.objects.get(pk=bounty_id)
+    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     fbAmount = FeedbackEntry.objects.filter(
         sender_profile=profile_id,
+        receiver_profile=receiver_profile,
         bounty=bountyObj
     ).count()
     if fbAmount > 0:
@@ -483,7 +486,6 @@ def post_comment(request):
             'msg': 'There is already a approval comment',
         })
 
-    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
     kwargs = {
         'bounty': bountyObj,
         'sender_profile': profile_id,
@@ -824,21 +826,6 @@ def uninterested(request, bounty_id, profile_id):
 def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
-
-def get_preview_img(key):
-    if key == 'classic':
-        return 'https://c.gitcoin.co/avatars/d1a33d2bcb7bbfef50368bca73111fae/fryggr.png'
-    if key == 'bufficorn':
-        return 'https://c.gitcoin.co/avatars/94c30306a088d06163582da942a2e64e/dah0ld3r.png'
-    if key == 'female':
-        return 'https://c.gitcoin.co/avatars/b713fb593b3801700fd1f92e9cd18e79/aaliyahansari.png'
-    if key == 'unisex':
-        return 'https://c.gitcoin.co/avatars/cc8272136bcf9b9d830c0554a97082f3/joshegwuatu.png'
-    if key == 'bot':
-        return 'https://c.gitcoin.co/avatars/c9d82da31b7833bdae37861014c32ebc/owocki.png'
-
-    return f'/avatar/view3d?theme={key}&scale=20'
-
 def onboard(request, flow=None):
     """Handle displaying the first time user experience flow."""
     if flow not in ['funder', 'contributor', 'profile']:
@@ -884,15 +871,7 @@ def onboard(request, flow=None):
     from avatar.views_3d import get_avatar_attrs
     skin_tones = get_avatar_attrs(theme, 'skin_tones')
     hair_tones = get_avatar_attrs(theme, 'hair_tones')
-    avatar_options = [
-        'classic',
-        'unisex',
-        'female',
-        'bufficorn',
-    ]
-    if request.user.is_staff:
-        avatar_options.append('bot')
-    avatar_options = [ (ele, f'/onboard/profile?steps=avatar&theme={ele}', get_preview_img(ele)) for ele in avatar_options ]
+    background_tones = get_avatar_attrs(theme, 'background_tones')
 
     params = {
         'title': _('Onboarding Flow'),
@@ -900,8 +879,9 @@ def onboard(request, flow=None):
         'flow': flow,
         'profile': profile,
         'theme': theme,
-        'avatar_options': avatar_options,
+        'avatar_options': AvatarTheme.objects.filter(active=True).order_by('-popularity'),
         '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(theme),
+        'possible_background_tones': background_tones,
         'possible_skin_tones': skin_tones,
         'possible_hair_tones': hair_tones,
     }
@@ -1056,35 +1036,37 @@ def users_fetch(request):
             )
         )
 
-    profile_list = Profile.objects.filter(pk__in=profile_list).annotate(
-            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).annotate(previous_worked=previous_worked()).order_by(
-        order_by, '-previous_worked'
-    )
-    profile_list = profile_list.values_list('pk', flat=True)
-    params = dict()
-    all_pages = Paginator(profile_list, limit)
-    all_users = []
-    this_page = all_pages.page(page)
+    if request.GET.get('type') == 'explore_tribes':
+        profile_list = Profile.objects.filter(data__type='Organization'
+            ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
 
-    page_type = request.GET.get('type')
-    if page_type == 'explore_tribes':
-        this_page = Profile.objects.filter(data__type='Organization'
-            ).annotate(
-                previous_worked_count=previous_worked()).annotate(
-                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
-            ).annotate(follower_count=Count('org')).order_by('-follower_count')
+        all_pages = Paginator(profile_list, limit)
+        this_page = all_pages.page(page)
     else:
-        this_page = Profile.objects.filter(pk__in=[ele for ele in this_page])\
-            .order_by(order_by).annotate(
+        profile_list = Profile.objects.filter(pk__in=profile_list
+            ).annotate(average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))).annotate(previous_worked=previous_worked()).order_by(order_by, '-previous_worked', 'id')
+        profile_list = profile_list.values_list('pk', flat=True)
+
+        all_pages = Paginator(profile_list, limit)
+        this_page = all_pages.page(page)
+
+        profile_list = Profile.objects.filter(pk__in=[ele for ele in this_page])\
+            .order_by(order_by, 'id').annotate(
             previous_worked_count=previous_worked()).annotate(
                 count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
             ).annotate(
                 average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-            ).order_by('-previous_worked_count')
+            ).order_by('-previous_worked_count', 'id')
+
+        this_page = profile_list
+
+    all_users = []
+    params = dict()
 
     for user in this_page:
-        count_work_completed = user.get_fulfilled_bounties(network=network).count()
+        followers = TribeMember.objects.filter(org=user)
+
+        is_following = True if followers.filter(profile=current_profile).count() else False
         profile_json = {
             k: getattr(user, k) for k in
             ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
@@ -1092,17 +1074,6 @@ def users_fetch(request):
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
             'organizations', 'is_org']}
 
-        profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
-        profile_json['previously_worked'] = user.previous_worked_count > 0
-        profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
-        profile_json['position_funder'] = user.get_funder_leaderboard_index()
-        profile_json['work_done'] = count_work_completed
-        profile_json['verification'] = user.get_my_verified_check
-        profile_json['avg_rating'] = user.get_average_star_rating()
-
-        followers = TribeMember.objects.filter(org=user)
-
-        is_following = True if followers.filter(profile=current_profile).count() else False
         profile_json['is_following'] = is_following
 
         follower_count = followers.count()
@@ -1114,12 +1085,22 @@ def users_fetch(request):
             profile_json['sum_eth_on_repos'] = profile_dict.get('as_dict').get('sum_eth_on_repos')
             profile_json['tribe_description'] = user.tribe_description
             profile_json['rank_org'] = user.rank_org
+        else:
+            count_work_completed = user.get_fulfilled_bounties(network=network).count()
 
-        if not user.show_job_status:
-            for key in ['job_salary', 'job_location', 'job_type',
-                        'linkedin_url', 'resume', 'job_search_status',
-                        'remote', 'job_status']:
-                del profile_json[key]
+            profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
+            profile_json['previously_worked'] = user.previous_worked_count > 0
+            profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
+            profile_json['position_funder'] = user.get_funder_leaderboard_index()
+            profile_json['work_done'] = count_work_completed
+            profile_json['verification'] = user.get_my_verified_check
+            profile_json['avg_rating'] = user.get_average_star_rating()
+
+            if not user.show_job_status:
+                for key in ['job_salary', 'job_location', 'job_type',
+                            'linkedin_url', 'resume', 'job_search_status',
+                            'remote', 'job_status']:
+                    del profile_json[key]
 
         if user.avatar_baseavatar_related.exists():
             user_avatar = user.avatar_baseavatar_related.first()
@@ -3610,7 +3591,7 @@ def get_users(request):
             profile_json['id'] = user.id
             profile_json['text'] = user.handle
             profile_json['avatar_url'] = user.avatar_url
-            if user.avatar_baseavatar_related.exists():
+            if user.avatar_baseavatar_related.filter(active=True).exists():
                 profile_json['avatar_id'] = user.avatar_baseavatar_related.filter(active=True).first().pk
                 profile_json['avatar_url'] = user.avatar_baseavatar_related.filter(active=True).first().avatar_url
             profile_json['preferred_payout_address'] = user.preferred_payout_address
