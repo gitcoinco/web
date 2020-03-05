@@ -31,6 +31,7 @@ from dashboard.models import Activity, Tip, UserAction
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
 from marketing.utils import handle_marketing_callback
+from perftools.models import JSONStore
 from retail.helpers import get_ip
 from townsquare.models import Announcement
 
@@ -40,13 +41,12 @@ logger = logging.getLogger(__name__)
 
 
 def fetchPost(qt='2'):
-    """Fetch last post from wordpress blog."""
-    url = f"https://gitcoin.co/blog/wp-json/wp/v2/posts?_fields=excerpt,title,link,jetpack_featured_media_url&per_page={qt}"
-    last_posts = requests.get(url=url).json()
-    return last_posts
+    jsonstores = JSONStore.objects.filter(view='posts', key='posts')
+    if jsonstores.exists():
+        return jsonstores.first().data
 
 
-@cached_as(Announcement.objects.filter(key__in=['footer', 'header']), timeout=120)
+@cached_as(Announcement.objects.filter(key__in=['footer', 'header']), timeout=1200)
 def get_sitewide_announcements():
     announcements = Announcement.objects.filter(key__in=['footer', 'header'])
     announcement = announcements.filter(key='footer').first()
@@ -88,9 +88,10 @@ def preprocess(request):
         if record_visit:
             ip_address = get_ip(request)
             profile.last_visit = timezone.now()
+            profile.save()
             try:
-                profile.as_dict = json.loads(json.dumps(profile.to_dict()))
-                profile.save()
+                from dashboard.tasks import profile_dict
+                profile_dict.delay(profile.pk)
             except Exception as e:
                 logger.exception(e)
             metadata = {
@@ -154,6 +155,7 @@ def preprocess(request):
         'INFURA_V3_PROJECT_ID': settings.INFURA_V3_PROJECT_ID,
         'email_key': email_key,
         'giphy_key': settings.GIPHY_KEY,
+        'youtube_key': settings.YOUTUBE_API_KEY,
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
         'hotjar': settings.HOTJAR_CONFIG,

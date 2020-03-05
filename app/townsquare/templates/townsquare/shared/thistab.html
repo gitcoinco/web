@@ -1,0 +1,8 @@
+                      <li class="nav-item">
+                        <a data-toggle="tooltip" title="{{this_tab.helper_text}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
+                          <span class="nav-title">{{this_tab.title}}</span>
+                          {% if this_tab.badge %}
+                            <span class="nav-badge">({{ this_tab.badge }})</span>
+                          {% endif %}
+                        </a>
+                      </li>

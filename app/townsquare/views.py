@@ -82,7 +82,7 @@ def get_amount_unread(key, request):
 
 def get_sidebar_tabs(request):
     # setup tabs
-    hours = 24
+    hours = 168
     hackathon_tabs = []
     tabs = [{
         'title': f"Everywhere",
@@ -117,24 +117,14 @@ def get_sidebar_tabs(request):
             tabs = [new_tab] + tabs
             default_tab = 'grants'
 
-        threads_last_24_hours = max_of_ten(request.user.profile.subscribed_threads.filter(
+        threads_last_week = max_of_ten(request.user.profile.subscribed_threads.filter(
             pk__gt=request.session.get('my_threads', 0)).count()) if request.GET.get('tab') != 'my_threads' else 0
 
         threads = {
-            'title': f"My 24h Threads",
-            'slug': f'my_threads',
-            'helper_text': f'The Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
-            'badge': threads_last_24_hours
-        }
-        tabs = [threads] + tabs
-        
-        threads_all_time = max_of_ten(request.user.profile.subscribed_threads)
-        
-        threads = {
             'title': f"My Threads",
             'slug': f'my_threads',
-            'helper_text': f'The Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last all time.',
-            'badge': threads_all_time
+            'helper_text': f'The Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last week.',
+            'badge': threads_last_week
         }
         tabs = [threads] + tabs
         
@@ -186,7 +176,6 @@ def get_sidebar_tabs(request):
 
     return tabs, tab, is_search, search, hackathon_tabs
 
-
 def get_offers(request):
     # get offers
     offer_pks = []
@@ -209,7 +198,6 @@ def get_offers(request):
     increment_offer_view_counts.delay(offer_pks)
     return offers_by_category
 
-
 def get_miniclr_info(request):
     # matching leaderboard
     current_match_round = MatchRound.objects.current().first()
@@ -231,7 +219,6 @@ def get_miniclr_info(request):
     ]
 
     return matching_leaderboard, current_match_round
-
 
 def get_subscription_info(request):
     # subscriber info
