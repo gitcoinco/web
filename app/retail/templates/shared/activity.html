@@ -245,6 +245,11 @@
             >
               <span class="action px-0 {% if row.flagged %}open{%endif%}"><i class="far fa-flag mr-2"></i></span> Report
             </a>
+            {% if row.metadata.fund_able and not row.bounty  %}
+            <a class="mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Create new bounty." href='/funding/new?type=public&activity={{ row.id }}&url={{ row.metadata.resource.provider }}'>
+              <i class="fab fa-ethereum mr-2"></i> Fund Issue
+            </a>
+            {% endif %}
             {% if row.profile.handle == github_handle %}
             <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity px-3 font-smaller-5">
               <i class="fas fa-trash mr-2"></i> Delete

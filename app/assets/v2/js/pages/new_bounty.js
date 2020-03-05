@@ -597,6 +597,7 @@ $('#submitBounty').validate({
       */
       createBounty(data);
     } else {
+      console.log(data)
       ethCreateBounty(data);
     }
   }
@@ -748,7 +749,8 @@ const transformBountyData = form => {
     releaseAfter: releaseAfter !== 'Release To Public After' ? releaseAfter : '',
     tokenName: token['name'],
     invite: inviteContributors,
-    bounty_categories: data.bounty_categories
+    bounty_categories: data.bounty_categories,
+    activity: data.activity
   };
 
   data.metadata = metadata;

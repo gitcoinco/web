@@ -75,7 +75,8 @@ createBounty = data => {
     'attached_job_description': hiring.jobDescription,
     'eventTag': metadata.eventTag,
     'auto_approve_workers': data.auto_approve_workers ? 'True' : 'False',
-    'web3_type': 'qr'
+    'web3_type': 'qr',
+    'activity': data.activity
   };
 
   const url  = '/api/v1/bounty/create';

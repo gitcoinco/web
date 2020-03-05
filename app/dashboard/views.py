@@ -87,6 +87,7 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
+from townsquare.models import Comment
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
     ProfileExportSerializer, filtered_list_data,
@@ -3033,6 +3034,22 @@ def sync_web3(request):
                         max_tries_attempted = counter > 3
                     if new_bounty:
                         url = new_bounty.url
+                        try:
+                            fund_ables = Activity.objects.filter(activity_type='status_update',
+                                                                 bounty=None,
+                                                                 metadata__fund_able=True,
+                                                                 metadata__resource__contains={
+                                                                     'provider': issue_url
+                                                                 })
+                            if fund_ables.exists():
+                                comment = f'New Bounty created {new_bounty.get_absolute_url()}'
+                                activity = fund_ables.first()
+                                activity.bounty = new_bounty
+                                activity.save()
+                                Comment.objects.create(profile=new_bounty.bounty_owner_profile, activity=activity, comment=comment)
+                        except Activity.DoesNotExist as e:
+                            print(e)
+
                 result = {
                     'status': '200',
                     'msg': "success",
@@ -3400,6 +3417,13 @@ def new_bounty(request):
             params['coupon_code'] = coupon.code
         else:
             params['expired_coupon'] = True
+
+    activity_ref = request.GET.get('activity', False)
+    try:
+        activity_id = int(activity_ref)
+        params['activity'] = Activity.objects.get(id=activity_id)
+    except (ValueError, Activity.DoesNotExist):
+        pass
 
     return TemplateResponse(request, 'bounty/fund.html', params)
 
@@ -4759,6 +4783,18 @@ def create_bounty_v1(request):
         logger.error(e)
 
     bounty.save()
+
+    activity_ref = request.POST.get('activity', False)
+    if activity_ref:
+        try:
+            comment = f'New Bounty created {bounty.get_absolute_url()}'
+            activity_id = int(activity_ref)
+            activity = Activity.objects.get(id=activity_id)
+            activity.bounty = bounty
+            activity.save()
+            Comment.objects.create(profile=bounty.bounty_owner_profile, activity=activity, comment=comment)
+        except (ValueError, Activity.DoesNotExist) as e:
+            print(e)
 
     event_name = 'new_bounty'
     record_bounty_activity(bounty, user, event_name)

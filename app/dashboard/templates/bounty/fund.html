@@ -125,7 +125,7 @@
             <div class="mt-4">
               {% include 'shared/bounty_keywords.html' %}
             </div>
-
+            <input type="hidden" id="activity" name="activity" value="{% if activity %}{{ activity.id }}{% endif %}">
           </div>
 
           <div class="bg-white my-3 px-5 rounded">

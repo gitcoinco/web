@@ -707,6 +707,19 @@ $(document).ready(function() {
     }, 300);
   });
 
+  $(document).on('click', '.fund_issue', function(e) {
+    e.preventDefault();
+    var url = $(this).data('url');
+
+    copyToClipboard(url);
+    _alert('Link copied to clipboard.', 'success', 1000);
+    $(this).addClass('open');
+    var $target = $(this);
+
+    setTimeout(function() {
+      $target.removeClass('open');
+    }, 300);
+  });
 
   // auto open new comment threads
   setInterval(function() {
