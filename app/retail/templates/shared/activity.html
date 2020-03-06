@@ -57,7 +57,7 @@
          <a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
 
          {% if row.hackathonevent %}
-            <a href="/{{ row.hackathonevent.relative_url }}" class="tag">
+            <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" class="tag">
               via {{ row.hackathonevent.name }}
             </a>
          {% endif %}
