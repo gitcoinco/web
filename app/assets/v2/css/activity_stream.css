@@ -202,6 +202,15 @@ a .sup {
   list-style: none;
   padding: 5px;
 }
+.staff_tag
+{
+  background-color: #eEbAEE;
+  border-radius: 5px;
+  color: #8E2ABE;
+  font-size: 10px;
+  list-style: none;
+  padding: 5px;
+}
 
 .bounty_removed_by_funder .activity-tags .tag,
 .bounty_removed_by_staff .activity-tags .tag,

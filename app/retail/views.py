@@ -1176,7 +1176,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     if 'search-' in what:
         keyword = what.split('-')[1]
         view_count_threshold = 5
-        base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post', 'new_bounty', 'created_quest', 'mini_clr_payout'])
+        base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post', 'new_bounty', 'created_quest', 'new_grant', 'created_kudos', 'mini_clr_payout'])
         keyword_filter = Q(pk=0) #noop
         if keyword == 'meme':
             keyword_filter = Q(metadata__type='gif') | Q(metadata__type='png') | Q(metadata__type='jpg')
@@ -1197,7 +1197,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     if len(relevant_grants):
         activities = activities.filter(grant__in=relevant_grants)
     if what == 'connect':
-        activities = activities.filter(activity_type__in=['status_update', 'wall_post', 'new_bounty', 'created_quest', 'mini_clr_payout'])
+        activities = activities.filter(activity_type__in=['status_update', 'wall_post', 'new_bounty', 'created_quest', 'mini_clr_payout', 'new_grant', 'created_kudos',])
     if what == 'kudos':
         activities = activities.filter(activity_type__in=['new_kudos', 'receive_kudos'])
 

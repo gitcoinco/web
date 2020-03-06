@@ -2022,6 +2022,7 @@ class Activity(SuperModel):
         ('new_milestone', 'New Milestone'),
         ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
+        ('created_kudos', 'Created Kudos'),
         ('receive_kudos', 'Receive Kudos'),
         ('joined', 'Joined Gitcoin'),
         ('played_quest', 'Played Quest'),
@@ -2219,6 +2220,8 @@ class Activity(SuperModel):
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
         activity['secondary_avatar_url'] = self.secondary_avatar_url
+        activity['staff'] = self.profile.user.is_staff if self.profile and hasattr(self.profile, 'user') else False
+
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
