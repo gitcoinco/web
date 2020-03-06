@@ -236,6 +236,8 @@ $(document).ready(function() {
     data.append('ask', ask);
     data.append('data', the_message);
     data.append('what', $('#status [name=what]').val());
+    data.append('tab', getParam('tab'));
+    
     message.val('');
     localStorage.setItem(lskey, '');
     data.append(

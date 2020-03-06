@@ -2074,6 +2074,13 @@ class Activity(SuperModel):
         on_delete=models.CASCADE,
         blank=True, null=True
     )
+    hackathonevent = models.ForeignKey(
+        'dashboard.HackathonEvent',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
     metadata = JSONField(default=dict, blank=True)
@@ -2341,6 +2348,10 @@ def post_add_activity(sender, instance, created, **kwargs):
     if created:
         instance.cached_view_props = instance.generate_view_props_cache()
 
+        if instance.bounty and instance.bounty.event:
+            if not instance.hackathonevent:
+                instance.hackathonevent = instance.bounty.event
+
         # make sure duplicate activity feed items are removed
         dupes = Activity.objects.exclude(pk=instance.pk)
         dupes = dupes.filter(created_on__gte=(instance.created_on - timezone.timedelta(minutes=5)))
@@ -2356,6 +2367,8 @@ def post_add_activity(sender, instance, created, **kwargs):
         dupes = dupes.filter(needs_review=instance.needs_review)
         for dupe in dupes:
             dupe.delete()
+
+
 
 
 class LabsResearch(SuperModel):
