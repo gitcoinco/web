@@ -44,6 +44,7 @@ window.onload = function() {
 
 const fetchFromMetamask = () => {
   const account = web3.eth.accounts[0];
+
   $('#payoutAddress').val(account);
   $('#payoutAddress').attr('disabled', true);
-}
+};

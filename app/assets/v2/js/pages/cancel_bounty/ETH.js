@@ -117,4 +117,4 @@ const ethCancelBounty = data => {
     '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
   $.get(uri, apiCallback);
-}
+};

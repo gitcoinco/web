@@ -95,6 +95,7 @@ const ethCreateBounty = data => {
   // TODO: web3 is using the web3.js file.  In the future we will move
   // to the node.js package.  github.com/ethereum/web3.js
   const isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
+
   web3.eth.contract(token_abi).at(tokenAddress);
   const account = web3.eth.coinbase;
   const amountNoDecimal = amount;
@@ -195,6 +196,7 @@ const ethCreateBounty = data => {
 
     const eth_amount = isETH ? amount : 0;
     const _paysTokens = !isETH;
+
     bounty.issueAndActivateBounty(
       account, // _issuer
       mock_expire_date, // _deadline
@@ -403,6 +405,7 @@ const ethCreateBounty = data => {
       ethBalance.then(
         function(result) {
           const walletBalance = result.toNumber() / Math.pow(10, token_decimals);
+
           return checkBalance(walletBalance, total, token_name);
         }
       );
@@ -410,8 +413,9 @@ const ethCreateBounty = data => {
       token_contract.balanceOf.call(from, function(error, result) {
         if (error) return;
         const walletBalance = result.toNumber() / Math.pow(10, token_decimals);
+        
         return checkBalance(walletBalance, total, token_name);
       });
     }
   }
-}
+};

@@ -139,6 +139,7 @@ class Widget {
 
   formattedTotals() {
     let totals = [ 0, 0 ];
+    
     let i = this.data.length;
 
     while (i--) {

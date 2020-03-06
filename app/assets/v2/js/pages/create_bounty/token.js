@@ -17,8 +17,8 @@ createBounty = data => {
 
   const expiresDate =
     data.neverExpires == 'on' ?
-    bountyNeverExpires :
-    new Date(data.expirationTimeDelta).getTime() / 1000;
+      bountyNeverExpires :
+      new Date(data.expirationTimeDelta).getTime() / 1000;
 
   let is_featured = data.is_featured ? 'True' : 'False';
   let coupon_code = $('#coupon_code').val();
@@ -82,15 +82,18 @@ createBounty = data => {
 
   $.post(url, params, function(response) {    
     if (200 <= response.status && response.status <= 204) {
+      // eslint-disable-next-line no-console
       console.log('success', response);
       window.location.href = response.bounty_url;
     } else if (response.status == 304) {
       _alert('Bounty already exists for this github issue.', 'error');
+      // eslint-disable-next-line no-console
       console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
     } else {
       _alert('Unable to create a bounty. Please try again later', 'error');
+      // eslint-disable-next-line no-console
       console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);  
     }
   });
 
-}
+};

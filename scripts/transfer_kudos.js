@@ -5,13 +5,18 @@ var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
 var kudos_token_id = 11111;
 
 var callback = function(error, result) {
+  // eslint-disable-next-line no-console
   console.log(result[0].toNumber());
+  // eslint-disable-next-line no-console
   console.log(result[1].toNumber());
+  // eslint-disable-next-line no-console
   console.log(result[2].toNumber());
+  // eslint-disable-next-line no-console
   console.log(result[3].toNumber());
 };
 
 var callback2 = function(error, result) {
+  // eslint-disable-next-line no-console
   console.log(result);
 };
 
@@ -21,6 +26,4 @@ kudos_contract.ownerOf(kudos_token_id, callback2);
 
 // to actually do transfer
 
-kudos_contract.safeTransferFrom("0x000000", "0x000000", kudos_token_id, callback2);
-
-
+kudos_contract.safeTransferFrom('0x000000', '0x000000', kudos_token_id, callback2);
