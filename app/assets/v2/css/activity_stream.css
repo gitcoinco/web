@@ -194,6 +194,15 @@ a .sup {
   display: inline-block;
 }
 
+.activity_stream .activity_detail .tag
+{
+  background-color: #e7f0fa;
+  color: var(--gc-blue);
+  font-size: 10px;
+  list-style: none;
+  padding: 5px;
+}
+
 .bounty_removed_by_funder .activity-tags .tag,
 .bounty_removed_by_staff .activity-tags .tag,
 .bounty_abandonment_escalation_to_mods .activity-tags .tag,
