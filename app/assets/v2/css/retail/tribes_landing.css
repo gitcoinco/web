@@ -8,7 +8,7 @@
 }
 
 .features {
-  max-width: 20rem;;
+  max-width: 20rem;
 }
 
 .tribes-landing img {
@@ -89,6 +89,12 @@
   left: -1rem;
 }
 
+.testimonial-section img {
+  max-width: 5rem;
+  top: -5px;
+  background: white;
+}
+
 .testimonial-section .testimonial-box .img-container.org-container img {
   left: -2px;
   top: 6px;
@@ -100,12 +106,6 @@
 
 .testimonial-section .quote-text {
   font-size: 1.2rem;
-}
-
-.testimonial-section img {
-  max-width: 5rem;
-  top: -5px;
-  background: white;
 }
 
 .testimonial-section .testimonial-photo-container {

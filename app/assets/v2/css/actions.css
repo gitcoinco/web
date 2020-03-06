@@ -1,6 +1,6 @@
 
 .announce-bot {
-  margin-top: 10px;
+  margin: 10px 0 0 0;
   text-align: center;
 }
 
@@ -30,10 +30,7 @@
   background-color: #fdedee;
   padding: 3px;
   position: relative;
-  margin-top: 25px;
-  margin-bottom: 25px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 25px auto 25px auto;
   width: 90%;
 }
 
@@ -48,8 +45,7 @@
   border-bottom-color: #fdedee;
   border-top: 0;
   border-left: 0;
-  margin-left: -10px;
-  margin-top: -20px;
+  margin: -20px 0 0 10px;
 }
 
 .announce a {
@@ -152,14 +148,13 @@
   background-color: #d9d8e7;
   border-radius: 5px;
   text-align: center;
-  margin-top: 5px;
+  margin: 5px 0 0 0;
   padding-top: 0px;
 }
 
 #announce img {
   margin: 0px auto;
-  margin-top: -150px;
-  margin-bottom: -50px;
+  margin: -150px 0 -50px 0;
   width: 200px;
   height: 200px;
 }
