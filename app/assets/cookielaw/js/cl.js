@@ -1,6 +1,6 @@
 var Cookielaw = {
 
-  createCookie: function (name, value, days) {
+  createCookie: function(name, value, days) {
     var date = new Date();
     var expires = '';
 
@@ -13,7 +13,7 @@ var Cookielaw = {
     document.cookie = name + '=' + value + expires + '; path=/';
   },
 
-  createCookielawCookie: function () {
+  createCookielawCookie: function() {
     this.createCookie('cookielaw_accepted', '1', 10 * 365);
 
     if (typeof (window.jQuery) === 'function') {

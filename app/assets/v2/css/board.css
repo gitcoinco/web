@@ -14,6 +14,14 @@
   position: relative;
   z-index: 1;
   background: #fff no-repeat;
+  background: -webkit-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+  -webkit-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+  background: -o-linear-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+  -o-linear-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+  background: -webkit-radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+  -webkit-radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+  background: -ms-linear-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+  -ms-linear-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
   background-image: -webkit-radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), -webkit-radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
   background-image: -moz-radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), -moz-radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
   background-image: radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
@@ -32,6 +40,9 @@
   background: -webkit-linear-gradient(top, #fff, #fff 30%, rgba(255, 255, 255, 0));
   background: -moz-linear-gradient(top, #fff, #fff 30%, rgba(255, 255, 255, 0));
   background: linear-gradient(to bottom, #fff, #fff 30%, rgba(255, 255, 255, 0));
+  background: -webkit-gradient(to bottom, #fff, #fff 30%, rgba(255, 255, 255, 0));
+  background: -o-linear-gradient(to bottom, #fff, #fff 30%, rgba(255, 255, 255, 0));
+  background: -ms-linear-gradient(to bottom, #fff, #fff 30%, rgba(255, 255, 255, 0));
 }
 
 .list-bounty:after {
@@ -39,6 +50,9 @@
   background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0), #fff 70%, #fff);
   background: -moz-linear-gradient(top, rgba(255, 255, 255, 0), #fff 70%, #fff);
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff 70%, #fff);
+  background: -webkit-gradient(to bottom, rgba(255, 255, 255, 0), #fff 70%, #fff);
+  background: -o-linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff 70%, #fff);
+  background: -ms-linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff 70%, #fff);
 }
 
 .list-bounty-item + .list-bounty-item {

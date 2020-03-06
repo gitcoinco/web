@@ -1,5 +1,6 @@
 (function($) {
   function syncComplete(res) {
+    // eslint-disable-next-line no-console
     console.log('sync complete');
   }
 
@@ -25,6 +26,7 @@
         box.onSyncDone(syncComplete);
         window.box = box;
         window.curentEthAddr = addresses[0];
+        // eslint-disable-next-line no-console
         console.log('openBox succeeded');
         callback(box);
       }).catch(err => {

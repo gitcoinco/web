@@ -565,6 +565,7 @@ waitforWeb3(function() {
       } catch (error) {
         document.lastCoinbase = null;
         // catch error so sentry doesn't alert on metamask call failure
+        // eslint-disable-next-line no-console
         console.log('web3.eth.coinbase could not be loaded');
       }
       return;
@@ -581,14 +582,18 @@ waitforWeb3(function() {
 });
 
 var wait_for_tx_to_mine_and_then_ping_server = function() {
+  // eslint-disable-next-line no-console
   console.log('checking for updates');
   if (typeof document.pendingIssueMetadata != 'undefined') {
     var txid = document.pendingIssueMetadata['txid'];
 
+    // eslint-disable-next-line no-console
     console.log('waiting for web3 to be available');
     callFunctionWhenweb3Available(function() {
+      // eslint-disable-next-line no-console
       console.log('waiting for tx to be mined');
       callFunctionWhenTransactionMined(txid, function() {
+        // eslint-disable-next-line no-console
         console.log('tx mined');
         var data = {
           url: document.issueURL,
@@ -601,6 +606,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
         };
         var success = function(response) {
           if (response.status == '200') {
+            // eslint-disable-next-line no-console
             console.log('success from sync/web', response);
 
             // clear local data
@@ -613,11 +619,13 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
               document.location.reload();
             }
           } else {
+            // eslint-disable-next-line no-console
             console.log('error from sync/web', response);
             error(response);
           }
         };
 
+        // eslint-disable-next-line no-console
         console.log('syncing gitcoin with web3');
         var uri = '/sync/web3/';
 
@@ -1469,6 +1477,7 @@ var pull_bounty_from_api = function() {
       $('.nonefound').css('display', 'block');
     }
   }).fail(function(result) {
+    // eslint-disable-next-line no-console
     console.log(result);
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
     $('#primary_view').css('display', 'none');

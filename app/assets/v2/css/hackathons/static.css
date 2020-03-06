@@ -28,6 +28,10 @@ h4 {
   background: #000;
 }
 
+.powered-by img {
+  height: 3.5rem;
+}
+
 .hackathon footer img {
   min-height: 3.5rem;
 }
@@ -36,10 +40,6 @@ h4 {
   text-decoration: underline;
   color: inherit;
   word-spacing: 0;
-}
-
-.powered-by img {
-  height: 3.5rem;
 }
 
 .hackathon .button {
@@ -84,6 +84,10 @@ h4 {
   max-height: 25rem;
 }
 
+.hk-white-bg .border {
+  background-color: #121315;
+}
+
 .hackathon .section .border {
   height: 0.55rem;
   width: 15rem;
@@ -97,10 +101,6 @@ h4 {
 
 .hk-white-bg {
   background-color: #fff;
-}
-
-.hk-white-bg .border {
-  background-color: #121315;
 }
 
 .hk-black-bg {
@@ -139,13 +139,13 @@ h4 {
 
 /* Beyond Blocks */
 
-.beyond_blocks .powered_by img:last-child {
-  min-height: 5.5rem;
-}
-
 .beyond_blocks footer a:last-child img {
   min-height: 5.5rem;
   height: 100%;
+}
+
+.beyond_blocks .powered_by img:last-child {
+  min-height: 5.5rem;
 }
 
 .beyond_blocks .sponsors_silver img {
