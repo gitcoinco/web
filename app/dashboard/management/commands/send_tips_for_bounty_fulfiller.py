@@ -89,7 +89,7 @@ class Command(BaseCommand):
                             print(" - 2 ")
                             old_from = tip.from_name
                             comments_public = "[gitcoinbot message] This crowdfunding was auto-returned to you because Gitcoin could not figure out how to distribute the funds.  We recommend that you payout these funds to the bounty hunters, at your discretion, via https://gitcoin.co/tip ."
-                            msg = f'auto assigneed on {timezone.now()}; as bulk payout bounty.  tip was from {tip.from_name}'
+                            msg = f'auto assigneed on {timezone.now()}; as bulk payout bounty.  tip was from {old_from}'
                             return_to_sender(tip, msg, comments_public)
                     elif bounty.status == 'cancelled':
                         ######################################################

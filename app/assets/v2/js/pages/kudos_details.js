@@ -1,11 +1,17 @@
 var cloneKudos = function(name, numClones) {
   console.log('name: ' + name);
+  /* eslint no-console: "error" */
+
+  // show: number of Clones
   console.log('numClones: ' + numClones);
 
   var account = web3.eth.coinbase;
   var kudosContractInstance = web3.eth.contract(kudos_abi).at(kudos_address());
 
   kudosContractInstance.clone(name, numClones, {from: account, value: new web3.BigNumber(1000000000000000)}, function(error, txid) {
+    /* eslint no-console: "error" */
+
+    // show: txid
     console.log('txid:' + txid);
     return true;
   });

@@ -1,5 +1,6 @@
 (function($) {
   function syncComplete(res) {
+    // eslint-disable-next-line no-console
     console.log('sync complete');
   }
 
@@ -25,6 +26,7 @@
         box.onSyncDone(syncComplete);
         window.box = box;
         window.curentEthAddr = addresses[0];
+        // eslint-disable-next-line no-console
         console.log('openBox succeeded');
         callback(box);
       }).catch(err => {
@@ -134,12 +136,18 @@
         return result;
       }
     } catch (err) {
+      /* eslint no-console: "error" */
+
+      // show Error when fetching profile data
       console.log('Error when fetching profile data', err);
     }
     return null;
   }
 
   async function syncTo3Box(option) {
+    /* eslint no-console: "error" */
+
+    // process: start sync data
     console.log('start sync data to 3box');
 
     onLoading = option ? option.onLoading : null;

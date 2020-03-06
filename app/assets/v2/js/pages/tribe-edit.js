@@ -239,6 +239,9 @@ $('[data-cancelbountyrequest]').on('click', function() {
       $(`#${bounty_request_id}`).hide();
     } else {
       _alert(`Error rejecting bounty request as ${response.message}`, 'error');
+      /* eslint no-console: "error" */
+
+      // error:  response error
       console.error(response.message);
     }
 

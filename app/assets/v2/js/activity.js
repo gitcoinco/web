@@ -142,6 +142,7 @@ $(document).ready(function() {
     // calc total
     var answers = $this.parents('.poll_choices').find('span');
 
+    // eslint-disable-next-line no-console
     console.log(answers.length);
     for (var i = 0; i < answers.length; i++) {
       total += parseInt(($(answers[i]).text()));
@@ -205,6 +206,7 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $parent.data('pk');
 
     $.post(url, params, function(response) {
+      // eslint-disable-next-line no-console
       console.log(response);
     });
 
@@ -599,6 +601,9 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $(this).parents('.activity').data('pk');
 
     $.post(url, params, function(response) {
+      /* eslint no-console: "error" */
+
+      // event: toggle like
       console.log('toggle like');
     });
     var like_count = parseInt($(this).find('span.like_count').text());
@@ -671,13 +676,16 @@ $(document).ready(function() {
         if (response.status <= 204) {
           _alert('comment successfully deleted.', 'success', 1000);
           $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
+          // eslint-disable-next-line no-console
           console.log(response);
         } else {
           _alert(`Unable to delete commment: ${response.message}`, 'error');
+          // eslint-disable-next-line no-console
           console.log(`error deleting commment: ${response.message}`);
         }
       }).fail(function(error) {
         _alert('Unable to delete comment', 'error');
+        // eslint-disable-next-line no-console
         console.log(`error deleting commment: ${error.message}`);
       });
     }

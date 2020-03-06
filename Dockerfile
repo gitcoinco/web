@@ -10,18 +10,19 @@ WORKDIR /code
 
 # Inkscape
 RUN apt-get update
-RUN apt-get install -y software-properties-common
+RUN apt-get install -y --no-install-recommends software-properties-common
 RUN add-apt-repository ppa:inkscape.dev/stable
 RUN apt-get update
 
 # Install general dependencies.
-RUN apt-get install -y $PACKAGES
+RUN apt-get install -y --no-install-recommends $PACKAGES
 RUN apt-get update
-RUN apt-get install -y $BUILD_DEPS
+RUN apt-get install -y --no-install-recommends $BUILD_DEPS
 
-RUN apt-get install -y wget
+RUN apt-get install -y --no-install-recommends wget
 
-RUN apt-get install -y python3-pip
+RUN apt-get install -y --no-install-recommends python3-pip
+RUN apt-get clean \ && rm -rf /var/lib/apt/lists/*
 
 COPY dist/* ./
 
@@ -38,8 +39,8 @@ RUN mkdir -p /usr/share/GeoIP/ && \
 RUN pip3 install --upgrade pip setuptools wheel dumb-init pipenv
 
 COPY requirements/ /code/
-RUN apt-get install -y build-essential libssl-dev python3-dev
-RUN apt-get install -y libsecp256k1-dev
+RUN apt-get install -y --no-install-recommends build-essential libssl-dev python3-dev
+RUN apt-get install -y --no-install-recommends libsecp256k1-dev
 RUN pip3 install --upgrade -r test.txt
 
 COPY bin/docker-command.bash /bin/docker-command.bash

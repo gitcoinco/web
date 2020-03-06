@@ -93,6 +93,9 @@
   background-image: -webkit-radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), -webkit-radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
   background-image: -moz-radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), -moz-radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
   background-image: radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+  background-image: -ms-radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+  background-image: -o-radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+  background-image: -webkit-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
   background-position: 0 0, 0 100%;
   background-size: 100% 14px;
 }
@@ -108,6 +111,9 @@
   background: -webkit-linear-gradient(top, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
   background: -moz-linear-gradient(top, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
   background: linear-gradient(to bottom, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
+  background: -ms-linear-gradient(to bottom, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
+  background: -o-linear-gradient(to bottom, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
+  background: -webkit-gradient(to bottom, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
 }
 
 .notifications__list:after {

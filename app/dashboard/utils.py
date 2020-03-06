@@ -25,7 +25,6 @@ from json.decoder import JSONDecodeError
 
 from django.conf import settings
 from django.urls import URLPattern, URLResolver
-from django.utils import timezone
 
 import ipfshttpclient
 import requests

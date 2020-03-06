@@ -4,7 +4,7 @@
  */
 createBounty = data => {
 
-  const metadata  = data.metadata;
+  const metadata = data.metadata;
   const privacy_preferences = {
     show_email_publicly: data.show_email_publicly,
     show_name_publicly: data.show_name_publicly
@@ -78,9 +78,9 @@ createBounty = data => {
     'web3_type': 'qr'
   };
 
-  const url  = '/api/v1/bounty/create';
+  const url = '/api/v1/bounty/create';
 
-  $.post(url, params, function(response) {    
+  $.post(url, params, function(response) {
     if (200 <= response.status && response.status <= 204) {
       // eslint-disable-next-line no-console
       console.log('success', response);
@@ -92,7 +92,7 @@ createBounty = data => {
     } else {
       _alert('Unable to create a bounty. Please try again later', 'error');
       // eslint-disable-next-line no-console
-      console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);  
+      console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
     }
   });
 

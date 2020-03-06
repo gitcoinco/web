@@ -146,7 +146,7 @@ def iter_threshold(aggregated_contributions, pair_totals, total_pot, lower_bound
     return bigtot, totals
 
 
-'''
+"""
     Clubbed function that intakes grant data, calculates necessary
     intermediate calculations, and spits out clr calculations.
 
@@ -165,7 +165,8 @@ def iter_threshold(aggregated_contributions, pair_totals, total_pot, lower_bound
     Returns:
         bigtot: should equal total pot
         totals: clr totals
-'''
+"""
+
 def grants_clr_calculate (grant_contributions, total_pot, lower_bound):
     grants_list = translate_data(grant_contributions)
     aggregated_contributions, pair_totals = aggregate_contributions(grants_list)

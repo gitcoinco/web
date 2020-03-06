@@ -19,7 +19,6 @@
 
 from django.core.management.base import BaseCommand
 
-from dashboard.models import Bounty
 from dashboard.utils import sync_etc_payout
 
 

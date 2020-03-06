@@ -175,6 +175,9 @@ const ethCreateBounty = data => {
   function newIpfsCallback(error, result) {
     indicateMetamaskPopup();
     if (error) {
+      /* eslint no-console: "error" */
+
+      // error: show error msg
       console.error(error);
       _alert({
         message: gettext('There was an error.  Please try again or contact support.')
@@ -311,11 +314,17 @@ const ethCreateBounty = data => {
       } else {
         _alert('Unable to upload NDA. ', 'error');
         unloading_button($('.js-submit'));
+        /* eslint no-console: "error" */
+
+        // error: NDA error
         console.log('NDA error:', response.message);
       }
     }).fail(function(error) {
       _alert('Unable to upload NDA. ', 'error');
       unloading_button($('.js-submit'));
+      /* eslint no-console: "error" */
+
+      // error: NDA error
       console.log('NDA error:', error);
     });
   };
@@ -413,7 +422,7 @@ const ethCreateBounty = data => {
       token_contract.balanceOf.call(from, function(error, result) {
         if (error) return;
         const walletBalance = result.toNumber() / Math.pow(10, token_decimals);
-        
+
         return checkBalance(walletBalance, total, token_name);
       });
     }

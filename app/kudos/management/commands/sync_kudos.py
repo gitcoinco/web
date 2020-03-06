@@ -119,7 +119,6 @@ class Command(BaseCommand):
 
     def block_sync(self, kudos_contract, fromBlock):
         raise NotImplementedError('block_sync does not work properly')
-        block = fromBlock
         last_block_number = kudos_contract._w3.eth.getBlock('latest')['number']
         # for block_num in range(block, last_block_number + 1)
         while True:

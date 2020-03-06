@@ -33,10 +33,7 @@
   background-color: #fdedee;
   padding: 3px;
   position: relative;
-  margin-top: 25px;
-  margin-bottom: 25px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 25px auto 25px auto;
 }
 
 .announce:after {

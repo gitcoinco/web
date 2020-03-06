@@ -5,6 +5,9 @@ $(document).ready(function() {
     let prefix = ' in ';
 
     if (difference > 0) {
+      /* eslint no-console: "error" */
+
+      // event: ispect on moment(difference)
       console.log(moment(difference).inspect());
       const parts = {
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),

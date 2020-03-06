@@ -27,5 +27,5 @@ if [ "$2" == "1" ]; then
 fi
 
 BFILE=$1
-cat "$BFILE" | psql postgres -p 5432 -h db -U postgres
+< "$BFILE" | psql postgres -p 5432 -h db -U postgres
 
