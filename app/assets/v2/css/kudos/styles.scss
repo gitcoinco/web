@@ -86,7 +86,7 @@ $bg-cellarius: #4D5858;
     z-index: 2;
   }
 
-  >a {
+  > a {
     position: relative;
     display: block;
   }
@@ -185,7 +185,7 @@ $bg-cellarius: #4D5858;
   background-color: $gc-blue;
   font-size: 2em;
 
-  >div {
+  > div {
     display: flex;
     flex-direction: column;
     padding: 0 0.6em 0;
@@ -290,7 +290,6 @@ a:hover {
 
 }
 
-#svg-text {}
 
 @keyframes rotation {
 
