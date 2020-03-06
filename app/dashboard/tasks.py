@@ -4,7 +4,7 @@ from app.redis_service import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
-from dashboard.models import Profile
+from dashboard.models import Activity, Profile
 from marketing.mails import func_name, send_mail
 from retail.emails import render_share_bounty
 
@@ -96,3 +96,17 @@ def profile_dict(self, pk, retry: bool = True) -> None:
         if profile.frontend_calc_stale:
             profile.calculate_all()
             profile.save()
+
+
+@app.shared_task(bind=True, max_retries=3)
+def refresh_activity_views(self, pk, retry: bool = True) -> None:
+    """
+    :param self:
+    :param pk:
+    :return:
+    """
+    if isinstance(pk, list):
+        pk = pk[0]
+    with redis.lock("tasks:refresh_activity_views:%s" % pk, timeout=LOCK_TIMEOUT):
+        activity = Activity.objects.get(pk=pk)
+        activity.generate_view_props_cache()

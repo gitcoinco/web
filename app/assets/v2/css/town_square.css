@@ -1,3 +1,6 @@
+#mobile_nav_toggle{
+  display: none !important;
+}
 .follow_button[member=true]{
   display: none;
 }
@@ -971,4 +974,19 @@ body.green.offer_view .announce {
   width: 20px;
   height: 20px;
   margin-right: 4px;
+}
+
+@media (max-width: 768px) {
+  #mobile_nav_toggle{
+    display: block !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  #_hj_feedback_container{
+    display:none !important;
+  }
+  .townsquare_header li.nav-item{
+    display:inline-block;
+  }
 }

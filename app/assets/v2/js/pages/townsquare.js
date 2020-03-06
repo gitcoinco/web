@@ -26,6 +26,18 @@ $(document).ready(function() {
     return prefix + remaining;
   };
 
+  $('#mobile_nav_toggle li a').click(function(e) {
+    $('#mobile_nav_toggle li a').removeClass('active');
+    $(this).addClass('active');
+    if ($(this).data('slug') == 'feed') {
+      $('.feed_container').removeClass('hidden');
+      $('.actions_container').addClass('hidden');
+    } else {
+      $('.feed_container').addClass('hidden');
+      $('.actions_container').removeClass('hidden');
+    }
+  });
+
   $('.top_offer').click(function(e) {
     document.location = $(this).find('a.btn').attr('href');
   });
@@ -65,6 +77,9 @@ $(document).ready(function() {
     }, 10);
   });
   $('body').on('click', '.townsquare_nav-list .nav-link', function(e) {
+    if ($(this).attr('href') != '#') {
+      return;
+    }
     $('.nav-link').removeClass('active');
     $(this).addClass('active');
     e.preventDefault();
