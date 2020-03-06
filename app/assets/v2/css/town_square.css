@@ -911,9 +911,9 @@ body.green.offer_view .announce {
 
 .activity_stream .activity_comments .comment_container.filled
 .activity-avatar img {
-  height: 30px;
-  width: 30px;
-  max-width: 30px;
+  height: 40px;
+  width: 40px;
+  max-width: 40px;
   border-radius: 50%;
 }
 
