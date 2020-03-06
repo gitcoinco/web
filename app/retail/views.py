@@ -1177,7 +1177,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     if 'search-' in what:
         keyword = what.split('-')[1]
         view_count_threshold = 5
-        base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post', 'mini_clr_payout'])
+        base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post', 'new_bounty', 'created_quest', 'mini_clr_payout'])
         keyword_filter = Q(pk=0) #noop
         if keyword == 'meme':
             keyword_filter = Q(metadata__type='gif') | Q(metadata__type='png') | Q(metadata__type='jpg')

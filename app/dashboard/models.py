@@ -2249,6 +2249,7 @@ class Activity(SuperModel):
             'created_human_time',
             'humanized_name',
             'url',
+            'relative_url',
             'match_this_round',
             'matchranking_this_round',
         ]
@@ -2261,7 +2262,7 @@ class Activity(SuperModel):
         activity['comments'] = self.comments.count()
         for key, value in model_to_dict(self).items():
             activity[key] = value
-        for fk in ['bounty', 'tip', 'kudos', 'profile', 'grant', 'other_profile']:
+        for fk in ['bounty', 'tip', 'kudos', 'profile', 'grant', 'other_profile', 'hackathonevent']:
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
         activity['secondary_avatar_url'] = self.secondary_avatar_url
@@ -4480,6 +4481,10 @@ class HackathonEvent(SuperModel):
     @property
     def relative_url(self):
         return f'hackathon/{self.slug}'
+
+    @property
+    def town_square_link(self):
+        return f'townsquare/?tab=hackathon:{self.pk}'
 
     def get_absolute_url(self):
         """Get the absolute URL for the HackathonEvent.

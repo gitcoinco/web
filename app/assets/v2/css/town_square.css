@@ -374,7 +374,10 @@ a.offer_container.animate:hover .prize-gift::after {
   color: #a58484;
   text-shadow: 0 2px 0px #a58484;
 }
-
+.empty {
+  background-color: #ddd;
+  color: #808080;
+}
 .empty .prize-gift {
   color: grey;
   text-shadow: 0 2px 0px grey;
