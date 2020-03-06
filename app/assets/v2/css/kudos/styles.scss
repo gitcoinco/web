@@ -13,6 +13,7 @@ $bg-cellarius: #4D5858;
   width: 100%;
   justify-content: center;
   align-items: center;
+
   &:after {
     content: ' ';
     padding-top: 100%;
@@ -31,7 +32,7 @@ $bg-cellarius: #4D5858;
   }
 
   &.gold .img-thumbnail {
-    border-image: linear-gradient(to bottom, rgba(255, 193, 7, 0.5) , rgba(169, 116, 21, .5));
+    border-image: linear-gradient(to bottom, rgba(255, 193, 7, 0.5), rgba(169, 116, 21, .5));
     border-image-slice: 1;
   }
 
@@ -72,7 +73,7 @@ $bg-cellarius: #4D5858;
 }
 
 .kd-shadow {
-  box-shadow: 1px 1px 2px rgba(0,0,0, 0.1);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .kd-extended {
@@ -85,7 +86,7 @@ $bg-cellarius: #4D5858;
     z-index: 2;
   }
 
-  > a {
+  >a {
     position: relative;
     display: block;
   }
@@ -130,10 +131,10 @@ $bg-cellarius: #4D5858;
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba($gc-blue,.8);
+  background: rgba($gc-blue, .8);
   color: white;
   padding: 1rem;
-  overflow-y:auto;
+  overflow-y: auto;
   flex-direction: column;
 
   a {
@@ -163,6 +164,7 @@ $bg-cellarius: #4D5858;
   background-color: $dark-blue;
   color: white;
 }
+
 .bg-light-blue {
   background-color: $gc-blue;
   color: white;
@@ -183,7 +185,7 @@ $bg-cellarius: #4D5858;
   background-color: $gc-blue;
   font-size: 2em;
 
-  > div {
+  >div {
     display: flex;
     flex-direction: column;
     padding: 0 0.6em 0;
@@ -193,7 +195,7 @@ $bg-cellarius: #4D5858;
   }
 
   &:hover {
-    color:rgba(255,255,255, 0.8)
+    color: rgba(255, 255, 255, 0.8)
   }
 }
 
@@ -201,7 +203,9 @@ $bg-cellarius: #4D5858;
   width: 90%;
   margin: auto;
 }
+
 .carousel-control-kudos {
+
   .carousel-control-next,
   .carousel-control-prev {
     width: 3.3rem;
@@ -217,9 +221,11 @@ $bg-cellarius: #4D5858;
   .carousel-control-prev-icon {
     height: 34px;
   }
+
   .carousel-control-prev-icon {
     background-image: url("data:image/svg+xml,%0A%3Csvg width='19px' height='34px' viewBox='0 0 19 34' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 50.2 %2855047%29 - http://www.bohemiancoding.com/sketch --%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Symbols' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Headers/Header-%239' transform='translate%28-101.000000, -638.000000%29' fill='%23C1C1C1'%3E%3Cpath d='M116.89675,671.709 L101.58275,656.405 C100.80575,655.629 100.80575,654.371 101.58275,653.595 L116.89675,638.291 C117.28475,637.903 117.91475,637.903 118.30275,638.291 L119.70875,639.696 C120.09675,640.084 120.09675,640.713 119.70875,641.101 L106.50275,654.297 C106.11475,654.685 106.11475,655.315 106.50275,655.702 L119.70875,668.899 C120.09675,669.287 120.09675,669.916 119.70875,670.304 L118.30275,671.709 C117.91475,672.097 117.28475,672.097 116.89675,671.709' id='Icon'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
+
   .carousel-control-next-icon {
     background-image: url("data:image/svg+xml,%0A%3Csvg width='19px' height='34px' viewBox='0 0 19 34' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 50.2 %2855047%29 - http://www.bohemiancoding.com/sketch --%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Symbols' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Headers/Header-%239' transform='translate%28-1320.000000, -638.000000%29' fill='%23C1C1C1'%3E%3Cpath d='M1335.89675,671.709 L1320.58275,656.405 C1319.80575,655.629 1319.80575,654.371 1320.58275,653.595 L1335.89675,638.291 C1336.28475,637.903 1336.91475,637.903 1337.30275,638.291 L1338.70875,639.696 C1339.09675,640.084 1339.09675,640.713 1338.70875,641.101 L1325.50275,654.297 C1325.11475,654.685 1325.11475,655.315 1325.50275,655.702 L1338.70875,668.899 C1339.09675,669.287 1339.09675,669.916 1338.70875,670.304 L1337.30275,671.709 C1336.91475,672.097 1336.28475,672.097 1335.89675,671.709' id='Icon' transform='translate%281329.499875, 655.000000%29 scale%28-1, 1%29 translate%28-1329.499875, -655.000000%29 '%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
@@ -252,27 +258,22 @@ $bg-cellarius: #4D5858;
 
   &:hover {
     color: white;
-    background-color: rgba(#d38971,0.9);
+    background-color: rgba(#d38971, 0.9);
   }
 }
 
 .hexagon {
   background: red;
   width: 10rem;
-  display: block;
   margin: auto;
   height: 11.56rem;
   display: flex;
   align-content: center;
   justify-content: center;
   align-items: center;
-  -webkit-clip-path: polygon(
-    50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%
-  );
+  -webkit-clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
 
-  clip-path: polygon(
-    50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%
-  );
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
 }
 
 a:hover {
@@ -280,46 +281,53 @@ a:hover {
     animation-play-state: paused;
   }
 }
-  #shape-hexagon {
-    animation: rotation 5s linear infinite;
-    animation-fill-mode: none;
-    animation-direction: alternate;
-    animation-iteration-count: infinite;
 
-  }
-  #svg-text {
+#shape-hexagon {
+  animation: rotation 5s linear infinite;
+  animation-fill-mode: none;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
 
-  }
+}
+
+#svg-text {}
 
 @keyframes rotation {
+
   // stroke-dasharray: 300
   0% {
-    stroke:#0cc67f;
-    fill:rgba(#0cc67f,0.6);
+    stroke: #0cc67f;
+    fill: rgba(#0cc67f, 0.6);
   }
+
   15% {
-    stroke:#1e6ee2;
-    fill:rgba(#1e6ee2,0.6);
+    stroke: #1e6ee2;
+    fill: rgba(#1e6ee2, 0.6);
   }
+
   30% {
-    stroke:#662d91;
-    fill:rgba(#662d91,0.6);
+    stroke: #662d91;
+    fill: rgba(#662d91, 0.6);
   }
+
   50% {
-    stroke:#018cb2;
-    fill:rgba(#018cb2,0.6);
+    stroke: #018cb2;
+    fill: rgba(#018cb2, 0.6);
   }
+
   65% {
-    stroke:#e57418;
-    fill:rgba(#e57418,0.6);
+    stroke: #e57418;
+    fill: rgba(#e57418, 0.6);
   }
+
   85% {
-    stroke:#4d4d4d;
-    fill:rgba(#4d4d4d,0.6);
+    stroke: #4d4d4d;
+    fill: rgba(#4d4d4d, 0.6);
   }
+
   100% {
-    stroke:#0044e0;
-    fill:rgba(#0044e0,0.6);
+    stroke: #0044e0;
+    fill: rgba(#0044e0, 0.6);
   }
 }
 
@@ -380,7 +388,7 @@ a:hover {
 
     }
 
-    &:hover .faces{
+    &:hover .faces {
       transform: rotateY(0.5turn);
     }
 
@@ -425,6 +433,7 @@ a:hover {
     svg text {
       font-size: 1.3em;
     }
+
     .paging-animation {
       height: 260px;
       font-size: 16px;
@@ -461,6 +470,7 @@ a:hover {
 
   @media(min-width: 800px) {
     grid-template-columns: repeat(8, 1fr);
+
     .paging-animation {
       &:nth-child(1) {
         grid-column: 1/3;
@@ -508,15 +518,16 @@ a:hover {
     width: 5rem;
   }
 }
+
 @keyframes pulse-shadow {
   0% {
     transform: scale(0.98);
-    filter: drop-shadow(0px 0px 0px rgba(0,0,0,0.9));
+    filter: drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.9));
   }
 
   100% {
     transform: scale(1);
-    filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.5));
+    filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.5));
   }
 }
 
@@ -562,7 +573,7 @@ a.cellarius-partner:before {
   background: url('/static/v2/images/kudos/assets/cellarius-logo.svg');
   background-repeat: no-repeat;
   background-color: #fff;
-  border-radius:50px;
+  border-radius: 50px;
 }
 
 // Kudos details
@@ -619,6 +630,7 @@ a.cellarius-partner:before {
     line-height: 1.5;
 
   }
+
   .tooltip-inner {
     width: 300px;
     background-color: #0D0764;
@@ -635,40 +647,47 @@ a.cellarius-partner:before {
 
 .author-shape {
   -webkit-clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
 
 // kudos detail animations
-#kudos-image, .kudos_levitate_container{
+#kudos-image,
+.kudos_levitate_container {
   cursor: pointer;
 }
 
-#kudos-image.shake{
-  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+#kudos-image.shake {
+  animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   perspective: 1000px;
 }
 
 @keyframes shake {
-  10%, 90% {
+
+  10%,
+  90% {
     transform: translate3d(-1px, 0, 0);
   }
 
-  20%, 80% {
+  20%,
+  80% {
     transform: translate3d(2px, 0, 0);
   }
 
-  30%, 50%, 70% {
+  30%,
+  50%,
+  70% {
     transform: translate3d(-4px, 0, 0);
   }
 
-  40%, 60% {
+  40%,
+  60% {
     transform: translate3d(4px, 0, 0);
   }
 }
 
-.kudos_msg{
+.kudos_msg {
   margin-top: -90px;
   display: none;
   position: relative;
@@ -677,7 +696,6 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   color: white;
   padding: 3px 10px;
   margin-bottom: 20px
-
 }
 
 .kudos_msg:after {
@@ -714,6 +732,7 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
+
   &__flipper {
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
@@ -723,12 +742,13 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     cursor: pointer;
     border-radius: 3px;
   }
+
   &__front {
     position: relative;
     background: white;
     border-radius: .25rem;
     z-index: 2;
-  	transform: rotateY(0);
+    transform: rotateY(0);
   }
 
 
@@ -736,6 +756,7 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     transform: rotateY(-10deg);
     box-shadow: 2px 0px 7px 1px hsla(0, 0%, 0%, 0.1);
   }
+
   &.turn .flip-card__flipper {
     transform: rotateY(-0.5turn);
   }
@@ -772,7 +793,7 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
 
 .bubble {
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   padding: 0.7em;
   position: relative;
   border-radius: 3px;
