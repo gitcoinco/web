@@ -1003,7 +1003,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "New Week, New Me, New Gitcoin!"
+    subject = "Spring & New Things Around the Corner"
     new_kudos_pks = [11843, 11803, 11799]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
