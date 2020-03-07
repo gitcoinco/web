@@ -2077,6 +2077,8 @@ class Activity(SuperModel):
         ('created_quest', 'Created Quest'),
         ('updated_avatar', 'Updated Avatar'),
         ('mini_clr_payout', 'Mini CLR Payout'),
+        ('leaderboard_rank', 'Leaderboard Rank'),
+        ('consolidated_leaderboard_rank', 'Consolidated Leaderboard Rank'),
     ]
 
     profile = models.ForeignKey(
@@ -2267,7 +2269,7 @@ class Activity(SuperModel):
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
         activity['secondary_avatar_url'] = self.secondary_avatar_url
-        activity['staff'] = self.profile.user.is_staff if self.profile and hasattr(self.profile, 'user') else False
+        activity['staff'] = self.profile.user.is_staff if self.profile and hasattr(self.profile, 'user') and self.profile.user else False
 
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
