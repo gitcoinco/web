@@ -40,7 +40,13 @@ a .sup {
 .action.open {
   background-color: #eeeeee;
 }
-
+.comment_container .action{
+  cursor: pointer;
+}
+.comment_container .action.open,
+.comment_container .open .fa-heart{
+  color: var(--gc-pink) !important;
+}
 .activity_stream .activity_detail {
   flex: 1;
   font-size: 0.75rem;
@@ -192,4 +198,9 @@ a .sup {
 
 .activity_stream .dropdown-menu {
   min-width: 7rem;
+}
+
+.activity_stream .new_bounty {
+  border-top: 3px solid #3e00ff;
+  border-bottom: 3px solid #3e00ff;
 }

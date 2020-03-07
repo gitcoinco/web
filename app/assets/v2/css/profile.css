@@ -449,6 +449,7 @@
   transform: scale(1.1);
 }
 
+#follow_header,
 #kudos_header {
   position: absolute;
   top: -95px;
@@ -456,6 +457,14 @@
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 5px;
   padding: 5px;
+}
+#follow_header{
+  top: -165px;
+  color: white;
+  font-size: 12px;
+}
+#follow_header.lower{
+  top: -75px;
 }
 #kudos_header img{
   box-shadow: none;

@@ -118,6 +118,7 @@ urlpatterns = [
     url(r'^api/v0.1/profile/settings', dashboard.views.profile_settings, name='profile_settings'),
     url(r'^api/v0.1/profile/backup', dashboard.views.profile_backup, name='profile_backup'),
     path('api/v0.1/activity/<int:activity_id>', townsquare.views.api, name='townsquare_api'),
+    path('api/v0.1/comment/<int:comment_id>', townsquare.views.comment_v1, name='comment_v1'),
     path('api/v0.1/emailsettings/', townsquare.views.emailsettings, name='townsquare_emailsettings'),
     url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
     url(
@@ -378,6 +379,7 @@ urlpatterns = [
         name='townsquare_offer_decline'
     ),
     path('action/<int:offer_id>/<slug:offer_slug>', townsquare.views.offer_view, name='townsquare_offer_view'),
+    url(r'^service/metadata/$', townsquare.views.extract_metadata_page, name='meta-extractor'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
     url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),
@@ -574,6 +576,7 @@ urlpatterns = [
         retail.emails.no_applicant_reminder,
         name='no_applicant_reminder'
     ),
+    re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),

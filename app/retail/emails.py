@@ -335,6 +335,15 @@ def render_funder_payout_reminder(**kwargs):
     return response_html, response_txt
 
 
+def render_match_distribution(mr):
+    params = {
+        'mr': mr,
+    }
+    response_html = premailer_transform(render_to_string("emails/match_distribution.html"))
+    response_txt = ''
+    return response_html, response_txt
+
+
 def render_no_applicant_reminder(bounty):
     params = {
         'bounty': bounty,
@@ -994,8 +1003,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "BUIDL Week Greetings"
-    new_kudos_pks = [10677, 10230, 7511]
+    subject = "Today’s The Day - Stream Sustain Web3 Summit Live!"
+    new_kudos_pks = [10727, 10864, 7503]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1014,16 +1023,16 @@ def render_new_bounty_roundup(to_email):
 
     intro = f'''
 <p>
-Hey Gitcoiners,
+Heya Gitcoiners,
 </p>
 <p>
-Have you sustained the web this month? Are you getting tired of our sustain talk? Don’t worry, one more week til the grand finale! There are 5 days left in the <a href="https://gitcoin.co/hackathon/sustain-web3">Sustain Web3 Virtual Hackathon</a>, and 6 days until the <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a> in Denver. Tons of <a href="https://gitcoin.co/hackathon/sustain-web3">prizes</a> are still up for grabs and we just announced the summit’s <a href="https://web3.sustainoss.org/schedule">schedule</a>! Join us virtually or in person and let’s get BUIDL Week in Denver off to a great start. If you’re attending ETHDenver, make sure to come say hi at our booth.
+We’re coming at you a day early with the Gitcoin Weekly for a special announcement. The big day has arrived! We’re hosting the <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a> today in Denver, and you can <a href="https://web3.sustainoss.org/livestream">Livestream</a> the event from the comfort of your own home!
 </p>
 <p>
- Today we’ll be hosting a very special Livestream on ETH 1.X - Meet the protocol devs who are actively maintaining clients on the mainnet. I’ll be there with Piper Merriam, James Hancock, and more special guests planning to present. <a href=“https://gitcoin.co/livestream">Add the event to your calendar</a> and come with questions.
+ The <a href="https://web3.sustainoss.org/schedule">schedule is live</a> and the lineup is looking hotter than the ETH price ;). Karl Floersch, Hudson Jameson, Vitalik Buterin, Josh Cincinnati and many many more industry leaders are taking the stage as we speak. Check out the full agenda <a href="https://web3.sustainoss.org/schedule">here</a> to find which talks you won’t want to miss. Times are listed in MST (UTC - 7), so make sure you know when that is in your time zone - the event will run from 17:00 to 23:59 UTC today, Feb 13th.
 </p>
 <p>
-Finally, our most recent deploy added tons of new features for you to check out. You can now tip users on Town Square, as well as comment with emojis. Ever want to export your earnings or spending history? Give it a try! The Bufficorn builder is live, the navigation is new. <a href=“https://gitcoin.co/townsquare">Take a look</a> and tell us what you think on <a href=“https://chat.gitcoin.co/gitcoin/channels/town-square">Chat</a>.
+Depending on when you are reading this, the event may be live now! You can stream on the <a href="https://web3.sustainoss.org/livestream">Livestream Page</a> or directly from our <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w">Youtube Channel</a>. Drop in and leave a like or comment if you’re so inclined! Many people have been working hard to put on a great free event and we can’t wait to share it with you. If you do miss the Livestream, expect the talks to go up on Youtube shortly after.
 </p>
 
 {kudos_friday}
@@ -1034,22 +1043,22 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'vporton',
+        'who': 'mul1sh',
         'who_link': True,
-        'what': 'Built a Time Lock Smart Contract With Vesting Period',
-        'link': 'https://gitcoin.co/issue/jazzholicbae/timelock/1/3981',
+        'what': 'Built OrFeed Judge Voting Contract For Prediction Market',
+        'link': 'https://gitcoin.co/issue/ProofSuite/OrFeed/52/3990',
         'link_copy': 'View more',
     }, {
-        'who': 'KiChjang',
+        'who': 'pengiundev',
         'who_link': True,
-        'what': 'Interest Rate Oracle Consumer Contracts',
-        'link': 'https://gitcoin.co/issue/ProofSuite/OrFeed/38/3940',
+        'what': 'Adjusted "Hatching Period" In Bonding Curve Smart Contract',
+        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/10/3962',
         'link_copy': 'View more',
     }, {
-        'who': 'wighawag',
+        'who': 'adrianhacker-pdx',
         'who_link': True,
-        'what': 'Won MetaMasks Generalized MetaTransaction Contest',
-        'link': 'https://gitcoin.co/issue/MetaMask/Hackathons/2/3865',
+        'what': 'Solved Challenge With A Memory-Efficient Algorithm',
+        'link': 'https://gitcoin.co/issue/chejazi/points-challenge/1/3945',
         'link_copy': 'View more',
     }, ]
 
@@ -1066,14 +1075,14 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/xpring-eng/challenges/issues/3',
-        'primer': '[$1000 XRP] Niflheim - Interledger Protocol Support For ERC-20 On Layer 2 Network',
+        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/23',
+        'primer': 'Move Orion Peer Table To Memory And Implement Environment Variables For Configuration',
     }, {
-        'url': 'https://github.com/dfuse-io/hackathons/issues/3',
-        'primer': '$350 USDT - Most Innovative Integration Of Dfuse Lifecycle',
+        'url': 'https://github.com/ProofSuite/OrFeed/issues/57',
+        'primer': 'Arbitrage And Triangular Arbitrage Calculator',
     }, {
-        'url': 'https://github.com/xpring-eng/challenges/issues/2',
-        'primer': '[$1000 XRP] Vanaheim - Interledger Protocol Support For ETH On Layer 2 Network',
+        'url': 'https://github.com/ArweaveTeam/Bounties/issues/23',
+        'primer': 'Record The Forks Permafeed',
     }]
 
 
@@ -1333,6 +1342,16 @@ def no_applicant_reminder(request):
     ).first()
     response_html, _ = render_no_applicant_reminder(bounty=bounty)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def match_distribution(request):
+    from townsquare.models import MatchRanking
+    mr = MatchRanking.objects.last()
+    response_html, _ = render_match_distribution(mr)
+    return HttpResponse(response_html)
+
+
 
 
 @staff_member_required
