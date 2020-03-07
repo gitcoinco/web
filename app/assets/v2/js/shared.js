@@ -1077,8 +1077,7 @@ $(document).ready(function() {
   const Web3Connect = window.Web3Connect.default;
   // Determine if we're on prod or not
   const isProd = document.location.href.startsWith('https://gitcoin.co');
-  // FIXME: Use Fortmatic API key provided by Gitcoin
-  const formaticKey = isProd ? 'pk_live_99CEDFB950A446EC' : 'pk_test_A9E82CC253A9C8E4';
+  const formaticKey = isProd ? document.contxt['fortmatic_live_key'] : document.contxt['fortmatic_test_key'];
   const providerOptions = {
     authereum: {
       'package': Authereum
