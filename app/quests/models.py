@@ -64,7 +64,11 @@ class Quest(SuperModel):
     @property
     def url(self):
         from django.conf import settings
-        return settings.BASE_URL + f"quests/{self.pk}/{slugify(self.title)}"
+        return settings.BASE_URL + self.relative_url
+
+    @property
+    def relative_url(self):
+        return f"quests/{self.pk}/{slugify(self.title)}"
 
     @property
     def edit_url(self):

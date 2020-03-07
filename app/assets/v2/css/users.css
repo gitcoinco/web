@@ -22,6 +22,10 @@
   }
 }
 
+.users .card-user .dropdown-menu {
+  min-width: 4rem;
+}
+
 .card-user {
   font-size: 12px;
 }

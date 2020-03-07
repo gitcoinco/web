@@ -4,6 +4,8 @@ import time
 
 import pandas as pd
 
+match_amounts_to_estimate = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 1, 5, 10, 100, 1000]
+#match_amounts_to_estimate = [0.30]
 
 '''
     Some data conversion functions.
@@ -113,7 +115,7 @@ def aggregate_contributions_live(grant_contributions, grant_id=86.0, live_user=9
         contrib_dict[proj][user] = contrib_dict[proj].get(user, 0) + amount
     contrib_dict_list = []
     tot_overlap_list = []
-    for amount in [0, 1, 10, 100, 1000]:
+    for amount in match_amounts_to_estimate:
         contrib_dict_copy = copy.deepcopy(contrib_dict)
         contrib_dict_copy[grant_id][live_user] = contrib_dict_copy[grant_id].get(live_user, 0) + amount
         contrib_dict_list.append(contrib_dict_copy)
@@ -245,8 +247,6 @@ def run_calc(data, total_pot=125000):
     return res
 
 
-
-
 '''
     Runs live donation incremental calculations
 
@@ -254,22 +254,26 @@ def run_calc(data, total_pot=125000):
 
     Returns: live donation incremental clr award amounts 
 '''
-def run_live_calc(grant_id=86.0, live_user=99999999.0):
+def run_live_calc(data, grant_id=86.0, live_user=99999999.0, total_pot=125000):
     start_time = time.time()
-    tech, media = get_data()
-    aggregated_contributions_list, pair_totals_list = aggregate_contributions_live(tech, grant_id=grant_id, live_user=live_user)
+    aggregated_contributions_list, pair_totals_list = aggregate_contributions_live(data, grant_id=grant_id, live_user=live_user)
     clr_curve = []
     for x, y in zip(aggregated_contributions_list, pair_totals_list):
-        res = calculate_new_clr(x, y)
+        res = calculate_new_clr(x, y, total_pot=total_pot)
         pred = list(filter(lambda x: x['id'] == grant_id, res))[0]['clr_amount']
         clr_curve.append(pred)
+
     print('live calc runtime --- %s seconds ---' % (time.time() - start_time))
-    print(clr_curve)
-    return clr_curve
 
+    return_dict = {}
+    for i in range(0, len(match_amounts_to_estimate)):
+        key = match_amounts_to_estimate[i]
+        val = clr_curve[i]
+        return_dict[key] = val
 
+    return return_dict
 
 if __name__ == '__main__':
     run_calc(get_data())
-    res = run_media_calc()
+    res = run_live_calc()
     print(res)

@@ -496,7 +496,7 @@ appreciate you being a part of the community + let us know if you'd like some Gi
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, trending_quests=[]):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -508,6 +508,8 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'email_style': email_style,
 		'email_type': 'new_bounty_notifications',
         'base_url': settings.BASE_URL,
+        'show_action': True,
+        'trending_quests': trending_quests,
         'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 
@@ -1003,8 +1005,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Today’s The Day - Stream Sustain Web3 Summit Live!"
-    new_kudos_pks = [10727, 10864, 7503]
+    subject = "Have We Mentioned The Future Of Work Is Remote?"
+    new_kudos_pks = [11602, 7496, 1838]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1023,42 +1025,51 @@ def render_new_bounty_roundup(to_email):
 
     intro = f'''
 <p>
-Heya Gitcoiners,
+Good day Gitcoiners,
 </p>
 <p>
-We’re coming at you a day early with the Gitcoin Weekly for a special announcement. The big day has arrived! We’re hosting the <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a> today in Denver, and you can <a href="https://web3.sustainoss.org/livestream">Livestream</a> the event from the comfort of your own home!
+Well that was quick - February has been a fast and crazy month. Watching the spread of the SARS-CoV-2 virus and economic uncertainty that follows, we hope everyone in our global community is staying safe and healthy. Now more than ever it’s obvious the future of work will have to be flexible and remote. If you’re feeling isolated, come hang out in the <a href="https://gitcoin.co/townsquare">Town Square</a>, we promise it’s virus free.
 </p>
 <p>
- The <a href="https://web3.sustainoss.org/schedule">schedule is live</a> and the lineup is looking hotter than the ETH price ;). Karl Floersch, Hudson Jameson, Vitalik Buterin, Josh Cincinnati and many many more industry leaders are taking the stage as we speak. Check out the full agenda <a href="https://web3.sustainoss.org/schedule">here</a> to find which talks you won’t want to miss. Times are listed in MST (UTC - 7), so make sure you know when that is in your time zone - the event will run from 17:00 to 23:59 UTC today, Feb 13th.
+As we leap Into March, there are plenty of new opportunities for you to earn crypto working for the open internet. First off, the <a href="https://blockchainforsocialimpact.com/incubator/">Social Impact Incubator</a> is in full swing. Today is the last day to <a href="https://gitcoin.co/hackathon/onboard/decentralized-impact-incubator/">sign up</a> and find a team, now with <a href="https://gitcoin.co/hackathon/decentralized-impact-incubator">$40,000</a> up for grabs.
 </p>
 <p>
-Depending on when you are reading this, the event may be live now! You can stream on the <a href="https://web3.sustainoss.org/livestream">Livestream Page</a> or directly from our <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w">Youtube Channel</a>. Drop in and leave a like or comment if you’re so inclined! Many people have been working hard to put on a great free event and we can’t wait to share it with you. If you do miss the Livestream, expect the talks to go up on Youtube shortly after.
+Next, the <a href=“https://gitcoin.co/hackathon/skynet”>Skynet Virtual Hackathon</a> by <a href=“https://siasky.net/">Sia</a> goes live today! Check out our <a href="https://gitcoin.co/blog/sia-virtual-hackathon-launching-on-gitcoin-2-28/">blog post</a> to learn more about Skynet and the 1,750,000 SC (~$5k) in prizes. There is even a 25,000 SC consolation prize for all submissions. Join the event  <a href="https://gitcoin.co/hackathon/onboard/skynet/">here</a>. If you need some hackathon inspiration, our Global Communities retro post is also live - <a href="https://gitcoin.co/blog/global-communities-hackathon-retro/">take a gander here</a>.
+</p>
+<p>
+Finally, March 16th will kick off both the <a href="https://gitcoin.co/hackathon/onboard/funding-the-future/">Funding The Future</a> Virtual Hackathon, alongside <a href=“https://gitcoin.co/grants/">Gitcoin Grants</a> Round 5. More to come on those soon.
 </p>
 
 {kudos_friday}
 
+<h3>What else is new?</h3>
+    <ul>
+        <li>
+        <a href=“gitcoin.co/livestream”>Join us</a> for the Livestream today as David Vorick, Co-Founder of Sia, speaks to us about the launch of Skynet and the Skynet Hackathon. We’ll start at 2pm ET, so join the conversation and come with questions.
+        </li>
+    </ul>
 </p>
 <p>
-Back to BUIDLing,
+Back to Chillin and Shillin,
 </p>
 '''
     highlights = [{
-        'who': 'mul1sh',
+        'who': 'kfichter',
         'who_link': True,
-        'what': 'Built OrFeed Judge Voting Contract For Prediction Market',
-        'link': 'https://gitcoin.co/issue/ProofSuite/OrFeed/52/3990',
+        'what': 'Restructured And Wrote Further Content In Eth2 Book',
+        'link': 'https://gitcoin.co/issue/quilt/pm/7/4032',
         'link_copy': 'View more',
     }, {
-        'who': 'pengiundev',
+        'who': 'bobface',
         'who_link': True,
-        'what': 'Adjusted "Hatching Period" In Bonding Curve Smart Contract',
-        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/10/3962',
+        'what': 'Streamlined Buying Tokens From Bonding Curve Using RDAI',
+        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/7/4031',
         'link_copy': 'View more',
     }, {
-        'who': 'adrianhacker-pdx',
+        'who': 'vbstreetz',
         'who_link': True,
-        'what': 'Solved Challenge With A Memory-Efficient Algorithm',
-        'link': 'https://gitcoin.co/issue/chejazi/points-challenge/1/3945',
+        'what': 'Built a Mobile-Friendly Map Viewer With FOAM (Sustain Web3 Hackathon)',
+        'link': 'https://gitcoin.co/issue/ryan-foamspace/Sustain-Web3-hackathon/3/3960',
         'link_copy': 'View more',
     }, ]
 
@@ -1075,14 +1086,14 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/PegaSysEng/BountiedWork/issues/23',
-        'primer': 'Move Orion Peer Table To Memory And Implement Environment Variables For Configuration',
+        'url': 'https://github.com/NebulousLabs/Skynet-Hive/issues/1',
+        'primer': '(1,750,000 SC) - Gitcoin Skynet Hackathon Challenge',
     }, {
-        'url': 'https://github.com/ProofSuite/OrFeed/issues/57',
-        'primer': 'Arbitrage And Triangular Arbitrage Calculator',
+        'url': 'https://github.com/blockchainforsocialimpact/incubator/issues/7',
+        'primer': '[$10,000] - Celo Peace & Prosperity Challenge',
     }, {
-        'url': 'https://github.com/ArweaveTeam/Bounties/issues/23',
-        'primer': 'Record The Forks Permafeed',
+        'url': 'https://github.com/xpring-eng/challenges/issues/1',
+        'primer': '[$1000 XRP] Bifrost - XRP, ETH & ERC-20 Bridge Over Interledger Protocol',
     }]
 
 

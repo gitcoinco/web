@@ -91,6 +91,16 @@
           </div>
         {% endif %}
       </div>
+
+      <div class="mt-2 row">
+        <div class="col">
+          <div>
+            {% for category in grant.categories.all %}
+              <span class="badge badge-primary">{{category.category}}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </a>
