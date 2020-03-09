@@ -2702,6 +2702,8 @@ class Profile(SuperModel):
     @property
     def online_now(self):
         # returns True IFF the user is online now
+        if not self.last_chat_seen:
+            return False
         online_now_threshold_minutes = 5 if not settings.DEBUG else 60
         online_now_threshold_seconds = 60 * online_now_threshold_minutes
         return (timezone.now() - self.last_chat_seen).seconds < (online_now_threshold_seconds)
