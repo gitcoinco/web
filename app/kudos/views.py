@@ -702,7 +702,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
         return None, error, None
     else:
 
-        if request.user.profile.bulk_transfer_redemptions.filter(coupon=coupon).exists():
+        if profile.bulk_transfer_redemptions.filter(coupon=coupon).exists():
             error = f'You have already redeemed this kudos.'
             return None, error, None
 
