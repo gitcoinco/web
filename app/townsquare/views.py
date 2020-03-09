@@ -271,7 +271,7 @@ def get_following_tribes(request):
             last_24_hours_activity = 0 # TODO: integrate this with get_amount_unread
             tribe = {
                 'title': handle,
-                'slug': handle,
+                'slug': f"tribe:{handle}",
                 'helper_text': f'Activities from @{handle} in the last 24 hours',
                 'badge': last_24_hours_activity,
                 'avatar_url': f'/dynamic/avatar/{handle}'
