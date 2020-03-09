@@ -25,25 +25,16 @@ function getCategoryIndex(categoryName, categories) {
   return '-1';
 }
 
-function updateValuesOfExistingCategories() {
-  $.get('/grants/categories', data => {
-    if (!data || !data.categories) {
-      return;
-    }
-
-    $('#grant-categories option:selected').each(function() {
-      const categoryName = $(this).text();
-
-      const categoryIndex = getCategoryIndex(categoryName.toLowerCase(), data.categories);
-
-      $(this).val(categoryIndex);
-    });
-  });
-}
 
 function initGrantCategoriesInput() {
-  grantCategoriesSelection('#grant-categories', '/grants/categories');
-  updateValuesOfExistingCategories();
+  const grant_type = $('#grant-type').html();
+
+  if (grant_type && grant_type.length > 0) {
+    grantCategoriesSelection(
+      '#grant-categories',
+      `/grants/categories?type=${grant_type.toLowerCase()}`
+    );
+  }
 }
 
 $(document).ready(function() {
@@ -229,7 +220,7 @@ const copyDuplicateDetails = () => {
 
   $('#cancel-details').on('click', () => {
     editableFields.forEach(field => {
-      if (field == '#grant-members')
+      if ([ '#grant-members', '#grant-categories' ].includes(field))
         $(field).val(obj[field]).trigger('change');
       else
         $(field).val(obj[field]);
@@ -241,4 +232,5 @@ $(document).ready(() => {
   $('#grant-profile-tabs button').click(function() {
     document.location = $(this).attr('href');
   });
+  $('.select2-selection__choice').removeAttr('title');
 });

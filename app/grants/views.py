@@ -94,7 +94,7 @@ def grants(request):
     keyword = request.GET.get('keyword', '')
     grant_type = request.GET.get('type', 'tech')
     state = request.GET.get('state', 'active')
-    category = request.GET.get('category', '')
+    category = request.GET.get('category')
     _grants = None
 
     show_past_clr = False
@@ -103,7 +103,6 @@ def grants(request):
     sort_by_clr_pledge_matching_amount = None
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
-        sort_by = 'pk'
 
     if state == 'active':
         _grants = Grant.objects.filter(
@@ -1010,17 +1009,15 @@ def basic_grant_categories(grant_type):
         categories = GrantCategory.tech_categories()
     elif grant_type == 'media':
         categories = GrantCategory.media_categories()
+    else:
+        categories = GrantCategory.all_categories()
 
     return [ (category,idx) for idx, category in enumerate(categories) ]
 
 @csrf_exempt
 def grant_categories(request):
-    grant_type = request.GET.get('type', 'tech')
+    grant_type = request.GET.get('type', None)
     categories = basic_grant_categories(grant_type)
-
-    search_term = request.GET.get('term', None)
-    if search_term is not None:
-        categories = [ category for category in categories if search_term in category[0] ]
 
     return JsonResponse({
         'categories': categories
