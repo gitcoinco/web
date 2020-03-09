@@ -1,0 +1,17 @@
+{
+    "symbol": "UTI",
+    "address": "0xFb2C3b20307807C9703b3EE41a3d142Cfb5Bb162",
+    "overview":{
+          "en": "UTI Chain Ecology aims to build a distributed business engine through blockchain technology. While constructing three major service systems, it uses blockchain services, namely BaaS, and four-dimensional integration to establish a cloud computing platform that combines centralization and decentralization. Create an efficient, high-speed, intelligent, trusted, reliable, and controllable super cloud.",
+          "zh": "尤泰链生态旨在通过区块链技术打造分布式商业引擎，在构建三大服务体系同时，利用区块链服务即BaaS，四维一体，建立中心化与去中心化相结合的云计算平台，打造高效、高速、智能又可信、可靠、可控制的超级云。"
+    },
+    "email": "utichain@gmail.com",
+    "website": "http://utiop.com/",
+    "whitepaper": "http://utiop.com/Public/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-02-26",
+    "links": {
+        "telegram": "http://www.t.me/utigroup/",
+        "twitter": "https://twitter.com/ChainUti"
+      }
+}
