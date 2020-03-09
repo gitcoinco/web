@@ -1,9 +1,9 @@
 {
-    "symbol": "plDAI",
+    "symbol": "plDai",
     "address": "0x49d716DFe60b37379010A75329ae09428f17118d",
     "overview": {
-        "en": "The PoolTogether protocol mints plDAI token, plDAI represent ownership of tickets eligible to win prizes and a claim on the asset deposited!",
-        "zh": "无损彩票 PoolTogether 发行了 plDAI 代币，plDAI 用于代表获得大奖的资格和拿回存入资产的凭证"
+        "en": "The PoolTogether protocol mints plDai token, plDai represent ownership of tickets eligible to win prizes and a claim on the asset deposited!",
+        "zh": "无损彩票 PoolTogether 发行了 plDai 代币，plDai 用于代表获得大奖的资格和拿回存入资产的凭证"
     },
     "email": "hello@pooltogether.com",
     "website": "https://www.pooltogether.com/",

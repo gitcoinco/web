@@ -1,9 +1,9 @@
 {
-    "symbol": "plUSDC",
+    "symbol": "plUsdc",
     "address": "0xBD87447F48ad729C5c4b8bcb503e1395F62e8B98",
     "overview": {
-        "en": "The PoolTogether protocol mints plUSDC token, plUSDC represent ownership of tickets eligible to win prizes and a claim on the asset deposited!",
-        "zh": "无损彩票 PoolTogether 发行了 plUSDC， plUSDC 用于代表获得大奖的资格和拿回存入资产的凭证"
+        "en": "The PoolTogether protocol mints plUsdc token, plUsdc represent ownership of tickets eligible to win prizes and a claim on the asset deposited!",
+        "zh": "无损彩票 PoolTogether 发行了 plUsdc， plUsdc 用于代表获得大奖的资格和拿回存入资产的凭证"
     },
     "email": "hello@pooltogether.com",
     "website": "https://www.pooltogether.com/",
