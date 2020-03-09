@@ -2340,6 +2340,7 @@ class Activity(SuperModel):
         if not user.is_authenticated:
             return vp
         vp['liked'] = self.likes.filter(profile=user.profile).exists()
+        vp['favorite'] = self.favorite_set.filter(user=user).exists()
         vp['poll_answered'] = self.has_voted(user)
         return vp
 

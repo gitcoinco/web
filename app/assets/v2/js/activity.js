@@ -325,8 +325,10 @@ $(document).ready(function() {
 
 
   // like activity
-  $(document).on('click', '.like_activity, .flag_activity', function(e) {
+  $(document).on('click', '.like_activity, .flag_activity, .favorite_activity', function(e) {
     e.preventDefault();
+    const current_tab = getURLParams('tab');
+
     if (!document.contxt.github_handle) {
       _alert('Please login first.', 'error');
       return;
@@ -342,12 +344,14 @@ $(document).ready(function() {
 
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
+      $(this).find('i').removeClass('far').addClass('fas');
     } else { // unlike
       $(this).find('span.action').removeClass('open');
       $(this).data('state', $(this).data('negative'));
       $(this).removeClass('animate-sparkle');
       num = parseInt(num) - 1;
       $(this).find('span.num').html(num);
+      $(this).find('i').removeClass('fas').addClass('far');
     }
 
     // remote post
@@ -359,11 +363,15 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $(this).data('pk');
 
     var parent = $(this).parents('.activity.box');
-
+    var self = $(this);
     parent.find('.loading').removeClass('hidden');
     $.post(url, params, function(response) {
       // no message to be sent
       parent.find('.loading').addClass('hidden');
+
+      if (!is_unliked && current_tab === 'my_favorites') {
+        self.parentsUntil('.activity_stream').remove();
+      }
     }).fail(function() {
       parent.find('.error').removeClass('hidden');
     });

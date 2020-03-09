@@ -15,7 +15,8 @@ from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.views import get_specific_activities
 
-from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction
+from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction, \
+    Favorite
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
@@ -104,8 +105,8 @@ def get_sidebar_tabs(request):
             }
             tabs = [new_tab] + tabs
             default_tab = 'my_tribes'
-        num_grants_relationships = (len(set(get_my_grants(request.user.profile))))
 
+        num_grants_relationships = (len(set(get_my_grants(request.user.profile))))
         if num_grants_relationships:
             key = 'grants'
             new_tab = {
@@ -116,6 +117,20 @@ def get_sidebar_tabs(request):
             }
             tabs = [new_tab] + tabs
             default_tab = 'grants'
+
+        num_favorites = request.user.favorites.all().count()
+        if num_favorites:
+            key = 'my_favorites'
+            activities = get_specific_activities(key, False, request.user, request.session.get(key, 0)).count()
+            new_tab = {
+                'title': f"My Favorites",
+                'slug': key,
+                'helper_text': f'Activity that you marked as favorite',
+                'badge': max_of_ten(activities) if request.GET.get(
+                    'tab') != key else 0
+            }
+            tabs = [new_tab] + tabs
+            default_tab = 'my_favorites'
 
         threads_last_24_hours = max_of_ten(request.user.profile.subscribed_threads.filter(pk__gt=request.session.get('my_threads', 0)).count())  if request.GET.get('tab') != 'my_threads' else 0
 
@@ -417,6 +432,15 @@ def api(request, activity_id):
                 Like.objects.create(profile=request.user.profile, activity=activity)
         if request.POST['direction'] == 'unliked':
             activity.likes.filter(profile=request.user.profile).delete()
+
+    # like request
+    elif request.POST.get('method') == 'favorite':
+        if request.POST['direction'] == 'favorite':
+            already_likes = Favorite.objects.filter(activity=activity, user=request.user).exists()
+            if not already_likes:
+                Favorite.objects.create(user=request.user, activity=activity)
+        if request.POST['direction'] == 'unfavorite':
+            Favorite.objects.filter(user=request.user, activity=activity).delete()
 
     # flag request
     elif request.POST.get('method') == 'flag':
