@@ -1,0 +1,15 @@
+{
+    "symbol": "TDC",
+    "address": "0x827B317893b2767Bc71E42D2dEed91c538576A15",
+    "overview": {
+        "en": "TDC is the only value certificate of transdata chain transportation data platform, which will be transferred, value incentive and consumption certification in the transdata chain data ecosystem. In order to solve the problem of low data application rate and data redundancy caused by data island and low data analysis and processing ability in the field of traffic data, TDC traffic big data platform plans to intelligently collect traffic data by configuring front-end vehicle hardware equipment, intelligently analyze the collected data by using advanced artificial intelligence algorithm model, and use blockchain technology to data It encrypts distributed storage, builds a new economic system based on dapow consensus mechanism, and realizes the application value and scenario of traffic data, so as to promote the rapid application of traffic data in the Internet of things, road safety, road transportation, driverless and other scenarios.",
+        "zh": "TDC是TransData Chain交通数据平台唯一价值凭证，将在TransData Chain数据生态圈中进行流转，价值激励及消费认证。为解决目前交通数据领域所面临的数据孤岛及数据分析处理能力低下而造成数据应用率低，数据冗余现象，TDC交通大数据平台拟通过配置前端车载硬件设备对交通数据进行智能化采集，利用先进的人工智能算法模型对采集数据进行智能解析，采用区块链技术对数据进行加密分布式存储，并基于DaPow共识机制构建全新的经济体制，实现交通数据应用价值化与场景化，从而推动交通数据在物联网、公路安全、道路运输、无人驾驶等场景的较快应用落地。"
+    },
+    "email": "olalalalal@sina.com",
+    "website": "http://www.tdcio.com/",
+    "whitepaper": "http://www.tdcio.com/tdcpdf.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-01-16",
+    "links": {
+    }
+}
