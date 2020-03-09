@@ -199,7 +199,7 @@ def get_miniclr_info(request):
     # matching leaderboard
     current_match_round = MatchRound.objects.current().first()
     num_to_show = 10
-    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1))
+    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1)).order_by('-number')
     matching_leaderboard = [
         {
             'i': obj.number,
