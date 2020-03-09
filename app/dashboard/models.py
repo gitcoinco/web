@@ -2597,7 +2597,7 @@ class Profile(SuperModel):
     handle = models.CharField(max_length=255, db_index=True, unique=True)
     last_sync_date = models.DateTimeField(null=True)
     last_calc_date = models.DateTimeField(default=get_time)
-    last_chat_seen = models.DateTimeField(null=True)
+    last_chat_seen = models.DateTimeField(null=True, blank=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     chat_id = models.CharField(max_length=255, blank=True, db_index=True)
