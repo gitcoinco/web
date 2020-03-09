@@ -148,7 +148,6 @@
 .odd{
   background-color: #f9f9f9;
 }
-
 .profile_details .nav-tabs .nav-link {
   padding: 0.5rem;
   padding-bottom: 0.2rem;
@@ -187,6 +186,15 @@
 }
 
 @media (max-width: 767.98px) {
+  .profile_details #section-all-activity .container .row,
+  .profile_details .profile-bounties,
+  .profile_details #all-activity,
+  .profile_details .activity{
+    padding: 0px!important;
+  }
+  .profile_details #section-all-activity{
+    margin-top: 10px;
+  }
 
   .profile-header__main-infos {
     text-align: center;

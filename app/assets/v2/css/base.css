@@ -1666,3 +1666,44 @@ div.busyOverlay {
 .emoji-picker__emoji {
   font-size: 1.6rem!important;
 }
+.online_now:hover {
+  font-weight: bold;
+}
+.chat_presence_indicator {
+  font-size: 12px;
+  padding: 5px;
+  list-style: none;
+  display: inline-block;
+  background-color: #eee;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 0px;
+  margin-left: 5px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+.chat_presence_indicator .indicator {
+  vertical-align: middle;
+  content: "\2022";
+  font-size: 20px;
+  color: #aaa;
+  font-weight: bold;
+  display: inline-block;
+  margin-top: -10px;
+  margin-bottom: -5px;
+}
+.chat_presence_indicator.online .indicator {
+  color: #0fce7c;
+}
+.chat_presence_indicator.mini li,
+.chat_presence_indicator.mini {
+  padding: 0px 1px;
+  font-size: 10px;
+}
+.chat_presence_indicator.mini .indicator {
+  font-size: 12px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+

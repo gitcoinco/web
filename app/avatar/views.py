@@ -174,6 +174,10 @@ def select_preset_avatar(request):
     return JsonResponse(response, status=response['status'])
 
 
+class AvatarNotFoundException(Exception):
+    pass
+
+
 def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     from dashboard.models import Profile
     icon_size = (215, 215)
@@ -194,6 +198,7 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
                     return HttpResponse(avatar_file, content_type=content_type)
         except Exception as e:
             logger.error('Handle Avatar - Exception: (%s) - Handle: (%s)', str(e), _org_name)
+            logger.exception(e)
 
     # default response
     # params
@@ -207,7 +212,8 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
             _org_name = org_name(repo_url)
 
         filepath = get_avatar(_org_name)
-
+        if isinstance(filepath, JsonResponse):
+            raise AvatarNotFoundException('no avatar found')
         # new image
         img = Image.new('RGBA', icon_size, (255, 255, 255))
 
@@ -224,6 +230,9 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
         response = HttpResponse(content_type='image/png')
         img.save(response, 'PNG')
         return response
+    except AvatarNotFoundException:
+        return get_err_response(request, blank_img=(_org_name == 'Self'))
     except (AttributeError, IOError, SyntaxError) as e:
         logger.error('Handle Avatar - Response error: (%s) - Handle: (%s)', str(e), _org_name)
+        logger.exception(e)
         return get_err_response(request, blank_img=(_org_name == 'Self'))

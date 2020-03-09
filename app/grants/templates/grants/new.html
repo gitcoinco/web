@@ -83,10 +83,10 @@
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-grant_type">{% trans "Grant Type" %}</label>
-                  <div>
-                    <select id="input-grant_type" class="form__input form__input-lg">
-                      <option value="tech">{% trans "Technology" %}</option>
-                      <option value="media">{% trans "Media" %}</option>
+                  <div class="form__select2">
+                    <select class="js-select2 form__input form__input-lg" name="input-grant_type" id="input-grant_type">
+                      <option selected>{% trans "Tech" %}</option>
+                      <option>{% trans "Media" %}</option>
                     </select>
                   </div>
                 </div>
@@ -94,7 +94,7 @@
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-team_members">{% trans "Team members" %}</label>
                   <div class="form__select2 g-multiselect">
-                    <select id="input-team_members" class="form__input form__input-lg  team_members" name="team_members[]" multiple="multiple">
+                    <select id="input-team_members" class="form__input form__input-lg team_members" name="team_members[]" multiple="multiple">
                     </select>
                   </div>
                 </div>

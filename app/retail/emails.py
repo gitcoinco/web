@@ -496,7 +496,7 @@ appreciate you being a part of the community + let us know if you'd like some Gi
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, trending_quests=[]):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -508,6 +508,8 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'email_style': email_style,
 		'email_type': 'new_bounty_notifications',
         'base_url': settings.BASE_URL,
+        'show_action': True,
+        'trending_quests': trending_quests,
         'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 
@@ -1003,8 +1005,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Web3 Status: SUSTAINED!"
-    new_kudos_pks = [10864, 10852, 7502]
+    subject = "Spring & New Things Around the Corner"
+    new_kudos_pks = [11843, 11803, 11799]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1023,19 +1025,16 @@ def render_new_bounty_roundup(to_email):
 
     intro = f'''
 <p>
-Greetings Gitcoiners,
+What’s up Gitcoiners,
 </p>
 <p>
-Happy Friday! If you were expecting an email from Mr. Owocki today, I have good news and bad news. The bad news is you’re stuck with me - sorry to disappoint. But the absolutely incredible good news is that in the early morning hours of a magical Sustain Web3 Summit, the blockchain gods blessed this earth with a healthy <a href="https://twitter.com/owocki/status/1227969021720424449">baby Owocki</a>. While this may have thrown a wrench in our event plans, we’re all extremely excited for Kevin and his wonderful family, and the show must (and did) go on.
+Spring is just around the corner! March is going to be an exciting month on Gitcoin. We are halfway through the <a href="https://gitcoin.co/hackathon/decentralized-impact-incubator">Social Impact Incubator Hackathon</a> and the <a href=“https://gitcoin.co/hackathon/skynet”>Skynet Virtual Hackathon</a> by Sia. Check out the great <a href="https://gitcoin.co/hackathon/projects/skynet/">projects</a> in the <a href="https://gitcoin.co/hackathon/projects/decentralized-impact-incubator">works</a>! There are also more exciting bounties up ahead. <a href=“https://hackathons.gitcoin.co/funding-the-future”>Funding the Future</a> Virtual Hackathon starts on March 16th and will be packed with great bounties on DeFi, funding mechanisms, DAOs and more! On top of that, we’re doing a concurrent <a href=“https://gitcoin.co/grants/">Gitcoin Grants CLR</a> Round 5, kicking off at the same time.
 </p>
 <p>
-So let’s get into it! If you weren’t able to attend or stream Sustain Web3, the event was a blast and almost all the talks are already uploaded to our <a href="https://www.youtube.com/watch?v=wWXdi891b28&list=PLvTrX8LNPbPnJYe0v37HL4T8dsilPQWTE">Youtube</a> for your enjoyment. Furthermore, Xpring and Bancor have both decided to extend their bounties from the Sustain Web3 Virtual Hackathon, see the <a href="https://gitcoin.co/hackathon/sustain-web3">prize explorer</a> with $9,000 still up for grabs and 1 week left!
+We’re working on launching the next stage of open source community BUIDLing. We’ve got a few tricks up our sleeves about how to make it easier and more purposeful for all of us to create strong connections, teams, concepts and wheel-spinning products. Keep an eye out for what’s coming in the next month! In the mean time come hangout in <a href="https://gitcoin.co/townsquare">Town Square</a> to be part of the conversation, earn tips (with mini CLR matches), and learn how you can help Grow Open Source!
 </p>
 <p>
-Even as the Gitcoin team devolves into anarchy without Kevin, we still have plenty of hackathons in the pipeline for you. This week we kicked off the 6-week <a href="https://blockchainforsocialimpact.com/incubator/">Social Impact Incubator</a> with $30,000 in prizes, <a href="https://gitcoin.co/hackathon/onboard/decentralized-impact-incubator/">sign up</a> and form teams by next week. Next Friday we’re launching an <a href="https://gitcoin.co/hackathon/onboard/sia/">exclusive virtual hackathon</a> with <a href="https://siasky.net/">Sia</a>. Registration is also open for our DeFi hackathon <a href="https://gitcoin.co/hackathon/onboard/funding-the-future/">Funding The Future</a> in late March.
-</p>
-<p>
-Finally, a sleep deprived CEO and father of two still somehow managed to make it to his <a href="https://www.youtube.com/watch?v=eAMzAOhn1KY">ETHDenver talk</a> to make some special announcements. Titled “Cathedral & Bazaar in the web3 era” this talk explores concepts from the 90’s OSS classic "Cathedral & Bazaar" & revisits it in the web3-era. We’re excited to share that we’ve already got $600k in CLR matching funds for 2020, and will be running weekly mini CLR rounds on the Gitcoin <a href=“https://gitcoin.co/townsquare">Town Square</a>!
+Interested in sneak peaks at what the product team is doing or being an early tester? <a href=“https://gitcoin.co/pixelantdesign”>Hit me up</a> on the <a href=“https://gitcoin.co/chat”>Gitcoin Chat</a>!
 </p>
 
 {kudos_friday}
@@ -1043,31 +1042,31 @@ Finally, a sleep deprived CEO and father of two still somehow managed to make it
 <h3>What else is new?</h3>
     <ul>
         <li>
-        Today's Gitcoin Livestream will be with Yorke Rhodes of Microsoft and Vanessa Grellet of ConsenSys, both part of the Blockchain for Social Impact Coalition. We'll be discussing the Social Impact Incubator (6-week hackathon) that kicked off this week, so <a href=“gitcoin.co/livestream”>join us</a> at 2pm ET and come with questions.
+        <a href=“gitcoin.co/livestream”>Join us</a> for the Gitcoin Livestream today at 2 pm ET. This Livestream will be a "meta" community stream - we want to hear from you! We'll be presenting some of the new features we're building out with Townsquare, Gitcoin Tribes, Hackathons, and more. But we also want you to participate. What new features do you want to have in 2020? Who do you want to see on future Livestreams? What kind of themes should we host hackathons around? This is an open discussion, come with questions, comments, concerns, complaints, and we'll make it fun!
         </li>
     </ul>
 </p>
 <p>
-Back to Gittin' those Coins,
+Back to (remote) work,
 </p>
 '''
     highlights = [{
-        'who': 'matkt',
+        'who': 'Bobface',
         'who_link': True,
-        'what': 'Added NAT Kubernetes Support for Besu',
-        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/4/4002',
+        'what': 'Enabled Token Purchases With ETH And Other ERC20s for IdeaMarkets',
+        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/18/4053',
         'link_copy': 'View more',
     }, {
-        'who': 'robsecord',
+        'who': 'agbilotia1998',
         'who_link': True,
-        'what': 'Created The Best User Experience In A Dapp Utilizing Dfuse (Sustain Web3 Hackathon)',
-        'link': 'https://gitcoin.co/issue/dfuse-io/hackathons/1/3954',
+        'what': 'Moved Code Of Conduct Into Footer And Out Of Cent-Node Docs',
+        'link': 'https://gitcoin.co/issue/centrifuge/developer.centrifuge.io/163/4062',
         'link_copy': 'View more',
     }, {
-        'who': 'calchulus',
+        'who': 'proy24',
         'who_link': True,
-        'what': 'Created a New Logo Design for Charged Particles',
-        'link': 'https://gitcoin.co/issue/robsecord/ChargedParticlesWeb/1/4025',
+        'what': 'Won Bancor Hackathon Prize - Trade & Liquidity Widget',
+        'link': 'https://gitcoin.co/issue/bancorprotocol/contracts/336/3947',
         'link_copy': 'View more',
     }, ]
 
@@ -1084,14 +1083,14 @@ Back to Gittin' those Coins,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/harmonylion/ideamarkets/issues/7',
-        'primer': 'Streamline Buying Tokens From Bonding Curve Using RDAI',
+        'url': 'https://github.com/NebulousLabs/Skynet-Hive/issues/1',
+        'primer': '(1,750,000 SC) - Gitcoin Skynet Hackathon Challenge',
     }, {
-        'url': 'https://github.com/unstoppabledomains/unstoppable-demo-browser/issues/4',
-        'primer': 'Support ENS (.Eth) + IPFS Resolution',
+        'url': 'https://github.com/cybersemics/em/issues/308',
+        'primer': 'React-Scripts >= 2 Breaks MultiGesture On Build',
     }, {
-        'url': 'https://github.com/blockchainforsocialimpact/incubator/issues/3',
-        'primer': '[$10,000] - Plastics & Pollution (Social Impact Incubator)',
+        'url': 'https://github.com/diadata-org/diadata/issues/203',
+        'primer': 'DeFI Lending | MasterKey Risk Analysis',
     }]
 
 

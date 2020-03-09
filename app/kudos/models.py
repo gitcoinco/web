@@ -410,6 +410,21 @@ def psave_token(sender, instance, **kwargs):
             )
 
 
+@receiver(post_save, sender=Token, dispatch_uid="postsave_token")
+def postsave_token(sender, instance, created, **kwargs):
+    if created:
+        if instance.pk and instance.gen == 1 and not instance.hidden:
+            from dashboard.models import Activity, Profile
+            kwargs = {
+                'activity_type': 'created_kudos',
+                'kudos': instance,
+                'profile': Profile.objects.filter(handle='gitcoinbot').first(),
+                'metadata': {
+                }
+            }
+            Activity.objects.create(**kwargs)
+
+
 class KudosTransfer(SendCryptoAsset):
     """Model that represents a request to clone a Kudos.
 

@@ -27,6 +27,10 @@ class GrantsViewResponsesTests(TestCase):
                 ['community',5],
                 ['eth2.0',6],
                 ['eth1.x',7],
+                ['twitter', 8],
+                ['reddit', 9],
+                ['blog', 10],
+                ['notes', 11]
             ],
             'status': 200
         }
