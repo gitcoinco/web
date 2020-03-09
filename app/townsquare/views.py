@@ -198,8 +198,10 @@ def get_offers(request):
 def get_miniclr_info(request):
     # matching leaderboard
     current_match_round = MatchRound.objects.current().first()
+    if request.GET.get('round'):
+        current_match_round = MatchRound.objects.get(number=request.GET.get('round'))
     num_to_show = 10
-    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1)).order_by('-number')
+    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1)).order_by('number')
     matching_leaderboard = [
         {
             'i': obj.number,
