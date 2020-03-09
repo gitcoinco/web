@@ -60,29 +60,13 @@ const processReceipt = receipt => {
 };
 
 const setupGrantCategoriesInput = (grantType) => {
-  //grantCategoriesSelection('.categories', `/grants/categories?type=${grantType}`);
-  $.get(`/grants/categories?type=${grantType}`, data => {
-    $('.categories')
-      .find('option')
-      .remove();
+  // Clear any existing ones
+  $('.categories')
+    .find('option')
+    .remove();
 
-    const {categories} = data;
-    if (!categories) {
-      return;
-    }
-
-    categories.forEach(category => {
-      const name = category[0];
-      const humanisedName = name.charAt(0).toUpperCase() + name.substring(1);
-
-      const index = category[1];
-      $('.categories').append(`<option value="${index}">
-                                       ${humanisedName}
-                                  </option>`);
-    });
-  });
-
-  $('.categories').select2();
+  // init the select 2 input
+  grantCategoriesSelection('.categories', `/grants/categories?type=${grantType}`);
 };
 
 const init = () => {

@@ -4,43 +4,24 @@ var compiledSplitter;
 var contractVersion;
 
 function grantCategoriesSelection(target, apiUrl) {
-  $(target).each(function() {
-    if (!$(this).length) {
+  $.get(apiUrl, data => {
+    const {categories} = data;
+    if (!categories) {
       return;
     }
 
-    $(this).select2({
-      ajax: {
-        url: apiUrl,
-        dataType: 'json',
-        delay: 250,
-        data: function(params) {
+    categories.forEach(category => {
+      const name = category[0];
+      const humanisedName = name.charAt(0).toUpperCase() + name.substring(1);
 
-          let query = {
-            term: params.term[0] === '@' ? params.term.slice(1) : params.term
-          };
+      const index = category[1];
+      $('.categories').append(`<option value="${index}">
+                                       ${humanisedName}
+                                  </option>`);
+    });
 
-          return query;
-        },
-        processResults: function(data) {
-          return {
-            results: data.categories.map(category => {
-              const name = category[0];
-              const humanisedName = name.charAt(0).toUpperCase() + name.substring(1);
-
-              const index = category[1];
-
-              return {value: name, text: humanisedName, id: index};
-            })
-          };
-        },
-        cache: true
-      },
-      data: false,
-      allowClear: true,
-      theme: undefined,
-      placeholder: 'Search by grant category',
-      minimumInputLength: 1,
+    $(target).select2({
+      placeholder: `Select as many grant categories as you like...`,
       escapeMarkup: function(markup) {
         return markup;
       },
