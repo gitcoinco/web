@@ -3,10 +3,12 @@
       <span class="indicator">
         •
       </span>
-      {% if profile.online_now %}
-        Online Now
-      {% else %}
-        Offline
-      {% endif %}
+      <span class="copy">
+        {% if profile.online_now %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+      </span>
     </span>
   {% endif %}

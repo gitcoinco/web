@@ -24,7 +24,7 @@
     </div>
   {% endif %}
   <div class="activity_main row">
-    <div class="col-2">
+    <div class="col-2 p-0">
       <div class="activity-avatar">
         <a href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
           <img class="avatar rounded-circle" src="{% if row.profile.active_avatar %}{{ row.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{{row.profile.handle}}{% endif %}"/>
@@ -60,7 +60,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="col-10 col-sm-8 pl-4 px-sm-0 activity_detail">
+    <div class="col-10 col-sm-8 pl-2 px-sm-0 activity_detail">
       <div>
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
