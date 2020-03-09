@@ -173,8 +173,10 @@ def select_preset_avatar(request):
         logger.error('Save Avatar - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
     return JsonResponse(response, status=response['status'])
 
+
 class AvatarNotFoundException(Exception):
     pass
+
 
 def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     from dashboard.models import Profile
