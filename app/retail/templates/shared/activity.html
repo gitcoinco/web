@@ -190,7 +190,7 @@
         {% endif %}
       :
         <b>{{ row.metadata.title }}</b>
-      {% elif row.activity_type == 'consolidated_leaderboard_rank' %}
+      {% elif row.activity_type == 'consolidated_leaderboard_rank'  or row.activity_type == 'consolidated_mini_clr_payout' %}
         {{row.metadata.copy|safe}}
 
       {% elif row.activity_type == 'leaderboard_rank' %}
