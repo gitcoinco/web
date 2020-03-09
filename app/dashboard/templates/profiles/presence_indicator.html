@@ -1,14 +1,10 @@
   {% if profile.chat_id and show_even_if_offline or profile.online_now %}
-    <span class="chat_presence_indicator {{additionalclasses}} {% if profile.online_now %} online {% else %} offline {% endif %}" data-openchat="{{profile}}">
+    <span class="chat_presence_indicator {{additionalclasses}} {{profile.last_chat_status}}" data-openchat="{{profile}}">
       <span class="indicator">
         •
       </span>
       <span class="copy">
-        {% if profile.online_now %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
+        {{profile.last_chat_status|title}}
       </span>
     </span>
   {% endif %}

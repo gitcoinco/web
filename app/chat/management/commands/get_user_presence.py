@@ -24,6 +24,7 @@ from django.utils import timezone
 import pytz
 from chat.tasks import get_driver
 from dashboard.models import Profile
+from django_bulk_update.helper import bulk_update
 
 logger = logging.getLogger(__name__)
 
@@ -32,24 +33,19 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     help = "find users who are on chat and figure out their presence, save it to db"
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            'seconds_back',
-            default=99999999999,
-            type=int,
-            help="How many seconds back to look for presence"
-        )
-
 
     def handle(self, *args, **options):
-        # setup
-        only_update_in_last_seconds_n = options['seconds_back']
-
         # connect to API
         d = get_driver()
         teams = d.teams.get_teams()
 
+        # outer vars
+        all_usernames = []
+        all_user_statuses = {}
+
         for team in teams:
+            if team['display_name'] == 'Codefund':
+                continue
 
             # pull back users on team
             print(team['display_name'])
@@ -63,21 +59,31 @@ class Command(BaseCommand):
                 all_users += users
                 cont = len(users) == per_page
                 page += 1
+                #for testing on small amount of data
+                #if settings.DEBUG:
+                #    cont = False
             for user in users:
                 pass
 
             # get through all users
             print(f"- {len(all_users)}")
+            users_status = d.client.post('/users/status/ids', [ele['id'] for ele in all_users])
+            users_status_by_id = { ele['user_id']: ele for ele in users_status }
+            all_usernames += [ele['username'].lower() for ele in all_users]
+
+            # iterate through each one
             for user in all_users:
-                last_activity_at = user['last_activity_at']
+                last_activity_at_1 = user['last_activity_at']
+                last_activity_at_2 = users_status_by_id[user['id']]['last_activity_at']
+                status = users_status_by_id[user['id']]['status']
+                last_activity_at = max(last_activity_at_2, last_activity_at_1)
                 username = user['username']
                 timestamp = int(last_activity_at/1000)
                 timestamp = timezone.datetime.utcfromtimestamp(timestamp).replace(tzinfo=pytz.utc)
-                update_db = (timezone.now() - timestamp).seconds < only_update_in_last_seconds_n
+                all_user_statuses[username] = (status, timestamp, user['id'])
 
-                if update_db:
-                    profile = Profile.objects.filter(handle__iexact=username).first()
-                    if profile:
-                        profile.last_chat_seen = timestamp
-                        profile.chat_id = user['id']
-                        profile.save()
+        # update all usernames
+        profiles = Profile.objects.filter(handle__in=all_usernames)
+        for profile in profiles:
+            profile.last_chat_status, profile.last_chat_seen, profile.chat_id = all_user_statuses[profile.handle]
+        bulk_update(profiles, update_fields=['last_chat_seen', 'last_chat_status', 'chat_id'])  

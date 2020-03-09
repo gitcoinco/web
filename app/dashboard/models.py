@@ -2598,6 +2598,7 @@ class Profile(SuperModel):
     last_sync_date = models.DateTimeField(null=True)
     last_calc_date = models.DateTimeField(default=get_time)
     last_chat_seen = models.DateTimeField(null=True, blank=True)
+    last_chat_status = models.CharField(max_length=255, blank=True, default='offline')
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     chat_id = models.CharField(max_length=255, blank=True, db_index=True)
@@ -2702,11 +2703,9 @@ class Profile(SuperModel):
     @property
     def online_now(self):
         # returns True IFF the user is online now
-        if not self.last_chat_seen:
+        if not self.last_chat_status:
             return False
-        online_now_threshold_minutes = 5 if not settings.DEBUG else 60
-        online_now_threshold_seconds = 60 * online_now_threshold_minutes
-        return (timezone.now() - self.last_chat_seen).seconds < (online_now_threshold_seconds)
+        return self.last_chat_status in ['online', 'away']
 
     @property
     def match_this_round(self):
