@@ -117,7 +117,7 @@ def town_square(request):
         }
         tabs = [threads] + tabs
 
-    connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post', 'new_bounty', 'new_grant', 'created_kudos', 'created_quest', 'mini_clr_payout', 'consolidated_leaderboard_rank'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
+    connect_last_24_hours = lazy_round_number(Activity.objects.filter(activity_type__in=['status_update', 'wall_post', 'new_bounty', 'new_grant', 'created_kudos', 'created_quest', 'mini_clr_payout', 'consolidated_leaderboard_rank', 'consolidated_mini_clr_payout'], created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count())
     if connect_last_24_hours:
         default_tab = 'connect'
         connect = {

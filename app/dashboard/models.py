@@ -2032,6 +2032,7 @@ class Activity(SuperModel):
         ('mini_clr_payout', 'Mini CLR Payout'),
         ('leaderboard_rank', 'Leaderboard Rank'),
         ('consolidated_leaderboard_rank', 'Consolidated Leaderboard Rank'),
+        ('consolidated_mini_clr_payout', 'Consolidated CLR Payout'),
     ]
 
     profile = models.ForeignKey(
