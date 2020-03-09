@@ -3,48 +3,75 @@ var compiledSubscription;
 var compiledSplitter;
 var contractVersion;
 
+function titleCase(lowercaseString) {
+  return lowercaseString.charAt(0).toUpperCase() + lowercaseString.substring(1);
+}
+
 function grantCategoriesSelection(target, apiUrl) {
-  $.get(apiUrl, data => {
-    const {categories} = data;
-    if (!categories) {
+  $(target).each(function () {
+    if (!$(this).length) {
       return;
     }
 
-    categories.forEach(category => {
-      const name = category[0];
-      const humanisedName = name.charAt(0).toUpperCase() + name.substring(1);
+    const elem = this;
 
-      const index = category[1];
-      $('.categories').append(`<option value="${index}">
-                                       ${humanisedName}
-                                  </option>`);
-    });
+    const currentSelectedCategories = [];
+    $(elem)
+      .find('option')
+      .each(function () {
+        currentSelectedCategories.push($(this).text());
+      });
 
-    $(target).select2({
-      placeholder: `Select as many grant categories as you like...`,
-      escapeMarkup: function(markup) {
-        return markup;
-      },
-      templateResult: function(category) {
-        if (category.loading) {
-          return category.text;
-        }
+    $.get(apiUrl, data => {
+      const {categories} = data;
+      if (!categories) {
+        return;
+      }
 
-        return `<div class="d-flex align-items-baseline">
+      categories
+        // First remove categories from api response so it's not added twice
+        .filter(category => {
+          const titleCaseCategoryName = titleCase(category[0]);
+          const filteredSet = currentSelectedCategories.filter(selectedCategoryName => selectedCategoryName === titleCaseCategoryName);
+          return filteredSet.length === 0;
+        })
+        // Add rest of remaining categories as options
+        .forEach(category => {
+          const titleCaseCategoryName = titleCase(category[0]);
+
+          const index = category[1];
+          $(elem).append(`<option value="${index}">
+                                         ${titleCaseCategoryName}
+                                    </option>`);
+        });
+
+      $(elem).select2({
+        placeholder: `Select as many grant categories as you like...`,
+        allowClear: true,
+        escapeMarkup: function(markup) {
+          return markup;
+        },
+        templateResult: function(category) {
+          if (category.loading) {
+            return category.text;
+          }
+
+          return `<div class="d-flex align-items-baseline">
                       <div>${category.text}</div>
                     </div>`;
-      },
-      templateSelection: function(category) {
-        let selected;
+        },
+        templateSelection: function(category) {
+          let selected;
 
-        if (category.id) {
-          selected = `<span class="ml-2">${category.text}</span>`;
-        } else {
-          selected = category.text;
+          if (category.id) {
+            selected = `<span class="ml-2">${category.text}</span>`;
+          } else {
+            selected = category.text;
+          }
+
+          return selected;
         }
-
-        return selected;
-      }
+      });
     });
   });
 }
