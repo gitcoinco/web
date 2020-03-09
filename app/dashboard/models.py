@@ -2597,6 +2597,7 @@ class Profile(SuperModel):
     handle = models.CharField(max_length=255, db_index=True, unique=True)
     last_sync_date = models.DateTimeField(null=True)
     last_calc_date = models.DateTimeField(default=get_time)
+    last_chat_seen = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     chat_id = models.CharField(max_length=255, blank=True, db_index=True)
@@ -2697,6 +2698,13 @@ class Profile(SuperModel):
     @property
     def quest_level(self):
         return self.quest_attempts.filter(success=True).distinct('quest').count() + 1
+
+    @property
+    def online_now(self):
+        # returns True IFF the user is online now
+        online_now_threshold_minutes = 5 if not settings.DEBUG else 60
+        online_now_threshold_seconds = 60 * online_now_threshold_minutes
+        return (timezone.now() - self.last_chat_seen).seconds < (online_now_threshold_seconds)
 
     @property
     def match_this_round(self):

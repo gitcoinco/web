@@ -2,6 +2,7 @@
 
 <h1 class="profile-header__handle">
   {{ profile.name }}
+  {% include 'profiles/presence_indicator.html' with show_even_if_offline=1 %}
   {% if verification %}
     <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
       <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
