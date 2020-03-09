@@ -218,7 +218,7 @@ def get_miniclr_info(request):
     ]
 
     return matching_leaderboard, current_match_round
-
+  
 def get_subscription_info(request):
     # subscriber info
     is_subscribed = False
@@ -241,8 +241,8 @@ def get_tags(request):
 def get_param_metadata(request, tab):
 
     # title
-    title = 'Home'
-    desc = 'View the recent activity on the Gitcoin network'
+    title = 'Town Square'
+    desc = 'Learn, earn, & connect with great developers on the Gitcoin Town Square'
     page_seo_text_insert = ''
     avatar_url = ''
     admin_link = ''

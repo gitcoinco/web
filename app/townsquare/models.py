@@ -113,7 +113,8 @@ class Comment(SuperModel):
 def postsave_comment(sender, instance, created, **kwargs):
     from townsquare.tasks import send_comment_email, refresh_activities
     refresh_activities.delay([instance.activity.pk])
-    send_comment_email.delay(instance.pk)
+    if created:
+        send_comment_email.delay(instance.pk)
 
 
 @receiver(post_delete, sender=Comment, dispatch_uid="post_delete_comment")

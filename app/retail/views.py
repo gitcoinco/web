@@ -41,7 +41,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Bounty, Profile, get_my_earnings_counter_profiles, get_my_grants, Tip
+from dashboard.models import Activity, Bounty, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants, Tip
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import (
@@ -56,6 +56,7 @@ from retail.helpers import get_ip
 from townsquare.tasks import increment_view_counts
 
 from .forms import FundingLimitIncreaseRequestForm
+
 from .utils import programming_languages
 
 logger = logging.getLogger(__name__)
@@ -1153,7 +1154,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     ## filtering
     if 'hackathon:' in what:
         pk = what.split(':')[1]
-        activities = activities.filter(bounty__event=pk)
+        activities = activities.filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
     elif ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
@@ -1177,7 +1178,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     if 'search-' in what:
         keyword = what.split('-')[1]
         view_count_threshold = 5
-        base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post', 'mini_clr_payout'])
+        base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post', 'new_bounty', 'created_quest', 'new_grant', 'created_kudos', 'mini_clr_payout', 'consolidated_leaderboard_rank', 'consolidated_mini_clr_payout'])
         keyword_filter = Q(pk=0) #noop
         if keyword == 'meme':
             keyword_filter = Q(metadata__type='gif') | Q(metadata__type='png') | Q(metadata__type='jpg')
@@ -1198,7 +1199,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     if len(relevant_grants):
         activities = activities.filter(grant__in=relevant_grants)
     if what == 'connect':
-        activities = activities.filter(activity_type__in=['status_update', 'wall_post', 'mini_clr_payout'])
+        activities = activities.filter(activity_type__in=['status_update', 'wall_post', 'new_bounty', 'created_quest', 'new_grant', 'created_kudos', 'mini_clr_payout', 'consolidated_leaderboard_rank', 'consolidated_mini_clr_payout'])
     if what == 'kudos':
         activities = activities.filter(activity_type__in=['new_kudos', 'receive_kudos'])
 
@@ -1322,6 +1323,13 @@ def create_status_update(request):
                         'i': i,
                         })
             kwargs['metadata']['poll_choices'] = poll_choices
+
+        if ':' in request.POST.get('tab', ''):
+            tab = request.POST.get('tab')
+            key = tab.split(':')[0]
+            result = tab.split(':')[1]
+            if key == 'hackathon':
+                kwargs['hackathonevent'] = HackathonEvent.objects.get(pk=result)
 
         try:
             activity = Activity.objects.create(**kwargs)

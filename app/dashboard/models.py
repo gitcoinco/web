@@ -2069,6 +2069,7 @@ class Activity(SuperModel):
         ('new_milestone', 'New Milestone'),
         ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
+        ('created_kudos', 'Created Kudos'),
         ('receive_kudos', 'Receive Kudos'),
         ('joined', 'Joined Gitcoin'),
         ('played_quest', 'Played Quest'),
@@ -2076,6 +2077,9 @@ class Activity(SuperModel):
         ('created_quest', 'Created Quest'),
         ('updated_avatar', 'Updated Avatar'),
         ('mini_clr_payout', 'Mini CLR Payout'),
+        ('leaderboard_rank', 'Leaderboard Rank'),
+        ('consolidated_leaderboard_rank', 'Consolidated Leaderboard Rank'),
+        ('consolidated_mini_clr_payout', 'Consolidated CLR Payout'),
     ]
 
     profile = models.ForeignKey(
@@ -2121,6 +2125,13 @@ class Activity(SuperModel):
         on_delete=models.CASCADE,
         blank=True, null=True
     )
+    hackathonevent = models.ForeignKey(
+        'dashboard.HackathonEvent',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
     metadata = JSONField(default=dict, blank=True)
@@ -2242,6 +2253,7 @@ class Activity(SuperModel):
             'created_human_time',
             'humanized_name',
             'url',
+            'relative_url',
             'match_this_round',
             'matchranking_this_round',
         ]
@@ -2254,10 +2266,12 @@ class Activity(SuperModel):
         activity['comments'] = self.comments.count()
         for key, value in model_to_dict(self).items():
             activity[key] = value
-        for fk in ['bounty', 'tip', 'kudos', 'profile', 'grant', 'other_profile']:
+        for fk in ['bounty', 'tip', 'kudos', 'profile', 'grant', 'other_profile', 'hackathonevent']:
             if getattr(self, fk):
                 activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
         activity['secondary_avatar_url'] = self.secondary_avatar_url
+        activity['staff'] = self.profile.user.is_staff if self.profile and hasattr(self.profile, 'user') and self.profile.user else False
+
         # KO notes 2019/01/30
         # this is a bunch of bespoke information that is computed for the views
         # in a later release, it couild be refactored such that its just contained in the above code block ^^.
@@ -2406,6 +2420,10 @@ def post_add_activity(sender, instance, created, **kwargs):
     if created:
         instance.cached_view_props = instance.generate_view_props_cache_as_task()
 
+        if instance.bounty and instance.bounty.event:
+            if not instance.hackathonevent:
+                instance.hackathonevent = instance.bounty.event
+
         # make sure duplicate activity feed items are removed
         dupes = Activity.objects.exclude(pk=instance.pk)
         dupes = dupes.filter(created_on__gte=(instance.created_on - timezone.timedelta(minutes=5)))
@@ -2421,6 +2439,8 @@ def post_add_activity(sender, instance, created, **kwargs):
         dupes = dupes.filter(needs_review=instance.needs_review)
         for dupe in dupes:
             dupe.delete()
+
+
 
 
 class LabsResearch(SuperModel):
@@ -4467,6 +4487,10 @@ class HackathonEvent(SuperModel):
     @property
     def relative_url(self):
         return f'hackathon/{self.slug}'
+
+    @property
+    def town_square_link(self):
+        return f'townsquare/?tab=hackathon:{self.pk}'
 
     def get_absolute_url(self):
         """Get the absolute URL for the HackathonEvent.
