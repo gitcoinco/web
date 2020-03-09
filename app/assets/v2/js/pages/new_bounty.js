@@ -597,7 +597,6 @@ $('#submitBounty').validate({
       */
       createBounty(data);
     } else {
-      console.log(data)
       ethCreateBounty(data);
     }
   }
