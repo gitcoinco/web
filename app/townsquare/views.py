@@ -254,8 +254,8 @@ def get_tags(request):
 def get_param_metadata(request, tab):
 
     # title
-    title = 'Home'
-    desc = 'View the recent activity on the Gitcoin network'
+    title = 'Town Square'
+    desc = 'Learn, earn, & connect with great developers on the Gitcoin Town Square'
     page_seo_text_insert = ''
     avatar_url = ''
     admin_link = ''

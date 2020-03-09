@@ -342,6 +342,41 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/orc_gitcoin.svg',
         },
+        'wookie': {
+            'preview_viewbox': {
+                'Background': '0 0 350 350',
+                'Eyes': '50 100 200 200',
+                'Glasses': '50 50 200 200',
+                'Headphone': '0 0 200 200',
+                'Hat': '50 0 200 200',
+                'Nose': '50 100 150 150',
+                'Mouth': '90 140 130 130',
+            },
+            'skin_tones': [
+                'AE7343', 'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B',
+                '715031', '593D26', '392D16', 'FFFF99'
+            ],
+            'hair_tones': [],
+            'tone_maps': ['wookie_skin'],
+            'path': 'assets/v2/images/avatar3d/wookie.svg',
+        },
+        'wolverine': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+                'Mouth': '90 140 130 130',
+                'Eye': '50 100 200 200',
+                'Mask': '0 0 300 300',
+                'Mouth': '90 190 130 130',
+                'Clothing': '0 150 250 250',
+            },
+            'skin_tones': [
+                'ECE3C1', 'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B',
+                '715031', '593D26', '392D16', 'FFFF99'
+            ],
+            'hair_tones': [],
+            'tone_maps': ['wolverine_skin'],
+            'path': 'assets/v2/images/avatar3d/wolverine.svg',
+        },
         'cartoon_jedi': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
@@ -476,6 +511,12 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
     if tone == 'orc_skin':
         tones = {'FFFF99': 0, }
         base_3d_tone = 'FFFF99'
+    if tone == 'wookie_skin':
+        tones = {'AE7343': 0, }
+        base_3d_tone = 'AE7343'
+    if tone == 'wolverine_skin':
+        tones = {'ECE3C1': 0, }
+        base_3d_tone = 'ECE3C1'
     if tone == 'orc_hair':
         tones = {'010101': 0, }
         base_3d_tone = '010101'

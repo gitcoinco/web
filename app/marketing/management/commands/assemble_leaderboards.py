@@ -399,6 +399,24 @@ def do_leaderboard_feed():
             if lr.profile:
                 Activity.objects.create(profile=lr.profile, activity_type='leaderboard_rank', metadata=metadata)
 
+    profile = Profile.objects.filter(handle='gitcoinbot').first()
+    for _type in [PAYERS, EARNERS, ORGS, CITIES, TOKENS]:
+        url = f'/leaderboard/{_type}'
+        what = _type.title() if _type != PAYERS else "Funders"
+        key = f'{WEEKLY}_{_type}'
+        lrs = LeaderboardRank.objects.active().filter(leaderboard=key, rank__lte=max_rank, product='all').order_by('rank')[0:10]
+        copy = f"<a href={url}>Weekly {what} Leaderboard</a>:<BR>"
+        counter = 0
+        for lr in lrs:
+            profile_link = f"<a href=/{lr.profile}>@{lr.profile}</a>" if _type not in [CITIES, TOKENS] else f"<strong>{lr.github_username}</strong>"
+            copy += f" - {profile_link} was ranked <strong>#{lr.rank}</strong>. <BR>"
+        metadata = {
+            'copy': copy,
+        }
+        key = f'{WEEKLY}_{_type}'
+        Activity.objects.create(profile=profile, activity_type='consolidated_leaderboard_rank', metadata=metadata)
+
+
 
 def do_leaderboard():
     global ranks

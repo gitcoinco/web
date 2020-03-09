@@ -576,7 +576,7 @@ $(document).ready(function() {
 
       const post_comment_html = `
         <div class="row py-2 mx-auto">
-          <div class="col-sm-1 activity-avatar d-none d-sm-inline">
+          <div class="col-sm-1 mt-1 activity-avatar d-none d-sm-inline">
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
           <div class="col-12 col-sm-11 text-right">

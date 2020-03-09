@@ -86,9 +86,11 @@ def preprocess(request):
             timezone.now() - timezone.timedelta(seconds=RECORD_VISIT_EVERY_N_SECONDS)
         )
         if record_visit:
-            ip_address = get_ip(request)
-            profile.last_visit = timezone.now()
-            profile.save()
+            try:
+                profile.last_visit = timezone.now()
+                profile.save()
+            except Exception as e:
+                logger.exception(e)
             try:
                 from dashboard.tasks import profile_dict
                 profile_dict.delay(profile.pk)
@@ -99,6 +101,7 @@ def preprocess(request):
                 'referrer': request.META.get('HTTP_REFERER', None),
                 'path': request.META.get('PATH_INFO', None),
             }
+            ip_address = get_ip(request)
             UserAction.objects.create(
                 user=request.user,
                 profile=profile,
@@ -155,6 +158,7 @@ def preprocess(request):
         'INFURA_V3_PROJECT_ID': settings.INFURA_V3_PROJECT_ID,
         'email_key': email_key,
         'giphy_key': settings.GIPHY_KEY,
+        'youtube_key': settings.YOUTUBE_API_KEY,
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
         'hotjar': settings.HOTJAR_CONFIG,

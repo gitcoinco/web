@@ -37,7 +37,14 @@
           {% endif %}
         </div>
       </div>
-      <div class="pt-2">
+      <div class="pt-0 text-center">
+         {% if row.staff %}
+            <span class="staff_tag">
+              Staff
+            </span>
+            <BR>
+         {% endif %}
+
         {% for org in row.profile.organizations %}
           <span>
             <img data-toggle="tooltip" title="Member of @{{org}}" src="/dynamic/avatar/{{ org }}" style="border-radius: 15px; width: 15px; height: 15px;" />
@@ -55,7 +62,14 @@
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
          <a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
+
+         {% if row.hackathonevent %}
+            <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" class="tag">
+              via {{ row.hackathonevent.name }}
+            </a>
+         {% endif %}
         </span>
+
         {% if row.profile.match_this_round %}
           <span class="tip_activity" data-pk="{{row.pk}}" data-username="{{row.profile.handle}}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; padding: 2px; font-size: 10px;"
             data-placement="bottom" data-toggle="tooltip" data-html="true"
@@ -77,6 +91,11 @@
           </a>
         {% elif row.activity_type == 'mini_clr_payout' %}
           {% trans "got a distribution of" %} of <strong>{{row.metadata.amount|floatformat:2}} DAI<strong> in {{row.metadata.round_description}}
+        {% elif row.activity_type == 'created_kudos' %}
+          a new kudos has been minted:
+          <a href="{{ row.kudos_data.external_url }}">
+            {{ row.kudos_data.name }}
+          </a>
         {% elif row.activity_type == 'new_kudos' %}
           {% trans "sent a" %}
           Kudos
@@ -171,6 +190,9 @@
         {% endif %}
       :
         <b>{{ row.metadata.title }}</b>
+      {% elif row.activity_type == 'consolidated_leaderboard_rank'  or row.activity_type == 'consolidated_mini_clr_payout' %}
+        {{row.metadata.copy|safe}}
+
       {% elif row.activity_type == 'leaderboard_rank' %}
         <a href="{{ row.metadata.link }}">{{ row.metadata.title }}</a>
       {% elif row.activity_type == 'new_bounty' %}
@@ -306,7 +328,7 @@
       </div>
       <div class="mt-3 text-right pr-3 activity-img">
         {% if row.kudos %}
-          <a href="{{row.kudos_data.url}}">
+          <a href="{{row.kudos_data.external_url}}">
             <img src="{% static row.kudos_data.image %}" alt="{% static row.kudos_data.name %}" class="mw-100">
           </a>
         {% elif row.activity_type == 'leaderboard_rank' %}

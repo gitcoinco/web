@@ -20,10 +20,12 @@ import json
 import time
 
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.core import management
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from dashboard.models import Activity, Earning, Profile
 from dashboard.utils import get_tx_status, get_web3, has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from townsquare.models import MatchRound
@@ -39,7 +41,7 @@ class Command(BaseCommand):
         parser.add_argument('what', 
             default='finalize',
             type=str,
-            help="what do we do? (finalize, payout)"
+            help="what do we do? (finalize, payout, announce)"
             )
         parser.add_argument(
             'minutes_ago',
@@ -82,7 +84,7 @@ class Command(BaseCommand):
                 ranking.save()
             print(rankings.count(), " finalied")
 
-        # payout rankings
+        # payout rankings (round must be finalized first)
         if options['what'] == 'payout':
             rankings = mr.ranking.filter(final=True, paid=False).order_by('-match_total')
             print(rankings.count(), " to pay")
@@ -140,8 +142,6 @@ class Command(BaseCommand):
                     other_ranking.save()
 
                 # create earning object
-                from dashboard.models import Earning, Profile, Activity
-                from django.contrib.contenttypes.models import ContentType
                 from_profile = Profile.objects.get(handle='gitcoinbot')
                 Earning.objects.update_or_create(
                     source_type=ContentType.objects.get(app_label='townsquare', model='matchranking'),
@@ -168,8 +168,28 @@ class Command(BaseCommand):
                         "round_description": f"Mini CLR Round {mr.number}"
                     })
 
+
                 from marketing.mails import match_distribution
                 match_distribution(ranking)
 
                 print("paid ", ranking)
                 time.sleep(30)
+            
+        # announce finalists (round must be finalized first)
+        from_profile = Profile.objects.get(handle='gitcoinbot')
+        if options['what'] == 'announce':
+            copy = f"Mini CLR Round {mr.number} Winners:<BR>"
+            rankings = mr.ranking.filter(final=True).order_by('-match_total')[0:10]
+            print(rankings.count(), " to announce")
+            for ranking in rankings:
+                profile_link = f"<a href=/{ranking.profile}>@{ranking.profile}</a>"
+                copy += f" - {profile_link} was ranked <strong>#{ranking.number}</strong>. <BR>"
+            metadata = {
+                'copy': copy,
+            }
+
+            Activity.objects.create(
+                created_on=timezone.now(),
+                profile=from_profile,
+                activity_type='consolidated_mini_clr_payout',
+                metadata=metadata)
