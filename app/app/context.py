@@ -48,7 +48,9 @@ def fetchPost(qt='2'):
 
 @cached_as(Announcement.objects.filter(key__in=['footer', 'header']), timeout=1200)
 def get_sitewide_announcements():
-    announcements = Announcement.objects.filter(key__in=['footer', 'header'], valid_to__gt=timezone.now(), valid_from__lt=timezone.now())
+    announcements = Announcement.objects.filter(
+        key__in=['footer', 'header'], valid_to__gt=timezone.now(), valid_from__lt=timezone.now()
+    )
     announcement = announcements.filter(key='footer').first()
     header_msg, footer_msg, nav_salt = '', '', 0
     if announcement:
