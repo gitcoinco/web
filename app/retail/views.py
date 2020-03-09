@@ -1151,7 +1151,41 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     is_auth = user and user.is_authenticated
 
     ## filtering
-    if 'hackathon:' in what:
+    relevant_profiles = []
+    relevant_grants = []
+    if what == 'tribes':
+        relevant_profiles = get_my_earnings_counter_profiles(user.profile.pk) if is_auth else []
+    elif what == 'grants':
+        relevant_grants = get_my_grants(user.profile) if is_auth else []
+    elif what == 'my_threads' and is_auth:
+        activities = user.profile.subscribed_threads.all().order_by('-created') if is_auth else []
+    elif 'keyword-' in what:
+        keyword = what.split('-')[1]
+        relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
+    elif 'search-' in what:
+        keyword = what.split('-')[1]
+        view_count_threshold = 5
+        base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post', 'new_bounty', 'created_quest', 'new_grant', 'created_kudos', 'mini_clr_payout', 'consolidated_leaderboard_rank', 'consolidated_mini_clr_payout'])
+        keyword_filter = Q(pk=0) #noop
+        if keyword == 'meme':
+            keyword_filter = Q(metadata__type='gif') | Q(metadata__type='png') | Q(metadata__type='jpg')
+        if keyword == 'meme':
+            keyword_filter = Q(metadata__icontains='spotify') | Q(metadata__type='soundcloud') | Q(metadata__type='pandora')
+        activities = activities.filter(keyword_filter | base_filter)
+    elif 'tribe:' in what:
+        key = what.split(':')[1]
+        profile_filter = Q(profile__handle=key)
+        keyword_filter = Q(metadata__icontains=key)
+        activities = activities.filter(keyword_filter | profile_filter)
+    elif 'activity:' in what:
+        view_count_threshold = 0
+        pk = what.split(':')[1]
+        activities = Activity.objects.filter(pk=pk)
+        if request:
+            page = int(request.GET.get('page', 1))
+            if page > 1:
+                activities = Activity.objects.none()
+    elif 'hackathon:' in what:
         pk = what.split(':')[1]
         activities = activities.filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
     elif ':' in what:
@@ -1163,35 +1197,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         kwargs[key] = pk
         activities = activities.filter(**kwargs)
 
-    relevant_profiles = []
-    relevant_grants = []
-    if what == 'tribes':
-        relevant_profiles = get_my_earnings_counter_profiles(user.profile.pk) if is_auth else []
-    if what == 'grants':
-        relevant_grants = get_my_grants(user.profile) if is_auth else []
-    if what == 'my_threads' and is_auth:
-        activities = user.profile.subscribed_threads.all().order_by('-created') if is_auth else []
-    if 'keyword-' in what:
-        keyword = what.split('-')[1]
-        relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
-    if 'search-' in what:
-        keyword = what.split('-')[1]
-        view_count_threshold = 5
-        base_filter = Q(metadata__icontains=keyword, activity_type__in=['status_update', 'wall_post', 'new_bounty', 'created_quest', 'new_grant', 'created_kudos', 'mini_clr_payout', 'consolidated_leaderboard_rank', 'consolidated_mini_clr_payout'])
-        keyword_filter = Q(pk=0) #noop
-        if keyword == 'meme':
-            keyword_filter = Q(metadata__type='gif') | Q(metadata__type='png') | Q(metadata__type='jpg')
-        if keyword == 'meme':
-            keyword_filter = Q(metadata__icontains='spotify') | Q(metadata__type='soundcloud') | Q(metadata__type='pandora')
-        activities = activities.filter(keyword_filter | base_filter)
-    if 'activity:' in what:
-        view_count_threshold = 0
-        pk = what.split(':')[1]
-        activities = Activity.objects.filter(pk=pk)
-        if request:
-            page = int(request.GET.get('page', 1))
-            if page > 1:
-                activities = Activity.objects.none()
+
     # filters
     if len(relevant_profiles):
         activities = activities.filter(profile__in=relevant_profiles)
