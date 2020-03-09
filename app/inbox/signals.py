@@ -171,7 +171,7 @@ def create_like_notification(sender, **kwargs):
         activity.profile.user,
         activity.url,
         'new_like',
-        f'❤️ <b>{like.profile.user} liked your comment</b>: {activity.metadata["title"]}'
+        f'❤️ <b>{like.profile.user} liked your comment</b>: {activity.metadata.get("title", "")}'
     )
 
 
