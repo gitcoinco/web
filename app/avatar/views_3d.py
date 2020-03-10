@@ -457,8 +457,7 @@ def get_avatar_attrs(theme, key):
                 'body': '0 0 350 350',
                 'accessory': '100 100 150 150',
             },
-            'skin_tones': [
-            ],
+            'skin_tones': [],
             'hair_tones': [],
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/bender.svg',
