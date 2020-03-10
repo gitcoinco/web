@@ -665,9 +665,24 @@ def get_gh_notifications(login=None):
     return notifications
 
 
+def post_issue(issue, owner, repo, token=None):
+    url = f'https://api.github.com/repos/{owner}/{repo}/issues'
+    _auth = {'Authorization': f'token {token}'}
+
+    try:
+        response = requests.post(url, data=json.dumps(issue), auth=_AUTH)
+        return response.json()
+    except Exception as e:
+        logger.error(
+            "could not post issue comment - Reason: %s - %s %s %s %s", e, issue, owner, repo, response.status_code
+        )
+    return {}
+
+
 def post_issue_comment(owner, repo, issue_num, comment):
     """Post a comment on an issue."""
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/comments'
+
     try:
         response = requests.post(url, data=json.dumps({'body': comment}), auth=_AUTH)
         return response.json()

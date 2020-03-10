@@ -18,6 +18,7 @@ from retail.views import get_specific_activities
 from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
+from git.utils import post_issue
 
 tags = [
     ['#announce','bullhorn','search-announce'],
@@ -638,3 +639,66 @@ def extract_metadata_page(request):
         'status': 'error',
         'message': 'no url was provided'
     }, status=404)
+
+
+def create_github_issue(request):
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request.'
+    }
+    method = request.POST.get('method')
+
+    if method == 'POST_ISSUE':
+        activity_id = request.POST.get('activity_id')
+        title = request.POST.get('title')
+        body = request.POST.get('body')
+        _response = post_issue(
+            {'title': title, 'body': body},
+            'walidmujahid', 'web',
+            # request.user.profile.github_access_token
+        )
+        html_url = _response['html_url']
+        activity = Activity.objects.get(pk=activity_id)
+
+        # handle activity that already has an issue opened
+        if activity.activity_type == 'turned_github_issue':
+            response = {
+                'status': 405,
+                'message': 'This post already has an issue opened.',
+                'html_url': activity.html_url,
+                'activity_id': activity.pk,
+            }
+            return JsonResponse(response)
+
+        response = {
+            'status': 201,
+            'title': title,
+            'message': 'Issue has successfully been opened.',
+            'html_url': html_url,
+            'activity_id': activity.pk,
+        }
+
+        activity.activity_type = 'turned_github_issue'
+        activity.html_url = html_url
+        activity.save()
+
+
+        from townsquare.models import Comment
+        comment = f"@{request.user.profile.handle} just turned this post into" \
+        f" a Github Issue: {html_url}"
+        comment = Comment.objects.create(
+            profile=request.user.profile,
+            activity=activity,
+            comment=comment
+        )
+
+        Activity.objects.create(
+        profile=request.user.profile,
+        created_on=timezone.now(),
+        activity_type='is_github_issue',
+        html_url=html_url
+        )
+
+        return JsonResponse(response)
+
+    return JsonResponse(response)

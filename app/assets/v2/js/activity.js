@@ -716,6 +716,53 @@ $(document).ready(function() {
   });
 
 
+  // turn post into GitHub issue
+  $(document).on('click', '.activity_to_issue', function(e) {
+    e.preventDefault();
+    const pk = $(this).data('pk');
+    const title = prompt('Set Title');
+    const activity_body = $(this).parents('.activity.box').find('.activity_detail_content span').html();
+    const activity_url = $(this).data('url');
+    const body = `**From Townsquare:** ${activity_url}\n\n### Discussion\n\n${activity_body}`;
+
+    // remote post
+    const params = {
+      'method': 'POST_ISSUE',
+      'title': title,
+      'body': body,
+      'activity_id': pk,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+    const url = 'api/v0.1/activity/post_to_github';
+
+    if (title == null || title == '') {
+      _alert('Must enter title.', 'error', 2500);
+      return;
+    }
+
+    $.post(url, params, function(response) {
+      // no message to be sent
+    }).done(function(response) {
+      console.log(response);
+      if (response['status'] == 201) {
+        _alert(`${response['message']} ${response['html_url']}`, 'success');
+
+        // TODO: fix
+        setTimeout(function() {
+          var $target = $(this).parents(`.activity.box[data-pk=${response['pk']}]`).find('.comment_activity');
+
+          var override_hide_comments = !has_hidden_comments;
+
+          view_comments($target, false, undefined, true);
+        }, 1000);
+      }
+
+      if (response['status'] == 405) {
+        _alert(`${response['message']} Here is the link: ${response['html_url']}`, 'warning');
+      }
+    });
+  });
+
   // auto open new comment threads
   setInterval(function() {
 

@@ -174,8 +174,13 @@
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
-        {% elif row.activity_type == 'status_update' or  row.activity_type == 'silent_status_update' %}
+        {% elif row.activity_type == 'status_update' or  row.activity_type == 'silent_status_update' or row.activity_type == 'turned_github_issue' %}
           <span>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</span>
+        {% elif row.activity_type == 'is_github_issue' %}
+          <a href="https://gitcoin.co/profile/{{ row.profile.handle }}" >
+            @{{ row.profile.handle }}
+          </a>
+          {% trans "opened" %}: <a href={{row.html_url}} target="_blank">{{ row.html_url }}</a>
         {% elif row.activity_type == 'wall_post' %}
           &gt;
         {% if row.grant %}
@@ -269,6 +274,15 @@
             <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
               <i class="fas fa-link mr-2"></i> Copy Link
             </a>
+            {% if row.activity_type == 'status_update' or row.activity_type == 'silent_status_update' %}
+            <a class="activity_to_issue mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Turn this post into a GitHub Issue." href=# data-url={{row.url}} data-pk={{row.pk}}>
+              <i class="fab fa-github mr-2"></i> Open as Issue
+            </a>
+            {% elif row.activity_type == 'turned_github_issue' %}
+            <a class="open_github_issue mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="This post has already been turned into a Github Issue." href={{row.html_url}} target="_blank" data-url={{row.url}} data-pk={{row.pk}}>
+              <i class="fab fa-github mr-2"></i> Open Issue on Github
+            </a>
+            {% endif %}
             <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged
               data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}}
               class="flag_activity mr-2 dropdown-item px-3 font-smaller-5"

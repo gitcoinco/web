@@ -2061,6 +2061,9 @@ class Activity(SuperModel):
         ('bounty_removed_by_staff', 'Removed from Bounty by Staff'),
         ('bounty_removed_by_funder', 'Removed from Bounty by Funder'),
         ('new_crowdfund', 'New Crowdfund Contribution'),
+        # Activities to Github Issue
+        ('is_github_issue', 'Activity is a Github Issue'),
+        ('turned_github_issue', 'Activity was Turned into a Github Issue'),
         # Grants
         ('new_grant', 'New Grant'),
         ('update_grant', 'Updated Grant'),
@@ -2148,6 +2151,8 @@ class Activity(SuperModel):
     )
     hidden = models.BooleanField(default=False, db_index=True)
     cached_view_props = JSONField(default=dict, blank=True)
+    # Activities to Github Issue
+    html_url = models.URLField(blank=True)
 
     # Activity QuerySet Manager
     objects = ActivityQuerySet.as_manager()
