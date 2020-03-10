@@ -1,0 +1,21 @@
+{
+  "symbol": "HUSD",
+  "address": "0xdF574c24545E5FfEcb9a659c229253D4111d87e1",
+  "overview":{
+        "en": "HUSD is a regulated stablecoin issued by Stable Universal, pegged to  U.S. dollar in a 1:1 ratio. The US dollars collateralized for HUSD are held in a US Trust Company, and transparently verified by a wellknown third-party auditing firm monthly.From the blockchain perspective, HUSD is a ERC-20 token built on the Ethereum network, a mature public chain with high degree of decentralization and security. The on chain digital records are  transparent and tamper proof. HUSD has made good progress in crypto-asset trading and digital payments, and will continue to develop more applications in financial services.",
+        "zh": "HUSD是由Stable Universal 发行的合规稳定币，与美元1:1锚定。HUSD对应的美元资产由美国信托机构托管，并邀请了知名第三方审计公司每月对资金进行审计。从区块链角度来说，HUSD目前基于成熟公链ETH实现，所有操作都是公开且不可篡改的，具有很高的去中心化度和安全性。HUSD已经在数字资产交易和支付应用上取得了一定的进展，未来将会不断拓展在其他金融领域的应用。"
+  },
+  "email": "support@stcoins.com",
+  "website": "https://www.stcoins.com/",
+  "state": "NORMAL",
+  "published_on": "2019-07-20",
+  "initial_price":{
+        "USD":"1 USD"
+  },
+  "links": {
+    "blog": "https://www.stcoins.com",
+    "twitter": "https://twitter.com/stablecoin_husd",
+    "linkedin": "https://www.linkedin.com/company/stcoins",
+    "medium": "https://medium.com/@Stablecoin_HUSD"
+  }
+}

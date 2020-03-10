@@ -1,0 +1,19 @@
+{
+    "symbol": "XY",
+    "address": "0x0878B3d9Ae5dCA7042D16FA6c6Cc0D831b71c7C2",
+    "overview":{
+          "en": "Xiu Yan is Positioning based on blockchain storage technology to create a blockchain storage information network",
+          "zh": "Xiu Yan 定位基于区块链储存技术以打造区块链储存信息网络，使之成为互联网世界的信息链接器。"
+    },
+    "email": "944814980@qq.com",
+    "website": "http://xiuyan.xyz/",
+    "whitepaper": "https://docsend.com/view/8s5t728",
+    "state": "NORMAL",
+    "published_on": "2020.02.02",
+    "initial_price":{
+          "BTC":"0.00000005 BTC"
+    },
+    "links": {
+      "reddit": "https://mp.weixin.qq.com/s/lIhGdHa6_MTIyD27ay1q1w"
+    }
+  }
