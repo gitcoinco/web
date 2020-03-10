@@ -62,9 +62,6 @@ logger = logging.getLogger(__name__)
 
 connect_types = ['status_update', 'wall_post', 'new_bounty', 'created_quest', 'new_grant', 'created_kudos', 'consolidated_leaderboard_rank', 'consolidated_mini_clr_payout']
 
-@cached_as(
-    Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created'),
-    timeout=120)
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
 
@@ -72,7 +69,7 @@ def get_activities(tech_stack=None, num_activities=15):
     if tech_stack:
         activities = activities.filter(bounty__metadata__icontains=tech_stack)
     activities = activities[0:num_activities]
-    return [a.either_view_props for a in activities]
+    return activities
 
 
 def index(request):
@@ -1217,6 +1214,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
+    
     return activities
 
 
@@ -1228,6 +1226,7 @@ def activity(request):
     trending_only = int(request.GET.get('trending_only', 0))
 
     activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
+    activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent')
 
     # store last seen
     if activities.exists():
@@ -1249,7 +1248,6 @@ def activity(request):
     activities_pks = [obj.pk for obj in page]
     if len(activities_pks):
         increment_view_counts.delay(activities_pks)
-
 
     context = {
         'suppress_more_link': suppress_more_link,

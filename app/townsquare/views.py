@@ -396,7 +396,6 @@ def api(request, activity_id):
         if not activity.has_voted(request.user):
             activity.metadata['poll_choices'][index]['answers'].append(request.user.profile.pk)
             activity.save()
-            activity.generate_view_props_cache_as_task()
 
     # toggle like comment
     if request.POST.get('method') == 'toggle_like_comment':

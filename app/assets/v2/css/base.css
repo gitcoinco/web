@@ -1702,6 +1702,7 @@ div.busyOverlay {
 .chat_presence_indicator.mini {
   padding: 0px 1px;
   font-size: 10px;
+  margin-left: 0px;
 }
 .chat_presence_indicator.mini .indicator {
   font-size: 24px;

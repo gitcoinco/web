@@ -2074,7 +2074,7 @@ def quickstart(request):
 
     activities = Activity.objects.filter(activity_type='new_bounty').order_by('-created')[:5]
     context = deepcopy(qs.quickstart)
-    context["activities"] = [a.either_view_props for a in activities]
+    context["activities"] = activities
     return TemplateResponse(request, 'quickstart.html', context)
 
 
