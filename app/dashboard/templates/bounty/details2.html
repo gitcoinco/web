@@ -30,7 +30,7 @@
       <div class="row">
         <loading-screen v-show="!bounty.created_on"></loading-screen>
 
-        <div class="col-12 pt-3 text-center">
+        <div class="col-12 pt-3 text-center" v-if="contxt.is_staff">
           <span class="text-black-70 my-2 font-caption">
             <i class="fas fa-user-secret mr-2"></i>
             Admin Actions
