@@ -30,12 +30,12 @@
       <div class="row">
         <loading-screen v-show="!bounty.created_on"></loading-screen>
 
-        <div class="col-12 pt-3 text-center" v-if="contxt.is_staff">
+        <div class="col-12 pt-3 text-center" v-if="contxt.is_staff && bounty.pk">
           <span class="text-black-70 my-2 font-caption">
             <i class="fas fa-user-secret mr-2"></i>
             Admin Actions
           </span>
-          <a v-for="link in staffQuickLinks" class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" href="[[link.href]]" title="[[link.title]]">[[link.label]]</a>
+          <a v-for="link in quickLinks" class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
         </div>
         <div class="col-12" v-show="bounty.created_on">
           {% if event_tag %}
