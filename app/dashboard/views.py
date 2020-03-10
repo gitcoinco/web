@@ -1052,6 +1052,9 @@ def users_fetch(request):
         profile_list = Profile.objects.filter(data__type='Organization'
             ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
 
+        if q:
+            profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
+
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
     else:
