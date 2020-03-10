@@ -128,6 +128,8 @@ def preprocess(request):
         callback = request.GET.get('cb')
         handle_marketing_callback(callback, request)
 
+    header_msg, footer_msg, nav_salt = get_sitewide_announcements()
+
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,

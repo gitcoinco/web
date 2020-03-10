@@ -469,7 +469,6 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
     }, 30000);
   })(jQuery);
 }
-
 // carousel/collabs/... inside menu
 $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
   e.stopPropagation();
