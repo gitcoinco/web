@@ -16,6 +16,8 @@
 {% endcomment %}
 {% load static humanize i18n grants_extra %}
 <div class="summary p-5 px-md-3">
+  <input type="hidden" id="grant_type" name="grant_type" value="{{ grant.grant_type }}">
+
   <!-- GRANT LOGO -->
   <div class="grant-logo pb-2">
     {% if is_team_member %}
