@@ -2840,11 +2840,11 @@ def profile(request, handle, tab=None):
             handle = request.user.username
             profile = getattr(request.user, 'profile', None)
             if not profile:
-                profile = profile_helper(handle)
+                profile = profile_helper(handle, disable_cache=True)
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
-            profile = profile_helper(handle, current_user=request.user)
+            profile = profile_helper(handle, current_user=request.user, disable_cache=True)
 
     except (Http404, ProfileHiddenException, ProfileNotFoundException):
         status = 404
