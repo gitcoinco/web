@@ -254,7 +254,7 @@
             </a>
 
             <a href=# data-pk={{row.pk}} class="comment_activity mr-2" data-toggle="tooltip"
-              title="Comment on this feed item." {% if row.comments %} data-open="true" {% endif %} >
+              title="Comment on this feed item." {% if row.comments.count %} data-open="true" {% endif %} >
               <span class="action"><i class="far fa-comment grey"></i></span>
               <span class="num grey">{{row.comments.count}}</span>
             </a>
