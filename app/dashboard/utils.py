@@ -787,8 +787,8 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
     if current_profile and current_profile.handle == handle:
         return current_profile
 
+    base = Profile.objects
     try:
-        base = Profile.objects
         if disable_cache:
             base = base.nocache()
         profile = base.get(handle__iexact=handle)
@@ -800,7 +800,7 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
         # Handle edge case where multiple Profile objects exist for the same handle.
         # We should consider setting Profile.handle to unique.
         # TODO: Should we handle merging or removing duplicate profiles?
-        profile = Profile.objects.filter(handle__iexact=handle).latest('id')
+        profile = base.filter(handle__iexact=handle).latest('id')
         logging.error(e)
 
     if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:

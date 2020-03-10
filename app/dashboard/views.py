@@ -2838,7 +2838,7 @@ def profile(request, handle, tab=None):
 
         if not handle:
             handle = request.user.username
-            profile = getattr(request.user, 'profile', None)
+            profile = None
             if not profile:
                 profile = profile_helper(handle, disable_cache=True)
         else:
