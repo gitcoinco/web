@@ -25,8 +25,8 @@ function getCategoryIndex(categoryName, categories) {
   return '-1';
 }
 
-function updateValuesOfExistingCategories(grant_type) {
-  $.get(`/grants/categories?type=${grant_type}`, data => {
+function updateValuesOfExistingCategories(apiUrl) {
+  $.get(apiUrl, data => {
     if (!data || !data.categories) {
       return;
     }
@@ -43,8 +43,9 @@ function updateValuesOfExistingCategories(grant_type) {
 
 function initGrantCategoriesInput() {
   const grant_type = $('#grant_type').val();
-  grantCategoriesSelection('#grant-categories', `/grants/categories?type=${grant_type}`);
-  updateValuesOfExistingCategories(grant_type);
+  const apiUrl = `/grants/categories?type=${grant_type}`;
+  grantCategoriesSelection('#grant-categories', apiUrl);
+  updateValuesOfExistingCategories(apiUrl);
 }
 
 $(document).ready(function() {
