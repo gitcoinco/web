@@ -884,8 +884,14 @@ body.green.offer_view .announce {
   font-size: 0.9rem;
   color: #626365;
   text-transform: uppercase;
+  cursor: pointer;
 }
-
+.townsquare_block-header::after {
+  content: ""
+}
+.townsquare_block-header.closed::after {
+  content: "^"
+}
 #status .btn-group-toggle .btn-radio {
   background-color: var(--badge-blue-bg);
   color: var(--badge-blue-text);
