@@ -1671,13 +1671,10 @@ div.busyOverlay {
 }
 .chat_presence_indicator {
   font-size: 12px;
-  padding: 5px;
+  padding: 0px;
   list-style: none;
   display: inline-block;
-  background-color: #eee;
-  border: 1px solid #ddd;
   cursor: pointer;
-  border-radius: 5px;
   margin-bottom: 0px;
   margin-left: 5px;
   font-weight: normal;
@@ -1686,12 +1683,12 @@ div.busyOverlay {
 .chat_presence_indicator .indicator {
   vertical-align: middle;
   content: "\2022";
-  font-size: 20px;
+  font-size: 42px;
   color: #aaa;
   font-weight: bold;
   display: inline-block;
-  margin-top: -10px;
-  margin-bottom: -5px;
+  margin-top: -12px;
+  margin-bottom: 0px;
 }
 .chat_presence_indicator.online .indicator {
   color: #0fce7c;
@@ -1702,14 +1699,12 @@ div.busyOverlay {
 .chat_presence_indicator.dnd .indicator {
   color: red;
 }
-.chat_presence_indicator.mini li,
 .chat_presence_indicator.mini {
   padding: 0px 1px;
   font-size: 10px;
 }
 .chat_presence_indicator.mini .indicator {
-  font-size: 12px;
-  margin-top: 0px;
-  margin-bottom: 0px;
+  font-size: 24px;
+  line-height: 0px
 }
 
