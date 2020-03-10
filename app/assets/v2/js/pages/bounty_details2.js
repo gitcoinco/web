@@ -129,6 +129,47 @@ Vue.mixin({
   computed: {
     sortedActivity: function() {
       return this.bounty.activities.sort((a, b) => new Date(b.created) - new Date(a.created));
+    },
+    staffQuickLinks: function() {
+      let quickLinks = [];
+
+      if (this.contxt.is_staff) {
+        quickLinks.push({
+          label: 'View in Admin',
+          href: `/_administrationdashboard/bounty/${this.bounty.pk}/change/`,
+          title: 'View in Admin Tool'
+        });
+
+        const connector_char = this.bounty.url.indexOf('?') == -1 ? '?' : '&';
+
+        quickLinks.push({
+          label: 'Hide Bounty',
+          href: `${this.bounty.url}${connector_char}admin_override_and_hide=1`,
+          title: 'Hides Bounty from Active Bounties'
+        });
+
+        quickLinks.push({
+          label: 'Toggle Remarket Ready',
+          href: `${this.bounty.url}${connector_char}admin_toggle_as_remarket_ready=1`,
+          title: 'Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.'
+        });
+
+        quickLinks.push({
+          label: 'Suspend Auto Approval',
+          href: `${this.bounty.url}${connector_char}suspend_auto_approval=1`,
+          title: 'Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'
+        });
+
+        if (this.bounty.needs_review) {
+          quickLinks.push({
+            label: 'Mark as Reviewed',
+            href: `${this.bounty.url}${connector_char}mark_reviewed=1`,
+            title: 'Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'
+          });
+        }
+      }
+
+      return quickLinks;
     }
 
   }
@@ -256,7 +297,6 @@ var show_interest_modal = function() {
       }
 
       let actionPlanForm = $('#action_plan');
-      let discord_username = $('#discord_username');
       let issueMessage = $('#issue_message');
 
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));

@@ -1295,106 +1295,106 @@ var do_actions = function(result) {
   }
 
 
-  if (show_suspend_auto_approval) {
-    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
-    const url = result['url'] + connector_char + 'suspend_auto_approval=1';
+  // if (show_suspend_auto_approval) {
+  //   const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+  //   const url = result['url'] + connector_char + 'suspend_auto_approval=1';
 
-    const _entry = {
-      enabled: true,
-      href: url,
-      text: gettext('Suspend Auto Approval'),
-      parent: 'moderator-admin-actions',
-      title: gettext('Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty')
-    };
+  //   const _entry = {
+  //     enabled: true,
+  //     href: url,
+  //     text: gettext('Suspend Auto Approval'),
+  //     parent: 'moderator-admin-actions',
+  //     title: gettext('Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty')
+  //   };
 
-    actions.push(_entry);
-  }
+  //   actions.push(_entry);
+  // }
 
-  if (show_admin_methods) {
-    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
-    const url = result['url'] + connector_char + 'admin_override_and_hide=1';
+  // if (show_admin_methods) {
+  //   const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+  //   const url = result['url'] + connector_char + 'admin_override_and_hide=1';
 
-    const _entry = {
-      enabled: true,
-      href: url,
-      text: gettext('Hide Bounty'),
-      parent: 'moderator-admin-actions',
-      title: gettext('Hides Bounty from Active Bounties')
-    };
+  //   const _entry = {
+  //     enabled: true,
+  //     href: url,
+  //     text: gettext('Hide Bounty'),
+  //     parent: 'moderator-admin-actions',
+  //     title: gettext('Hides Bounty from Active Bounties')
+  //   };
 
-    actions.push(_entry);
-  }
+  //   actions.push(_entry);
+  // }
 
-  if (show_admin_methods || show_moderator_methods) {
-    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+  // if (show_admin_methods || show_moderator_methods) {
+  //   const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
 
-    let _entry = {
-      enabled: true,
-      href: result['url'] + connector_char + 'admin_toggle_as_remarket_ready=1',
-      text: gettext('Toggle Remarket Ready'),
-      parent: 'moderator-admin-actions',
-      title: gettext('Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.')
-    };
+  //   let _entry = {
+  //     enabled: true,
+  //     href: result['url'] + connector_char + 'admin_toggle_as_remarket_ready=1',
+  //     text: gettext('Toggle Remarket Ready'),
+  //     parent: 'moderator-admin-actions',
+  //     title: gettext('Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.')
+  //   };
 
-    actions.push(_entry);
+  //   actions.push(_entry);
 
-    _entry = {
-      enabled: true,
-      href: '',
-      text: gettext('Snooze Gitcoinbot'),
-      parent: 'moderator-admin-actions',
-      title: gettext('Snooze Gitcoinbot reminders')
-    };
-    actions.push(_entry);
+  //   _entry = {
+  //     enabled: true,
+  //     href: '',
+  //     text: gettext('Snooze Gitcoinbot'),
+  //     parent: 'moderator-admin-actions',
+  //     title: gettext('Snooze Gitcoinbot reminders')
+  //   };
+  //   actions.push(_entry);
 
-    if (needs_review) {
-      const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
-      const url = result['url'] + connector_char + 'mark_reviewed=1';
+  //   if (needs_review) {
+  //     const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+  //     const url = result['url'] + connector_char + 'mark_reviewed=1';
 
-      const _entry = {
-        enabled: true,
-        href: url,
-        text: gettext('Mark as Reviewed'),
-        parent: 'moderator-admin-actions',
-        title: gettext('Marks the bounty activity as reviewed.')
-      };
+  //     const _entry = {
+  //       enabled: true,
+  //       href: url,
+  //       text: gettext('Mark as Reviewed'),
+  //       parent: 'moderator-admin-actions',
+  //       title: gettext('Marks the bounty activity as reviewed.')
+  //     };
 
-      actions.push(_entry);
-    }
-  }
+  //     actions.push(_entry);
+  //   }
+  // }
 
-  if (show_admin_methods) {
-    let _entry = {
-      enabled: true,
-      href: '',
-      text: gettext('Override Status'),
-      parent: 'moderator-admin-actions',
-      title: gettext('Override Status with a status of your choosing'),
-      buttonclass: 'admin_override_satatus'
-    };
+  // if (show_admin_methods) {
+  //   let _entry = {
+  //     enabled: true,
+  //     href: '',
+  //     text: gettext('Override Status'),
+  //     parent: 'moderator-admin-actions',
+  //     title: gettext('Override Status with a status of your choosing'),
+  //     buttonclass: 'admin_override_satatus'
+  //   };
 
-    actions.push(_entry);
+  //   actions.push(_entry);
 
-    _entry = {
-      enabled: true,
-      href: '/_administrationdashboard/bounty/' + result['pk'] + '/change/',
-      text: gettext('View in Admin'),
-      parent: 'moderator-admin-actions',
-      title: gettext('View in Admin')
-    };
-    actions.push(_entry);
+  //   _entry = {
+  //     enabled: true,
+  //     href: '/_administrationdashboard/bounty/' + result['pk'] + '/change/',
+  //     text: gettext('View in Admin'),
+  //     parent: 'moderator-admin-actions',
+  //     title: gettext('View in Admin')
+  //   };
+  //   actions.push(_entry);
 
-    _entry = {
-      enabled: true,
-      href: '',
-      text: gettext('Contact Funder'),
-      parent: 'moderator-admin-actions',
-      title: gettext('Contact Funder via Email'),
-      buttonclass: 'contact_bounty_hunter'
-    };
+  //   _entry = {
+  //     enabled: true,
+  //     href: '',
+  //     text: gettext('Contact Funder'),
+  //     parent: 'moderator-admin-actions',
+  //     title: gettext('Contact Funder via Email'),
+  //     buttonclass: 'contact_bounty_hunter'
+  //   };
 
-    actions.push(_entry);
-  }
+  //   actions.push(_entry);
+  // }
 
   $('#bounty-options-link').text().trim() == '' ? $('#bounty-options').hide() : $('#bounty-options').show();
   render_actions(actions);
