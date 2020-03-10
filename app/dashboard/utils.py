@@ -766,7 +766,7 @@ def release_bounty_lock(standard_bounty_id):
     release_semaphore(ns)
 
 
-def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
+def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None, disable_cache=False):
     """Define the profile helper.
 
     Args:
@@ -788,7 +788,10 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
         return current_profile
 
     try:
-        profile = Profile.objects.get(handle__iexact=handle)
+        base = Profile.objects
+        if disable_cache:
+            base = base.nocache()
+        profile = base.get(handle__iexact=handle)
     except Profile.DoesNotExist:
         profile = sync_profile(handle)
         if not profile:
