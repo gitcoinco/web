@@ -1779,8 +1779,6 @@ def postsave_tip(sender, instance, created, **kwargs):
                 activity=instance.attached_object
                 comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
                 comment = Comment.objects.create(profile=instance.sender_profile, activity=activity, comment=comment)
-                from townsquare.tasks import refresh_activities
-                refresh_activities.delay([activity.pk])
 
             if 'comment:' in instance.comments_priv:
                 _comment=instance.attached_object
@@ -2227,134 +2225,28 @@ class Activity(SuperModel):
             txt = txt.replace("  ",' ')
         return txt
 
-    @property
-    def view_props(self):
-        from kudos.models import Token
-        icons = {
-            'new_tip': 'far fa-thumbs-up',
-            'start_work': 'far fa-lightbulb',
-            'new_bounty': 'far fa-money-bill-alt',
-            'work_done': 'far fa-check-circle',
-            'status_update': 'far fa-user',
-            'new_kudos': 'far fa-thumbs-up',
-            'new_grant': 'far fa-envelope',
-            'update_grant': 'far fa-edit',
-            'killed_grant': 'fas fa-trash',
-            'new_grant_contribution': 'fas fa-donate',
-            'new_grant_subscription': 'far fa-calendar-check',
-            'killed_grant_contribution': 'far fa-calendar-times',
-        }
-
-        # load up this data package with all of the information in the already existing objects
-        properties = [
-            'i18n_name'
-            'title',
-            'token_name',
-            'created_human_time',
-            'humanized_name',
-            'url',
-            'relative_url',
-            'match_this_round',
-            'matchranking_this_round',
-        ]
-        activity = self.to_standard_dict(properties=properties)
-        activity['pk'] = self.pk
-        activity['likes'] = self.likes.count()
-        if activity['likes']:
-            activity['likes_title'] = "Liked by " + ",".join(self.likes.values_list('profile__handle', flat=True)) + '. '
-
-        activity['comments'] = self.comments.count()
-        for key, value in model_to_dict(self).items():
-            activity[key] = value
-        for fk in ['bounty', 'tip', 'kudos', 'profile', 'grant', 'other_profile', 'hackathonevent']:
-            if getattr(self, fk):
-                activity[fk] = getattr(self, fk).to_standard_dict(properties=properties)
-        activity['secondary_avatar_url'] = self.secondary_avatar_url
-        activity['staff'] = self.profile.user.is_staff if self.profile and hasattr(self.profile, 'user') and self.profile.user else False
-
-        # KO notes 2019/01/30
-        # this is a bunch of bespoke information that is computed for the views
-        # in a later release, it couild be refactored such that its just contained in the above code block ^^.
-        activity['icon'] = icons.get(self.activity_type, 'far fa-check-circle')
-        if activity.get('kudos'):
-            activity['kudos_data'] = self.kudos
-        obj = self.metadata
-        if 'new_bounty' in self.metadata:
-            obj = self.metadata['new_bounty']
-        if 'poll_choices' in self.metadata:
-            activity['poll'] = self.metadata['poll_choices']
-        activity['title'] = clean(obj.get('title', ''), strip=True)
-        if 'id' in obj:
-            if 'category' not in obj or obj['category'] == 'bounty': # backwards-compatible for category-lacking metadata
-                activity['bounty_url'] = Bounty.objects.get(pk=obj['id']).get_relative_url()
-                if activity.get('title'):
-                    activity['urled_title'] = f'<a href="{activity["bounty_url"]}">{activity["title"]}</a>'
-                else:
-                    activity['urled_title'] = activity.get('title')
-            activity['humanized_activity_type'] = self.humanized_activity_type
-        if 'value_in_usdt_now' in obj:
-            activity['value_in_usdt_now'] = obj['value_in_usdt_now']
-        if 'token_name' in obj and obj['token_name']:
-            activity['token'] = token_by_name(obj['token_name'])
-            if 'value_in_token' in obj and activity['token']:
-                activity['value_in_token_disp'] = round((float(obj['value_in_token']) /
-                                                      10 ** activity['token']['decimals']) * 1000) / 1000
-
-        activity['view_count'] = self.view_count
-        activity['tip_count_usd'] = self.tip_count_usd
-        activity['tip_count_eth'] = self.tip_count_eth
-
-        # finally done!
-
-        return activity
-
-    @property
-    def either_view_props(self):
-        vp = self.cached_view_props
-        if not vp.get('pk'):
-            vp = self.view_props
-        return vp
-
-    def generate_view_props_cache(self):
-        vp = self.view_props
-        try:
-            self.cached_view_props = json.loads(json.dumps(vp, cls=EncodeAnything))
-            self.save()
-        except ValueError as e: #ValueError
-            logger.exception(e)
-            return vp
-        return self.cached_view_props
-
-    def generate_view_props_cache_as_task(self):
-        from dashboard.tasks import refresh_activity_views
-        refresh_activity_views.delay(self.pk)
 
     def has_voted(self, user):
-        vp = self.view_props
-        if vp.get('poll'):
+        poll = self.metadata.get('poll_choices')
+        if poll:
             if user.is_authenticated:
-                for ele in vp.get('poll'):
+                for ele in poll:
                     if user.profile.pk in ele['answers']:
                         return ele['i']
         return False
 
     def view_props_for(self, user):
         # get view props
-        vp = self.cached_view_props
-
-        # refresh view count
-        vp['view_count'] = self.view_count
-        vp['profile'] = self.profile
-        vp['created_human_time'] = naturaltime(self.created_on)
-
-        # lazily create vp
-        if not vp.get('pk'):
-            vp = self.generate_view_props_cache()
+        vp = self
 
         if not user.is_authenticated:
             return vp
-        vp['liked'] = self.likes.filter(profile=user.profile).exists()
-        vp['poll_answered'] = self.has_voted(user)
+
+        vp.metadata['liked'] = False
+        if self.likes.exists():
+            vp.metadata['liked'] = self.likes.filter(profile=user.profile).exists()
+            vp.metadata['likes_title'] = "Liked by " + ",".join(self.likes.values_list('profile__handle', flat=True)) + '. '
+        vp.metadata['poll_answered'] = self.has_voted(user)
         return vp
 
     @property
@@ -2418,7 +2310,6 @@ class Activity(SuperModel):
 @receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
 def post_add_activity(sender, instance, created, **kwargs):
     if created:
-        instance.cached_view_props = instance.generate_view_props_cache_as_task()
 
         if instance.bounty and instance.bounty.event:
             if not instance.hackathonevent:
@@ -2716,10 +2607,13 @@ class Profile(SuperModel):
 
     @property
     def matchranking_this_round(self):
+        if hasattr(self, '_matchranking_this_round'):
+            return self._matchranking_this_round
         from townsquare.models import MatchRound
         mr = MatchRound.objects.current().first()
         if mr:
             mr = mr.ranking.filter(profile=self).first()
+            self._matchranking_this_round = mr
             if mr:
                 return mr
         return None

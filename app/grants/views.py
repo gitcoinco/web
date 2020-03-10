@@ -84,6 +84,13 @@ def lazy_round_number(n):
         return f"{round(n/1000, 1)}k"
     return n
 
+def grants_addr_as_json(request):
+    _grants = Grant.objects.filter(
+        network='mainnet', hidden=False
+    )
+    response = list(set(_grants.values_list('title', 'admin_address')))
+    return JsonResponse(response, safe=False)
+
 
 def grants(request):
     """Handle grants explorer."""

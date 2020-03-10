@@ -29,18 +29,6 @@ class Like(SuperModel):
         return self.activity.url
 
 
-@receiver(post_save, sender=Like, dispatch_uid="post_save_like")
-def postsave_like(sender, instance, created, **kwargs):
-    from townsquare.tasks import refresh_activities
-    refresh_activities.delay([instance.activity.pk])
-
-
-@receiver(post_delete, sender=Like, dispatch_uid="post_delete_like")
-def postdel_like(sender, instance, **kwargs):
-    from townsquare.tasks import refresh_activities
-    refresh_activities.delay([instance.activity.pk])
-
-
 class Flag(SuperModel):
     """A Flag is an indication of a flagged activity feed item"""
 
@@ -94,16 +82,9 @@ class Comment(SuperModel):
 
 @receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
 def postsave_comment(sender, instance, created, **kwargs):
-    from townsquare.tasks import send_comment_email, refresh_activities
-    refresh_activities.delay([instance.activity.pk])
+    from townsquare.tasks import send_comment_email
     if created:
         send_comment_email.delay(instance.pk)
-
-
-@receiver(post_delete, sender=Comment, dispatch_uid="post_delete_comment")
-def postdel_comment(sender, instance, **kwargs):
-    from townsquare.tasks import refresh_activities
-    refresh_activities.delay([instance.activity.pk])
 
 
 class OfferQuerySet(models.QuerySet):

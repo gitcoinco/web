@@ -1,5 +1,5 @@
                 {% if REFER_LINK %}
-                  <div class="townsquare_block-header text-left mb-1 mt-0">
+                  <div class="townsquare_block-header text-left mb-1 mt-0" data-target="reflink_container">
                     Ref Link <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
                     <strong>
                       Gitcoin is better with friends!
@@ -14,7 +14,9 @@
                     <BR>
                     3. You will earn credit for their Quests, and access to special limited edition goodies - like exclusive Gitcoin Actions, Gitcoin Kudos, or other unannounced (but exciting) rewards.
                     "></i>
-                    <input id=reflink type="text" value="{{REFER_LINK}}" class="w-100 copy_me" readonly="readonly">
-                    <hr>
+                    <div id=reflink_container>
+                        <input id=reflink type="text" value="{{REFER_LINK}}" class="w-100 copy_me" readonly="readonly">
+                        <hr>
+                    </div>
                   </div>
                 {% endif %}

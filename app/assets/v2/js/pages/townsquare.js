@@ -42,6 +42,24 @@ $(document).ready(function() {
     document.location = $(this).find('a.btn').attr('href');
   });
 
+  // collapse menu items
+  $('.townsquare_block-header').click(function(e) {
+    let target_id = $(this).data('target');
+
+    $('#' + target_id).toggleClass('hidden');
+    $(this).toggleClass('closed');
+    localStorage.setItem(target_id, $(this).hasClass('closed'));
+  });
+  // collapse menu items
+  $('.townsquare_block-header').each(function() {
+    let target_id = $(this).data('target');
+    var item = localStorage.getItem(target_id);
+
+    if (item == 'true') {
+      $(this).click();
+    }
+  });
+
   // effects when an offer is clicked upon
   $('.offer a').click(function(e) {
     var speed = 500;
