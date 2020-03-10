@@ -174,7 +174,7 @@
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
-        {% elif row.activity_type == 'status_update' %}
+        {% elif row.activity_type == 'status_update' or  row.activity_type == 'silent_status_update' %}
           <span>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</span>
         {% elif row.activity_type == 'wall_post' %}
           &gt;
