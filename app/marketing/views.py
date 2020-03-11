@@ -23,7 +23,6 @@ import csv
 import json
 import logging
 
-from chat.tasks import update_chat_notifications
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -42,6 +41,7 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
+from chat.tasks import update_chat_notifications
 from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from enssubdomain.models import ENSSubdomainRegistration

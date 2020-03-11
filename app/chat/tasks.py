@@ -1,11 +1,12 @@
-from app.redis_service import RedisService
-from celery import app, group
-from celery.utils.log import get_task_logger
-from dashboard.models import HackathonEvent, HackathonRegistration, HackathonSponsor, Bounty, Profile
+import logging
 
 from django.conf import settings
 from django.utils.text import slugify
-import logging
+
+from app.redis_service import RedisService
+from celery import app, group
+from celery.utils.log import get_task_logger
+from dashboard.models import Bounty, HackathonEvent, HackathonRegistration, HackathonSponsor, Profile
 from marketing.utils import should_suppress_notification_email
 from mattermostdriver import Driver
 from mattermostdriver.exceptions import ResourceNotFound

@@ -59,8 +59,9 @@ from avatar.views_3d import avatar3dids_helper
 from bleach import clean
 from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
-from chat.tasks import add_to_channel, create_channel_if_not_exists, associate_chat_to_profile, chat_notify_default_props
-
+from chat.tasks import (
+    add_to_channel, associate_chat_to_profile, chat_notify_default_props, create_channel_if_not_exists,
+)
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,

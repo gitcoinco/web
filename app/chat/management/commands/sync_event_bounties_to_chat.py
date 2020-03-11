@@ -23,8 +23,9 @@ from django.db.models import Q
 from django.utils.text import slugify
 
 from celery import group
-from chat.tasks import add_to_channel, create_channel, create_user, get_driver
-from chat.tasks import create_channel_if_not_exists, associate_chat_to_profile
+from chat.tasks import (
+    add_to_channel, associate_chat_to_profile, create_channel, create_channel_if_not_exists, create_user, get_driver,
+)
 from dashboard.models import Bounty, Interest, Profile
 
 logger = logging.getLogger(__name__)

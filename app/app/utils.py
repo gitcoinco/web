@@ -27,7 +27,6 @@ from pyshorteners import Shortener
 from social_core.backends.github import GithubOAuth2
 from social_django.models import UserSocialAuth
 
-
 logger = logging.getLogger(__name__)
 
 

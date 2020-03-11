@@ -21,7 +21,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from celery import group
-from chat.tasks import create_user, chat_notify_default_props
+from chat.tasks import chat_notify_default_props, create_user
 from dashboard.models import Profile
 from marketing.utils import should_suppress_notification_email
 

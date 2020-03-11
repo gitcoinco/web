@@ -18,11 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from chat.tasks import get_chat_url
+import logging
+
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 
-import logging
+from chat.tasks import get_chat_url
 from marketing.models import Stat
 
 logger = logging.getLogger(__name__)
@@ -35,8 +36,8 @@ def chat(request):
         users_online_count = Stat.objects.filter(key='chat_active_users').order_by('pk').first()
         users_total_count = Stat.objects.filter(key='chat_total_users').order_by('pk').first()
 
-        users_online_count = users_online_count if users_online_count is not None else 'N/A'
-        users_total_count = users_total_count if users_total_count is not None else 'N/A'
+        users_online_count = users_online_count.val if users_online_count is not None else 'N/A'
+        users_total_count = users_total_count.val if users_total_count is not None else 'N/A'
 
     except Exception as e:
         logger.error(str(e))

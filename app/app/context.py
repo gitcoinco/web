@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import logging
 
-from chat.tasks import get_chat_url
 from django.conf import settings
 from django.core.cache import cache
 from django.utils import timezone
@@ -28,6 +27,7 @@ from django.utils import timezone
 import requests
 from app.utils import get_location_from_ip
 from cacheops import cached_as
+from chat.tasks import get_chat_url
 from dashboard.models import Activity, Tip, UserAction
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
