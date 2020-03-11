@@ -446,6 +446,22 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['barb_skin'],
             'path': 'assets/v2/images/avatar3d/avatar_barbarian.svg',
         },
+        'bender': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+                'legs': '30 150 300 300',
+                'arms': '0 0 350 350',
+                'head': '100 0 150 150',
+                'mouth': '130 80 100 100',
+                'eyes': '130 50 100 100',
+                'body': '0 0 350 350',
+                'accessory': '100 100 150 150',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/bender.svg',
+        },
         'joker': {
             'preview_viewbox': {
                 'background': '0 0 350 350',

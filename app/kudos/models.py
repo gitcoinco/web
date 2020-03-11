@@ -347,6 +347,8 @@ class Token(SuperModel):
     def preview_img_url(self):
         if self.preview_img_mode == 'png':
             return self.img_url
+        if "https:" in self.image:
+            return self.image
         return static(self.image)
 
     @property

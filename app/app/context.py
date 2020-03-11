@@ -41,6 +41,7 @@ RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
 logger = logging.getLogger(__name__)
 
 
+@cached_as(JSONStore.objects.filter(view='posts', key='posts'), timeout=1200)
 def fetchPost(qt='2'):
     jsonstores = JSONStore.objects.filter(view='posts', key='posts')
     if jsonstores.exists():
@@ -84,8 +85,6 @@ def preprocess(request):
 
     user_is_authenticated = request.user.is_authenticated
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
-    email_subs = profile.email_subscriptions if profile else None
-    email_key = email_subs.first().priv if user_is_authenticated and email_subs and email_subs.exists() else ''
     if user_is_authenticated and profile and profile.pk:
         # what actions to take?
         record_join = not profile.last_visit
@@ -149,7 +148,6 @@ def preprocess(request):
         'nav_salt': nav_salt,
         'footer_msg': footer_msg,
         'INFURA_V3_PROJECT_ID': settings.INFURA_V3_PROJECT_ID,
-        'email_key': email_key,
         'giphy_key': settings.GIPHY_KEY,
         'youtube_key': settings.YOUTUBE_API_KEY,
         'orgs': profile.organizations if profile else [],
@@ -175,17 +173,14 @@ def preprocess(request):
 
     if context['github_handle']:
         context['unclaimed_tips'] = Tip.objects.filter(
-            expires_date__gte=timezone.now(),
-            receive_txid='',
-            username__iexact=context['github_handle'],
-            web3_type='v3',
-        ).send_happy_path()
+            receive_txid='', username__iexact=context['github_handle'], web3_type='v3',
+        ).send_happy_path().cache(timeout=60)
         context['unclaimed_kudos'] = KudosTransfer.objects.filter(
             receive_txid='', username__iexact="@" + context['github_handle'], web3_type='v3',
-        ).send_happy_path()
+        ).send_happy_path().cache(timeout=60)
 
         if not settings.DEBUG:
-            context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet')
-            context['unclaimed_kudos'] = context['unclaimed_kudos'].filter(network='mainnet')
+            context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet').cache(timeout=60)
+            context['unclaimed_kudos'] = context['unclaimed_kudos'].filter(network='mainnet').cache(timeout=60)
 
     return context

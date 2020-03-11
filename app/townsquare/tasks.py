@@ -56,23 +56,6 @@ def increment_offer_view_counts(self, pks, retry=False):
 
 
 @app.shared_task(bind=True, max_retries=3)
-def refresh_activities(self, pks, retry=False):
-    """
-    :param self:
-    :param pks:
-    :return:
-    """
-    with redis.lock("tasks:refresh_activities", timeout=LOCK_TIMEOUT):
-        if len(pks) == 0:
-            return
-        print(pks)
-        for pk in pks:
-            activity = Activity.objects.get(pk=pk)
-            activity.cached_view_props = activity.generate_view_props_cache()
-            activity.save()
-
-
-@app.shared_task(bind=True, max_retries=3)
 def send_comment_email(self, pk, retry=False):
     """
     :param self:

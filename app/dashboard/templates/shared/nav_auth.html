@@ -98,15 +98,8 @@
     </div>
   </div>
   <a href="/profile/" id="nav_auth_profile" class="nav_avatar d-none d-md-block"
-   data-gtm="profile" style="background-image: url('{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}')">
+   data-gtm="profile" style="background-image: url('/dynamic/avatar/{{user.username}}')">
   </a>
-  <script>
-    // setInterval(function(){
-    //   if($ && !$("#nav_auth_profile").attr('background-image')){
-    //     $("#nav_auth_profile").css('background-image', 'url("{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}")')
-    //   }
-    // }, 1000)
-  </script>
 
 {% else %}
   <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">

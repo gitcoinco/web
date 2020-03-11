@@ -6,7 +6,7 @@
 <p class="mb-0">
   @{{ profile.handle }}
  {% include 'profiles/presence_indicator.html' with show_even_if_offline=1 %}
-  {% if 1 %}
+  {% if profile.match_this_round %}
     <span data-placement="bottom" data-toggle="tooltip" data-html="true"  title="
       {% include 'profiles/match_estimate_explainer.html' %}
 
@@ -25,7 +25,7 @@
   {% endif %}
 </p>
 {% if profile.data.bio %}
-  <div class="profile-header__bio my-2" style="margin-top: -13px !important;">
+  <div class="profile-header__bio my-2">
     <small class="review-comment">{{ profile.data.bio }}</small>
   </div>
 {% endif %}
