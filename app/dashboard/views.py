@@ -2600,11 +2600,10 @@ def get_profile_tab(request, profile, tab, prev_context):
 
     # all tabs
     active_bounties = context['active_bounties'].order_by('-web3_created')
-    context['active_bounties_count'] = active_bounties.count()
-    context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.count()
-    context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).count()
-    context['my_kudos'] = profile.get_my_kudos.distinct('kudos_token_cloned_from__name')[0:7]
-
+    context['active_bounties_count'] = active_bounties.cache().count()
+    context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.cache().count()
+    context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).cache().count()
+    context['my_kudos'] = profile.get_my_kudos.cache().distinct('kudos_token_cloned_from__name')[0:7]
     # specific tabs
     if tab == 'activity':
         all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar']
