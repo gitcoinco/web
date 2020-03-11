@@ -1,0 +1,19 @@
+{
+    "symbol": "COMP",
+    "address": "0xc00e94Cb662C3520282E6f5717214004A7f26888",
+    "overview": {
+        "en": "Compound's governance token, COMP. COMP allows the owner to delegate voting rights to the address of their choice; the owner’s wallet, another user, an application, or a DeFi expert. Anybody can participate in Compound governance by receiving delegation, without needing to own COMP. The token also includes code to query an address’ historical voting weight, which is useful for building complex voting systems.",
+        "zh": "COMP 是Compound 发行的治理代币，用于去中心化决策 Compound 未来的发展方向。"
+    },
+    "website": "https://compound.finance",
+    "whitepaper": "https://medium.com/compound-finance/compound-governance-5531f524cf68",
+    "state": "NORMAL",
+    "published_on": "2020-02-27",
+    "links": {
+        "blog": "https://medium.com/compound-finance",
+        "twitter": "https://twitter.com/compoundfinance",
+        "github": "https://github.com/compound-finance/compound-protocol",
+        "discord": "https://compound.finance/discord"
+    }
+}
+
