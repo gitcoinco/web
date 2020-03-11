@@ -29,7 +29,7 @@ class Command(BaseCommand):
     help = "create users to Gitcoin chat, creates the user if it doesn't exist"
 
     def add_arguments(self, parser):
-        parser.add_argument('days_ago', default=30, type=int)
+        parser.add_argument('--days_ago', default=30, type=int)
 
     def handle(self, *args, **options):
         try:
