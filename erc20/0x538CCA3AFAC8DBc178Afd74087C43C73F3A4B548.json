@@ -12,5 +12,8 @@
 	"state": "NORMAL",
     "initial_price":{
           "USD":"0.1416 USD"
-    }
+    },
+	"links": {
+    "telegram": "https://t.me/cbdchain"
+  }
 }
