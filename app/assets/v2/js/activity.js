@@ -516,6 +516,11 @@ $(document).ready(function() {
           <div class="col-11 activity_comments_main pl-4 px-sm-3">
             <div class="mb-0">
               <span>
+              <span class="chat_presence_indicator mini ${comment['last_chat_status']}" data-openchat="${comment['profile_handle']}">
+                <span class="indicator" data-toggle="tooltip" title="Gitcoin Chat: ${comment['last_chat_status_title']}">
+                  •
+                </span>
+              </span>          
                 <b>${comment['name']}</b>
                 <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
                 @${comment['profile_handle']}
@@ -541,7 +546,7 @@ $(document).ready(function() {
                   ` : ' '}
               </span>
               <span class='float-right'>
-                <span class="d-none d-sm-inline grey font-smaller-5 text-right">
+                <span class="d-sm-inline grey font-smaller-5 text-right">
                   ${timeAgo}
                 </span>
                 <span class="font-smaller-5 mt-1" style="display: block; text-align: right;">
@@ -571,7 +576,7 @@ $(document).ready(function() {
 
       const post_comment_html = `
         <div class="row py-2 mx-auto">
-          <div class="col-sm-1 mt-1 activity-avatar d-none d-sm-inline">
+          <div class="col-sm-1 mt-1 activity-avatar d-sm-inline">
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
           <div class="col-12 col-sm-11 text-right">

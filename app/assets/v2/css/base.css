@@ -1708,11 +1708,14 @@ div.busyOverlay {
   font-size: 24px;
   line-height: 0px
 }
+.navbar .chat_presence_indicator:hover{
+  background-color: rgba(0,0,0,.5);
+  border-radius: 5px;
+}
 .navbar .chat_presence_indicator{
   position: relative;
   left: -16px;
   top: -4px;
-  cursor: default;
 }
 .navbar .chat_presence_indicator .indicator{
   font-size: 22px;

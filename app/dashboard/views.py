@@ -1029,7 +1029,7 @@ def users_fetch(request):
             ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
             'show_job_status', 'job_location', 'job_salary', 'job_search_status',
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
-            'organizations', 'is_org']}
+            'organizations', 'is_org', 'last_chat_status']}
 
         profile_json['is_following'] = is_following
 
@@ -1039,7 +1039,7 @@ def users_fetch(request):
         if user.is_org:
             profile_dict = user.__dict__
             profile_json['count_bounties_on_repo'] = profile_dict.get('as_dict').get('count_bounties_on_repo')
-            profile_json['sum_eth_on_repos'] = profile_dict.get('as_dict').get('sum_eth_on_repos')
+            profile_json['sum_eth_on_repos'] = round(profile_dict.get('as_dict').get('sum_eth_on_repos'), 2)
             profile_json['tribe_description'] = user.tribe_description
             profile_json['rank_org'] = user.rank_org
         else:
