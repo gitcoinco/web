@@ -437,6 +437,9 @@ $(document).ready(function() {
 
   var view_comments = function($parent, allow_close_comment_container, success_callback, override_hide_comments) {
     hide_after_n_comments = 3;
+    if(getParam('tab') && getParam('tab').indexOf('activity:') != -1){
+      hide_after_n_comments = 100;
+    }
     // remote post
     var params = {
       'method': 'comment'
@@ -573,7 +576,7 @@ $(document).ready(function() {
           </div>
           <div class="col-12 col-sm-11 text-right">
             <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3">${existing_text}</textarea>
-            <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
+            <a href=# class="btn btn-gc-blue btn-sm mt-= font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
         </div>
       `;
