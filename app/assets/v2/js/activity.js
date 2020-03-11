@@ -437,7 +437,7 @@ $(document).ready(function() {
 
   var view_comments = function($parent, allow_close_comment_container, success_callback, override_hide_comments) {
     hide_after_n_comments = 3;
-    if(getParam('tab') && getParam('tab').indexOf('activity:') != -1){
+    if (getParam('tab') && getParam('tab').indexOf('activity:') != -1) {
       hide_after_n_comments = 100;
     }
     // remote post
