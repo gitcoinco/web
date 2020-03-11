@@ -96,8 +96,12 @@ def associate_chat_to_profile(profile):
                         break
             except Exception as e:
                 logger.error(str(e))
-                profile_access_token = chat_driver.users.create_user_access_token(user_id=profile.chat_id, options={
-                    'description': "Grants Gitcoin access to modify your account"})
+                try:
+                    profile_access_token = chat_driver.users.create_user_access_token(user_id=profile.chat_id, options={
+                        'description': "Grants Gitcoin access to modify your account"})
+                except Exception as e:
+                    logger.info('Failed to create access token')
+                    logger.error(str(e))
 
             profile.gitcoin_chat_access_token = profile_access_token['token']
 
@@ -238,7 +242,7 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
                 else:
                     profiles_to_connect.append(reg.registrant.chat_id)
         else:
-            profile = Profile.objects.get(handle=profile_handle)
+            profile = Profile.objects.get(handle__iexact=profile_handle)
             if profile.chat_id is '' or profile.chat_id is None:
                 created, updated_profile = associate_chat_to_profile(profile)
                 profiles_to_connect.append(updated_profile.chat_id)
@@ -314,7 +318,7 @@ def create_user(self, options, params, profile_handle='', retry: bool = True):
                 params=params
             )
             if profile_handle:
-                profile = Profile.objects.get(handle=profile_handle)
+                profile = Profile.objects.get(handle__iexact=profile_handle)
                 profile.chat_id = create_user_response['id']
 
                 profile_access_token = chat_driver.users.create_user_access_token(user_id=profile.chat_id, options={
@@ -354,7 +358,7 @@ def patch_chat_user(self, query_opts, update_opts, retry: bool = True) -> None:
                 try:
                     chat_user = chat_driver.users.get_user_by_username(query_opts['handle'])
                     chat_id = chat_user['id']
-                    user_profile = Profile.objects.filter(handle=query_opts['handle'])
+                    user_profile = Profile.objects.filter(handle__iexact=query_opts['handle'])
                     user_profile.chat_id = chat_id
                     user_profile.save()
                 except Exception as e:

@@ -444,7 +444,8 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
   // setup polling check for any updated data
   // scope our polling function so any potential js crashes won't affect it.
   (($) => {
-    setInterval(() => {
+
+    const checkChatNotifications = () => {
       $.ajax({
         beforeSend: function(request) {
           request.setRequestHeader('Authorization', `Bearer ${document.contxt.chat_access_token}`);
@@ -455,7 +456,7 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
           let notified = false;
 
           JSONUnread.forEach((team) => {
-            if ((team.msg_count || team.mention_count) && !notified) {
+            if ((team.msg_count > 0 || team.mention_count > 0) && !notified) {
               $('#chat-notification-dot').addClass('notification__dot_active');
               notified = true;
             }
@@ -466,7 +467,12 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
           console.log(error);
         })
       });
-    }, 30000);
+    };
+
+    setInterval(() => {
+      checkChatNotifications();
+    }, 15000);
+    checkChatNotifications();
   })(jQuery);
 }
 // carousel/collabs/... inside menu
