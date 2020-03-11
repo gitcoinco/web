@@ -27,6 +27,7 @@ from django.utils import timezone
 import requests
 from app.utils import get_location_from_ip
 from cacheops import cached_as
+from chat.tasks import get_chat_url
 from dashboard.models import Activity, Tip, UserAction
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
@@ -70,6 +71,10 @@ def preprocess(request):
     if request.path == '/lbcheck':
         return {}
 
+    chat_url = get_chat_url(front_end=True)
+    chat_access_token = ''
+    chat_id = ''
+
     user_is_authenticated = request.user.is_authenticated
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
     if user_is_authenticated and profile and profile.pk:
@@ -108,35 +113,21 @@ def preprocess(request):
         if record_join:
             Activity.objects.create(profile=profile, activity_type='joined')
 
+        chat_access_token = profile.gitcoin_chat_access_token
+        chat_id = profile.chat_id
     # handles marketing callbacks
     if request.GET.get('cb'):
         callback = request.GET.get('cb')
         handle_marketing_callback(callback, request)
-
-    chat_unread_messages = False
-
-    if profile and hasattr(profile, 'chat_id'):
-        try:
-            make_external_api_call = False
-            if make_external_api_call:
-                from chat.tasks import get_driver
-                chat_driver = get_driver()
-
-                chat_unreads_request = chat_driver.teams.get_team_unreads_for_user(profile.chat_id)
-
-                for teams in chat_unreads_request:
-                    if teams['msg_count'] > 0 or teams['mention_count'] > 0:
-                        chat_unread_messages = True
-                        break
-        except Exception as e:
-            logger.error(str(e))
 
     header_msg, footer_msg, nav_salt = get_sitewide_announcements()
 
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
-        'chat_unread_messages': chat_unread_messages,
+        'chat_url': chat_url,
+        'chat_id': chat_id,
+        'chat_access_token': chat_access_token,
         'github_handle': request.user.username if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,

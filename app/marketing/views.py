@@ -41,6 +41,7 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
+from chat.tasks import update_chat_notifications
 from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from enssubdomain.models import ENSSubdomainRegistration
@@ -298,6 +299,8 @@ def email_settings(request, key):
             es.email = email
             unsubscribed_email_type = {}
             unsubscribed_email_type[email_type] = True
+            if email_type == 'chat':
+                update_chat_notifications(profile, 'email', False)
             es.build_email_preferences(unsubscribed_email_type)
             es = record_form_submission(request, es, 'email')
             ip = get_ip(request)
@@ -342,6 +345,10 @@ def email_settings(request, key):
                     key = email_tuple[0]
                     if key not in form.keys():
                         form[key] = False
+
+                if form['chat']:
+                    update_chat_notifications(profile, 'email', False)
+
                 es.build_email_preferences(form)
                 es = record_form_submission(request, es, 'email')
                 ip = get_ip(request)

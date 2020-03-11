@@ -18,21 +18,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from django.conf import settings
+import logging
+
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 
+from chat.tasks import get_chat_url
 from marketing.models import Stat
+
+logger = logging.getLogger(__name__)
 
 
 def chat(request):
     """Render chat landing page response."""
 
     try:
-        users_online_count = Stat.objects.get(key='chat_active_users')
-        users_total_count = Stat.objects.get(key='chat_total_users')
+        users_online_count = Stat.objects.filter(key='chat_active_users').order_by('pk').first()
+        users_total_count = Stat.objects.filter(key='chat_total_users').order_by('pk').first()
+
+        users_online_count = users_online_count.val if users_online_count is not None else 'N/A'
+        users_total_count = users_total_count.val if users_total_count is not None else 'N/A'
 
     except Exception as e:
+        logger.error(str(e))
         users_online_count = 'N/A'
         users_total_count = 'N/A'
     context = {
@@ -48,11 +56,8 @@ def chat(request):
 def embed(request):
     """Handle the chat embed view."""
 
-    chat_url = settings.CHAT_URL
-    if settings.CHAT_PORT not in [80, 443]:
-        chat_url = f'http://{settings.CHAT_URL}:{settings.CHAT_PORT}'
-    else:
-        chat_url = f'https://{chat_url}'
+    chat_url = get_chat_url(front_end=True)
+
     context = {
         'is_outside': True,
         'active': 'chat',

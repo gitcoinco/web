@@ -21,12 +21,11 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from celery import group
-from chat.tasks import create_user
+from chat.tasks import chat_notify_default_props, create_user
 from dashboard.models import Profile
 from marketing.utils import should_suppress_notification_email
 
 logger = logging.getLogger(__name__)
-
 
 
 class Command(BaseCommand):
@@ -51,15 +50,7 @@ class Command(BaseCommand):
                     "auth_service": "gitcoin",
                     "locale": "en",
                     "props": {},
-                    "notify_props": {
-                        "email": "false",
-                        "push": "mention",
-                        "desktop": "all",
-                        "desktop_sound": "true",
-                        "mention_keys": f'{profile.handle}, @{profile.handle}',
-                        "channel": "true",
-                        "first_name": "false"
-                    },
+                    "notify_props": chat_notify_default_props(profile),
                 }, params={
                     "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
                 }))
@@ -67,15 +58,17 @@ class Command(BaseCommand):
 
             result = job.apply_async()
             for result_req in result.get():
-                if 'message' not in result_req:
-                    if 'username' in result_req and 'id' in result_req:
-                        profile = Profile.objects.get(handle=result_req['username'])
-                        if profile is not None:
-                            profile.chat_id = result_req['id']
-                            profile.save()
+                if 'message' not in result_req and 'username' in result_req and 'id' in result_req:
+                    try:
+                        profile = Profile.objects.get(handle__iexact=result_req['username'])
+                        profile.chat_id = result_req['id']
+                        profile.save()
+                    except Exception as e:
+                        logger.error(str(e))
+                        continue
 
         except ConnectionError as exec:
-            print(str(exec))
+            logger.error(str(exec))
             self.retry(30)
         except Exception as e:
             logger.error(str(e))

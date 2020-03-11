@@ -55,7 +55,7 @@ from avatar.utils import get_user_github_avatar_image
 from bleach import clean
 from bs4 import BeautifulSoup
 from dashboard.tokens import addr_to_token, token_by_name
-from economy.models import ConversionRate, EncodeAnything, SuperModel, get_time
+from economy.models import ConversionRate, EncodeAnything, SuperModel, get_0_time, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
@@ -2487,11 +2487,12 @@ class Profile(SuperModel):
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True, unique=True)
     last_sync_date = models.DateTimeField(null=True)
-    last_calc_date = models.DateTimeField(default=get_time)
+    last_calc_date = models.DateTimeField(default=get_0_time)
     last_chat_seen = models.DateTimeField(null=True, blank=True)
     last_chat_status = models.CharField(max_length=255, blank=True, default='offline')
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
+    gitcoin_chat_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     chat_id = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES, blank=True)
     slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
@@ -4373,7 +4374,7 @@ class HackathonEvent(SuperModel):
     show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
     description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
-
+    chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     def __str__(self):
         """String representation for HackathonEvent.
 
@@ -4474,6 +4475,7 @@ class HackathonSponsor(SuperModel):
         choices=SPONSOR_TYPES,
         default='G',
     )
+    chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
 
 
 class HackathonProject(SuperModel):
@@ -4519,6 +4521,7 @@ class HackathonProject(SuperModel):
         choices=PROJECT_STATUS,
         blank=True
     )
+    chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         ordering = ['-name']
