@@ -54,7 +54,6 @@ from avatar.models import SocialAvatar
 from avatar.utils import get_user_github_avatar_image
 from bleach import clean
 from bs4 import BeautifulSoup
-from dashboard.tasks import profile_dict
 from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -3996,7 +3995,9 @@ class Profile(SuperModel):
 
         # lazily generate profile dict on the fly
         if not params.get('title') or self.frontend_calc_stale:
-            profile_dict.delay(self.pk)
+            #from dashboard.tasks import profile_dict
+            #profile_dict.delay(self.pk)
+            pass
 
         params['active_bounties'] = Bounty.objects.filter(pk__in=params.get('active_bounties', []))
         if params.get('tips'):
