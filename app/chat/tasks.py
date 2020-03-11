@@ -127,6 +127,11 @@ def associate_chat_to_profile(profile):
                     "tid": settings.GITCOIN_CHAT_TEAM_ID
                 })
             profile.chat_id = create_user_response['id']
+            chat_driver.teams.add_user_to_team(
+                settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                options={'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                         'user_id': create_user_response['id']}
+            )
             try:
                 profile_access_tokens = chat_driver.users.get_user_access_token(profile.chat_id)
                 for pat in profile_access_tokens:
