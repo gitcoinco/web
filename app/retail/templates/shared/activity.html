@@ -24,10 +24,10 @@
     </div>
   {% endif %}
   <div class="activity_main row">
-    <div class="col-2">
+    <div class="col-2 p-0">
       <div class="activity-avatar">
         <a href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
-          <img class="avatar rounded-circle" src="{% if row.profile.active_avatar %}{{ row.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{{row.profile.handle}}{% endif %}"/>
+          <img class="avatar rounded-circle" src="/dynamic/avatar/{{row.profile.handle}}"/>
         </a>
         <div class="position-relative">
           {% if row.secondary_avatar_url %}
@@ -38,14 +38,13 @@
         </div>
       </div>
       <div class="pt-0 text-center">
-         {% if row.staff %}
+         {% if row.metadata.staff %}
             <span class="staff_tag">
               Staff
             </span>
             <BR>
          {% endif %}
 
-         {% include 'profiles/presence_indicator.html' with profile=row.profile additionalclasses="mini" %}
         {% if row.profile.organizations|length %}
           <div>
             {% for org in row.profile.organizations %}
@@ -60,8 +59,9 @@
         {% endif %}
       </div>
     </div>
-    <div class="col-10 col-sm-8 pl-4 px-sm-0 activity_detail">
+    <div class="col-10 col-sm-8 pl-2 px-sm-0 activity_detail">
       <div>
+         {% include 'profiles/presence_indicator.html' with profile=row.profile additionalclasses="mini" show_even_if_offline=1 %}
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
          <a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
@@ -96,8 +96,8 @@
           {% trans "got a distribution of" %} of <strong>{{row.metadata.amount|floatformat:2}} DAI<strong> in {{row.metadata.round_description}}
         {% elif row.activity_type == 'created_kudos' %}
           a new kudos has been minted:
-          <a href="{{ row.kudos_data.external_url }}">
-            {{ row.kudos_data.name }}
+          <a href="{{ row.kudos.external_url }}">
+            {{ row.kudos.ui_name }}
           </a>
         {% elif row.activity_type == 'new_kudos' %}
           {% trans "sent a" %}
@@ -107,10 +107,10 @@
             <a href="/profile/{{ row.metadata.to_username|cut:'@' }}">
               {{ row.metadata.to_username }}
             </a>
-          {% elif row.kudos %}
+          {% elif row.kudos_transfer and row.kudos_transfer.username %}
             {% trans "to" %}
-            <a href="/profile/{{ row.kudos.username|cut:'@' }}">
-              {{ row.kudos.username }}
+            <a href="/profile/{{ row.kudos_transfer.username|cut:'@' }}">
+              {{ row.kudos_transfer.username }}
             </a>
           {% endif %}
         {% elif row.activity_type == 'receive_kudos' %}
@@ -174,7 +174,7 @@
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
-        {% elif row.activity_type == 'status_update' %}
+        {% elif row.activity_type == 'status_update' or  row.activity_type == 'silent_status_update' %}
           <span>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</span>
         {% elif row.activity_type == 'wall_post' %}
           &gt;
@@ -182,9 +182,9 @@
           <a href="{{ row.grant.url }}">
             {{ row.grant.title }}
           </a>
-        {% elif row.kudos_data %}
-          <a href="{{ row.kudos_data.url }}">
-            {{ row.kudos_data.ui_name }}
+        {% elif row.kudos %}
+          <a href="{{ row.kudos.url }}">
+            {{ row.kudos.ui_name }}
           </a>
         {% elif row.other_profile %}
           <a href="{{ row.other_profile.url }}">
@@ -199,19 +199,24 @@
       {% elif row.activity_type == 'leaderboard_rank' %}
         <a href="{{ row.metadata.link }}">{{ row.metadata.title }}</a>
       {% elif row.activity_type == 'new_bounty' %}
-        {{ row.urled_title | safe }}
+        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% elif row.activity_type == 'start_work' %}
-        <span>{% trans "started work: " %}</span>{{ row.urled_title | safe }}
+        <span>{% trans "started work: " %}</span>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% elif row.activity_type == 'stop_work' %}
-        <span>{% trans "stopped work: " %}</span>{{ row.urled_title | safe }}
+        <span>{% trans "stopped work: " %}</span>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% elif row.activity_type == 'killed_bounty' %}
-        <span>{% trans "canceled bounty: " %}</span>{{ row.urled_title | safe }}
+        <span>{% trans "canceled bounty: " %}</span>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% elif row.activity_type == 'increased_bounty' %}
-        <span>{% trans "increased funding: " %}</span>{{ row.urled_title | safe }}
+        <span>{% trans "increased funding: " %}</span>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% elif row.activity_type == 'updated_avatar' %}
         <span>{% trans "updated their avatar" %}</span>
       {% elif row.activity_type == 'unknown_event' %}
-        <span>{% trans "made an update to: " %}</span>{{ row.urled_title | safe }}
+        <span>{% trans "made an update to: " %}</span>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% else %}
         {{ row.i18n_name }}
         {{row.humanized_activity_type }}
@@ -238,20 +243,20 @@
                 <span class="amount grey">{{ row.tip_count_eth|floatformat:3}}</span>
               </a>
 
-            <a href=# title="{{row.likes_title}}Click to {% if row.liked %}unlike{% else %}like{%endif%} feed item."
-              data-affirmative=liked data-negative=unliked data-state="{% if row.liked %}liked{% else %}unliked{%endif%}"
+            <a href=# title="{{row.metadata.likes_title}}Click to {% if row.metadata.liked %}unlike{% else %}like{%endif%} feed item."
+              data-affirmative=liked data-negative=unliked data-state="{% if row.metadata.liked %}liked{% else %}unliked{%endif%}"
               data-pk={{row.pk}} class="like_activity mr-2" data-action='like' data-toggle="tooltip"
             >
-              <span class="action {% if row.liked %}open{%endif%}">
+              <span class="action {% if row.metadata.liked %}open{%endif%}">
                 <i class="far fa-heart grey"></i>
               </span>
-              <span class="num grey">{{row.likes}}</span>
+              <span class="num grey">{{row.likes.count}}</span>
             </a>
 
             <a href=# data-pk={{row.pk}} class="comment_activity mr-2" data-toggle="tooltip"
-              title="Comment on this feed item." {% if row.comments %} data-open="true" {% endif %} >
+              title="Comment on this feed item." {% if row.comments.count %} data-open="true" {% endif %} >
               <span class="action"><i class="far fa-comment grey"></i></span>
-              <span class="num grey">{{row.comments}}</span>
+              <span class="num grey">{{row.comments.count}}</span>
             </a>
           </span>
 
@@ -278,15 +283,17 @@
           </div>
 
           {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
-            {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name %}
+            {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name or row.bounty %}
               <div class="tag token mr-2">
                 <p class="font-smaller-6 mb-0">
-                  {% if row.value_in_token_disp %}
-                    <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
+                  {% if row.bounty %}
+                    <span class="value_in_token_bounty">{{ row.bounty.value_true | floatformat:2 }} {{row.bounty.token_name}}</span>
+                  {% elif row.value_in_token_disp %}
+                    <span class="value_in_token_disp">{{ row.value_in_token_disp | floatformat:2 }} {{row.token_name}}</span>
                   {% elif row.metadata.value_in_eth %}
-                    <span class="value_in_eth">{{ row.metadata.value_in_eth }} ETH</span>
+                    <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:2 }} ETH</span>
                   {% elif row.metadata.value_in_token and row.metadata.token_name %}
-                    <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
+                    <span class="value_in_token">{{row.metadata.value_in_token  | floatformat:2}}  {{row.metadata.token_name}}</span>
                   {% endif %}
                 </p>
               </div>
@@ -321,8 +328,8 @@
       </div>
       <div class="mt-3 text-right pr-3 activity-img">
         {% if row.kudos %}
-          <a href="{{row.kudos_data.external_url}}">
-            <img src="{% static row.kudos_data.image %}" alt="{% static row.kudos_data.name %}" class="mw-100">
+          <a href="{{row.kudos.external_url}}">
+            <img src="{{row.kudos.preview_img_url}}" alt="{{row.kudos.ui_name }}" class="mw-100">
           </a>
         {% elif row.activity_type == 'leaderboard_rank' %}
           <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100 mw-100">
@@ -336,10 +343,10 @@
       </div>
     </div>
   </div>
-  {% if row.poll %}
-  <div class="poll_choices {% if row.poll_answered %}answered{%endif%}">
-    {% for ele in row.poll %}
-      <div data-vote="{{ forloop.counter0 }}" class=" vote {% if row.poll_answered == ele.i %}answer{%endif%}">
+  {% if row.metadata.poll_choices %}
+  <div class="poll_choices {% if row.metadata.poll_answered %}answered{%endif%}">
+    {% for ele in row.metadata.poll_choices %}
+      <div data-vote="{{ forloop.counter0 }}" class=" vote {% if row.metadata.poll_answered == ele.i %}answer{%endif%}">
         <p>
           {{ele.question}}
         <span>
