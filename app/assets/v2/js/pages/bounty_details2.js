@@ -1,3 +1,4 @@
+var appBounty;
 let bounty = [];
 let url = location.href;
 
@@ -14,6 +15,9 @@ Vue.mixin({
         vm.bounty = response[0];
         vm.isOwner = vm.checkOwner(response[0].bounty_owner_github_username);
         document.result = response[0];
+        vm.staffOptions();
+      }).catch(function(error) {
+        _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
       });
     },
     checkOwner: function(handle) {
@@ -124,60 +128,53 @@ Vue.mixin({
     },
     show_interest_modal: function() {
       show_interest_modal();
+    },
+    staffOptions: function() {
+      let vm = this;
+
+      if (!vm.bounty.pk) {
+        return;
+      }
+
+      if (vm.contxt.is_staff) {
+        vm.quickLinks.push({
+          label: 'View in Admin',
+          href: `/_administrationdashboard/bounty/${vm.bounty.pk}/change/`,
+          title: 'View in Admin Tool'
+        }, {
+          label: 'Hide Bounty',
+          href: `${vm.bounty.url}?admin_override_and_hide=1`,
+          title: 'Hides Bounty from Active Bounties'
+        }, {
+          label: 'Toggle Remarket Ready',
+          href: `${vm.bounty.url}?admin_toggle_as_remarket_ready=1`,
+          title: 'Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.'
+        }, {
+          label: 'Suspend Auto Approval',
+          href: `${vm.bounty.url}?suspend_auto_approval=1`,
+          title: 'Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'
+        });
+
+        if (vm.bounty.needs_review) {
+          vm.quickLinks.push({
+            label: 'Mark as Reviewed',
+            href: `${vm.bounty.url}?mark_reviewed=1`,
+            title: 'Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'
+          });
+        }
+      }
     }
   },
   computed: {
     sortedActivity: function() {
       return this.bounty.activities.sort((a, b) => new Date(b.created) - new Date(a.created));
-    },
-    staffQuickLinks: function() {
-      let quickLinks = [];
-
-      if (this.contxt.is_staff) {
-        quickLinks.push({
-          label: 'View in Admin',
-          href: `/_administrationdashboard/bounty/${this.bounty.pk}/change/`,
-          title: 'View in Admin Tool'
-        });
-
-        const connector_char = this.bounty.url.indexOf('?') == -1 ? '?' : '&';
-
-        quickLinks.push({
-          label: 'Hide Bounty',
-          href: `${this.bounty.url}${connector_char}admin_override_and_hide=1`,
-          title: 'Hides Bounty from Active Bounties'
-        });
-
-        quickLinks.push({
-          label: 'Toggle Remarket Ready',
-          href: `${this.bounty.url}${connector_char}admin_toggle_as_remarket_ready=1`,
-          title: 'Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.'
-        });
-
-        quickLinks.push({
-          label: 'Suspend Auto Approval',
-          href: `${this.bounty.url}${connector_char}suspend_auto_approval=1`,
-          title: 'Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'
-        });
-
-        if (this.bounty.needs_review) {
-          quickLinks.push({
-            label: 'Mark as Reviewed',
-            href: `${this.bounty.url}${connector_char}mark_reviewed=1`,
-            title: 'Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'
-          });
-        }
-      }
-
-      return quickLinks;
     }
-
   }
 });
 
 
 if (document.getElementById('gc-bounty-detail')) {
-  var appBounty = new Vue({
+  appBounty = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-bounty-detail',
     data() {
@@ -189,7 +186,8 @@ if (document.getElementById('gc-bounty-detail')) {
         is_bounties_network: is_bounties_network,
         inputAmount: 0,
         inputBountyOwnerAddress: bounty.bounty_owner_address,
-        contxt: document.contxt
+        contxt: document.contxt,
+        quickLinks: []
       };
     },
     mounted() {
@@ -276,7 +274,8 @@ var extend_expiration = function(bounty_pk, data) {
 
     if (result.success) {
       _alert({ message: result.msg }, 'success');
-      return appBounty.bounty.expires_date = moment.unix(data.deadline).utc().format();
+      appBounty.bounty.expires_date = moment.unix(data.deadline).utc().format();
+      return appBounty.bounty.expires_date;
     }
     return false;
   }).fail(function(result) {
