@@ -3993,12 +3993,6 @@ class Profile(SuperModel):
     def reassemble_profile_dict(self):
         params = self.as_dict
 
-        # lazily generate profile dict on the fly
-        if not params.get('title') or self.frontend_calc_stale:
-            #from dashboard.tasks import profile_dict
-            #profile_dict.delay(self.pk)
-            pass
-
         params['active_bounties'] = Bounty.objects.filter(pk__in=params.get('active_bounties', []))
         if params.get('tips'):
             params['tips'] = Tip.objects.filter(pk__in=params['tips'])

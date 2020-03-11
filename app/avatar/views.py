@@ -193,7 +193,9 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
             profile = Profile.objects.prefetch_related('avatar_baseavatar_related')\
                 .filter(handle__iexact=_org_name).first()
             if profile and profile.active_avatar_nocache:
-                avatar_file, content_type = profile.active_avatar_nocache.determine_response(request.GET.get('email', False))
+                avatar_file, content_type = profile.active_avatar_nocache.determine_response(
+                    request.GET.get('email', False)
+                )
                 if avatar_file:
                     return HttpResponse(avatar_file, content_type=content_type)
         except Exception as e:

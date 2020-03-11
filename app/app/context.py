@@ -173,9 +173,7 @@ def preprocess(request):
 
     if context['github_handle']:
         context['unclaimed_tips'] = Tip.objects.filter(
-            receive_txid='',
-            username__iexact=context['github_handle'],
-            web3_type='v3',
+            receive_txid='', username__iexact=context['github_handle'], web3_type='v3',
         ).send_happy_path().cache(timeout=60)
         context['unclaimed_kudos'] = KudosTransfer.objects.filter(
             receive_txid='', username__iexact="@" + context['github_handle'], web3_type='v3',
