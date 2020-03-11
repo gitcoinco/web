@@ -124,7 +124,7 @@ def associate_chat_to_profile(profile):
                     "notify_props": chat_notify_default_props(profile),
                 },
                 params={
-                    "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
+                    "tid": settings.GITCOIN_CHAT_TEAM_ID
                 })
             profile.chat_id = create_user_response['id']
             try:
