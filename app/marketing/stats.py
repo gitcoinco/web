@@ -96,6 +96,7 @@ def chat_users():
     try:
         chat_driver = get_driver()
         stats_request = chat_driver.system.get_analytics({'name': 'standard', 'team_id': ''})
+        stats_request = { ele['name']: ele["value"] for ele in stats_request }
         Stat.objects.create(
             key='chat_total_users',
             val=stats_request['unique_user_count'],
