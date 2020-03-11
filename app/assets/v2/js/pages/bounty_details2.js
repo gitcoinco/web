@@ -95,7 +95,7 @@ Vue.mixin({
         });
       }
     },
-    fulfillmentComplete: function(fulfillment_id, amount, closeBounty, bounty_owner_address) {
+    fulfillmentComplete: function(fulfillment_id, amount, bounty_owner_address) {
 
       let vm = this;
       const owner_address = vm.bounty.bounty_owner_address ?
@@ -108,7 +108,6 @@ Vue.mixin({
       const payload = {
         amount: amount * 10 ** decimals,
         token_name: token_name,
-        close_bounty: closeBounty,
         bounty_owner_address: owner_address
       };
 
@@ -120,6 +119,22 @@ Vue.mixin({
         } else {
           _alert('Unable to make payout bounty. Please try again later', 'error');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
+        }
+      });
+    },
+    closeBounty: function() {
+
+      let vm = this;
+      const bounty_id = vm.bounty.pk;
+
+      const apiUrlBounty = `/api/v1/bounty/${bounty_id}/close`;
+
+      fetchData(apiUrlBounty, 'POST').then(response => {
+        if (200 <= response.status && response.status <= 204) {
+          vm.bounty.status = 'done';
+        } else {
+          _alert('Unable to close. bounty. Please try again later', 'error');
+          console.error(`error: bounty closure failed with status: ${response.status} and message: ${response.message}`);
         }
       });
     },
@@ -163,6 +178,23 @@ Vue.mixin({
           });
         }
       }
+    },
+    hasAcceptedFulfillments: function() {
+      let vm = this;
+
+      if (!vm.bounty) {
+        return [];
+      }
+
+      if (vm.is_bounties_network) {
+        return vm.bounty.fulfillments.filter(fulfillment => fulfillment.accepted);
+      }
+
+      return vm.bounty.fulfillments.filter(fulfillment =>
+        fulfillment.accepted &&
+          fulfillment.payout_status == 'done'
+      );
+
     }
   },
   computed: {

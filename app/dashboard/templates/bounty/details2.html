@@ -159,16 +159,23 @@
           {% endif %}
           <div class="row">
             <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1 text-center text-lg-left" v-if="bounty.action_urls">
+              <template v-if="isOwner">
+                <div id="bounty_actions" class="d-inline-block" v-if="is_bounties_network">
+                  <a :href="bounty.action_urls.payout" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Payout the bounty to one or more submitters.">
+                    <i class="fab fa-ethereum mr-2"></i> {% trans "Payout Bounty" %}
+                  </a>
+                  <a :href="bounty.action_urls.increase" class="btn btn-outline-gc-blue btn-sm mr-2 px-3 font-caption" title="Help by funding or promoting this issue">
+                    {% trans "Increase Funding" %}
+                  </a>
+                </div>
+                <div v-else-if="hasAcceptedFulfillments().length && bounty.status != 'done' " class="d-inline-block">
+                  <a class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption text-white" @click="closeBounty()" title="This bounty can be closed since it's been paid out">
+                    <i class="fas fa-check mr-2"></i>
+                    {% trans "Close Bounty" %}
+                  </a>
+                </div>
+              </template>
 
-              <div id="bounty_actions" class="d-inline-block" v-if="is_bounties_network && isOwner">
-                <a :href="bounty.action_urls.payout" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Payout the bounty to one or more submitters.">
-                  <i class="fab fa-ethereum mr-2"></i> {% trans "Payout Bounty" %}
-                </a>
-                <a :href="bounty.action_urls.increase" class="btn btn-outline-gc-blue btn-sm mr-2 px-3 font-caption" title="Help by funding or promoting this issue">
-                  {% trans "Increase Funding" %}
-                </a>
-
-              </div>
               <template v-if="checkInterest()">
                 <a :href="bounty.action_urls.fulfill" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Submit work for the funder to review" v-if="checkApproved() && !checkFulfilled()">
                   Submit Work
@@ -367,14 +374,9 @@
                             <qrcode :string="`${fulfillment.fulfiller_address}?amount=${inputAmount}`"></qrcode>
                             <small class="d-block my-3">Scan the QR code  above with your ETC Wallet to payout</small>
                             <button class="d-block mx-auto mb-3 btn btn-outline-gc-blue px-2 font-caption font-weight-semibold"
-                              @click="fulfillmentComplete(fulfillment.pk, inputAmount, false, inputBountyOwnerAddress)"
+                              @click="fulfillmentComplete(fulfillment.pk, inputAmount, inputBountyOwnerAddress)"
                             >
                               I've Scanned + Paid
-                            </button>
-                            <button class="btn btn-outline-gc-blue px-2 font-caption font-weight-semibold"
-                              @click="fulfillmentComplete(fulfillment.pk, inputAmount, true, inputBountyOwnerAddress)"
-                            >
-                              I've Scanned + Paid. Close Bounty
                             </button>
                           </div>
                         </div>

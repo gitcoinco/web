@@ -4566,7 +4566,6 @@ def save_tribe(request,handle):
 
 @csrf_exempt
 @require_POST
-@staff_member_required
 def create_bounty_v1(request):
 
     '''
@@ -4730,7 +4729,6 @@ def create_bounty_v1(request):
 
 @csrf_exempt
 @require_POST
-@staff_member_required
 def cancel_bounty_v1(request):
     '''
         ETC-TODO
@@ -4911,7 +4909,6 @@ def fulfill_bounty_v1(request):
 
 @csrf_exempt
 @require_POST
-@staff_member_required
 def payout_bounty_v1(request, fulfillment_id):
     '''
         ETC-TODO
@@ -4923,7 +4920,6 @@ def payout_bounty_v1(request, fulfillment_id):
         {
             amount: <integer>,
             bounty_owner_address : <char>,
-            close_bounty: <bool>,
             token_name : <char>
         }
     '''
@@ -4993,16 +4989,78 @@ def payout_bounty_v1(request, fulfillment_id):
     fulfillment.token_name = token_name
     fulfillment.save()
 
-    if request.POST.get('close_bounty') == True:
-        bounty.bounty_state = 'done'
-        bounty.save()
-
     sync_etc_payout(fulfillment)
 
     response = {
         'status': 204,
         'message': 'bounty payment recorded. verification pending',
         'fulfillment_id': fulfillment_id
+    }
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def close_bounty_v1(request, bounty_id):
+    '''
+        ETC-TODO
+        - wire in email
+
+    '''
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to close bounty'
+    }
+
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to fulfill bounty'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: close bounty is a POST operation'
+        return JsonResponse(response)
+
+    if not bounty_id:
+        response['message'] = 'error: missing parameter bounty_id'
+        return JsonResponse(response)
+
+    try:
+        bounty = Bounty.objects.get(pk=str(bounty_id))
+        accepted_fulfillments = BountyFulfillment.objects.filter(bounty=bounty, accepted=True, payout_status='done')
+    except Bounty.DoesNotExist:
+        response['message'] = 'error: bounty not found'
+        return JsonResponse(response)
+
+    if bounty.bounty_state in ['cancelled', 'done']:
+        response['message'] = 'error: bounty in ' + bounty.bounty_state + ' state cannot be closed'
+        return JsonResponse(response)
+
+    is_funder = bounty.is_funder(user.username.lower()) if user else False
+
+    if not is_funder:
+        response['message'] = 'error: closing a bounty funder operation'
+        return JsonResponse(response)
+
+    if accepted_fulfillments.count() == 0:
+        response['message'] = 'error: cannot close a bounty without making a payment'
+        return JsonResponse(response)
+
+    bounty.bounty_state = 'done'
+    bounty.idx_status = 'done' # TODO: RETIRE
+    bounty.save()
+
+    response = {
+        'status': 204,
+        'message': 'bounty is closed'
     }
 
     return JsonResponse(response)
