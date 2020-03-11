@@ -5410,6 +5410,10 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 <pre><code class="python">Profile._method(self, *, field=&lt;django.db.models.fields.CharField: selected_persona&gt;)
 </code></pre>
 
+<h3 id="dashboard.models.Profile.gitcoin_chat_access_token">gitcoin_chat_access_token</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.gitcoin_discord_username">gitcoin_discord_username</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -7103,6 +7107,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.HackathonEvent.chat_channel_id">chat_channel_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.HackathonEvent.description">description</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -7281,8 +7289,12 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 <pre><code class="python">HackathonSponsor(self, *args, **kwargs)
 </code></pre>
 
-<p>HackathonSponsor(id, created_on, modified_on, hackathon, sponsor, sponsor_type)
-<h3 id="dashboard.models.HackathonSponsor.get_next_by_created_on">_method</h3></p>
+<p>HackathonSponsor(id, created_on, modified_on, hackathon, sponsor, sponsor_type, chat_channel_id)
+<h3 id="dashboard.models.HackathonSponsor.chat_channel_id">chat_channel_id</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.HackathonSponsor.get_next_by_created_on">_method</h3>
+
 <pre><code class="python">HackathonSponsor._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
 </code></pre>
 
@@ -7349,7 +7361,7 @@ The argument must be an iterable if specified.
 <pre><code class="python">HackathonProject(self, *args, **kwargs)
 </code></pre>
 
-<p>HackathonProject(id, created_on, modified_on, name, hackathon, logo, work_url, summary, bounty, badge, status)
+<p>HackathonProject(id, created_on, modified_on, name, hackathon, logo, work_url, summary, bounty, badge, status, chat_channel_id)
 <h3 id="dashboard.models.HackathonProject.badge">badge</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -7363,6 +7375,10 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 </code></pre>
 <p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
 <h3 id="dashboard.models.HackathonProject.bounty_id">bounty_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.HackathonProject.chat_channel_id">chat_channel_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
