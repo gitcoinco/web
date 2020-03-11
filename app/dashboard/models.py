@@ -3424,6 +3424,10 @@ class Profile(SuperModel):
         return self.avatar_baseavatar_related.cache(timeout=60).filter(active=True).first()
 
     @property
+    def active_avatar_nocache(self):
+        return self.avatar_baseavatar_related.nocache().filter(active=True).first()
+
+    @property
     def github_url(self):
         return f"https://github.com/{self.handle}"
 
