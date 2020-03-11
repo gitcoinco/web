@@ -17,9 +17,11 @@
 '''
 import logging
 from datetime import timedelta
+
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 from django.utils import timezone
+
 from dashboard.models import Profile
 
 logger = logging.getLogger(__name__)
