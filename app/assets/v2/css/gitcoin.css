@@ -11,8 +11,6 @@ h4,
   padding-top: 40px;
 }
 
-[v-cloak] > * { display:none!important;}
-
 #indicate-popup {
   position: fixed;
   top: 0.25rem;
@@ -530,6 +528,8 @@ div.button-pink {
 *:-ms-input-placeholder {
   color: lightgray;
 }
+
+[v-cloak] > * { display:none!important;}
 
 .accordion {
   cursor: pointer;
