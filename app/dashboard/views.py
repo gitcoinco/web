@@ -4802,7 +4802,6 @@ def cancel_bounty_v1(request):
 
 @csrf_exempt
 @require_POST
-@staff_member_required
 def fulfill_bounty_v1(request):
     '''
         ETC-TODO
