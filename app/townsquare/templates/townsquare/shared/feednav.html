@@ -1,0 +1,57 @@
+                <div class="townsquare_nav-list my-1">
+                  <div class="townsquare_block-header" data-target="feeds" >
+                    Feeds
+                  </div>
+                  <ul id=feeds class="nav d-inline-block font-body mb-2">
+                    {% for this_tab in tabs %}
+                      {% include 'townsquare/shared/thistab.html' %}
+                    {% endfor %}
+                  </ul>
+                  {% if hackathon_tabs|length %}
+                  <div class="townsquare_block-header mt-1" data-target="hackathons">
+                    Hackathons
+                  </div>
+                  <ul id=hackathons class="nav d-inline-block font-body mb-2">
+                    {% for this_tab in hackathon_tabs %}
+                      {% include 'townsquare/shared/thistab.html' %}
+                    {% endfor %}
+                  </ul>
+                  {% endif %}
+                  <div class="townsquare_nav-list mb-1 mt-1">
+                    <div class="townsquare_block-header" data-target="filter">
+                      Filter
+                    </div>
+                    <ul id=filter class="nav d-inline-block font-body mb-2">
+                        {% for tag in tags %}
+                          {% include 'townsquare/shared/tag.html' %}
+                        {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="townsquare_nav-list my-1 tribe">
+                  <div class="townsquare_block-header" data-target="tribes">
+                    Tribes
+                  </div>
+                  <div id="tribes">
+                    <ul class="nav d-inline-block font-body">
+                      {% for tribe in following_tribes %}
+                        <li class="nav-item">
+                          <a data-toggle="tooltip" title="{{tribe.helper_text}}" class="nav-link nav-line {% if tab == tribe.slug %}active{% endif %} " href="#" data-slug="{{tribe.slug}}">
+                            <img src="{{tribe.avatar_url}}" class="rounded avatar">
+                            <span class="nav-title">{{tribe.title}}</span>
+                            {% if tribe.badge %}
+                              <span class="nav-badge">({{ tribe.badge }})</span>
+                            {% endif %}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                    <div class="townsquare_nav-list_footer font-body font-weight-semibold">
+                      <a href="{% url "tribes_directory" %}">
+                        Explore Tribes
+                        <i class="ml-1 fab fa-wpexplorer font-weight-normal"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>

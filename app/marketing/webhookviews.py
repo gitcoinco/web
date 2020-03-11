@@ -58,7 +58,7 @@ def process(request):
                 event=event['event'],
                 category=event.get('category', ''),
                 created_on=created_on,
-                ip_address=event.get('ip'),
+                ip_address=event.get('ip').split(':')[0],
                 )
             events.append(email_event)
         except Exception:

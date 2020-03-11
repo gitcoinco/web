@@ -26,12 +26,33 @@ $(document).ready(function() {
     return prefix + remaining;
   };
 
-  $('.top_offer').click(function(e) {
+  $('body').on('click', '#mobile_nav_toggle li a', function(e) {
+    $('#mobile_nav_toggle li a').removeClass('active');
+    $(this).addClass('active');
+    if ($(this).data('slug') == 'feed') {
+      $('.feed_container').removeClass('hidden');
+      $('.actions_container').addClass('hidden');
+    } else {
+      $('.feed_container').addClass('hidden');
+      $('.actions_container').removeClass('hidden');
+    }
+  });
+
+  $('body').on('click', '.top_offer', function(e) {
     document.location = $(this).find('a.btn').attr('href');
   });
 
+  // collapse menu items
+  $('body').on('click', '.townsquare_block-header', function(e) {
+    let target_id = $(this).data('target');
+
+    $('#' + target_id).toggleClass('hidden');
+    $(this).toggleClass('closed');
+    localStorage.setItem(target_id, $(this).hasClass('closed'));
+  });
+
   // effects when an offer is clicked upon
-  $('.offer a').click(function(e) {
+  $('body').on('click', '.offer a', function(e) {
     var speed = 500;
 
     $(this).addClass('clicked');
@@ -65,6 +86,9 @@ $(document).ready(function() {
     }, 10);
   });
   $('body').on('click', '.townsquare_nav-list .nav-link', function(e) {
+    if ($(this).attr('href') != '#') {
+      return;
+    }
     $('.nav-link').removeClass('active');
     $(this).addClass('active');
     e.preventDefault();
@@ -74,7 +98,7 @@ $(document).ready(function() {
   });
 
   // toggles the daily email sender
-  $('#receive_daily_offers_in_inbox').on('change', function(e) {
+  $('body').on('change', '#receive_daily_offers_in_inbox', function(e) {
     _alert('Your email subscription preferences have been updated', 'success', 2000);
 
     var url = '/api/v0.1/emailsettings/';
@@ -89,7 +113,7 @@ $(document).ready(function() {
   });
 
   // clear any announcement
-  $('.announce .remove').click(function() {
+  $('body').on('click', '.announce .remove', function() {
     $(this).parents('.announce').remove();
   });
 
@@ -130,4 +154,32 @@ $(document).ready(function() {
   }
 
   loadImages();
+
+  var load_dressing = function() {
+    var url = document.location.href;
+
+    url = url + (url.indexOf('?') == -1 ? '?' : '&') + 'dressing=1';
+    $.get(url, function(response) {
+
+      //load content
+      $('#right_sidebar').html($(response).find('#right_sidebar').html());
+      $('#left_sidebar').html($(response).find('#left_sidebar').html());
+      $('#top_bar').html($(response).find('#top_bar').html());
+      // bind more actions
+      joinTribe();
+      // collapse menu items
+      $('.townsquare_block-header').each(function() {
+        let target_id = $(this).data('target');
+        var item = localStorage.getItem(target_id);
+
+        if (item == 'true') {
+          $(this).click();
+        }
+      });
+
+    });
+  };
+
+  load_dressing();
+
 }(jQuery));

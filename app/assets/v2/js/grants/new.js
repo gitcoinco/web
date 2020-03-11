@@ -6,7 +6,7 @@ let description = new Quill('#input-description', {
 
 $(document).ready(function() {
 
-  _alert({ message: gettext('Note: Brave users seem to have issues while contributing to Grants while using both Brave Wallet and MetaMask. We recommend disabling one. For more info, see this <a target="_blank" href="https://github.com/brave/brave-browser/issues/6053">issue</a>') }, 'warning');
+  $('.select2-selection__choice').removeAttr('title');
 
   if (web3 && web3.eth) {
     web3.eth.net.isListening((error, connectionStatus) => {
@@ -59,9 +59,6 @@ const processReceipt = receipt => {
   saveGrant(formData, true);
 };
 
-const setupGrantCategoriesInput = (grantType) => {
-  grantCategoriesSelection('.categories', `/grants/categories?type=${grantType}`);
-};
 
 const init = () => {
   if (localStorage['grants_quickstart_disable'] !== 'true') {
@@ -204,7 +201,7 @@ const init = () => {
             formData.append('network', $('#network').val());
             formData.append('team_members[]', $('#input-team_members').val());
             formData.append('categories[]', $('#input-categories').val());
-            formData.append('grant_type', $('#input-grant_type').val());
+            formData.append('grant_type', $('#input-grant_type').val().toLowerCase());
             saveGrant(formData, false);
 
             document.issueURL = linkURL;
@@ -296,16 +293,18 @@ const init = () => {
     $('#js-token').select2();
     $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
     $('#js-token').append("<option value='0x0000000000000000000000000000000000000000' selected='selected'>Any Token");
-    $('.select2-selection__rendered').hover(function() {
-      $(this).removeAttr('title');
-    });
+  });
 
+  grantCategoriesSelection('.categories', '/grants/categories?type=tech');
 
-    setupGrantCategoriesInput('tech');
+  $('#input-grant_type').on('change', function() {
+    $('.categories').val(null);
+    const type = this.value && this.value.toLowerCase();
 
-    $('#input-grant_type').on('change', function() {
-      $('.categories').val(null).trigger('change');
-      setupGrantCategoriesInput(this.value);
-    });
+    grantCategoriesSelection('.categories', `/grants/categories?type=${type}`);
+  });
+
+  $('.select2-selection__rendered').hover(function() {
+    $(this).removeAttr('title');
   });
 };

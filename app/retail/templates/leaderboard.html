@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+  {% load chartit %}
     <meta name="title" content="Leaderboards - Best in Bounties | Gitcoin">
     <meta name="description" content="See the Top Earners, Payers, Orgs, Tokens and Keywords on Gitcoin.">
     {% include 'shared/head.html' %}
@@ -16,6 +17,7 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'home/nav.html' %}
     </div>
+
     <div class="row no-gutter">
       <div class="col body leaderboard-container">
         <div class="container-fluid leaderboard">
@@ -126,6 +128,14 @@
                     </p>
                   </div>
                 {% else %}
+
+              {% if cht %}
+                <div class="row no-gutter">
+                  <div id="container" style="width:100%;"> Chart will be rendered here 
+                  </div>
+                </div>
+              {% endif %}
+
                 <div class="row">
                   <table class="table table-hover leaderboard_entry font-weight-semibold mb-0">
                     <thead>
@@ -202,6 +212,8 @@
       $("img").unveil(200);
     });
   </script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  {{ cht|load_charts:"container" }}
 
 
 </html>

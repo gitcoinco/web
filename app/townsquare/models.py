@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models, transaction
-from django.db.models.signals import post_save
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
@@ -83,8 +83,8 @@ class Comment(SuperModel):
 @receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
 def postsave_comment(sender, instance, created, **kwargs):
     from townsquare.tasks import send_comment_email
-
-    send_comment_email.delay(instance.pk)
+    if created:
+        send_comment_email.delay(instance.pk)
 
 
 class OfferQuerySet(models.QuerySet):
@@ -310,20 +310,40 @@ class MatchRanking(SuperModel):
         items = [[float(ele[0]), ele[1] - float(self.match_total)] for ele in items]
         od = collections.OrderedDict(sorted(items))
         return od
-    
+
 
 def get_eligible_input_data(mr):
     from dashboard.models import Tip
-    from django.db.models import Q
+    from django.db.models import Q, F
     from dashboard.models import Earning, Profile
     from django.contrib.contenttypes.models import ContentType
     network = 'mainnet'
     earnings = Earning.objects.filter(created_on__gt=mr.valid_from, created_on__lt=mr.valid_to)
+    # filter out earnings that have invalid info (due to profile deletion), or dont have a USD value, or are not on the correct network
     earnings = earnings.filter(to_profile__isnull=False, from_profile__isnull=False, value_usd__isnull=False, network=network)
+    # filter out staff earnings
     earnings = earnings.exclude(to_profile__user__is_staff=True)
-    earnings = earnings.filter(source_type=ContentType.objects.get(app_label='dashboard', model='tip'))
+    # filter out self earnings
+    earnings = earnings.exclude(to_profile__pk=F('from_profile__pk'))
+    # blacklisted users
+    earnings = earnings.exclude(to_profile__pk=68768)
     # microtips only
-    tips = list(Tip.objects.filter(Q(comments_priv__contains='activity:') | Q(comments_priv__contains='comment:') | Q(tokenName='ETH', amount__lte=0.05)).values_list('pk', flat=True))
+    earnings = earnings.filter(source_type=ContentType.objects.get(app_label='dashboard', model='tip'))
+    tips = list(Tip.objects.send_happy_path().filter(Q(comments_priv__contains='activity:') | Q(comments_priv__contains='comment:') | Q(tokenName='ETH', amount__lte=0.05)).values_list('pk', flat=True))
     earnings = earnings.filter(source_id__in=tips)
+
+    # output
     earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
     return [[ele[0], ele[1], float(ele[2])] for ele in earnings]
+
+class SuggestedAction(SuperModel):
+
+    title = models.CharField(max_length=50, blank=True)
+    desc = models.TextField(default='', blank=True)
+    suggested_donation = models.CharField(max_length=50, blank=True)
+    matchpotential = models.CharField(max_length=50, blank=True)
+    active = models.BooleanField(help_text='Is this suggestion active?', default=True)
+    rank = models.IntegerField(default=0, db_index=True)
+
+    def __str__(self):
+        return f"{self.title} / {self.suggested_donation}"

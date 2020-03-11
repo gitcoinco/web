@@ -136,6 +136,80 @@ $(document).ready(function() {
     $('title').text(document.base_title);
   });
 
+  // show percentages and votes
+  var update_and_reveal = function($this, total) {
+
+    // calc total
+    var answers = $this.parents('.poll_choices').find('span');
+
+    console.log(answers.length);
+    for (var i = 0; i < answers.length; i++) {
+      total += parseInt(($(answers[i]).text()));
+    }
+
+    // update all htmls
+    for (var j = 0; j < answers.length; j++) {
+      var $answer = $(answers[j]);
+      var answer = parseInt(($answer.text()));
+      var new_answer = answer;
+
+      if (isNaN(new_answer)) {
+        new_answer = 0;
+      }
+      var pct = Math.round((new_answer / total) * 100);
+
+      if (isNaN(pct)) {
+        pct = 0;
+      }
+      var html = '- ' + new_answer + ' ( ' + pct + '% )';
+
+      $answer.html(html);
+    }
+    return total;
+  };
+
+  $('.poll_choices.answered').each(function() {
+    update_and_reveal($(this).find('div'), 0);
+  });
+
+  // vote on a poll
+  $(document).on('click', '.poll_choices div', function(e) {
+    e.preventDefault();
+
+    // no answering twice
+    if ($(this).parents('.poll_choices').hasClass('answered')) {
+      return;
+    }
+
+    // setup
+    $(this).addClass('answer');
+    $(this).parents('.poll_choices').addClass('answered');
+
+    // update this error count
+    var $answer = $(this).find('span');
+    var answer = parseInt(($answer.text()));
+    var new_answer = answer + 1;
+
+    $answer.html(new_answer);
+
+    update_and_reveal($(this), 0);
+
+    // remote post
+    var $parent = $(this).parents('.activity.box');
+    var vote = $(this).data('vote');
+    var params = {
+      'method': 'vote',
+      'vote': vote,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+    var url = '/api/v0.1/activity/' + $parent.data('pk');
+
+    $.post(url, params, function(response) {
+      console.log(response);
+    });
+
+  });
+
   // delete activity
   $(document).on('click', '.delete_activity', function(e) {
     e.preventDefault();
@@ -204,7 +278,7 @@ $(document).ready(function() {
       const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
 
       var old_amount = $amount.text();
-      var new_amount = Math.round(100 * (parseFloat(old_amount) + parseFloat(amountInEth))) / 100;
+      var new_amount = Math.round(1000 * (parseFloat(old_amount) + parseFloat(amountInEth))) / 1000;
 
       $amount.fadeOut().text(new_amount).fadeIn();
       setTimeout(function() {
@@ -304,14 +378,15 @@ $(document).ready(function() {
     }
 
     // user input
-    var comment = $parent.parents('.box').find('.comment_container textarea').val();
-
-    $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
+    var comment = $parent.parents('.box').find('.comment_container textarea').val().trim();
 
     // validation
     if (!comment) {
       return;
     }
+
+    $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
+    $('.post_comment').prop('disabled', true);
 
     $parent.parents('.activity.box').find('.loading').removeClass('hidden');
     var has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
@@ -347,6 +422,7 @@ $(document).ready(function() {
       .always(function() {
         $parent.parents('.activity.box').find('.loading').addClass('hidden');
         $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
+        $('.post_comment').prop('disabled', false);
       });
   };
 
@@ -409,7 +485,7 @@ $(document).ready(function() {
             let ele = match_curve[j];
 
             sorted_match_curve_html += '<li>';
-            sorted_match_curve_html += `Your contribution of ${ele.name} could yield $${Math.round(ele.value * 100) / 100} in matching.`;
+            sorted_match_curve_html += `Your contribution of ${ele.name} could yield $${Math.round(ele.value * 1000) / 1000} in matching.`;
             sorted_match_curve_html += '</li>';
           }
         }
@@ -445,7 +521,7 @@ $(document).ready(function() {
                 <span class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; cursor:pointer; padding: 2px; font-size: 10px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@${comment['profile_handle']} is estimated to be earning <strong>$${comment['match_this_round']}</strong> in this week's CLR Round.
                 <BR><BR>
 
-              Want to help @${comment['profile_handle']} move up the rankings?  Assuming you haven't contributed to @${comment['profile_handle']} yet this round, a contribution of 0.001 ETH (about $0.30) could mean +<strong>$${Math.round(100 * comment['default_match_round']) / 100}</strong> in matching.
+              Want to help @${comment['profile_handle']} move up the rankings?  Assuming you haven't contributed to @${comment['profile_handle']} yet this round, a contribution of 0.001 ETH (about $0.30) could mean +<strong>$${Math.round(1000 * comment['default_match_round']) / 1000}</strong> in matching.
               <br>
               <br>
               Other contribution levels will mean other matching amounts:
@@ -492,7 +568,7 @@ $(document).ready(function() {
 
       const post_comment_html = `
         <div class="row py-2 mx-auto">
-          <div class="col-sm-1 activity-avatar d-none d-sm-inline">
+          <div class="col-sm-1 mt-1 activity-avatar d-none d-sm-inline">
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
           <div class="col-12 col-sm-11 text-right">
@@ -590,19 +666,21 @@ $(document).ready(function() {
 
     const url = '/api/v0.1/comment/' + comment_id;
 
-    $.post(url, params, function(response) {
-      if (response.status <= 204) {
-        _alert('comment successfully deleted.', 'success', 1000);
-        $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
-        console.log(response);
-      } else {
-        _alert(`Unable to delete commment: ${response.message}`, 'error');
-        console.log(`error deleting commment: ${response.message}`);
-      }
-    }).fail(function(error) {
-      _alert('Unable to delete comment', 'error');
-      console.log(`error deleting commment: ${error.message}`);
-    });
+    if (confirm('Do you want to delete this comment?')) {
+      $.post(url, params, function(response) {
+        if (response.status <= 204) {
+          _alert('comment successfully deleted.', 'success', 1000);
+          $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
+          console.log(response);
+        } else {
+          _alert(`Unable to delete commment: ${response.message}`, 'error');
+          console.log(`error deleting commment: ${response.message}`);
+        }
+      }).fail(function(error) {
+        _alert('Unable to delete comment', 'error');
+        console.log(`error deleting commment: ${error.message}`);
+      });
+    }
   });
 
 
@@ -635,6 +713,7 @@ $(document).ready(function() {
 
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').bootstrapTooltip();
+    openChat();
 
     $('.comment_activity').each(function() {
       var open = $(this).data('open');

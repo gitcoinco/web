@@ -17,7 +17,7 @@ $(document).ready(function() {
     });
   }
 
-  $('.copy_me').click(function() {
+  $('body').on('click', '.copy_me', function() {
     $(this).focus();
     $(this).select();
     document.execCommand('copy');

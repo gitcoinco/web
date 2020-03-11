@@ -51,6 +51,7 @@ ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
 BASE_DIR = root()
 #social integrations
 GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
+YOUTUBE_API_KEY = env('YOUTUBE_API_KEY', default='YOUR-SupEr-SecRet-YOUTUBE-KeY')
 
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
@@ -127,6 +128,15 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'townsquare',
     'compliance',
+    'django_nyt.apps.DjangoNytConfig',
+    'mptt',
+    'sekizai',
+    'sorl.thumbnail',
+    'wiki.apps.WikiConfig',
+    'wiki.plugins.attachments.apps.AttachmentsConfig',
+    'wiki.plugins.notifications.apps.NotificationsConfig',
+    'wiki.plugins.images.apps.ImagesConfig',
+    'wiki.plugins.macros.apps.MacrosConfig',
 ]
 
 MIDDLEWARE = [
@@ -167,6 +177,7 @@ TEMPLATES = [{
             'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
             'app.context.preprocess', 'social_django.context_processors.backends',
             'social_django.context_processors.login_redirect',
+            "sekizai.context_processors.sekizai",
         ],
     },
 }]
@@ -548,12 +559,19 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
+# Etherscan API
+ETHERSCAN_API_KEY = env('ETHERSCAN_API_KEY', default='')
+
+# Kudos revenue account
+KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xdb282cee382244e05dd226c8809d2405b76fbdc9')
+
 # Chat
 CHAT_PORT = env('CHAT_PORT', default=8065)  # port of where mattermost is hosted
 CHAT_URL = env('CHAT_URL', default='localhost')  # location of where mattermost is hosted
 CHAT_DRIVER_TOKEN = env('CHAT_DRIVER_TOKEN', default='')  # driver token
 GITCOIN_HACK_CHAT_TEAM_ID = env('GITCOIN_HACK_CHAT_TEAM_ID', default='')
 GITCOIN_CHAT_TEAM_ID = env('GITCOIN_CHAT_TEAM_ID', default='')
+
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
@@ -742,6 +760,10 @@ if ENABLE_SILK:
 ENABLE_DDTRACE = env.bool('ENABLE_DDTRACE', default=False)
 if ENABLE_DDTRACE:
     INSTALLED_APPS += ['ddtrace.contrib.django']
+
+WIKI_ACCOUNT_HANDLING = True
+WIKI_ACCOUNT_SIGNUP_ALLOWED = True
+WIKI_CACHE_TIMEOUT = True
 
 # Sending an email when a bounty is funded below a threshold
 LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)

@@ -4,67 +4,25 @@ var compiledSplitter;
 var contractVersion;
 
 function grantCategoriesSelection(target, apiUrl) {
-  $(target).each(function() {
-    if (!$(this).length) {
-      return;
-    }
+  $(target).select2({
+    ajax: {
+      url: apiUrl,
+      dataType: 'json',
+      processResults: function(data) {
+        return {
+          results: data.categories.map(category => {
+            const name = category[0];
+            const humanisedName = name.charAt(0).toUpperCase() + name.substring(1);
 
-    $(this).select2({
-      ajax: {
-        url: apiUrl,
-        dataType: 'json',
-        delay: 250,
-        data: function(params) {
+            const index = category[1];
 
-          let query = {
-            term: params.term[0] === '@' ? params.term.slice(1) : params.term
-          };
-
-          return query;
-        },
-        processResults: function(data) {
-          return {
-            results: data.categories.map(category => {
-              const name = category[0];
-              const humanisedName = name.charAt(0).toUpperCase() + name.substring(1);
-
-              const index = category[1];
-
-              return {value: name, text: humanisedName, id: index};
-            })
-          };
-        },
-        cache: true
+            return {value: name, text: humanisedName, id: index};
+          })
+        };
       },
-      data: false,
-      allowClear: true,
-      theme: undefined,
-      placeholder: 'Search by grant category',
-      minimumInputLength: 1,
-      escapeMarkup: function(markup) {
-        return markup;
-      },
-      templateResult: function(category) {
-        if (category.loading) {
-          return category.text;
-        }
-
-        return `<div class="d-flex align-items-baseline">
-                      <div>${category.text}</div>
-                    </div>`;
-      },
-      templateSelection: function(category) {
-        let selected;
-
-        if (category.id) {
-          selected = `<span class="ml-2">${category.text}</span>`;
-        } else {
-          selected = category.text;
-        }
-
-        return selected;
-      }
-    });
+      cache: true
+    },
+    allowClear: true
   });
 }
 

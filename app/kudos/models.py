@@ -347,6 +347,8 @@ class Token(SuperModel):
     def preview_img_url(self):
         if self.preview_img_mode == 'png':
             return self.img_url
+        if "https:" in self.image:
+            return self.image
         return static(self.image)
 
     @property
@@ -408,6 +410,21 @@ def psave_token(sender, instance, **kwargs):
                 'img_url': instance.img_url,
             }
             )
+
+
+@receiver(post_save, sender=Token, dispatch_uid="postsave_token")
+def postsave_token(sender, instance, created, **kwargs):
+    if created:
+        if instance.pk and instance.gen == 1 and not instance.hidden:
+            from dashboard.models import Activity, Profile
+            kwargs = {
+                'activity_type': 'created_kudos',
+                'kudos': instance,
+                'profile': Profile.objects.filter(handle='gitcoinbot').first(),
+                'metadata': {
+                }
+            }
+            Activity.objects.create(**kwargs)
 
 
 class KudosTransfer(SendCryptoAsset):

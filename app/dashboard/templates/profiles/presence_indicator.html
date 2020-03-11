@@ -1,0 +1,7 @@
+  {% if profile.chat_id and show_even_if_offline or profile.online_now %}
+    <span class="chat_presence_indicator {{additionalclasses}} {{profile.last_chat_status}}" data-openchat="{{profile}}">
+      <span class="indicator" data-toggle="tooltip" title="{{profile.last_chat_status|title}}">
+        •
+      </span>
+    </span>
+  {% endif %}

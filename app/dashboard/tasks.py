@@ -4,7 +4,7 @@ from app.redis_service import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
-from dashboard.models import Profile
+from dashboard.models import Activity, Profile
 from marketing.mails import func_name, send_mail
 from retail.emails import render_share_bounty
 
