@@ -92,7 +92,11 @@ class OfferQuerySet(models.QuerySet):
 
     def current(self):
         """Filter results down to current offers only."""
-        return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now(), public=True)
+        timestamp = timezone.now()
+        timestamp -= timestamp.timedelta(microseconds=timestamp.microsecond)
+        timestamp -= timestamp.timedelta(seconds=timestamp.seconds)
+        timestamp -= timestamp.timedelta(minutes=timestamp.minutes)
+        return self.filter(valid_from__lte=timestamp, valid_to__gt=timestamp, public=True)
 
 num_backgrounds = 33
 
