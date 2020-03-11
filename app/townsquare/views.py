@@ -298,6 +298,7 @@ def town_square(request):
             'nav': 'home',
             'target': f'/activity?what={tab}&trending_only={trending_only}',
             'tab': tab,
+            'tags': tags,
             'admin_link': admin_link,
             'now': timezone.now(),
             'is_townsquare': True,
