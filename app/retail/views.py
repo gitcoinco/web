@@ -1174,8 +1174,9 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     elif 'tribe:' in what:
         key = what.split(':')[1]
         profile_filter = Q(profile__handle=key)
+        other_profile_filter = Q(other_profile__handle=key)
         keyword_filter = Q(metadata__icontains=key)
-        activities = activities.filter(keyword_filter | profile_filter)
+        activities = activities.filter(keyword_filter | profile_filter | other_profile_filter)
     elif 'activity:' in what:
         view_count_threshold = 0
         pk = what.split(':')[1]
@@ -1321,6 +1322,8 @@ def create_status_update(request):
             result = tab.split(':')[1]
             if key == 'hackathon':
                 kwargs['hackathonevent'] = HackathonEvent.objects.get(pk=result)
+            if key == 'tribe':
+                kwargs['other_profile'] = Profile.objects.get(handle__iexact=result)
 
         try:
             activity = Activity.objects.create(**kwargs)
