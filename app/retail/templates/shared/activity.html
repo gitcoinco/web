@@ -341,9 +341,9 @@
       </div>
     </div>
   </div>
-  {% if row.poll %}
+  {% if row.metadata.poll_choices %}
   <div class="poll_choices {% if row.metadata.poll_answered %}answered{%endif%}">
-    {% for ele in row.poll %}
+    {% for ele in row.metadata.poll_choices %}
       <div data-vote="{{ forloop.counter0 }}" class=" vote {% if row.metadata.poll_answered == ele.i %}answer{%endif%}">
         <p>
           {{ele.question}}
