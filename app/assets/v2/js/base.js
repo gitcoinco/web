@@ -439,11 +439,37 @@ const gitcoinUpdates = () => {
 
 };
 
+
+if (document.contxt.chat_access_token && document.contxt.chat_id) {
+  // setup polling check for any updated data
+  // scope our polling function so any potential js crashes won't affect it.
+  (($) => {
+    setInterval(() => {
+      $.ajax({
+        beforeSend: function(request) {
+          request.setRequestHeader('Authorization', `Bearer ${document.contxt.chat_access_token}`);
+        },
+        url: `${document.contxt.chat_url}/api/v4/users/me/teams/unread`,
+        dataType: 'json',
+        success: (JSONUnread) => {
+          let notified = false;
+
+          JSONUnread.forEach((team) => {
+            if ((team.msg_count || team.mention_count) && !notified) {
+              $('#chat-notification-dot').addClass('notification__dot_active');
+              notified = true;
+            }
+          });
+
+        },
+        error: (error => {
+          console.log(error);
+        })
+      });
+    }, 30000);
+  })(jQuery);
+}
 // carousel/collabs/... inside menu
 $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
   e.stopPropagation();
 });
-
-if (document.contxt.chat_unread_messages) {
-  $('#chat-notification-dot').addClass('notification__dot__active');
-}

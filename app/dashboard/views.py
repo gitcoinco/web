@@ -59,8 +59,8 @@ from avatar.views_3d import avatar3dids_helper
 from bleach import clean
 from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
-from chat.tasks import add_to_channel
-from chat.utils import create_channel_if_not_exists, create_user_if_not_exists
+from chat.tasks import add_to_channel, create_channel_if_not_exists, associate_chat_to_profile, chat_notify_default_props
+
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -130,15 +130,7 @@ def oauth_connect(request, *args, **kwargs):
         "id": f'{active_user_profile.user.id}',
         "auth_data": f'{active_user_profile.user.id}',
         "auth_service": "gitcoin",
-        "notify_props": {
-            "email": "false",
-            "push": "mention",
-            "desktop": "all",
-            "desktop_sound": "true",
-            "mention_keys": f'{active_user_profile.handle}, @{active_user_profile.handle}',
-            "channel": "true",
-            "first_name": "false"
-        }
+        "notify_props": chat_notify_default_props(active_user_profile)
     }
     return JsonResponse(user_profile, status=200, safe=False)
 
@@ -386,57 +378,6 @@ def new_interest(request, bounty_id):
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
-        if bounty.event:
-            try:
-                if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
-                    try:
-                        bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
-                        created, channel_details = create_channel_if_not_exists({
-                            'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                            'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
-                            'channel_name': bounty_channel_name[:60]
-                        })
-                        bounty_channel_id = channel_details['id']
-                        bounty.chat_channel_id = bounty_channel_id
-                        bounty.save()
-                    except Exception as e:
-                        logger.error(str(e))
-                        raise ValueError(e)
-                else:
-                    bounty_channel_id = bounty.chat_channel_id
-
-                funder_profile = Profile.objects.get(handle__iexact=bounty.bounty_owner_github_username)
-
-                if funder_profile:
-                    if funder_profile.chat_id is '':
-                        try:
-                            created, funder_details_response = create_user_if_not_exists(funder_profile)
-                            funder_profile.chat_id = funder_details_response['id']
-                            funder_profile.save()
-                        except Exception as e:
-                            logger.error(str(e))
-                            raise ValueError(e)
-
-                    if profile.chat_id is '':
-
-                        try:
-                            created, profile_lookup_response = create_user_if_not_exists(profile)
-                            profile.chat_id = profile_lookup_response['id']
-                            profile.save()
-                        except Exception as e:
-                            logger.error(str(e))
-                            raise ValueError(e)
-
-                    profiles_to_connect = [
-                        funder_profile.chat_id,
-                        profile.chat_id
-                    ]
-                    add_to_channel.delay(
-                        {'id': bounty_channel_id}, profiles_to_connect
-                    )
-
-            except Exception as e:
-                print(str(e))
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -4003,13 +3944,32 @@ def hackathon_save_project(request):
     }
 
     if project_id:
-        try :
+        try:
+
             project = HackathonProject.objects.filter(id=project_id, profiles__id=profile.id)
 
             kwargs.update({
                 'logo': request.FILES.get('logo', project.first().logo)
             })
+
             project.update(**kwargs)
+            profiles_to_connect = []
+            try:
+                bounty_profile = Profile.objects.get(handle=project.bounty.bounty_owner_github_username)
+                if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
+                    created, bounty_profile = associate_chat_to_profile(bounty_profile)
+
+                profiles_to_connect.append(bounty_profile.chat_id)
+            except Exception as e:
+                logger.info("Bounty Profile owner not apart of gitcoin")
+
+            for profile_id in profiles:
+                curr_profile = Profile.objects.get(id=profile_id)
+                if not curr_profile.chat_id:
+                    created, curr_profile = associate_chat_to_profile(curr_profile)
+                profiles_to_connect.append(curr_profile.chat_id)
+
+            add_to_channel.delay(project.chat_channel_id, profiles_to_connect)
 
             profiles.append(str(profile.id))
             project.first().profiles.set(profiles)
@@ -4021,6 +3981,41 @@ def hackathon_save_project(request):
             return JsonResponse({'error': _('Error trying to save project')},
             status=401)
     else:
+
+        try:
+            project_channel_name = slugify(f'{kwargs["name"]}')
+
+            created, channel_details = create_channel_if_not_exists({
+                'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                'channel_purpose': kwargs["summary"][:255],
+                'channel_display_name': f'project-{project_channel_name}'[:60],
+                'channel_name': project_channel_name[:60],
+                'channel_type': 'P'
+            })
+            profiles_to_connect = []
+            try:
+                bounty_profile = Profile.objects.get(handle=bounty_obj.bounty_owner_github_username)
+                if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
+                    created, bounty_profile = associate_chat_to_profile(bounty_profile)
+
+                profiles_to_connect.append(bounty_profile.chat_id)
+            except Exception as e:
+                logger.info("Bounty Profile owner not apart of gitcoin")
+
+            for profile_id in profiles:
+                curr_profile = Profile.objects.get(id=profile_id)
+                if not curr_profile.chat_id:
+                    created, curr_profile = associate_chat_to_profile(curr_profile)
+                profiles_to_connect.append(curr_profile.chat_id)
+
+            add_to_channel.delay(channel_details, profiles_to_connect)
+
+            kwargs.update({
+                'chat_channel_id': channel_details['id']
+            })
+        except Exception as e:
+            logger.error('Error creating project channel', e)
+
         project = HackathonProject.objects.create(**kwargs)
         project.save()
         profiles.append(str(profile.id))
@@ -4049,10 +4044,15 @@ def hackathon_registration(request):
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
         HackathonRegistration.objects.create(
             name=hackathon,
-            hackathon= hackathon_event,
+            hackathon=hackathon_event,
             referer=referer,
             registrant=profile
         )
+        try:
+            from chat.tasks import hackathon_chat_sync
+            hackathon_chat_sync.delay(hackathon_event.id, profile.handle)
+        except Exception as e:
+            logger.error('Error while adding to chat', e)
 
     except Exception as e:
         logger.error('Error while saving registration', e)
