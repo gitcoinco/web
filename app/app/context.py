@@ -71,14 +71,6 @@ def preprocess(request):
     if request.path == '/lbcheck':
         return {}
 
-    from marketing.utils import get_stat
-    try:
-        num_slack = int(get_stat('slack_users'))
-    except Exception:
-        num_slack = 0
-    if num_slack > 1000:
-        num_slack = f'{str(round((num_slack) / 1000, 1))}k'
-
     chat_url = get_chat_url(front_end=True)
     chat_access_token = ''
     chat_id = ''
@@ -133,7 +125,6 @@ def preprocess(request):
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
-        'num_slack': num_slack,
         'chat_url': chat_url,
         'chat_id': chat_id,
         'chat_access_token': chat_access_token,
