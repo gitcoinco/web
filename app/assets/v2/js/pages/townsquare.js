@@ -165,7 +165,8 @@ $(document).ready(function() {
       $('#right_sidebar').html($(response).find('#right_sidebar').html());
       $('#left_sidebar').html($(response).find('#left_sidebar').html());
       $('#top_bar').html($(response).find('#top_bar').html());
-
+      // bind more actions
+      joinTribe();
       // collapse menu items
       $('.townsquare_block-header').each(function() {
         let target_id = $(this).data('target');
