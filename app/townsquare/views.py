@@ -282,7 +282,7 @@ def get_following_tribes(request):
 
 def town_square(request):
     SHOW_DRESSING = request.GET.get('dressing', False)
-    tab = request.COOKIES.get('tab', request.GET.get('tab', 'connect'))
+    tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
     if not SHOW_DRESSING:
         is_search = "activity:" in tab or "search-" in tab
