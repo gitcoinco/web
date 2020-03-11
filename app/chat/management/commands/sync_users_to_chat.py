@@ -45,10 +45,15 @@ class Command(BaseCommand):
                 last_visit__gte=now - delta,
                 user__is_active=True
             ).prefetch_related('user')
+
             for profile in profiles:
-                logger.info(f'Syncing Gitcoin Chat Data for {profile.handle} Started')
-                created, profile = associate_chat_to_profile(profile)
-                logger.info(f'Syncing Gitcoin Chat Data for {profile.handle} Complete')
+                try:
+                    logger.info(f'Syncing Gitcoin Chat Data for: {profile.handle} Started')
+                    created, profile = associate_chat_to_profile(profile)
+                    logger.info(f'Syncing Gitcoin Chat Data for: {profile.handle} Complete')
+                except Exception as e:
+                    logger.info(f'Failed to associate chat to profile for: {profile.handle}')
+                    logger.error(str(e))
 
         except ConnectionError as exec:
             logger.error(str(exec))
