@@ -2610,9 +2610,9 @@ class Profile(SuperModel):
         if hasattr(self, '_matchranking_this_round'):
             return self._matchranking_this_round
         from townsquare.models import MatchRound
-        mr = MatchRound.objects.current().first()
+        mr = MatchRound.objects.current().cache(timeout=60).first()
         if mr:
-            mr = mr.ranking.filter(profile=self).first()
+            mr = mr.ranking.filter(profile=self).cache(timeout=60).first()
             self._matchranking_this_round = mr
             if mr:
                 return mr
@@ -3992,11 +3992,6 @@ class Profile(SuperModel):
     @property
     def reassemble_profile_dict(self):
         params = self.as_dict
-
-        # lazily generate profile dict on the fly
-        if not params.get('title') or self.frontend_calc_stale:
-            from dashboard.tasks import profile_dict
-            profile_dict.delay(self.pk)
 
         params['active_bounties'] = Bounty.objects.filter(pk__in=params.get('active_bounties', []))
         if params.get('tips'):

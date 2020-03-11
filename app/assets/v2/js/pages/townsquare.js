@@ -161,7 +161,7 @@ $(document).ready(function() {
     url = url + (url.indexOf('?') == -1 ? '?' : '&') + 'dressing=1';
     $.get(url, function(response) {
 
-      //load content
+      // load content
       $('#right_sidebar').html($(response).find('#right_sidebar').html());
       $('#left_sidebar').html($(response).find('#left_sidebar').html());
       $('#top_bar').html($(response).find('#top_bar').html());
