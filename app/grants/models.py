@@ -928,7 +928,6 @@ def psave_grant(sender, instance, **kwargs):
     instance.contributor_count = instance.get_contributor_count
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
-    instance.amount_received_with_phantom_funds = instance.get_amount_received_with_phantom_funds()
     #print(instance.id)
     for subscription in instance.subscriptions.all():
         value_usdt = subscription.get_converted_amount(False)
@@ -957,6 +956,7 @@ def psave_grant(sender, instance, **kwargs):
                 'img_url': instance.logo.url if instance.logo else None,
             }
             )
+    instance.amount_received_with_phantom_funds = Decimal(round(instance.get_amount_received_with_phantom_funds(), 2))
 
 class DonationQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""
