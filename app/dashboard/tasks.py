@@ -57,7 +57,7 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
     """
     with redis.lock("tasks:bounty_email:%s" % invite_url, timeout=LOCK_TIMEOUT):
         # need to look at how to send bulk emails with SG
-        profile = Profile.objects.get(handle=profile_handle)
+        profile = Profile.objects.get(handle__iexact=profile_handle)
         try:
             for email in emails:
                 to_email = email
