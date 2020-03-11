@@ -321,10 +321,17 @@ def create_user(self, options, params, profile_handle='', retry: bool = True):
                 profile = Profile.objects.get(handle__iexact=profile_handle)
                 profile.chat_id = create_user_response['id']
 
-                profile_access_token = chat_driver.users.create_user_access_token(user_id=profile.chat_id, options={
-                    'description': "Grants Gitcoin access to modify your account"})
+                profile_access_token = chat_driver.users.create_user_access_token(user_id=create_user_response['id'],
+                                                                                  options={
+                                                                                      'description': "Grants Gitcoin access to modify your account"})
                 profile.gitcoin_chat_access_token = profile_access_token['id']
                 profile.save()
+
+                chat_driver.teams.add_user_to_team(
+                    settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                    options={'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                             'user_id': create_user_response['id']}
+                )
 
             return create_user_response
         except ConnectionError as exc:
