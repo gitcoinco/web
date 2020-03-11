@@ -20,13 +20,48 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
 
+from django.conf import settings
+from django.http import Http404, JsonResponse
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from chat.tasks import get_chat_url
+from app.redis_service import RedisService
+from chat.tasks import get_chat_url, get_driver
 from marketing.models import Stat
 
 logger = logging.getLogger(__name__)
+
+def chat_presence(request):
+    """Sets user presence on mattermost."""
+    if not request.user.is_authenticated:
+        raise Http404
+
+    profile = request.user.profile
+    if not profile.chat_id:
+        raise Http404
+
+    # setup driver
+    driver = get_driver()
+
+    # determine current status/ should we set the user as online in mm?
+    current_status = driver.client.post('/users/status/ids', [profile.chat_id])
+    manual = current_status[0]['manual']
+    current_status = current_status[0]['status']
+    set_status = current_status == 'offline' or manual or settings.DEBUG
+
+    # if so, make it so
+    if set_status:
+        new_status = 'online'
+        if current_status in ['away', 'dnd']:
+            new_status = current_status
+        driver.client.put(f'/users/{profile.chat_id}/status', {'user_id': profile.chat_id, 'status': new_status})
+        # set a marker of when this user was last seen..
+        # so that get_user_prsence can clean it up later
+        redis = RedisService().redis
+        redis.set(profile.chat_id, timezone.now().timestamp())
+
+    return JsonResponse({'status': 'OK'})
 
 
 def chat(request):

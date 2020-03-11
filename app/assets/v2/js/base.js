@@ -441,7 +441,8 @@ const gitcoinUpdates = () => {
 
 
 if (document.contxt.chat_access_token && document.contxt.chat_id) {
-  // setup polling check for any updated data
+  // setup polling check for any updated data from chat
+  // and set users as active on chat just by browsing gitcoin
   // scope our polling function so any potential js crashes won't affect it.
   (($) => {
 
@@ -469,10 +470,26 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
       });
     };
 
+    const set_as_active = () => {
+      $.ajax({
+        url: 'api/v0.1/chat/presence',
+        dataType: 'json',
+        success: (response) => {
+          console.log(response);
+        },
+        error: (error => {
+          console.log(error);
+        })
+      });
+    };
+
+
     setInterval(() => {
       checkChatNotifications();
+      set_as_active();
     }, 15000);
     checkChatNotifications();
+    set_as_active();
   })(jQuery);
 }
 // carousel/collabs/... inside menu

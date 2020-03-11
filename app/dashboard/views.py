@@ -2807,9 +2807,14 @@ def profile(request, handle, tab=None):
         return redirect(profile.url)
 
     # setup context for visit
-
     if not len(profile.tribe_members) and tab == 'tribe':
         tab = 'activity'
+
+    # hack to make sure that if ur looking at ur own profile u see right online status
+    # previously this was cached on the session object, and we've not yet found a way to buste that cache
+    if request.user.is_authenticated:
+        if request.user.username.lower() == profile.handle:
+            profile = Profile.objects.nocache().get(pk=profile.pk)
 
     if tab == 'tribe':
         context['tribe_priority'] = profile.tribe_priority

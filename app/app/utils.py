@@ -469,7 +469,6 @@ def get_profile(request):
     if is_authed and not profile:
         profile = sync_profile(request.user.username, request.user, hide_profile=False)
 
-
     return profile
 
 
