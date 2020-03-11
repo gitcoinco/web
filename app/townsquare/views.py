@@ -303,7 +303,7 @@ def town_square(request):
             'is_townsquare': True,
             'trending_only': bool(trending_only),
         }
-        response = TemplateResponse(request, 'townsquare/index.html', context)
+        return TemplateResponse(request, 'townsquare/index.html', context)
 
     tabs, tab, is_search, search, hackathon_tabs = get_sidebar_tabs(request)
     offers_by_category = get_offers(request)

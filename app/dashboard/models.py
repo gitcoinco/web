@@ -2997,7 +2997,7 @@ class Profile(SuperModel):
             bool: Whether or not the user is a moderator.
 
         """
-        return self.user.groups.filter(name='Moderators').exists() if self.user else False
+        return self.user.groups.filter(name='Moderators').cache().exists() if self.user else False
 
     @property
     def is_alpha_tester(self):
@@ -3009,7 +3009,7 @@ class Profile(SuperModel):
         """
         if self.user.is_staff:
             return True
-        return self.user.groups.filter(name='Alpha_Testers').exists() if self.user else False
+        return self.user.groups.filter(name='Alpha_Testers').cache().exists() if self.user else False
 
     @property
     def is_staff(self):
@@ -3421,7 +3421,7 @@ class Profile(SuperModel):
 
     @property
     def active_avatar(self):
-        return self.avatar_baseavatar_related.filter(active=True).first()
+        return self.avatar_baseavatar_related.cache(timeout=60).filter(active=True).first()
 
     @property
     def github_url(self):
