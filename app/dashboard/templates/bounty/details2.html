@@ -253,7 +253,7 @@
             </div>
           </div>
 
-          <div class="row" v-if="bounty?.fulfillments?.length">
+          <div class="row" v-if="bounty.fulfillments && bounty.fulfillments.length">
             <div class="col-12">
               <div class="border my-5 px-4 pt-4">
                 <h5 class="font-body font-weight-semibold">{% trans "SUBMISSIONS" %}</h5>
@@ -345,7 +345,7 @@
                       <a :href="fulfillment.fulfiller_github_url" target="_blank">
                         [[ fulfillment.fulfiller_github_url ]]
                       </a>
-                      <p class="mb-0" v-if="fulfillment.fulfiller_metadata.data?.payload?.fulfiller?.hoursWorked">
+                      <p class="mb-0" v-if="fulfillment.fulfiller_metadata.data.payload.fulfiller && fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked">
                         <i class="far fa-clock font-caption mr-1"></i>
                         <span class="font-weight-bold">Hours worked:</span>
                         [[ fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked ]]
@@ -389,7 +389,7 @@
             </div>
           </div>
 
-          <div class="row" v-if="bounty?.interested?.length">
+          <div class="row" v-if="bounty.interested && bounty.interested.length">
             <div class="col-12">
               <div class="border my-5 px-4 pt-4">
                 <h5 class="font-body font-weight-semibold">{% trans "APPLICANTS" %}</h5>
@@ -445,7 +445,7 @@
             </div>
           </div>
 
-          <div class="row" v-if="bounty?.activities?.length">
+          <div class="row" v-if="bounty.activities && bounty.activities.length">
             <div class="col-12">
               <div class="border my-5 px-4 pt-4">
                 <h5 class="font-body font-weight-semibold">{% trans "ALL  ACTIVITY" %}</h5>
