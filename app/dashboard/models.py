@@ -2306,14 +2306,19 @@ class Activity(SuperModel):
             kwargs['exclude'] = exclude
         return model_to_dict(self, **kwargs)
 
+@receiver(pre_save, sender=Activity, dispatch_uid="psave_activity")
+def psave_activity(sender, instance, **kwargs):
+    if instance.bounty and instance.bounty.event:
+        if not instance.hackathonevent:
+            instance.hackathonevent = instance.bounty.event
+
+    if hasattr(instance, 'profile') and hasattr(instance.profile, 'user') and instance.profile.user.is_staff:
+        instance.metadata['staff'] = True
+
 
 @receiver(post_save, sender=Activity, dispatch_uid="post_add_activity")
 def post_add_activity(sender, instance, created, **kwargs):
     if created:
-
-        if instance.bounty and instance.bounty.event:
-            if not instance.hackathonevent:
-                instance.hackathonevent = instance.bounty.event
 
         # make sure duplicate activity feed items are removed
         dupes = Activity.objects.exclude(pk=instance.pk)
@@ -4042,7 +4047,6 @@ def psave_profile(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
-
     if instance.pk:
         SearchResult.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
