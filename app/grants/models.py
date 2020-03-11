@@ -62,6 +62,8 @@ class GrantQuerySet(models.QuerySet):
             dashboard.models.GrantQuerySet: The QuerySet of grants filtered by keyword.
 
         """
+        if not keyword:
+            return self
         return self.filter(
             Q(description__icontains=keyword) |
             Q(title__icontains=keyword) |
@@ -238,6 +240,12 @@ class Grant(SuperModel):
         max_digits=20,
         help_text=_('The TOTAL CLR matching amount across all rounds'),
     )
+    amount_received_with_phantom_funds = models.DecimalField(
+        default=0,
+        decimal_places=2,
+        max_digits=20,
+        help_text=_('The fundingamount across all rounds with phantom funding'),
+    )
     clr_prediction_curve = ArrayField(
         ArrayField(
             models.FloatField(),
@@ -381,8 +389,7 @@ class Grant(SuperModel):
                 max_amount = max(max_amount, ele[1]+ele[2]+ele[3]+ele[4])
         return max_amount
 
-    @property
-    def amount_received_with_phantom_funds(self):
+    def get_amount_received_with_phantom_funds(self):
         return float(self.amount_received) + float(sum([ele.value for ele in self.phantom_funding.all()]))
 
     @property
@@ -921,6 +928,7 @@ def psave_grant(sender, instance, **kwargs):
     instance.contributor_count = instance.get_contributor_count
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
+    instance.amount_received_with_phantom_funds = instance.get_amount_received_with_phantom_funds()
     #print(instance.id)
     for subscription in instance.subscriptions.all():
         value_usdt = subscription.get_converted_amount(False)

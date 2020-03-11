@@ -5,7 +5,7 @@
     </div>
     <div class="col-3 col-sm-2 col-md-1 justify-content-center special_tag">
       <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
-        <img class="avatar rounded-circle" src="{{ transaction.subscription.contributor_profile.avatar_url }}">
+        <img class="avatar rounded-circle" src="/dynamic/avatar/{{ transaction.subscription.contributor_profile.handle }}">
       </a>
     </div>
     <div class="col-5 col-sm-4 my-auto">
