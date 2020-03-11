@@ -1689,6 +1689,7 @@ div.busyOverlay {
   display: inline-block;
   margin-top: -12px;
   margin-bottom: 0px;
+  line-height: 10px;
 }
 .chat_presence_indicator.online .indicator {
   color: #0fce7c;
