@@ -1711,18 +1711,7 @@ def tribes(request):
         }
     ]
 
-    _tribes = Profile.objects.filter(data__type='Organization').\
-        annotate(follower_count=Count('org')).cache().order_by('-follower_count')[:8]
-
-    tribes = []
-
-    for _tribe in _tribes:
-        tribe = {
-            'name': _tribe.handle,
-            'img': _tribe.avatar_url,
-            'followers_count': _tribe.follower_count
-        }
-        tribes.append(tribe)
+    tribes = JSONStore.objects.get(view='tribes', key='tribes').data
 
     testimonials = [
         {
