@@ -566,6 +566,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             bounty_kwargs.update(latest_old_bounty_dict)
         try:
             print('new bounty with kwargs:{}'.format(bounty_kwargs))
+            _ = bounty_kwargs.pop('payout_tx_id', None)
             new_bounty = Bounty.objects.create(**bounty_kwargs)
             merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details)
         except Exception as e:
