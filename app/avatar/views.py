@@ -173,8 +173,10 @@ def select_preset_avatar(request):
         logger.error('Save Avatar - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
     return JsonResponse(response, status=response['status'])
 
+
 class AvatarNotFoundException(Exception):
     pass
+
 
 def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     from dashboard.models import Profile
@@ -190,8 +192,10 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
         try:
             profile = Profile.objects.prefetch_related('avatar_baseavatar_related')\
                 .filter(handle__iexact=_org_name).first()
-            if profile and profile.active_avatar:
-                avatar_file, content_type = profile.active_avatar.determine_response(request.GET.get('email', False))
+            if profile and profile.active_avatar_nocache:
+                avatar_file, content_type = profile.active_avatar_nocache.determine_response(
+                    request.GET.get('email', False)
+                )
                 if avatar_file:
                     return HttpResponse(avatar_file, content_type=content_type)
         except Exception as e:

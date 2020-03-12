@@ -59,8 +59,9 @@ from avatar.views_3d import avatar3dids_helper
 from bleach import clean
 from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
-from chat.tasks import add_to_channel
-from chat.utils import create_channel_if_not_exists, create_user_if_not_exists
+from chat.tasks import (
+    add_to_channel, associate_chat_to_profile, chat_notify_default_props, create_channel_if_not_exists,
+)
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -130,15 +131,7 @@ def oauth_connect(request, *args, **kwargs):
         "id": f'{active_user_profile.user.id}',
         "auth_data": f'{active_user_profile.user.id}',
         "auth_service": "gitcoin",
-        "notify_props": {
-            "email": "false",
-            "push": "mention",
-            "desktop": "all",
-            "desktop_sound": "true",
-            "mention_keys": f'{active_user_profile.handle}, @{active_user_profile.handle}',
-            "channel": "true",
-            "first_name": "false"
-        }
+        "notify_props": chat_notify_default_props(active_user_profile)
     }
     return JsonResponse(user_profile, status=200, safe=False)
 
@@ -386,57 +379,6 @@ def new_interest(request, bounty_id):
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
-        if bounty.event:
-            try:
-                if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
-                    try:
-                        bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
-                        created, channel_details = create_channel_if_not_exists({
-                            'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                            'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
-                            'channel_name': bounty_channel_name[:60]
-                        })
-                        bounty_channel_id = channel_details['id']
-                        bounty.chat_channel_id = bounty_channel_id
-                        bounty.save()
-                    except Exception as e:
-                        logger.error(str(e))
-                        raise ValueError(e)
-                else:
-                    bounty_channel_id = bounty.chat_channel_id
-
-                funder_profile = Profile.objects.get(handle__iexact=bounty.bounty_owner_github_username)
-
-                if funder_profile:
-                    if funder_profile.chat_id is '':
-                        try:
-                            created, funder_details_response = create_user_if_not_exists(funder_profile)
-                            funder_profile.chat_id = funder_details_response['id']
-                            funder_profile.save()
-                        except Exception as e:
-                            logger.error(str(e))
-                            raise ValueError(e)
-
-                    if profile.chat_id is '':
-
-                        try:
-                            created, profile_lookup_response = create_user_if_not_exists(profile)
-                            profile.chat_id = profile_lookup_response['id']
-                            profile.save()
-                        except Exception as e:
-                            logger.error(str(e))
-                            raise ValueError(e)
-
-                    profiles_to_connect = [
-                        funder_profile.chat_id,
-                        profile.chat_id
-                    ]
-                    add_to_channel.delay(
-                        {'id': bounty_channel_id}, profiles_to_connect
-                    )
-
-            except Exception as e:
-                print(str(e))
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -1051,6 +993,9 @@ def users_fetch(request):
     if request.GET.get('type') == 'explore_tribes':
         profile_list = Profile.objects.filter(data__type='Organization'
             ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
+
+        if q:
+            profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
 
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
@@ -2071,7 +2016,7 @@ def quickstart(request):
 
     activities = Activity.objects.filter(activity_type='new_bounty').order_by('-created')[:5]
     context = deepcopy(qs.quickstart)
-    context["activities"] = [a.either_view_props for a in activities]
+    context["activities"] = activities
     return TemplateResponse(request, 'quickstart.html', context)
 
 
@@ -2597,11 +2542,10 @@ def get_profile_tab(request, profile, tab, prev_context):
 
     # all tabs
     active_bounties = context['active_bounties'].order_by('-web3_created')
-    context['active_bounties_count'] = active_bounties.count()
-    context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.count()
-    context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).count()
-    context['my_kudos'] = profile.get_my_kudos.distinct('kudos_token_cloned_from__name')[0:7]
-
+    context['active_bounties_count'] = active_bounties.cache().count()
+    context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.cache().count()
+    context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).cache().count()
+    context['my_kudos'] = profile.get_my_kudos.cache().distinct('kudos_token_cloned_from__name')[0:7]
     # specific tabs
     if tab == 'activity':
         all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar']
@@ -2835,13 +2779,13 @@ def profile(request, handle, tab=None):
 
         if not handle:
             handle = request.user.username
-            profile = getattr(request.user, 'profile', None)
+            profile = None
             if not profile:
-                profile = profile_helper(handle)
+                profile = profile_helper(handle, disable_cache=True)
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
-            profile = profile_helper(handle, current_user=request.user)
+            profile = profile_helper(handle, current_user=request.user, disable_cache=True)
 
     except (Http404, ProfileHiddenException, ProfileNotFoundException):
         status = 404
@@ -2863,9 +2807,14 @@ def profile(request, handle, tab=None):
         return redirect(profile.url)
 
     # setup context for visit
-
     if not len(profile.tribe_members) and tab == 'tribe':
         tab = 'activity'
+
+    # hack to make sure that if ur looking at ur own profile u see right online status
+    # previously this was cached on the session object, and we've not yet found a way to buste that cache
+    if request.user.is_authenticated:
+        if request.user.username.lower() == profile.handle:
+            profile = Profile.objects.nocache().get(pk=profile.pk)
 
     if tab == 'tribe':
         context['tribe_priority'] = profile.tribe_priority
@@ -4000,14 +3949,41 @@ def hackathon_save_project(request):
         'work_url': clean(request.POST.get('work_url'), strip=True)
     }
 
+    try:
+
+        if profile.chat_id is '' or profile.chat_id is None:
+            created, profile = associate_chat_to_profile(profile)
+    except Exception as e:
+        logger.info("Bounty Profile owner not apart of gitcoin")
+    profiles_to_connect = [profile.chat_id]
+
     if project_id:
-        try :
+        try:
+
             project = HackathonProject.objects.filter(id=project_id, profiles__id=profile.id)
 
             kwargs.update({
                 'logo': request.FILES.get('logo', project.first().logo)
             })
+
             project.update(**kwargs)
+
+            try:
+                bounty_profile = Profile.objects.get(handle__iexact=project.bounty.bounty_owner_github_username)
+                if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
+                    created, bounty_profile = associate_chat_to_profile(bounty_profile)
+
+                profiles_to_connect.append(bounty_profile.chat_id)
+            except Exception as e:
+                logger.info("Bounty Profile owner not apart of gitcoin")
+
+            for profile_id in profiles:
+                curr_profile = Profile.objects.get(id=profile_id)
+                if not curr_profile.chat_id:
+                    created, curr_profile = associate_chat_to_profile(curr_profile)
+                profiles_to_connect.append(curr_profile.chat_id)
+
+            add_to_channel.delay(project.first().chat_channel_id, profiles_to_connect)
 
             profiles.append(str(profile.id))
             project.first().profiles.set(profiles)
@@ -4019,6 +3995,40 @@ def hackathon_save_project(request):
             return JsonResponse({'error': _('Error trying to save project')},
             status=401)
     else:
+
+        try:
+            project_channel_name = slugify(f'{kwargs["name"]}')
+
+            created, channel_details = create_channel_if_not_exists({
+                'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                'channel_purpose': kwargs["summary"][:255],
+                'channel_display_name': f'project-{project_channel_name}'[:60],
+                'channel_name': project_channel_name[:60],
+                'channel_type': 'P'
+            })
+            try:
+                bounty_profile = Profile.objects.get(handle__iexact=bounty_obj.bounty_owner_github_username)
+                if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
+                    created, bounty_profile = associate_chat_to_profile(bounty_profile)
+
+                profiles_to_connect.append(bounty_profile.chat_id)
+            except Exception as e:
+                logger.info("Bounty Profile owner not apart of gitcoin")
+
+            for profile_id in profiles:
+                curr_profile = Profile.objects.get(id=profile_id)
+                if not curr_profile.chat_id:
+                    created, curr_profile = associate_chat_to_profile(curr_profile)
+                profiles_to_connect.append(curr_profile.chat_id)
+
+            add_to_channel.delay(channel_details, profiles_to_connect)
+
+            kwargs.update({
+                'chat_channel_id': channel_details['id']
+            })
+        except Exception as e:
+            logger.error('Error creating project channel', e)
+
         project = HackathonProject.objects.create(**kwargs)
         project.save()
         profiles.append(str(profile.id))
@@ -4047,10 +4057,15 @@ def hackathon_registration(request):
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
         HackathonRegistration.objects.create(
             name=hackathon,
-            hackathon= hackathon_event,
+            hackathon=hackathon_event,
             referer=referer,
             registrant=profile
         )
+        try:
+            from chat.tasks import hackathon_chat_sync
+            hackathon_chat_sync.delay(hackathon_event.id, profile.handle)
+        except Exception as e:
+            logger.error('Error while adding to chat', e)
 
     except Exception as e:
         logger.error('Error while saving registration', e)
@@ -4402,6 +4417,11 @@ def choose_persona(request):
 
     if request.user.is_authenticated:
         profile = request.user.profile if hasattr(request.user, 'profile') else None
+        if not profile:
+            return JsonResponse(
+                { 'error': _('You must be authenticated') },
+                status=401
+            )
         persona = request.POST.get('persona')
         if persona == 'persona_is_funder':
             profile.persona_is_funder = True

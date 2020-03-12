@@ -532,6 +532,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
                 'bounty_owner_name': bounty_issuer.get('name', ''),
+                'payout_tx_id': '',
                 'admin_override_suspend_auto_approval': not schemes.get('auto_approve_workers', True),
                 'fee_tx_id': bounty_payload.get('fee_tx_id', '0x0'),
                 'fee_amount': bounty_payload.get('fee_amount', 0)

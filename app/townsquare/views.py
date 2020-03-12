@@ -159,7 +159,7 @@ def get_sidebar_tabs(request):
     }
     tabs = tabs + [connect]
 
-    hackathons = HackathonEvent.objects.filter(start_date__gt=timezone.now() - timezone.timedelta(days=10), end_date__gt=timezone.now())
+    hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now() + timezone.timedelta(days=10), end_date__gt=timezone.now())
     if hackathons.count():
         for hackathon in hackathons:
             connect = {
@@ -213,8 +213,10 @@ def get_offers(request):
 def get_miniclr_info(request):
     # matching leaderboard
     current_match_round = MatchRound.objects.current().first()
+    if request.GET.get('round'):
+        current_match_round = MatchRound.objects.get(number=request.GET.get('round'))
     num_to_show = 10
-    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1))
+    current_match_rankings = MatchRanking.objects.filter(round=current_match_round, number__lt=(num_to_show+1)).order_by('number')
     matching_leaderboard = [
         {
             'i': obj.number,
@@ -254,8 +256,8 @@ def get_tags(request):
 def get_param_metadata(request, tab):
 
     # title
-    title = 'Home'
-    desc = 'View the recent activity on the Gitcoin network'
+    title = 'Town Square'
+    desc = 'Learn, earn, & connect with great developers on the Gitcoin Town Square'
     page_seo_text_insert = ''
     avatar_url = ''
     admin_link = ''
@@ -284,7 +286,7 @@ def get_following_tribes(request):
             last_24_hours_activity = 0 # TODO: integrate this with get_amount_unread
             tribe = {
                 'title': handle,
-                'slug': handle,
+                'slug': f"tribe:{handle}",
                 'helper_text': f'Activities from @{handle} in the last 24 hours',
                 'badge': last_24_hours_activity,
                 'avatar_url': f'/dynamic/avatar/{handle}'
@@ -294,6 +296,30 @@ def get_following_tribes(request):
 
 
 def town_square(request):
+    SHOW_DRESSING = request.GET.get('dressing', False)
+    tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
+    title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
+    if not SHOW_DRESSING:
+        is_search = "activity:" in tab or "search-" in tab
+        trending_only = int(request.GET.get('trending', 0))
+        context = {
+            'title': title,
+            'card_desc': desc,
+            'avatar_url': avatar_url,
+            'use_pic_card': True,
+            'is_search': is_search,
+            'is_direct_link': is_direct_link,
+            'page_seo_text_insert': page_seo_text_insert,
+            'nav': 'home',
+            'target': f'/activity?what={tab}&trending_only={trending_only}',
+            'tab': tab,
+            'tags': tags,
+            'admin_link': admin_link,
+            'now': timezone.now(),
+            'is_townsquare': True,
+            'trending_only': bool(trending_only),
+        }
+        return TemplateResponse(request, 'townsquare/index.html', context)
 
     tabs, tab, is_search, search, hackathon_tabs = get_sidebar_tabs(request)
     offers_by_category = get_offers(request)
@@ -301,7 +327,6 @@ def town_square(request):
     is_subscribed = get_subscription_info(request)
     announcements = Announcement.objects.current().filter(key='townsquare')
     view_tags = get_tags(request)
-    title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
     following_tribes = get_following_tribes(request)
 
     # render page context
@@ -318,6 +343,7 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'SHOW_DRESSING': SHOW_DRESSING,
         'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'matching_leaderboard': matching_leaderboard,
@@ -409,7 +435,6 @@ def api(request, activity_id):
         if not activity.has_voted(request.user):
             activity.metadata['poll_choices'][index]['answers'].append(request.user.profile.pk)
             activity.save()
-            activity.generate_view_props_cache_as_task()
 
     # toggle like comment
     if request.POST.get('method') == 'toggle_like_comment':
