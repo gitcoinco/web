@@ -2755,6 +2755,8 @@ def profile(request, handle, tab=None):
     default_tab = 'activity'
     tab = tab if tab else default_tab
     handle = handle.replace("@", "")
+    # perf
+    disable_cache = False
 
     # make sure tab param is correct
     all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons']
@@ -2776,7 +2778,6 @@ def profile(request, handle, tab=None):
     try:
         if not handle and not request.user.is_authenticated:
             return redirect('funder_bounties')
-        disable_cache = False
         if not handle:
             handle = request.user.username
             profile = None
@@ -2814,7 +2815,10 @@ def profile(request, handle, tab=None):
     # previously this was cached on the session object, and we've not yet found a way to buste that cache
     if request.user.is_authenticated:
         if request.user.username.lower() == profile.handle:
-            profile = Profile.objects.get(pk=profile.pk)
+            base = Profile.objects
+            if disable_cache:
+                base = base.nocache()
+            profile = base.get(pk=profile.pk)
 
     if tab == 'tribe':
         context['tribe_priority'] = profile.tribe_priority
