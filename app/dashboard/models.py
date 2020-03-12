@@ -2534,6 +2534,7 @@ class Profile(SuperModel):
 
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    organizations_fk = models.ManyToManyField('dashboard.Profile', blank=True)
     profile_organizations = models.ManyToManyField(Organization, blank=True)
     repos = models.ManyToManyField(Repo, blank=True)
     form_submission_records = JSONField(default=list, blank=True)
@@ -2667,7 +2668,7 @@ class Profile(SuperModel):
     def team(self):
         if not self.is_org:
             return Profile.objects.none()
-        return Profile.objects.filter(organizations__contains=[self.handle.lower()])
+        return Profile.objects.filter(organizations_fk=self)
 
     @property
     def tribe_members(self):
@@ -4048,6 +4049,17 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace(' ', '')
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
+
+    # sync organizations_fk and organizations
+    for handle in instance.organizations:
+        handle =handle.lower()
+        if not instance.organizations_fk.filter(handle=handle).exists():
+            obj = Profile.objects.filter(handle=handle).first()
+            if obj:
+                instance.organizations_fk.add(obj)
+    for profile in instance.organizations_fk.all():
+        if profile.handle not in instance.organizations:
+            instance.organizations += [profile.handle]
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
