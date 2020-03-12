@@ -96,7 +96,7 @@ def about(request):
     context = {
         'is_outside': True,
         'active': 'about',
-        'activities': [a.either_view_props for a in activities],
+        'activities': activities,
         'title': 'Kudos',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
@@ -701,6 +701,11 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
         error = f'Your github profile is too new.  Cannot receive kudos.'
         return None, error, None
     else:
+
+        if profile.bulk_transfer_redemptions.filter(coupon=coupon).exists():
+            error = f'You have already redeemed this kudos.'
+            return None, error, None
+
 
         signed = w3.eth.account.signTransaction(tx, private_key)
         retry_later = False

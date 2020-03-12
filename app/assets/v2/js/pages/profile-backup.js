@@ -51,6 +51,8 @@
 
   // add click listener
   $('#sync-to-3box').on('click', (event) => {
+    event.preventDefault();
+    _alert('... starting backup ... ', 'info', 500);
     if (!long_pressed) {
       startProfileDataBackup();
     }

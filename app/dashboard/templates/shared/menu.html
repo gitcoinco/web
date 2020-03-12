@@ -30,7 +30,17 @@
 <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
   <nav class="navbar-nav mx-auto gc-megamenu">
     <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Home" %}</a>
-    <a class="nav-link {% if '/chat' in request.path %}selected{% endif %} interior" href="/chat">{% trans "Chat" %}</a>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link {% if '/chat' in request.path %}selected{% endif %}  dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Chat
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/chat">Web Chat</a>
+          <a class="dropdown-item" href="/chat/landing">Desktop & Mobile Apps</a>
+        </div>
+      </li>
+
     <div class="nav-item dropdown interior gc-megamenu-fw">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownProducts" role="button"
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

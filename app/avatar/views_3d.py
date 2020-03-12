@@ -429,6 +429,39 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['orc_skin', 'orc_hair'],
             'path': 'assets/v2/images/avatar3d/orc.svg',
         },
+        'barbarian': {
+            'preview_viewbox': {
+                'BACK': '0 0 350 350',
+                'ACC': '0 50 320 320',
+                'BEARD': '80 130 200 200',
+                'HAIR': '70 120 200 200',
+                'EYE': '100 100 150 150',
+                'CASK': '70 0 210 210',
+            },
+            'skin_tones': [
+                'FFCAA6', 'FFFFF6', 'FEF7EB', 'F8D5C2', 'EEE3C1', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031',
+                '593D26', '392D16', 'FFFF99'
+            ],
+            'hair_tones': [],
+            'tone_maps': ['barb_skin'],
+            'path': 'assets/v2/images/avatar3d/avatar_barbarian.svg',
+        },
+        'bender': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+                'legs': '30 150 300 300',
+                'arms': '0 0 350 350',
+                'head': '100 0 150 150',
+                'mouth': '130 80 100 100',
+                'eyes': '130 50 100 100',
+                'body': '0 0 350 350',
+                'accessory': '100 100 150 150',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/bender.svg',
+        },
         'joker': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
@@ -508,6 +541,9 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
     if tone == 'mage_skin':
         tones = {'FFEDD9': 0, }
         base_3d_tone = 'FFEDD9'
+    if tone == 'barb_skin':
+        tones = {'F7D3C0': 0, }
+        base_3d_tone = 'F7D3C0'
     if tone == 'orc_skin':
         tones = {'FFFF99': 0, }
         base_3d_tone = 'FFFF99'

@@ -94,12 +94,12 @@ INSTALLED_APPS = [
     'health_check.contrib.s3boto3_storage',
     'app',
     'avatar',
-    'chat',
     'retail',
     'rest_framework',
     'marketing',
     'economy',
     'dashboard',
+    'chat',
     'quests',
     'enssubdomain',
     'faucet',
@@ -568,10 +568,11 @@ KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0x
 # Chat
 CHAT_PORT = env('CHAT_PORT', default=8065)  # port of where mattermost is hosted
 CHAT_URL = env('CHAT_URL', default='localhost')  # location of where mattermost is hosted
+CHAT_SERVER_URL = env('CHAT_SERVER_URL', default='chat')  # location of where mattermost is hosted
 CHAT_DRIVER_TOKEN = env('CHAT_DRIVER_TOKEN', default='')  # driver token
 GITCOIN_HACK_CHAT_TEAM_ID = env('GITCOIN_HACK_CHAT_TEAM_ID', default='')
 GITCOIN_CHAT_TEAM_ID = env('GITCOIN_CHAT_TEAM_ID', default='')
-
+GITCOIN_LEADERBOARD_CHANNEL_ID = env('GITCOIN_LEADERBOARD_CHANNEL_ID', default='')
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
@@ -763,7 +764,7 @@ if ENABLE_DDTRACE:
 
 WIKI_ACCOUNT_HANDLING = True
 WIKI_ACCOUNT_SIGNUP_ALLOWED = True
-
+WIKI_CACHE_TIMEOUT = True
 
 # Sending an email when a bounty is funded below a threshold
 LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)

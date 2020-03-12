@@ -1,67 +1,33 @@
 # Running Locally with Docker (Recommended)
 
-```shell
-git clone https://github.com/gitcoinco/mattermost-server.git
-git clone https://github.com/gitcoinco/mattermost-client.git
+Chat has been containerized and loads automatically as apart of `docker-compose up`
 
-```
+Chat Config overrides can be setup in `chatconfig/config.json`
+- email, notifications, plugins, etc
 
+Gitcoin Oauth Dummy Credentials are created as apart the chat/fixtures/initial.json folder.
 
-
-## Mattermost Developer Setup
-
-Follow the instructions at https://developers.mattermost.com/contribute/server/developer-setup/
+If you want to configure a new oauth application visit: [oAuth Provider Administration](http://localhost:8000/_administrationoauth2_provider/application/) and you will have to update the `GitCoinSettings` key in  `config/config.json` file with the new application keys created above.
 
 
-You want `mattermost-server` and `mattermost-client` in the same parent directory
+Visit [Chat](http://localhost:8065) to get started. 
 
-Server commands are scripted with a relative path to the client at ../mattermost-client
+- [ ] Login
+- Setup the Platform post initialization:
+  - Create Two New Teams:
+    - [ ] Gitcoin - name Gitcoin, slug /gitcoin
+    - [ ] Hackathons - name Hackathons, slug /hackathon
+  - [ ] Access the mattermost database
+  
+  - [ ] extract the two team ID's for what we created above, 
+and set them in `app/app/.env`
+    - [ ] GITCOIN_HACK_CHAT_TEAM_ID=
+    - [ ] GITCOIN_CHAT_TEAM_ID= 
 
-## Startup server
+Once Logged into The Gitcoin team, 
+- Create a Bot Account to drive actions from Gitcoin on Chat
+[Visit Gitcoin Chat Integrations](http://localhost:8065/gitcoin/integrations)
+  - [ ] Create a new Bot Account and copy its access token 
+  - [ ] Set CHAT_DRIVER_TOKEN= in `app/app/.env` to the access token from above 
 
-### Running in Detached mode
-
-Runs the server with its dependencies on docker, conflicts with other services presently  
-```shell
-make run-server
-```
-
-### Developing with the command line shell
-
-```shell
-make run-cli
-```
-
-### Debugging
-
-```shell
-make debug-server
-```
-
-
-### Viewing Logs
-
-Actively follow a container's log:
-
-```shell
-docker-compose logs -f mattermost # Or any other container name
-```
-
-View all container logs:
-
-```shell
-docker-compose logs
-```
-
-Navigate to `http://localhost:8065/`.
-
-
-You will need to edit the `config/config.json` file with your local environment variables. Look for config items that are marked `# required`.
-
-## Gitcoin Integration Setup (recommended)
-
-If you plan on using the Gitcoin integration, please read this first [Django Oauth Toolkit - Register an application](https://django-oauth-toolkit.readthedocs.io/en/latest/rest-framework/getting_started.html#step-3-register-an-application). 
-
-Create an Application on your local copy of Gitcoin and enable skip authorization.
-
-Once you have those keys you will have to update the `GitCoinSettings` key in  `config/config.json` file with the new application keys created above.
+Restart Gitcoin Web with updated env variables

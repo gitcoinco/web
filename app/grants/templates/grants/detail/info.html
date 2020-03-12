@@ -134,19 +134,6 @@
 
     </div>
 
-    <div id="edit-grant-category" class="my-2 mb-4">
-      <p class="sub-title mb-0">{% trans "Categories" %}</p>
-      <div>
-        <div class="form__select2">
-          <select id="grant-categories" class="form__input" name="grant-categories[]" multiple="multiple" disabled>
-            {% for category in grant.categories.all %}
-            <option value="{{ category.id }}" selected="selected">{{ category.category|title }}</option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-    </div>
-
     {% if grant_is_inactive %}
       <button type="button" class="button button--primary shadow-none font-weight-bold button--full py-3" disabled>
         {% trans "Grant Has Ended" %}
@@ -213,7 +200,32 @@
       {% endif %}
     </div>
 
-    <div class="grant-item__member my-4 font-body">
+
+    {% if grant.categories and grant.categories.all %}
+      {% if not is_team_member or grant_is_inactive %}
+        <div class="mb-2 mt-3 font-body">
+          <p class="sub-title mb-1">{% trans "CATEGORIES" %}</p>
+          {% for category in grant.categories.all %}
+            <span class="btn btn-outline-gc-green py-1 font-weight-bold font-smaller-4">{{ category.category|title }}</span>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="hidden" id="grant-type">{{ grant.grant_type }}</p>
+
+        <div id="edit-grant-category" class="mt-4 mb-2 font-body grant-item-multiselect">
+          <p class="sub-title mb-1">{% trans "CATEGORIES" %}</p>
+          <div class="form__select2">
+            <select id="grant-categories" class="form__input" name="grant-categories" multiple="multiple" disabled>
+              {% for category in grant.categories.all %}
+              <option value="{{ category.id }}" selected="selected">{{ category.category|title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    <div class="grant-item__member grant-item-multiselect my-4 font-body">
       <p class="sub-title {% if is_team_member %} mb-0 {% else %} mb-3 {% endif %}">
         TEAM
       </p>
@@ -232,9 +244,9 @@
           <div class="grant-item__members d-flex flex-wrap">
             {% for team_member in grant.team_members.all %}
               <a class="grant-item__member-handle mb-3" href="{% url 'profile' team_member %}">
-                <div class="grant-item__member mr-5">
+                <div class="grant-item__member grant-item-multiselect mr-5">
                   <div class="mr-2 d-inline-block">
-                    <img src="{{ team_member.avatar_url }}">
+                    <img src="/dynamic/avatar/{{ team_member.handle }}">
                   </div>
                   <div class="mt-1 d-inline-block">
                     <span class="grant-profile font-weight-semibold">{{ team_member }}</span>

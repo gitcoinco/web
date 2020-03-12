@@ -57,7 +57,7 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
     """
     with redis.lock("tasks:bounty_email:%s" % invite_url, timeout=LOCK_TIMEOUT):
         # need to look at how to send bulk emails with SG
-        profile = Profile.objects.get(handle=profile_handle)
+        profile = Profile.objects.get(handle__iexact=profile_handle)
         try:
             for email in emails:
                 to_email = email
@@ -96,17 +96,3 @@ def profile_dict(self, pk, retry: bool = True) -> None:
         if profile.frontend_calc_stale:
             profile.calculate_all()
             profile.save()
-
-
-@app.shared_task(bind=True, max_retries=3)
-def refresh_activity_views(self, pk, retry: bool = True) -> None:
-    """
-    :param self:
-    :param pk:
-    :return:
-    """
-    if isinstance(pk, list):
-        pk = pk[0]
-    with redis.lock("tasks:refresh_activity_views:%s" % pk, timeout=LOCK_TIMEOUT):
-        activity = Activity.objects.get(pk=pk)
-        activity.generate_view_props_cache()
