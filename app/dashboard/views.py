@@ -2776,16 +2776,16 @@ def profile(request, handle, tab=None):
     try:
         if not handle and not request.user.is_authenticated:
             return redirect('funder_bounties')
-
+        disable_cache = False
         if not handle:
             handle = request.user.username
             profile = None
             if not profile:
-                profile = profile_helper(handle, disable_cache=True)
+                profile = profile_helper(handle, disable_cache=disable_cache)
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
-            profile = profile_helper(handle, current_user=request.user, disable_cache=True)
+            profile = profile_helper(handle, current_user=request.user, disable_cache=disable_cache)
 
     except (Http404, ProfileHiddenException, ProfileNotFoundException):
         status = 404
@@ -2814,7 +2814,7 @@ def profile(request, handle, tab=None):
     # previously this was cached on the session object, and we've not yet found a way to buste that cache
     if request.user.is_authenticated:
         if request.user.username.lower() == profile.handle:
-            profile = Profile.objects.nocache().get(pk=profile.pk)
+            profile = Profile.objects.get(pk=profile.pk)
 
     if tab == 'tribe':
         context['tribe_priority'] = profile.tribe_priority
