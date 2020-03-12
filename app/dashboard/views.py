@@ -437,7 +437,7 @@ def post_comment(request):
     if fbAmount > 0:
         return JsonResponse({
             'success': False,
-            'msg': 'There is already a approval comment',
+            'msg': 'There is already an approval comment',
         })
 
     kwargs = {
