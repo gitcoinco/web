@@ -651,7 +651,7 @@ class TokenRequest(SuperModel):
 
     def __str__(self):
         """Define the string representation of a conversion rate."""
-        return f"{self.name} on {self.network} on {self.created_on}; approved: {self.approved} "
+        return f"approved: {self.approved} -- {self.name} on {self.network} on {self.created_on};"
 
 
     def mint(self):
