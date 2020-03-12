@@ -71,6 +71,7 @@ urlpatterns = [
     url('^api/v1/bounty/create', dashboard.views.create_bounty_v1, name='create_bounty_v1'),
     url('^api/v1/bounty/cancel', dashboard.views.cancel_bounty_v1, name='cancel_bounty_v1'),
     url('^api/v1/bounty/fulfill', dashboard.views.fulfill_bounty_v1, name='fulfill_bounty_v1'),
+    re_path(r'.*api/v0.1/chat/presence$', chat.views.chat_presence, name='chat_presence'),
 
     # inbox
     re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
@@ -159,7 +160,6 @@ urlpatterns = [
     # chat
     url(r'^chat/landing', chat.views.chat, name='landing_chat'),
     url(r'^chat/landing/', chat.views.chat, name='landing_chat2'),
-    url(r'^api/v0.1/chat/presence', chat.views.chat_presence, name='chat_presence'),
     re_path(r'^chat/?', chat.views.embed, name='chat'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),

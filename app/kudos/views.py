@@ -72,9 +72,9 @@ def get_profile(handle):
         obj: The profile model object.
     """
     try:
-        to_profile = Profile.objects.get(handle__iexact=handle)
+        to_profile = Profile.objects.get(handle=handle.lower())
     except Profile.MultipleObjectsReturned:
-        to_profile = Profile.objects.filter(handle__iexact=handle).order_by('-created_on').first()
+        to_profile = Profile.objects.filter(handle=handle.lower()).order_by('-created_on').first()
     except Profile.DoesNotExist:
         to_profile = None
     return to_profile
@@ -293,7 +293,7 @@ def send_2(request):
     user = {}
 
     if username:
-        profiles = Profile.objects.filter(handle__iexact=username)
+        profiles = Profile.objects.filter(handle=username.lower())
 
         if profiles.exists():
             profile = profiles.first()
@@ -512,9 +512,9 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
     }
     try:
         github_handle = github_handle.lstrip('@')
-        kwargs['profile'] = Profile.objects.get(handle=github_handle)
+        kwargs['profile'] = Profile.objects.get(handle=github_handle.lower())
     except Profile.MultipleObjectsReturned:
-        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
+        kwargs['profile'] = Profile.objects.filter(handle=github_handle.lower()).first()
     except Profile.DoesNotExist:
         logger.warning(f"error in record_kudos_email_activity: profile with github name {github_handle} not found")
         return
@@ -550,9 +550,9 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
     }
 
     try:
-        kwargs['profile'] = Profile.objects.get(handle__iexact=github_handle)
+        kwargs['profile'] = Profile.objects.get(handle=github_handle.lower())
     except Profile.MultipleObjectsReturned:
-        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
+        kwargs['profile'] = Profile.objects.filter(handle=github_handle.lower()).first()
     except Profile.DoesNotExist:
         logging.error(f"error in record_kudos_activity: profile with github name {github_handle} not found")
         return
