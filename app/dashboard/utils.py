@@ -791,7 +791,7 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
     try:
         if disable_cache:
             base = base.nocache()
-        profile = base.get(handle__iexact=handle)
+        profile = base.get(handle=handle.lower())
     except Profile.DoesNotExist:
         profile = sync_profile(handle)
         if not profile:
@@ -800,7 +800,7 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
         # Handle edge case where multiple Profile objects exist for the same handle.
         # We should consider setting Profile.handle to unique.
         # TODO: Should we handle merging or removing duplicate profiles?
-        profile = base.filter(handle__iexact=handle).latest('id')
+        profile = base.filter(handle=handle.lower()).latest('id')
         logging.error(e)
 
     if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
@@ -865,7 +865,7 @@ def is_blocked(handle):
         return True
 
     # check banned country list
-    profiles = Profile.objects.filter(handle__iexact=handle)
+    profiles = Profile.objects.filter(handle=handle.lower())
     if profiles.exists():
         profile = profiles.first()
         last_login = profile.actions.filter(action='Login').order_by('pk').last()

@@ -282,7 +282,7 @@ class BountyViewSet(viewsets.ModelViewSet):
             handle = self.request.query_params.get('reserved_for_user_handle', '')
             if handle:
                 try:
-                    profile = Profile.objects.filter(handle__iexact=handle).first()
+                    profile = Profile.objects.filter(handle=handle.lower()).first()
                     queryset = queryset.filter(bounty_reserved_for_user=profile)
                 except:
                     logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
@@ -361,7 +361,7 @@ class BountyViewSet(viewsets.ModelViewSet):
         # Retrieve all interested bounties by profile handle
         if 'interested_github_username' in param_keys:
             queryset = queryset.filter(
-                interested__profile__handle__iexact=self.request.query_params.get('interested_github_username')
+                interested__profile__handle=self.request.query_params.get('interested_github_username').lower()
             )
 
         # Retrieve all mod bounties.

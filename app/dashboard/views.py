@@ -238,7 +238,7 @@ def helper_handle_access_token(request, access_token):
     # interest API via token
     github_user_data = get_github_user_data(access_token)
     request.session['handle'] = github_user_data['login']
-    profile = Profile.objects.filter(handle__iexact=request.session['handle']).first()
+    profile = Profile.objects.filter(handle=request.session['handle'].lower()).first()
     request.session['profile_id'] = profile.pk
 
 
@@ -322,7 +322,7 @@ def new_interest(request, bounty_id):
         helper_handle_access_token(request, access_token)
         github_user_data = get_github_user_data(access_token)
         profile = Profile.objects.prefetch_related('bounty_set') \
-            .filter(handle=github_user_data['login']).first()
+            .filter(handle=github_user_data['login'].lower()).first()
         profile_id = profile.pk
     else:
         profile = request.user.profile if profile_id else None
@@ -428,7 +428,7 @@ def post_comment(request):
 
     bounty_id = request.POST.get('bounty_id')
     bountyObj = Bounty.objects.get(pk=bounty_id)
-    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]')).first()
+    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]').lower()).first()
     fbAmount = FeedbackEntry.objects.filter(
         sender_profile=profile_id,
         receiver_profile=receiver_profile,
@@ -565,7 +565,7 @@ def remove_interest(request, bounty_id):
     if access_token:
         helper_handle_access_token(request, access_token)
         github_user_data = get_github_user_data(access_token)
-        profile = Profile.objects.filter(handle=github_user_data['login']).first()
+        profile = Profile.objects.filter(handle=github_user_data['login'].lower()).first()
         profile_id = profile.pk
 
     if not profile_id:
@@ -1755,7 +1755,7 @@ def helper_handle_approvals(request, bounty):
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
         if is_funder or is_staff:
-            pending_interests = bounty.interested.select_related('profile').filter(profile__handle=worker, pending=True)
+            pending_interests = bounty.interested.select_related('profile').filter(profile__handle=worker.lower(), pending=True)
             # Check whether or not there are pending interests.
             if not pending_interests.exists():
                 messages.warning(
@@ -2830,7 +2830,7 @@ def profile(request, handle, tab=None):
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
     context['is_on_tribe'] = False
     if request.user.is_authenticated:
-        context['is_on_tribe'] = request.user.profile.tribe_members.filter(org__handle__iexact=handle.lower())
+        context['is_on_tribe'] = request.user.profile.tribe_members.filter(org__handle=handle.lower())
     context['ratings'] = range(0,5)
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
@@ -2877,7 +2877,7 @@ def lazy_load_kudos(request):
 
     if handle:
         try:
-            profile = Profile.objects.get(handle=handle)
+            profile = Profile.objects.get(handle=handle.lower())
             if datarequest == 'mykudos':
                 key = 'kudos'
                 context[key] = profile.get_my_kudos.order_by('id', order_by)
@@ -3969,7 +3969,7 @@ def hackathon_save_project(request):
             project.update(**kwargs)
 
             try:
-                bounty_profile = Profile.objects.get(handle__iexact=project.bounty.bounty_owner_github_username)
+                bounty_profile = Profile.objects.get(handle=project.bounty.bounty_owner_github_username.lower())
                 if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
                     created, bounty_profile = associate_chat_to_profile(bounty_profile)
 
@@ -4007,7 +4007,7 @@ def hackathon_save_project(request):
                 'channel_type': 'P'
             })
             try:
-                bounty_profile = Profile.objects.get(handle__iexact=bounty_obj.bounty_owner_github_username)
+                bounty_profile = Profile.objects.get(handle=bounty_obj.bounty_owner_github_username.lower())
                 if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
                     created, bounty_profile = associate_chat_to_profile(bounty_profile)
 
@@ -4475,7 +4475,7 @@ def join_tribe(request, handle):
     if request.user.is_authenticated:
         profile = request.user.profile if hasattr(request.user, 'profile') else None
         try:
-            TribeMember.objects.get(profile=profile, org__handle__iexact=handle).delete()
+            TribeMember.objects.get(profile=profile, org__handle=handle.lower()).delete()
             return JsonResponse(
             {
                 'success': True,
@@ -4484,7 +4484,7 @@ def join_tribe(request, handle):
             status=200)
         except TribeMember.DoesNotExist:
             kwargs = {
-                'org': Profile.objects.filter(handle=handle).first(),
+                'org': Profile.objects.filter(handle=handle.lower()).first(),
                 'profile': profile,
                 'why': 'api',
             }
@@ -4583,7 +4583,7 @@ def save_tribe(request,handle):
                 strip=True,
                 strip_comments=True
             )
-            tribe = Profile.objects.filter(handle=handle).first()
+            tribe = Profile.objects.filter(handle=handle.lower()).first()
             tribe.tribe_description = tribe_description
             tribe.save()
 
@@ -4598,7 +4598,7 @@ def save_tribe(request,handle):
                 strip=True,
                 strip_comments=True
             )
-            tribe = Profile.objects.filter(handle=handle).first()
+            tribe = Profile.objects.filter(handle=handle.lower()).first()
             tribe.tribe_priority = tribe_priority
             tribe.save()
 
@@ -4749,7 +4749,7 @@ def create_bounty_v1(request):
     # bounty is reserved for a user
     reserved_for_username = request.POST.get("bounty_reserved_for")
     if reserved_for_username:
-        bounty.bounty_reserved_for_user = Profile.objects.get(handle=reserved_for_username)
+        bounty.bounty_reserved_for_user = Profile.objects.get(handle=reserved_for_username.lower())
         if bounty.bounty_reserved_for_user:
             bounty.reserved_for_user_from = current_time
             release_to_public_after = request.POST.get("release_to_public")
