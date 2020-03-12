@@ -65,6 +65,7 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
         python3 manage.py loaddata app/fixtures/dashboard.json
         python3 manage.py loaddata app/fixtures/avatar.json
         python3 manage.py loaddata app/fixtures/marketing.json
+        python3 manage.py init_chat_db
 
     fi
     date >> /provisioned
