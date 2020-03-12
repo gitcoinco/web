@@ -440,6 +440,7 @@ $(document).ready(function() {
     if (getParam('tab') && getParam('tab').indexOf('activity:') != -1) {
       hide_after_n_comments = 100;
     }
+    const limit_hide_option = 10;
     // remote post
     var params = {
       'method': 'comment'
@@ -449,7 +450,6 @@ $(document).ready(function() {
     var $target = $parent.parents('.activity.box').find('.comment_container');
     var $existing_textarea = $target.find('textarea.enter-activity-comment');
     var existing_text = $existing_textarea.length ? $existing_textarea.val() : '';
-
     if (!$target.length) {
       $target = $parent.parents('.box').find('.comment_container');
     }
@@ -495,12 +495,13 @@ $(document).ready(function() {
         var show_more_box = '';
         var is_hidden = (num_comments - i) >= hide_after_n_comments && override_hide_comments != true;
         var is_first_hidden = i == 0 && num_comments >= hide_after_n_comments && override_hide_comments != true;
+        const show_all_option = num_comments > limit_hide_option;
 
         if (is_first_hidden) {
           show_more_box = `
-          <div class="row mx-auto show_more d-block text-center">
+          <div class="row mx-auto ${ show_all_option ? 'show_all' : 'show_more'} d-block text-center">
             <a href="#" class="text-black-60 font-smaller-5">
-              Show More
+            ${ show_all_option ? 'See all comments' : `Show More (<span class="comment-count">${num_comments - hide_after_n_comments}</span>)`}
             </a>
           </div>
           `;
@@ -630,14 +631,27 @@ $(document).ready(function() {
   // post comment activity
   $(document).on('click', '.show_more', function(e) {
     e.preventDefault();
-    var num_to_unhide_at_once = 3;
+    const num_to_unhide_at_once = 3;
 
     for (var i = 0; i < num_to_unhide_at_once; i++) {
       get_hidden_comments($(this)).last().removeClass('hidden');
     }
     if (get_hidden_comments($(this)).length == 0) {
       $(this).remove();
+    } else {
+      $(this).find('.comment-count').text(get_hidden_comments($(this)).length);
     }
+  });
+
+  $(document).on('click', '.show_all', function(e) {
+    e.preventDefault();
+    const hiddenComments = get_hidden_comments($(this));
+
+    for (let i = 0; i < hiddenComments.length; i++) {
+      hiddenComments[i].classList.remove('hidden');
+    }
+
+    $(this).remove();
   });
 
   // post comment activity
