@@ -1712,7 +1712,7 @@ def tribes(request):
     ]
 
     _tribes = Profile.objects.filter(data__type='Organization').\
-        annotate(follower_count=Count('org')).order_by('-follower_count')[:8]
+        annotate(follower_count=Count('org')).cache().order_by('-follower_count')[:8]
 
     tribes = []
 
