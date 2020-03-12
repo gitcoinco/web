@@ -905,7 +905,7 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
             fulfilled__bounty__github_url__icontains=organisation
         )
         profile_list2 = profile_list.filter(
-            organizations__icontains=organisation
+            organizations__contains=[organisation.lower()]
         )
         profile_list = (profile_list1 | profile_list2).distinct()
 

@@ -2667,7 +2667,7 @@ class Profile(SuperModel):
     def team(self):
         if not self.is_org:
             return Profile.objects.none()
-        return Profile.objects.filter(organizations__icontains=self.handle)
+        return Profile.objects.filter(organizations__contains=[self.handle.lower()])
 
     @property
     def tribe_members(self):
