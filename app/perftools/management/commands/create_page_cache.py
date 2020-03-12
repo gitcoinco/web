@@ -41,6 +41,22 @@ def fetchPost(qt='2'):
     last_posts = requests.get(url=url).json()
     return last_posts
 
+def create_hidden_profiles_cache():
+
+    handles = list(Profile.objects.hidden().values_list('handle', flat=True))
+
+    view = 'hidden_profiles'
+    keyword = 'hidden_profiles'
+    with transaction.atomic():
+        JSONStore.objects.filter(view=view).all().delete()
+        data = handles
+        JSONStore.objects.create(
+            view=view,
+            key=keyword,
+            data=data,
+            )
+
+
 def create_tribes_cache():
 
     _tribes = Profile.objects.filter(data__type='Organization').\
@@ -205,8 +221,9 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_tribes_cache()
+        create_hidden_profiles_cache()
         if not settings.DEBUG:
+            create_tribes_cache()
             create_activity_cache()
             create_post_cache()
             create_results_cache()
