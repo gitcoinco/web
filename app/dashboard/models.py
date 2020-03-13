@@ -2316,7 +2316,7 @@ def psave_activity(sender, instance, **kwargs):
         if not instance.hackathonevent:
             instance.hackathonevent = instance.bounty.event
 
-    if hasattr(instance, 'profile') and hasattr(instance.profile, 'user') and instance.profile.user.is_staff:
+    if hasattr(instance, 'profile') and instance.profile and hasattr(instance.profile, 'user') and instance.profile.user and instance.profile.user.is_staff:
         instance.metadata['staff'] = True
 
 
