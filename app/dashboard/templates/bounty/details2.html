@@ -361,10 +361,6 @@
                               <span class="d-block">Scan QR code using address</span>
                               <span>[[bounty.bounty_owner_address]]</span>
                             </p>
-                            <p v-else>
-                              <span class="d-block">Enter Address with which payment will be made</span>
-                              <input class="w-75" v-model="inputBountyOwnerAddress">
-                            </p>
 
                             <p>Payout [[ bounty.value_in_eth ]] [[ bounty.token_name ]] to [[ fulfillment.profile.handle ]] ([[ fulfillment.fulfiller_address | truncateHash ]])</p>
 
@@ -374,7 +370,7 @@
                             <qrcode :string="`${fulfillment.fulfiller_address}?amount=${inputAmount}`"></qrcode>
                             <small class="d-block my-3">Scan the QR code  above with your ETC Wallet to payout</small>
                             <button class="d-block mx-auto mb-3 btn btn-outline-gc-blue px-2 font-caption font-weight-semibold"
-                              @click="fulfillmentComplete(fulfillment.pk, inputAmount, inputBountyOwnerAddress)"
+                              @click="fulfillmentComplete(fulfillment.pk, inputAmount)"
                             >
                               I've Scanned + Paid
                             </button>

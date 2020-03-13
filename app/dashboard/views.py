@@ -4662,6 +4662,7 @@ def create_bounty_v1(request):
     bounty.raw_data = request.POST.get("raw_data", {})      # ETC-TODO: REMOVE ?
     bounty.web3_type = request.POST.get("web3_type", '')
     bounty.value_true = request.POST.get("amount", 0)
+    bounty.bounty_owner_address = request.POST.get("bounty_owner_address", 0)
 
     ''' ETC-TODO
     bounty.unsigned_nda = request.POST.get("unsigned_nda")
