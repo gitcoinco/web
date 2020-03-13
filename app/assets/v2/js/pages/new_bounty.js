@@ -52,7 +52,9 @@ const updateOnNetworkOrTokenChange = () => {
 };
 
 window.addEventListener('load', function() {
-  setInterval(updateOnNetworkOrTokenChange, 5000);
+  setTimeout(() => {
+    setInterval(updateOnNetworkOrTokenChange, 1000);
+  }, 5000);
 });
 
 var localStorage = window.localStorage ? window.localStorage : {};
