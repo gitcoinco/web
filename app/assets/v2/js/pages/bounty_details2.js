@@ -160,12 +160,9 @@ Vue.mixin({
         });
       }
     },
-    fulfillmentComplete: function(fulfillment_id, amount, bounty_owner_address) {
+    fulfillmentComplete: function(fulfillment_id, amount) {
 
       let vm = this;
-      const owner_address = vm.bounty.bounty_owner_address ?
-        vm.bounty.bounty_owner_address :
-        bounty_owner_address;
 
       const token_name = vm.bounty.token_name;
       const decimals = tokenNameToDetails('mainnet', token_name).decimals;
@@ -173,7 +170,7 @@ Vue.mixin({
       const payload = {
         amount: amount * 10 ** decimals,
         token_name: token_name,
-        bounty_owner_address: owner_address
+        bounty_owner_address: vm.bounty.bounty_owner_address
       };
 
       const apiUrlBounty = `/api/v1/bounty/payout/${fulfillment_id}`;

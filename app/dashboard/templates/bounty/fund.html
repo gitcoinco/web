@@ -34,21 +34,9 @@
     {% include 'shared/nav.html' %}
   </div>
   <div class="submit_bounty_content">
-    <div class="row no-gutters metamask-banner">
-      <div class="col-12">
-        {% include 'shared/no_issue_error.html' with page='submit_bounty' %}
-        {% include 'shared/no_metamask_error.html' %}
-        {% include 'shared/zero_balance_error.html' %}
-        {% include 'shared/unlock_metamask.html' %}
-        {% include 'shared/connect_metamask.html' %}
-      </div>
-    </div>
     <div class="row justify-content-center">
 
-      <div id="robot_error" class="hidden">
-        <img src="{% static "v2/images/prime.png" %}">
-      </div>
-      <div class="col-lg-8 col-sm-12 my-5" id="primary_form">
+      <div class="col-lg-8 col-sm-12 my-5" id="create_bounty_form">
         <form id="submitBounty" class="pt-5">
 
           <div id="about-section" class="pt-2 bg-white rounded p-5">
@@ -113,6 +101,14 @@
             </div>
 
             {% include 'shared/pricing.html' %}
+
+            <div class="web3-alert font-smaller-2 py-2 px-3 mt-2">
+            </div>
+
+            <div class="funder-address-container" style="display: none;">
+              <label class="font-caption letter-spacing text-black-60" for=funderAddress>{% trans "Funder Address" %}</label>
+              <input name='funderAddress' id="funderAddress"  class="form__input" type="text" placeholder="{% trans 'Address with which the bounty will be paid out' %}"/>
+            </div>
 
             <div class="mt-4">
               {% include 'shared/bounty_details.html' %}
