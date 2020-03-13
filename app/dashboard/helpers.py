@@ -339,9 +339,9 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                 if is_blocked(github_username):
                     continue
                 try:
-                    kwargs['profile_id'] = Profile.objects.get(handle__iexact=github_username).pk
+                    kwargs['profile_id'] = Profile.objects.get(handle=github_username.lower()).pk
                 except Profile.MultipleObjectsReturned:
-                    kwargs['profile_id'] = Profile.objects.filter(handle__iexact=github_username).first().pk
+                    kwargs['profile_id'] = Profile.objects.filter(handle=github_username.lower()).first().pk
                 except Profile.DoesNotExist:
                     pass
             if fulfillment.get('accepted'):
@@ -607,7 +607,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         from marketing.mails import share_bounty
         from dashboard.utils import get_bounty_invite_url
         emails = []
-        inviter = Profile.objects.get(handle=new_bounty.bounty_owner_github_username)
+        inviter = Profile.objects.get(handle=new_bounty.bounty_owner_github_username.lower())
         invite_url = get_bounty_invite_url(inviter, new_bounty.id)
         msg = "Check out this bounty that pays out " + \
             str(new_bounty.get_value_true) + new_bounty.token_name + invite_url
@@ -820,7 +820,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
     user_profile = None
     fulfillment = _fulfillment
     try:
-        user_profile = Profile.objects.filter(handle__iexact=new_bounty.bounty_owner_github_username).first()
+        user_profile = Profile.objects.filter(handle=new_bounty.bounty_owner_github_username.lower()).first()
         funder_actions = ['new_bounty',
                           'worker_approved',
                           'killed_bounty',
@@ -833,7 +833,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                 if event_name == 'work_done':
                     fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
             if fulfillment:
-                user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
+                user_profile = Profile.objects.filter(handle=fulfillment.fulfiller_github_username.lower()).first()
                 if not user_profile:
                     user_profile = sync_profile(fulfillment.fulfiller_github_username)
 
@@ -874,7 +874,7 @@ def record_user_action(event_name, old_bounty, new_bounty):
     user_profile = None
     fulfillment = None
     try:
-        user_profile = Profile.objects.filter(handle__iexact=new_bounty.bounty_owner_github_username).first()
+        user_profile = Profile.objects.filter(handle=new_bounty.bounty_owner_github_username.lower()).first()
         fulfillment = new_bounty.fulfillments.order_by('pk').first()
 
     except Exception as e:

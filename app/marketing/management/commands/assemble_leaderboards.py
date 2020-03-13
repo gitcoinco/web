@@ -96,7 +96,7 @@ def profile_to_location(handle):
 
 def profile_to_location_helper(handle):
 
-    profiles = Profile.objects.filter(handle__iexact=handle)
+    profiles = Profile.objects.filter(handle=handle.lower())
     if handle and profiles.exists():
         profile = profiles.first()
         return profile.locations
@@ -376,7 +376,7 @@ def sum_grant_helper(gc, time, index_term, val_usd):
 def should_suppress_leaderboard(handle):
     if not handle:
         return True
-    profiles = Profile.objects.filter(handle__iexact=handle)
+    profiles = Profile.objects.filter(handle=handle.lower())
     if profiles.exists():
         profile = profiles.first()
         if profile.suppress_leaderboard or profile.hide_profile:
@@ -488,11 +488,11 @@ def do_leaderboard():
                     }
 
                     try:
-                        profile = Profile.objects.get(handle__iexact=index_term)
+                        profile = Profile.objects.get(handle=index_term.lower())
                         lbr_kwargs['profile'] = profile
                         lbr_kwargs['tech_keywords'] = profile.keywords
                     except Profile.MultipleObjectsReturned:
-                        profile = Profile.objects.filter(handle__iexact=index_term).latest('id')
+                        profile = Profile.objects.filter(handle=index_term.lower()).latest('id')
                         lbr_kwargs['profile'] = profile
                         lbr_kwargs['tech_keywords'] = profile.keywords
                         print(f'Multiple profiles found for username: {index_term}')

@@ -338,7 +338,7 @@ class Grant(SuperModel):
     @property
     def org_profile(self):
         from dashboard.models import Profile
-        profiles = Profile.objects.filter(handle__iexact=self.org_name)
+        profiles = Profile.objects.filter(handle=self.org_name.lower())
         if profiles.count():
             return profiles.first()
         return None

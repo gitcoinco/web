@@ -624,7 +624,9 @@ class Bounty(SuperModel):
 
     @property
     def org_profile(self):
-        profiles = Profile.objects.filter(handle__iexact=self.org_name)
+        if not self.org_name:
+            return None
+        profiles = Profile.objects.filter(handle=self.org_name.lower())
         if profiles.exists():
             return profiles.first()
         return None
@@ -695,7 +697,7 @@ class Bounty(SuperModel):
             bool: Whether or not the user has started work.
 
         """
-        return self.interested.filter(pending=pending, profile__handle__iexact=handle).exists()
+        return self.interested.filter(pending=pending, profile__handle=handle.lower()).exists()
 
     @property
     def absolute_url(self):
@@ -1218,7 +1220,7 @@ class Bounty(SuperModel):
 
         if handle:
             try:
-                profile = Profile.objects.filter(handle__iexact=handle).first()
+                profile = Profile.objects.filter(handle=handle.lower()).first()
             except:
                 logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
 
@@ -1563,7 +1565,9 @@ class SendCryptoAsset(SuperModel):
 
     @property
     def org_profile(self):
-        profiles = Profile.objects.filter(handle__iexact=self.org_name)
+        if not self.org_name:
+            return None
+        profiles = Profile.objects.filter(handle=self.org_name.lower())
         if profiles.count():
             return profiles.first()
         return None
@@ -1757,11 +1761,11 @@ def psave_tip(sender, instance, **kwargs):
     instance.username = instance.username.replace(' ', '')
     # set missing attributes
     if not instance.sender_profile:
-        profiles = Profile.objects.filter(handle__iexact=instance.from_username)
+        profiles = Profile.objects.filter(handle=instance.from_username.lower())
         if profiles.exists():
             instance.sender_profile = profiles.first()
     if not instance.recipient_profile:
-        profiles = Profile.objects.filter(handle__iexact=instance.username)
+        profiles = Profile.objects.filter(handle=instance.username.lower())
         if profiles.exists():
             instance.recipient_profile = profiles.first()
 
@@ -2675,7 +2679,7 @@ class Profile(SuperModel):
     def team(self):
         if not self.is_org:
             return Profile.objects.none()
-        return Profile.objects.filter(organizations__icontains=self.handle)
+        return Profile.objects.filter(organizations__contains=[self.handle.lower()])
 
     @property
     def tribe_members(self):

@@ -391,6 +391,8 @@ def api(request, activity_id):
         for comment in comments:
             comment_dict = comment.to_standard_dict(properties=['profile_handle'])
             comment_dict['handle'] = comment.profile.handle
+            comment_dict['last_chat_status'] = comment.profile.last_chat_status
+            comment_dict['last_chat_status_title'] = comment.profile.last_chat_status.title()
             comment_dict['tip_count_eth'] = comment.tip_count_eth
             comment_dict['match_this_round'] = comment.profile.match_this_round
             comment_dict['is_liked'] = request.user.is_authenticated and (request.user.profile.pk in comment.likes)

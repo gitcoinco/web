@@ -516,6 +516,11 @@ $(document).ready(function() {
           <div class="col-11 activity_comments_main pl-4 px-sm-3">
             <div class="mb-0">
               <span>
+              <span class="chat_presence_indicator mini ${comment['last_chat_status']}" data-openchat="${comment['profile_handle']}">
+                <span class="indicator" data-toggle="tooltip" title="Gitcoin Chat: ${comment['last_chat_status_title']}">
+                  •
+                </span>
+              </span>          
                 <b>${comment['name']}</b>
                 <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
                 @${comment['profile_handle']}

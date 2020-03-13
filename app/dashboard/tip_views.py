@@ -266,9 +266,9 @@ def send_tip_4(request):
 
 def get_profile(handle):
     try:
-        to_profile = Profile.objects.get(handle__iexact=handle)
+        to_profile = Profile.objects.get(handle=handle.lower())
     except Profile.MultipleObjectsReturned:
-        to_profile = Profile.objects.filter(handle__iexact=handle).order_by('-created_on').first()
+        to_profile = Profile.objects.filter(handle=handle.lower()).order_by('-created_on').first()
     except Profile.DoesNotExist:
         to_profile = None
     return to_profile
@@ -416,7 +416,7 @@ def send_tip_2(request):
 
     user = {}
     if username:
-        profiles = Profile.objects.filter(handle__iexact=username)
+        profiles = Profile.objects.filter(handle=username.lower())
 
         if profiles.exists():
             profile = profiles.first()

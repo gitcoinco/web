@@ -472,7 +472,7 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
 
     const set_as_active = () => {
       $.ajax({
-        url: 'api/v0.1/chat/presence',
+        url: '/api/v0.1/chat/presence',
         dataType: 'json',
         success: (response) => {
           console.log(response);

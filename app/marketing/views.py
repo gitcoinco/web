@@ -128,7 +128,7 @@ def settings_helper_get_auth(request, key=None):
     # lazily create profile if needed
     profiles = Profile.objects.none()
     if github_handle:
-        profiles = Profile.objects.prefetch_related('alumni').filter(handle__iexact=github_handle)
+        profiles = Profile.objects.prefetch_related('alumni').filter(handle=github_handle.lower())
     profile = None if not profiles.exists() else profiles.first()
     if not profile and github_handle:
         profile = sync_profile(github_handle, user=request.user)
@@ -626,7 +626,7 @@ def account_settings(request):
                 es.delete()
             request.user.delete()
             AccountDeletionRequest.objects.create(
-                handle=profile.handle,
+                handle=profile.handle.lower(),
                 profile={
                         'ip': get_ip(request),
                     }
@@ -705,7 +705,7 @@ def job_settings(request):
                 es.delete()
             request.user.delete()
             AccountDeletionRequest.objects.create(
-                handle=profile.handle,
+                handle=profile.handle.lower(),
                 profile={
                         'ip': get_ip(request),
                     }
