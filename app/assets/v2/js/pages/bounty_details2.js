@@ -1,30 +1,95 @@
 var appBounty;
 let bounty = [];
 let url = location.href;
+const loadingState = {
+  loading: 'loading',
+  error: 'error',
+  empty: 'empty',
+  resolved: 'resolved',
+}
 
 document.result = bounty;
 
 Vue.mixin({
   methods: {
-    fetchBounty: function() {
+    fetchBounty: function(newData) {
       let vm = this;
       let apiUrlBounty = `/actions/api/v0.1/bounty?github_url=${document.issueURL}`;
       const getBounty = fetchData(apiUrlBounty, 'GET');
 
       $.when(getBounty).then(function(response) {
+        if (!response.length) {
+          vm.loadingState = 'empty';
+          return vm.syncBounty();
+        }
         vm.bounty = response[0];
+        vm.loadingState = 'resolved'
         vm.isOwner = vm.checkOwner(response[0].bounty_owner_github_username);
+        vm.isOwnerAddress = vm.checkOwnerAddress(response[0].bounty_owner_address);
         document.result = response[0];
+        if (newData) {
+          delete sessionStorage['fulfillers'];
+          delete sessionStorage['bountyId'];
+          localStorage[document.issueURL] = '';
+          document.title = `${response[0].title} | Gitcoin`;
+          window.history.replaceState({},`${response[0].title} | Gitcoin`, response[0].url);
+        }
         vm.staffOptions();
       }).catch(function(error) {
+        vm.loadingState = 'error'
         _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
       });
+    },
+    syncBounty: function() {
+      let vm = this;
+
+      if (!localStorage[document.issueURL]) {
+        vm.loadingState = 'notfound'
+        return;
+      }
+
+      let bountyMetadata = JSON.parse(localStorage[document.issueURL]);
+
+      async function waitBlock(txid) {
+        let receipt = promisify(cb => web3.eth.getTransactionReceipt(txid, cb))
+        try {
+         let result = await receipt
+         console.log(result)
+          const data = {
+            url: document.issueURL,
+            txid: txid,
+            network: document.web3network
+          };
+          let syncDb = fetchData ('/sync/web3/', 'POST', data);
+
+          $.when(syncDb).then(function(response) {
+            console.log(response)
+
+            vm.fetchBounty(true);
+          }).catch(function(error) {
+            setTimeout(vm.syncBounty(), 10000);
+          });
+        } catch (error) {
+            return error;
+        }
+      }
+      waitBlock(bountyMetadata.txid)
+
     },
     checkOwner: function(handle) {
       let vm = this;
 
       if (vm.contxt.github_handle) {
         return caseInsensitiveCompare(document.contxt['github_handle'], handle);
+      }
+      return false;
+
+    },
+    checkOwnerAddress: function(bountyOwnerAddress) {
+      let vm = this;
+
+      if (cb_address) {
+        return caseInsensitiveCompare(cb_address, bountyOwnerAddress);
       }
       return false;
 
@@ -211,10 +276,12 @@ if (document.getElementById('gc-bounty-detail')) {
     el: '#gc-bounty-detail',
     data() {
       return {
+        loadingState: loadingState['loading'],
         bounty: bounty,
         url: url,
         cb_address: cb_address,
         isOwner: false,
+        isOwnerAddress: false,
         is_bounties_network: is_bounties_network,
         inputAmount: 0,
         inputBountyOwnerAddress: bounty.bounty_owner_address,
@@ -414,3 +481,47 @@ var show_interest_modal = function() {
   });
   modals.bootstrapModal('show');
 };
+
+$('body').on('click', '.issue_description img', function() {
+  var content = $.parseHTML(
+    '<div><div class="row"><div class="col-12 closebtn">' +
+      '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+        '<span aria-hidden="true">&times;</span>' +
+      '</a>' +
+    '</div>' +
+    '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
+
+  $(content).appendTo('body').modal({
+    modalClass: 'modal magnify'
+  });
+});
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const promisify = (inner) =>
+    new Promise((resolve, reject) =>
+        inner((err, res) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        })
+    );
+
+// async function waitBlock(txid) {
+//   while (true) {
+//     let receipt = web3.eth.getTransactionReceipt(txid);
+//     if (receipt && receipt.contractAddress) {
+//       console.log("Your contract has been deployed at http://testnet.etherscan.io/address/" + receipt.contractAddress);
+//       console.log("Note that it might take 30 - 90 sceonds for the block to propagate befor it's visible in etherscan.io");
+//       break;
+//     }
+//     console.log("Waiting a mined block to include your contract... currently in block " + web3.eth.blockNumber);
+//     await sleep(4000);
+//   }
+// }
+
+

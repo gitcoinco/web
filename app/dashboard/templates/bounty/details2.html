@@ -28,16 +28,16 @@
     <div class="container min-vh-100" id="gc-bounty-detail" v-cloak>
 
       <div class="row">
-        <loading-screen v-show="!bounty.created_on"></loading-screen>
+        <loading-screen v-show="loadingState == 'loading'"></loading-screen>
 
-        <div class="col-12 pt-3 text-center" v-if="contxt.is_staff && bounty.pk">
+        <div class="col-12 pt-3 text-center" v-if="contxt.is_staff && loadingState == 'resolved'">
           <span class="text-black-70 my-2 font-caption">
             <i class="fas fa-user-secret mr-2"></i>
             Admin Actions
           </span>
           <a v-for="link in quickLinks" class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
         </div>
-        <div class="col-12" v-show="bounty.created_on">
+        <div class="col-12" v-if="loadingState === 'resolved'">
           {% if event_tag %}
             <a href="/hackathon/{{ event_tag }}" class="btn btn-link font-body mt-3">
               <i class="fas fa-chevron-left font-caption"></i> {% trans "Back to Hackathon Explorer" %}
@@ -151,7 +151,7 @@
             <div class="row">
               <div class="col-12 notif-info mt-4 font-caption" id="funder_notif_info" v-if="isOwner">
                 {% trans "Funder Address:" %} <span id="bounty_funded_by">[[ bounty.bounty_owner_address ]]</span>
-                <span class="bounty-notification ml-2">
+                <span class="bounty-notification ml-2" v-if="!isOwnerAddress">
                   <i class="far fa-bell mr-2"></i> Ready to Pay? Set Your Metamask to this address! <img src="{% static 'v2/images/metamask.svg' %}"  class="ml-2">
                 </span>
               </div>
@@ -201,9 +201,9 @@
                   <span>Share</span>
                 </a>
               </div>
-              <div class="dropdown show float-right">
+              <div class="dropdown show float-right" v-if="isOwner">
                 <a class="btn btn-link btn-sm blue dropdown-toggle font-caption" href="#" role="button"
-                  id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-if="isOwner">
+                  id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   {% trans "Bounty Options" %}
                 </a>
                 <div id="bounty-options-link" class="dropdown-menu font-caption shadow-sm" aria-labelledby="bounty-options">
@@ -514,6 +514,19 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div v-if="loadingState == 'empty'">
+          empty waiting
+        </div>
+        <div v-if="loadingState == 'notfound'" class="d-block mx-auto text-center m-5">
+          <div class=" nonefound">
+            <img src="{% static "v2/images/shrug_bot.png" %}" alt="Shrug bot" class="mw-100" width="250">
+            <h3>{% trans "No funded issue found." %}</h3>
+            <p>{% url 'explorer' as explorerurl %}{% blocktrans %}Check out the <a href="{{ explorerurl }}">Issue Explorer</a>{% endblocktrans %}</p>
+            <br>
+            <h6>{% trans "Be the OSS Funding you wish to see in the world." %}</h6>
+            <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %}Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
           </div>
         </div>
       </div>

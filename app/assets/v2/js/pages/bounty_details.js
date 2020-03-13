@@ -1004,20 +1004,20 @@ var build_detail_page = function(result) {
     e.preventDefault();
   });
 
-  $('#bounty_details #issue_description img').on('click', function() {
+  // $('#bounty_details #issue_description img').on('click', function() {
 
-    var content = $.parseHTML(
-      '<div><div class="row"><div class="col-12 closebtn">' +
-        '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
-          '<span aria-hidden="true">&times;</span>' +
-        '</a>' +
-      '</div>' +
-      '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
+  //   var content = $.parseHTML(
+  //     '<div><div class="row"><div class="col-12 closebtn">' +
+  //       '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+  //         '<span aria-hidden="true">&times;</span>' +
+  //       '</a>' +
+  //     '</div>' +
+  //     '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
 
-    $(content).appendTo('body').modal({
-      modalClass: 'modal magnify'
-    });
-  });
+  //   $(content).appendTo('body').modal({
+  //     modalClass: 'modal magnify'
+  //   });
+  // });
 
   showGithubSync(result);
 };

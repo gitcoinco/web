@@ -425,7 +425,7 @@ a.btn {
 .issue_description img {
   max-height: 30rem;
   max-width: 100%;
-  cursor: pointer;
+  cursor: zoom-in;
   display: block;
   margin-top: 1rem;
   margin-bottom: 1rem;
