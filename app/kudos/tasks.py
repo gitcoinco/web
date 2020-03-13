@@ -49,6 +49,7 @@ def redeem_bulk_kudos(self, kt_id, signed_rawTransaction, retry=False):
     """
     with redis.lock("tasks:all_redeem_bulk_kudos", timeout=LOCK_TIMEOUT):
         with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=LOCK_TIMEOUT):
+            from dashboard.utils import has_tx_mined
             try:
                 obj = KudosTransfer.objects.get(pk=kt_id)
                 w3 = get_web3(obj.network)
