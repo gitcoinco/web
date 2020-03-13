@@ -654,7 +654,7 @@ class TokenRequest(SuperModel):
         return f"approved: {self.approved} -- {self.name} on {self.network} on {self.created_on};"
 
 
-    def mint(self):
+    def mint(self, gas_price_gwei=None):
         """Approve / mint this token."""
         from kudos.management.commands.mint_all_kudos import mint_kudos # avoid circular import
         from kudos.utils import KudosContract # avoid circular import
@@ -672,7 +672,7 @@ class TokenRequest(SuperModel):
             'artwork_url': self.artwork_url,
         }
         kudos_contract = KudosContract(network=self.network)
-        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1) * 2
+        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1) * 2 if not gas_price_gwei else None
         tx_id = mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True, dont_wait_for_kudos_id_return_tx_hash_instead=True)
         self.processed = True
         self.approved = True
