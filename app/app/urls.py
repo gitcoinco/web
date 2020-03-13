@@ -227,6 +227,8 @@ urlpatterns = [
     re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
     path('hackathon-list', dashboard.views.get_hackathons, name='get_hackathons2'),
+    re_path(r'^hackathon/?$', dashboard.views.get_hackathons, name='get_hackathons3'),
+    re_path(r'^hackathons/?$', dashboard.views.get_hackathons, name='get_hackathons4'),
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
 
