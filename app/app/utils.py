@@ -205,7 +205,7 @@ def sync_profile(handle, user=None, hide_profile=True):
 
                     try:
                         from chat.tasks import associate_chat_to_profile
-                        created, profile = associate_chat_to_profile(profile)
+                        # created, profile = associate_chat_to_profile(profile)
 
                     except Exception as e:
                         logger.error(str(e))
