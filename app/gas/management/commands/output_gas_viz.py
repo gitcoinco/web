@@ -73,7 +73,7 @@ class Command(BaseCommand):
         rotate = True
         last_degrees = 275
         invert_colors = False
-        max_gas = 50
+        max_gas = 200
         package = {}
         for gp in GasProfile.objects.filter(gas_price__lt=max_gas, created_on__gt=timezone.now() - timezone.timedelta(days=7)).order_by('created_on'):
             key = gp.created_on.strftime("%Y-%m-%dT%H:%M:00")
