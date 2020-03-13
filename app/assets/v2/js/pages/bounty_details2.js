@@ -100,7 +100,9 @@ Vue.mixin({
       if (!vm.contxt.github_handle) {
         return false;
       }
-      return !!(vm.bounty.interested || []).find(interest => caseInsensitiveCompare(interest.profile.handle, vm.contxt.github_handle));
+      let isInterested = !!(vm.bounty.interested || []).find(interest => caseInsensitiveCompare(interest.profile.handle, vm.contxt.github_handle));
+      // console.log(isInterested)
+      return isInterested;
 
     },
     checkApproved: function() {
@@ -110,8 +112,8 @@ Vue.mixin({
         return false;
       }
       // pending=false
-      let result = vm.bounty.interested.filter(interest => caseInsensitiveCompare(interest.profile.handle, vm.contxt.github_handle));
-
+      let result = vm.bounty.interested.find(interest => caseInsensitiveCompare(interest.profile.handle, vm.contxt.github_handle));
+      console.log(result)
       return result ? !result.pending : false;
 
     },

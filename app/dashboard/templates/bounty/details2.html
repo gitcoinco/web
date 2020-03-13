@@ -258,7 +258,7 @@
               <div class="border my-5 px-4 pt-4">
                 <h5 class="font-body font-weight-semibold">{% trans "SUBMISSIONS" %}</h5>
                 <div v-for="fulfillment in bounty.fulfillments" :key="fulfillment.pk" class="my-4 row font-body">
-                  <div class="col-md-2 col-lg-1 text-center text-md-leftr">
+                  <div class="col-md-2 col-lg-1 text-center text-md-left">
                     <a :href="`/profile/${fulfillment.profile.handle}`" v-show="fulfillment.profile.avatar_url">
                       <img class="avatar" :src="[[fulfillment.profile.avatar_url]]">
                     </a>
@@ -410,10 +410,10 @@
                   </div>
                   <div class="col-md-3 col-lg-3 my-auto text-center">
                     <template v-if="interest.pending && isOwner">
-                      <a target="_blank" :href="`${bounty.url}?mutate_worker_action=approve&worker=${interest.profile.handle}`" title="Approve worker" class="btn btn-sm btn-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
+                      <a :href="`${bounty.url}?mutate_worker_action=approve&worker=${interest.profile.handle}`" title="Approve worker" class="btn btn-sm btn-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
                         <i class="fas fa-check mr-1 font-caption"></i> Approve
                       </a>
-                      <a target="_blank" :href="`${bounty.url}?mutate_worker_action=reject&worker=${interest.profile.handle}`" title="Reject worker" class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
+                      <a :href="`${bounty.url}?mutate_worker_action=reject&worker=${interest.profile.handle}`" title="Reject worker" class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
                         <i class="fas fa-times mr-1 font-caption"></i> Reject
                       </a>
                     </template>
@@ -452,9 +452,7 @@
                     </a>
                   </div>
                   <div class="col-lg-3 col-md-3 my-auto text-center text-md-left">
-                    <a :href="`/profile/${activity.profile.handle}`" class="user-popover" :data-username="[[ activity.profile.handle ]]"
-                      data-html="true" data-toggle="popover" data-container="body"
-                    >
+                    <a :href="`/profile/${activity.profile.handle}`" class="user-popover" :data-username="[[ activity.profile.handle ]]" data-html="true" data-toggle="popover" data-container="body">
                       [[ activity.profile.handle ]]
                     </a>
                   </div>
@@ -466,6 +464,11 @@
                     <div v-if="activity.activity_type === 'new_kudos'">
                       show value
                     </div>
+                    <a v-if="activity.activity_type === 'worker_approved'" :href="`/profile/${activity.metadata.worker_handle}`" class="user-popover" :data-username="[[ activity.metadata.worker_handle ]]"
+                      data-html="true" data-toggle="popover" data-container="body"
+                    >
+                      [[ activity.metadata.worker_handle ]]
+                    </a>
                   </div>
                   <div class="col-md-3 col-lg-5 my-auto text-center text-md-left">
                     <time class="text-black-60 text-capitalize" :datetime="activity.created" :title="activity.created |momentFormat">

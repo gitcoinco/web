@@ -31,7 +31,7 @@ const updateOnNetworkOrTokenChange = () => {
     $('.navbar-network').show();
 
     $('.funder-address-container').hide();
-    $('#funderAddress').attr('required', '');
+    $('#funderAddress').removeAttr('required');
     $('#funderAddress').val('');
 
     $('.web3-alert').show();
@@ -422,9 +422,7 @@ $(function() {
     updateOnNetworkOrTokenChange();
 
     const token_address = $('select[name=denomination]').val();
-
-    const tokenName = $('select[name=denomination]').select2('data')[0] ?
-      $('select[name=denomination]').select2('data')[0].text : 'ETH';
+    const tokenName = $('select[name=denomination]').select2('data')[0].text;
 
     const tokendetails = qr_tokens.includes(tokenName) ?
       tokenAddressToDetailsByNetwork(token_address, 'mainnet') :
@@ -442,8 +440,11 @@ $(function() {
   $('select[name=denomination]').change(triggerDenominationUpdate);
 
   waitforWeb3(function() {
-    setTimeout(function() {
-      triggerDenominationUpdate();
+    let denominationId = setInterval(function() {
+      if ($('select[name=denomination]').val()) {
+        triggerDenominationUpdate();
+        clearInterval(denominationId);
+      }
     }, 1000);
   });
 
