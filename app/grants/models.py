@@ -103,9 +103,8 @@ class GrantCategory(SuperModel):
     @staticmethod
     def health_categories():
         return [
-            'self-quarantine',
-            'covid19',
-            'health-tech',
+            'COVID19 research',
+            'COVID19 response',
         ]
 
     category = models.CharField(
