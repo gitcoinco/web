@@ -1,0 +1,93 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2020 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static humanize avatar_tags %}
+
+{% block content %}
+<style>
+  .primary-content {
+    margin: 0;
+  }
+  .bounty-idea {
+    background-color: white;
+    text-align: center;
+    width: 500px;
+  }
+
+  h4 {
+      padding: 0;
+  }
+
+  @media screen and (min-width: 35.5em) {
+    .bounty-idea {
+      padding-left: 20rem;
+      padding-right: 20rem;
+    }
+  }
+
+  @media screen and (min-width: 48em) {
+    .bounty-idea {
+      padding-left: 40rem;
+      padding-right: 40rem;
+    }
+  }
+
+  @media screen and (max-width: 48em) {
+    .bounty-idea {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+</style>
+
+<div class="bounty-idea">
+    <h1>{% trans "Hello, fantastic " %} {{ bounty.org_name }}</h1>
+    <div style="margin-bottom: 1em;">
+        {% trans "We come in peace and bring you favorable news. Your work is inspiring other contributors and new ideas are flowing towards your tribe. Here is the latest bounty suggestion sent to you from a fellow Gitcoiner."%}
+    </div>
+    <div style="background-color: #F3F9FF; padding: 2em;">
+        <div style="display: flex; justify-content: center;">
+          <div class="bounty-avatar">
+            <img style="border-radius: 100%;border: 2px solid #1AB56D; margin-right: 1em;" src="{% avatar_url interest.profile.handle %}" width="48" height="48">
+          </div>
+          <div class="bounty-avatar">
+            <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="{{ bounty.avatar_url }}" width="48" height="48">
+          </div>
+        </div>
+        <h4>{{ bounty.title }}</h4>
+        <span><a href="{% url "profile" interested.profile.handle %}"> {{ interested.profile.handle }}</a> {% trans "is willing to build for:" %}</span>
+        <div style="display: flex; justify-content: center; margin-top: 1em;">
+          <div style="background-color: #E7F0FA; color: #3F00FF; padding: 1em; margin-right: 1em">
+            {{ bounty.value_true }} {{ bounty.token_name }}
+          </div>
+          <div style="background-color: #D6FBEB; color: #00A55E; padding: 1em;">
+            {{ bounty.value_in_usdt_now }} USD
+          </div>
+        </div>
+    </div>
+    <p>{% trans "Take some time to evaluate this idea and let your contributor know if you want to invest in buidling it." %}</p>
+    <div style="margin-bottom: 2em; margin-top: 2em;">
+        <a class="button" href="{{ bounty.absolute_url }}">{% trans "Review bounty" %}</a>
+    </div>
+    <p>{% trans "The more you encourage your community to contribute, the more your protocol and its extensions will grow. And remember that an active tribe will always attract more contributors and more hackathon participants!" %}</p>
+    <div>
+        <p>{% trans "Happy tribe-building!" %}</p>
+        <p>{% trans "The Gitcoiniacs" %}</p>
+    </div>
+</div>
+{% endblock %}

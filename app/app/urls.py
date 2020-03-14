@@ -498,6 +498,7 @@ urlpatterns = [
         retail.emails.subscription_terminated,
         name='admin_subscription_terminated'
     ),
+    path('_administration/email/bounty_idea_notification', retail.emails.bounty_idea_notification, name='admin_bounty_idea_notification'),
     path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
     path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
     path(

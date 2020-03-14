@@ -119,6 +119,19 @@ def render_new_grant_email(grant):
     return response_html, response_txt, subject
 
 
+def render_bounty_idea_notification(bounty, interested):
+    params = {
+        'bounty': bounty,
+        'interested': interested,
+        'email_style': 26,
+        'hide_preferred_payout': True,
+    }
+    response_html = premailer_transform(render_to_string("emails/tribes/bounty_idea_notifications.html", params))
+    response_txt = render_to_string("emails/tribes/bounty_idea_notifications.txt", params)
+    subject = _("Bounty idea notification")
+    return response_html, response_txt, subject
+
+
 def render_new_supporter_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
@@ -227,7 +240,12 @@ def new_grant(request):
     grant = Grant.objects.first()
     response_html, __, __ = render_new_grant_email(grant)
     return HttpResponse(response_html)
-
+@staff_member_required
+def bounty_idea_notification(request):
+    from dashboard.models import Bounty, Interest
+    bounty = Bounty.objects.first()
+    response_html, __, __ = render_bounty_idea_notification(bounty, Interest.objects.all().last())
+    return HttpResponse(response_html)
 
 def render_tip_email(to_email, tip, is_new):
     warning = tip.network if tip.network != 'mainnet' else ""
@@ -859,7 +877,6 @@ def render_faucet_request(fr):
     response_txt = render_to_string("emails/faucet_request.txt", params)
 
     return response_html, response_txt
-
 
 def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
     params = {

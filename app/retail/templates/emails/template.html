@@ -176,6 +176,8 @@
         background-color: #ffc000;
       {% elif email_style == 21 %}
         background-color: #f7ecbc;
+      {% elif email_style == 26 %}
+        background-color: #170640;
       {% else %}
         background-color: #15003e;
       {% endif %}
@@ -300,6 +302,7 @@
       {% elif email_style == 22 %} <img id="logo" src="{% static "v2/images/emails/email_header22.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% elif email_style == 23 %} <img id="logo" src="{% static "v2/images/emails/email_header23.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% elif email_style == 24 %} <img id="logo" src="{% static "v2/images/emails/email_header24.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 26 %} <img id="logo" src="{% static "v2/images/emails/email_header26.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% else %}
         <img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% endif %}
@@ -313,6 +316,7 @@
         <img id="grow-oss" width="259" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
     </div>
 
+  {% if not hide_preferred_payout %}
   <div id="preferred_payout">
     {% if subscriber.profile.preferred_payout_address %}
       Your Gitcoin preferred payout address is <strong>{{subscriber.profile.preferred_payout_address}}</strong>.  Payments will be auto-sent to this address (unless otherwise specified upon work submission).
@@ -323,6 +327,7 @@
     {% endif %}
 
   </div>
+  {% endif %}
   <div id="footer" class="text-center">
     <div>
       <a href="https://www.twitter.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
