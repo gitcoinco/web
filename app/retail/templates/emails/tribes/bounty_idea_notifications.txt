@@ -1,0 +1,5 @@
+Bounty idea notification
+
+Link to the issue: {{bounty.github_url}}.
+
+The user is willing to build the task for {{bounty.value_in_usdt_now}} (USD).
