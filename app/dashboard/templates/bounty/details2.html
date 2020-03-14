@@ -362,13 +362,13 @@
                               <span>[[bounty.bounty_owner_address]]</span>
                             </p>
 
-                            <p>Payout [[ bounty.value_in_eth ]] [[ bounty.token_name ]] to [[ fulfillment.profile.handle ]] ([[ fulfillment.fulfiller_address | truncateHash ]])</p>
+                            <p>Payout [[ bounty.value_true ]] [[ bounty.token_name ]] to [[ fulfillment.profile.handle ]] ([[ fulfillment.fulfiller_address | truncateHash ]])</p>
 
                             <input type="number" class="mb-4" v-model="inputAmount" name="" id="">
-                            [[ bounty.value_in_eth - inputAmount ]] [[ bounty.token_name ]]
+                            [[ bounty.value_true - inputAmount ]] [[ bounty.token_name ]]
 
-                            <qrcode :string="`${fulfillment.fulfiller_address}?amount=${inputAmount}`"></qrcode>
-                            <small class="d-block my-3">Scan the QR code  above with your ETC Wallet to payout</small>
+                            <qrcode :string="`ethereum:${fulfillment.fulfiller_address}`"></qrcode>
+                            <small class="d-block my-3">Scan the QR code above with your ETC Wallet to payout</small>
                             <button class="d-block mx-auto mb-3 btn btn-outline-gc-blue px-2 font-caption font-weight-semibold"
                               @click="fulfillmentComplete(fulfillment.pk, inputAmount)"
                             >
