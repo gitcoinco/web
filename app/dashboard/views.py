@@ -1962,6 +1962,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         except Exception as e:
             logger.error(e)
 
+    if request.GET.get('sb') == '1' or (bounty and bounty.is_bounties_network):
+        return TemplateResponse(request, 'bounty/details.html', params)
+
     return TemplateResponse(request, 'bounty/details2.html', params)
 
 

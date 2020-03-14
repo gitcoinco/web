@@ -9,7 +9,7 @@ const loadingState = {
 };
 
 document.result = bounty;
-listen_for_web3_changes();
+// listen_for_web3_changes();
 
 Vue.mixin({
   methods: {

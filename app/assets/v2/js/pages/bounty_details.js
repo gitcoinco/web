@@ -2,6 +2,10 @@
 /* eslint no-redeclare: "warn" */
 /* eslint no-loop-func: "warn" */
 
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 1000);
+});
+
 const _truthy = function(val) {
   if (!val || val == '0x0000000000000000000000000000000000000000') {
     return false;
@@ -684,104 +688,104 @@ var attach_override_status = function() {
   });
 };
 
-// var show_interest_modal = function() {
-//   var self = this;
-//   var modals = $('#modalInterest');
-//   let modalBody = $('#modalInterest .modal-content');
-//   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
+var show_interest_modal = function() {
+  var self = this;
+  var modals = $('#modalInterest');
+  let modalBody = $('#modalInterest .modal-content');
+  let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
 
-//   modals.on('show.bs.modal', function() {
-//     modalBody.load(modalUrl, ()=> {
-//       if (document.result['repo_type'] === 'private') {
-//         document.result.unsigned_nda ? $('.nda-download-link').attr('href', document.result.unsigned_nda.doc) : $('#nda-upload').hide();
-//       }
+  modals.on('show.bs.modal', function() {
+    modalBody.load(modalUrl, ()=> {
+      if (document.result['repo_type'] === 'private') {
+        document.result.unsigned_nda ? $('.nda-download-link').attr('href', document.result.unsigned_nda.doc) : $('#nda-upload').hide();
+      }
 
-//       let actionPlanForm = $('#action_plan');
-//       let discord_username = $('#discord_username');
-//       let issueMessage = $('#issue_message');
+      let actionPlanForm = $('#action_plan');
+      let discord_username = $('#discord_username');
+      let issueMessage = $('#issue_message');
 
-//       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
+      issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
 
-//       actionPlanForm.on('submit', function(event) {
-//         event.preventDefault();
+      actionPlanForm.on('submit', function(event) {
+        event.preventDefault();
 
-//         let msg = issueMessage.val().trim();
+        let msg = issueMessage.val().trim();
 
-//         if (!msg || msg.length < 30) {
-//           _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
-//           return false;
-//         }
+        if (!msg || msg.length < 30) {
+          _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
+          return false;
+        }
 
-//         const issueNDA = document.result['repo_type'] === 'private' ? $('#issueNDA')[0].files : undefined;
+        const issueNDA = document.result['repo_type'] === 'private' ? $('#issueNDA')[0].files : undefined;
 
-//         if (issueNDA && typeof issueNDA[0] !== 'undefined') {
+        if (issueNDA && typeof issueNDA[0] !== 'undefined') {
 
-//           const formData = new FormData();
+          const formData = new FormData();
 
-//           formData.append('docs', issueNDA[0]);
-//           formData.append('doc_type', 'signed_nda');
+          formData.append('docs', issueNDA[0]);
+          formData.append('doc_type', 'signed_nda');
 
-//           const ndaSend = {
-//             url: '/api/v0.1/bountydocument',
-//             method: 'POST',
-//             data: formData,
-//             processData: false,
-//             dataType: 'json',
-//             contentType: false
-//           };
+          const ndaSend = {
+            url: '/api/v0.1/bountydocument',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            dataType: 'json',
+            contentType: false
+          };
 
-//           $.ajax(ndaSend).done(function(response) {
-//             if (response.status == 200) {
-//               _alert(response.message, 'info');
-//               add_interest(document.result['pk'], {
-//                 issue_message: msg,
-//                 signed_nda: response.bounty_doc_id,
-//                 discord_username: $('#discord_username').length ? $('#discord_username').val() : null
-//               }).then(success => {
-//                 if (success) {
-//                   $(self).attr('href', '/uninterested');
-//                   $(self).find('span').text(gettext('Stop Work'));
-//                   $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-//                   modals.bootstrapModal('hide');
-//                 }
-//               }).catch((error) => {
-//                 if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-//                   return;
-//                 throw error;
-//               });
-//             } else {
-//               _alert(response.message, 'error');
-//             }
-//           }).fail(function(error) {
-//             _alert(error, 'error');
-//           });
-//         } else {
-//           add_interest(document.result['pk'], {
-//             issue_message: msg,
-//             discord_username: $('#discord_username').length ? $('#discord_username').val() : null
-//           }).then(success => {
-//             if (success) {
-//               $(self).attr('href', '/uninterested');
-//               $(self).find('span').text(gettext('Stop Work'));
-//               $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-//               modals.bootstrapModal('hide');
-//               if (document.result.event) {
-//                 projectModal(document.result.pk);
-//               }
-//             }
-//           }).catch((error) => {
-//             if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-//               return;
-//             throw error;
-//           });
-//         }
+          $.ajax(ndaSend).done(function(response) {
+            if (response.status == 200) {
+              _alert(response.message, 'info');
+              add_interest(document.result['pk'], {
+                issue_message: msg,
+                signed_nda: response.bounty_doc_id,
+                discord_username: $('#discord_username').length ? $('#discord_username').val() : null
+              }).then(success => {
+                if (success) {
+                  $(self).attr('href', '/uninterested');
+                  $(self).find('span').text(gettext('Stop Work'));
+                  $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+                  modals.bootstrapModal('hide');
+                }
+              }).catch((error) => {
+                if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+                  return;
+                throw error;
+              });
+            } else {
+              _alert(response.message, 'error');
+            }
+          }).fail(function(error) {
+            _alert(error, 'error');
+          });
+        } else {
+          add_interest(document.result['pk'], {
+            issue_message: msg,
+            discord_username: $('#discord_username').length ? $('#discord_username').val() : null
+          }).then(success => {
+            if (success) {
+              $(self).attr('href', '/uninterested');
+              $(self).find('span').text(gettext('Stop Work'));
+              $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+              modals.bootstrapModal('hide');
+              if (document.result.event) {
+                projectModal(document.result.pk);
+              }
+            }
+          }).catch((error) => {
+            if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+              return;
+            throw error;
+          });
+        }
 
-//       });
+      });
 
-//     });
-//   });
-//   modals.bootstrapModal('show');
-// };
+    });
+  });
+  modals.bootstrapModal('show');
+};
 
 const repoInstructions = () => {
   let linkToSettings = `https://github.com/${document.result.github_org_name}/${document.result.github_repo_name}/settings/collaboration`;
@@ -823,75 +827,75 @@ const repoInstructions = () => {
   });
 };
 
-// var set_extended_time_html = function(extendedDuration) {
-//   extendedDuration = extendedDuration.set({hour: 0, minute: 0, second: 0, millisecond: 0});
-//   $('input[name=updatedExpires]').val(extendedDuration.utc().unix());
-//   $('#extended-expiration-date #extended-date').html(extendedDuration.format('MM-DD-YYYY hh:mm A'));
-//   $('#extended-expiration-date #extended-days').html(moment.utc(extendedDuration).fromNow());
-// };
+var set_extended_time_html = function(extendedDuration) {
+  extendedDuration = extendedDuration.set({hour: 0, minute: 0, second: 0, millisecond: 0});
+  $('input[name=updatedExpires]').val(extendedDuration.utc().unix());
+  $('#extended-expiration-date #extended-date').html(extendedDuration.format('MM-DD-YYYY hh:mm A'));
+  $('#extended-expiration-date #extended-days').html(moment.utc(extendedDuration).fromNow());
+};
 
-// var show_extend_deadline_modal = function() {
-//   let modals = $('#modalExtend');
-//   let modalBody = $('#modalExtend .modal-content');
-//   const url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
+var show_extend_deadline_modal = function() {
+  let modals = $('#modalExtend');
+  let modalBody = $('#modalExtend .modal-content');
+  const url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
 
-//   moment.locale('en');
-//   modals.on('show.bs.modal', function() {
-//     modalBody.load(url, ()=> {
-//       const currentExpires = moment.utc(document.result['expires_date']);
+  moment.locale('en');
+  modals.on('show.bs.modal', function() {
+    modalBody.load(url, ()=> {
+      const currentExpires = moment.utc(document.result['expires_date']);
 
-//       $('#modalExtend input[name="expirationTimeDelta"]').daterangepicker({
-//         parentEl: '#extend_deadline',
-//         singleDatePicker: true,
-//         startDate: moment(currentExpires).add(1, 'month'),
-//         minDate: moment().add(1, 'day'),
-//         ranges: {
-//           '1 week': [ moment(currentExpires).add(7, 'days'), moment(currentExpires).add(7, 'days') ],
-//           '2 weeks': [ moment(currentExpires).add(14, 'days'), moment(currentExpires).add(14, 'days') ],
-//           '1 month': [ moment(currentExpires).add(1, 'month'), moment(currentExpires).add(1, 'month') ],
-//           '3 months': [ moment(currentExpires).add(3, 'month'), moment(currentExpires).add(3, 'month') ],
-//           '1 year': [ moment(currentExpires).add(1, 'year'), moment(currentExpires).add(1, 'year') ]
-//         },
-//         'locale': {
-//           'customRangeLabel': 'Custom'
-//         }
-//       }, function(start, end, label) {
-//         set_extended_time_html(end);
-//       });
+      $('#modalExtend input[name="expirationTimeDelta"]').daterangepicker({
+        parentEl: '#extend_deadline',
+        singleDatePicker: true,
+        startDate: moment(currentExpires).add(1, 'month'),
+        minDate: moment().add(1, 'day'),
+        ranges: {
+          '1 week': [ moment(currentExpires).add(7, 'days'), moment(currentExpires).add(7, 'days') ],
+          '2 weeks': [ moment(currentExpires).add(14, 'days'), moment(currentExpires).add(14, 'days') ],
+          '1 month': [ moment(currentExpires).add(1, 'month'), moment(currentExpires).add(1, 'month') ],
+          '3 months': [ moment(currentExpires).add(3, 'month'), moment(currentExpires).add(3, 'month') ],
+          '1 year': [ moment(currentExpires).add(1, 'year'), moment(currentExpires).add(1, 'year') ]
+        },
+        'locale': {
+          'customRangeLabel': 'Custom'
+        }
+      }, function(start, end, label) {
+        set_extended_time_html(end);
+      });
 
-//       set_extended_time_html($('#modalExtend input[name="expirationTimeDelta"]').data('daterangepicker').endDate);
+      set_extended_time_html($('#modalExtend input[name="expirationTimeDelta"]').data('daterangepicker').endDate);
 
-//       $('#neverExpires').on('click', () => {
-//         if ($('#neverExpires').is(':checked')) {
-//           $('#expirationTimeDelta').attr('disabled', true);
-//           $('#extended-expiration-date #extended-days').html('Never');
-//           $('#extended-expiration-date #extended-date').html('-');
-//         } else {
-//           $('#expirationTimeDelta').attr('disabled', false);
-//           set_extended_time_html($('#modalExtend input[name="expirationTimeDelta"]').data('daterangepicker').endDate);
-//         }
-//       });
+      $('#neverExpires').on('click', () => {
+        if ($('#neverExpires').is(':checked')) {
+          $('#expirationTimeDelta').attr('disabled', true);
+          $('#extended-expiration-date #extended-days').html('Never');
+          $('#extended-expiration-date #extended-date').html('-');
+        } else {
+          $('#expirationTimeDelta').attr('disabled', false);
+          set_extended_time_html($('#modalExtend input[name="expirationTimeDelta"]').data('daterangepicker').endDate);
+        }
+      });
 
-//       modals.on('submit', function(event) {
-//         event.preventDefault();
+      modals.on('submit', function(event) {
+        event.preventDefault();
 
-//         var extended_time = $('input[name=updatedExpires]').val();
+        var extended_time = $('input[name=updatedExpires]').val();
 
-//         extend_expiration(document.result['pk'], {
-//           deadline: extended_time
-//         });
-//         setTimeout(function() {
-//           window.location.reload();
-//         }, 2000);
-//       });
-//     });
-//   });
-//   modals.bootstrapModal('show');
-//   $(document, modals).on('hidden.bs.modal', function(e) {
-//     $('#extend_deadline').remove();
-//     $('.daterangepicker').remove();
-//   });
-// };
+        extend_expiration(document.result['pk'], {
+          deadline: extended_time
+        });
+        setTimeout(function() {
+          window.location.reload();
+        }, 2000);
+      });
+    });
+  });
+  modals.bootstrapModal('show');
+  $(document, modals).on('hidden.bs.modal', function(e) {
+    $('#extend_deadline').remove();
+    $('.daterangepicker').remove();
+  });
+};
 
 const showGithubSync = function(result) {
   if (isBountyOwnerPerLogin(result) || currentProfile.isStaff) {
@@ -1004,20 +1008,20 @@ var build_detail_page = function(result) {
     e.preventDefault();
   });
 
-  // $('#bounty_details #issue_description img').on('click', function() {
+  $('#bounty_details #issue_description img').on('click', function() {
 
-  //   var content = $.parseHTML(
-  //     '<div><div class="row"><div class="col-12 closebtn">' +
-  //       '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
-  //         '<span aria-hidden="true">&times;</span>' +
-  //       '</a>' +
-  //     '</div>' +
-  //     '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
+    var content = $.parseHTML(
+      '<div><div class="row"><div class="col-12 closebtn">' +
+        '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+          '<span aria-hidden="true">&times;</span>' +
+        '</a>' +
+      '</div>' +
+      '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
 
-  //   $(content).appendTo('body').modal({
-  //     modalClass: 'modal magnify'
-  //   });
-  // });
+    $(content).appendTo('body').modal({
+      modalClass: 'modal magnify'
+    });
+  });
 
   showGithubSync(result);
 };
@@ -1295,106 +1299,106 @@ var do_actions = function(result) {
   }
 
 
-  // if (show_suspend_auto_approval) {
-  //   const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
-  //   const url = result['url'] + connector_char + 'suspend_auto_approval=1';
+  if (show_suspend_auto_approval) {
+    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+    const url = result['url'] + connector_char + 'suspend_auto_approval=1';
 
-  //   const _entry = {
-  //     enabled: true,
-  //     href: url,
-  //     text: gettext('Suspend Auto Approval'),
-  //     parent: 'moderator-admin-actions',
-  //     title: gettext('Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty')
-  //   };
+    const _entry = {
+      enabled: true,
+      href: url,
+      text: gettext('Suspend Auto Approval'),
+      parent: 'moderator-admin-actions',
+      title: gettext('Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty')
+    };
 
-  //   actions.push(_entry);
-  // }
+    actions.push(_entry);
+  }
 
-  // if (show_admin_methods) {
-  //   const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
-  //   const url = result['url'] + connector_char + 'admin_override_and_hide=1';
+  if (show_admin_methods) {
+    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+    const url = result['url'] + connector_char + 'admin_override_and_hide=1';
 
-  //   const _entry = {
-  //     enabled: true,
-  //     href: url,
-  //     text: gettext('Hide Bounty'),
-  //     parent: 'moderator-admin-actions',
-  //     title: gettext('Hides Bounty from Active Bounties')
-  //   };
+    const _entry = {
+      enabled: true,
+      href: url,
+      text: gettext('Hide Bounty'),
+      parent: 'moderator-admin-actions',
+      title: gettext('Hides Bounty from Active Bounties')
+    };
 
-  //   actions.push(_entry);
-  // }
+    actions.push(_entry);
+  }
 
-  // if (show_admin_methods || show_moderator_methods) {
-  //   const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+  if (show_admin_methods || show_moderator_methods) {
+    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
 
-  //   let _entry = {
-  //     enabled: true,
-  //     href: result['url'] + connector_char + 'admin_toggle_as_remarket_ready=1',
-  //     text: gettext('Toggle Remarket Ready'),
-  //     parent: 'moderator-admin-actions',
-  //     title: gettext('Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.')
-  //   };
+    let _entry = {
+      enabled: true,
+      href: result['url'] + connector_char + 'admin_toggle_as_remarket_ready=1',
+      text: gettext('Toggle Remarket Ready'),
+      parent: 'moderator-admin-actions',
+      title: gettext('Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.')
+    };
 
-  //   actions.push(_entry);
+    actions.push(_entry);
 
-  //   _entry = {
-  //     enabled: true,
-  //     href: '',
-  //     text: gettext('Snooze Gitcoinbot'),
-  //     parent: 'moderator-admin-actions',
-  //     title: gettext('Snooze Gitcoinbot reminders')
-  //   };
-  //   actions.push(_entry);
+    _entry = {
+      enabled: true,
+      href: '',
+      text: gettext('Snooze Gitcoinbot'),
+      parent: 'moderator-admin-actions',
+      title: gettext('Snooze Gitcoinbot reminders')
+    };
+    actions.push(_entry);
 
-  //   if (needs_review) {
-  //     const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
-  //     const url = result['url'] + connector_char + 'mark_reviewed=1';
+    if (needs_review) {
+      const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+      const url = result['url'] + connector_char + 'mark_reviewed=1';
 
-  //     const _entry = {
-  //       enabled: true,
-  //       href: url,
-  //       text: gettext('Mark as Reviewed'),
-  //       parent: 'moderator-admin-actions',
-  //       title: gettext('Marks the bounty activity as reviewed.')
-  //     };
+      const _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Mark as Reviewed'),
+        parent: 'moderator-admin-actions',
+        title: gettext('Marks the bounty activity as reviewed.')
+      };
 
-  //     actions.push(_entry);
-  //   }
-  // }
+      actions.push(_entry);
+    }
+  }
 
-  // if (show_admin_methods) {
-  //   let _entry = {
-  //     enabled: true,
-  //     href: '',
-  //     text: gettext('Override Status'),
-  //     parent: 'moderator-admin-actions',
-  //     title: gettext('Override Status with a status of your choosing'),
-  //     buttonclass: 'admin_override_satatus'
-  //   };
+  if (show_admin_methods) {
+    let _entry = {
+      enabled: true,
+      href: '',
+      text: gettext('Override Status'),
+      parent: 'moderator-admin-actions',
+      title: gettext('Override Status with a status of your choosing'),
+      buttonclass: 'admin_override_satatus'
+    };
 
-  //   actions.push(_entry);
+    actions.push(_entry);
 
-  //   _entry = {
-  //     enabled: true,
-  //     href: '/_administrationdashboard/bounty/' + result['pk'] + '/change/',
-  //     text: gettext('View in Admin'),
-  //     parent: 'moderator-admin-actions',
-  //     title: gettext('View in Admin')
-  //   };
-  //   actions.push(_entry);
+    _entry = {
+      enabled: true,
+      href: '/_administrationdashboard/bounty/' + result['pk'] + '/change/',
+      text: gettext('View in Admin'),
+      parent: 'moderator-admin-actions',
+      title: gettext('View in Admin')
+    };
+    actions.push(_entry);
 
-  //   _entry = {
-  //     enabled: true,
-  //     href: '',
-  //     text: gettext('Contact Funder'),
-  //     parent: 'moderator-admin-actions',
-  //     title: gettext('Contact Funder via Email'),
-  //     buttonclass: 'contact_bounty_hunter'
-  //   };
+    _entry = {
+      enabled: true,
+      href: '',
+      text: gettext('Contact Funder'),
+      parent: 'moderator-admin-actions',
+      title: gettext('Contact Funder via Email'),
+      buttonclass: 'contact_bounty_hunter'
+    };
 
-  //   actions.push(_entry);
-  // }
+    actions.push(_entry);
+  }
 
   $('#bounty-options-link').text().trim() == '' ? $('#bounty-options').hide() : $('#bounty-options').show();
   render_actions(actions);
