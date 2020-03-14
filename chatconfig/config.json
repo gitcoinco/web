@@ -1,6 +1,10 @@
 {
     "ServiceSettings": {
+<<<<<<< Updated upstream
         "SiteURL": "http://localhost:8065",
+=======
+        "SiteURL": "",
+>>>>>>> Stashed changes
         "WebsocketURL": "",
         "LicenseFileLocation": "",
         "ListenAddress": ":8065",
@@ -30,19 +34,33 @@
         "EnableOnlyAdminIntegrations": true,
         "EnablePostUsernameOverride": false,
         "EnablePostIconOverride": false,
+<<<<<<< Updated upstream
         "EnableLinkPreviews": true,
         "EnableTesting": true,
         "EnableDeveloper": true,
+=======
+        "EnableLinkPreviews": false,
+        "EnableTesting": false,
+        "EnableDeveloper": false,
+>>>>>>> Stashed changes
         "EnableSecurityFixAlert": true,
         "EnableInsecureOutgoingConnections": false,
         "AllowedUntrustedInternalConnections": "",
         "EnableMultifactorAuthentication": false,
         "EnforceMultifactorAuthentication": false,
+<<<<<<< Updated upstream
         "EnableUserAccessTokens": true,
         "AllowCorsFrom": "http://localhost:8000 http://localhost:8065",
         "CorsExposedHeaders": "",
         "CorsAllowCredentials": true,
         "CorsDebug": true,
+=======
+        "EnableUserAccessTokens": false,
+        "AllowCorsFrom": "",
+        "CorsExposedHeaders": "",
+        "CorsAllowCredentials": false,
+        "CorsDebug": false,
+>>>>>>> Stashed changes
         "AllowCookiesForSubdomains": false,
         "SessionLengthWebInDays": 180,
         "SessionLengthMobileInDays": 180,
@@ -52,9 +70,15 @@
         "WebsocketSecurePort": 443,
         "WebsocketPort": 80,
         "WebserverMode": "gzip",
+<<<<<<< Updated upstream
         "EnableCustomEmoji": true,
         "EnableEmojiPicker": true,
         "EnableGifPicker": true,
+=======
+        "EnableCustomEmoji": false,
+        "EnableEmojiPicker": true,
+        "EnableGifPicker": false,
+>>>>>>> Stashed changes
         "GfycatApiKey": "2_KtH_W5",
         "GfycatApiSecret": "3wLVZPiswc3DnaiaFoLkDvB4X0IV6CpMkj4tf2inJRsBY6-FnkT08zGmppWFgeof",
         "RestrictCustomEmojiCreation": "all",
@@ -69,12 +93,20 @@
         "EnableUserStatuses": true,
         "ExperimentalEnableAuthenticationTransfer": true,
         "ClusterLogTimeoutMilliseconds": 2000,
+<<<<<<< Updated upstream
         "CloseUnusedDirectMessages": true,
+=======
+        "CloseUnusedDirectMessages": false,
+>>>>>>> Stashed changes
         "EnablePreviewFeatures": true,
         "EnableTutorial": true,
         "ExperimentalEnableDefaultChannelLeaveJoinMessages": true,
         "ExperimentalGroupUnreadChannels": "disabled",
+<<<<<<< Updated upstream
         "ExperimentalChannelOrganization": true,
+=======
+        "ExperimentalChannelOrganization": false,
+>>>>>>> Stashed changes
         "ImageProxyType": "",
         "ImageProxyURL": "",
         "ImageProxyOptions": "",
@@ -82,6 +114,7 @@
         "ExperimentalEnableHardenedMode": false,
         "DisableLegacyMFA": true,
         "ExperimentalStrictCSRFEnforcement": false,
+<<<<<<< Updated upstream
         "EnableEmailInvitations": true,
         "DisableBotsWhenOwnerIsDeactivated": false,
         "EnableBotAccountCreation": true,
@@ -99,6 +132,25 @@
         "EnableCustomBrand": true,
         "CustomBrandText": "At Gitcoin, we build products that allow for better\nincentivized collaboration in the realm of open source software",
         "CustomDescriptionText": "At Gitcoin, we build products that allow for better incentivized collaboration in the realm of open source software",
+=======
+        "EnableEmailInvitations": false,
+        "DisableBotsWhenOwnerIsDeactivated": true,
+        "EnableBotAccountCreation": false,
+        "EnableSVGs": false,
+        "EnableLatex": false
+    },
+    "TeamSettings": {
+        "SiteName": "Mattermost",
+        "MaxUsersPerTeam": 50,
+        "EnableTeamCreation": true,
+        "EnableUserCreation": true,
+        "EnableOpenServer": false,
+        "EnableUserDeactivation": false,
+        "RestrictCreationToDomains": "",
+        "EnableCustomBrand": false,
+        "CustomBrandText": "",
+        "CustomDescriptionText": "",
+>>>>>>> Stashed changes
         "RestrictDirectMessage": "any",
         "RestrictTeamInvite": "all",
         "RestrictPublicChannelManagement": "all",
@@ -111,6 +163,7 @@
         "EnableXToLeaveChannelsFromLHS": false,
         "UserStatusAwayTimeout": 300,
         "MaxChannelsPerTeam": 2000,
+<<<<<<< Updated upstream
         "MaxNotificationsPerChannel": 1000000,
         "EnableConfirmNotificationsToChannel": true,
         "TeammateNameDisplay": "username",
@@ -124,6 +177,18 @@
             "sponsor-%",
             "general-%"
         ]
+=======
+        "MaxNotificationsPerChannel": 1000,
+        "EnableConfirmNotificationsToChannel": true,
+        "TeammateNameDisplay": "username",
+        "ExperimentalViewArchivedChannels": false,
+        "ExperimentalEnableAutomaticReplies": false,
+        "ExperimentalHideTownSquareinLHS": false,
+        "ExperimentalTownSquareIsReadOnly": false,
+        "LockTeammateNameDisplay": false,
+        "ExperimentalPrimaryTeam": "",
+        "ExperimentalDefaultChannels": []
+>>>>>>> Stashed changes
     },
     "ClientRequirements": {
         "AndroidLatestVersion": "",
@@ -134,15 +199,24 @@
         "IosMinVersion": ""
     },
     "SqlSettings": {
+<<<<<<< Updated upstream
         "DriverName": "postgres",
         "DataSource": "postgres://postgres:postgres@db:5432/chat?sslmode=disable\u0026connect_timeout=10",
+=======
+        "DriverName": "mysql",
+        "DataSource": "mmuser:mostest@tcp(localhost:3306)/mattermost_test?charset=utf8mb4,utf8\u0026readTimeout=30s\u0026writeTimeout=30s",
+>>>>>>> Stashed changes
         "DataSourceReplicas": [],
         "DataSourceSearchReplicas": [],
         "MaxIdleConns": 20,
         "ConnMaxLifetimeMilliseconds": 3600000,
         "MaxOpenConns": 300,
         "Trace": false,
+<<<<<<< Updated upstream
         "AtRestEncryptKey": "sopgnyio54zsuag53hz5unuoyxdpawfs",
+=======
+        "AtRestEncryptKey": "ziduduwagif6rwjhcfquij8t4r7cygay",
+>>>>>>> Stashed changes
         "QueryTimeout": 30
     },
     "LogSettings": {
@@ -180,7 +254,11 @@
         "DriverName": "local",
         "Directory": "./data/",
         "EnablePublicLink": false,
+<<<<<<< Updated upstream
         "PublicLinkSalt": "ypeqmxrgg98kh44kf6n5zb8ouyxjiita",
+=======
+        "PublicLinkSalt": "k7fnpbufgh95pg9brupt5bs6jgzricst",
+>>>>>>> Stashed changes
         "InitialFont": "nunito-bold.ttf",
         "AmazonS3AccessKeyId": "",
         "AmazonS3SecretAccessKey": "",
@@ -193,22 +271,37 @@
         "AmazonS3Trace": false
     },
     "EmailSettings": {
+<<<<<<< Updated upstream
         "EnableSignUpWithEmail": false,
         "EnableSignInWithEmail": false,
         "EnableSignInWithUsername": false,
+=======
+        "EnableSignUpWithEmail": true,
+        "EnableSignInWithEmail": true,
+        "EnableSignInWithUsername": true,
+>>>>>>> Stashed changes
         "SendEmailNotifications": true,
         "UseChannelInEmailNotifications": false,
         "RequireEmailVerification": false,
         "FeedbackName": "",
+<<<<<<< Updated upstream
         "FeedbackEmail": "feedback@gitcoin.co",
         "ReplyToAddress": "feedback@gitcoin.co",
+=======
+        "FeedbackEmail": "test@example.com",
+        "ReplyToAddress": "test@example.com",
+>>>>>>> Stashed changes
         "FeedbackOrganization": "",
         "EnableSMTPAuth": false,
         "SMTPUsername": "",
         "SMTPPassword": "",
         "SMTPServer": "localhost",
         "SMTPPort": "10025",
+<<<<<<< Updated upstream
         "ConnectionSecurity": "TLS",
+=======
+        "ConnectionSecurity": "",
+>>>>>>> Stashed changes
         "SendPushNotifications": true,
         "PushNotificationServer": "https://push-test.mattermost.com",
         "PushNotificationContents": "generic",
@@ -224,24 +317,43 @@
     },
     "RateLimitSettings": {
         "Enable": false,
+<<<<<<< Updated upstream
         "PerSec": 50000,
         "MaxBurst": 100,
         "MemoryStoreSize": 10000,
         "VaryByRemoteAddr": false,
+=======
+        "PerSec": 10,
+        "MaxBurst": 100,
+        "MemoryStoreSize": 10000,
+        "VaryByRemoteAddr": true,
+>>>>>>> Stashed changes
         "VaryByUser": false,
         "VaryByHeader": ""
     },
     "PrivacySettings": {
+<<<<<<< Updated upstream
         "ShowEmailAddress": false,
+=======
+        "ShowEmailAddress": true,
+>>>>>>> Stashed changes
         "ShowFullName": true
     },
     "SupportSettings": {
         "TermsOfServiceLink": "https://about.mattermost.com/default-terms/",
+<<<<<<< Updated upstream
         "PrivacyPolicyLink": "",
         "AboutLink": "",
         "HelpLink": "",
         "ReportAProblemLink": "",
         "SupportEmail": "feedback@gitcoin.co",
+=======
+        "PrivacyPolicyLink": "https://about.mattermost.com/default-privacy-policy/",
+        "AboutLink": "https://about.mattermost.com/default-about/",
+        "HelpLink": "https://about.mattermost.com/default-help/",
+        "ReportAProblemLink": "https://about.mattermost.com/default-report-a-problem/",
+        "SupportEmail": "feedback@mattermost.com",
+>>>>>>> Stashed changes
         "CustomTermsOfServiceEnabled": false,
         "CustomTermsOfServiceReAcceptancePeriod": 365
     },
@@ -259,6 +371,7 @@
         "AllowedThemes": []
     },
     "GitCoinSettings": {
+<<<<<<< Updated upstream
         "Enable": true,
         "Secret": "xhLXNqXnOlkUiGCDFJLxQJjPb3CltLZNFZtzOsLgFfvwbYY60kYWRRBmqyjzfrnNyT6WWdIbfQEPpU854K2UiofmXtybFD1QkfIR9VVQyK3ttJpET7GormIBjK9CQRap",
         "Id": "VkHFfFlxnVCMYtYCWRxphbvPQUJjmER4cWtwqe7Q",
@@ -269,6 +382,18 @@
     },
     "GitLabSettings": {
         "Enable": true,
+=======
+        "Enable": null,
+        "Secret": null,
+        "Id": null,
+        "Scope": null,
+        "AuthEndpoint": null,
+        "TokenEndpoint": null,
+        "UserApiEndpoint": null
+    },
+    "GitLabSettings": {
+        "Enable": false,
+>>>>>>> Stashed changes
         "Secret": "",
         "Id": "",
         "Scope": "",
@@ -452,11 +577,16 @@
     },
     "PluginSettings": {
         "Enable": true,
+<<<<<<< Updated upstream
         "EnableUploads": true,
+=======
+        "EnableUploads": false,
+>>>>>>> Stashed changes
         "AllowInsecureDownloadUrl": false,
         "EnableHealthCheck": true,
         "Directory": "./plugins",
         "ClientDirectory": "./client/plugins",
+<<<<<<< Updated upstream
         "Plugins": {
             "com.mattermost.welcomebot": {
                 "welcomemessages": [
@@ -535,6 +665,12 @@
             },
             "zoom": {
                 "Enable": false
+=======
+        "Plugins": {},
+        "PluginStates": {
+            "com.mattermost.nps": {
+                "Enable": true
+>>>>>>> Stashed changes
             }
         },
         "EnableMarketplace": true,
@@ -543,10 +679,15 @@
         "SignaturePublicKeyFiles": []
     },
     "DisplaySettings": {
+<<<<<<< Updated upstream
         "CustomUrlSchemes": [
             "git"
         ],
         "ExperimentalTimezone": true
+=======
+        "CustomUrlSchemes": [],
+        "ExperimentalTimezone": false
+>>>>>>> Stashed changes
     },
     "GuestAccountsSettings": {
         "Enable": false,
