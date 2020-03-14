@@ -18,15 +18,24 @@
 {% load i18n static humanize avatar_tags kudos_extras %}
 {% block content %}
 <style>
+  .primary-content {
+    padding: 0;
+    background-color: #0D0764;
+    margin: 0;
+  }
+  #footer {
+    background-color: #0D0764;
+  }
   .roundup {
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
-    padding-left: 2em;
-    padding-right: 2em;
+    padding-top: 2em;
+    background-color: #ffffff;
     line-height: 20px;
   }
+  a {
+    text-decoration: none !important;
+  }
   p, li, a{
-    color: #353535;
+    text-decoration: none;
     line-height: 26px;
     font-size: 16px;
     list-style: none;
@@ -45,26 +54,55 @@
   h5{
     color: #aeaeae;
   }
+  h4 {
+    padding: 0 !important;
+  }
   a{
     text-decoration: underline;
   }
-</style>
 
+  @media screen and (min-width: 35.5em) {
+    .roundup {
+      margin-left: 20%;
+      margin-right: 20%;
+    }
+  }
+
+  @media screen and (min-width: 48em) {
+    .roundup {
+      margin-left: 10%;
+      margin-right: 10%;
+    }
+  }
+
+  @media screen and (max-width: 48em) {
+    .roundup {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+</style>
 <div class="roundup">
   <div>
     <h1>{% trans "The Gitcoin Weekly" %}</h1>
   </div>
 
-  <div class='intro text-left'>
-    {{ intro|safe }}
-    <div style="text-align: center; ">
-      <a href="https://twitter.com/pixelant">
-        <img style="max-height: 170px; " src="{% static "v2/images/pixelantdesign.png" %}">
-      </a>
-      <p>
-        <a href="https://twitter.com/pixelant">-Pixelant</a>
-      </p>
+  <div class='intro' style="text-align: left;">
+    <div style="padding-left: 2em; padding-right: 2em;">
+      {{ intro|safe }}
+      <div style="display: flex;">
+        <a href="https://twitter.com/pixelant">
+          <img height="48" width="48" style="border-radius: 50px;" src="{% static "v2/images/pixelantdesign.png" %}" />
+          <a style="align-self: center; margin-left: 20px;" href="https://twitter.com/pixelant">@pixelant</a>
+        </a>
+      </div>
     </div>
+
+    {% if kudos_friday %}
+    <div style="text-align: center;">
+      {{ kudos_friday|safe }}
+    </div>
+    {% endif %}
 
     {% if sponsor %}
       <div style="padding: 5px 15px 15px 15px; background-color: #f2f6f9; text-align: center;">
@@ -81,38 +119,38 @@
         </small>
       </div>
     {% endif %}
-
-    <hr>
   </div>
 
   {% if highlights %}
     <h3>{% trans "Last Week's Highlights" %}</h3>
-    <h5>{% trans "Community Members growing open source" %}</h5>
+    <h4>{% trans "Community Members growing open source" %}</h4>
 
     <div style="text-align: center;">
       {% for highlight in highlights %}
-        <li style="list-style:none; margin-bottom: 5px;">
-          {% if highlight.who_link %}
-            <img style="border-radius: 20px;" src="{% avatar_url highlight.who%}" width=30px height=30px>
-            <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>
-          {% else %}
-            * <strong>{{ highlight.who }}</strong>
-          {% endif %}
-            - {{ highlight.what }}
-          {% if highlight.link %}
-            <a href="{{ highlight.link }}">{{ highlight.link_copy }}</a>
-          {% endif %}
-        </li>
+        <div style="display:flex; flex-direction:column; margin-bottom: 5px;">
+          <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+            {% if highlight.who_link %}
+              <img style="border-radius: 20px;" src="{% avatar_url highlight.who%}" width=30px height=30px>
+              <a style="align-self: center; margin-left: 5px; font-weight: bold; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>
+            {% else %}
+              * <strong style="align-self: center;">{{ highlight.who }}</strong>
+            {% endif %}
+          </div>
+          {{ highlight.what }}
+          <div style="margin-top: 1em; margin-bottom: 1em">
+            {% if highlight.link %}
+            <a style="align-self: center; padding: 8px 16px; font-size: 15px;" class="button" href="{{ highlight.link }}">{{ highlight.link_copy }}</a>
+            {% endif %}
+          </div>
+        </div>
       {% endfor %}
     </div>
-    <br>
-    <br>
     <hr>
   {% endif %}
 
   <div>
     <h3>{% trans "Open Funded Issues" %}</h3>
-    <h5>{% trans "Grow Open Source &amp; Make Some ETH" %}</h5>
+    <h4>{% trans "Grow Open Source &amp; Make Some ETH" %}</h4>
   </div>
 
   {% for bounty in bounties %}
@@ -124,13 +162,14 @@
     <p>{% trans "There are more issues in the Gitcoin Issue Explorer:" %}</p>
 
     <div style="margin-bottom: 2em;">
-      <a class="button" href="{% url "explorer" %}">{% trans "View Issue Explorer" %}</a>
+      <a class="button" href="{% url "explorer" %}">{% trans "View Explorer" %}</a>
     </div>
   </div>
   <hr>
   {% if leaderboard %}
-    <h3>{% trans "Who's leading the Leaderboard?" %}</h3>
-    <h5>{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
+  <div style="background-color: #000000; color: #ffffff;">
+    <h3 style="color: #ffffff; padding-top: 1em;">{% trans "Who's leading the Leaderboard?" %}</h3>
+    <h4>{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h4>
 
     <div class="text-left">
       {% for key, package in leaderboard.items %}
@@ -149,17 +188,17 @@
     </div>
     <br>
     <br>
-    <div style="margin-bottom: 2em;">
+    <div style="padding-bottom: 2em;">
       <a class="button" href="{% url "leaderboard" 'quarterly_payers' %}">{% trans "View Leaderboard" %}</a>
     </div>
-    <hr>
+  </div>
   {% endif %}
   <hr>
 
   {% if kudos_highlights %}
     <h3>{% trans "Kudos" %}</h3>
-    <h5>{% trans "Recognition throughout the platform" %}</h5>
-    <div style="text-align: center;">
+    <h4>{% trans "Recognition throughout the platform" %}</h4>
+    <div style="text-align: center; display: flex; justify-content: center;">
       <ul style="text-align: center; padding-left: 20px;">
         {% for kudos in kudos_highlights %}
         {% if kudos.recipient_profile and kudos.sender_profile %}
@@ -183,11 +222,6 @@
     </div>
     <br>
     <br>
-    <hr>
   {% endif %}
-  <hr>
 </div>
-<p>
-  {% trans "You are receiving this email because your email address is on the notification list." %} <a href="{% url "email_settings" subscriber.priv %}">{% trans "Manage Email Settings" %}</a>.
-</p>
 {% endblock %}
