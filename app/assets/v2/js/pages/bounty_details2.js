@@ -9,6 +9,7 @@ const loadingState = {
 };
 
 document.result = bounty;
+listen_for_web3_changes();
 
 Vue.mixin({
   methods: {
@@ -572,4 +573,3 @@ const promisify = (inner) =>
 //     await sleep(4000);
 //   }
 // }
-
