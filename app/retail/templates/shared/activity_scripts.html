@@ -23,7 +23,8 @@
   document.long_poller_live = true;
   $(document).ready(function(){
     var infinite = new Waypoint.Infinite({
-      element: $('.infinite-container')[0]
+      element: $('.infinite-container')[0],
+      prefill: true,
     });
   });
 </script>
