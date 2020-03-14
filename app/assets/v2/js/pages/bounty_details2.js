@@ -307,8 +307,15 @@ Vue.mixin({
 
       if (decimals) {
         activities.forEach(activity => {
-          if (activity.metadata && activity.metadata.value_in_token) {
-            activity.metadata['token_value'] = activity.metadata.value_in_token / 10 ** decimals;
+          if (activity.metadata) {
+            if (activity.metadata.new_bounty) {
+              activity.metadata.new_bounty['token_value'] = activity.metadata.new_bounty.value_in_token / 10 ** decimals;
+              if (activity.metadata.old_bounty) {
+                activity.metadata.old_bounty['token_value'] = activity.metadata.old_bounty.value_in_token / 10 ** decimals;
+              }
+            } else {
+              activity.metadata['token_value'] = activity.metadata.value_in_token / 10 ** decimals;
+            }
           }
         });
       }

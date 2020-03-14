@@ -459,7 +459,16 @@
                   <div class="col-md-4 col-lg-3 my-auto text-center text-md-left">
                     [[ activity.activity_type | stringReplace ]]
                     <template v-if="activity.activity_type === 'new_bounty'">
-                      <span class="tag token">[[ activity.metadata.token_value ]] [[ activity.metadata.token_name ]]</span>
+                      <span class="tag token">
+                        <template v-if="activity.metadata.new_bounty">
+                          [[ activity.metadata.new_bounty.token_value ]]
+                          [[ activity.metadata.new_bounty.token_name ]]
+                        </template>
+                        <template v-else>
+                          [[ activity.metadata.token_value ]]
+                          [[ activity.metadata.token_name ]]
+                        </template>
+                      </span>
                     </template>
                     <template v-if="activity.activity_type === 'increased_bounty'">
                       to <span class="tag token">[[ activity.metadata.token_value ]] [[ activity.metadata.token_name ]]</span>
