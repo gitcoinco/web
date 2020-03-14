@@ -288,7 +288,7 @@
                           <i class="fas fa-check mr-2 font-caption"></i>Bounty Paid
                         </button>
                         <p class="font-smaller-4 my-0">
-                          ([[ fulfillment.payout_tx_id | truncateHash ]])
+                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
                           </button>
@@ -300,7 +300,7 @@
                           <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                         </button>
                         <p class="font-smaller-4 my-0">
-                          ([[ fulfillment.payout_tx_id | truncateHash ]])
+                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
                           </button>
@@ -318,8 +318,8 @@
                           <i class="fas fa-check mr-2 font-caption"></i>Bounty Paid
                         </button>
                         <p class="font-smaller-4 my-0">
-                          ([[ fulfillment.payout_tx_id | truncateHash ]])
-                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+<button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
                           </button>
                         </p>
@@ -329,7 +329,7 @@
                           <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                         </button>
                         <p class="font-smaller-4 my-0">
-                          ([[ fulfillment.payout_tx_id | truncateHash ]])
+                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
                           </button>
