@@ -608,6 +608,7 @@ def remove_interest(request, bounty_id):
     return JsonResponse({
         'success': True,
         'msg': _("You've stopped working on this, thanks for letting us know."),
+        'status': 200
     })
 
 

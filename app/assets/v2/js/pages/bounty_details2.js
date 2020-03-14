@@ -262,6 +262,39 @@ Vue.mixin({
           fulfillment.payout_status == 'done'
       );
 
+    },
+    stopWork: function(isOwner) {
+      let text = isOwner ?
+        'Are you sure you would like to stop this user from working on this bounty ?' :
+        'Are you sure you would like to stop working on this bounty ?';
+
+      if (!confirm(text)) {
+        return;
+      }
+
+      let vm = this;
+
+      const headers = {
+        'X-CSRFToken': csrftoken
+      };
+
+      const apiUrlBounty = `/actions/bounty/${vm.bounty.pk}/interest/remove/`;
+
+      fetchData(apiUrlBounty, 'POST', {}, headers).then(response => {
+        if (200 <= response.status && response.status <= 204) {
+          const user = vm.contxt.github_handle;
+          const _interested = vm.bounty.interested.filter(interest => interest.profile.handle != user);
+          let text = isOwner ?
+            "'You\'ve stopped the user from working on this bounty ?" :
+            "'You\'ve stopped work on this bounty";
+
+          _alert(text, 'success');
+          vm.bounty.interested = _interested;
+        } else {
+          _alert('Unable to stop work on bounty. Please try again later', 'error');
+          console.error(`error: stopping work on bounty failed with status: ${response}`);
+        }
+      });
     }
   },
   computed: {
