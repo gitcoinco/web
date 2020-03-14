@@ -26,7 +26,6 @@
   .bounty-idea {
     background-color: white;
     text-align: center;
-    width: 500px;
   }
 
   h4 {
@@ -53,10 +52,13 @@
       padding-right: 0;
     }
   }
+  .text-center {
+    text-align: center;
+  }
 </style>
 
-<div class="bounty-idea">
-    <h1>{% trans "Hello, fantastic " %} {{ bounty.org_name }}</h1>
+<div class="bounty-idea text-center">
+    <h1 class="text-center">{% trans "Hello, fantastic " %} {{ bounty.org_name }}</h1>
     <div style="margin-bottom: 1em;">
         {% trans "We come in peace and bring you favorable news. Your work is inspiring other contributors and new ideas are flowing towards your tribe. Here is the latest bounty suggestion sent to you from a fellow Gitcoiner."%}
     </div>
