@@ -188,7 +188,7 @@
                 <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="show_interest_modal()" v-if="bounty.permission_type === 'approval'">
                   Express Interest
                 </button>
-                <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" v-else>
+                <button @click="show_interest_modal()" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" v-else>
                   Start Work
                 </button>
               </template>

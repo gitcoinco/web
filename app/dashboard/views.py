@@ -414,6 +414,7 @@ def new_interest(request, bounty_id):
         'success': True,
         'profile': ProfileSerializer(interest.profile).data,
         'msg': msg,
+        'status': 200
     })
 
 

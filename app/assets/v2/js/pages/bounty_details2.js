@@ -283,17 +283,15 @@ Vue.mixin({
 
       fetchData(apiUrlBounty, 'POST', {}, headers).then(response => {
         if (200 <= response.status && response.status <= 204) {
-          const user = vm.contxt.github_handle;
-          const _interested = vm.bounty.interested.filter(interest => interest.profile.handle != user);
+          this.fetchBounty();
           let text = isOwner ?
             "'You\'ve stopped the user from working on this bounty ?" :
             "'You\'ve stopped work on this bounty";
 
           _alert(text, 'success');
-          vm.bounty.interested = _interested;
         } else {
           _alert('Unable to stop work on bounty. Please try again later', 'error');
-          console.error(`error: stopping work on bounty failed with status: ${response}`);
+          console.error(`error: stopping work on bounty failed due to : ${response}`);
         }
       });
     }
