@@ -458,9 +458,12 @@
                   </div>
                   <div class="col-md-4 col-lg-3 my-auto text-center text-md-left">
                     [[ activity.activity_type | stringReplace ]]
-                    <div v-if="activity.activity_type === 'increased_bounty'">
-                      show value
-                    </div>
+                    <template v-if="activity.activity_type === 'new_bounty'">
+                      <span class="tag token">[[ activity.metadata.token_value ]] [[ activity.metadata.token_name ]]</span>
+                    </template>
+                    <template v-if="activity.activity_type === 'increased_bounty'">
+                      to <span class="tag token">[[ activity.metadata.token_value ]] [[ activity.metadata.token_name ]]</span>
+                    </template>
                     <div v-if="activity.activity_type === 'new_kudos'">
                       show value
                     </div>

@@ -5,8 +5,8 @@ const loadingState = {
   loading: 'loading',
   error: 'error',
   empty: 'empty',
-  resolved: 'resolved',
-}
+  resolved: 'resolved'
+};
 
 document.result = bounty;
 
@@ -23,7 +23,7 @@ Vue.mixin({
           return vm.syncBounty();
         }
         vm.bounty = response[0];
-        vm.loadingState = 'resolved'
+        vm.loadingState = 'resolved';
         vm.isOwner = vm.checkOwner(response[0].bounty_owner_github_username);
         vm.isOwnerAddress = vm.checkOwnerAddress(response[0].bounty_owner_address);
         document.result = response[0];
@@ -32,11 +32,11 @@ Vue.mixin({
           delete sessionStorage['bountyId'];
           localStorage[document.issueURL] = '';
           document.title = `${response[0].title} | Gitcoin`;
-          window.history.replaceState({},`${response[0].title} | Gitcoin`, response[0].url);
+          window.history.replaceState({}, `${response[0].title} | Gitcoin`, response[0].url);
         }
         vm.staffOptions();
       }).catch(function(error) {
-        vm.loadingState = 'error'
+        vm.loadingState = 'error';
         _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
       });
     },
@@ -44,17 +44,19 @@ Vue.mixin({
       let vm = this;
 
       if (!localStorage[document.issueURL]) {
-        vm.loadingState = 'notfound'
+        vm.loadingState = 'notfound';
         return;
       }
 
       let bountyMetadata = JSON.parse(localStorage[document.issueURL]);
 
       async function waitBlock(txid) {
-        let receipt = promisify(cb => web3.eth.getTransactionReceipt(txid, cb))
+        let receipt = promisify(cb => web3.eth.getTransactionReceipt(txid, cb));
+
         try {
-         let result = await receipt
-         console.log(result)
+          let result = await receipt;
+
+          console.log(result);
           const data = {
             url: document.issueURL,
             txid: txid,
@@ -63,17 +65,17 @@ Vue.mixin({
           let syncDb = fetchData ('/sync/web3/', 'POST', data);
 
           $.when(syncDb).then(function(response) {
-            console.log(response)
+            console.log(response);
 
             vm.fetchBounty(true);
           }).catch(function(error) {
             setTimeout(vm.syncBounty(), 10000);
           });
         } catch (error) {
-            return error;
+          return error;
         }
       }
-      waitBlock(bountyMetadata.txid)
+      waitBlock(bountyMetadata.txid);
 
     },
     checkOwner: function(handle) {
@@ -102,6 +104,7 @@ Vue.mixin({
       }
       let isInterested = !!(vm.bounty.interested || []).find(interest => caseInsensitiveCompare(interest.profile.handle, vm.contxt.github_handle));
       // console.log(isInterested)
+
       return isInterested;
 
     },
@@ -113,7 +116,7 @@ Vue.mixin({
       }
       // pending=false
       let result = vm.bounty.interested.find(interest => caseInsensitiveCompare(interest.profile.handle, vm.contxt.github_handle));
-      console.log(result)
+
       return result ? !result.pending : false;
 
     },
@@ -263,7 +266,21 @@ Vue.mixin({
   },
   computed: {
     sortedActivity: function() {
-      return this.bounty.activities.sort((a, b) => new Date(b.created) - new Date(a.created));
+      const token_details = tokenAddressToDetailsByNetwork(
+        this.bounty.token_address, this.bounty.network
+      );
+      const decimals = token_details && token_details.decimals;
+
+      let activities = this.bounty.activities.sort((a, b) => new Date(b.created) - new Date(a.created));
+
+      if (decimals) {
+        activities.forEach(activity => {
+          if (activity.metadata && activity.metadata.value_in_token) {
+            activity.metadata['token_value'] = activity.metadata.value_in_token / 10 ** decimals;
+          }
+        });
+      }
+      return activities;
     }
   }
 });
@@ -500,15 +517,15 @@ function sleep(ms) {
 }
 
 const promisify = (inner) =>
-    new Promise((resolve, reject) =>
-        inner((err, res) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(res);
-            }
-        })
-    );
+  new Promise((resolve, reject) =>
+    inner((err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res);
+      }
+    })
+  );
 
 // async function waitBlock(txid) {
 //   while (true) {
@@ -522,5 +539,4 @@ const promisify = (inner) =>
 //     await sleep(4000);
 //   }
 // }
-
 
