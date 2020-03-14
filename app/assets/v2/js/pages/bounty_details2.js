@@ -1,6 +1,7 @@
 var appBounty;
 let bounty = [];
 let url = location.href;
+let param = getURLParams();
 const loadingState = {
   loading: 'loading',
   error: 'error',
@@ -23,6 +24,11 @@ Vue.mixin({
           vm.loadingState = 'empty';
           return vm.syncBounty();
         }
+
+        if (param.url) {
+          vm.syncBounty();
+        }
+
         vm.bounty = response[0];
         vm.loadingState = 'resolved';
         vm.isOwner = vm.checkOwner(response[0].bounty_owner_github_username);
@@ -34,6 +40,10 @@ Vue.mixin({
           localStorage[document.issueURL] = '';
           document.title = `${response[0].title} | Gitcoin`;
           window.history.replaceState({}, `${response[0].title} | Gitcoin`, response[0].url);
+        }
+
+        if (vm.bounty.event && localStorage['pendingProject'] && (vm.bounty.standard_bounties_id == localStorage['pendingProject'])) {
+          projectModal(vm.bounty.pk);
         }
         vm.staffOptions();
       }).catch(function(error) {
@@ -48,6 +58,8 @@ Vue.mixin({
         vm.loadingState = 'notfound';
         return;
       }
+
+      waitingRoomEntertainment();
 
       let bountyMetadata = JSON.parse(localStorage[document.issueURL]);
 
@@ -70,7 +82,7 @@ Vue.mixin({
 
             vm.fetchBounty(true);
           }).catch(function(error) {
-            setTimeout(vm.syncBounty(), 10000);
+            setTimeout(() => vm.syncBounty(), 10000);
           });
         } catch (error) {
           return error;

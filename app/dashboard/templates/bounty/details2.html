@@ -565,7 +565,25 @@
             </div>
           </div>
         </div>
-        <div v-if="loadingState == 'empty'">
+        <!-- <div v-if="loadingState == 'empty'"> -->
+        <div v-if="true">
+          <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
+            {% include 'shared/rain.html' with class="color" %}
+            <div class="quote-container font-weight-semibold my-5 mx-auto">
+              <img src="{% static "v2/images/quotes.png" %}" style="float: left; max-width: 22px;" />
+              <div class="quote_text mt-5"></div>
+              <div class="quote_author mt-2 mx-auto"></div>
+              <input id="quoteRefresh" class="mt-4 btn btn-gc-blue shadow-none py-2" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
+            </div>
+
+            <div class="invite-user-container col-12 mt-5 pt-5 hidden">
+              <h2 id="invite-header" class="font-title mb-4">
+                Work with <b>${user}</b> again on your next bounty ?
+              </h2>
+              <div id="invite-users" class="text-center"></div>
+            </div>
+
+          </div>
           empty waiting
         </div>
         <div v-if="loadingState == 'notfound'" class="d-block mx-auto text-center m-5">
