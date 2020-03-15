@@ -75,7 +75,7 @@ class GrantCategory(SuperModel):
     def all_categories():
         all_tech_categories = GrantCategory.tech_categories()
         filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
-        return all_tech_categories + filtered_media_categories + GrantCategory.media_categories()
+        return all_tech_categories + filtered_media_categories + GrantCategory.health_categories()
 
     @staticmethod
     def tech_categories():
