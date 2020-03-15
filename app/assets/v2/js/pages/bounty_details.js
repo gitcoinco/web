@@ -650,39 +650,39 @@ var attach_work_actions = function() {
   });
 };
 
-var attach_contact_funder_options = function() {
-  $('body').delegate('a.contact_bounty_hunter', 'click', function(e) {
-    e.preventDefault();
-    var text = window.prompt('What would you like to say to the funder?', '');
-    var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
-    var url = document.location + connector_char + 'admin_contact_funder=' + text;
+// var attach_contact_funder_options = function() {
+//   $('body').delegate('a.contact_bounty_hunter', 'click', function(e) {
+//     e.preventDefault();
+//     var text = window.prompt('What would you like to say to the funder?', '');
+//     var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+//     var url = document.location + connector_char + 'admin_contact_funder=' + text;
 
-    document.location.href = url;
-  });
-};
+//     document.location.href = url;
+//   });
+// };
 
 
-var attach_snoozee_options = function() {
-  $('body').delegate('a.snooze_gitcoin_bot', 'click', function(e) {
-    e.preventDefault();
-    var text = window.prompt('How many days do you want to snooze?', '');
-    var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
-    var url = document.location + connector_char + 'snooze=' + text;
+// var attach_snoozee_options = function() {
+//   $('body').delegate('a.snooze_gitcoin_bot', 'click', function(e) {
+//     e.preventDefault();
+//     var text = window.prompt('How many days do you want to snooze?', '');
+//     var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+//     var url = document.location + connector_char + 'snooze=' + text;
 
-    document.location.href = url;
-  });
-};
+//     document.location.href = url;
+//   });
+// };
 
-var attach_override_status = function() {
-  $('body').delegate('a.admin_override_satatus', 'click', function(e) {
-    e.preventDefault();
-    var text = window.prompt('What new status (valid choices: "open", "started", "submitted", "done", "expired", "cancelled", "" to remove override )?', '');
-    var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
-    var url = document.location + connector_char + 'admin_override_satatus=' + text;
+// var attach_override_status = function() {
+//   $('body').delegate('a.admin_override_satatus', 'click', function(e) {
+//     e.preventDefault();
+//     var text = window.prompt('What new status (valid choices: "open", "started", "submitted", "done", "expired", "cancelled", "" to remove override )?', '');
+//     var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+//     var url = document.location + connector_char + 'admin_override_satatus=' + text;
 
-    document.location.href = url;
-  });
-};
+//     document.location.href = url;
+//   });
+// };
 
 // var show_interest_modal = function() {
 //   var self = this;
