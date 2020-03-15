@@ -4867,7 +4867,7 @@ def fulfill_bounty_v1(request):
         response['message'] = 'error: bounty in ' + bounty.bounty_state + ' state cannot be fulfilled'
         return JsonResponse(response)
 
-    if BountyFulfillment.objects.filter(bounty=bounty):
+    if BountyFulfillment.objects.filter(bounty=bounty, profile=profile):
         response['message'] = 'error: user can submit once per bounty'
         return JsonResponse(response)
 

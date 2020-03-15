@@ -310,7 +310,7 @@
                         </p>
                       </template>
 
-                      <button v-else data-toggle="modal" data-target="#payoutModal" class="btn btn-sm btn-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
+                      <button v-else data-toggle="modal" :data-target="`#payoutModal${fulfillment.pk}`" class="btn btn-sm btn-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
                         <i class="fas fa-money-check-alt mr-2 font-caption"></i>Payout Bounty
                       </button>
                     </template>
@@ -353,7 +353,7 @@
                         <span class="font-weight-bold">Hours worked:</span>
                         [[ fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked ]]
                       </p>
-                      <modal id="payoutModal" ref="user-modal">
+                      <modal :id="`payoutModal${fulfillment.pk}`" ref="user-modal">
                         <div slot="body">
                           <div class="text-center">
                             <h4 class="mb-3">
