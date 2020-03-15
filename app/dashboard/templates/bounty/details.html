@@ -16,20 +16,6 @@
     <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
-
-    <style>
-      #bounty_details #issue_description h1,
-      #bounty_details #issue_description h2,
-      #bounty_details #issue_description h3,
-      #bounty_details #issue_description h4,
-      #bounty_details #issue_description h5,
-      #bounty_details #issue_description h6 {
-        letter-spacing: 1px;
-        font-size: 16px;
-        margin-top: 15px;
-        text-transform: none;
-      }
-    </style>
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -180,7 +166,7 @@
             </div>
             <div class="col-12 mt-2">
               <h5 class="bounty-heading mt-0 pt-4" id="description">{% trans "Description" %}</h5>
-              <div class="bounty-text text-body" id="issue_description"></div>
+              <div class="bounty-text text-body issue_description" id="issue_description"></div>
             </div>
             <div class="col-12">
               <div id="issue_keywords"></div>
@@ -519,8 +505,8 @@
     <script>
       const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
       document.issueURL = '{{ issueURL }}';
-                                                                                                
-      // ETC-TODO: remove network + std bounties for ETC                                                                                                     
+
+      // ETC-TODO: remove network + std bounties for ETC
       document.issueNetwork = '{{ network }}';
       document.issue_stdbounties_id = '{{ stdbounties_id }}';
 

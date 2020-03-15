@@ -247,6 +247,30 @@ Vue.mixin({
         }
       }
     },
+    contactFunder: function() {
+      let vm = this;
+      let text = window.prompt('What would you like to say to the funder?', '');
+      if (text === null) {
+        return;
+      }
+      document.location.href = `${vm.bounty.url}?admin_contact_funder=${text}`;
+    },
+    snoozeeGitbot: function() {
+      let vm = this;
+      let text = window.prompt('How many days do you want to snooze?', '');
+      if (text === null) {
+        return;
+      }
+      document.location.href = `${vm.bounty.url}?snooze=${text}`;
+    },
+    overrideStatus: function() {
+      let vm = this;
+      let text = window.prompt('What new status (valid choices: "open", "started", "submitted", "done", "expired", "cancelled", "" to remove override )?', '');
+      if (text === null) {
+        return;
+      }
+      document.location.href = `${vm.bounty.url}?admin_override_satatus=${text}`;
+    },
     hasAcceptedFulfillments: function() {
       let vm = this;
 
