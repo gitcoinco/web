@@ -28,7 +28,7 @@
     <div class="container min-vh-100" id="gc-bounty-detail" v-cloak>
 
       <div class="row">
-        <loading-screen v-show="loadingState == 'loading'"></loading-screen>
+        <loading-screen class="position-absolute" v-show="loadingState == 'loading'"></loading-screen>
 
         <div class="col-12 pt-3 text-center" v-if="contxt.is_staff && loadingState == 'resolved'">
           <span class="text-black-70 my-2 font-caption">
