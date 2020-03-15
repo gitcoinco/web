@@ -287,9 +287,9 @@
                   <div class="col-md-3 col-lg-3 my-auto text-center">
                     <template v-if="isOwner">
                       <template v-if="fulfillment.payout_status == 'done'">
-                        <button class="btn btn-sm btn-gc-green my-auto px-3 font-smaller-2 font-weight-semibold">
-                          <i class="fas fa-check mr-2 font-caption"></i>Bounty Paid
-                        </button>
+                        <span class="my-auto px-3 font-smaller-2 font-weight-semibold">
+                          <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
+                        </span>
                         <p class="font-smaller-4 my-0">
                           <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
