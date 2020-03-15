@@ -35,6 +35,9 @@ Vue.mixin({
           document.title = `${response[0].title} | Gitcoin`;
           window.history.replaceState({}, `${response[0].title} | Gitcoin`, response[0].url);
         }
+        if (vm.bounty.event && localStorage['pendingProject'] && (vm.bounty.standard_bounties_id == localStorage['pendingProject'])) {
+          projectModal(vm.bounty.pk);
+        }
         vm.staffOptions();
       }).catch(function(error) {
         vm.loadingState = 'error';

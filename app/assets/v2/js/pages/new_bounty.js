@@ -3,7 +3,7 @@
 /* eslint-disable no-lonely-if */
 document.web3network = 'mainnet';
 load_tokens();
-listen_for_web3_changes();
+//listen_for_web3_changes();
 
 const qr_tokens = ['ETC'];
 
