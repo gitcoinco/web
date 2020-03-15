@@ -21,7 +21,6 @@ Vue.mixin({
 
       $.when(getBounty).then(function(response) {
         if (!response.length) {
-          vm.loadingState = 'empty';
           return vm.syncBounty();
         }
 
@@ -37,7 +36,7 @@ Vue.mixin({
         if (newData) {
           delete sessionStorage['fulfillers'];
           delete sessionStorage['bountyId'];
-          localStorage[document.issueURL] = '';
+          delete localStorage[document.issueURL];
           document.title = `${response[0].title} | Gitcoin`;
           window.history.replaceState({}, `${response[0].title} | Gitcoin`, response[0].url);
         }
@@ -59,7 +58,7 @@ Vue.mixin({
         return;
       }
 
-      waitingRoomEntertainment();
+      vm.loadingState = 'empty';
 
       let bountyMetadata = JSON.parse(localStorage[document.issueURL]);
 
@@ -68,6 +67,7 @@ Vue.mixin({
 
         try {
           let result = await receipt;
+          let syncPool;
 
           console.log(result);
           const data = {
@@ -79,16 +79,17 @@ Vue.mixin({
 
           $.when(syncDb).then(function(response) {
             console.log(response);
-
             vm.fetchBounty(true);
+            return clearTimeout(syncPool);
           }).catch(function(error) {
-            setTimeout(() => vm.syncBounty(), 10000);
+            syncPool = setTimeout(() => vm.syncBounty(), 10000);
           });
         } catch (error) {
           return error;
         }
       }
       waitBlock(bountyMetadata.txid);
+      waitingRoomEntertainment();
 
     },
     checkOwner: function(handle) {
@@ -577,6 +578,67 @@ const promisify = (inner) =>
       }
     })
   );
+
+/**
+ * Checks sessionStorage to toggle to show the quote
+ * container vs showing the list of fulfilled users to be
+ * invite.
+ */
+const show_invite_users = () => {
+
+  if (sessionStorage['fulfillers']) {
+    const users = sessionStorage['fulfillers'].split(',');
+    const bountyId = sessionStorage['bountyId'];
+
+    if (users.length == 1) {
+
+      let user = users[0];
+      const title = `Work with <b>${user}</b> again on your next bounty ?`;
+      const invite = `
+        <div class="invite-user">
+          <img class="avatar" src="/dynamic/avatar/${users}" />
+          <p class="mt-4">
+            <a target="_blank" class="btn btn-gc-blue shadow-none py-2 px-4" href="/users?invite=${user}&current-bounty=${bountyId}">
+              Yes, invite to one of my bounties
+            </a>
+          </p>
+        </div>`;
+
+      $('#invite-header').html(title);
+      $('#invite-users').html(invite);
+    } else {
+
+      let invites = [];
+      const title = 'Work with these contributors again on your next bounty?';
+
+      users.forEach(user => {
+        const invite = `
+          <div class="invite-user mx-3">
+            <img class="avatar" src="/dynamic/avatar/${user}"/>
+            <p class="my-2">
+              <a target="_blank" class="font-subheader blue" href="/profile/${user}">
+                ${user}
+              </a>
+            </p>
+            <a target="_blank" class="btn btn-gc-blue shadow-none px-4 font-body font-weight-semibold" href="/users?invite=${user}&current-bounty=${bountyId}"">
+              Invite
+            </a>
+          </div>`;
+
+        invites.push(invite);
+      });
+
+      $('#invite-users').addClass('d-flex justify-content-center');
+      $('#invite-header').html(title);
+      $('#invite-users').html(invites);
+    }
+    $('.invite-user-container').removeClass('hidden');
+    $('.quote-container').addClass('hidden');
+  } else {
+    $('.invite-user-container').addClass('hidden');
+    $('.quote-container').removeClass('hidden');
+  }
+};
 
 // async function waitBlock(txid) {
 //   while (true) {

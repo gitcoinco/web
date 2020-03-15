@@ -319,7 +319,7 @@
                         </button>
                         <p class="font-smaller-4 my-0">
                           <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
-<button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                            <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
                           </button>
                         </p>
@@ -565,9 +565,13 @@
             </div>
           </div>
         </div>
-        <!-- <div v-if="loadingState == 'empty'"> -->
-        <div v-if="true">
-          <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
+        <div v-if="loadingState == 'error'">
+          error
+        </div>
+        <div v-show="loadingState == 'empty'">
+        <!-- <div v-if="true"> -->
+          {% include 'shared/bounty_waiting_state.html' with can_close=True %}
+          <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment">
             {% include 'shared/rain.html' with class="color" %}
             <div class="quote-container font-weight-semibold my-5 mx-auto">
               <img src="{% static "v2/images/quotes.png" %}" style="float: left; max-width: 22px;" />
@@ -584,7 +588,6 @@
             </div>
 
           </div>
-          empty waiting
         </div>
         <div v-if="loadingState == 'notfound'" class="d-block mx-auto text-center m-5">
           <div class=" nonefound">
@@ -684,6 +687,7 @@
 
       const csrftoken = $('input[name="csrfmiddlewaretoken"]').attr('value');
     </script>
+    <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
     <script src="{% static "v2/js/pages/bounty_details2.js" %}"></script>
     <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
     <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
@@ -693,7 +697,6 @@
     <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
     <script src="{% static "v2/js/ipfs.js" %}"></script>
     <script src="{% static "v2/js/user-search.js" %}"></script>
-    <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
     {% for message in messages %}
       {% if message.tags == 'success'%}
       <script>
