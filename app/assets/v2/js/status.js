@@ -145,58 +145,70 @@ $(document).ready(function() {
       }
     }
 
-    if (lastWord.startsWith('@')) {
+    if (/\B@([a-zA-Z0-9_-]{2})/g.test(lastWord)) {
       const usernameFilter = lastWord.slice(1);
 
-      if (usernameFilter.length > 2) {
-        const api = `/api/v0.1/users_fetch/?search=${usernameFilter}`;
-        let getUsers = fetchData(api, 'GET');
-
-        $.when(getUsers).then(function(response) {
-          let dropdown = $('#textarea-dropdown');
-
-          dropdown.empty();
-
-          if (response.data && response.data.length) {
-            for (profile of response.data) {
-              const { avatar_url, handle } = profile;
-              let userRow = $('<a class="dropdown-item" tabindex="0" href="#"></a>');
-
-              userRow.append(`<img class="rounded-circle mr-1" src="${avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/>`);
-              userRow.append(`<span>${handle}</span>`);
-
-              userRow.click(function(e) {
-                e.preventDefault();
-                let inputVal = $('#textarea').val();
-                let inputPos = inputVal.search(lastWord);
-
-                if (inputPos !== -1) {
-                  let newVal = inputVal.slice(0, inputPos) + '@' + handle + ' ';
-
-                  $('#textarea').val(newVal);
-                  $('#textarea').focus();
-                  $('#textarea-dropdown').removeClass('show');
-                }
-              });
-              dropdown.append(userRow);
-            }
-          } else {
-            dropdown.append(`No username matching '${usernameFilter}'`);
-          }
-
-          dropdown.addClass('show');
-        });
+      function split(val) {
+        // replace comma with space: https://stackoverflow.com/a/24826141/678481
+        return val.split(/ \s*/);
       }
+      function extractLast(term) {
+        return split(term).pop();
+      }
+
+      $.ui.autocomplete.prototype._resizeMenu = function() {
+        this.menu.element.css({'left': 'initial'});
+      }
+
+      $('#textarea').on('keydown', function(event) {
+        // don't navigate away from the field on tab when selecting an item
+        if (event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+          event.preventDefault();
+        }
+      }).autocomplete({
+        source: function (request, response) {
+          $.getJSON(`/api/v0.1/users_fetch/?search=${usernameFilter}`, function(data) {
+            response($.map(data.data, function(value, key) {
+              // return {handle: value.handle, avatar_url: value.avatar_url};
+              return value.handle;
+            }));
+          });
+        },
+        minLength: 2,
+        delay: 250,
+        autoFocus: true,
+        search: function(event, ui) {
+          // custom minLength
+          let term = extractLast(this.value);
+          if (term.length < 2) {
+            return false;
+          }
+        },
+        focus: function () {
+          // prevent value inserted on focus
+          return false;
+        },
+        select: function(event, ui) {
+          let terms = split(this.value);
+
+          // remove the current input
+          terms.pop();
+          // add the selected item
+          terms.push(`@${ui.item.value}`);
+          // add placeholder to get the comma-and-space at the end
+          terms.push('');
+          this.value = terms.join(' ');
+
+          return false;
+        },
+        classes: {
+            "ui-autocomplete": "dropdown-menu",
+            "ui-menu-item": "dropdown-item"
+        },
+      });
+
       return;
     }
-
-    $('#textarea-dropdown').removeClass('show');
-  });
-
-  $('#textarea').focusout(function(e) {
-    window.setTimeout(function() {
-      $('#textarea-dropdown').removeClass('show');
-    }, 100);
   });
 
   if ($('#textarea').length && $('#textarea').offset().top < 400) {
@@ -210,6 +222,7 @@ $(document).ready(function() {
       document.is_shift = false;
     }
   });
+
   // handle shift button
   $('body').on('click', '#poll-button', function(e) {
     e.preventDefault();
@@ -255,7 +268,7 @@ $(document).ready(function() {
         $('#char_count').text(len + '/' + max_len);
       }
     };
-    
+
     update_max_len();
     localStorage.setItem(lskey, $(this).val());
     if ($(this).val().trim().length > max_len) {
@@ -286,7 +299,7 @@ $(document).ready(function() {
     data.append('data', the_message);
     data.append('what', $('#status [name=what]').val());
     data.append('tab', getParam('tab'));
-    
+
     message.val('');
     localStorage.setItem(lskey, '');
     data.append(
