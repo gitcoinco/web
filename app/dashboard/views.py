@@ -3561,7 +3561,9 @@ def get_users(request):
 
     if request.is_ajax():
         q = request.GET.get('term', '').lower()
-        profiles = Profile.objects.filter(handle__startswith=q)
+        profiles = Profile.objects.filter(handle=q)
+        if not profiles.exists():
+            profiles = Profile.objects.filter(handle__startswith=q)
         results = []
         # try gitcoin
         for user in profiles:
