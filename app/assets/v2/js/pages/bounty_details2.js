@@ -90,7 +90,10 @@ Vue.mixin({
       }
       waitBlock(bountyMetadata.txid);
       waitingRoomEntertainment();
+      var link_url = get_etherscan_url(bountyMetadata.txid);
 
+      $('#transaction_url').attr('href', link_url);
+      $('.bg-container').show();
     },
     checkOwner: function(handle) {
       let vm = this;

@@ -573,7 +573,7 @@
         </div>
         <div v-show="loadingState == 'empty'">
         <!-- <div v-if="true"> -->
-          {% include 'shared/bounty_waiting_state.html' with can_close=True %}
+          {% include 'shared/waiting_state.html' with can_close=True %}
           <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment">
             {% include 'shared/rain.html' with class="color" %}
             <div class="quote-container font-weight-semibold my-5 mx-auto">
