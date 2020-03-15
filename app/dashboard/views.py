@@ -3560,7 +3560,7 @@ def get_users(request):
     add_non_gitcoin_users = not request.GET.get('suppress_non_gitcoiners', None)
 
     if request.is_ajax():
-        q = request.GET.get('term').lower()
+        q = request.GET.get('term', '').lower()
         profiles = Profile.objects.filter(handle__startswith=q)
         results = []
         # try gitcoin
