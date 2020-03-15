@@ -75,7 +75,7 @@ class GrantCategory(SuperModel):
     def all_categories():
         all_tech_categories = GrantCategory.tech_categories()
         filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
-        return all_tech_categories + filtered_media_categories
+        return all_tech_categories + filtered_media_categories + GrantCategory.media_categories()
 
     @staticmethod
     def tech_categories():
@@ -100,6 +100,13 @@ class GrantCategory(SuperModel):
             'notes',
         ]
 
+    @staticmethod
+    def health_categories():
+        return [
+            'COVID19 research',
+            'COVID19 response',
+        ]
+
     category = models.CharField(
         max_length=50,
         blank=False,
@@ -117,6 +124,7 @@ class Grant(SuperModel):
 
     GRANT_TYPES = [
         ('tech', 'tech'),
+        ('health', 'health'),
         ('media', 'media')
     ]
 

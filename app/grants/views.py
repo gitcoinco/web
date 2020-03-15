@@ -156,12 +156,16 @@ def grants(request):
     media_grants_count = Grant.objects.filter(
         network=network, hidden=False, grant_type='media'
     ).count()
+    health_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='health'
+    ).count()
 
     categories = [category[0] for category in basic_grant_categories(grant_type)]
 
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
-        {'label': 'Media', 'keyword': 'media', 'count': media_grants_count}
+        {'label': 'Media', 'keyword': 'media', 'count': media_grants_count},
+        {'label': 'Public Health', 'keyword': 'health', 'count': health_grants_count}
     ]
 
     params = {
@@ -1023,6 +1027,8 @@ def basic_grant_categories(grant_type):
         categories = GrantCategory.tech_categories()
     elif grant_type == 'media':
         categories = GrantCategory.media_categories()
+    elif grant_type == 'health':
+        categories = GrantCategory.health_categories()
     else:
         categories = GrantCategory.all_categories()
 

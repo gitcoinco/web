@@ -185,6 +185,12 @@ const init = () => {
             let file = $('#img-project')[0].files[0];
             let formData = new FormData();
 
+            if (!$('#contract_owner_address').val()) {
+              web3.eth.getAccounts(function(err, accounts) {
+                $('#contract_owner_address').val(accounts[0]);
+              });
+            }
+
             formData.append('input_image', file);
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('title', $('#input_title').val());

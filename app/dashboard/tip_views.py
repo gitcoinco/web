@@ -109,6 +109,15 @@ def receive_tip_v3(request, key, txid, network):
     these_tips = Tip.objects.filter(web3_type='v3', txid=txid, network=network)
     tips = these_tips.filter(metadata__reference_hash_for_receipient=key) | these_tips.filter(metadata__reference_hash_for_funder=key)
     tip = tips.first()
+    if not tip:
+        messages.error(request, 'This tip was not found')
+        return redirect('/')
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+        request.user, 'profile', None
+    ):
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
     is_authed = request.user.username.lower() == tip.username.lower() or request.user.username.lower() == tip.from_username.lower() or not tip.username
     not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
     did_fail = False
@@ -116,11 +125,6 @@ def receive_tip_v3(request, key, txid, network):
         tip.update_tx_status()
         did_fail = tip.tx_status in ['dropped', 'unknown', 'na', 'error']
 
-    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
-        request.user, 'profile', None
-    ):
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
-        return login_redirect
     num_redemptions = tip.metadata.get("num_redemptions", 0)
     max_redemptions = tip.metadata.get("max_redemptions", 0)
     is_redeemable = not (tip.receive_txid and (num_redemptions >= max_redemptions)) and is_authed

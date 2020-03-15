@@ -318,7 +318,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
           web3.eth.sendTransaction({
             from: fromAccount,
             to: destinationAccount,
-            value: amountInDenom,
+            value: amountInDenom
           }, post_send_callback);
         } else {
           var send_erc20 = function() {
@@ -330,7 +330,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
             _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
             web3.eth.sendTransaction({
               to: destinationAccount,
-              value: gas_money,
+              value: gas_money
             }, send_erc20);
           };
 

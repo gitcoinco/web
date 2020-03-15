@@ -1033,7 +1033,7 @@ impact the lives of ourselves and others. The biggest - social distancing - is o
 save countless lives <a href="https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca">in this article.</a>
 We first and foremost hope you and your families stay safe.
 
-With proper precautions in shape, feel free to come join us (virtually!) for  <a href=https://hackathons.gitcoin.co/funding-the-future”>Funding The Future.</a> Our goal
+With proper precautions in shape, feel free to come join us (virtually!) for <a href=https://hackathons.gitcoin.co/funding-the-future”>Funding The Future.</a> Our goal
 is to make this our most interactive hackathon yet -- especially important in a time where distance physically is a requirement. Do join us if your circumstances allow, we'd love
 to have you! You can get a sneak preview of this in our <a href="https://gitcoin.co/townsquare">Town Square</a> anytime :)
 
