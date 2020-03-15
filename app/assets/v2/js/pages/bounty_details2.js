@@ -90,7 +90,11 @@ Vue.mixin({
       }
       waitBlock(bountyMetadata.txid);
       waitingRoomEntertainment();
-      var link_url = get_etherscan_url(bountyMetadata.txid);
+      if (vm.is_bounties_network) {
+        var link_url = get_etherscan_url(bountyMetadata.txid);
+      } else {
+        var link_url = 'https://classic.etccoopexplorer.com/tx/' + bountyMetadata.txid;
+      }
 
       $('#transaction_url').attr('href', link_url);
       $('.bg-container').show();
