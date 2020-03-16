@@ -746,6 +746,21 @@ a.btn {
   padding: 0 25px;
 }
 
+.payout-input-amount-container input {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  max-width: 5rem;
+  outline: none;
+  color: #03B16B;
+}
+
+.payout-input-amount-container input::-webkit-outer-spin-button,
+.payout-input-amount-container input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 @media (max-width: 575.98px) {
 
   #timer {

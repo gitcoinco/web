@@ -339,6 +339,20 @@ Vue.mixin({
       }
 
       return false;
+    },
+    totalAmountPaid: function(inputAmount) {
+      let vm = this;
+      let amount_paid = 0;
+      const token_details = tokenAddressToDetailsByNetwork(
+        this.bounty.token_address, this.bounty.network
+      );
+      const decimals = token_details && token_details.decimals;
+
+      vm.bounty.fulfillments.forEach(fulfillment => {
+        amount_paid += (fulfillment.payout_amount / 10 ** decimals);
+      });
+
+      vm.bounty.amount_paid = parseFloat(amount_paid) + parseFloat(inputAmount);
     }
   },
   computed: {
@@ -354,11 +368,13 @@ Vue.mixin({
         activities.forEach(activity => {
           if (activity.metadata) {
             if (activity.metadata.new_bounty) {
+              // ETH
               activity.metadata.new_bounty['token_value'] = activity.metadata.new_bounty.value_in_token / 10 ** decimals;
               if (activity.metadata.old_bounty) {
                 activity.metadata.old_bounty['token_value'] = activity.metadata.old_bounty.value_in_token / 10 ** decimals;
               }
             } else {
+              // cross-chain
               activity.metadata['token_value'] = activity.metadata.value_in_token / 10 ** decimals;
             }
           }

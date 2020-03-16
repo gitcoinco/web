@@ -356,26 +356,30 @@
                       <modal :id="`payoutModal${fulfillment.pk}`" ref="user-modal">
                         <div slot="body">
                           <div class="text-center">
-                            <h4 class="mb-3">
-                              Payout contributor
-                            </h4>
+                            <p class="alert-warning py-2 font-smaller-4 mb-0" v-if="bounty.amount_paid && bounty.amount_paid > bounty.value_true">
+                              You are paying [[ bounty.amount_paid - bounty.value_true ]] [[ bounty.token_name ]] more than the bounty amount
+                            </p>
+
+                            <p class="pt-3 mb-3 font-title">
+                              Payout [[ fulfillment.profile.handle ]]
+                            </p>
 
                             <p v-if="bounty.bounty_owner_address">
                               <span class="d-block">Scan QR code using address</span>
-                              <span>[[bounty.bounty_owner_address]]</span>
+                              <span class="font-subheader font-weight-semibold">[[bounty.bounty_owner_address]]</span>
                             </p>
 
-                            <p>Payout [[ bounty.value_true ]] [[ bounty.token_name ]] to [[ fulfillment.profile.handle ]] ([[ fulfillment.fulfiller_address | truncateHash ]])</p>
-
-                            <input type="number" class="mb-4" v-model="inputAmount" name="" id="">
-                            [[ bounty.value_true - inputAmount ]] [[ bounty.token_name ]]
+                            <p class="payout-input-amount-container font-weight-semibold ">
+                              <input type="number" class="mb-4 font-bigger-4 text-center" v-model="inputAmount" v-on:input="totalAmountPaid(inputAmount)" min="0" name="" id="">
+                              <span class="font-body">[[ bounty.token_name ]]</span>
+                            </p>
 
                             <qrcode :string="`ethereum:${fulfillment.fulfiller_address}`"></qrcode>
                             <small class="d-block my-3">Scan the QR code above with your ETC Wallet to payout</small>
                             <button class="d-block mx-auto mb-3 btn btn-outline-gc-blue px-2 font-caption font-weight-semibold"
                               @click="fulfillmentComplete(fulfillment.pk, inputAmount)"
                             >
-                              I've Scanned + Paid
+                              I have Scanned & Paid
                             </button>
                           </div>
                         </div>
@@ -494,7 +498,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="row">
             <div class="col-12">
               <div class="border my-3 px-4 py-3">
