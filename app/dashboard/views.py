@@ -996,8 +996,9 @@ def users_fetch(request):
         )
 
     if request.GET.get('type') == 'explore_tribes':
-        profile_list = Profile.objects.filter(data__type='Organization'
-            ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
+        # KO - todo - in future be smarter about tribes lookups and ranking by follower count
+        profile_list = Profile.objects.filter(data__type='Organization')
+        #    ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
 
         if q:
             profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
@@ -1005,25 +1006,26 @@ def users_fetch(request):
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
 
-        this_page = Profile.objects_full.filter(pk__in=[ele. pk for ele in this_page]
-            ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
+        this_page = Profile.objects_full.filter(pk__in=[ele.pk for ele in this_page])
+#            ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
 
     else:
-        # KO 2020/03 - 
-        profile_list = Profile.objects.filter(pk__in=profile_list.values_list('pk', flat=True)
-            ).annotate(average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))).annotate(previous_worked=previous_worked()).order_by(order_by, '-previous_worked', 'id')
+        # KO 2020/03 - this was crushing server perf so removing it
+        # profile_list = Profile.objects.filter(pk__in=profile_list.values_list('pk', flat=True)
+        #    ).annotate(average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))).annotate(previous_worked=previous_worked()).order_by(order_by, '-previous_worked', 'id')
         profile_list = profile_list.values_list('pk', flat=True)
 
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
 
         profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page])\
-            .order_by(order_by, 'id').annotate(
-            previous_worked_count=previous_worked()).annotate(
-                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
-            ).annotate(
-                average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-            ).order_by('-previous_worked_count', 'id')
+            .order_by(order_by, 'id')
+#            .annotate(
+#            previous_worked_count=previous_worked()).annotate(
+#                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
+#            ).annotate(
+#                average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+#            ).order_by('-previous_worked_count', 'id')
 
         this_page = profile_list
 
@@ -1056,7 +1058,7 @@ def users_fetch(request):
             count_work_completed = user.get_fulfilled_bounties(network=network).count()
 
             profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
-            profile_json['previously_worked'] = user.previous_worked_count > 0
+            profile_json['previously_worked'] = False # user.previous_worked_count > 0
             profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
             profile_json['position_funder'] = user.get_funder_leaderboard_index()
             profile_json['work_done'] = count_work_completed
