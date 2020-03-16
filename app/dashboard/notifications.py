@@ -31,6 +31,7 @@ from django.utils.translation import gettext_lazy as _
 
 import requests
 import twitter
+from app.utils import timeout
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
 from marketing.mails import featured_funded_bounty, send_mail, setup_lang, tip_email
@@ -257,6 +258,13 @@ def build_message_for_integration(bounty, event_name):
 
 
 def maybe_market_to_user_slack(bounty, event_name):
+    try:
+        return maybe_market_to_user_slack_helper(bounty, event_name)
+    except TimeoutError as e:
+        logger.exception(e)
+
+@timeout(1)
+def maybe_market_to_user_slack_helper(bounty, event_name):
     """Send a Slack message to the user's slack channel for the specified Bounty.
 
     Args:
