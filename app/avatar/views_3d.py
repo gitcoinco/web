@@ -343,6 +343,20 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/orc_gitcoin.svg',
         },
+        'walle': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+                'tyres': '0 200 250 250',
+                'accessory': '0 0 200 200',
+                'cap': '100 0 150 150',
+                'goggles': '100 0 150 150',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/walle.svg',
+        },
         'megaman': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
