@@ -5016,6 +5016,7 @@ def payout_bounty_v1(request, fulfillment_id):
         return JsonResponse(response)
 
     fulfillment.payout_amount = amount
+    fulfillment.payout_status = 'pending'
     fulfillment.token_name = token_name
     fulfillment.save()
 
