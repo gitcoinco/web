@@ -5086,6 +5086,8 @@ def close_bounty_v1(request, bounty_id):
 
     bounty.bounty_state = 'done'
     bounty.idx_status = 'done' # TODO: RETIRE
+    bounty.is_open = False # TODO: fixup logic in status calculated property on bounty model
+    bounty.accepted = True
     bounty.save()
 
     response = {
