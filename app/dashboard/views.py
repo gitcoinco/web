@@ -2649,9 +2649,10 @@ def get_profile_tab(request, profile, tab, prev_context):
     elif tab == 'orgs':
         pass
     elif tab == 'tribe':
-        pass
+        context['team'] = profile.team_or_none_if_timeout
     elif tab == 'people':
-        pass
+        if profile.is_org:
+            context['team'] = profile.team_or_none_if_timeout
     elif tab == 'hackathons':
         context['projects'] = HackathonProject.objects.filter( profiles__id=profile.id)
     elif tab == 'quests':

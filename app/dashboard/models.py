@@ -49,7 +49,7 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
-from app.utils import get_upload_filename
+from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
 from avatar.utils import get_user_github_avatar_image
 from bleach import clean
@@ -2676,6 +2676,15 @@ class Profile(SuperModel):
         return Grant.objects.filter(Q(admin_profile=self) | Q(team_members__in=[self]) | Q(subscriptions__contributor_profile=self))
 
     @property
+    def team_or_none_if_timeout(self):
+        try:
+            return self.team
+        except TimeoutError as e:
+            logger.error(f'timeout for team of {self.handle}; will be fixed when https://github.com/gitcoinco/web/pull/6218/files is in')
+            return []
+
+    @property
+    @timeout(1)
     def team(self):
         if not self.is_org:
             return Profile.objects.none()
