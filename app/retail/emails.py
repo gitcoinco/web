@@ -1005,8 +1005,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Spring & New Things Around the Corner"
-    new_kudos_pks = [11843, 11803, 11799]
+    subject = "COVID: Stay Safe & Carry On"
+    new_kudos_pks = [12403, 12299, 12239]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1025,13 +1025,22 @@ def render_new_bounty_roundup(to_email):
 
     intro = f'''
 <p>
-What’s up Gitcoiners,
+Hello Gitcoiners,
 </p>
 <p>
-Spring is just around the corner! March is going to be an exciting month on Gitcoin. We are halfway through the <a href="https://gitcoin.co/hackathon/decentralized-impact-incubator">Social Impact Incubator Hackathon</a> and the <a href=“https://gitcoin.co/hackathon/skynet”>Skynet Virtual Hackathon</a> by Sia. Check out the great <a href="https://gitcoin.co/hackathon/projects/skynet/">projects</a> in the <a href="https://gitcoin.co/hackathon/projects/decentralized-impact-incubator">works</a>! There are also more exciting bounties up ahead. <a href=“https://hackathons.gitcoin.co/funding-the-future”>Funding the Future</a> Virtual Hackathon starts on March 16th and will be packed with great bounties on DeFi, funding mechanisms, DAOs and more! On top of that, we’re doing a concurrent <a href=“https://gitcoin.co/grants/">Gitcoin Grants CLR</a> Round 5, kicking off at the same time.
+We'd like to first and foremost wish you all a safe few weeks ahead. We're living in a COVID world now - and while there's no need to panic - we can take simple precautions to
+impact the lives of ourselves and others. The biggest - social distancing - is outlined with fantastic detail alongside the reasons this could
+save countless lives <a href="https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca">in this article.</a>
+We first and foremost hope you and your families stay safe.
+
+With proper precautions in shape, feel free to come join us (virtually!) for <a href=https://hackathons.gitcoin.co/funding-the-future”>Funding The Future.</a> Our goal
+is to make this our most interactive hackathon yet -- especially important in a time where distance physically is a requirement. Do join us if your circumstances allow, we'd love
+to have you! You can get a sneak preview of this in our <a href="https://gitcoin.co/townsquare">Town Square</a> anytime :)
+
 </p>
 <p>
-We’re working on launching the next stage of open source community BUIDLing. We’ve got a few tricks up our sleeves about how to make it easier and more purposeful for all of us to create strong connections, teams, concepts and wheel-spinning products. Keep an eye out for what’s coming in the next month! In the mean time come hangout in <a href="https://gitcoin.co/townsquare">Town Square</a> to be part of the conversation, earn tips (with mini CLR matches), and learn how you can help Grow Open Source!
+ <a href=“https://hackathons.gitcoin.co/funding-the-future”>Funding the Future</a> Virtual Hackathon starts on Monday, March 16th and will be packed with great bounties on DeFi, funding mechanisms, and DAOs!
+ In an update, we've moved the <a href=“https://gitcoin.co/grants/">Gitcoin Grants CLR</a> Round 5 round back one week (starting 3/23), giving us some time to readjust to uncertainty across markets and the world.
 </p>
 <p>
 Interested in sneak peaks at what the product team is doing or being an early tester? <a href=“https://gitcoin.co/pixelantdesign”>Hit me up</a> on the <a href=“https://gitcoin.co/chat”>Gitcoin Chat</a>!
@@ -1042,7 +1051,7 @@ Interested in sneak peaks at what the product team is doing or being an early te
 <h3>What else is new?</h3>
     <ul>
         <li>
-        <a href=“gitcoin.co/livestream”>Join us</a> for the Gitcoin Livestream today at 2 pm ET. This Livestream will be a "meta" community stream - we want to hear from you! We'll be presenting some of the new features we're building out with Townsquare, Gitcoin Tribes, Hackathons, and more. But we also want you to participate. What new features do you want to have in 2020? Who do you want to see on future Livestreams? What kind of themes should we host hackathons around? This is an open discussion, come with questions, comments, concerns, complaints, and we'll make it fun!
+        <a href=“gitcoin.co/livestream”>Join us</a> for the Gitcoin Livestream today at 2 pm ET. This Livestream will be an ETH 2.0 stream hosted by our own Kevin Owocki!
         </li>
     </ul>
 </p>
@@ -1053,20 +1062,20 @@ Back to (remote) work,
     highlights = [{
         'who': 'Bobface',
         'who_link': True,
-        'what': 'Enabled Token Purchases With ETH And Other ERC20s for IdeaMarkets',
-        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/18/4053',
+        'what': 'More great work with Austin Griffith!',
+        'link': 'https://gitcoin.co/issue/austintgriffith/eth.build/14/4074',
         'link_copy': 'View more',
     }, {
-        'who': 'agbilotia1998',
+        'who': 'dhaileytaha',
         'who_link': True,
-        'what': 'Moved Code Of Conduct Into Footer And Out Of Cent-Node Docs',
-        'link': 'https://gitcoin.co/issue/centrifuge/developer.centrifuge.io/163/4062',
+        'what': 'Kudos to the best Infura Community contributor',
+        'link': 'https://gitcoin.co/issue/INFURA/infura/198/4066',
         'link_copy': 'View more',
     }, {
-        'who': 'proy24',
+        'who': 'developerfred',
         'who_link': True,
-        'what': 'Won Bancor Hackathon Prize - Trade & Liquidity Widget',
-        'link': 'https://gitcoin.co/issue/bancorprotocol/contracts/336/3947',
+        'what': 'Kudos to one of our most active Gitcoiners!',
+        'link': 'https://gitcoin.co/issue/gitcoinco/web/6093/4068',
         'link_copy': 'View more',
     }, ]
 
@@ -1084,13 +1093,13 @@ Back to (remote) work,
 
     bounties_spec = [{
         'url': 'https://github.com/NebulousLabs/Skynet-Hive/issues/1',
-        'primer': '(1,750,000 SC) - Gitcoin Skynet Hackathon Challenge',
+        'primer': '(1,750,000 SC) - Gitcoin Skynet Hackathon Challenge: Last Chance! ',
     }, {
-        'url': 'https://github.com/cybersemics/em/issues/308',
-        'primer': 'React-Scripts >= 2 Breaks MultiGesture On Build',
+        'url': 'https://github.com/mysteriumnetwork/node/issues/1865',
+        'primer': 'A sneak peak at a Mysterium prize during FTF next week',
     }, {
-        'url': 'https://github.com/diadata-org/diadata/issues/203',
-        'primer': 'DeFI Lending | MasterKey Risk Analysis',
+        'url': 'https://github.com/AdExNetwork/adex-protocol-eth/issues/93',
+        'primer': 'A great AdEx one, also a sneak peak :)',
     }]
 
 
