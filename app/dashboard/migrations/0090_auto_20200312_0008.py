@@ -39,9 +39,4 @@ class Migration(migrations.Migration):
             name='token_name',
             field=models.CharField(blank=True, max_length=10),
         ),
-        migrations.AlterField(
-            model_name='profile',
-            name='last_calc_date',
-            field=models.DateTimeField(default=economy.models.get_0_time),
-        ),
     ]
