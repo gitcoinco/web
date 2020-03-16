@@ -115,8 +115,12 @@
               {% if send_enabled %}
                 <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
               {% if kudos.quests_reward %}
+                <BR>
+                <BR>
+                or: 
                 {% for quest in reward_for %}
-                  <a class="btn btn-gc-blue m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
+                  <a class="m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
+                  <BR>
                 {% endfor %}
               {% endif %}
               {% else %}

@@ -2,6 +2,10 @@
 /* eslint no-redeclare: "warn" */
 /* eslint no-loop-func: "warn" */
 
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 1000);
+});
+
 const _truthy = function(val) {
   if (!val || val == '0x0000000000000000000000000000000000000000') {
     return false;
@@ -1512,7 +1516,7 @@ const process_activities = function(result, bounty_activities) {
   bounty_activities.forEach(function(_activity) {
     const type = _activity.activity_type;
 
-    if (type === 'unknown_event') {
+    if (type === 'unknown_event' || type === 'receive_kudos') {
       return;
     }
 
@@ -1558,7 +1562,9 @@ const process_activities = function(result, bounty_activities) {
 
     if (type === 'new_kudos') {
       to_username = meta.to_username.slice(1);
-      kudos = _activity.kudos.kudos_token_cloned_from.image;
+      const kudos_img = _activity.kudos.image;
+
+      kudos = kudos_img.startsWith('v2/images/') ? '/static/'.concat(kudos_img) : kudos_img;
     } else if (type == 'new_tip') {
       tip = {
         amount: meta.amount,

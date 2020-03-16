@@ -2,13 +2,25 @@ from django.contrib import admin
 from django.utils import timezone
 from django.utils.html import format_html
 
-from .models import Announcement, Comment, Flag, Like, Offer, OfferAction
+from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction
 
 
 # Register your models here.
 class GenericAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
     raw_id_fields = ['activity', 'profile']
+
+class SuggestedActionAdmin(admin.ModelAdmin):
+    list_display = ['created_on', '__str__']
+
+
+class ActuallyGenericAdmin(admin.ModelAdmin):
+    list_display = ['created_on', '__str__']
+
+
+class MatchRankingAdmin(admin.ModelAdmin):
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['profile', 'round']
 
 
 class OfferActionAdmin(admin.ModelAdmin):
@@ -48,7 +60,7 @@ class OfferAdmin(admin.ModelAdmin):
     def schedule_preview(self, instance, size=400):
         import pytz
         html = "<table style='max-width:700px; overflow-x: scroll;'>"
-        for _type in ['monthly', 'weekly', 'daily', 'secret', 'random']:
+        for _type in ['monthly', 'weekly', 'daily', 'secret', 'random', 'top']:
             days = 1
             start = timezone.now() - timezone.timedelta(days=5)
             current = start
@@ -125,9 +137,12 @@ def schedule_helper(obj):
 class AnnounceAdmin(admin.ModelAdmin):
     list_display = ['created_on', 'valid_from', 'valid_to', '__str__']
 
+admin.site.register(SuggestedAction, SuggestedActionAdmin)
 admin.site.register(Offer, OfferAdmin)
 admin.site.register(OfferAction, OfferActionAdmin)
 admin.site.register(Comment, GenericAdmin)
 admin.site.register(Like, GenericAdmin)
 admin.site.register(Flag, GenericAdmin)
+admin.site.register(MatchRound, ActuallyGenericAdmin)
+admin.site.register(MatchRanking, MatchRankingAdmin)
 admin.site.register(Announcement, AnnounceAdmin)

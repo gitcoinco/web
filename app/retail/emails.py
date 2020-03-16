@@ -335,6 +335,15 @@ def render_funder_payout_reminder(**kwargs):
     return response_html, response_txt
 
 
+def render_match_distribution(mr):
+    params = {
+        'mr': mr,
+    }
+    response_html = premailer_transform(render_to_string("emails/match_distribution.html"))
+    response_txt = ''
+    return response_html, response_txt
+
+
 def render_no_applicant_reminder(bounty):
     params = {
         'bounty': bounty,
@@ -487,7 +496,7 @@ appreciate you being a part of the community + let us know if you'd like some Gi
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, trending_quests=[]):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -499,6 +508,8 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'email_style': email_style,
 		'email_type': 'new_bounty_notifications',
         'base_url': settings.BASE_URL,
+        'show_action': True,
+        'trending_quests': trending_quests,
         'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 
@@ -994,8 +1005,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "BUIDL Week Greetings"
-    new_kudos_pks = [10677, 10230, 7511]
+    subject = "COVID: Stay Safe & Carry On"
+    new_kudos_pks = [12403, 12299, 12239]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1014,42 +1025,57 @@ def render_new_bounty_roundup(to_email):
 
     intro = f'''
 <p>
-Hey Gitcoiners,
+Hello Gitcoiners,
 </p>
 <p>
-Have you sustained the web this month? Are you getting tired of our sustain talk? Don’t worry, one more week til the grand finale! There are 5 days left in the <a href="https://gitcoin.co/hackathon/sustain-web3">Sustain Web3 Virtual Hackathon</a>, and 6 days until the <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a> in Denver. Tons of <a href="https://gitcoin.co/hackathon/sustain-web3">prizes</a> are still up for grabs and we just announced the summit’s <a href="https://web3.sustainoss.org/schedule">schedule</a>! Join us virtually or in person and let’s get BUIDL Week in Denver off to a great start. If you’re attending ETHDenver, make sure to come say hi at our booth.
+We'd like to first and foremost wish you all a safe few weeks ahead. We're living in a COVID world now - and while there's no need to panic - we can take simple precautions to
+impact the lives of ourselves and others. The biggest - social distancing - is outlined with fantastic detail alongside the reasons this could
+save countless lives <a href="https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca">in this article.</a>
+We first and foremost hope you and your families stay safe.
+
+With proper precautions in shape, feel free to come join us (virtually!) for <a href=https://hackathons.gitcoin.co/funding-the-future”>Funding The Future.</a> Our goal
+is to make this our most interactive hackathon yet -- especially important in a time where distance physically is a requirement. Do join us if your circumstances allow, we'd love
+to have you! You can get a sneak preview of this in our <a href="https://gitcoin.co/townsquare">Town Square</a> anytime :)
+
 </p>
 <p>
- Today we’ll be hosting a very special Livestream on ETH 1.X - Meet the protocol devs who are actively maintaining clients on the mainnet. I’ll be there with Piper Merriam, James Hancock, and more special guests planning to present. <a href=“https://gitcoin.co/livestream">Add the event to your calendar</a> and come with questions.
+ <a href=“https://hackathons.gitcoin.co/funding-the-future”>Funding the Future</a> Virtual Hackathon starts on Monday, March 16th and will be packed with great bounties on DeFi, funding mechanisms, and DAOs!
+ In an update, we've moved the <a href=“https://gitcoin.co/grants/">Gitcoin Grants CLR</a> Round 5 round back one week (starting 3/23), giving us some time to readjust to uncertainty across markets and the world.
 </p>
 <p>
-Finally, our most recent deploy added tons of new features for you to check out. You can now tip users on Town Square, as well as comment with emojis. Ever want to export your earnings or spending history? Give it a try! The Bufficorn builder is live, the navigation is new. <a href=“https://gitcoin.co/townsquare">Take a look</a> and tell us what you think on <a href=“https://chat.gitcoin.co/gitcoin/channels/town-square">Chat</a>.
+Interested in sneak peaks at what the product team is doing or being an early tester? <a href=“https://gitcoin.co/pixelantdesign”>Hit me up</a> on the <a href=“https://gitcoin.co/chat”>Gitcoin Chat</a>!
 </p>
 
 {kudos_friday}
 
+<h3>What else is new?</h3>
+    <ul>
+        <li>
+        <a href=“gitcoin.co/livestream”>Join us</a> for the Gitcoin Livestream today at 2 pm ET. This Livestream will be an ETH 2.0 stream hosted by our own Kevin Owocki!
+        </li>
+    </ul>
 </p>
 <p>
-Back to BUIDLing,
+Back to (remote) work,
 </p>
 '''
     highlights = [{
-        'who': 'vporton',
+        'who': 'Bobface',
         'who_link': True,
-        'what': 'Built a Time Lock Smart Contract With Vesting Period',
-        'link': 'https://gitcoin.co/issue/jazzholicbae/timelock/1/3981',
+        'what': 'More great work with Austin Griffith!',
+        'link': 'https://gitcoin.co/issue/austintgriffith/eth.build/14/4074',
         'link_copy': 'View more',
     }, {
-        'who': 'KiChjang',
+        'who': 'dhaileytaha',
         'who_link': True,
-        'what': 'Interest Rate Oracle Consumer Contracts',
-        'link': 'https://gitcoin.co/issue/ProofSuite/OrFeed/38/3940',
+        'what': 'Kudos to the best Infura Community contributor',
+        'link': 'https://gitcoin.co/issue/INFURA/infura/198/4066',
         'link_copy': 'View more',
     }, {
-        'who': 'wighawag',
+        'who': 'developerfred',
         'who_link': True,
-        'what': 'Won MetaMasks Generalized MetaTransaction Contest',
-        'link': 'https://gitcoin.co/issue/MetaMask/Hackathons/2/3865',
+        'what': 'Kudos to one of our most active Gitcoiners!',
+        'link': 'https://gitcoin.co/issue/gitcoinco/web/6093/4068',
         'link_copy': 'View more',
     }, ]
 
@@ -1066,14 +1092,14 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/xpring-eng/challenges/issues/3',
-        'primer': '[$1000 XRP] Niflheim - Interledger Protocol Support For ERC-20 On Layer 2 Network',
+        'url': 'https://github.com/NebulousLabs/Skynet-Hive/issues/1',
+        'primer': '(1,750,000 SC) - Gitcoin Skynet Hackathon Challenge: Last Chance! ',
     }, {
-        'url': 'https://github.com/dfuse-io/hackathons/issues/3',
-        'primer': '$350 USDT - Most Innovative Integration Of Dfuse Lifecycle',
+        'url': 'https://github.com/mysteriumnetwork/node/issues/1865',
+        'primer': 'A sneak peak at a Mysterium prize during FTF next week',
     }, {
-        'url': 'https://github.com/xpring-eng/challenges/issues/2',
-        'primer': '[$1000 XRP] Vanaheim - Interledger Protocol Support For ETH On Layer 2 Network',
+        'url': 'https://github.com/AdExNetwork/adex-protocol-eth/issues/93',
+        'primer': 'A great AdEx one, also a sneak peak :)',
     }]
 
 
@@ -1333,6 +1359,16 @@ def no_applicant_reminder(request):
     ).first()
     response_html, _ = render_no_applicant_reminder(bounty=bounty)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def match_distribution(request):
+    from townsquare.models import MatchRanking
+    mr = MatchRanking.objects.last()
+    response_html, _ = render_match_distribution(mr)
+    return HttpResponse(response_html)
+
+
 
 
 @staff_member_required

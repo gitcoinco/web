@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
-
     {% if use_pic_card %}
       {% include 'shared/cards_pic.html' %}
     {% else %}
@@ -32,7 +31,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <body class="{{ active }} bg-lightblue g-font-muli" >
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="container-fluid header">
+    <div class="container-fluid header sticky-top">
       {% include 'home/nav.html' %}
     </div>
     <div class="townsquare_main container-fluid">
@@ -43,291 +42,129 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
       {% endif %}
 
-      {% if not profile_id %}
-        <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
-        <div class="container">
-          <div class="row">
-            <div class="col pt-2">
-              <div class="alert bs-alert alert-info" role="alert">
-                <i class="fas fa-info mr-3"></i>
-                What is Gitcoin? - <a class="font-weight-bold" href="/home">Learn More <i class="fas fa-share-square"></i> </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      {% endif %}
+      <div id=top_bar>
+        {% if SHOW_DRESSING %}
 
-      {% if offers_by_category.top.offers %}
-      <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
-        <div class="row top_offers pb-2">
-          <div class="container py-0 ">
-            <div class="my-1">
-
-              <div class="row mx-md-3">
-                <div class="col-12">
-                  <h4 class="pt-3 font-weight-semibold font-header text-left">Nano-Bounties</h4>
+        {% if not profile_id %}
+          <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
+          <div class="container">
+            <div class="row">
+              <div class="col pt-2">
+                <div class="alert bs-alert alert-info mb-0 w-90 mt-2" role="alert">
+                  <i class="fas fa-info mr-3"></i>
+                  What is Gitcoin? - <a class="font-weight-bold" href="/home">Learn More <i class="fas fa-share-square"></i> </a>
                 </div>
-                {% for nb in offers_by_category.top.offers|slice:3 %}
-                  <div class="top_offer row mx-auto mx-md-0 mb-3 mb-sm-0">
-                    <div class="col-12 decline-container">
-                      <a class="decline float-right" href="{{nb.decline_url}}">
-                        <i class="fas fa-times"></i>
-                      </a>
-                    </div>
-
-                    <div class="col-2">
-                      <img class="rounded-circle" src=dynamic/avatar/{{nb.created_by.handle}}>
-                    </div>
-
-                    <div class="col-10 pl-1">
-                      <h5 class="font-weight-semibold font-subheader mb-1">{{nb.title}}</h5>
-                      <p class="font-body">{{nb.desc}}</p>
-                      <div class="float-right">
-                        <span class="tag">{{nb.amount}}</span>
-                        <a class="btn btn-gc-blue btn-sm font-smaller-6 font-weight-bold text-uppercase" href="{{nb.go_url}}">VIEW</a>
-                      </div>
-                    </div>
-
-                  </div>
-                {% endfor %}
               </div>
             </div>
           </div>
-        </div>
-      {% endif %}
+        {% endif %}
 
-      {% for announce in announcements %}
-        <div class="container">
-          <div class="row">
-            <div class="col pt-2">
-              <div class="alert bs-alert alert-{{announce.style}} alert-dismissible " role="alert">
-                <div>
-                  <strong>{{announce.title}}</strong> <small>{{announce.valid_from | naturaltime}}</small>
-                </div>
-                {{announce.desc | safe}}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      {% endfor %}
+        {% include 'townsquare/shared/offers_top.html' %}
+        {% include 'townsquare/shared/announcements.html' %}
 
-      <div class="container">
+        {% endif %}
+      </div>
+
+      <div class="">
         <div class="my-1 px-sm-3">
           <div class="row">
             <div class="col-12 mb-2">
-              <ul class="nav nav-tabs mt-3 font-smaller-2 font-weight-semibold d-none" id="myTab" role="tablist">
-                  <!-- TODO: FIGURE OUT WHAT TO PUT INSTEAD OF TRIBES -->
+              <ul id="mobile_nav_toggle" class="nav nav-tabs mt-3 font-smaller-2 font-weight-semibold" id="myTab" role="tablist">
                   <li class="nav-item">
-                    <a data-toggle="tooltip" class="nav-link nav-line {% if tab != 'tribes' %}active{% endif %}"
-                      href="#" data-slug="townsquare" title=""
+                    <a data-toggle="tooltip" class="nav-link nav-line active "
+                      href="#" data-slug="feed" title=""
                     >
-                      Town Square
+                      Feed
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a data-toggle="tooltip" class="nav-link nav-line {% if tab == 'tribes' %}active{% endif %}"
-                      href="#" data-slug="tribes" title=""
+                    <a data-toggle="tooltip" class="nav-link nav-line"
+                      href="#" data-slug="actions" title=""
                     >
-                      Tribes
+                      Goodies
                     </a>
                   </li>
               </ul>
             </div>
           </div>
-          <div class="row mt-4">
-            <div class="col-12 col-lg-3 d-none d-lg-block">
-              <div class="townsquare_left-sidebar">
-                <div class="search font-caption mb-4 text-left">
-                  <div class="search-area col-12">
-                    <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
-                  </div>
-                  <div class="mt-2">
-                    <div class="checkbox_container">
-                      <input name="trending" id="trending" type="checkbox" value="0" val-ui='Trending' {% if trending_only %}checked=checked{%endif%} />
-                      <span class="checkbox"></span>
-                      <div class="filter-label ml-1">
-                        <label for=beginner>{% trans "Trending Only" %}</label>
+          <div class="row mt-4 townsquare_header">
+            <div class="col-12 col-lg-3 d-lg-block">
+              <div id=left_sidebar>
+                {% if SHOW_DRESSING %}
+                  <div class="townsquare_left-sidebar feed_container">
+                    <div class="townsquare_block-header" data-target="search-area" >
+                      Search
+                    </div>
+                    <div class="search font-caption mb-2 text-left" id="search-area">
+                      <div class="search-area">
+                        <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
+                      </div>
+                      <div class="mt-2">
+
+                        <div class="checkbox_container">
+                          <input name="trending" id="trending" type="checkbox" value="0" {% if trending_only %}checked=checked{%endif%} />
+                          <!-- <span class="checkbox"></span> -->
+                          <label for=trending>{% trans "Trending Only" %}</label>
+                        </div>
                       </div>
                     </div>
+                  {% include 'townsquare/shared/feednav.html' %}
                   </div>
-                </div>
-                <div class="townsquare_nav-list mb-5">
-                  <div class="townsquare_block-header">
-                    Feed
-                  </div>
-                  <ul class="nav d-inline-block font-body">
-                    {% for this_tab in tabs %}
-                      <li class="nav-item">
-                        <a data-toggle="tooltip" title="{{this_tab.helper_text}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
-                          <span class="nav-title">{{this_tab.title}}</span>
-                          {% if this_tab.badge %}
-                            <span class="nav-badge">({{ this_tab.badge }})</span>
-                          {% endif %}
-                        </a>
-                      </li>
-                    {% endfor %}
-                  </ul>
-                  <div class="townsquare_nav-list_footer font-body font-weight-semibold">
-                <!--
-                    <a href="#">Explore Topics <i class="ml-1 fab fa-wpexplorer font-weight-normal"></i></a>
-                -->
-                  </div>
-                </div>
-                <!--
-                <div class="townsquare_nav-list mb-5">
-                  <div class="townsquare_block-header">
-                    Tribe
-                  </div>
-                  <ul class="nav d-inline-block font-body">
-                    {% for this_tab in tabs %}
-                      <li class="nav-item">
-                        <a data-toggle="tooltip" title="{{this_tab.helper_text}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
-                          <span class="nav-title">{{this_tab.title}}</span>
-                          {% if this_tab.badge %}
-                            <span class="nav-badge">({{ this_tab.badge }})</span>
-                          {% endif %}
-                        </a>
-                      </li>
-                    {% endfor %}
-                  </ul>
-                  <div class="townsquare_nav-list_footer font-body font-weight-semibold">
-                    <a href="{% url "users_directory" %}?persona=Organization">
-                      Explore Tribes
-                      <i class="ml-1 fab fa-wpexplorer font-weight-normal"></i>
-                    </a>
-                  </div>
-                </div>
-                -->
+                {% endif %}
               </div>
             </div>
-            <div class="col-12 col-md-8 col-lg-6 px-0 px-sm-3">
-              <div class="bg-white rounded border">
-                <div id="status">
-                  {% csrf_token %}
-                  <div class="position-relative d-flex flex-row px-2 pt-4 pb-2">
-                    <div class="status-avatar">
-                      <img class="avatar rounded-circle" src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% endif %}{% endif %}"/>
-                      {% if row.secondary_avatar_url %}
-                        <img class="avatar my-auto rounded-circle secondary_avatar" src="{{row.secondary_avatar_url}}" />
-                      {% elif row.other_profile %}
-                        <img class="avatar my-auto rounded-circle secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
-                      {% endif %}
-                    </div>
-                    <textarea
-                      id="textarea"
-                      class="form__input border-0 pl-2"
-                      placeholder="{% if placeholder %}{{placeholder}}{%else%}What are you thinking?{%endif%}"
-                      style="resize: none"
-                      data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
-                    ></textarea>
-                    <div id="textarea-dropdown" class="dropdown-menu" style="left: initial;"></div>
-                    <button id="emoji-button" class="btn btn-clean position-absolute" style="bottom: 0.2em; right: 0;"><i class="far fa-smile"></i></button>
-                  </div>
-                  <input type="hidden" name="what" value="{{what}}:{{whatid}}">
-                  <div class="bg-lightblue p-2 d-flex flex-column flex-sm-row justify-content-between">
-                    <div class="btn-group-toggle text-left activity_type_selector" data-toggle="buttons">
-                      {% if tags %}
-                        {% for tag in tags %}
-                          <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" >
-                            <input type="checkbox" name="activity_type" value="{{tag.0}}" autocomplete="off">
-                          {{tag.0}}
-                          </label>
-                        {% endfor %}
-                      {% endif %}
-                    </div>
-                    <button class="btn btn-gc-blue font-smaller-7 font-weight-bold h-100" id="btn_post" disabled="true">POST</button>
-                  </div>
+            <div class="feed_container col-12 col-md-8 col-lg-6 px-0 px-sm-3">
+            {% csrf_token %}
+            {% include 'townsquare/shared/shareactivity.html' %}
 
-                  <div id="thumbnail" class="mt-1 mb-2" style="display: none; top: initial; left: initial; background-color: #FAFAFA">
-                    <div class="row" style="display: flex; justify-content: center; align-items: center; ">
-                      <div class="col ml-1 col-sm-3 col-md-2"><img id="thumbnail-img" style="width: 130%;" src=""></div>
-                      <div class="col ml-2 text-left">
-                        <p id="thumbnail-title" class="mt-2 mb-1" style="font-size: 1.2em; font-weight: bold"></p>
-                        <p id="thumbnail-desc" class="small"></p>
-                        <p id="thumbnail-provider" class="small" style="color: #0056b3"></p>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-              <div id="activities" class="activity_stream mt-4">
-                <span id=activity_subheader>{{card_desc}}</span>
+              <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
+                <span id=activity_subheader>
+                  <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
+                  <br>
+                  <span>
+                    {{card_desc}}
+                  </span>
+                </span>
                 {% include 'shared/activity_container.html' %}
               </div>
             </div>
-            <div class="col-12 col-md-4 col-lg-3">
-              <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-4">
-                Actions
-              </div>
-              {% for type, item in offers_by_category.items %}
-                <div class="offer_container {{type}} {% if not item.offer %}empty{%endif%} mb-4">
-                  <div class="d-flex align-items-center mb-2">
-                    <h4 class="my-0 ml-2 p-0 offer_container_type grey">{{type|title}} Action</h4>
-                  </div>
-                  <div class="font-caption text-left ml-1">
-                    {% if item.offer %}
-                      <a href="{{item.offer.view_url}}">
-                        <div class="offer_icon border mr-1">
-                          {% if type == 'secret'%}
-                            <i class="fas fa-key"></i>
-                          {% elif type == 'daily'%}
-                            <i class="far fa-clock"></i>
-                          {% elif type == 'weekly'%}
-                            <i class="far fa-calendar-check"></i>
-                          {% elif type == 'monthly'%}
-                            <i class="fas fa-check"></i>
-                          {% elif type == 'other'%}
-                            <i class="fas fa-parachute-box"></i>
-                          {% elif type == 'top'%}
-                            <i class="fas fa-fire-alt"></i>
-                          {% elif type == 'random'%}
-                            <i class="fa-random fas"></i>
-                          {% else %}
-                            <i class="far fa-clock"></i>
-                          {% endif %}
-                        </div>
-                      </a>
-                      <a href="{{item.offer.view_url}}"> Available now
-                        <span class="grey">
-                          <i class="fas fa-hourglass-end mr-2"></i>
-                          Expires <span class="{{type}} timer m-0" data-time="{{item.offer.valid_to|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>
-                        </span>
-                      </a>
-                    {% else %}
-                      <span class="filter-label ml-1">
-                        <i class="fas fa-hourglass-end mr-2"></i>
-                        Available
-                        <span class="{{type}} timer m-0" data-time="{{item.time|date:'Y-m-d H:i'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>
-                      </span>
-                    {% endif %}
-                  </div>
-                  {% if item.offer %}
-                  <div class="{{type}} offers">
+            <div class="actions_container col-12 col-md-4 col-lg-3">
+            <div id=right_sidebar>
+              {% if SHOW_DRESSING %}
 
-                  </div>
-                  {% else %}
-                  <div class="offer_coming {{type}} font-caption text-left ml-1 d-flex align-items-center">
-                    {% if type == 'daily' %}
-                      <div class="checkbox_container">
-                        <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
-                        <span class="checkbox"></span>
-                        <div class="filter-label ml-1">
-                          <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
-                        </div>
-                      </div>
-                    {% endif %}
-                  </div>
-                  {% endif %}
+                {% include 'townsquare/shared/reflink.html' %}
+
+                <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2" data-target="actions">
+                  Actions <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
+                      <strong>Gitcoin Actions</strong> are a way to introduce entropy into your learning routine.  Gitcoin will select the best educational, networking, or (sometimes)monetary or reputational opportunities and put them in front of you on a daily, weekly, monthly, and (sometimes) secret basis!
+                      <br>
+                      <br>
+                      Come to Gitcion daily to discover today's daily action!
+                      "></i>
                 </div>
-              {% endfor %}
-                <a href="/action/new" class="font-smaller-2">
-                  <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                  Create Action
-                </a>
+                <div id=actions>
+                  <div class="offer_coming font-caption">
+                    <div class="checkbox_container">
+                      <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
+                      <span class="checkbox"></span>
+                      <div class="filter-label ml-1">
+                        <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {% include 'townsquare/shared/offers.html' %}
+
+                  <a href="/action/new" class="font-smaller-2 mb-2">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    Create Action
+                  </a>
+                  <hr>
+                </div>
+
+                  {% include 'townsquare/shared/matchround.html' %}
+                {% endif %}
+                </div>
             </div>
           </div>
         </div>
@@ -340,5 +177,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <script src="{% static "v2/js/search.js" %}"></script>
     <script src="{% static "v2/js/status.js" %}"></script>
     <script src="{% static "v2/js/pages/townsquare.js" %}"></script>
+    <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
   </body>
 </html>

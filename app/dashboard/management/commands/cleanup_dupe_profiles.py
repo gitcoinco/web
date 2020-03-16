@@ -112,7 +112,7 @@ class Command(BaseCommand):
 
         for dupe in dupes:
             handle = dupe['handle_lower']
-            profiles = Profile.objects.filter(handle__iexact=handle).distinct("pk")
+            profiles = Profile.objects.filter(handle=handle.lower()).distinct("pk")
             print(f"combining {handle}: {profiles[0].pk} and {profiles[1].pk}")
             combine_profiles(profiles[0], profiles[1])
 
@@ -130,7 +130,7 @@ class Command(BaseCommand):
         # For some reason, these proiles keep getting
         # removed from their useres.  this mgmt command fixes that
         for user in User.objects.filter(profile__isnull=True):
-            profiles = Profile.objects.filter(handle__iexact=user.username)
+            profiles = Profile.objects.filter(handle=user.username.lower())
             if profiles.exists():
                 print(user.username)
                 profile = profiles.first()

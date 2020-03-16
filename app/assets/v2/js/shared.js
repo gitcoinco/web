@@ -433,6 +433,7 @@ var update_fulfiller_list = function(bounty_pk) {
   });
   return fulfillers;
 };
+// ETC TODO END
 
 function validateEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -1023,11 +1024,6 @@ var actions_page_warn_if_not_on_same_network = function() {
 
 attach_change_element_type();
 
-if (typeof is_bounties_network == 'undefined' || is_bounties_network) {
-  window.addEventListener('load', function() {
-    setInterval(listen_for_web3_changes, 1000);
-  });
-}
 
 var setUsdAmount = function() {
   const amount = $('input[name=amount]').val();
@@ -1471,9 +1467,25 @@ const indicateMetamaskPopup = (closePopup) => {
   }
 };
 
+(function($) {
+  $.fn.visible = function(partial) {
+    let $t = $(this);
+    let $w = $(window);
+    let viewTop = $w.scrollTop();
+    let viewBottom = viewTop + $w.height();
+    let _top = $t.offset().top;
+    let _bottom = _top + $t.height();
+    let compareTop = partial === true ? _bottom : _top;
+    let compareBottom = partial === true ? _top : _bottom;
+
+    return ((compareBottom <= viewBottom) && (compareTop >= viewTop));
+  };
+})(jQuery);
+
+
 $(document).ready(function() {
   $(window).scroll(function() {
-    $('.g-fadein').each(function(i) {
+    $('.g-fadein').each(function(index, element) {
       let duration = $(this).attr('data-fade-duration') ? $(this).attr('data-fade-duration') : 1500;
       let direction = $(this).attr('data-fade-direction') ? $(this).attr('data-fade-direction') : 'mid';
       let animateProps;
@@ -1489,11 +1501,10 @@ $(document).ready(function() {
           animateProps = { 'opacity': '1', 'bottom': '0' };
       }
 
-      let bottom_of_object = $(this).position().top + $(this).outerHeight() / 2;
-      let bottom_of_window = $(window).scrollTop() + $(window).height();
-
-      if (bottom_of_window > bottom_of_object)
+      if ($(element).visible(true)) {
         $(this).animate(animateProps, duration);
+      }
+
     });
   });
 });

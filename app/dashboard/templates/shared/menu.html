@@ -30,7 +30,17 @@
 <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
   <nav class="navbar-nav mx-auto gc-megamenu">
     <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Home" %}</a>
-    <a class="nav-link {% if '/chat' in request.path %}selected{% endif %} interior" href="/chat">{% trans "Chat" %}</a>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link {% if '/chat' in request.path %}selected{% endif %}  dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Chat
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/chat">Web Chat</a>
+          <a class="dropdown-item" href="/chat/landing">Desktop & Mobile Apps</a>
+        </div>
+      </li>
+
     <div class="nav-item dropdown interior gc-megamenu-fw">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownProducts" role="button"
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -193,8 +203,8 @@
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url "users_directory" %}?persona=Organization">
-                  {% trans "Org Tribes" %}
+                <a class="dropdown-item" href="{% url "users_directory" %}?persona=tribe">
+                  {% trans "Tribes" %}
                 </a>
               </li>
             </ul>
@@ -211,7 +221,7 @@
                   <div class="carousel-item">
                     <h5>Find your Tribe</h5>
                     <p>Follow the orgs you like more with <a href="{% url 'tribes' %}">tribes</a> and build relationships and meaningful projects.</p>
-                    <a class="btn btn-gc-blue" href="{% url 'users_directory' %}?persona=Organization">
+                    <a class="btn btn-gc-blue" href="{% url 'users_directory' %}?persona=tribe">
                       {% trans "Find a Tribe" %}
                     </a>
                   </div>
@@ -258,6 +268,16 @@
               <li>
                 <a class="dropdown-item" href="{% url "mission" %}">
                   {% trans "Mission" %}
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/wiki">
+                  {% trans "Wiki" %}
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/wiki">
+                  {% trans "Help" %}
                 </a>
               </li>
             </ul>

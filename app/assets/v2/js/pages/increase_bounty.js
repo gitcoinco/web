@@ -1,4 +1,8 @@
 /* eslint-disable no-lonely-if */
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 1000);
+});
+
 load_tokens();
 
 const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
@@ -200,7 +204,7 @@ $(document).ready(function() {
         {
           from: account,
           value: ethAmount,
-          gas: web3.toHex(65269),
+          gas: web3.toHex(652690),
           gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
         },
         web3Callback

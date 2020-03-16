@@ -1,17 +1,15 @@
 {% load i18n static avatar_tags %}
-<div class="profile-header__sync d-inline-block d-inline-block mb-1 {% if not is_editable %}inactive{% endif %}">
+<div class="profile-header__sync d-inline-block d-inline-block mb-1 p-0 {% if not is_editable %}inactive{% endif %}">
 
-  {% if is_editable %}
     <button id="sync-to-3box" class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true"
       data-placement="bottom" data-trigger="hover" data-content='
         <p class="h6 my-2 text-left">Backup Profile Data to 3Box <img width="24" src="{% static "v2/images/3box.svg" %}"></p>
-        <p>You can backup your GitCoin profie data to the decentralized 3Box cloud. 3Box storage is simple, secure, and private by design.</p>
-        <p><b>Click this button</b> to start backing up profile data to 3Box. <b>Long press this button</b> to enable/disable automatic backup of profile data. </p>
+        <p>You can backup your Gitcoin profile data to the decentralized 3Box cloud. 3Box storage is simple, secure, and private by design.</p>
+        <p><b>Click this button</b> to start backing up your profile data to 3Box. <b>Long press this button</b> to enable/disable automatic backup of profile data. </p>
         <p>Visit 3box.io to learn more about 3Box project.</p>
         '>
         <img class="action" src="{% static 'v2/images/3box.svg' %}" alt="">
         <img class="loading" src="{% static 'v2/images/loading.gif' %}" alt="">
       </button>
-  {% endif %}
 
 </div>

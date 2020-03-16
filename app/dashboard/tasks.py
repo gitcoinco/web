@@ -4,7 +4,7 @@ from app.redis_service import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
-from dashboard.models import Profile
+from dashboard.models import Activity, Profile
 from marketing.mails import func_name, send_mail
 from retail.emails import render_share_bounty
 
@@ -57,7 +57,7 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
     """
     with redis.lock("tasks:bounty_email:%s" % invite_url, timeout=LOCK_TIMEOUT):
         # need to look at how to send bulk emails with SG
-        profile = Profile.objects.get(handle=profile_handle)
+        profile = Profile.objects.get(handle=profile_handle.lower())
         try:
             for email in emails:
                 to_email = email
@@ -80,3 +80,19 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
             self.retry(30)
         except Exception as e:
             logger.error(str(e))
+
+
+@app.shared_task(bind=True, max_retries=3)
+def profile_dict(self, pk, retry: bool = True) -> None:
+    """
+    :param self:
+    :param pk:
+    :return:
+    """
+    if isinstance(pk, list):
+        pk = pk[0]
+    with redis.lock("tasks:profile_dict:%s" % pk, timeout=LOCK_TIMEOUT):
+        profile = Profile.objects.get(pk=pk)
+        if profile.frontend_calc_stale:
+            profile.calculate_all()
+            profile.save()

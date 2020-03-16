@@ -62,12 +62,57 @@ class GrantQuerySet(models.QuerySet):
             dashboard.models.GrantQuerySet: The QuerySet of grants filtered by keyword.
 
         """
+        if not keyword:
+            return self
         return self.filter(
             Q(description__icontains=keyword) |
             Q(title__icontains=keyword) |
             Q(reference_url__icontains=keyword)
         )
 
+class GrantCategory(SuperModel):
+    @staticmethod
+    def all_categories():
+        all_tech_categories = GrantCategory.tech_categories()
+        filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
+        return all_tech_categories + filtered_media_categories + GrantCategory.health_categories()
+
+    @staticmethod
+    def tech_categories():
+        return [
+            'security',
+            'scalability',
+            'defi',
+            'education',
+            'wallets',
+            'community',
+            'eth2.0',
+            'eth1.x',
+        ]
+
+    @staticmethod
+    def media_categories():
+        return [
+            'education',
+            'twitter',
+            'reddit',
+            'blog',
+            'notes',
+        ]
+
+    @staticmethod
+    def health_categories():
+        return [
+            'COVID19 research',
+            'COVID19 response',
+        ]
+
+    category = models.CharField(
+        max_length=50,
+        blank=False,
+        null=False,
+        help_text=_('Grant Category'),
+    )
 
 class Grant(SuperModel):
     """Define the structure of a Grant."""
@@ -79,6 +124,7 @@ class Grant(SuperModel):
 
     GRANT_TYPES = [
         ('tech', 'tech'),
+        ('health', 'health'),
         ('media', 'media')
     ]
 
@@ -202,6 +248,12 @@ class Grant(SuperModel):
         max_digits=20,
         help_text=_('The TOTAL CLR matching amount across all rounds'),
     )
+    amount_received_with_phantom_funds = models.DecimalField(
+        default=0,
+        decimal_places=2,
+        max_digits=20,
+        help_text=_('The fundingamount across all rounds with phantom funding'),
+    )
     clr_prediction_curve = ArrayField(
         ArrayField(
             models.FloatField(),
@@ -229,6 +281,7 @@ class Grant(SuperModel):
         null=True,
         blank=True,
     )
+    categories = models.ManyToManyField(GrantCategory)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -293,7 +346,7 @@ class Grant(SuperModel):
     @property
     def org_profile(self):
         from dashboard.models import Profile
-        profiles = Profile.objects.filter(handle__iexact=self.org_name)
+        profiles = Profile.objects.filter(handle=self.org_name.lower())
         if profiles.count():
             return profiles.first()
         return None
@@ -344,8 +397,7 @@ class Grant(SuperModel):
                 max_amount = max(max_amount, ele[1]+ele[2]+ele[3]+ele[4])
         return max_amount
 
-    @property
-    def amount_received_with_phantom_funds(self):
+    def get_amount_received_with_phantom_funds(self):
         return float(self.amount_received) + float(sum([ele.value for ele in self.phantom_funding.all()]))
 
     @property
@@ -912,6 +964,7 @@ def psave_grant(sender, instance, **kwargs):
                 'img_url': instance.logo.url if instance.logo else None,
             }
             )
+    instance.amount_received_with_phantom_funds = Decimal(round(instance.get_amount_received_with_phantom_funds(), 2))
 
 class DonationQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""
@@ -1083,7 +1136,7 @@ def psave_contrib(sender, instance, **kwargs):
             "url":instance.subscription.grant.url,
             "network":instance.subscription.grant.network,
         }
-        )
+    )
 
 @receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
 def presave_contrib(sender, instance, **kwargs):
@@ -1104,7 +1157,7 @@ def presave_contrib(sender, instance, **kwargs):
         'amount_per_period_usdt': float(sub.amount_per_period_usdt),
         'amount_per_period': float(sub.amount_per_period),
         'tx_id': ele.tx_id,
-        }
+    }
 
 
 def next_month():
