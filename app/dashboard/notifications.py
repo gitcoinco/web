@@ -256,8 +256,15 @@ def build_message_for_integration(bounty, event_name):
           f"\n{bounty.get_absolute_url()}"
     return msg
 
-@timeout(2)
+
 def maybe_market_to_user_slack(bounty, event_name):
+    try:
+        return maybe_market_to_user_slack_helper(bounty, event_name)
+    except TimeoutError as e:
+        logger.exception(e)
+
+@timeout(1)
+def maybe_market_to_user_slack_helper(bounty, event_name):
     """Send a Slack message to the user's slack channel for the specified Bounty.
 
     Args:

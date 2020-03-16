@@ -1776,10 +1776,7 @@ def helper_handle_approvals(request, bounty):
 
                 maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
                 maybe_market_to_slack(bounty, 'worker_approved')
-                try:
-                    maybe_market_to_user_slack(bounty, 'worker_approved')
-                except TimeoutError:
-                    pass
+                maybe_market_to_user_slack(bounty, 'worker_approved')
                 record_bounty_activity(bounty, request.user, 'worker_approved', interest)
             else:
                 start_work_rejected(interest, bounty)
@@ -1789,10 +1786,7 @@ def helper_handle_approvals(request, bounty):
                 interest.delete()
 
                 maybe_market_to_slack(bounty, 'worker_rejected')
-                try:
-                    maybe_market_to_user_slack(bounty, 'worker_rejected')
-                except TimeoutError:
-                    pass
+                maybe_market_to_user_slack(bounty, 'worker_rejected')
 
             messages.success(request, _(f'{worker} has been {mutate_worker_action_past_tense}'))
         else:
