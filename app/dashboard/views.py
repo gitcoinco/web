@@ -936,6 +936,8 @@ def users_fetch(request):
     else:
         current_user = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
 
+    if not current_user:
+        return redirect('/login/github?next=' + request.get_full_path())
     current_profile = Profile.objects.get(user=current_user)
 
     if not settings.DEBUG:
@@ -1003,7 +1005,7 @@ def users_fetch(request):
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
     else:
-        profile_list = Profile.objects.filter(pk__in=profile_list
+        profile_list = Profile.objects.filter(pk__in=profile_list.values_list('pk', flat=True)
             ).annotate(average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))).annotate(previous_worked=previous_worked()).order_by(order_by, '-previous_worked', 'id')
         profile_list = profile_list.values_list('pk', flat=True)
 
@@ -2793,7 +2795,7 @@ def profile(request, handle, tab=None):
             handle = request.user.username
             profile = None
             if not profile:
-                profile = profile_helper(handle, disable_cache=disable_cache)
+                profile = profile_helper(handle, disable_cache=disable_cache, full_profile=True)
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
@@ -2826,7 +2828,7 @@ def profile(request, handle, tab=None):
     # previously this was cached on the session object, and we've not yet found a way to buste that cache
     if request.user.is_authenticated:
         if request.user.username.lower() == profile.handle:
-            base = Profile.objects
+            base = Profile.objects_full
             if disable_cache:
                 base = base.nocache()
             profile = base.get(pk=profile.pk)

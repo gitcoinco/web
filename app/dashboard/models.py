@@ -2425,6 +2425,10 @@ class BountyInvites(SuperModel):
 class ProfileQuerySet(models.QuerySet):
     """Define the Profile QuerySet to be used as the objects manager."""
 
+    def slim(self):
+        """Filter slims down whats returned from the DB to not include large fields."""
+        return self.defer('as_dict', 'as_representation', 'job_location')
+
     def visible(self):
         """Filter results to only visible profiles."""
         return self.filter(hide_profile=False)
@@ -2432,6 +2436,11 @@ class ProfileQuerySet(models.QuerySet):
     def hidden(self):
         """Filter results to only hidden profiles."""
         return self.filter(hide_profile=True)
+
+
+class ProfileManager(models.Manager):
+    def get_queryset(self):
+        return ProfileQuerySet(self.model, using=self._db).slim()
 
 
 class Repo(SuperModel):
@@ -2599,7 +2608,8 @@ class Profile(SuperModel):
     automatic_backup = models.BooleanField(default=False, help_text=_('automatic backup profile to cloud storage such as 3Box if the flag is true'))
     as_representation = JSONField(default=dict, blank=True)
     tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
-    objects = ProfileQuerySet.as_manager()
+    objects = ProfileManager()
+    objects_full = ProfileQuerySet.as_manager()
 
     @property
     def subscribed_threads(self):
