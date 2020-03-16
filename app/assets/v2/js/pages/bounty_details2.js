@@ -253,6 +253,7 @@ Vue.mixin({
     contactFunder: function() {
       let vm = this;
       let text = window.prompt('What would you like to say to the funder?', '');
+
       if (text === null) {
         return;
       }
@@ -261,6 +262,7 @@ Vue.mixin({
     snoozeeGitbot: function() {
       let vm = this;
       let text = window.prompt('How many days do you want to snooze?', '');
+
       if (text === null) {
         return;
       }
@@ -269,6 +271,7 @@ Vue.mixin({
     overrideStatus: function() {
       let vm = this;
       let text = window.prompt('What new status (valid choices: "open", "started", "submitted", "done", "expired", "cancelled", "" to remove override )?', '');
+
       if (text === null) {
         return;
       }
@@ -321,6 +324,21 @@ Vue.mixin({
           console.error(`error: stopping work on bounty failed due to : ${response}`);
         }
       });
+    },
+    canStopWork: function(handle) {
+      let vm = this;
+
+      if (!handle) {
+        return false;
+      }
+
+      if (vm.bounty.fulfillments.filter(fulfillment =>
+        fulfillment.fulfiller_github_username != handle).length
+      ) {
+        return true;
+      }
+
+      return false;
     }
   },
   computed: {
