@@ -357,7 +357,12 @@
                         <div slot="body">
                           <div class="text-center">
                             <p class="alert-warning py-2 font-smaller-4 mb-0" v-if="bounty.amount_paid && bounty.amount_paid > bounty.value_true">
-                              You are paying [[ bounty.amount_paid - bounty.value_true ]] [[ bounty.token_name ]] more than the bounty amount
+                              <template v-if="inputAmount == 0">
+                                You've paid [[ bounty.amount_paid - bounty.value_true ]] [[ bounty.token_name ]] more than the bounty amount.
+                              </template>
+                              <template v-else>
+                                You are paying [[ bounty.amount_paid - bounty.value_true ]] [[ bounty.token_name ]] more than the bounty amount.
+                              </template>
                             </p>
 
                             <p class="pt-3 mb-3 font-title">

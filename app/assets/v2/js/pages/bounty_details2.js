@@ -343,13 +343,9 @@ Vue.mixin({
     totalAmountPaid: function(inputAmount) {
       let vm = this;
       let amount_paid = 0;
-      const token_details = tokenAddressToDetailsByNetwork(
-        this.bounty.token_address, this.bounty.network
-      );
-      const decimals = token_details && token_details.decimals;
 
       vm.bounty.fulfillments.forEach(fulfillment => {
-        amount_paid += (fulfillment.payout_amount / 10 ** decimals);
+        amount_paid += (fulfillment.payout_amount / 10 ** vm.decimals);
       });
 
       vm.bounty.amount_paid = parseFloat(amount_paid) + parseFloat(inputAmount);
@@ -361,6 +357,8 @@ Vue.mixin({
         this.bounty.token_address, this.bounty.network
       );
       const decimals = token_details && token_details.decimals;
+
+      this.decimals = decimals;
 
       let activities = this.bounty.activities.sort((a, b) => new Date(b.created) - new Date(a.created));
 
@@ -400,6 +398,7 @@ if (document.getElementById('gc-bounty-detail')) {
         isOwnerAddress: false,
         is_bounties_network: is_bounties_network,
         inputAmount: 0,
+        decimals: 18,
         inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt,
         quickLinks: []
