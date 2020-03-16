@@ -1004,7 +1004,12 @@ def users_fetch(request):
 
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
+
+        this_page = Profile.objects_full.filter(pk__in=[ele. pk for ele in this_page]
+            ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
+
     else:
+        # KO 2020/03 - 
         profile_list = Profile.objects.filter(pk__in=profile_list.values_list('pk', flat=True)
             ).annotate(average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))).annotate(previous_worked=previous_worked()).order_by(order_by, '-previous_worked', 'id')
         profile_list = profile_list.values_list('pk', flat=True)
@@ -1012,7 +1017,7 @@ def users_fetch(request):
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
 
-        profile_list = Profile.objects.filter(pk__in=[ele for ele in this_page])\
+        profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page])\
             .order_by(order_by, 'id').annotate(
             previous_worked_count=previous_worked()).annotate(
                 count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
