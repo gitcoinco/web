@@ -71,6 +71,8 @@ urlpatterns = [
     url('^api/v1/bounty/create', dashboard.views.create_bounty_v1, name='create_bounty_v1'),
     url('^api/v1/bounty/cancel', dashboard.views.cancel_bounty_v1, name='cancel_bounty_v1'),
     url('^api/v1/bounty/fulfill', dashboard.views.fulfill_bounty_v1, name='fulfill_bounty_v1'),
+    path('api/v1/bounty/<int:bounty_id>/close', dashboard.views.close_bounty_v1, name='close_bounty_v1'),
+    path('api/v1/bounty/payout/<int:fulfillment_id>', dashboard.views.payout_bounty_v1, name='payout_bounty_v1'),
     re_path(r'.*api/v0.1/chat/presence$', chat.views.chat_presence, name='chat_presence'),
 
     # inbox
@@ -371,7 +373,6 @@ urlpatterns = [
 
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
-    url(r'^sync/etc/?', dashboard.views.sync_etc, name='sync_etc'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
     re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
 
