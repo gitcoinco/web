@@ -895,11 +895,13 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
         )
 
     if rating != 0:
-        profile_list = profile_list.annotate(
-            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).filter(
-            average_rating__gte=rating
-        )
+        pass
+        # TODO - reenable in future when we have avg feedback availaable
+ #       profile_list = profile_list.annotate(
+ #           average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+ #       ).filter(
+ #           average_rating__gte=rating
+ #       )
 
     if organisation:
         profile_list1 = profile_list.filter(
@@ -997,7 +999,7 @@ def users_fetch(request):
 
     if request.GET.get('type') == 'explore_tribes':
         # KO - todo - in future be smarter about tribes lookups and ranking by follower count
-        profile_list = Profile.objects.filter(data__type='Organization')
+        profile_list = Profile.objects.all()#filter(data__type='Organization')
         #    ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
 
         if q:
