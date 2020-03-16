@@ -4082,15 +4082,16 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.lower()
 
     # sync organizations_fk and organizations
-    for handle in instance.organizations:
-        handle =handle.lower()
-        if not instance.organizations_fk.filter(handle=handle).exists():
-            obj = Profile.objects.filter(handle=handle).first()
-            if obj:
-                instance.organizations_fk.add(obj)
-    for profile in instance.organizations_fk.all():
-        if profile.handle not in instance.organizations:
-            instance.organizations += [profile.handle]
+    if hasattr(instance, 'pk') and instance.pk:
+        for handle in instance.organizations:
+            handle =handle.lower()
+            if not instance.organizations_fk.filter(handle=handle).exists():
+                obj = Profile.objects.filter(handle=handle).first()
+                if obj:
+                    instance.organizations_fk.add(obj)
+        for profile in instance.organizations_fk.all():
+            if profile.handle not in instance.organizations:
+                instance.organizations += [profile.handle]
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
