@@ -52,6 +52,8 @@
   async function saveDataToSpace(space, model) {
     const res = await fetchProfieData(model);
 
+    console.log('data', model, res.data);
+
     if (res.data) {
       let data = res.data;
 
@@ -143,11 +145,7 @@
     console.log('start sync data to 3box');
 
     onLoading = option ? option.onLoading : null;
-    const model = option ? option.model : null;
-
-    const res = await fetchProfieData(model);
-
-    console.log('data', res.data);
+    const models = option ? option.models : [];
 
     // User is prompted to approve the messages inside their wallet (openBox() and
     // openSpace() methods via 3Box.js). This logs them in to 3Box.
@@ -160,7 +158,9 @@
         openBox(box => {
           openSpace(box, (box, space) => {
             console.log('backup data into space');
-            saveDataToSpace(space, model);
+            models.forEach(async model => {
+              await saveDataToSpace(space, model);
+            });
           });
         });
       } else {
