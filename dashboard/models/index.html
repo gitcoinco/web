@@ -4780,6 +4780,11 @@ object the first time, the query is executed.</p>
 </code></pre>
 
 <p>Define the Profile QuerySet to be used as the objects manager.
+<h3 id="dashboard.models.ProfileQuerySet.slim">slim</h3></p>
+<pre><code class="python">ProfileQuerySet.slim(self)
+</code></pre>
+
+<p>Filter slims down whats returned from the DB to not include large fields.
 <h3 id="dashboard.models.ProfileQuerySet.visible">visible</h3></p>
 <pre><code class="python">ProfileQuerySet.visible(self)
 </code></pre>
