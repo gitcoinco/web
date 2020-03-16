@@ -36,7 +36,6 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        return
         # connect to API
         d = get_driver()
         teams = d.teams.get_teams()
