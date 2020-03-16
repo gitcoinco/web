@@ -307,6 +307,11 @@ def maybe_market_to_user_slack_helper(bounty, event_name):
 
 
 def maybe_market_to_user_discord(bounty, event_name):
+    from dashboard.tasks import maybe_market_to_user_discord
+    maybe_market_to_user_discord.delay(bounty.pk, event_name)
+
+
+def maybe_market_to_user_discord_helper(bounty, event_name):
     """Send a Discord message to the user's discord channel for the specified Bounty.
 
     Args:
