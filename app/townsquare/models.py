@@ -250,7 +250,11 @@ class MatchRound(SuperModel):
             data = get_eligible_input_data(mr)
             total_pot = mr.amount
             print(mr, f"{len(data)} earnings to process")
-            results = clr.run_calc(data, total_pot)
+            resutls = []
+            try:
+                results = clr.run_calc(data, total_pot)
+            except ZeroDivisionError:
+                print('ZeroDivisionError; probably theres just not enough contribtuions in round')
             for result in results:
                 try:
                     profile = Profile.objects.get(pk=result['id'])
