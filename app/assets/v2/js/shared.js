@@ -433,6 +433,7 @@ var update_fulfiller_list = function(bounty_pk) {
   });
   return fulfillers;
 };
+// ETC TODO END
 
 function validateEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -1023,11 +1024,6 @@ var actions_page_warn_if_not_on_same_network = function() {
 
 attach_change_element_type();
 
-if (typeof is_bounties_network == 'undefined' || is_bounties_network) {
-  window.addEventListener('load', function() {
-    setInterval(listen_for_web3_changes, 1000);
-  });
-}
 
 var setUsdAmount = function() {
   const amount = $('input[name=amount]').val();

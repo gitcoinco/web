@@ -276,8 +276,6 @@ class Bounty(SuperModel):
     WORK_IN_PROGRESS_STATUSES = ['reserved', 'open', 'started', 'submitted']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
-    payout_confirmed = models.BooleanField(default=False, blank=True, null=True)
-    payout_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     bounty_state = models.CharField(max_length=50, choices=BOUNTY_STATES, default='open', db_index=True)
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=1000)
@@ -1327,6 +1325,11 @@ class BountyFulfillmentQuerySet(models.QuerySet):
 class BountyFulfillment(SuperModel):
     """The structure of a fulfillment on a Bounty."""
 
+    PAYOUT_STATUS = [
+        ('pending', 'pending'),
+        ('done', 'done'),
+    ]
+
     fulfiller_address = models.CharField(max_length=50)
     fulfiller_email = models.CharField(max_length=255, blank=True)
     fulfiller_github_username = models.CharField(max_length=255, blank=True)
@@ -1341,6 +1344,11 @@ class BountyFulfillment(SuperModel):
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
     profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True)
+
+    token_name = models.CharField(max_length=10, blank=True)
+    payout_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
+    payout_status = models.CharField(max_length=10, choices=PAYOUT_STATUS, blank=True)
+    payout_amount = models.DecimalField(null=True, blank=True, decimal_places=4, max_digits=50)
 
     def __str__(self):
         """Define the string representation of BountyFulfillment.
@@ -1376,6 +1384,10 @@ class BountyFulfillment(SuperModel):
             'email': self.fulfiller_email,
             'githubUsername': self.fulfiller_github_username,
             'name': self.fulfiller_name,
+            'payout_status': self.payout_status,
+            'payout_amount': self.payout_amount,
+            'token_name': self.token_name,
+            'payout_tx_id': self.payout_tx_id
         }
 
 
@@ -2316,7 +2328,7 @@ def psave_activity(sender, instance, **kwargs):
         if not instance.hackathonevent:
             instance.hackathonevent = instance.bounty.event
 
-    if hasattr(instance, 'profile') and hasattr(instance.profile, 'user') and instance.profile.user.is_staff:
+    if hasattr(instance, 'profile') and instance.profile and hasattr(instance.profile, 'user') and instance.profile.user and instance.profile.user.is_staff:
         instance.metadata['staff'] = True
 
 

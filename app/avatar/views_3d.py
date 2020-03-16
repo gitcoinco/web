@@ -342,6 +342,36 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/orc_gitcoin.svg',
         },
+        'megaman': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/megaman.svg',
+        },
+        'starbot': {
+            'preview_viewbox': {
+                'Head': '50 20 250 250',
+                'Backdrop': '0 0 350 350',
+                'Accents': '0 100 250 250',
+            },
+            'hair_tones': [],
+            'skin_tones': ['FFFFFF', 'EEEEEE', 'DDDDDD', 'CCCCCC', 'E1C699', 'CFB997', 'F5F5DC', 'B3983', 'AAA9AD'],
+            'tone_maps': ['starbot_skin'],
+            'path': 'assets/v2/images/avatar3d/starbot.svg',
+        },
+        'robocop': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/robocop.svg',
+        },
         'wookie': {
             'preview_viewbox': {
                 'Background': '0 0 350 350',
@@ -547,6 +577,9 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
     if tone == 'orc_skin':
         tones = {'FFFF99': 0, }
         base_3d_tone = 'FFFF99'
+    if tone == 'starbot_skin':
+        tones = {'FFFFFF': 0, }
+        base_3d_tone = 'FFFFFF'
     if tone == 'wookie_skin':
         tones = {'AE7343': 0, }
         base_3d_tone = 'AE7343'
