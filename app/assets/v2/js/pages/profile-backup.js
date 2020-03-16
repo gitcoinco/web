@@ -44,7 +44,7 @@
     if (window.syncTo3Box) {
       syncTo3Box({
         onLoading: switchIcons,
-        models: ['profile', 'grants', 'portfolio', 'bounties', 'activities', 'tips', 'feedback' ]
+        models: [ 'profile', 'grants', 'portfolio', 'bounties', 'activities', 'tips', 'feedback' ]
       });
     }
   };
