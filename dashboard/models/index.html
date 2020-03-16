@@ -2982,15 +2982,7 @@ object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.past_hard_expiration_date">past_hard_expiration_date</h3></p>
 <p>Return true IFF issue is past smart contract expiration date
 and therefore cannot ever be claimed again
-<h3 id="dashboard.models.Bounty.payout_confirmed">payout_confirmed</h3></p>
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="dashboard.models.Bounty.payout_tx_id">payout_tx_id</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="dashboard.models.Bounty.permission_type">permission_type</h3>
-
+<h3 id="dashboard.models.Bounty.permission_type">permission_type</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.PERMISSION_TYPES">PERMISSION_TYPES</h3>
@@ -3478,6 +3470,11 @@ object the first time, the query is executed.</p>
 <pre><code class="python">BountyFulfillment._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
 </code></pre>
 
+<h3 id="dashboard.models.BountyFulfillment.get_payout_status_display">_method</h3>
+
+<pre><code class="python">BountyFulfillment._method(self, *, field=&lt;django.db.models.fields.CharField: payout_status&gt;)
+</code></pre>
+
 <h3 id="dashboard.models.BountyFulfillment.get_previous_by_created_on">_method</h3>
 
 <pre><code class="python">BountyFulfillment._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
@@ -3489,6 +3486,22 @@ object the first time, the query is executed.</p>
 </code></pre>
 
 <h3 id="dashboard.models.BountyFulfillment.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.BountyFulfillment.payout_amount">payout_amount</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.BountyFulfillment.PAYOUT_STATUS">PAYOUT_STATUS</h3>
+
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.models.BountyFulfillment.payout_status">payout_status</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.BountyFulfillment.payout_tx_id">payout_tx_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -3510,6 +3523,10 @@ object the first time, the query is executed.</p>
 <p>Define the JSON representation of BountyFulfillment.</p>
 <p>Returns:
     dict: A JSON representation of BountyFulfillment.</p>
+<h3 id="dashboard.models.BountyFulfillment.token_name">token_name</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.BountyFulfillment.save">save</h3>
 
 <pre><code class="python">BountyFulfillment.save(self, *args, **kwargs)

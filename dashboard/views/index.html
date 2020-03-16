@@ -2704,15 +2704,7 @@ passed in first, followed optionally by a <code>bountydetails</code> argument.</
 <p>Returns True when the argument x is true, False otherwise.
 The builtins True and False are the only two instances of the class bool.
 The class bool is a subclass of the class int, and cannot be subclassed.
-<h2 id="dashboard.views.sync_etc">sync_etc</h2></p>
-<pre><code class="python">sync_etc(request)
-</code></pre>
-
-<p>Sync up ETC chain to find transction status.</p>
-<p>Returns:
-    JsonResponse: The JSON response following the web3 sync.</p>
-<h2 id="dashboard.views.new_bounty">new_bounty</h2>
-
+<h2 id="dashboard.views.new_bounty">new_bounty</h2></p>
 <pre><code class="python">new_bounty(request)
 </code></pre>
 
@@ -2785,6 +2777,38 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 - wire in email (invite + successful fulfillment)
 - evalute BountyFulfillment unused fields</p>
 <h3 id="dashboard.views.fulfill_bounty_v1.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.payout_bounty_v1">payout_bounty_v1</h2></p>
+<pre><code class="python">payout_bounty_v1(request, fulfillment_id)
+</code></pre>
+
+<p>ETC-TODO
+- wire in email (invite + successful payout)
+- invoke blockscout to check status
+- add new bounty_state : pending verification
+- handle multiple payouts</p>
+<p>{
+    amount: <integer>,
+    bounty_owner_address : <char>,
+    token_name : <char>
+}</p>
+<h3 id="dashboard.views.payout_bounty_v1.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.close_bounty_v1">close_bounty_v1</h2></p>
+<pre><code class="python">close_bounty_v1(request, bounty_id)
+</code></pre>
+
+<p>ETC-TODO
+- wire in email</p>
+<h3 id="dashboard.views.close_bounty_v1.csrf_exempt">csrf_exempt</h3>
 
 <p>bool(x) -&gt; bool</p>
 <p>Returns True when the argument x is true, False otherwise.
