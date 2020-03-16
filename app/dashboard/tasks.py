@@ -4,7 +4,7 @@ from app.redis_service import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
-from dashboard.models import Activity, Profile
+from dashboard.models import Activity, Bounty, Profile
 from marketing.mails import func_name, send_mail
 from retail.emails import render_share_bounty
 
@@ -96,3 +96,17 @@ def profile_dict(self, pk, retry: bool = True) -> None:
         if profile.frontend_calc_stale:
             profile.calculate_all()
             profile.save()
+
+
+@app.shared_task(bind=True)
+def maybe_market_to_user_slack(self, bounty_pk, event_name, retry: bool = True) -> None:
+    """
+    :param self:
+    :param bounty_pk:
+    :param event_name:
+    :return:
+    """
+    with redis.lock("maybe_market_to_user_slack:bounty", timeout=LOCK_TIMEOUT):
+        bounty = Bounty.objects.get(pk=bounty_pk)
+        from dashboard.notifications import maybe_market_to_user_slack_helper
+        maybe_market_to_user_slack_helper(bounty, event_name)
