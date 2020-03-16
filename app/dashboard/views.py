@@ -895,11 +895,13 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
         )
 
     if rating != 0:
-        profile_list = profile_list.annotate(
-            average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-        ).filter(
-            average_rating__gte=rating
-        )
+        pass
+        # TODO - reenable in future when we have avg feedback availaable
+ #       profile_list = profile_list.annotate(
+ #           average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+ #       ).filter(
+ #           average_rating__gte=rating
+ #       )
 
     if organisation:
         profile_list1 = profile_list.filter(
@@ -936,6 +938,8 @@ def users_fetch(request):
     else:
         current_user = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
 
+    if not current_user:
+        return redirect('/login/github?next=' + request.get_full_path())
     current_profile = Profile.objects.get(user=current_user)
 
     if not settings.DEBUG:
@@ -945,12 +949,12 @@ def users_fetch(request):
     if current_user:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
-            ).exclude(hide_profile=True)
+            )#.exclude(hide_profile=True)
     else:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
-            ).exclude(hide_profile=True)
-
+            )#.exclude(hide_profile=True)
+    # KO 3/16
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
 
@@ -994,29 +998,36 @@ def users_fetch(request):
         )
 
     if request.GET.get('type') == 'explore_tribes':
-        profile_list = Profile.objects.filter(data__type='Organization'
-            ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
+        # KO - todo - in future be smarter about tribes lookups and ranking by follower count
+        profile_list = Profile.objects.all()#filter(data__type='Organization')
+        #    ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
 
         if q:
             profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
 
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
+
+        this_page = Profile.objects_full.filter(pk__in=[ele.pk for ele in this_page])
+#            ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
+
     else:
-        profile_list = Profile.objects.filter(pk__in=profile_list
-            ).annotate(average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))).annotate(previous_worked=previous_worked()).order_by(order_by, '-previous_worked', 'id')
+        # KO 2020/03 - this was crushing server perf so removing it
+        # profile_list = Profile.objects.filter(pk__in=profile_list.values_list('pk', flat=True)
+        #    ).annotate(average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))).annotate(previous_worked=previous_worked()).order_by(order_by, '-previous_worked', 'id')
         profile_list = profile_list.values_list('pk', flat=True)
 
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
 
-        profile_list = Profile.objects.filter(pk__in=[ele for ele in this_page])\
-            .order_by(order_by, 'id').annotate(
-            previous_worked_count=previous_worked()).annotate(
-                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
-            ).annotate(
-                average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-            ).order_by('-previous_worked_count', 'id')
+        profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page])\
+            .order_by(order_by, 'id')
+#            .annotate(
+#            previous_worked_count=previous_worked()).annotate(
+#                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
+#            ).annotate(
+#                average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
+#            ).order_by('-previous_worked_count', 'id')
 
         this_page = profile_list
 
@@ -1049,7 +1060,7 @@ def users_fetch(request):
             count_work_completed = user.get_fulfilled_bounties(network=network).count()
 
             profile_json['job_status'] = user.job_status_verbose if user.job_search_status else None
-            profile_json['previously_worked'] = user.previous_worked_count > 0
+            profile_json['previously_worked'] = False # user.previous_worked_count > 0
             profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
             profile_json['position_funder'] = user.get_funder_leaderboard_index()
             profile_json['work_done'] = count_work_completed
@@ -1776,8 +1787,8 @@ def helper_handle_approvals(request, bounty):
 
                 maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
                 maybe_market_to_slack(bounty, 'worker_approved')
-                maybe_market_to_user_slack(bounty, 'worker_approved')
                 record_bounty_activity(bounty, request.user, 'worker_approved', interest)
+                maybe_market_to_user_slack(bounty, 'worker_approved')
             else:
                 start_work_rejected(interest, bounty)
 
@@ -2649,9 +2660,10 @@ def get_profile_tab(request, profile, tab, prev_context):
     elif tab == 'orgs':
         pass
     elif tab == 'tribe':
-        pass
+        context['team'] = profile.team_or_none_if_timeout
     elif tab == 'people':
-        pass
+        if profile.is_org:
+            context['team'] = profile.team_or_none_if_timeout
     elif tab == 'hackathons':
         context['projects'] = HackathonProject.objects.filter( profiles__id=profile.id)
     elif tab == 'quests':
@@ -2792,7 +2804,7 @@ def profile(request, handle, tab=None):
             handle = request.user.username
             profile = None
             if not profile:
-                profile = profile_helper(handle, disable_cache=disable_cache)
+                profile = profile_helper(handle, disable_cache=disable_cache, full_profile=True)
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
@@ -2825,7 +2837,7 @@ def profile(request, handle, tab=None):
     # previously this was cached on the session object, and we've not yet found a way to buste that cache
     if request.user.is_authenticated:
         if request.user.username.lower() == profile.handle:
-            base = Profile.objects
+            base = Profile.objects_full
             if disable_cache:
                 base = base.nocache()
             profile = base.get(pk=profile.pk)

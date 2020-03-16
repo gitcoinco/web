@@ -21,6 +21,7 @@ import json
 import logging
 import xml.etree.ElementTree as ET
 
+from django.contrib import messages
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -765,6 +766,10 @@ def save_custom_avatar(request, output):
             profile.activate_avatar(custom_avatar.pk)
             profile.save()
             create_user_action(profile.user, 'updated_avatar', request)
+            messages.info(
+                request,
+                f'Your avatar has been updated & will be refreshed when the cache expires (every hour). Or hard refresh (Apple-Shift-R) to view it now.'
+            )
             response['message'] = 'Avatar updated'
     except Exception as e:
         logger.exception(e)
