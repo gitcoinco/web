@@ -2518,8 +2518,6 @@ class Profile(SuperModel):
     handle = models.CharField(max_length=255, db_index=True, unique=True)
     last_sync_date = models.DateTimeField(null=True)
     last_calc_date = models.DateTimeField(default=get_0_time)
-    last_chat_seen = models.DateTimeField(null=True, blank=True)
-    last_chat_status = models.CharField(max_length=255, blank=True, default='offline')
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     gitcoin_chat_access_token = models.CharField(max_length=255, blank=True, db_index=True)
@@ -2539,6 +2537,7 @@ class Profile(SuperModel):
     hide_profile = models.BooleanField(
         default=True,
         help_text='If this option is chosen, we will remove your profile information all_together',
+        db_index=True,
     )
     hide_wallet_address = models.BooleanField(
         default=True,
@@ -2609,6 +2608,19 @@ class Profile(SuperModel):
     automatic_backup = models.BooleanField(default=False, help_text=_('automatic backup profile to cloud storage such as 3Box if the flag is true'))
     as_representation = JSONField(default=dict, blank=True)
     tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
+
+    is_org = models.BooleanField(
+        default=True,
+        help_text='Is this profile an org?',
+        db_index=True,
+    )
+
+    average_rating = models.DecimalField(default=0, decimal_places=2, max_digits=50, help_text='avg feedback from those who theyve done work with')
+    follower_count = models.IntegerField(default=0, db_index=True, help_text='how many users follow them')
+    following_count = models.IntegerField(default=0, db_index=True, help_text='how many users are they following')
+    earnings_count = models.IntegerField(default=0, db_index=True, help_text='How many times has user earned crypto with Gitcoin')
+    spent_count = models.IntegerField(default=0, db_index=True, help_text='How many times has user spent crypto with Gitcoin')
+
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
 
@@ -2811,11 +2823,18 @@ class Profile(SuperModel):
         return Interest.objects.filter(profile_id=self.pk, bounty__in=active_bounties)
 
     @property
-    def is_org(self):
+    def last_chat_status(self):
+        if not self.chat_id:
+            return 'offline'
         try:
-            return self.data['type'] == 'Organization'
+            from app.redis_service import RedisService
+            redis = RedisService().redis
+            status = redis.get(f"chat:{self.chat_id}")
+            if not status:
+                return 'offline'
+            return str(status.decode('utf-8'))
         except KeyError:
-            return False
+            return 'offline'
 
     @property
     def frontend_calc_stale(self):
@@ -4093,6 +4112,16 @@ def psave_profile(sender, instance, **kwargs):
             if profile.handle not in instance.organizations:
                 instance.organizations += [profile.handle]
 
+    instance.is_org = instance.data.get('type') == 'Organization'
+    instance.average_rating = 0
+    if instance.feedbacks_got.count():
+        num = instance.feedbacks_got.count()
+        val = sum(instance.feedbacks_got.values_list('rating', flat=True))
+        instance.average_rating = val/num
+    instance.following_count = instance.follower.count()
+    instance.follower_count = instance.org.count()
+    instance.earnings_count = instance.earnings.count()
+    instance.spent_count = instance.sent_earnings.count()
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
     if instance.pk:
