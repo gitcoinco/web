@@ -1,0 +1,9 @@
+{
+  "symbol": "SUSD",
+  "address": "0xe8dE351d8F949B2FFb8068a84a3bC8034874fd32",
+  "overview":{
+    "en": "Star Stable Coins (STAR) endorsed by World Digital Central Bank (WDCB), is a 1-1 asset backed stablecoins that is fully collaterized, legally protected and transparently verified by 3rd party attestations."
+  },
+  "website": "https://starsc.io/",
+  "whitepaper": "https://starsc.io/download/StarStableCoinsWhitepaper-English.pdf"
+}
