@@ -698,7 +698,7 @@ var currentNetwork = function(network, no_ui_updates) {
   $('.navbar-network').removeClass('hidden');
 
   document.web3network = network;
-  if(typeof no_ui_updates != 'undefined'){
+  if (typeof no_ui_updates != 'undefined') {
     return;
   }
 
@@ -1029,9 +1029,10 @@ var actions_page_warn_if_not_on_same_network = function() {
 attach_change_element_type();
 
 window.addEventListener('load', function() {
-  const listen = function(){
+  const listen = function() {
     listen_for_web3_changes(true);
-  }
+  };
+
   listen();
   setInterval(listen, 5000);
 });
