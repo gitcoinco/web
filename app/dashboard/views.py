@@ -229,7 +229,17 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
                 event_type=bounty_activity_event_adapter[event_name],
                 created_by=kwargs['profile'])
             bounty.handle_event(event)
-        return Activity.objects.create(**kwargs)
+        activity = Activity.objects.create(**kwargs)
+
+        # leave a comment on townsquare IFF someone left a start work plan
+        if event_name == 'start_work' and interest and interest.issue_message:
+            from townsquare.models import Comment
+            Comment.objects.create(
+                profile=interest.profile,
+                activity=activity,
+                comment=interest.issue_message,
+                )
+
     except Exception as e:
         logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
 
@@ -247,7 +257,6 @@ def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
     approval_required = bounty.permission_type == 'approval'
     acceptance_date = timezone.now() if not approval_required else None
     profile_id = user.profile.pk
-    record_bounty_activity(bounty, user, 'start_work' if not approval_required else 'worker_applied')
     interest = Interest.objects.create(
         profile_id=profile_id,
         issue_message=issue_message,
@@ -255,6 +264,7 @@ def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
         acceptance_date=acceptance_date,
         signed_nda=signed_nda,
     )
+    record_bounty_activity(bounty, user, 'start_work' if not approval_required else 'worker_applied', interest=interest)
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work' if not approval_required else 'worker_applied')

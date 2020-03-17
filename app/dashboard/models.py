@@ -2093,6 +2093,7 @@ class Activity(SuperModel):
         ('leaderboard_rank', 'Leaderboard Rank'),
         ('consolidated_leaderboard_rank', 'Consolidated Leaderboard Rank'),
         ('consolidated_mini_clr_payout', 'Consolidated CLR Payout'),
+        ('hackathon_registration', 'Hackathon Registration'),
     ]
 
     profile = models.ForeignKey(
@@ -2491,6 +2492,17 @@ class HackathonRegistration(SuperModel):
     )
     def __str__(self):
         return f"Name: {self.name}; Hackathon: {self.hackathon}; Referer: {self.referer}; Registrant: {self.registrant}"
+
+
+@receiver(post_save, sender=HackathonRegistration, dispatch_uid="post_add_HackathonRegistration")
+def post_add_HackathonRegistration(sender, instance, created, **kwargs):
+    if created:
+        Activity.objects.create(
+            profile=instance.registrant,
+            hackathonevent=instance.hackathon,
+            activity_type='hackathon_registration',
+
+            )
 
 
 class Profile(SuperModel):
