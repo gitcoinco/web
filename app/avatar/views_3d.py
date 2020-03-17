@@ -474,6 +474,21 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['orc_skin', 'orc_hair'],
             'path': 'assets/v2/images/avatar3d/orc.svg',
         },
+        'terminator': {
+            'preview_viewbox': {
+                'bg': '0 0 350 350',
+                'beard': '50 150 200 200',
+                'eyes': '90 120 150 150',
+                'accessoire': '50 0 200 200',
+                'hair': '50 0 250 250',
+                't-shirt': '0 200 300 300',
+            },
+            'skin_tones': [
+            ],
+            'hair_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/terminator-3.svg',
+        },
         'barbarian': {
             'preview_viewbox': {
                 'BACK': '0 0 350 350',
