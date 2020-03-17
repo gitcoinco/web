@@ -999,3 +999,67 @@ body.green.offer_view .announce {
     display:inline-block;
   }
 }
+
+/* Toggle Switch for Dark Mode */
+
+input[type=checkbox].toggle-switch {
+  transform: rotate(180deg);
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  outline: 0;
+  cursor: pointer;
+  /* width of the track */
+  width: 4em;
+  /* height of the track */
+  height: 1.5em;
+  border-radius: 3em;
+  background-color: #ebebeb;
+  transition: background-color 0.09s ease-in-out;
+  position: relative;
+}
+
+input[type=checkbox].toggle-switch:active::after {
+  background-color: #f2f2f2;
+  padding-right: .8em;
+}
+
+input[type=checkbox].toggle-switch::after {
+  content: '';
+  width: 2em;
+  height: 2em;
+  background-color: white;
+  border-radius: 3em;
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), padding 0.3s ease, margin 0.3s ease;
+  box-shadow: 2px 0px 5px 0 rgba(0, 0, 0, 0.15);
+}
+
+input[type=checkbox].toggle-switch:checked {
+  background-color: #333;
+  color: #fff;
+}
+
+input[type=checkbox].toggle-switch:checked:active::after {
+  margin-left: -.8em;
+}
+
+input[type=checkbox].toggle-switch:checked::after {
+  left: 2em;
+  background-color: #fff;
+}
+
+.dark {
+  background-color: rgb(23, 7, 61);
+}
+
+.dark .townsquare_nav-list .nav-item .nav-link {
+  color: #fff;
+}
+
+.dark .townsquare_block-header {
+  color: #fff;
+}
