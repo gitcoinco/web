@@ -8,6 +8,9 @@
 .after_copy{
   font-size: 12px;
 }
+.activity_stream{
+  margin-bottom: 50px;
+}
 .activity_stream .content{
   cursor: pointer;
 }
@@ -256,6 +259,16 @@ a .sup {
 .bounty_abandonment_warning .activity-tags .tag,
 .activity.new_kudos .activity-tags .tag {
   display: none;
+}
+
+.infinite-more-link{
+  position: absolute;
+  bottom: 10px;
+  text-align: center;
+  width: 50%;
+  background-color: white;
+  border: 1px solid;
+  margin-left: 25%;
 }
 
 @media (min-width: 768px) {
