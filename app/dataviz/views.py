@@ -197,7 +197,7 @@ def cohort(request):
     cohorts = {}
 
     data_source = request.GET.get('data_source', 'slack-online')
-    num_periods = request.GET.get('num_periods', 20)
+    num_periods = int(request.GET.get('num_periods', 20))
     period_size = request.GET.get('period_size', 'weeks')
     kwargs = {}
 
