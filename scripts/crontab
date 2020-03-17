@@ -26,7 +26,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 ## TOWN SQUARE
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_rankings >> /var/log/gitcoin/create_rankings.log 2>&1
 1 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash payout_mini_clr finalize 10 0 >> /var/log/gitcoin/payout_mini_clr.log 2>&1
-* * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash get_user_presence >> /var/log/gitcoin/get_user_presence.log 2>&1
+* * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash get_user_presence && sleep 10 bash scripts/run_management_command_if_not_already_running.bash get_user_presence && sleep 10 && bash scripts/run_management_command_if_not_already_running.bash get_user_presence >> /var/log/gitcoin/get_user_presence.log 2>&1
 
 ## TOOLING
 1 */6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash get_prices 0  >> /var/log/gitcoin/get_prices.log  2>&1

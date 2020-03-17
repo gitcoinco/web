@@ -959,12 +959,12 @@ def users_fetch(request):
     if current_user:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
-            )#.exclude(hide_profile=True)
+            ).exclude(hide_profile=True)
     else:
         profile_list = Profile.objects.prefetch_related(
                 'fulfilled', 'leaderboard_ranks', 'feedbacks_got'
-            )#.exclude(hide_profile=True)
-    # KO 3/16
+            ).exclude(hide_profile=True)
+
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
 
@@ -1008,9 +1008,7 @@ def users_fetch(request):
         )
 
     if request.GET.get('type') == 'explore_tribes':
-        # KO - todo - in future be smarter about tribes lookups and ranking by follower count
-        profile_list = Profile.objects.all()#filter(data__type='Organization')
-        #    ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
+        profile_list = Profile.objects.filter(is_org=True).order_by('-follower_count', 'id')
 
         if q:
             profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
@@ -1018,26 +1016,16 @@ def users_fetch(request):
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
 
-        this_page = Profile.objects_full.filter(pk__in=[ele.pk for ele in this_page])
-#            ).annotate(follower_count=Count('org')).order_by('-follower_count', 'id')
+        this_page = Profile.objects_full.filter(pk__in=[ele.pk for ele in this_page]).order_by('-follower_count', 'id')
 
     else:
-        # KO 2020/03 - this was crushing server perf so removing it
-        # profile_list = Profile.objects.filter(pk__in=profile_list.values_list('pk', flat=True)
-        #    ).annotate(average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))).annotate(previous_worked=previous_worked()).order_by(order_by, '-previous_worked', 'id')
+        profile_list = profile_list.order_by(order_by, '-earnings_count', 'id')
         profile_list = profile_list.values_list('pk', flat=True)
 
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
 
-        profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page])\
-            .order_by(order_by, 'id')
-#            .annotate(
-#            previous_worked_count=previous_worked()).annotate(
-#                count=Count('fulfilled', filter=Q(fulfilled__bounty__network=network, fulfilled__accepted=True))
-#            ).annotate(
-#                average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
-#            ).order_by('-previous_worked_count', 'id')
+        profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page]).order_by('-earnings_count', 'id')
 
         this_page = profile_list
 
@@ -1045,6 +1033,8 @@ def users_fetch(request):
     params = dict()
 
     for user in this_page:
+        if not user:
+            continue
         followers = TribeMember.objects.filter(org=user)
 
         is_following = True if followers.filter(profile=current_profile).count() else False

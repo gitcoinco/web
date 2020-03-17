@@ -60,6 +60,7 @@ def chat_presence(request):
         # so that get_user_prsence can clean it up later
         redis = RedisService().redis
         redis.set(profile.chat_id, timezone.now().timestamp())
+        redis.set(f"chat:{profile.chat_id}", new_status)
 
     return JsonResponse({'status': 'OK'})
 
