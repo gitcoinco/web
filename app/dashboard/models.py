@@ -1707,6 +1707,21 @@ class Tip(SendCryptoAsset):
             obj = Comment.objects.get(pk=pk)
             return obj
 
+    def trigger_townsquare(instance):
+        if instance.network == 'mainnet' or settings.DEBUG:
+            from townsquare.models import Comment
+            network = instance.network if instance.network != 'mainnet' else ''
+            if 'activity:' in instance.comments_priv:
+                activity=instance.attached_object
+                comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
+                comment = Comment.objects.create(profile=instance.sender_profile, activity=activity, comment=comment)
+
+            if 'comment:' in instance.comments_priv:
+                _comment=instance.attached_object
+                comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
+                comment = Comment.objects.create(profile=instance.sender_profile, activity=_comment.activity, comment=comment)
+
+
 
     @property
     def receive_url(self):
@@ -1787,22 +1802,6 @@ def postsave_tip(sender, instance, created, **kwargs):
                 "network":instance.network,
             }
             )
-    if created:
-        if instance.network == 'mainnet' or settings.DEBUG:
-            from townsquare.models import Comment
-            network = instance.network if instance.network != 'mainnet' else ''
-            if 'activity:' in instance.comments_priv:
-                activity=instance.attached_object
-                comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
-                comment = Comment.objects.create(profile=instance.sender_profile, activity=activity, comment=comment)
-
-            if 'comment:' in instance.comments_priv:
-                _comment=instance.attached_object
-                comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
-                comment = Comment.objects.create(profile=instance.sender_profile, activity=_comment.activity, comment=comment)
-
-
-
 
 # method for updating
 @receiver(pre_save, sender=Bounty, dispatch_uid="psave_bounty")

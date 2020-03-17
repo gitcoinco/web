@@ -253,6 +253,7 @@ def send_tip_4(request):
             tip=tip,
             )
     tip.save()
+    tip.trigger_townsquare()
 
     from townsquare.tasks import calculate_clr_match
     calculate_clr_match.delay()
