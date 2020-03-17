@@ -127,5 +127,3 @@ class Command(BaseCommand):
         for username, ele in all_user_statuses.items():
             key = f"chat:{ele[2]}"
             redis.set(key, ele[0])
-
-

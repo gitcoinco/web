@@ -483,8 +483,7 @@ def get_avatar_attrs(theme, key):
                 'hair': '50 0 250 250',
                 't-shirt': '0 200 300 300',
             },
-            'skin_tones': [
-            ],
+            'skin_tones': [],
             'hair_tones': [],
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/terminator-3.svg',

@@ -29,7 +29,7 @@ def mint_token_request(self, token_req_id, retry=False):
             from dashboard.utils import has_tx_mined
             obj = TokenRequest.objects.get(pk=token_req_id)
             multiplier = 1 if not retry else (mint_token_request.request.retries + 1)
-            gas_price = int(recommend_min_gas_price_to_confirm_in_time(1) * multiplier)
+            gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
             tx_id = obj.mint(gas_price)
             if tx_id:
                 while not has_tx_mined(tx_id, obj.network):
