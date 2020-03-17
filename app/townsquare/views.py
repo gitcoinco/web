@@ -52,11 +52,6 @@ def get_next_time_available(key):
 
 def index(request):
 
-    # TODO: temporary until town square is approved for non-staff use
-    if not is_user_townsquare_enabled(request.user):
-        from retail.views import index as regular_homepage
-        return regular_homepage(request)
-
     return town_square(request)
 
 

@@ -1007,6 +1007,26 @@ def products(request):
     """Render the Products response."""
     products = [
         {
+            'name': 'Town Square',
+            'heading': _("A Web3-enabled social networking bazaar."),
+            'description': _("Gitcoin offers social features that uses mechanism design create a community that #GivesFirst."),
+            'link': 'https://gitcoin.co/townsquare',
+            'img': static('v2/images/products/social.png'),
+            'logo': static('v2/images/helmet.svg'),
+            'service_level': '',
+            'traction': '100s of posts per day',
+        },
+        {
+            'name': 'Chat',
+            'heading': _("Reach your favorite Gitcoiner's in realtime.."),
+            'description': _("Gitcoin Chat is an enterprise-grade solution to connect with your favorite Gitcoiners in realtime.  Download the mobile apps to stay connected on the go!"),
+            'link': 'https://gitcoin.co/chat/landing',
+            'img': static('v2/images/products/chat.png'),
+            'logo': static('v2/images/helmet.svg'),
+            'service_level': '',
+            'traction': '100s of DAUs',
+        },
+        {
             'name': 'hackathons',
             'heading': _("Hack with the best companies in web3."),
             'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
