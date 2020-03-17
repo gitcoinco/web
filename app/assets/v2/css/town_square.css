@@ -1003,7 +1003,7 @@ body.green.offer_view .announce {
 /* Toggle Switch for Dark Mode */
 
 input[type=checkbox].toggle-switch {
-  transform: rotate(180deg);
+  transform: rotate(360deg);
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
