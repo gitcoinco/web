@@ -3611,17 +3611,14 @@ def hackathon(request, hackathon=''):
     if timezone.now() < hackathon_event.start_date and not request.user.is_staff:
         return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
-    # TODO: Refactor post orgs
     orgs = []
-    for bounty in Bounty.objects.filter(event=hackathon_event, network=network).current():
+    for sponsor_profile in hackathon_event.sponsor_profiles.all():
         org = {
-            'display_name': bounty.org_display_name,
-            'avatar_url': bounty.avatar_url,
-            'org_name': bounty.org_name
+            'display_name': sponsor_profile.name,
+            'avatar_url': sponsor_profile.avatar_url,
+            'org_name': sponsor_profile.handle
         }
         orgs.append(org)
-
-    orgs = list({v['display_name']:v for v in orgs}.values())
 
     params = {
         'active': 'dashboard',

@@ -3570,9 +3570,9 @@ class Profile(SuperModel):
         if self.admin_override_name:
             return self.admin_override_name
 
-        if self.data and self.data["name"]:
+        # TODO: investigate how jsonfield blank keys get set.
+        if self.data and self.data["name"] and self.data["name"] != 'null':
             return self.data["name"]
-
         return self.username
 
 
@@ -4505,12 +4505,13 @@ class HackathonEvent(SuperModel):
     text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
+    sponsor_profiles = models.ManyToManyField('dashboard.Profile', blank=True, limit_choices_to={'data__type': 'Organization'})
     show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
     description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
-
+    default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
 
     def __str__(self):
