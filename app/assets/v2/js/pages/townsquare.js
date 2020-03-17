@@ -96,6 +96,11 @@ $(document).ready(function() {
       document.location.href = get_redir_location($('.nav-link.active').data('slug'));
     }, 10);
   });
+  
+  // Enables Dark Mode
+  $(".toggle-switch").on("click", function(event){
+  $("body").toggleClass("dark");
+  });
 
   // toggles the daily email sender
   $('body').on('change', '#receive_daily_offers_in_inbox', function(e) {
