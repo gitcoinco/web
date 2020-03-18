@@ -5,6 +5,13 @@
   background-color: #ecf0f4;
   border: 0px solid;
 }
+.click_here_to_join_video{
+    width: 100%;
+  cursor: pointer;
+}
+.click_here_to_join_video img{
+  width: 100%;
+}
 .after_copy{
   font-size: 12px;
 }
@@ -197,8 +204,17 @@ a .sup {
   display: inline-block;
 }
 
-#poll-button.selected{
+#poll-button.selected,
+#video-button.selected{
   color: black;
+}
+#video_container{
+  background-color: white;
+  text-align: center;
+}
+#video_container img{
+  width: 75%;
+  margin: 0px auto;
 }
 
 #poll_container input{

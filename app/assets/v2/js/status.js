@@ -203,14 +203,8 @@ $(document).ready(function() {
     $('#textarea').focus();
   }
 
-  document.is_shift = false;
-  // handle shift button
-  $('body').on('keyup', '#textarea', function(e) {
-    if (e.keyCode == 16) {
-      document.is_shift = false;
-    }
-  });
-  // handle shift button
+
+  // handle poll button
   $('body').on('click', '#poll-button', function(e) {
     e.preventDefault();
     $(this).toggleClass('selected');
@@ -233,12 +227,34 @@ $(document).ready(function() {
     }
 
   });
-  $('body').on('keydown', '#textarea', function(e) {
+
+  // handle video button
+  $('body').on('click', '#video-button', function(e) {
+    e.preventDefault();
+    $(this).toggleClass('selected');
+    var is_selected = $(this).hasClass('selected');
+
+    if (is_selected) {
+      let html = `
+      <div id=video_container class="bg-lightblue p-2">
+        <img src='/static/v2/images/video.gif'>
+      </div>
+      `;
+      $(html).insertAfter('#status');
+    } else {
+      $('#video_container').remove();
+    }
+
+
+  document.is_shift = false;
+  // handle shift button
+  $('body').on('keyup', '#textarea', function(e) {
     if (e.keyCode == 16) {
-      document.is_shift = true;
+      document.is_shift = false;
     }
   });
 
+  });
   $('body').on('focus change paste keydown keyup blur', '#textarea', function(e) {
 
     // enforce a max length
@@ -286,6 +302,7 @@ $(document).ready(function() {
     data.append('data', the_message);
     data.append('what', $('#status [name=what]').val());
     data.append('tab', getParam('tab'));
+    data.append('has_video', $("#video_container").length);
     
     message.val('');
     localStorage.setItem(lskey, '');
@@ -339,6 +356,7 @@ $(document).ready(function() {
       }
     }
     $('#poll_container').remove();
+    $('#video_container').remove();
 
     fetch('/api/v0.1/activity', {
       method: 'post',

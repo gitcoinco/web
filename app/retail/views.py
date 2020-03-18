@@ -1321,7 +1321,10 @@ def create_status_update(request):
                 key = f"{key}_id"
                 kwargs[key] = result
                 kwargs['activity_type'] = 'wall_post'
-        
+
+        if request.POST.get('has_video'):
+            kwargs['metadata']['video'] = True
+
         if request.POST.get('option1'):
             poll_choices = []
             for i in range(1, 5):
