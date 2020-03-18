@@ -1089,3 +1089,5 @@ def predict_clr_v1(request, grant_id):
         'grant_id': grant_id,
         'clr_match': predicted_clr_match
     }
+
+    return JsonResponse(response)

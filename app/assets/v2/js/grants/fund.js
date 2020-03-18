@@ -649,3 +649,18 @@ const predictCLRMatch = () => {
   $('.clr_match_prediction').html(predicted_clr.toFixed(2));
   $('.clr_increase').html((predicted_clr - clr_prediction_curve[0]).toFixed(2));
 };
+
+const predictCLRLive = (amount) => {
+  const grant_id = $('#grant_id').val();
+  const url = `/grants/api/v1/${grant_id}/predict-clr?amount=${amount}`;
+
+  fetchData (url, 'GET').then(response => {
+    if (200 == response.status) {
+      // SUCCESS
+      console.log('clr match', response.clr_match);
+    } else {
+      // FAILURE
+      console.error(`error: predictCLRLive - status ${response.status} - ${response.message}`);
+    }
+  });
+};

@@ -32,13 +32,13 @@ from perftools.models import JSONStore
 CLR_START_DATE = dt.datetime(2020, 1, 6, 0, 0)
 
 # TODO: MOVE TO DB
-THRESHOLD_TECH = None
-THRESHOLD_MEDIA = None
-THRESHOLD_HEALTH = None
+THRESHOLD_TECH = 20.0
+THRESHOLD_MEDIA = 20.0
+THRESHOLD_HEALTH = 20.0
 
-TOTAL_POT_TECH = 0.0
-TOTAL_POT_MEDIA = 0.0
-TOTAL_POT_HEALTH = 0.0
+TOTAL_POT_TECH = 75000.0
+TOTAL_POT_MEDIA = 75000.0
+TOTAL_POT_HEALTH = 75000.0
 
 '''
     Helper function that translates existing grant data structure
