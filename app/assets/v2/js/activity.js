@@ -17,17 +17,22 @@ $(document).ready(function() {
     });
   }
 
-    $(document).on('click', '.click_here_to_join_video', function(e) {
-      e.preventDefault();
-      $(this).text('');
-      var roomName = $(this).data('roomname');
-      var jitsi_domain = 'meet.jit.si';
-      var jitsi_options = {
-        roomName: roomName,
-        parentNode: document.querySelector('#' + roomName),
-      };
-      var jitsi_api = new JitsiMeetExternalAPI(jitsi_domain, jitsi_options);        
-    });
+  $(document).on('click', '.click_here_to_join_video', function(e) {
+    e.preventDefault();
+    $(this).text('');
+    var roomName = $(this).data('roomname');
+    var jitsi_domain = 'meet.jit.si';
+    var jitsi_options = {
+      roomName: roomName,
+      parentNode: document.querySelector('#' + roomName),
+      welcomePageEnabled: true,
+      userInfo: {
+        displayName: document.contxt.github_handle ? document.contxt.github_handle : 'Anonymous',
+        email: document.contxt.email ? document.contxt.email : null
+      }
+    };
+    var jitsi_api = new JitsiMeetExternalAPI(jitsi_domain, jitsi_options);
+  });
 
   $(document).on('click', '.infinite-more-link', function(e) {
     if ($(this).hasClass('hidden')) {

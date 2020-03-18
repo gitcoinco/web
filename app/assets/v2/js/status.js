@@ -240,19 +240,20 @@ $(document).ready(function() {
         <img src='/static/v2/images/video.gif'>
       </div>
       `;
+
       $(html).insertAfter('#status');
     } else {
       $('#video_container').remove();
     }
 
 
-  document.is_shift = false;
-  // handle shift button
-  $('body').on('keyup', '#textarea', function(e) {
-    if (e.keyCode == 16) {
-      document.is_shift = false;
-    }
-  });
+    document.is_shift = false;
+    // handle shift button
+    $('body').on('keyup', '#textarea', function(e) {
+      if (e.keyCode == 16) {
+        document.is_shift = false;
+      }
+    });
 
   });
   $('body').on('focus change paste keydown keyup blur', '#textarea', function(e) {
@@ -302,7 +303,7 @@ $(document).ready(function() {
     data.append('data', the_message);
     data.append('what', $('#status [name=what]').val());
     data.append('tab', getParam('tab'));
-    data.append('has_video', $("#video_container").length);
+    data.append('has_video', $('#video_container').length);
     
     message.val('');
     localStorage.setItem(lskey, '');

@@ -6,8 +6,12 @@
   border: 0px solid;
 }
 .click_here_to_join_video{
-    width: 100%;
+  width: 100%;
   cursor: pointer;
+  min-height: 250px;
+}
+.click_here_to_join_video iframe{
+  min-height: 250px;
 }
 .click_here_to_join_video img{
   width: 100%;
