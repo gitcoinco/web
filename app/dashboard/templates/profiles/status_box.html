@@ -11,7 +11,9 @@
     ></textarea>
     <input type="hidden" name="what" value="{{what}}:{{whatid}}">
     <div id="textarea-dropdown" class="dropdown-menu" style="top: initial; left: initial;"></div>
-    <button id="video-button" class="btn btn-clean position-absolute" style="bottom: 3.5em; right: 1.5em;"><i class="fas fa-video"></i></i></button>
+    {% if is_alpha_tester %}
+      <button id="video-button" class="btn btn-clean position-absolute" style="bottom: 3.5em; right: 1.5em;"><i class="fas fa-video"></i></i></button>
+    {% endif %}
     <button id="poll-button" class="btn btn-clean position-absolute" style="bottom: 2em; right: 0em;"><i class="fas fa-chart-bar"></i></i></button>
     <button id="emoji-button" class="btn btn-clean position-absolute" style="bottom: 0.2em; right: 0;"><i class="far fa-smile"></i></button>
   </div>

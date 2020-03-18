@@ -14,6 +14,7 @@ from marketing.mails import comment_email, new_action_request
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.views import get_specific_activities
+from app.redis_service import RedisService
 
 from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction
 from .tasks import increment_offer_view_counts
@@ -611,6 +612,25 @@ def offer_new(request):
         'nav': 'home',
     }
     return TemplateResponse(request, 'townsquare/new.html', context)
+
+
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def video_presence(request):
+    """Sets user presence on mattermost."""
+    if not request.user.is_authenticated:
+        return Http404
+
+    roomname = request.POST.get('roomname', '').replace('meet', '')
+    participants = request.POST.get('participants', '')
+    activity = Activity.objects.filter(pk=roomname).first()
+    set_status = activity and int(participants) >= 0
+
+    # if so, make it so
+    if set_status:
+        redis = RedisService().redis
+        seconds = 100 if not settings.DEBUG else 9999999
+        redis.setex(roomname, seconds, participants)
+    return JsonResponse({'status': 'OK'})
 
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)

@@ -185,6 +185,13 @@
 
           {% if row.metadata.video %}
           <div id=meet{{row.pk}} class="click_here_to_join_video" data-roomname="meet{{row.pk}}"><img src='/static/v2/images/video.gif'></div>
+          
+          <p class='num_participants m-0 p-0' data-roomname="+roomName+">
+            <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{%endif%}'>
+              •
+            </p>
+            <span class="participants_count">{{row.video_participants_count}}</span> users on call
+          </p>
           {% endif %}
 
         {% elif row.activity_type == 'wall_post' %}

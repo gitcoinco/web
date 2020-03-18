@@ -2094,7 +2094,6 @@ class Activity(SuperModel):
         ('consolidated_leaderboard_rank', 'Consolidated Leaderboard Rank'),
         ('consolidated_mini_clr_payout', 'Consolidated CLR Payout'),
         ('hackathon_registration', 'Hackathon Registration'),
-        ('video', 'Video'),
     ]
 
     profile = models.ForeignKey(
@@ -2172,6 +2171,21 @@ class Activity(SuperModel):
 
     def get_absolute_url(self):
         return self.url
+
+    @property
+    def video_participants_count(self):
+        if not self.metadata.get('video'):
+            return 0
+        try:
+            from app.redis_service import RedisService
+            redis = RedisService().redis
+            result = redis.get(self.pk)
+            if not result:
+                return 0
+            return int(result.decode('utf-8'))
+        except KeyError:
+            return 0
+
 
     @property
     def action_url(self):
