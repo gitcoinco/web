@@ -785,11 +785,10 @@ function throttle(fn, wait) {
   
 
 window.addEventListener('scroll', throttle(function() {
-  console.log('scrolling');
   var offset = 800;
 
   if ((window.innerHeight + window.scrollY + offset) >= document.body.offsetHeight) {
-    $('.infinite-more-link:visible').click();
+    $('.infinite-more-link').click();
   }
 }, 500));
 
