@@ -456,6 +456,9 @@ def predict_clr_live(grant, contributor, amount):
         print('error: predict_clr_live - missing parameters')
         return None
 
+    if amount == 0:
+        return 0
+
     clr_type = grant.grant_type
     network = grant.network
     _, contrib_data, total_pot, threshold = populate_data_for_clr(False, clr_type, network)
