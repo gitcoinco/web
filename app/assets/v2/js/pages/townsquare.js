@@ -42,7 +42,7 @@ $(document).ready(function() {
     e.preventDefault();
     $('.promo').remove();
     localStorage.setItem('hide_promo', true);
-  })
+  });
 
   $('body').on('click', '.top_offer', function(e) {
     document.location = $(this).find('a.btn').attr('href');
