@@ -1,0 +1,25 @@
+{
+  "symbol": "OXT",
+  "address": "0x4575f41308EC1483f3d399aa9a2826d74Da13Deb",
+  "overview":{
+        "en": "The Orchid digital currency (OXT) enables anyone to buy and sell bandwidth on the Orchid peer-to-peer, incentivized privacy network.",
+        "zh": "任何人都可以使用Orchid的数字货币OXT，在Orchid 的隐私平台上以点对点 (P2P)的形式买卖带宽。"
+  },
+  "email": "contact@orchid.com",
+  "website": "https://www.orchid.com/",
+  "whitepaper": "https://www.orchid.com/assets/whitepaper/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-12-03",
+  "initial_price":{
+        "USD":"0.363600 USD"
+  },
+  "links": {
+    "blog": "https://blog.orchid.com/",
+    "twitter": "https://twitter.com/OrchidProtocol",
+    "telegram": "https://t.me/OrchidOfficial",
+    "github": "https://github.com/OrchidTechnologies",
+    "facebook": "https://www.facebook.com/OrchidProtocol/",
+    "reddit": "https://www.reddit.com/r/orchid/",
+    "medium": "https://medium.com/orchid-labs"
+  }
+}
