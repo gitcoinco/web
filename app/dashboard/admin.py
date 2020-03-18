@@ -90,7 +90,7 @@ class ToolAdmin(admin.ModelAdmin):
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile', 'kudos_transfer']
+    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile', 'kudos_transfer', 'hackathonevent']
     search_fields = ['metadata', 'activity_type', 'profile__handle']
 
     def response_change(self, request, obj):
@@ -166,7 +166,7 @@ def recalculate_profile(modeladmin, request, queryset):
 recalculate_profile.short_description = "Recalculate Profile Frontend Info"
 
 class ProfileAdmin(admin.ModelAdmin):
-    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer']
+    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk']
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
@@ -234,6 +234,25 @@ class TipAdmin(admin.ModelAdmin):
         except Exception:
             html = 'n/a'
         return html
+
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        if "_reset_tip_redemption" in request.POST:
+            if not obj.receive_txid:
+                self.message_user(request, f"Cannot reset tip! This tip has not been marked as receieved")
+                return redirect(obj.admin_url)
+            obj.receive_txid = ''
+            obj.receive_tx_status = ''
+            obj.received_on = None
+            obj.recipient_profile = None
+            obj.receive_address = ''
+            obj.metadata['num_redemptions'] = 0
+            obj.payouts.all().delete()
+            obj.save()
+            addr = obj.metadata.get('address')
+            self.message_user(request, f"This tip redemption has been reset.  Please make sure {addr} has enough ETH in it to pay gas, and send the new claim link to customer.")
+            return redirect(obj.admin_url)
+        return super().response_change(request, obj)
 
 
 # Register your models here.

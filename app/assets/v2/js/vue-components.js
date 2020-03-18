@@ -80,3 +80,47 @@ Vue.component('loading-screen', {
               <div class="rhombus big"></div>
             </div>`
 });
+
+
+Vue.component('qrcode', {
+  props: ['string'],
+  template: '<div class="qrcode"></div>',
+  data() {
+    return {
+      jqEl: null,
+      qrcode: null
+    };
+  },
+  mounted() {
+    let vm = this;
+
+    vm.jqEl = $(this.$el);
+    vm.qrcode = new QRCode(vm.jqEl[0], vm.string);
+    return vm.qrcode;
+
+    // document.getElementsByClassName("qrcode")[0].innerHTML = qr.createImgTag();
+    // var qrcode = new QRCode(document.getElementById("qrcode"), {
+    //   text: "http://jindo.dev.naver.com/collie",
+    //   width: 128,
+    //   height: 128,
+    //   colorDark : "#000000",
+    //   colorLight : "#ffffff",
+    //   correctLevel : QRCode.CorrectLevel.H
+    // });
+    // qrcode.makeCode("http://naver.com")
+  },
+  watch: {
+    string: function(string) {
+      let vm = this;
+
+      return vm.qrcode.makeCode(string);
+    }
+  },
+  computed: {
+    // normalizedSize: function () {
+    //   console.log(vm.jqEl)
+    // return new QRCode(vm.jqEl, "http://jindo.dev.naver.com/collie");
+    //   // return this.size.trim().toLowerCase()
+    // }
+  }
+});

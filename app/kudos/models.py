@@ -347,6 +347,8 @@ class Token(SuperModel):
     def preview_img_url(self):
         if self.preview_img_mode == 'png':
             return self.img_url
+        if "https:" in self.image:
+            return self.image
         return static(self.image)
 
     @property
@@ -408,6 +410,21 @@ def psave_token(sender, instance, **kwargs):
                 'img_url': instance.img_url,
             }
             )
+
+
+@receiver(post_save, sender=Token, dispatch_uid="postsave_token")
+def postsave_token(sender, instance, created, **kwargs):
+    if created:
+        if instance.pk and instance.gen == 1 and not instance.hidden:
+            from dashboard.models import Activity, Profile
+            kwargs = {
+                'activity_type': 'created_kudos',
+                'kudos': instance,
+                'profile': Profile.objects.filter(handle='gitcoinbot').first(),
+                'metadata': {
+                }
+            }
+            Activity.objects.create(**kwargs)
 
 
 class KudosTransfer(SendCryptoAsset):
@@ -634,10 +651,10 @@ class TokenRequest(SuperModel):
 
     def __str__(self):
         """Define the string representation of a conversion rate."""
-        return f"{self.name} on {self.network} on {self.created_on}; approved: {self.approved} "
+        return f"approved: {self.approved} -- {self.name} on {self.network} on {self.created_on};"
 
 
-    def mint(self):
+    def mint(self, gas_price_gwei=None):
         """Approve / mint this token."""
         from kudos.management.commands.mint_all_kudos import mint_kudos # avoid circular import
         from kudos.utils import KudosContract # avoid circular import
@@ -655,7 +672,7 @@ class TokenRequest(SuperModel):
             'artwork_url': self.artwork_url,
         }
         kudos_contract = KudosContract(network=self.network)
-        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1) * 2
+        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1) * 2 if not gas_price_gwei else None
         tx_id = mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True, dont_wait_for_kudos_id_return_tx_hash_instead=True)
         self.processed = True
         self.approved = True

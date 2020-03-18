@@ -73,7 +73,7 @@ def delete_user_from_mailchimp(email_address):
 
 
 def is_deleted_account(handle):
-    return AccountDeletionRequest.objects.filter(handle__iexact=handle).exists()
+    return AccountDeletionRequest.objects.filter(handle=handle.lower()).exists()
 
 
 def get_stat(key):

@@ -77,6 +77,7 @@ createBounty = data => {
     'auto_approve_workers': data.auto_approve_workers ? 'True' : 'False',
     'web3_type': 'qr',
     'activity': data.activity
+    'bounty_owner_address': data.funderAddress
   };
 
   const url  = '/api/v1/bounty/create';
