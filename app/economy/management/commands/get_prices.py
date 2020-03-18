@@ -182,6 +182,9 @@ class Command(BaseCommand):
 
     help = 'gets prices for all (or... as many as possible) tokens'
 
+    def add_arguments(self, parser):
+        parser.add_argument('perform_obj_updates', default='localhost', type=int)
+
     def handle(self, *args, **options):
         """Get the latest currency rates."""
         stablecoins()
@@ -192,17 +195,21 @@ class Command(BaseCommand):
         except Exception as e:
             print(e)
 
-        try:
-            print('cryptocompare')
-            cryptocompare()
-        except Exception as e:
-            print(e)
+        if not options['perform_obj_updates']:
+            return
 
         try:
             print('polo')
             polo()
         except Exception as e:
             print(e)
+
+        try:
+            print('cryptocompare')
+            cryptocompare()
+        except Exception as e:
+            print(e)
+
 
         try:
             print('refresh')

@@ -21,6 +21,7 @@ import json
 import logging
 import xml.etree.ElementTree as ET
 
+from django.contrib import messages
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -342,6 +343,50 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/orc_gitcoin.svg',
         },
+        'walle': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+                'tyres': '0 200 250 250',
+                'accessory': '0 0 200 200',
+                'cap': '100 0 150 150',
+                'goggles': '100 0 150 150',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/walle.svg',
+        },
+        'megaman': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/megaman.svg',
+        },
+        'starbot': {
+            'preview_viewbox': {
+                'Head': '50 20 250 250',
+                'Backdrop': '0 0 350 350',
+                'Accents': '0 100 250 250',
+            },
+            'hair_tones': [],
+            'skin_tones': ['FFFFFF', 'EEEEEE', 'DDDDDD', 'CCCCCC', 'E1C699', 'CFB997', 'F5F5DC', 'B3983', 'AAA9AD'],
+            'tone_maps': ['starbot_skin'],
+            'path': 'assets/v2/images/avatar3d/starbot.svg',
+        },
+        'robocop': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/robocop.svg',
+        },
         'wookie': {
             'preview_viewbox': {
                 'Background': '0 0 350 350',
@@ -428,6 +473,20 @@ def get_avatar_attrs(theme, key):
             'hair_tones': [],
             'tone_maps': ['orc_skin', 'orc_hair'],
             'path': 'assets/v2/images/avatar3d/orc.svg',
+        },
+        'terminator': {
+            'preview_viewbox': {
+                'bg': '0 0 350 350',
+                'beard': '50 150 200 200',
+                'eyes': '90 120 150 150',
+                'accessoire': '50 0 200 200',
+                'hair': '50 0 250 250',
+                't-shirt': '0 200 300 300',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/terminator-3.svg',
         },
         'barbarian': {
             'preview_viewbox': {
@@ -547,6 +606,9 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
     if tone == 'orc_skin':
         tones = {'FFFF99': 0, }
         base_3d_tone = 'FFFF99'
+    if tone == 'starbot_skin':
+        tones = {'FFFFFF': 0, }
+        base_3d_tone = 'FFFFFF'
     if tone == 'wookie_skin':
         tones = {'AE7343': 0, }
         base_3d_tone = 'AE7343'
@@ -732,6 +794,10 @@ def save_custom_avatar(request, output):
             profile.activate_avatar(custom_avatar.pk)
             profile.save()
             create_user_action(profile.user, 'updated_avatar', request)
+            messages.info(
+                request,
+                f'Your avatar has been updated & will be refreshed when the cache expires (every hour). Or hard refresh (Apple-Shift-R) to view it now.'
+            )
             response['message'] = 'Avatar updated'
     except Exception as e:
         logger.exception(e)

@@ -52,11 +52,6 @@ def get_next_time_available(key):
 
 def index(request):
 
-    # TODO: temporary until town square is approved for non-staff use
-    if not is_user_townsquare_enabled(request.user):
-        from retail.views import index as regular_homepage
-        return regular_homepage(request)
-
     return town_square(request)
 
 
@@ -122,7 +117,7 @@ def get_sidebar_tabs(request):
         threads = {
             'title': f"My Threads",
             'slug': f'my_threads',
-            'helper_text': f'The Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
+            'helper_text': f'The Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin since you last checked.',
             'badge': threads_last_24_hours
         }
         tabs = [threads] + tabs
@@ -272,7 +267,7 @@ def get_following_tribes(request):
             tribe = {
                 'title': handle,
                 'slug': f"tribe:{handle}",
-                'helper_text': f'Activities from @{handle} in the last 24 hours',
+                'helper_text': f'Activities from @{handle} since you last checked',
                 'badge': last_24_hours_activity,
                 'avatar_url': f'/dynamic/avatar/{handle}'
             }
@@ -284,6 +279,8 @@ def town_square(request):
     SHOW_DRESSING = request.GET.get('dressing', False)
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
+    max_length_offset = abs(((request.user.profile.created_on if request.user.is_authenticated else timezone.now()) - timezone.now()).days)
+    max_length = 280 + max_length_offset
     if not SHOW_DRESSING:
         is_search = "activity:" in tab or "search-" in tab
         trending_only = int(request.GET.get('trending', 0))
@@ -299,6 +296,8 @@ def town_square(request):
             'target': f'/activity?what={tab}&trending_only={trending_only}',
             'tab': tab,
             'tags': tags,
+            'max_length': max_length,
+            'max_length_offset': max_length_offset,
             'admin_link': admin_link,
             'now': timezone.now(),
             'is_townsquare': True,
