@@ -153,6 +153,7 @@ def preprocess(request):
             'protocol': settings.IPFS_API_SCHEME,
             'root': settings.IPFS_API_ROOT,
         },
+        'chat_persistence_frequency': 60 * 1000,
         'access_token': profile.access_token if profile else '',
         'is_staff': request.user.is_staff if user_is_authenticated else False,
         'is_moderator': profile.is_moderator if profile else False,
