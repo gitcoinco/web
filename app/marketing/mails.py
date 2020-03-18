@@ -42,7 +42,7 @@ from retail.emails import (
     render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
     render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
     render_tip_email, render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
-)
+    render_request_amount_email)
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
 from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
@@ -1500,3 +1500,20 @@ def bounty_request_feedback(profile):
         )
     finally:
         translation.activate(cur_language)
+
+
+def fund_request_email(request, to_emails, is_new=False):
+    subject = gettext("🕐 New Request funds from {} ({} {})").format(request.requester.handle,
+                                                                     request.amount,
+                                                                     request.token_name)
+    for to_email in to_emails:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            from_email = settings.CONTACT_EMAIL
+            html, text = render_request_amount_email(to_email, request, is_new)
+
+            if not should_suppress_notification_email(to_email, 'tip'):
+                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        finally:
+            translation.activate(cur_language)
