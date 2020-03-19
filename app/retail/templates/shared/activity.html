@@ -236,7 +236,6 @@
         <span>{% trans "made an update to: " %}</span>
         <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% else %}
-        {{ row.i18n_name }}
         {{row.humanized_activity_type }}
         {% if row.bounty %}
           : <a href="{{ row.bounty.url }}">{{ row.bounty.title }}</a>

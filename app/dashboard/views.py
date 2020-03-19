@@ -232,7 +232,7 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
         activity = Activity.objects.create(**kwargs)
 
         # leave a comment on townsquare IFF someone left a start work plan
-        if event_name == 'start_work' and interest and interest.issue_message:
+        if event_name in ['start_work', 'worker_applied'] and interest and interest.issue_message:
             from townsquare.models import Comment
             Comment.objects.create(
                 profile=interest.profile,
