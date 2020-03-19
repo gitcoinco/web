@@ -59,8 +59,7 @@ def create_hidden_profiles_cache():
 
 def create_tribes_cache():
 
-    _tribes = Profile.objects.filter(is_org=True).\
-        .cache().order_by('-follower_count')[:8]
+    _tribes = Profile.objects.filter(is_org=True).order_by('-follower_count')[:8]
 
     tribes = []
 
