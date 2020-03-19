@@ -53,8 +53,15 @@ $(document).ready(function() {
     api.executeCommand('toggleVideo'); // default off
     const participants_count = api.getNumberOfParticipants() + 1;
     const $target = $(this).parents('.activity_detail_content');
+    const html = `
+    <p class='float-right p-0 m-0 video_options_container'>
+    <a href=# class='full_screen'>Full Screen <i class="fas fa-expand-arrows-alt"></i></a> | 
+    <a href=# class='popout_screen'>Pop Out <i class="fas fa-sign-out-alt"></i></a> | 
+    <a href=# class='new_tab'>Open in New Tab <i class="fas fa-external-link-square-alt"></i></i></a> | 
+    <a href=# class=' leave_video_call'>Leave Video Call <i class="far fa-times-circle"></i></a>
+    </p>`;
 
-    $target.prepend("<a href=# class='float-right leave_video_call'>Leave Video Call</a>");
+    $target.prepend(html);
   });
 
   // refresh job for live call
@@ -84,6 +91,14 @@ $(document).ready(function() {
     });
   }, 5000);
 
+  $(document).on('click', '.new_tab', function(e) {
+    e.preventDefault();
+    var roomname = $(this).parents('.row').find('.click_here_to_join_video').data('roomname');
+    var url = 'https://meet.jit.si/' + roomname;
+
+    window.open(url, '_blank');
+  });
+
   // leave video call
   $(document).on('click', '.leave_video_call', function(e) {
     e.preventDefault();
@@ -94,8 +109,41 @@ $(document).ready(function() {
 
     document.jitsi_api = undefined;
     $taret.removeClass('live').html(html);
-    $(this).remove();
+    $('.video_options_container').remove();
   });
+
+  // full screen
+  $(document).on('click', '.full_screen', function(e) {
+    e.preventDefault();
+    var $target = $(this).parents('.row').find('iframe[name=jitsiConferenceFrame0]');
+
+    toggleFullscreen();
+  });
+
+  // popout screen
+  $(document).on('click', '.popout_screen', function(e) {
+    e.preventDefault();
+    var $target = $(this).parents('.row').find('iframe[name=jitsiConferenceFrame0]');
+
+    $target.toggleClass('popout');
+    if ($(this).text().indexOf('Pop Out') != -1) {
+      $(this).html('Pop In <i class="fas fa-level-up-alt"></i>');
+    } else {
+      $(this).html('Pop Out <i class="fas fa-sign-out-alt">');
+    }
+  });
+
+  function toggleFullscreen() {
+    let iframe = document.querySelector('#jitsiConferenceFrame0');
+
+    if (!document.fullscreenElement) {
+      iframe.requestFullscreen().catch(err => {
+        alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }
 
   $(document).on('click', '.infinite-more-link', function(e) {
     if ($(this).hasClass('hidden')) {

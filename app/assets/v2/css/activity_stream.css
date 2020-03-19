@@ -221,6 +221,13 @@ a .sup {
   width: 75%;
   margin: 0px auto;
 }
+iframe.popout{
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  width: 25% !important;
+  height: 25% !important;
+}
 
 #poll_container input{
   display: block;
