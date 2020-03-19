@@ -1,4 +1,5 @@
 import re
+import time
 
 from django.conf import settings
 from django.contrib import messages
@@ -387,22 +388,41 @@ def api(request, activity_id):
 
     # no perms needed responses go here
     if request.GET.get('method') == 'comment':
-        comments = activity.comments.order_by('created_on')
+        comments = activity.comments.prefetch_related('profile').order_by('created_on')
         response['comments'] = []
+        results = {i : 0 for i in range(0, 15)}
         for comment in comments:
+            counter = 0; start_time = time.time()
             comment_dict = comment.to_standard_dict(properties=['profile_handle'])
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['handle'] = comment.profile.handle
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
+            #0.3
             comment_dict['last_chat_status'] = comment.profile.last_chat_status
-            comment_dict['last_chat_status_title'] = comment.profile.last_chat_status.title()
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
+            comment_dict['last_chat_status_title'] = comment_dict['last_chat_status'].title()
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['tip_count_eth'] = comment.tip_count_eth
-            comment_dict['match_this_round'] = comment.profile.match_this_round
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['is_liked'] = request.user.is_authenticated and (request.user.profile.pk in comment.likes)
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['like_count'] = len(comment.likes)
-            comment_dict['likes'] = ", ".join(Profile.objects.filter(pk__in=comment.likes).values_list('handle', flat=True)) if len(comment.likes) else "no one. Want to be the first?"
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
+            comment_dict['likes'] = ", ".join(comment.likes_handles) if len(comment.likes) else "no one. Want to be the first?"
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['name'] = comment.profile.data.get('name', None) or comment.profile.handle
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
+            #0.2
             comment_dict['default_match_round'] = comment.profile.matchranking_this_round.default_match_estimate if comment.profile.matchranking_this_round else None
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
+            comment_dict['match_this_round'] = comment.profile.match_this_round
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['sorted_match_curve'] = comment.profile.matchranking_this_round.sorted_match_curve if comment.profile.matchranking_this_round else None
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             response['comments'].append(comment_dict)
+        for key, val in results.items():
+            if settings.DEBUG:
+                print(key, round(val, 2))
         return JsonResponse(response)
 
     # check for permissions

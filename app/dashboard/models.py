@@ -1718,6 +1718,7 @@ class Tip(SendCryptoAsset):
 
             if 'comment:' in instance.comments_priv:
                 _comment=instance.attached_object
+                _comment.save()
                 comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
                 comment = Comment.objects.create(profile=instance.sender_profile, activity=_comment.activity, comment=comment)
 
