@@ -246,7 +246,7 @@
               <a class="grant-item__member-handle mb-3" href="{% url 'profile' team_member %}">
                 <div class="grant-item__member grant-item-multiselect mr-5">
                   <div class="mr-2 d-inline-block">
-                    <img src="{{ team_member.avatar_url }}">
+                    <img src="/dynamic/avatar/{{ team_member.handle }}">
                   </div>
                   <div class="mt-1 d-inline-block">
                     <span class="grant-profile font-weight-semibold">{{ team_member }}</span>

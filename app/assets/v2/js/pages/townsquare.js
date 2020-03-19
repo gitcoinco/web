@@ -65,7 +65,7 @@ $(document).ready(function() {
     let trending = $('#trending').is(':checked') ? 1 : 0;
     let personal = $('#personal').is(':checked') ? 1 : 0;
 
-    return '/?tab=' + tab + '&trending=' + trending + '&personal=' + personal;
+    return '/townsquare?tab=' + tab + '&trending=' + trending + '&personal=' + personal;
   };
 
   $('body').on('focus change paste keyup blur', '#keyword', function(e) {

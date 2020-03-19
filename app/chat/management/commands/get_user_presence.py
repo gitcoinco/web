@@ -22,6 +22,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 import pytz
+from app.redis_service import RedisService
 from chat.tasks import get_driver
 from dashboard.models import Profile
 from django_bulk_update.helper import bulk_update
@@ -39,9 +40,13 @@ class Command(BaseCommand):
         d = get_driver()
         teams = d.teams.get_teams()
 
+        # connect to redis
+        redis = RedisService().redis
+
         # outer vars
         all_usernames = []
         all_user_statuses = {}
+        all_response = []
 
         for team in teams:
             if team['display_name'] == 'Codefund':
@@ -68,10 +73,11 @@ class Command(BaseCommand):
             # get through all users
             print(f"- {len(all_users)}")
             users_status = d.client.post('/users/status/ids', [ele['id'] for ele in all_users])
+            all_response += users_status
             users_status_by_id = { ele['user_id']: ele for ele in users_status }
             all_usernames += [ele['username'].lower() for ele in all_users]
 
-            # iterate through each one
+            # iterate through each one, and sync it to our DB
             for user in all_users:
                 last_activity_at_1 = user['last_activity_at']
                 last_activity_at_2 = users_status_by_id[user['id']]['last_activity_at']
@@ -82,8 +88,42 @@ class Command(BaseCommand):
                 timestamp = timezone.datetime.utcfromtimestamp(timestamp).replace(tzinfo=pytz.utc)
                 all_user_statuses[username] = (status, timestamp, user['id'])
 
-        # update all usernames
-        profiles = Profile.objects.filter(handle__in=all_usernames)
+            # look for manual statuses set by /api/v0.1/chat route and clean them up if needed
+            for ele in all_response:
+
+                user_id = ele['user_id']
+                status = ele['status']
+                if status == 'offline':
+                    continue
+
+                # user has been offline for 10 mins
+                # update mattermost, and redis
+                max_delta = (10*60)
+
+                # calc it
+                now = timezone.now().timestamp()
+                last_action_mattermost = int(ele['last_activity_at']/1000)
+                redis_response = redis.get(user_id)
+                last_seen_gc = int(float(redis_response)) if redis_response else now
+
+                # do update
+                is_away_mm = ((now - last_action_mattermost) > max_delta)
+                is_away_gc = (now - last_seen_gc) > max_delta
+                manual = ele['manual']
+                update_ele = (manual and is_away_gc) or (not manual and is_away_mm)
+                if update_ele or settings.DEBUG:
+                    new_status = 'offline' 
+                    d.client.put(f'/users/{user_id}/status', {'user_id': user_id, 'status': new_status})
+                    redis.set(user_id, 0)
+        
+        # update all chat ids not in DB
+        profiles = Profile.objects.filter(handle__in=all_usernames, chat_id='')
         for profile in profiles:
-            profile.last_chat_status, profile.last_chat_seen, profile.chat_id = all_user_statuses[profile.handle]
-        bulk_update(profiles, update_fields=['last_chat_seen', 'last_chat_status', 'chat_id'])  
+            _, _, profile.chat_id = all_user_statuses[profile.handle]
+        bulk_update(profiles, update_fields=['chat_id'])  
+
+        # update all chat info that is in redis
+        # all_user_statuses[username] = (status, timestamp, user['id'])
+        for username, ele in all_user_statuses.items():
+            key = f"chat:{ele[2]}"
+            redis.set(key, ele[0])

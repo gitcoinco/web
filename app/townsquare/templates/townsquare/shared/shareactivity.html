@@ -2,6 +2,7 @@
             {% if not is_direct_link %}
               <div class="bg-white rounded border">
                 <div id="status">
+                  <div id="char_count" data-toggle="tooltip" title="You have been a Gitcoin community member for {{max_length_offset}} days, and you can post up to 280 + {{max_length_offset}} = {{max_length}} chars in your status update."></div>
                   <div class="position-relative d-flex flex-row px-2 pt-4 pb-2">
                     <div class="status-avatar px-3">
                       <img class="avatar rounded-circle" src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% endif %}{% endif %}"/>
@@ -21,7 +22,7 @@
                     <div id="textarea-dropdown" class="dropdown-menu" style="left: initial;"></div>
                     <button id="background-button" class="btn btn-clean position-absolute" style="bottom: 3.8em; right: 0em;"><i class="fas fa-image"></i></i></button>
                     <button id="poll-button" class="btn btn-clean position-absolute" style="bottom: 2em; right: 0em;"><i class="fas fa-chart-bar"></i></i></button>
-                    <button id="emoji-button" class="btn btn-clean position-absolute" style="bottom: 0.2em; right: 0;"><i class="far fa-smile"></i></button>
+                    <button id="emoji-button" class="btn btn-clean position-absolute" style="bottom: 3.5em; right: 0;"><i class="far fa-smile"></i></button>
                   </div>
                   <div class="hide" id="bg-selector">
                   </div>

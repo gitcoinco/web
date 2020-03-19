@@ -28,7 +28,7 @@
   </head>
   <body class="interior {{ active }} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
+    <div class="container-fluid header dash px-0">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
       <div class="row no-gutters metamask-banner">
@@ -85,8 +85,9 @@
                   <label class="font-body" for="input-grant_type">{% trans "Grant Type" %}</label>
                   <div class="form__select2">
                     <select class="js-select2 form__input form__input-lg" name="input-grant_type" id="input-grant_type">
-                      <option selected>{% trans "Tech" %}</option>
-                      <option>{% trans "Media" %}</option>
+                      <option selected value="tech">{% trans "Tech" %}</option>
+                      <option value="media">{% trans "Media" %}</option>
+                      <option value="health">{% trans "Public Health" %}</option>
                     </select>
                   </div>
                 </div>

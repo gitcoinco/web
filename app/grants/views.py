@@ -66,7 +66,7 @@ total_clr_pot = 200000
 clr_round = 4
 clr_active = False
 show_clr_card = True
-next_round_start = timezone.datetime(2020, 3, 16)
+next_round_start = timezone.datetime(2020, 3, 23)
 
 if True:
     clr_matching_banners_style = 'results'
@@ -74,7 +74,7 @@ if True:
 
 def get_keywords():
     """Get all Keywords."""
-    return json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)])
+    return json.dumps([str(key) for key in Keyword.objects.all().cache().values_list('keyword', flat=True)])
 
 
 def lazy_round_number(n):
@@ -129,6 +129,7 @@ def grants(request):
     if category:
         _grants = _grants.filter(Q(categories__category__icontains = category))
 
+    _grants = _grants.prefetch_related('categories')
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
     partners = MatchPledge.objects.filter(active=True, pledge_type=grant_type) if grant_type else MatchPledge.objects.filter(active=True)
@@ -155,12 +156,16 @@ def grants(request):
     media_grants_count = Grant.objects.filter(
         network=network, hidden=False, grant_type='media'
     ).count()
+    health_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='health'
+    ).count()
 
     categories = [category[0] for category in basic_grant_categories(grant_type)]
 
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
-        {'label': 'Media', 'keyword': 'media', 'count': media_grants_count}
+        {'label': 'Media', 'keyword': 'media', 'count': media_grants_count},
+        {'label': 'Public Health', 'keyword': 'health', 'count': health_grants_count}
     ]
 
     params = {
@@ -224,22 +229,29 @@ def add_form_categories_to_grant(form_category_ids, grant, grant_type):
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
+    tab = request.GET.get('tab', 'activity')
     profile = get_profile(request)
     add_cancel_params = False
     try:
-        grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates').get(
+        grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates', 'team_members').get(
             pk=grant_id, slug=grant_slug
         )
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False).order_by('-created_on')
-        _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all())
-        phantom_funds = grant.phantom_funding.all()
-        contributions = list(_contributions.order_by('-created_on'))
-        voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
-        contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
-        activity_count = len(cancelled_subscriptions) + len(contributions)
+
+        activity_count = grant.contribution_count
+        contributors = []
+        contributions = []
+        voucher_fundings = []
+        if tab in ['transactions', 'contributors']:
+            _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all().cache(timeout=60)).cache(timeout=60)
+            phantom_funds = grant.phantom_funding.all().cache(timeout=60)
+            contributions = list(_contributions.order_by('-created_on'))
+            voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
+            contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
+            activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
         add_cancel_params = user_subscription
@@ -311,7 +323,6 @@ def grant_details(request, grant_id, grant_slug):
             )
         is_unsubscribed_from_updates_from_this_grant = True
 
-    tab = request.GET.get('tab', 'activity')
     params = {
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
@@ -1016,6 +1027,8 @@ def basic_grant_categories(grant_type):
         categories = GrantCategory.tech_categories()
     elif grant_type == 'media':
         categories = GrantCategory.media_categories()
+    elif grant_type == 'health':
+        categories = GrantCategory.health_categories()
     else:
         categories = GrantCategory.all_categories()
 

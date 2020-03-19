@@ -30,7 +30,9 @@ class GrantsViewResponsesTests(TestCase):
                 ['twitter', 8],
                 ['reddit', 9],
                 ['blog', 10],
-                ['notes', 11]
+                ['notes', 11],
+                ['COVID19 research',12],
+                ['COVID19 response',13]
             ],
             'status': 200
         }
@@ -52,7 +54,9 @@ class GrantsViewResponsesTests(TestCase):
             ('twitter', 8),
             ('reddit',9),
             ('blog',10),
-            ('notes',11)
+            ('notes',11),
+            ('COVID19 research',12),
+            ('COVID19 response',13)
         ]
 
         self.assertEqual(all_categories, expected_response)

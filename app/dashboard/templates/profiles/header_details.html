@@ -5,8 +5,8 @@
 </h1>
 <p class="mb-0">
   @{{ profile.handle }}
- {% include 'profiles/presence_indicator.html' with show_even_if_offline=1 %}
-  {% if 1 %}
+ {% include 'profiles/presence_indicator.html' with show_even_if_offline=1 last_chat_status=profile.last_chat_status chat_id=profile.chat_id handle=profile.handle %}
+  {% if profile.match_this_round %}
     <span data-placement="bottom" data-toggle="tooltip" data-html="true"  title="
       {% include 'profiles/match_estimate_explainer.html' %}
 

@@ -38,7 +38,7 @@
         </div>
       </div>
       <div class="pt-0 text-center">
-         {% if row.staff %}
+         {% if row.metadata.staff %}
             <span class="staff_tag">
               Staff
             </span>
@@ -61,7 +61,7 @@
     </div>
     <div class="col-10 col-sm-8 pl-2 px-sm-0 activity_detail">
       <div>
-         {% include 'profiles/presence_indicator.html' with profile=row.profile additionalclasses="mini" show_even_if_offline=1 %}
+         {% include 'profiles/presence_indicator.html' with last_chat_status=row.profile.last_chat_status chat_id=row.profile.chat_id handle=row.profile.handle additionalclasses="mini" show_even_if_offline=1 %}
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
          <a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
@@ -134,6 +134,12 @@
           </a>
         {% elif row.activity_type == 'joined' %}
           {% trans "joined Gitcoin" %}
+        {% elif row.activity_type == 'hackathon_registration' %}
+          {% trans "registered for " %}
+          <a href="/{{row.hackathonevent.relative_url}}">
+            {{row.hackathonevent.name}}
+          </a>
+
         {% elif row.activity_type == 'update_grant' %}
           {% trans "updated" %}
           <a href="{{ row.metadata.grant_url }}" >
@@ -283,25 +289,19 @@
               </a>
               {% endif %}
             </div>
-
-            {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
-              {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name %}
-                <div class="tag token mr-2">
-                  <p class="font-smaller-6 mb-0">
-                    {% if row.value_in_token_disp %}
-                      <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
-                    {% elif row.metadata.value_in_eth %}
-                      <span class="value_in_eth">{{ row.metadata.value_in_eth }} ETH</span>
-                    {% elif row.metadata.value_in_token and row.metadata.token_name %}
-                      <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
-                    {% endif %}
-                  </p>
-                </div>
-              {% endif %}
-            {% if row.value_in_usdt_now %}
-              <div class="tag usd mr-2">
+          {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
+            {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name or row.bounty %}
+              <div class="tag token mr-2">
                 <p class="font-smaller-6 mb-0">
-                  <span>{{ row.value_in_usdt_now }} USD</span>
+                  {% if row.bounty %}
+                    <span class="value_in_token_bounty">{{ row.bounty.value_true | floatformat:2 }} {{row.bounty.token_name}}</span>
+                  {% elif row.value_in_token_disp %}
+                    <span class="value_in_token_disp">{{ row.value_in_token_disp | floatformat:2 }} {{row.token_name}}</span>
+                  {% elif row.metadata.value_in_eth %}
+                    <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:2 }} ETH</span>
+                  {% elif row.metadata.value_in_token and row.metadata.token_name %}
+                    <span class="value_in_token">{{row.metadata.value_in_token  | floatformat:2}}  {{row.metadata.token_name}}</span>
+                  {% endif %}
                 </p>
               </div>
             {% endif %}
@@ -352,9 +352,9 @@
       </div>
     {% endif %}
   </div>
-  {% if row.poll %}
+  {% if row.metadata.poll_choices %}
   <div class="poll_choices {% if row.metadata.poll_answered %}answered{%endif%}">
-    {% for ele in row.poll %}
+    {% for ele in row.metadata.poll_choices %}
       <div data-vote="{{ forloop.counter0 }}" class=" vote {% if row.metadata.poll_answered == ele.i %}answer{%endif%}">
         <p>
           {{ele.question}}

@@ -618,9 +618,8 @@ def how_it_works(request, work_type):
     return TemplateResponse(request, 'how_it_works/index.html', context)
 
 
-@cached_view_as(Profile.objects.hidden())
 def robotstxt(request):
-    hidden_profiles = Profile.objects.hidden()
+    hidden_profiles = list(JSONStore.objects.get(view='hidden_profiles').data)
     context = {
         'settings': settings,
         'hidden_profiles': hidden_profiles,
@@ -1008,6 +1007,26 @@ def products(request):
     """Render the Products response."""
     products = [
         {
+            'name': 'Town Square',
+            'heading': _("A Web3-enabled social networking bazaar."),
+            'description': _("Gitcoin offers social features that uses mechanism design create a community that #GivesFirst."),
+            'link': 'https://gitcoin.co/townsquare',
+            'img': static('v2/images/products/social.png'),
+            'logo': static('v2/images/helmet.svg'),
+            'service_level': '',
+            'traction': '100s of posts per day',
+        },
+        {
+            'name': 'Chat',
+            'heading': _("Reach your favorite Gitcoiner's in realtime.."),
+            'description': _("Gitcoin Chat is an enterprise-grade solution to connect with your favorite Gitcoiners in realtime.  Download the mobile apps to stay connected on the go!"),
+            'link': 'https://gitcoin.co/chat/landing',
+            'img': static('v2/images/products/chat.png'),
+            'logo': static('v2/images/helmet.svg'),
+            'service_level': '',
+            'traction': '100s of DAUs',
+        },
+        {
             'name': 'hackathons',
             'heading': _("Hack with the best companies in web3."),
             'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
@@ -1173,8 +1192,8 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         activities = activities.filter(keyword_filter | base_filter)
     elif 'tribe:' in what:
         key = what.split(':')[1]
-        profile_filter = Q(profile__handle=key)
-        other_profile_filter = Q(other_profile__handle=key)
+        profile_filter = Q(profile__handle=key.lower())
+        other_profile_filter = Q(other_profile__handle=key.lower())
         keyword_filter = Q(metadata__icontains=key)
         activities = activities.filter(keyword_filter | profile_filter | other_profile_filter)
     elif 'activity:' in what:
@@ -1323,7 +1342,7 @@ def create_status_update(request):
             if key == 'hackathon':
                 kwargs['hackathonevent'] = HackathonEvent.objects.get(pk=result)
             if key == 'tribe':
-                kwargs['other_profile'] = Profile.objects.get(handle__iexact=result)
+                kwargs['other_profile'] = Profile.objects.get(handle=result.lower())
 
         try:
             activity = Activity.objects.create(**kwargs)
@@ -1346,6 +1365,11 @@ def create_status_update(request):
             logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
             return JsonResponse(response, status=400)
     return JsonResponse(response)
+
+
+def grant_redir(request):
+    return redirect('/grants/')
+
 
 def help(request):
     return redirect('/wiki/')
@@ -1711,18 +1735,7 @@ def tribes(request):
         }
     ]
 
-    _tribes = Profile.objects.filter(data__type='Organization').\
-        annotate(follower_count=Count('org')).order_by('-follower_count')[:8]
-
-    tribes = []
-
-    for _tribe in _tribes:
-        tribe = {
-            'name': _tribe.handle,
-            'img': _tribe.avatar_url,
-            'followers_count': _tribe.follower_count
-        }
-        tribes.append(tribe)
+    tribes = JSONStore.objects.get(view='tribes', key='tribes').data
 
     testimonials = [
         {

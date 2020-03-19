@@ -52,7 +52,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <div class="col pt-2">
                 <div class="alert bs-alert alert-info mb-0 w-90 mt-2" role="alert">
                   <i class="fas fa-info mr-3"></i>
-                  What is Gitcoin? - <a class="font-weight-bold" href="/home">Learn More <i class="fas fa-share-square"></i> </a>
+                  What is Gitcoin? - <a class="font-weight-bold" href="/landing">Learn More <i class="fas fa-share-square"></i> </a>
                 </div>
               </div>
             </div>
@@ -119,13 +119,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
               <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
                 <span id=activity_subheader>
-                  <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
-                  <br>
                   <span>
                     {{card_desc}}
                   </span>
                 </span>
-                {% include 'shared/activity_container.html' %}
+                {% include 'shared/activity_container.html' with supress_infinite_more_link_hidden=1 %}
               </div>
             </div>
             <div class="actions_container col-12 col-md-4 col-lg-3">

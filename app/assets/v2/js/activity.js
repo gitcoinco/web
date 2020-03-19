@@ -17,6 +17,25 @@ $(document).ready(function() {
     });
   }
 
+  $(document).on('click', '.infinite-more-link', function(e) {
+    if ($(this).hasClass('hidden')) {
+      e.preventDefault();
+      return;
+    }
+    $(this).addClass('hidden');
+    var url = $(this).attr('href');
+
+    $('.infinite-container').find('.loading').removeClass('hidden');
+    $.get(url, function(response) {
+      $('.infinite-container').find('.infinite-more-link').remove();
+      $('.infinite-container').find('.loading').remove();
+      $('.infinite-container').append($(response).find('.infinite-container').html());
+      $('.infinite-container').find('.loading').addClass('hidden');
+    });
+    e.preventDefault();
+  });
+  $('.infinite-more-link').click();
+
 
   document.base_title = $('title').text();
 
@@ -142,7 +161,6 @@ $(document).ready(function() {
     // calc total
     var answers = $this.parents('.poll_choices').find('span');
 
-    console.log(answers.length);
     for (var i = 0; i < answers.length; i++) {
       total += parseInt(($(answers[i]).text()));
     }
@@ -437,6 +455,9 @@ $(document).ready(function() {
 
   var view_comments = function($parent, allow_close_comment_container, success_callback, override_hide_comments) {
     hide_after_n_comments = 3;
+    if (getParam('tab') && getParam('tab').indexOf('activity:') != -1) {
+      hide_after_n_comments = 100;
+    }
     // remote post
     var params = {
       'method': 'comment'
@@ -513,6 +534,11 @@ $(document).ready(function() {
           <div class="col-11 activity_comments_main pl-4 px-sm-3">
             <div class="mb-0">
               <span>
+              <span class="chat_presence_indicator mini ${comment['last_chat_status']}" data-openchat="${comment['profile_handle']}">
+                <span class="indicator" data-toggle="tooltip" title="Gitcoin Chat: ${comment['last_chat_status_title']}">
+                  •
+                </span>
+              </span>          
                 <b>${comment['name']}</b>
                 <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
                 @${comment['profile_handle']}
@@ -573,7 +599,7 @@ $(document).ready(function() {
           </div>
           <div class="col-12 col-sm-11 text-right">
             <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3">${existing_text}</textarea>
-            <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
+            <a href=# class="btn btn-gc-blue btn-sm mt-= font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
         </div>
       `;
@@ -745,3 +771,25 @@ $(document).ready(function() {
 
 
 }(jQuery));
+
+function throttle(fn, wait) {
+  var time = Date.now();
+
+  return function() {
+    if ((time + wait - Date.now()) < 0) {
+      fn();
+      time = Date.now();
+    }
+  };
+}
+  
+
+window.addEventListener('scroll', throttle(function() {
+  console.log('scrolling');
+  var offset = 800;
+
+  if ((window.innerHeight + window.scrollY + offset) >= document.body.offsetHeight) {
+    $('.infinite-more-link:visible').click();
+  }
+}, 500));
+
