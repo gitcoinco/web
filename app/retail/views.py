@@ -1324,6 +1324,7 @@ def create_status_update(request):
 
         if request.POST.get('has_video'):
             kwargs['metadata']['video'] = True
+            kwargs['metadata']['gfx'] = request.POST.get('video_gfx')
 
         if request.POST.get('option1'):
             poll_choices = []

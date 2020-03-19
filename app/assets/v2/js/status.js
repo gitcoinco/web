@@ -235,9 +235,12 @@ $(document).ready(function() {
     var is_selected = $(this).hasClass('selected');
 
     if (is_selected) {
+      const items = ['video1.gif', 'video2.gif', 'video3.png']
+      const item = $(this).data('gfx') ? $(this).data('gfx') : items[Math.floor(Math.random() * items.length)];
+
       let html = `
-      <div id=video_container class="bg-lightblue p-2">
-        <img src='/static/v2/images/video.gif'>
+      <div data-gfx=`+item+` id=video_container class="bg-lightblue p-2">
+        <img src='/static/v2/images/`+item+`'>
       </div>
       `;
 
@@ -304,6 +307,7 @@ $(document).ready(function() {
     data.append('what', $('#status [name=what]').val());
     data.append('tab', getParam('tab'));
     data.append('has_video', $('#video_container').length);
+    data.append('video_gfx', $('#video_container').data('gfx'));
     
     message.val('');
     localStorage.setItem(lskey, '');
