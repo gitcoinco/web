@@ -36,9 +36,10 @@ $(document).ready(function() {
       _alert('You can only be in one video call at a time.', 'error', 1000);
       return;
     }
-    const animals = ['Hamster', "Marmot", "Robot", "Ferret", "Squirrel"]
+    const animals = [ 'Hamster', 'Marmot', 'Robot', 'Ferret', 'Squirrel' ];
     const animal = animals[Math.floor(Math.random() * animals.length)];
     const safeHandle = document.contxt.github_handle ? document.contxt.github_handle : animal;
+
     $(this).addClass('live');
     $(this).text('');
     const roomName = $(this).data('roomname');
@@ -67,7 +68,7 @@ $(document).ready(function() {
       if ($parent.find('.indie_chat_indicator').hasClass('offline')) {
         $parent.find('.indie_chat_indicator').removeClass('offline');
       }
-      if(!document.contxt.github_handle){
+      if (!document.contxt.github_handle) {
         return;
       }
       const url = '/api/v0.1/video/presence';
@@ -87,9 +88,9 @@ $(document).ready(function() {
   $(document).on('click', '.leave_video_call', function(e) {
     e.preventDefault();
     document.jitsi_api.dispose();
-    var $taret=$(this).parents('.row').find('.click_here_to_join_video');
+    var $taret = $(this).parents('.row').find('.click_here_to_join_video');
     var url = $taret.data('src');
-    var html = "<img src='"+url+"'>";
+    var html = "<img src='" + url + "'>";
 
     document.jitsi_api = undefined;
     $taret.removeClass('live').html(html);
