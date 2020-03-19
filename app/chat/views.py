@@ -35,11 +35,11 @@ logger = logging.getLogger(__name__)
 def chat_presence(request):
     """Sets user presence on mattermost."""
     if not request.user.is_authenticated:
-        return Http404
+        return JsonResponse({'status': 'OK'})
 
     profile = request.user.profile
     if not profile.chat_id:
-        return Http404
+        return JsonResponse({'status': 'OK'})
 
     # setup driver
     driver = get_driver()
