@@ -23,6 +23,8 @@
 
   --text-light: #D8D8D8;
   --text-dark: var(--gc-black);
+
+  --main-bg: #EFF3F6;
 }
 
 .text-highlight-purple {
