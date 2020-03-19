@@ -1,0 +1,44 @@
+{% load humanize static i18n %}
+          <div class="row mt-5">
+
+            <div class="col-12 col-xl-8">
+              <ul class="grants_nav grants_keyword_nav pl-0 mb-0 pb-1 pt-2 mt-2 mt-xl-0 text-center text-xl-left font-body font-weight-semibold">
+                <a data-type="category" data-value="" class="mr-3 mr-md-2 mr-lg-3 {% if selected_category == '' %} selected {% endif %}">
+                  All
+                </a>
+                {% for category in categories %}
+                  <a data-type="category" data-value="{{category}}" class="mr-3 mr-md-2 mr-lg-3 {% if selected_category == category %} selected {% endif %}">
+                    {{category|title}}
+                  </a>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <div class="col-12 col-xl-4 mt-2 mt-xl-0 font-caption text-center text-xl-right font-weight-semibold order_by sort_container">
+              <div class="heading">{% trans "Sort by" %}</div>
+              <select name="sort_option" id="sort_option">
+                <option value="weighted_shuffle">{% trans "Weighted Shuffle" %}</option>
+                <option value="match_pledge_amount_1">{% trans "Round 4 - $1 Contrib Matching Amount" %}</option>
+                <option value="match_pledge_amount_10">{% trans "Round 4 - $10 Contrib Matching Amount" %}</option>
+                <option value="match_pledge_amount_100">{% trans "Round 4 - $100 Contrib Matching Amount" %}</option>
+                <option value="match_pledge_amount_1000">{% trans "Round 4 - $1k Contrib Matching Amount" %}</option>
+                <option value="-clr_prediction_curve__0__1">{% trans "Round 4 - CLR Match Estimate: Highest" %}</option>
+                <option value="clr_prediction_curve__0__1">{% trans "Round 4 - CLR Match Estimate: Lowest" %}</option>
+                <option value="-clr_matching">{% trans "Rounds 1 & 2 - Total CLR Match: Highest" %}</option>
+                <option value="clr_matching">{% trans "Rounds 1 & 2 - Total CLR Match: Lowest" %}</option>
+                <option value="-created_on">{% trans "Created: Recent" %}</option>
+                <option value="created_on">{% trans "Created: Oldest" %}</option>
+                <option value="-amount_goal">{% trans "Goal: Highest" %}</option>
+                <option value="amount_goal">{% trans "Goal: Lowest" %}</option>
+                <option value="-amount_received">{% trans "Amount Raised: Highest" %}</option>
+                <option value="amount_received">{% trans "Amount Raised: Lowest" %}</option>
+                <option value="-contribution_count">{% trans "Most Contributions" %}</option>
+                <option value="-contributor_count">{% trans "Most Contributors" %}</option>
+              </select>
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+    </div>

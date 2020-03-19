@@ -182,6 +182,18 @@
           </a>
         {% elif row.activity_type == 'status_update' or  row.activity_type == 'silent_status_update' %}
           <span>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</span>
+
+          {% if row.metadata.video and row.metadata.gfx != 'undefined' %}
+          <div id=meet{{row.pk}} class="click_here_to_join_video" data-roomname="meet{{row.pk}}" data-src='/static/v2/images/{{row.metadata.gfx}}'><img src='/static/v2/images/{{row.metadata.gfx}}'></div>
+          
+          <p class='num_participants m-0 p-0' data-roomname="+roomName+">
+            <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{%endif%}'>
+              •
+            </p>
+            <span class="participants_count">{{row.video_participants_count}}</span> users on call
+          </p>
+          {% endif %}
+
         {% elif row.activity_type == 'wall_post' %}
           &gt;
         {% if row.grant %}

@@ -99,11 +99,11 @@ def grants(request):
     sort = request.GET.get('sort_option', 'weighted_shuffle')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
-    grant_type = request.GET.get('type', 'tech')
+    grant_type = request.GET.get('type', 'activity')
     state = request.GET.get('state', 'active')
     category = request.GET.get('category')
     _grants = None
-
+    bg = int(request.GET.get('i', timezone.now().strftime("%j"))) % 5
     show_past_clr = False
 
     sort_by_index = None
@@ -188,6 +188,8 @@ def grants(request):
         'card_player_stream_override': static('v2/card/grants.mp4'),
         'card_player_thumb_override': static('v2/card/grants.png'),
         'grants': grants,
+        'target': f'/activity?what=all_grants',
+        'bg': bg,
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
