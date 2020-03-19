@@ -6,13 +6,16 @@
       id="textarea"
       class="form__input p-2 font-body"
       placeholder="{% if placeholder %}{{placeholder}}{%else%}What are you thinking?{%endif%}"
-      style="resize: none"
+      style="resize: none; height: 7em;"
       data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
     ></textarea>
     <input type="hidden" name="what" value="{{what}}:{{whatid}}">
     <div id="textarea-dropdown" class="dropdown-menu" style="top: initial; left: initial;"></div>
+    <button id="background-button" class="btn btn-clean position-absolute" style="bottom: 3.8em; right: 0em;"><i class="fas fa-image"></i></i></button>
     <button id="poll-button" class="btn btn-clean position-absolute" style="bottom: 2em; right: 0em;"><i class="fas fa-chart-bar"></i></i></button>
-    <button id="emoji-button" class="btn btn-clean position-absolute" style="bottom: 0.2em; right: 0;"><i class="far fa-smile"></i></button>
+    <button id="emoji-button" class="btn btn-clean position-absolute" style="bottom: 0.2em; right: 0em;"><i class="far fa-smile"></i></button>
+  </div>
+  <div class="hide" id="bg-selector">
   </div>
   <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
     {% if tags %}
