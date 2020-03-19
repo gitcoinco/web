@@ -23,6 +23,7 @@ tags = [
     ['#announce','bullhorn','search-announce'],
     ['#mentor','terminal','search-mentor'],
     ['#jobs','code','search-jobs'],
+    ['#bounty','hand-holding-usd','search-bounty'],
     ['#help','laptop-code','search-help'],
     ['#meme','images','search-meme'],
     ['#music','music','search-music'],
