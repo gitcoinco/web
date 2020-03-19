@@ -131,6 +131,16 @@ def render_bounty_idea_notification(bounty, interested):
     subject = _("Bounty idea notification")
     return response_html, response_txt, subject
 
+def render_tribes_sales_funnel(to_email):
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'hide_preferred_payout': True,
+        'email_style': 26
+    }
+    response_html = premailer_transform(render_to_string("emails/tribes/sales_funnel.html", params))
+    response_txt = render_to_string("emails/tribes/sales_funnel.txt", params)
+
+    return response_html, response_txt
 
 def render_new_supporter_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
@@ -240,6 +250,7 @@ def new_grant(request):
     grant = Grant.objects.first()
     response_html, __, __ = render_new_grant_email(grant)
     return HttpResponse(response_html)
+
 @staff_member_required
 def bounty_idea_notification(request):
     from dashboard.models import Bounty, Interest
@@ -1114,8 +1125,6 @@ def render_new_bounty_roundup(to_email):
 
     return response_html, response_txt, subject, args.from_email, args.from_name
 
-
-
 # DJANGO REQUESTS
 
 
@@ -1397,6 +1406,10 @@ def gdpr_reconsent(request):
     response_html, _ = render_gdpr_reconsent(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
 
+@staff_member_required
+def tribes_sales_funnel(request):
+    response_html = render_tribes_sales_funnel(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
 
 @staff_member_required
 def share_bounty(request):

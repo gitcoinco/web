@@ -1,0 +1,109 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2020 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static humanize avatar_tags %}
+
+{% block content %}
+<style>
+  .primary-content {
+    padding: 0;
+    margin: 0;
+  }
+  h1 {
+    margin: 0;
+    padding-top: 2em;
+  }
+  .container {
+    padding:  2em;
+  }
+
+  .tribes-features {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    margin-bottom: 1em;
+  }
+
+  .tribes-features img {
+    width: 30%; 
+    align-self: center;
+  }
+
+  @media screen and (min-width: 35.5em) {
+    .container {
+      padding-left: 20%;
+      padding-right: 20%;
+    }
+  }
+
+  @media screen and (min-width: 48em) {
+    .container {
+      padding-left: 30%;
+      padding-right: 30%;
+    }
+  }
+
+  @media screen and (max-width: 48em) {
+    .container {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+  
+</style>
+<div class="container">
+  <h1>{% trans "Is a Tribe missing in your life?" %}</h1>
+  <p>{% trans "At Gitcoin we’re constantly flying ideas across the room and tinkering with wild contraptions. Some go live, some we bank or transform into something easier or better. What keeps our flow going, you ask?" %}</p>
+  <h3>{% trans "The Tribe" %}</h3>
+  <p><b>{% trans "Tribes are a two-way broadcast channel between core teams & the open-source community. But don’t take our word for it. Try tribe-ing yourself, for a couple of solid reasons."%}</b></p>
+  <div style="display: flex; justify-content: center; flex-direction: row; margin-bottom: 1em;">
+    <img style="width: 10%; align-self: center;" src="{% static "v2/images/emails/focused_communities.png" %}" alt="Gitcoin" title="Gitcoin Focused communities">
+    <div style="align-self: center; text-align: left; padding-left: 2em;">
+        <h3>
+          <b>Focused communities</b>
+        </h3>
+        <p>{% trans "Having a Tribe gives you community traction. It brings people in and keeps them together, for common causes and conversations. #tribeconnections" %}</p>
+      </div>
+  </div>
+  <div style="display: flex; justify-content: center; flex-direction: row; margin-bottom: 1em;">
+    <img style="width: 10%; align-self: center;" src="{% static "v2/images/emails/long-term-partnerships.png" %}" alt="Gitcoin" title="Gitcoin tribes long term partnerships">
+    <div style="align-self: center; text-align: left; padding-left: 2em;">
+        <h3>
+          <b>{% trans "Long-term partnerships" %}</b>
+        </h3>
+        <p>{% trans "Having a Tribe gives you community traction. It brings people in and keeps them together, for common causes and conversations. #tribeconnections" %}</p>
+      </div>
+  </div>
+  <div style="display: flex; justify-content: center; flex-direction: row; margin-bottom: 1em;">
+    <img style="width: 10%; align-self: center;" src="{% static "v2/images/emails/innovation-pools.png" %}" alt="Gitcoin" title="Gitcoin Innovation pools">
+    <div style="align-self: center; text-align: left; padding-left: 2em;">
+        <h3>
+          <b>{% trans "Innovation pools" %}</b>
+        </h3>
+        <p>{% trans "Having a Tribe gives you community traction. It brings people in and keeps them together, for common causes and conversations. #tribeconnections" %}</p>
+      </div>
+  </div>
+  <p>{% trans "We’ve got plenty more reasons to share with you. But nothing beats discovering them yourself, through Your Tribe." %}</p>
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="#">{% trans "Found My Tribe" %}</a>
+  </div>
+  <p>{% trans "The flow must go on!" %}</p>
+  <p>{% trans "The Gitcoiniacs" %}</p>
+  <p>{% trans "P.S. If you need some inspiration to name your tribe, take a tour of our current tribes. And if you need more reasons to start a tribe, we’ve also got you covered." %}</p>
+</div>
+{% endblock %}
