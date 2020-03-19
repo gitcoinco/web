@@ -98,9 +98,23 @@ $(document).ready(function() {
   });
   
   // Enables Dark Mode
-  $(".toggle-switch").on("click", function(event){
-  $("body").toggleClass("dark");
-  });
+  $('body').toggleClass(localStorage.toggled);
+   $('.toggle-switch').on("click",function(event) {
+  if (localStorage.toggled != 'dark') {
+    $('body').toggleClass('dark',  true)
+    localStorage.toggled = 'dark';
+  } else {
+    $('body').toggleClass('dark', false)
+    localStorage.toggled = '';
+  }
+
+});
+
+if (!$('body').hasClass('dark', true)) {
+     $('.toggle-switch').prop('checked', true)
+} else {
+     $('.toggle-switch').prop('checked', false)
+}
 
   // toggles the daily email sender
   $('body').on('change', '#receive_daily_offers_in_inbox', function(e) {
