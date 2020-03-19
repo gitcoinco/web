@@ -208,6 +208,7 @@ a .sup {
   display: inline-block;
 }
 
+.click-gif.selected,
 #poll-button.selected,
 #video-button.selected{
   color: black;
@@ -290,6 +291,9 @@ a .sup {
   border: 1px solid;
   margin-left: 25%;
 }
+.dropdown-menu.gif-inject-target.show{
+  margin-top: -185px;
+}
 
 @media (min-width: 768px) {
   .activity_feed_kudos_image{
@@ -301,6 +305,11 @@ a .sup {
   }
 }
 @media (max-width: 767.98px) {
+  .dropdown-menu.gif-inject-target.show{
+    margin-top: -150px;
+    margin-left: -300px;
+  }
+
   .activity_stream .activity-avatar{
     margin-top: 0px;
   }

@@ -21,7 +21,6 @@ $(document).ready(function() {
     const result = fetchData(endpoint);
 
     $.when(result).then(function(response) {
-      $('.pick-gif').remove();
 
       for (let i = 0; i < response.data.length; i++) {
         let item = response.data[i];
@@ -33,6 +32,12 @@ $(document).ready(function() {
       $('.pick-gif').on('click', selectGif);
     });
   }
+
+  $('.click-gif').on('click', function(e) {
+    e.preventDefault();
+    $(this).toggleClass('selected');
+    $("#status .gif-inject-target").toggleClass('show');
+  });
 
   $('#search-gif').on('input', function(e) {
     e.preventDefault();
