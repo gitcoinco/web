@@ -43,7 +43,7 @@ def fetchPost(qt='2'):
 
 def create_hidden_profiles_cache():
 
-    handles = list(Profile.objects.hidden().values_list('handle', flat=True))
+    handles = list(Profile.objects.all().hidden().values_list('handle', flat=True))
 
     view = 'hidden_profiles'
     keyword = 'hidden_profiles'
