@@ -243,12 +243,25 @@ $(document).ready(function() {
 
     // enforce a max length
     var max_len = $(this).data('maxlen');
+    var len = $(this).val().trim().length;
 
+    var update_max_len = function() {
+      if ($('#char_count').length) {
+        if (len < max_len) {
+          $('#char_count').addClass('hidden');
+        } else {
+          $('#char_count').removeClass('hidden');
+        }
+        $('#char_count').text(len + '/' + max_len);
+      }
+    };
+    
+    update_max_len();
     localStorage.setItem(lskey, $(this).val());
     if ($(this).val().trim().length > max_len) {
       $(this).addClass('red');
       $('#btn_post').attr('disabled', true);
-    } else if ($(this).val().trim().length > 4) {
+    } else if (len > 4) {
       $('#btn_post').attr('disabled', false);
       $(this).removeClass('red');
       if ($('#textarea').is(':focus') && !e.shiftKey && e.keyCode == 13) {
@@ -272,6 +285,8 @@ $(document).ready(function() {
     data.append('ask', ask);
     data.append('data', the_message);
     data.append('what', $('#status [name=what]').val());
+    data.append('tab', getParam('tab'));
+    
     message.val('');
     localStorage.setItem(lskey, '');
     data.append(

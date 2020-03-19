@@ -1,6 +1,8 @@
 import email
+import functools
 import imaplib
 import logging
+import multiprocessing.pool
 import os
 import re
 import time
@@ -200,6 +202,17 @@ def sync_profile(handle, user=None, hide_profile=True):
                 profile.handle = data['login']
                 profile.email = user.email
                 profile.save()
+
+                if profile is not None and (profile.chat_id is '' or profile.gitcoin_chat_access_token is ''):
+
+                    try:
+                        from chat.tasks import associate_chat_to_profile
+                        # created, profile = associate_chat_to_profile(profile)
+
+                    except Exception as e:
+                        logger.error(str(e))
+                        raise ValueError(e)
+
         except UserSocialAuth.DoesNotExist:
             pass
     else:
@@ -479,3 +492,22 @@ def get_profiles_from_text(text):
     username_pattern = re.compile(r'@(\S+)')
     mentioned_usernames = re.findall(username_pattern, text)
     return Profile.objects.filter(handle__in=mentioned_usernames).distinct()
+
+
+def timeout(max_timeout):
+    """Timeout decorator, parameter in seconds."""
+
+    def timeout_decorator(item):
+        """Wrap the original function."""
+
+        @functools.wraps(item)
+        def func_wrapper(*args, **kwargs):
+            """Closure for function."""
+            pool = multiprocessing.pool.ThreadPool(processes=1)
+            async_result = pool.apply_async(item, args, kwargs)
+            # raises a TimeoutError if execution exceeds max_timeout
+            return async_result.get(max_timeout)
+
+        return func_wrapper
+
+    return timeout_decorator

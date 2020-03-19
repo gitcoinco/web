@@ -126,7 +126,7 @@
         </a>
       </div>
     </div>
-
+    {% if job_listings|length %}
     <div class="container-fluid bg-light" id="job-listings">
       <div class="row pt-3 justify-content-center">
         <div class="col-lg-auto pb-4 text-center">
@@ -153,6 +153,17 @@
         {% endfor %}
       </div>
     </div>
+    {% else %}
+    <div class="container-fluid bg-light" id="job-listings">
+      <div class="row pt-3 justify-content-center">
+        <div class="col-lg-auto pb-4 text-center">
+          <h4>{% trans "Full Time Positions"%}</h4>
+          <h6>{% trans "We have no positions available right now."%}</h6>
+        </div>
+      </div>
+    </div>
+
+    {% endif %}
 
 
     {% include 'shared/footer.html' %}

@@ -29,18 +29,6 @@ class Like(SuperModel):
         return self.activity.url
 
 
-@receiver(post_save, sender=Like, dispatch_uid="post_save_like")
-def postsave_like(sender, instance, created, **kwargs):
-    from townsquare.tasks import refresh_activities
-    refresh_activities.delay([instance.activity.pk])
-
-
-@receiver(post_delete, sender=Like, dispatch_uid="post_delete_like")
-def postdel_like(sender, instance, **kwargs):
-    from townsquare.tasks import refresh_activities
-    refresh_activities.delay([instance.activity.pk])
-
-
 class Flag(SuperModel):
     """A Flag is an indication of a flagged activity feed item"""
 
@@ -94,15 +82,9 @@ class Comment(SuperModel):
 
 @receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
 def postsave_comment(sender, instance, created, **kwargs):
-    from townsquare.tasks import send_comment_email, refresh_activities
-    refresh_activities.delay([instance.activity.pk])
-    send_comment_email.delay(instance.pk)
-
-
-@receiver(post_delete, sender=Comment, dispatch_uid="post_delete_comment")
-def postdel_comment(sender, instance, **kwargs):
-    from townsquare.tasks import refresh_activities
-    refresh_activities.delay([instance.activity.pk])
+    from townsquare.tasks import send_comment_email
+    if created:
+        send_comment_email.delay(instance.pk)
 
 
 class OfferQuerySet(models.QuerySet):
@@ -110,7 +92,11 @@ class OfferQuerySet(models.QuerySet):
 
     def current(self):
         """Filter results down to current offers only."""
-        return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now(), public=True)
+        timestamp = timezone.now()
+        timestamp -= timezone.timedelta(microseconds=timestamp.microsecond)
+        timestamp -= timezone.timedelta(seconds=int(timestamp.strftime('%S')))
+        timestamp -= timezone.timedelta(minutes=int(timestamp.strftime('%M')))
+        return self.filter(valid_from__lte=timestamp, valid_to__gt=timestamp, public=True)
 
 num_backgrounds = 33
 
@@ -264,7 +250,11 @@ class MatchRound(SuperModel):
             data = get_eligible_input_data(mr)
             total_pot = mr.amount
             print(mr, f"{len(data)} earnings to process")
-            results = clr.run_calc(data, total_pot)
+            results = []
+            try:
+                results = clr.run_calc(data, total_pot)
+            except ZeroDivisionError:
+                print('ZeroDivisionError; probably theres just not enough contribtuions in round')
             for result in results:
                 try:
                     profile = Profile.objects.get(pk=result['id'])

@@ -28,10 +28,10 @@
 
     <div class="my-5">
       <h5 class="font-weight-bold">
-        Core Team <span class="badge badge-pill badge--bluelight">{{profile.team.count}}</span>
+        Core Team <span class="badge badge-pill badge--bluelight">{{team.count}}</span>
       </h5>
       <div class="tribe-members pt-4 mt-4">
-        {% for member in profile.team %}
+        {% for member in team %}
           <div class="card border-0 card-shadow">
             <div class="bg-lightblue text-center">
               <img height="80" width="80" class="rounded-circle mt-n4 mx-auto mb-2 d-block" src="{% avatar_url member.handle %}" />
