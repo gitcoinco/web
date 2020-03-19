@@ -8,6 +8,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 
 import metadata_parser
+from app.redis_service import RedisService
 from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
@@ -612,6 +613,25 @@ def offer_new(request):
         'nav': 'home',
     }
     return TemplateResponse(request, 'townsquare/new.html', context)
+
+
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def video_presence(request):
+    """Sets user presence on mattermost."""
+    if not request.user.is_authenticated:
+        return Http404
+
+    roomname = request.POST.get('roomname', '').replace('meet', '')
+    participants = request.POST.get('participants', '')
+    activity = Activity.objects.filter(pk=roomname).first()
+    set_status = activity and int(participants) >= 0
+
+    # if so, make it so
+    if set_status:
+        redis = RedisService().redis
+        seconds = 100 if not settings.DEBUG else 9999999
+        redis.setex(roomname, seconds, participants)
+    return JsonResponse({'status': 'OK'})
 
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)

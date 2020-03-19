@@ -17,6 +17,86 @@ $(document).ready(function() {
     });
   }
 
+  var get_jitsi_api_object = function(roomName) {
+    var jitsi_domain = 'meet.jit.si';
+    var jitsi_options = {
+      roomName: roomName,
+      parentNode: document.querySelector('#' + roomName),
+      welcomePageEnabled: true
+    };
+    var jitsi_api = new JitsiMeetExternalAPI(jitsi_domain, jitsi_options);
+
+    return jitsi_api;
+  };
+
+  // join video call
+  $(document).on('click', '.click_here_to_join_video', function(e) {
+    e.preventDefault();
+    if (typeof document.jitsi_api != 'undefined') {
+      _alert('You can only be in one video call at a time.', 'error', 1000);
+      return;
+    }
+    const animals = [ 'Hamster', 'Marmot', 'Robot', 'Ferret', 'Squirrel' ];
+    const animal = animals[Math.floor(Math.random() * animals.length)];
+    const safeHandle = document.contxt.github_handle ? document.contxt.github_handle : animal;
+
+    $(this).addClass('live');
+    $(this).text('');
+    const roomName = $(this).data('roomname');
+    const api = get_jitsi_api_object(roomName);
+    const avatarURL = 'https://gitcoin.co/dynamic/avatar/' + safeHandle;
+
+    document.jitsi_api = api;
+    api.executeCommand('displayName', safeHandle + parseInt(100 * Math.random()));
+    api.executeCommand('avatarUrl', avatarURL);
+    api.executeCommand('toggleAudio'); // default off
+    api.executeCommand('toggleVideo'); // default off
+    const participants_count = api.getNumberOfParticipants() + 1;
+    const $target = $(this).parents('.activity_detail_content');
+
+    $target.prepend("<a href=# class='float-right leave_video_call'>Leave Video Call</a>");
+  });
+
+  // refresh job for live call
+  setInterval(function() {
+    $('.click_here_to_join_video.live').each(function() {
+      const pc = document.jitsi_api.getNumberOfParticipants();
+      const roomName = $(this).data('roomname');
+      const $parent = $(this).parents('.activity_detail');
+
+      $parent.find('.participants_count').text(pc);
+      if ($parent.find('.indie_chat_indicator').hasClass('offline')) {
+        $parent.find('.indie_chat_indicator').removeClass('offline');
+      }
+      if (!document.contxt.github_handle) {
+        return;
+      }
+      const url = '/api/v0.1/video/presence';
+      const params = {
+        'participants': pc,
+        'roomname': roomName,
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+      };
+
+      $.post(url, params, function(response) {
+        $.noop;
+      });
+    });
+  }, 5000);
+
+  // leave video call
+  $(document).on('click', '.leave_video_call', function(e) {
+    e.preventDefault();
+    document.jitsi_api.dispose();
+    var $taret = $(this).parents('.row').find('.click_here_to_join_video');
+    var url = $taret.data('src');
+    var html = "<img src='" + url + "'>";
+
+    document.jitsi_api = undefined;
+    $taret.removeClass('live').html(html);
+    $(this).remove();
+  });
+
   $(document).on('click', '.infinite-more-link', function(e) {
     if ($(this).hasClass('hidden')) {
       e.preventDefault();

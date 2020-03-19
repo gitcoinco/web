@@ -2173,6 +2173,21 @@ class Activity(SuperModel):
         return self.url
 
     @property
+    def video_participants_count(self):
+        if not self.metadata.get('video'):
+            return 0
+        try:
+            from app.redis_service import RedisService
+            redis = RedisService().redis
+            result = redis.get(self.pk)
+            if not result:
+                return 0
+            return int(result.decode('utf-8'))
+        except KeyError:
+            return 0
+
+
+    @property
     def action_url(self):
         if self.bounty:
             return self.bounty.url
