@@ -36,7 +36,7 @@ $(document).ready(function() {
   $('.click-gif').on('click', function(e) {
     e.preventDefault();
     $(this).toggleClass('selected');
-    $("#status .gif-inject-target").toggleClass('show');
+    $('#status .gif-inject-target').toggleClass('show');
   });
 
   $('#search-gif').on('input', function(e) {
@@ -311,8 +311,10 @@ $(document).ready(function() {
     data.append('data', the_message);
     data.append('what', $('#status [name=what]').val());
     data.append('tab', getParam('tab'));
-    data.append('has_video', $('#video_container').length);
-    data.append('video_gfx', $('#video_container').data('gfx'));
+    if ($('#video_container').length) {
+      data.append('has_video', $('#video_container').length);
+      data.append('video_gfx', $('#video_container').data('gfx'));
+    }
     
     message.val('');
     localStorage.setItem(lskey, '');
