@@ -4086,16 +4086,16 @@ def hackathon_registration(request):
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
-    try:
-        events = HackathonEvent.objects.values().order_by('-created_on')
-    except HackathonEvent.DoesNotExist:
-        raise Http404
-
+    events = {
+        'current': HackathonEvent.objects.current().order_by('-start_date'),
+        'upcoming': HackathonEvent.objects.upcoming().order_by('-start_date'),
+        'finished': HackathonEvent.objects.finished().order_by('-start_date'),
+    }
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',
-        'card_desc': "Gitcoin is one of the largers administrators of Virtual Hackathons in the decentralizion space.",
-        'hackathons': events,
+        'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
+        'events': events,
     }
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
 

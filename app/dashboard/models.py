@@ -1718,6 +1718,7 @@ class Tip(SendCryptoAsset):
 
             if 'comment:' in instance.comments_priv:
                 _comment=instance.attached_object
+                _comment.save()
                 comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
                 comment = Comment.objects.create(profile=instance.sender_profile, activity=_comment.activity, comment=comment)
 
@@ -2171,6 +2172,21 @@ class Activity(SuperModel):
 
     def get_absolute_url(self):
         return self.url
+
+    @property
+    def video_participants_count(self):
+        if not self.metadata.get('video'):
+            return 0
+        try:
+            from app.redis_service import RedisService
+            redis = RedisService().redis
+            result = redis.get(self.pk)
+            if not result:
+                return 0
+            return int(result.decode('utf-8'))
+        except KeyError:
+            return 0
+
 
     @property
     def action_url(self):
@@ -2640,7 +2656,12 @@ class Profile(SuperModel):
         tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
         tips = [tip.comments_priv.split(':')[1] for tip in tips]
         tips = [ele for ele in tips if ele.isnumeric()]
-        activities = Activity.objects.filter(Q(pk__in=self.likes.all()) | Q(pk__in=self.comments.all()) | Q(pk__in=tips))
+        activities = Activity.objects.filter(
+         Q(pk__in=self.likes.values_list('activity__pk', flat=True))
+         | Q(pk__in=self.comments.values_list('activity__pk', flat=True))
+         | Q(pk__in=tips)
+         | Q(profile=self)
+         | Q(other_profile=self))
         return activities
 
     @property
@@ -4450,6 +4471,22 @@ class Sponsor(SuperModel):
         return self.name
 
 
+class HackathonEventQuerySet(models.QuerySet):
+    """Handle the manager queryset for HackathonEvents."""
+
+    def current(self):
+        """Filter results down to current events only."""
+        return self.filter(start_date__lt=timezone.now(), end_date__gt=timezone.now())
+
+    def upcoming(self):
+        """Filter results down to upcoming events only."""
+        return self.filter(start_date__gt=timezone.now())
+
+    def finished(self):
+        """Filter results down to upcoming events only."""
+        return self.filter(end_date__lt=timezone.now())
+
+
 class HackathonEvent(SuperModel):
     """Defines the HackathonEvent model."""
 
@@ -4467,6 +4504,9 @@ class HackathonEvent(SuperModel):
     description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
+
+    objects = HackathonEventQuerySet.as_manager()
+
     def __str__(self):
         """String representation for HackathonEvent.
 

@@ -7,6 +7,9 @@
 .navbar {
   background-color: #0d023b;
 }
+.infinite-more-link{
+  display: none;
+}
 
 .mega-founder {
   height: 150px;
