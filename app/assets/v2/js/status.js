@@ -61,7 +61,6 @@ $(document).ready(function() {
     const result = fetchData(endpoint);
 
     $.when(result).then(function(response) {
-      $('.pick-gif').remove();
 
       for (let i = 0; i < response.data.length; i++) {
         let item = response.data[i];
@@ -73,6 +72,12 @@ $(document).ready(function() {
       $('.pick-gif').on('click', selectGif);
     });
   }
+
+  $('.click-gif').on('click', function(e) {
+    e.preventDefault();
+    $(this).toggleClass('selected');
+    $('#status .gif-inject-target').toggleClass('show');
+  });
 
   $('#search-gif').on('input', function(e) {
     e.preventDefault();
@@ -315,12 +320,38 @@ $(document).ready(function() {
     }
 
   });
-  $('body').on('keydown', '#textarea', function(e) {
-    if (e.keyCode == 16) {
-      document.is_shift = true;
-    }
-  });
 
+  // handle video button
+  $('body').on('click', '#video-button', function(e) {
+    e.preventDefault();
+    $(this).toggleClass('selected');
+    var is_selected = $(this).hasClass('selected');
+
+    if (is_selected) {
+      const items = [ 'video1.gif', 'video2.gif', 'video3.png' ];
+      const item = $(this).data('gfx') ? $(this).data('gfx') : items[Math.floor(Math.random() * items.length)];
+
+      let html = `
+      <div data-gfx=` + item + ` id=video_container class="bg-lightblue p-2">
+        <img src='/static/v2/images/` + item + `'>
+      </div>
+      `;
+
+      $(html).insertAfter('#status');
+    } else {
+      $('#video_container').remove();
+    }
+
+
+    document.is_shift = false;
+    // handle shift button
+    $('body').on('keyup', '#textarea', function(e) {
+      if (e.keyCode == 16) {
+        document.is_shift = false;
+      }
+    });
+
+  });
   $('body').on('focus change paste keydown keyup blur', '#textarea', function(e) {
 
     // enforce a max length
@@ -337,7 +368,7 @@ $(document).ready(function() {
         $('#char_count').text(len + '/' + max_len);
       }
     };
-    
+
     update_max_len();
     localStorage.setItem(lskey, $(this).val());
     if ($(this).val().trim().length > max_len) {
@@ -369,6 +400,10 @@ $(document).ready(function() {
     data.append('data', the_message);
     data.append('what', $('#status [name=what]').val());
     data.append('tab', getParam('tab'));
+    if ($('#video_container').length) {
+      data.append('has_video', $('#video_container').length);
+      data.append('video_gfx', $('#video_container').data('gfx'));
+    }
 
     message.val('');
     localStorage.setItem(lskey, '');
@@ -429,6 +464,7 @@ $(document).ready(function() {
       }
     }
     $('#poll_container').remove();
+    $('#video_container').remove();
 
     fetch('/api/v0.1/activity', {
       method: 'post',

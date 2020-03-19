@@ -343,6 +343,22 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/orc_gitcoin.svg',
         },
+        'curly': {
+            'preview_viewbox': {
+                'back': '0 0 350 350',
+                'skin': '0 0 250 250',
+                'accessory': '220 200 100 100',
+                'mouth': '90 150 100 100',
+                'eyes': '140 140 50 50',
+                'clothes': '0 150 250 250',
+                'hair': '50 50 250 250',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/curly.svg',
+        },
         'walle': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
