@@ -74,7 +74,7 @@ class Comment(SuperModel):
     @property
     def get_tip_count_eth(self):
         from dashboard.models import Tip
-        network = 'mainnet' if settings.DEBUG else 'mainnet'
+        network = 'rinkeby' if settings.DEBUG else 'mainnet'
         tips = Tip.objects.filter(comments_priv=f"comment:{self.pk}", network=network)
         return sum([tip.value_in_eth for tip in tips])
 
