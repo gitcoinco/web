@@ -134,6 +134,12 @@
           </a>
         {% elif row.activity_type == 'joined' %}
           {% trans "joined Gitcoin" %}
+        {% elif row.activity_type == 'hackathon_registration' %}
+          {% trans "registered for " %}
+          <a href="/{{row.hackathonevent.relative_url}}">
+            {{row.hackathonevent.name}}
+          </a>
+
         {% elif row.activity_type == 'update_grant' %}
           {% trans "updated" %}
           <a href="{{ row.metadata.grant_url }}" >

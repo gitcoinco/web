@@ -36,10 +36,12 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        return
         # connect to API
         d = get_driver()
         teams = d.teams.get_teams()
+
+        # connect to redis
+        redis = RedisService().redis
 
         # outer vars
         all_usernames = []
@@ -87,7 +89,6 @@ class Command(BaseCommand):
                 all_user_statuses[username] = (status, timestamp, user['id'])
 
             # look for manual statuses set by /api/v0.1/chat route and clean them up if needed
-            redis = RedisService().redis
             for ele in all_response:
 
                 user_id = ele['user_id']
@@ -114,8 +115,15 @@ class Command(BaseCommand):
                     new_status = 'offline' 
                     d.client.put(f'/users/{user_id}/status', {'user_id': user_id, 'status': new_status})
                     redis.set(user_id, 0)
-        # update all usernames
-        profiles = Profile.objects.filter(handle__in=all_usernames)
+        
+        # update all chat ids not in DB
+        profiles = Profile.objects.filter(handle__in=all_usernames, chat_id='')
         for profile in profiles:
-            profile.last_chat_status, profile.last_chat_seen, profile.chat_id = all_user_statuses[profile.handle]
-        bulk_update(profiles, update_fields=['last_chat_seen', 'last_chat_status', 'chat_id'])  
+            _, _, profile.chat_id = all_user_statuses[profile.handle]
+        bulk_update(profiles, update_fields=['chat_id'])  
+
+        # update all chat info that is in redis
+        # all_user_statuses[username] = (status, timestamp, user['id'])
+        for username, ele in all_user_statuses.items():
+            key = f"chat:{ele[2]}"
+            redis.set(key, ele[0])

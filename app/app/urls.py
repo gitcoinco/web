@@ -171,6 +171,7 @@ urlpatterns = [
     # grant views
     path('grants/', include('grants.urls', namespace='grants')),
     re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall')),
+    re_path(r'^grant/?', include('grants.urls', namespace='grants_catchall')),
 
     # dashboard views
     re_path(r'^onboard/(?P<flow>\w+)/?$', dashboard.views.onboard, name='onboard'),
@@ -382,6 +383,7 @@ urlpatterns = [
 
     # brochureware views
     re_path(r'^home/?$', retail.views.index, name='home'),
+    re_path(r'^landing/?$', retail.views.index, name='landing'),
     re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
     re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),

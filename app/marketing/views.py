@@ -108,7 +108,7 @@ def settings_helper_get_auth(request, key=None):
     es = EmailSubscriber.objects.none()
 
     # find the user info
-    if not key:
+    if key is None or not EmailSubscriber.objects.filter(priv=key).exists():
         email = request.user.email if request.user.is_authenticated else None
         if not email:
             github_handle = request.user.username if request.user.is_authenticated else None
@@ -139,6 +139,7 @@ def settings_helper_get_auth(request, key=None):
             es = EmailSubscriber.objects.create(
                 email=request.user.email,
                 source='settings_page',
+                profile=request.user.profile,
             )
             es.set_priv()
             es.save()
