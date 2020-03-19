@@ -11,34 +11,35 @@ $(document).ready(function() {
 
   // populates background selector on load
   let bgs = [
-  	"cannon-green-blue", 
-  	"h2-v2", 
-  	"burst-yellow", 
-  	"burst-pink", 
-  	"burst-blue", 
-  	"eletric_design", 
-  	"dvdptr-blue-green", 
-  	"cannon-yellow-pink", 
-  	"network-yellow", 
-  	"h4", 
-  	"network-blue", 
-  	"network-pink", 
-  	"h2", 
-  	"cannon-blue-yellow", 
-  	"dvdptr-blue-yellow"
-  	];
-  
+    'cannon-green-blue',
+    'h2-v2',
+    'burst-yellow',
+    'burst-pink',
+    'burst-blue',
+    'eletric_design',
+    'dvdptr-blue-green',
+    'cannon-yellow-pink',
+    'network-yellow',
+    'h4',
+    'network-blue',
+    'network-pink',
+    'h2',
+    'cannon-blue-yellow',
+    'dvdptr-blue-yellow'
+  ];
+
   let selector = $('#bg-selector');
+
   for (var i = 0; i < bgs.length; i++) {
-  	selector.append(`<div data-bg-name="` + bgs[i] + `" class="bg-thumbnail"><img class="bg-icon" draggable="false" src="/static/status_backgrounds/` + bgs[i] + `-icon.png"/><div class="selector-bar hide"></div></div>`);
+    selector.append('<div data-bg-name="' + bgs[i] + '" class="bg-thumbnail"><img class="bg-icon" draggable="false" src="/static/status_backgrounds/' + bgs[i] + '-icon.png"/><div class="selector-bar hide"></div></div>');
   }
 
   function closeBackgroundDropdown(e) {
-  	e.preventDefault();
-  	$('#bg-selector').attr("data-selected", null);
-  	$('#bg-selector').addClass("hide");
- 	embedded_resource = '';
- 	$('#bg-selector').children('div').children('div').addClass('hide');
+    e.preventDefault();
+    $('#bg-selector').attr('data-selected', null);
+    $('#bg-selector').addClass('hide');
+    embedded_resource = '';
+    $('#bg-selector').children('div').children('div').addClass('hide');
   }
 
   function selectGif(e) {
@@ -49,7 +50,7 @@ $(document).ready(function() {
   }
 
   function deselectGif(e) {
-  	embedded_resource = '';
+    embedded_resource = '';
     $('#preview-img').attr('src', '');
     $('#preview').hide();
     $('#thumbnail').hide();
@@ -179,9 +180,9 @@ $(document).ready(function() {
     } else {
       $('#thumbnail-desc').text('');
       if (no_lb) {
-      	if (embedded_resource != $('#bg-selector').attr("data-selected")) {
-        	embedded_resource = '';
-    	}
+        if (embedded_resource != $('#bg-selector').attr('data-selected')) {
+          embedded_resource = '';
+        }
         $('#thumbnail').hide();
       }
     }
@@ -245,39 +246,40 @@ $(document).ready(function() {
   }
 
   $('#btn_gif').click(function(e) {
-  	e.preventDefault();
-  	closeBackgroundDropdown(e);
-  	deselectGif(e);
+    e.preventDefault();
+    closeBackgroundDropdown(e);
+    deselectGif(e);
 
-  	$('#poll-button').removeClass('selected');
-  	$('#poll_container').remove();
+    $('#poll-button').removeClass('selected');
+    $('#poll_container').remove();
   });
 
   var selectedElement = null;
   // handle background selection
+
   $('.bg-thumbnail').click(function(e) {
-  	e.preventDefault();
+    e.preventDefault();
 
-	$('#bg-selector').children('div').children('div').addClass('hide');
-  	$(this).children('div').removeClass('hide');
+    $('#bg-selector').children('div').children('div').addClass('hide');
+    $(this).children('div').removeClass('hide');
 
-  	selectedElement = $(this);
-  	$('#bg-selector').attr("data-selected", $(this).attr('data-bg-name'));
-  	embedded_resource = $(this).attr('data-bg-name');
+    selectedElement = $(this);
+    $('#bg-selector').attr('data-selected', $(this).attr('data-bg-name'));
+    embedded_resource = $(this).attr('data-bg-name');
   });
 
   // handle add background button push
   $('body').on('click', '#background-button', function(e) {
-  	e.preventDefault();
-  	$('#bg-selector').toggleClass('hide');
-  	if ($('#bg-selector').hasClass('hide')) {
- 		closeBackgroundDropdown(e);
-  	}
+    e.preventDefault();
+    $('#bg-selector').toggleClass('hide');
+    if ($('#bg-selector').hasClass('hide')) {
+      closeBackgroundDropdown(e);
+    }
 
-  	$('#poll-button').removeClass('selected');
-  	$('#poll_container').remove();
+    $('#poll-button').removeClass('selected');
+    $('#poll_container').remove();
 
-  	deselectGif(e);
+    deselectGif(e);
   });
 
 
@@ -298,13 +300,13 @@ $(document).ready(function() {
 
     if (is_selected) {
       let html = `
-      <div id=poll_container class="bg-lightblue p-2">
-      <input name=option1 placeholder="Option 1" class="form-control form-control-sm my-2">
-      <input name=option2 placeholder="Option 2" class="form-control form-control-sm my-2">
-      <input name=option3 placeholder="Option 3" class="form-control form-control-sm my-2">
-      <input name=option4 placeholder="Option 4" class="form-control form-control-sm my-2">
-      </div>
-      `;
+        <div id=poll_container class="bg-lightblue p-2">
+        <input name=option1 placeholder="Option 1" class="form-control form-control-sm my-2">
+        <input name=option2 placeholder="Option 2" class="form-control form-control-sm my-2">
+        <input name=option3 placeholder="Option 3" class="form-control form-control-sm my-2">
+        <input name=option4 placeholder="Option 4" class="form-control form-control-sm my-2">
+        </div>
+        `;
 
       $(html).insertAfter('#status');
       $('#poll_container input[name=option1]').focus();
@@ -354,7 +356,7 @@ $(document).ready(function() {
     data.append('data', the_message);
     data.append('what', $('#status [name=what]').val());
     data.append('tab', getParam('tab'));
-    
+
     message.val('');
     localStorage.setItem(lskey, '');
     data.append(
@@ -368,7 +370,7 @@ $(document).ready(function() {
       const description = $('#thumbnail-desc').text();
       const image = $('#thumbnail-img').attr('src');
       const youtube = embedded_resource.match(youtube_re);
-      const background = $('#bg-selector').attr("data-selected");
+      const background = $('#bg-selector').attr('data-selected');
 
       if (embedded_resource.match(giphy_re)) {
         data.append('resource', 'gif');
@@ -382,7 +384,7 @@ $(document).ready(function() {
         data.append('description', description);
         data.append('image', image);
       } else if (background != null) {
-      	data.append('resource', 'background');
+        data.append('resource', 'background');
         data.append('resourceProvider', 'gitcoin');
         data.append('resourceId', background);
       } else {
@@ -394,9 +396,9 @@ $(document).ready(function() {
         data.append('image', image);
       }
     }
-    $('#bg-selector').attr("data-selected", null);
-  	$('#bg-selector').addClass("hide");
- 	$('#bg-selector').children('div').children('div').addClass('hide');
+    $('#bg-selector').attr('data-selected', null);
+    $('#bg-selector').addClass('hide');
+    $('#bg-selector').children('div').children('div').addClass('hide');
     var fail_callback = function() {
       message.val(the_message);
       localStorage.setItem(lskey, the_message);
