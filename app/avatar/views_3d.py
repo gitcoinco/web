@@ -514,7 +514,7 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'hair_tones': [],
             'tone_maps': [],
-            'path': 'assets/v2/images/avatar3d/terminator-3.svg',
+            'path': 'assets/v2/images/avatar3d/terminator-4.svg',
         },
         'barbarian': {
             'preview_viewbox': {
