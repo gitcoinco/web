@@ -16,7 +16,6 @@
 
 '''
 
-import math
 import random
 import time
 
@@ -173,7 +172,6 @@ class Command(BaseCommand):
                 # print(f"owocki pagerank: {round(pagerank['owocki'])}, avg {round(pagerank['owocki']/i)}")
 
             max_pagerank = max([val for key, val in pagerank.items()])
-            bucket_size = max_pagerank / 100
 
             for key in pagerank.keys():
                 pagerank[key] = get_exponent(pagerank[key]/num_traversals_of_graph)

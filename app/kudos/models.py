@@ -269,7 +269,6 @@ class Token(SuperModel):
             array: array of handles
 
         """
-        from dashboard.models import Profile
         related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(recipient_profile__isnull=True)
         related_kudos_transfers = related_kudos_transfers.send_success() | related_kudos_transfers.send_pending()
         related_kudos_transfers = related_kudos_transfers.distinct('id')
@@ -648,7 +647,6 @@ class TokenRequest(SuperModel):
             'description': self.description,
             'priceFinney': self.priceFinney,
             'artist': self.artist,
-            'platform': self.name,
             'platform': self.platform,
             'numClonesAllowed': self.numClonesAllowed,
             'tags': self.tags,

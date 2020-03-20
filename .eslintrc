@@ -162,7 +162,7 @@
       }
     ],
     "quotes": [
-      "error",
+      2,
       "single", {
         "avoidEscape": true
       }

@@ -1,5 +1,4 @@
 import copy
-import json
 import time
 
 import pandas as pd
@@ -138,7 +137,7 @@ def aggregate_contributions_live(grant_contributions, grant_id=86.0, live_user=9
     Helper function that runs the pairwise clr formula while "binary" searching for the correct threshold.
 
     Args:
-    
+
         aggregated_contributions: {grant_id (str): {user_id (str): aggregated_amount (float)}}
         pair_totals: {user_id (str): {user_id (str): pair_total (float)}}
         threshold: pairwise coefficient
@@ -169,8 +168,8 @@ def calculate_new_clr(aggregated_contributions, pair_totals, threshold=25.0, tot
         result['clr_amount'] = result['clr_amount'] / normalization_factor
     # # check total = pot
     # print(f'total pot check = {sum([x["clr_amount"] for x in totals])}')
-    
-    return totals 
+
+    return totals
 
 
 
@@ -182,7 +181,7 @@ def calculate_new_clr(aggregated_contributions, pair_totals, threshold=25.0, tot
 #         set variables:
 #         lower_bound: set at 0.0
 #         total_pot: set at 100000.0
-        
+
 #         from the helper function aggregate_contributions:
 #         aggregated_contributions: {grant_id (str): {user_id (str): aggregated_amount (float)}}
 #         pair_totals: {user_id (str): {user_id (str): pair_total (float)}}
@@ -191,7 +190,7 @@ def calculate_new_clr(aggregated_contributions, pair_totals, threshold=25.0, tot
 #         bigtot: should equal total pot
 #         totals:
 # '''
-# def calculate_clr(aggregated_contributions, pair_totals, lower_bound=0.0, total_pot=125000.0):   
+# def calculate_clr(aggregated_contributions, pair_totals, lower_bound=0.0, total_pot=125000.0):
 #     lower = lower_bound
 #     upper = total_pot
 #     iterations = 0
@@ -228,7 +227,7 @@ def calculate_new_clr(aggregated_contributions, pair_totals, threshold=25.0, tot
 #             lower = threshold
 #         elif bigtot > total_pot:
 #             upper = threshold
-#     return bigtot, totals 
+#     return bigtot, totals
 
 
 
@@ -237,7 +236,7 @@ def calculate_new_clr(aggregated_contributions, pair_totals, threshold=25.0, tot
 
     Args: none
 
-    Returns: tech grants clr award amounts 
+    Returns: tech grants clr award amounts
 '''
 def run_calc(data, total_pot=125000):
     start_time = time.time()
@@ -252,7 +251,7 @@ def run_calc(data, total_pot=125000):
 
     Args: live grant being donated to, live user doing the donation
 
-    Returns: live donation incremental clr award amounts 
+    Returns: live donation incremental clr award amounts
 '''
 def run_live_calc(data, grant_id=86.0, live_user=99999999.0, total_pot=125000):
     start_time = time.time()

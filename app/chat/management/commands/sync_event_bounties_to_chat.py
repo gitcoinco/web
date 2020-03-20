@@ -24,7 +24,7 @@ from django.utils.text import slugify
 
 from celery import group
 from chat.tasks import add_to_channel, create_channel, create_user, get_driver
-from chat.utils import create_channel_if_not_exists, create_user_if_not_exists
+from chat.utils import create_user_if_not_exists
 from dashboard.models import Bounty, Interest, Profile
 
 logger = logging.getLogger(__name__)
@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
                     if funder_profile:
                         if funder_profile.chat_id:
-                            created, funder_profile_request = create_user_if_not_exists(funder_profile)
+                            funder_profile_request = create_user_if_not_exists(funder_profile)
                             funder_profile.chat_id = funder_profile_request['id']
                             funder_profile.save()
                         profiles_to_connect.append(funder_profile.chat_id)

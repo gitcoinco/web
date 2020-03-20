@@ -58,7 +58,6 @@ class OfferAdmin(admin.ModelAdmin):
         return format_html(html)
 
     def schedule_preview(self, instance, size=400):
-        import pytz
         html = "<table style='max-width:700px; overflow-x: scroll;'>"
         for _type in ['monthly', 'weekly', 'daily', 'secret', 'random', 'top']:
             days = 1

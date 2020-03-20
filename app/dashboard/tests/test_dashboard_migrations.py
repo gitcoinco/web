@@ -204,7 +204,7 @@ def cancelled_subscription_with_activity(cancelled_subscription, profile):
     activity = Activity(**kwargs)
     activity.save(update=False)
     return cancelled_subscription
-    
+
 def test_new_grant(new_grant):
     activities = Activity.objects.filter(grant = new_grant)
     assert len(activities) == 0

@@ -7,7 +7,7 @@ import time
 
 from django.conf import settings
 from django.contrib import messages
-from django.db.models import Count, Q
+from django.db.models import Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
@@ -20,7 +20,7 @@ from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
 from marketing.mails import new_quest_request, send_user_feedback
 from marketing.models import EmailSubscriber
 from quests.helpers import (
-    get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity,
+    get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper,
 )
 from quests.models import Quest, QuestAttempt, QuestPointAward
 from quests.quest_types.example import details as example

@@ -20,7 +20,7 @@
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 
-''''
+'''
 Context Parameters For the ETHEREAL VIRTUAL HACKATHON static landing page
 '''
 eth_hack = {
@@ -238,7 +238,7 @@ beyond_blocks_2019 = {
         },
         {
             'title'         : _('Fund a Prize Bounty'),
-            'bg'            : 'hk-black-bg', 
+            'bg'            : 'hk-black-bg',
             'font-bg-color' : 'hk-white-f',
             'subtitle'      : _('Have an epic challenge you want to see the community tackle? <br> <a target="_blank" href="https://docs.google.com/presentation/d/1gktma0VzSmzLGKFLJ7xVEbkXHjHfroP2Rk9vrYUIv_k/edit#slide=id.g5b466f0de5_1_6">Learn More</a>'),
             'img'           :  static('v2/images/hackathon/bot.svg')
