@@ -759,7 +759,7 @@ def grant_fund(request, grant_id, grant_slug):
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
-    fund_reward = BulkTransferCoupon.objects.filter(token__id__in=kudos_reward_pks).order_by('?').first()
+    fund_reward = BulkTransferCoupon.objects.filter(token__id__in=kudos_reward_pks, token__owner_address__iexact='0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F').order_by('?').first()
     if can_phantom_fund:
         active_tab = 'phantom'
     if can_phantom_fund and request.POST.get('toggle_phantom_fund'):
