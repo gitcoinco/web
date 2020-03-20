@@ -23,8 +23,44 @@
                 Start Date: {{next_round_start|date:'Y-m-d'}} 
                   (<span class="m-0" data-time="{{next_round_start|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>)
               </h5>
+
+            <div class="mininav">
+              <a class="mininavcategory p-0 {% if type == 'tech' %}selected{% endif %}" href="/grants?type=tech">
+                <h4 class="p-0 m-0">View Tech Grants</h4>
+                <h5 class="p-0 m-0">$100k Matching</h5>
+              </a>
+
+              <a class="mininavcategory p-0 {% if type == 'media' %}selected{% endif %}" href="/grants?type=media">
+                <h4 class="p-0 m-0">View Media Grants</h4>
+                <h5 class="p-0 m-0">$50k Matching</h5>
+              </a>
+
+              <a class="mininavcategory p-0 {% if type == 'health' %}selected{% endif %}"  href="/grants?type=health">
+                <h4 class="p-0 m-0">View Health Grants</h4>
+                <h5 class="p-0 m-0">$100k Matching</h5>
+              </a>
+            </div>
+
             </div>
           </div>
         </div>
       </div>
     </div>
+
+      <div class="container-fluid pt-0 pb-2 grants-matching" style="height: 170px;">
+        <div class="container">
+          <div class="col-md-12 font-smaller-1 text-center pt-2">
+            <div class="float-right announcea right-announce2" style="margin-top: 0px; width: 35%; z-index: 9999;">
+              <p><a href="https://en.wikipedia.org/wiki/Public_good_(economics)" target="new">Open Source is a public good</a>, just like journalism, and public health. </p> 
+              <img src="{% static 'v2/images/quests/enemies/genie.svg' %}" />
+            </div>
+
+            <div class="float-left mt-2 announcea right-announce3" style="margin-top: 0px; width: 35%; z-index: 9999;">
+              <p>PSST - <a href="/mission">Our mission is to "Grow Open Source"</a> </p> 
+              <img class="mt-2" src="{% static 'v2/images/quests/enemies/goldbot.svg' %}" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+

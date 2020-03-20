@@ -29,7 +29,6 @@
 }
 
 .announce a {
-  background-color: #f2c3c4;
   color: black;
 }
 
@@ -113,8 +112,76 @@
   background-color: #fde9ed !important;
 }
 
-.announce6 a {
-  background-color: #ddb9bd !important;
+
+.announcea a{
+  color: black;
+  font-weight: bold;
+}
+.mininavcategory a{
+  color: black;
+}
+.mininavcategory{
+  display: inline-block;
+  width: 20%;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 5px;
+  cursor: pointer;
+}
+.mininavcategory.selected{
+  border: black 2px solid;
+}
+.mininavcategory:hover{
+  border: black 2px solid;
+}
+.mininavcategory h4{
+  color: black;
+  font-size: 14px;
+}
+.mininavcategory h5{
+  color: black;
+  font-size: 12px;
+}
+.right-announce2 {
+  margin-top: 5px;
+  padding-top: 0px;
+  text-align: right;
+}
+
+.right-announce2 img {
+  width: 100px;
+}
+
+.right-announce2 p {
+  border-radius: 5px;
+  background-color: #d9d8e7;
+  padding: 5px;
+  margin-top: 10px;
+}
+
+.right-announce4 {
+  margin-top: 5px;
+  padding-top: 0px;
+  text-align: right;
+}
+
+.right-announce4 img {
+  width: 100px;
+}
+
+.right-announce4 p {
+  border-radius: 5px;
+  background-color: #da7474;
+  padding: 5px;
+  margin-top: 10px;
+}
+
+.right-announce3 {
+  text-align: left;
+}
+
+.right-announce3 p {
+  background-color: #ffde55;
 }
 
 .clr .label {

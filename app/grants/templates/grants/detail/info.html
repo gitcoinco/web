@@ -15,13 +15,14 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load static humanize i18n grants_extra %}
-<div class="summary p-5 px-md-3">
+<div class="summary p-5 px-md-3 pt-1" style="padding-top: 0px !important;">
+  <a href="/grants">&lt; Back to Grants</a>
   <!-- GRANT LOGO -->
-  <div class="grant-logo pb-2">
+  <div class="grant-logo pb-2" style="padding-top: 20px !important;">
     {% if is_team_member %}
       <a id="change-logo" data-toggle="modal" data-target="#changeLogo">
         <i class="far fa-image" data-toggle="tooltip" data-placement="right" title="Change Grant Profile Photo"></i>
-        <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{grant.image_css}}">
+        <img src="https://c.gitcoin.co/grants/2fe4b9259602c3271d29918db6c9d40b/Screen_Shot_2020-01-10_at_4.44.59_PM.png?{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{grant.image_css}}">
       </a>
 
       <div class="modal fade" id="changeLogo" tabindex="-1" role="dialog" aria-labelledby="changeLogoLabel" aria-hidden="true">
@@ -51,7 +52,7 @@
 
     {% else %}
 
-      <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{grant.image_css}}">
+      <img src="https://c.gitcoin.co/grants/2fe4b9259602c3271d29918db6c9d40b/Screen_Shot_2020-01-10_at_4.44.59_PM.png?{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{grant.image_css}}">
 
     {% endif %}
   </div>

@@ -1387,7 +1387,7 @@ const updateParams = (key, value) => {
   params = new URLSearchParams(window.location.search);
   if (params.get(key) === value) return;
   params.set(key, value);
-  window.location.search = params.toString();
+  window.location.href = '/grants/?' + decodeURIComponent(params.toString()) + "#content_navbar";
 };
 
 /**

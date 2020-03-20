@@ -111,14 +111,17 @@ def grants(request):
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
 
+    _grants = Grant.objects.filter(
+        network=network, hidden=False
+    ).keyword(keyword).order_by(sort)
     if state == 'active':
-        _grants = Grant.objects.filter(
-            network=network, hidden=False, grant_type=grant_type
-        ).active().keyword(keyword).order_by(sort)
+        _grants = _grants.active()
+    if keyword:
+        grant_type = ''
     else:
-        _grants = Grant.objects.filter(
-            network=network, hidden=False, grant_type=grant_type
-        ).keyword(keyword).order_by(sort)
+        # dotn do search by cateogry
+        _grants = _grants.filter(grant_type=grant_type)
+
 
     clr_prediction_curve_schema_map = {10**x:x+1 for x in range(0, 5)}
     if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
