@@ -1,3 +1,4 @@
+/* eslint no-empty: "error" */
 Vue.filter('moment-fromnow', function(date) {
   moment.defineLocale('en-custom', {
     parentLocale: 'en',
@@ -89,4 +90,3 @@ Vue.filter('stringReplace', function(activity_type) {
 
   return activity_names[activity_type];
 });
-

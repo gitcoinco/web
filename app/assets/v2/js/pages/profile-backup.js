@@ -1,4 +1,4 @@
-
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 (function($) {
   const switchIcons = (loading) => {
     if (loading) {

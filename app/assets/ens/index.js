@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 function signMsgAndCreateSubdomain(message, from) {
   var msg = web3.toHex(message);
   var params = [ msg, from ];
@@ -24,4 +25,3 @@ $(document).ready(function() {
     $('#tos').click();
   });
 });
-

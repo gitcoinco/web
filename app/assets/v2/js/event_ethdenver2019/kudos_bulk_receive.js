@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 $(document).ready(function() {
 
   setInterval(function() {

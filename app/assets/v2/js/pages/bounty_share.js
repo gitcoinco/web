@@ -1,5 +1,7 @@
-
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 $('body').on('click', '.modal-link', function(e) {
+
+  // event: function click on modal-link
   console.log(e);
   let modals = $('#modal');
   let modalBody = $('#modal .modal-content');
@@ -43,4 +45,3 @@ const sendInvites = (users) => {
     }
   );
 };
-

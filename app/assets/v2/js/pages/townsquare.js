@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 $(document).ready(function() {
   // gets multi part (ex: 10 hours 2 minutes 5 seconds) time
   var time_difference_broken_down = function(difference) {

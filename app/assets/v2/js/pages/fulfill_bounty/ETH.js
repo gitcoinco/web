@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 /**
  * Handles Fulfillment for bounties funded in ETH/ERC20 tokens
  * Data is stored on IPFS + the data is stored in
@@ -141,5 +142,6 @@ const ethFulfillBounty = data => {
       }
     }
   };
+
   ipfs.addJson(ipfsFulfill, _callback);
-}
+};

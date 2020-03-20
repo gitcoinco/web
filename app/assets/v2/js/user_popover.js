@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 let popoverData = [];
 
 const renderPopOverData = data => {

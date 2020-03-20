@@ -162,8 +162,8 @@
       }
     ],
     "quotes": [
-      2,
-      "single", {
+      "error",
+      "double", {
         "avoidEscape": true
       }
     ],

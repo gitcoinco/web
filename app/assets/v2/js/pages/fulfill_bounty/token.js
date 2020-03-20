@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 /**
  * Handles Bounty Fulfillement for crypto tokens
  * Data is stored in the db
@@ -14,7 +15,7 @@ fulfillBounty = data => {
     return;
   }
 
-  const url  = '/api/v1/bounty/fulfill';
+  const url = '/api/v1/bounty/fulfill';
 
   const metadata = {
     'data': {
@@ -50,4 +51,4 @@ fulfillBounty = data => {
       console.error(`error: bounty fulfillment failed with status: ${response.status} and message: ${response.message}`);
     }
   });
-}
+};

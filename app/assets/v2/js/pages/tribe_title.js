@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 const tribeTitle = () => {
   $('[data-tribetitle]').each(function(index, elem) {
     $(elem).on('click', function() {

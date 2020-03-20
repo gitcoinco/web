@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 /**
  * Handles Bounty Cancellation for bounties funded in ETH/ERC20 tokens
  * Data is stored on IPFS + the data is stored in
@@ -117,8 +118,8 @@ const ethCancelBounty = data => {
 
   };
 
-  const uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + 
-    issueURL + '&network=' + $('input[name=network]').val() + 
+  const uri = '/api/v0.1/bounties/?event_tag=all&github_url=' +
+    issueURL + '&network=' + $('input[name=network]').val() +
     '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
   $.get(uri, apiCallback);

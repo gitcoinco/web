@@ -1,4 +1,5 @@
 /* eslint-disable no-lonely-if */
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 1000);
 });

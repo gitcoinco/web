@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 /**
  * Handles Bounty creation for bounties funded in ETH/ERC20 tokens
  * Data is stored on IPFS + the data is stored in
@@ -229,43 +230,41 @@ const ethCreateBounty = data => {
       indicateMetamaskPopup();
       if (FEE_PERCENTAGE == 0) {
         deductBountyAmount(fee, '');
+      } else if (isETH) {
+        web3.eth.sendTransaction({
+          to: to_address,
+          from: web3.eth.coinbase,
+          value: web3.toWei(fee, 'ether'),
+          gasPrice: gas_price
+        }, function(error, txnId) {
+          indicateMetamaskPopup(true);
+          if (error) {
+            _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+          } else {
+            deductBountyAmount(fee, txnId);
+            saveAttestationData(
+              result,
+              fee,
+              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              'bountyfee'
+            );
+          }
+        });
       } else {
-        if (isETH) {
-          web3.eth.sendTransaction({
-            to: to_address,
-            from: web3.eth.coinbase,
-            value: web3.toWei(fee, 'ether'),
-            gasPrice: gas_price
-          }, function(error, txnId) {
+        const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
+        const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+
+        token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
+          function(error, txnId) {
             indicateMetamaskPopup(true);
             if (error) {
               _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+              unloading_button($('.js-submit'));
             } else {
               deductBountyAmount(fee, txnId);
-              saveAttestationData(
-                result,
-                fee,
-                '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
-                'bountyfee'
-              );
             }
-          });
-        } else {
-          const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
-          const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-
-          token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
-            function(error, txnId) {
-              indicateMetamaskPopup(true);
-              if (error) {
-                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
-                unloading_button($('.js-submit'));
-              } else {
-                deductBountyAmount(fee, txnId);
-              }
-            }
-          );
-        }
+          }
+        );
       }
     });
   };
@@ -309,8 +308,10 @@ const ethCreateBounty = data => {
       if (response.status == 200) {
         _alert(response.message, 'info');
         ipfsBounty.payload.unsigned_nda = response.bounty_doc_id;
-        if (data.featuredBounty) payFeaturedBounty();
-        else do_bounty();
+        if (data.featuredBounty)
+          payFeaturedBounty();
+        else
+          do_bounty();
       } else {
         _alert('Unable to upload NDA. ', 'error');
         unloading_button($('.js-submit'));
@@ -420,7 +421,8 @@ const ethCreateBounty = data => {
       );
     } else {
       token_contract.balanceOf.call(from, function(error, result) {
-        if (error) return;
+        if (error)
+          return;
         const walletBalance = result.toNumber() / Math.pow(10, token_decimals);
 
         return checkBalance(walletBalance, total, token_name);
