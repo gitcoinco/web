@@ -63,14 +63,14 @@ logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
-matching_live = '($200K matching live now!) '
-total_clr_pot = 200000
-clr_round = 4
-clr_active = False
+matching_live = '($250K matching live now!) '
+total_clr_pot = 250000
+clr_round = 5
+clr_active = True
 show_clr_card = True
 next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
 
-if True:
+if not clr_active:
     clr_matching_banners_style = 'results'
     matching_live = ''
 
