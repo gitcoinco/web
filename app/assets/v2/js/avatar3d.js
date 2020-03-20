@@ -24,13 +24,13 @@ $(document).ready(function() {
     var ht = document.hair_tone;
     var bt = document.background_tone;
 
-    if (typeof st == 'undefined') {
+    if (typeof st === 'undefined') {
       st = '';
     }
-    if (typeof ht == 'undefined') {
+    if (typeof ht === 'undefined') {
       ht = '';
     }
-    if (typeof bt == 'undefined') {
+    if (typeof bt === 'undefined') {
       bt = '';
     }
     url += '&skinTone=' + st;
@@ -77,13 +77,13 @@ $(document).ready(function() {
       var ht = document.hair_tone;
       var bt = document.background_tone;
 
-      if (typeof st == 'undefined') {
+      if (typeof st === 'undefined') {
         st = '';
       }
-      if (typeof ht == 'undefined') {
+      if (typeof ht === 'undefined') {
         ht = '';
       }
-      if (typeof bt == 'undefined') {
+      if (typeof bt === 'undefined') {
         bt = '';
       }
       var new_url = $(this).data('src') + '&skinTone=' + st + '&hairTone=' + ht + '&backgroundTone=' + bt;

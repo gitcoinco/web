@@ -37,7 +37,7 @@ Vue.mixin({
           document.title = `${response[0].title} | Gitcoin`;
           window.history.replaceState({}, `${response[0].title} | Gitcoin`, response[0].url);
         }
-        if (vm.bounty.event && localStorage['pendingProject'] && (vm.bounty.standard_bounties_id == localStorage['pendingProject'])) {
+        if (vm.bounty.event && localStorage['pendingProject'] && (vm.bounty.standard_bounties_id === localStorage['pendingProject'])) {
           projectModal(vm.bounty.pk);
         }
         vm.staffOptions();
@@ -292,7 +292,7 @@ Vue.mixin({
 
       return vm.bounty.fulfillments.filter(fulfillment =>
         fulfillment.accepted &&
-          fulfillment.payout_status == 'done'
+          fulfillment.payout_status === 'done'
       );
 
     },
@@ -335,7 +335,7 @@ Vue.mixin({
       }
 
       if (vm.bounty.fulfillments.filter(fulfillment =>
-        fulfillment.fulfiller_github_username != handle).length
+        fulfillment.fulfiller_github_username !== handle).length
       ) {
         return true;
       }
@@ -545,7 +545,7 @@ var show_interest_modal = function() {
           };
 
           $.ajax(ndaSend).done(function(response) {
-            if (response.status == 200) {
+            if (response.status === 200) {
               _alert(response.message, 'info');
               add_interest(document.result['pk'], {
                 issue_message: msg,

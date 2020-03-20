@@ -133,7 +133,7 @@ var buildURI = function(custom_filters) {
 
   _filters.forEach((filter) => {
     if (localStorage[filter] &&
-      localStorage[filter] != 'any') {
+      localStorage[filter] !== 'any') {
       uri += (filter + '=' + localStorage[filter] + '&');
     }
   });
@@ -215,7 +215,7 @@ const set_sidebar_defaults = () => {
         $('input[name="' + filter + '"][value="' + val + '"]').prop('checked', true);
       });
 
-      if ($('input[name="' + filter + '"][value!=any]:checked').length > 0)
+      if ($('input[name="' + filter + '"][value!==any]:checked').length > 0)
         $('input[name="' + filter + '"][value=any]').prop('checked', false);
     }
   });
@@ -234,7 +234,7 @@ var toggleAny = function(event) {
   }
   if (event.target.value === 'any') {
     // Deselect other filters when 'any' is selected
-    $('input[name="' + key + '"][value!=any]').prop('checked', false);
+    $('input[name="' + key + '"][value!==any]').prop('checked', false);
   } else {
     // Deselect option 'any' when another filter is selected
     anyOption.prop('checked', false);
@@ -436,7 +436,7 @@ var trigger_scroll = debounce(function() {
   var scrollPos = $(document).scrollTop();
   var last_active_bounty = $('.bounty_row.result:last-child');
 
-  if (last_active_bounty.length == 0) {
+  if (last_active_bounty.length === 0) {
     return;
   }
 
@@ -568,7 +568,7 @@ var refreshBounties = function(event, offset, append) {
     }
 
     $('#results-count span.num').html(offset + results.length);
-    if (results.length == results_limit) {
+    if (results.length === results_limit) {
       $('#results-count span.plus').html('+');
     } else {
       $('#results-count span.plus').html('');
@@ -622,7 +622,7 @@ var resetFilters = function(resetKeyword) {
     var tag = ($('input[name="' + filter + '"][value]'));
 
     for (var j = 0; j < tag.length; j++) {
-      if (tag[j].value == 'any')
+      if (tag[j].value === 'any')
         $('input[name="' + filter + '"][value="any"]').prop('checked', true);
       else
         $('input[name="' + filter + '"][value="' + tag[j].value + '"]').prop('checked', false);
@@ -802,7 +802,7 @@ $(document).ready(function() {
   });
 
   $('.search-area input[type=text]').keypress(function(e) {
-    if (e.which == 13) {
+    if (e.which === 13) {
       reset_offset();
       refreshBounties(null, 0, false);
       e.preventDefault();

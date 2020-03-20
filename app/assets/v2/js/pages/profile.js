@@ -27,7 +27,7 @@ $(document).ready(function() {
     }
 
     const is_on_activity_tab = $('.profile-bounties--activities').length > 0;
-    const are_there_no_tabs = $('#tab_controller .nav-link.active').length == 0;
+    const are_there_no_tabs = $('#tab_controller .nav-link.active').length === 0;
 
     if (!is_on_activity_tab && !are_there_no_tabs) {
       return;

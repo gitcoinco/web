@@ -25,7 +25,7 @@ $(document).ready(function() {
   });
 
   $('.clickable-row').on('click', function(e) {
-    if (typeof $(this).data('href') == 'undefined') {
+    if (typeof $(this).data('href') === 'undefined') {
       return;
     }
     window.location = $(this).data('href');

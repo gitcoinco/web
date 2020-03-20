@@ -74,7 +74,7 @@ var start_quiz = async function() {
     await $('#header').removeClass('hidden').fadeIn();
     await $('#desc').removeClass('hidden').fadeIn();
     await $('#cta_button').removeClass('hidden').fadeIn();
-    var seconds_per_question = question_level_seconds_to_respond != undefined ? question_level_seconds_to_respond : document.seconds_per_question;
+    var seconds_per_question = question_level_seconds_to_respond !== undefined ? question_level_seconds_to_respond : document.seconds_per_question;
     var timer = seconds_per_question * 1000;
 
     while (timer > 0 && !document.submitted_answer) {

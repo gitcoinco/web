@@ -185,7 +185,7 @@ function changeImage(option, path) {
 }
 
 function purchaseOption(option, value, target) {
-  if (document.web3network == 'mainnet') {
+  if (document.web3network === 'mainnet') {
     _alert('You will now be prompted via Metamask to purchase this avatar item.', 'info');
     var ele = $('#' + target.id.replace("'", '').replace("'", ''));
     var cost = null;
@@ -235,7 +235,7 @@ function purchaseOption(option, value, target) {
         });
       });
     });
-  } else if (document.web3network == 'locked') {
+  } else if (document.web3network === 'locked') {
     if (document.ready) {
       _alert('This is a premium avatar item.  In order to purchase it, please unlock your web3 wallet.', 'info');
     }
@@ -372,7 +372,7 @@ function randomAvatar(sections, optionalSections) {
 
     randomChoice = Math.floor(Math.random() * totalOpts) + optional;
 
-    if (randomChoice != 0) {
+    if (randomChoice !== 0) {
       let option = options[randomChoice - 1];
       let htmlComponent = null;
 

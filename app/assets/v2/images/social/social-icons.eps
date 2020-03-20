@@ -454,7 +454,7 @@ L3? dup dup{save exch}if
 	% case 0: circle1 inside circle2
 	% case 1: circle 2 inside circle 1
 	% case 2: r1 = r2 
-	% case 3: r1 != r2
+	% case 3: r1 !== r2
 	dx r2 add r1 lt{
 		% circle 2 inside of circle 1
 		0 
@@ -466,7 +466,7 @@ L3? dup dup{save exch}if
 			r1 r2 eq
 			{	% equal
 				2
-			}{ % r1 != r2
+			}{ % r1 !== r2
 				3
 			}ifelse		
 		}ifelse
@@ -499,7 +499,7 @@ L3? dup dup{save exch}if
 			% case 0: circle1 inside circle2
 			% case 1: circle 2 inside circle 1
 			% case 2: circles don't contain each other and r1 == r2
-			% case 3: circles don't contain each other and r1 != r2
+			% case 3: circles don't contain each other and r1 !== r2
 			{ 
 				{	% case 0
 					dx 0 r1 360 0 arcn
@@ -521,7 +521,7 @@ L3? dup dup{save exch}if
 					0 r1 xmin abs r1 add neg r1 shp
 				}
 				{	% case 3
-					% no containment, r1 != r2
+					% no containment, r1 !== r2
 				
 					r2 r1 gt{	% the endpoint we are drawing is that with a circle of zero radius
 						% x(i+1) r(i+1) x(i) r(i) shp
@@ -584,7 +584,7 @@ L3? dup dup{save exch}if
 			% case 0: circle1 inside circle2
 			% case 1: circle 2 inside circle 1
 			% case 2: circles don't contain each other and r1 == r2
-			% case 3: circles don't contain each other and r1 != r2
+			% case 3: circles don't contain each other and r1 !== r2
 			{ 
 				{
 					dx 0 r2 0 360 arc fill
@@ -603,7 +603,7 @@ L3? dup dup{save exch}if
 					% x(i+1) r(i+1) x(i) r(i) shp
 					xmax abs r1 add r1 dx r1 shp
 				}	
-				{	% no containment, r1 != r2
+				{	% no containment, r1 !== r2
 			
 					r2 r1 gt{
 						% we find a circle on our line which is outside the bbox in the

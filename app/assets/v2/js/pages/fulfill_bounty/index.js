@@ -12,12 +12,12 @@ window.onload = function() {
     fetchFromMetamask();
   }
 
-  if (typeof localStorage['githubUsername'] != 'undefined') {
+  if (typeof localStorage['githubUsername'] !== 'undefined') {
     if (!$('input[name=githubUsername]').val()) {
       $('input[name=githubUsername]').val(localStorage['githubUsername']);
     }
   }
-  if (typeof localStorage['notificationEmail'] != 'undefined') {
+  if (typeof localStorage['notificationEmail'] !== 'undefined') {
     $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
   }
   if (getParam('source')) {

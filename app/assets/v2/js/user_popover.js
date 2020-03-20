@@ -45,7 +45,7 @@ const renderPopOverData = data => {
       <div class="stats text-center mt-4">
         <div class="stat-card mx-1 mb-2 py-2 px-5 px-sm-3 d-inline-block text-center">
           <h2 class="font-title font-weight-bold mb-0">
-            ${data.stats.position == 0 ? '-' : '#' + data.stats.position}
+            ${data.stats.position === 0 ? '-' : '#' + data.stats.position}
           </h2>
           <p class="font-body mb-0">contributor</p>
         </div>
@@ -66,7 +66,7 @@ const renderPopOverData = data => {
         </div>
       </div>
 
-    ${data.related_bounties.length == 0 ?
+    ${data.related_bounties.length === 0 ?
     `<p class="font-body mt-3 summary">
         No bounties completed related to <span class="font-italic">${data.keywords || 'bounty'}</span>
       </p>`

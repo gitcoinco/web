@@ -1,3 +1,5 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
+
 const sleep = (milliseconds) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
@@ -71,14 +73,14 @@ var toggle_character_class = async function(sel, classes) {
 };
 
 function typeWriter() {
-  if (document.typewriter_i == 0) {
+  if (document.typewriter_i === 0) {
     document.typewriter_offset = 0;
     document.is_typewriter = true;
   }
   if (document.typewriter_offset + document.typewriter_i < document.typewriter_txt.length) {
     var char = document.typewriter_txt.charAt(document.typewriter_i);
 
-    if (char == '*') {
+    if (char === '*') {
       char = '<BR>';
       document.typewriter_offset += 3;
     }
@@ -123,7 +125,7 @@ var resume_music_midi = function(name) {
 };
 var pause_music_midi = function(name) {
   // get_audio('bossmusic.mid').play();
-  if (typeof MIDIjs == 'undefined') {
+  if (typeof MIDIjs === 'undefined') {
     return;
   }
   MIDIjs.pause();

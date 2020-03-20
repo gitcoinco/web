@@ -16,7 +16,7 @@ createBounty = data => {
   const bountyNeverExpires = 9999999999;
 
   const expiresDate =
-    data.neverExpires == 'on' ?
+    data.neverExpires === 'on' ?
       bountyNeverExpires :
       new Date(data.expirationTimeDelta).getTime() / 1000;
 
@@ -29,7 +29,7 @@ createBounty = data => {
   const tokenAddress = data.denomination;
   const token = tokenAddressToDetails(tokenAddress);
 
-  if (metadata.tokenName == 'ETC') {
+  if (metadata.tokenName === 'ETC') {
     is_featured = 'True';
     coupon_code = null;
     fee_amount = 0;
@@ -86,7 +86,7 @@ createBounty = data => {
       // eslint-disable-next-line no-console
       console.log('success', response);
       window.location.href = response.bounty_url;
-    } else if (response.status == 304) {
+    } else if (response.status === 304) {
       _alert('Bounty already exists for this github issue.', 'error');
       // eslint-disable-next-line no-console
       console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);

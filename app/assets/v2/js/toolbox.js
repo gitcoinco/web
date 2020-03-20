@@ -39,10 +39,10 @@ $(document).ready(function() {
     upVoteButton.removeClass(activeVoteClass);
     downVoteButton.removeClass(activeVoteClass);
 
-    if (direction == 1 && scoreDelta > 0)
+    if (direction === 1 && scoreDelta > 0)
       upVoteButton.addClass(activeVoteClass);
 
-    if (direction == -1 && scoreDelta < 0)
+    if (direction === -1 && scoreDelta < 0)
       downVoteButton.addClass(activeVoteClass);
   }
 

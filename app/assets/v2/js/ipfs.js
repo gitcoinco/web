@@ -34,8 +34,8 @@
     var req = new XMLHttpRequest();
 
     req.onreadystatechange = function() {
-      if (req.readyState == 4) {
-        if (req.status != 200)
+      if (req.readyState === 4) {
+        if (req.status !== 200)
           opts.callback(req.responseText, null);
         else {
           var response = req.responseText;

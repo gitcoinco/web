@@ -31,7 +31,7 @@ var usdToAmountEstimate = function(usd_amount, conv_rate) {
 const get_rates_estimate = function(usd_amount) {
   let hours = $('#hours').val();
 
-  if (!usd_amount || !hours || hours == 0) {
+  if (!usd_amount || !hours || hours === 0) {
     return '';
   }
 
@@ -91,7 +91,7 @@ var getUSDEstimate = function(amount, denomination, callback) {
     eth_amount = parseFloat(result['eth']);
     conv_rate = amount_usdt / amount;
     // store conv rate for later in cache
-    if (typeof document.conversion_rates == 'undefined') {
+    if (typeof document.conversion_rates === 'undefined') {
       document.conversion_rates = {};
     }
     document.conversion_rates[denomination] = conv_rate;
@@ -142,7 +142,7 @@ var getAmountEstimate = function(usd_amount, denomination, callback) {
     eth_amount = parseFloat(result['eth']);
     conv_rate = amount_usdt / amount;
     // store conv rate for later in cache
-    if (typeof document.conversion_rates == 'undefined') {
+    if (typeof document.conversion_rates === 'undefined') {
       document.conversion_rates = {};
     }
     document.conversion_rates[denomination] = conv_rate;

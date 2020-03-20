@@ -48,7 +48,7 @@ new truncateHash();
   this.getaddress = function(elem, _address) {
     const address = !_address ? _address = web3.eth.coinbase : _address;
 
-    if (elem.nodeName == 'INPUT') {
+    if (elem.nodeName === 'INPUT') {
       elem.value = address;
     } else {
       elem.textContent = address;

@@ -15,7 +15,7 @@ $(document).ready(function() {
   $('select').on('change', function(evt) {
     $('.select2-selection__rendered').removeAttr('title');
   });
-  
+
   $('input[type=submit]').on('click', function(e) {
     // acutally submit form if data is present
     if ($('#network').val()) {
@@ -27,9 +27,9 @@ $(document).ready(function() {
     var contract_address = $('#contract_address').val();
     var contract_name = $('select[name=contract] option:selected').text().trim();
     var token_name = $('select[name=denomination] option:selected').text().trim();
-    
+
     // validation
-    if (token_address == '0x0000000000000000000000000000000000000000') {
+    if (token_address === '0x0000000000000000000000000000000000000000') {
       _alert('You already are approved for this token');
       e.preventDefault();
       return;
@@ -42,7 +42,7 @@ $(document).ready(function() {
     var to = contract_address;
 
     token_contract.allowance.call(from, to, function(error, result) {
-      if (error || result.toNumber() == 0) {
+      if (error || result.toNumber() === 0) {
         var amount = 10 * 18 * 9999999999999999999999999999999999999999999999999999; // uint256
 
         indicateMetamaskPopup();

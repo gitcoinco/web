@@ -9,7 +9,7 @@ const rateUser = (elem) => {
 };
 
 const normalizeUsername = function(username) {
-  if (username.indexOf('@') != 0) {
+  if (username.indexOf('@') !== 0) {
     return '@' + username;
   }
   return username;
@@ -83,7 +83,7 @@ $(document).ready(function($) {
     $('.entry_' + transaction['id']).addClass('active');
 
     // cancel bounty
-    if (transaction['type'] == 'cancel') {
+    if (transaction['type'] === 'cancel') {
       var callback = function(error, txid) {
         indicateMetamaskPopup(true);
         if (error) {
@@ -169,7 +169,7 @@ $(document).ready(function($) {
       _alert('Please accept the TOS.', 'error');
       return;
     }
-    if (typeof document.transactions == 'undefined' || !document.transactions.length) {
+    if (typeof document.transactions === 'undefined' || !document.transactions.length) {
       _alert('You do not have any transactions to payout.  Please add payees to the form.', 'error');
       return;
     }
@@ -274,12 +274,12 @@ const get_total_cost = function() {
     const $rows = $(rows[i]);
     const amount = parseFloat($rows.find('.amount').text());
     const username = $rows.find('.username-search').text();
-    const is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
+    const is_error = !$.isNumeric(amount) || amount <= 0 || username === '' || username === '@';
 
     const amount_in_percentage = $rows.find('.input_amount');
     const amount_in_qty = $rows.find('.amount');
 
-    if (username == '' || username == '@') {
+    if (username === '' || username === '@') {
       amount_in_percentage.attr('contenteditable', false);
       amount_in_percentage.attr('title', 'Add Github user to edit this field');
 
@@ -320,7 +320,7 @@ var update_registry = function(coinbase) {
   var original_amount = $('#original_amount').val();
   const over = round((original_amount - get_total_cost()) * -1, 4);
   const addr = new truncate(coinbase).elem;
-  const pay_with_bounty = $('input[name=pay_with]:checked').val() == 'bounty';
+  const pay_with_bounty = $('input[name=pay_with]:checked').val() === 'bounty';
   const amount_from_bounty = $('#amount').text() > get_total_cost() ? get_total_cost() : $('#amount').text();
 
   let transactions = [];
@@ -367,7 +367,7 @@ var update_registry = function(coinbase) {
     const amount = parseFloat($row.find('.amount').text());
     const username = $row.find('.username-search').text();
 
-    if (username == '')
+    if (username === '')
       continue;
 
     transaction = {
@@ -383,7 +383,7 @@ var update_registry = function(coinbase) {
       }
     };
 
-    const is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
+    const is_error = !$.isNumeric(amount) || amount <= 0 || username === '' || username === '@';
 
     if (!is_error)
       transactions.push(transaction);
@@ -396,7 +396,7 @@ var update_registry = function(coinbase) {
     const trans = transactions[k];
     let direction;
 
-    if (trans.type == 'cancel') {
+    if (trans.type === 'cancel') {
       direction = '<span class="direction in font-caption font-weight-semibold ml-2 py-1 px-3">IN</span>';
     } else {
       direction = '<span class="direction out font-caption font-weight-semibold ml-2 py-1 px-3">OUT</span>';

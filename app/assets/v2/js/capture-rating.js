@@ -10,7 +10,7 @@ const checkUnrated = () => {
   let requestUnrated = fetchData ('/api/v0.1/unrated_bounties/', 'GET');
 
   $.when(requestUnrated).then((response, status, statusCode) => {
-    if (statusCode.status != 200) {
+    if (statusCode.status !== 200) {
       return _alert(response.msg, 'error');
     }
 

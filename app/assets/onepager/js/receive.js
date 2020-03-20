@@ -20,7 +20,7 @@ window.onload = function() {
   waitforWeb3(function() {
     ipfs.ipfsApi = IpfsApi(ipfsConfig);
     ipfs.setProvider(ipfsConfig);
-    if (typeof document.ipfs_key_to_secret == 'undefined') {
+    if (typeof document.ipfs_key_to_secret === 'undefined') {
       return;
     }
     ipfs.catText(document.ipfs_key_to_secret, function(err, key2) {
@@ -32,8 +32,8 @@ window.onload = function() {
     });
   });
   waitforWeb3(function() {
-    if (document.web3network != document.network) {
-      if (document.web3network == 'locked') {
+    if (document.web3network !== document.network) {
+      if (document.web3network === 'locked') {
         _alert({ message: gettext('Please authorize Metamask in order to continue.')}, 'info');
         approve_metamask();
       } else {
@@ -58,22 +58,22 @@ $(document).ready(function() {
       unloading_button($(this));
       return;
     }
-    if (forwarding_address == '0x0' || forwarding_address == '') {
+    if (forwarding_address === '0x0' || forwarding_address === '') {
       _alert('Invalid forwarding address.', 'error');
       unloading_button($(this));
       return;
     }
-    if (typeof web3 == 'undefined') {
+    if (typeof web3 === 'undefined') {
       _alert({ message: gettext('You are not on a web3 browser.  Please switch to a web3 browser.') }, 'error');
       unloading_button($(this));
       return;
     }
-    if (typeof document.tip == 'undefined') {
+    if (typeof document.tip === 'undefined') {
       _alert({ message: gettext('You do not have permission to do that.') }, 'error');
       return;
     }
 
-    if (document.web3network != document.network) {
+    if (document.web3network !== document.network) {
       _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
       unloading_button($(this));
       return;
@@ -107,7 +107,7 @@ $(document).ready(function() {
     // redeem tip
 
     var gas_price_wei = new BigNumber(document.gas_price * 10 ** 9);
-    var is_eth = document.tip['token_address'] == '0x0' || document.tip['token_address'] == '0x0000000000000000000000000000000000000000';
+    var is_eth = document.tip['token_address'] === '0x0' || document.tip['token_address'] === '0x0000000000000000000000000000000000000000';
     var token_address = document.tip['token_address'];
     var token_contract = web3.eth.contract(token_abi).at(token_address);
     var holding_address = document.tip['holding_address'];
@@ -123,7 +123,7 @@ $(document).ready(function() {
       web3.eth.getBalance(holding_address, function(error, result) {
         var balance = new BigNumber(result.toString());
 
-        if (balance == 0) {
+        if (balance === 0) {
           _alert('You must wait until the senders transaction confirm before claiming this tip.');
           return;
         }

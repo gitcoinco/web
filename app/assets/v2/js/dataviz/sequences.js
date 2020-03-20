@@ -275,7 +275,7 @@ function drawLegend() {
 function toggleLegend() {
   var legend = d3.select('#legend');
 
-  if (legend.style('visibility') == 'hidden') {
+  if (legend.style('visibility') === 'hidden') {
     legend.style('visibility', '');
   } else {
     legend.style('visibility', 'hidden');
@@ -309,7 +309,7 @@ function buildHierarchy(csv) {
         var foundChild = false;
 
         for (var k = 0; k < children.length; k++) {
-          if (children[k]['name'] == nodeName) {
+          if (children[k]['name'] === nodeName) {
             childNode = children[k];
             foundChild = true;
             break;

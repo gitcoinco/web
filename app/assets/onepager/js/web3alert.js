@@ -24,14 +24,14 @@ var _alert = function(msg, addClassName) {
   setTimeout(callback, 5000);
 };
 var metaMaskWarning = function() {
-  if (typeof web3 == 'undefined' || !web3.currentProvider || !web3.currentProvider.isMetaMask) {
-    if (typeof document.suppressweb3alert != 'undefined') {
+  if (typeof web3 === 'undefined' || !web3.currentProvider || !web3.currentProvider.isMetaMask) {
+    if (typeof document.suppressweb3alert !== 'undefined') {
       _alert({ message: gettext('You must install <a href=https://metamask.io/>Metamask</a> to use this tool.') }, 'info');
     }
     return true;
   } else if (is_metamask_unlocked && !is_metamask_approved) {
     _alert({ message: gettext('Please connect to Metamask.') }, 'info');
-  } else if (web3.eth.accounts.length == 0) {
+  } else if (web3.eth.accounts.length === 0) {
     _alert({ message: gettext('Please unlock Metamask.') }, 'info');
     return true;
   }

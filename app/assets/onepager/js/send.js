@@ -3,14 +3,14 @@ var get_gas_price = function() {
   if ($('#gasPrice').length) {
     return $('#gasPrice').val() * Math.pow(10, 9);
   }
-  if (typeof defaultGasPrice != 'undefined') {
+  if (typeof defaultGasPrice !== 'undefined') {
     return defaultGasPrice;
   }
   return 5 * 10 ** 9;
 };
 
 var generate_or_get_private_key = function() {
-  if (typeof document.account != 'undefined') {
+  if (typeof document.account !== 'undefined') {
     return document.account;
   }
   document.account = new Accounts().new();
@@ -43,7 +43,7 @@ var set_metadata = function(callback) {
 };
 var wait_for_metadata = function(callback) {
   setTimeout(function() {
-    if (typeof document.hash1 != 'undefined') {
+    if (typeof document.hash1 !== 'undefined') {
       var account = generate_or_get_private_key();
 
       callback({
@@ -68,7 +68,7 @@ $(document).ready(function() {
     });
   }, 100);
 
-  if (typeof userSearch != 'undefined') {
+  if (typeof userSearch !== 'undefined') {
     userSearch('.username-search', true);
   }
   set_metadata();
@@ -95,13 +95,13 @@ $(document).ready(function() {
     var accept_tos = $('#tos').is(':checked');
     var secret_link = $('#secret_link').is(':checked');
     var tokenAddress = (
-      ($('#token').val() == '0x0') ?
+      ($('#token').val() === '0x0') ?
         '0x0000000000000000000000000000000000000000'
         : $('#token').val());
     var expires = parseInt($('#expires').val());
 
     // derived info
-    var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
+    var isSendingETH = (tokenAddress === '0x0' || tokenAddress === '0x0000000000000000000000000000000000000000');
     var tokenDetails = tokenAddressToDetails(tokenAddress);
     var tokenName = 'ETH';
 
@@ -172,7 +172,7 @@ function isNumeric(n) {
 
 
 function sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller) {
-  if (typeof web3 == 'undefined') {
+  if (typeof web3 === 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
     failure_callback();
     return;
@@ -180,19 +180,19 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
   // setup
   var fromAccount = web3.eth.accounts[0];
 
-  if (typeof fromAccount == 'undefined') {
+  if (typeof fromAccount === 'undefined') {
     _alert({ message: gettext('You must unlock & enable Gitcoin via your web3 wallet to continue.') }, 'warning');
     failure_callback();
     return;
   }
 
-  if (username.indexOf('@') == -1) {
+  if (username.indexOf('@') === -1) {
     username = '@' + username;
   }
 
   var gas_multiplier = 1.008;
   var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((get_gas_price() * gas_multiplier) / Math.pow(10, 9)));
-  var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
+  var isSendingETH = (tokenAddress === '0x0' || tokenAddress === '0x0000000000000000000000000000000000000000');
   var tokenDetails = tokenAddressToDetails(tokenAddress);
   var tokenName = 'ETH';
   var denomFactor = Math.pow(10, 18);
@@ -211,7 +211,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
 
   var amountInDenom = amount * 1.0 * denomFactor;
   // validation
-  var hasEmail = email != '';
+  var hasEmail = email !== '';
 
   // validation
   if (hasEmail && !validateEmail(email)) {
@@ -219,17 +219,17 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
     failure_callback();
     return;
   }
-  if (from_email != '' && !validateEmail(from_email)) {
+  if (from_email !== '' && !validateEmail(from_email)) {
     _alert({ message: gettext('From Email is optional, but if you enter an email, you must enter a valid email!') }, 'warning');
     failure_callback();
     return;
   }
-  if (!isNumeric(amountInDenom) || amountInDenom == 0) {
+  if (!isNumeric(amountInDenom) || amountInDenom === 0) {
     _alert({ message: gettext('You must enter an number for the amount!') }, 'warning');
     failure_callback();
     return;
   }
-  if (username == '') {
+  if (username === '') {
     _alert({ message: gettext('You must enter a username.') }, 'warning');
     failure_callback();
     return;
@@ -270,7 +270,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
     }).then(function(response) {
       return response.json();
     }).then(function(json) {
-      var is_success = json['status'] == 'OK';
+      var is_success = json['status'] === 'OK';
       var _class = is_success ? 'info' : 'error';
 
       if (!is_success) {
@@ -300,7 +300,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
             }).then(function(response) {
               return response.json();
             }).then(function(json) {
-              var is_success = json['status'] == 'OK';
+              var is_success = json['status'] === 'OK';
 
               if (!is_success) {
                 _alert(json, _class);
@@ -382,10 +382,10 @@ var updateEstimate = function(e) {
 var etherscanDomain = function() {
   var etherscanDomain = 'etherscan.io';
 
-  if (document.web3network == 'custom network') {
+  if (document.web3network === 'custom network') {
     // testrpc
     etherscanDomain = 'localhost';
-  } else if (document.web3network == 'rinkeby') {
+  } else if (document.web3network === 'rinkeby') {
     // rinkeby
     etherscanDomain = 'rinkeby.etherscan.io';
   } else {

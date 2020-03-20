@@ -27,7 +27,7 @@ window.addEventListener('load', function() {
   var timeout_value = 100;
 
   setTimeout(function() {
-    if (typeof web3 != 'undefined') {
+    if (typeof web3 !== 'undefined') {
       web3.version.getNetwork(function(error, netId) {
         if (!error) {
           document.web3network = getNetwork(netId);
@@ -41,7 +41,7 @@ var ts = function() {
   return Math.round((new Date()).getTime() / 1000);
 };
 
-if (typeof localStorage['ts'] == 'undefined' || parseInt(localStorage['ts']) < (ts() - 3600)) {
+if (typeof localStorage['ts'] === 'undefined' || parseInt(localStorage['ts']) < (ts() - 3600)) {
   localStorage['ts'] = ts();
   localStorage['target_ts'] = ts() + (60 * 3); // 3 mins
 }

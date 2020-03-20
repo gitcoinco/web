@@ -11,7 +11,7 @@ $(document).ready(function() {
     return elementBottom > viewportTop && elementTop < viewportBottom;
   };
 
-  if (typeof ($('body').tooltip) != 'undefined') {
+  if (typeof ($('body').tooltip) !== 'undefined') {
     $('body').tooltip({
       items: ':not([data-toggle])'
     });
@@ -47,7 +47,7 @@ $(document).ready(function() {
     var cb = getParam('cb');
     // only if user is not logged in tho
 
-    if (cb.indexOf('ref') != -1 && !document.contxt.github_handle) {
+    if (cb.indexOf('ref') !== -1 && !document.contxt.github_handle) {
       localStorage.setItem('cb', cb);
     }
   }
@@ -63,7 +63,7 @@ $(document).ready(function() {
   }
 
   var force_no_www = function() {
-    if (document.location.href.indexOf('https://www.gitcoin.co') != -1) {
+    if (document.location.href.indexOf('https://www.gitcoin.co') !== -1) {
       var new_url = document.location.href.replace('www.gitcoin.co', 'gitcoin.co');
 
       document.location.href = new_url;
@@ -166,7 +166,7 @@ $(document).ready(function() {
   if (localStorage['top_nav_notification_remove_' + top_nav_salt]) {
     remove_top_row();
   }
-  if (top_nav_salt == 0) {
+  if (top_nav_salt === 0) {
     remove_top_row();
   }
   $('#top_nav_notification').click(remove_top_row);
@@ -254,7 +254,7 @@ const attach_close_button = function() {
   $('body').delegate('.alert .closebtn', 'click', function(e) {
     $(this).parents('.alert').remove();
     $('.alert').each(function(index) {
-      if (index == 0) $(this).css('top', 0);
+      if (index === 0) $(this).css('top', 0);
       else {
         let new_top = (index * 66) + 'px';
 
@@ -277,7 +277,7 @@ const alertMessage = function(msg) {
 };
 
 const _alert = function(msg, _class, remove_after_ms) {
-  if (typeof msg == 'string') {
+  if (typeof msg === 'string') {
     msg = {
       'message': msg
     };
@@ -301,7 +301,7 @@ const _alert = function(msg, _class, remove_after_ms) {
 
   $('body').append(html);
 
-  if (typeof remove_after_ms != 'undefined') {
+  if (typeof remove_after_ms !== 'undefined') {
     setTimeout(function() {
       $('#' + id).remove();
     }, remove_after_ms);
@@ -356,7 +356,7 @@ const sendPersonal = (persona) => {
   );
 
   $.when(postPersona).then((response, status, statusCode) => {
-    if (statusCode.status != 200) {
+    if (statusCode.status !== 200) {
       return _alert(response.msg, 'error');
     }
     $('#persona_modal').bootstrapModal('hide');
@@ -372,7 +372,7 @@ const sendPersonal = (persona) => {
 
     const checkUrlRedirect = (arr, val) => {
       return arr.all(arrObj => {
-        if (val.indexOf(arrObj.url) == -1) {
+        if (val.indexOf(arrObj.url) === -1) {
           return true;
         }
         return false;

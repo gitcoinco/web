@@ -54,7 +54,7 @@ Vue.mixin({
     checkUnread: function() {
       vm = this;
       vm.unreadNotifications = vm.notifications.filter(function(elem) {
-        if (elem.is_read == false)
+        if (elem.is_read === false)
           return elem.id;
       });
     },
@@ -156,7 +156,7 @@ if (document.getElementById('gc-inbox')) {
     computed: {
       selectAll: {
         get: function() {
-          return this.notifications ? this.selectedNotifications.length == this.notifications.length : false;
+          return this.notifications ? this.selectedNotifications.length === this.notifications.length : false;
         },
         set: function(value) {
           var selectedNotifications = [];
@@ -243,7 +243,7 @@ const newData = (newObj, oldObj) => {
 
   return newObj.filter(function(obj) {
     return !oldObj.some(function(obj2) {
-      return obj.id == obj2.id;
+      return obj.id === obj2.id;
     });
   });
 };

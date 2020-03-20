@@ -1,7 +1,7 @@
 jQuery(document).ready(function() {
 
   var gas_price_to_confirmation_time = function(gas_price) {
-    if (typeof gas_times == 'undefined') {
+    if (typeof gas_times === 'undefined') {
       return;
     }
     for (var i = 0; i < gas_times.length; i++) {

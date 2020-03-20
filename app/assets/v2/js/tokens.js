@@ -8,7 +8,7 @@ var tokenAddressToDetailsByNetwork = function(addr, network) {
 
   for (var i = 0; i < _tokens.length; i += 1) {
     if (_tokens[i].addr && addr) {
-      if (_tokens[i].addr.toLowerCase() == addr.toLowerCase()) {
+      if (_tokens[i].addr.toLowerCase() === addr.toLowerCase()) {
         return _tokens[i];
       }
     }
@@ -24,7 +24,7 @@ var tokenAddressToDetailsByNetwork = function(addr, network) {
 const tokenNameToDetails = (network, token_name) => {
   var _tokens = tokens(network);
 
-  return _tokens.filter((_token) => _token.name == token_name)[0];
+  return _tokens.filter((_token) => _token.name === token_name)[0];
 };
 
 var load_tokens = function() {
@@ -50,7 +50,7 @@ var load_tokens = function() {
           text: token['name']
         };
 
-        if (token['addr'] == tokenAddress) {
+        if (token['addr'] === tokenAddress) {
           select['selected'] = 'selected';
         }
 
@@ -61,9 +61,9 @@ var load_tokens = function() {
       var url = new URL(url_string);
       var params_amount = url.searchParams.get('amount');
 
-      if (typeof localStorage['amount'] != 'undefined') {
-        if (params_amount != null) {
-          if (localStorage['amount'] != params_amount) {
+      if (typeof localStorage['amount'] !== 'undefined') {
+        if (params_amount !== null) {
+          if (localStorage['amount'] !== params_amount) {
             localStorage.setItem('amount', params_amount);
             $('input[name=amount]').val(params_amount);
           }
@@ -71,12 +71,12 @@ var load_tokens = function() {
           $('input[name=amount]').val(localStorage['amount']);
         }
       }
-      if (typeof localStorage['githubUsername'] != 'undefined') {
+      if (typeof localStorage['githubUsername'] !== 'undefined') {
         if (!$('input[name=githubUsername]').val()) {
           $('input[name=githubUsername]').val(localStorage['githubUsername']);
         }
       }
-      if (typeof localStorage['notificationEmail'] != 'undefined') {
+      if (typeof localStorage['notificationEmail'] !== 'undefined') {
         $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
       }
     });

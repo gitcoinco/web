@@ -55,7 +55,7 @@ $(document).ready(function() {
 
   });
 
-  if (kudosNumClonesAvailable == 0) {
+  if (kudosNumClonesAvailable === 0) {
     $('#getKudos').attr('class', 'btn btn-gc-blue disabled').attr('aria-disabled', 'true');
     return;
   }
@@ -146,7 +146,7 @@ var stop_kudos_levitate = function() {
 };
 
 window.onclick = (event) => {
-  if (event.target.id == 'share-modal') {
+  if (event.target.id === 'share-modal') {
     $('#share-modal').css('display', 'none');
   }
 };

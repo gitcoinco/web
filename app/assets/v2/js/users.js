@@ -1,3 +1,5 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
+
 let users = [];
 let usersPage = 1;
 let usersNumPages = '';
@@ -28,7 +30,7 @@ Vue.mixin({
         vm.params.persona = 'tribe';
       }
 
-      if (vm.params.persona == 'tribe') {
+      if (vm.params.persona === 'tribe') {
         // remove filters which do not apply for tribes directory
         delete vm.params['rating'];
         delete vm.params['organisation'];

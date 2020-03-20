@@ -13,7 +13,7 @@ var sign_and_send = function(rawTx, success_callback, private_key) {
 
   var private_key_buffer = new EthJS.Buffer.Buffer.from(private_key, 'hex');
   // console.log(private_key_buffer)
-  
+
   tx.sign(private_key_buffer);
   var serializedTx = tx.serialize();
 
@@ -30,7 +30,7 @@ window.onload = function() {
     console.log(document.ipfs_key_to_secret);
     ipfs.ipfsApi = IpfsApi(ipfsConfig);
     ipfs.setProvider(ipfsConfig);
-    if (typeof document.ipfs_key_to_secret == 'undefined') {
+    if (typeof document.ipfs_key_to_secret === 'undefined') {
       return;
     }
     ipfs.catText(document.ipfs_key_to_secret, function(err, key2) {
@@ -42,8 +42,8 @@ window.onload = function() {
     });
   });
   waitforWeb3(function() {
-    if (document.web3network != document.network) {
-      if (document.web3network == 'locked') {
+    if (document.web3network !== document.network) {
+      if (document.web3network === 'locked') {
         _alert({ message: gettext('Please authorize Metamask in order to continue.')}, 'info');
         approve_metamask();
       } else {
@@ -67,22 +67,22 @@ $(document).ready(function() {
       unloading_button($(this));
       return;
     }
-    if (forwarding_address == '0x0' || forwarding_address == '') {
+    if (forwarding_address === '0x0' || forwarding_address == '') {
       _alert('Invalid forwarding address.', 'error');
       unloading_button($(this));
       return;
     }
-    if (typeof web3 == 'undefined') {
+    if (typeof web3 === 'undefined') {
       _alert({ message: gettext('You are not on a web3 browser.  Please switch to a web3 browser.') }, 'error');
       unloading_button($(this));
       return;
     }
-    if (typeof document.kudos_transfer == 'undefined') {
+    if (typeof document.kudos_transfer === 'undefined') {
       _alert({ message: gettext('You do not have permission to do that.') }, 'error');
       return;
     }
 
-    if (document.web3network != document.network) {
+    if (document.web3network !== document.network) {
       _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
       unloading_button($(this));
       return;
@@ -119,7 +119,7 @@ $(document).ready(function() {
     var token_address = document.kudos_transfer['token_address'];
     var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
     var holding_address = document.kudos_transfer['holding_address'];
-    
+
 
     web3.eth.getTransactionCount(holding_address, function(error, result) {
       var nonce = result;
@@ -131,7 +131,7 @@ $(document).ready(function() {
       web3.eth.getBalance(holding_address, function(error, result) {
         var balance = new web3.BigNumber(result.toString());
 
-        if (balance == 0) {
+        if (balance === 0) {
           _alert('You must wait until the senders transaction confirm before claiming this Kudos.');
           return;
         }
@@ -167,7 +167,7 @@ $(document).ready(function() {
 
         console.log('params for kudos clone:');
         console.log(params);
- 
+
         kudos_contract.clone.estimateGas(forwarding_address, tokenId, numClones, {from: holding_address, value: kudosPriceInWei}, function(error, gasLimit) {
           console.log(gasLimit);
 

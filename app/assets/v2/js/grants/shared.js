@@ -73,11 +73,11 @@ const notifyOwnerAddressMismatch = (username, address, button, message) => {
 
   web3.eth.getAccounts((error, accounts) => {
     if (
-      typeof accounts != 'undefined' &&
-      document.contxt && document.contxt.github_handle == username &&
-      accounts[0] && accounts[0] != address
+      typeof accounts !== 'undefined' &&
+      document.contxt && document.contxt.github_handle === username &&
+      accounts[0] && accounts[0] !== address
     ) {
-      if ($(button).attr('disabled') != 'disabled') {
+      if ($(button).attr('disabled') !== 'disabled') {
         $(button).attr('disabled', 'disabled');
         _alert({
           message: message
@@ -117,9 +117,9 @@ const addGrantLogo = () => {
 
 const show_error_banner = (result, web3_not_found) => {
   if ($('#grants_form').length) {
-    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1 && !document.suppress_faucet_solicitation;
+    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') === -1 && !document.suppress_faucet_solicitation;
 
-    if (typeof web3 == 'undefined' || web3_not_found) {
+    if (typeof web3 === 'undefined' || web3_not_found) {
       $('#no_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#grants_form').addClass('hidden');
@@ -147,7 +147,7 @@ const show_error_banner = (result, web3_not_found) => {
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
       $('.alpha-warning').addClass('hidden');
-    } else if (is_zero_balance_not_okay && document.balance == 0) {
+    } else if (is_zero_balance_not_okay && document.balance === 0) {
       $('#zero_balance_error').css('display', 'block');
       $('#robot_error').removeClass('hidden');
       $('#grants_form').addClass('hidden');
@@ -176,9 +176,9 @@ $(document).ready(function() {
   contractVersion = $('#contract_version').val();
 
   if (contractVersion) {
-    if (contractVersion == 0) {
+    if (contractVersion === 0) {
       compiledSubscription = compiledSubscription0;
-    } else if (contractVersion == 1) {
+    } else if (contractVersion === 1) {
       compiledSubscription = compiledSubscription1;
     }
   }
@@ -186,7 +186,7 @@ $(document).ready(function() {
   compiledSplitter = compiledSplitter0 ? compiledSplitter0 : null;
 
   const listen_web3_1_changes = () => {
-    if (typeof web3 == 'undefined' || typeof web3.eth.getCoinbase() == 'undefined') {
+    if (typeof web3 === 'undefined' || typeof web3.eth.getCoinbase() === 'undefined') {
       return;
     }
     web3.eth.getCoinbase().then(function(result) {

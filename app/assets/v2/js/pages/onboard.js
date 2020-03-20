@@ -37,7 +37,7 @@ onboard.showTab = function(num) {
     $('.controls').show();
   }
 
-  if (num == ($('.step').length) - 1) {
+  if (num === ($('.step').length) - 1) {
     $('#next-btn').html(gettext('Done'));
     $('#next-btn').attr('onclick', 'redirectURL()');
   } else if (num > ($('.step').length) - 1) {
@@ -65,7 +65,7 @@ document.alreadyFoundMetamask = false;
 onboard.watchMetamask = function() {
   if (document.alreadyFoundMetamask) {
     return;
-  } else if (typeof web3 == 'undefined') {
+  } else if (typeof web3 === 'undefined') {
     $('.step #metamask').html(`
       <div class="locked">
         <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
@@ -121,7 +121,7 @@ onboard.getFilters = function(savedKeywords, currentKeywords) {
   var _words = [];
   var search_keywords = $('#keywords').val();
 
-  if (search_keywords && search_keywords != '') {
+  if (search_keywords && search_keywords !== '') {
     search_keywords.split(',').forEach(function(word) {
       _words.push(word);
       _filters.push('<a class=filter-tag><i class="fas fa-check"></i>' + word + '</a>');
@@ -133,7 +133,7 @@ onboard.getFilters = function(savedKeywords, currentKeywords) {
       if (keywords.includes(value.toLowerCase())) {
         $('input[type=checkbox][name=tech-stack][value="' + value.toLowerCase() + '"]').prop('checked', true);
       } else {
-        if ($('#keywords').val() != '') {
+        if ($('#keywords').val() !== '') {
           $('#keywords').val($('#keywords').val() + ',');
         }
 

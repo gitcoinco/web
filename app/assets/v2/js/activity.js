@@ -33,7 +33,7 @@ $(document).ready(function() {
   // join video call
   $(document).on('click', '.click_here_to_join_video', function(e) {
     e.preventDefault();
-    if (typeof document.jitsi_api != 'undefined') {
+    if (typeof document.jitsi_api !== 'undefined') {
       _alert('You can only be in one video call at a time.', 'error', 1000);
       return;
     }
@@ -127,7 +127,7 @@ $(document).ready(function() {
     var $target = $(this).parents('.row').find('iframe[name=jitsiConferenceFrame0]');
 
     $target.toggleClass('popout');
-    if ($(this).text().indexOf('Pop Out') != -1) {
+    if ($(this).text().indexOf('Pop Out') !== -1) {
       $(this).html('Pop In <i class="fas fa-level-up-alt"></i>');
     } else {
       $(this).html('Pop Out <i class="fas fa-sign-out-alt">');
@@ -182,7 +182,7 @@ $(document).ready(function() {
 
   // notifications of new activities
   var ping_activity_notifier = (function() {
-    var plural = document.buffered_rows.length == 1 ? 'y' : 'ies';
+    var plural = document.buffered_rows.length === 1 ? 'y' : 'ies';
     var html = '<div id=new_activity_notifier>' + document.buffered_rows.length + ' New Activit' + plural + ' - Click to View</div>';
 
     if ($('#new_activity_notifier').length) {
@@ -481,7 +481,7 @@ $(document).ready(function() {
       return;
     }
 
-    var is_unliked = $(this).data('state') == $(this).data('negative');
+    var is_unliked = $(this).data('state') === $(this).data('negative');
     var num = $(this).find('span.num').html();
 
     if (is_unliked) { // like
@@ -586,7 +586,7 @@ $(document).ready(function() {
 
   var view_comments = function($parent, allow_close_comment_container, success_callback, override_hide_comments) {
     hide_after_n_comments = 3;
-    if (getParam('tab') && getParam('tab').indexOf('activity:') != -1) {
+    if (getParam('tab') && getParam('tab').indexOf('activity:') !== -1) {
       hide_after_n_comments = 100;
     }
     const limit_hide_option = 10;
@@ -627,7 +627,7 @@ $(document).ready(function() {
         the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
         const timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         const show_tip = true;
-        const is_comment_owner = document.contxt.github_handle == comment['profile_handle'];
+        const is_comment_owner = document.contxt.github_handle === comment['profile_handle'];
         var sorted_match_curve_html = '';
 
         if (comment['sorted_match_curve']) {
@@ -643,8 +643,8 @@ $(document).ready(function() {
           }
         }
         var show_more_box = '';
-        var is_hidden = (num_comments - i) >= hide_after_n_comments && override_hide_comments != true;
-        var is_first_hidden = i == 0 && num_comments >= hide_after_n_comments && override_hide_comments != true;
+        var is_hidden = (num_comments - i) >= hide_after_n_comments && override_hide_comments !== true;
+        var is_first_hidden = i === 0 && num_comments >= hide_after_n_comments && override_hide_comments !== true;
         const show_all_option = num_comments > limit_hide_option;
 
         if (is_first_hidden) {
@@ -738,7 +738,7 @@ $(document).ready(function() {
       `;
 
       $target.append(post_comment_html);
-      if (success_callback && typeof success_callback != 'undefined') {
+      if (success_callback && typeof success_callback !== 'undefined') {
         success_callback($target);
       }
     });
@@ -791,7 +791,7 @@ $(document).ready(function() {
     for (var i = 0; i < num_to_unhide_at_once; i++) {
       get_hidden_comments($(this)).last().removeClass('hidden');
     }
-    if (get_hidden_comments($(this)).length == 0) {
+    if (get_hidden_comments($(this)).length === 0) {
       $(this).remove();
     } else {
       $(this).find('.comment-count').text(get_hidden_comments($(this)).length);
@@ -860,7 +860,7 @@ $(document).ready(function() {
 
 
   $(document).on('keypress', '.enter-activity-comment', function(e) {
-    if (e.which == 13 && !e.shiftKey) {
+    if (e.which === 13 && !e.shiftKey) {
       const $target = $(this).parents('.activity.box').find('.comment_activity');
 
       post_comment($target, false);

@@ -61,7 +61,7 @@ var callFunctionWhenTransactionMined = function(txHash, f) {
  * @param {function} f - The function passed into this callback.
  */
 var callFunctionWhenweb3Available = function(f) {
-  if (typeof document.web3network != 'undefined') {
+  if (typeof document.web3network !== 'undefined') {
     f();
   } else {
     setTimeout(function() {
@@ -104,7 +104,7 @@ var update_metamask_conf_time_and_cost_estimate = function() {
     usdAmount = Math.round(1000 * eth_amount_unrounded * document.eth_usd_conv_rate) / 1000;
   }
 
-  if (typeof document.conf_time_spread == 'undefined') return;
+  if (typeof document.conf_time_spread === 'undefined') return;
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
     var this_ele = (document.conf_time_spread[i]);
@@ -135,7 +135,7 @@ var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
     usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
   }
 
-  if (typeof document.conf_time_spread == 'undefined') return;
+  if (typeof document.conf_time_spread === 'undefined') return;
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
     var this_ele = (document.conf_time_spread[i]);
@@ -156,7 +156,7 @@ var unloading_button = function(button) {
 };
 
 var sanitizeDict = function(d, keyToIgnore) {
-  if (typeof d != 'object') {
+  if (typeof d !== 'object') {
     return d;
   }
   keys = Object.keys(d);
@@ -190,7 +190,7 @@ function ucwords(str) {
 }
 
 var sanitize = function(str) {
-  if (typeof str != 'string') {
+  if (typeof str !== 'string') {
     return str;
   }
   result = DOMPurify.sanitize(str);
@@ -391,16 +391,16 @@ var pull_interest_list = function(bounty_pk, callback) {
         started.push(
           profileHtml(_interested.profile.handle)
         );
-        if (_interested.profile.handle == document.contxt.github_handle) {
+        if (_interested.profile.handle === document.contxt.github_handle) {
           document.interested = true;
         }
       });
     }
-    if (started.length == 0) {
+    if (started.length === 0) {
       started.push('<i class="fas fa-minus"></i>');
     }
     $('#started_owners_username').html(started);
-    if (typeof callback != 'undefined') {
+    if (typeof callback !== 'undefined') {
       callback(document.interested);
     }
   });
@@ -426,7 +426,7 @@ var update_fulfiller_list = function(bounty_pk) {
     var tmpl = $.templates('#submitters');
     var html = tmpl.render(fulfillers);
 
-    if (fulfillers.length == 0) {
+    if (fulfillers.length === 0) {
       html = 'No one has submitted work yet.';
     }
     $('#submitter_list').html(html);
@@ -534,7 +534,7 @@ function timeDifference(current, previous, remaining, now_threshold_seconds) {
     amt = Math.round(elapsed / msPerYear);
     unit = 'year';
   }
-  var plural = amt != 1 ? 's' : '';
+  var plural = amt !== 1 ? 's' : '';
 
   if (remaining) return amt + ' ' + unit + plural;
   return amt + ' ' + unit + plural + ' ago';
@@ -562,7 +562,7 @@ var retrieveAmount = function() {
   var ele = $('input[name=amount]');
   var target_ele = $('#usd_amount');
 
-  if (target_ele.html() == '') {
+  if (target_ele.html() === '') {
     target_ele.html('<img style="width: 50px; height: 50px;" src=' + static_url + 'v2/images/loading_v2.gif>');
   }
 
@@ -589,7 +589,7 @@ var retrieveAmount = function() {
     updateAmountUI(target_ele, usd_amount);
 
     // store conv rate for later in cache
-    if (typeof document.conversion_rates == 'undefined') {
+    if (typeof document.conversion_rates === 'undefined') {
       document.conversion_rates = {};
     }
     document.conversion_rates[denomination] = conv_rate;
@@ -637,10 +637,10 @@ var retrieveIssueDetails = function() {
   };
   var issue_url = ele.val();
 
-  if (typeof issue_url == 'undefined') {
+  if (typeof issue_url === 'undefined') {
     return;
   }
-  if (issue_url.length < 5 || issue_url.indexOf('github') == -1) {
+  if (issue_url.length < 5 || issue_url.indexOf('github') === -1) {
     return;
   }
   var request_url = '/sync/get_issue_details?url=' + encodeURIComponent(issue_url) + '&token=' + currentProfile.githubToken;
@@ -698,12 +698,12 @@ var currentNetwork = function(network, no_ui_updates) {
   $('.navbar-network').removeClass('hidden');
 
   document.web3network = network;
-  if (typeof no_ui_updates != 'undefined') {
+  if (typeof no_ui_updates !== 'undefined') {
     return;
   }
 
   if (document.location.href.startsWith('https://gitcoin.co')) { // Live
-    if (network == 'mainnet') {
+    if (network === 'mainnet') {
       $('#current-network').text('Main Ethereum Network');
       $('.navbar-network').attr('title', '');
       $('.navbar-network i').addClass('green');
@@ -716,7 +716,7 @@ var currentNetwork = function(network, no_ui_updates) {
           '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
-      } else if (network == 'locked') {
+      } else if (network === 'locked') {
         if (is_metamask_approved || !is_metamask_unlocked) {
           info = gettext('Web3 locked. Please unlock ') +
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
@@ -739,12 +739,12 @@ var currentNetwork = function(network, no_ui_updates) {
       $('#navbar-network-banner').addClass('network-banner--warning');
       $('#navbar-network-banner').removeClass('hidden');
 
-      if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
+      if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length === 0) {
         $('.navbar-network').attr('title', '<div class="tooltip-info tooltip-xs">' + info + '</div>');
       }
     }
   } else { // Staging
-    if (network == 'rinkeby') {
+    if (network === 'rinkeby') {
       $('#current-network').text('Rinkeby Network');
       $('.navbar-network').attr('title', '');
       $('.navbar-network i').addClass('green');
@@ -757,7 +757,7 @@ var currentNetwork = function(network, no_ui_updates) {
           '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
-      } else if (network == 'locked') {
+      } else if (network === 'locked') {
         if (is_metamask_approved || !is_metamask_unlocked) {
           info = gettext('Web3 locked. Please unlock ') +
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
@@ -780,7 +780,7 @@ var currentNetwork = function(network, no_ui_updates) {
       $('#navbar-network-banner').addClass('network-banner--warning');
       $('#navbar-network-banner').removeClass('hidden');
 
-      if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
+      if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length === 0) {
         $('.navbar-network').attr('title', '<div class="tooltip-info tooltip-xs">' + info + '</div>');
       }
     }
@@ -797,9 +797,9 @@ var currentNetwork = function(network, no_ui_updates) {
  */
 var trigger_primary_form_web3_hooks = function() {
   if ($('#primary_form').length) {
-    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1 && !document.suppress_faucet_solicitation;
+    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') === -1 && !document.suppress_faucet_solicitation;
 
-    if (typeof web3 == 'undefined') {
+    if (typeof web3 === 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#primary_form, .primary_form-meta').addClass('hidden');
@@ -823,7 +823,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'none');
       $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
-    } else if (is_zero_balance_not_okay && document.balance == 0) {
+    } else if (is_zero_balance_not_okay && document.balance === 0) {
       $('#zero_balance_error').css('display', 'block');
       $('#robot_error').removeClass('hidden');
       $('#primary_form, .primary_form-meta').addClass('hidden');
@@ -855,7 +855,7 @@ var trigger_faucet_form_web3_hooks = function() {
     $('#ethAddress').val(web3.eth.accounts[0]);
     var faucet_amount = parseInt($('#currentFaucet').val() * (Math.pow(10, 18)));
 
-    if (typeof web3 == 'undefined') {
+    if (typeof web3 === 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
       return;
@@ -887,7 +887,7 @@ var trigger_faucet_form_web3_hooks = function() {
     }
   }
   if ($('#admin_faucet_form').length || $('#admin_refund_form').length) {
-    if (typeof web3 == 'undefined') {
+    if (typeof web3 === 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
       return;
@@ -908,7 +908,7 @@ var trigger_faucet_form_web3_hooks = function() {
       }
       var balance = result.toNumber();
 
-      if (balance == 0) {
+      if (balance === 0) {
         $('#zero_balance_error').css('display', 'block');
         $('#admin_faucet_form').remove();
       }
@@ -943,13 +943,13 @@ var listen_for_web3_changes = async function(no_ui_updates) {
       document.listen_for_web3_iterations += 1;
     }
 
-    if (typeof web3 == 'undefined') {
+    if (typeof web3 === 'undefined') {
       currentNetwork(undefined, no_ui_updates);
       trigger_form_hooks();
-    } else if (typeof web3.eth == 'undefined') {
+    } else if (typeof web3.eth === 'undefined') {
       currentNetwork('locked', no_ui_updates);
       trigger_form_hooks();
-    } else if (typeof cb_address == 'undefined' || !cb_address) {
+    } else if (typeof cb_address === 'undefined' || !cb_address) {
       currentNetwork('locked', no_ui_updates);
       trigger_form_hooks();
     } else {
@@ -959,7 +959,7 @@ var listen_for_web3_changes = async function(no_ui_updates) {
         if (errors) {
           return;
         }
-        if (typeof result != 'undefined' && result !== null) {
+        if (typeof result !== 'undefined' && result !== null) {
           document.balance = result.toNumber();
         }
       });
@@ -1008,12 +1008,12 @@ var actions_page_warn_if_not_on_same_network = function() {
     return;
   }
 
-  if (typeof user_network == 'undefined') {
+  if (typeof user_network === 'undefined') {
     user_network = 'no network';
   }
   var bounty_network = $('input[name=network]').val();
 
-  if (bounty_network != user_network) {
+  if (bounty_network !== user_network) {
     var msg = 'Warning: You are on ' +
               user_network +
               ' and this bounty is on the ' +
@@ -1149,7 +1149,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
       if (result['fulfillment_submitted_on']) {
         result['p'] += ' ' + timeDifference(dateNow, new Date(result['fulfillment_submitted_on']), false, 60 * 60);
       }
-    } else if (result['status'] == 'cancelled') {
+    } else if (result['status'] === 'cancelled') {
       result['p'] += 'Cancelled';
       if (result['canceled_on']) {
         result['p'] += ' ' + timeDifference(dateNow, new Date(result['canceled_on']), false, 60 * 60);
@@ -1177,7 +1177,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
 
     if (renderForExplorer) {
 
-      if (typeof web3 != 'undefined' && typeof web3.eth != 'undefined' && cb_address == result['bounty_owner_address']) {
+      if (typeof web3 !== 'undefined' && typeof web3.eth !== 'undefined' && cb_address === result['bounty_owner_address']) {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
       } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
@@ -1275,7 +1275,7 @@ function fetchBountiesAndAddToList(params, target, limit, additional_callback) {
     } else {
       console.log($(target).parent().closest('.container').addClass('hidden'));
     }
-    if (typeof additional_callback != 'undefined') {
+    if (typeof additional_callback !== 'undefined') {
       additional_callback(results);
     }
   });
@@ -1536,7 +1536,7 @@ function check_balance_and_alert_user_if_not_enough(
   amount,
   msg = 'You do not have enough tokens to perform this action.') {
 
-  if (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000') {
+  if (tokenAddress === '0x0' || tokenAddress === '0x0000000000000000000000000000000000000000') {
     return;
   }
 
@@ -1567,7 +1567,7 @@ function check_balance_and_alert_user_if_not_enough(
  */
 const fetchIssueDetailsFromGithub = issue_url => {
   return new Promise((resolve, reject) => {
-    if (!issue_url || issue_url.length < 5 || issue_url.indexOf('github') == -1) {
+    if (!issue_url || issue_url.length < 5 || issue_url.indexOf('github') === -1) {
       reject('error: issue_url needs to be a valid github URL');
     }
 

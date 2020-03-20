@@ -10,7 +10,7 @@ const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
 
 const is_funder = () => {
   if (web3 && web3.eth && web3.coinbase)
-    return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() == web3.eth.coinbase;
+    return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() === web3.eth.coinbase;
   return document.is_funder_github_user_same;
 };
 
@@ -71,7 +71,7 @@ $(document).ready(function() {
     // validation
     var isError = false;
 
-    if ($('#terms:checked').length == 0) {
+    if ($('#terms:checked').length === 0) {
       _alert({ message: gettext('Please accept the terms of service.') }, 'error');
       isError = true;
     }
@@ -79,17 +79,17 @@ $(document).ready(function() {
       _alert({ message: gettext('Invalid Amount.') }, 'error');
       isError = true;
     }
-    var is_issueURL_invalid = issueURL == '' ||
-        issueURL.indexOf('http') != 0 ||
-        issueURL.indexOf('github') == -1 ||
-        issueURL.indexOf('javascript:') != -1
+    var is_issueURL_invalid = issueURL === '' ||
+        issueURL.indexOf('http') !== 0 ||
+        issueURL.indexOf('github') === -1 ||
+        issueURL.indexOf('javascript:') !== -1
 
     ;
     if (is_issueURL_invalid) {
       _alert({ message: gettext('Please enter a valid github issue URL.') }, 'error');
       isError = true;
     }
-    if (amount == '') {
+    if (amount === '') {
       _alert({ message: gettext('Please enter an amount.') }, 'error');
       isError = true;
     }
@@ -102,7 +102,7 @@ $(document).ready(function() {
     // setup web3
     // TODO: web3 is using the web3.js file.  In the future we will move
     // to the node.js package.  github.com/ethereum/web3.js
-    var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
+    var isETH = tokenAddress === '0x0000000000000000000000000000000000000000';
     var token = tokenAddressToDetails(tokenAddress);
     var decimals = token['decimals'];
     var decimalDivisor = Math.pow(10, decimals);
@@ -151,7 +151,7 @@ $(document).ready(function() {
 
     var errormsg = undefined;
 
-    if (bountyAmount == 0 || open == false) {
+    if (bountyAmount === 0 || open === false) {
       errormsg = gettext('No active funded issue found at this address on ' + document.web3network + '. Are you sure this is an active funded issue?');
     }
 
@@ -220,7 +220,7 @@ $(document).ready(function() {
       const fee = (Number($('#summary-bounty-amount').html()) * FEE_PERCENTAGE).toFixed(4);
 
       indicateMetamaskPopup();
-      if (FEE_PERCENTAGE == 0) {
+      if (FEE_PERCENTAGE === 0) {
         do_as_funder();
       } else {
         if (isETH) {

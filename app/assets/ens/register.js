@@ -3,7 +3,7 @@ window.onload = function() {
     if ($('#tos')[0].checked === false) {
       return _alert({ message: gettext('Please check the TOS checkbox.')}, 'error');
     }
-    if (typeof web3 == 'undefined') {
+    if (typeof web3 === 'undefined') {
       return _alert({ message: gettext('Please install metamask in your browser and try again.')}, 'error');
     }
     // Get the github handle

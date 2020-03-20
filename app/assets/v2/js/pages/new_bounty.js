@@ -160,7 +160,7 @@ const getSuggestions = () => {
       obj.children.forEach((children, childIndex) => {
         children.text = children.fulfiller_github_username || children.user__profile__handle || children.handle;
         children.id = generalIndex;
-        if (obj.text == 'Invites') {
+        if (obj.text === 'Invites') {
           children.selected = true;
           $('#reserve-section').collapse('show');
         }
@@ -403,7 +403,7 @@ $(function() {
 
     $('input[name=amount]').trigger('change');
 
-    if (prev_usd_amount != usd_amount) {
+    if (prev_usd_amount !== usd_amount) {
       usdToAmount(usd_amount);
     }
   });
@@ -481,7 +481,7 @@ $(function() {
     }
   });
 
-  if ($('input[name=issueURL]').val() != '' && !isPrivateRepo) {
+  if ($('input[name=issueURL]').val() !== '' && !isPrivateRepo) {
     retrieveIssueDetails();
   }
 
@@ -555,7 +555,7 @@ $('#issueURL').focusout(function() {
   for (let i = 0; i < document.blocked_urls.length; i++) {
     let this_url_filter = document.blocked_urls[i];
 
-    if ($('input[name=issueURL]').val().toLowerCase().indexOf(this_url_filter.toLowerCase()) != -1) {
+    if ($('input[name=issueURL]').val().toLowerCase().indexOf(this_url_filter.toLowerCase()) !== -1) {
       _alert('This repo is not bountyable at the request of the maintainer.');
       $('input[name=issueURL]').val('');
       return false;
@@ -645,7 +645,7 @@ $('#submitBounty').validate({
     }
   },
   submitHandler: function(form) {
-    if (typeof ga != 'undefined') {
+    if (typeof ga !== 'undefined') {
       dataLayer.push({
         'event': 'new_bounty',
         'category': 'new_bounty',
@@ -776,8 +776,8 @@ const transformBountyData = form => {
 
   if (
     data.repo_type == 'private' &&
-    data.project_type != 'traditional' &&
-    data.permission_type != 'approval'
+    data.project_type !== 'traditional' &&
+    data.permission_type !== 'approval'
   ) {
     _alert(gettext('The project type and/or permission type of bounty does not validate for a private repo'));
     unloading_button($('.js-submit'));

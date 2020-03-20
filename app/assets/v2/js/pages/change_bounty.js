@@ -244,14 +244,14 @@ $(document).ready(function() {
 
     $('input[name=amount]').trigger('change');
 
-    if (prev_usd_amount != usd_amount) {
+    if (prev_usd_amount !== usd_amount) {
       usdToAmount(usd_amount);
     }
   });
 
   form.validate({
     errorPlacement: function(error, element) {
-      if (element.attr('name') == 'bounty_categories') {
+      if (element.attr('name') === 'bounty_categories') {
         error.appendTo($(element).parents('.btn-group-toggle').next('.cat-error'));
       } else {
         error.insertAfter(element);

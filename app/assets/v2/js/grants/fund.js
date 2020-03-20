@@ -64,7 +64,7 @@ $(document).ready(function() {
     $('.bot-heart').hide();
     updateSummary();
 
-    if ($('#gitcoin-grant-input-amount').val() == 0) {
+    if ($('#gitcoin-grant-input-amount').val() === 0) {
       $('#bot-heartbroken').show();
     } else if ($('#gitcoin-grant-input-amount').val() >= 20) {
       $('#bot-heart-20').show();
@@ -101,7 +101,7 @@ $(document).ready(function() {
     $(event.currentTarget).addClass('badge-active');
   });
   $('.contribution_type select').change(function() {
-    if ($('.contribution_type select').val() == 'once') {
+    if ($('.contribution_type select').val() === 'once') {
       $('.frequency').addClass('hidden');
       $('.num_recurring').addClass('hidden');
       $('.hide_if_onetime').addClass('hidden');
@@ -138,13 +138,13 @@ $(document).ready(function() {
         // translate timeAmount&timeType to requiredPeriodSeconds
         let periodSeconds = data.frequency;
 
-        if (data.frequency_unit == 'days') {
+        if (data.frequency_unit === 'days') {
           periodSeconds *= 86400;
-        } else if (data.frequency_unit == 'hours') {
+        } else if (data.frequency_unit === 'hours') {
           periodSeconds *= 3600;
-        } else if (data.frequency_unit == 'minutes') {
+        } else if (data.frequency_unit === 'minutes') {
           periodSeconds *= 60;
-        } else if (data.frequency_unit == 'months') {
+        } else if (data.frequency_unit === 'months') {
           periodSeconds *= 2592000;
         }
         if (periodSeconds) {
@@ -153,13 +153,13 @@ $(document).ready(function() {
       }
 
 
-      if (data.contract_version == 0) {
+      if (data.contract_version === 0) {
         deployedSubscription = new web3.eth.Contract(compiledSubscription0.abi, data.contract_address);
-      } else if (data.contract_version == 1) {
+      } else if (data.contract_version === 1) {
         deployedSubscription = new web3.eth.Contract(compiledSubscription1.abi, data.contract_address);
       }
 
-      if (data.token_address != '0x0000000000000000000000000000000000000000') {
+      if (data.token_address !== '0x0000000000000000000000000000000000000000') {
         selected_token = data.token_address;
         deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
       } else {
@@ -186,9 +186,9 @@ $(document).ready(function() {
         let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
         let realApproval;
 
-        if (data.contract_version == 1 || data.num_periods == 1) {
+        if (data.contract_version === 1 || data.num_periods === 1) {
           realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + 1);
-        } else if (data.contract_version == 0) {
+        } else if (data.contract_version === 0) {
           console.log('grant amount: ' + grant_amount);
           console.log('gitcoin grant amount: ' + gitcoin_grant_amount);
           // don't need to approve for gitcoin_grant_amount since we will directly transfer it
@@ -197,7 +197,7 @@ $(document).ready(function() {
 
         let realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
 
-        if (contractVersion == 0) {
+        if (contractVersion === 0) {
           realGasPrice = 1;
         }
 
@@ -211,7 +211,7 @@ $(document).ready(function() {
 
           var approvalAddress;
 
-          if (data.num_periods == 1) {
+          if (data.num_periods === 1) {
             approvalAddress = splitterAddress;
           } else {
             approvalAddress = data.contract_address;
@@ -236,11 +236,11 @@ $(document).ready(function() {
                 _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
               }).on('transactionHash', function(transactionHash) {
                 $('#sub_new_approve_tx_id').val(transactionHash);
-                if (data.num_periods == 1) {
+                if (data.num_periods === 1) {
                   // call splitter after approval
                   splitPayment(accounts[0], data.admin_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
                 } else {
-                  if (data.contract_version == 0 && gitcoin_grant_amount > 0) {
+                  if (data.contract_version === 0 && gitcoin_grant_amount > 0) {
                     donationPayment(deployedToken, accounts[0], Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
                   }
                   subscribeToGrant(transactionHash);
@@ -259,7 +259,7 @@ $(document).ready(function() {
   }); // validate
 
   waitforWeb3(function() {
-    if (document.web3network != $('#network').val()) {
+    if (document.web3network !== $('#network').val()) {
       $('#js-fundGrant-button').prop('disabled', true);
       let network = $('#network').val();
 
@@ -392,7 +392,7 @@ const saveSubscription = (data, isOneTimePayment) => {
     data: data,
     success: json => {
       console.log('successfully saved subscription');
-      if (json.url != undefined) {
+      if (json.url !== undefined) {
         redirectURL = json.url;
         $('#wait').val('false');
       }
@@ -420,7 +420,7 @@ const saveSplitTx = (data, splitTxID, confirmed) => {
     data: data,
     success: json => {
       console.log('successfully saved subscription');
-      if (json.url != undefined) {
+      if (json.url !== undefined) {
         redirectURL = json.url;
         $('#wait').val('false');
       }
@@ -509,7 +509,7 @@ const updateSummary = (element) => {
   $('.summary-frequency-unit').html($('#frequency_unit').val());
   $('.summary-frequency-unit-gitcoin').html($('#frequency_unit').val());
 
-  if (contract_version == 0) {
+  if (contract_version === 0) {
     $('.summary-period-gitcoin').html('');
     $('.summary-frequency-unit-gitcoin').html('');
     $('.summary-rollup-gitcoin').hide();
@@ -535,13 +535,13 @@ const splitGrantAmount = () => {
   const percent = $('#gitcoin-grant-input-amount').val();
   const total_amount = $('input#amount').val() ? $('input#amount').val() : 0;
 
-  if (total_amount != 0) {
+  if (total_amount !== 0) {
     if (!percent) {
       $('#summary-gitcoin-grant').hide();
       grant_amount = Number($('input#amount').val());
     } else {
       $('#summary-gitcoin-grant').show();
-      if (contract_version == 0) {
+      if (contract_version === 0) {
         gitcoin_grant_amount = parseFloat(Number(num_periods * percent / 100 * Number($('input#amount').val())).toFixed(4));
         grant_amount = parseFloat((Number($('input#amount').val())).toFixed(4));
       } else {
@@ -564,7 +564,7 @@ const predictPhantomCLRMatch = () => {
 
   let amount = phantom_value;
 
-  if (typeof clr_prediction_curve_per_grant == 'undefined') {
+  if (typeof clr_prediction_curve_per_grant === 'undefined') {
     return;
   }
   for (var grant_id in clr_prediction_curve_per_grant) {

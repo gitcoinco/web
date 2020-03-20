@@ -95,7 +95,7 @@ const ethCreateBounty = data => {
   // setup web3
   // TODO: web3 is using the web3.js file.  In the future we will move
   // to the node.js package.  github.com/ethereum/web3.js
-  const isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
+  const isETH = tokenAddress === '0x0000000000000000000000000000000000000000';
 
   web3.eth.contract(token_abi).at(tokenAddress);
   const account = web3.eth.coinbase;
@@ -156,7 +156,7 @@ const ethCreateBounty = data => {
       return;
     }
 
-    if (typeof ga != 'undefined') {
+    if (typeof ga !== 'undefined') {
       dataLayer.push({
         'event': 'new_bounty',
         'category': 'new_bounty',
@@ -228,7 +228,7 @@ const ethCreateBounty = data => {
       const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
 
       indicateMetamaskPopup();
-      if (FEE_PERCENTAGE == 0) {
+      if (FEE_PERCENTAGE === 0) {
         deductBountyAmount(fee, '');
       } else if (isETH) {
         web3.eth.sendTransaction({
@@ -274,8 +274,8 @@ const ethCreateBounty = data => {
     ipfsBounty.payload.fee_tx_id = txnId;
     ipfsBounty.payload.fee_amount = fee;
     ipfs.addJson(ipfsBounty, newIpfsCallback);
-    if (typeof ga != 'undefined') {
-      if (fee == 0)
+    if (typeof ga !== 'undefined') {
+      if (fee === 0)
         dataLayer.push({
           'event': 'new_bounty',
           'category': 'new_bounty',
@@ -305,7 +305,7 @@ const ethCreateBounty = data => {
     };
 
     $.ajax(settings).done(function(response) {
-      if (response.status == 200) {
+      if (response.status === 200) {
         _alert(response.message, 'info');
         ipfsBounty.payload.unsigned_nda = response.bounty_doc_id;
         if (data.featuredBounty)
@@ -360,7 +360,7 @@ const ethCreateBounty = data => {
 
   function processBounty() {
     if (
-      $("input[type='radio'][name='repo_type']:checked").val() == 'private' &&
+      $("input[type='radio'][name='repo_type']:checked").val() === 'private' &&
       $('#issueNDA')[0].files[0]
     ) {
       uploadNDA();
@@ -409,7 +409,7 @@ const ethCreateBounty = data => {
       }
     };
 
-    if (tokenAddress == '0x0000000000000000000000000000000000000000') {
+    if (tokenAddress === '0x0000000000000000000000000000000000000000') {
       let ethBalance = getBalance(from);
 
       ethBalance.then(

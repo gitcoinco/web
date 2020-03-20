@@ -30,7 +30,7 @@ $(document).ready(function() {
   $('body').on('click', '#mobile_nav_toggle li a', function(e) {
     $('#mobile_nav_toggle li a').removeClass('active');
     $(this).addClass('active');
-    if ($(this).data('slug') == 'feed') {
+    if ($(this).data('slug') === 'feed') {
       $('.feed_container').removeClass('hidden');
       $('.actions_container').addClass('hidden');
     } else {
@@ -87,7 +87,7 @@ $(document).ready(function() {
     }, 10);
   });
   $('body').on('click', '.townsquare_nav-list .nav-link', function(e) {
-    if ($(this).attr('href') != '#') {
+    if ($(this).attr('href') !== '#') {
       return;
     }
     $('.nav-link').removeClass('active');

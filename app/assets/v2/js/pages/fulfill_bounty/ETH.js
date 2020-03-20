@@ -65,7 +65,7 @@ const ethFulfillBounty = (data) => {
 
     if (error) {
       console.error(error);
-      ignore_error = String(error).indexOf('BigNumber') != -1;
+      ignore_error = String(error).indexOf('BigNumber') !== -1;
     }
     document.ipfsDataHash = result;
     const run_main = !error || ignore_error;
@@ -118,7 +118,7 @@ const ethFulfillBounty = (data) => {
         $.get(uri, function(results) {
           results = sanitizeAPIResults(results);
           result = results[0];
-          if (result == null) {
+          if (result === null) {
             _alert({
               message: 'No active bounty found for this Github URL.'
             });

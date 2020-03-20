@@ -132,7 +132,7 @@ const init = () => {
       // These args are baseline requirements for the contract set by the sender. Will set most to zero to abstract complexity from user.
       let args;
 
-      if ($('#contract_version').val() == 1) {
+      if ($('#contract_version').val() === 1) {
         args = [
           // admin_address
           web3.utils.toChecksumAddress(data.admin_address),
@@ -149,7 +149,7 @@ const init = () => {
           // trusted relayer
           web3.utils.toChecksumAddress(data.trusted_relayer)
         ];
-      } else if ($('#contract_version').val() == 0) {
+      } else if ($('#contract_version').val() === 0) {
         args = [
           // admin_address
           web3.utils.toChecksumAddress(data.admin_address),
@@ -247,7 +247,7 @@ const init = () => {
                       let didFindTransaction = false;
 
                       for (let i = 0; i < block.transactions.length; i += 1) {
-                        if (block.transactions[i].from == accounts[0]) {
+                        if (block.transactions[i].from === accounts[0]) {
                           didFindTransaction = true;
                           web3.eth.getTransactionReceipt(block.transactions[i].hash, (error, result) => {
                             if (result && result.contractAddress) {

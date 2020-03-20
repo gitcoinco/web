@@ -67,11 +67,11 @@
     if (vars.dev)
       console.log('[register]', evt);
 
-    if (typeof evt == 'string')
+    if (typeof evt === 'string')
       evt = [evt];
 
     evt.forEach(function(e) {
-      if (typeof vars.evt[e] == 'undefined')
+      if (typeof vars.evt[e] === 'undefined')
         vars.evt[e] = [];
 
       vars.evt[e].push([ f, d ]);
@@ -83,7 +83,7 @@
     if (vars.dev)
       console.log('[call]', evt, a);
 
-    if (typeof vars.evt[evt] == 'undefined') {
+    if (typeof vars.evt[evt] === 'undefined') {
       if (vars.dev)
         console.warn('No callback for event', evt, a);
       return;
@@ -92,7 +92,7 @@
     vars.evt[evt].forEach(function(e) {
       if (vars.dev)
         console.log('[calling evt]', e);
-      if (typeof (e[0]) != 'undefined')
+      if (typeof (e[0]) !=== 'undefined')
         e[0](a);
     });
   };
@@ -106,7 +106,7 @@
   dragit.trajectory.display = function(d, i, c) {
 
   // Making sure we do not display twice the same trajectory
-    if (dragit.statemachine.current_state == 'drag' && dragit.statemachine.current_id == i)
+    if (dragit.statemachine.current_state === 'drag' && dragit.statemachine.current_id === i)
       return;
 
     if (vars.dev)
@@ -115,7 +115,7 @@
     vars.gDragit = vars.container.insert('g', ':first-child')
       .attr('class', 'gDragit');
 
-    if (typeof c != 'undefined' && c != 0) {
+    if (typeof c !=== 'undefined' && c !=== 0) {
       vars.gDragit.classed(c, true);
     } else {
       vars.gDragit.classed('focus', true);
@@ -172,7 +172,7 @@
   };
 
   dragit.trajectory.remove = function(d, i) {
-    if (dragit.statemachine.current_state != 'drag')
+    if (dragit.statemachine.current_state !=== 'drag')
       d3.selectAll('.gDragit.focus').remove();
   };
 
@@ -190,13 +190,13 @@
 
 
     d3.select(this)[0][0].node().addEventListener('mouseenter', function() {
-      if (dragit.statemachine.current_state == 'idle') {
+      if (dragit.statemachine.current_state === 'idle') {
         dragit.statemachine.setState('mouseenter');
       }
     }, false);
 
     d3.select(this)[0][0].node().addEventListener('mouseleave', function() {
-      if (dragit.statemachine.current_state == 'idle')
+      if (dragit.statemachine.current_state === 'idle')
         dragit.statemachine.setState('mouseleave');
     }, false);
 
@@ -300,9 +300,9 @@
 
           var current_index = null;
 
-          if (dragit.mouse.scope == 'focus') {
+          if (dragit.mouse.scope === 'focus') {
             current_index = i;
-          } else if (dragit.mouse.scope == 'selected') {
+          } else if (dragit.mouse.scope === 'selected') {
             current_index = j;
           }
 
@@ -334,7 +334,7 @@
         var index_closest_trajectorypoint = list_distances_trajectorypoint.indexOf(d3.min(list_distances_trajectorypoint));
 
         // It can happens the trajectory is not fully displayed yet, then leave because no closest one
-        if (index_closest_trajectorypoint == -1)
+        if (index_closest_trajectorypoint === -1)
           return;
 
         var new_time = list_times[index_closest_datapoint];
@@ -360,21 +360,21 @@
           .attr('cy', mousepoint[1]);
 
 
-        if (dragit.object.dragging == 'relative') {
+        if (dragit.object.dragging === 'relative') {
           svg.style('cursor', 'none');
           // console.log("relative", list_closest_trajectorypoint[index_closest_trajectorypoint][0])
 
         }
 
         // We have a new time point
-        if (dragit.time.current != new_time || dragit.trajectory.current_id != index_closest_trajectorypoint) {
+        if (dragit.time.current !=== new_time || dragit.trajectory.current_id !=== index_closest_trajectorypoint) {
           dragit.trajectory.index_closest_trajectorypoint = index_closest_trajectorypoint;
           dragit.time.current = new_time;
           dragit.evt.call('update', new_time, 0);
         }
 
         // We have a new trajectoy focus
-        if (dragit.statemachine.current_id != index_closest_trajectorypoint && dragit.mouse.scope != 'focus') {
+        if (dragit.statemachine.current_id !=== index_closest_trajectorypoint && dragit.mouse.scope !=== 'focus') {
           dragit.statemachine.current_id = index_closest_trajectorypoint;
           dragit.evt.call('new_focus', dragit.statemachine.current_id);
         }
@@ -447,7 +447,7 @@
 
         dragit.evt.call('update', 0, 0);
 
-        if (dragit.time.current == dragit.time.max - 1) {
+        if (dragit.time.current === dragit.time.max - 1) {
           if (dragit.playback.loop) {
             dragit.time.current = 0;
             dragit.playback.play();
@@ -469,7 +469,7 @@
       dragit.playback.playing = true;
       d3.select(vars.playback.el).select('button').text('| |').attr('class', 'playing');
 
-      if (dragit.time.current == dragit.time.max)
+      if (dragit.time.current === dragit.time.max)
         dragit.time.current;
 
       dragit.playback.play();
@@ -493,7 +493,7 @@
         .text('▶')
         .attr('class', 'stop')
         .on('click', function() {
-          if (dragit.playback.playing == false) {
+          if (dragit.playback.playing === false) {
             dragit.playback.start();
           } else {
             dragit.playback.stop();
@@ -620,7 +620,7 @@
     while (true) {
       target = Math.floor((beginning + end) / 2);
       pos = pathEl.getPointAtLength(target);
-      if ((target === end || target === beginning) && pos.x !== x) {
+      if ((target === end || target === beginning) && pos.x !=== x) {
         break;
       }
       if (pos.x > x)
@@ -682,10 +682,10 @@ Array.prototype.equals = function(b) {
   var a = this;
   var i = a.length;
 
-  if (i != b.length)
+  if (i !=== b.length)
     return false;
   while (i--) {
-    if (a[i] !== b[i])
+    if (a[i] !=== b[i])
       return false;
   }
   return true;

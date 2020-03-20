@@ -32,7 +32,7 @@ function nextSlide() {
 }
 
 function prevSlide() {
-  if (currentSlide == 0) {
+  if (currentSlide === 0) {
     currentSlide = slides.length - 1;
   } else {
     currentSlide = (currentSlide - 1) % slides.length;
