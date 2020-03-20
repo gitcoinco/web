@@ -1009,15 +1009,14 @@ input[type=checkbox].toggle-switch {
   -webkit-appearance: none;
   outline: 0;
   cursor: pointer;
-  /* width of the track */
   width: 4em;
-  /* height of the track */
-  height: 1.5em;
-  border-radius: 3em;
+  height: 1.2em;
+  border-radius: 2.5em;
   background-color: #ebebeb;
   transition: background-color 0.09s ease-in-out;
   position: relative;
 }
+
 
 input[type=checkbox].toggle-switch:active::after {
   background-color: #f2f2f2;
@@ -1039,8 +1038,7 @@ input[type=checkbox].toggle-switch::after {
 }
 
 input[type=checkbox].toggle-switch:checked {
-  background-color: #333;
-  color: #fff;
+  background-color: rgba(224, 214, 214, 0.493);
 }
 
 input[type=checkbox].toggle-switch:checked:active::after {
@@ -1057,6 +1055,11 @@ input[type=checkbox].toggle-switch:checked::after {
 }
 
 .dark .bg-white {
+  background-color: #2b2642!important;
+  box-shadow: 60px!important;
+}
+
+.dark .bg-lightblue {
   background-color: #2b2642!important;
   box-shadow: 60px!important;
 }
@@ -1079,6 +1082,7 @@ input[type=checkbox].toggle-switch:checked::after {
 
 .dark .activity_stream .activity_comments .activity_comments_main_comment {
   color: #fff!important;
+  border-top: 2px solid #346698!important;
 }
 
 .dark .textarea.form__input {
@@ -1108,4 +1112,54 @@ input[type=checkbox].toggle-switch:checked::after {
 
 .dark .townsquare_block-header {
   color: #fff;
+}
+
+.dark .font-caption {
+  color: #fff!important;
+}
+
+.dark .activity_stream .box {
+  border-bottom: 1px solid #312979;
+}
+
+.dark .poll_choices.answered div span {
+  color: #fff!important;
+}
+
+.dark .poll_choices div p {
+  color: #fff!important;
+  background-color: black!important;
+}
+
+.dark .activity_stream .comment_row .activity_comments_main {
+  border-top: #8ab2b2!important;
+}
+
+.dark .poll_choices div.vote {
+  background-color: #232342!important;
+}
+
+.dark .poll_choices.answered div.vote {
+  border: 1px solid #262661!important;
+}
+
+.dark #status .btn-group-toggle .btn-radio {
+  background-color: black!important;
+}
+
+.dark .poll_choices.answered div.vote {
+  background-color: black!important;
+}
+
+.dark .action:hover {
+  background-color: black!important;
+}
+
+.dark .border {
+  border: 1px solid #346698!important;
+}
+
+.dark #new_activity_notifier {
+  background-color: #262661!important;
+  border-bottom: 1px solid #262661!important;
 }
