@@ -16,13 +16,9 @@
 
 '''
 
-
 from django.core.management.base import BaseCommand
 
-<<<<<<< HEAD
-=======
 from dashboard.models import BountyFulfillment
->>>>>>> 86eb6b20a633b8d45b6c61b8122edb09bec0b463
 from dashboard.utils import sync_etc_payout
 
 

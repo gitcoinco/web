@@ -87,6 +87,11 @@ ul.milestones-list .milestone-date form {
   display: inline;
 }
 
+.milestones-input input,
+.milestones-input textarea {
+  margin-top: 20px;
+}
+
 ul.milestones-list .milestone-date input {
   border: 1px solid;
   font-size: 14px;
@@ -106,11 +111,6 @@ ul.milestones-list .milestone-date a {
 ul.milestones-list .milestone-description {
   font-size: .85rem;
   color: #43484D;
-}
-
-.milestones-input input,
-.milestones-input textarea {
-  margin-top: 20px;
 }
 
 ul.milestones-list .button {

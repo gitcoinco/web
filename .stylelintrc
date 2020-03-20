@@ -25,7 +25,8 @@
       "vh",
       "pt",
       "vmin",
-      "fr"
+      "fr",
+      "turn"
     ]
   }
 }

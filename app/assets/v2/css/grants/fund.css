@@ -9,7 +9,7 @@
   color: #0D0764;
 }
 
-.tab_target{
+.tab_target {
   width: 100%;
 }
 
@@ -29,6 +29,10 @@
   border-top: 1px solid black;
   border-left: 1px solid black;
   margin-right: 10px;
+}
+
+.nav-link:visited {
+  color: black;
 }
 
 #grants_form .nav-link {
@@ -148,30 +152,6 @@
   top: -2px;
 }
 
-#gitcoin-grant-section .gitcoin-grant-summary p:last-child {
-  top: 1.2rem;
-  left: 1rem;
-}
-
-.helper-text {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1.2rem;
-}
-
-.nav {
-  text-align: center;
-}
-
-.nav-link:visited {
-  color: black;
-}
-
-.nav-item.active {
-  text-decoration: underline;
-}
-
 .clr_estimate {
   background-color: white;
   border-radius: 5px;
@@ -221,7 +201,6 @@
   background-color: #10cd7a;
   border-radius: 3px;
   padding: 4px 6px;
-
 }
 
 .clr_estimate h4 {
@@ -238,9 +217,28 @@
 
 .clr_estimate p {
   text-align: left;
-  color: #10cd7a;
   font-size: 12px;
   color: #959595;
+}
+
+#gitcoin-grant-section .gitcoin-grant-summary p:last-child {
+  top: 1.2rem;
+  left: 1rem;
+}
+
+.helper-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1.2rem;
+}
+
+.nav {
+  text-align: center;
+}
+
+.nav-item.active {
+  text-decoration: underline;
 }
 
 #phantom_fund .description i {
@@ -265,7 +263,6 @@
 }
 
 @media (max-width: 767.98px) {
-
   .banner-img {
     text-align: center;
   }

@@ -2,11 +2,9 @@
 $dark-blue: #0d023b;
 $gc-blue: #3e00ff;
 $bg-cellarius: #4D5858;
-
 @import 'transaction';
 @import 'range-slider';
 @import 'select2.bootstrap4';
-
 // MIXINS
 @mixin square() {
   display: flex;
@@ -20,8 +18,17 @@ $bg-cellarius: #4D5858;
     display: table;
   }
 }
+// CODE: kd-card
+.kd-content {
+  font-size: 0.9rem;
+  padding: 1.3rem 1.3rem 0.7rem;
 
-// CODE
+  a,
+  b {
+    color: #3e00ff;
+  }
+}
+
 .kd-card {
   position: relative;
 
@@ -39,14 +46,13 @@ $bg-cellarius: #4D5858;
   .img-thumbnail {
     width: 100%;
     padding: 1.25rem 2.14rem;
-    transition: all linear .15s;
-
+    transition: all linear 0.15s;
   }
 
   a:hover {
     .img-thumbnail {
       border-color: $gc-blue;
-      box-shadow: inset 0 0 0px 2px $gc-blue;
+      box-shadow: inset 0 0 0 2px $gc-blue;
     }
   }
 
@@ -78,7 +84,7 @@ $bg-cellarius: #4D5858;
 
 .kd-extended {
   background: #fff;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   height: 100%;
   transition: all 0.5s ease-in-out;
 
@@ -93,7 +99,6 @@ $bg-cellarius: #4D5858;
 
   .sender-avatar {
     position: absolute;
-    width: 50px;
     border-radius: 50%;
     bottom: 1em;
     left: 7%;
@@ -112,16 +117,6 @@ $bg-cellarius: #4D5858;
   .kd-title {
     font-size: 1.25rem;
     padding: 0;
-  }
-}
-
-.kd-content {
-  font-size: 0.9rem;
-  padding: 1.3rem 1.3rem 0.7rem;
-
-  a,
-  b {
-    color: #3e00ff;
   }
 }
 
@@ -149,12 +144,10 @@ $bg-cellarius: #4D5858;
 }
 
 .listing-kudo {
-
   a {
     color: #43484d;
   }
 }
-
 // GENERAL
 .full-height {
   min-height: 100vh;
@@ -180,7 +173,7 @@ $bg-cellarius: #4D5858;
 
 .cta-square {
   @include square;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   color: #fff;
   background-color: $gc-blue;
   font-size: 2em;
@@ -188,14 +181,14 @@ $bg-cellarius: #4D5858;
   > div {
     display: flex;
     flex-direction: column;
-    padding: 0 0.6em 0;
+    padding: 0 0.6em;
     line-height: 1.1;
     align-self: stretch;
     justify-content: space-evenly;
   }
 
   &:hover {
-    color: rgba(255, 255, 255, 0.8)
+    color: rgba(255, 255, 255, 0.8);
   }
 }
 
@@ -205,7 +198,6 @@ $bg-cellarius: #4D5858;
 }
 
 .carousel-control-kudos {
-
   .carousel-control-next,
   .carousel-control-prev {
     width: 3.3rem;
@@ -254,7 +246,7 @@ $bg-cellarius: #4D5858;
 .btn-orange {
   background-color: #d38971;
   color: white;
-  padding: .75rem 1.5rem;
+  padding: 0.75rem 1.5rem;
 
   &:hover {
     color: white;
@@ -272,8 +264,14 @@ $bg-cellarius: #4D5858;
   justify-content: center;
   align-items: center;
   -webkit-clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
-
   clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+
+#shape-hexagon {
+  animation: rotation 5s linear infinite;
+  animation-fill-mode: none;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
 }
 
 a:hover {
@@ -282,17 +280,8 @@ a:hover {
   }
 }
 
-#shape-hexagon {
-  animation: rotation 5s linear infinite;
-  animation-fill-mode: none;
-  animation-direction: alternate;
-  animation-iteration-count: infinite;
-
-}
-
 
 @keyframes rotation {
-
   // stroke-dasharray: 300
   0% {
     stroke: #0cc67f;
@@ -330,21 +319,14 @@ a:hover {
   }
 }
 
-
-
 .hexagon-group {
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   margin: auto;
   font-size: 16px;
   padding-bottom: 3em;
-
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-
-
 
   svg {
     height: 16.8em;
@@ -355,11 +337,9 @@ a:hover {
     }
   }
 
-
   .paging-animation {
     font-size: 14px;
-    margin: 0.8em;
-    margin-bottom: -3em;
+    margin: 0.8em 0.8em -3em;
     perspective: 1000px;
     position: relative;
     height: 208px;
@@ -369,7 +349,6 @@ a:hover {
       transition: all 0.5s linear;
       width: 100%;
       height: 100%;
-
     }
 
     .face {
@@ -384,7 +363,6 @@ a:hover {
       display: block;
       transform: rotateY(0.5turn);
       box-sizing: border-box;
-
     }
 
     &:hover .faces {
@@ -426,9 +404,7 @@ a:hover {
       grid-column: 1/4;
     }
   }
-
   @media(min-width: 400px) {
-
     svg text {
       font-size: 1.3em;
     }
@@ -466,7 +442,6 @@ a:hover {
       }
     }
   }
-
   @media(min-width: 800px) {
     grid-template-columns: repeat(8, 1fr);
 
@@ -500,24 +475,20 @@ a:hover {
       }
     }
   }
-
 }
 
-
 .star-pulse {
-  animation: pulse-shadow .5s ease-out infinite;
+  animation: pulse-shadow 0.5s ease-out infinite;
   animation-direction: alternate;
   margin-left: -60px;
   margin-top: 4rem;
   top: 0;
-
   @media (max-width: 768px) {
     right: -10px;
     margin-top: 0;
     width: 5rem;
   }
 }
-
 @keyframes pulse-shadow {
   0% {
     transform: scale(0.98);
@@ -558,9 +529,9 @@ a.cellarius-partner:before {
   bottom: 3rem;
   width: 16%;
   height: 16%;
-  background-size: cover;
-  background: url('/static/v2/images/kudos/assets/cellarius-logo.svg');
+  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
   background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .cellarius-badge {
@@ -569,12 +540,11 @@ a.cellarius-partner:before {
   width: 16%;
   height: 16%;
   background-size: cover;
-  background: url('/static/v2/images/kudos/assets/cellarius-logo.svg');
+  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
   background-repeat: no-repeat;
   background-color: #fff;
   border-radius: 50px;
 }
-
 // Kudos details
 .kudos-details__title {
   font-weight: 200;
@@ -627,7 +597,6 @@ a.cellarius-partner:before {
     color: #0ECF7C;
     font-weight: 600;
     line-height: 1.5;
-
   }
 
   .tooltip-inner {
@@ -640,7 +609,6 @@ a.cellarius-partner:before {
     table {
       width: 100%;
     }
-
   }
 }
 
@@ -648,7 +616,6 @@ a.cellarius-partner:before {
   -webkit-clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
-
 // kudos detail animations
 #kudos-image,
 .kudos_levitate_container {
@@ -661,9 +628,7 @@ a.cellarius-partner:before {
   backface-visibility: hidden;
   perspective: 1000px;
 }
-
 @keyframes shake {
-
   10%,
   90% {
     transform: translate3d(-1px, 0, 0);
@@ -694,7 +659,7 @@ a.cellarius-partner:before {
   border-radius: 10px;
   color: white;
   padding: 3px 10px;
-  margin-bottom: 20px
+  margin-bottom: 20px;
 }
 
 .kudos_msg:after {
@@ -722,16 +687,6 @@ a.cellarius-partner:before {
   background-color: transparent;
   display: flex;
 
-  &:focus .flip-card__flipper {
-    transform: rotateY(-10deg);
-    box-shadow: 2px 0px 7px 1px hsla(0, 0%, 0%, 0.1);
-  }
-
-  &__hold {
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-
   &__flipper {
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
@@ -742,18 +697,27 @@ a.cellarius-partner:before {
     border-radius: 3px;
   }
 
+  &__flipper:hover {
+    transform: rotateY(-10deg);
+    box-shadow: 2px 0 7px 1px hsla(0, 0%, 0%, 0.1);
+  }
+
+  &:focus .flip-card__flipper {
+    transform: rotateY(-10deg);
+    box-shadow: 2px 0 7px 1px hsla(0, 0%, 0%, 0.1);
+  }
+
+  &__hold {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
   &__front {
     position: relative;
     background: white;
-    border-radius: .25rem;
+    border-radius: 0.25rem;
     z-index: 2;
     transform: rotateY(0);
-  }
-
-
-  &__flipper:hover {
-    transform: rotateY(-10deg);
-    box-shadow: 2px 0px 7px 1px hsla(0, 0%, 0%, 0.1);
   }
 
   &.turn .flip-card__flipper {
@@ -764,18 +728,10 @@ a.cellarius-partner:before {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     transform: rotateY(-0.5turn);
-    border-radius: .25rem;
+    border-radius: 0.25rem;
   }
 
-  &__extra-data {
-    display: flex;
-    justify-content: space-between;
-    margin: .5rem 0 1.5rem;
 
-    a {
-      font-size: 0.75rem;
-    }
-  }
 
   &__stack-img {
     display: flex;
@@ -788,7 +744,6 @@ a.cellarius-partner:before {
       margin-left: -18px;
     }
   }
-
 }
 
 .bubble {
@@ -808,7 +763,7 @@ a.cellarius-partner:before {
     border: 11px solid;
     position: absolute;
     border-color: transparent transparent rgba(0, 0, 0, 0.4) transparent;
-    border-width: 0px 0.5em 0.5em 0.5em;
+    border-width: 0 0.5em 0.5em 0.5em;
     top: -0.5em;
     left: 1em;
   }

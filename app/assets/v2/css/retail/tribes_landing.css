@@ -76,7 +76,7 @@
   border-radius: 5px;
 }
 
-.testimonial-section .testimonial-box  .img-container {
+.testimonial-section .testimonial-box .img-container {
   border: 2px solid #3E00FF;
   height: 5rem;
   width: 5rem;
@@ -93,6 +93,10 @@
   max-width: 5rem;
   top: -5px;
   background: white;
+}
+
+.tribes-section img {
+  height: 5rem;
 }
 
 .testimonial-section .testimonial-box .img-container.org-container img {
@@ -114,20 +118,16 @@
   right: 0;
 }
 
+.ribbon-green span {
+  background: #0FCE7C;
+}
+
 #pro,
 #pro h3,
 #pro h2,
 #pro .plan-header span {
   background-color: #170640;
   color: white;
-}
-
-.ribbon-green span {
-  background: #0FCE7C;
-}
-
-.tribes-section img {
-  height: 5rem;
 }
 
 @media (min-width:1200px) and (max-width: 1500px) {

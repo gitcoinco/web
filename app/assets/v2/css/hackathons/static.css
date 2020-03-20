@@ -32,6 +32,10 @@ h4 {
   height: 3.5rem;
 }
 
+.hackathon .section img {
+  max-height: 25rem;
+}
+
 .hackathon footer img {
   min-height: 3.5rem;
 }
@@ -68,8 +72,8 @@ h4 {
   transition: all .2s ease-in-out;
 }
 
-.hackathon .sponsors img:hover,
-.hackathon footer img:hover {
+.hackathon footer img:hover,
+.hackathon .sponsors img:hover {
   transform: scale(1.1);
 }
 
@@ -80,12 +84,13 @@ h4 {
   border-radius: 52px;
 }
 
-.hackathon .section img {
-  max-height: 25rem;
-}
-
 .hk-white-bg .border {
   background-color: #121315;
+}
+
+.hk-black-bg .border,
+.hk-blue-bg .border {
+  background-color: #fff;
 }
 
 .hackathon .section .border {
@@ -98,7 +103,6 @@ h4 {
 }
 
 /* color schema */
-
 .hk-white-bg {
   background-color: #fff;
 }
@@ -113,11 +117,6 @@ h4 {
   color: #fff;
 }
 
-.hk-black-bg .border,
-.hk-blue-bg .border {
-  background-color: #fff;
-}
-
 .hk-white-f {
   color: #fff
 }
@@ -127,7 +126,6 @@ h4 {
 }
 
 /* Eth Hack */
-
 .ethhk-banner-bg {
   background-color: #180944;
 }
@@ -138,6 +136,9 @@ h4 {
 }
 
 /* Beyond Blocks */
+.beyond_blocks .sponsors_silver img {
+  height: 3.5rem;
+}
 
 .beyond_blocks footer a:last-child img {
   min-height: 5.5rem;
@@ -146,10 +147,6 @@ h4 {
 
 .beyond_blocks .powered_by img:last-child {
   min-height: 5.5rem;
-}
-
-.beyond_blocks .sponsors_silver img {
-  height: 3.5rem;
 }
 
 .bb-banner-bg {
@@ -169,9 +166,7 @@ h4 {
   }
 }
 
-
 @media (max-width: 575.98px) {
-
   h1 {
     font-size: 2.5rem;
   }

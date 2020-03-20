@@ -26,11 +26,9 @@ from celery import group
 <<<<<<< HEAD
 from chat.tasks import add_to_channel, create_channel, create_user, get_driver
 from chat.utils import create_user_if_not_exists
-=======
 from chat.tasks import (
     add_to_channel, associate_chat_to_profile, create_channel, create_channel_if_not_exists, create_user, get_driver,
 )
->>>>>>> 86eb6b20a633b8d45b6c61b8122edb09bec0b463
 from dashboard.models import Bounty, Interest, Profile
 
 logger = logging.getLogger(__name__)
