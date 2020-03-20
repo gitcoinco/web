@@ -35,6 +35,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
 
 from app.utils import get_profile
 from cacheops import cached_view
@@ -42,6 +43,7 @@ from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
+from grants.clr import predict_clr_live
 from grants.forms import MilestoneForm
 from grants.models import (
     Contribution, Grant, GrantCategory, MatchPledge, Milestone, PhantomFunding, Subscription, Update,
@@ -1047,3 +1049,50 @@ def grant_categories(request):
     return JsonResponse({
         'categories': categories
     })
+
+
+@csrf_exempt
+@require_GET
+def predict_clr_v1(request, grant_id):
+    '''
+        {
+            amount: <float>
+        }
+    '''
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to predict clr match'
+    }
+
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to predict clr'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    try:
+       grant = Grant.objects.get(pk=grant_id)
+    except Grant.DoesNotExist:
+        response['message'] = 'error: grant not found'
+        return JsonResponse(response)
+
+    amount = request.GET.get('amount')
+    if not amount:
+        response['message'] = 'error: missing parameter amount'
+        return JsonResponse(response)
+
+    predicted_clr_match = predict_clr_live(grant, profile, float(amount))
+
+    response = {
+        'status': 200,
+        'grant_id': grant_id,
+        'clr_match': predicted_clr_match
+    }
+
+    return JsonResponse(response)

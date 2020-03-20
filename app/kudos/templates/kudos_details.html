@@ -117,7 +117,9 @@
               {% if kudos.quests_reward %}
                 <BR>
                 <BR>
+                {% if reward_for|length %}
                 or: 
+                {% endif %}
                 {% for quest in reward_for %}
                   <a class="m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
                   <BR>
