@@ -343,6 +343,18 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/orc_gitcoin.svg',
         },
+        'visible': {
+            'preview_viewbox': {
+                'back': '0 0 350 350',
+                'eye': '120 40 70 70',
+                'accessoire': '0 0 350 350',
+                'body': '0 0 250 250',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/visible.svg',
+        },
         'curly': {
             'preview_viewbox': {
                 'back': '0 0 350 350',
@@ -750,7 +762,9 @@ def avatar3d(request):
             elements = []
             tree = ET.parse(file)
             for item in tree.getroot():
-                include_item = item.attrib.get('id') in accept_ids or item.tag in tags
+                include_item = item.attrib.get('id') in accept_ids \
+                    or item.tag in tags or 'gradient' in item.attrib.get('id', '').lower() \
+                    or 'defs' in str(item.tag)
                 if include_item:
                     elements.append(ET.tostring(item).decode('utf-8'))
             output = prepend + "".join(elements) + postpend
