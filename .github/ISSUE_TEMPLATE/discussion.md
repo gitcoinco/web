@@ -4,7 +4,6 @@ about: Want to start a discussion? Use this template.
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
 <!--
@@ -18,4 +17,4 @@ gitcoin.co/slack
 
 ### Discussion
 
-[comment]: # (What conversation would you like to facilitate?)
+[comment]: # "What conversation would you like to facilitate?"
